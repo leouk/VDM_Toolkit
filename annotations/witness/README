@@ -1,0 +1,7 @@
+Building VDMJ Annotations
+
+Annotations is designed to be built with Maven (see http://maven.apache.org/).
+
+This is an extension to the default VDMJ annotations to include @Witness annotation. 
+
+See Edward Jacobs CSC8499 2019 MSc dissertation for details.
