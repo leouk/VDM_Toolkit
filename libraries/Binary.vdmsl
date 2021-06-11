@@ -78,6 +78,17 @@ definitions
 
 /******************* Bit Vectors ********************/
 
+functions
+	--@doc arguably not necessary?
+	npow: nat * nat -> nat1
+	npow(base, exp) == 
+		base**exp--if exp = 0 then 1 else base * npow(base, exp - 1)
+	--post 
+	--	RESULT = base**exp
+	--measure 
+	--	npow_measure
+	;
+
 values
 	BITS_PER_BYTE: nat1 = 8;
 	BIN_BASE: nat1 = 2;
@@ -124,17 +135,7 @@ functions
 	
 	n2b: binary -> bool
 	n2b(n) == n <> 0; --if n <> 0 then true else false; -- n <> 0
-	
-	--@doc arguably not necessary?
-	npow: nat * nat -> nat1
-	npow(base, exp) == 
-		base**exp--if exp = 0 then 1 else base * npow(base, exp - 1)
-	--post 
-	--	RESULT = base**exp
-	--measure 
-	--	npow_measure
-	;
-	
+		
 	--bnpow : Bit -> nat1
 	--bnpow(exp) == npow(BIN_BASE,exp);
 	
@@ -172,16 +173,6 @@ functions
 	post 
 		n < npow(BIN_BASE, len RESULT);
 				
-	bin2byte: BinByte -> Byte
-	bin2byte(bv) == bv2nat(bv)
-	post
-		post_bv2nat(bv, RESULT);
-	
-	byte2bin: Byte -> BinByte
-	byte2bin(n) == binPad(nat2bv(n))
-	post
-		post_nat2bv(n, RESULT);
-	
 	--@doc use of double sequence generator to avoid warning on both OVerture and VDMJ
 	zeroed: nat -> BitVector
 	zeroed(size) == [ false | - in seq [ p | p in set {1,...,size} ] ]
@@ -197,6 +188,16 @@ functions
 	binPad(bv) == bvPad(bv, BITS_PER_BYTE - len bv)
 	post
 		post_bvPad(bv, BITS_PER_BYTE - len bv, RESULT);
+	
+	bin2byte: BinByte -> Byte
+	bin2byte(bv) == bv2nat(bv)
+	post
+		post_bv2nat(bv, RESULT);
+	
+	byte2bin: Byte -> BinByte
+	byte2bin(n) == binPad(nat2bv(n))
+	post
+		post_nat2bv(n, RESULT);
 	
 	firstBitIndex: BitVector -> nat
 	firstBitIndex(bv) == 
@@ -360,29 +361,7 @@ types
 	inv list == injective[HexString](list);
 		
 functions
-	--@doc = calculates the number of bytes in a hex string; any leading zeros are ignored
-	--			 ex: hexSizeBytes(0F)=hexSizeBytes(FF)=1
-	--			 ranges:
-	--			  0  -  FF		1  byte, lentgh 1-2
-	--			100  -FFFF		2 bytes, length 3-4
-	--			10000-FFFFFF	3 bytes, length 5-6
-	hexSizeBytes: HexString -> nat
-	hexSizeBytes(hs) == 
-		let hs_clean = removeLeadingZeros(hs) in
-			(len hs_clean div HEX_BIN_OCTET_LEN) + (len hs_clean mod HEX_BIN_OCTET_LEN);
 
-	--@doc = removes the leading zeros hex string (e.g. 00FC becomes FC). 
-	--			 important for calculating the byte size of given hex string
-	--			 ex: hexSizeBytes(00FC)=hexSizeByte(FC)=(len "FC" div HEX_BIN_OCTET_LEN) + (len "FC" mod HEX_BIN_OCTET_LEN)=1+0=1
-	removeLeadingZeros: HexString -> HexString
-	removeLeadingZeros(hs) == nat2hex(hex2nat(hs))
-	post
-		--@doc = removing leading zero does not affect the underlying nat result value
-		hex2nat(hs) = hex2nat(RESULT);
-
-	hex2nat: HexString -> nat
-	hex2nat(hs) == hex2nat0(hs, 0);
-	
 	hex2digit: char -> nat
 	hex2digit(hs) == 
 		-- hs in {a,b,c,d,e,f}
@@ -420,10 +399,10 @@ functions
 		forall i in set elems hs & pre_hex2digit(i)
 	measure 
 		len hs;
-	
-	nat2hex: nat -> HexString
-	nat2hex(n) == nat2hex0(n, "");
-	
+
+	hex2nat: HexString -> nat
+	hex2nat(hs) == hex2nat0(hs, 0);
+		
 	digit2hex: HexDigit -> HexString
 	digit2hex(digit) == 
 		if digit in set dom NAT_HEX_LETTER then
@@ -440,6 +419,29 @@ functions
   measure
   	n;
 
+	nat2hex: nat -> HexString
+	nat2hex(n) == nat2hex0(n, "");
+
+	--@doc = removes the leading zeros hex string (e.g. 00FC becomes FC). 
+	--			 important for calculating the byte size of given hex string
+	--			 ex: hexSizeBytes(00FC)=hexSizeByte(FC)=(len "FC" div HEX_BIN_OCTET_LEN) + (len "FC" mod HEX_BIN_OCTET_LEN)=1+0=1
+	removeLeadingZeros: HexString -> HexString
+	removeLeadingZeros(hs) == nat2hex(hex2nat(hs))
+	post
+		--@doc = removing leading zero does not affect the underlying nat result value
+		hex2nat(hs) = hex2nat(RESULT);
+
+	--@doc = calculates the number of bytes in a hex string; any leading zeros are ignored
+	--			 ex: hexSizeBytes(0F)=hexSizeBytes(FF)=1
+	--			 ranges:
+	--			  0  -  FF		1  byte, lentgh 1-2
+	--			100  -FFFF		2 bytes, length 3-4
+	--			10000-FFFFFF	3 bytes, length 5-6
+	hexSizeBytes: HexString -> nat
+	hexSizeBytes(hs) == 
+		let hs_clean = removeLeadingZeros(hs) in
+			(len hs_clean div HEX_BIN_OCTET_LEN) + (len hs_clean mod HEX_BIN_OCTET_LEN);
+	
 /******************* Traces ********************/
 
 	equal : nat * nat -> bool

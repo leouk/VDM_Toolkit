@@ -59,7 +59,14 @@ functions
 		(card RESULT = 0 <=> size(s) = 0)
 		and
 		card RESULT <= size(s);
-	
+
+	--@doc checks whether given element is within stack, nil is within empty stack but not within non-empty stack?
+	within_stack: Stack * ? -> bool
+	within_stack(s,t) ==
+		(size(s) = 0 <=> t = nil)
+		and
+		(size(s) > 0 <=> t in set vset(s));
+		
 	--@doc peek at the top without changing stack 
 	top: Stack -> ?
 	top(s) ==
@@ -97,13 +104,6 @@ functions
 			and
 			forall i in set vr & criteria(i);
 
-	--@doc checks whether given element is within stack, nil is within empty stack but not within non-empty stack?
-	within_stack: Stack * ? -> bool
-	within_stack(s,t) ==
-		(size(s) = 0 <=> t = nil)
-		and
-		(size(s) > 0 <=> t in set vset(s));
-	
 	--@doc how many instances of specific value filter the stack contains	
 	howMany: Stack * (? -> bool) -> nat
 	howMany(s,criteria) == size(filter(s,criteria))

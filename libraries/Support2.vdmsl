@@ -1,10 +1,5 @@
 module Support2
 imports
-from IO
-	operations
-		print renamed print;
-		printf renamed printf
-,
 from MATH
   operations 
     rand renamed rand
@@ -16,7 +11,6 @@ from VDMUtil
 exports 
 	types
 		struct SortKind;
-		struct LogLevel;
 		struct Trace;
 		struct String;
 		struct StringList;
@@ -72,7 +66,6 @@ exports
 		enum_typed[@T]: @T -> bool;
 		record_name[@T]: @T -> String;
 		record_typed[@T]: @T -> bool;
-		log_level_leq: LogLevel * LogLevel +> bool;
 		
 		inv_UniqueStringList: seq of String +> bool;
 		inv_UniqueStringList1: seq1 of String +> bool;
@@ -116,21 +109,8 @@ exports
 		true_invSet[@T]: set of @T -> bool
 		
 	operations
-		set_log_level: LogLevel ==> ();
-		get_log_level: () ==> LogLevel;
-		get_trace: () ==> Trace;
-		print_trace: () ==> ();
-		reset_trace: () ==> ();
-		log: LogLevel * String ==> ();
-		logf: LogLevel * String * seq of ? ==> ();
-		tlog: LogLevel * ? * String ==> ();
-		tlogf: LogLevel * ? * String * seq of ? ==> ();
 		fresh_random: () ==> int;
 		--new_random: int ==> int;
-		assert: String * ? * ? * bool ==> ();
-		assert_all: seq1 of (String * ? * ? * bool) ==> ();
-		high_assert: String * ? * ? * (? * ? -> bool) ==> ();
-    high_assert_all: seq1 of (String * ? * ? * (? * ? -> bool)) ==> ()
 
 definitions 
 
@@ -151,9 +131,6 @@ types
 	
 	Trace = seq of String;
 	
-	--@todo decouple LogLevel from support to be free; namely no <MDS> just numbers?
-	LogLevel = <Debug> | <Verbose> | <Todo> | <Info> | <Trace> | <Concurrency> | <Warning> | <Stack> | <MDS> | <Error> | <Fatal>; 
-
 values
 	--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters 
 	--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters 
@@ -949,47 +926,16 @@ functions
 			result(4) <> '('
 			and
 			indexOf[char]('(',result) <> nil;
-		
-	log_level2nat: LogLevel -> nat
-	log_level2nat(ll) ==
-		cases ll: 
-			<Debug>   -> 0,
-			<Verbose> -> 1,
-			<Todo>		-> 2,
-			<Info> 		-> 3,
-			<Trace>   -> 4,
-			<Concurrency> -> 5,
-			<Warning> -> 6,
-			<Stack>		-> 7,
-			<MDS> 		-> 8,
-			<Error>		-> 9,
-			<Fatal>   -> 10
-		end; 
-	
-	log_level_leq: LogLevel * LogLevel +> bool
-	log_level_leq(ll1, ll2) == log_level2nat(ll1) <= log_level2nat(ll2);
-	
-	level_trace: LogLevel -> String
-	level_trace(level) == "[" ^ val2str[LogLevel](level) ^ "]: " ^ (if level = <Info> then "\t## " else "\t"); 
-	
-	make_trace: LogLevel * ? * String * seq of char -> String
-	make_trace(level, tag, trace, extra) == 
-		let tag': seq of char = (if tag <> nil then "(" ^ val2str[?](tag) ^ ")" else []) in
-			level_trace(level) ^ tag' ^ trace ^ extra ^ "\n";
-	
+				
 values
-	DEFAULT_LOG_LEVEL: LogLevel = <Trace>;
-		
   SEED      : int = 2000;
 	MAX_RANDOM: int = 2000;
 		
-state Support_MDS of
-  log_level: LogLevel
-	log_trace: Trace
+state Support of
 	used: set of int
 	seed: int
-inv mk_Support_MDS(-,-,-,seed) == seed <= MAX_RANDOM
-init smds == smds = mk_Support_MDS(DEFAULT_LOG_LEVEL, [], {},SEED)	
+inv mk_Support(-,seed) == seed <= MAX_RANDOM
+init s == s = mk_Support({},SEED)	
 end
 
 operations
@@ -1024,123 +970,5 @@ operations
     r in set used
     and
     r <= MAX_RANDOM;
-
-	set_log_level(level: LogLevel) ==
-		log_level := level
-	ext
-		wr log_level
-	post
-		log_level = level;
-		
-	pure get_log_level: () ==> LogLevel
-	get_log_level() == return log_level;
-		
-	pure get_trace: () ==> Trace
-	get_trace() == return log_trace;
-	
-	reset_trace() ==
-		(log_trace := [];
-		)
-	ext
-		wr log_trace
-	post
-		log_trace = [];
-	
-	print_trace() ==
-		for s in log_trace do
-			print(s)
-	ext 
-		rd log_trace;
-		
-	--@doc = logs the given trace if within log level with a trailing new line 
-	log(level: LogLevel, msg: String) ==
-		tlog(level, nil, msg);
-	
-	--@doc = logs the given trace if within log level with a trailing new line after the parameters
-	--			 works like a simplified version of Java's printf
-	logf(level: LogLevel, msg: String, params: seq of ?) ==
-		tlogf(level, nil, msg, params);
-
-	--@doc09 = tagged version of logging, if present. Useful to classify locally beyond chosen log level (e.g. Warning that is serious)
-	--			   could have been [String], but using '?' to be flexible.
-	tlog(level: LogLevel, tag: ?, msg: String) ==
-		(
-		log_trace := log_trace ^ [make_trace(level, tag, msg, "")]; 
-		if log_level_leq(log_level, level) then
-			print(last[String](log_trace))
-		)
-	ext
-		rd log_level
-		wr log_trace
-	post
-		elems log_trace~ subset elems log_trace
-		and
-		len log_trace~ < len log_trace;		
-		
-	tlogf(level: LogLevel, tag: ?, msg: String, params: seq of ?) ==
-		(
-		--@doc09 needed a formatf to handle this...
-		log_trace := log_trace ^ [make_trace(level, tag, msg, "(" ^ val2str[seq of ?](params) ^ ")")];
-		if log_level_leq(log_level, level) then 	
-			printf(make_trace(level, tag, msg, ""), params);
-		)
-	ext
-		rd log_level
-		wr log_trace
-	post
-		elems log_trace~ subset elems log_trace
-		and
-		len log_trace~ < len log_trace;
-			
-	
-	--@todo NB: perhaps pass type parameter for "?"? No :-(... operations can't have type params okay.
-  --assert[@T]: String * @T * @T * bool ==> ()
-	assert: String * ? * ? * bool ==> ()
-  assert(msg, expected, actual, equals) ==
-    high_assert(msg, expected, actual, (lambda e: ?, a: ? & if equals then e = a else e <> a));
-
-  assert_all: seq1 of (String * ? * ? * bool) ==> ()
-  assert_all(ss) ==
-    high_assert_all([
-        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
-        --let mk_(msg,expected,actual,equals) = ss(i) in
-        let v			  : String * ? * ? * bool = ss(i),
-        		msg			: String = v.#1,
-        		expected: ? = v.#2,
-        		actual  : ? = v.#3,
-        		equals  : bool = v.#4
-        in
-            mk_(msg, expected, actual,(lambda e: ?, a: ? & if equals then e = a else e <> a)) | i in set inds ss ]);
-   
-  --@doc Inspired in an example from Nick Battle - high-order test between expected and actual of any type raising an error in case test fails
-  high_assert: String * ? * ? * (? * ? -> bool) ==> ()
-  high_assert(msg, expected, actual, test) ==
-    if not test(expected, actual) then
-    (
-        printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
-        exit "Assertion failed";
-    );
-
-  --@doc like high assert, but accummulate failures before exiting
-  high_assert_all: seq1 of (String * ? * ? * (? * ? -> bool)) ==> ()
-  high_assert_all(ss) ==
-    (dcl i: nat := 0;
-       for s in ss do
-        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
-        -- let mk_(msg,expected,actual,test) = s in
-        let msg			: String = s.#1,
-        	  expected: ? 		 = s.#2,
-        	  actual  : ? 		 = s.#3,
-        	  test	  : (?*?->bool) = s.#4
-         in
-           if not test(expected, actual) then
-           (
-               i := i+1;
-               --@todo NB: it would be nice to have a formatf as well as printf in I/O?
-               printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
-            );
-       if i > 0 then
-        exit "Assertion failed";         
-    );
    	 
 end Support2
