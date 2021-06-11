@@ -1,0 +1,32 @@
+module MinimalTime
+exports all
+definitions 
+
+functions
+	
+	--@Warning(5012)
+	f: nat * nat -> nat
+	f(m, n) == 
+		--@Time("f(%2s, %3s)\n", m, n) 
+		if m = 0 then
+			n+1
+		else
+			if n = 0 then
+				f(m-1, 1)
+			else
+				--@Time("Outer call to f(%2s, f(%3s, %4s))", m-1, m, n-1)
+				f(m-1, 
+					--@Time("Inner call to f(%2s, %3s)", m, n-1)
+					f(m, n-1));
+				
+	g: nat * nat -> nat
+	g(m, n) == 
+		--@Time("JUST_SUMMARY")
+		let 
+			--Time("Test 2 * %2s + %3s = %4s", m, n, x)
+			x = 2 * m + n
+		 in 
+		--@Time("TIME_SUMMARY")
+		f(m,n) + x;
+					
+end MinimalTime
