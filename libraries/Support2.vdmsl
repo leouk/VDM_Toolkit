@@ -1,0 +1,1146 @@
+module Support2
+imports
+from IO
+	operations
+		print renamed print;
+		printf renamed printf
+,
+from MATH
+  operations 
+    rand renamed rand
+,
+from VDMUtil
+	functions
+		val2seq_of_char renamed val2str;
+		seq_of_char2val renamed str2val_
+exports 
+	types
+		struct SortKind;
+		struct LogLevel;
+		struct Trace;
+		struct String;
+		struct StringList;
+		struct StringList1;
+		struct UniqueStringList;
+		struct UniqueStringList1
+	functions
+	  xor: bool * bool -> bool;
+	  xor_all: seq1 of bool -> bool;
+ 		last[@T]: seq1 of @T -> @T;
+		front[@T]: seq1 of @T -> seq of @T;
+		injective[@T]: seq of @T +> bool;
+    injectiveOn[@T]: seq of @T * (@T * @T -> bool) +> bool;
+    make_injective[@T]: seq of @T -> seq of @T;
+		injconcat[@T]: seq of @T * @T -> seq of @T;
+		injappend[@T]: seq of @T * seq of @T -> seq of @T;
+		split[@T]: @T * seq of @T -> seq of seq of @T;
+	  seqMap[@T,@R]: (@T->@R) * seq of @T -> seq of @R;
+	  --pre_seqMap[@T,@R]: (@T->@R) * seq of @T +> bool;
+	  sum: seq of int -> int;
+		prod: seq of int -> int;
+		fold[@T]: (@T * @T -> @T) * @T * seq of @T +> @T;
+	  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T;
+	  filter[@T]: seq of @T * (@T -> bool) -> seq of @T;
+	  filter_elems[@T]: seq of @T * set of @T -> seq of @T;
+	  findIndexes[@T]: seq of @T * (@T -> bool) -> seq of nat1;
+    updateAt[@T]: seq of @T * (@T -> @T) -> seq of @T;
+    updateWith[@T,@S]: (seq of @T) * @S * (@T * @S -> @T) -> seq of @T;
+    zip[@T,@R]: seq of @T * seq of @R -> seq of (@T * @R);
+	  unzip[@T,@R]: seq of (@T * @R) -> (seq of @T * seq of @R);
+		replicate[@T]: nat * @T -> seq of @T;
+	  remove[@T] : @T * seq of @T -> seq of @T;
+	  numOccurs[@T]: @T * seq of @T +> nat;
+   	permutation[@T]: seq of @T * seq of @T +> bool;
+	  sort_nat: seq of nat * SortKind -> seq of nat;
+		sort[@T]: seq of @T * (@T * @T -> bool) * (@T * @T -> bool) * SortKind -> seq of @T;
+		min: nat * nat +> nat;
+		minxs_nat: seq1 of nat -> nat;
+		minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+		max: nat * nat +> nat;
+		maxxs_nat: seq1 of nat -> nat;
+		maxxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+		seq2bag[@T]: seq of @T -> (map @T to nat1)	;
+		indexOf[@T]: @T * seq of @T -> [nat1];
+		indexOfSlow[@T]: @T * seq of @T -> [nat1];
+		howManyOfIn[@T]: @T * seq of @T -> nat;
+		howManyOfCharIn: char * seq of char -> nat;
+		str2nval[@T]: seq1 of char -> [@T];
+		str2val[@T]: seq1 of char -> @T;
+		pre_str2val[@T]: seq1 of char +> bool;
+		str2enum: String -> String;
+		enum2str[@T]: @T -> String;
+		enum_typed[@T]: @T -> bool;
+		record_name[@T]: @T -> String;
+		record_typed[@T]: @T -> bool;
+		log_level_leq: LogLevel * LogLevel +> bool;
+		
+		inv_UniqueStringList: seq of String +> bool;
+		inv_UniqueStringList1: seq1 of String +> bool;
+		
+		--map_to[@D,@R]: @R -> map @D to @R;
+		--post_map_to[@D,@R]: @R * (map @D to @R) +> bool;
+		--map_id[@D]: () -> map @D to @D;
+
+		seq_of[@T]: @T * nat1 -> seq1 of @T;
+
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		check_is_either[@T1,@T2]: ? -> bool;
+		check_is_seq_of_depth[@T]: ? * nat -> bool;
+		check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) /*(? -> bool)*/ /*(seq of @T -> bool)*/ -> bool;
+		check_is_seq_of[@T]: ? -> bool;
+		check_is_seq_of_inv[@T]: ? * (seq of @T -> bool) /*(? -> bool)*/ -> bool;
+		as_seq_of_inv[@T/*,@TS*/]: ? * (seq of @T -> bool) -> seq of @T;
+		true_invSeq[@T]: seq of @T -> bool;
+	
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		check_is_set_of_depth[@T]: ? * nat -> bool;
+		check_is_set_of_inv_depth[@T]: ? * nat * (set of @T -> bool) -> bool;
+		check_is_set_of[@T]: ? -> bool;
+		check_is_set_of_inv[@T]: ? * (set of @T -> bool) -> bool;
+		as_set_of_inv[@T/*,@TS*/]: ? * (set of @T -> bool) -> set of @T;
+		true_invSet[@T]: set of @T -> bool
+		
+	operations
+		set_log_level: LogLevel ==> ();
+		get_log_level: () ==> LogLevel;
+		get_trace: () ==> Trace;
+		print_trace: () ==> ();
+		reset_trace: () ==> ();
+		log: LogLevel * String ==> ();
+		logf: LogLevel * String * seq of ? ==> ();
+		tlog: LogLevel * ? * String ==> ();
+		tlogf: LogLevel * ? * String * seq of ? ==> ();
+		fresh_random: () ==> int;
+		--new_random: int ==> int;
+		assert: String * ? * ? * bool ==> ();
+		assert_all: seq1 of (String * ? * ? * bool) ==> ();
+		high_assert: String * ? * ? * (? * ? -> bool) ==> ();
+    high_assert_all: seq1 of (String * ? * ? * (? * ? -> bool)) ==> ()
+
+definitions 
+
+types
+	SortKind = <Select> | <Merge> | <Quick>;
+
+	String = seq1 of char;
+	
+	StringList = seq of String;
+	
+	StringList1 = seq1 of String;
+	
+	UniqueStringList = seq of String
+  inv ulist == injective[String](ulist);
+  
+  UniqueStringList1 = seq1 of String
+	inv ulist == injective[String](ulist);
+	
+	Trace = seq of String;
+	
+	--@todo decouple LogLevel from support to be free; namely no <MDS> just numbers?
+	LogLevel = <Debug> | <Verbose> | <Todo> | <Info> | <Trace> | <Concurrency> | <Warning> | <Stack> | <MDS> | <Error> | <Fatal>; 
+
+values
+	--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters 
+	--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters 
+	--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters 
+	xor_constant: bool * bool -> bool = (lambda a: bool, b: bool & xor(a,b));
+	leomax_constant: nat * nat -> nat    = (lambda x: nat, y: nat & max(x,y));
+	leomin_constant: nat * nat -> nat    = (lambda x: nat, y: nat & min(x,y));
+			
+functions
+
+	--@todo/codegen/mods0 CG-Error: ATypeMultipleBind "d : @D"
+	--@doc maps all domain elements to given range r; executes if @D is enumerable
+	--map_to[@D,@R]: @R -> map @D to @R
+	--map_to(r) ==
+	--	{ d |-> r | d : @D }
+	--post
+	--	rng RESULT = {r};
+	
+	--@todo/codegen/mods0 CG-Error: ATypeMultipleBind "d : @D"
+	--@doc identity map	
+	--map_id[@D]: () -> map @D to @D
+	--map_id() == { d |-> d | d : @D }
+	--post
+	--	dom RESULT = rng RESULT;
+
+	--@todo/codegen/mods0 CG-Error: seq comprehension with "-"
+	seq_of[@T]: @T * nat1 -> seq1 of @T
+	seq_of(v, l) == [ v | - in seq [ p | p in set {1,...,l} ] ];
+				
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	check_is_either[@T1,@T2]: ? -> bool
+	check_is_either(x) == is_(x, @T1) or is_(x, @T2);
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	--@doc09 this function is needed for the CG lack of support for complex structured sequences; only allowed is seq of ?
+	--			 we assume that the sequence cannot have union types like [[1,2,3], 1, 3, [[1,2],1]]... (i.e. uniform types per type layer)
+	--			 the use case: is_(xs, seq of @T), where @T is the bound type; for the CG @T has to be "basic"/primitive
+	--		   the problem: when @T is seq of @T2! We have to have a way to control the recursive call, which in VDMJ would 
+	--			 be caught by the is_(xs, seq of @T); because we can't have seq of complext @T, we have to use the layer of wrapping 
+	--			 as a parameter. 
+	--
+	--			 Expectation: is_(xs, seq of @T)  				 ~= check_is_seq_of[@T](xs) (i.e. cut one level of "seq of")
+	--			 Example 		: is_(xs, seq of nat) 				 ~= check_is_seq_of[nat](xs)
+	--			 How about  : is_(xs, seq of (seq of nat)) ~= check_is_seq_of[seq of nat](xs) 
+	--			
+	--			 But that will fail CG because of the seq of nat parameter. So we need the level of "seq of" cut as parameter
+	--
+	--			 is_(xs, seq of (seq of nat)) ~= check_is_seq_of[nat](xs, 1)  
+	--			 is_(xs, seq of (seq of nat)) ~= check_is_seq_of[seq of nat](xs, 0)
+	--
+	--			 is_(xs, (seq of * N) of @T)  ~= check_is_seq_of[@T](xs, N-1) for any value N-1 >= 0
+	--
+	-- evaluates to true:
+	-- p check_is_seq_of[seq of nat]([[1,2,3],[2,3,2]], 1)
+	-- p check_is_seq_of[nat]([[1,2,3],[2,3,2]], 2)
+	-- p check_is_seq_of[nat]([2,3,2], 1)
+	-- p check_is_seq_of[nat]([2,3,2], 0)
+	--
+	-- evaluates to false:
+	-- p check_is_seq_of[nat]([[1,2,3],[2,3,2]], 0)
+	-- p check_is_seq_of[seq of nat]([[1,2,3],[2,3,2]], 0)
+	-- p check_is_seq_of[seq of nat]([2,3,2], 0)
+	-- p check_is_seq_of[seq of nat]([2,3,2], 1)
+ 
+  --
+  -- p let xs = [["ABC","CDE"],["EFG"]] in 
+  --		is_(xs, seq of DataIDList)
+  -- 		=
+  -- 		is_(xs, seq of seq of seq of char)
+  --		=
+  -- 		check_is_seq_of[seq of seq of char=DataIDList](xs, 0..1)
+  --		because (seq of * 3 above) - (seq of * 2 from DataIDList) + 0..1 is >= 0
+  --		<>
+  -- 		check_is_seq_of[DataIDList](xs, 2)
+  --		because (seq of * 3 above) - (seq of * 2 from DataIDList) + 2 is not >= 0
+  --		=
+  --		check_is_seq_of[DataID=seq of char](xs, 2)
+  --		because (seq of * 3 above) - (seq of * 1 from DataID) + 2 >= 0
+ 
+	check_is_seq_of_depth[@T]: ? * nat -> bool
+	check_is_seq_of_depth(xs, l) == 
+		is_(xs, seq of ?) 
+		and 
+		--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+		forall x in set elems narrow_(xs, seq of ?) & 
+			if is_(x, seq of ?) and l > 1 then
+				check_is_seq_of_depth[@T](x, l-1)
+			else
+				is_(x,@T)
+	measure
+		if not is_(xs, seq of ?) then
+			0
+		else
+			let 
+				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+				xs' : seq of seq of ? = [ xs(i) | i in set inds narrow_(xs, seq of ?) & 
+						is_(xs(i), seq of ?) 		--@doc09 inner value is also a sequence?
+						and 
+							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						l > 1 									--@doc09 has the bound on @T been reached?
+						--and 
+						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						--not is_(xs(i), seq of char) --@doc09 seq of char are treated differently by CG, so ignore then? 
+						]
+			in
+				if xs' = [] or is_(xs(1), seq of char) then
+					len xs'
+				else 
+					len xs' + len conc xs' - len xs' + 1
+	;
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	--@doc09 checks the invariant as well, in this case presume @T can't be a sequence
+	--
+	--@doc09 on the invariant check case, if we end up having the need for layers etc, then the signature must agree?
+	check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) -> bool
+	check_is_seq_of_inv_depth(xs, l, invariant) ==
+		check_is_seq_of_depth[@T](xs, l)
+		and
+		invariant(xs);
+
+	--@doc input xs has to be a seq of ? to enable the CG not to get upset about function parameters beyond "seq of ?"
+	--		 the missing precondition would enforce a compile-time type check that seq of @T is @TS without its invariant
+	--		 as_seq_of_inv[MethodID, MethodIDList](select_bla[seq of ?](bla), inv_MethodIDList)
+	--		 x
+	--	   as_seq_of_inv[MethodID, FethodIDList](select_bla[seq of ?](bla), inv_MethodIDList)
+	--
+	--@doc09 because of the complicated nature of type narrowing, particularly when l > 0, the result might not match @T
+	--			 ex: as_seq_of_inv_depth[MethodID]([[<NoXYZ>],[<XYZ>,<NoXYZ>]], 2, (lambda s: ? & true)) 
+	--					 should be a seq of MethodIDList, which is not @T. Because the invariant function holds, the type result is up to that!
+	--
+	--@todo/codegen/mods0 CG-warning/Java-Error: we *must* have "seq of @T" for code gen; hence no option for depth for as_seq_of :-(  
+	as_seq_of_inv[@T/*,@TS*/]: ? * (seq of @T -> bool) -> seq of @T
+	as_seq_of_inv(xs, fcn_inv) == 
+		if check_is_seq_of_inv[@T](xs, fcn_inv) then
+			--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+			--																	so, a typo for @TS won't be caught by VDMJ neither will CG complain :-(  
+			--@todo/codegen/mods0 CG-warning/?: narrow_ isn't needed here because xs is already seq of ?
+			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
+			xs -- narrow_(xs, @TS)
+		else
+			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
+			undefined -- [] -- undefined?
+	--pre
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--is_(xs, seq of @T)
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--and is_(xs, @TS)
+	post 
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--is_(RESULT, @TS)
+		--@todo/codegen/mods0 CG-warning/?: at least enforce that the result will satisfy the @T invariant for result given no @TS is given
+		check_is_seq_of_inv[@T](xs, fcn_inv) => fcn_inv(RESULT);
+		
+	check_is_seq_of[@T]: ? -> bool
+	check_is_seq_of(xs) == check_is_seq_of_depth[@T](xs, 0);
+	
+	check_is_seq_of_inv[@T]: ? * (seq of @T -> bool) -> bool
+	check_is_seq_of_inv(xs, fcn_inv) == check_is_seq_of_inv_depth[@T](xs, 0, fcn_inv);
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	check_is_set_of_depth[@T]: ? * nat -> bool
+	check_is_set_of_depth(xs, l) == 
+		is_(xs, set of ?) 
+		and 
+		--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+		forall x in set narrow_(xs, set of ?) & 
+			if is_(x, set of ?) and l > 1 then
+				check_is_set_of_depth[@T](x, l-1)
+			else
+				is_(x,@T)
+	measure
+		if not is_(xs, set of ?) then
+			0
+		else
+			let 
+				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+				xs' : set of set of ? = { e | e in set narrow_(xs, set of ?) & 
+						is_(e, set of ?) 		--@doc09 inner value is also a setuence?
+						and 
+							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						l > 1 									--@doc09 has the bound on @T been reached?
+						--and 
+						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						--not is_(xs(i), set of char) --@doc09 set of char are treated differently by CG, so ignore then? 
+						}
+			in
+				if xs' = {} then
+					card xs'
+				else 
+					card xs' + card dunion xs' - card xs' + 1
+	;
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	--@doc09 checks the invariant as well, in this case presume @T can't be a setuence
+	check_is_set_of_inv_depth[@T]: ? * nat * (set of @T -> bool) -> bool
+	check_is_set_of_inv_depth(xs, l, invariant) ==
+		check_is_set_of_depth[@T](xs, l)
+		and
+		invariant(xs);
+
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	as_set_of_inv[@T/*,@TS*/]: ? * (set of @T -> bool) -> set of @T
+	as_set_of_inv(xs, fcn_inv) == 
+		if check_is_set_of_inv[@T](xs, fcn_inv) then
+			--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+			--																	so, a typo for @TS won't be caught by VDMJ neither will CG complain :-(  
+			--@todo/codegen/mods0 CG-warning/?: narrow_ isn't needed here because xs is already set of ?
+			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
+			xs -- narrow_(xs, @TS)
+		else
+			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
+			undefined -- [] -- undefined?
+	--pre
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--is_(xs, set of @T)
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--and is_(xs, @TS)
+	post 
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--is_(RESULT, @TS)
+		--@todo/codegen/mods0 CG-warning/?: at least enforce that the result will satisfy the @T invariant for result given no @TS is given
+		check_is_set_of_inv[@T](xs, fcn_inv) => fcn_inv(RESULT);
+		
+	check_is_set_of[@T]: ? -> bool
+	check_is_set_of(xs) == check_is_set_of_depth[@T](xs, 0);
+	
+	check_is_set_of_inv[@T]: ? * (set of @T -> bool) -> bool
+	check_is_set_of_inv(xs, fcn_inv) == check_is_set_of_inv_depth[@T](xs, 0, fcn_inv);
+	
+	true_invSet[@T]: set of @T -> bool
+  true_invSet(-) == true;
+        
+	true_invSeq[@T]: seq of @T -> bool
+	true_invSeq(-) == true;
+	
+---------------------------------------------------------------
+-- Generic functions for VDM data types
+---------------------------------------------------------------
+
+  --@todo/codegen/mods0 CG-Error: ATypeMultipleBind "i : @T"
+  --@doc works so long as @T is enumerable (e.g. boolean, all enums, etc; tend to always get the first value
+  --any[@T]: () -> @T
+  --any() == let x in set { i | i : @T } in x;
+  
+  xor: bool * bool -> bool
+  xor(a, b) == (a and not b) or (not a and b);
+  
+  --@doc09 exclusive or over multiple options (i.e, only one can be true).
+  xor_all: seq1 of bool -> bool
+  xor_all(s) == 
+	  --@todo/codegen/mods0 CG-warning/Java-Error: function as parameters
+  	--fold[bool](xor, false, s)
+  	fold[bool](xor_constant, false, s)
+  	; 
+
+	last[@T]: seq1 of @T -> @T
+	last(s) == s(len s);
+	
+	front[@T]: seq1 of @T -> seq of @T
+	front(s) == s(1,...,len s - 1);
+
+  injective[@T]: seq of @T +> bool
+  injective(ss) == card (elems ss) = len ss;
+
+  make_injective[@T]: seq of @T -> seq of @T
+  make_injective(ss) == 
+  	if injective[@T](ss) then ss else make_injective0[@T](ss, [])
+  post 
+    injective[@T](RESULT)
+    and
+    elems RESULT subset elems ss
+    ;
+    
+  seq_pattern[@T, @R]: seq of @T * @R * (@T * seq of @T * @R -> @R) -> @R
+  seq_pattern(ss, res, induct) ==
+  	if len ss = 0 then
+  		res
+  	else
+  		let  x: @T 				= hd ss,
+  			  xs: seq of @T = tl ss
+  	   in
+  	   		--@todo/codegen/mods0 VDMJ-bug: typechecker not reporting type error
+  	   		--seq_pattern[@T, @R](xs, res, induct(x, xs, res))
+  	   		seq_pattern[@T, @R](xs, induct(x, xs, res), induct)
+  measure
+  	len ss;
+  	
+  make_injective0[@T]: seq of @T * seq of @T -> seq of @T
+  make_injective0(ss,res) ==
+  --@todo/codegen/mods0 VDMJ-bug: Cannot convert [1, 2, 3, 4, 5] (seq) to (nat * seq of (nat) * seq of (nat)  on base case
+  --	seq_pattern[@T, seq of @T](ss, res, 
+  --			(lambda x: @T, xs: seq of @T, -: seq of @T & 
+  --					if x in set elems res then 
+  --						make_injective0[@T](xs, res) 
+  --					else 
+  --						make_injective0[@T](xs, res ^ [x])
+  --			)
+  --	)
+  --@todo generalise solution to avoid repetition
+  	if len ss = 0 then 
+  		res
+  	else
+  		let  x: @T 				= hd ss,
+  				xs: seq of @T = tl ss
+  	  in 
+  			if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+  --  cases ss:
+  --    []     -> res,
+  --    [x]^xs -> if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --  end
+  --@doc given it is not exported, this is quite inneficient/slow
+  --pre
+  --  injective[@T](res)
+  --post
+  --  injective[@T](RESULT)
+  measure
+    len ss;
+  
+  --@doc test sequence injectivity under possibly more involved equality test (e.g. records injective on specific elements only)
+  --@todo injective concat and append based on same principle
+  injectiveOn[@T]: seq of @T * (@T * @T -> bool) +> bool
+  injectiveOn(ss, eqtest) == 
+    forall i, j in set inds ss & i <> j => not eqtest(ss(i),ss(j));
+
+	injconcat[@T]: seq of @T * @T -> seq of @T
+	injconcat(xs,x) == if (x in set elems xs) then xs else xs ^ [x]
+	pre
+	  injective[@T](xs)
+	post
+	  injective[@T](RESULT);
+	
+	injappend[@T]: seq of @T * seq of @T -> seq of @T
+	injappend(xs,xt) ==
+		if injective[@T](xs ^ xt) then 
+			xs ^ xt 
+		else
+			(if xt = [] then xs else injappend[@T](injconcat[@T](xs,hd xt), tl xt))
+			--@todo/codegen/mods0 VDMJ-Bug
+			--seq_pattern[@T,seq of @T](xt, xs, (lambda x: @T, xr: seq of @T, -: seq of @T & injappend[@T](injconcat[@T](xs,x), xr))) 
+		  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+			--cases xt:
+			--	[]		 -> xs,
+			--	[x]^xr -> injappend[@T](injconcat[@T](xs,x), xr)
+			--end
+  pre
+    injective[@T](xs)
+  post
+    injective[@T](RESULT)
+	measure 
+	  len xt;
+	  
+	--@doc = splits a sequence into its subcomponents by the identified element, which is removed
+	--			 ex: split[nat]([1,2,3,4,1,4,5,3,1,1,3,2,1],1) = [[],[2,3,4],[4,5,3],[],[3,2],[]]
+	--			 ex: split[char]("x.y.z.ID",'.')    = ["x","y","z","ID"]
+	split[@T]: @T * seq of @T -> seq of seq of @T
+	split(x, xs) ==
+		let idx: [nat1] = indexOf[@T](x, xs) in
+			-- if x doesn't appear return whole xs 
+			if idx = nil then
+				[xs]
+			-- if it appears at the end, consume it
+			elseif idx = len xs then
+				xs(1,...,len xs -1)
+			-- consume the part excluding the marker.
+			else
+			-- 		ex: split('.',"x.y")=["x","y"]
+			-- if marker is at the front of the sequence add empty sequence
+			--		ex: split('.',".x.y")=["","x","y"]
+			  [xs(1,...,idx-1)] ^ split[@T](x, xs(idx+1,...,len xs))
+	measure
+		len xs;
+	
+-- Apply a function to all elements of a sequence.
+  seqMap[@T,@R]: (@T->@R) * seq of @T -> seq of @R
+  seqMap(f,s) == [ f(s(i)) | i in set inds s ]
+  --@todo @NB: how go express this one? POG?
+  --pre elems s subset dom f
+  --pre forall i in set inds s & pre_f(s(i)) --?  
+  post len RESULT = len s;
+
+	sum: seq of int -> int
+	sum(ss) == fold[int]((lambda x: int, y: int & x+y),0,ss);
+
+	prod: seq of int -> int
+	prod(ss) == fold[int]((lambda x: int, y: int & x*y),0,ss);
+	
+  -- Fold (iterate, accumulate, reduce) a binary function over a sequence.
+  -- The function is assumed to be associative and have an identity element.
+  fold[@T]: (@T * @T -> @T) * @T * seq of @T +> @T
+  fold(f, e, s) == 
+  	if s = [] then
+  		e
+  	else if len s = 1 then
+  		hd s
+  	else
+  		let lens: nat1 = len s in
+	  		f(fold[@T](f,e,s(1,...,lens div 2)), fold[@T](f,e,s((lens div 2)+1,...,lens)))
+  	--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern 
+  	--cases s:
+    --  []    -> e,
+    --  [x]   -> x,
+    --  s1^s2 -> f(fold[@T](f,e,s1), fold[@T](f,e,s2))
+    --end
+  --@doc pre not possible to refer to @T
+  --pre (exists x:@T & forall y:@T & f(x,y) = y and f(y,x) = y)
+  --and forall x,y,z:@T & f(x,f(y,z)) = f(f(x,y),z)
+  measure 
+  	len s;
+  
+  -- Fold (iterate, accumulate, reduce) a binary function over a non-empty sequence.
+  -- The function is assumed to be associative.
+  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T
+  fold1(f, s) == 
+  	if len s = 1 then
+  		hd s
+  	else
+  		let lens: nat1 = len s in
+  			f(fold1[@T](f,s(1,...,lens div 2)), fold1[@T](f,s((lens div 2)+1,...,lens)))
+  	--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+  	--cases s:
+    --  [e]   -> e,
+    --  s1^s2 -> f(fold1[@T](f,s1), fold1[@T](f,s2))
+    --end
+  --pre forall x,y,z:@T & f(x,f(y,z)) = f(f(x,y),z)
+  measure 
+  	len s;
+  
+  -- The number of times an element appears in a sequence.
+  numOccurs[@T]: @T * seq of @T +> nat
+  numOccurs(e,sq) == len [ 0 | i in set inds sq & sq(i) = e ];
+
+  -- Is one sequence a permutation of another?
+  permutation[@T]: seq of @T * seq of @T +> bool
+  permutation(sq1,sq2) ==
+    len sq1 = len sq2 and
+    forall i in set inds sq1 & numOccurs[@T](sq1(i),sq1) = numOccurs[@T](sq1(i),sq2);
+
+	sort_nat: seq of nat * SortKind -> seq of nat
+	sort_nat(s, kind) == sort[nat](s, (lambda x: nat, y: nat & x < y), (lambda x: nat, y: nat & x = y), kind);
+	
+	sort[@T]: seq of @T * (@T * @T -> bool) * (@T * @T -> bool) * SortKind -> seq of @T
+	sort(s, lt_ord, leoleoeq_ord, kind) == 
+		cases kind:
+			<Select> -> selection_sort[@T](s, lt_ord,leoleoeq_ord),
+			<Merge>  -> merge_sort[@T](s, lt_ord),
+			<Quick>  -> quick_sort[@T](s, lt_ord,leoleoeq_ord)
+		end
+	post
+		permutation[@T](s, RESULT)
+		and
+		forall i in set inds RESULT \ {len RESULT} & lt_ord(RESULT(i), RESULT(i+1)) or leoleoeq_ord(RESULT(i), RESULT(i+1));
+		
+	remove[@T] : @T * seq of @T -> seq of @T 
+	remove (x,l) ==
+		if x in set elems l then
+		  let i in set inds l be st l(i) = x in
+		    l(1,...,i-1) ^ l(i+1,...,len l) 
+		else
+			l
+	post
+		elems RESULT subset elems l
+		and
+		(x in set elems l => len RESULT + 1 = len l);
+	
+	selection_sort[@T] : seq of @T * (@T * @T -> bool) * (@T * @T -> bool) -> seq of @T 
+	selection_sort (l,lt_order, leoeq_order) ==
+	  if l = [] then []
+	  else 
+	  	let m in seq l be st (forall x in seq l & lt_order(m,x) or leoeq_order(m,x)) in
+	  	--@todo/codegen/mods0 CG-Error: LetBeSt for seq
+	  	--let m in set elems l be st (forall x in seq l & lt_order(m,x) or leoeq_order(m,x)) in
+	      [m] ^ (selection_sort[@T](remove[@T](m,l),lt_order,leoeq_order))
+	pre
+		exists m in seq l & (forall x in seq l & lt_order(m,x) or leoeq_order(m,x))
+	measure
+		len l; 
+	          
+	lmerge[@T] : seq of @T * seq of @T * (@T * @T -> bool) -> seq of @T 
+	lmerge (s1,s2,lt_ord) ==
+	  if     s1 = [] then s2
+	  elseif s2 = [] then s1
+	  elseif lt_ord((hd s1), (hd s2)) then 
+	    [hd s1] ^ (lmerge[@T] (tl s1, s2, lt_ord)) 
+	  else 
+	    [hd s2] ^ (lmerge[@T] (s1, tl s2, lt_ord))
+	measure
+		len s1 + len s2;
+  
+	merge_sort[@T] : seq of @T * (@T * @T -> bool) -> seq of @T 
+	merge_sort (l,lt_ord) == 
+	  if l = [] then
+	  	[]
+	  else if len l = 1 then
+	  	[hd l]
+	  else
+	  	let lenl: nat1 = len l in
+		  	lmerge[@T] (merge_sort[@T](l(1,...,lenl div 2), lt_ord), merge_sort[@T](l((lenl div 2)+1,...,lenl), lt_ord), lt_ord)
+	--measure
+	--	if len l mod 2 = 0 then len l + 1 else len l 
+	  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+	  --cases l:
+	  --  []      -> [],
+	  --  [x]     -> [x],
+	  --  l1 ^ l2 -> lmerge[@T] (merge_sort[@T](l1, lt_ord,leoeq_ord), merge_sort[@T](l2, lt_ord,leoeq_ord), lt_ord)
+	  --end
+	measure
+		len l 
+	;
+	
+	quick_sort[@T] : seq of @T * (@T * @T -> bool) * (@T * @T -> bool) -> seq of @T 
+	quick_sort (l,lt_ord, leoeq_ord) ==
+	  if l = [] then
+	  	[]
+	  else if len l = 1 then
+	  	[hd l]
+	  else if len l = 2 then
+	  	if lt_ord(l(1), l(2)) then l else reverse l
+	  else
+	  	let x: @T = l(len l div 2) in
+	  		quick_sort[@T]([l(i) | i in set inds l & lt_ord(l(i),x) ], lt_ord, leoeq_ord) ^ 
+	                         [l(i) | i in set inds l & leoeq_ord(l(i),x)] ^
+	      quick_sort[@T]([l(i) | i in set inds l & not lt_ord(l(i),x) and not leoeq_ord(l(i),x) ], lt_ord, leoeq_ord)
+	  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+	  --cases l:
+	  --  []      -> [],
+	  --  [x]     -> [x],
+	  --  [x,y]   -> if lt_ord(x,y) then [x,y] else [y,x], 
+	  --  -^[x]^- -> quick_sort[@T]([l(i) | i in set inds l & lt_ord(l(i),x) ], lt_ord, leoeq_ord) ^ 
+	  --                       [l(i) | i in set inds l & leoeq_ord(l(i),x)] ^
+	  --             quick_sort[@T]([l(i) | i in set inds l & not lt_ord(l(i),x) and not leoeq_ord(l(i),x) ], lt_ord, leoeq_ord)
+	  --end
+	measure
+		len l;
+	
+	min: nat * nat +> nat
+	min(x,y) == if x < y then x else y;
+		
+	minxs_nat: seq1 of nat -> nat
+	minxs_nat(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters
+		--minxs[nat](s, min);
+		minxs[nat](s, leomin_constant);
+		
+	minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  minxs(s,lt_ord) == 
+  	fold1[@T](lt_ord,s)
+  post 
+  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+
+	max: nat * nat +> nat
+	max(x,y) == if x > y then x else y;
+		
+	maxxs_nat: seq1 of nat -> nat
+	maxxs_nat(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: function parameters
+		--maxxs[nat](s, max);
+		maxxs[nat](s, leomax_constant);
+	
+	maxxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  maxxs(s,lt_ord) == 
+  	fold1[@T](lt_ord,s)
+  post 
+  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+	
+	--@doc = transform a sequence into a bag (i.e. a map counting the number of instances sequence elements appear)
+	--			 we use Z/Eves encoding of bags with partial functions as this fits well with VDM, rather than the total
+	--		   map as in @T to nat where result is 0 for when @T is not in the sequence.
+	seq2bag[@T]: seq of @T -> (map @T to nat1)
+	seq2bag(ss) == 
+		--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatentaitonPattern
+		if ss = [] then
+			{|->}
+		else
+			let x: @T 			 = hd ss,
+			  mp': map @T to nat1 = seq2bag[@T](tl ss)
+			in
+										 if x in set dom mp' then 
+										 		mp' ++ { x |-> mp'(x)+1 } 
+										 else 
+										 		mp' munion { x |-> 1 } 
+		--cases ss:
+		--	[] 			-> {|->},
+		--	[x]^xs	-> let mp': map @T to nat1 = seq2bag[@T](xs)
+		--							in
+		--								 if x in set dom mp' then 
+		--								 		mp' ++ { x |-> mp'(x)+1 } 
+		--								 else 
+		--								 		mp' munion { x |-> 1 } 
+		--end
+	measure
+		len ss;
+
+	--@doc = gives the first index of element x in the given string, or nil if not present
+	indexOfSlow[@T]: @T * seq of @T -> [nat1]
+	indexOfSlow(x, xs) == indexOf0[@T](x,xs,1)
+	post
+		RESULT <> nil => x in set elems xs and xs(RESULT) = x; 
+	
+	indexOf[@T]: @T * seq of @T -> [nat1]
+	indexOf(x,xs) == 
+		if x in set elems xs then
+		  let i in set inds xs be st xs(i) = x in i
+		else
+			nil
+	post	
+		RESULT <> nil => x in set elems xs and xs(RESULT) = x;
+	
+	indexOf0[@T]: @T * seq of @T * nat1 -> [nat1]
+	indexOf0(x, xs, res) == 
+		if xs = [] then
+			nil
+		else
+			 if hd xs = x then res else indexOf0[@T](x, tl xs, res+1)
+		--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+		--cases xs:
+		--	[] 		 -> nil,
+		--	[h]^hs -> if h = x then res else indexOf0[@T](x, hs, res+1)
+		--end
+	measure
+		len xs;
+
+  --@doc finds all the indexes in given sequence where the search criteria is true
+  findIndexes[@T]: seq of @T * (@T -> bool) -> seq of nat1
+  findIndexes(s, search) == 
+    [ i | i in set inds s & search(s(i)) ]
+    --findIndexes0[@T](s, search, 1)
+  post
+    elems RESULT subset inds s
+    and
+    forall i in seq RESULT & search(RESULT(i));
+  
+  findIndexes0[@T]: seq of @T * (@T +> bool) * nat1 -> seq of nat1
+  findIndexes0(s, search, currentIndex) ==
+    if s = [] then
+    	[]
+    else
+    	(if search(hd s) then [currentIndex] else []) ^ findIndexes0[@T](tl s, search, currentIndex+1)
+    --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+    --cases s:
+    --  []      -> [],
+    --  [x]^xs  -> (if search(x) then [currentIndex] else []) ^ findIndexes0[@T](xs, search, currentIndex+1)
+    --end
+  measure
+    len s;
+  
+  --@doc finds all the elements in given sequence where the search criteria is true
+	filter[@T]: seq of @T * (@T -> bool) -> seq of @T
+	filter (l,search) ==	[i | i in seq l & search(i)]
+	post
+		len RESULT <= len l
+		and
+		elems RESULT subset elems l
+		and
+		forall i in seq RESULT & search(i);
+  
+  filter_elems[@T]: seq of @T * set of @T -> seq of @T
+  filter_elems(l,s) == filter[@T](l, (lambda x: @T & x in set s));
+		
+  --@doc updates sequence s according to the given function on its elements
+  --     upd function must be identity for values it doesn't want to change.
+  updateAt[@T]: seq of @T * (@T -> @T) -> seq of @T
+  updateAt(s, upd) == 
+    [ upd(s(i)) | i in set inds s ]
+    --@doc09 very slow
+    --cases s:
+    --  []       -> [],
+    --  [x]^xs -> [upd(x)]^updateAt[@T](xs, upd)
+    --end
+  post
+    len RESULT = len s
+    and
+    forall i in set inds RESULT & RESULT(i) = upd(s(i))
+  --measure
+  --  len s
+  ;
+    
+	--@doc like updateAt but with an extra parameter for whatever purpose needed
+  updateWith[@T,@S]: (seq of @T) * @S * (@T * @S -> @T) -> seq of @T
+  updateWith(s, y, upd) == 
+    [ upd(s(i), y) | i in set inds s ]
+		--@doc09 very slow
+    --cases s:
+    --  []       -> [],
+    --  [x]^xs -> [upd(x, y)]^updateWith[@T,@S](xs, y, upd)
+    --end
+  post
+    len RESULT = len s
+    and
+    forall i in set inds RESULT & RESULT(i) = upd(s(i), y)
+  --measure
+  --  len s
+  ;
+  
+  zip[@T,@R]: seq of @T * seq of @R -> seq of (@T * @R)
+  zip(xs,ys) == [ mk_(xs(i),ys(i)) | i in set inds xs inter inds ys ] 
+  post
+  	{ x.#1 | x in set elems RESULT } subset elems xs
+  	and
+  	{ y.#2 | y in set elems RESULT } subset elems ys
+ 		and 	
+  	len RESULT = min(len xs, len ys);
+
+	unzip[@T,@R]: seq of (@T * @R) -> (seq of @T * seq of @R)
+	unzip(s) == mk_([ s(i).#1 | i in set inds s ], [ s(i).#2 | i in set inds s ])
+	post
+		let mk_(xs,ys) = RESULT in
+			len xs = len s
+			and
+			len ys = len s
+			and
+			{ mk_(xs(i), ys(i)) | i in set inds s } = elems s;
+			  
+	replicate[@T]: nat * @T -> seq of @T
+	replicate(n,t) == 
+		if n = 0 then [] else [t] ^ replicate[@T](n-1, t)
+	post
+		len RESULT = n
+		and
+		(n > 0 => elems RESULT = {t}) 
+	measure
+		n; 
+		
+	--@doc = counts how many times (if any) the given element appears in the given sequence
+	howManyOfIn[@T]: @T * seq of @T -> nat
+	howManyOfIn(ch, s) == 
+		let bag: (map @T to nat1) = seq2bag[@T](s) in
+			if ch in set dom bag then bag(ch) else 0;
+
+	--@doc = counts how many times (if any) the given char appears in the given string
+	howManyOfCharIn: char * seq of char -> nat
+	howManyOfCharIn(ch, s) == howManyOfIn[char](ch,s);
+
+	str2nval[@T]: seq1 of char -> [@T]
+	str2nval(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(-, val) = str2val_[@T](s) in val
+		--@todo/codegen/mods0 CG-warning/Java-Error: user has to define parsing mechanism for s
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in res.#2
+	post
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(ok, -) = str2val_[@T](s) in (ok <=> RESULT <> nil)
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in (res.#1 <=> RESULT <> nil)
+		;
+	
+	str2val[@T]: seq1 of char -> @T
+	str2val(s) == str2nval[@T](s)
+	pre
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(ok, -) = str2val_[@T](s) in ok;
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in res.#1
+		;
+		
+	str2enum: String -> String
+	str2enum(s) == "<" ^ s ^ ">";
+	
+	--@doc removes the enumeration brackets from string
+	enum2str[@T]: @T -> String
+	enum2str(e) == 
+		let result: String = val2str[@T](e) in result(2,...,len result -1)
+	pre
+		enum_typed[@T](e);
+	
+	--@doc poor man's version of a enumerated type test? 
+	enum_typed[@T]: @T -> bool
+	enum_typed(t) == 
+		let result: String = val2str[@T](t) in 
+			len result > 2
+			and
+			hd result = '<' and last[char](result) = '>';
+	
+	--@doc09 removes mk_ and (...) from record name, e.g. mk_Record(field1,...,fieldn) = Record
+	record_name[@T]: @T -> String
+	record_name(r) == 
+		let result: String = val2str[@T](r) in result(4,...,indexOf[char]('(', result)-1)
+	pre
+		record_typed[@T](r);
+	
+	--@doc09 poor man's version of record type test; doesn't consider tuples, e.g. mk_(x,y); minimum size mk_R()	
+	record_typed[@T]: @T -> bool
+	record_typed(r) == 
+		let result: String = val2str[@T](r) in
+			len result > 5 -- minimum size len "mk_R()" = 6
+			and
+			result(1,...,3) = "mk_"
+			and
+			result(4) <> '('
+			and
+			indexOf[char]('(',result) <> nil;
+		
+	log_level2nat: LogLevel -> nat
+	log_level2nat(ll) ==
+		cases ll: 
+			<Debug>   -> 0,
+			<Verbose> -> 1,
+			<Todo>		-> 2,
+			<Info> 		-> 3,
+			<Trace>   -> 4,
+			<Concurrency> -> 5,
+			<Warning> -> 6,
+			<Stack>		-> 7,
+			<MDS> 		-> 8,
+			<Error>		-> 9,
+			<Fatal>   -> 10
+		end; 
+	
+	log_level_leq: LogLevel * LogLevel +> bool
+	log_level_leq(ll1, ll2) == log_level2nat(ll1) <= log_level2nat(ll2);
+	
+	level_trace: LogLevel -> String
+	level_trace(level) == "[" ^ val2str[LogLevel](level) ^ "]: " ^ (if level = <Info> then "\t## " else "\t"); 
+	
+	make_trace: LogLevel * ? * String * seq of char -> String
+	make_trace(level, tag, trace, extra) == 
+		let tag': seq of char = (if tag <> nil then "(" ^ val2str[?](tag) ^ ")" else []) in
+			level_trace(level) ^ tag' ^ trace ^ extra ^ "\n";
+	
+values
+	DEFAULT_LOG_LEVEL: LogLevel = <Trace>;
+		
+  SEED      : int = 2000;
+	MAX_RANDOM: int = 2000;
+		
+state Support_MDS of
+  log_level: LogLevel
+	log_trace: Trace
+	used: set of int
+	seed: int
+inv mk_Support_MDS(-,-,-,seed) == seed <= MAX_RANDOM
+init smds == smds = mk_Support_MDS(DEFAULT_LOG_LEVEL, [], {},SEED)	
+end
+
+operations
+
+  new_random0() r: int ==
+    return (rand(seed) mod MAX_RANDOM)
+  post
+    r <= MAX_RANDOM;
+  
+  --@doc generates a random number according to the given seed, might be same in multiple calls 
+  /*
+  new_random(seed_param: int) r: int ==
+    (seed := seed_param;
+     return new_random0())
+  pre
+    seed_param <= MAX_RANDOM
+  post
+    r <= MAX_RANDOM;
+	*/
+	
+	--@doc ensures that returned random number is fresh/unique with respect to the seed set earlier
+  fresh_random() r: int ==
+    (dcl aux: int := 0;
+        (while  (aux in set used) do
+          aux := new_random0();
+        );
+        used := used union {aux};
+        return aux)
+  post
+    r not in set used~
+    and
+    r in set used
+    and
+    r <= MAX_RANDOM;
+
+	set_log_level(level: LogLevel) ==
+		log_level := level
+	ext
+		wr log_level
+	post
+		log_level = level;
+		
+	pure get_log_level: () ==> LogLevel
+	get_log_level() == return log_level;
+		
+	pure get_trace: () ==> Trace
+	get_trace() == return log_trace;
+	
+	reset_trace() ==
+		(log_trace := [];
+		)
+	ext
+		wr log_trace
+	post
+		log_trace = [];
+	
+	print_trace() ==
+		for s in log_trace do
+			print(s)
+	ext 
+		rd log_trace;
+		
+	--@doc = logs the given trace if within log level with a trailing new line 
+	log(level: LogLevel, msg: String) ==
+		tlog(level, nil, msg);
+	
+	--@doc = logs the given trace if within log level with a trailing new line after the parameters
+	--			 works like a simplified version of Java's printf
+	logf(level: LogLevel, msg: String, params: seq of ?) ==
+		tlogf(level, nil, msg, params);
+
+	--@doc09 = tagged version of logging, if present. Useful to classify locally beyond chosen log level (e.g. Warning that is serious)
+	--			   could have been [String], but using '?' to be flexible.
+	tlog(level: LogLevel, tag: ?, msg: String) ==
+		(
+		log_trace := log_trace ^ [make_trace(level, tag, msg, "")]; 
+		if log_level_leq(log_level, level) then
+			print(last[String](log_trace))
+		)
+	ext
+		rd log_level
+		wr log_trace
+	post
+		elems log_trace~ subset elems log_trace
+		and
+		len log_trace~ < len log_trace;		
+		
+	tlogf(level: LogLevel, tag: ?, msg: String, params: seq of ?) ==
+		(
+		--@doc09 needed a formatf to handle this...
+		log_trace := log_trace ^ [make_trace(level, tag, msg, "(" ^ val2str[seq of ?](params) ^ ")")];
+		if log_level_leq(log_level, level) then 	
+			printf(make_trace(level, tag, msg, ""), params);
+		)
+	ext
+		rd log_level
+		wr log_trace
+	post
+		elems log_trace~ subset elems log_trace
+		and
+		len log_trace~ < len log_trace;
+			
+	
+	--@todo NB: perhaps pass type parameter for "?"? No :-(... operations can't have type params okay.
+  --assert[@T]: String * @T * @T * bool ==> ()
+	assert: String * ? * ? * bool ==> ()
+  assert(msg, expected, actual, equals) ==
+    high_assert(msg, expected, actual, (lambda e: ?, a: ? & if equals then e = a else e <> a));
+
+  assert_all: seq1 of (String * ? * ? * bool) ==> ()
+  assert_all(ss) ==
+    high_assert_all([
+        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+        --let mk_(msg,expected,actual,equals) = ss(i) in
+        let v			  : String * ? * ? * bool = ss(i),
+        		msg			: String = v.#1,
+        		expected: ? = v.#2,
+        		actual  : ? = v.#3,
+        		equals  : bool = v.#4
+        in
+            mk_(msg, expected, actual,(lambda e: ?, a: ? & if equals then e = a else e <> a)) | i in set inds ss ]);
+   
+  --@doc Inspired in an example from Nick Battle - high-order test between expected and actual of any type raising an error in case test fails
+  high_assert: String * ? * ? * (? * ? -> bool) ==> ()
+  high_assert(msg, expected, actual, test) ==
+    if not test(expected, actual) then
+    (
+        printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
+        exit "Assertion failed";
+    );
+
+  --@doc like high assert, but accummulate failures before exiting
+  high_assert_all: seq1 of (String * ? * ? * (? * ? -> bool)) ==> ()
+  high_assert_all(ss) ==
+    (dcl i: nat := 0;
+       for s in ss do
+        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+        -- let mk_(msg,expected,actual,test) = s in
+        let msg			: String = s.#1,
+        	  expected: ? 		 = s.#2,
+        	  actual  : ? 		 = s.#3,
+        	  test	  : (?*?->bool) = s.#4
+         in
+           if not test(expected, actual) then
+           (
+               i := i+1;
+               --@todo NB: it would be nice to have a formatf as well as printf in I/O?
+               printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
+            );
+       if i > 0 then
+        exit "Assertion failed";         
+    );
+   	 
+end Support2
