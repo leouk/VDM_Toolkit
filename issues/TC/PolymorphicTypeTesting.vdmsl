@@ -1,0 +1,38 @@
+module PolymorphicTypeTesting
+exports all
+definitions 
+
+types
+	Type1 = nat1;
+
+	Type2 = Type1
+	inv t == t < 10;
+	
+	Type3 = seq1 of Type2;
+	
+	PolymorphicTypeTest = (? -> bool);
+	PolymorphicTypeRegister = seq of PolymorphicTypeTest;
+	
+functions
+	--print register_type_check_for[Type1]([])
+	--print elems register_type_check_for[nat1](register_type_check_for[Type1]([]))
+	--print card elems register_type_check_for[nat1](register_type_check_for[Type1]([]))=1?
+	--print register_type_check_for[Type1]([])(1)(2)=true
+	--print register_type_check_for[Type1]([])(1)(0)=false
+	register_type_check_for[@T]: PolymorphicTypeRegister -> PolymorphicTypeRegister
+	register_type_check_for(r) == r ^ [(lambda t: ? & is_(t, @T))]
+	pre
+		true and 1 > 0;
+		
+	--print lookup_type_test_for[Type1](register_type_check_for[Type3](register_type_check_for[Type2](register_type_check_for[nat1](register_type_check_for[Type1]([])))))
+	lookup_type_test_for[@T]: PolymorphicTypeRegister * @T -> [PolymorphicTypeTest]
+	lookup_type_test_for(r, t) == 
+		let result: PolymorphicTypeRegister = [ r(i) | i in set inds r & r(i)(t) ] in
+			if result <> [] then hd result else nil
+	post
+		RESULT <> nil <=> is_(RESULT, (@T -> bool));
+	
+	append_type_check_for[@T]: seq of (? -> bool) -> seq of (? -> bool)
+	append_type_check_for(r) == r ^ [(lambda t: ? & is_(t, @T))];
+	
+end PolymorphicTypeTesting

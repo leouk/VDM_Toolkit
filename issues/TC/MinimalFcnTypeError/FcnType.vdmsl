@@ -1,0 +1,25 @@
+module FcnType
+exports 
+	types
+		struct FunnyTypes
+		FunnyType
+	functions
+		filter[@T]: seq of @T * (@T +> bool) -> seq of @T
+		f: (FunnyType -> bool) -> FunnyTypes
+definitions 
+
+types
+	FunnyType ::
+		x: nat
+		y: ?;
+		
+	FunnyTypes = seq of FunnyType;
+
+functions
+	filter[@T]: seq of @T * (@T +> bool) -> seq of @T
+	filter (l,search) ==	[i | i in seq l & search(i)];
+	
+	f: (FunnyType -> bool) -> FunnyTypes
+	f(criteria) == filter[FunnyType]([], criteria);
+	
+end FcnType

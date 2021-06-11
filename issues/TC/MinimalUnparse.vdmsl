@@ -1,0 +1,21 @@
+module MinimalUnparse
+exports all
+definitions 
+
+/*
+
+	unparse_titration: Titration -> String1
+	unparse_titration(mk_Titration(m, os, tc)) == 
+		section_it("tritration, 
+			parethesise_it(unparse_modifiers(m)),
+			[unparse_criteria(tc),
+			 unparse_objectives("objectives", os)
+			]
+		);
+
+	unparse_titrations: Titrations -> String1
+	unparse_titrations(t) == 
+		seqMap[Titration, String1]((lambda t: Titration & " "), t);
+
+*/
+end MinimalUnparse

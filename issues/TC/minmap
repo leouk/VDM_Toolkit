@@ -1,0 +1,9 @@
+break 20
+break 33
+p is_SimpleConversionSchema(CONVERSION_SCHEMA())
+n
+n
+p <Hourly> in set dom sc
+p sc(<Hourly>)
+o
+q

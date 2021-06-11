@@ -1,0 +1,12 @@
+module InvTest
+imports from support functions xor renamed xor
+exports all
+definitions 
+
+types
+	   Type1 = nat inv t == t > 10;
+     Type2 = nat inv t == t < 20;
+     Type3 = nat inv t == inv_Type1(t) or inv_Type2(t);
+     Type4 = nat inv t == xor(inv_Type1(t), inv_Type2(t));
+
+end InvTest

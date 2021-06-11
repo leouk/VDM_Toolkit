@@ -1,0 +1,28 @@
+module MinimalStateVarOnMk
+imports from MinimalStateVarOnMk0 
+	types
+		T0 renamed T0;
+		T1 renamed T1;
+		functions
+		 make_t1 renamed make_t1;
+exports all
+definitions 
+	
+functions
+	f: () -> T1
+	f() ==
+		let 	
+			t: T0 = mk_T0(20),
+			q: T0 = mk_T0(30)
+		 in
+		 	mk_T0(q.x - t.x);
+		 	
+	g: () -> T1
+	g() ==
+		let
+			t: T1 = make_t1(20),
+			q: T1 = make_t1(30)
+		 in
+		 	make_t1(q.x - t.x);
+	
+end MinimalStateVarOnMk

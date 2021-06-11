@@ -1,0 +1,15 @@
+module MinimalSeqMapQueryType
+exports all
+definitions 
+
+functions
+	 f: seq1 of (map char to [nat]) -> [(map char to nat)]
+	 f(s) ==
+	 	  let 
+				ss: set of (map char to nat) = { (s(i) :-> {/*nil*/}) | i in set inds s } in
+			if ss <> {} then
+				let x in set ss in x
+			else
+				nil;
+	 	
+end MinimalSeqMapQueryType

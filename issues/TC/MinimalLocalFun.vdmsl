@@ -1,0 +1,18 @@
+module MinimalLocalFun
+exports all
+definitions 
+functions
+  f: seq of nat -> nat
+  f(xs) ==	
+  	let sum: nat * nat -> nat
+  		  sum(x, y) == x + y
+  		  pre 
+  		  	x < y
+  	 in
+  	 	 sum(xs(1), xs(2))
+  pre
+  	len xs > 1
+  	and
+  	true;--(forall i in set inds xs \ {len xs} & pre_sum(xs(i), xs(i+1)));
+  	
+end MinimalLocalFun

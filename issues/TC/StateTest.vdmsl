@@ -1,0 +1,136 @@
+module StateTest
+exports 
+	types
+		struct Type3
+		struct Type5
+		struct Type6
+	functions
+		f1: Type2 -> bool
+		g2: [Type4] -> bool
+		h: Type -> bool
+	operations 
+		 op: nat ==> nat
+		 op2: nat ==> nat
+		 op3: nat ==> nat
+		 op4: nat ==> nat
+		 op5: Type3 ==> ()
+		 op6: nat ==> nat
+definitions 
+
+types
+	Type :: 
+		x: nat
+		y: nat;
+		
+	Type2 = bool | int;
+	
+	Type3 = <A> | <B> |<C>;	
+	
+	Type4 = Type3
+	inv t4 == t4 in set {<A>, <B>};
+	
+	Type5 :: 
+		x: nat
+		y: real
+		z: [Type5];
+		
+	Type6 ::
+		x: Type5
+		i: (Type5 +> bool)
+	inv mk_Type6(x,i) == i(x);
+	
+state S of
+    a : nat
+    b : nat
+    c : Type
+    used: set of nat
+init s == s = mk_S(1, 10, mk_Type(1,2), {})
+end
+
+functions
+	f1: Type2 -> bool
+	f1(y) == is not yet specified;
+	
+	--g1: Type4 -> bool
+	--g1(y) == f1(y);
+
+	f2: [Type2] -> bool
+	f2(y) == is not yet specified;
+	
+	g2: [Type4] -> bool
+	g2(y) == f2(y)
+	pre
+		y <> nil;
+		
+	h: Type -> bool
+	h(t) == true
+	pre
+		let v: seq of Type = [t] in
+				(hd v).x > 10;
+
+operations
+    op: nat ==> nat
+    op(x) == return x + 1
+    pre x > S.a
+    post RESULT < S.b;
+    
+    op2(x: nat) r: nat == return x + a
+    pre x > S.a
+    --post r < S.b and (lambda v: nat & v > c.x)(c~.x)
+    ;
+
+    op3(x: nat) r: nat == (b := b +1; return x + a)
+    ext
+    	wr b, c
+    	rd S,a
+    pre x > S.a
+    --post r < S.b and (lambda v: nat & v > c~.x)(c~.x)
+    ;
+
+		fresh_value(n: nat) r: nat == 
+    ( r := n;   
+      return r;
+    )
+  --pre 
+    --r > 0 -- —->  weird to be able to access r here? 
+  post 
+    r not in set used~
+    and
+    r in set used;
+    
+    op4(x: nat) r: nat == (b := b +1; return x + a)
+    ext
+    	wr b, c
+    	rd S,a
+    pre x > S.a
+    post r < S.b and let fix = c~.x in (lambda v: nat & v > fix)(c~.x);
+
+		op5(x: Type3) == (b := (if x = <A> then 1 else 2) + op3(a+1);)
+    ext
+    	wr b
+    	rd a
+    ;
+    
+    op6(x: nat) r: nat ==
+    	(cases x:
+    			0,1,2,3,4,5,6,7,8,9,10 -> return 10,
+    			10,11,12,13,14,15,16,17 -> return 20,
+    			others -> return 0
+    	end;
+    	)
+    post
+    	r > 0; 
+    	
+    	
+    op7(x: nat) r : nat ==
+    	(return x+1;
+    	)
+    pre
+    	true;
+    
+    op8(x: int) ==
+    	((dcl y: nat := op7(x); b := y;))
+    pre
+    	pre_op7(x, S);
+    
+end StateTest

@@ -1,0 +1,18 @@
+module TypeExportedConstantsOfImportedType
+imports 
+from TypesToImport
+	types
+		TransparentType renamed TransparentType
+		--OpaqueType renamed OpaqueType
+
+exports 
+	values
+		TCONST: TransparentType
+		--OCONST: OpaqueType
+definitions 
+
+values
+	TCONST: TransparentType = 10;
+	--OCONST: OpaqueType = 20;
+	
+end TypeExportedConstantsOfImportedType

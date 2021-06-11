@@ -1,0 +1,16 @@
+module MinimalStateVariable
+exports all
+definitions 
+
+state StateName of
+  x: nat
+init s == s = mk_StateName(10)
+end 
+
+operations
+  op(i: nat1) == (x := x+i;)
+  ext wr x
+  post 
+    x~ < x;
+    
+end MinimalStateVariable

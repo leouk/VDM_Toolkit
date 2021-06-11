@@ -1,0 +1,25 @@
+module MinimalParamTypeError
+exports all
+definitions 
+
+types
+	S0 = seq of nat;
+	S1 = seq1 of nat1;
+	M0 = map nat to nat;
+	Id = seq of char;
+	Un = <All> | <Any>;
+	Window = nat1;
+
+functions
+
+ 	--@Warning(5000)
+ 	g: [nat1] * S0 * M0 * Id * Un * [Window] -> bool
+	--g(week, ms, tm, criteria_id, modifier, window) == true;
+	g(-, -, -, -, -, -) == true;
+			
+	f: [nat1] * S1 * Id * M0 * Un * [Window] -> bool
+	f(week, ms, criteria_id, tolerance, modifier, window) ==
+ 		g(week, ms, tolerance, criteria_id, modifier,/*modifier, criteria_id,*/ window)
+		;
+
+end MinimalParamTypeError

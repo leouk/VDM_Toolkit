@@ -1,0 +1,28 @@
+module MinimalMapProblem
+imports
+from Char
+	types Id renamed Id;
+	functions make_id renamed make_id;
+exports all
+definitions 
+
+types
+	Percent = nat
+	inv p == p in set {0,...,100};
+	
+	Confidence = Percent;
+	
+	--@doc Measurement kind map, which enables different kinds of measurement within measurements section
+	--		 Assuming there will be multiple options, so String instead MeasureMentKind?
+	--@witness({ make_id("physical") |-> 100, make_id("side_effects") |-> 60, make_id("benefits") |-> 40 }
+	Map = map Id to Confidence--map MeasurementKind to Confidence
+	inv mm == mm <> {|->};  
+  	
+values
+	PHYSICAL          : Id = make_id("physical");
+	SIDE_EFFECTS      : Id = make_id("side_effects");
+	BENEFITS          : Id = make_id("benefits");
+	
+	MEASUREMENT_KIND_MAP: Map = { BENEFITS |-> 40, PHYSICAL |-> 99, SIDE_EFFECTS |-> 80};
+
+end MinimalMapProblem

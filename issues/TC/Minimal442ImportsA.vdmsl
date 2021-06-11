@@ -1,0 +1,9 @@
+module A1
+exports
+  types
+    struct T;
+definitions
+types
+  T = nat 
+  inv t == t < 10;
+end A1

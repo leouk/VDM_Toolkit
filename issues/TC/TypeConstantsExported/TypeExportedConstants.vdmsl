@@ -1,0 +1,11 @@
+module TypeExportedConstants
+exports
+values
+	Constant: nat
+
+definitions 
+
+values
+   Constant: nat = 1;
+   
+end TypeExportedConstants

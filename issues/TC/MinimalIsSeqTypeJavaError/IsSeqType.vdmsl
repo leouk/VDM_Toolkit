@@ -1,0 +1,21 @@
+module B
+imports from Type types MDSType renamed MDSType
+exports all
+definitions
+
+types
+
+S = seq of nat
+inv - == true;
+
+functions
+
+--@doc the is_S(d1_0) isn't possible, but the inv_S(d1_0) isn't possible either because VDMJ can't know d1_0 is seq
+--		 both together were generating CG errors.
+fun : seq of MDSType -> seq of nat
+fun (xs) ==
+  let d1_0 : MDSType = xs(1)
+  in
+    if is_(d1_0, seq of ?) and inv_S(d1_0) then d1_0 else []
+end B
+

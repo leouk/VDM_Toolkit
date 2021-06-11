@@ -1,0 +1,63 @@
+module CG_MinimalIotaRec
+exports all
+definitions 
+
+types
+	Amount = nat;
+	
+	R :: 
+		amount: Amount
+		y:- set of Amount
+	--@doc GOTCHA! 
+	ord r1 < r2 ==
+		r1.amount < r2.amount
+	--ord mk_R(-,y1) < mk_R(-,y2) ==
+	--	y1 subset y2
+		;
+		
+functions
+	--@doc IllegalArgumentException because of iota? No
+	gotcha: Amount * seq of R -> R
+	gotcha(id, rs) ==
+		(iota r in set elems rs & r.amount = id)
+		--(iota r: R & r.x = id)
+		-- (iota r:CG_MinimalIotaRec`R & ((r.x) = id)) at [line, pos] = [13, 10] in ./CG_MinimalIotaRec.vdmsl. 
+		-- Reason: Transformation only works for expressions with multiple set binds 
+	pre
+		id in set { r.amount | r in set elems rs };
+
+	--@doc IllegalArgumentException because of lambda-result with a mu update? No
+	gotcha1: Amount * bool -> (R -> R)
+	gotcha1(a, increase) == 
+		(lambda d: R &
+				let
+					okay: bool = (increase and is_Amount(d.amount + a)) or
+											 (not increase and is_Amount(d.amount - a))
+				 in
+				  if okay then
+						mu(d, amount |-> if increase then d.amount + a else d.amount - a)
+					else
+						d--nil
+		);
+	
+	--@doc IllegalArgumentException because of => and result from gotcha? No
+	gotcha2: seq of R -> (Amount -> bool)
+	gotcha2(rs) == 
+		(lambda a: Amount &
+				let 
+					r: R = gotcha(a, rs)
+				 in
+				 	a > 0 => r.amount > a
+	  );  
+		
+	--@doc IllegalArgumentException because of ".y" selector on function result? No
+	gotcha3: Amount * seq of R -> set of Amount
+	gotcha3(a, rs) == 
+		if len rs > 3 then 
+			gotcha(a, rs).y
+		else
+			{}
+	pre
+		pre_gotcha(a, rs);	
+	
+end CG_MinimalIotaRec

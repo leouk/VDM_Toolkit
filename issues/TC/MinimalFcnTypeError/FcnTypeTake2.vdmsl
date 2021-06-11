@@ -1,0 +1,18 @@
+module FcnTypeTake2
+imports 
+from FcnType
+	types 
+		FunnyTypes renamed FunnyTypes
+		FunnyType renamed FunnyType
+	functions
+		filter renamed filter
+exports 
+	functions
+		f: (FunnyType -> bool) -> FunnyTypes		
+definitions 
+
+functions
+	f: (FunnyType -> bool) -> FunnyTypes
+	f(criteria) == filter[FunnyType]([], criteria);
+
+end FcnTypeTake2

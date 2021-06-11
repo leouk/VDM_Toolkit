@@ -1,0 +1,10 @@
+module B2
+imports from A2 all
+exports
+  functions
+    f: A2`T -> bool;
+definitions
+functions
+  f: A2`T -> bool
+  f(x) == is_nat1(x);
+end B2

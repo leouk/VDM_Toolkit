@@ -1,0 +1,19 @@
+module MinimalFcnTypeInv
+exports all
+definitions 
+
+types
+	R :: 
+		x: set of nat
+		y: set of nat;
+		
+	T = (R -> set of nat)
+	inv t == forall r: R & t(r) subset r.x inter r.y;
+
+functions
+	f: R * T -> set of nat
+	f(r, t) == t(r)
+	post
+		RESULT subset r.x union r.y;	
+	
+end MinimalFcnTypeInv

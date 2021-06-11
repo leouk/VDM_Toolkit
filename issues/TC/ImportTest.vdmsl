@@ -1,0 +1,17 @@
+module ImportTest
+imports 
+from StateTest
+	operations 
+		op5 renamed op5
+exports
+	operations
+		badOp: () ==> ()
+		--badOp2: () ==> ()
+definitions 
+
+operations 
+	badOp() == op5(nil);
+
+	--badOp2() == op5(<E>);
+
+end ImportTest

@@ -1,0 +1,44 @@
+module MinimalEfficientSearch
+exports all
+definitions 
+
+functions
+	maxs: set1 of int -> int
+	maxs(s) == 
+		(iota m in set s & (forall n in set s & n <= m))
+	post
+		forall x in set s & x <= RESULT;
+
+	mins: set1 of int -> int
+	mins(s) == 
+		(iota m in set s & (forall n in set s & m <= n))
+	post
+		forall x in set s & RESULT <= x;
+
+	maxs_nat: set of nat -> nat
+	maxs_nat(s) == if s = {} then 0 else maxs(s)
+	post
+		forall x in set s & x <= RESULT;
+
+	--@doc leomax of a set, default as maximum within the set, which will zero if empty
+	mins_nat: set of nat -> nat
+	mins_nat(s) == if s = {} then 0 else mins(s)
+	post
+		forall x in set s & RESULT <= x;
+
+  --@todo @NB how to improve efficiency here? 
+	mostly_observed: seq1 of seq of nat -> seq of nat
+  mostly_observed(ms) == 
+			 --@doc lenm = mostly observed sequence of values within ms;
+			 --			  mm = indexes of mostly observed values within ms; 
+			 --			   i = first index that is mostly observed to be returned
+  		let
+  			 lenm: nat          = maxs_nat({ len ms(i) | i in set inds ms }),
+  			 mm  : set1 of nat1 = { i | i in set inds ms & len ms(i) = lenm }
+  		 in
+  		   let i in set inds ms be st len ms(i) = lenm and i = mins_nat(mm) in
+  		   	  ms(i)
+  post
+  	RESULT in set elems ms;
+
+end MinimalEfficientSearch

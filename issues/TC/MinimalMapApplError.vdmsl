@@ -1,0 +1,63 @@
+module MinimalMapApplError
+exports all
+definitions 
+
+types
+	Beat = <Hourly> | <Daily> | <Weekly>
+	ord b1 < b2 ==
+		let 
+			value =  --map (<Hourly> | <Daily> | <Weekly>) to nat1
+				{ <Hourly> |-> 1,
+					<Daily>  |-> 2,
+					<Weekly> |-> 3
+				}
+		in
+			value(b1) < value(b2);
+	
+	--@todo properly embed MHC, MDC, MWC from ISQ here
+	SimpleConversion = inmap Beat to real
+	inv sc == 
+		dom sc = {<Hourly>, <Daily>, <Weekly>}
+		and
+		1 in set rng sc
+		and
+		--@doc conversions to hour are always bigger
+		sc(<Hourly>) >= 1
+		and
+		--@doc conversions to week are always smaller
+		sc(<Weekly>) <= 1;
+	
+	SimpleConversionSchema = map Beat to SimpleConversion
+	inv scc == 
+		--@doc all conversions must be known, and always map themselves to identity
+		dom scc = {<Hourly>, <Daily>, <Weekly>}
+		and
+		(forall b in set dom scc & scc(b)(b) = 1)
+		and
+		--@doc mappings from week to anything else are never fraction nor non-positive
+		is_(scc(<Weekly>), inmap Beat to nat1);
+
+functions
+	CONVERSION_SCHEMA: () -> map Beat to map Beat to real--SimpleConversionSchema 
+	CONVERSION_SCHEMA() == 
+		{ <Hourly> |-> { <Hourly> |-> 1,
+									   <Daily>  |-> 1/24,
+									   <Weekly> |-> 1/(7*24) },
+			<Daily>  |-> { <Hourly> |-> 24,
+									   <Daily>  |-> 1,
+									   <Weekly> |-> 1/7 },
+			<Weekly> |-> { <Hourly> |-> (7*24),
+									   <Daily>  |-> 7,
+									   <Weekly> |-> 1 }
+		};
+
+  convert: Beat * Beat * nat1 -> real
+	convert(b_from, b_to, scale_by) == 
+		CONVERSION_SCHEMA()(b_from)(b_to) * scale_by
+	post
+		cases b_from:
+			<Hourly> -> RESULT <= 1,
+			<Weekly> -> is_nat1(RESULT)
+		end;
+		
+end MinimalMapApplError

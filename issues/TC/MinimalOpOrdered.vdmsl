@@ -1,0 +1,13 @@
+module MinimalOpOrdered
+exports 
+	types
+		T;
+	functions
+		ord_T: nat1 * nat1 +> bool;
+definitions 
+
+types
+	T = nat1
+	ord t1 < t2 == t1 < t2;
+	
+end MinimalOpOrdered

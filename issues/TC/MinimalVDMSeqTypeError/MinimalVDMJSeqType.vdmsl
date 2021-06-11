@@ -1,0 +1,24 @@
+module MinimalVDMJSeqType
+definitions 
+
+types
+	N = seq of char;
+	
+	R :: x: nat;
+	
+	S = seq of R;
+	
+	E = <A> | <B>;
+	T ::
+	  i: [N]
+		r:- [S];
+		
+functions
+	f: [T | E] -> nat
+	f(t) == if not (t.r = nil	or is_E(t) or t.r = []) then (hd t.r).x else 0;
+
+operations
+	p: [T | E] ==> nat
+	p(t) == (if not (t.r = nil	or is_E(t) or t.r = []) then return (hd t.r).x else return 0);
+		
+end MinimalVDMJSeqType

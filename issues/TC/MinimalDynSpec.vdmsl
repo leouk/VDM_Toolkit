@@ -1,0 +1,61 @@
+module MinimalDynSpec
+exports all
+definitions 
+
+types
+	State :: x: nat;
+		
+	PreExpr   = (State -> bool);
+	PostExpr  = (State * State -> bool);
+	ImplExpr  = (State -> [State]);
+	InvExpr   = PreExpr;
+	FrameExpr = PostExpr;
+
+	Specification ::
+		invExpr				: InvExpr
+		preExpr				: PreExpr
+		postExpr			: PostExpr
+		frameExpr			: FrameExpr
+		implExpr 			: ImplExpr
+		;
+
+	String1 = seq1 of char;
+
+values
+	  PRE: PreExpr  = (lambda -: State & true);
+	 POST: PostExpr = (lambda -: State, -: State & true);
+	 IMPL: ImplExpr = (lambda s: State & s);
+	INVALID: [State]= nil;
+	IMPL': ImplExpr = (lambda -: State & INVALID); 
+	IMPL'':ImplExpr = (lambda -: State & nil);	
+	
+	SPEC  : Specification = mk_Specification(PRE, PRE, POST, POST, IMPL);
+	SPEC' : Specification = mk_Specification(PRE, PRE, POST, POST, IMPL');
+	SPEC'': Specification = mk_Specification(PRE, PRE, POST, POST, IMPL'');
+	 
+functions
+
+  unparse_spec_expr: (PreExpr | PostExpr | ImplExpr) -> String1
+	unparse_spec_expr(te) == 
+		cases true:
+			(is_PreExpr(te)) -> "(State -> bool)",
+			(is_PostExpr(te))-> "(State * State -> bool)",
+			(is_ImplExpr(te))-> "(State -> [State])",
+			others 					 -> "Something is wrong!"
+		end;
+	
+	unparse_spec: Specification -> seq1 of String1
+	unparse_spec(mk_Specification(i, p, q, f, e)) ==	
+		["\ninv"		, unparse_spec_expr(i),
+		 "\nassumes", unparse_spec_expr(p),
+		 "\nensures", unparse_spec_expr(q),
+		 "\nframes" , unparse_spec_expr(f),
+		 "\nimpls"  , unparse_spec_expr(e),
+		 "\n"];
+	
+traces
+	TR1: unparse_spec(SPEC);
+	TR2: unparse_spec(SPEC');
+	TR3: unparse_spec(SPEC'');
+		 
+end MinimalDynSpec

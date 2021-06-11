@@ -1,0 +1,10 @@
+module B1
+imports from A1 types T renamed T;
+exports
+  functions
+    f: T -> bool;
+definitions
+functions
+  f: T -> bool
+  f(x) == x > 0;
+end B1

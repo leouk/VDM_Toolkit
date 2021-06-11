@@ -1,0 +1,12 @@
+module C
+imports
+from A1
+  types T renamed T;
+exports
+  functions
+    f: A1`T -> bool;
+definitions
+functions
+  f: A1`T -> bool
+  f(x) == x > 0;
+end C

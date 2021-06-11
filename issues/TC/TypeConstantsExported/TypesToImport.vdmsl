@@ -1,0 +1,21 @@
+module TypesToImport
+exports 
+types
+	struct TransparentType
+	OpaqueType
+
+values
+	TCONST: TransparentType
+	OCONST: OpaqueType
+definitions 
+
+types
+	TransparentType = nat1;
+	
+	OpaqueType = bool;
+	
+values
+	TCONST: TransparentType = 10;
+	OCONST: OpaqueType = true;
+		
+end TypesToImport

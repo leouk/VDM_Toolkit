@@ -1,0 +1,27 @@
+module MinimalLambda
+exports all
+definitions 
+
+values 
+  L = (lambda x: nat, y: nat & [x, y]);
+  
+functions
+	seqMap[@T,@R]: (@T->@R) * seq of @T -> seq of @R
+  seqMap(m,s) == [ m(s(i)) | i in set inds s ];
+  
+	--f: nat * seq of nat -> seq of nat
+	--f(x, ys) == seqMap[(nat * nat), nat](L, [ mk_(x, ys(i)) | i in set inds ys ]);
+
+	g': nat * nat -> seq of nat
+	g'(x,y) == [x,y];
+	
+	--g: nat * seq of nat -> seq of nat
+	--g(x, ys) == seqMap[(nat * nat), nat](g', [ mk_(x, ys(i)) | i in set inds ys ]);
+  
+end MinimalLambda
+
+/*
+Error 3061: Inappropriate type for argument 1 in 'MinimalLambda' (./attic/MinimalLambda.vdmsl) at line 13:17
+Expect: ((nat * nat) -> nat)
+Actual: (nat * nat -> seq1 of (nat))
+*/

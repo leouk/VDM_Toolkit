@@ -1,0 +1,9 @@
+module A2
+exports
+  types
+    T;
+definitions
+types
+  T = nat 
+  inv t == t < 10;
+end A2

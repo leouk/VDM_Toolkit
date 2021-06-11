@@ -1,0 +1,10 @@
+module Types0
+exports 
+	types 
+		struct String;
+definitions 
+
+types
+	String = seq1 of char;
+	
+end Types0

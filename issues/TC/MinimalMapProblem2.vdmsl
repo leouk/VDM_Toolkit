@@ -1,0 +1,68 @@
+module MinimalMapProblem2
+exports all
+definitions 
+
+types
+	OChar = char
+	ord c1 < c2 == indexOf[char](c1, ASCIIFY) < indexOf[char](c2, ASCIIFY);
+	
+	Id = seq of OChar
+	ord id1 < id2 == forall i in set inds id1 inter inds id2 & id1(i) < id2(i);
+	
+	Map = map Id to nat;  
+
+values
+	PHYSICAL          : Id = ("physical");
+	SIDE_EFFECTS      : Id = ("side_effects");
+	BENEFITS          : Id = ("benefits");
+	
+  ASCIIFY: seq1 of char = ['$'] ^ "0123456789" ^ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ^ ['_'] ^ "abcdefghijklmnopqrstuvwxyz";
+	
+	--M: Map = { PHYSICAL |-> 100, SIDE_EFFECTS |-> 80, BENEFITS |-> 40 };
+
+functions
+	make_id: seq of char -> Id
+	make_id(s) == s;
+	
+	indexOf[@T]: @T * seq1 of @T -> nat1
+	indexOf(x,xs) == 
+	  let i in set inds xs be st xs(i) = x in i
+	pre
+		x in set elems xs
+	post	
+		xs(RESULT) = x;
+		
+	lexi_order: seq of OChar * seq of OChar -> bool
+	lexi_order(s1, s2) ==
+		if s1 = [] then
+			s2 <> []
+		else 
+			s2 = [] 
+			or
+			hd s1 < hd s2
+    	or
+	    lexi_order(tl s1, tl s2) 
+	measure
+		if len s1 < len s2 then len s1 else len s2;
+		
+end MinimalMapProblem2
+/*
+((forall x1:MinimalMapProblem2`Id & (not ord_Id(x1, x1))) and 
+ (forall x1, y2, z3:MinimalMapProblem2`Id & ((ord_Id(x1, y2) and ord_Id(y2, z3)) => ord_Id(x1, z3))))
+=
+ not len x < len x = len x >= len x = true
+ and
+ len x1 < len x2 and len x2 < len x3 => len x1 < len x3
+=
+ true
+ and
+ len x1 < len x3 => len x1 < len x3 = true
+=
+ true
+
+(forall m1, m2 in set {{PHYSICAL |-> 100}, {SIDE_EFFECTS |-> 80}, {BENEFITS |-> 40}} & 
+  (forall d3 in set (dom m1), d4 in set (dom m2) & 
+  	((d3 = d4) => (m1(d3) = m2(d4)))))
+ = 
+ true
+*/

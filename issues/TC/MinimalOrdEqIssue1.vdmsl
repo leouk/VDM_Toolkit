@@ -1,0 +1,28 @@
+module Minimal
+exports all
+definitions 
+
+types
+	R :: 
+	  x: nat 
+	  y: nat;
+	 
+	--@doc with eq predicate, this fails! for nil below. 
+	S = R
+	inv mk_R(x,-) == x > 10
+	eq s1 = s2 == s1.x = s2.x
+	ord s1 < s2 == s1.x < s2.x;
+	
+	T = R
+	inv mk_R(x,-) == x < 20
+	eq t1 = t2 == t1.x = t2.x
+	ord t1 < t2 == t1.x < t2.x;
+		
+	-- print mk_E(nil, mk_R(10, 10)) = funny error (NOT OKAY)?
+	E::
+		s: [S]
+		t: [T]
+	inv mk_E(s, t) ==
+		not (s = nil and t = nil);
+
+end Minimal

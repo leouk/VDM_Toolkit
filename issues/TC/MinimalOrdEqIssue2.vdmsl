@@ -1,0 +1,79 @@
+module MinimalOrdEqIssue2
+exports all
+definitions 
+
+types
+	R ::
+		x : nat
+		y :- nat;
+		
+	S :: 
+		x: nat
+		y:- nat
+	ord s1 < s2 == s1.x < s2.x or (s1.x = s2.x and s1.y < s2.y);
+		
+	Q ::
+		name     :- seq1 of char
+		s        : S
+		amount   :- nat
+		frequency:- nat
+	ord q1 < q2 ==
+		q1.s < q2.s
+		or
+		(q1.s = q2.s 
+		 and 
+		 q1.frequency < q2.frequency 
+		 or
+		 (q1.frequency = q2.frequency and q1.amount < q2.amount)
+		);
+		
+values
+	R1: R = mk_R(1,2);
+	R2: R = mk_R(1,3);
+	
+	S1: S = mk_S(1,2);
+	S2: S = mk_S(2,1);
+	
+	Q1  : Q = mk_Q("Q1"  , S1, 10, 8);
+	Q1' : Q = mk_Q("Q1'" , S1, 12, 8);
+	Q1'': Q = mk_Q("Q1''", S1, 12, 10);
+	Q2  : Q = mk_Q("Q2"  , S2, 5, 4);
+	Q2' : Q = mk_Q("Q2'" , S2, 7, 5);
+	Q2'': Q = mk_Q("Q1''", S2, 8, 7);
+
+	testOrd1: bool = Q1 < Q1' and Q1 < Q1'' and Q1' < Q1'';
+	testOrd2: bool = Q2 < Q2' and Q2 < Q2'' and Q2' < Q2'';
+	testOrd3: bool = Q1 < Q2;
+	
+	testEq0: bool = R1 = R2; 
+	testEq1: bool = Q1 = Q1' and Q1 = Q1'';
+	testEq2: bool = Q2 = Q2' and Q2 = Q2'';
+	
+functions
+	testOrd: () -> bool
+	testOrd() == testOrd1 and testOrd2 and testOrd3;
+	 
+	testEq: () -> bool
+	testEq() == testEq0 and testEq1 and testEq2;
+
+	test: () -> bool
+	test() == testOrd() and testEq();
+
+traces
+	TR_TEST: test();
+	
+end MinimalOrdEqIssue2
+ 
+/* see Isabelle proof
+Strict order relation PO for S:
+((forall x1:MinimalOrdEqIssue2`S & 
+	(not ord_S(x1, x1))) and 
+	(forall x1, y2, z3:MinimalOrdEqIssue2`S & ((ord_S(x1, y2) and ord_S(y2, z3)) => ord_S(x1, z3))))
+=
+
+*/
+/*
+Strict order relation PO for Q:
+((forall x1:MinimalOrdEqIssue2`Q & (not ord_Q(x1, x1))) and 
+(forall x1, y2, z3:MinimalOrdEqIssue2`Q & ((ord_Q(x1, y2) and ord_Q(y2, z3)) => ord_Q(x1, z3))))
+*/

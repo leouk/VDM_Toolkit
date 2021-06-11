@@ -1,0 +1,33 @@
+module TestLimitAnnotation
+exports all
+definitions 
+
+types	
+	R ::
+		x: nat
+	inv mk_R(x) == x > 0
+	eq r1 = r2 == r1.x = r2.x
+	ord r1 < r2 == r1.x < r2.x;
+	
+functions
+
+	f: nat -> seq of nat
+	f(a) ==
+	-- @Limit(10), make sure the total value count here is <= 10
+	conc
+	[
+	[1,2,3],
+	[ x ** 2 | x in set {1, ..., a} ]
+	];
+	
+	g: nat -> map nat to nat
+	g(n) == 
+	--@Limit(10)
+	{ i |-> i | i in set {1,...,n} };
+	
+	r: nat -> set of R
+	r(n) == 
+	--@Limit(10)
+	{ mk_R(i) | i in set {1,...,n} };
+
+end TestLimitAnnotation

@@ -1,0 +1,19 @@
+module MinimalPartialGenInput
+exports all
+definitions 
+
+functions
+
+	f[@X]: @X -> bool
+	f(x) == true;
+	
+	g[@X]: [@X] -> bool
+	g(x) == x = nil;
+	
+values
+	T1: bool = f[int](5);
+	T2: bool = f[[int]](nil);
+	T3: bool = g[int](5);
+	T4: bool = g[int](nil);	
+
+end MinimalPartialGenInput

@@ -1,0 +1,43 @@
+module MinimalStructA
+exports 
+	types
+		Id0;
+		ReservedId;
+		struct Id;
+	functions 
+		test: Id -> bool;
+definitions 
+
+types
+  Upper = char
+  inv c == c in set elems "ABCD";
+
+  Lower = char
+  inv c == c in set elems "abcd";
+
+  Digit = char
+  inv c == c in set elems "123456789";
+
+  Letter = Upper | Lower;
+
+  AlphaNum = Letter | Digit;
+
+  Underscore = char
+  inv us == us = '_';
+  
+  ReservedChar = char
+  inv rc == rc = '$';
+
+	Id0 = seq1 of (AlphaNum | Underscore | ReservedChar)
+	inv id == is_Letter(hd id) or is_Underscore(hd id) or is_ReservedChar(hd id);
+	
+	ReservedId = Id0
+	inv ri == is_ReservedChar(hd ri);
+	
+	Id = Id0 | ReservedId;
+	 
+functions
+	test: Id -> bool
+	test(id) == len id > 5;
+	
+end MinimalStructA

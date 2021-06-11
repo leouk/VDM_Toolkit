@@ -1,0 +1,17 @@
+module MinimalStateVarOnMk0
+exports all
+--	types
+--		struct T0;
+--		struct T1;
+definitions 
+types
+	T0 :: x: nat;
+	
+	T1 = T0
+	inv mk_T0(x) == x >= 10;
+
+functions
+	make_t1: nat -> T1
+	make_t1(x) == mk_T0(x);
+	
+end MinimalStateVarOnMk0

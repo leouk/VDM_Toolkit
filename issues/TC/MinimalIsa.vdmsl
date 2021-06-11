@@ -1,0 +1,26 @@
+module MinimalIsa
+exports all
+definitions 
+
+types
+	T = nat 
+	inv t == t < 10;
+	
+functions
+	f: T -> T
+	f(x) == x + 1
+	pre x - 1 < 10
+	post x < RESULT; 
+	
+	isa_invVDMNat: int -> bool
+	isa_invVDMNat(x) == x >= 0;
+	
+	isa_invT: nat -> bool
+	isa_invT(t) == isa_invVDMNat(t) and t < 10;
+	
+	f_isa: T -> T
+	f_isa(x) == x + 1
+	pre isa_invT(x) and x + 1 < 10
+	post isa_invT(x) and isa_invT(RESULT) and x < RESULT;
+	
+end MinimalIsa

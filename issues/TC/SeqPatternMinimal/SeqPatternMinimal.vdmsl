@@ -1,0 +1,63 @@
+module SeqPatternMinimal
+exports all
+definitions 
+
+functions
+  injective[@T]: seq of @T +> bool
+  injective(ss) == card (elems ss) = len ss;
+
+  make_injective[@T]: seq of @T -> seq of @T
+  make_injective(ss) == 
+  	if injective[@T](ss) then ss else make_injective0[@T](ss, [])
+  post 
+    injective[@T](RESULT)
+    and
+    elems RESULT subset elems ss
+    ;
+    
+  seq_pattern[@T, @R]: seq of @T * @R * (@T * seq of @T * @R -> @R) -> @R
+  seq_pattern(ss, res, induct) ==
+  	if len ss = 0 then
+  		res
+  	else
+  		let  x: @T 				= hd ss,
+  			  xs: seq of @T = tl ss
+  	   in
+  	   		seq_pattern[@T, @R](xs, res, induct(x, xs, res))
+  measure
+  	len ss;
+  	
+  make_injective0[@T]: seq of @T * seq of @T -> seq of @T
+  make_injective0(ss,res) ==
+  --@todo/codegen VDMJ bug? Cannot convert [1, 2, 3, 4, 5] (seq) to (nat * seq of (nat) * seq of (nat)  on base case
+  	seq_pattern[@T, seq of @T](ss, res, 
+  			(lambda x: @T, xs: seq of @T, -: seq of @T & 
+  					if x in set elems res then 
+  						make_injective0[@T](xs, res) 
+  					else 
+  						make_injective0[@T](xs, res ^ [x])
+  			)
+  	)
+  --@todo/codegen generalise solution to avoid repetition
+  --	if len ss = 0 then 
+  --		res
+  --	else
+  --		let  x: @T 				= hd ss,
+  --				xs: seq of @T = tl ss
+  --	  in 
+  --			if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --@todo/codegen doesn't like ASeqPattern or AConcatenationPattern
+  --  cases ss:
+  --    []     -> res,
+  --    [x]^xs -> if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --  end
+  
+  --@doc given it is not exported, this is quite inneficient/slow
+  --pre
+  --  injective[@T](res)
+  --post
+  --  injective[@T](RESULT)
+  measure
+    len ss;
+    
+end SeqPatternMinimal

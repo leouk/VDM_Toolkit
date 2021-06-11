@@ -1,0 +1,10 @@
+module MinimalEmptySetBindWarning2
+imports from MinimalEmptySetBindWarning values PERCENT renamed PERCENT;
+exports all
+definitions 
+
+types
+	T1 = nat
+	inv t == (exists p in set PERCENT & t = p);
+	
+end MinimalEmptySetBindWarning2

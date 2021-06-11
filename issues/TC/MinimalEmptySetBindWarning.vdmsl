@@ -1,0 +1,13 @@
+module MinimalEmptySetBindWarning
+exports all
+definitions 
+
+values
+	PERCENT: set1 of nat = {0,...,100};
+	
+types
+	--@doc here it's fine, but imported you get the wrong warning.
+	Percent = nat
+	inv p == p in set PERCENT;
+
+end MinimalEmptySetBindWarning

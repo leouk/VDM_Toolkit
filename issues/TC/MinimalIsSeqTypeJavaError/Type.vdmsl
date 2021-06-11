@@ -1,0 +1,9 @@
+module Type
+exports 
+	types
+		MDSType
+definitions 
+
+types 
+ MDSType = ?
+end Type

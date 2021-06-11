@@ -1,0 +1,12 @@
+module MinimalOpOrderedImport
+imports from MinimalOpOrdered types T renamed T functions ord_T renamed ord_T;
+exports all
+definitions 
+
+types
+	R ::
+		x: T
+		y: T
+	;--inv mk_R(x,y) == x < y or ord_T(x, y) or x = y;
+
+end MinimalOpOrderedImport
