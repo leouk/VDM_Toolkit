@@ -1,0 +1,128 @@
+--@doc Generic ordering relations notions 
+--@author Leo Freitas, March 2019
+module Ordering
+imports
+	from Relations
+		functions
+			unzip renamed unzip
+exports 
+	functions
+		reflexive[@X]: @X * (@X * @X -> bool) -> bool;
+		trans[@X]: @X * @X * @X * (@X * @X -> bool) -> bool;
+		antisym[@X]: @X * @X * (@X * @X -> bool) -> bool;
+		
+		partial_order[@X]: set of @X * (@X * @X -> bool) -> bool;
+		strict_partial_order[@X]: set of @X * (@X * @X -> bool) -> bool;
+		symmetric_rel[@X]: set of @X * (@X * @X -> bool) -> bool;
+	
+		partial_order_set[@X]: set of (@X * @X) * (@X * @X -> bool) -> bool;
+		partial_order_X[@X]: (@X * @X -> bool) -> bool;
+	
+		min: nat * nat -> nat;
+		max: nat * nat -> nat;
+		mins: set1 of nat -> nat;
+		maxs: set1 of nat -> nat;
+		lord_xs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+	  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T;
+	
+		equal[@T] : @T * @T -> bool;
+		refl[@T]: @T -> @T;
+		refl_bool: bool -> bool
+
+definitions 
+
+functions
+	reflexive[@X]: @X * (@X * @X -> bool) -> bool
+	reflexive(x1, order) == order(x1, x1);
+
+	trans[@X]: @X * @X * @X * (@X * @X -> bool) -> bool
+	trans(x1, x2, x3, order) == 
+		order(x1, x2) and order(x2, x3) => order(x1, x3);
+	
+	antisym[@X]: @X * @X * (@X * @X -> bool) -> bool
+	antisym(x1,x2, order) == 
+		order(x1,x2) and order(x2,x1) => x1 = x2;
+	
+	partial_order[@X]: set of @X * (@X * @X -> bool) -> bool
+	partial_order(s, order) ==
+		(forall x in set s & reflexive[@X](x, order)) 
+		and
+		(forall x1, x2, x3 in set s & trans[@X](x1, x2, x3, order))
+		and
+		(forall x1, x2 in set s & antisym[@X](x1, x2, order))
+		;
+		
+	strict_partial_order[@X]: set of @X * (@X * @X -> bool) -> bool
+	strict_partial_order(s, strict_order) ==
+		partial_order[@X](s, (lambda x1: @X, x2: @X & strict_order(x1, x2) or x1 = x2))
+		and
+		(forall x1, x2 in set s & strict_order(x1, x2) <=> x1 <= x2 and x1 <> x2); 
+		
+	symmetric_rel[@X]: set of @X * (@X * @X -> bool) -> bool
+	symmetric_rel(s, eql) == 
+		(forall x1 in set s & 
+				forall x2 in set s \ {x1} & 
+						reflexive[@X](x1, eql) and reflexive[@X](x2, eql)
+						and
+						(eql(x1, x2) <=> eql(x2, x1))
+		);
+		
+	partial_order_set[@X]: set of (@X * @X) * (@X * @X -> bool) -> bool
+	partial_order_set(s, order) == 
+		forall mk_(x1, x2) in set s & 
+			reflexive[@X](x1, order) and reflexive[@X](x2, order) 
+			and
+			--@doc to make it executable in more general terms 
+			--forall x3 : @X & 
+			forall x3 in set unzip[@X](s) &
+				trans[@X](x1, x2, x3, order)
+			and
+			antisym[@X](x1, x2, order);
+
+	partial_order_X[@X]: (@X * @X -> bool) -> bool
+	partial_order_X(order) == 
+		forall x1, x2, x3 : @X & 
+			reflexive[@X](x1, order) 
+			and 
+			trans[@X](x1, x2, x3, order)
+			and
+			antisym[@X](x1, x2, order);
+
+	min: nat * nat -> nat
+	min(x,y) == if x < y then x else y;
+	
+	max: nat * nat -> nat
+	max(x,y) == if x > y then x else y;
+
+	mins: set1 of nat -> nat
+	mins(s) == lord_xs[nat]([ e | e in set s ], min);
+
+	maxs: set1 of nat -> nat
+	maxs(s) == lord_xs[nat]([ e | e in set s ], max);
+		
+	lord_xs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  lord_xs(s,lt_ord) == 
+  		fold1[@T](lt_ord,s)
+  post 
+	  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+
+  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T
+  fold1(f, s) == 
+	  	if len s = 1 then
+	  		hd s
+	  	else
+	  		let lens: nat1 = len s in
+	  			f(fold1[@T](f,s(1,...,lens div 2)), fold1[@T](f,s((lens div 2)+1,...,lens)))
+  	measure
+  		len s;
+
+	equal[@T] : @T * @T -> bool
+	equal(x,y) == x = y;
+
+	refl[@T]: @T -> @T
+	refl(x) == x;
+	
+	refl_bool: bool -> bool
+	refl_bool(x) == refl[bool](x);
+			
+end Ordering

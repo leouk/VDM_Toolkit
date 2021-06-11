@@ -1,0 +1,845 @@
+--@doc Z mathametical toolkit for relations for VDM as executable specifications
+--@author Leo Freitas 
+--@date Aug 2010 
+--@version March 2019
+module Relations
+exports
+	types
+		struct Negative
+	functions
+		refl_bool: bool -> bool;
+		id[@X]: set of @X -> set of (@X*@X);
+		id_rel[@X]: set of (@X * @X) -> set of (@X*@X);
+		rel_dom[@X,@Y]: set of (@X*@Y) -> set of @X;
+		rel_rng[@X,@Y]: set of (@X*@Y) -> set of @Y;
+		rel_comp[@X,@Y,@Z]: set of (@X*@Y) * set of (@Y*@Z) -> set of (@X*@Z);
+		rel_circ[@X,@Y,@Z]: set of (@Y*@Z) * set of (@X*@Y) -> set of (@X*@Z);
+		rel_dres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y);
+		rel_rres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y);
+		rel_ndres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y);
+		rel_nrres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y);
+		rel_inv[@X,@Y]: set of (@X*@Y) -> set of (@Y*@X);
+		rel_img[@X,@Y]: set of (@X*@Y) * set of @X -> set of @Y;
+		rel_dagger[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> set of (@Y*@X);
+		rel_iter[@X]: nat * set of (@X*@X) -> set of (@X * @X);
+		rel_niter[@X]: Negative * set of (@X*@X) -> set of (@X*@X);
+		rel_tclosure[@X]: set of (@X*@X) -> set of (@X*@X);
+		rel_tclosure2[@X]: set of (@X*@X) -> set of (@X*@X);
+		rel_rtclosure[@X]: set of (@X*@X) -> set of (@X*@X);
+		
+		rel_is_total_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool;
+		rel_is_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool;
+		rel_is_map[@X,@Y]: set of (@X*@Y) -> bool;
+		rel_is_inmap_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool;
+		rel_is_inmap[@X,@Y]: set of (@X*@Y) -> bool;
+		rel_is_surj_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool;
+		rel_is_bij_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool;
+		rel_subset_is_map_subset[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> bool;
+	
+		rel_apply[@X,@Y]: set of (@X*@Y) * @X -> @Y;
+		rel_as_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> (map @X to @Y);
+		rel_as_map[@X,@Y]: set of (@X*@Y) -> (map @X to @Y);
+		map_as_rel[@X,@Y]: (map @X to @Y) -> set of (@X*@Y);
+	
+		force_rel_as_map[@X,@Y]: set of (@X * @Y) -> (map @X to set of @Y);
+		
+		unzip[@X]: set of (@X * @X) -> set of @X;
+		zip[@X,@Y]: set of @X * set of @Y -> set of (@X * @Y);
+		
+		make_rel_from_set[@X, @Y]: set of @X * set of @Y -> set of (@X * @Y);
+		make_rel_trcl_from_set[@X]: (set of @X) -> set of (@X * @X);
+		make_rel_subset[@X, @Y]: set of (@X * @Y) * nat1 -> set of (@X * @Y);
+		make_rel_map[@X,@Y]: set of (@X * @Y) -> map @X to @Y;
+		make_rel_inmap[@X,@Y]: set of (@X * @Y) -> inmap @X to @Y
+		
+definitions 
+
+types
+	Negative = int
+	inv n == n < 0;
+	
+functions
+	--@doc Creates an identity relation for given set of values (i.e. map every element to itself) 
+	id[@X]: set of @X -> set of (@X*@X)
+	id(s) == { mk_(x,x) | x in set s }
+	post
+		card s = card RESULT;
+	
+	--@doc Projected identity relation (i.e. identity relation over the overall elements of R)
+	--	   ex. R={mk_(1,2), mk_(3,4)}, RESULT = {mk_(1,1), mk_(2,2), mk_(3,3), mk_(4,4)}
+	id_rel[@X]: set of (@X * @X) -> set of (@X*@X)
+	id_rel(R) == id[@X](unzip[@X](R))
+	post
+		unzip[@X](R) subset unzip[@X](RESULT);
+	
+	--@doc First projection on the set of pairs (i.e like VDM's "dom R") 
+	rel_dom[@X,@Y]: set of (@X*@Y) -> set of @X
+	rel_dom(R) == { x.#1 | x in set R }
+	post
+		forall mk_(x,-) in set R & x in set RESULT;
+	
+	--@doc Second projection on the set of pairs (i.e like VDM's "rng R") 
+	rel_rng[@X,@Y]: set of (@X*@Y) -> set of @Y
+	rel_rng(R) == { x.#2 | x in set R }
+	post
+		forall mk_(-,y) in set R & y in set RESULT;
+	
+	--@doc Forward relational composition (i.e like sequential composition Q ;; R) 
+	rel_comp[@X,@Y,@Z]: set of (@X*@Y) * set of (@Y*@Z) -> set of (@X*@Z)
+	rel_comp(Q, R) == 
+		--@doc very slow for large relations without the let; thanks @NB!
+		let 
+			Qdom: set of @X = rel_dom[@X,@Y](Q),
+			Qrng: set of @Y = rel_rng[@X,@Y](Q),
+			Rdom: set of @Y = rel_dom[@Y,@Z](R),
+			Rrng: set of @Z = rel_rng[@Y,@Z](R),
+			QrRd: set of @Y = Qrng union Rdom
+		 in
+			{ mk_(x, z) | x in set Qdom, z in set Rrng & 
+						(exists y in set QrRd & 
+								mk_(x,y) in set Q and mk_(y, z) in set R) }
+	post
+		--@doc composition result projections is at most the same, or is smaller
+		rel_dom[@X,@Z](RESULT) subset rel_dom[@X,@Y](Q)
+		and
+		rel_rng[@X,@Z](RESULT) subset rel_rng[@Y,@Z](R);
+
+	--@doc Relational composition (i.e. like VDM's "Q comp R" and (f o g)(x) = g(f(x)))
+	rel_circ[@X,@Y,@Z]: set of (@Y*@Z) * set of (@X*@Y) -> set of (@X*@Z)
+	rel_circ(R, Q) == rel_comp[@X,@Y,@Z](Q, R);
+	
+	--@doc Domain restriction (i.e. like VDM's "S <: R")
+	rel_dres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y)
+	rel_dres(S, R) == { mk_(x,y) | mk_(x,y) in set R & x in set S }
+	post
+		RESULT subset R;
+
+	--@doc Range restriction (i.e. like VDM's "R :> S")
+	rel_rres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y)
+	rel_rres(R, S) == { mk_(x,y) | mk_(x,y) in set R & y in set S }
+	post
+		RESULT subset R;
+
+	--@doc Domain anti-restriction (i.e. like VDM's "S <-: R")
+	rel_ndres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y)
+	rel_ndres(S, R) == { mk_(x,y) | mk_(x,y) in set R & not x in set S }
+	post
+		RESULT subset R;
+
+	--@doc Range anti-restriction (i.e. like VDM's "R :-> S")
+	rel_nrres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y)
+	rel_nrres(R, S) == { mk_(x,y) | mk_(x,y) in set R & not y in set S }
+	post
+		RESULT subset R;
+	
+	--@doc Relational inverse (i.e. like VDM's "inverse R")
+	rel_inv[@X,@Y]: set of (@X*@Y) -> set of (@Y*@X)
+	rel_inv(R) == { mk_(y, x) | mk_(x,y) in set R }
+	post
+		card R = card RESULT;
+
+	--@doc Projected relational imagine over S (i.e. all @Y related elements from S in R)
+	rel_img[@X,@Y]: set of (@X*@Y) * set of @X -> set of @Y
+	rel_img(R, S) == rel_rng[@X,@Y](rel_dres[@X,@Y](S, R))
+	post
+		--@doc singleton relational imagine on S implies (S:<R) is a map
+		(card RESULT = 1 => rel_is_map_on[@X,@Y](R, S));
+
+	--@doc Relational override (i.e. like VDM's "Q ++ R")
+	rel_dagger[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> set of (@Y*@X)
+	rel_dagger(Q, R) == rel_ndres[@X,@Y](rel_dom[@X,@Y](R), Q) union R;
+	
+	--@doc Relational iteration (i.e. like VDM's "R ** n")
+	rel_iter[@X]: nat * set of (@X*@X) -> set of (@X * @X)
+	rel_iter(n, R) == 
+		cases n:
+			0 		 -> id_rel[@X](R),
+			1 		 -> R,
+			others -> rel_comp[@X,@X,@X](R, rel_iter[@X](n-1, R))
+		end
+	measure
+		n; 
+		
+	--@doc Inverse relational iteration (i.e. like VDM's "(inverse R) ** (-n)")
+	rel_niter[@X]: Negative * set of (@X*@X) -> set of (@X*@X)
+	rel_niter(n, R) == rel_iter[@X](-n, rel_inv[@X,@X](R));
+		
+	--@doc Relational transitive closure as the largest relation of exaustive relational composition iteration
+	--@todo Interesting property that the iteration is bound to card R (PROVE IT)!
+	rel_tclosure[@X]: set of (@X*@X) -> set of (@X*@X)
+	rel_tclosure(R) == dunion { rel_iter[@X](n, R) | n in set {1,...,card R} }
+	post
+		R subset RESULT;
+	
+	--@doc Relational transitive closure as the smallest relation that is transitive
+	--@todo Doesn't quite work as Q is not growing beyond R (i.e. VDM's power R, and meaning of dinter of {} in VDM)
+	rel_tclosure2[@X]: set of (@X*@X) -> set of (@X*@X)
+	rel_tclosure2(R) == 
+		let closed_R: set of set of (@X*@X) = { Q | Q in set power R & R subset Q and rel_comp[@X,@X,@X](Q,Q) subset Q } in
+			if closed_R = {} then {} else dinter closed_R;
+
+	--@doc Relational reflective transitive closure as the transitive closure plust the identity relation
+	rel_rtclosure[@X]: set of (@X*@X) -> set of (@X*@X)
+	rel_rtclosure(R) == rel_tclosure[@X](R) union id_rel[@X](R)
+	post
+		R subset RESULT;
+
+	rel_is_total_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
+	rel_is_total_on(R, S) == rel_dom[@X,@Y](R) = S;
+
+	rel_is_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
+	rel_is_map_on(R, S) == 
+		--@doc don't use y, y' in set rel_img[@X,@Y](R,S) to prevent looping in the postcondition of rel_img; or remove post 
+		(forall x in set S & (forall y, y' in set rel_rng[@X,@Y](rel_dres[@X,@Y](S, R)) & mk_(x,y) in set R and mk_(x,y') in set R => y = y'));
+		--@doc could it be defined simpler?
+		--card rel_dom[@X,@Y](R) <= card R 
+
+	--@doc Functional relation test (i.e. related elements form a map, like VDM "R = map @X to @Y")
+	rel_is_map[@X,@Y]: set of (@X*@Y) -> bool
+	rel_is_map(R) == 
+		rel_is_map_on[@X,@Y](R, rel_dom[@X,@Y](R));
+		--forall x in set rel_dom[@X,@Y](R), y, y' in set rel_rng[@X,@Y](R) & 
+		--	(mk_(x, y) in set R and mk_(x,y') in set R => y = y');
+		
+	rel_is_inmap_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
+	rel_is_inmap_on(R, S) == 
+		rel_is_map_on[@X,@Y](R, S) 
+		and 
+		(let relinv': set of (@Y*@X) = rel_inv[@X,@Y](R) in 
+			rel_is_map_on[@Y,@X](relinv', rel_dom[@Y,@X](relinv'))
+		)
+	post
+		(RESULT <=> (forall x1, x2 in set S & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
+		
+	rel_is_inmap[@X,@Y]: set of (@X*@Y) -> bool
+	rel_is_inmap(R) == rel_is_map_on[@X,@Y](R, rel_dom[@X,@Y](R))
+	post
+		(RESULT <=> (forall x1, x2 in set rel_dom[@X,@Y](R) & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
+
+	rel_is_surj_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool
+	rel_is_surj_on(R, S) == rel_is_map[@X,@Y](R) and rel_rng[@X,@Y](R) = S;
+	
+	rel_is_bij_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool
+	rel_is_bij_on(R,S) == rel_is_inmap[@X,@Y](R) and rel_is_surj_on[@X,@Y](R,S);
+
+	rel_subset_is_map_subset[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> bool
+	rel_subset_is_map_subset(R, f) == 
+		(rel_is_map[@X,@Y](R) and f subset R => rel_is_map[@X,@Y](f));
+
+	--@todo cross reference maps and relations? 	
+	--map_inj_on_D[@X,@Y]: (map @X to @Y) * set of @X -> bool
+	--map_inj_on_D(m, S) == 
+
+	--@doc relational application within their domains when they are maps (i.e. like VDM's "R(x)")
+	rel_apply[@X,@Y]: set of (@X*@Y) * @X -> @Y
+	rel_apply(R, x) == (iota y in set rel_rng[@X,@Y](R) & rel_img[@X,@Y](R, {x}) = {y})
+	pre
+		rel_is_map[@X,@Y](R)
+		and
+		x in set rel_dom[@X,@Y](R)
+	post
+		rel_img[@X,@Y](R, {x}) = {RESULT}; 
+
+	--@doc Functional view of a relation (i.e. relation R as a map)
+	rel_as_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> (map @X to @Y)
+	rel_as_map_on(R, S) == { x |-> y | mk_(x,y) in set R & x in set S }
+	pre
+		rel_is_map_on[@X,@Y](R, S)
+	post
+		(S inter rel_dom[@X,@Y](R) = dom RESULT)
+		and 
+		(rel_img[@X,@Y](R, S) = rng RESULT);
+
+	--@doc Functional view of a relation (i.e. relation R as a map)
+	rel_as_map[@X,@Y]: set of (@X*@Y) -> (map @X to @Y)
+	rel_as_map(R) == 
+		rel_as_map_on[@X,@Y](R, rel_dom[@X,@Y](R))
+	pre
+		rel_is_map[@X,@Y](R)
+	post
+		rel_dom[@X,@Y](R) = dom RESULT
+		and
+		rel_rng[@X,@Y](R) = rng RESULT;
+		
+	map_as_rel0[@X,@Y]: (map @X to @Y) * set of (@X*@Y) -> set of (@X*@Y)
+	map_as_rel0(m, R) == 
+		if m = {|->} then 
+			R 
+		else 
+			let x in set dom m in 
+				map_as_rel0[@X,@Y]({x}<-:m, {mk_(x,m(x))} union R)
+	pre
+		dom m inter rel_dom[@X,@Y](R) = {}
+	post
+		dom m = rel_dom[@X,@Y](RESULT \ R)
+		--and
+		--dom m = rel_rng[@X,@Y](RESULT \ R)
+	measure
+		card dom m;
+		
+	map_as_rel[@X,@Y]: (map @X to @Y) -> set of (@X*@Y)
+	map_as_rel(m) == map_as_rel0[@X,@Y](m,{})
+	post
+		rel_dom[@X,@Y](RESULT) = dom m
+		and
+		rel_rng[@X,@Y](RESULT) = rng m
+		and
+		rel_is_map[@X,@Y](RESULT);
+	
+	--@doc auxiliary function that flattens a relation into a set through its projections	
+	unzip[@X]: set of (@X * @X) -> set of @X
+	unzip(s) == rel_dom[@X,@X](s) union rel_rng[@X,@X](s);
+
+	zip[@X,@Y]: set of @X * set of @Y -> set of (@X * @Y)
+	zip(ls, rs) == { mk_(l, r) | l in set ls, r in set rs }
+	post
+		rel_dom[@X,@Y](RESULT) subset ls
+		and
+		rel_rng[@X,@Y](RESULT) subset rs;
+
+	--@doc auxiliary function for traces test
+	refl_bool: bool -> bool
+	refl_bool(x) == x;
+		
+	make_rel_from_set[@X, @Y]: set of @X * set of @Y -> set of (@X * @Y)
+	make_rel_from_set(x, y) == zip[@X,@Y](x,y);
+	
+	make_rel_trcl_from_set[@X]: (set of @X) -> set of (@X * @X)
+	make_rel_trcl_from_set(x) == rel_tclosure[@X](make_rel_from_set[@X,@X](x, x));
+	
+	make_rel_subset0[@X, @Y]: set of (@X * @Y) * set of (@X * @Y) * nat -> set of (@X * @Y)
+	make_rel_subset0(R, S, n) == 
+		if card R > n and n > 0 then
+			let x in set R in  	
+				make_rel_subset0[@X,@Y](R \ {x}, S union {x}, n-1)
+		else
+			S
+	post
+		S subset RESULT 
+		and 
+		(R \ RESULT) inter S = {}
+	measure
+		n;
+
+	make_rel_subset[@X, @Y]: set of (@X * @Y) * nat1 -> set of (@X * @Y)
+	make_rel_subset(R, n) == make_rel_subset0[@X,@Y](R, {}, n)
+	pre
+		n < card R
+	post
+		card RESULT = n
+		and
+		RESULT subset R;
+
+	make_rel_map0[@X,@Y]: set of (@X * @Y) * (map @X to @Y) * bool -> map @X to @Y
+	make_rel_map0(R, m, injective) == 
+		if R = {} then
+			m
+		else
+			let mk_(x,y) in set R in --be st not x in set dom m in
+					make_rel_map0[@X,@Y](R \ {mk_(x,y)},
+						--{ x |-> y | & (injective => not y in set rng m) }
+						--if injective and not in set m ++ { x |-> y })--munion { x |-> y })
+						m ++ (if (injective => not y in set rng m) then { x |-> y } else { |-> }),
+						injective
+					)
+	measure
+		card R;
+
+	make_rel_map[@X,@Y]: set of (@X * @Y) -> map @X to @Y
+	make_rel_map(R) == 
+		make_rel_map0[@X,@Y](R, {|->}, false)
+	post
+		map_as_rel[@X,@Y](RESULT) subset R;
+
+	make_rel_inmap[@X,@Y]: set of (@X * @Y) -> inmap @X to @Y
+	make_rel_inmap(R) == 
+		make_rel_map0[@X,@Y](R, {|->}, true)
+	post
+		map_as_rel[@X,@Y](RESULT) subset R;
+
+	force_rel_as_map0[@X,@Y]: set of (@X * @Y) * (map @X to set of @Y) -> (map @X to set of @Y)
+	force_rel_as_map0(R, m) ==
+		if R = {} then
+			m
+		else
+			let mk_(x,y) in set R in
+				force_rel_as_map0[@X,@Y](R \ {mk_(x,y)}, 
+					m ++ { x |-> (if x in set dom m then m(x) union {y} else {y}) }
+				)
+	measure
+		card R; 
+		
+	force_rel_as_map[@X,@Y]: set of (@X * @Y) -> (map @X to set of @Y)
+	force_rel_as_map(R) == force_rel_as_map0[@X,@Y](R, {|->})
+	post
+		if rel_is_map[@X, @Y](R) then
+			dom RESULT = rel_dom[@X, @Y](R)
+		else 
+			card dunion rng RESULT = card R;
+
+--p let R = make_rel_from_set[nat,nat](TYPE_RANGE1, TYPE_RANGE2), R' = make_rel_subset[nat,nat](R, card R - 2), F = make_rel_map[nat,nat](R), I = make_rel_inmap[nat,nat](R) in mk_(R', F, I)	
+values
+	--@doc deliberately allow overlap on some range of relations on nat
+	MAX_TEST: nat1 			            = 4;
+	TYPE_RANGE1: set1 of nat        = {1,...,MAX_TEST div 2 + 1};
+	TYPE_RANGE2: set1 of nat        = {MAX_TEST div 2,...,MAX_TEST};
+	TYPE_RANGE : set1 of nat			  = TYPE_RANGE1 union TYPE_RANGE2;
+
+functions
+	--@doc CG
+	fR1: () -> set of (nat * nat) 
+	fR1() == { mk_(i, j) | i, j in set TYPE_RANGE1 };
+	
+	fR2: () -> set of (nat * nat) 
+	fR2() == { mk_(i, j) | i, j in set TYPE_RANGE2 };
+	
+	fR10: () -> map nat to nat
+	fR10() == { i |-> 0 | i in set TYPE_RANGE1 };
+	
+	fR2i: () -> map nat to nat
+	fR2i() == { i |-> i+1 | i in set TYPE_RANGE2 };
+
+values	
+	--@doc some relations; R' is a subset; Fn is a map, F2 is injective
+	X1				 : set of nat					= TYPE_RANGE1 \ {1};
+	X1'				 : set of nat				  = X1 \ {2};
+	Y1				 : set of nat					= TYPE_RANGE2 \ {MAX_TEST div 2}; 
+	R1				 : set of (nat * nat) = fR1();
+	S1				 : set of (nat * nat) = fR2();
+	R1'				 : set of (nat * nat) = rel_ndres[nat,nat]({1}, R1);
+	S1'				 : set of (nat * nat) = rel_nrres[nat,nat](S1, {1});
+	F1				 : set of (nat * nat) = map_as_rel[nat,nat](fR10());
+	F2				 : set of (nat * nat) = map_as_rel[nat,nat](fR2i());
+	
+traces
+	--@doc id distributes over union:	$\id~(S \cup T) = id~S \cup \id~T$ 
+	T_ID_CUP:
+		 let MAX in set {2, ..., 10} in
+        let TR1: set1 of nat = {1, ..., MAX div 2 + 1} in
+        let TR2: set1 of nat = {MAX div 2, ..., MAX} in 
+		refl_bool(
+			id[nat](TR1 union TR2) = id[nat](TR1) union id[nat](TR2)
+		);
+
+	--@doc id subset: $\id~S \subset \id~T \iff S \subseteq T$
+	--@doc testing that many relations is irrelevant?
+	T_ID_SUBSET:
+		 let M in set {2, ..., MAX_TEST} in
+        let TR1: set1 of nat = {1, ..., M div 2 + 1} in
+        let TR2: set1 of nat = {M div 2, ..., M} in 
+		refl_bool(
+			id[nat](TR1) subset id[nat](TR2) <=> TR1 subset TR2
+		);
+		
+	--@doc dom/rng singleton relation
+	T_DOM_RNG_SINGLETON: 
+		 let x in set {1, ..., MAX_TEST} in
+		 let y in set {1, ..., MAX_TEST} in
+		refl_bool(
+			rel_dom[nat,nat]({ mk_(x, y) }) = {x}
+			and
+			rel_rng[nat,nat]({ mk_(x,y) }) = {y}
+		); 
+	
+	--@doc dom/rng distributes over union: $\dom~(R \cup S) = \dom~R \cup \dom~S$
+	T_DOM_RNG_UNION:
+		let M in set {1, ..., MAX_TEST} in
+		    let TR1: set1 of nat = {1, ..., M div 2 + 1} in
+        let TR2: set1 of nat = {M div 2, ..., M} in 
+				let R1_: set1 of (nat*nat) = make_rel_from_set[nat,nat](TR1, TR2) in
+				let S1_: set1 of (nat*nat) = make_rel_from_set[nat,nat](TR2, TR1) in
+		refl_bool(
+			(rel_dom[nat,nat](R1_ union S1_) = rel_dom[nat,nat](R1_) union rel_dom[nat,nat](S1_))
+			and
+			(rel_rng[nat,nat](R1_ union S1_) = rel_rng[nat,nat](R1_) union rel_rng[nat,nat](S1_))
+		);
+		
+	--@doc dom/rng containment
+	T_DOM_RNG_IN:
+		refl_bool(
+			(forall x in set rel_dom[nat,nat](R1) & (exists y in set TYPE_RANGE & mk_(x,y) in set R1))
+			and
+			(forall mk_(x,-) in set R1 & x in set rel_dom[nat,nat](R1))
+			and
+			(forall y in set rel_rng[nat,nat](R1) & (exists x in set TYPE_RANGE & mk_(x,y) in set R1))
+			and
+			(forall mk_(-,y) in set R1 & y in set rel_rng[nat,nat](R1))
+		);
+		
+	--@doc dom/rng subset of contained relations
+	--@trace(slow)
+	T_DOM_RNG_SUBSET:
+		refl_bool(
+			--T subset R1 => rel_dom[nat](T) subset rel_dom[nat](R1) and rel_rng[nat,nat](T) subset rel_rng[nat,nat](R1)
+			forall T in set power R1 & rel_dom[nat,nat](T) subset rel_dom[nat,nat](R1) and rel_rng[nat,nat](T) subset rel_rng[nat,nat](R1)
+		);
+
+	--@doc dom/rng of id		
+	T_DOM_RNG_ID:
+		refl_bool(
+			rel_dom[nat,nat](id[nat](TYPE_RANGE)) = TYPE_RANGE
+			and
+			rel_rng[nat,nat](id[nat](TYPE_RANGE)) = TYPE_RANGE
+		);
+		
+	--@doc dom/rng forward composition equivalence
+	T_DOM_RNG_COMP_PAIR:
+		refl_bool(
+			--forall x in set rel_dom[@X,@Y](R1), z in set rel_rng[@X,@Y](S1) & 
+			--	mk_(x,z) in set rel_comp[@X,@Y,@Z](R1, S1) <=> (exists y in set rel_rng[@X,@Y](R1) inter rel_dom[@Y,@Z](S1) & mk_(x, y) in set R1 and mk_(x,z) in set S1)
+			forall x in set rel_dom[nat,nat](R1), z in set rel_rng[nat,nat](S1) & 
+				mk_(x,z) in set rel_comp[nat,nat,nat](R1, S1) 
+				<=> 
+			  (exists y in set rel_rng[nat,nat](R1) inter rel_dom[nat,nat](S1) & mk_(x, y) in set R1 and mk_(y,z) in set S1)
+		);
+
+	--@doc forward comp is associative: $(R \comp S) \comp T) = (R \comp (S \comp T))$
+	T_COMP_ASSOC:
+		refl_bool(
+			rel_comp[nat,nat,nat](rel_comp[nat,nat,nat](R1, S1), F1) = rel_comp[nat,nat,nat](R1, rel_comp[nat,nat,nat](S1, F1)) 
+		);
+		
+	--@doc contained compositions projections take the smaller projection; stronger (=) than the rel_comp postcondition (subet): $\ran~R \subseteq \dom~S \implies \dom~(R \comp S) = \dom~R$
+	T_COMP_DOM_RNG_EASY:
+		refl_bool(
+			(rel_rng[nat,nat](R1) subset rel_dom[nat,nat](S1) => rel_dom[nat,nat](rel_comp[nat,nat,nat](R1, S1)) = rel_dom[nat,nat](R1))
+			and
+			(rel_dom[nat,nat](S1) subset rel_rng[nat,nat](R1) => rel_rng[nat,nat](rel_comp[nat,nat,nat](R1, S1)) = rel_rng[nat,nat](S1))
+		);
+		
+	--@doc composition of maps is a map: $F1 \in X \pfun Y \land F2 \in X \pfun Y \implies (F1 \comp F2) \in X \pfun Y$
+	T_COMP_MAP:
+		refl_bool(
+			rel_is_map[nat,nat](F1) and rel_is_map[nat,nat](F2) => rel_is_map[nat,nat](rel_comp[nat,nat,nat](F1, F2))
+		);
+
+	--@doc In VDM-english:
+	--		 is_(F1, map @X to @Y) and is_(F2, map @X to @Y) and x in set dom F1 and F1(x) in set dom F2 
+	--		 =>
+	--		 is_(F1 ;; F2, map @X to @Y) and is_(F2 o F1, map @X to @Z) and (F1 ;; F2)(x) = (F2 o F1)(x) = F2(F1(x)) 
+	T_COMP_APPLY:
+		refl_bool(
+			rel_is_map[nat,nat](F1) 
+			and 
+			rel_is_map[nat,nat](F2)
+			=>
+			(forall x in set rel_dom[nat,nat](F1) &
+					(let f1_x: nat = rel_apply[nat,nat](F1, x) in
+						(f1_x in set rel_dom[nat,nat](F2) )
+						=>
+						(let f1_comp_f2: set of (nat * nat) = rel_comp[nat,nat,nat](F1, F2),
+								f2_circ_f1: set of (nat * nat) = rel_circ[nat,nat,nat](F2, F1)
+						in
+								rel_is_map[nat,nat](f1_comp_f2)
+								and
+								rel_is_map[nat,nat](f2_circ_f1)
+								and
+								let f1_comp_f2_x: nat	= rel_apply[nat,nat](f1_comp_f2, x),
+										f2_circ_f1_x: nat = rel_apply[nat,nat](f2_circ_f1, x),
+										f2_of_f1_x  : nat = rel_apply[nat,nat](F2, f1_x)
+								in
+									(f1_comp_f2_x = f2_circ_f1_x
+									and
+									f1_comp_f2_x = f2_of_f1_x
+									and
+									f2_circ_f1_x = f2_of_f1_x
+								  )
+						)
+					)
+			) 
+		);
+		
+	--@doc relational composition is monotonic: $R' \subseteq R \land S' \subseteq S \implies (R' \comp S') \subseteq (R \comp S)$
+	T_COMP_MONOTONE:
+		refl_bool(
+			R1' subset R1 and S1' subset S1 => rel_comp[nat,nat,nat](R1', S1') subset rel_comp[nat,nat,nat](R1, S1)
+		);
+		
+	--@doc dom/rng restriction projection intersection
+	T_RES_DOM_RNG:
+		refl_bool(
+			(rel_dom[nat,nat](rel_dres[nat,nat](X1, R1)) = X1 inter rel_dom[nat,nat](R1))
+			and
+			(rel_rng[nat,nat](rel_rres[nat,nat](R1, Y1)) = rel_rng[nat,nat](R1) inter Y1)
+		);
+
+	--@doc dom/rng restriction relational containment
+	T_RES_SUBSET:
+		refl_bool(
+			(rel_dres[nat,nat](X1, R1) subset R1)
+			and
+			(rel_rres[nat,nat](R1, Y1) subset R1)
+		);
+	
+	--@doc (id~S) \comp R = S \dres R
+	--@doc R \comp (id~S) = R \rres S
+	T_ID_COMP_RES:
+		refl_bool(
+			rel_comp[nat,nat,nat](id[nat](X1), R1) = rel_dres[nat,nat](X1, R1)
+			and 
+			rel_comp[nat,nat,nat](R1, id[nat](X1)) = rel_rres[nat,nat](R1, X1) 
+		);
+		
+	--@doc S \dres (id~T) = id~(S \inter T)
+	--@doc (id~S) \rres T = id~(S \inter T)
+	T_ID_RES_ID:
+		refl_bool(
+			rel_dres[nat,nat](X1, id[nat](Y1)) = id[nat](X1 inter Y1)
+			and
+			rel_rres[nat,nat](id[nat](X1), Y1) = id[nat](X1 inter Y1)
+		);
+
+	--@doc S \ndres (id~T) = id~(T \ S)
+	--@doc id~S \nrres T = id~(S \ T)
+	T_ID_NRES_ID:
+		refl_bool(
+			rel_ndres[nat,nat](X1, id[nat](Y1)) = id[nat](Y1 \ X1)
+			and
+			rel_nrres[nat,nat](id[nat](X1), Y1) = id[nat](X1 \ Y1)
+		);
+	
+	--@doc dom/rng restriction accummulate by restriction set intersection	
+	T_RES_ACCUMULATES:
+		refl_bool(
+			rel_dres[nat,nat](X1, rel_dres[nat,nat](Y1, R1)) = rel_dres[nat,nat](X1 inter Y1, R1)
+			and
+			rel_rres[nat,nat](rel_rres[nat,nat](R1, X1), Y1) = rel_rres[nat,nat](R1, X1 inter Y1)
+		);
+
+	--@doc dom/rng restriction elimination on projection subset over restriction set	
+	T_RES_ELIMINATION:
+		refl_bool(
+			(rel_dom[nat,nat](R1) subset X1 => rel_dres[nat,nat](X1, R1) = R1)
+			and
+			(rel_rng[nat,nat](R1) subset Y1 => rel_rres[nat,nat](R1, Y1) = R1)
+		);
+
+	--@doc dom/rng restriction union	
+	T_RES_UNION:
+		refl_bool(
+			(rel_dres[nat,nat](X1, R1 union S1) = rel_dres[nat,nat](X1, R1) union rel_dres[nat,nat](X1, S1))
+			and
+			(rel_rres[nat,nat](R1 union S1, Y1) = rel_rres[nat,nat](R1, Y1) union rel_rres[nat,nat](S1, Y1))
+		);
+
+	--@doc dom/rng restriction application	
+	T_RES_APPLY:
+		refl_bool(
+			rel_is_map[nat,nat](F1) => 
+					(forall x in set X1 inter rel_dom[nat,nat](F1) & rel_apply[nat,nat](rel_dres[nat,nat](X1, F1), x) = rel_apply[nat,nat](F1, x))
+					and
+					(forall x in set rel_dom[nat,nat](F1) & rel_apply[nat,nat](F1, x) in set X1 => rel_apply[nat,nat](rel_rres[nat,nat](F1, Y1), x) = rel_apply[nat,nat](F1, x)) 
+		);
+
+	--@doc dom/rng anti-restriction projection difference
+	T_NRES_DOM_RNG:
+		refl_bool(
+			(rel_dom[nat,nat](rel_ndres[nat,nat](X1, R1)) = rel_dom[nat,nat](R1) \ X1)
+			and
+			(rel_rng[nat,nat](rel_nrres[nat,nat](R1, Y1)) = rel_rng[nat,nat](R1) \ Y1)
+		);
+
+	--@doc dom/rng anti-restriction relational containment
+	T_NRES_SUBSET:
+		refl_bool(
+			(rel_ndres[nat,nat](X1, R1) subset R1)
+			and
+			(rel_nrres[nat,nat](R1, Y1) subset R1)
+		);
+
+	--@doc dom/rng anti-restriction accummulate by filtering set union	
+	T_NRES_ACCUMULATES:
+		refl_bool(
+			rel_ndres[nat,nat](X1, rel_ndres[nat,nat](Y1, R1)) = rel_ndres[nat,nat](X1 union Y1, R1)
+			and
+			rel_nrres[nat,nat](rel_nrres[nat,nat](R1, X1), Y1) = rel_nrres[nat,nat](R1, X1 union Y1)
+		);
+
+	--@doc dom/rng anti-restriction elimination on projection subset over filtering set	
+	T_NRES_ELIMINATION:
+		refl_bool(
+			(rel_dom[nat,nat](R1) subset X1 => rel_ndres[nat,nat](X1, R1) = {})
+			and
+			(rel_rng[nat,nat](R1) subset Y1 => rel_nrres[nat,nat](R1, Y1) = {})
+		);
+
+	--@doc dom/rng anti-restriction union	
+	T_NRES_UNION:
+		refl_bool(
+			(rel_ndres[nat,nat](X1, R1 union S1) = rel_ndres[nat,nat](X1, R1) union rel_ndres[nat,nat](X1, S1))
+			and
+			(rel_nrres[nat,nat](R1 union S1, Y1) = rel_nrres[nat,nat](R1, Y1) union rel_nrres[nat,nat](S1, Y1))
+		);
+
+	--@doc dom/rng anti-restriction application
+	T_NRES_APPLY:
+		refl_bool(
+			rel_is_map[nat,nat](F1) => 
+					(forall x in set rel_dom[nat,nat](F1) \ X1 & rel_apply[nat,nat](rel_ndres[nat,nat](X1, F1), x) = rel_apply[nat,nat](F1, x))
+					and
+					(forall x in set rel_dom[nat,nat](F1) & not rel_apply[nat,nat](F1, x) in set X1 => rel_apply[nat,nat](rel_nrres[nat,nat](F1, Y1), x) = rel_apply[nat,nat](F1, x)) 
+		);
+	
+	--@doc relational inverse preserves subset	
+	T_REL_INV_SUBSET:
+		refl_bool(
+			rel_inv[nat,nat](R1') subset rel_inv[nat,nat](R1) => R1' subset R1
+		);
+	
+	--@doc relational inverse set operators relationship	
+	T_REL_INV_SETOPS:
+		refl_bool(
+			rel_inv[nat,nat](R1 union S1) = rel_inv[nat,nat](R1) union rel_inv[nat,nat](S1)
+			and
+			rel_inv[nat,nat](R1 inter S1) = rel_inv[nat,nat](R1) inter rel_inv[nat,nat](S1)
+			and
+			rel_inv[nat,nat](R1 \ S1) = rel_inv[nat,nat](R1) \ rel_inv[nat,nat](S1)
+		);
+	
+	--@doc doule inverse identity	
+	T_REL_DOUBLE_INV:
+		refl_bool(
+			rel_inv[nat,nat](rel_inv[nat,nat](R1)) = R1
+		);
+	
+	--@doc inverse distribute over composition 	
+	T_REL_INV_COMP:
+		refl_bool(
+			rel_inv[nat,nat](rel_comp[nat,nat,nat](R1, S1)) = rel_comp[nat,nat,nat](rel_inv[nat,nat](S1), rel_inv[nat,nat](R1))
+		);
+	
+	--@doc dom/rng inverse	
+	T_REL_INV_DOM_RNG:
+		refl_bool(
+			rel_dom[nat,nat](rel_inv[nat,nat](R1)) = rel_rng[nat,nat](R1)
+			and
+			rel_rng[nat,nat](rel_inv[nat,nat](R1)) = rel_dom[nat,nat](R1)
+		);
+	
+	--@doc inverse relational restrictions/filters	
+	T_REL_INV_RES:
+		refl_bool(
+			rel_inv[nat,nat](rel_dres[nat,nat](X1, R1)) = rel_rres[nat,nat](rel_inv[nat,nat](R1), X1)
+			and
+			rel_inv[nat,nat](rel_ndres[nat,nat](X1, R1)) = rel_nrres[nat,nat](rel_inv[nat,nat](R1), X1)
+			and
+			rel_inv[nat,nat](rel_rres[nat,nat](R1, Y1)) = rel_dres[nat,nat](Y1, rel_inv[nat,nat](R1))
+			and
+			rel_inv[nat,nat](rel_nrres[nat,nat](R1, Y1)) = rel_ndres[nat,nat](Y1, rel_inv[nat,nat](R1))
+		);
+
+	--@doc inverse apply identity
+	T_REL_INV_APPLY:
+		refl_bool(
+			rel_is_inmap[nat,nat](F2) => (forall x in set rel_dom[nat,nat](F2) & rel_apply[nat,nat](rel_inv[nat,nat](F2), rel_apply[nat,nat](F2, x)) = x)
+		);	
+		
+	--@todo cupInPInj? 
+								
+	--@doc relations that are maps have unique relational images	
+	--@doc these tests with relational image could also be done on maps	
+	T_REL_IMG_MAP_SINGLETON:
+		refl_bool(
+			(rel_is_map[nat,nat](F1) <=> (forall x in set rel_dom[nat,nat](F1) & card rel_img[nat,nat](F1, {x}) = 1)) 
+		);
+	
+	--@doc relaitonal image subset	
+	T_REL_IMG_SUBSET:
+		refl_bool(
+			rel_img[nat,nat](R1, X1) subset rel_rng[nat,nat](R1)
+		);
+	
+	--@doc relational image monotonic	
+	T_REL_IMG_MONOTINIC:
+		refl_bool(
+			(X1' subset X1 and R1' subset R1 => rel_img[nat,nat](R1', X1') subset rel_img[nat,nat](R1, X1)) 
+			and
+			(X1' subset X1 => rel_img[nat,nat](R1, X1') subset rel_img[nat,nat](R1, X1)) 
+			and
+			(R1' subset R1 => rel_img[nat,nat](R1', X1) subset rel_img[nat,nat](R1, X1)) 
+		);
+		
+	--@doc image union
+	T_REL_IMG_UNION:
+		refl_bool(
+			rel_img[nat,nat](R1, X1 union Y1) = rel_img[nat,nat](R1, X1) union rel_img[nat,nat](R1, Y1)
+		);
+
+	--@doc image is range on subset
+	T_REL_IMG_FULL:
+		refl_bool(
+			rel_dom[nat,nat](R1) subset X1 => rel_img[nat,nat](R1, X1) = rel_rng[nat,nat](R1)
+		);
+
+	--@doc relational image of id is a map
+	T_REL_IMG_ID_MAP:	
+		refl_bool(
+			(forall x in set TYPE_RANGE & rel_img[nat,nat](id[nat](TYPE_RANGE), {x}) = {x})
+		);	
+	
+	--@doc relational union is a map <=> each side is a map, mapping to the same value where there is any sharing 
+	T_REL_IGM_UNION_FCN:
+		refl_bool(
+			rel_is_map[nat,nat](F1 union F2) 
+			<=>
+			rel_is_map[nat,nat](F1) and rel_is_map[nat,nat](F2)
+			and
+			(forall x in set rel_dom[nat,nat](F1) inter rel_dom[nat,nat](F2) & rel_img[nat,nat](F1, {x}) = rel_img[nat,nat](F2, {x}) )
+		);
+		
+	--@doc $(S \dres R) \limg T \rimg = R \limg S \inter T \rimg$
+	--@doc $(R \rres S) \limg T \rimg = R \limg T \rimg inter S
+	T_REL_IMG_RES:
+		refl_bool(
+			rel_img[nat,nat](rel_dres[nat,nat](X1, R1), Y1) = rel_img[nat,nat](R1, X1 inter Y1)
+			and
+			rel_img[nat,nat](rel_rres[nat,nat](R1, X1), Y1) = rel_img[nat,nat](R1, Y1) inter X1
+		);
+	
+	--@todo $(R \nrres S) \limg T \rimg = R \limg T \ S \rimg$
+	--@todo $(Q \comp R) \limg S \rimg = R \limg Q \limg S \rimg \rimg$
+	--@todo $\dom(Q \comp R) = Q\inv \limg \dom~R \rimg$
+	--@todo $\ran(Q \comp R) = R \limg \ran~Q \rimg$
+	
+	--@doc relaitonal image of function within function applicaiton 
+	--		 $\forall x: S, f: X \pfun Y | x \in \dom~f @ f~(x) \in f \limg S \rimg
+	T_REL_IMG_APPLY:
+		refl_bool(
+			rel_is_map[nat,nat](F1) => (forall x in set X1 & x in set rel_dom[nat,nat](F1) => rel_apply[nat,nat](F1, x) in set rel_img[nat,nat](F1, X1))
+		);
+		 			
+	--@doc reflexive transitive closure is iterative closure from zero	
+	T_RTRCL_ITERATION:
+		refl_bool(
+			rel_rtclosure[nat](R1) = dunion { rel_iter[nat](n, R1) | n in set {0,...,card R1} }
+		);
+	
+	--@doc transitive closure subset composition	
+	T_TRCL_SUBSET:
+		refl_bool(
+			(R1' subset R1 and rel_comp[nat,nat,nat](R1,R1) subset R1 => rel_tclosure[nat](R1') subset R1)
+			and
+			(R1' subset R1 and rel_comp[nat,nat,nat](R1',R1) subset R1 => rel_tclosure[nat](R1') subset R1)
+			and
+			(R1' subset R1 and rel_comp[nat,nat,nat](R1,R1') subset R1 => rel_tclosure[nat](R1') subset R1)
+			and
+			R1 subset rel_tclosure[nat](R1) 
+		);
+	
+	--@doc transitive closure is transitive	
+	T_TRCL_TRANSITIVE:
+		refl_bool(
+			rel_comp[nat,nat,nat](rel_tclosure[nat](R1), rel_tclosure[nat](R1)) subset rel_tclosure[nat](R1)
+			and
+			(rel_comp[nat,nat,nat](R1, R1) subset R1 => rel_tclosure[nat](R1) = R1)
+		);
+		
+	--@todo \dres distributes over closures (Z/Eves extended toolkit)
+	
+	--@doc relation that's an injective map   
+	T_REL_IS_INMAP:
+		refl_bool(
+			rel_is_inmap[nat,nat](F2)	
+		);
+		
+end Relations
