@@ -1,0 +1,1488 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright, Leo Freitas 2020 
+--@v1, 15/11/2020
+------------------------------------------------------------------------------------
+module TP
+imports 
+	from IO operations print renamed print;
+,	from VDMUtil functions val2seq_of_char renamed val2str;
+exports all
+definitions 
+
+------------------------------------------------------------------------------------
+--@chapter VDM implementation of Lary's Folderol theorem prover as defined in
+--				 https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-192.pdf
+------------------------------------------------------------------------------------
+
+types
+	string = seq of char;
+	string1= seq1 of char;
+
+--@doc terms	
+	Var ::
+		x: string;
+		
+	Param ::
+		f: string
+		p: seq of string;
+		
+	Bound ::
+		n: nat;
+		
+	Fun ::
+		f: string
+		ts: seq of Term;
+		
+	Term = Var | Param | Bound | Fun;
+
+--@doc formulae
+	Pred ::
+		p: string
+		ts: seq of Term;
+		
+	Conn ::
+		c: string
+		fs: seq1 of Form
+	inv mk_Conn(-, f) == len f <= 2;
+		
+	Quant ::
+		q: string
+		v: string
+		f: Form;
+	
+	Form = Pred | Conn | Quant;
+	
+	Key :: k: string;
+	Id  :: i: string;
+	Token = Key | Id;
+	
+	Collation = string
+	inv c == card elems c = len c;		-- No duplicates in a collation sequence
+
+values
+	codeChars: Collation = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
+	--["(",")", "~","&", "|","-",">","<","."," "]
+	--[ 40, 41, 126, 38, 124, 45, 62, 60, 46,32] ord(x) in ML
+	keyChars: Collation = " &()-.<>|~"; -- ~, &, |, -->, <->, ALL x . P, EXISTS x . P 
+	
+	allChars: Collation = keyChars ^ codeChars;
+functions
+
+------------------------------------------------------------
+--@section basic definitions	
+------------------------------------------------------------
+	length[@T]: seq of @T -> nat
+	length(s) == len s;
+	
+	filter[@T]: (@T -> bool) -> seq of @T -> seq of @T
+	filter(p)(s) == [ s(i) | i in set inds s & p(s(i)) ]
+	post
+		len RESULT <= len s
+		and
+		elems RESULT subset elems s
+		and
+		forall i in seq RESULT & p(i);
+	
+	mem[@T]: @T * seq of @T -> bool
+	mem(x, s) == x in set elems s;
+	
+	ins[@T]: @T * seq of @T -> seq of @T
+	ins(x, s) == if mem[@T](x, s) then s else [x]^s
+	post
+		(if mem[@T](x, s) then len RESULT = len s else len RESULT > len s)
+		and
+		mem[@T](x, RESULT);
+	
+	repeat[@T]: @T -> nat -> seq of @T
+	repeat(x)(n) == [ x | - in set {1,...,n} ]
+	post
+		(elems RESULT = {x} and len RESULT = n);	
+	
+	accumulate[@X, @Y]: (@X * @Y -> @Y) -> ((seq of @X) * @Y) -> @Y 
+	accumulate(f)(mk_(s, y)) ==
+		cases s:
+			[] 		 -> y,
+			[x]^xs -> accumulate[@X, @Y](f)(mk_(xs, f(x, y)))
+		end
+	measure
+		len s;
+		
+	lookup[@X, @Z]: @X * seq of (@X * @Z) -> seq of @Z
+	lookup(x, env) ==
+		cases env:
+			[] 						-> [],
+			[mk_(y,z)]^xs -> if x = y then [z] else lookup[@X,@Z](x, xs)
+		end
+	measure
+		len env;
+
+	seqMap[@T,@R]: (@T->@R) -> seq of @T -> seq of @R
+  seqMap(f)(s) == [ f(s(i)) | i in set inds s ]
+  --@todo @NB: how go express this one? POG?
+  --pre elems s subset dom f
+  --pre forall i in set inds s & pre_f(s(i)) --?  
+  post len RESULT = len s;
+  
+  --@doc forward funtional composition (f o g) x
+  fcomp[@A, @B, @C]: (@A -> @B) * (@C -> @A) -> @C -> @B
+  fcomp(f, g)(x) == f(g(x)); 
+  
+  implode: seq of string -> string
+  implode(ss) == conc ss;
+  
+  explode: string -> seq of string
+  explode(s) == [ [s(i)] | i in set inds s];
+  
+------------------------------------------------------------
+--@section operations on terms and formulae
+------------------------------------------------------------
+
+	--@doc replace atomic term u by new throughout a term t
+	replace_term: Term * Term -> Term -> Term
+	replace_term(u, new)(t) ==
+		if t = u then 
+			new
+		else if is_Fun(t) then
+			let mk_Fun(a, ts) = t in
+				mk_Fun(a, seqMap[Term, Term](replace_term(u,new))(ts))
+		else
+			t;
+
+	--@doc abstraction of a formula over t (containing no bound vars)
+	abstract: Term -> Form -> Form
+	abstract(t) == 
+		let abst: nat -> Form -> Form
+				abst(i)(f) ==
+					cases true:
+						(is_Pred(f)) -> let mk_Pred(a, ts)    = f in mk_Pred(a, seqMap[Term, Term](replace_term(t, mk_Bound(i)))(ts)),
+						(is_Conn(f)) -> let mk_Conn(b, As)    = f in mk_Conn(b, seqMap[Form, Form](abst(i))(As)),
+						(is_Quant(f))-> let mk_Quant(q, b, A) = f in mk_Quant(q, b, abst(i+1)(A))
+					end
+				--measure	
+				--	cases true:
+				--		(is_Pred(f)) -> 0,
+				--		(is_Conn(f)) -> let mk_Conn(b, As)    = f in len As,
+				--		(is_Quant(f))-> let mk_Quant(q, b, A) = f in measure_abst(i+1)(A)
+				--	end
+		 in 
+		 	 abst(0); 
+	
+	--depth: Form -> nat1
+	--depth(f) ==
+	--	cases true:
+	--		(is_Pred(f)) -> 1,
+	--		(is_Conn(f)) -> let mk_Conn(b, As)    = f in 1 + depth(As),
+	--		(is_Quant(f))-> let mk_Quant(q, b, A) = f in 1 + depth(A)
+	--	end;
+	--measure is structural depth of Term/Form being finite?
+	subst_bound: Term -> Form -> Form
+	subst_bound(t) == 
+		let subst: nat -> Form -> Form
+				subst(i)(f) ==
+					cases true:
+						(is_Pred(f)) -> let mk_Pred(a, ts)    = f in mk_Pred(a, seqMap[Term, Term](replace_term(mk_Bound(i), t))(ts)),
+						(is_Conn(f)) -> let mk_Conn(b, As)    = f in mk_Conn(b, seqMap[Form, Form](subst(i))(As)),
+						(is_Quant(f))-> let mk_Quant(q, b, A) = f in mk_Quant(q, b, subst(i+1)(A))
+					end
+			in
+				subst(0);	
+	
+------------------------------------------------------------
+--@section syntax: scanning, parsing and displaying	
+------------------------------------------------------------
+
+	valofCh: char * Collation -> nat1
+	valofCh(c, collation) == iota i in set inds collation & collation(i) = c
+	pre c in set elems collation;
+
+	lessCh: char * char -> bool
+	lessCh(a, b) == valofCh(a, allChars) < valofCh(b, allChars);
+	
+	--@doc see letter or digit and ML's ord operator on strings
+	ml_ord_chr: string -> char
+	ml_ord_chr(s) == s(1)
+	pre
+		--@OnFail("ERROR: Invalid empty character string %1s", s)
+		(len s > 0);
+	
+	val_is_char: string * string * string -> bool
+	val_is_char(l_,c_,u_) == 
+		let l: char = ml_ord_chr(l_),
+				c: char = ml_ord_chr(c_),
+				u: char = ml_ord_chr(u_)
+		 in
+			  (l=c or lessCh(l, c)) and (c=u or lessCh(c, u));--c in set {l,...,u}
+	
+	--@doc defined in terms of string to make it easer on scanning
+	letter_or_digit: string -> bool
+	letter_or_digit(c) == val_is_char("A",c,"Z") or val_is_char("a",c,"z") or val_is_char("0",c,"9");
+	 		
+	blanks: string -> bool
+	blanks(c) == c in set {" ", "\t", "\n"};
+	
+	keyword_infix: string -> bool
+	keyword_infix(c) == c in set {"-->", "<->"};
+	
+	keyword_quant: string -> bool
+	keyword_quant(c) == c in set {"ALL", "EXISTS"};
+	 		
+	token_of: string -> Token
+	token_of(a) == 
+		if mem[string](a, ["ALL", "EXIST"]) then mk_Key(a) else mk_Id(a);
+	
+	scan_ident: seq of string * seq of string -> Token * seq of string
+	scan_ident(front, next) == 
+		cases next:
+			[]     -> mk_(token_of(implode(reverse front)), []),
+			[c]^cs -> if letter_or_digit(c) then
+									scan_ident([c]^front, cs)
+								else
+									mk_(token_of(implode(reverse front)), [c]^cs)
+		end
+	measure
+		len next;
+	
+	--@doc Scanning, recognizing --> and <->, skipping blanks, etc.
+	--		 Have to account for ML's use in no differentiation between " " and ' '!
+	scan: seq of Token * seq of string -> seq of Token
+	scan(front_toks, next) ==
+		cases next:
+			[] 			-> reverse front_toks, --end of char list
+			[c]^cs  -> if blanks(c) then 
+										scan(front_toks, cs) --blanks tabs, newlines
+									else if keyword_infix(c) then
+										scan([mk_Key(c)]^front_toks, cs) --infix operators --> and <->
+									else if letter_or_digit(c) then
+										--scan_next(front_toks, scan_ident([c], cs))
+										let mk_(tok, cs') = scan_ident([c], cs) in
+											scan([tok]^front_toks, cs')
+									else
+										scan([mk_Key(c)]^front_toks, cs) --arguably could be together with infix ops?
+		end
+	--measure
+	--	len next + (if next = [] or not letter_or_digit(hd next) then 0 else 1)
+	;
+
+	--@doc parsing a list of tokens (i.e. apply first; like map on pair + tokens)
+	apfst[@A,@B,@C]: (@A -> @B) -> (@A * @C) -> (@B * @C) 
+	apfst(f)(mk_(x, toks)) == mk_(f(x), toks); 
+
+------------------------------------------------------------
+--@subsection functions for constructing results
+------------------------------------------------------------
+
+	cons[@X]: @X -> seq of @X -> seq of @X
+	cons(x)(xs) == [x]^xs;
+	
+	makeVar: string -> Var
+	makeVar(a) == mk_Var(a);
+		
+	makeFun: string -> seq of Term -> Fun
+	makeFun(fu)(ts) == mk_Fun(fu, ts);
+	
+	makePred: string -> seq of Term -> Pred
+	makePred(id)(ts) == mk_Pred(id, ts);
+	
+	makeNeg: Form -> Conn
+	makeNeg(A) == mk_Conn("~", [A]);
+	
+	makeConn: string -> Form -> Form -> Conn
+	makeConn(a)(A)(B) == mk_Conn(a, [A,B]);
+		
+	makeQuant: string -> string -> Form -> Quant
+	makeQuant(q)(b)(A) == mk_Quant(q, b, abstract(mk_Fun(b,[]))(A))
+	pre
+		keyword_quant(q); 	
+
+------------------------------------------------------------
+--@subsection repeated parsing returning the list of results
+------------------------------------------------------------
+	
+	--@doc parse "a<phrase>...a<phrase>"
+	--@Warning(5013)
+	parse_repeat[@T]: string * (seq of Token -> @T * seq of Token) -> seq of Token -> (seq of @T * seq of Token)
+	parse_repeat(a, parsefn)(tokens) == 
+		cases tokens:
+			[mk_Key(b)]^toks -> if a = b then parse_repeat1[@T](a, parsefn)(toks) else mk_([], [mk_Key(b)]^toks),
+			others					 -> mk_([], tokens)
+		end;
+	
+	--@doc parse "<phrase>a...<phrase>a"
+	--@Warning(5013)
+	parse_repeat1[@T]: string * (seq of Token -> @T * seq of Token) -> seq of Token -> (seq of @T * seq of Token)
+  parse_repeat1(a, parsefn)(toks) == 
+  	let mk_(u, toks2) = parsefn(toks),
+  			mk_(t, toks3) = parse_repeat[@T](a, parsefn)(toks2)
+  	 in
+  	 	--@Warning(5031) @T expected to be token
+  		apfst[@T, seq of @T, seq of Token](cons[@T](u))(mk_(t, toks3));
+	 
+	right_paren[@T]: (@T * seq of Token) -> (@T * seq of Token)
+	right_paren(mk_(x, tokens)) == mk_(x, tl tokens)
+	pre
+		--@OnFail("ERROR: Symbol ')' expected %1s found", if tokens = [] then nil else hd tokens)
+		(tokens <> [] and hd tokens = mk_Key(")"));
+
+	syntax_of_term: seq of Token -> bool
+	syntax_of_term(tokens) ==	 
+		tokens <> [] 
+		and
+		--@doc f(...)
+		((len tokens > 1 and is_Id(hd tokens) and is_Key(tokens(2)) and tokens(2).k="(")
+		 or
+		--@doc ?v
+		 (len tokens > 1 and is_Key(hd tokens) and (hd tokens).k="?" and is_Id(tokens(2)))
+		 or
+		--@doc f
+		 (is_Id(hd tokens))
+		);
+		
+	parse_term: seq of Token -> Term * seq of Token
+	parse_term(tokens) ==
+		cases tokens:
+			[mk_Id(a), mk_Key("(")]^toks -> 
+				--@NB here we see the power of ML's type inference in practice! The type of apfst was originally wrongly typed!
+				--let x: seq of Term * seq of Token = parse_repeat1[Term](",", parse_term)(toks),
+		    --		y: seq of Term * seq of Token = right_paren[seq of Term](x) 
+		    -- in
+				--	apfst[seq of Term, Fun, seq of Token](makeFun(a))(y),
+					--apfst[@A,@B,@C]: (@A -> @B) -> (@A * @C) -> (@B * @C) 
+					--apfst(f)(mk_(x, toks)) == mk_(f(x), toks); 
+					--apfst[seq of Term, Term, seq of Token] 
+					--	(makeFun(a)) 							--:: (seq of Term -> Fun)
+					--	(rightparen[seq of Term] 
+					--			(parse_repeat1[Term] 
+					--					(",", parse_term) --:: string * (seq of Token -> Term * seq of Token)
+					--					toks							--:: seq of Token
+					--			)											--:: (seq of Term * seq of Token)
+					--	)													--:: (seq of Term * seq of Token)
+				apfst[seq of Term, Fun, seq of Token](makeFun(a))(right_paren[seq of Term](parse_repeat1[Term](",", parse_term)(toks))),
+			[mk_Id(a)]^toks 						 -> mk_(mk_Fun(a, []), toks),
+			[mk_Key("?"), mk_Id(a)]^toks -> mk_(mk_Var(a), toks)
+		end
+	pre
+		--@OnFail("ERROR: Syntax of term")
+		(syntax_of_term(tokens));
+	
+	--@doc precedence table
+	prec_of: string -> int
+	prec_of(s) ==
+		if  s="~" then 4 else 
+		if  s="&" then 3 else
+		if  s="|" then 2 else
+		if  s="<->" then 1 else
+		if  s="-->" then 1 else -1; 
+	
+	syntax_of_form: seq of Token -> bool
+	syntax_of_form(tokens) ==
+		tokens <> []
+		and
+		(--@doc ~A or (A
+		 (is_Key(hd tokens) and ((hd tokens).k in set {"~", "("}))
+		 or
+		 --@doc A(
+		 (len tokens > 1 and is_Id(hd tokens) and is_Key(tokens(2)) and tokens(2).k="(")
+		 or
+		 --@doc A
+		 is_Id(hd tokens)
+		);
+		
+	parse_atom: seq of Token -> Form * seq of Token
+	parse_atom(tokens) == 
+		cases tokens:
+			[mk_Key("~")]^toks 						-> 
+				apfst[Form, Conn, seq of Token](makeNeg)(parse_atom(toks)),
+			[mk_Key("(")]^toks 						-> 
+				right_paren[Form](parse(toks)),
+			[mk_Id(pr), mk_Key("(")]^toks -> 
+				apfst[seq of Term, Pred, seq of Token](makePred(pr))(right_paren[seq of Term](parse_repeat1[Term](",", parse_term)(toks))),
+			[mk_Id(pr)]^toks -> mk_(mk_Pred(pr, []), toks)
+		end
+	pre
+		--@OnFail("ERROR: Syntax of formula")
+		(syntax_of_form(tokens))
+	measure 
+		len tokens
+	;
+
+	parsefix: int -> (Form * seq of Token) -> Form * seq of Token
+	parsefix(prec)(mk_(A, tokens)) == 
+		cases tokens:
+			[mk_Key(co)]^toks ->
+				if prec_of(co) < prec then 
+					mk_(A, tokens)
+				else
+					--@NB here VDM let us down on not identifying the (Form * seq of Term) result
+					--let mk_(form, toks_) = parse_atom(toks),
+					--    mk_(form', toks')= apfst[Form, Conn, seq of Token](makeConn(co)(A))(parsefix(prec_of(co))(form, toks_))
+					-- in
+					--	parsefix(prec)(form', toks'),
+					parsefix(prec)(apfst[Form, Conn, seq of Token](makeConn(co)(A))(parsefix(prec_of(co))(parse_atom(toks)))),
+			others -> mk_(A, tokens)
+		end
+	measure
+		len tokens;
+		
+	parse: seq of Token -> Form * seq of Token
+	parse(tokens) ==
+		cases tokens:
+			[mk_Key("ALL"), mk_Id(a), mk_Key(".")]^toks     ->
+				 apfst[Form, Quant, seq of Token](makeQuant("ALL")(a))(parse(toks)),
+			[mk_Key("EXISTS"), mk_Id(a), mk_Key(".")]^toks  ->
+				 apfst[Form, Quant, seq of Token](makeQuant("EXISTS")(a))(parse(toks)),
+			others -> 
+				--let mk_(form, toks_) = parse_atom(tokens) in
+					parsefix(0)(parse_atom(tokens))
+		end
+	measure 
+		len tokens
+	;
+	
+	parse_end[@A, @B]: (@A * seq of @B) -> @A
+	parse_end(mk_(x, toks)) == x
+	pre
+		--@OnFail("ERROR: Extra characters in formula %s", toks)
+		(toks = []);
+		
+	read: string -> Form
+	read(a) == parse_end[Form, Token](parse(scan([], explode(a)))); 
+	
+------------------------------------------------------------
+--@subsection Printing: conversion of terms/formulae to strings
+------------------------------------------------------------
+
+	enclose: string -> string
+	enclose(s) == "(" ^ s ^ ")";
+	
+	conc_list: string -> seq of string -> string
+	conc_list(sep)(s) == 
+		cases s:
+			[] 		 -> "",
+			[b]^bs -> (sep ^ b) ^ conc_list(sep)(bs)
+		end
+	measure
+		len s;
+		
+	conc_list1: string -> seq of string -> string
+	conc_list1(sep)(s) == hd s ^ conc_list(sep)(tl s)
+	pre
+		--@OnFail("UNIFY: Invalid empty string")
+		(len s > 0);
+
+	stringof_args: seq of Term -> string
+	stringof_args(ts) == 
+		if ts = [] then "" else enclose(conc_list1(",")(seqMap[Term, string](stringof_term)(ts)));
+	
+	makestring: int -> string
+	makestring(n) == val2str[int](n);
+				
+	stringof_term: Term -> string
+	stringof_term(t) == 
+		cases true:
+			(is_Param(t)) -> let mk_Param(a, -) = t	in a,
+			(is_Var(t))   -> let mk_Var(a)      = t in "?" ^ a,
+			(is_Bound(t)) -> let mk_Bound(i)    = t in "B." ^ makestring(i),
+			(is_Fun(t))   -> let mk_Fun(a, ts)  = t in a ^ stringof_args(ts)
+		end;
+		
+	max: int * int -> int
+	max(x,y) == if x > y then x else y;
+
+	--@Warning(5012)
+	stringof_form: int -> Form -> string
+	stringof_form(prec)(t) == 
+		cases true:
+			(is_Pred(t))  -> let mk_Pred(a, ts)    = t in a ^ stringof_args(ts),
+			(is_Conn(t))  -> let mk_Conn(C, ops)   = t in
+				 (if C = "~" and len ops = 1 then 
+				 		"~" ^ stringof_form(prec_of("~"))(hd ops)
+				 else
+				 		(let
+				 			A: Form = ops(1), B: Form = ops(2), 
+				 			stringf: (Form -> string) = stringof_form(max(prec_of(C), prec)),
+				 			Z: string = stringf(A) ^ " " ^ C ^ stringf(B)
+				 		 in
+				 		  if prec_of(C) <= prec then 
+				 		  	enclose(Z)
+				 		  else
+				 		  	Z
+				 		)
+				 ),
+			(is_Quant(t)) -> let mk_Quant(q, b, A) = t in 
+				 (let 
+				 		B: Form   = subst_bound (mk_Fun(b, []))(A),
+				 		Z: string = q ^ " " ^ b ^ ". " ^ stringof_form(0)(B)
+				 	 in
+				 	  if prec > 0 then enclose(Z) else Z
+				 )
+		end;
+	
+	stringof: Form -> string
+	stringof(f) == stringof_form(0)(f);
+		
+------------------------------------------------------------
+--@section Unification
+------------------------------------------------------------
+types
+	Env = seq of (string * Term);
+	
+functions
+------------------------------------------------------------
+--@subsection Naive unification of terms containing no bound variables
+------------------------------------------------------------
+	
+	/*
+	--@doc Chase variable assignments
+	chase_var: Term * Env -> Term
+	chase_var(term, env) ==
+		cases true:
+			(is_Var(term)) -> 
+				let mk_Var(a) = term in
+					cases lookup[string, Term](a, env):
+						[]    -> term,
+						[u]^- -> chase_var(u, env)
+					end,
+			others -> term
+		end
+	measure
+		if is_Var(term) then 
+			let mk_Var(a) = term in len lookup[string, Term](a, env)
+		else
+			0;
+	
+	occs: string * Term * Env -> bool
+	occs(a, t, env) ==
+		cases true:
+			(is_Fun(t))  -> let mk_Fun(-,ts)  = t in occsl(a, ts, env),
+			(is_Param(t))-> let mk_Param(-,bs)= t in occsl(a, seqMap[string, Var](makeVar)(bs), env),
+			(is_Var(t))  -> let mk_Var(b)     = t in a=b or occsl(a, lookup[string, Term](b, env), env),
+			others -> false
+		end;
+		
+	occsl: string * seq of Term * Env -> bool
+	occsl(a, ts, env)	==
+		cases ts:
+			[]      -> false,
+			[t]^ts' -> occs(a, t, env) or occsl(a, ts', env)
+		end;
+		
+	--@doc Unification with var
+	unify_var: string * Term * Env -> Env
+	unify_var(a, t, env) == env;
+
+	unification_term: Term * Term -> bool
+	unification_term(t, u) == 
+		is_Var(t)
+		or 
+		is_Var(u)
+		or 
+		(is_Param(t) and is_Param(u) and t.f = u.f)
+		or
+		--@doc check on inner parameters is done via unify_terms check
+		(is_Fun(t) and is_Fun(u) and t.f = u.f);
+	
+	unify_term: Term * Term * Env -> Env
+	unify_term(t, u, env) == 
+		if is_Var(t) then
+			unify_var(t.x, u, env)
+		else if is_Var(u) then
+			unify_var(u.x, t, env)
+		else if is_Param(t) and is_Param(u) then
+			env
+		else if is_Fun(t) and is_Fun(u) then
+			unify_terms(t.ts, u.ts, env)
+		else
+			env
+	pre
+		--@OnFail("Unification of term fail %1s %2s", t, u)
+		unification_term(t, u);
+	
+	unification_terms: seq of Term * seq of Term -> bool
+	unification_terms(ts, us) == 
+		len ts = len us
+		and
+		(forall t in seq ts, u in seq us & unification_term(t, u));
+					 	
+	unify_terms: seq of Term * seq of Term * Env -> Env	
+	unify_terms(ts, us, env) ==
+		if ts = [] and us = [] then
+			env
+		else
+			unify_terms(tl ts, tl us, unify_term(chase_var(hd ts, env), chase_var(hd us, env), env))
+	pre
+		--@OnFail("Unify")
+		(unification_terms(ts, us));
+*/
+
+	unification_term: Term * Term -> bool
+	unification_term(t, u) == 
+		is_Var(t)
+		or 
+		is_Var(u)
+		or 
+		(is_Param(t) and is_Param(u) and t.f = u.f)
+		or
+		--@doc check on inner parameters is done via unify_terms check
+		(is_Fun(t) and is_Fun(u) and t.f = u.f);
+				
+	unification_terms: seq of Term * seq of Term -> bool
+	unification_terms(ts, us) == 
+		len ts = len us
+		and
+		(forall t in seq ts, u in seq us & unification_term(t, u));
+	
+	--@Warning(5012) structurally finite
+	unify_terms: seq of Term * seq of Term * Env -> Env	
+	unify_terms(ts, us, env) ==
+		if ts = [] and us = [] then
+			env
+		else
+			let --@doc Chase variable assignments
+					chase_var: Term -> Term
+					chase_var(term) ==
+						cases true:
+							(is_Var(term)) -> 
+								let mk_Var(a) = term in
+									cases lookup[string, Term](a, env):
+										[]    -> term,
+										[u]^- -> chase_var(u)
+									end,
+							others -> term
+						end
+					measure
+						if is_Var(term) then 
+							let mk_Var(a) = term in len lookup[string, Term](a, env)
+						else
+							0,
+	
+				occsl: string * seq of Term -> bool
+				occsl(a, ots)	==
+					cases ots:
+						[]      -> false,
+						[t']^ts' -> 
+							(cases true:
+									(is_Fun(t'))  -> let mk_Fun(-,tsf) = t' in occsl(a, tsf),
+									(is_Param(t'))-> let mk_Param(-,bs)= t' in occsl(a, seqMap[string, Var](makeVar)(bs)),
+									(is_Var(t'))  -> let mk_Var(b)     = t' in a=b or occsl(a, lookup[string, Term](b, env)),
+									others -> false
+							 end
+							)
+							or 
+							occsl(a, ts')
+					end
+				measure
+					len ots,
+					
+				--@doc Unification with var; ML outer t from unify_terms is hidden by this t? assuming so 
+				unify_var: string * Term -> Env
+				unify_var(a, t) == 
+					--@doc here occs is inner inner mutually recursive function :-(... so avoiding the mutual recursion
+					--@NB ah, but for the precondition, we would need this to be defined outside of unify_var in the end
+					--let occsl: seq of Term -> bool
+					--		occsl(ots)	==
+					--			cases ots:
+					--				[]      -> false,
+					--				[t']^ts' -> 
+					--					(cases true:
+					--							(is_Fun(t'))  -> let mk_Fun(-,tsf) = t' in occsl(tsf),
+					--							(is_Param(t'))-> let mk_Param(-,bs)= t' in occsl(seqMap[string, Var](makeVar)(bs)),
+					--							(is_Var(t'))  -> let mk_Var(b)     = t' in a=b or occsl(lookup[string, Term](b, env)),
+					--							others -> false
+					--					 end
+					--					)
+					--					or 
+					--					occsl(ts')
+					--			end
+					--		measure
+					--			len ts
+					-- in
+					 	  if t = mk_Var(a) then 
+					 	  	env
+					 	  --else if occsl([t]) then
+					 	  --	env--raise UNIFY
+					 	  else
+					 	  	[mk_(a, t)] ^ env
+				pre
+					--@OnFail("UNIFY: occurs check failed for variable %1s in term %2s", a, t)
+					(not occsl(a, [t])),--unify_var_occs_check(t)	 	  	 
+									
+				unify_term: Term * Term  -> Env
+				unify_term(t, u) == 
+					if is_Var(t) then
+						unify_var(t.x, u)
+					else if is_Var(u) then
+						unify_var(u.x, t)
+					else if is_Param(t) and is_Param(u) then
+						env
+					else if is_Fun(t) and is_Fun(u) then
+						unify_terms(t.ts, u.ts, env)
+					else
+						env
+				pre
+					--@OnFail("UNIFY: unification of terms fail: %1s %2s", t, u)
+					(unification_term(t, u) 
+					 and 
+					 (is_Var(t) => pre_unify_var(t.x, u))
+					 and
+					 (is_Var(u) => pre_unify_var(u.x, t))
+					)	
+			in
+				unify_terms(tl ts, tl us, unify_term(chase_var(hd ts), chase_var(hd us)))
+	pre
+		--@NB the local definition has the disadvantage of not enabling the precondition check directly, if saving on some params
+		--@OnFail("UNIFY: unification failed")
+		(unification_terms(ts, us)
+		 and
+		 --@NB does this entail the "+ occsls(a, [t]) check everywhere when is_Var for t/u in ts/us? not in scope! It should be?
+		 (forall - in seq ts, - in seq us & true)--pre_unify_term(t, u))
+		) 
+  ;	
+	
+	unify: Form * Form * Env -> Env
+	unify(f1, f2, env) ==
+		if is_Pred(f1) and is_Pred(f2) then
+			let mk_Pred(a, ts) = f1,
+					mk_Pred(b, us) = f2
+				in
+					if a = b then
+					  unify_terms(ts, us, env)
+					else
+						env--raise UNIFY
+		else
+			env--raise UNIFY
+	pre
+		--@OnFail("UNIFY: cannot unify formulae %1s %2s", f1, f2)
+		((is_Pred(f1) and is_Pred(f2) and f1.p = f2.p)
+		 and
+		 let mk_Pred(-, ts) = f1,
+				 mk_Pred(-, us) = f2
+			in
+				 pre_unify_terms(ts, us, env)
+		);
+	
+	--@doc Accumulate all Vars in the term (not Vars attached to a Param)
+	vars_in_term: Term * seq of string -> seq of string
+	vars_in_term(t, bs) ==
+		cases true:
+			(is_Var(t)) -> let mk_Var(a) = t    in ins[string](a, bs),
+			(is_Fun(t)) -> let mk_Fun(-,ts) = t in accumulate[Term, seq of string](vars_in_term)(mk_(ts, bs)),
+			others			-> bs
+		end;
+	
+	--@doc Instantiate a term by an environment
+	--@Warning(5012) structural finite
+	inst_term: Env -> Term -> Term
+	inst_term(env)(t) ==
+		cases true:
+			(is_Fun(t))  -> 
+				let mk_Fun(a, ts) = t in 
+					mk_Fun(a, seqMap[Term, Term](inst_term(env))(ts)),
+			(is_Param(t))-> 
+				let mk_Param(a,bs)= t in 
+					--@NB fiendish type instantion!
+					--inst_term(env): Term @A -> Term @B
+					--makeVar: string @C -> Term @B
+					--fcomp[@A, @B, @C]: (@A -> @B) * (@C -> @A) -> @C -> @B
+					--fcp: @C string -> @A Term
+					--bs: seq of string
+					--accumulate[@X, @Y]: (@X * @Y -> @Y) -> ((seq of @X) * @Y) -> @Y
+					--ac: seq of Term * seq of string -> seq of string 
+					--let  it: Term -> Term                                   = inst_term(env),
+					--    fcp: string -> Term                                 = fcomp[Term, Term, string](it, makeVar),
+					--     sm: seq of Term                                    = seqMap[string, Term](fcp)(bs),
+					-- 		 ac: (seq of Term * seq of string) -> seq of string = accumulate[Term, seq of string](vars_in_term),
+					-- 		res: seq of string																	= ac(mk_(sm, []))
+					-- in
+					--  mk_Param(a, res),	
+					mk_Param(a, accumulate[Term, seq of string](vars_in_term)(mk_(seqMap[string, Term](fcomp[Term, Term, string](inst_term(env), makeVar))(bs),[]))),
+			(is_Var(t))  -> 
+				let mk_Var(a)     = t in 
+					cases lookup[string, Term](a, env):
+						[]    -> t,
+						[u]^- -> inst_term(env)(u)
+					end, 
+			others       -> t
+		end;
+
+--(*INFERENCE: GOALS AND PROOF STATES: GOALS AND PROOF STATES*)	
+types
+	Side = <Left> | <Right>;
+	Entry = int * Side * Form;
+	Goal = seq of Entry;
+	GoalTable = seq of Goal;
+	
+functions
+	
+	--@Warning(5012) structural finite
+	inst_form: Env -> Form -> Form
+	inst_form(env)(A) ==
+		if env = [] then 
+			A 
+		else
+			cases true:
+				(is_Pred(A))     -> let mk_Pred(a, ts) = A in mk_Pred(a, seqMap[Term, Term](inst_term(env))(ts)),
+				(is_Conn(A)) -> let mk_Conn(b, As)     = A in mk_Conn(b, seqMap[Form, Form](inst_form(env))(As)),
+				(is_Quant(A))-> let mk_Quant(q, b, A') = A in mk_Quant(q, b, inst_form(env)(A'))
+			end;
+	
+  inst_goal: Env -> Goal -> Goal /*@T * @T * Form*/
+  inst_goal(env)(gs) ==
+  	if gs = [] then
+  		[]
+  	else
+  		let mk_(m, si, A) = hd gs in
+  			[mk_(m, si, inst_form(env)(A))] ^ inst_goal(env)(tl gs)
+  measure
+  	len gs;
+  	
+  inst_goals: Env -> GoalTable -> GoalTable
+  inst_goals(env)(gs) ==
+  	if env = [] then
+			gs
+		else
+			seqMap[Goal, Goal](inst_goal(env))(gs)
+	measure
+		len env;		
+	
+	--@doc Accumulate over all terms in a formula
+	--@Warning(5012)
+	accum_form[@T]: (Term * @T -> @T) -> Form * @T -> @T
+	accum_form(f)(F, bs) ==
+		cases true:
+			--@NB here we get a rather hairy situation: VDM's "Form * @T" vs "(Form * @T)" makes for confusing
+			--		 type instantiation and function applicaiton for the second instantiation in accumulate!  
+			(is_Pred(F)) -> let mk_Pred(-,ts) = F in accumulate[Term, @T](f)(mk_(ts, bs)),
+			(is_Conn(F)) -> let mk_Conn(-,As) = F in accumulate[Form, @T](accum_form[@T](f))(mk_(As, bs)),
+			(is_Quant(F))-> let mk_Quant(-,-,A)=F in accum_form[@T](f)(A, bs)
+		end
+	--measure on structure of F
+	;
+	
+	--val accum_form = fn: (term * 'a -> 'a) -> form * 'a -> 'a
+	--val accum_goal = fn: ('a * 'b -> 'b) -> ('c * 'd * 'a) list * 'b -> 'b
+	--val vars_in_term = fn: term * string list -> string list
+	--val vars_in_form = fn: form * string list -> string list
+  --val vars_in_goal = fn: entry list * string list -> string list
+  --		vars_in_goal = accum_goal(vars_in_form)
+  /*
+  	Entry = int * Side * Form;
+		Goal = seq of Entry;
+		GoalTable = seq of Goal;
+  */
+	--accum_goal[Form, seq of string, int, Side]
+	--accum_goal: (Form * seq of string -> seq of string) -> (Goal * seq of string) -> seq of string 
+	accum_goal[@A,@B,@C,@D]: (@A * @B -> @B) -> (seq of (@C * @D * @A) * @B) -> @B
+	accum_goal(f)(mk_(gs, bs)) ==
+		if gs = [] then
+			bs
+		else
+			let mk_(-,-,A') = hd gs in
+				accum_goal[@A, @B, @C, @D](f)(mk_(tl gs, f(A', bs)))
+	measure
+		len gs;
+		
+	--@NB how to make this less awkward? 	
+	vars_in_form: () -> (Form * seq of string -> seq of string)
+	vars_in_form() == accum_form[seq of string](vars_in_term);
+	
+	--@NB here the type inference would also be quite nice
+	vars_in_goal: () -> (Goal * seq of string) -> seq of string
+	vars_in_goal() == accum_goal[Form, seq of string, int, Side](vars_in_form());
+
+	--@doc Accumulate all Params
+	params_in_term: Term * seq of (string * seq of string) -> seq of (string * seq of string)
+	params_in_term(t, pairs) ==
+		cases true:
+			(is_Param(t)) -> let mk_Param(a, bs) = t in ins[string * seq of string](mk_(a,bs), pairs),
+			--@NB some of these instantiations could be automatically inferred? 
+			(is_Fun(t))   -> let mk_Fun(-, ts) = t   in accumulate[Term, seq of (string * seq of string)](params_in_term)(mk_(ts, pairs)),
+			others				-> pairs
+		end;  
+
+	params_in_form: () -> (Form * seq of (string * seq of string) -> seq of (string * seq of string))
+	params_in_form() == accum_form[seq of (string * seq of string)](params_in_term);
+	
+	--@NB if extra (..) not added between (Goal * seq ...) ->! 
+	--Value is not of the right type. 
+	--Actual  : ((seq of ((int * TP`Side * TP`Form)) * seq of ((TP`string * seq of (TP`string)))) +> seq of ((TP`string * seq of (TP`string)))) 
+	--Expected:  (seq of ((int * TP`Side * TP`Form)) * seq of ((TP`string * seq of (TP`string)))  -> seq of ((TP`string * seq of (TP`string))))  
+	params_in_goal: () -> (Goal * seq of (string * seq of string)) -> seq of (string * seq of string)
+	params_in_goal() == accum_goal[Form, seq of (string * seq of string), int, Side](params_in_form());
+	
+	params_in_goal2: Goal * seq of (string * seq of string) -> seq of (string * seq of string)
+	params_in_goal2(g, s) == params_in_goal()(mk_(g, s));
+
+	--@doc Returns (As,Bs),preserving order of elements As = Left entries,  Bs = Right entries 
+	split_goal: Goal -> (seq of Form) * (seq of Form)
+	split_goal(g) ==
+		let split: (seq of Form) * (seq of Form) * Goal-> (seq of Form) * (seq of Form)
+				split(As, Bs, h) ==
+					cases h:
+						[] 									 -> mk_(As, Bs),
+						[mk_(-,<Left>,A)]^h' -> split([A]^As, Bs, h'),
+						[mk_(-,<Right>,B)]^h'-> split(As, [B]^Bs, h')
+					end
+				measure
+					len h
+			in 
+				split([], [], reverse g);
+	
+	--@doc is_pred = is_Pred in VDM
+	ml_is_pred: Form -> bool
+	ml_is_pred(f) == is_Pred(f);
+	
+	--@doc Solve the goal (A|-A’) by unifying A with A’, Left and Right atomic formulae. 
+	--		 Returns list [ (A,env) ] if successful, otherwise [].
+	solve_goal: Goal -> seq of (Form * Env)
+	solve_goal(g) ==
+		let findA: seq of Pred * seq of Pred -> seq of (Form * Env)
+				findA(As, Bs) ==
+					if As = [] then
+						[] --failure
+					else
+						let findB: seq of Pred -> seq of (Form * Env)
+							  findB(Bs') ==
+							  	--@doc this use of inner parameters is confusing as hell... hum...
+							  	if Bs' = [] then
+							  		findA(tl As, Bs)
+							  	else if pre_unify(hd As, hd Bs', []) then 
+							  		--@NB can't have as an auxiliary funciton because of the inner let fun defs; will pre_unify when failed go to the else?
+							  		--can_unify(hd As, hd Bs', []) then
+							  		[ mk_(hd As, unify(hd As, hd Bs', [])) ]
+							  	else
+							  		--@doc handle UNIFY => findB(tl Bs')
+							  		findB(tl Bs')
+							  measure
+							  	len Bs'
+						 in
+						 		findB(Bs)
+				measure
+					len As
+		 in
+		 	 let mk_(As, Bs) = split_goal(g) in
+		 	 	 findA(filter[Form](ml_is_pred)(As), filter[Form](ml_is_pred)(Bs));
+	
+	--@doc Insert goals into a goaltable. For each solved goal (A,env), accumulates 
+	--		 the formula (in reverse) and instantiates all other goals.
+	insert_goals: GoalTable * (seq of Form) * GoalTable -> (seq of Form * GoalTable)
+	insert_goals(gs, As, tab) ==
+		if gs = [] then
+			mk_(As, tab)
+		else
+			cases solve_goal(hd gs):
+				[] 							-> insert_goals(tl gs, As, [hd gs] ^ tab),
+				--@doc instantiate other goals
+				[mk_(A, env)]^- -> insert_goals(inst_goals(env)(tl gs), [inst_form(env)(A)] ^ As, inst_goals(env)(tab))
+			end
+	measure
+		len gs;
+	
+	stringof_sy: Form -> string
+	stringof_sy(f) ==
+		cases true:
+			(is_Pred(f)) -> let mk_Pred(a, -) = f in a,
+			(is_Conn(f)) -> let mk_Conn(a, -) = f in a,
+			(is_Quant(f))-> let mk_Quant(q,-,-)=f in q
+		end;
+	
+	stringof_side: Side -> string
+	stringof_side(s) ==
+		cases s:
+			<Right>-> ":right",
+			<Left> -> ":left"	
+		end;
+	
+	--@doc generation of new variable names
+	--@NB string manipulation is akwakwrd in ML as well :-)
+	make_letter: int -> string
+	make_letter(n) == [codeChars(valofCh('a', codeChars)+n)]
+	pre
+		valofCh('a', codeChars)+n in set inds codeChars;
+	
+	make_varname: int * string -> string
+	make_varname(n, tail) ==
+		if n < 26 then
+			make_letter(n) ^ tail
+		else
+			make_varname(n div 26, make_letter(n mod 26) ^ tail)
+	measure
+		--@NB wicked measure :-)
+		n div 26;
+	
+	--@NB uses ML refs :-(. will need state. But that will affect reduction. Hummm		
+	--@doc see reduce_goals extra int parameter instead?
+	gensym: int -> string
+	gensym(var_count) == 
+		--let var_count: int = -1 + 1
+			--var_count := var_count+1; make_varname(var_count, "");
+		-- in
+		  make_varname(var_count, "");
+	
+	--@doc the "cost" of reducing a connective
+	--@NB here ML pattern matching does a nice job at the complex nature of this result? Any suggestion? if-then-else is a mess
+	/*
+	x fun cost (_,       Conn("~", _))          = 1    (*a single subgoal*)
+	x  | cost (Left,    Conn("&", _))          = 1
+	x  | cost (Right,   Conn("|", _))          = 1
+	x  | cost (Right,   Conn("-->", _))        = 1
+	x  | cost (Right,   Quant("ALL",_,_))      = 1
+	x  | cost (Left,    Quant("EXISTS",_,_))   = 1
+	x  | cost (Right,   Conn("&", _))          = 2    (*case split: 2 subgoals*)
+	x  | cost (Left,    Conn("|", _))          = 2
+	x  | cost (Left,    Conn("-->", _))        = 2
+	x  | cost (_ ,      Conn("<->", _))        = 2
+	x  | cost (Left,    Quant("ALL",_,_))      = 3    (*quantifier expansion*)
+	x  | cost (Right,   Quant("EXISTS",_,_))   = 3    (*quantifier expansion*)
+	x  | cost _ = 4;                                  (*no reductions possible*)
+  	*/
+	cost: Side * Form -> int
+	cost(s, f) ==
+		if is_Conn(f) then
+			if f.c = "~" then	
+				1
+			else if f.c = "<->" then
+				2
+			else if s = <Left> then
+				if f.c = "&" then
+					1
+				else if f.c in set {"|", "-->"} then
+					2
+				else
+					4
+			else if s = <Right> then
+				if f.c in set {"|", "-->"} then
+					1
+				else if f.c = "&" then
+					2
+				else
+					4
+			else
+				4
+		else if is_Quant(f) then
+			if s = <Left> then
+				if f.q = "EXISTS" then
+					1
+				else if f.q = "ALL" then
+					3
+				else
+					4
+			else if s = <Right> then
+				if f.q = "EXISTS" then
+					3
+				else if f.q = "ALL" then
+					1
+				else
+					4	
+			else
+				4					
+		else
+			4;
+
+	--@NB see new_goal below; had to make mk_(...) version
+	paircost: (Side * Form) -> Entry
+	paircost(mk_(s, A)) == mk_(cost(s, A), s, A);
+	
+	--@NB here ML is cleaner in the sense it returns the lambda! 
+	/*
+	(*Insertion into a list, ordered by sort keys. *) 
+	fun insert less =
+	  let fun insr (x, []) = [x]
+	        | insr (x, y::ys) = if less(y,x) then y :: insr (x,ys) else x::y::ys
+	   in insr end;
+	*/
+	insert[@T]: (@T * @T -> bool) -> @T * seq of @T -> seq of @T
+	insert(less)(x', s') ==
+		--@NB interesting: should I didn't add [@T] here as it would "hide" outer @T. Should I have to?
+		let insr: @T * seq of @T -> seq of @T
+		    insr(x, s) ==
+		    	cases s:
+		    		[]    -> [x],
+		    		[y]^ys-> (if less(y, x) then [y] ^ insr(x, ys) else [x, y] ^ ys)
+		    	end
+		    measure
+		    	len s
+		 in
+		 	--@NB couldn't return this directly either; guess would have to change the function signature?
+		   --insr[@T];
+		   insr(x', s');
+	
+	insert2[@T]: (@T * @T -> bool) -> (@T * seq of @T -> seq of @T)
+	insert2(less) ==
+		let insr: @T * seq of @T -> seq of @T
+		    insr(x, s) ==
+		    	cases s:
+		    		[]    -> [x],
+		    		[y]^ys-> (if less(y, x) then [y] ^ insr(x, ys) else [x, y] ^ ys)
+		    	end
+		    measure
+		    	len s
+		 in
+		   insr;			
+
+	--@doc (*Insert an entry into a goal, in correct order *)
+	--@NB here VDM is nicer: one could have defined a ord_Entry instead
+	entry_less: Entry * Entry -> bool
+	entry_less(mk_(m, -, -), mk_(n, -, -)) == m < n;
+	
+	insert_early: Entry * Goal -> Goal
+	insert_early(x, s) == insert[Entry](entry_less)(x, s);
+	
+	insert_early2: () -> (Entry * Goal -> Goal)
+	insert_early2() == insert2[Entry](entry_less);
+
+	--@doc (*Quantified formulae are put back at end -- they are used in a cycle*) 
+	--@NB here VDM is nicer: one could have defined a ord_Entry instead
+	entry_lesseq: Entry * Entry -> bool
+	entry_lesseq(mk_(m, -, -), mk_(n, -, -)) == m <= n;
+	
+	insert_late: Entry * Goal -> Goal
+	insert_late(x, s) == insert[Entry](entry_lesseq)(x, s);
+	
+	insert_late2: () -> (Entry * Goal -> Goal)
+	insert_late2() == insert2[Entry](entry_lesseq);
+
+	--@doc (*Extend the goal G by inserting a list of (side,form) pairs*)
+	new_goal: Goal -> seq of (Side * Form) -> Goal
+	--Inappropriate type for argument 1. Expect: ((TP`Side * TP`Form) +> TP`Entry) Actual: (TP`Side * TP`Form -> TP`Entry)  
+	--new_goal(g)(pairs) == accumulate[Entry, Goal](insert_early)(mk_(seqMap[Side * Form, Entry](paircost)(pairs), g));
+	new_goal(g)(pairs) == accumulate[Entry, Goal](insert_early)(mk_(seqMap[(Side * Form), Entry](paircost)(pairs), g));
+
+	--@doc (*Extend the goal G, making a list of goals*)
+	new_goals: Goal -> seq of seq of (Side * Form) -> GoalTable
+	new_goals(g)(pairslist) == seqMap[seq of (Side * Form), Goal](new_goal(g))(pairslist);
+
+	--@NB here VDM is much much nicer: we can have type invariants on Conn and Quant.	
+	can_reduce: Entry -> bool
+	can_reduce(mk_(-, side, form)) ==
+		--@doc can't reduce anything by connective or quantifier
+		(is_Conn(form) or is_Quant(form))
+		and
+		(side = <Left> => 
+				((is_Conn(form) => (form.c in set {"~", "&", "|", "-->", "<->"}) 
+														and 
+														len form.fs = (if form.c = "~" then 1 else 2)
+													 )
+				 and
+				 (is_Quant(form) => form.q in set {"ALL", "EXISTS"})
+				)
+	  )
+	  and
+	  (side = <Right> =>
+	  		((is_Conn(form) => (form.c in set {"~", "&", "|", "-->", "<->"}) 
+														and 
+														len form.fs = (if form.c = "~" then 1 else 2)
+													 )
+	  		 and
+	  		 (is_Quant(form) => form.q in set {"ALL", "EXISTS"})
+	  		)
+	  );
+				
+		
+	--@doc (*Reduce the pair using the rest of the goal (G) to make new goals*)
+	--@doc to account for the symbol generator, use another parameter 
+	reduce_goal: Entry * Goal * int -> int * GoalTable
+	reduce_goal(pair_, g, n) ==
+		let
+			goals: () -> (seq of seq of (Side * Form) -> GoalTable) 
+			goals() == new_goals(g),
+			
+			--vars_in_goal: () -> (Goal * seq of string) -> seq of string
+			--vars_in_form: () -> (Form * seq of string -> seq of string)
+			vars_in: Form -> seq of string 
+			vars_in(A) == vars_in_goal()(mk_(g, vars_in_form()(A, []))),
+			
+			--subst_bound: Term -> Form -> Form
+			subparam: Form -> Form
+			subparam(A) == subst_bound(mk_Param(gensym(n), vars_in(A)))(A),
+			
+			subvar: Form -> Form
+			subvar(A) == subst_bound(mk_Var(gensym(n)))(A),
+			
+			red: Entry -> GoalTable
+			red(mk_(cost_, side, form)) ==
+					/*
+					  fun red(_,Right,Conn("~", [A]))     = goals[[(Left,A)]]
+			        | red(_,Right,Conn("&", [A,B]))   = goals[[(Right,A)], [(Right,B)]]
+			        | red(_,Right,Conn("|", [A,B]))   = goals[[(Right,A)], [(Left,B)]]
+			        | red(_,Right,Conn("-->", [A,B])) = goals[[(Left,A),(Right,B)]]
+			        | red(_,Right,Conn("<->", [A,B])) = goals[[(Left,A),(Right,B)], [(Right,A),(Left,B)]] 
+			        | red(_,Right,Quant("ALL",_,A))   = goals[[(Right, subparam A)]] 
+			        | red(_,Right,Quant("EXISTS",_,A))= [ insert_early (paircost(Right, subvar A), insert_late(pair,G)) ] 
+			
+			        | red(_,Left, Conn("~", [A]))     = goals[[(Right,A)]]
+			        | red(_,Left, Conn("&", [A,B]))   = goals[[(Left,A)], [(Left,B)]]
+			        | red(_,Left, Conn("|", [A,B]))   = goals[[(Left,A)], [(Left,B)]]
+			        | red(_,Left, Conn("-->", [A,B])) = goals[[(Right,A)], [(Left,B)]] 
+			        | red(_,Left, Conn("<->", [A,B])) = goals[[(Left,A),(Left,B)], [(Right,A),(Right,B)]]
+			        | red(_,Left, Quant("ALL",_,A))   = [ insert_early (paircost(Left, subvar A), insert_late(pair,G)) ] 
+			        | red(_,Left, Quant("EXISTS",_,A))= goals[[(Left, subparam A)]]
+			        | red _ = raise REDUCE
+					*/
+				cases side:
+					<Left> ->
+						cases true:
+							(is_Conn(form)) -> let mk_Conn(c, As) = form in 
+								cases c:
+									"~"  -> goals()([[mk_(<Right>, hd As)]]),
+									--@NB here VDM is nicer? But then can't match on [A,B]?
+									"&",  
+									"|"  -> goals()([[mk_(<Left>, hd As)], [mk_(<Left>, As(2))]]),
+									"-->"-> goals()([[mk_(<Right>, hd As)], [mk_(<Left>, As(2))]]),
+									"<->"-> goals()([[mk_(<Left>, hd As), mk_(<Left>, As(2))], [mk_(<Right>, hd As), mk_(<Right>, As(2))]]),
+								  others-> [] --raise REDUCE
+								end,
+							(is_Quant(form))-> let mk_Quant(q,-,A)=form in 
+								cases q:
+									"ALL"    -> [ insert_early(paircost(mk_(<Left>, subvar(A))), insert_late(mk_(cost_, side, form), g)) ],
+									"EXISTS" -> goals()([[mk_(<Left>, subparam(A))]]),
+								  others-> [] --raise REDUCE
+								end,
+							others -> []--raise REDUCE!
+						end,
+					<Right>->
+						cases true:
+							(is_Conn(form)) -> let mk_Conn(c, As) = form in 
+								cases c:
+									"~"  -> goals()([[mk_(<Left>, hd As)]]),
+									"&"  -> goals()([[mk_(<Right>, hd As)], [mk_(<Right>, As(2))]]), 
+									"|"  -> goals()([[mk_(<Right>, hd As)], [mk_(<Left>, As(2))]]),
+									"-->"-> goals()([[mk_(<Left>, hd As)], [mk_(<Right>, As(2))]]),
+									"<->"-> goals()([[mk_(<Left>, hd As), mk_(<Right>, As(2))], [mk_(<Right>, hd As), mk_(<Left>, As(2))]]),
+								  others-> [] --raise REDUCE
+								end,
+							(is_Quant(form))-> let mk_Quant(q,-,A)=form in 
+								cases q:
+									"ALL"    -> goals()([[mk_(<Right>, subparam(A))]]),
+									"EXISTS" -> [ insert_early(paircost(mk_(<Right>, subvar(A))), insert_late(mk_(cost_, side, form), g)) ],
+								  others-> [] --raise REDUCE
+								end,
+							others -> []--raise REDUCE!
+						end,
+					others -> []--raise REDUCE!
+				end,
+				--mk_(-, side, form) = pair_,
+				n': int = n + (if is_Quant(pair_.#3/*form*/) then 1 else 0)
+		in 
+			mk_(n', red(pair_))
+	pre
+		--@OnFail("REDUCE: couldn't reduce goal")
+		(can_reduce(pair_))
+	post
+		--@doc must increase the symbol generator counter for ensuring new symbols are created 
+		RESULT.#1 >= n + (if is_Quant(pair_.#3/*form*/) then 1 else 0);	
+	
+	pair[@X,@Y]: @X -> @Y -> @X * @Y
+	pair(x)(y) == mk_(x,y);
+	
+	--@doc (*Make a goal from lists of formulae: As|-Bs*) 
+	make_goal: seq of Form * seq of Form -> Goal
+	make_goal(As, Bs) == 
+		new_goal([])(seqMap[Form, Side * Form](pair[Side, Form](<Left>))(As) ^ seqMap[Form, Side * Form](pair[Side, Form](<Right>))(Bs));
+		
+	--@doc Reading of goals: Astrs |- Bstrs
+	read_tab: seq of string * seq of string -> GoalTable
+	read_tab(Astrs, Bstrs) ==
+		let 
+			As: seq of Form = reverse(seqMap[string, Form](read)(Astrs)),
+			Bs: seq of Form = reverse(seqMap[string, Form](read)(Bstrs)),
+			 G: Goal        = make_goal(As, Bs),
+			 mk_(-, tab)    = insert_goals([G], [], [])
+		 in
+		  tab;
+	
+	stringof_sequent: seq of Form -> string
+	stringof_sequent(As) ==	  	
+		if As = [] then
+			"empty"
+		else
+			conc_list1(", ")(seqMap[Form, string](stringof)(As));
+	
+	--@NB another case of mk_ :-(
+	print_param: (string * seq of string) -> string
+	print_param(mk_(a, ts)) ==
+		a ^ "         " ^ stringof_args(seqMap[string, Var](makeVar)(ts)) ^ "\n";
+  
+  print_params: seq of (string * seq of string) -> string
+  print_params(pairs) ==
+  	if pairs <> [] then
+  		"Param     Not allowed in\n" ^
+  		implode(seqMap[string * seq of string, string](print_param)(pairs)) ^ "\n"
+  	else
+  		"";
+
+	print_goal: Goal -> string
+	print_goal(g) ==
+  	let mk_(As, Bs) = split_goal(g) in
+  		 stringof_sequent(As) ^ " |- " ^ stringof_sequent(Bs) ^ "\n\n";
+
+	print_count: int -> string
+	print_count(n) == if n = 0 then "" else makestring(n) ^ " goals\n";
+	
+  print_tab: GoalTable -> string
+  print_tab(gt) ==
+  	if gt = [] then
+  		"No more goals: proof finished\n"
+  	else
+  		"\n" ^ 
+  		implode(seqMap[Goal, string](print_goal)(gt)) ^
+    	print_count(length[Goal](gt)) ^
+    	--@NB without these comments on site, it's hard to know the type params and it's easy to make a mistake; couldn't they be inferred?
+    	--params_in_goal: () -> ((Goal * seq of (string * seq of string)) -> seq of (string * seq of string))
+    	--accumulate[@X, @Y]: (@X * @Y -> @Y) -> ((seq of @X) * @Y) -> @Y 
+			--print_params(accumulate[Entry, seq of (string * seq of string)](params_in_goal())(mk_(gt, [])));
+    	--print_params(accumulate[Goal, seq of (string * seq of string)](params_in_goal())(mk_(gt, [])));
+			--Inappropriate type for argument 1. 
+			--Expect:   (TP`Goal * seq of ((TP`string * seq of (TP`string))) +> seq of ((TP`string * seq of (TP`string)))) 
+			--Actual: ( (TP`Goal * seq of ((TP`string * seq of (TP`string))))-> seq of ((TP`string * seq of (TP`string))))  	
+			--print_params(accumulate[Goal, seq of (string * seq of string)](params_in_goal())(mk_(gt, [])));
+			--Multiple markers found on this line:
+  		--- Inappropriate type for argument 1. 
+  		--  Expect: (seq of (TP`Entry) * seq of ((TP`string * seq of (TP`string)))) 
+  		--  Actual: (TP`GoalTable * [])  
+  		--- Inappropriate type for argument 1. 
+  		--  Expect: (TP`Entry * seq of ((TP`string * seq of (TP`string))) +> seq of ((TP`string * seq of (TP`string)))) 
+  		--  Actual: ((TP`Goal * seq of ((TP`string * seq of (TP`string)))) -> seq of ((TP`string * seq of (TP`string))))  
+			
+			--Inappropriate type for argument 1. 
+			-- Expect:  (TP`Goal * seq of ((TP`string * seq of (TP`string))) +> seq of ((TP`string * seq of (TP`string)))) 
+			-- Actual: ((TP`Goal * seq of ((TP`string * seq of (TP`string)))) -> seq of ((TP`string * seq of (TP`string))))  
+			print_params(accumulate[Goal, seq of (string * seq of string)](params_in_goal2)(mk_(gt, [])));
+    	
+--@doc noew the StdOut bit of ML with operations, as well as init_gensym()
+state Folderol of
+	var_count: int
+	the_goaltable: GoalTable
+init f == f = mk_Folderol(-1, [])
+end
+
+operations
+	ml_init_gem_sym() == 
+		(var_count := -1;)
+	ext 
+		wr var_count
+	post
+		var_count = -1;
+		
+	ml_prints(a: string) ==
+		(print(a);
+		);
+		
+	ml_print_step(entry: Entry, ngoals: int, As: seq of Form) ==
+		(let mk_(-, si, C) = entry in
+		 		ml_prints(implode(repeat[string](" ")(ngoals)) ^ stringof_sy(C) ^ stringof_side(si));
+		 ml_prints(conc_list(" ")(seqMap[Form, string](stringof)(reverse As)));
+		 ml_prints("\n");
+		);
+		
+	ml_proof_step(gt: GoalTable) gt': GoalTable ==
+		(if gt = [] then
+		   (return [];)
+		 else
+			 let 
+			 		[ent]^G        = hd gt,
+			 		tab: GoalTable = tl gt,
+					mk_(var_count', newtab) = reduce_goal(ent, G, var_count),
+					mk_(As, newtab') 				= insert_goals(newtab, [], tab)
+				in
+					(ml_print_step(ent, length[Goal](tab), As);
+					 var_count := var_count';
+					 return newtab';
+					);
+		)
+	ext 
+		wr var_count
+	pre
+		--@OnFail("ERROR: Empty goal")
+		((gt <> [] => len(hd gt) > 1)
+		 and
+		 (let [ent]^G = hd gt in pre_reduce_goal(ent, G, var_count))
+		)
+	post
+		(gt = [] => gt' = []);
+	
+	--@NB here ML has a monadic stylr state update; effectively also having 
+	--		ml_proof_steps: int ==> Goalable ==> GoalTable!
+																				
+	ml_proof_steps(n: int, gt: GoalTable) --@Warning(5000)
+																				gt': GoalTable==
+		(if gt = [] then
+			 (ml_prints("Sucess, no goals!"); return [];)
+		 else
+		 	 (if n = 0 then
+		 	 		return gt
+		 	 	else
+		 	 		return ml_proof_steps(n - 1, ml_proof_step(gt));
+		 	 )
+		)
+	ext
+		rd Folderol
+	pre
+		--@OnFail("REDUCE:\n**No proof rules applicable**\n, %1s", gt)
+		(gt <> [] and n > 0 => pre_ml_proof_step(gt, Folderol));
+			
+  ml_print_tab(gt: GoalTable) ==
+  	(if gt = [] then
+  		 ml_prints("No more goals: proof finished\n")
+  	 else
+  	 	 ml_prints(print_tab(gt));
+  	);	
+  
+  --@doc (*Top-level commands: interaction with proof state*)
+  ml_set_tab(gt: GoalTable) ==
+  	(the_goaltable := gt;
+  	 ml_print_tab(gt);
+  	)
+  ext 
+  	wr the_goaltable
+  post
+  	the_goaltable = gt;
+  
+  --@doc(*Read a goal: the sequent As|-Bs *) 
+  ml_read_goalseq(Astrs: seq of string, Bstrs: seq of string) ==
+  	(ml_init_gem_sym();
+  	 ml_set_tab(read_tab(Astrs, Bstrs));
+  	)
+  ext
+  	wr the_goaltable;
+  
+  --@doc Read the goal |-Bs
+  ml_read_goal(Bstr: string) ==
+  	(ml_read_goalseq([], [Bstr]);
+  	);
+  
+  ml_step() ==
+  	(ml_set_tab(ml_proof_step(the_goaltable));
+  	);	
+  	
+  ml_steps(n: int) ==
+  	(ml_set_tab(ml_proof_steps(max(n, 0), the_goaltable));
+  	);
+
+	ml_run() ==
+		(ml_set_tab(ml_proof_steps(-1, the_goaltable));
+  	);  	
+  
+  ml_run_goalseq(Astrs: seq of string, Bstrs: seq of string) ==
+		(ml_read_goalseq(Astrs, Bstrs);
+		 ml_run();
+  	);  	
+
+  ml_run_goal(g: string) ==
+		(ml_run_goalseq([], [g]);
+  	);  	
+  
+  --@doc(*Raises exception unless some goals are left unsolved after n proof steps*) 
+  ml_fail_goal(n: int, A: string) ==
+  	(ml_read_goal(A);
+  	 ml_steps(n);
+  	 if the_goaltable = [] then
+  	 	 ml_prints("This proof should have failed!")
+  	 else
+  	 	 ml_prints("Failed, as expected\n"); 
+  	);
+  	
+traces
+	TR_OR_AND_DIST: ml_run_goal("(P|Q)&(P|R) --> P|(Q&R)");
+  
+end TP
