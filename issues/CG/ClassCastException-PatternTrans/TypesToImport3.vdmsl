@@ -1,0 +1,12 @@
+module TypesToImport3
+exports
+	types
+		struct Technology0
+		struct Technology
+definitions 
+
+types
+	Technology0 = <FirstGen> | <SecondGen>;
+	Technology = set1 of Technology0; -- = {{<FirstGen>}, {<SecondGen>}, {<FirstGen>,<SecondGen>}};
+
+end TypesToImport3

@@ -1,0 +1,165 @@
+module MuError
+exports all
+definitions 
+
+types
+	-- to help choose what type RT in R; this is only known at run-time depending on the module it comes from.
+	RE = <Nat> | <Bool> | <Char>;
+	
+	-- this is artificial and could be the types directly. kept structure to see what CG did. 
+	RT = R1 | R2 | R3;
+	
+	R1 :: n: nat inv mk_R1(n) == n < 10;
+		
+	R2 ::
+		l: bool inv mk_R2(b) == not b; -- artificial...
+		
+	R3 ::
+		c: char inv mk_R3(c) == c in set { 'A', 'B', 'C', 'D', 'E' };
+	
+	R ::
+		e: RE -- module id
+		x: RT -- module record specific to the id
+	inv mk_R(e,x) == 
+		cases e:
+			<Nat> -> is_R1(x),  -- each module id has different types for R.x with different invariants
+			<Bool> -> is_R2(x),
+			<Char> -> is_R3(x),
+			others -> false
+		end;
+		
+	-- to help choose what field is nil or not.
+	TE = <A> | <B>;
+	 
+	T1 ::
+		a: seq of nat inv mk_T1(a) == len a > 0;
+		
+	T2 ::
+		b: map nat to nat inv mk_T2(b) == card dom b > 0;
+		 
+	T ::
+		e: TE
+		a: [T1]
+		b: [T2]
+	inv mk_T(e, a, b) ==
+		cases e:
+			<A> -> a <> nil and b = nil,
+			<B> -> a = nil and b <> nil,
+			others -> false
+		end;
+		
+	U = (R | T);
+
+	S = seq1 of char
+	inv s == (hd s) in set { 'R', 'T' };
+	
+	MR = map S to ?
+	inv m == dom m = { "R1.n" } or dom m = { "R2.l" } or dom m = { "R3.c" };
+	
+	MT = map S to ?
+	inv m == dom m = { "T1.a" } or dom m = { "T2.b" };
+	
+	M = MR | MT;
+	
+functions
+
+	r12m: R1 -> MR
+	r12m(mk_R1(n)) == { "R1.n" |-> n };
+	
+	m2r1: MR -> R1
+	m2r1(m) == mk_R1(m("R1.n"));
+
+	r22m: R2 -> MR
+	r22m(mk_R2(l)) == { "R2.l" |-> l };
+	
+	m2r2: MR -> R2
+	m2r2(m) == mk_R2(m("R2.l"));
+	
+	r32m: R3 -> MR
+	r32m(mk_R3(c)) == { "R3.c" |-> c };
+	
+	m2r3: MR -> R3
+	m2r3(m) == mk_R3(m("R3.c"));
+	
+	mr_upd[@V]: MR * S * @V -> MR
+	mr_upd(m, key, val) == 
+		m ++ { key |-> val }
+  pre
+    key in set dom m and is_(m(key),@V);
+
+	t12m: T1 -> MT
+	t12m(mk_T1(a)) == { "T1.a" |-> a };
+	
+	m2t1: MT -> T1
+	m2t1(m) == mk_T1(m("T1.a"));
+	
+	t22m: T2 -> MT
+	t22m(mk_T2(b)) == { "T2.b" |-> b };
+	
+	m2t2: MT -> T2
+	m2t2(m) == mk_T2(m("T2.b"));
+
+	mt_upd[@V]: MT * S * @V -> MT
+	mt_upd(m, key, val) == 
+		m ++ { key |-> val }
+  pre
+    key in set dom m and is_(m(key),@V);
+    
+  -- nick: it fails for m_upd[seq of nat](t12m(mk_T1([1])), "T1.a", [3]) on the inv_MR even though it creates a MT? Possible semantics?
+  m_upd[@V]: M * S * @V -> M
+	m_upd(m, key, val) == 
+		m ++ { key |-> val }
+  pre
+    key in set dom m and is_(m(key),@V);
+    
+
+	u_id: U * S  -> U
+	u_id(u, key) ==
+		cases hd key:
+			'R' -> mu(u, x |-> u.x),
+			'T' -> 
+				cases u.e:
+					<A> -> mu(u, a |-> u.a),
+					<B> -> mu(u, b |-> u.b),
+					others -> u
+				end,
+			others -> u
+		end
+	pre
+		-- the key determines the expected type for R and T; 
+		(hd key = 'R' <=> is_R(u))
+		and
+		(hd key = 'T' <=> is_T(u));
+
+	-- this is not quite the real one because the casts for T have extra info within key; and R has way more structure than given
+	-- the invariant of R an T, imposes restrictions on @V
+	--
+	-- ex: print u_upd[nat](mk_R(<Nat>, mk_R1(5)), "R1.n", 3)
+	--		 print u_upd[seq of nat](mk_T(<A>, mk_T1([1]), nil), "T1.a", [3])
+	--		  print m_upd[seq of nat](t12m(mk_T1([1])), "T1.n", [3])
+	--      print mt_upd[seq of nat](t12m(mk_T1([1])), "T1.n", [3])
+	u_upd[@V]: U * S * @V -> U
+	u_upd(u, key, val) ==
+		cases hd key:
+			'R' -> 
+				cases u.e: 
+					<Nat> -> mu(u, x |-> m2r1(mr_upd[@V](r12m(u.x), key, val))),
+					<Bool>-> mu(u, x |-> m2r2(mr_upd[@V](r22m(u.x), key, val))),
+					<Char>->  mu(u, x |-> m2r3(mr_upd[@V](r32m(u.x), key, val))),
+					others-> u
+				end,
+			'T' -> 
+				cases u.e:
+					<A> -> mu(u, a |-> m2t1(mt_upd[@V](t12m(u.a), key, val))),
+					<B> -> mu(u, b |-> m2t2(mt_upd[@V](t22m(u.b), key, val))),
+					others -> u
+				end,
+			others -> u
+		end
+	pre
+		(hd key = 'R' <=> is_R(u))
+		and
+		(hd key = 'T' <=> is_T(u));
+		
+	
+end MuError

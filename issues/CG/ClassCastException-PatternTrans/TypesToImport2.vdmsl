@@ -1,0 +1,25 @@
+module TypesToImport2
+imports
+from TypesToImport
+	types
+		String renamed String
+exports 
+	types
+		struct AcquirerID
+definitions 
+
+types
+	ANString = String
+	inv an == hd an in set ALPHA_CHARS and
+					  elems (tl an) subset ALPHA_NUM_CHARS;
+
+	AcquirerID = ANString;
+		
+values
+	NUM_CHARS      : set1 of char = {'0','1','2','3','4','5','6','7','8','9'};
+	UALPHA_CHARS   : set1 of char = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+	LALPHA_CHARS   : set1 of char = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+	ALPHA_CHARS    : set1 of char = UALPHA_CHARS union LALPHA_CHARS; 
+	ALPHA_NUM_CHARS: set1 of char = ALPHA_CHARS union NUM_CHARS;
+
+end TypesToImport2

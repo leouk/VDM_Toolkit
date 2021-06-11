@@ -1,0 +1,18 @@
+module BasicTypes
+exports 
+	types
+		struct String
+		struct TypeForX
+		struct TypeForY
+definitions 
+
+types
+	String = seq1 of char;
+
+	TypeForX = nat
+	inv x == x > 10;
+	
+	TypeForY = int
+	inv y == y < 100;
+	
+end BasicTypes

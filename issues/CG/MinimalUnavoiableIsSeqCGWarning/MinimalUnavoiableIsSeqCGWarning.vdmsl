@@ -1,0 +1,115 @@
+module MinimalUnavoiableIsSeqCGWarning
+imports
+from BasicTypeNonStruct
+	types
+		Type renamed Type
+		SeqType renamed SeqType
+	functions
+		check_is_seq_of_inv renamed check_is_seq_of_inv
+		select_first_value renamed select_first_value
+exports all
+definitions 
+
+types	
+	Kind = <A> | <B>;
+	
+	InnerRecord:: 
+		x: nat
+	inv mk_InnerRecord(x) == x > 10;
+	
+	InnerRecordSeq = seq of InnerRecord
+	inv l == card elems l = len l;
+		
+	InnerSeq = seq of nat
+	inv l == card elems l = len l;
+	
+	--@CG each record has structured stuff inside
+	OuterRecord ::
+		r: InnerRecordSeq
+		s: InnerSeq
+		o: Kind;
+		
+	SomeOtherRecord ::
+		x: nat;
+	
+	--@CG depending on Kind, the internal data is a different record structure
+	Record ::
+		kind: Kind
+		data: SomeOtherRecord | OuterRecord
+	inv mk_Record(k,d) == 
+		cases k:
+			<A> -> is_OuterRecord(d),
+			<B> -> is_SomeOtherRecord(d),
+			others -> false
+		end;
+
+values
+	--@CG needed for function parameters warning
+	invariant_InnerSeq_const      : seq of nat +> bool         = (lambda s: seq of nat & inv_InnerSeq(s));
+	invariant_InnerRecordSeq_const: seq of InnerRecord +> bool = (lambda s: seq of InnerRecord & inv_InnerRecordSeq(s));
+	
+functions
+
+	--@CG SeqType is parsed from XML, hence the seq of ?, which is here "straithened" out if it satisfy certain conditions
+	invariant_OuterRecord: Kind * SeqType +> bool
+	invariant_OuterRecord(kind, data) ==
+		kind = <A>
+		and
+		--@CG data might contain more stuff, including garbage, but *must* contain at least 3 things first
+		len data >= 3 
+		and 
+		--@CG This leads to is_T(x) warning; 
+		--@CG-POINT: the check_is doesn't give VDM enouhg info about type of data(1)!
+		check_is_seq_of_inv[InnerRecord](data(1), invariant_InnerRecordSeq_const) -- is_InnerRecordSeq(data(1))
+		and 
+		check_is_seq_of_inv[nat](data(2), invariant_InnerSeq_const) 							-- is_InnerSeq(data(2))
+		and 
+		is_Kind(data(3));
+
+	f: Kind * SeqType -> Record
+	f(kind, data) ==
+		if invariant_OuterRecord(kind, data) then 
+				let d1_0: Type = data(1),
+				    d2_0: Type = data(2),
+				    d3_0: Type = data(3),
+				    --@CG this is_T(x) warning
+				    --@VDM without the is_T(x) check, d1_0 is a type error , even with narrow
+				    --d1: InnerRecordSeq = if check_is_seq_of_inv[InnerRecord](d1_0, invariant_InnerRecordSeq_const) then narrow_(d1_0, InnerRecord) else [],
+				    --@CG-POINT: the check_is doesn't give VDM enouhg info about type of data(1)!
+				    d1: InnerRecordSeq = if is_InnerRecordSeq(d1_0) then d1_0 else [],
+				    d2: InnerSeq  		 = if is_InnerSeq(d2_0) then d2_0 else [],
+				 		d3: Kind 					 = narrow_(d3_0, Kind)
+				 	in
+						mk_Record(kind, mk_OuterRecord(d1,d2,d3))
+		 else
+			 		mk_Record(kind, mk_SomeOtherRecord(0));
+			 		
+	g: SeqType -> [InnerRecord]
+	g(s) ==
+		if len s > 0 then 
+			--@CG-POINT: warning about function parameter being complex
+			--slect_first_value[InnerRecordSeq](s)
+			let s': ? = select_first_value[seq of ?](s) in
+				if check_is_seq_of_inv[InnerRecord](s', invariant_InnerRecordSeq_const) then 
+					--@CG-POINT: in my actual case, this narrowing is allowed? narrow_(s', InnerRecord)
+					nil
+				else
+					nil
+		else
+			nil;
+
+	--p: SeqType -> nat
+	--p(xs) == narrow_(xs(1), nat);
+	
+	p: SeqType -> nat
+	p(-) == 1;
+	
+values
+	val: nat = p([1]);
+
+values
+	--@CG-POINT these are the kinds of ways f is called (i.e. with a SeqType that can build a Record type of the right kind
+	test: Record = f(<A>, [[mk_InnerRecord(11),mk_InnerRecord(12)],[0,1], <B>]);
+			
+
+end MinimalUnavoiableIsSeqCGWarning

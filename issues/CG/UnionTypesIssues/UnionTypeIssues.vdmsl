@@ -1,0 +1,88 @@
+module UnionTypeIssues
+definitions
+
+types 
+	R1 :: x : nat;
+	
+	R2 :: x : seq of int
+				y : set of int;
+				
+	R3 = R1 | R2;
+	
+	E = <A> | <B> | <C>;
+	
+	T1 :: 
+			  y : int
+			  q : nat
+				x : E;
+			  
+	T2 :: x : E
+				z : char;
+				
+	T = T1 | T2;
+	
+functions
+	--Error: doesn't like here the lack of a descriminator for the type	
+	f1: R3 -> bool
+	f1(r3) == if is_R1(r3) then r3.x < 30 and narrow_(r3, R1).x > 0 else r3.y <> {};
+	
+	--Error: doesn't like here the lack of a descriminator for the type	
+	f1': R3 -> bool
+	f1'(r3) == if is_R1(r3) then r3.x > 0 else if is_R2(r3) then r3.y <> {} else false;
+	
+	--Error: doesn't like here the lack of a descriminator for the type	
+	f2: R3 -> bool
+	f2(r3) == r3.y <> {}
+	pre is_R2(r3);
+
+	--Error: doesn't like here the lack of a descriminator for the type	
+	f2': R3 -> bool
+	f2'(r3) == r3.x > 0;
+	
+	--Error: doesn't like here the lack of a descriminator for the type	
+	f3: (R1|R2) -> bool
+	f3(r3) == r3.x > 0;
+	
+	g1: R1 -> bool
+	g1(r) == r.x > 10
+	pre r.x > 0;
+	
+	g2: R2 -> bool
+	g2(r) == len r.x in set r.y
+	pre r.y <> {};
+	
+	g3: R3 -> bool
+	g3(r3) == f1(r3)	
+		--Error: missing cast on (R1)r3 in generated Java? needs narrow? 
+	pre (is_R1(r3) => pre_g1(r3))
+			and
+			(is_R2(r3) => pre_g2(r3))
+			
+functions
+	--common field of same type
+	h: T -> bool
+	h(t) ==
+		--shared field name on union type field of a record
+		 if t.x = <A> then true else false;
+
+	h1: E -> bool
+	h1(x) == true;
+
+state ST of
+	 qqqq: nat
+end
+
+operations
+	--Error only with external clauses?  works here 
+	op1: (T1 | T2) ==> E
+	op1(t) ==
+		--shared field name on union type field of a record
+		(return t.x);
+
+	--Error only with external clauses? 
+	op2(t:(T1 | T2)) r : E ==
+		--shared field name on union type field of a record
+		(return t.x)
+	ext rd qqqq;
+	
+end UnionTypeIssues

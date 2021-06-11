@@ -1,0 +1,54 @@
+module DBLink
+exports 
+	types
+		SQLQuery
+	functions
+		createSQLQuery: seq1 of char -> SQLQuery
+	operations
+		Open: seq1 of char ==> ()
+		Close: () ==> ()
+		Query: SQLQuery ==> seq1 of char
+definitions 
+
+types 
+
+	String = seq1 of char;
+	SQLQuery = String;
+
+state DBLink of
+	dbName: [String]
+end
+	
+functions
+	createSQLQuery: seq1 of char -> SQLQuery
+	createSQLQuery(s) == s;
+	
+operations 
+
+	Open(filename: seq1 of char) == 
+		(dbName := filename;
+		 dbOpen())
+	ext
+		wr dbName
+	pre 
+		dbName = nil
+	post
+		dbName <> nil;
+		 
+	Close() == dbClose()
+	ext wr dbName
+	pre dbName <> nil
+	post dbName = nil;
+	
+	dbOpen() == is not yet specified
+	ext rd dbName; 
+
+	dbClose() == is not yet specified
+	ext rd dbName; 
+	
+	Query(query: SQLQuery) r: seq1 of char == is not yet specified
+	ext rd dbName
+	pre dbName <> nil; 
+	--@todo NB: link with SQL database to create/select rules/configuration. 
+
+end DBLink

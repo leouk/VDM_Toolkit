@@ -1,0 +1,17 @@
+module FcnEqTest
+exports all
+definitions 
+
+types
+
+functions
+	f1: nat -> nat
+	f1(x) == x;
+	
+	f2: nat -> nat
+	f2(x) == x;
+	
+values
+	test: bool = f1 = f2;
+	
+end FcnEqTest

@@ -1,0 +1,8 @@
+module MinimalQuoteError
+exports all
+definitions 
+
+types
+	Package = <card> | <cardholder> | <mod> | <types>;
+
+end MinimalQuoteError

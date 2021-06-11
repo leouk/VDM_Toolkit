@@ -1,0 +1,118 @@
+module MuOk
+exports all
+definitions 
+
+types
+	-- to help choose what type RT in R; this is only known at run-time depending on the module it comes from.
+	RE = <Nat> | <Bool> | <Char>;
+	
+	-- this is artificial and could be the types directly. kept structure to see what CG did. 
+	RT = R1 | R2 | R3;
+	
+	R1 :: n: nat inv mk_R1(n) == n < 10;
+		
+	R2 ::
+		l: bool inv mk_R2(b) == not b; -- artificial...
+		
+	R3 ::
+		c: char inv mk_R3(c) == c in set { 'A', 'B', 'C', 'D', 'E' };
+	
+	R ::
+		e: RE -- module id
+		x: RT -- module record specific to the id
+	inv mk_R(e,x) == 
+		cases e:
+			<Nat> -> is_R1(x),  -- each module id has different types for R.x with different invariants
+			<Bool> -> is_R2(x),
+			<Char> -> is_R3(x),
+			others -> false
+		end;
+		
+	-- to help choose what field is nil or not.
+	TE = <A> | <B>;
+	 
+	T ::
+		e: TE
+		a: [seq of nat]
+		b: [map nat to nat]
+	inv mk_T(e, a, b) ==
+		cases e:
+			<A> -> a <> nil and b = nil,
+			<B> -> a = nil and b <> nil,
+			others -> false
+		end;
+		
+	U = (R | T);
+
+	S = seq1 of char
+	inv s == (hd s) in set { 'R', 'T' };
+	
+	MR = map S to ?
+	inv m == dom m = { "R.e", "R.x" };
+	
+	MT = map S to ?
+	inv m == dom m = { "T.e", "T.a", "T.b" };
+	
+	M = MR | MT;
+	
+functions
+
+	r2m: R -> MR
+	r2m(mk_R(e, x)) == { "R.e" |-> e, "R.x" |-> x };
+	
+	m2r: MR -> R
+	m2r(m) == mk_R(m("R.e"), m("R.x"));
+	
+	t2m: T -> MT
+	t2m(mk_T(e,a,b)) == { "T.e" |-> e, "T.a" |-> a, "T.b" |-> b };
+	
+	m2t: MT -> T
+	m2t(m) == mk_T(m("T.e"), m("T.a"), m("T.b"));
+	
+	m_upd[@V]: M * S * @V -> M
+	m_upd(m, key, val) == 
+		m ++ { key |-> val }
+  pre
+    key in set dom m and is_(m(key),@V);
+
+	u_id: U * S  -> U
+	u_id(u, key) ==
+		cases hd key:
+			'R' -> mu(u, x |-> u.x),
+			'T' -> 
+				cases u.e:
+					<A> -> mu(u, a |-> u.a),
+					<B> -> mu(u, b |-> u.b),
+					others -> u
+				end,
+			others -> u
+		end
+	pre
+		-- the key determines the expected type for R and T; 
+		(hd key = 'R' <=> is_R(u))
+		and
+		(hd key = 'T' <=> is_T(u));
+
+	-- this is not quite the real one because the casts for T have extra info within key; and R has way more structure than given
+	-- the invariant of R an T, imposes restrictions on @V
+	--
+	-- ex: print u_upd[R1](mk_R(<Nat>, mk_R1(5)), "R.x", mk_R1(3))
+	u_upd[@V]: U * S * @V -> U
+	u_upd(u, key, val) ==
+		cases hd key:
+			'R' -> mu(u, x |-> m2r(m_upd[@V](r2m(u), key, val)).x),
+			'T' -> 
+				cases u.e:
+					<A> -> mu(u, a |-> m2t(m_upd[@V](t2m(u), key, val)).a),
+					<B> -> mu(u, b |-> m2t(m_upd[@V](t2m(u), key, val)).b),
+					others -> u
+				end,
+			others -> u
+		end
+	pre
+		(hd key = 'R' <=> is_R(u))
+		and
+		(hd key = 'T' <=> is_T(u));
+		
+	
+end MuOk

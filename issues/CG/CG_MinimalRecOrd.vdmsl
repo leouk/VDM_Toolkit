@@ -1,0 +1,33 @@
+module CG_MinimalRecOrd
+exports all
+definitions 
+
+types
+--@doc this works
+	S = set of nat
+	ord s1 < s2 == s1 subset s2;
+
+--@doc this works
+	R :: 
+		x : nat
+		y :- set of nat
+	ord r1 < r2 == r1.x < r2.x;
+
+--	R ::
+--		x: nat
+	--inv r == r.x > 0
+--	ord r1 < r2 == r1.x < r2.x;
+
+	Amount = nat;
+	
+	--@doc this works
+	Aha :: 
+		amount: Amount
+		y:- set of Amount
+	--@doc GOTCHA! 
+	ord r1 < r2 ==
+		r1.amount < r2.amount
+	--ord mk_R(-,y1) < mk_R(-,y2) ==
+	--	y1 subset y2
+		;			
+end CG_MinimalRecOrd

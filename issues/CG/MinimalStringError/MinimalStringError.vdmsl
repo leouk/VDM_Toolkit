@@ -1,0 +1,43 @@
+module MinimalStringError
+imports
+from VDMUtil
+	functions
+		seq_of_char2val renamed str2val_
+exports all
+definitions 
+
+types
+	--I know.......
+	Integer = nat;
+	
+	String = seq1 of char;
+	
+	Numeric = String
+	inv n == elems n subset NUM_CHARS;
+	
+functions
+	str2nval[@T]: seq1 of char -> [@T]
+	str2nval(s) == 
+		--@todo/codegen complex pattern: tuples
+		--let mk_(-, val) = str2val_[@T](s) in val
+		let res: bool * [@T] = str2val_[@T](s) in res.#2
+	post
+		let mk_(ok, -) = str2val_[@T](s) in (ok <=> RESULT <> nil);
+	
+	str2val[@T]: seq1 of char -> @T
+	str2val(s) == str2nval[@T](s)
+	pre
+		let mk_(ok, -) = str2val_[@T](s) in ok;
+		
+	seq_of[@T]: @T * nat1 -> seq1 of @T
+	seq_of(v, l) == [ v | - in seq [ p | p in set {1,...,l} ] ];
+
+	numeric2integer: Numeric -> Integer
+	numeric2integer(n) == str2val[Integer](n)
+
+values
+	NUM_CHARS      : set1 of char = {'0','1','2','3','4','5','6','7','8','9'};
+	MAX_AMOUNT_LEN: nat1 = 18;
+	MAX_AMOUNT		: nat1 = numeric2integer(seq_of[char]('9',MAX_AMOUNT_LEN));
+	
+end MinimalStringError

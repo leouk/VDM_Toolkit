@@ -1,0 +1,30 @@
+-- This file is (somewhat) automatically generated from XSD source.
+module TypeAsRecord
+imports
+	-- Figuring out the types of x and y to import is difficult given
+	-- the complex/layered nature of XSDs (and transitivity of types).
+	from BasicTypes
+		types
+			TypeForX renamed TypeForX
+			TypeForY renamed TypeForY
+exports 
+	types
+		struct TypeAsRecord
+	functions
+		default_TypeAsRecord: () -> TypeAsRecord
+definitions 
+
+types
+	TypeAsRecord ::
+		x: TypeForX
+		y: TypeForY
+	-- Invariants are manually added.
+	inv mk_TypeAsRecord(x,y) == x < y;
+
+functions
+	-- default implementations are generated as "is not yet specified"
+	-- and are manually adjusted 
+	default_TypeAsRecord: () -> TypeAsRecord
+	default_TypeAsRecord() == mk_TypeAsRecord(0,1);
+	
+end TypeAsRecord

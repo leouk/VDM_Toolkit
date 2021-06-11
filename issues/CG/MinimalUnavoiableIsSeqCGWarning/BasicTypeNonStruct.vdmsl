@@ -1,0 +1,36 @@
+module BasicTypeNonStruct
+exports 
+	types
+		Type
+		struct SeqType
+	functions
+		check_is_seq_of[@T]: ? -> bool
+		check_is_seq_of_inv[@T]: ? * (seq of @T +> bool) -> bool
+		select_first_value[@T]: SeqType -> @T
+definitions 
+
+types
+	--@doc this already includes nil; refactored from xxx.vdmsl to avoid too much dependencies 
+	Type = ?;
+	
+	SeqType = seq of Type;
+
+functions
+	check_is_seq_of[@T]: ? -> bool
+	check_is_seq_of(xs) == 
+		is_(xs, seq of ?) 
+		and 
+		forall x in set elems narrow_(xs, seq of ?) & is_(x,@T);
+	
+	check_is_seq_of_inv[@T]: ? * (seq of @T +> bool) -> bool
+	check_is_seq_of_inv(xs, invariant) ==
+		check_is_seq_of[@T](xs)
+		and
+		invariant(xs);
+		
+	select_first_value[@T]: SeqType -> @T
+	select_first_value(s) == narrow_(s(1), @T)
+	pre
+		is_(s(1), @T);
+
+end BasicTypeNonStruct

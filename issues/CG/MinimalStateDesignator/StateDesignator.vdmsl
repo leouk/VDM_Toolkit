@@ -1,0 +1,37 @@
+module StateDesignator
+imports from StateType
+	types
+		BYTE renamed BYTE
+		BLOCK renamed BLOCK
+		WORD renamed WORD		
+exports all
+definitions 
+	
+state public of
+	cla: BYTE
+	la: WORD
+	data: BLOCK
+	b: bool
+inv mk_public(cla, la, data, b) == 
+	(let x: nat = cla,
+			y : set of nat = elems data
+	  in
+	  	--Error on let x, y assumed  as psart of the state (e.g. public_.x in Java)
+	  	x in set y and la > 0)
+init v == v = mk_public(20, 1, [20], false)
+end
+
+operations
+
+pure get_data: () ==> BLOCK
+get_data() == return data;
+
+op(d: BLOCK) ==
+(
+--Error is here as the type for ST.data
+	data := d;
+	la := len(d);
+)
+ext wr data, la;
+	
+end StateDesignator

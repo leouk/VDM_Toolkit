@@ -1,0 +1,13 @@
+module Other
+imports from m functions f renamed f
+definitions
+
+operations
+	--Error only with external clauses?  works here 
+	op1: () ==> ()
+	op1() ==
+		-- field name m and module named m confuses CG on m.f(0)!
+		(let m: nat = 0,
+				 n: nat = f(0) in skip);
+	
+end Other

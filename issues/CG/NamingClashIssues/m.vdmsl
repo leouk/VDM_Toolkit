@@ -1,0 +1,9 @@
+module m
+exports all
+definitions 
+
+functions
+	 f: nat -> nat
+	 f(x) == x;
+	 
+end m

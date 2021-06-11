@@ -1,0 +1,34 @@
+module PatternTrans_ClasCastException_Minimal
+imports 
+from TypesToImport2
+	types
+		AcquirerID renamed AcquirerID
+,
+from TypesToImport3
+	types
+		Technology renamed Technology		
+exports 
+	types
+		Configuration
+		AcquirerView -- no struct export to avoid exposing value: ?
+	functions
+		get_acquirer: AcquirerView -> AcquirerID
+definitions 
+
+types 
+	
+	Configuration ::
+		configID			 : nat
+		value					 : ?
+		priority			 : int; 
+	
+	AcquirerView = Configuration 
+  inv mk_Configuration(-, value, -) == 
+		is_(value, (AcquirerID * Technology));
+	
+functions 
+
+	get_acquirer: AcquirerView -> AcquirerID
+	get_acquirer(mk_Configuration(-, mk_(acquirer, -), -)) == acquirer;
+
+end PatternTrans_ClasCastException_Minimal

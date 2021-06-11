@@ -1,0 +1,19 @@
+module StateType
+exports 
+	types
+		struct BYTE
+		struct WORD
+		struct BLOCK
+definitions 
+
+types
+	BYTE = nat1
+	inv b == b > 10;
+	
+	WORD = nat
+	inv w == w > 0;
+	
+	BLOCK = seq of BYTE
+	inv b == len b > 0;
+	
+end StateType

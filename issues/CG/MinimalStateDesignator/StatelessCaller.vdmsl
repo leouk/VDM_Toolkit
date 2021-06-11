@@ -1,0 +1,19 @@
+module StatelessCaller
+imports from
+	StateDesignator
+	operations
+		op renamed op
+exports 
+	operations
+		stateless_call: () ==> ()
+definitions 
+
+operations
+
+stateless_call: () ==> ()
+stateless_call() ==
+(
+	op([10]);
+);
+
+end StatelessCaller

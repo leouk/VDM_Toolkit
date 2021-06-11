@@ -1,0 +1,28 @@
+module TypeVisitorIRError1_Minimal
+imports 
+from TypesToImport
+  types
+    String renamed String
+
+exports 
+	types
+		struct Numeric
+	values 
+		V1: Numeric
+		V2: Numeric
+		
+definitions 
+
+types
+
+	--@doc =A sequence of digit characters
+	Numeric = String
+	inv n == elems n subset NUM_CHARS;
+
+values
+	NUM_CHARS: set1 of char = {'0','1','2','3','4','5','6','7','8','9'};
+	
+	V1: Numeric = "0100";
+	V2: Numeric = "0200";
+	
+end TypeVisitorIRError1_Minimal

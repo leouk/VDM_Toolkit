@@ -1,0 +1,19 @@
+module MinimalNarrowingError
+exports all
+definitions 
+
+types
+	E = <A> | <B>;
+	T = nat | E;
+	
+	R :: x: T;
+	
+functions
+	update: R -> R
+	update(r) == 
+		if is_E(r.x) then
+			mu(r, x |-> if r.x = <A> then <B> else <A>)
+		else 
+			mu(r, x |-> r.x+1);
+	
+end MinimalNarrowingError
