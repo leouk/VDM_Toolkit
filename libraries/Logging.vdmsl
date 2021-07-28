@@ -113,8 +113,6 @@ functions
 state Logging of
   log_level: LogLevel
 	log_trace: Trace
-	--used: set of int
-	--seed: int
 init logstate == logstate = mk_Logging(DEFAULT_LOG_LEVEL, [])	
 end
 
