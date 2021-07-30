@@ -6,6 +6,10 @@
 ------------------------------------------------------------------------------------
 module ISQ
 imports
+from MATH
+	functions
+		pi_f renamed pi_f;
+,
 --@todo remove any dependencies?
 from Support1
 	functions
@@ -906,7 +910,7 @@ functions
 	SI_ASTRONOMICAL() == scaleMS(149597870700, METRE);
 
 	SI_DEGREE: () -> Radian
-	SI_DEGREE() == scaleMS(2*3.14159265358979323846/180, SI_RADIAN);
+	SI_DEGREE() == scaleMS(2*pi_f()/180, SI_RADIAN);--scaleMS(2*3.14159265358979323846/180, SI_RADIAN);
 	
 	SI_LITRE: () -> Volume
 	SI_LITRE() == scaleMS(mag(milli(1)), SI_VOLUME);
