@@ -1,0 +1,264 @@
+--@doc Implementation of basic fuzzy sets as defined in https://en.wikipedia.org/wiki/Fuzzy_set
+--@author Leo Freitas, 30/07/2021
+module FuzzySets
+exports 
+	types
+		struct Score;
+		struct PartialScore;
+		Universe;
+		FuzzySet;
+		struct FuzzyTest;
+	functions
+		make_fuzzy_set[@T]: set of @T -> FuzzySet;
+		universe[@T]: FuzzySet -> set of @T;
+		membership[@T]: @T * FuzzySet -> Score;
+		crisp_fuzzy_set: FuzzySet * FuzzyTest -> FuzzySet;	
+		alpha_cut: FuzzySet * Score -> FuzzySet;
+    strong_alpha_cut: FuzzySet * Score -> FuzzySet;
+    support_fuzzy_set: FuzzySet -> FuzzySet;
+    core_fuzzy_set: FuzzySet -> FuzzySet;
+		full_member[@T]: @T * FuzzySet -> bool;
+		not_member[@T]: @T * FuzzySet -> bool;
+		partial_member[@T]: @T * FuzzySet -> bool;
+		empty: FuzzySet -> bool;
+		equals: FuzzySet * FuzzySet -> bool;
+		included: FuzzySet * FuzzySet -> bool;
+		crossed_over: FuzzySet -> bool;
+		level: FuzzySet * Score -> FuzzySet;
+		maxs: set1 of Score -> Score;
+		mins: set1 of Score -> Score;
+		height: FuzzySet -> Score;
+		normal: FuzzySet -> bool;
+		post_normal: FuzzySet * bool +> bool;
+		normalise: FuzzySet -> FuzzySet;
+		pre_normalise: FuzzySet +> bool;
+		post_normalise: FuzzySet * FuzzySet +> bool;
+		width: FuzzySet -> Score;
+		convex: FuzzySet -> bool;
+		complement: FuzzySet -> FuzzySet;
+		fuzzy_union: FuzzySet * FuzzySet -> FuzzySet;
+		fuzzy_inter: FuzzySet * FuzzySet -> FuzzySet;
+definitions 
+
+types
+
+	--@doc fuzzy set score [0..1]
+	Score = real
+	inv s == 0 <= s and s <= 1;
+	
+	--@doc partial test score ]0..1[
+	PartialScore = Score
+	inv ps == ps <> 0 and ps <> 1;
+
+	--@doc fuzzy set universe 
+	Universe = set of ?;
+	
+	--@doc fuzzy set definition (U, m), where U = dom m 	
+	FuzzySet = map ? to Score;
+	
+	--@doc fuzzy set test used for various (crisp) filtering.
+	FuzzyTest = Score -> bool;
+
+functions
+	
+	--@doc make a core fuzzy set (all maps to 1) on given universe set. 
+	make_fuzzy_set[@T]: set of @T -> FuzzySet
+	make_fuzzy_set(U) == { x |-> 1 | x in set U };
+	
+	--@doc fuzzy set universe closed under the polymorphic type
+	universe[@T]: FuzzySet -> set of @T
+	universe(fs) == dom fs;
+	
+	--@doc fuzzy set membership (objective) function closed under the polymorphic type
+	membership[@T]: @T * FuzzySet -> Score
+	membership(x, fs) ==
+		fs(x) 
+	pre	
+		x in set universe[@T](fs);
+	
+	--@doc general crisp fuzzy set filtered by the given fuzzy test 
+	--		 avoid using membership (and call fs(x)) direclty, to avoid needing to give @T
+	crisp_fuzzy_set: FuzzySet * FuzzyTest -> FuzzySet
+	crisp_fuzzy_set(fs, ft) ==
+		{ x | x in set dom fs & ft(fs(x)) } <: fs; 
+	
+	--@doc fuzzy set "alpha" cut (i.e. all mappings >= alpha)
+  alpha_cut: FuzzySet * Score -> FuzzySet
+  alpha_cut(fs, alpha) == 
+  	crisp_fuzzy_set(fs, (lambda s: Score & s >= alpha));
+  
+	--@doc fuzzy set strong "alpha" cut (i.e. all mappings > alpha)
+  strong_alpha_cut: FuzzySet * Score -> FuzzySet
+  strong_alpha_cut(fs, alpha) == 
+  	crisp_fuzzy_set(fs, (lambda s: Score & s > alpha));
+  
+	--@doc fuzzy set all elements have membership (i.e. all mappings > 0)
+  support_fuzzy_set: FuzzySet -> FuzzySet
+  support_fuzzy_set(fs) == 
+		strong_alpha_cut(fs, 0);
+	
+	--@doc fuzzy set all elements are full members (i.e. all mapptings = 1)		
+  core_fuzzy_set: FuzzySet -> FuzzySet
+  core_fuzzy_set(fs) == 
+  	crisp_fuzzy_set(fs, (lambda s: Score & s = 1));
+
+  --@doc fuzzy set full membership test
+	full_member[@T]: @T * FuzzySet -> bool
+	full_member(x, fs) ==
+		pre_membership[@T](x, fs) and membership[@T](x, fs) = 1;
+		
+	--@doc fuzzy set no membership test
+	not_member[@T]: @T * FuzzySet -> bool
+	not_member(x, fs) ==
+		pre_membership[@T](x, fs) and membership[@T](x, fs) = 0;
+
+	--@doc fuzzy set partial membership test	
+	partial_member[@T]: @T * FuzzySet -> bool
+	partial_member(x, fs) ==
+		pre_membership[@T](x, fs) and is_PartialScore(membership[@T](x, fs));	
+
+	--@todo: add [@T] on every case for force strong typing? 
+	--@doc empty fuzzy set is either empty universe or all elements maps to 0.
+	--     filtering on empty universe might be redundant.  
+	--fuzzy_set_empty[@T]: FuzzySet -> bool
+	empty: FuzzySet -> bool
+	empty(fs) == 
+		(dom fs <> {} => card dom fs = card dom crisp_fuzzy_set(fs, (lambda s: Score & s = 0)));
+		--(universe[@T](fs) <> {} => 
+		--		card universe[@T](fs) 
+		--		= 
+		--		card universe[@T](crisp_fuzzy_set(fs, (lambda s: Score & s = 0)))
+		--);
+	
+	--@doc fuzzy set equality can be mapped to VDM equality	
+	equals: FuzzySet * FuzzySet -> bool
+	equals(fsA, fsB) == fsA = fsB;
+	
+	--@doc fuzzy set subset containment; it requires A's universe to be within B's
+	included: FuzzySet * FuzzySet -> bool
+	included(fsA, fsB) ==
+		dom fsA subset dom fsB
+		and
+		(forall x in set dom fsA & fsA(x) <= fsB(x));
+	
+	--@doc level fuzzy set 
+	level: FuzzySet * Score -> FuzzySet
+	level(fs, alpha) == 
+		crisp_fuzzy_set(fs, (lambda s: Score & s = alpha));
+			
+	--@doc a fuzzy set where some element maps to 0.5 has crossed over
+	crossed_over: FuzzySet -> bool
+	crossed_over(fs) ==
+		not empty(level(fs, 0.5));
+	
+	--@doc maximum over scores using VDM's iota (i.e. for Isabelle, convert to fold). 
+	maxs: set1 of Score -> Score
+	maxs(s) == 
+		(iota m in set s & (forall n in set s & n <= m))
+	post
+		forall x in set s & x <= RESULT;
+
+	--@doc maximum over scores using VDM's iota (i.e. for Isabelle, convert to fold). 
+	mins: set1 of Score -> Score
+	mins(s) == 
+		(iota m in set s & (forall n in set s & m <= n))
+	post
+		forall x in set s & RESULT <= x;
+	
+	--@doc fuzzy set height is the suppremum (or maximum) of the mapped scores (or zero if none)
+	height: FuzzySet -> Score
+	height(fs) == 
+		if empty(fs) then 0 else maxs(rng fs);
+	
+	--@doc normal fuzzy set is one where at least one element has full membership
+	normal: FuzzySet -> bool
+	normal(fs) ==
+		height(fs) = 1
+	post
+		--@doc here the design decision over the fuzzy set type shows itself. 
+		(exists u in set universe[?](fs) & full_member[?](u, fs));
+			 
+	--@doc non-empty fuzzy set can be normalised by dividing its membership over its height for every element
+	normalise: FuzzySet -> FuzzySet
+	normalise(fs) ==
+		let
+			h: Score = height(fs)
+		 in	
+		 	{ x |-> fs(x) / h | x in set dom fs }  
+	pre
+		not empty(fs)
+	post
+		normal(fs);
+	
+	--@doc assuming the single-dimensioned fuzzy set, width is difference between its maximum and minimum
+	width: FuzzySet -> Score
+	width(fs) == 
+		let
+			support_fs: FuzzySet = support_fuzzy_set(fs)
+		 in 
+		  maxs(rng support_fs) - mins(rng support_fs);
+	
+	--@doc convex fuzzy set	
+	convex: FuzzySet -> bool
+	convex(fs) ==
+		(forall x, y in set dom fs & forall z in set {x,y} & fs(z) >= mins({fs(x), fs(y)}));
+
+	has_fuzzy_t_norm[@T]: FuzzySet * (Score * Score -> Score) -> bool
+	has_fuzzy_t_norm(fs, t_norm) ==
+		(forall a, b in set universe[@T](fs) & t_norm(fs(a), fs(b)) = t_norm(fs(b), fs(a)))
+		and
+	  (forall a, b, c, d in set universe[@T](fs) & 
+	  	ord_(@T, a, c) and ord_(@T, b, d) => t_norm(a, b) <= t_norm(c, d)) 
+	  and
+	  (forall a, b, c in set universe[@T](fs) & 
+	  	t_norm(fs(a), t_norm(fs(b), fs(c))) = t_norm(t_norm(fs(a), fs(b)), fs(c)))
+	  and
+	  (forall a in set universe[@T](fs) & t_norm(a, 1) = a);
+	 
+	t_norm_min: Score * Score -> Score
+	t_norm_min(a, b) == mins({a, b});
+	
+	t_norm_prod: Score * Score -> Score
+	t_norm_prod(a, b) == a * b;
+	
+	t_norm_luk: Score * Score -> Score
+	t_norm_luk(a, b) == maxs({0, a+b-1});
+	
+	t_norm_drastic: Score * Score -> Score
+	t_norm_drastic(a, b) == 
+		if a = 1 then b else if b = 1 then a else 0;
+		
+	t_norm_potent_min: Score * Score -> Score
+	t_norm_potent_min(a, b) == 
+		if a + b > 1 then mins({a,b}) else 0;
+		
+	t_norm_hamacher: Score * Score -> Score
+	t_norm_hamacher(a, b) == 
+		if a = b and b = 0 then 0 else a * (b / ((a+b) - (a*b)));
+	 
+	s_norm: Score * Score * (Score * Score -> Score) -> Score
+	s_norm(a, b, t_norm) == 
+		1 - t_norm(1 - a, 1 - b);   
+	
+	has_fuzzy_strong_negator: Universe * (Score -> Score) -> bool 
+	has_fuzzy_strong_negator(u, s_n) ==
+		(forall a in set u & s_n(a) = s_n(a));
+		
+	complement: FuzzySet -> FuzzySet
+	complement(fs) == 
+		{ x |-> 1 - fs(x) | x in set dom fs };
+		
+	fuzzy_union: FuzzySet * FuzzySet -> FuzzySet
+	fuzzy_union(fsA, fsB) ==
+		fsA
+	pre
+		dom fsA = dom fsB;
+		
+	fuzzy_inter: FuzzySet * FuzzySet -> FuzzySet
+	fuzzy_inter(fsA, fsB) ==
+		fsA
+	pre
+		dom fsA = dom fsB;
+	
+			   
+end FuzzySets
