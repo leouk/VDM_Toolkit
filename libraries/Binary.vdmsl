@@ -4,7 +4,7 @@ from VDMUtil
 	functions
 		val2seq_of_char renamed val2str
 ,
-from Support2
+from Support1
 	types
 		String renamed String
 	functions
