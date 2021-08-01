@@ -101,7 +101,7 @@ definitions
     pre a > 0;
 
   values
-    pi = 3.14159265358979323846
+    pi = 3.14159;--265358979323846
 
  
 end MATH

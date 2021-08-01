@@ -6,8 +6,9 @@ exports
 definitions 
 
 functions 
-	narrow_: nat -> nat
-  narrow_(x) == x;
+  --@doc fixed on VDMJ
+  --narrow_: nat -> nat
+  --narrow_(x) == x;
   
   f: [bool] -> bool
   f(x) == if x <> nil then narrow_(x,bool) else false;
