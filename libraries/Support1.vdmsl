@@ -6,30 +6,51 @@
 ------------------------------------------------------------------------------------
 module Support1
 imports
+from MATH
+  operations 
+    rand renamed rand;
+,
 from VDMUtil
 	functions
-		set2seq					renamed set2seqVDM;
+		val2seq_of_char renamed val2str;
+		seq_of_char2val renamed str2val_;
+		set2seq			renamed set2seqVDM;
 exports 
 	types
 		struct Precision                          ;
+		struct SortKind;
+		struct Trace;
+		struct String;
+		struct StringList;
+		struct StringList1;
+		struct UniqueStringList;
+		struct UniqueStringList1;
 	functions                                   
+		inv_UniqueStringList: seq of String +> bool;
+		inv_UniqueStringList1: seq1 of String +> bool;
 		identity[@T]: @T -> @T                    ;
 		xor: bool * bool -> bool                  ;
+		--@todo sort these out after mergning and sorting dependencies; too many versions
 		max: int * int -> int                     ;
 		min: int * int -> int                     ;
 		maxs: set1 of int -> int                  ;
 		mins: set1 of int -> int                  ;
 		maxs_isa: set1 of int -> int              ;
 		mins_isa: set1 of int -> int              ;
+		minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+		maxxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
 		minss: set1 of set1 of int -> int         ;
 		minss_isa: set1 of set1 of int -> int     ;
 		maxs_nat: set of nat -> nat               ;
+		minxs_nat: seq1 of nat -> nat
+		maxxs_nat: seq1 of nat -> nat
 		maxs_nat_isa: set of nat -> nat           ;
 		mins_nat: set of nat -> nat               ;
 		mins_nat_isa: set of nat -> nat           ;
 		minss_nat: set of set of nat -> nat       ;
 		minss_nat_isa: set of set of nat -> nat   ;
 		sum: seq of int -> int                    ;
+		sum_r: seq of real -> real				  ;
 		prod: seq of int -> int                   ;
 		prod_r: seq of real -> real               ;
 		sums: set of int -> int                   ;
@@ -40,10 +61,18 @@ exports
 		averages_r: set of real -> real           ;
 		nearest_precision: real * Precision * nat -> nat;
 		approximate: real * Precision -> nat;
-	  ordered: set of set1 of int * set of set1 of int -> bool         ;
-	  well_ordered[@elem]: set of (@elem * set of set1 of int) -> bool ;
+	  	ordered: set of set1 of int * set of set1 of int -> bool         ;
+	  	well_ordered[@elem]: set of (@elem * set of set1 of int) -> bool ;
 		unique_seq_inv[@T,@R]: seq of @T * (@T -> @R) -> bool    ;       
-	  injective[@elem]: seq of @elem -> bool                   ;
+	  	injective[@elem]: seq of @elem -> bool                   ;
+	  	xor: bool * bool -> bool;
+	  	xor_all: seq1 of bool -> bool;
+		front[@T]: seq1 of @T -> seq of @T;
+    	injectiveOn[@T]: seq of @T * (@T * @T -> bool) +> bool;
+    	make_injective[@T]: seq of @T -> seq of @T;
+		injconcat[@T]: seq of @T * @T -> seq of @T;
+		injappend[@T]: seq of @T * seq of @T -> seq of @T;
+		split[@T]: @T * seq of @T -> seq of seq of @T;
 		last[@e]: seq1 of @e -> @e                               ;
 		take[@e]: nat * seq of @e -> seq of @e                   ;
 		drop[@e]: nat * seq of @e -> seq of @e                   ;
@@ -52,25 +81,51 @@ exports
 		lasts[@e]: nat * seq of @e -> seq of @e                  ;
 		starts_with_[@e]: seq of @e * seq of @e -> bool          ;
 		disjoint[@elem]: seq of (set of @elem) +> bool           ;
-	  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T            ;
-	  fold[@T]: (@T * @T -> @T) * @T * seq of @T +> @T         ;
+	  	fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T            ;
+	  	fold[@T]: (@T * @T -> @T) * @T * seq of @T +> @T         ;
 		filter[@T]: seq of @T * (@T -> bool) -> seq of @T        ;
-	  filter_elems[@T]: seq of @T * set of @T -> seq of @T     ;
-	  seqMap[@T,@R]: (@T->@R) * seq of @T -> seq of @R         ;
+	  	filter_elems[@T]: seq of @T * set of @T -> seq of @T     ;
+	  	seqMap[@T,@R]: (@T->@R) * seq of @T -> seq of @R         ;
+		findIndexes[@T]: seq of @T * (@T -> bool) -> seq of nat1;
+		updateAt[@T]: seq of @T * (@T -> @T) -> seq of @T;
+		updateWith[@T,@S]: (seq of @T) * @S * (@T * @S -> @T) -> seq of @T;
+		zip[@T,@R]: seq of @T * seq of @R -> seq of (@T * @R);
 		unzip[@T,@R]: seq of (@T * @R) -> (seq of @T * seq of @R);
 		remove[@T] : @T * seq of @T -> seq of @T                 ;
 		remove_all[@T]: @T * seq of @T -> seq of @T              ;
-	  numOccurs[@T]: @T * seq of @T +> nat                     ;
-	  set2seq[@elem]: set of @elem -> seq of @elem             ;
+	 	numOccurs[@T]: @T * seq of @T +> nat                     ;
+	  	set2seq[@elem]: set of @elem -> seq of @elem             ;
 		replicate[@T]: nat * @T -> seq of @T                     ;
 		xreplicate[@T]: nat * seq of @T -> seq of @T             ;
 		lex_ord[@T]: /*set of (@T * @T) **/ seq of @T * seq of @T * (@T * @T -> bool) -> bool;
-	  inSeq[@a]: @a * seq of @a +> bool                ;
+	  	inSeq[@a]: @a * seq of @a +> bool                ;
 		indexOf[@T]: @T * seq1 of @T -> nat1             ;
-	  padLeft[@a]: seq of @a * @a * nat -> seq of @a   ;
-	  padRight[@a]: seq of @a * @a * nat -> seq of @a  ;
-	  sum_map[@D]: map @D to int -> int;
+		indexOf'[@T]: @T * seq1 of @T -> [nat1]          ;
+		indexOf_isa[@T]: @T * seq of @T -> [nat1];
+	  	padLeft[@a]: seq of @a * @a * nat -> seq of @a   ;
+	  	padRight[@a]: seq of @a * @a * nat -> seq of @a  ;
+
+		str2nval[@T]: seq1 of char -> [@T];
+		str2val[@T]: seq1 of char -> @T;
+		pre_str2val[@T]: seq1 of char +> bool;
+		str2enum: String -> String;
+		enum2str[@T]: @T -> String;
+		enum_typed[@T]: @T -> bool;
+		record_name[@T]: @T -> String;
+		record_typed[@T]: @T -> bool;
+  		sum_map[@D]: map @D to int -> int;		
+	  	remove[@T] : @T * seq of @T -> seq of @T;
+		numOccurs[@T]: @T * seq of @T +> nat;
+   		permutation[@T]: seq of @T * seq of @T +> bool;
+	  	sort_nat: seq of nat * SortKind -> seq of nat;
+		sort[@T]: seq of @T * (@T * @T -> bool) * (@T * @T -> bool) * SortKind -> seq of @T;
+		seq2bag[@T]: seq of @T -> (map @T to nat1)	;
+		howManyOfIn[@T]: @T * seq of @T -> nat;
+		howManyOfCharIn: char * seq of char -> nat;
 		
+	operations
+		fresh_random: () ==> int;
+		--new_random: int ==> int;
 definitions 
 ------------------------------------------------------------------------------------
 --@chapter Auxiliary functional library 
@@ -82,7 +137,8 @@ definitions
 values
 	--@doc for certain heavely recursive functions, use iota instead (if possible) given the stack overflow limit roughly 850+10/20 for maxs({1,...VDM_STACK_SIZE})
 	VDMJ_STACK_SIZE   : nat1               = 850;
-  sum_const         : int * int -> int   = (lambda x: int, y: int & x+y);
+  sum_const         : int * int -> int    = (lambda x: int, y: int & x+y);
+  sum_r_const       : real * real -> real = (lambda x: real, y: real & x+y);
   prod_const        : int * int -> int   = (lambda x: int, y: int & x*y);
   prod_r_const      : real * real -> real= (lambda x: real, y: real & x*y);
   leomax_const      : int * int -> int   = (lambda x: int, y: int & max(x,y));
@@ -91,10 +147,27 @@ values
   mins_isa_const    : set1 of int -> int = (lambda s: set1 of int & mins_isa(s));
   mins_nat_const    : set of nat -> nat  = (lambda s: set of nat  & mins_nat(s));
 	mins_nat_isa_const: set of nat -> nat  = (lambda s: set of nat  & mins_nat_isa(s));
+	xor_constant: bool * bool -> bool = (lambda a: bool, b: bool & xor(a,b));
 
 types
 	Precision = nat
 	inv p == p mod 10 = 0;
+
+	SortKind = <Select> | <Merge> | <Quick>;
+
+	String = seq1 of char;
+	
+	StringList = seq of String;
+	
+	StringList1 = seq1 of String;
+	
+	UniqueStringList = seq of String
+    inv ulist == injective[String](ulist);
+  
+  	UniqueStringList1 = seq1 of String
+	inv ulist == injective[String](ulist);
+	
+	Trace = seq of String;
 
 functions	
 ------------------------------------------------------------------------------------
@@ -178,13 +251,38 @@ functions
 	post
 		forall x in set dunion s & RESULT <= x;
 
+	minxs_nat: seq1 of nat -> nat
+	minxs_nat(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: function as parameters
+		--minxs[nat](s, min);
+		minxs[nat](s, leomin_const);
+
+	maxxs_nat: seq1 of nat -> nat
+	maxxs_nat(s) == 
+		maxxs[nat](s, leomax_const);
+
 	minss_nat_isa: set of set of nat -> nat
 	minss_nat_isa(s) == mins_nat_isa(elems seqMap[set of nat, nat](mins_nat_isa_const, set2seq[set of nat](s)))
 	post
 		forall x in set dunion s & RESULT <= x;
 		
+	minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  minxs(s,lt_ord) == 
+  	fold1[@T](lt_ord,s)
+  post 
+  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+
+	maxxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  maxxs(s,lt_ord) == 
+  	fold1[@T](lt_ord,s)
+  post 
+  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+
 	sum: seq of int -> int
 	sum(ss) == fold[int](sum_const,0,ss);
+
+	sum_r: seq of real -> real
+	sum_r(ss) == fold[real](sum_r_const, 0, ss);
 
 	prod: seq of int -> int
 	prod(ss) == fold[int](prod_const,0,ss);
@@ -232,6 +330,135 @@ functions
 	approximate: real * Precision -> nat
 	approximate(r, precision) == nearest_precision(r, precision, precision div 2);
 	
+---------------------------------------------------------------
+-- Generic functions for VDM data types
+---------------------------------------------------------------
+
+  --@todo/codegen/mods0 CG-Error: ATypeMultipleBind "i : @T"
+  --@doc works so long as @T is enumerable (e.g. boolean, all enums, etc; tend to always get the first value
+  --any[@T]: () -> @T
+  --any() == let x in set { i | i : @T } in x;
+  
+  --@doc09 exclusive or over multiple options (i.e, only one can be true).
+  xor_all: seq1 of bool -> bool
+  xor_all(s) == 
+	  --@todo/codegen/mods0 CG-warning/Java-Error: function as parameters
+  	--fold[bool](xor, false, s)
+  	fold[bool](xor_constant, false, s)
+  	; 
+
+	front[@T]: seq1 of @T -> seq of @T
+	front(s) == s(1,...,len s - 1);
+
+  make_injective[@T]: seq of @T -> seq of @T
+  make_injective(ss) == 
+  	if injective[@T](ss) then ss else make_injective0[@T](ss, [])
+  post 
+    injective[@T](RESULT)
+    and
+    elems RESULT subset elems ss
+    ;
+    
+  seq_pattern[@T, @R]: seq of @T * @R * (@T * seq of @T * @R -> @R) -> @R
+  seq_pattern(ss, res, induct) ==
+  	if len ss = 0 then
+  		res
+  	else
+  		let  x: @T 				= hd ss,
+  			  xs: seq of @T = tl ss
+  	   in
+  	   		--@todo/codegen/mods0 VDMJ-bug: typechecker not reporting type error
+  	   		--seq_pattern[@T, @R](xs, res, induct(x, xs, res))
+  	   		seq_pattern[@T, @R](xs, induct(x, xs, res), induct)
+  measure
+  	len ss;
+  	
+  make_injective0[@T]: seq of @T * seq of @T -> seq of @T
+  make_injective0(ss,res) ==
+  --@todo/codegen/mods0 VDMJ-bug: Cannot convert [1, 2, 3, 4, 5] (seq) to (nat * seq of (nat) * seq of (nat)  on base case
+  --	seq_pattern[@T, seq of @T](ss, res, 
+  --			(lambda x: @T, xs: seq of @T, -: seq of @T & 
+  --					if x in set elems res then 
+  --						make_injective0[@T](xs, res) 
+  --					else 
+  --						make_injective0[@T](xs, res ^ [x])
+  --			)
+  --	)
+  --@todo generalise solution to avoid repetition
+  	if len ss = 0 then 
+  		res
+  	else
+  		let  x: @T 				= hd ss,
+  				xs: seq of @T = tl ss
+  	  in 
+  			if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+  --  cases ss:
+  --    []     -> res,
+  --    [x]^xs -> if x in set elems res then make_injective0[@T](xs, res) else make_injective0[@T](xs, res ^ [x])
+  --  end
+  --@doc given it is not exported, this is quite inneficient/slow
+  --pre
+  --  injective[@T](res)
+  --post
+  --  injective[@T](RESULT)
+  measure
+    len ss;
+  
+  --@doc test sequence injectivity under possibly more involved equality test (e.g. records injective on specific elements only)
+  --@todo injective concat and append based on same principle
+  injectiveOn[@T]: seq of @T * (@T * @T -> bool) +> bool
+  injectiveOn(ss, eqtest) == 
+    forall i, j in set inds ss & i <> j => not eqtest(ss(i),ss(j));
+
+	injconcat[@T]: seq of @T * @T -> seq of @T
+	injconcat(xs,x) == if (x in set elems xs) then xs else xs ^ [x]
+	pre
+	  injective[@T](xs)
+	post
+	  injective[@T](RESULT);
+	
+	injappend[@T]: seq of @T * seq of @T -> seq of @T
+	injappend(xs,xt) ==
+		if injective[@T](xs ^ xt) then 
+			xs ^ xt 
+		else
+			(if xt = [] then xs else injappend[@T](injconcat[@T](xs,hd xt), tl xt))
+			--@todo/codegen/mods0 VDMJ-Bug
+			--seq_pattern[@T,seq of @T](xt, xs, (lambda x: @T, xr: seq of @T, -: seq of @T & injappend[@T](injconcat[@T](xs,x), xr))) 
+		  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+			--cases xt:
+			--	[]		 -> xs,
+			--	[x]^xr -> injappend[@T](injconcat[@T](xs,x), xr)
+			--end
+  pre
+    injective[@T](xs)
+  post
+    injective[@T](RESULT)
+	measure 
+	  len xt;
+	  
+	--@doc = splits a sequence into its subcomponents by the identified element, which is removed
+	--			 ex: split[nat]([1,2,3,4,1,4,5,3,1,1,3,2,1],1) = [[],[2,3,4],[4,5,3],[],[3,2],[]]
+	--			 ex: split[char]("x.y.z.ID",'.')    = ["x","y","z","ID"]
+	--@Warning(5031) only union types for @T
+	split[@T]: @T * seq of @T -> seq of seq of @T
+	split(x, xs) ==
+		let idx: [nat1] = indexOf'[@T](x, xs) in
+			-- if x doesn't appear return whole xs 
+			if idx = nil then
+				[xs]
+			-- if it appears at the end, consume it
+			elseif idx = len xs then
+				xs(1,...,len xs -1)
+			-- consume the part excluding the marker.
+			else
+			-- 		ex: split('.',"x.y")=["x","y"]
+			-- if marker is at the front of the sequence add empty sequence
+			--		ex: split('.',".x.y")=["","x","y"]
+			  [xs(1,...,idx-1)] ^ split[@T](x, xs(idx+1,...,len xs))
+	measure
+		len xs;
 	
 ------------------------------------------------------------------------------------
 --@section Set toolkit
@@ -407,6 +634,15 @@ functions
   --pre forall i in set inds s & pre_f(s(i)) --?  
   post len RESULT = len s;
 
+  zip[@T,@R]: seq of @T * seq of @R -> seq of (@T * @R)
+  zip(xs,ys) == [ mk_(xs(i),ys(i)) | i in set inds xs inter inds ys ] 
+  post
+  	{ x.#1 | x in set elems RESULT } subset elems xs
+  	and
+  	{ y.#2 | y in set elems RESULT } subset elems ys
+ 		and 	
+  	len RESULT = min(len xs, len ys);	  
+
 	unzip[@T,@R]: seq of (@T * @R) -> (seq of @T * seq of @R)
 	unzip(s) == mk_([ s(i).#1 | i in set inds s ], [ s(i).#2 | i in set inds s ])
 	post
@@ -437,11 +673,7 @@ functions
 		elems RESULT subset elems l
 		and
 		len l = len RESULT + numOccurs[@T](x, l);
-					  	
-	--@doc The number of times an element appears in a sequence.
-  numOccurs[@T]: @T * seq of @T +> nat
-  numOccurs(e,sq) == len [ 0 | i in set inds sq & sq(i) = e ];
-	
+			
   --@doc fast transformation between sets to sequences, irrespective of whether
   --		 elem is orderable or not. 
   set2seq0[@elem]: set of @elem * seq of @elem -> seq of @elem
@@ -467,6 +699,7 @@ functions
 		xreplicate[@T](n, [x])
 	post
 		post_xreplicate[@T](n, [x], RESULT);
+
 
 	--@todo make it high order on the seq perhaps?
 	--@doc given a seq, make each of its elements n times
@@ -499,11 +732,86 @@ functions
 
 	indexOf[@T]: @T * seq1 of @T -> nat1
 	indexOf(x,xs) == 
-	  let i in set inds xs be st xs(i) = x in i
+	  indexOf'[@T](x, xs)
 	pre
 		inSeq[@T](x,xs)
 	post	
-		xs(RESULT) = x;		
+		post_indexOf'[@T](x, xs, RESULT);		
+
+	indexOf'[@T]: @T * seq1 of @T -> [nat1]
+	indexOf'(x,xs) == 
+	  if inSeq[@T](x, xs) then
+	  	let i in set inds xs be st xs(i) = x in i
+	  else		
+	  	nil
+	post	
+		(inSeq[@T](x,xs) => xs(RESULT) = x);		
+
+	--@todo delete? or keep for Isa case?
+	indexOf0[@T]: @T * seq of @T * nat1 -> [nat1]
+	indexOf0(x, xs, res) == 
+		if xs = [] then
+			nil
+		else
+			 if hd xs = x then res else indexOf0[@T](x, tl xs, res+1)
+		--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+		--cases xs:
+		--	[] 		 -> nil,
+		--	[h]^hs -> if h = x then res else indexOf0[@T](x, hs, res+1)
+		--end
+	measure
+		len xs;
+
+	--@doc = gives the first index of element x in the given ing, or nil if not present
+	indexOf_isa[@T]: @T * seq of @T -> [nat1]
+	indexOf_isa(x, xs) == indexOf0[@T](x,xs,1)
+	post
+		RESULT <> nil => x in set elems xs and xs(RESULT) = x; 
+
+  --@doc finds all the indexes in given sequence where the search criteria is true
+  findIndexes[@T]: seq of @T * (@T -> bool) -> seq of nat1
+  findIndexes(s, search) == 
+    [ i | i in set inds s & search(s(i)) ]
+    --findIndexes0[@T](s, search, 1)
+  post
+    elems RESULT subset inds s
+    and
+    forall i in seq RESULT & search(RESULT(i));
+
+  --@doc updates sequence s according to the given function on its elements
+  --     upd function must be identity for values it doesn't want to change.
+  updateAt[@T]: seq of @T * (@T -> @T) -> seq of @T
+  updateAt(s, upd) == 
+    [ upd(s(i)) | i in set inds s ]
+    --@doc09 very slow
+    --cases s:
+    --  []       -> [],
+    --  [x]^xs -> [upd(x)]^updateAt[@T](xs, upd)
+    --end
+  post
+    len RESULT = len s
+    and
+    forall i in set inds RESULT & RESULT(i) = upd(s(i))
+  --measure
+  --  len s
+  ;
+    
+	--@doc like updateAt but with an extra parameter for whatever purpose needed
+  updateWith[@T,@S]: (seq of @T) * @S * (@T * @S -> @T) -> seq of @T
+  updateWith(s, y, upd) == 
+    [ upd(s(i), y) | i in set inds s ]
+		--@doc09 very slow
+    --cases s:
+    --  []       -> [],
+    --  [x]^xs -> [upd(x, y)]^updateWith[@T,@S](xs, y, upd)
+    --end
+  post
+    len RESULT = len s
+    and
+    forall i in set inds RESULT & RESULT(i) = upd(s(i), y)
+  --measure
+  --  len s
+  ;
 
   -- Pad a sequence on the left with a given item up to a specified length.
   padLeft[@a]: seq of @a * @a * nat -> seq of @a
@@ -513,6 +821,70 @@ functions
   padRight[@a]: seq of @a * @a * nat -> seq of @a
   padRight(sq,x,n) == sq ^ [ x | - in set {1 ,..., n - len sq} ];	
   
+------------------------------------------------------------------------------------
+--@section VDM reflection
+------------------------------------------------------------------------------------
+
+	str2nval[@T]: seq1 of char -> [@T]
+	str2nval(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(-, val) = str2val_[@T](s) in val
+		--@todo/codegen/mods0 CG-warning/Java-Error: user has to define parsing mechanism for s
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in res.#2
+	post
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(ok, -) = str2val_[@T](s) in (ok <=> RESULT <> nil)
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in (res.#1 <=> RESULT <> nil)
+		;
+	
+	str2val[@T]: seq1 of char -> @T
+	str2val(s) == str2nval[@T](s)
+	pre
+		--@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+		--let mk_(ok, -) = str2val_[@T](s) in ok;
+		--@todo/codegen/mods0 CG-warning-suppress: call to unsupported lib function
+		let res: bool * [@T] = str2val_[@T](s) in res.#1
+		;
+		
+	str2enum: String -> String
+	str2enum(s) == "<" ^ s ^ ">";
+	
+	--@doc removes the enumeration brackets from string
+	enum2str[@T]: @T -> String
+	enum2str(e) == 
+		let result: String = val2str[@T](e) in result(2,...,len result -1)
+	pre
+		enum_typed[@T](e);
+	
+	--@doc poor man's version of a enumerated type test? 
+	enum_typed[@T]: @T -> bool
+	enum_typed(t) == 
+		let result: String = val2str[@T](t) in 
+			len result > 2
+			and
+			hd result = '<' and last[char](result) = '>';
+	
+	--@doc09 removes mk_ and (...) from record name, e.g. mk_Record(field1,...,fieldn) = Record
+	record_name[@T]: @T -> String
+	record_name(r) == 
+		let result: String = val2str[@T](r) in result(4,...,indexOf[char]('(', result)-1)
+	pre
+		record_typed[@T](r);
+	
+	--@doc09 poor man's version of record type test; doesn't consider tuples, e.g. mk_(x,y); minimum size mk_R()	
+	record_typed[@T]: @T -> bool
+	record_typed(r) == 
+		let result: String = val2str[@T](r) in
+			len result > 5 -- minimum size len "mk_R()" = 6
+			and
+			result(1,...,3) = "mk_"
+			and
+			result(4) <> '('
+			and
+			indexOf'[char]('(',result) <> nil;
+
 ------------------------------------------------------------------------------------
 --@section Map toolkit
 ------------------------------------------------------------------------------------
@@ -531,7 +903,196 @@ functions
   sum_map(m) == sum_map0[@D](m, 0)
   post
   	(is_(rng m, set of nat) => RESULT >= 0); 
+
+------------------------------------------------------------------------------------
+--@section Bags
+------------------------------------------------------------------------------------
+
+	--@doc = transform a sequence into a bag (i.e. a map counting the number of instances sequence elements appear)
+	--			 we use Z/Eves encoding of bags with partial functions as this fits well with VDM, rather than the total
+	--		   map as in @T to nat where result is 0 for when @T is not in the sequence.
+	seq2bag[@T]: seq of @T -> (map @T to nat1)
+	seq2bag(ss) == 
+		--@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatentaitonPattern
+		if ss = [] then
+			{|->}
+		else
+			let x: @T 			 = hd ss,
+			  mp': map @T to nat1 = seq2bag[@T](tl ss)
+			in
+										 if x in set dom mp' then 
+										 		mp' ++ { x |-> mp'(x)+1 } 
+										 else 
+										 		mp' munion { x |-> 1 } 
+		--cases ss:
+		--	[] 			-> {|->},
+		--	[x]^xs	-> let mp': map @T to nat1 = seq2bag[@T](xs)
+		--							in
+		--								 if x in set dom mp' then 
+		--								 		mp' ++ { x |-> mp'(x)+1 } 
+		--								 else 
+		--								 		mp' munion { x |-> 1 } 
+		--end
+	measure
+		len ss;
 	
+	--@doc = counts how many times (if any) the given element appears in the given sequence
+	howManyOfIn[@T]: @T * seq of @T -> nat
+	howManyOfIn(ch, s) == 
+		let bag: (map @T to nat1) = seq2bag[@T](s) in
+			if ch in set dom bag then bag(ch) else 0;
+
+	--@doc = counts how many times (if any) the given char appears in the given string
+	howManyOfCharIn: char * seq of char -> nat
+	howManyOfCharIn(ch, s) == howManyOfIn[char](ch,s);
+
+------------------------------------------------------------------------------------
+--@section Sorting and searching
+------------------------------------------------------------------------------------
+
+  -- The number of times an element appears in a sequence.
+  numOccurs[@T]: @T * seq of @T +> nat
+  numOccurs(e,sq) == len [ 0 | i in set inds sq & sq(i) = e ];
+
+  -- Is one sequence a permutation of another?
+  permutation[@T]: seq of @T * seq of @T +> bool
+  permutation(sq1,sq2) ==
+    len sq1 = len sq2 and
+    forall i in set inds sq1 & numOccurs[@T](sq1(i),sq1) = numOccurs[@T](sq1(i),sq2);
+
+	sort_nat: seq of nat * SortKind -> seq of nat
+	sort_nat(s, kind) == sort[nat](s, (lambda x: nat, y: nat & x < y), (lambda x: nat, y: nat & x = y), kind);
+	
+	sort[@T]: seq of @T * (@T * @T -> bool) * (@T * @T -> bool) * SortKind -> seq of @T
+	sort(s, lt_ord, leoleoeq_ord, kind) == 
+		cases kind:
+			<Select> -> selection_sort[@T](s, lt_ord,leoleoeq_ord),
+			<Merge>  -> merge_sort[@T](s, lt_ord),
+			<Quick>  -> quick_sort[@T](s, lt_ord,leoleoeq_ord)
+		end
+	post
+		permutation[@T](s, RESULT)
+		and
+		forall i in set inds RESULT \ {len RESULT} & lt_ord(RESULT(i), RESULT(i+1)) or leoleoeq_ord(RESULT(i), RESULT(i+1));
+	
+	selection_sort[@T] : seq of @T * (@T * @T -> bool) * (@T * @T -> bool) -> seq of @T 
+	selection_sort (l,lt_order, leoeq_order) ==
+	  if l = [] then []
+	  else 
+	  	let m in seq l be st (forall x in seq l & lt_order(m,x) or leoeq_order(m,x)) in
+	  	--@todo/codegen/mods0 CG-Error: LetBeSt for seq
+	  	--let m in set elems l be st (forall x in seq l & lt_order(m,x) or leoeq_order(m,x)) in
+	      [m] ^ (selection_sort[@T](remove[@T](m,l),lt_order,leoeq_order))
+	pre
+		exists m in seq l & (forall x in seq l & lt_order(m,x) or leoeq_order(m,x))
+	measure
+		len l; 
+	          
+	lmerge[@T] : seq of @T * seq of @T * (@T * @T -> bool) -> seq of @T 
+	lmerge (s1,s2,lt_ord) ==
+	  if     s1 = [] then s2
+	  elseif s2 = [] then s1
+	  elseif lt_ord((hd s1), (hd s2)) then 
+	    [hd s1] ^ (lmerge[@T] (tl s1, s2, lt_ord)) 
+	  else 
+	    [hd s2] ^ (lmerge[@T] (s1, tl s2, lt_ord))
+	measure
+		len s1 + len s2;
+  
+	merge_sort[@T] : seq of @T * (@T * @T -> bool) -> seq of @T 
+	merge_sort (l,lt_ord) == 
+	  if l = [] then
+	  	[]
+	  else if len l = 1 then
+	  	[hd l]
+	  else
+	  	let lenl: nat1 = len l in
+		  	lmerge[@T] (merge_sort[@T](l(1,...,lenl div 2), lt_ord), merge_sort[@T](l((lenl div 2)+1,...,lenl), lt_ord), lt_ord)
+	--measure
+	--	if len l mod 2 = 0 then len l + 1 else len l 
+	  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+	  --cases l:
+	  --  []      -> [],
+	  --  [x]     -> [x],
+	  --  l1 ^ l2 -> lmerge[@T] (merge_sort[@T](l1, lt_ord,leoeq_ord), merge_sort[@T](l2, lt_ord,leoeq_ord), lt_ord)
+	  --end
+	measure
+		len l 
+	;
+	
+	quick_sort[@T] : seq of @T * (@T * @T -> bool) * (@T * @T -> bool) -> seq of @T 
+	quick_sort (l,lt_ord, leoeq_ord) ==
+	  if l = [] then
+	  	[]
+	  else if len l = 1 then
+	  	[hd l]
+	  else if len l = 2 then
+	  	if lt_ord(l(1), l(2)) then l else reverse l
+	  else
+	  	let x: @T = l(len l div 2) in
+	  		quick_sort[@T]([l(i) | i in set inds l & lt_ord(l(i),x) ], lt_ord, leoeq_ord) ^ 
+	                         [l(i) | i in set inds l & leoeq_ord(l(i),x)] ^
+	      quick_sort[@T]([l(i) | i in set inds l & not lt_ord(l(i),x) and not leoeq_ord(l(i),x) ], lt_ord, leoeq_ord)
+	  --@todo/codegen/mods0 CG-Error: ASeqPattern/AConcatenationPattern
+	  --cases l:
+	  --  []      -> [],
+	  --  [x]     -> [x],
+	  --  [x,y]   -> if lt_ord(x,y) then [x,y] else [y,x], 
+	  --  -^[x]^- -> quick_sort[@T]([l(i) | i in set inds l & lt_ord(l(i),x) ], lt_ord, leoeq_ord) ^ 
+	  --                       [l(i) | i in set inds l & leoeq_ord(l(i),x)] ^
+	  --             quick_sort[@T]([l(i) | i in set inds l & not lt_ord(l(i),x) and not leoeq_ord(l(i),x) ], lt_ord, leoeq_ord)
+	  --end
+	measure
+		len l;
+
+------------------------------------------------------------------------------------
+--@section State dependant random generator
+------------------------------------------------------------------------------------
+
+values
+  SEED      : int = 2000;
+	MAX_RANDOM: int = 2000;
+		
+state Support of
+	used: set of int
+	seed: int
+inv mk_Support(-,seed) == seed <= MAX_RANDOM
+init s == s = mk_Support({},SEED)	
+end
+
+operations
+
+  new_random0() r: int ==
+    return (rand(seed) mod MAX_RANDOM)
+  post
+    r <= MAX_RANDOM;
+  
+  --@doc generates a random number according to the given seed, might be same in multiple calls 
+  /*
+  new_random(seed_param: int) r: int ==
+    (seed := seed_param;
+     return new_random0())
+  pre
+    seed_param <= MAX_RANDOM
+  post
+    r <= MAX_RANDOM;
+	*/
+	
+	--@doc ensures that returned random number is fresh/unique with respect to the seed set earlier
+  fresh_random() r: int ==
+    (dcl aux: int := 0;
+        (while  (aux in set used) do
+          aux := new_random0();
+        );
+        used := used union {aux};
+        return aux)
+  post
+    r not in set used~
+    and
+    r in set used
+    and
+    r <= MAX_RANDOM;
+
 ------------------------------------------------------------------------------------
 --@section Traces
 ------------------------------------------------------------------------------------
