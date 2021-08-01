@@ -15,3 +15,4 @@
 ./SetMapLib.vdmsl
 ./Stack.vdmsl
 ./Matrix_Seq.vdmsl
+./FuzzySets.vdmsl

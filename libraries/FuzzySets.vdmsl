@@ -64,15 +64,15 @@ exports
 		complement[@T]: FuzzySet -> FuzzySet;
 		general_fuzzy_inter[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
 		general_fuzzy_union[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
-		general_fuzzy_diff[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * FuzzyStrongNegator * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet
+		general_fuzzy_diff[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * FuzzyStrongNegator * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
 		fuzzy_inter[@T]: FuzzySet * FuzzySet -> FuzzySet;
 		fuzzy_union[@T]: FuzzySet * FuzzySet -> FuzzySet;
 		fuzzy_diff[@T]: FuzzySet * FuzzySet -> FuzzySet;
 		disjoint[@T, @R]: FuzzySet * FuzzySet -> bool;
 		scalar_card[@T]: FuzzySet -> real ;
-		relative_card[@T]: FuzzySet -> real
-		extended_relative_card[@T]: FuzzySet * FuzzySet -> real 
-		general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real 
+		relative_card[@T]: FuzzySet -> real;
+		extended_relative_card[@T]: FuzzySet * FuzzySet -> real;
+		general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real; 
 definitions 
 
 types
@@ -484,6 +484,7 @@ functions
 	  		t_norm_min(membership[@T](x, fsA), membership[@R](x, fsB)) = 0
 	  );
 
+	--@doc fuzzy set scalar cardinality as the sum over its scores; non-zero if non-empty
 	scalar_card[@T]: FuzzySet -> real 
 	scalar_card(fs) == 
 		sum_r(set2seq[Score](scores[@T](fs)))
@@ -491,6 +492,7 @@ functions
 		--@doc weaker empty, given summing of results 
 		(not empty[@T](fs) => RESULT > 0);
 
+	--@doc relative cardinality with respect to the universe size
 	relative_card[@T]: FuzzySet -> real
 	relative_card(fs) == 
 		if strict_empty[@T](fs) then
@@ -498,21 +500,22 @@ functions
 		else
 			scalar_card[@T](fs) / card universe[@T](fs);
 
+	--@doc extended relative cardinality with fixed fuzzy_inter 
 	extended_relative_card[@T]: FuzzySet * FuzzySet -> real 
 	extended_relative_card(fsA, fsB) ==
-		scalar_card[@T](fuzzy_inter[@T](fsA, fsB)) / card universe[@T](fsB)
+		scalar_card[@T](fuzzy_inter[@T](fsA, fsB)) / scalar_card[@T](fsB)
 	pre
-		not strict_empty[@T](fsB)
+		scalar_card[@T](fsB) > 0
 		and
 		pre_fuzzy_inter[@T](fsA, fsB);	
 
+	--@doc general relative cardinality with general t_norm intersection and order 
 	general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real 
 	general_relative_card(fsA, fsB, t_norm, orderA, orderB) ==
-		scalar_card[@T](general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)) / card universe[@T](fsB)
+		scalar_card[@T](general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)) / scalar_card[@T](fsB)
 	pre
-		not strict_empty[@T](fsB)
+		scalar_card[@T](fsB) > 0
 		and
-		pre_general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)
-
+		pre_general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB);
 
 end FuzzySets

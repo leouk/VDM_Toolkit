@@ -42,8 +42,8 @@ exports
 		minss: set1 of set1 of int -> int         ;
 		minss_isa: set1 of set1 of int -> int     ;
 		maxs_nat: set of nat -> nat               ;
-		minxs_nat: seq1 of nat -> nat
-		maxxs_nat: seq1 of nat -> nat
+		minxs_nat: seq1 of nat -> nat;
+		maxxs_nat: seq1 of nat -> nat;
 		maxs_nat_isa: set of nat -> nat           ;
 		mins_nat: set of nat -> nat               ;
 		mins_nat_isa: set of nat -> nat           ;
