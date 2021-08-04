@@ -4,6 +4,10 @@
 # Rebuild and installs VDMJ with new jars
 #
 
+# Assuming:
+# 0. symbolic link vdmj_build into /usr/local/bin first
+# 1. cd $VDMJ_HOME
+
 function latest()
 {
     ls -t $1 | head -1
