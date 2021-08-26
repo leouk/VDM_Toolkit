@@ -30,6 +30,7 @@ values
     -- z + w < x + y 
     ex1: S = mk_S(mk_S("z", <Plus>, "w"), <Less>, mk_S("x", <Plus>, "y"));
 
+--@doc fails with error "Error 4148: Measure function is called recursively: measure_depth line 27:9"
 traces
     T1: depth(ex1);
 
