@@ -1,0 +1,36 @@
+module StructuralMeasures
+definitions
+types
+
+    E = S | V | N;
+
+    N = nat;
+
+    V = seq1 of char;
+
+    Op = <Less> | <Plus>; 
+
+    S ::
+        lhs: E
+        op: Op
+        rhs: E;
+
+functions
+    depth: E -> nat
+    depth(e) ==
+        cases true:
+            (is_N(e)) -> 0,
+            (is_V(e)) -> 0,
+            (is_S(e)) -> depth(e.lhs) + depth(e.rhs)
+        end
+    measure
+        depth(e);
+
+values
+    -- z + w < x + y 
+    ex1: S = mk_S(mk_S("z", <Plus>, "w"), <Less>, mk_S("x", <Plus>, "y"));
+
+traces
+    T1: depth(ex1);
+
+end StructuralMeasures
