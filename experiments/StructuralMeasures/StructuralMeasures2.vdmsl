@@ -47,4 +47,18 @@ values
 traces
     T1: depth(ex1);
 
+
+state Test of  
+  x: nat
+init t == t = mk_Test(10)
+end
+
+operations
+
+    M: nat ==> nat
+    M(y) == (x := x + y; return x);
+
+    N: () ==> nat
+    N() == (let v: nat = 10 in M(v));
+
 end StructuralMeasures2
