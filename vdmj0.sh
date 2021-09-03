@@ -3,8 +3,15 @@
 # * Calls latest VDMJ build (see vdmj_build.sh) with corresponding annotations and parameters
 # * Raw-call version (of vdmj.sh) without rlwrap - useful as launch configuration within IDEs
 
+if [ -z "$VDMJ_VERSION" ]
+then
+	# should be VDMJ_VERSION=X.Y.Z-SNAPSHOT
+    echo "Variable VDMJ_VERSION not set; should be X.Y.Z-SNAPSHOT"
+    exit 1
+fi
+
 BASE=`dirname $0`
-VERSION=4.4.3-SNAPSHOT
+VERSION=$VDMJ_VERSION
 NAME=vdmj
 
 JAR=/usr/local/lib/${NAME}-${VERSION}.jar
