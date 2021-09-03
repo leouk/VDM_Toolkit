@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copy standard jars back into resources
 
 if [ $# -ne 1 ]

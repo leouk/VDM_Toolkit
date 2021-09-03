@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copy jars and set symlinks to Maven
 
 if [ $# -ne 2 ]
