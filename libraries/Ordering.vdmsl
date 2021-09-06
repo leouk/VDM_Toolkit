@@ -10,15 +10,15 @@ imports
 exports 
 	functions
 		reflexive[@X, @Y]: @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
-		trans[@X, @Y]: @X * @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
-		antisym[@X, @Y]: @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		    trans[@X, @Y]: @X * @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		  antisym[@X, @Y]: @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
 		
-		partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		       partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
 		strict_partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
-		symmetric_rel[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		       symmetric_rel[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
 	
 		partial_order_set[@X, @Y]: set of (@X * @X) * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
-		partial_order_X[@X, @Y]: [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+    	  partial_order_X[@X, @Y]: [@Y] * (@X * @X * [@Y] -> bool) -> bool;
 	
 		min: nat * nat -> nat;
 		max: nat * nat -> nat;
@@ -34,7 +34,7 @@ exports
 definitions 
 
 functions
-	reflexive[@X, @Y]: @X * [@Y]* (@X * @X * [@Y] -> bool) -> bool
+	reflexive[@X, @Y]: @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
 	reflexive(x1, y, order) == order(x1, x1, y);
 
 	trans[@X,@Y]: @X * @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
@@ -43,20 +43,20 @@ functions
 	
 	antisym[@X, @Y]: @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
 	antisym(x1,x2,y, order) == 
-		(order(x1,x2,y) and order(x2,x1,y) => x1 = x2);
+		(order(x1, x2, y) and order(x2, x1, y) => x1 = x2);
 	
 	partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
 	partial_order(s, y, order) ==
-		(forall x in set s & reflexive[@X,@Y](x, y, order)) 
+		(forall x in set s & reflexive[@X, @Y](x, y, order)) 
 		and
-		(forall x1, x2, x3 in set s & trans[@X,@Y](x1, x2, x3, y, order))
+		(forall x1, x2, x3 in set s & trans[@X, @Y](x1, x2, x3, y, order))
 		and
-		(forall x1, x2 in set s & antisym[@X,@Y](x1, x2, y, order))
+		(forall x1, x2 in set s & antisym[@X, @Y](x1, x2, y, order))
 		;
 		
 	strict_partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y]-> bool) -> bool
 	strict_partial_order(s, y, strict_order) ==
-		partial_order[@X, @Y](s, y, (lambda x1: @X, x2: @X, y2: @Y & strict_order(x1, x2, y2) or x1 = x2))
+		partial_order[@X, @Y](s, y, (lambda x1: @X, x2: @X, y2: [@Y] & strict_order(x1, x2, y2) or x1 = x2))
 		and
 		(forall x1, x2 in set s & strict_order(x1, x2, y) <=> x1 <= x2 and x1 <> x2); 
 		
