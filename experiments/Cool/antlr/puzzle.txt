@@ -1,0 +1,22 @@
+program
+  int i, j;
+  i := 20; // inputs
+  j := 12;
+  if i = 0 then
+	i := j
+  else
+	begin
+		int v;
+		// avoid last semicolon! annoying huh?
+		v := v + 1
+	end;
+	// avoid parenthesised exprs: no rules for then!
+  	while j != 0 do
+		if i > j then
+			i := i - j
+		else
+			j := j - i
+		fi
+	od 
+  fi
+end

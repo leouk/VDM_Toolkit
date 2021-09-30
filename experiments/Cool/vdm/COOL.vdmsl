@@ -1,0 +1,1138 @@
+module COOL
+imports from IO operations println; 
+exports all
+definitions 
+
+-- NOTE: like Base, we have all abstract syntax + context conditions + semantics
+--		 this is because otherwise we would need many types/functions sections,
+--		 which is fine in Overture (i.e. Taste +/-).
+types
+
+-- C.0 Auxiliary types 
+
+-- TODO: perhaps have CldIds and ObjIds to avoid confusion?
+-- NOTE: avoid it because we can't quite check for it. Taste?
+Id = token;
+
+Type = Id | ScType ;
+
+-- TODO: add subtyping / natural numbers to COOL?
+-- DIFF: Reference is needed as a scalar type, otherwise we cannot declare variables of type ref (!)
+ScType = <IntTp> | <BoolTp> | Reference;
+
+-- References:
+--	* record to avoid any possible confusion between token types in overture
+--	* to avoid interference/confusion with VDM "nil":
+--		+ have a separate (unique) "NIL" reference value (see below)
+--		+ hence no optional types [Reference] are allowed
+--		+ i.e. we do not use VDM nil to mean a nil reference; instead we use 
+--			   a specific value, which we conviniently name "NIL" of type Reference.
+--		+ thus there is no way to confuse nil references	
+--
+-- DIFF: references as records; added unique construct/tag to references
+--  * unique is not used in the semantics, but is useful in the equivalence
+--	  transformations when adding "automatic" concurrency 
+--		+ e.g. Return x Release transformations
+--		+ precise rules for commuting/transforming, provinding unique refs
+--		+ there are others; "proofs of that would be very interesting".
+--
+--GRANT: concurrency grant where these transformations are chosen instead
+--	     of bottom-up linearizability option.
+Reference :: ref: Id
+			 unique: bool;
+
+	-- possible value sorts/kinds + optional object references
+ScalarValue = int | bool;
+-- DIFF: Val has Reference, which has a "special" NIL value, rather than overloading VDM's nil.
+--		 This is important when defining ALL_REFERENCES below
+Val = ScalarValue | Reference;
+
+-- C.1 Semantic types
+
+-- C.1.1 context conditions (e.g. Static type information for classes)
+
+	-- maps class names to class structures (e.g. just methods for now)
+ClTypes = map Id to ClInfo;
+
+	-- maps method names to method structures
+ClInfo = map Id to MethInfo;
+
+	-- method signature: return + parameter type(s)
+MethInfo :: rtp: Type
+			pts: seq of Type;
+
+	-- variable type environment
+VarEnv = map Id to Type;
+
+-- C.1.2 semantics (e.g. dynamic type information for object instances)
+
+	-- maps memory reference to live object structures in memory
+	-- p.62: "treat each object [reference] as running a separate thread" (!!!)
+	-- NOTE:
+	-- all the code the threads needs to be run (domain map);
+	-- all the state spread around the objects (range map);
+	-- no need to explicitly/directly handle threads, yet they "are" the threads.
+ObjMap = map Reference to ObjInfo;
+
+	-- object strucure: declared class; known (local)variables; concurrency mode
+ObjInfo ::	class : Id
+			sigma : VarStore
+			mode  : <Idle> | Active | Wait;
+
+	-- local variable value store
+VarStore = map Id to Val;
+
+-- Return Value:
+--	* for objects, returned values are either expressions or Self
+--	* note that <Self> is not quite an expression (e.g. it is not of Expr type)
+--	* this is important to ensure Expr are deterministic when involved in method calls
+--		+ i.e. method calls are not expressions (as it is usual to have them in other prog lang)
+--		+ e.g. you cannot have v = x.method() + 1 (!!!)
+--		+ 	   you must do v = x.method() ; w = v + 1;
+--		+ see p.65 7.2.3 ("Method calls cannot occur in expressions).
+--
+-- DIFF: Added this type explicitly to avoid various occurrances of (Expr | <Self>). 
+--		 Would these various (different) <Self> be the same (see Return / Release in App. C)?
+RetVal = Expr | <Self>;
+
+--- C.1.3 concurrency (e.g. information regarding thread access to objects)
+
+	-- active client references: TODO
+	-- TODO: datatype invariant saying that the client Reference should be in Wait mode
+	--		 in the ObjMap where Active leaves? Or what kind of invariant should be there?
+Active :: 	todo: seq of Stmt
+			-- TODO: because of mk_Active(rl, nil) this need to be an optional reference? 
+			client: Reference;
+
+	-- waiting client references: TODO
+Wait ::	lhs: Id
+		todo: seq of Stmt
+		client: Reference;
+
+--- C.1.4 semantic relations:
+--
+--	infix arrows coded as prefix boolean-valued functions
+--
+--	sem_prog(Program x Done) --> bool  				[--p-->]
+--  sem_stmt(ClMap x ObjMap x ObjMap) --> bool		[--s-->]
+--
+--  e.g. (C, O) --s--> O' == (C, O, O') in (_ --s--> _) == sem_stmt(C, O, O') = true
+--
+--  just like in: "x < y" == (x, y) in (_ < _) == less_than(x, y) = true
+--
+--	expressions are deterministic, hence no need for a relation; just use a function
+--	sem_expr(Expr x VarStore) --> Val				[--e-->]
+
+--- C.2 Programs
+
+-- Program:
+--	* declared classes + starting client + starting method
+--
+-- SERIOUS-TODO: who is the initial client object to be referenced in the initial method call? 
+--				 For now, I am trying to streamline the bootstrapping mechanism in compile_program
+--
+-- NOTE: maybe what we want to do is to "store"/"read" the object map (e.g. initial heap?)
+--		 don't worry how they got there, and provide semantics from that point on.
+--
+-- DIFF: Semantics of programs involve initial ObjMap compilation, which isn't fully defined in Appendix C.
+--		 During compilation we see Program as (almost)
+--			+ clt := new(start_class); lhs := mcall(lhs, sigma(clt), start_meth, [])
+--			+ in Appendix C (p. 100), there is a somewhat similar (if implicit) assumption of these two Stmt
+--			+ we streamline it in compile_program(p) -> ObjMap
+Program ::  cm : ClMap
+			start_class: Id
+			start_meth: Id;
+
+ClMap = map Id to ClBlock;
+
+--- C.3 Classes
+
+	-- class decl: typed variables + method signatures
+ClBlock ::  vm : VarEnv
+			mm : map Id to Meth;
+ 
+--- C.4 Methods
+	
+	-- method decl: return type + parameter names + parameter types + body (TODO)
+Meth :: rtp: Type
+		ps: seq of Id
+		ptpm: VarEnv
+		body: seq of Stmt;
+
+--- C.5 Statements
+
+-- TODO: add "assert bool" statement to COOL
+Stmt = Assign | If | New | MethCall | Return | Release | Delegate | FutureCall | AwaitResult;
+
+--- C.6 Simple statements
+
+Assign :: 	lhs : Id
+			rhs : Expr;
+
+If :: test: Expr
+	  th: seq of Stmt
+	  el: seq of Stmt;
+
+New :: targ: Id;
+
+--- C.7 Invoking and completing methods
+
+-- TODO: shouldn't we accept Val instead of Id for args? 
+-- DIFF: yes, have them. The original motivation had to do with OO-pure languages, where
+--		 "1" (or integers) are object references. Problem with that is that 
+MethCall :: lhs : Id
+			obj : Id
+			meth: Id
+			args: seq of Id;
+
+Return :: val : RetVal;
+
+--- C.8 Concurrency
+
+Release :: val : RetVal;
+
+Delegate :: obj : Id
+			meth: Id
+			args: seq of Id;
+
+FutureCall :: obj : Id
+			  meth: Id
+			  args: seq of Id;
+
+AwaitResult :: lhs : Id;
+
+--- C.9 Expressions
+
+-- Expr:
+--	* as before but adding testing for object + nil values
+--	* NIL here is explicitly of Reference type, rather than the VDM nil
+--		+ that is the only value allowed as as reference (e.g. no objects)
+--
+-- DIFF: Used Reference instead of VDM nil. This means we need to rule out References
+--		 in expressions in wf_Expr below. Nevertheless, this gives rise to extensions
+--		 to COOL which have, say, method calls as expressions. For now, only the special
+--		 COOL NIL Reference is allowed.
+--		 Also, expressions are deterministic, so "--e-->" is a function rather than a relation.
+--		 Finally, we extend the ArithExpr/RelExpr with a few extra (if trivial) operators.
+Expr = ArithExpr | RelExpr | Id | ScalarValue | TestNil | Reference;
+
+ArithExpr :: opd1 	: Expr
+			 oprator: <PLUS> | <MINUS>
+			 opd2	: Expr
+			 --inv mk_ArithExpr(opd1, -, opd2) == (is_ArithExpr(opd1) and is_ArithExpr(opd2))
+			 ;
+				
+RelExpr :: opd1    : Expr
+		   operator: <EQUALS> | <NOTEQUALS> | <LT> | <OR>
+		   opd2	   : Expr
+  		   --inv mk_RelExpr(opd1, -, opd2) == (is_RelExpr(opd1) and is_RelExpr(opd2))
+  		   ;
+
+TestNil :: obj: Id;
+
+----------------------------------------------------------------------------
+-------------------------------- VALUES ------------------------------------
+----------------------------------------------------------------------------
+
+-- We need to add special values within the langue definition. They are:
+--	* NIL references for objects
+--	* ERROR references for when Reference expressions are misused (e.g. different from NIL)
+--	* explicit reference witnesses to build ALL_REFERENCES
+--	* ALL_REFERENCES to enable VDM Overture executability - it models unbounded set of references we need
+--
+-- DIFF: Appendix C has no values. For animation purposes we add three *key* values: ALL_REFS, NIL, ERROR.
+--		 NIL represents invalid references; ERROR represents run-time errors involving references, it can
+--		 only occur (for now) on ill-formed expressions or if some Expr Reference is not NIL (but say, MethCall).
+--		 We have some extra internal names/references for animation (X_ref), they *should not* be exported!
+values
+
+-- x := NIL;
+NIL   : Reference = mk_Reference(mk_token("NIL"), false);
+ERROR : Reference = mk_Reference(mk_token("ERROR"), false);
+
+a_ref : Reference = mk_Reference(mk_token("a_ref"), false);
+b_ref : Reference = mk_Reference(mk_token("b_ref"), false);
+c_ref : Reference = mk_Reference(mk_token("c_ref"), false);
+d_ref : Reference = mk_Reference(mk_token("d_ref"), false);
+
+-- "unbounded" Reference set:
+--	* make sure NIL is not part of it
+--	* this is general but not executable: it does not give an infinite set of references, though.
+-- 		+ ALL_REFERENCES: set of Reference = { r | r : Reference } \ { NIL, ERROR };
+ALL_REFERENCES: set of Reference = { a_ref, b_ref, c_ref, d_ref } \ { NIL, ERROR };
+
+functions 
+
+----------------------------------------------------------------------------
+---------------------------- CONTEXT CONDITIONS ----------------------------
+----------------------------------------------------------------------------
+
+-- Programs: 
+--	* starting client is known in class map
+--	* starting method is known within methods of starting client
+--		+ check the initial method is parameterless
+--	* create a class type information map (ctps) for all known class ids (c) in class map (cm)
+--		+ from class declaration (static) create class information (dynamic) [c_clinfo]
+--		+ mapping of all methods from their name to their method signature
+--		+ from method declaration create method signature [c_minfo]
+--		+ extract method signature from type environment for all method parameter list [apply]
+--		+ common check for types being either scalar or a valid id within ctps [c_scalar]
+--  * for all class ids, check each class declaration is well formed in ctps 
+--
+-- DIFF: initial method needs to be parameterless and this check is missing.
+wf_Program: Program -> bool
+wf_Program(mk_Program(cm, start_class, start_m)) == 
+	start_class in set dom cm and
+	start_m in set dom(cm(start_class).mm) and
+	cm(start_class).mm(start_m).ps = [] and -- ADDED 
+	let ctps = { c |-> c_clinfo(cm(c)) | c in set dom cm } in
+		--TODO: add parameters to initial method? 
+		--		wf_MethCall(mk_MethCall(lhs??, vm0(start_c)??, start_m, start_args), ctps, cm(start_c).vm) and
+		forall cid in set dom cm & wf_ClBlock(cm(cid), ctps);
+
+c_clinfo : ClBlock -> ClInfo
+c_clinfo(mk_ClBlock(-, mm)) ==
+	{ m |-> c_minfo(mm(m)) | m in set dom mm };
+
+c_minfo : Meth -> MethInfo
+c_minfo(mk_Meth(ret, pnl, ptm, -)) ==
+	mk_MethInfo(ret, apply(pnl, ptm));
+
+-- DIFF: extra precondition to avoid function application outside the domain?
+apply : seq of Id * VarEnv -> seq of Type
+apply(pnl, ptm) ==
+	[ ptm(pnl(i)) | i in set inds pnl & pnl(i) in set dom ptm ]
+pre
+	elems pnl subset dom ptm;
+
+-- DIFF: added function to avoid repetition in wf_XXXX definitions
+c_scalar: Type * ClTypes -> bool
+c_scalar(t, ctps) ==
+	is_ScType(t) or t in set dom ctps;	
+
+-- Classes
+--	* all variables must be (c_scalar) either a scalar type or within the class type environment (ctps)
+--	* all methods must be well formed
+wf_ClBlock: ClBlock * ClTypes -> bool
+wf_ClBlock(mk_ClBlock(vm, mm), ctps) ==
+	forall id in set dom vm & c_scalar(vm(id), ctps) and 
+	forall m in set dom mm & wf_Meth(mm(m), ctps, vm);
+
+-- Methods
+--	* return type is either scalar or within type environment
+--	* all parameter types must be c_scalar
+--  * all parameter names must be within the type environment containing name types
+--  * all statements in body are well formed in an env enriched/overriden by method parameters type map
+--	* all methods should have at least one return statement -- INCOMPLETE solution.
+--
+-- TODO: shouldn't method body have at least one return statement for all reachable paths? 
+--		 Or even a unique return statement?
+--
+-- DIFF: Add a check that at least one return statement is within the method body. This is
+--		 not complete, given we could have paths without return statements. What should happen then?
+wf_Meth: Meth * ClTypes * VarEnv -> bool
+wf_Meth(mk_Meth(rtp, ps, ptpm, body), ctps, v_env) ==
+	c_scalar(rtp, ctps) and
+    forall id in set dom ptpm & c_scalar(ptpm(id), ctps) and
+	elems ps subset dom ptpm and
+	--forall i in set inds body & wf_Stmt(body(i), ctps, v_env ++ ptpm); REFACTORED
+	wf_StmtList(body, ctps, v_env ++ ptpm) and
+	-- TODO: should this be here at all? Perhaps not because we can't guarantee dead-path checking.
+	has_RetStmt(body);	-- ADDED?
+
+has_RetStmt: seq of Stmt -> bool
+has_RetStmt(sl) ==
+	exists s in set elems sl & is_Return(s);
+
+-- Stmts
+--	* check each statement in a list
+--
+-- DIFF: refactored wf_StmtList function from various places where its definition was repeatedly used.
+wf_StmtList: seq of Stmt * ClTypes * VarEnv -> bool
+wf_StmtList(sl, ctps, v_env) == 
+	forall s_i in set inds sl & wf_Stmt(sl(s_i), ctps, v_env);
+
+-- Stmt
+--	* case analysis on specific syntactic categories
+--
+-- DIFF: add "false" case for catch all (e.g. badly formed program?)
+wf_Stmt: Stmt * ClTypes * VarEnv -> bool
+wf_Stmt(s, ctps, v_env) ==
+	cases true:
+		(is_Assign(s))		-> wf_Assign(s, ctps, v_env),
+		(is_If(s)) 			-> wf_If(s, ctps, v_env),
+	    (is_New(s))			-> wf_New(s, ctps, v_env),
+		(is_MethCall(s))    -> wf_MethCall(s, ctps, v_env),
+		(is_Return(s))  	-> wf_Return(s, ctps, v_env),
+		(is_Release(s))  	-> wf_Release(s, ctps, v_env),
+		(is_Delegate(s))  	-> wf_Delegate(s, ctps, v_env),
+		(is_FutureCall(s))  -> wf_FutureCall(s, ctps, v_env),
+		(is_AwaitResult(s)) -> wf_AwaitResult(s, ctps, v_env),
+		others		 		-> false
+	end;
+
+-- Simple statements: assignment + if + new
+
+-- Assign
+--	* name is known in the environment
+--  * rhs type agrees with lhs type in v_env
+wf_Assign: Assign * ClTypes * VarEnv -> bool
+wf_Assign(mk_Assign(lhs, rhs), ctps, v_env) == 
+	lhs in set dom v_env and 
+	c_tp(rhs, ctps, v_env) = v_env(lhs);
+
+-- If
+--  * test has boolean type
+--	* check each statement on both th/el parts
+wf_If: If * ClTypes * VarEnv -> bool
+wf_If(mk_If(test, th, el), ctps, v_env) ==
+	c_tp(test, ctps, v_env) = <BoolTp> and
+	wf_StmtList(th, ctps, v_env) and
+	wf_StmtList(el, ctps, v_env);
+
+-- New
+--  * new object tag is known in global (v_env)
+--  * targ is an identifier (e.g. cannot create a bool or int with new!)
+wf_New: New * ClTypes * VarEnv -> bool
+wf_New(mk_New(targ), -, v_env) ==
+	targ in set dom v_env and 
+	(is_Id(v_env(targ)));
+
+-- Invoking/completing methods: MethodCall + Return
+--  * method return (lhs) id is known
+--  * object calling (obj) id is known
+--  * object val is indeed an id
+--  * method signature from ctps for given obj id and meth name  
+--		+ lhs = obj.m(pts)			variables
+--		+ rtp = id.id(seq of id)	types
+--	* return type (rtp) agrees with lhs type
+--	* number of method parameters declared (formal) agrees with given (actual) parameters
+--  * check the type for each argument agrees with the method signature parameter type at position (pts(i))
+wf_MethCall: MethCall * ClTypes * VarEnv -> bool
+wf_MethCall(mk_MethCall(lhs, obj, meth, args), ctps, v_env) == 
+	lhs in set dom v_env and
+	obj in set dom v_env and
+	is_Id(v_env(obj)) and
+	meth in set dom (ctps(v_env(obj))) and
+	let mk_MethInfo(rtp, pts) = (ctps(v_env(obj)))(meth) in
+		rtp = v_env(lhs) and
+		len args = len pts and
+		forall i in set inds args & c_tp(args(i), ctps, v_env) = pts(i);
+
+wf_Return: Return * ClTypes * VarEnv -> bool
+wf_Return(mk_Return(val), ctps, v_env) == 
+	true; -- TODO
+
+-- Concurrency: release + delegation + future + await
+wf_Release: Release * ClTypes * VarEnv -> bool
+wf_Release(mk_Release(val), ctps, v_env) == 
+	true; -- TODO
+
+wf_Delegate: Delegate * ClTypes * VarEnv -> bool
+wf_Delegate(mk_Delegate(obj, meth, args), ctps, v_env) == 
+	true; -- TODO
+
+wf_FutureCall: FutureCall * ClTypes * VarEnv -> bool
+wf_FutureCall(mk_FutureCall(obj, meth, args), ctps, v_env) == 
+	obj in set dom v_env and
+	meth in set dom(ctps(v_env(obj))) and
+	let mk_MethInfo(-, pts) = (ctps(v_env(obj)))(meth) in
+		len args = len pts and
+		forall i in set inds args & c_tp(args(i), ctps, v_env) = pts(i);
+
+wf_AwaitResult: AwaitResult * ClTypes * VarEnv -> bool
+wf_AwaitResult(mk_AwaitResult(lhs), ctps, v_env) == 
+	true; -- TODO
+
+-- Expr checking:
+--	* delegate to a corresponding c_tp_XXX case
+--	* catch-all gives rise to an <Error> tag
+--
+--	OBS1: Note that ctps is not used anywhere within these expression checking functions.
+--		  That is because we do not allow cross-references between objects (e.g. object
+--		  x talking about object y's variables/methods), although this would be a nice and
+--		  realistic extension to COOL. In here we have the right scafolding for such 
+--		  improvement in place.
+--
+-- DIFF: Came from Base.vdmsl, which is slightly different from Appendix B.
+--		 For instance, RelExpr also accept BoolTp for OR-expr.
+c_tp: Expr * ClTypes * VarEnv -> (ScType | <Error>)
+c_tp(e, ctps, v_env) ==
+	cases true:
+		(is_ArithExpr(e))	-> c_tp_AExpr(e, ctps, v_env),
+		(is_RelExpr(e)) 	-> c_tp_RExpr(e, ctps, v_env),
+		(is_Id(e))			-> c_tp_Id(e, ctps, v_env),
+		(is_ScalarValue(e)) -> c_tp_ScalarValue(e),
+		(is_TestNil(e))		-> c_tp_TestNil(e, ctps, v_env),
+		(is_Reference(e))	-> c_tp_Nil(e),
+		others				-> <Error>
+	end;
+ 
+-- AExpr: arithmetic
+--	* check each side is of interger type in v_env
+--	* return integer type or error
+c_tp_AExpr: ArithExpr * ClTypes * VarEnv -> (ScType | <Error>)
+c_tp_AExpr(mk_ArithExpr(op1, -, op2), ctps, v_env) ==
+	if (c_tp(op1, ctps, v_env) = <IntTp> and c_tp(op2, ctps, v_env) = <IntTp>)
+	then <IntTp>
+	else <Error>;
+
+-- RExpr: relations
+--	* check each side is of same type in v_env
+--	* return boolean type or error
+--	* we extended relational expressions to have boolean types (e.g. v1 or v2)
+c_tp_RExpr: RelExpr * ClTypes * VarEnv -> (ScType | <Error>)
+c_tp_RExpr(mk_RelExpr(op1, -, op2), ctps, v_env) ==
+	if (c_tp(op1, ctps, v_env) = <IntTp> and c_tp(op2, ctps, v_env) = <IntTp>)
+		or
+	   (c_tp(op1, ctps, v_env) = <BoolTp> and c_tp(op2, ctps, v_env) = <BoolTp>)
+	then <BoolTp>
+	else <Error>;
+
+-- Ids
+--	* just check they are known in the variable environment
+c_tp_Id: Id * ClTypes * VarEnv -> (ScType | <Error>)
+c_tp_Id(id, -, v_env) ==
+	if (id in set dom v_env)
+	then v_env(id)
+	else <Error>;
+	-- TODO: if access was allowed between different object entities, you might need 
+	--		 more complex state within ctps to query for ids as well. This also brings
+	--		 complications like name clashes (e.g., same name for ids within variables
+	--		 and class names)!
+
+-- Scalars:
+--	* just return the correspnding COOL types given the VDM types 
+c_tp_ScalarValue: ScalarValue -> (ScType | <Error>)
+c_tp_ScalarValue(v) ==
+	cases true:
+		(is_int(v))		-> <IntTp>,
+		(is_bool(v)) 	-> <BoolTp>,
+		others			-> <Error>
+	end;
+
+-- Test ref for Nil:
+--	* check whether the underlying id to test for NIL references is well typed or not
+--		+ that means check the Id is a proper reference
+--	* if so, this is a boolean expression; <Error> otherwise
+c_tp_TestNil: TestNil * ClTypes * VarEnv -> (ScType | <Error>)
+c_tp_TestNil(tn, ctps, v_env) ==
+	if (c_tp_Id(tn.obj, ctps, v_env) <> <Error>) then <BoolTp> else <Error>;
+
+-- NIL references:
+--	* reference expressions *must* be / can only be "NIL", in which case we return boolean type 
+--		+ always true in sigma states later, when well-typed
+--	
+--	OBS1: if we allow other reference expressions we need to adjust the test for e below.
+c_tp_Nil: Reference -> (<BoolTp> | <Error>)
+c_tp_Nil(e) ==
+	if (e = NIL) then <BoolTp> else <Error>;
+
+----------------------------------------------------------------------------
+-------------------------------- SEMANTICS ---------------------------------
+----------------------------------------------------------------------------
+
+-- Compilation:
+--	* given a program, creates an initial object map
+--		+ it can be viewed as a sequence of: "start_obj := new(start_class) ; mcall(lhs, start_obj, start_meth, start_args)
+--		+ initial sigma is the same as what sem_new uses
+--		+ in practice, the allocation of the starting client is necessary for the reference in ObjMap domain
+--	* first find a reference for the starting client, effectively "allocating it" (e.g. new(start_cl))
+--	* map this new reference to a method call to the given initial method on the just created client
+--
+-- SERIOUS-TODO: is the starting client the start_class id of the program? No, because start_class isn't an object!
+--
+-- DIFF: There is no compilation (e.g. initial ObjMap for calling the semantics functions) in Appendix C.
+--		 On p.100 there is something akin to it that requires some extra statements, which amount to new/mcall.
+--		 We try to refactor it to have on initial execution the corresponding statements instead.
+compile_program: Program -> ObjMap
+compile_program(mk_Program(C, start_class, start_meth)) ==
+	let r in set ALL_REFERENCES in
+		let mk_ClBlock(vm0, -) = C(start_class),
+			sigma_init = initial_sigma(vm0) in 
+			{ r |-> mk_ObjInfo(start_class, sigma_init, 
+						mk_Active([mk_New(start_class), 
+								   mk_MethCall(start_class, start_class, start_meth, [])], r)) };
+
+compile_program0: Program -> ObjMap
+compile_program0(mk_Program(C, start_class, start_meth)) ==
+	let r in set ALL_REFERENCES in
+		let mk_ClBlock(vm0, -) = C(start_class),
+			sigma_init = initial_sigma(vm0) in 
+			{ r |-> mk_ObjInfo(start_class, sigma_init ++ { start_class |-> r }, -- looks just like new
+						mk_Active([mk_MethCall(start_class, start_class, start_meth, [])], r)) };
+
+-- Execution:
+--   NOTE: either big disjunct of boolean-valued functions (see small thread language)
+--			or picked-up non-det rule case (e.g. choice of a in dom Ob), then all is functional.
+--
+-- DIFF: There is no execution (e.g. program -semantic- computation result given an initial ObjMap) in Appendix C. 
+exec_program: Program * ObjMap -> set of ObjMap
+exec_program(P, Ob) == { Oa | Oa : ObjMap & sem_program(P, Ob, Oa) };
+			-- SERIOUS-TODO: add an ObjMap witness here, probably out of ALL_REFERENCES? to make it executable?
+
+--@CLIFF: predicate between programs start/end states, like "Program *ObjMap * ObjMap -> bool"
+
+sem_program: Program * ObjMap * ObjMap -> bool
+sem_program(mk_Program(C, start_cls, start_meth), Ob, Oa) == 
+	let a in set dom Ob in
+		let mk_ObjInfo(start_cls, sigma, mk_Active(sl, a)) = Ob(a) in
+			true; -- sem_stmtList(C, Ob, Oa);
+
+exec_sl_empty: seq of Stmt * ObjMap -> set of ObjMap
+exec_sl_empty([], Ob) == { Ob };
+
+exec_sl_concat: seq of Stmt * ObjMap -> set of ObjMap
+exec_sl_concat([s] ^ rest, Ob) == 
+	let first = exec_stmt(s, { Ob }) in
+		first union exec_stmt(s, first);
+
+exec_sl: seq of Stmt * ObjMap -> set of ObjMap
+exec_sl(sl, sigma) ==
+	cases sl:
+		[]			-> exec_sl_empty([], sigma),
+		[s] ^ rest	-> exec_sl_concat([s] ^ rest, sigma)
+	end;
+
+exec_stmt: Stmt * set of ObjMap -> set of ObjMap
+exec_stmt(s, sOb) == 
+	cases true:
+--		(is_Assign(s)) 	-> exec_Assign(s, sOb),
+--		(is_If(s))	 	-> exec_If(s, sOb),
+		false			-> sOb,
+		others			-> sOb
+	end;
+
+--Assign | If | New | MethCall | Return | Release | Delegate | FutureCall | AwaitResult;
+
+
+
+-- For each SOS rule in Appendix C for the corresponding programming constructs, 
+-- we have a ---s---> relation here describing it. What's above the line usually
+-- comes as pattern matching in let-expr, whereas what is below the line is the
+-- result of applying ---s---> to the programming construct.
+--
+-- So, for the usual relation (e.g. same as ((C, O), O ++ expr) in set ---s--->)
+--		(C, O) ---s---> O ++ expr
+-- we have here the a boolean-valued function that test whether the given parameters
+-- are part of the semantic relation or not. If so, then that is the semantic 
+-- description of the programming construct.
+
+-- sem_stmtprog(Program x Done) --> bool  		[--p-->]
+-- sem_stmt((ClMap x ObjMap) x ObjMap) --> bool	[--s-->]
+-- sem_expr((Expr x VarStore) x Val) --> bool	[--e-->]
+
+-- assignment: ClassMap * ObjMap before (Ob) * ObjMap after (Oa)
+--	* class information is irrelevant: no cross-reference or cross-object assignments (e.g. x.a = y.b + 1)
+--		+ hence the "-" in place of C in the sem_assign(-, Ob, Oa)
+--	* unpack the structure for the object reference (a) in Ob that is an assignment (Ob(a))
+--	* evaluate the rhs expression in a's state (sigma)
+--	* update the state (sigma) to the new value (v) under lhs + update active list
+--	* ensure that the result map (Oa) is the old map (Ob) with reference (a) updated (aobj_dash)
+--  * PS: in the next rules I will shorten the pattern to avoid having aobj_dash explicitly
+--		
+--  * OBS1: note that the !!KEY!! differences from Appenddix C are:
+--			+ the mk_XXXX within mk_Active determines which case it is
+--			+ the mapping updates within Ob (before state) determine what changes
+--			+ the rest is packing/unpacking
+--
+--	* OBS2: if we have/add non-deterministic expressions, then we could use "let v in set sem_expr"
+--
+-- NOTE: 
+sem_assign: ClMap * ObjMap * ObjMap -> bool
+sem_assign(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Assign(lhs, rhs)] ^ rl, clt)) = Ob(a) in
+			let v = sem_expr(rhs, sigma) in
+			-- let v in set sem_expr(rhs, sigma) in
+				let aobj_dash = mk_ObjInfo(c, (sigma ++ {lhs |-> v}), mk_Active(rl, clt)) in
+					Oa = Ob ++ { a |-> aobj_dash };
+
+-- if: 
+--	* again, class information is not relevant since objects are ``self-contained'' (no external obj refs.)
+--	* unpack the structure for the object reference (a) in Ob that is an if-statement (Ob(a))
+--		+ note we need the "a in set dom ob" in all cases, otherwise a is not bounded in the 2nd let expression for Ob(a)
+--  * evaluate the test expression
+--  * if passed, compute then part as next active statement; otherwise do the else part
+--  * PS: note the update on Oa abbreviates the need for the let statement
+--
+-- DIFF: Semantic rules from if onwards are slightly more compact when possible (e.g. avoiding too many let-expr).
+--		 Also, so explicit (extra) lets are added, like "let a in set dom Ob", which is missing in almost all rules.
+sem_if: ClMap * ObjMap * ObjMap -> bool
+sem_if(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_If(test, th, el)] ^ rl, clt)) = Ob(a) in
+			let passed = sem_expr(test, sigma) in
+				if passed then
+					Oa = Ob ++ { a |-> mk_ObjInfo(c, sigma, mk_Active(th ^ rl, clt)) }
+				else
+					Oa = Ob ++ { a |-> mk_ObjInfo(c, sigma, mk_Active(el ^ rl, clt)) };
+
+-- New:
+--	* class info is now relevant: we need to know how to initialise the fields of new object instance
+--	* unpack the structure for the object reference (a) in Ob that is an new-statement (Ob(a))
+--	* ``create'' a new instace (b)
+--		+ we do that by looking at the pool of all references (e.g. set of Reference type)
+--		+ PS: just using "Reference" here would confuse the tool 
+--			  (e.g. difference between VDM type and our interpretation)
+--
+--		+ PS2: also not this implies we will never run out of memory as we can always draw a new
+--				instance from the ALL_REFERENCES pool. That also means we can't execute the VDM spec.
+--				Note that ALL_REFERENCES does not contain NIL or ERROR references.
+--
+--				So, we actually provide a limited number of references to enable debugging/execution.
+--
+--  * extract from the variable environment the class id for the given tag
+--		+ c = String ; targ = Integer; (C(c).vm)(targ) = the Class information for integer in c
+--	* build the initial state for the new object according to the type information for targ (c_dash)
+--	* update the object map with new class
+--		+ new instance for targ (b) is associated to the old reference (a) in sigma and remainder is active
+--		+ add new instance (b) using right type (c_dash) and new sigma as a new idle object 
+--	* initial sigma:
+--		+ for every member of the variable environment, create a variable store with the appropriate value
+--		+ 0 for int; false for bool; nil for class/obj instance id
+--
+-- DIFF: Added an extra function to create initial sigma, as it is reused during initial compilation.
+--		 Also, we use here the set ALL_REFERENCES, instead of a general reference to "b : Reference"
+--		 in order to enable animation.
+sem_new: ClMap * ObjMap * ObjMap -> bool
+sem_new(C, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_New(targ)] ^ rl, clt)) = Ob(a) in
+			let b in set (ALL_REFERENCES \ dom Ob) in
+				let c_dash = (C(c).vm)(targ),
+					sigma_init = initial_sigma(C(c_dash).vm) 
+				in
+					Oa = Ob ++ { a |-> mk_ObjInfo(c, (sigma ++ { targ |-> b }), mk_Active(rl, clt)),
+								 b |-> mk_ObjInfo(c_dash, sigma_init, <Idle>) };
+
+initial_sigma: VarEnv -> VarStore
+initial_sigma(vm) ==
+	{ v |-> 0 | v in set dom vm & vm(v) = <IntTp> } munion
+	{ v |-> false | v in set dom vm & vm(v) = <BoolTp> } munion
+	{ v |-> 0 | v in set dom vm & not (is_ScType(vm(v))) };
+
+-- Method call (when <Idle> and about to start execution):
+--	* unpack the structure for the object reference (a) in Ob that is an method call-statement (Ob(a))
+--		+ this represents the calling site for the method (meth) within reference (a)
+--	* extract the object state (sigma_dash) / class info (c_dash) for the method itself (Obj(sigma(obj))
+--		+ the meth needs to be idle as well
+--	* extract from the class info (c_dash) the method signatures
+--	* build the new state (sigma_double_dash) after binding the method with the right arguments from signature (mm(meth).ps)
+--	* update the obj map state where calling obj (a) is waiting on the return of the method (lhs)
+--	* and the reference for the method obj (sigma(obj)) gets active in the new (sigma_double_dash) state
+--
+--	* PS: the basic "unpacking"/find-ref-a description is tedious/repetitive to describe. will shorten it.
+sem_mcall_exec: ClMap * ObjMap * ObjMap -> bool
+sem_mcall_exec(C, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_MethCall(lhs, obj, meth, args)] ^ rl, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, <Idle>) = Ob(sigma(obj)),
+		    mk_ClBlock(-, mm) = C(c_dash),
+		    sigma_double_dash = sigma_dash ++ { (mm(meth).ps)(i) |-> sigma(args(i)) | i in set inds args } in
+				Oa = Ob ++ { 		  a |-> mk_ObjInfo(c, sigma, mk_Wait(lhs, rl, clt)),
+							 sigma(obj) |-> mk_ObjInfo(c_dash, sigma_double_dash, mk_Active(mm(meth).body, a))};
+
+-- Method call (when finished active statements and becoming <Idle>):
+--	* when a method for reference (a) finishes its active statements
+--		+ update the obj map with a mapping to idle 
+--	* this representing the method finishing executing its statements
+sem_mcall_idle: ClMap * ObjMap * ObjMap -> bool
+sem_mcall_idle(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([], -)) = Ob(a) in
+			Oa = Ob ++ { a |-> mk_ObjInfo(c, sigma, <Idle>) };
+
+-- Method return expr
+--	* when an active reference (a) encounters a Return expr, regardless of thest of stmts (-)
+--		+ make sure it is an expression type
+--		+ update the concurrent state of (a) to idle
+sem_mreturn_expr: ClMap * ObjMap * ObjMap -> bool
+sem_mreturn_expr(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Return(e)] ^ -, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, mk_Wait(lhs, sl, clt_dash)) = Ob(clt)
+		in 
+			(is_Expr(e)) and
+			let v = sem_expr(e, sigma) in
+				Oa = Ob ++ {   a |-> mk_ObjInfo(c, sigma, <Idle>),
+							-- TODO: in App. C this is "cl |-> ..." rather than clt?
+							 clt |-> mk_ObjInfo(c_dash, sigma_dash ++ { lhs |-> v }, mk_Active(sl, clt_dash)) };
+
+-- Method return <Self>:
+--	* unpack the right structure/reference (a) that is waiting on self
+--	* update the calling instance (a) to <Idle>
+--	* update the waiting client ObjInfo such that:
+--		+ the store now contains the return value (lhs) mapped to the calling reference (a)
+--		+ method client (clt) now has an active statment list on its waiting client (clt_dash)   
+sem_mreturn_self: ClMap * ObjMap * ObjMap -> bool
+sem_mreturn_self(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Return(<Self>)] ^ -, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, mk_Wait(lhs, sl, clt_dash)) = Ob(clt)
+		in 
+			Oa = Ob ++ {   a |-> mk_ObjInfo(c, sigma, <Idle>),
+						 clt |-> mk_ObjInfo(c_dash, sigma_dash ++ { lhs |-> a }, mk_Active(sl, clt_dash)) };
+
+
+sem_release_expr: ClMap * ObjMap * ObjMap -> bool
+sem_release_expr(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Release(e)] ^ rl, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, mk_Wait(lhs, sl, clt_dash)) = Ob(clt)
+		in 
+			(is_Expr(e)) and
+			let v = sem_expr(e, sigma) in
+				Oa = Ob ++ {   a |-> mk_ObjInfo(c, sigma, mk_Active(rl, NIL)),
+							 clt |-> mk_ObjInfo(c_dash, sigma_dash ++ { lhs |-> v }, mk_Active(sl, clt_dash)) };
+
+sem_release_self: ClMap * ObjMap * ObjMap -> bool
+sem_release_self(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Return(<Self>)] ^ rl, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, mk_Wait(lhs, sl, clt_dash)) = Ob(clt)
+		in 
+			Oa = Ob ++ {   a |-> mk_ObjInfo(c, sigma, mk_Active(rl, NIL)),
+						 clt |-> mk_ObjInfo(c_dash, sigma_dash ++ { lhs |-> a }, mk_Active(sl, clt_dash)) };
+
+sem_delegate: ClMap * ObjMap * ObjMap -> bool
+sem_delegate(C, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_Delegate(obj, meth, args)] ^ rl, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, <Idle>) = Ob(sigma(obj)),
+			mk_ClBlock(-, mm) = C(c_dash),
+			sigma_double_dash = sigma_dash ++ { (mm(meth).ps)(i) |-> sigma(args(i)) | i in set inds args } 
+		in 
+			Oa = Ob ++ {   		  a |-> mk_ObjInfo(c, sigma, mk_Active(rl, NIL)),
+						 sigma(obj) |-> mk_ObjInfo(c_dash, sigma_double_dash, mk_Active(mm(meth).body, clt)) };
+
+sem_futurecall: ClMap * ObjMap * ObjMap -> bool
+sem_futurecall(C, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_FutureCall(obj, meth, args)] ^ rl, clt)) = Ob(a),
+			mk_ObjInfo(c_dash, sigma_dash, <Idle>) = Ob(sigma(obj)),
+		    mk_ClBlock(-, mm) = C(c_dash),
+		    sigma_double_dash = sigma_dash ++ { (mm(meth).ps)(i) |-> sigma(args(i)) | i in set inds args } 
+		in
+				Oa = Ob ++ { 		  a |-> mk_ObjInfo(c, sigma, mk_Active(rl, clt)),
+							 sigma(obj) |-> mk_ObjInfo(c_dash, sigma_double_dash, mk_Active(mm(meth).body, a))};
+
+sem_awaitresult: ClMap * ObjMap * ObjMap -> bool
+sem_awaitresult(-, Ob, Oa) ==
+	let a in set dom Ob in
+		let mk_ObjInfo(c, sigma, mk_Active([mk_AwaitResult(lhs)] ^ rl, clt)) = Ob(a) in
+			Oa = Ob ++ { a |-> mk_ObjInfo(c, sigma, mk_Wait(lhs, rl, clt)) };
+
+-- Expr: 
+--  * since expr are deterministic, there is no need for a reltion, so we use a function
+--		+ that is thanks to the use of method call as a separate construct rather than as part of an expr
+--	* just as before in Base language
+--
+-- DIFF: all expressions are determinisitc. In COOL they already are, but the semantics definition allows for non-det.
+sem_expr: Expr * VarStore -> Val
+sem_expr(e, sigma) == eval_expr(e , sigma);
+
+-- Expr: 
+--	* expression evaluation for each kind + NIL reference test
+--	* the test nil case just checks whether the underlying id is NIL in sigma
+--	* the Reference test is for when the value is being explicitly assigned (e.g. x = NIL)
+--	* other cases return an ERROR reference
+--
+--	OBS1: if we are to allow references other than NIL as expressions (e.g. x = y), then
+--		  eval_Reference might return something different from NIL. That is, just like in
+--		  c_tp_Expr, we have here the scaffolding for such extension. 
+--
+-- DIFF: catch-all case leads to an "invalid" reference (e.g. run-time error on illegal references in expressions)
+eval_expr: Expr * VarStore -> Val
+eval_expr(e, sigma) ==
+	cases true:
+		(is_ArithExpr(e))	-> eval_AExpr(e, sigma),
+		(is_RelExpr(e))		-> eval_RExpr(e, sigma),
+		(is_Id(e))			-> eval_Id(e, sigma),
+		(is_ScalarValue(e)) -> e,
+		(is_TestNil(e))		-> eval_TestNil(e, sigma),
+		(is_Reference(e))	-> eval_Reference(e, sigma),
+		others				-> ERROR
+	end; 
+
+-- AExpr:
+--	* evaluate each side and perform the actual operation
+eval_AExpr: ArithExpr * VarStore -> int
+eval_AExpr(mk_ArithExpr(op1, opt, op2), sigma) ==
+	let v1 = eval_expr(op1, sigma) in
+		let v2 = eval_expr(op2, sigma) in
+			cases opt:
+				<PLUS>	-> (v1 + v2),
+				<MINUS> -> (v1 - v2)
+			end
+--pre
+--	is_int(eval_expr(op1, sigma)) and
+--	is_int(eval_expr(op2, sigma))
+;
+
+-- RExpr:
+--	* evaluate each side and test the actual operation
+eval_RExpr: RelExpr * VarStore -> bool
+eval_RExpr(mk_RelExpr(op1, opt, op2), sigma) ==
+	let v1 = eval_expr(op1, sigma) in
+		let v2 = eval_expr(op2, sigma) in
+			cases opt:
+				<EQUALS>	-> (v1 = v2),
+				<NOTEQUALS> -> not (v1 = v2),
+				<LT>		-> v1 < v2,
+				<OR>		-> v1 or v2
+			end
+--pre
+	-- relax this if <AND>, <OR>, etc is included
+--	is_int(eval_expr(op1, sigma)) and
+--	is_int(eval_expr(op2, sigma))
+;
+
+-- Id:
+--	* lookup the id within sigma
+--		+ it needs to be within sigma's domain [lookup_Id]
+--		+ we delegate to a function as it might get more complicated if/when COOL is extended
+--
+-- DIFF: id-lookup added as function to avoid repetition
+eval_Id: Id * VarStore -> Val
+eval_Id(id, sigma) == lookup_Id(id, sigma);
+
+lookup_Id: Id * VarStore -> Val
+lookup_Id(id, sigma) ==
+	sigma(id)
+pre
+	id in set dom sigma;
+
+-- TestNil:
+--	* tests the underlying Id to test equals to a NIL reference
+--
+-- DIFF: TestNil evaluation uses special NIL Reference rather than VDM nil.
+eval_TestNil: TestNil * VarStore -> bool
+eval_TestNil(mk_TestNil(obj), sigma) ==
+	lookup_Id(obj, sigma) = NIL;
+
+-- References:
+--	* all references as expressions *must*/can only return NIL 
+--		+ no expression reference id resolution
+--		+ in that case we return an "error" (Reference) value 
+--
+--	OBS1: If/when we extend COOL to handle other kinds of reference expressions
+--		  this needs appropriate adjustment.
+--
+-- DIFF: For now, all references that are not NIL return the run-time ERROR Reference.
+--		 Future extensions could add other kinds of references in expressions like method call.
+eval_Reference: Reference * VarStore -> Val
+eval_Reference(e, -) == 
+	if (e = NIL) then e else ERROR;
+
+----------------------------------------------------------------------------
+-------------------------------- TESTING -----------------------------------
+----------------------------------------------------------------------------
+
+-- DIFF: extra (not-to-export) values for a testing program
+
+values
+
+-- type id names
+Sort_clsid : Id = mk_token("Sort");
+client_id  : Id = mk_token("client");
+
+-- variable id names
+n_id	 : Id = mk_token("n");
+x_id	 : Id = mk_token("x");
+v_id	 : Id = mk_token("v");
+b_id	 : Id = mk_token("b");
+
+-- methods id names
+insert_id: Id = mk_token("insert");
+test_id  : Id = mk_token("test");
+main_id  : Id = mk_token("main");
+
+-- sequential method bodies
+seq_insert_body : seq of Stmt = [
+	-- insert(x: int) method
+	-- begin
+		-- if (is-nil(n)) then
+		mk_If(mk_TestNil(n_id),
+		-- 		v := x; new n 
+			  	[mk_Assign(v_id, x_id), mk_New(n_id)],
+		-- else if (v <= x) then  // actually: (v < x) || (v = x)
+				[mk_If( mk_RelExpr(mk_RelExpr(v_id, <EQUALS>, x_id), <OR>, mk_RelExpr(v_id, <LT>, x_id)),
+		-- 				n := n.insert(x)
+						[mk_MethCall(n_id, n_id, insert_id, [x_id])],
+		-- else
+		-- 				n := n.insert(v); v := x;
+						[mk_MethCall(n_id, n_id, insert_id, [v_id]), 
+						 mk_Assign(v_id, x_id)
+						]
+					  )
+				-- endif
+				]
+			  ),
+		-- endif
+		--	--assert v <> -1;  shouldn't this be true? what else?
+		-- return(SELF)
+		mk_Return(<Self>)
+	-- end
+	];
+
+seq_test_body : seq of Stmt = [
+	-- test(x: int) method bool
+	-- begin
+		-- if (is-nil(n) or (x < v) then
+		mk_If(mk_RelExpr(mk_TestNil(n_id), <OR>, mk_RelExpr(x_id, <LT>, v_id)),
+		-- 	return (false)
+			[mk_Return(false)],
+		-- else if (x = v) then
+			[mk_If(mk_RelExpr(x_id, <EQUALS>, v_id),
+		-- 			return(true)
+					[mk_Return(false)],
+		-- else
+		-- 			b := n.test(x); return (b);
+					[mk_MethCall(b_id, n_id, test_id, [x_id]),
+					 mk_Return(b_id)
+					]
+				)
+			]
+		)
+		-- endif
+	-- end
+	];
+
+seq_main_body : seq of Stmt = [
+	-- main method
+	-- begin
+	--  -- if test(1) then -- WRONG: method calls cannot be expressions 
+		--  b := test(1);
+		mk_MethCall(b_id, n_id, test_id, [mk_token("1")]), -- SERIOUS-TODO: doesn't allow values on meth params? 
+		--  if b = false then
+		mk_If(mk_RelExpr(b_id, <EQUALS>, false),
+		--		insert(1); insert(2); insert(3);
+				[],
+	--	else
+		--		insert(4);
+				[]
+		),
+	--  fi;
+	--	-- debug n;
+	--	return (SELF);
+		mk_Return(<Self>)
+	-- end
+	];
+
+SEQ_PROGRAM_EXAMPLE : Program = mk_Program(
+	{ Sort_clsid 
+		|-> 
+	  mk_ClBlock(
+		-- class variables
+		{ v_id |-> <IntTp>, n_id |-> mk_Reference(Sort_clsid, true), b_id |-> <BoolTp> }, 
+		-- class methods
+		{ insert_id |-> mk_Meth(Sort_clsid, [x_id], { x_id |-> <IntTp> }, seq_insert_body),
+		    test_id |-> mk_Meth(<BoolTp>,   [x_id], { x_id |-> <IntTp> }, seq_test_body),
+			main_id |-> mk_Meth(Sort_clsid, [], 	{ |-> }, 			  seq_main_body) }
+	  ) 
+	}, 
+	Sort_clsid, main_id);
+-- Sort class
+--
+-- vars v: int := -1;
+--	 	n: unique ref(Sort) := nil;
+--		b: bool := false;
+--
+-- insert (x: int) method -- implicit Sort return type
+-- begin
+--	if is-nil(n) then
+--		v := x; 
+--		new n;
+--	else if v <= x then
+--		n := n.insert(x);
+--	else 
+--		n := n.insert(v);
+--		v := x;
+--	fi;
+--	-- TODO: add assertions to COOL
+--	--assert v <> -1;  shouldn't this be true? what else?
+--	return (SELF);
+-- end
+--
+-- test (x: int) method : bool
+-- begin
+--	if is-nil(n) \/ x < v then
+--		return (false);
+--	else if x = v then
+--		return (true);
+--	else
+--		b := n.test(x);
+--		return (b);
+--	fi;
+-- end
+--
+-- main method
+-- begin
+--  -- if test(1) then -- WRONG: method calls cannot be expressions 
+--  b := test(1);
+--  if b = false then
+--		insert(1);
+--  	insert(2);
+--  	insert(3);
+--	else
+--		insert(4);
+--  fi;
+--	-- TODO: add debug/println messages to COOL objects [it should print the object state + thread status]
+--	-- debug n;
+--	return (SELF);
+-- end
+
+
+operations
+
+-- DIFF: top-level wrap-up of COOL for Overture execution
+
+-- Typechecking:
+--	* ensures the program is well-formed by calling wf_Program(p)
+TestWF : Program ==> bool
+TestWF(p) ==
+	(
+		IO`println("\n\n 2) Test program is well-formed\n");
+		IO`println  ("\t------------ STARTED(2)  ------------");
+			(dcl 
+				resultP3 : bool := wf_Program(p); -- and (p.start_meth = meth);
+				IO`println("\n\t------------ FINISHED(2) ------------\n");
+				return (resultP3);
+			);
+	);
+
+Compile : Program ==> ObjMap
+Compile(p) ==
+	(
+		IO`println("\n\n 3) Compiling program initial object map \n");
+		IO`println  ("\n------------ PROGRAM(3)  ------------");	
+		IO`println(p);
+		IO`println  ("\n------------ STARTED(3)  ------------");	
+		(dcl
+			objMap: ObjMap := compile_program(p);
+			IO`println("\n--------- INITIAL ObjMap -----------");	
+			IO`println(objMap);
+			IO`println("\n------------ FINISHED(3) ------------\n");
+			return objMap;
+		);
+	);
+
+TestExec : Program ==> ()
+TestExec(p) ==
+	(
+		IO`println("\n\n 1) Test semantic execution functions\n");
+		IO`println  ("\n------------ STARTED(1)  ------------");
+			--if TestWF(p) then
+				(dcl 
+					objMap: ObjMap := Compile(p),
+					objMapR: set of ObjMap := exec_program(p, objMap);
+					IO`println("\n-------- RESULT ObjMap(s) ----------");	
+					IO`println(objMapR);
+				);
+			--else
+			---	IO`println("!!! program is not well-formed !!!");
+		IO`println("\n------------ FINISHED(1) ------------\n");
+	);
+
+end COOL
