@@ -4,43 +4,21 @@ Repository of various VDM scripts useful for (Linux/Mac) integration.
 * _**TODO: Test/add on Windows?**_
 
 ## setlinks
-dsdsd
+Sets new VDMJ version links into VSCode distribution
 
 ## unsetlinks
-dsds
+Unsets new VDMJ version links into VSCode distribution
 
 ## vdmj_build
-dsds
+Build's VDMJ linking jars to `/usr/local/lib` (or other set in)  `vdmj_env` variables. Assumes `vdmj` linked to `/usr/local/bin`.
 
 ## vdmj_env
-dsds
+Sets key VDMJ and build environment variables.
+
+* **TODO: fix/complete! **
 
 ## vdmj
-dsds
+`rlwrap`ped script call for VDMJ. This enables console "history" in VDMJ. It uses my prefered VDMJ flags too. Link to `/usr/local/bin`.
 
 ## vdmj0
-### @Witness
-Witness annotation useful as a automatic existential-proof discharger through VDMJ interpreation. That is, a witness to a record type will be type checked and interpreted; if that succeeds, this is akin to an exitentially quantified variable witness useful for later translation to theorem provers. 
- 
-## experiments
-Colleciton of interesting VDM-SL experiments
-
-### Asynch
-Attempt to include in VDM-SL what exists in VDM-RT as asynchronous operation calls. This needs some extending.
-
-### Folderol
-Larry Paulson's Folderol theorem prover in VDM-SL.
-
-## issues 
-Collection of minimal examples highlighting tool issues/errors. These were all reported to and fixed by corresponding tool builders.
-
-### CG
-Overture code generator issues. 
-
-### TC
-Overture and VDMJ type checker (and occasionally parsing) issues.
-
-## libraries 
-Collection of VDM-SL libraries for various uses. 
-
-* **TODO: document each library + fix Support1/2.vdmsl! **
+Simplest/raw script call for VDMJ. This enables external tool (e.g. Overture builders) integration with VDMJ without console wrapping and other xinenegans. Link to `/usr/local/bin`.
