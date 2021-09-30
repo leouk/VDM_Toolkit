@@ -3,7 +3,7 @@
 --@doc Copyright, Leo Freitas 2020 
 --@v1, 15/11/2020
 ------------------------------------------------------------------------------------
-module TP2
+module FolderolAlt
 imports from VDMUtil functions val2seq_of_char renamed val2str;
 exports all
 definitions 
@@ -592,4 +592,4 @@ functions
 		 in
 			g(a, a);
 		
-end TP2
+end FolderolAlt

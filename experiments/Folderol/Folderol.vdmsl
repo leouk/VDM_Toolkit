@@ -3,7 +3,7 @@
 --@doc Copyright, Leo Freitas 2020 
 --@v1, 15/11/2020
 ------------------------------------------------------------------------------------
-module TP
+module Folderol
 imports 
 	from IO operations print renamed print;
 ,	from VDMUtil functions val2seq_of_char renamed val2str;
@@ -1485,4 +1485,4 @@ operations
 traces
 	TR_OR_AND_DIST: ml_run_goal("(P|Q)&(P|R) --> P|(Q&R)");
   
-end TP
+end Folderol
