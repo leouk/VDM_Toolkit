@@ -10,7 +10,7 @@ definitions
 
 values
 
-MAX_PILE: nat1 = 31;
+MAX_PILE: nat1 = 20;--31;
 MAX_MOV: nat1 = 3;
 
 types 
@@ -34,8 +34,18 @@ inv s ==
 	-- last move is always 1, when moves are present, at the end of the game
 	(sum_elems(s) = MAX_PILE => s(len s) = 1)
 	;
+	-- forall s : seq of nat &  
+	--		forall i in set inds s &
+	--			s(i) >= 1 and s(i) <= MAX_MOV	
 
 functions 
+
+sum_elems0: seq of Move -> nat
+sum_elems0(s) == 
+	if s = [] then 
+		0
+	else
+		hd s + sum_elems(tl s);
 
 sum_elems: seq of Move -> nat
 sum_elems(s) == 
@@ -46,11 +56,9 @@ sum_elems(s) ==
 post
  	-- if someone played, then sum is not zero
 	s <> [] <=> RESULT > 0
-measure sum_elems_measure;
-
-sum_elems_measure: seq of Move -> nat
-sum_elems_measure(s) == len s;
-
+measure 
+	len s;-- [1,2,3]
+	
 -- assumes <P1> is the first player
 who_plays_next: Moves -> Player
 who_plays_next(ms) == 
@@ -64,6 +72,60 @@ fair_play(p, ms) == p = who_plays_next(ms);
 moves_left: Moves -> nat
 moves_left(ms) == MAX_PILE - sum_elems(ms);
 
+take[@e]: nat * seq of @e -> seq of @e
+take(n, s) == s(1,...,n)
+--pre n <= len s
+post
+	len RESULT = min(n, len s)
+	and
+	elems RESULT subset elems s;
+
+--@doc checks whether s is prefix closed with t (i.e. subseq of t).
+seq_prefix[@e]: seq of @e * seq of @e -> bool
+seq_prefix(s,t) == 
+	(s = t) or (s = []) 
+	or 
+	(len s <= len t and (exists i in set inds t & s = take[@e](i, t)))
+post
+	--@OnFail("seq prefix %1$s [= %2$s", s, t)
+	(RESULT 
+	 =>
+	 (elems s subset elems t
+	  and
+	  len s <= len t
+	 )
+	);
+
+play_move_bare: Player * nat * seq of nat -> seq of nat
+play_move_bare(p, m, s) == s ^ [m];
+
+play_move_types: Player * Move * Moves -> Moves
+play_move_types(p, m, s) == s ^ [m];
+
+play_move_correct: Player * Move * Moves -> Moves
+play_move_correct(p, m, s) == s ^ [m]
+pre
+	--@doc haven't reached the end
+	--MAX_PILE - sum_elems(s) > 0
+	--MAX_PILE > sum_elems(s)
+	--sum_elems(s) < MAX_PILE
+	moves_left(s) > 0
+	and
+	--@doc whatever is played next must be within PILE together with what's been played so far  
+	--MAX_PILE - sum_elems(s) >= m
+	--MAX_PILE >= sum_elems(s) + m
+	--m + sum_elems(s) <= MAX_PILE
+	--sum_elems(s ^ [m]) <= MAX_PILE
+	--m + sum_elems(s) <= MAX_PILE
+	--sum_elems(play_move_correct(p, m, s)) <= MAX_PILE
+	moves_left(s) >= m
+	and
+	(moves_left(s) = m => m = 1)
+	and
+	fair_play(p, s)
+post
+  post_play_move(p, m, s, RESULT);
+	
 --print play_move(<P1>, 3, [3,3,3,3,1,2,1,3])
 --print pre_play_move(<P1>, 3, [3,3,3,3,1,2,1,3])
 --print post_play_move(<P1>, 3, [3,3,3,3,1,2,1,3], play_move(<P1>, 3, [3,3,3,3,1,2,1,3]))
@@ -74,30 +136,48 @@ play_move(p, m, s) == s ^ [m]
 pre 
 	-- x cannot play to loose, but at the end
 	-- x cannot play to loose before the end
+	-- MAX_PILE - sum_elems(s) <> 1 => m < MAX_PILE - sum_elems(s)
+	-- sum_elems() <> 19 => m + sum_elems(s) < MAX_PILE
 	(moves_left(s) <> 1 => m < moves_left(s))
-	and
--- must play to loose at the end
+  and
+  -- must play to loose at the end
+	-- MAX_PILE - sum_elems(s) = m => m = 1
+	-- m + sum_elems(s) = MAX_PILE
 	(moves_left(s) = m => m = 1)
-	--(moves_left(s) = 1 => m = 1
 	and
   --there must be something to be played
-	moves_left(s) > 0
-
-	and
+	--moves_left(s) > m
+	--and
 	-- encodes fairness: if even no moves, then it must be <P1>'s turn
 	fair_play(p, s)
-	
 post 
 	-- you play something = implicitly true by the inv of Move
 	sum_elems(s) < sum_elems(RESULT)
+	--sum([3,2,1]) < sum([3,2,1,2])
+	--6 < 8 
+	--sum([3,2,1]) < sum([2,1,3,3,1])
+	--6 < 10
 	and
-	sum_elems(s) + m = sum_elems(RESULT) 
+	sum_elems(s) + m = sum_elems(RESULT)
+	and 
+	not fair_play(p, RESULT)
+	and
+	seq_prefix[Move](s, RESULT)
 ;
+
+-- DISCUSS
+last_play: Player * Moves -> Moves
+last_play(p, ms) == ms ^ [1]
+pre sum_elems(ms) = MAX_PILE - 1
+		and
+		--p = who_plays_next(ms)
+		fair_play(p, ms)
+		;
 		
 -- invariant for whoever won: last player looses by taking 1
 -- even seq means second player; odd seq means firs player 
-who_won_invariant: Player * Moves -> bool 
-who_won_invariant(winner, moves) ==
+who_won_invariant: Player * Moves * Move -> bool 
+who_won_invariant(winner, moves, limit) ==
 	-- all moves played, including last
 	moves_left(moves) = 0
 	and
@@ -105,7 +185,7 @@ who_won_invariant(winner, moves) ==
 	winner = who_plays_next(moves)
 	-- assuming perfect play?
 	and
-	will_first_player_win() => isFirst(winner) 
+	(will_first_player_win(limit) => isFirst(winner))
 ; 
 
 isFirst: Player -> bool
@@ -115,24 +195,35 @@ first_player: () -> Player
 first_player() == if isFirst(<P1>) then <P1> else <P2>
 post isFirst(RESULT);
 
+first_player_inds_implict(ms: Moves) r: set of nat1
+pre ms <> []
+post r subset inds ms;
+-- forall ms: Moves & pre_first_player_inds(ms) 
+--		=> exists r: seq of nat1 & post_first_player_inds(ms, r)
+
 first_player_inds: Moves -> set of nat1
 first_player_inds(ms) == { i | i in set inds ms & i mod 2 <> 0 }
 post RESULT subset inds ms;
+-- forall ms: Moves & pre_first_player_inds(ms) 
+--		=> post_first_player_inds(ms, first_player_inds(ms))
 
 moves_of: Moves * bool -> seq of Move
 moves_of(ms, first) == 
 	let idxs = first_player_inds(ms) in
-			[ ms(i) | i in set  if (first) then idxs else inds ms \ idxs ]
+			[ ms(i) | i in set if (first) then idxs else inds ms \ idxs ]
 ;
 
-will_first_player_win: () -> bool
-will_first_player_win() == (MAX_PILE - 1) mod (MAX_MOV + 1) <> 0;
+will_first_player_win: Move -> bool
+will_first_player_win(limit) == 
+	(MAX_PILE - 1) mod (limit + 1) <> 0;
 
-best_move: Moves -> nat
-best_move(moves) == (moves_left(moves) - 1) mod (MAX_MOV + 1)
-pre moves_left(moves) > 0
+best_move: Moves * Move -> nat
+best_move(moves, limit) == (moves_left(moves) - 1) mod (limit + 1)
+pre 
 	-- missed pre found through failed proof.
-post RESULT <= moves_left(moves);
+	moves_left(moves) > 0
+post 
+  RESULT <= moves_left(moves);
 
 min: int * int -> int
 min(x,y) == if (x < y) then x else y;
@@ -144,6 +235,23 @@ flip_current_player: Player -> Player
 flip_current_player(p) == if (p = <P1>) then <P2> else <P1>
 post p <> RESULT;
 
+types
+	NimAsRecord ::
+		limit: Move
+		current: Player
+		moves: Moves
+	inv mk_NimAsRecord(limit, current, moves) ==
+		-- cannot move all at once
+		limit < MAX_PILE
+		and
+		-- fair play
+		fair_play(current, moves)
+		and
+		isFirst(<P1>)
+
+values
+	NimAsRecordInit : NimAsRecord = mk_NimAsRecord(MAX_MOV, first_player(), []);
+	
 state Nim of
 	limit: Move
 	current: Player
@@ -151,8 +259,6 @@ state Nim of
 inv mk_Nim(limit, current, moves) ==
 	-- cannot move all at once
 	limit < MAX_PILE
-	and
-	limit <= MAX_MOV
 	and
 	-- fair play
 	fair_play(current, moves)
@@ -178,6 +284,19 @@ tally() ==
 	 )
 ext rd current, moves;	
 
+-- who won is determined by who played more moves? 
+who_won() w: Player ==
+	return current -- who_plays_next(moves)
+ext rd current, moves, limit
+pre 
+	isFirst(first_player())
+post 
+	(who_won_invariant(w, moves, limit) 
+		and 
+		-- last save flipped loser and put winner as current
+	 w = current)
+;
+
 -- flips who is playing - as extended explicit operation
 -- PROBLEM: changing player without changing moves will break
 -- 				  fair_play invariant (and vice-versa). Needs to be atomic!
@@ -185,19 +304,10 @@ flip_player() ==
 	current := if (current = <P1>) then <P2> else <P1>
 ext wr current
 		rd moves
-pre moves_left(moves) > 0 and false
-post current <> current~;
-
--- who won is determined by who played more moves? 
-who_won() w: Player ==
-	return current -- who_plays_next(moves)
-ext rd current, moves
-pre isFirst(first_player())
-post (who_won_invariant(w, moves) 
-			and 
-			-- last save flipped loser and put winner as current
-			w = current)
-;
+pre 
+	moves_left(moves) > 0 --and false
+post 
+  current <> current~;
 
 naive_choose_move() r: Move == 
 	-- naive choice: from 1 up to MAX_MOV or else amount left, presuming there are at least the last
@@ -217,17 +327,16 @@ post
 
 fixed_choose_move() r: Move == 
 	return FIXED_PLAY(len moves + 1)
-ext rd moves, current
+ext rd moves, current, limit
 pre moves_left(moves) > 0
 post 
-	-- can never be = moves_left(moves) or it would entail loosing?
-	r < moves_left(moves)
+	r <= moves_left(moves)
 	and
 	-- after playing the chosen move r, the next player has no good move choice
-	(will_first_player_win() 
-	and
-	isFirst(who_plays_next(moves))) 
-	=> best_move(play_move(current, r, moves)) = 0
+	(will_first_player_win(limit) and isFirst(who_plays_next(moves)) 
+ 	 => 
+ 	 best_move(play_move(current, r, moves), limit) = 0
+ 	)
 	;
 
 /*
@@ -240,19 +349,23 @@ The Isabelle proof shows a possible problem with function $best\_move$ precondit
 */
 first_player_winning_choose_move() r: Move == 
 	-- winning choice: get the best move, unless it's zero, so choose the least worst (1) play
-	return max(1, best_move(moves))
-ext rd moves, current
-pre moves_left(moves) > 0
+	return best_move(moves, limit)--max(1, best_move(moves, limit))
+ext rd moves, current, limit
+pre 
+  moves_left(moves) > 0
+  and
+  best_move(moves, limit) > 0
 post 
 	-- can never be = moves_left(moves) or it would entail loosing?
 	r < moves_left(moves)
 	and
 	-- after playing the chosen move r, the next player has no good move choice
-	will_first_player_win() => best_move(play_move(current, r, moves)) = 0
+	(will_first_player_win(limit) => best_move(play_move(current, r, moves), limit) = 0)
 	;
 	
 save(choice : Move) == 
-	(dcl ms  : Moves := play_move(current, choice, moves),
+	--bst
+	(dcl ms  : Moves  := play_move(current, choice, moves),
 			 next: Player := flip_current_player(current);
 		--flip_player();, see flip_current_player(current) instead
 		-- to keep the fair_play_invariant, we need to change both atomically
@@ -260,21 +373,32 @@ save(choice : Move) ==
 			moves := ms;
 			current := next;
 		);
+		--ast1
 		-- we want to debug who played last, so flip back
 		debug(flip_current_player(current), choice);	  
+		--ast2
 	)	
 ext wr current, moves
-pre pre_play_move(current, choice, moves) 
+pre 
+	--@OnFail("%1s, %2s, %3s", current, choice, moves)
+  (pre_play_move(current, choice, moves))
+  --and
+  --pre_flip_current_player(current)
 post 
-	post_play_move(current, choice, moves~, moves)
+	post_play_move(current~, choice, moves~, moves)
+	and
+	post_flip_current_player(current~, current)
 	and
 	current~ <> current
 ;
 
 naive_play_game() ==
+	--bst = s0
 	((while moves_left(moves) > 0 do
 			save(naive_choose_move())
+			--ast = s1 ; s2 ; s3 ... ; sn
 		);
+		--ast = sn
 	 tally()
 	)
 ext wr current, moves
@@ -314,6 +438,8 @@ reset() ==
 			current := first_player()
 		)
 ext wr moves, current
+post
+	moves = [] and current = first_player()
 ;
 
 all_play_game() ==
@@ -333,6 +459,8 @@ all_play_game() ==
 		println(  "==================================\n");
 		first_win_game();
 	)
+pre moves_left(moves) = MAX_PILE
+post moves_left(moves) = 0;
 
 values
 									-- 1 2 1 2 1 2 1 2 1 2
