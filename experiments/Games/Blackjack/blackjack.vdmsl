@@ -1,0 +1,273 @@
+module Blackjack
+imports 
+from IO
+	operations
+	  println renamed println;
+		printf renamed printf; 
+exports all
+
+definitions
+
+
+types
+
+  --@doc The two possible players in the game
+  Player = <Dealer> | <Player>;
+ 
+  --@doc Used to store the seed for random card selection
+  Seed = nat;
+  
+  --@doc The 4 possible card suits
+  Suit = char
+  inv s == s in set {'C', 'D', 'H', 'S'};
+  
+  --@doc The possible card values (including picture cards and aces) 
+  FaceValue = int | char
+  inv s ==  s in set dom FACE_VALUES;
+  
+  FaceValue2 = int | char
+  inv s == s in set {'A', 'J', 'K', 'Q', 2, 3, 4, 5, 6, 7, 8, 9, 10};
+ 
+  --@doc Stores information about a card
+	PlayingCard ::
+	  value: FaceValue
+	  suit:  Suit;
+	
+values
+
+  --@doc Stores the suits
+  SUITS: set of Suit = {'C', 'D', 'H', 'S'};
+  
+  --@doc Stores the numeric value assigned to each card's face value
+  FACE_VALUES: map (int | char) to nat1 = {
+    2 |-> 2, 3 |-> 3, 4 |-> 4, 5 |-> 5, 6 |-> 6, 7 |-> 7, 8 |-> 8,
+    9 |-> 9, 10 |-> 10, 'J' |-> 10, 'Q' |-> 10, 'K' |-> 10, 'A' |-> 11
+  };
+
+
+state Game of 
+  
+  --@doc The seed of the game
+  seed: nat
+  
+  --@doc The current deck in play
+  deck: map PlayingCard to nat
+  
+  --@doc The current scores
+  score: map Player to nat
+  
+  --@doc The current hands of each player
+  hands: map Player to seq of PlayingCard
+  targetScore: nat1
+  
+  --@doc Create the game, with 4 standard decks
+  init s == s = mk_Game(1, 
+    { mk_PlayingCard(val, suit) |-> 4 | val in set dom FACE_VALUES, suit in set SUITS },
+    { x |-> 0 | x : Player}, 
+    { x |-> [] | x : Player},
+    10)
+  
+ end;
+
+functions
+  --@doc Generate the next random number
+  nextSeed: Seed -> Seed
+  nextSeed(s) == ((63 * s) + 257) mod 5321; 
+
+  --@doc Calculate the total value of a hand
+  totalHand: seq of PlayingCard -> nat
+  totalHand(s) == 
+    if len s = 0 then 0
+    else FACE_VALUES((hd s).value) + totalHand(tl s)
+  measure len s;
+
+
+operations
+  --@doc Set the random seed
+  setSeed(n: Seed) ==
+  	seed := n
+  ext wr seed;
+  
+  --@doc Remove a card from the deck
+  removeCard(c: PlayingCard) ==
+    deck := deck ++ { c |-> deck(c) - 1 }
+  ext wr deck
+  pre
+  	c in set dom deck
+  	and
+  	deck(c) > 0;
+  
+  --@doc Retrieve a random card from the deck
+  nextCard: () ==> PlayingCard
+  nextCard() == (
+    dcl chosenCard: PlayingCard,
+        cardAsSequence: seq of PlayingCard := [],
+        
+        --@doc Get all cards with a quantity of more than 0 in the deck
+        cardsRemaining: map PlayingCard to nat := 
+          { x |-> deck(x) | x in set dom deck & deck(x) > 0 };
+    
+    --@doc Update the seed
+    setSeed(nextSeed(seed));
+    
+    --@doc Convert the set to a sequence (we need this in order to pick from a random index)
+    while card dom cardsRemaining > 0 do (
+      let a in set dom cardsRemaining in (
+      cardAsSequence := cardAsSequence ^ [a];
+      cardsRemaining := {a} <-: cardsRemaining;
+      )
+    );
+
+		--@doc Select a random card from the sequence
+    chosenCard := cardAsSequence(seed mod len cardAsSequence);
+    
+    --@doc Remove the card from the deck
+    removeCard(chosenCard);
+    
+		return chosenCard;
+  );
+  
+  --@doc Add a card to a player's hand
+  addCard(p: Player, c: PlayingCard) == 
+    hands(p) := hands(p) ^ [c]
+  ext
+    wr hands
+  pre
+  	p in set dom hands
+  	--and
+  	--not c in set elems hands(p)
+  	;
+    
+  --@doc Increment a player's score
+  addPoint(p: Player) == 
+    score(p) := score(p) + 1
+  ext
+    wr score
+  pre 
+  	p in set dom score
+  	--and
+  	--score(p) < MAX>????
+  	;
+    
+  --@doc Play the dealer's turn
+  dealersTurn() == (
+    printf("Dealer's hand is worth %s\n", [totalHand(hands(<Dealer>))]);
+  
+    --@doc Check if the dealer has blackjack
+    if totalHand(hands(<Dealer>)) = 21 then (
+      println("Dealer has blackjack");
+      addPoint(<Dealer>);
+      
+      --@doc If the dealer has blackjack, check if they have reached the target score.
+      if score(<Dealer>) = targetScore then
+        printf("Dealer wins game %s to %s", [score(<Player>), score(<Dealer>)])
+      else
+        --@doc Otherwise, play the next round
+        playRound();
+    ) else (
+    
+      --@doc Deal cards until we have a hand value greater than the player
+      while totalHand(hands(<Dealer>)) < totalHand(hands(<Player>)) do (
+        dcl new: PlayingCard := nextCard();
+        addCard(<Dealer>, new);
+        printf("Dealer deals %s\n", [FACE_VALUES(new.value)]);
+      );
+      
+      --@doc If we've beaten the player, and we haven't bust, we have won
+      if totalHand(hands(<Dealer>)) <= 21 then (
+        printf("Dealer wins round %s to %s", [totalHand(hands(<Dealer>)), totalHand(hands(<Player>))]);
+        
+        --@doc Check if the dealer has reached the target score.
+        if score(<Dealer>) = targetScore then
+          printf("Dealer wins game %s to %s", [score(<Player>), score(<Dealer>)])
+        else
+          --@doc Otherwise, play the next roudn
+          playRound();
+          
+      --@doc The dealer has bust, the player has won the round
+      ) else (
+        printf("Dealer has bust, Player wins round %s to %s", [totalHand(hands(<Player>)), totalHand(hands(<Dealer>))]);
+        
+        --@doc Check if the player has reached the target score
+        if score(<Player>) = targetScore then
+          printf("Player wins game %s to %s", [score(<Player>), score(<Dealer>)])
+        else
+          --@doc Otherwise, play the next round
+          playRound();
+      )
+    )
+  )
+  ext
+    wr score
+    wr hands
+    rd targetScore;
+    
+  --@doc Pass the play to the dealer
+  stand() == (
+    dealersTurn();
+  );
+  
+  --@doc Draw a new card
+  hit() == (
+    dcl new: PlayingCard := nextCard();
+    printf("You were dealt %s\n", [FACE_VALUES(new.value)]);
+    addCard(<Player>, new);
+    
+    --@doc Check if the player can draw another card
+    if totalHand(hands(<Player>)) < 21 then
+      printf("Your hand is worth %s, type \"p stand()\" or \"p hit()\"", [totalHand(hands(<Player>))])
+    
+    --@doc Check if the player has blackjack
+    elseif totalHand(hands(<Player>)) = 21 then (
+      println("Player has blackjack");
+      addPoint(<Player>);
+       
+       --@doc Check if the player has reached the target score
+      if score(<Player>) = targetScore then
+        printf("Player wins game %s to %s", [score(<Player>), score(<Dealer>)])
+      else
+        --@doc Otherwise, play the next round
+        playRound()
+     
+    --@doc The player has bust, the dealer has won the round
+    ) else (
+      printf("Player has bust, Dealer wins round %s to %s\n", [totalHand(hands(<Dealer>)), totalHand(hands(<Player>))]);
+      addPoint(<Dealer>);
+      playRound(); 
+    );
+  )
+  ext 
+    wr score
+    rd hands
+    rd targetScore;
+  
+  --@doc Play the next round
+  playRound() == (
+  
+    hands(<Dealer>) := [];
+    hands(<Player>) := [];
+    println("\nDealing Cards...\n");
+    addCard(<Player>, nextCard());
+    addCard(<Dealer>, nextCard());
+    addCard(<Player>, nextCard());
+    addCard(<Dealer>, nextCard());
+
+    printf("Your hand is worth %s, type \"p stand()\" or \"p hit()\"", [totalHand(hands(<Player>))]);
+    
+  );
+  
+  
+  -- ========================== ENTRY OPERATION ==============================
+  
+  --@doc Start the game
+  blackjack() == (
+    println("====================================================================");
+    println("                         VDM Blackjack                              ");
+    println("====================================================================");
+    setSeed(78167813);
+    printf("Configuration: {seed: %s, targetScore: %s}\n\n", [seed, targetScore]);
+    
+    playRound();
+  );
+  
+end Blackjack
