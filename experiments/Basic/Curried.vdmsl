@@ -1,0 +1,23 @@
+module Curried
+exports all
+definitions 
+
+-- curried x uncurried functions: 
+functions
+
+  times: nat * nat -> nat
+  times(x,y) == x * y;
+  
+  double: nat -> nat
+  double(x) == times(2, x); --2 * x;
+  
+  timesC: nat -> (nat -> nat)
+  timesC(x) == (lambda y: nat & x * y);
+  
+  doubleC: () -> (nat -> nat)
+  doubleC() == timesC(2);
+  
+  doubleC2: nat -> nat
+  doubleC2(y) == doubleC()(y);	
+  	
+end Curried

@@ -1,0 +1,10 @@
+default ImportanceOfSpecification
+p counter_example_f()
+p counter_example_g()
+p counter_example_h() 
+p counter_example_k() 
+p counter_example_h'() 
+p another_counter_example_h'() 
+p counter_example_k'() 
+p counter_example_k''() 
+p counter_example_k'''() 

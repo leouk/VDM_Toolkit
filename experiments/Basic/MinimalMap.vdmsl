@@ -1,0 +1,79 @@
+module MinimalMap
+exports all
+definitions 
+
+types
+	R :: 
+		field1: nat
+		field2: int;
+	
+	Transfer :: 
+		 name: token
+		 exported: nat
+		 imported: nat;
+		 
+functions
+  update_transfer0: Transfer * nat -> Transfer
+  update_transfer0(mk_Transfer(name, exported, imported), by_this_much) == 
+  	mk_Transfer(name, exported+by_this_much, imported);
+
+  update_transfer1: Transfer * nat -> Transfer
+  update_transfer1(t, by_this_much) == mk_Transfer(t.name, t.exported+3*by_this_much, t.imported)
+  post
+  	t.exported + by_this_much <= RESULT.exported;
+
+  update_transfer2: Transfer -> Transfer
+  update_transfer2(t) == mu(t, exported |-> t.exported + 1);
+
+types	
+	-- record containing a map with a nameless field	
+	M :: 
+			-- no name
+			map nat to R;
+		 --compose 
+ 	
+	M1 = map nat to R;
+			
+	Dom = nat1
+	inv d == d < 10;
+	
+	-- map {1,...,9} to {11,...}
+	MyMap = map Dom to nat1
+	inv m == 
+		--forall d in set dom m & inv_Dom(d) and 
+		--	forall n in set rng m & inv_nat1(m(d)) and 
+		forall d in set dom m & m(d) > 10;
+
+  MyMap1 = map Dom to nat1;
+  
+values
+	mymap1: MyMap = {|->};				-- mymap1(1)
+	mymap2: MyMap = { 1 |-> 12 }; -- mymap2(1) = 12, mymap2(2) = undefined 
+	mymap3 = { 11 |-> 20 }; -- not is_MyMap(mymap3)
+	mymap4 = { 9 |-> 2 }; -- not is_MyMap(mymap3)
+	--mymap5: MyMap = { 1 |-> 12, 1 |-> 15 };
+	
+types
+	Day = nat1 
+	inv d == d <= 31;
+	
+	Month = nat1
+	inv m == m <= 12;
+	
+	DaysInMonths = map Month to Day
+	inv m == 
+		--forall i in set dom m & 
+		(forall i in set dom m & ({4,6,8,11} <: m)(i) <= 30)
+		or
+		(forall j in set rng ({4,6,8,11} <: m) & j <= 30)
+		or
+		(rng ({4,6,8,11} <: m) subset {1,...,30})
+			--and
+			--rng ({2} <: m) subset {1,...,28};
+			--{1, 3, 5, 7, 8, 10, 12} <: m 
+;
+	Enum = <A> | <B> | <C>;
+	
+	MyEnumMap = map Enum to nat1; 
+	
+end MinimalMap

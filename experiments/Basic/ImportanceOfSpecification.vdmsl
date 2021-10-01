@@ -1,0 +1,226 @@
+module ImportanceOfSpecification
+exports all
+definitions
+
+--@doc This artificial specification aims at demonstrating the importance of 
+--		 specification in the discovery of problems as well as in the realisation
+--		 of stated requirements. 
+--
+--		 It defines 4 different solutions (as functions f, g, h and k) to the same problem.
+--		 Variations are commented and discussed, alongside their consequence. At the end,
+--		 I provide some counter examples describing what's wrong with the solution. 
+--
+--		 Notice that even a solution with a successful proof (e.g. g) can still have 
+--		 counter examples. Counter examples are input values that fail to satisfy the 
+--		 implicit type invariatn postcondition and/or the explicit user given postcondition
+--		 (i.e. too weak precondition to catch input problems leads to run-time error).
+--		
+--		 That serves to demonstrate that successful testing, even with successful proof,
+--		 does not necessarily mean successful outcome, if one can find an allowed input
+--		 that either betrays the computation (i.e. fail postcondition, as in f or h) or 
+--		 has not been consider (i.e. fail the requirements, as in g, even though it's proof is correct).    
+
+--@doc REQUIREMENTS
+--
+--@doc R1.  represent valid moves
+--@doc R1.1 valid move is non-zero choice
+--@doc R1.2 all moves must be within MAX_SUM
+--@doc R1.3 no moves can be repeated
+--@doc R1.4 must have moves
+--@doc R2   define an update function for given valid moves
+--@doc R2.1 result must continue to be of valid moves
+--@doc R2.2 result must be different from input by given new valid move
+--@doc R3   create tests demonstrating valid moves update
+
+values	
+	MAX_SUM: nat1 = 40;
+	
+types
+	--@doc R1.1
+	Move = nat1;
+	--inv m == m <= MAX_SUM;
+	
+	--@doc R1.2, R1.4 (seq1)
+	Moves = seq1 of Move
+	inv m == sum_elems(m) <= MAX_SUM;
+	
+	--@doc R1, R1.3  
+	ValidMoves = Moves
+	inv m == card elems m = len m;
+	  
+functions
+	sum_elems: seq of Move -> nat
+	sum_elems(xs) == 
+		if xs = [] then 0 else hd xs + sum_elems(tl xs)
+	measure
+		len xs;
+	
+	--@doc loose types, no spec; works for valid inputs; what are they?
+	--@proof fail with various inputs, proof fails too 
+	f: int * seq of int -> seq of nat1
+	f(x, xs) == 
+		--@doc R1.3, R1.1
+		if x in set elems xs or x < 1 then xs else xs ^ [x];
+	
+	f': int * seq of nat1 -> seq of nat1
+	f'(x, xs) == 
+		--@doc R1.3, R1.1
+		if x in set elems xs or x < 1 then xs else xs ^ [x];
+	
+	--@doc tighter types, no spec; rules out some invalid inputs; what others?
+	--@doc implicit type checks on pre prevent class of invalid inputs and
+	--		 impose a condition on the output (e.g. inv_Seqelems inv_Move xs/RESULT)
+	g: Move * seq of Move -> seq of Move
+	g(x, xs) ==
+		if x in set elems xs then xs else xs ^ [x];
+		
+	--@doc precise types, implicit and explicit spec; rules out all invalid inputs; prove it!
+	--@proof discovered the missing problem about the type of xs
+	h: Move * Moves -> ValidMoves
+	h(x, xs) == 
+		xs ^ [x]
+	pre
+		not x in set elems xs
+		and
+		x + sum_elems(xs) <= MAX_SUM
+	post
+		x in set elems RESULT;  
+
+	--@doc tighter types, like g for spec; 
+	--@doc rules out invalid inputs by cases; prove it!
+	k: Move * seq1 of Move -> seq1 of Move
+	k(x, xs) ==
+		if x in set elems xs or 
+			 sum_elems(xs) + x <= MAX_SUM 
+		then 
+			 xs 
+		else 
+			 xs ^ [x]
+	post
+		x in set elems RESULT;
+		--
+		--x in set elems (if x in set elems xs or 
+		--	 sum_elems(xs) + x <= MAX_SUM 
+		--then 
+		--	 xs 
+		--else 
+		--	 xs ^ [x])
+		--
+		--== x in set elems xs or sum_elems(xs) + x <= MAX_SUM
+		-- x in set elems xs
+		
+		
+		
+		
+		
+
+	--@doc precise types, implicit and explicit spec; rules out all invalid inputs; prove it!
+	--@proof shown this is sound: if given valid moves, result is valid moves so long as x is 
+	--			 valid move and won't invalidate the established validity of xs.
+	h': Move * ValidMoves -> ValidMoves
+	h'(x, xs) == 
+		xs ^ [x]
+	pre
+		not x in set elems xs
+		and
+		x + sum_elems(xs) <= MAX_SUM
+	post
+		x in set elems RESULT;  
+	
+	--@doc better definition but still not right
+	--@proof like with h, what if xs is invalid?
+	k': Move * seq1 of Move -> seq1 of Move
+	k'(x, xs) ==
+		if sum_elems(xs) + x <= MAX_SUM 
+		then 
+			 xs 
+		else 
+			 xs ^ [x]
+	pre
+	  not x in set elems xs
+	post
+		x in set elems RESULT;	
+
+	--@doc better definition with valid inputs
+	--@proof what if x + sum_elems(xs) > MAX_SUM? Output don't contain x
+	k'': Move * ValidMoves -> ValidMoves
+	k''(x, xs) ==
+		if sum_elems(xs) + x <= MAX_SUM 
+		then 
+			 xs 
+		else 
+			 xs ^ [x]
+	pre
+	  not x in set elems xs
+	post
+		x in set elems RESULT;			
+
+	--@doc final version, which is the same as h'!
+	k''': Move * ValidMoves -> ValidMoves
+	k'''(x, xs) ==
+		xs ^ [x]
+	pre
+	  not x in set elems xs
+	  and
+	  x + sum_elems(xs) <= MAX_SUM
+	post
+		x in set elems RESULT;			
+
+values
+	MOVES: Moves = [1,1];
+	VALID_MOVES: ValidMoves = [1];
+
+traces
+--@doc successful tests (i.e. hardly never enough)
+	
+	T_f   :    f(1, MOVES);
+	T_g   :    g(1, MOVES);
+	T_h   :    h(2, VALID_MOVES);
+	T_k   :    k(2, VALID_MOVES);
+	T_h'  :   h'(2, VALID_MOVES);
+	T_k'  :   k'(2, VALID_MOVES);
+	T_k'' :  k''(2, VALID_MOVES);
+	T_K''': k'''(2, VALID_MOVES);
+	
+--@doc counter examples to explore 	
+--@doc have them as functions given as values would fail to load
+--@doc those that are caught by the pre are invalid counter examples (i.e. just normal run)
+--@doc those that are caught by post or type invariant are run-time errors to be ruled out
+functions
+	--@doc post_failure: if xs is invalid or input is negative
+	counter_example_f: () -> ValidMoves
+	counter_example_f() == f(-1, MOVES);
+
+	--@doc post_failure: if xs is invalid
+	counter_example_g: () -> ValidMoves
+	counter_example_g() == g(2, MOVES);
+
+	--@doc post_failure: if xs is invalid
+	counter_example_h: () -> ValidMoves
+	counter_example_h() == h(2, MOVES);
+
+	--@doc post_failure: if xs is invalid or input is not in x in set elems xs
+	counter_example_k: () -> ValidMoves
+	counter_example_k() == k(2, MOVES);
+	 			 
+	--@doc no failure: can't find one for h'
+	counter_example_h': () -> ValidMoves
+	counter_example_h'() == h'(2, VALID_MOVES);
+
+	--@doc pre_failure (caught problem): can't find one for h'
+	another_counter_example_h': () -> ValidMoves
+	another_counter_example_h'() == h'(2, [MAX_SUM]);
+
+	--@doc post_failure: if xs is invalid
+	counter_example_k': () -> ValidMoves
+	counter_example_k'() == k'(2, MOVES);
+
+	--@doc post_failure: input will break max_sum 
+	counter_example_k'': () -> ValidMoves
+	counter_example_k''() == k''(1, [MAX_SUM]);
+
+	--@doc pre_failure (caught problem): can't find one for k'''
+	counter_example_k''': () -> ValidMoves
+	counter_example_k'''() == k'''(1, [MAX_SUM]);
+	 			 	 			 
+end ImportanceOfSpecification
