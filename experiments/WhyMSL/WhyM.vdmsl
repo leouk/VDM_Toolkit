@@ -1,0 +1,2114 @@
+module WhyM
+--load ./WhyM.vdmsl ./WhyMIds.vdmsl ./WhyMUtil.vdmsl ./lib/IO.vdmsl ./lib/VDMUtil.vdmsl
+
+imports from VDMUtil  functions  set2seq		renamed set2seq,
+		from IO		 functions  println	renamed println;
+								print   renamed print,
+
+		from WhyMIds  types 	 Id 			renamed Id0;
+								 Identity		renamed Identity;
+
+					  functions	 canCreateIds	renamed canCreateIds0;
+								 isIdConsistent renamed isIdConsistent0;
+
+								 inv_Name		renamed inv_Name0;	
+ 								 inv_TheoryId	renamed inv_TheoryId0;
+								 inv_ConjId	 	renamed inv_ConjId0;
+								 inv_ProofId	renamed inv_ProofId0;
+								 inv_VarId	  	renamed inv_VarId0;
+								 inv_DefId	  	renamed inv_DefId0;
+								 inv_LogId	  	renamed inv_LogId0;
+								 inv_ToolId	  	renamed inv_ToolId0;
+								 toolIds		renamed allowedTools0;
+
+			 		  operations createId	 	renamed createId0;
+								 createNamedId	renamed createNamedId0,
+
+		from WhyMUtil functions process_Set  		renamed wf_Set0;
+								process_Seq  		renamed wf_Seq0;
+								domain				renamed domain0;
+								range				renamed range0;
+								partition			renamed partition0;
+								--filter_seq			renamed filter_seq;
+								collect_Elems 		renamed collectElems0;
+								post_collect_Elems 	renamed post_collectElems0;
+								hasCircularDeps		renamed hasCircularDeps0;
+								hasUnknownDeps		renamed hasUnknownDeps0;
+								isKeyDepValid		renamed isKeyDepValid0;
+								isDepMapValid		renamed isDepMapValid0;
+								validDeps			renamed validDeps0;
+								post_validDeps		renamed post_validDeps0;
+		
+
+exports all -- all for now...
+
+definitions
+
+/*
+---------------------------------------------------------------------------------------------------------
+General Requirements
+
+R1 - Collect (posibly multiple) proof attempt (meta-)information from proof obligations of (unique) theories of interest
+R2 - Information is about an expert's intent, must be well formed/consistent, and useful for AI4FM applications 
+	 (e.g., concept formation, lemma suggestion, proof refactoring, strategies, etc)
+R3 - Scores are assigned to help discern / order best practice/choice; they can be learned or prescribed (ranks?)
+
+---------------------------------------------------------------------------------------------------------
+Theorey Requireents
+
+RT1 - Can have structure (E.g., meta-information), yet are theorem prover independent (e.g., no ties TP AST or types)
+RT2 - There is a logged record associated with the theories' history; it contains "snapshots" of the theory
+RT3 - They are orgsanised in a (acyclic) hierarchy of dependencies and dependants
+RT4 - For learning/searching capabilities, theories have meta-information about types and defs of interests
+RT5 - They encompass (named) POs of interest with their respective proof attempts
+RT6 - It also includes collected / learned data from the theory's use
+
+---------------------------------------------------------------------------------------------------------
+Definition Requirements
+
+RD1 - User definitions from different tools/languages/formats need to be capture within a theory
+RD2 - Only aspects pertinent/relevant to machine learning and referencing within WhyM are recorded
+RD3 - Extra information regarding the user's intention is also to be recorded, such as the set of
+	  positive/negative properties this definition has, its origin, declared intent, etc.
+RD4 - Definitions usually capture a particular kind of concept, which we want to record as well
+RD5 - Thes extra information are to be added as needed.
+
+---------------------------------------------------------------------------------------------------------
+Conjecture Requirements
+
+RC1 - POs might have more than one attempt; or even unssuccessful attempts
+RC2 - A sequence of attempts is often part of a final proof: we want to capture them all, successful or not
+RC3 - Certain attempts lead to changes in the model, or on the list of hyp needed, or a new lemma suggested;
+	  these "intentional"-shifts need to be captured as well
+RC4 - Each major attempt (e.g., one sequence, say) must contain intent information as "why" was it done the way it was
+RC5 - We want to have both positive and negative intent capturing: they are both important during proof
+RC6 - It must be possible to distinguish among known/available ops/type/defs structural information of interest,
+	  in particular those related to their role in a proof attempt
+	  
+---------------------------------------------------------------------------------------------------------
+Attempt Requirements
+
+RA1 - Attempts represent a proof meta-information instances
+RA2 - Each attempt must be ordered wrt to their intent (Why), and its "quality" may vary depending on progress
+RA3 - It must capture both positive and negative information ordering depending on the user's choice
+	  
+---------------------------------------------------------------------------------------------------------
+Term Requirements
+
+RM1 - Terms must be abstract and tool independent (e.g., not tied to a particular theorem prover)
+RM2 - They need to contain only information of interest, like free/bound variables, or if they are Expr/Pred;
+	  special cases, like equality or relational defs, are also fine.
+	  
+---------------------------------------------------------------------------------------------------------
+DESIGN RAITONALE:
+
+* keep type invariants as simple as possible and push more complex invariants to state/operations
+* execute (as much as possible) the types/functions defined to see whether they can be handled or not
+* make use of polymorphic/high-order facilities but cautiously: there are so funny corner cases (e.g., typ inf)
+
+* ALWAYS have constructor on invariants (e.g., inv mk_T(...) = bla)
+* NEVER have circular dependencies (e.g., remodel if necessary)
+
+* Latham and Cottombush (VDM Book, have a look)
+*/
+
+--*********************************************************************************************************
+--*********************************************************************************************************
+
+values
+	ATTEMPT_SKETCH_WORTH  : real = 0;	-- POS/NEG
+	PROOF_INSTANCE_WORTH  : real = 1;	-- POS
+	PROOF_GUESS_WORTH     : real = 2;	
+	PROOF_INSIGHT_WORTH   : real = 3;	
+	PROOF_TRUSTED_WORTH   : real = 4;	
+	PROOF_AXIOM_WORTH     : real = 5;	 
+	PROOF_QED_WORTH       : real = 6;
+	DISPROOF_GUESS_WORTH  : real = 1;	-- NEG
+	DISPROOF_INSIGHT_WORTH: real = 2;
+	DISPROOF_TRUSTED_WORTH: real = 3;
+	DISPROOF_WITNESS_WORTH: real = 4;
+	ATTEMPT_MIN_WORTH     : real = ATTEMPT_SKETCH_WORTH;
+
+types
+
+	--IdMap = map Id to @T
+	--inv im == forall i in set dom im & im(i).id = i;
+
+-------------------------------------------------------------------------------
+--- * Sigma is an injective map: theories are unique (by Id!)
+
+	Sigma = map TheoryId to Theory
+	-- PERFORMANCE: these invariants could go to the state to avoid too many (redundant) "checks"?
+	inv s == forall i in set dom s & s(i).id = i;
+
+-------------------------------------------------------------------------------
+--- Theory 
+---		* Theory records intent information and inference
+---		* link with underlying log data, here just a pointer
+---		* hints are sequence of whys, and represent positive knowledge
+---		* clues are instantiate whys, yet they are just pieces of the jigsaw 
+---		* strategies are not to be updated, except when/with learning 
+---		  (i.e., they are those created during proof and fixed).
+---
+---		* should uses/specialised be like "inherited" features? See Isabelle Locale?
+	
+	Theory ::
+		id			: TheoryId						-- this theory own Id	
+		specialises	: [TheoryId]					-- dependencies down -- FIXME: should we have that?
+		log			: Log							-- associated log (pointer)
+		uses		: set of TheoryId				-- dependencies up
+		allowed		: set of Tool					-- tools allowed by theory 
+		ttypes		: set of Signature				-- known types
+		defs		: map DefId to Definition		-- tagged/known ops; inmap so that defs don't repeat?
+		results		: map ConjId to Conjecture		-- proved conjectures
+		strategies	: set of (Why * Hints) 			-- relates why with hints
+		-- G: Nelson/Oppen algorithm in decision procedures (e.g., see John Harisson book); SMT solvers. TODO: have a look.
+	inv mk_Theory(id, sp, -, uses, allowed, -, defs, results, -) == 
+			-- PERFORMANCE: these invariants could go to the state to avoid too many "checks"?
+			forall i in set dom defs & defs(i).id = i
+			and
+			forall j in set dom results & results(j).id = j
+			and
+			(id not in set uses)
+			and
+			(sp <> nil => id <> sp and sp not in set uses)
+			and
+			(allowed <> {})
+			;
+
+-------------------------------------------------------------------------------
+--- Definitions
+---		* Augumented from tool term structure with meta-tagging
+--		* Keep defs simple for now; may need more on term structure later (e.g., keep abstract: use Mural Indices - App.C)
+
+	Definition ::
+		id			: DefId
+		term		: Term				-- text from tool Term structure
+		props 		:- set of DefProp	-- set of properties of interest (e.g., does commute with OpY)		 TODO: SHAPE, PLEASE!
+		aprops		:- set of DefProp	-- set of anti-properties of interest (e.g., doesn't commute with OpX)
+		concept		:- Concept			-- what does it define?
+		structure	:- set of Structure -- expected use of definition
+		origin		:- DefOrigin		-- where the definition comes from?
+		intent		:- seq of char		-- user textual description of definition
+		related		:- set of DefLink	-- related terms/definitions/lemmas?
+		-- Larch: type classes / group theory (e.g., Collectors, and +/-/un/diff, etc.): BUT you might not be able to have it.
+		witnesses	:- map VarId to Pred-- possible witnesses for all quantified variables of interest? 
+		inv mk_Definition(-, term, -, -, -, -, -, -, -, w) ==  
+			-- witnesses are bounded 
+			dom w subset BoundedVars(term)
+			and
+			-- witnesses Pred cannot share free variables with term
+			let fv = FreeVars(term) in
+				forall p in set rng w & fv inter FreeVars(p) = {}
+		;
+
+	-- properties of interest for the definition? like assoc/comm/dist etc. 
+	-- what parameters to have, if any?
+	DefProp = token;
+
+	-- what kind of definition is this? useful to scoring mechanisms and strategy choices?
+	Concept =
+		  <CORE>		-- concept considered "core" by the user
+		| <EXTENSION>	-- extension of a core concept			[Ext of what? would this  be relevant]
+--		| <INVARIANT>	-- invariant of data structure? +/-
+		| <TOY>			-- part of a toy-problem abstraction
+		-- TODO: what else? could these be learned/created?
+		;
+		-- L: add an invariant for Concenpts that are <TOY> or <EXTENSION> to have a DefLink to some <CORE> concept
+
+	-- most likely/expected use of definition during a proof
+	Structure =
+		  <CONSTRUCTOR> -- constructor
+		| <DESTRUCTOR>	-- destructor
+		| <FUNCTIONAL>  -- function ? unnecessary?
+		| <POINTWISE>	-- definition is given/used pointwise 
+		| <SET_BASED>	-- definition is for set based resoning
+		| <SEQ_BASED>	-- definition is for seq/list based reasoning
+		| <EXTENSIONAL>	-- equality as quantified comparison (e.g., x=y iff (ALL i: x @ i:y) and...)
+		| <LIEBINITZ>	-- equality as substitution of equals-for-equals
+		-- TODO: what else? could these be learned?
+		;
+
+	-- definition source: problem itself, or user insight, or other tool/theory
+	DefOrigin = <EXTENSIONAL> | <INTENTIONAL> | <EXTERNAL>;
+		-- Problem with consistency: I didn't want to have to handle these; defer to tools.
+
+	-- definition links: other definitions; conjectures; theories
+	DefLink ::
+		thy : TheoryId 
+		link: [(DefId | ConjId)]
+	--inv mk_DefLink(thy, link) == --Definition | Conjecture | Theory
+	;
+	
+--L: should I have "id" here as well? just like in Theory? To make it an injective map (in theory defs map) on id only. Or use ":-" notation? TODO
+--G: add projection functions on "how to bind/subst etc"
+-- G/C: here or as conjectures?
+-- C/A: try to make it more general (and not op specific) e.g., VDM trick (map x->y, x->z or x->[y,z])
+-- C  : add indicators / counter indicators in different place / more general? SVCD paper (Abrial suggestion)
+-- L  : mondex: PayDetails as schema and as a tuple-based for proof of finiteness. Use IFF linking theorem!
+-- A  : are we trying to change the model by adding these (Cliff's) Isomorphism functions?
+-- G  : keep it small / simple - without any of these... (!)
+			-- C  : middle-out reasoning; cut-rule? how you learn from a user inserting a cut-rule line?
+			-- A  : WhyM would have the needed infrastructure to "learn" capture intent from that.
+			-- L  : we need examples for these to make it clear / understandable.
+--DefLink = DefId | ConjId | TheoryId;
+	-- L	: refined / modified? there at all?
+	-- A	: the disproof between R^+ = Ui R
+	-- L	: keep the "referencial" link rather than the actual element
+	-- L	: if just Id won't be able to "differentiate" between links :-(
+	-- L	: Andrius, these are for "referencial" equality (!!!)
+			
+-------------------------------------------------------------------------------
+--- Conjectures
+---		* Augumented from tool term structure with meta-tagging + Evidence
+---
+---		* justifications maps a given proof (Id/Name) to a sequence of possible attempts as the 
+---		  body of evidence for the same "version" of a conjecture. This also allows for mixed 
+---		  Proof/Disproof within evidence seq. Evidence conflicts (e.g., counter example followed by
+---		  unfinished proof, say) are to be resolved by different applications (e.g., we allow all attempts).
+---		  If the conjecture changes (e.g., new/diff hyp/goal), then it is a new conjecture anyway.
+---
+---		* a set of clues is given as places where the conjecture might be useful
+---		? what leads to a clue? proof attempt or another conjecture?
+
+	-- conjecture as in sequent calculus plus extra model Why info.
+	-- assuming only "goal" identify a conjecture (used ":-")
+	Conjecture ::
+		id				: ConjId	
+		hypotheses		:- seq of Sequent		-- list of known hypotheses	  
+		goal			: Sequent				-- goal to be proved
+		justification	:- map ProofId to Proof -- (non-empty) body of evidence  
+		shape 			:- seq1 of MetaType		-- how did this conjecture evolved
+		-- G: make it high-order as function from Sequent to MetaType (!) 
+		inference		:- seq1 of Inference	-- how to use this conjecture in other proofs? 
+												-- technology dependant, if not tool dependant?
+		usages			:- seq of Clue			-- conj. applicability
+		inspiredBy		:- seq of Clue
+		-- Imports/Exports of clues for this conj.
+	inv mk_Conjecture(-, -, -, just, -, -, -, -) ==
+		-- or should ProofIds be per attempt rather than Proof? 
+		forall i in set dom just & just(i).id = i
+		;
+			
+
+	-- Contexualised predicate: what can be (implicitly) inferred? what's its relevance?
+	Sequent ::		
+		pred	: Pred
+		ctx		: Context;
+
+	-- Underlying information per sequent
+	Context ::	
+		inferred: seq of Sequent -- what can be inferred by the pred in ctx
+		step	: nat			 -- proof step number / depth
+		rank	: nat			 -- some ordering notion (e.g., lexicograph)
+		relevance: nat			 -- user/AI defined notion of ranking?
+		-- TODO: use google-style page ranking? map-reduce style? etc.
+		-- TODO: Cliff suggest to use "graph-like" structure, rather than inferred above
+		;
+
+	-- what kind of conjecture is this?
+	-- or should it be "Structure"?
+	-- TODO: still undecided about this one.
+	MetaType =
+		  <EXPLORATORY>		-- user is playing around
+		| <TOY>				-- toy-problem / abstraction
+		| <LEMMA>			-- known subpart of a problem
+		| <THEOREM>			-- main/top-level goal of interest
+		;
+
+	-- how is this conjecture to be used by the prover/solver?
+	-- or are these just part of the "Why" type itself?
+	Inference =
+		  <FORWARD>
+		| <BACKWARD>
+		| <REWRITE>
+		| <TYPE_JUDGEMENT>
+		;
+
+-- Cliff:
+-- This is the intent only world of data(base) capturing. This is a status-tracker together
+-- How to apply these is a TP-specific problem (e.g., tight these things together).
+
+--	Origin = <TYPE> | <FEASIBILITY> | <REFINEMENT_APPL> | <REF_FEASIBILITY> | <INIT> | ... ???
+-- L/A: usages  : conjecture applicability clues -- clues on how to use this conjecture elsehwre: forward?
+--		inspired: seq of clues from other places/proofs, where there is some inspiration towards the proof of this conjecture: backward?
+--should we have "related" clues
+
+-------------------------------------------------------------------------------
+--- Evidence 
+---		* more than just proof script (Attempt): record of proof sccafoldings
+---		* scores/ranks as a function of the user / system 
+--		* Always start with Proof. Go to Disproof if you dare! (lower chess score risk)
+--
+--	Disproof
+--		* some examples of rankings
+--		 = ex. "bulk promotion" example from ONFI flash hardware [hunch]->[insight]
+--		 = ex. "FPU calculator" example from IEEE stad v1/v2 	 [huhch success]	 
+--		 = ex. "THE application" example from Tokeneer (failure) [hunch failed]
+--		 = ex. easy one "x <= y --> x < y" [hunch success] arithmetic why
+--
+--		* notion of negative-why: it's why(not P) rather than not (why P)! don't dist!
+--			n-why-tag x seq of Sequent x Goal x Attempt
+--
+--		* to make it precise: it is a user decision to choose/change ranks
+--			= users are to be scored according to the "precision" of their hunchs?
+--
+--		* Where negative-"Clues" come from?
+--			only from highest ranks and/or user prescribed?
+--
+--		* this is the data to be used for learning for suggestions to the user?
+--
+-- Proof
+--		* is rigorous transformation (even just AXIOM tag) of the goal
+--		* it includes unfinished proofs!!!
+--		* contains specific evidence: proof script + tool-session-tag (SMT?)
+--		* ranked by strength (of belief) as well:
+--			[R0] proof "Script" or tool-session tag (TP, SMT, etc)
+--				 = explicit / complete proof script 
+--
+--			[R1] proof "Attempt"
+--				 = explit user decision tagged as "unfinished" proof
+--				 = subgoals as isolated part of Attempt (e.g., proof Zoom)
+--		
+--			[R2] new Conjecture from proof Attempt
+--				 = lemma prescription given proof subgoal
+--
+--		* notion of why intent: why-tag x seq of Sequent x Goal x Attempt
+--			may contain tag for incompletion / trusted / axiom
+--
+--		* Where "Clues" come from?
+--			as either a proof Zoom or a suggested new conjecture? Or both?
+--
+--		* Gaps as just a special kind of attempt?
+--
+--		* again, to make it precise: it is a user decision or ranked score? Chess player style score
+--
+-- SIDE: add a role of witnesses within scripts - like in RODIN explicit witness request for quant?
+--
+-- Proof:     SKETCHY...EXAMPLE...GUESS...INSIGHT...TRUSTED...AXIOM...QED
+--            0         1         2       3         4         5       6
+--
+--	unfinished: [0..4[  = user knowns hasn't finished; believes it's true
+--	examples  : [1..2[  = we have possible example (guess quality)
+--  guess     : [2..4[  = more general guesses (greater quality)
+--  prescribed: [4..5]  = prescribed knowledge 
+--  finished  : [6.. [  = actual proof (best quality: may vary according to tool / script size?
+--
+-- Disproof:  SKETCHY...HUNCH...INSIGHT...TRUSTED...WITNESS...QED
+--            0         1       2         3         4         5  
+--
+--	unfinished: [0..3[  = user is unsure it's true; can't show otherwise
+--  guess     : [1..3[  = better understanding on why it isn't true
+--  examples  : [4..5[  = actual counter example
+--  contradict: 5		= general contractiction (needed?)
+--
+		
+	-- still evolving set of tags... = ways to differentiate between attempts
+	-- trouble between duplication x different notions (they are not DUALS, necessarily)
+	AttemptRank =	
+		  <AXIOM>	-- axiomatic			
+		| <TRUSTED>	-- user insight/guess?			
+		| <SKETCH>	-- unfinished proof		(for Proof only)
+		| <QED>		-- finished proof		(Disproof = Test/Contradiction; Proof = finished goal)
+		;
+
+	--?
+	AttemptKind = 
+		  <BLIND>	-- exploratory/don't care: auto, prove-by-reduce, grind, etc
+		| <GUIDED>	-- grounded WhyM info/evidence for given term
+		| <CLUES>	-- putative WhyM info/clues    for given term
+		| <BECAUSE> -- negative WhyM info/?????    for given term
+		;
+	
+	 
+	-- using "int/real" directly the (Overture) interpreter start complaining...(?)
+	Rank = real;
+
+	Worth = Rank
+	inv w == w >= ATTEMPT_MIN_WORTH;
+	
+	-- sequence of tokens - keep it abstract
+	Script = seq of token;
+
+	-- Attempt as intent * Terms involved/highlighted * steps
+	Attempt ::
+		why : Why				-- captured intent
+		--hyps: seq of Sequent 	-- involved hypotheses [maybe don't need this--- it's in context from Conjecture?]
+		--goal: Sequent			-- current goal			[but, could be transformed from the conjecture...]
+		tool: Tool				-- source tool (SMT/TP/Oracle)
+		kind: AttemptKind		-- what kind of attempt is this?
+		rank: [AttemptRank]				-- user prescribed rank?
+		worth: Worth
+		score: Score			-- learned/inferred score?
+		script: Script			-- hard evidence?
+		;
+		-- operation: length(script) = number proof steps?
+		
+		-- C: functions from Conjectures to Conjectures? Higher-level for varied contexts!!! Graph...
+		-- attempt as function can rely on a much weaker set of properties than what came from the context.
+
+	Proof :: 	
+		id	: ProofId
+		prf : seq1 of Attempt; 
+
+	-- score as calculated relevance either as a user defined function or system-infered suggestion on:
+	--	* number of times appearing in rewrites
+	--	* % of terms changing x times applied
+	-- 	* AM power-curve of strategies/heuristics
+	-- 	* HR concept scoring? What would be helpful to HR here?
+	-- 	* dead-end from logs
+	Score ::
+		fixed: Rank		-- 
+		domain: Rank
+		learned: Rank
+		--inv sc == is not yet specified
+		;
+
+-- bridging gaps in proofs?
+--	* way of introducing controlled uncertainty?
+--Gap ::	
+--	origin	: seq of Sequent		-- associated sequents
+--	infunk	: seq of Sequent		-- inferred/given unknowns
+--	sgoal	: Sequent				-- source goal to bridge
+--	tgoal	: Sequent				-- target goal to reach
+--	link	: Conjecture			-- where is this gap for??
+--	;
+-- TODO: a gap is a kind of unfinished proof? or a kind of new conjecture?
+--		 I guess we don't need it and it will appear within Proof/Disproof.
+
+-------------------------------------------------------------------------------
+--- Why	
+--		* ontology of proof intent with scores
+--
+--- Clues
+--		* tagging inference from various forms of evidence available per conjecture
+--		* it contains a top-level intent notion, and related evidence (with intent) as well
+--		* this constitutes both pos/neg evidence/clues, depending on what kind of evidence exists
+
+	-- corroborative data about Why tags?
+	Hints = seq of Why;
+
+	-- tentative aspect of Attempt: portions of proof
+	Clue ::	intent		: Why				-- top-level intent?
+			rationale	: Proof	-- detailed evidence (with intent)
+			score		: Score
+			;
+
+	-- (weighted) ontological tagging
+	Why ::	kind: WhyTag	-- justification category; or should it be a seq/low-level-Strategy?
+			score: Score	-- relevance/importance
+			pos: bool		-- positive / negative intent
+			;
+
+	-- should we have separate or composite Why categories?
+	WhyTag = 	--Operators
+			<OP_ORDER> | <OP_COMB> | <DIST_OP> | <DIFF_OP> | <COMM_OP> | 
+		  	-- Witnesses / quantifiers
+			<FORALL_NEEDED> | <EXISTS_NEEDED> |
+		  	-- Strategies
+			<INDUCTION> | <NF_REDUCTION> | <LR_REWRITE> |
+			-- Transformations
+			<DATATYPE_MAPPING> | <EQ_TRANSF> |
+			-- Decision procedures
+			<ARITHMETIC> | <SMT> | <QUICKCHECK> |
+			-- Eureka introduction: infered? user tags?
+			<EUREKA> | <THORS_HAMMER> |
+			-- Log / plans / AI ?
+			<INF_FROM_LOG> | <HR_CLUE> |
+			-- Negative? Should it be a diff tag? NWhyTag?
+			<NOT_THEOREM>;
+
+-------------------------------------------------------------------------------
+--- Auxiliary term structure 
+---
+---		* no dependendency on any expr/pred term structure - use Indices.
+
+	-- SEE MURAL App C!
+	TermData ::
+		bv: set of VarId	-- bounded variables
+		fv: set of VarId	-- free variables
+			inv td == td.bv inter td.fv = {} and
+					  td.bv union td.fv <> {};
+
+	-- this information is usually easily collectable on the system doing proof;
+	-- to avoid term-structure dependency, we expect to have access to them here.
+	Atom :: 
+		vars: TermData	-- information of interest?
+		body: token;	-- abstract structure
+
+	-----------------------
+	-- Expr tree (implicit)
+	Expr ::
+		exp: Atom		-- expression structure
+		typ: Signature	-- type information
+		val: [Value];	-- current bindings, if any?
+
+	-----------------------
+	-- Pred tree (implicit)
+	PredTerm ::
+		pred: Atom		-- predicate structure
+		val: [bool];	-- given current bindings? or unknown? actual pred value
+
+	EqTerm ::
+		lhs: Expr
+		rhs: Expr; -- equality is special?
+
+	Pred = PredTerm | EqTerm;
+
+	Term = Expr | Pred;
+
+    -- C: check the term language bindings (e.g., just values).
+	
+-------------------------------------------------------------------------------
+--- Various Ids
+---
+--- * Question: do we have one "Id" token or various (e.g., ThyId, ConjId, etc)?
+--- * Rational: lesser "names" makes for simpler model; will need more distinction
+--- 			in here, this will be just sets constraining all Ids.
+---				Or should this be just some well-formedness condition to check?
+--- * Language: VDM does not allow loosely specified "constants" (e.g., values as set of Id)
+---				one MUST give witnesses / instances. So the idea won't work :-(
+-------------------------------------------------------------------------------
+
+	-- Id's are used to "tag" various structures.
+	Id			= Id0;
+
+	TheoryId 	= Id
+	inv tid == inv_TheoryId0(tid);
+
+	ConjId		= Id
+	inv cid == inv_ConjId0(cid);
+
+	ProofId		= Id
+	inv pid == inv_ProofId0(pid);
+
+	VarId		= Id
+	inv vid == inv_VarId0(vid);
+ 
+	DefId		= Id
+	inv did == inv_DefId0(did);
+
+	-- ??? string to the executable ???
+	Tool		= Id
+	inv tid == inv_ToolId0(tid);
+
+	--- log-data (PSP-inspired)
+	Log			= Id
+	inv lid == inv_LogId0(lid);
+
+	-----------------------
+	-- Underspecified terms
+	
+	-- Follows from TP/tool type hierarchy?
+	Signature	= token;
+
+	-- binding values to variables / expr; depends on type system
+	Value		= token;
+
+
+-------------------------------------------------------------------------------
+--- All ids? Part of the state?
+
+	Environment = set of Id;
+
+--*********************************************************************************************************
+-- Functions collecting data (e.g., use [Cliff's] VDM style - no redundancy, but aux fcns)
+--*********************************************************************************************************
+
+-- Values used by (high-order polymorphic data collection) functions
+values 
+	Boolean : Signature = mk_token("bool");
+	Number	: Signature = mk_token("int");
+
+
+	DEFAULT_CONJ_SHAPE 	  : MetaType	= <EXPLORATORY>;
+	DEFAULT_CONJ_INFERENCE: Inference	= <BACKWARD>;
+
+
+	-- Given a Sigma, return the map of TheoryIds to their dependencies set (e.g., all known, no circular deps)
+	SigmaGatherUsesDeps : Sigma +> map TheoryId to set of TheoryId = (lambda s: Sigma & { i |-> s(i).uses | i in set dom s });
+		-- or perhaps use something that doesn't depend on Sigma to keep it independent when calculating Sigma Inv?
+	ThysGatherUseDeps	: set of Theory +> map TheoryId to set of TheoryId = (lambda thys: set of Theory & { t.id |-> t.uses | t in set thys });
+	
+	-- Given a theory, gather all its immediately known definitions and conjectures (e.g., no closure on its dependencies) 
+	ThyGatherDef   : Theory +> set of Definition = (lambda t: Theory & rng t.defs);
+	ThyGatherConj  : Theory +> set of Conjecture = (lambda t: Theory & rng t.results);
+	ThyGatherTools : Theory +> set of Tool 		 = (lambda t: Theory & t.allowed);
+
+	-- Given a definition, return the set of related DefLink of specific type 
+	DefFilterRelDef : Definition +> set of DefLink = (lambda x: Definition & { dr | dr in set x.related & inv_LinkDef(dr) });--is_Definition(dr) });
+	DefFilterRelConj: Definition +> set of DefLink = (lambda x: Definition & { cr | cr in set x.related & inv_LinkConj(cr) });--is_Conjecture(cr) });
+	DefFilterRelThy : Definition +> set of DefLink = (lambda x: Definition & { th | th in set x.related & inv_LinkThy(th) });--is_Theory(th)     });
+	
+	-- Given set of definitions, gather all known signatures
+	DefsGatherSigs  : set of Definition +> set of Signature  = (lambda x: set of Definition & dunion { TermSig(d.term) | d in set x }); 
+	
+	-- Given a conjecture, gather all its Why information from proof attempts and clues
+	
+	ThyGatherConjWhys  : Theory +> set of Why =
+				(lambda x: Theory & ConjRelatedWhys(rng x.results));
+
+	ConjGatherWhys : Conjecture +> set of Why = 
+				(lambda x: Conjecture &	
+					-- related Whys from Attemps within each justification for conjecture
+					AttemptRelatedWhys(dunion { elems ev.prf | ev in set rng x.justification }) 
+					union
+					-- related Whys from Clue intents
+					{ clue.intent | clue in set elems x.usages } 
+					union 
+					-- related Whys from Clue reationale Attempt sequence
+					AttemptRelatedWhys(dunion { elems c.rationale.prf | c in set elems x.usages }))
+
+functions
+
+/* 
+-- AMONG OTHER REASONS, TO AVOID THIS KIND OF REPETITION, I USE THE HIGH-ORDER / POLYMORPHIC FUNCTIONS
+--
+-- All definitions of the world
+SigmaDefs: Sigma +> set of Definition
+SigmaDefs(s) == dunion { TheoryDefs(s(i)) | i in set dom s }; -- TODO: which one is best?
+			  --distUnion[Definition]({ TheoryDefs(s(i)) | i in set dom s });
+
+-- All conjectures of the world
+SigmaConjs: Sigma +> set of Conjecture
+SigmaConjs(s) == dunion { TheoryConjs(s(i)) | i in set dom s };
+
+-- All definitions a theory contains
+TheoryDefs: Theory +> set of Definition
+TheoryDefs(t) == rng t.defs;
+
+-- All conjectures a theory contains
+TheoryConjs: Theory +> set of Conjecture
+TheoryConjs(t) == rng t.results;
+*/
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Simple data collection for Theory
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- All definitions within a set of theories (e.g., rng sigma)
+KnownDefs: set of Theory +> set of Definition
+KnownDefs(thys) == 
+	-- because ThyGatherDef is total, so is collectElems
+	--
+	-- collectElems[X, Y](A, B) 			= { A(b) | b in B }
+	-- A: *total* function from X to Y		= A is (lambda x: X & { y | P(y, Y) })
+	-- B: set of X to apply A(b), b in B 	= B is some set of Y to use
+	collectElems0[Theory, Definition](ThyGatherDef, thys)
+post
+	post_collectElems0[Theory, Definition](ThyGatherDef, thys, RESULT);
+
+-- All conjectures within a set of theories
+KnownConjs: set of Theory +> set of Conjecture
+KnownConjs(thys) == 
+	collectElems0[Theory, Conjecture](ThyGatherConj, thys)
+post
+	post_collectElems0[Theory, Conjecture](ThyGatherConj, thys, RESULT);
+
+-- All tools within a set of theories
+KnownTools: set of Theory +> set of Tool
+KnownTools(thys) == 
+	collectElems0[Theory, Tool](ThyGatherTools, thys)
+post
+	post_collectElems0[Theory, Tool](ThyGatherTools, thys, RESULT);
+
+-- All signatures/user-types within a set of theories
+KnownSigs: set of Theory +> set of Signature
+KnownSigs(thys) == 
+	collectElems0[Theory, Signature](TheorySigs, thys)
+post
+	post_collectElems0[Theory, Signature](TheorySigs, thys, RESULT);
+
+-- Closure of all signatures within a theory - don't calculate dependencies
+TheorySigs: Theory +> set of Signature
+TheorySigs(t) == 
+	DefsGatherSigs(rng t.defs)
+	union
+	collectElems0[Conjecture, Signature](ConjectureSigs, rng t.results)
+post
+	-- take into account that the signatures from defs won't be collected
+	post_collectElems0[Conjecture, Signature](ConjectureSigs, rng t.results, 
+			 								RESULT \ DefsGatherSigs(rng t.defs));
+
+-- All signatures within a conjecture hyp+goal sequents
+ConjectureSigs: Conjecture +> set of Signature
+ConjectureSigs(c) ==
+	collectElems0[Sequent, Signature](SequentSig, elems c.hypotheses union {c.goal})
+post
+	post_collectElems0[Sequent, Signature](SequentSig, elems c.hypotheses union {c.goal}, RESULT);
+
+-- All signatures within a sequent: from pred + context
+SequentSig: Sequent +> set of Signature
+SequentSig(s) ==
+	TermSig(s.pred) union 
+	collectElems0[Sequent, Signature](SequentSig, elems s.ctx.inferred)
+post
+	post_TermSig(s.pred, RESULT) and
+	post_collectElems0[Sequent, Signature](SequentSig, elems s.ctx.inferred, RESULT);
+
+-- Term signature - leaf operation
+TermSig: Term +> set of Signature
+TermSig(t) ==
+	cases true:
+		(is_EqTerm(t))		-> {t.lhs.typ, t.rhs.typ},
+		(is_Expr(t))		-> {t.typ},
+		(is_Pred(t))		-> {Boolean},
+		others				-> {}
+	end
+post
+	RESULT <> {}; -- TODO: Is this not total fcn then?
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Data collection for Theory dependency chain
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- Calculate theory dependency chain with a guard for no circularity
+TheoryUseDeps: Sigma * TheoryId -> set of TheoryId
+TheoryUseDeps(s, tid) == 
+	validDeps0[TheoryId](ThysGatherUseDeps(rng s), tid) -- SigmaGatherUsesDeps(s), tid)
+pre  
+	pre_(validDeps0[TheoryId], ThysGatherUseDeps(rng s), tid) -- SigmaGatherUsesDeps(s), tid)
+post
+	post_validDeps0[TheoryId](ThysGatherUseDeps(rng s), tid -- SigmaGatherUsesDeps(s), tid
+															, RESULT);
+
+-- Checks for circular dependency chains within Sigma 
+hasCircularThyUse: Sigma * TheoryId +> bool
+hasCircularThyUse(s, tid) == hasCircularDeps0[TheoryId](ThysGatherUseDeps(rng s), tid) -- SigmaGatherUsesDeps(s), tid)
+;
+
+-- Checks for unknown theory usage dependencies in Sigma
+hasUnknownThyDeps: Sigma * TheoryId +> bool
+hasUnknownThyDeps(s, tid) == hasUnknownDeps0[TheoryId](ThysGatherUseDeps(rng s), tid) -- SigmaGatherUsesDeps(s), tid)
+;
+
+-- Calculate theory allowed tools dependency chain with a guard for only known theories
+TheoryToolsAllowed: Sigma * TheoryId -> set of Tool
+TheoryToolsAllowed(s, tid) == 
+	-- tools allowed by tid + all tools from its dependent theories
+	s(tid).allowed union KnownTools(rng (TheoryUseDeps(s, tid) <: s))
+pre
+	--tid in set dom s implies by the pre below
+	--and
+	pre_TheoryUseDeps(s, tid)
+post
+	post_KnownTools(rng (TheoryUseDeps(s, tid) <: s), RESULT \ s(tid).allowed);
+
+-- Calculate theory types dependency chain with a guard for only known theories
+TheoryKnownSigs: Sigma * TheoryId -> set of Signature
+TheoryKnownSigs(s, tid) == 
+	-- tools allowed by tid + all tools from its dependent theories
+	s(tid).ttypes union KnownSigs(rng (TheoryUseDeps(s, tid) <: s))
+pre
+	pre_TheoryUseDeps(s, tid)
+post
+	post_KnownSigs(rng (TheoryUseDeps(s, tid) <: s), RESULT \ s(tid).ttypes);
+
+-- Checks for unknown allowed tools dependencies in Sigma
+hasUnknownToolDeps: Sigma * TheoryId +> bool
+hasUnknownToolDeps(s, tid) == 
+	-- either have unknown theory dependencies, which means "invalid" tools, even if known
+	-- or
+	-- all theory dependencies are known and their collected allowed tools are within all tools known in s 
+	not hasUnknownThyDeps(s, tid) => TheoryToolsAllowed(s, tid) subset KnownTools(rng s);
+
+-- Checks for unknown type dependencies in Sigma
+hasUnknownTypeDeps: Sigma * TheoryId +> bool
+hasUnknownTypeDeps(s, tid) == 
+	not hasUnknownThyDeps(s, tid) => TheoryKnownSigs(s, tid) subset KnownSigs(rng s);
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Related (DefLink) data collection for Definition
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+inv_LinkDef: DefLink +> bool
+inv_LinkDef(dl) == dl.link <> nil and inv_DefId(dl.link);
+
+inv_LinkConj: DefLink +> bool
+inv_LinkConj(dl) == dl.link <> nil and inv_ConjId(dl.link);
+
+inv_LinkThy: DefLink +> bool
+inv_LinkThy(dl) == dl.link = nil;
+
+-- Def have "related" def set: this computes their closure filtered by def
+DefsRelatedDefs: set of Definition +> set of DefLink
+DefsRelatedDefs(defs) == 
+	collectElems0[Definition, DefLink](DefFilterRelDef, defs)
+post
+	post_collectElems0[Definition, DefLink](DefFilterRelDef, defs, RESULT)
+	and
+	forall dl in set RESULT & inv_LinkDef(dl)
+;
+
+-- Def have "related" conj set: this computes their closure filtered by conj
+DefsRelatedConjs: set of Definition +> set of DefLink
+DefsRelatedConjs(defs) == 
+	collectElems0[Definition, DefLink](DefFilterRelConj, defs)
+post
+	post_collectElems0[Definition, DefLink](DefFilterRelConj, defs, RESULT)
+	and
+	forall dl in set RESULT & inv_LinkConj(dl)
+;
+
+-- Def have "related" thy set: this computes their closure filtered by thy
+DefsRelatedThys: set of Definition +> set of DefLink
+DefsRelatedThys(defs) == 
+	collectElems0[Definition, DefLink](DefFilterRelThy, defs)
+post
+	post_collectElems0[Definition, DefLink](DefFilterRelThy, defs, RESULT)
+	and
+	forall dl in set RESULT & inv_LinkThy(dl)
+;
+
+-- Flatten all whys within a theory's strategies
+ThyStrategyWhys: Theory +> set of Why
+ThyStrategyWhys(thy) == 
+	domain0[Why, seq of Why](thy.strategies) 
+	union 
+	dunion { elems x | x in set range0[Why, seq of Why](thy.strategies) };
+
+-- Thy have conjectures that have whys; collect them all
+ThyConjWhys: set of Theory +> set of Why
+ThyConjWhys(thys) == 
+	collectElems0[Theory, Why](ThyGatherConjWhys, thys)
+post
+	post_collectElems0[Theory, Why](ThyGatherConjWhys, thys, RESULT);
+
+-- Conj have "whys" set: they come from used clues and available justification attempts
+ConjRelatedWhys: set of Conjecture +> set of Why
+ConjRelatedWhys(conjs) ==
+	collectElems0[Conjecture, Why](ConjGatherWhys, conjs)
+post
+	post_collectElems0[Conjecture, Why](ConjGatherWhys, conjs, RESULT);
+
+-- THINK ABOUT THAT ....
+--
+-- M = number of proofs per conjecture
+-- N = number of attempts per proof
+-- K = number of proof steps among all 
+-- M * N * K whys per conjecture, where	  (granularity of Why for all proofs within a conjecture)
+-- M = number of proofs per conjecture	  (granularity of Why within A proof within a conjecture)
+-- N = number of attempt per proof		  (granularity of Why within seq of Attemps (or a Prof))
+-- K = proof steps associated per attempt (granularity of Why within Attempts)
+
+-- Project out Whys within Attempts
+AttemptRelatedWhys: set of Attempt +> set of Why
+AttemptRelatedWhys(atts) == { x.why | x in set atts }
+post
+	card atts = card RESULT;
+
+
+BoundedVars: Term +> set of VarId
+BoundedVars(t) == 
+	cases true:
+		(is_EqTerm(t))		-> BoundedVars(t.lhs) union BoundedVars(t.rhs),
+		(is_Expr(t))		-> t.exp.vars.bv,
+		(is_Pred(t))		-> t.pred.vars.bv--,
+		--others			-> {}	-- THAT MEANS, NO CASES TO APPLY: it needs to cover the whole Term AST
+	end
+--post
+--	RESULT <> {} -- TODO: Is this not total fcn then? Yep
+measure
+	measure_TermVars
+;
+	
+FreeVars: Term +> set of VarId
+FreeVars(t) ==
+	cases true:
+		(is_EqTerm(t))		-> FreeVars(t.lhs) union FreeVars(t.rhs),
+		(is_Expr(t))		-> t.exp.vars.fv,
+		(is_Pred(t))		-> t.pred.vars.fv
+	end
+--post
+--	RESULT <> {} -- TODO: Is this not total fcn then?
+measure
+	measure_TermVars
+;
+
+-- TODO: needs a proper measure here: given the term is to be "well-formed" this incompleteness here shouldn't be a problem
+measure_TermVars: Term -> nat
+measure_TermVars(t) == 
+	cases true:
+		(is_EqTerm(t))		-> if is_EqTerm(t.lhs) then 3 elseif is_EqTerm(t.rhs) then 2 else 1,
+		(is_Expr(t)),			
+		(is_Pred(t))		-> 0,
+		others				-> 10 -- FAIL
+	end;
+
+
+DefLinkFromId: Sigma * set of TheoryId * TheoryId * Id -> DefLink
+DefLinkFromId(s, depThys, tid, id) == mk_DefLink(tid, id)
+--	cases true:
+--		(inv_TheoryId(id))	-> s(id).id,
+--		(inv_ConjId(id))	-> s(tid).results(id).id,
+--		(inv_DefId(id))		-> s(tid).defs(id).id,
+--		others				-> nil
+--	end
+pre
+	-- Conjunctive normal form here will be too cumbersome, just use if-then-else
+	--(inv_TheoryId(id) => id in set dom s and id in set depThys union {tid})
+	--and
+	--(inv_ConjId(id) and not inv_TheoryId(id) => bla...
+	--and
+	--(inv_DefId(id) and not inv_TheoryId(id) and not inv_ConjId(id) => bla...)
+	--and
+	--(not inv_DefId(i) and not inv_TheoryId(id) => inv_ConjId(id))
+	(let 
+		thysOfInterest = depThys union {tid} 
+	in
+		-- thys of interest *must* be known, including tid
+		thysOfInterest subset dom s
+		and
+		-- if link is a theory
+		(if inv_TheoryId(id) then
+			-- it must be known and within dependencies
+			id in set thysOfInterest
+		else
+			-- otherwise if it's a conjecture
+			(if inv_ConjId(id) then
+				-- it must be known within dependencies
+				id in set dunion { dom s(i).results | i in set thysOfInterest } 
+			else
+				-- otherwise, it *must* be a definition known within dependencies 
+				inv_DefId(id) 
+				and
+				id in set dunion { dom s(i).defs | i in set thysOfInterest }
+			)
+		)
+	)
+;
+
+/*
+ValidProof : Attempt -> bool
+ValidProof(prf) == 
+	(prf.why.pos and prf.worth.tag <> <TRUSTED>);
+
+ValidDisproof: Attempt -> bool
+ValidDisproof(dprf) == 
+	(not dprf.why.pos and dprf.worth.tag <> <SORRY>)
+pre true;
+
+
+--	evidenceQuality: Attempt -> EvidenceTag
+	--evidenceQuality		
+
+	-- Sketchy attempts: users playing with goal
+	isSketchy: Attempt -> bool
+	isSketchy mk_Attempt(mk_Why(-, -, -), -, -, rank, -, -)) == 
+		rank >= ATTEMPT_SKETCHY_RANK;
+		
+	-- Why(P) => not (ON_TRUST)
+	--
+	-- if Proof (pos attempt) then 
+	--		cannot be on trust [to be a proof insight];
+	-- else 
+	--		it's any kind of Disproof [neg attempt insight];
+	isInsight: Attempt -> bool
+	isInsight(mk_Attempt(mk_Why(-, -, pos), -, -, mk_AttemptData(rank, -, tag), -)) == 
+			(pos => tag <> <TRUSTED>)
+			rank >= insightRank(pos);
+
+	-- VDM is very constructive, so not for "negative" specification (e.g., give constraints);
+	-- we need "positive" specification (e.g., give constructor)
+	--
+	-- Lower-ranking insight
+	isHunch: Attempt -> bool
+	isHunch(a) == isSketchy(a) and hunchRank(a.worth.pos)a.worthhunchRank(a.worth.pos) any-other-attempt <= a.worth.rank 
+
+	-- Proof is a positive attempt not taken on trust
+	isProof: Attempt -> bool
+	isProof(mk_Attempt(mk_Why(-, -, pos), -, -, mk_AttemptData(-, -, tag), -)) = pos and tag <> <TRUSTED>;
+	-- isProof(a) => isInsight(a) [proof is stronger than insight]
+
+	-- Disproof is a negative attempt 
+	isDisproof: Attempt -> bool
+	isDisproof(mk_Attempt(mk_Why(-, -, pos), -, -, mk_AttemptData(-, -, tag), -)) = not pos and tag <> <SORRY>;
+
+	isTest: Attempt -> bool
+	isTest(a) == a.worth.tag = <QED> 
+	Test = Attempt
+			-- tests must be definite, hence QED
+		--inv tst == tst.worth.tag = <QED> and
+		--	if tst.why.pos then
+				-- as positive evidence, it has weakest rank among Attempts
+		--		(forall i in set { att | att: Attempt } & i.worth.rank <= tst.worth.rank)
+		--	else
+				-- as negative evidence, it has strongest rank among Attempts
+		--		(forall i in set { att | att: Attempt } & tst.worth.rank <= i.worth.rank)
+		;
+
+  getInitialRank: EvidenceTag * bool -> Rank
+	getInitialRank(et, pos) ==
+		cases et:
+			<AXIOM>		-> poswATTEMPT_AXIOM_RANK
+			<TRUSTED>	-> ATTEMPT_TRUSTED_RANK
+			<SKETCHY>	-> ATTEMPT_SKETCHY_RANK
+			<QED>		-> ATTEMPT_QED_RANK
+		end;
+
+mkProof: Why * Tool * AttemptKind * AttemptData * Script -> Proof
+mkProof(why, tool, kind, worth, script) ==
+	mk_Attempt(
+			why,		-- intent 
+			tool,		-- which tool is it associated with
+			kind,	-- kind of attempt
+			worth,		-- how much is this attempt worth?
+			script		-- proof script text as a sequence
+		)
+pre inv_Proof(mk_Attempt(
+			why,		-- intent 
+			tool,		-- which tool is it associated with
+			kind,	-- kind of attempt
+			worth,		-- how much is this attempt worth?
+			script		-- proof script text as a sequence
+		));
+
+*/
+
+--*********************************************************************************************************
+-- State invariant helper functions
+--*********************************************************************************************************
+
+-- PERFORMANCE: This executes in 0.709secs (WhyMTest`Execute) [WORST]
+-- PERFORMANCE: 0.275secs (???) WHY (???)
+SigmaInv: Sigma +> bool
+SigmaInv(s) ==
+	-- theory dependencies of all theories are valid 
+	isDepMapValid0[TheoryId](SigmaGatherUsesDeps(s))
+	and
+	(forall i in set dom s &
+		-- theory id's are compatible with Sigma indices
+		s(i).id = i
+		and
+		-- specialises cannot be the id itself either
+		let thy = s(i) in (thy.specialises <> nil => thy.specialises <> i)
+		and
+		-- all theories satisfy the overall TheoryInv PERFORMANCE: avoid function call  (!!!) 
+		TheoryInv(s, i)
+	);
+
+ThyElemTIdSubset: set of DefLink * set of Theory -> bool
+ThyElemTIdSubset(deflinks, defs) ==
+	let
+		dthys = { d.thy | d in set deflinks },
+		ddefs = { t.id | t in set defs }
+	in
+		dthys subset ddefs;
+
+ThyElemConjSubset: set of DefLink * set of Conjecture -> bool
+ThyElemConjSubset(deflinks, defs) ==
+	let
+		dlinks = { d.link | d in set deflinks & d.link <> nil and is_ConjId(d.link) },
+		ddefs  = { d.id | d in set defs }
+	in
+		dlinks subset ddefs;
+
+ThyElemDefSubset: set of DefLink * set of Definition -> bool
+ThyElemDefSubset(deflinks, defs) ==
+	let
+		clinks = { c.link | c in set deflinks & c.link <> nil and is_ConjId(c.link) },
+		cdefs  = { c.id | c in set defs }
+	in
+		clinks subset cdefs;
+	
+TheoryInv: Sigma * TheoryId +> bool
+TheoryInv(s, tid) == 
+	-- all dependencies of tid in s are known within sigma (e.g., may still have circular deps): 
+	--						=> tid in set dom s and pre_TheoryUseDeps(s, tid) => Theory dep chain collection is enabled!
+	
+	-- This is implied by the Sigma Inv
+	isKeyDepValid0[TheoryId](SigmaGatherUsesDeps(s), tid) -- ? ThysGatherUseDeps(rng s), tid) -- SigmaGatherUsesDeps(s), tid)
+	and
+	let	-- given theories and ids in Sigma, 
+		allThys   = rng s, 
+		allThyIds = dom s
+	in	
+		-- tid is know: implied by isKeyDepValid, but leave it
+		tid in set allThyIds
+		and
+		(let 
+			-- actual theory to check invariant
+			thy = s(tid),
+
+			-- all thy's dependent theories from Sigma
+			depThyIds = TheoryUseDeps(s, tid),
+			depThys   = rng(depThyIds <: s), 
+
+			-- all thy's of interest for thy
+			thysOfInterest = {thy} union depThys 
+		in
+			-- all theories of interest are known
+			thysOfInterest subset allThys
+			and
+			-- thy is known with the world of theories : implied by isKeyDepValid, but leave it
+			(thy in set allThys and thy.id = tid)
+			and
+			-- a theory cannot specialise and use same theory
+			(thy.specialises <> nil =>
+				-- within known theories
+				thy.specialises in set allThyIds
+				and
+				-- cannot depend on specialisation [within dep. chain]
+				thy.specialises not in set depThyIds --thy.uses
+			)
+			and
+			-- used theories known in sigma
+			thy.uses subset depThyIds
+			and
+			-- a theory must allow some tool to manipulate it
+			(thy.allowed <> {})
+			and
+			-- tool dependencies chain within all known theories
+			KnownTools(thysOfInterest) subset KnownTools(allThys)
+			and 
+			-- all signatures within the theories of interest are known
+			KnownSigs(thysOfInterest) subset KnownSigs(allThys)
+			and
+			-- all related links within thy defs is known within thy of interest
+			(let 
+				 -- all defs in immediate thy
+				 thyDefs = rng thy.defs ,
+				 -- all defs in thy dep chain
+				 defsOfInterest: set of Definition = KnownDefs(thysOfInterest),
+				 -- all conj in thy dep chain
+				 conjsOfInterest: set of Conjecture = KnownConjs(thysOfInterest)
+			 in
+				
+				-- Within a thy's defs, DefLink related defs are within known defs of Thy and its deps (Thy of interest)  
+				--DefsRelatedDefs(thyDefs)  subset defsOfInterest 
+				ThyElemDefSubset(DefsRelatedDefs(thyDefs), defsOfInterest)
+				and
+				-- all definitions within dependency chain must be "unique" across theories (e.g., injective) TODO: does it?
+				-- e.g., { ThyGatherDef(t) | t in set thysOfInterest } = { rng t.defs | t in set thysOfInterest }; 
+				--			so a seq of set of defs per theory as a partition of all defs of Interest
+				--
+				-- That's irritating: Seq comphrehension, likst Map comprehension is rather limited (!!!)
+				--partition0[Definition]([ ThyGatherDef(t) | t in set thysOfInterest ], defsOfInterest) 
+				
+				let 
+					disjointDefs = { ThyGatherDef(t) | t in set thysOfInterest },
+					disjointDefsSeq = set2seq[set of Definition](disjointDefs)
+				in
+					-- WARNING: this can be pretty slow! (TODO) 
+					partition0[Definition](disjointDefsSeq, defsOfInterest)
+				and
+				
+				-- Within a thy's defs, DefLink related conjs are within known conjs of Thy and its deps   
+				ThyElemConjSubset(DefsRelatedConjs(thyDefs), conjsOfInterest)
+				and
+				-- Within a thy's defs, DefLink related thys are within known thys of Thy and its deps   
+				--DefsRelatedThys(thyDefs) subset thysOfInterest -- or depThys only?
+				ThyElemTIdSubset(DefsRelatedThys(thyDefs), thysOfInterest)
+				and
+				-- Defs of a theory dep chain are whithin all known defs
+				defsOfInterest subset KnownDefs(allThys)
+				and
+				-- Conjs of a theory dep chain are whithin all known defs
+				conjsOfInterest subset KnownConjs(allThys)
+				and
+				-- All Whys within a theory's strategies must be known within Conjectures of interest
+				ThyStrategyWhys(thy) subset ConjRelatedWhys(conjsOfInterest)
+				--
+				-- TODO: check here that Hints within a strategy are part of a rationale of some involved clue?
+				--		 being part of the clue means being a prefix sequence 
+				--		(e.g., forall whySeq in set strategy (| why |) & 
+				--				(exists c in set clue & whySeq prefix c.rationale)) or (exists somewthing similar from justification/proofs/attempts/etc)				
+
+				-- DefLink Theory must not be to itslef? nah leave it for now. TODO?
+				
+			)
+		)
+;
+	
+-- PERFORMANCE: This executes in 0.818secs (WhyMTest`Execute) [Worst]
+-- PERFORMANCE: This executes in 0.221secs (WhyMTest`Execute) [Best]
+SigmaInv0: Sigma +> bool
+SigmaInv0(s) ==
+	-- theory dependencies of all theories are valid 
+	isDepMapValid0[TheoryId](SigmaGatherUsesDeps(s))
+	and
+	(let allThys   = rng s,
+		 allThyIds = dom s 
+	 in 
+		(forall tid in set allThyIds &
+			(let thy = s(tid) in
+				-- theory id's are compatible with Sigma indices
+				thy.id = tid
+				and
+				-- specialises cannot be the id itself either
+				(thy.specialises <> nil => thy.specialises <> tid)
+				and
+				(let
+					-- all thy's dependent theories from Sigma
+					depThyIds = TheoryUseDeps(s, tid),
+					depThys   = rng(depThyIds <: s), 
+		
+					-- all thy's of interest for thy
+					thysOfInterest = {thy} union depThys 
+				in
+					-- all theories of interest are known
+					thysOfInterest subset allThys
+					and
+					-- thy is known with the world of theories : implied by isKeyDepValid, but leave it
+					(thy in set allThys and thy.id = tid)
+					and
+					-- a theory cannot specialise and use same theory
+					(thy.specialises <> nil =>
+						-- within known theories
+						thy.specialises in set allThyIds
+						and
+						-- cannot depend on specialisation [within dep. chain]
+						thy.specialises not in set depThyIds --thy.uses
+					)
+					and
+					-- used theories known in sigma
+					thy.uses subset depThyIds
+					and
+					-- a theory must allow some tool to manipulate it
+					(thy.allowed <> {})
+					and
+					-- tool dependencies chain within all known theories
+					KnownTools(thysOfInterest) subset KnownTools(allThys)
+					and 
+					-- all signatures within the theories of interest are known
+					KnownSigs(thysOfInterest) subset KnownSigs(allThys)
+					and
+					-- all related links within thy defs is known within thy of interest
+					(let 
+						 -- all defs in immediate thy
+						 thyDefs = rng thy.defs ,
+						 -- all defs in thy dep chain
+						 defsOfInterest = KnownDefs(thysOfInterest),
+						 -- all conj in thy dep chain
+						 conjsOfInterest = KnownConjs(thysOfInterest)
+					 in
+						
+						-- Within a thy's defs, DefLink related defs are within known defs of Thy and its deps (Thy of interest)  
+						--DefsRelatedDefs(thyDefs)  subset defsOfInterest 
+						ThyElemDefSubset(DefsRelatedDefs(thyDefs), defsOfInterest)
+						and
+						-- all definitions within dependency chain must be "unique" across theories (e.g., injective) TODO: does it?
+						-- e.g., { ThyGatherDef(t) | t in set thysOfInterest } = { rng t.defs | t in set thysOfInterest }; 
+						--			so a seq of set of defs per theory as a partition of all defs of Interest
+						--
+						-- That's irritating: Seq comphrehension, likst Map comprehension is rather limited (!!!)
+						--partition0[Definition]([ ThyGatherDef(t) | t in set thysOfInterest ], defsOfInterest) 
+						
+						let 
+							disjointDefs = { ThyGatherDef(t) | t in set thysOfInterest },
+							disjointDefsSeq = set2seq[set of Definition](disjointDefs)
+						in
+							-- WARNING: this can be pretty slow! (TODO) 
+							partition0[Definition](disjointDefsSeq, defsOfInterest)
+						and
+						
+						-- Within a thy's defs, DefLink related conjs are within known conjs of Thy and its deps   
+						--DefsRelatedConjs(thyDefs) subset conjsOfInterest 
+						ThyElemConjSubset(DefsRelatedConjs(thyDefs), conjsOfInterest)
+						and
+						-- Within a thy's defs, DefLink related thys are within known thys of Thy and its deps   
+						--DefsRelatedThys(thyDefs) subset thysOfInterest -- or depThys only?
+						ThyElemTIdSubset(DefsRelatedThys(thyDefs), thysOfInterest)
+						and
+						-- Defs of a theory dep chain are whithin all known defs
+						defsOfInterest subset KnownDefs(allThys)
+						and
+						-- Conjs of a theory dep chain are whithin all known defs
+						conjsOfInterest subset KnownConjs(allThys)
+						and
+						-- All Whys within a theory's strategies must be known within Conjectures of interest
+						ThyStrategyWhys(thy) subset ConjRelatedWhys(conjsOfInterest)
+						--
+						-- TODO: check here that Hints within a strategy are part of a rationale of some involved clue?
+						--		 being part of the clue means being a prefix sequence 
+						--		(e.g., forall whySeq in set strategy (| why |) & 
+						--				(exists c in set clue & whySeq prefix c.rationale)) or (exists somewthing similar from justification/proofs/attempts/etc)				
+		
+						-- DefLink Theory must not be to itslef? nah leave it for now. TODO?	
+					)
+				)
+			)
+		)
+	);
+
+	
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Well-formedness functions module a given environment: just simple set of Id at the moment
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- known ids and well formed theories
+wf_Sigma: Sigma * Environment -> bool
+wf_Sigma(s, e) ==
+	dom s subset e and
+	forall thy in set rng s & wf_Theory(thy, e)
+pre
+	forall thy in set rng s & pre_wf_Theory(thy, e);
+
+wf_Sigma2: Sigma * Environment -> bool
+wf_Sigma2(s, e) ==
+	forall i in set dom s & i in set e and wf_Theory(s(i), e)
+pre
+	forall i in set dom s & i in set e and pre_wf_Theory(s(i), e);
+
+wf_Theory: Theory * Environment -> bool
+wf_Theory(mk_Theory(id, specialises, log, uses, -, ttypes, ops, res, -), e) == 
+	id in set e and
+	(specialises <> nil => specialises in set e) and
+	log in set e		 and
+	uses subset e		 and
+
+	--specialises not in set uses and
+	log not in set uses and
+
+	(forall sig in set ttypes & wf_Signature(sig, e)) and
+	(forall k in set dom ops & k in set e and wf_Definition(ops(k), e)) and
+	(forall i in set dom res & i in set e and wf_Conjecture(res(i), e))
+pre 
+	(forall sig in set ttypes & pre_wf_Signature(sig, e)) and
+	(forall m in set dom ops &  pre_wf_Definition(ops(m), e)) and
+	(forall j in set rng res &  pre_wf_Conjecture(j, e));
+
+wf_Definition: Definition * Environment -> bool
+wf_Definition(mk_Definition(id, term, -, -, -, -, -, -, related, wts), e) == 
+	id in set e and
+	wf_Term(term, e) and 
+	dom wts subset e and
+	(forall p in set rng wts & wf_Pred(p, e)) and
+	wf_DefLinks(related, e)
+pre
+	pre_wf_Term(term, e) and
+	pre_wf_DefLinks(related, e) and 
+	forall p in set rng wts & pre_wf_Pred(p, e);
+
+wf_DefLinks: set of DefLink * Environment -> bool
+wf_DefLinks(related, e) == 
+	wf_Set0[DefLink, Environment](wf_DefLink, related, e)
+pre
+	-- calls the preconditon of wf_Set ;-) cool
+	pre_(wf_Set0[DefLink, Environment], wf_DefLink, related, e);
+
+-- not checking within Sigma.
+wf_DefLink: DefLink * Environment -> bool
+wf_DefLink(mk_DefLink(thy, link), e) ==
+	thy in set e 
+	and
+	link <> nil => link in set e
+--	cases true:
+--		(is_Conjecture(dl)) -> wf_Conjecture(dl, e),
+--		(is_Definition(dl)) -> wf_Definition(dl, e),
+--		-- THERE WAS A MISSING COMMA HERE OVERTURE DOESN'T COMPLAIN?! VDM-TOOLS found it
+--		(is_Theory(dl)) 	-> wf_Theory(dl, e), 
+--		others				-> false
+--	end
+--pre
+--	((is_Conjecture(dl) => pre_wf_Conjecture(dl, e)) and
+--	 (is_Definition(dl) => pre_wf_Definition(dl, e)) and
+--	 (is_Theory(dl)		=> pre_wf_Theory(dl, e)));
+pre true
+;
+	 
+wf_Conjecture: Conjecture * Environment -> bool
+wf_Conjecture(mk_Conjecture(id, hyp, goal, justf, -, -, usage, insp), e) ==
+	id in set e and
+	(let wf_Sequents 		= wf_Seq0[Sequent, Environment],
+		wf_BodyOfEvidence 	= wf_Seq0[Attempt, Environment],
+		wf_Clues			= wf_Seq0[Clue, Environment]
+	in 		
+		wf_Sequents(wf_Sequent, hyp ^ [goal], e) and
+	
+		--dom justf subset e -- id duplication within justf map is not possible (it's a map)	
+		(forall i in set dom justf & i in set e 
+				and wf_BodyOfEvidence(wf_Attempt, justf(i).prf, e)) and
+
+		wf_Clues(wf_Clue, usage, e) and wf_Clues(wf_Clue, insp, e)
+	)
+pre 
+	(let wf_Sequents 		= wf_Seq0[Sequent, Environment],
+		 wf_BodyOfEvidence 	= wf_Seq0[Attempt, Environment],
+		 wf_Clues			= wf_Seq0[Clue, Environment]
+	in 
+		pre_(wf_Sequents, wf_Sequent, hyp ^ [goal], e) and
+		(forall i in set dom justf & 
+			pre_(wf_BodyOfEvidence, wf_Attempt, justf(i).prf, e)) and
+		pre_(wf_Clues, wf_Clue, usage, e) and
+		pre_(wf_Clues, wf_Clue, insp, e)
+	);
+
+wf_Proof: Proof * Environment -> bool
+wf_Proof(p, e) ==
+	p.id in set e and
+	wf_Seq0[Attempt, Environment](wf_Attempt, p.prf, e)
+pre
+	pre_(wf_Seq0[Attempt, Environment], wf_Attempt, p.prf, e)
+;
+
+wf_Attempt: Attempt * Environment -> bool
+wf_Attempt(mk_Attempt(why, tool, -, -, -, -, script), ev) ==
+	wf_Script(script, tool, ev) and
+	wf_Why(why, ev)
+pre
+	pre_wf_Script(script, tool, ev) and
+	pre_wf_Why(why, ev);
+
+wf_Script: Script * Tool * Environment -> bool
+wf_Script(-, tool, ev) ==
+	-- script <> [] and
+	tool in set ev 
+pre
+	true;
+
+wf_Why: Why * Environment -> bool
+wf_Why(mk_Why(-, s, -), ev) ==
+	wf_Score(s, ev)
+pre
+	pre_wf_Score(s, ev);
+
+wf_Score: Score * Environment -> bool
+wf_Score(-, -) ==
+	true
+pre
+	true;
+
+wf_Clue: Clue * Environment -> bool
+wf_Clue(mk_Clue(why, evidence, score), e) == 
+	wf_Why(why, e) and
+	wf_Score(score, e) and
+	evidence.id in set e and
+	wf_Seq0[Attempt, Environment](wf_Attempt, evidence.prf, e)
+pre 
+	pre_wf_Why(why, e) and
+	pre_wf_Score(score, e) and
+	pre_(wf_Set0[Attempt, Environment], wf_Attempt, evidence.prf, e);
+
+wf_Context: Context * Environment -> bool
+wf_Context(mk_Context(sqs, -, -, -), e) ==
+	wf_Seq0[Sequent, Environment](wf_Sequent, sqs, e)
+pre
+	pre_(wf_Seq0[Sequent, Environment], wf_Sequent, sqs, e);
+
+wf_Sequent: Sequent * Environment -> bool
+wf_Sequent(mk_Sequent(pred, ctx), e) ==
+	wf_Pred(pred, e) and wf_Context(ctx, e)
+pre
+	pre_wf_Pred(pred, e) and 
+	pre_wf_Context(ctx, e);
+
+wf_Term: Term * Environment -> bool
+wf_Term(t, e) ==
+	cases true:
+		(is_Expr(t)) -> wf_Expr(t, e),
+		(is_Pred(t)) -> wf_Pred(t, e),
+		others		 -> false
+	end
+pre
+	((is_Expr(t) => pre_wf_Expr(t, e)) and
+	 (is_Pred(t) => pre_wf_Pred(t, e)));
+ 
+wf_Expr: Expr * Environment -> bool 
+wf_Expr(mk_Expr(atm, typ, val), env) == 
+	wf_Atom(atm, env) and wf_Signature(typ, env) and wf_Value(val, env)
+pre
+	pre_wf_Atom(atm, env) and
+ 	pre_wf_Signature(typ, env) and
+	pre_wf_Value(val, env);
+
+wf_Pred: Pred * Environment -> bool
+wf_Pred(p, e) ==
+	cases true:
+		(is_PredTerm(p)) 	-> wf_PredTerm(p, e),
+		(is_EqTerm(p))		-> wf_EqTerm(p, e),
+		others				-> false
+	end
+pre
+	(is_PredTerm(p) => pre_wf_PredTerm(p, e)) and
+	(is_EqTerm(p) => pre_wf_EqTerm(p,e));
+
+wf_PredTerm: PredTerm * Environment -> bool
+wf_PredTerm(mk_PredTerm(atm, -), e) ==
+	wf_Atom(atm, e)
+pre pre_wf_Atom(atm, e);
+
+wf_EqTerm: EqTerm * Environment -> bool
+wf_EqTerm(mk_EqTerm(lhs, rhs), e) ==
+	wf_Expr(lhs, e) and wf_Expr(rhs, e)
+pre pre_wf_Expr(lhs, e) and pre_wf_Expr(rhs, e);
+
+wf_Atom: Atom * Environment -> bool
+wf_Atom(mk_Atom(mk_TermData(bv, fv), body), e) ==
+	wf_AtomBody(body, e) and
+	bv subset e and fv subset e
+pre pre_wf_AtomBody(body, e);
+
+wf_Signature: Signature * Environment -> bool
+wf_Signature(-, -) == true -- for now
+pre true;
+
+wf_Value: [Value] * Environment -> bool
+wf_Value(-, -) == true -- about parsing?
+pre true;
+
+wf_AtomBody: token * Environment -> bool
+wf_AtomBody(-, -) == true -- like parsing?
+pre true;
+
+--*********************************************************************************************************
+--*********************************************************************************************************
+
+-- PERFORMANCE: VDMJ doesn't like set of set because it attempts the Power(Power(T))!!!
+--invNewElemInWorld: Id * set of set of Id * set of set of Id +> bool
+--invNewElemInWorld(id, old, new) ==
+--	-- no trivial solution
+--	old <> {} and new <> {} 
+--	and
+--	-- not previously known, everywhere
+--	forall s in set old & id not in set s 
+--	and
+--	-- and it becomes known, everywhere
+--	forall t in set new & id in set t
+--
+--	-- or just: id in set old and id in set new
+--	-- isIdConsistent
+--;
+--
+--nvNewElemInWorld: Id * seq of set of Id * seq of set of Id +> bool
+--invNewElemInWorld(id, old, new) ==
+--	-- no trivial solution
+--	old <> [] and new <> [] 
+--	and 
+--	-- not previously known, everywhere
+--	forall s in set elems old & id not in set s 
+--	and
+--	-- and it becomes known, everywhere
+--	forall t in set elems new & id in set t
+--;
+
+
+values
+	HUNCH_RANK_LIMIT = 0;
+	TEST_RANK_LIMIT  = 1;
+
+	DEFAULT_TOOLS = { "Isabelle-2011", "Z/Eves" };
+
+--*********************************************************************************************************
+-- State declaration
+--*********************************************************************************************************
+
+
+state WhyMSt of
+	world	: Sigma
+	--thyDeps	: map TheoryId to set of TheoryId? Just calculate on the fly for now
+	known	: Environment
+inv mk_WhyMSt(world, known) == 
+		SigmaInv(world) 
+		and
+		-- operations not allowed (of course)! This is a function...: or should this wf_Sigma be just part of SigmaInv?
+		wf_Sigma(world, known) --, allIds0()) not possible to call other module Ops here :-( 
+		and
+		KnownTools(rng world) subset allowedTools0(known)
+init wmst == wmst = mk_WhyMSt({|->}, {})
+end
+
+--*********************************************************************************************************
+-- Auxiliary state-related functions
+--*********************************************************************************************************
+
+functions
+
+-- theory known in sigma
+isValidThyId: Sigma * TheoryId +> bool
+isValidThyId(s, tid) == tid in set dom s;
+
+-- theory definition known in sigma
+isValidDefIdIn: Sigma * TheoryId * DefId +> bool
+isValidDefIdIn(s, tid, did) == 
+	isValidThyId(s, tid) and did in set dom s(tid).defs;
+
+-- theory conjecture known in sigma
+isValidConjIdIn: Sigma * TheoryId * ConjId +> bool
+isValidConjIdIn(s, tid, cid) == 
+	isValidThyId(s, tid) and cid in set dom s(tid).results;
+
+-- proof attempt of conjecture in theory known in sigma 
+isValidProofIdOfConjIdIn: Sigma * TheoryId * ConjId * ProofId +> bool
+isValidProofIdOfConjIdIn(s, tid, cid, pid) == 
+	isValidConjIdIn(s, tid, cid) and pid in set dom s(tid).results(cid).justification;
+
+--*********************************************************************************************************
+-- Operations
+--*********************************************************************************************************
+
+-- TODO: maybe add "Error" return to all operations, with success as an option? And "trap" the failures?
+-- 		 maybe have separate modules?
+
+operations
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Auxiliary Operations
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--TODO FROM HERE
+-- TODO: use IO`printf("with a nicer java formatting here", [known], [world]") etc....
+ShowWorld : () ==> ()
+ShowWorld() ==
+	(print("Known Ids = ");
+	 println(known);
+     print("World     = ");
+	 println(world))
+pre true;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Id Operations: PRIVATE? OR GOTO WhyMIds?
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- PRIVATE?
+createId: [seq1 of char] * [Identity] * bool ==> Id
+createId(name, idt, add) == 
+	(dcl result : Id := if (name = nil) then createId0(idt) else createNamedId0(name, idt);
+		 (if add then known := known union {result}); --: MINIMISE INV-CHECKS: use atomic instead
+		 return result)
+pre
+	canCreateIds0(known)
+post
+	add => isIdConsistent0(known~, known, RESULT)
+;
+
+createThyId: () ==> Id
+createThyId() == return createId(nil, <THEORY>, false);
+
+createConjId: () ==> Id
+createConjId() == return createId(nil, <CONJ>, false);
+
+createProofId: () ==> Id
+createProofId() == return createId(nil, <PROOF>, false);
+
+createDefId: () ==> Id
+createDefId() == return createId(nil, <DEF>, false);
+
+createLog: seq1 of char ==> Log
+createLog(name) == return createId(name, <LOG>, false)
+pre
+	inv_Name0(name);
+
+-- PUBLIC
+createVarId: () ==> Id
+createVarId() == return createId(nil, <VAR>, true);
+
+createTool: seq1 of char ==> Tool
+createTool(name) == return createId(name, <TOOL>, true)
+pre
+	inv_Name0(name);
+
+-- bootstrap allowed tools to a default set
+allowedTools: set of Id ==> set of Tool
+allowedTools(s) == 
+	def res = allowedTools0(s) in
+		return if res <> {} then res else { createTool(name) | name in set DEFAULT_TOOLS };
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Theory Operations
+--		* to keep the invariant easier, we *create* the underlying structures and return Ids for them
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- Create a new (empty) theory: 
+newTheory: seq1 of char ==> TheoryId
+newTheory(log) ==
+	(--IO`println("gets-to-0");
+	(dcl tid: Id := createThyId(),
+		lid: Id := createLog(log);
+	    --IO`println("gets-to-1");
+		atomic (
+			known := known union {tid, lid};
+			world := world munion 
+				{ tid |-> mk_Theory(
+					tid, 				-- created id
+					nil, 				-- no specialisation
+					lid,				-- created log 
+					{}, 				-- no dependencies / uses
+					allowedTools(known),-- default set of allowed tools
+					{}, 				-- type signature set
+					{|->},				-- operator definition map
+					{|->}, 				-- conjecture map
+					{})					-- strategies relation
+				};
+			--IO`println("gets-to-3")
+		);
+		--IO`println("gets-to-2");
+		return tid))
+pre
+	canCreateIds0(known) and inv_Name0(log)
+post
+	-- tid is *new* to the world
+	isIdConsistent0(known~, known, RESULT)
+	and
+	isIdConsistent0(dom world~, dom world, RESULT)
+	--RESULT in set known and RESULT in set dom world
+	--and
+	--RESULT not in set known~ and RESULT not in set dom world~
+	--PERFORMANCE: invNewElemInWorld(RESULT, {known~, dom world~}, {known, dom world})
+	--			   invNewElemInWorld(RESULT, [known~, dom world~], [known, dom world])
+;
+
+newDefinition: TheoryId * Term * Concept * set of Structure * DefOrigin * seq of char ==> DefId
+newDefinition(tid, defT, concept, structure, origin, intent) ==
+	(
+	dcl did : DefId := createDefId();
+	atomic(
+		known := known union {did};
+		world(tid).defs := world(tid).defs munion 
+			{ did |-> mk_Definition(
+				did,
+				defT,
+				{},			-- properties of interest 
+				{},			-- anti-properties of interest 
+				concept,	-- does it define?
+				structure,	-- expected use of definition
+				origin,		-- the definition comes from?
+				intent,		-- textual description of definition
+				{},			-- terms/definitions/lemmas?
+				{|->}		-- possible witnesses for all quantified variables of interest? 
+				)
+			}
+		);
+	return did)
+pre
+	isValidThyId(world, tid)
+post
+	RESULT in set known and RESULT in set dom world(tid).defs
+	and
+	RESULT not in set known~ and RESULT not in set dom world~(tid).defs
+;
+
+newConjecture: TheoryId * seq of Sequent * Sequent ==> ConjId
+newConjecture(tid, hyps, goal) ==
+	(dcl cid: ConjId := createConjId();
+	 atomic(
+		known := known union {cid};
+		world(tid).results := world(tid).results munion 
+			{ cid |-> mk_Conjecture(
+				cid,
+				hyps,			-- list of known hypotheses	
+				goal,			-- goal to be proved
+				{|->}, 			-- (non-empty) body of evidence 
+				[DEFAULT_CONJ_SHAPE],-- how did this conjecture evolved
+				[DEFAULT_CONJ_INFERENCE],	-- how to use this conjecture in other proofs? 
+				[],				-- technology dependant, if not tool dependant?
+				[]				-- conj. applicability
+				)
+			}
+		);
+	return cid)
+pre
+	isValidThyId(world, tid)
+post
+	RESULT in set known and RESULT in set dom world(tid).results
+	and
+	RESULT not in set known~ and RESULT not in set dom world~(tid).results
+;
+
+
+addTheoryUseDeps: TheoryId * set of TheoryId ==> ()
+addTheoryUseDeps(tid, depThys) == 
+	--def thy = world(tid) in
+	--	world := world ++ { tid |-> mu(thy, uses |-> thy.uses union depThys) }
+	world(tid).uses := world(tid).uses union depThys
+--ext rd world
+pre
+	-- theory is known
+	isValidThyId(world, tid)
+	and
+	-- dependencies to add are known
+	depThys subset dom world
+--post
+	-- there is no circular dependency chain
+	--not hasCircularThyUse(world, tid)			TODO: implied by invariant. CHECK
+;
+
+addTheoryAllowedTool: TheoryId * set of Tool ==> ()
+addTheoryAllowedTool(tid, tools) ==
+	world(tid).allowed := world(tid).allowed union tools
+pre
+	isValidThyId(world, tid)
+	and
+	--
+	tools <> {} -- ??
+--post
+--	not hasUnknownToolDeps(world, tid)  TODO: implied by invariant. CHECK
+;
+
+addTheoryKnownTypes: TheoryId * set of Signature ==>()
+addTheoryKnownTypes(tid, typs) ==
+	world(tid).ttypes := world(tid).ttypes union typs
+pre
+	isValidThyId(world, tid)
+	and
+	typs <> {}
+--post
+--	not hasUnknownTypeDeps(world, tid)  TODO: implied by invariant. CHECK
+;
+
+calcTheoryUseDeps: () ==> map TheoryId to set of TheoryId
+calcTheoryUseDeps() ==
+	return { tid |-> TheoryUseDeps(world, tid) | tid in set dom world & not hasCircularThyUse(world, tid) }
+--pre
+--	isDepMapValid0[TheoryId](world)  : TODO: implied by state invariant. CHECK
+post
+	dom RESULT = dom world
+	and
+	dunion rng RESULT subset dom world;
+
+deduceStrategies: () ==> ()
+deduceStrategies() == (skip); -- is not yet specified;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Definition Operations
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+addDefLinks: TheoryId * DefId * set of Id ==> ()
+addDefLinks(tid, did, dlinks) ==
+	let depThyIds = TheoryUseDeps(world, tid) in
+		world(tid).defs(did).related := world(tid).defs(tid).related union 
+			{ DefLinkFromId(world, depThyIds, tid, id) | id in set dlinks } 
+pre
+	isValidDefIdIn(world, tid, did)
+	--and
+	-- thy deps are okay
+	--pre_TheoryUseDeps(world, tid) : TODO: implied by the state invariant CHECK
+	and
+	-- for each linking id, check within dep with DefLinkFromId is okay
+	(let depThyIds = TheoryUseDeps(world, tid) in
+		forall id in set dlinks & pre_DefLinkFromId(world, depThyIds, tid, id))
+post
+	-- all dlinks ids must have a thy known to the world and an linked id in known
+	forall id in set dlinks & 
+		-- PERFORMANCE: TODO: how to avoid "calling" TheoryUseDeps so often? Have it as a state comp?
+		let depThyIds = TheoryUseDeps(world, tid),  
+			mk_DefLink(thy, dlid) = DefLinkFromId(world, depThyIds, tid, id) 
+		in 
+			thy in set dom world and dlid in set known;
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Conjecture Operations
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+newProof: TheoryId * ConjId * Attempt ==> ProofId
+newProof(tid, cid, att) ==
+	(dcl pid : ProofId := createProofId();
+		atomic(
+			known := known union {pid};
+			world(tid).results(cid).justification := 
+				world(tid).results(cid).justification munion 
+					{ pid |-> mk_Proof(pid, [att]) }
+		);
+		return pid;
+	)
+pre
+	isValidConjIdIn(world, tid, cid)
+post
+	RESULT in set known and RESULT in set dom world(tid).results
+	and
+	RESULT not in set known~ and RESULT not in set dom world~(tid).results;
+
+addHypothesis: TheoryId * ConjId * Sequent ==> ()
+addHypothesis(tid, cid, hyp) ==
+	world(tid).results(cid).hypotheses := 
+		world(tid).results(cid).hypotheses ^ [hyp];
+
+addAttempt: TheoryId * ConjId * ProofId * Attempt ==> ()
+addAttempt(tid, cid, pid, att) ==
+	world(tid).results(cid).justification(pid).prf := 
+		world(tid).results(cid).justification(pid).prf ^ [att]
+pre
+	isValidProofIdOfConjIdIn(world, tid, cid, pid);
+
+
+
+--newProofAttempt: TheoryId * ConjId * Attempt ==> ()
+--newProofAttempt(tid, cid, mk_Attempt(mk_Why(kind, score, pos), tool, kind, rank, worth, mk_Score(fixed, domain, learned), script)) ==
+--	world(tid).results(cid).justification
+
+
+--	Conjecture ::
+--		id				: ConjId	
+--		hypotheses		:- seq of Sequent		-- list of known hypotheses	  
+--		goal			: Sequent				-- goal to be proved
+--		justification	:- map ProofId to Proof -- (non-empty) body of evidence  
+--		shape 			:- seq1 of MetaType		-- how did this conjecture evolved
+--		inference		:- seq1 of Inference	-- how to use this conjecture in other proofs? 
+--												-- technology dependant, if not tool dependant?
+--		usages			:- seq of Clue			-- conj. applicability
+--		inspiredBy		:- seq of Clue
+
+
+-- TODO: do I need this extra layer of type checking for attempt given as is_XXX(att)? Not?
+
+	-- disproof attempts are trusted and with negative Why (as "not Why(P)")
+	--isValidInsight: Attempt -> bool
+	--isValidInsight(att) == (/*is_Insight(att) and*/ att.worth.tag = <TRUSTED> and not att.why.pos);
+
+	-- a test is definite, hence QED as the only option. it might be either positive or negative
+	--isValidTest: Attempt -> bool
+	--isValidTest(att) == (/*is_Test(att) and*/ att.worth.tag = <QEQ>);
+
+	-- a valid proof must be positive evidence and cannot be given on trust
+	--isValidProof: Attempt -> bool
+	--isValidProof(att) == (is_Proof(att) and att.worth.tag <> <TRUSTED> and att.why.pos);
+
+	-- if a given attempt is a proof, then it is finished if QED tagged
+	--finishedProof: Attempt -> bool
+	--finishedProof(att) == (isValidProof(att) => att.worth.tag = <QED>);
+
+	--   *USE => in FINISHED PROOF TO MAKE (not finishedProof) unfinished proof*
+	--unfinishedProof: Attempt -> bool
+	--unfinishedProof(att) == (isValidProof(att) and att.worth.tag <> <QED>);
+
+	
+	--linked: Attempt * Sigma -> bool
+	--linked(a, s) == is not yet specified;
+	
+	--complete: Attempt * Sigma -> bool
+	--complete(a, s) == is not yet specified;
+
+	--analyse:  Conjecture -> set of Why	
+	--analyse(c) == is not yet specified; 
+
+	--evolve: Disproof -> Proof
+	--evolve(d) == is not yet specified;	
+
+/*
+
+Well, I wanted a curried version here to allow for f[DefLink](wf_DefLink) as a resulting 
+partially evaluated function. Is that allowed somehow in VDMSL? There is also the problem
+with measure, which MUST match the fcn being-measured signature, yet insists on "-> nat" only
+
+f [@elem]: (@elem * Environment -> bool) -> set of @elem * Environment -> bool
+f(wf_Elem) (s, e) ==
+	if s = {} then true 
+	else (let x in set s
+		  in wf_Elem(x, e) and 
+			 f(wf_Elem) (s \ {x}, e));
+--pre
+--	forall x in set s & pre_wf_Elem(x, e)
+--measure
+--	measure_f;
+
+fDefLink = f[DefLink];
+
+measure_f [@elem]: (@elem * Environment -> bool) -> set of @elem * Environment -> nat
+measure_f(-) (s, -) == card s;
+
+
+g: set of DefLink * Environment -> bool
+g(related, e) == 
+	f[DefLink] (wf_DefLink) (related, e)
+pre
+	-- or else pre_wf_Set[DefLink](...)
+	forall l in set related & pre_wf_DefLink(l, e);
+*/
+
+/*
+	rankHyp	: Conjecture * Ordering -> Conjecture
+	-- order the hypotheses in some way	
+*/
+
+/*
+	* generate POs
+	* start [new] proof
+	* got stuck: review / inform / judge
+		- proof critics? others
+	* proof plan execution
+		- splitting / induction / rewriting
+	* proof engineering needed
+	* identification
+		- missing hypotheses
+		- ranking hypotheses
+		- disproofs (via intuition)
+		- counter examples (explicit)
+	* Eureka introduction
+	* Thor's hammer (force throuhg; isar Sorry)
+	* classify PO / goal
+		- attempts: blind			= auto, p-by-reduce, grind, etc
+					with-intent(X)	= grounded WhyM info for X
+					using-clues(Y)	= putative WhyM info for Y
+					becauseof(Z)	= negative WhyM info for Z
+		- metatype: exploration		= user is playing around
+					toy [abstration]= toy-problem construction (!!)
+					lemma [subpart] = known subpart 
+	* create [choose] strategy
+		- split, induct, rewrite, generalise
+	* tagging terms / lemmas (user burden: rationale = better learning?)
+		- op/defn	: isFcn/Op, Const, Dest, etc
+		- prop-sets	: p-assoc(op1, op2), p-commu, p-dist-l/r,
+		- anti-props: np-assoc(op1, op2), etc..
+		- conceptual: core 		  = considered basic by the user
+					  extension	  = refinement of "core"
+					  invariant   = general property predicate/term
+		- structural: pointwise   = explicit consider every point of set or function
+					  set-based   = set-theoretical proof/structure (don't expand to elements)
+					  extension   = equality as quantified comparison (x=y iff (ALL i: x @ i : y) etc) 
+					  liebinitz	  = equality as substitution over equals-for-equals
+		- inference	: rule		  = to be used a rewrite rule? forw/backw?
+					  tjudgement  = to be used as type judgements?
+		- origin	: extensional = from the problem text itself
+					  intentional = from user insight 
+		- intent	: desc		  = textual description of how this is to be used?
+					  related	  = link to related terms / lemmas / defs (possible to infer?)
+		- witnesses : concrete examples for quantifiers / predicates?
+	* tagging inference
+		- history	: p-where	  = where was it used and succeeded? theory; goal; proof script; etc
+					  np-where	  = where was it used and failed?
+					  terms		  = set of term structure (in case of formulae variation?)
+					  proofs	  = set of proof scripts attempts
+		- weights	: hr-based results using various other tags?
+	* disproofs
+		- passive (insight), active (counter-example), gaps, etc
+	* ontology of lemmas / terms 
+		- Paolo's provenance stuff?
+		- WhyM scoring function?
+		- success / failure applicability rate?
+	* classification of lemmas / terms
+		- postmortem analysis: weight/score adjustments
+		- suggestion of lemmas; patches; fixes; strategies; etc
+	* propose gap
+		- justified / tentative lemmas?
+		- infered from theory usage / clues?
+	* proof refactoring / reconstruction / clean-up / synthesis
+		- look for Iain Whitehouse(?) Edinburgh work on Isar transf.
+		- look for MSR guy from UV10 talking about synthesis techniques
+	* armageddon introduction
+		- badly stuck / lost; worth resetting the world :-) !!
+	* metamorphosis introduction
+		- isomorphic lemma / proof suggestion
+		- equivalence lemmas for proof engineering (e.g., eq def easier to prove)
+		- change / refine underlying datatype
+		
+	* LEARNING (!!!)
+		- HR concept formation and relevance-measurement using WhyM data (e.g., Disproof/Gap)
+		- AM power-curves and concept formation ideas?
+		- Improved notions for scoring (see TP term indexing, strategies, SMT stuff, etc)
+		
+	# DNA analogy: 2% gene encoding; 98% "garbage DNA"->"DNA mechanics"
+					(proof scripts); (proof sessions)->(proof intent/why)
+					
+	# TOOL-ARCHITECTURE:
+		- WhyM in VDM (Overture) enables:
+			+ formal documentation of proof intent (meta-proving specification)
+			+ trace / animation analysis options
+			+ POG for intra consistency (WhyM is sound / feasible)
+			+ POG for exo consistency (WhyM suggesting extra POs PScripts)
+			+ closer to FM tools for actual proof (TP / SMT / etc)
+			+ JML / Java code generation of WhyM
+			+ formal link with PSP-inspired logging?
+			
+		- Ecore/EMF/Epsilon world
+			+ loose manipulation / transformation of WhyM instances
+			+ visual appeal / user interfacing
+			+ shared effort on MDA (model driven architectures)
+			+ meta-modelling support (EVL, EWL, EOL, ECL, etc).
+			+ AI transformations
+			+ Method agnostic (not in VDM, say).
+
+
+		
+*/ 
+
+end WhyM

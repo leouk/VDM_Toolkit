@@ -1,0 +1,47 @@
+module experiment
+
+exports all
+
+definitions
+
+types
+
+X = token;
+
+Part = set of set of X
+inv p == {} not in set p and (dunion p = { x | x : X }) and isPrDisj(p);
+
+functions
+
+isPrDisj : set of set of X -> bool
+isPrDisj(ss) == forall s1 in set ss, s2 in set ss & s1 = s2 or isDisj(s1, s2);
+
+isDisj : set of X * set of X -> bool
+isDisj(s1,s2) == s1 inter s2 = {};
+
+mergef : Part * (set of X -> bool) -> Part
+mergef(p, t) == { s | s in set p & t(s) } union {dunion { s | s in set p & not t(s) }};
+
+l02 (p: Part, t :(set of X -> bool)) r: Part
+pre
+  exists s in set p & t(s)
+post
+  inv_Part(r);
+
+state CE of
+   p: Part
+end
+
+operations
+
+Test (e1, e2: X) r: bool
+ext rd p : Part
+post r <=> (exists s in set p & {e1, e2} subset s);
+
+Equate (e1, e2: X) 
+ext wr p : Part
+post p = { s | s in set p~ & e1 not in set s and e2 not in set s } 
+		  union 
+		 {dunion { s | s in set p~ & e1 in set s or e2 in set s }}; 
+
+end experiment
