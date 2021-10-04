@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/nljsf/Local/reps/git/vdmj/vdmj/target/vdmj-4.4.4-SNAPSHOT-211004.jar"
+    ]
+}
