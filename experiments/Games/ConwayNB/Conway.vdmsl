@@ -80,6 +80,16 @@ functions
 	generation(pop) ==
 		(pop \ deadCells(pop)) union newCells(pop);
 
+	-- Generate a sequence of N generations 
+	generations: nat1 * Population -> seq of Population
+	generations(n,pop) ==
+		let new_p = generation(pop)
+		in
+			if n = 1
+			then [new_p] 
+			else [new_p] ^ generations(n-1,new_p)
+	measure n;
+
     -- Generate an offset of a Population (for testing gliders)
 	offset: Population * int * int -> Population
 	offset(pop, dx, dy) ==
