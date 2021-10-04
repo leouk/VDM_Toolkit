@@ -1,4 +1,4 @@
-package com.github.vdm_toolkit;
+package com.github.VDMToolkit;
 
 import java.awt.Point;
 import java.io.Serializable;

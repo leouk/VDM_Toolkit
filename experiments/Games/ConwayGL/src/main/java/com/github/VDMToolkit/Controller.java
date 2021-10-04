@@ -1,4 +1,4 @@
-package com.github.vdm_toolkit;
+package com.github.VDMToolkit;
 
 import java.io.IOException;
 import java.util.logging.Level;

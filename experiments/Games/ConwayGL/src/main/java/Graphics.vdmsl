@@ -1,4 +1,4 @@
-module gui_Graphics 
+module com_github_VDMToolkit 
 
 imports from Conway all
 
@@ -58,4 +58,4 @@ values
        
   GOSPER_GLIDER_GUN = mk_Configuration(40, 50, Conway`GOSPER_GLIDER_GUN);
 
-end gui_Graphics
+end com_github_VDMToolkit
