@@ -4,6 +4,7 @@ definitions
 
 functions
 	
+	--@doc See the inner calls and detailed time check; don't use m > 3; too long!
 	--@Warning(5012)
 	f: nat * nat -> nat
 	f(m, n) == 
@@ -19,14 +20,18 @@ functions
 					--@Time("Inner call to f(%2s, %3s)", m, n-1)
 					f(m, n-1));
 				
+	--@doc See just the time summary (no inner f details)
 	g: nat * nat -> nat
 	g(m, n) == 
 		--@Time("JUST_SUMMARY")
 		let 
-			--Time("Test 2 * %2s + %3s = %4s", m, n, x)
+			--@Time("Test 2 * %2s + %3s = %4s", m, n, 2 * m + n)
 			x = 2 * m + n
 		 in 
 		--@Time("TIME_SUMMARY")
 		f(m,n) + x;
-					
+
+--@doc instrument VDMJ to call these two to play with it. 
+--f(3,4)
+--g(3,4)					
 end MinimalTime
