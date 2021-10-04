@@ -1,4 +1,7 @@
-module com_github_VDMToolkit 
+--@doc the module name has to satisfy the Delegate.java protocol for file names:
+--		for java package "com.github.VDMToolkit" and class "Graphics" you need this 
+--		VDM-SL module name! This is the key to the "is not yet specified" Java binding. 
+module com_github_VDMToolkit_Graphics 
 
 imports from Conway all
 
@@ -12,6 +15,7 @@ types
 		pop : Conway`Population;
 
 functions
+	--@doc run generations_animate(COUNT, CONFIG)! 
 	generations_animate: nat1 * Configuration -> seq of Conway`Population
 	generations_animate(n,conf) == 
 		let - = initialise(conf.gridSide, conf.sleepTime) 
@@ -58,4 +62,4 @@ values
        
   GOSPER_GLIDER_GUN = mk_Configuration(40, 50, Conway`GOSPER_GLIDER_GUN);
 
-end com_github_VDMToolkit
+end com_github_VDMToolkit_Graphics
