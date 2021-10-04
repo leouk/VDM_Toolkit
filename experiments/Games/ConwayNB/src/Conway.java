@@ -5,10 +5,7 @@ import javax.swing.JFrame;
 
 import com.fujitsu.vdmj.RemoteControl;
 import com.fujitsu.vdmj.RemoteInterpreter;
-import com.fujitsu.vdmj.runtime.ValueException;
 import com.fujitsu.vdmj.values.RecordValue;
-import com.fujitsu.vdmj.values.Value;
-import com.fujitsu.vdmj.values.ValueSet;
 
 /**
  * Animation for the Game of Life VDM-SL model
@@ -29,13 +26,15 @@ public class Conway implements RemoteControl
 		g.setData(result);
 		g.setVisible(true);
 		
-		while (true)
+		for (int i=0; i < 20; i++)
 		{
 			Thread.sleep(PAUSE);
 			result = interpreter.valueExecute("generation(" + result +")").setValue(null);
 			g.setData(result);
 			g.repaint();
 		}
+		
+		g.dispose();
 	}
 	
 	@SuppressWarnings("serial")

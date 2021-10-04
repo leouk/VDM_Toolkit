@@ -21,17 +21,15 @@
  * Modelled in VDM-SL by Nick Battle and Peter Gorm Larsen
  */
 
-module gui_Graphics
+module Conway
 
 exports all
 
 definitions
 
 values
-	GENERATE:	int				 = 3;		-- Number of neighbours to cause generation
-	SURVIVE	: set of int = {2, 3};	-- Numbers of neighbours to ensure survival, else death
-	AROUND	: set of int = { -1, 0, +1 };
-	MAX_NEIGHBOURS: int = 9;
+	GENERATE	= 3;		-- Number of neighbours to cause generation
+	SURVIVE		= {2, 3};	-- Numbers of neighbours to ensure survival, else death
 	
 types
 	Point ::				-- Plain is indexed by integers
@@ -49,21 +47,15 @@ functions
 	-- Generate the Points around a given Point
 	around: Point -> set of Point
 	around(p) ==
-		--{ mk_Point(p.x + x, p.y + y) | x, y in set { -1, 0, +1 }
-		--	& x <> 0 or y <> 0 }
-		{ mk_Point(p.x + x, p.y + y) | x, y in set AROUND } \ {p}
-	post not p in set RESULT and card RESULT < MAX_NEIGHBOURS;
+		{ mk_Point(p.x + x, p.y + y) | x, y in set { -1, 0, +1 }
+			& x <> 0 or y <> 0 }
+	post card RESULT < 9;
 	
 	-- Count the number of live cells around a given point 
-	neighbours: Population * Point -> Population
-	neighbours(pop, p) ==
-		{ q | q in set around(p) & q in set pop }
-	post card RESULT < MAX_NEIGHBOURS;
-	
 	neighbourCount: Population * Point -> nat
 	neighbourCount(pop, p) ==
-		card neighbours(pop,p)
-	post RESULT < MAX_NEIGHBOURS;
+		card { q | q in set around(p) & q in set pop }
+	post RESULT < 9;
 
 	-- Generate the set of empty cells that will become live
 	newCells: Population -> set of Point
@@ -88,36 +80,6 @@ functions
 	generation(pop) ==
 		(pop \ deadCells(pop)) union newCells(pop);
 
-	-- Generate a sequence of N generations 
-	generations: nat1 * Population -> seq of Population
-	generations(n,pop) ==
-		let - = {newLivingCell(cell.x, cell.y)| cell in set pop} in
-		let - = newRound() in
-		let new_p = generation(pop)
-		in
-			if n = 1
-			then [new_p] 
-			else [new_p] ^ generations(n-1,new_p)
-	measure measureGenerations;
-     
-	measureGenerations: nat1 * Population -> nat
-	measureGenerations(n,-) == n;
-	
-	generate: nat1 * Configuration -> seq of Population
-	generate(n,conf) == 
-		let - = initialise(conf.gridSide, conf.sleepTime) 
-		in
-		 generations(n, conf.pop);
-	
-	initialise: nat1 * nat1 -> int
-    initialise(gridSideCount, sleepTime)== is not yet specified;
-    
-    newLivingCell:  int * int -> int
-    newLivingCell(x,y)== is not yet specified;
-    
-   	newRound: () -> int
-    newRound()== is not yet specified;
-    
     -- Generate an offset of a Population (for testing gliders)
 	offset: Population * int * int -> Population
 	offset(pop, dx, dy) ==
@@ -142,7 +104,7 @@ functions
 	gliderN: Population * nat1 * nat1 -> bool
 	gliderN(pop, n, max) ==
 		isOffset(pop, (generation ** n)(pop), max);
-		
+
  	-- Versions of the three tests that check that N is the least value
 	periodNP: Population * nat1 -> bool
 	periodNP(pop, n) ==
@@ -151,12 +113,12 @@ functions
 	disappearNP: Population * nat1 -> bool
 	disappearNP(pop, n) ==
 		{ a | a in set {1, ..., n} & disappearN(pop, a) } = {n};
-		
+
 	gliderNP: Population * nat1 * nat1 -> bool
 	gliderNP(pop, n, max) ==
 		{ a | a in set {1, ..., n} & gliderN(pop, a, max) } = {n};
  
-	
+
 -- Test games from http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 values
 	BLOCK = mk_Configuration(6, 500, { mk_Point(0,0), mk_Point(-1,0), mk_Point(0,-1), mk_Point(-1,-1) });
@@ -203,10 +165,11 @@ values
 		periodNP(TOAD.pop,		2),
 		periodNP(BEACON.pop,	2),
 		periodNP(PULSAR.pop,	3),
-		gliderNP(GLIDER.pop,	4, 1),
-		disappearNP(DIEHARD.pop, 130)
-	];
+		gliderNP(GLIDER.pop,	4, 1)
+		-- disappearNP(DIEHARD.pop, 130)	-- This takes a few minutes!
+	]
+	post elems RESULT = {true};
 	          
              
-end gui_Graphics
+end Conway
     
