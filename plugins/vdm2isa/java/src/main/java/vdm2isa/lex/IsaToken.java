@@ -72,6 +72,9 @@ public enum IsaToken  implements Serializable {
 	IOTA("iota", "SOME"),
 	LAMBDA("lambda", "\\<lambda>"),
 	
+	IF("if", "if"),
+	THEN("then", "then"),
+	ELSE("else", "else"),
 	FUN("->", "\\<Rightarrow>"),
 	EOF("", "");
   private final String vdm;
@@ -84,6 +87,7 @@ public enum IsaToken  implements Serializable {
 		this.isa = isa;
   }
   
+  //@todo add infixlr notation here to know where/when to "pad" the string! 
   public String toString()
   {
 	  return isa;
@@ -92,6 +96,11 @@ public enum IsaToken  implements Serializable {
   public String vdmString()
   {
 	  return vdm;
+  }
+
+  public static boolean parenthesise(IsaToken i)
+  {
+	  return false;
   }
 
 }
