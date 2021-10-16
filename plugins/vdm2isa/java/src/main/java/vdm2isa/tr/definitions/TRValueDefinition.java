@@ -28,6 +28,17 @@ public class TRValueDefinition extends TRDefinition
 	@Override
 	public String translate()
 	{
-		return super.translate() + type.translate() + " " + pattern + " = " + exp.translate() + ";\n";
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.translate());
+		sb.append("abbreviation\n\t");
+		sb.append(pattern);
+		sb.append("\t::");
+		sb.append(type.translate());
+		sb.append("\nwhere\n\t\"");
+		sb.append(pattern);
+		sb.append(" == ");
+		sb.append(exp.translate());
+		sb.append("\"\n");
+		return sb.toString();
 	}
 }

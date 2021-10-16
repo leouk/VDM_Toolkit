@@ -30,21 +30,17 @@ public abstract class TRDefinition extends TRNode
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();
-		
+
+		sb.append("(* ");
 		for (LexComment c: comments)
 		{
-			if (c.block)
-			{
-				sb.append(c.toString());
-			}
-			else
-			{
-				sb.append("//");
-				sb.append(c.comment);
-			}
-			
-			sb.append("\n");
+			sb.append("@ ");
+			sb.append(c.location.toString());
+			sb.append("\n\n");
+			sb.append(c.comment);
+			sb.append("\n\n");
 		}
+		sb.append("*)");
 
 		return sb.toString();
 	}

@@ -71,6 +71,7 @@ public enum IsaToken  implements Serializable {
 	IOTA("iota", "SOME"),
 	LAMBDA("lambda", "\\<lambda>"),
 	
+	FUN("->", "\\<Rightarrow>"),
 	EOF("", "");
   private final String vdm;
   private final String isa;

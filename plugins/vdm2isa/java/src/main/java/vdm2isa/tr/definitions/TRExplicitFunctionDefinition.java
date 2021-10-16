@@ -17,7 +17,7 @@ import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.patterns.TRNameList;
+import vdm2isa.tr.patterns.TRParameterList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRTypeList;
 
@@ -27,7 +27,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	public final TCNameToken name;
 	public final TCNameList typeParams;
 	public final TRFunctionType type;
-	public final TRNameList parameters;
+	public final TRParameterList parameters;
 	public final TRExpression body;
 	public final TRExpression precondition;
 	public final TRExpression postcondition;
@@ -43,21 +43,21 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	public TRExplicitFunctionDefinition(LexCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
-			TCNameList typeParams, TCFunctionType type,
-			TCPatternListList parameters, TCExpression body,
-			TCExpression precondition,
-			TCExpression postcondition, boolean typeInvariant, TCExpression measure)
+			TCNameList typeParams, TRFunctionType type,
+			TRParameterList parameters, TRExpression body,
+			TRExpression precondition,
+			TRExpression postcondition, boolean typeInvariant, TCExpression measureExp)
 	{
 		super(comments, annotations);
 		this.name = name;
 		this.typeParams = typeParams;
-		//this.type = type;
-		//this.paramPatternList = parameters;
-		//this.body = body;
+		this.type = type;
+		this.parameters = parameters;
+		this.body = body;
 		this.precondition = precondition;
 		this.postcondition = postcondition;
 		this.isTypeInvariant = typeInvariant;
-		this.measureExp = measure;
+		this.measureExp = measureExp;
 	}
 
 	@Override
@@ -66,6 +66,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(super.translate());
+
 		sb.append(type.getResult().translate() + " " + name.getName() + "(");
 		TRTypeList ptypes = type.getParameters();
 		
