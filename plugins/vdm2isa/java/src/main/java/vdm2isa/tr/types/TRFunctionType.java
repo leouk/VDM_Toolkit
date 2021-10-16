@@ -4,6 +4,9 @@
 
 package vdm2isa.tr.types;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
+
 public class TRFunctionType extends TRType
 {
 	private static final long serialVersionUID = 1L;
@@ -19,7 +22,7 @@ public class TRFunctionType extends TRType
 	@Override
 	public String translate()
 	{
-		return result.translate() + " (*)(" + parameters.translate() + ")";
+		return getParameters().translate() + " " + IsaToken.FUN.toString() + " " + result.translate();
 	}
 	
 	public TRTypeList getParameters()

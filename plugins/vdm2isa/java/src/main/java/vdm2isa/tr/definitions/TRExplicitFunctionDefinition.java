@@ -16,6 +16,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRParameterList;
 import vdm2isa.tr.types.TRFunctionType;
@@ -67,6 +68,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		
 		sb.append(super.translate());
 
+		IsaTemplates.explicitFunctionDefnition(
+			name.toString(),
+			type.getParameters().translate() 
+			inTypeSig, outTypeSig, inParam, exp)
 		sb.append(type.getResult().translate() + " " + name.getName() + "(");
 		TRTypeList ptypes = type.getParameters();
 		

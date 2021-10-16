@@ -11,6 +11,8 @@ import com.fujitsu.vdmj.tc.types.TCRationalType;
 import com.fujitsu.vdmj.tc.types.TCRealType;
 import com.fujitsu.vdmj.tc.types.TCType;
 
+import vdm2isa.lex.IsaToken;
+
 public class TRNumericType extends TRType
 {
 	private static final long serialVersionUID = 1L;
@@ -46,12 +48,11 @@ public class TRNumericType extends TRType
 	{
 		switch (type.toString())
 		{
-			case "nat": case "int": case "nat1":
-				return "long";
-				
-			case "rat": case "real":
-				return "double";
-				
+			case "nat" : return IsaToken.NAT.toString(); 
+			case "nat1": return IsaToken.NAT1.toString();
+			case "int" : return IsaToken.INT.toString();
+			case "rat" : return IsaToken.RAT.toString();
+			case "real": return IsaToken.REAL.toString();
 			default:
 				throw new RuntimeException("Untranslatable type " + type);
 		}

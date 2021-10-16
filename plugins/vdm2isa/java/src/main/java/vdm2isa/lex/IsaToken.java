@@ -12,6 +12,7 @@ public enum IsaToken  implements Serializable {
 	REAL("real", "VDMReal"),
 	CHAR("char", "VDMChar"),
   TOKEN("token", "VDMToken"),
+	CROSSPROD("*", "\\<times>"),
 
   	// Operators
 	PLUS("+", "+"),
