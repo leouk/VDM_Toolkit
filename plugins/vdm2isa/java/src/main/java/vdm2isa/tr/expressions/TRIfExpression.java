@@ -4,6 +4,9 @@
 
 package vdm2isa.tr.expressions;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
+
 public class TRIfExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
@@ -21,6 +24,7 @@ public class TRIfExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return "(" + ifExp.translate() + ") ? " + thenExp.translate() + " : " + elseExp.translate();
+		// attempt at shifting the parenthesing and expression handling elsewhere
+		return IsaTemplates.tokenise(IsaToken.IF, ifExp, IsaToken.THEN, thenExp, IsaToken.ELSE, elseExp);
 	}
 }

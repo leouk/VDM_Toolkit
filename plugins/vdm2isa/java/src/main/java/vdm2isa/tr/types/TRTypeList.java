@@ -4,6 +4,8 @@
 
 package vdm2isa.tr.types;
 
+import java.util.stream.Collectors;
+
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
@@ -16,8 +18,6 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	
 	private boolean curried;
 	private String separator;
-
-	private int i;
 
 	public TRTypeList(TCTypeList list) throws Exception
 	{
@@ -47,6 +47,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		StringBuilder sb = new StringBuilder();
 		int l = size();
+		//@todo have a look at https://reversecoding.net/java-8-convert-list-string-comma/
+		//java.util.List<TRType> list = this;
+		//list.stream().map().collect(Collectors.joining(separator));
  		for(TRType type : this)
 		{
 			l = l - 1;

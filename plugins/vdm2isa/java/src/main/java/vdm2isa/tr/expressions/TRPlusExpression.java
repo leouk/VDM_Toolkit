@@ -4,6 +4,9 @@
 
 package vdm2isa.tr.expressions;
 
+import vdm2isa.lex.IsaToken;
+import vdm2isa.lex.IsaTemplates;
+
 public class TRPlusExpression extends TRBinaryExpression
 {
 	private static final long serialVersionUID = 1L;
@@ -16,6 +19,6 @@ public class TRPlusExpression extends TRBinaryExpression
 	@Override
 	public String translate()
 	{
-		return left.translate() + " + " + right.translate();
+		return IsaTemplates.tokenise(left, IsaToken.PLUS, right);
 	}
 }

@@ -21,15 +21,13 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();
-		String sep = "";
-		
+		int l = size();
 		for (TRExpression exp: this)
 		{
-			sb.append(sep);
+			l = l - 1;
 			sb.append(exp.translate());
-			sep = ", ";
+			if (l > 0) sb.append(" ");
 		}
-		
 		return sb.toString();
 	}
 }

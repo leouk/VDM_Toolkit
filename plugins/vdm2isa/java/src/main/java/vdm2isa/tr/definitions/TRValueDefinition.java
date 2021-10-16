@@ -7,6 +7,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
 
@@ -30,15 +31,7 @@ public class TRValueDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.translate());
-		sb.append("abbreviation\n\t");
-		sb.append(pattern);
-		sb.append("\t::");
-		sb.append(type.translate());
-		sb.append("\nwhere\n\t\"");
-		sb.append(pattern);
-		sb.append(" == ");
-		sb.append(exp.translate());
-		sb.append("\"\n");
+		sb.append(IsaTemplates.translateValueDefinition(pattern, type.translate(), exp.translate()));
 		return sb.toString();
 	}
 }

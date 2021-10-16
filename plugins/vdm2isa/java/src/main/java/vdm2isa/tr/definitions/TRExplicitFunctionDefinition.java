@@ -67,7 +67,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(super.translate());
-
+		/*
+		sb.append(IsaTemplates.translateValueDefinition(pattern, type.translate(), exp.translate()));
 		IsaTemplates.explicitFunctionDefnition(
 			name.toString(),
 			type.getParameters().translate() 
@@ -86,7 +87,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		sb.append("{\n    return ");
 		sb.append(body.translate());
 		sb.append(";\n}\n");
-		
+		*/
 		return sb.toString();
 	}
 }

@@ -19,6 +19,6 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return root.translate() + "(" + args.translate() + ")";
+		return "(" + root.translate() + " " + args.translate() + ")";
 	}
 }

@@ -4,10 +4,14 @@
 
 package vdm2isa.tr.expressions;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
+
 public class TRTimesExpression extends TRBinaryExpression
 {
 	private static final long serialVersionUID = 1L;
 	
+	//@todo how to take parenthesiation into account according to Isa's rules? 
 	public TRTimesExpression(TRExpression left, TRExpression right)
 	{
 		super(left, right);
@@ -16,6 +20,6 @@ public class TRTimesExpression extends TRBinaryExpression
 	@Override
 	public String translate()
 	{
-		return "(" + left.translate() + " * " + right.translate() + ")";
+		return IsaTemplates.tokenise(left, IsaToken.TIMES, right);
 	}
 }

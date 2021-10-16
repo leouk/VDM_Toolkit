@@ -6,6 +6,8 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 
+import vdm2isa.lex.IsaTemplates;
+
 public class TRCompareExpression extends TRBinaryExpression
 {
 	private static final long serialVersionUID = 1L;
@@ -20,6 +22,6 @@ public class TRCompareExpression extends TRBinaryExpression
 	@Override
 	public String translate()
 	{
-		return left.translate() + " " + op + " " + right.translate();
+		return IsaTemplates.tokenise(left, op, right);
 	}
 }
