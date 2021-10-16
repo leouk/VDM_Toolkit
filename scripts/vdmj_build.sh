@@ -46,11 +46,26 @@ VDMJ_TARGET=/usr/local/lib
 # You must make sure you are at VDMJ_HOME first (e.g. top-level VDMJ repo directory)
 mvn clean install
 
-echo "Linking VDMJ $VDMJ_VERSION to $VDMJ_TARGET"
-ln -snf $(latest "${HERE}/Annotations/target/annotations-${VERSION}-??????.jar") ${VDMJ_TARGET}/annotations-${VERSION}.jar
-ln -snf $(latest "${HERE}/Annotations2/target/annotations2-${VERSION}-??????.jar") ${VDMJ_TARGET}/annotations2-${VERSION}.jar
-ln -snf $(latest "${HERE}/cmd-plugins/target/cmd-plugins-${VERSION}-??????.jar") ${VDMJ_TARGET}/cmd-plugins-${VERSION}.jar
-ln -snf $(latest "${HERE}/vdmj/target/vdmj-${VERSION}-??????.jar") ${VDMJ_TARGET}/vdmj-${VERSION}.jar
+#echo "Linking VDMJ $VDMJ_VERSION to $VDMJ_TARGET"
+#ln -snf $(latest "${HERE}/Annotations/target/annotations-${VERSION}-??????.jar") ${VDMJ_TARGET}/annotations-${VERSION}.jar
+#ln -snf $(latest "${HERE}/Annotations2/target/annotations2-${VERSION}-??????.jar") ${VDMJ_TARGET}/annotations2-${VERSION}.jar
+#ln -snf $(latest "${HERE}/cmd-plugins/target/cmd-plugins-${VERSION}-??????.jar") ${VDMJ_TARGET}/cmd-plugins-${VERSION}.jar
+#ln -snf $(latest "${HERE}/vdmj/target/vdmj-${VERSION}-??????.jar") ${VDMJ_TARGET}/vdmj-${VERSION}.jar
+
+echo "Pull latest version of VDM Toolkit from $VDMJTK_HOME"
+
+cd $VDMJTK_HOME 
+git pull
+
+#@TODO make these into POM packaging files?
+cd $VDMJTK_HOME/annotations/Annotations3
+mvn clean install
+
+cd $VDMJTK_HOME/annotations/witness
+mvn clean install
+
+cd $VDMJTK_HOME/plugins/vdm2isa/java
+mvn clean install
 
 vdmj -v
 

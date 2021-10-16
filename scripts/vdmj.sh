@@ -1,32 +1,115 @@
 #!/bin/bash
+#####################################################################################
+# Execute VDMJ jar with various options
+#####################################################################################
 
-# * Calls latest VDMJ build (see vdmj_build.sh) with corresponding annotations and parameters
-# * Presumes rlwrap (i.e. indexed commands within VDMJ protmpt) is installed (i.e. brew install rlwrap) 
+# Change these to flip VDMJ version
+MVERSION="4.4.4-SNAPSHOT"
+PVERSION="4.4.4-P-SNAPSHOT"
 
-if [ -z "$VDMJ_VERSION" ]
+# Preferred VDMJ options
+VDMJ_OPTS="-strict"
+
+# The Maven repository directory containing VDMJ jars
+MAVENREPO=~/.m2/repository/com/fujitsu
+
+# Location of the vdmj.properties file, if any. Override with -D.
+PROPDIR="$HOME/lib"
+
+# Details for 64-bit Java
+JAVA64="/usr/bin/java"
+VM_OPTS="-Xmx3000m -Xss1m -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000"
+
+function help()
+{
+    echo "Usage: $0 [--help|-?] [-P] [-A] <VM and VDMJ options>"
+    echo "-P use high precision VDMJ"
+    echo "-A use annotation libraries and options"
+    echo "Default VM options are $JAVA64 $VM_OPTS"
+    exit 0
+}
+
+function check()
+{
+    if [ ! -r "$1" ]
+    then
+	echo "Cannot read $1"
+	exit 1
+    fi
+}
+
+# Just warn if a later version is available in Maven
+LATEST=$(ls $MAVENREPO/vdmj | grep "^[0-9].[0-9].[0-9]" | tail -1)
+
+if [ "$MVERSION" != "$LATEST" ]
 then
-	# should be VDMJ_VERSION=X.Y.Z-SNAPSHOT
-    echo "Variable VDMJ_VERSION not set; should be X.Y.Z-SNAPSHOT"
-    exit 1
+    echo "WARNING: Latest VDMJ version is $LATEST, not $MVERSION"
 fi
 
-BASE=`dirname $0`
-VERSION=$VDMJ_VERSION
-NAME=vdmj
-CMDS=cmd-plugins
 
-JAR=/usr/local/lib/${NAME}-${VERSION}.jar
-PLUGINS=/usr/local/lib/${CMDS}-${VERSION}.jar
-#VDM2ISA=/usr/local/lib/v2c-0.0.1-SNAPSHOT.jar
-VDM2ISA=/usr/local/lib/vdm2isa-0.0.1-SNAPSHOT.jar
-ANNOTATIONS=/usr/local/lib/annotations-${VERSION}.jar:/usr/local/lib/annotations2-${VERSION}.jar:/usr/local/lib/witness-1.0.0.jar:/usr/local/lib/annotations3-${VERSION}.jar
+# Chosen version defaults to "master"
+VERSION=$MVERSION
 
-export CLASSPATH="$CLASSPATH:${ANNOTATIONS}"
-
-if [ ! -f ${JAR} ]; then
-    echo -e "Executable jar: \n\n${JAR}\n\ndoes not exist.  It must be in /usr/local/lib."
-    exit -1;
+if [ $# -eq 0 ]
+then help
 fi
 
-#java -cp ${ANNOTATIONS} -jar -Dmax.errors=1000 ${JAR} $@
-rlwrap java -cp ${ANNOTATIONS}:${JAR}:${PLUGINS}:${VDM2ISA} -Dmax.errors=1000 com.fujitsu.vdmj.VDMJ -vdmsl -strict -annotations $@
+# Process non-VDMJ options
+while [ $# -gt 0 ]
+do
+    case "$1" in
+	--help|-\?)
+	    help
+	    ;;
+	-A)
+	    ANNOTATIONS_VERSION=$VERSION
+	    ;;
+	-P)
+	    VERSION=$PVERSION
+	    ;;
+	-D*|-X*)
+	    VM_OPTS="$VM_OPTS $1"
+	    ;;
+	*)
+	    VDMJ_OPTS="$VDMJ_OPTS $1"
+    esac
+    shift
+done
+
+# Locate the jars
+VDMJ_JAR=$MAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar
+STDLIB_JAR=$MAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
+PLUGINS_JAR=$MAVENREPO/cmd-plugins/${VERSION}/cmd-plugins-${VERSION}.jar
+ISAPLUGIN_JAR=$MAVENREPO/vdm2isa/${VERSION}/vdm2isa-${VERSION}.jar
+check "$VDMJ_JAR"
+check "$STDLIB_JAR"
+check "$PLUGINS_JAR"
+check "$ISAPLUGIN_JAR"
+CLASSPATH="$VDMJ_JAR:$PLUGINS_JAR:$ISAPLUGIN_JAR:$PROPDIR"
+VDMJ_OPTS="-path $STDLIB_JAR $VDMJ_OPTS"
+MAIN="com.fujitsu.vdmj.VDMJ"
+
+if [ $ANNOTATIONS_VERSION ]
+then
+    ANNOTATIONS_JAR=$MAVENREPO/annotations/${VERSION}/annotations-${VERSION}.jar
+    check "$ANNOTATIONS_JAR"
+    ANNOTATIONS2_JAR=$MAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
+    check "$ANNOTATIONS2_JAR"
+    ANNOTATIONS3_JAR=$MAVENREPO/annotations3/${VERSION}/annotations3-${VERSION}.jar
+    check "$ANNOTATIONS3_JAR"
+    WITNESS_JAR=$MAVENREPO/witness/${VERSION}/witness-${VERSION}.jar
+    check "$WITNESS_JAR"
+    VDMJ_OPTS="$VDMJ_OPTS -annotations"
+    VM_OPTS="$VM_OPTS -Dannotations.debug"
+    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$ANNOTATIONS3_JAR:$WITNESS_JAR"
+fi
+
+# The dialect is based on $0, so hard-link this file as vdmsl, vdmpp and vdmrt.
+#DIALECT=$(basename $0)
+DIALECT=vdmsl
+
+# Keep rlwrap output in a separate folder
+export RLWRAP_HOME=~/.vdmj
+
+# Execute the JVM...
+exec rlwrap "$JAVA64" $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS "$@"
