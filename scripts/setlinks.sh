@@ -24,11 +24,11 @@ do
     if [ ! -e $RESOURCES/$DIR/saved ]
     then
 	mkdir $RESOURCES/$DIR/saved
-	mv $RESOURCES/$DIR/*.jar $RESOURCES/$DIR/saved
+	mv $RESOURCES/$DIR/vdmj*.jar $RESOURCES/$DIR/lsp*.jar $RESOURCES/$DIR/annotations*.jar $RESOURCES/$DIR/saved
 	echo "Saved $DIR"
     else
 	echo "Jars already saved, cleaning $DIR..."
-	rm $RESOURCES/$DIR/*.jar
+	rm $RESOURCES/$DIR/vdmj*.jar $RESOURCES/$DIR/lsp*.jar $RESOURCES/$DIR/annotations*.jar
     fi
 done
 

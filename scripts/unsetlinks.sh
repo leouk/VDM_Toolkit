@@ -24,7 +24,7 @@ do
     then
 	echo "Cannot find $RESOURCES/$DIR/saved"
     else
-	rm $RESOURCES/$DIR/*.jar
+	rm $RESOURCES/$DIR/vdmj*.jar $RESOURCES/$DIR/lsp*.jar $RESOURCES/$DIR/annotations*.jar
 	cp $RESOURCES/$DIR/saved/*.jar $RESOURCES/$DIR
 	echo "Restored $DIR"
     fi
