@@ -32,7 +32,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	public final TRExpression precondition;
 	public final TRExpression postcondition;
 	public final boolean isTypeInvariant;
-	public final TCExpression measureExp;
+	public final TRExpression measureExp;
 	public TCExplicitFunctionDefinition predef;
 	public TCExplicitFunctionDefinition postdef;
 	public TCDefinitionListList paramDefinitionList;
@@ -46,7 +46,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			TCNameList typeParams, TRFunctionType type,
 			TRParameterList parameters, TRExpression body,
 			TRExpression precondition,
-			TRExpression postcondition, boolean typeInvariant, TCExpression measureExp)
+			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp)
 	{
 		super(comments, annotations);
 		this.name = name;

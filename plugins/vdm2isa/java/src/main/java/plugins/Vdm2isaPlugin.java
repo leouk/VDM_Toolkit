@@ -13,9 +13,9 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModuleList;
 
-public class TranslatePlugin extends CommandPlugin
+public class Vdm2isaPlugin extends CommandPlugin
 {
-	public TranslatePlugin(Interpreter interpreter)
+	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 	}
@@ -40,6 +40,6 @@ public class TranslatePlugin extends CommandPlugin
 	@Override
 	public String help()
 	{
-		return "translate <language> [<files>] - translate the VDM specification to <language>";
+		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL";
 	}
 }

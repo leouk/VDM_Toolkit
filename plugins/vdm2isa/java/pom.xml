@@ -1,23 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<artifactId>vdm2isa</artifactId>
+	<name>vdm2isa</name>
+	<description>VDMSL translation to Isabelle</description>
+	
 	<parent>
 		<groupId>com.fujitsu</groupId>
 		<artifactId>vdmj-suite</artifactId>
 		<version>4.4.4-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>vdm2isa</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>vdm2isa</name>
-	<description>VDMSL translation to Isabelle</description>
-	
+	<developers>
+		<developer>
+			<id>LeoFreitas</id>
+			<name>Leo Freitas</name>
+			<email>leo.freitas@newcastle.ac.uk</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.fujitsu</groupId>
 			<artifactId>vdmj</artifactId>
-			<version>4.4.4-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 	</dependencies>
 

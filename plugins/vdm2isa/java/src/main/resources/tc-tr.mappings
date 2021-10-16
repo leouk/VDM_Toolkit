@@ -7,7 +7,7 @@ map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
 map TCValueDefinition{comments, pattern, type, exp} to TRValueDefinition(comments, pattern, type, exp);
 map TCExplicitFunctionDefinition{comments, name, type, paramPatternList, body} to TRExplicitFunctionDefinition(comments, name, type, paramPatternList, body);
-map TCExplicitFunctionDefinition{annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp} to TRExplicitFunctionDefinition(annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp);
+map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
@@ -42,6 +42,7 @@ unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
+unmapped com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
 #############################################################################
 package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;
@@ -54,7 +55,7 @@ map TCModule{name, defs} to TRModule(name, defs);
 package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;
 #############################################################################
 
-map TCPatternListList{} to TRNameList(this); 
+map TCPatternListList{} to TRParameterList(this); 
 unmapped com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 
 #############################################################################

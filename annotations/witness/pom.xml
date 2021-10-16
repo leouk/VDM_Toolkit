@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fujitsu</groupId>
 	<artifactId>witness</artifactId>
-	<version>1.0.0</version>
 	<name>Witness</name>
 	<description>Witness</description>
 
-	<properties>
-		<maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
-	</properties>
-	
+	<parent>
+		<groupId>com.fujitsu</groupId>
+		<artifactId>vdmj-suite</artifactId>
+		<version>4.4.4-SNAPSHOT</version>
+	</parent>
+
 	<developers>
 		<developer>
 			<id>LeoFreitas</id>
