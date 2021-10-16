@@ -799,7 +799,7 @@ lemma "inj m" unfolding inj_on_def apply simp oops
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
   where
-  [intro!]: "rng m = ran m"
+  [intro!]: "rng m \<equiv> ran m"
 
 lemmas rng_defs = rng_def ran_def
   
