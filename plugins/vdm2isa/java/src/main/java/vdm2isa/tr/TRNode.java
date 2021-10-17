@@ -11,4 +11,8 @@ abstract public class TRNode extends MappedObject
 	private static final long serialVersionUID = 1L;
 	public final static String MAPPINGS = "tc-tr.mappings";
 
+	protected TRNode()
+	{
+		super();
+	}
 }

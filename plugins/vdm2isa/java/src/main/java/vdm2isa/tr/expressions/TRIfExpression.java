@@ -7,6 +7,8 @@ package vdm2isa.tr.expressions;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 public class TRIfExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
@@ -14,8 +16,10 @@ public class TRIfExpression extends TRExpression
 	private final TRExpression thenExp;
 	private final TRExpression elseExp;
 	
-	public TRIfExpression(TRExpression ifExp, TRExpression thenExp, TRExpression elseExp)
+	//@todo TCElseIfExpressionList! 
+	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, TRExpression elseExp)
 	{
+		super(location);
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;
@@ -25,6 +29,11 @@ public class TRIfExpression extends TRExpression
 	public String translate()
 	{
 		// attempt at shifting the parenthesing and expression handling elsewhere
-		return IsaTemplates.tokenise(IsaToken.IF, ifExp, IsaToken.THEN, thenExp, IsaToken.ELSE, elseExp);
+		return IsaTemplates.tokenise(isaToken(), location, ifExp, thenExp, elseExp);
+	}
+
+	@Override
+	public IsaToken isaToken() {
+		return IsaToken.IF;
 	}
 }

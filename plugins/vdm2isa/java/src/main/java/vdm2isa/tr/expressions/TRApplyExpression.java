@@ -4,6 +4,9 @@
 
 package vdm2isa.tr.expressions;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
+
 public class TRApplyExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
@@ -12,6 +15,7 @@ public class TRApplyExpression extends TRExpression
 	
 	public TRApplyExpression(TRExpression root, TRExpressionList args)
 	{
+		super(root);
 		this.root = root;
 		this.args = args;
 	}
@@ -19,6 +23,11 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return "(" + root.translate() + " " + args.translate() + ")";
+		return IsaTemplates.tokenise(isaToken(), location, root, args);
+	}
+
+	@Override
+	public IsaToken isaToken() {
+		return IsaToken.APPLY;
 	}
 }
