@@ -4,34 +4,33 @@
 
 package vdm2isa.tr.types;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+
+import com.fujitsu.vdmj.lex.LexLocation;
 
 public class TRFunctionType extends TRType
 {
 	private static final long serialVersionUID = 1L;
 	private final TRTypeList parameters;
+	private final boolean partial;
 	private final TRType result;
 	
-	public TRFunctionType(TRTypeList parameters, TRType result)
+	public TRFunctionType(LexLocation location, TRTypeList parameters, boolean partial, TRType result)
 	{
+		super(location);
 		this.parameters = parameters;
+		this.partial = partial;
 		this.result = result;
 	}
 
 	@Override
 	public String translate()
 	{
-		return getParameters().translate() + " " + IsaToken.FUN.toString() + " " + result.translate();
+		return parameters.translate() + " " + isaToken().toString() + " " + result.translate();
 	}
 	
-	public TRTypeList getParameters()
-	{
-		return parameters;
-	}
-	
-	public TRType getResult()
-	{
-		return result;
+	@Override
+	public IsaToken isaToken() {
+		return partial ? IsaToken.FUN : IsaToken.TFUN;
 	}
 }

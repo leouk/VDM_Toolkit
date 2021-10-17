@@ -4,6 +4,8 @@
 
 package vdm2isa.tr.expressions;
 
+import java.util.Arrays;
+
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
@@ -13,12 +15,18 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 {
 	private static final long serialVersionUID = 1L;
 	
-	private String separator; 
+	protected String separator; 
+
+	protected TRExpressionList() 
+	{
+		super();
+		separator = " ";
+	}  
 
 	public TRExpressionList(TCExpressionList list) throws Exception
 	{
 		super(list);
-		separator = null;
+		separator = " ";
 	}
 
 	public String translate()
@@ -33,5 +41,12 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 			if (l > 0) sb.append(separator);
 		}
 		return sb.toString();
+	}
+
+	public static String translate(TRExpression... args)
+	{
+		TRExpressionList list = new TRExpressionList();
+		list.addAll(Arrays.asList(args));
+		return list.translate();	
 	}
 }

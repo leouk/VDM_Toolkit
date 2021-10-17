@@ -18,12 +18,13 @@ public class TRApplyExpression extends TRExpression
 		super(root);
 		this.root = root;
 		this.args = args;
+		this.args.separator = " ";
 	}
 
 	@Override
 	public String translate()
 	{
-		return IsaTemplates.tokenise(isaToken(), location, root, args);
+		return "(" + root.translate() + this.args.separator + args.translate() + ")";
 	}
 
 	@Override

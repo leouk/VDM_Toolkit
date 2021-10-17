@@ -4,8 +4,6 @@
 
 package vdm2isa.tr.types;
 
-import java.util.stream.Collectors;
-
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 

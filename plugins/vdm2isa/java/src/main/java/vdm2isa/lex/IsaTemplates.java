@@ -2,6 +2,7 @@ package vdm2isa.lex;
 
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
@@ -12,6 +13,7 @@ public final class IsaTemplates {
     private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports VDMToolkit\nbegin\n\n%4$s\nend";
     //@todo add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
+    private final static String ABBRV_INV    = "definition\n\t%1$s :: \"\\<bool>\"\nwhere\n\t\"%1$s \\<equiv> %2$s\"\n";
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s \\<Rightarrow> %3$s\"\nwhere\n\t\"%1$s %4$s \\<equiv> %5$s\"\n";
     private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
 
@@ -33,7 +35,7 @@ public final class IsaTemplates {
         sb.append(String.format(ABBREVIATION, name, type, exp));
         sb.append("\n");
         //@todo make this tokenised as well? 
-        sb.append(String.format(DEFINITION, "inv_" + name, type, IsaToken.BOOL, "", "inv_" + type + " " + name));
+        sb.append(String.format(ABBRV_INV, "inv_" + name, "inv_" + type + " " + name));
         sb.append("\n");
         return sb.toString();
     }
@@ -77,8 +79,35 @@ public final class IsaTemplates {
 		return sb.toString();
     }
 
-    public static String tokenise(IsaToken token, LexLocation location, Object... args)
+    public static String tokenise(IsaToken token, LexLocation location, TRExpression... args)
     {
+        StringBuilder sb = new StringBuilder();
+        switch (token)
+        {
+            case ABS: 
+            case FLOOR:
+            case CARD:
+            case DUNION:
+            case DINTER:
+            case LEN:
+            case HEAD:
+            case TAIL:
+            case INDS:
+            case DISTCONC:
+            case MERGE:
+                if (args.length != 1)
+                    throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                sb.append("(");
+                sb.append(token.toString());
+                sb.append(" ");
+                sb.append(args[0].translate());
+                sb.append(")");
+                break;
+            default:
+                sb.append("NYI = " + token.toString() + " " + TRExpressionList.translate(args));
+        }
+        return sb.toString();
+        /*
         StringBuilder sb = new StringBuilder();
         boolean parenthesise = false;
         int parenCnt = 0;
@@ -115,5 +144,6 @@ public final class IsaTemplates {
             }
         }
         return sb.toString();
+        */
     }
 }
