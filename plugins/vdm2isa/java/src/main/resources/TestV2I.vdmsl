@@ -1,5 +1,10 @@
 module Test
+exports all
 definitions
+
+values
+	x: nat = 10;
+	
 functions
 
 f: nat -> nat

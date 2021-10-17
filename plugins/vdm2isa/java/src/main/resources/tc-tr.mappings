@@ -15,20 +15,28 @@ package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
 
 map TCExpression{} to TRExpression();
 map TCExpressionList{} to TRExpressionList(this);
+
+map TCBooleanLiteralExpression{} to TRLiteralExpression(this); 
+map TCCharLiteralExpression{} to TRLiteralExpression(this);
 map TCIntegerLiteralExpression{} to TRLiteralExpression(this);
 map TCRealLiteralExpression{} to TRLiteralExpression(this);
-map TCPlusExpression{left, right} to TRPlusExpression(left, right);
-map TCSubtractExpression{left, right} to TRSubtractExpression(left, right);
-map TCTimesExpression{left, right} to TRTimesExpression(left, right);
-map TCDivideExpression{left, right} to TRDivideExpression(left, right);
-map TCIfExpression{ifExp, thenExp, elseExp} to TRIfExpression(ifExp, thenExp, elseExp);
-map TCEqualsExpression{left, right} to TREqualsExpression(left, right);
-map TCVariableExpression{name} to TRVariableExpression(name);
-map TCLessExpression{left, op, right} to TRCompareExpression(left, op, right);
-map TCLessEqualExpression{left, op, right} to TRCompareExpression(left, op, right);
-map TCGreaterExpression{left, op, right} to TRCompareExpression(left, op, right);
-map TCGreaterEqualExpression{left, op, right} to TRCompareExpression(left, op, right);
+
 map TCApplyExpression{root, args} to TRApplyExpression(root, args);
+map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
+map TCVariableExpression{name} to TRVariableExpression(name);
+
+map TCAbsoluteExpression{exp} to TRUnaryExpression(this, exp);
+
+map TCAndExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCSubtractExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCTimesExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCDivideExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCLessExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCLessEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCGreaterExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCGreaterEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCEqualsExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.lex to vdm2isa.tr.lex;
