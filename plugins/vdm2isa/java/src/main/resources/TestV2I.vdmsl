@@ -1,14 +1,46 @@
-module Test
+module TestV2I
 exports all
 definitions
 
 values
-	x: nat = 10;
+	x: nat  = 10;
+	y: nat1 = 20;
+	--a: bool = true;
+	r: real = 4.5;
+	
+	
 	
 functions
 
-f: nat -> nat
-f(x) == x + 1;
+--f: nat -> nat
+--f(x) == x + 1;
 
 
-end Test
+end TestV2I
+
+--mvn exec:java -DadditionalClasspathElements="/Users/nljsf/.m2/repository/com/fujitsu/vdm2isa/4.4.4-SNAPSHOT/vdm2isa-4.4.4-SNAPSHOT.jar" -Dexec.mainClass="com.fujitsu.vdmj.VDMJ" -Dexec.args="-vdmsl -strict -i /Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/main/resources/TestV2I.vdmsl"
+--mvn exec:java -Dexec.args="-vdmsl -strict -i /Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/main/resources/TestV2I.vdmsl"
+
+/*
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch VDMJ",
+            "request": "launch",
+            "classPaths": [
+                "$Auto",
+                "$Runtime",
+                "/Users/nljsf/.m2/repository/com/fujitsu/vdmj/4.4.4-SNAPSHOT/vdmj-4.4.4-SNAPSHOT.jar",
+                "/Users/nljsf/.m2/repository/com/fujitsu/vdm2isa/4.4.4-SNAPSHOT/vdm2isa-4.4.4-SNAPSHOT.jar"],
+            "mainClass": "com.fujitsu.vdmj.VDMJ",
+            "projectName": "vdmj",
+            "args": "-vdmsl -i /Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/main/resources/TestV2I.vdmsl"
+        }
+    ]
+}
+*/

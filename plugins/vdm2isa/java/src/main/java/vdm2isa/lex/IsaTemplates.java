@@ -9,17 +9,23 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 public final class IsaTemplates {
     
-    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1s\n%2s\n*)\ntheory %2s\nimports VDMToolkit\nbegin\n\n%3s\nend";
+    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports VDMToolkit\nbegin\n\n%4$s\nend";
     //@todo add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
-    private final static String ABBREVIATION = "abbreviation\n\t%1s :: \"%2s\"\nwhere\n\t\"%1s \\<equiv> %3s\"\n";     
-    private final static String DEFINITION   = "definition\n\t%1s :: \"%2s \\<Rightarrow> %3s\"\nwhere\n\t\"%1s %4s \\<equiv> %5s\"\n";
-    private final static String TSYNONYM     = "type_synonym %1s = \"%2s\"";
+    private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
+    private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s \\<Rightarrow> %3$s\"\nwhere\n\t\"%1$s %4$s \\<equiv> %5$s\"\n";
+    private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
 
     //@todo could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
 
-    public final static String DATATYPE     = "datatype %1s = %2s";
+    public final static String DATATYPE     = "datatype %1$s = %2$s";
 
+    public static void main(String args[])
+    {
+        System.out.println(translateValueDefinition("x", "VDMNat1", "10"));
+        System.out.println(typeSynonymDefinition("T", "VDMNat1", "x", "x > 10"));
+
+    }
     public static String translateValueDefinition(String name, String type, String exp)
     {
         assert name != null && type != null && exp != null;
@@ -39,15 +45,15 @@ public final class IsaTemplates {
      * @param inv explicit type invariant expression
      * @return Isabelle YXML string
      */
-    public static String typeSynonymDefinition(String name, String exp, String inv)
+    public static String typeSynonymDefinition(String name, String exp, String inv_var_name, String inv)
     {
         assert name != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
         sb.append("\n");
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
-        inv = "inv_ " + exp + "\\<and> " + ((inv == null) ? "True" : inv);
-        sb.append(String.format(DEFINITION, "inv_" + name, exp, IsaToken.BOOL, "x", inv));
+        inv = "inv_" + exp + " " + inv_var_name + " \\<and> " + ((inv == null) ? "True" : inv);
+        sb.append(String.format(DEFINITION, "inv_" + name, exp, IsaToken.BOOL, inv_var_name, inv));
         return sb.toString();
     }
 

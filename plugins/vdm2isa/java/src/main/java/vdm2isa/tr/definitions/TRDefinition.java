@@ -31,17 +31,20 @@ public abstract class TRDefinition extends TRNode
 	{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("(* ");
-		for (LexComment c: comments)
+		if (comments.size() > 0) 
 		{
-			sb.append("@ ");
-			sb.append(c.location.toString());
-			sb.append("\n\n");
-			sb.append(c.comment);
-			sb.append("\n\n");
+			sb.append("(* ");
+			for (LexComment c: comments)
+			{
+				sb.append("@ ");
+				sb.append(c.location.toString());
+				sb.append("\n\n");
+				sb.append(c.comment);
+				sb.append("\n\n");
+			}
+			sb.append("*)");
+			sb.append("\n");
 		}
-		sb.append("*)");
-
 		return sb.toString();
 	}
 }

@@ -93,10 +93,10 @@ public enum IsaToken {
 	{
 		assert isa != null; 
 		//@nb could this be available somehow? Token.lookup(vdm.toString(), Dialect.VDM_SL)
-		if (vdm == null ||
-			Token.lookup(vdm.toString(), Dialect.VDM_PP) != null ||
-	   	    Token.lookup(vdm.toString(), Dialect.VDM_RT) != null)
-			   throw new IllegalArgumentException("Invalid VDM PP or RT token " + vdm.toString());
+		//if (vdm == null ||
+		//	Token.lookup(vdm.toString(), Dialect.VDM_PP) != null ||
+	   	//    Token.lookup(vdm.toString(), Dialect.VDM_RT) != null)
+		//	   throw new IllegalArgumentException("Invalid VDM PP or RT token " + vdm.toString());
 		this.vdm = vdm;
 		this.isa = isa;
 	}
