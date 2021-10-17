@@ -3,12 +3,25 @@ exports all
 definitions
 
 values
+	a: bool = true;
+	c: char = 'a';
+	i: int  = 10;
 	x: nat  = 10;
 	y: nat1 = 20;
-	--a: bool = true;
 	r: real = 4.5;
 	
-	
+	v1 = abs 10;
+	v2 = floor 5;
+	v3 = floor 4.5;
+	--v4 = card S;
+	--v5 = len l;
+	--v6 = hd l;
+	--v7 = tl l;
+	--v8 = inds l;
+	--v9 = conc [l];
+	--v10= dinter SS;
+	--v11= dunion SS;
+	--v12= merge mm;
 	
 functions
 

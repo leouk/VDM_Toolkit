@@ -21,22 +21,36 @@ map TCCharLiteralExpression{} to TRLiteralExpression(this);
 map TCIntegerLiteralExpression{} to TRLiteralExpression(this);
 map TCRealLiteralExpression{} to TRLiteralExpression(this);
 
-map TCApplyExpression{root, args} to TRApplyExpression(root, args);
-map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
-map TCVariableExpression{name} to TRVariableExpression(name);
-
 map TCAbsoluteExpression{exp} to TRUnaryExpression(this, exp);
+map TCFloorExpression{exp} to TRUnaryExpression(this, exp);
+map TCCardinalityExpression{exp} to TRUnaryExpression(this, exp);
+map TCLenExpression{exp} to TRUnaryExpression(this, exp);
+map TCHeadExpression{exp} to TRUnaryExpression(this, exp);
+map TCTailExpression{exp} to TRUnaryExpression(this, exp);
+map TCIndicesExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistConcatExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistIntersectExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistUnionExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistMergeExpression{exp} to TRUnaryExpression(this, exp);
 
 map TCAndExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCSubtractExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCTimesExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCDivideExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
 map TCLessExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCLessEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCGreaterExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCGreaterEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
+map TCApplyExpression{root, args} to TRApplyExpression(root, args);
+map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
+map TCVariableExpression{name} to TRVariableExpression(name);
+
+
 map TCEqualsExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
 
 #############################################################################
 package com.fujitsu.vdmj.tc.lex to vdm2isa.tr.lex;
@@ -72,12 +86,19 @@ package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
 
 map TCType{} to TRType();
 map TCTypeList{} to TRTypeList(this);
-map TCFunctionType{parameters, result} to TRFunctionType(parameters, result);
-map TCNaturalOneType{} to TRNumericType(this);
-map TCNaturalType{} to TRNumericType(this);
-map TCIntegerType{} to TRNumericType(this);
-map TCRationalType{} to TRNumericType(this);
-map TCRealType{} to TRNumericType(this);
+
+map TCFunctionType{location, parameters, partial, result} to TRFunctionType(location, parameters, partial, result);
+
+map TCNaturalOneType{} to TRBasicType(this);
+map TCNaturalType{} to TRBasicType(this);
+map TCIntegerType{} to TRBasicType(this);
+map TCRationalType{} to TRBasicType(this);
+map TCRealType{} to TRBasicType(this);
+map TCBooleanType{} to TRBasicType(this);
+map TCCharacterType{} to TRBasicType(this);
+map TCTokenType{} to TRBasicType(this);
+
+map TCQuoteType{location, value} to TRQuoteType(location, value);
 
 #############################################################################
 # Classes that are not mapped
