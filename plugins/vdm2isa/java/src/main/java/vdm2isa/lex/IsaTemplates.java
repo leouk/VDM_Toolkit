@@ -5,6 +5,7 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
+import com.fujitsu.vdmj.lex.LexLocation;
 
 public final class IsaTemplates {
     
@@ -21,6 +22,7 @@ public final class IsaTemplates {
 
     public static String translateValueDefinition(String name, String type, String exp)
     {
+        assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(ABBREVIATION, name, type, exp));
         sb.append("\n");
@@ -29,8 +31,17 @@ public final class IsaTemplates {
         sb.append("\n");
         return sb.toString();
     }
+
+    /**
+     * Creates a type synonum definition, including its type invariant definition, for VDM Type "NAME = EXPR inv x == INV"
+     * @param name type name
+     * @param exp type expression 
+     * @param inv explicit type invariant expression
+     * @return Isabelle YXML string
+     */
     public static String typeSynonymDefinition(String name, String exp, String inv)
     {
+        assert name != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
         sb.append("\n");
@@ -40,12 +51,13 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String explicitFunctionDefnition(String name, String inTypeSig, String outTypeSig, String inParam, String exp)
+    public static String explicitFunctionDefnition(String name, String inTypeSig, String outTypeSig, 
+        String inParam, String exp, String pre, String post)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(DEFINITION,  "pre_" + name, inTypeSig, IsaToken.BOOL, inParam, exp));
+        sb.append(String.format(DEFINITION,  "pre_" + name, inTypeSig, IsaToken.BOOL, inParam, pre));
         sb.append("\n");
-        sb.append(String.format(DEFINITION, "post_" + name, inTypeSig + IsaToken.FUN + outTypeSig, IsaToken.BOOL, inParam + " RESULT", exp));
+        sb.append(String.format(DEFINITION, "post_" + name, inTypeSig + IsaToken.FUN + outTypeSig, IsaToken.BOOL, inParam + " RESULT", post));
         sb.append("\n");
         sb.append(String.format(DEFINITION,           name, inTypeSig,    outTypeSig, inParam, exp));
         return sb.toString();
@@ -53,12 +65,13 @@ public final class IsaTemplates {
 
     public static String translateModule(String comment, String loc, String name, String defs) 
     {
+        assert comment != null && loc != null && name != null && defs != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(MODULE, comment, loc, name, defs));
 		return sb.toString();
     }
 
-    public static String tokenise(Object... args)
+    public static String tokenise(IsaToken token, LexLocation location, Object... args)
     {
         StringBuilder sb = new StringBuilder();
         boolean parenthesise = false;
