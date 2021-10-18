@@ -19,8 +19,4 @@ abstract public class TRType extends TRNode
 	{
 		this.location = location;
 	}
-
-	public abstract String translate();
-
-	public abstract IsaToken isaToken();
 }

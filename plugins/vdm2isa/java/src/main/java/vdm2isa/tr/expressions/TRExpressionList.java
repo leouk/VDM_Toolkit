@@ -9,6 +9,7 @@ import java.util.Arrays;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRMappedList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
@@ -32,6 +33,8 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	public String translate()
 	{
 		assert separator != null;
+		return IsaTemplates.listToString(this, separator);
+		/*
 		StringBuilder sb = new StringBuilder();
 		int l = size();
 		for (TRExpression exp: this)
@@ -40,7 +43,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 			sb.append(exp.translate());
 			if (l > 0) sb.append(separator);
 		}
-		return sb.toString();
+		return sb.toString();*/
 	}
 
 	public static String translate(TRExpression... args)

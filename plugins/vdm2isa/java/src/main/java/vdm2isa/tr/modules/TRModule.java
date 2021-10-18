@@ -7,6 +7,7 @@ package vdm2isa.tr.modules;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
@@ -26,5 +27,10 @@ public class TRModule extends TRNode
 	{
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
 		return IsaTemplates.translateModule("", loc, name.toString(), definitions.translate());
+	}
+
+	@Override
+	public IsaToken isaToken() {
+		return IsaToken.MODULE;
 	}
 }

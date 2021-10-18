@@ -8,10 +8,16 @@ import com.fujitsu.vdmj.tc.expressions.TCDistConcatExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistIntersectExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistMergeExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistUnionExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapDomainExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapRangeExpression;
+import com.fujitsu.vdmj.tc.expressions.TCNotExpression;
+import com.fujitsu.vdmj.tc.expressions.TCReverseExpression;
 import com.fujitsu.vdmj.tc.expressions.TCFloorExpression;
 import com.fujitsu.vdmj.tc.expressions.TCHeadExpression;
 import com.fujitsu.vdmj.tc.expressions.TCLenExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTailExpression;
+import com.fujitsu.vdmj.tc.expressions.TCUnaryMinusExpression;
+import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -32,6 +38,20 @@ public class TRUnaryExpression extends TRExpression {
 	}
 
     public TRUnaryExpression(TCFloorExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCUnaryMinusExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCUnaryPlusExpression owner, TRExpression exp)
 	{
 		super(owner.location);
         this.owner = owner;
@@ -101,6 +121,34 @@ public class TRUnaryExpression extends TRExpression {
 		this.exp = exp;
 	}
 
+    public TRUnaryExpression(TCMapDomainExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCNotExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCReverseExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
     @Override
     public String translate() 
     {
@@ -110,10 +158,16 @@ public class TRUnaryExpression extends TRExpression {
     @Override
     public IsaToken isaToken() 
     {
-        if (owner instanceof TCAbsoluteExpression)
+        if (owner instanceof TCNotExpression)
+            return IsaToken.NOT;
+        else if (owner instanceof TCAbsoluteExpression)
             return IsaToken.ABS;
         else if (owner instanceof TCFloorExpression)
             return IsaToken.FLOOR;
+        else if (owner instanceof TCUnaryMinusExpression)
+            return IsaToken.MINUS;
+        else if (owner instanceof TCUnaryPlusExpression)
+            return IsaToken.PLUS;
         else if (owner instanceof TCCardinalityExpression)
             return IsaToken.CARD;
         else if (owner instanceof TCDistUnionExpression)
@@ -132,6 +186,12 @@ public class TRUnaryExpression extends TRExpression {
             return IsaToken.DISTCONC;
         else if (owner instanceof TCDistMergeExpression)
             return IsaToken.MERGE;
+        else if (owner instanceof TCMapDomainExpression)
+            return IsaToken.DOM;
+        else if (owner instanceof TCMapRangeExpression)
+            return IsaToken.RNG;
+        else if (owner instanceof TCReverseExpression)
+            return IsaToken.REVERSE;
         else
 			throw new RuntimeException("Invalid VDM unary expression " + owner.getClass().getName() + " = " + owner.toString());
     }

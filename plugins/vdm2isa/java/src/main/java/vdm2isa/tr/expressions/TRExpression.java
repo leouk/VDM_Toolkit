@@ -29,8 +29,4 @@ public abstract class TRExpression extends TRNode
 	{
 		this(exp.location);
 	}
-
-	//@todo push these two up towards TRNode? 
-	abstract public String translate();
-	abstract public IsaToken isaToken();
 }
