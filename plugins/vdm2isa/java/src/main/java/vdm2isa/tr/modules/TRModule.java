@@ -14,8 +14,8 @@ import vdm2isa.tr.definitions.TRDefinitionList;
 public class TRModule extends TRNode
 {
 	private static final long serialVersionUID = 1L;
-	private final TCIdentifierToken name;
-	private final TRDefinitionList definitions;
+	public final TCIdentifierToken name;
+	protected final TRDefinitionList definitions;
 	
 	public TRModule(TCIdentifierToken name, TRDefinitionList definitions)
 	{
