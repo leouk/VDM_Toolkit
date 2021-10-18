@@ -4,6 +4,7 @@
 
 package vdm2isa.tr;
 
+import vdm2isa.lex.IsaToken;
 import com.fujitsu.vdmj.mapper.MappedObject;
 
 abstract public class TRNode extends MappedObject
@@ -15,4 +16,7 @@ abstract public class TRNode extends MappedObject
 	{
 		super();
 	}
+
+	public abstract IsaToken isaToken();
+	public abstract String translate();
 }

@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.ast.lex.LexComment;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 
 public abstract class TRDefinition extends TRNode
@@ -46,5 +47,10 @@ public abstract class TRDefinition extends TRNode
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+
+	public IsaToken isaToken()
+	{
+		return null;
 	}
 }
