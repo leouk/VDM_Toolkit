@@ -1,31 +1,34 @@
 package vdm2isa.tr.types;
 
-import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCSetType;
+import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
 import vdm2isa.lex.IsaToken;
 
 public class TRSetType extends TRType
 {
     private final TRType setof;
-    private final boolean empty;
+    private final boolean set1;
 
-    public TRSetType(LexLocation location, TRType setof, boolean empty)    
+    public TRSetType(TCSetType owner, TRType setof)    
     {
-        super(location);
+        super(owner.location);
         this.setof = setof;
-        this.empty = empty;
+        this.set1 = false;
     }
 
-    public TRSetType(LexLocation location, TRType setof)    
+    public TRSetType(TCSet1Type owner, TRType setof)    
     {
-        this(location, setof, false);
+        super(owner.location);
+        this.setof = setof;
+        this.set1 = true;
     }
 
     @Override
     public IsaToken isaToken() {
-        return empty ? IsaToken.SET : IsaToken.SET1;
+        return set1 ? IsaToken.SET1 : IsaToken.SET;
     }
-    
+
     @Override
     public String translate() {
         return isaToken().toString();

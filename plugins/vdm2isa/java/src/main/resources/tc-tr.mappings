@@ -96,6 +96,7 @@ unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
+unmapped com.fujitsu.vdmj.lex.LexLocation;
 unmapped com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
 #############################################################################
@@ -103,7 +104,7 @@ package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;
 #############################################################################
 
 map TCModuleList{} to TRModuleList(this);
-map TCModule{name, defs} to TRModule(name, defs);
+map TCModule{name, defs, files} to TRModule(name, defs, files);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;
@@ -133,10 +134,11 @@ map TCTokenType{} to TRBasicType(this);
 map TCQuoteType{location, value} to TRQuoteType(location, value);
 
 map TCMapType{location, from, to} to TRMapType(location, from, to);
-map TCNamedType{typename, type} to TRNamedType(typename, type);
-map TCSetType{location, setof, empty} to TRSetType(location, setof, empty);
-#map TCSet1Type{location, setof} to TRSetType(location, setof);
-map TCSeqType{location, seqof} to TRSeqType(location, seqof);
+map TCNamedType{typename, type} to TRNamedType(typename, type); 
+map TCSetType{setof} to TRSetType(this, setof);
+map TCSet1Type{setof} to TRSetType(this, setof);
+map TCSeqType{seqof} to TRSeqType(this, seqof);
+map TCSeq1Type{seqof} to TRSeqType(this, seqof);
 
 #############################################################################
 # Classes that are not mapped
