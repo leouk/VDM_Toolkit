@@ -1,7 +1,7 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-files = [./src/main/resources/TestV2I.vdmsl]
+files = [TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit

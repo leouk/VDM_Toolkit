@@ -27,18 +27,17 @@ package plugins;
 import java.io.File;
 import java.io.PrintWriter;
 
-import com.fujitsu.vdmj.mapper.ClassMapper;
-import com.fujitsu.vdmj.runtime.Interpreter;
-import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import json.JSONObject;
 import lsp.Utils;
+import rpc.RPCErrors;
+import rpc.RPCMessageList;
 import rpc.RPCRequest;
-import vdm2isa.tr.TRNode;
-import vdm2isa.tr.modules.TRModule;
-import vdm2isa.tr.modules.TRModuleList;
 import workspace.Log;
+import workspace.PluginRegistry;
+import workspace.plugins.TCPlugin;
 
 public class ISAPluginSL extends ISAPlugin
 {
@@ -48,31 +47,40 @@ public class ISAPluginSL extends ISAPlugin
 	}
 	
 	@Override
-	public File analyse(RPCRequest request) throws Exception
+	public RPCMessageList analyse(RPCRequest request)
 	{
 		try
 		{
 			JSONObject params = request.get("params");
 			File saveUri = Utils.uriToFile(params.get("saveUri"));
 
-			ModuleInterpreter minterpreter = (ModuleInterpreter) Interpreter.getInstance();
-			TCModuleList tclist = minterpreter.getTC();
-			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+			TCPlugin tc = PluginRegistry.getInstance().getPlugin("TC");
+			TCModuleList tclist = tc.getTC();
 			
-			for (TRModule module: trModules)
+			for (TCModule module: tclist)
 			{
 				File outfile = new File(saveUri, module.name.getName() + ".thy");
 				PrintWriter out = new PrintWriter(outfile);
-				out.write(module.translate());
+				out.write("Isabelle output...\n");
 				out.close();
 			}
 			
-			return saveUri;
+//			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+//			
+//			for (TRModule module: trModules)
+//			{
+//				File outfile = new File(saveUri, module.name.getName() + ".thy");
+//				PrintWriter out = new PrintWriter(outfile);
+//				out.write(module.translate());
+//				out.close();
+//			}
+
+			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
 		}
 		catch (Exception e)
 		{
 			Log.error(e);
-			throw e;
+			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
 		}
 	}
 }

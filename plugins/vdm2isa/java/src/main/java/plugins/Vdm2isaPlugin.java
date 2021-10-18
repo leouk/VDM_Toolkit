@@ -36,6 +36,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 			for (TRModule module: trModules)
 			{
 				String dir = module.name.getLocation().file.getParent();
+				if (dir == null) dir = ".";
 				String name = module.name.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
 				System.out.println("Translating into " + dir + "/" + name);
 				File outfile = new File(dir, name);
