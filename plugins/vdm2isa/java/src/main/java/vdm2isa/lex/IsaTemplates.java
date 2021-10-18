@@ -1,15 +1,19 @@
 package vdm2isa.lex;
 
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.types.TRType;
+
+import java.util.List;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 public final class IsaTemplates {
     
+    //@todo have single-templates per translation type then make the hybrids in-situ, rather than various strings; also add IsaTokens to strings? 
     private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports VDMToolkit\nbegin\n\n%4$s\nend";
     //@todo add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
@@ -28,6 +32,32 @@ public final class IsaTemplates {
         System.out.println(typeSynonymDefinition("T", "VDMNat1", "x", "x > 10"));
 
     }
+
+    public static String listToString(List<? extends TRNode> list, String separator)
+	{
+        return listToString("", list, separator, "");
+    }
+
+    public static String listToString(String before, List<? extends TRNode> list, String separator, String after)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(before);
+
+		if (!list.isEmpty())
+		{
+			sb.append(list.get(0).translate());
+
+			for (int i=1; i<list.size(); i++)
+			{
+				sb.append(separator);
+				sb.append(list.get(i).translate());
+			}
+		}
+
+		sb.append(after);
+		return sb.toString();
+	}
+
     public static String translateValueDefinition(String name, String type, String exp)
     {
         assert name != null && type != null && exp != null;

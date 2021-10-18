@@ -41,7 +41,7 @@ public enum IsaToken {
 	IMPLIES(Token.IMPLIES, "\\<longrightarrow>"),
 	ABS(Token.ABS, "vdm_abs"),
 	STARSTAR(Token.STARSTAR, "vdmpow"), //@doc vdmpow expects real_normed_algebra_1 types only
-	
+	NOT(Token.NOT, "\\<not>"),
 	SUBSET(Token.SUBSET, "\\<subsetseq>"),
 	PSUBSET(Token.PSUBSET, "\\<subset>"),
 	INSET(Token.INSET, "\\<in>"),
@@ -55,6 +55,7 @@ public enum IsaToken {
 	CONCATENATE(Token.CONCATENATE, "@"),
 	MAPLET(Token.MAPLET, "\\<mapsto>"),
 	RANGE(Token.RANGE, ".."),
+	REVERSE(Token.REVERSE, "vdm_reverse"),
 	DOMRESTO(Token.DOMRESTO, "\\<triangleleft>"),
 	DOMRESBY(Token.DOMRESBY, "-\\<triangleleft>"),
 	RANGERESTO(Token.RANGERESTO, "\\<triangleright>"),
@@ -81,6 +82,19 @@ public enum IsaToken {
 	IOTA(Token.IOTA, "SOME"),
 	LAMBDA(Token.LAMBDA, "\\<lambda>"),
 	
+	SET_OPEN(Token.SET_OPEN, "{"),
+	SET_CLOSE(Token.SET_CLOSE, "}"),
+	SEQ_OPEN(Token.SEQ_OPEN, "["),
+	SEQ_CLOSE(Token.SEQ_CLOSE, "]"),
+	COMMA(Token.COMMA, ","),
+
+	MODULE(Token.MODULE, "theory"),
+	SET(Token.SET, "VDMSet"),
+	SET1(Token.SET1, "VDMSet1"),
+	SEQ(Token.SEQ, "VDMSeq"),
+	SEQ1(Token.SEQ1, "VDMSeq1"),
+	MAP(Token.MAP, "\\<rightharpoonup>"),
+	INMAP(Token.INMAP, "\\<rightharpoonup>"),
 	IF(Token.IF, "if"),
 	THEN(Token.THEN, "then"),
 	ELSE(Token.ELSE, "else"),
@@ -146,9 +160,9 @@ public enum IsaToken {
 			
 			case EQUIVALENT	    : return IsaToken.EQUIVALENT;
 			case IMPLIES		: return IsaToken.IMPLIES;
-			/*
-			case CARD		: return IsaToken.CARD;
-			case POWER		: return IsaToken.POWER;
+			
+			case CARD			: return IsaToken.CARD;
+			//case POWER		: return IsaToken.POWER;
 
 			case UNION			: return IsaToken.UNION;
 			case INTER			: return IsaToken.INTER;
@@ -161,37 +175,37 @@ public enum IsaToken {
 			case DOM			: return IsaToken.DOM;
 			case RNG			: return IsaToken.RNG;
 			case MUNION			: return IsaToken.MUNION;
-			case MERGE		: return IsaToken.MERGE;
+			case MERGE			: return IsaToken.MERGE;
 			case PLUSPLUS		: return IsaToken.PLUSPLUS;
-			case RANGE		: return IsaToken.RANGE;
-			case DOMRESTO	: return IsaToken.DOMRESTO;
-			case DOMRESBY	: return IsaToken.DOMRESBY;
-			case RANGERESTO	: return IsaToken.RANGERESTO;
-			case RANGERESBY	: return IsaToken.RANGERESBY;
+			case RANGE			: return IsaToken.RANGE;
+			case DOMRESTO		: return IsaToken.DOMRESTO;
+			case DOMRESBY		: return IsaToken.DOMRESBY;
+			case RANGERESTO		: return IsaToken.RANGERESTO;
+			case RANGERESBY		: return IsaToken.RANGERESBY;
 			
 			case INVERSE		: return IsaToken.INVERSE;
 			case CONCATENATE	: return IsaToken.CONCATENATE;
-			case MAPLET		: return IsaToken.MAPLET;
+			case MAPLET			: return IsaToken.MAPLET;
 			case LEN			: return IsaToken.LEN;
-			case DINTER		: return IsaToken.DINTER;
-			case ELEMS		: return IsaToken.ELEMS;
-			case HEAD		: return IsaToken.HEAD;
-			case TAIL		: return IsaToken.TAIL;
-			case DISTCONC	: return IsaToken.DISTCONC;
-			case INDS		: return IsaToken.INDS;
+			case DINTER			: return IsaToken.DINTER;
+			case ELEMS			: return IsaToken.ELEMS;
+			case HEAD			: return IsaToken.HEAD;
+			case TAIL			: return IsaToken.TAIL;
+			case DISTCONC		: return IsaToken.DISTCONC;
+			case INDS			: return IsaToken.INDS;
 
 			case ABS			: return IsaToken.ABS;
-			case FLOOR		: return IsaToken.FLOOR;
-			case DUNION		: return IsaToken.DUNION;
+			case FLOOR			: return IsaToken.FLOOR;
+			case DUNION			: return IsaToken.DUNION;
 
 			//case POINT		: return IsaToken.POINT;
-			case COMP		: return IsaToken.COMP;
-			case FORALL		: return IsaToken.FORALL;
-			case EXISTS		: return IsaToken.EXISTS;
+			case COMP			: return IsaToken.COMP;
+			case FORALL			: return IsaToken.FORALL;
+			case EXISTS			: return IsaToken.EXISTS;
 			case EXISTS1		: return IsaToken.EXISTS1;
-			case IOTA		: return IsaToken.IOTA;
-			case LAMBDA		: return IsaToken.LAMBDA;
-*/
+			case IOTA			: return IsaToken.IOTA;
+			case LAMBDA			: return IsaToken.LAMBDA;
+			
 		}
 		throw new RuntimeException("Invalid VDM token for Isabelle translation " + operator.toString());  
 	}
