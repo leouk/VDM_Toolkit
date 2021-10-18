@@ -21,35 +21,67 @@ map TCCharLiteralExpression{} to TRLiteralExpression(this);
 map TCIntegerLiteralExpression{} to TRLiteralExpression(this);
 map TCRealLiteralExpression{} to TRLiteralExpression(this);
 
+map TCNotExpression{exp} to TRUnaryExpression(this, exp);
 map TCAbsoluteExpression{exp} to TRUnaryExpression(this, exp);
 map TCFloorExpression{exp} to TRUnaryExpression(this, exp);
+map TCUnaryMinusExpression{exp} to TRUnaryExpression(this, exp);
+map TCUnaryPlusExpression{exp} to TRUnaryExpression(this, exp);
 map TCCardinalityExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistUnionExpression{exp} to TRUnaryExpression(this, exp);
+map TCDistIntersectExpression{exp} to TRUnaryExpression(this, exp);
 map TCLenExpression{exp} to TRUnaryExpression(this, exp);
 map TCHeadExpression{exp} to TRUnaryExpression(this, exp);
 map TCTailExpression{exp} to TRUnaryExpression(this, exp);
 map TCIndicesExpression{exp} to TRUnaryExpression(this, exp);
 map TCDistConcatExpression{exp} to TRUnaryExpression(this, exp);
-map TCDistIntersectExpression{exp} to TRUnaryExpression(this, exp);
-map TCDistUnionExpression{exp} to TRUnaryExpression(this, exp);
 map TCDistMergeExpression{exp} to TRUnaryExpression(this, exp);
+map TCMapDomainExpression{exp} to TRUnaryExpression(this, exp);
+map TCMapRangeExpression{exp} to TRUnaryExpression(this, exp);
+map TCReverseExpression{exp} to TRUnaryExpression(this, exp);
 
 map TCAndExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCOrExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCEquivalentExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCImpliesExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
+map TCEqualsExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCNotEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCLessEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCLessExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCGreaterEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCGreaterExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
 map TCPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCSubtractExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCTimesExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCDivExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCDivideExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCModExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCRemExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCStarStarExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
-map TCLessExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCLessEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCGreaterExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCGreaterEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCInSetExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCNotInSetExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCSetUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCSetIntersectExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCSetDifferenceExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCSubsetExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCProperSubsetExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
+map TCSeqConcatExpression{left, op, right} to TRBinaryExpression(left, op, right);
+
+map TCPlusPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCDomainResByExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCDomainResToExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCRangeResByExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCRangeResToExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCMapUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
 map TCApplyExpression{root, args} to TRApplyExpression(root, args);
+map TCSetEnumExpression{location, members} to TRSetEnumExpression(location, members);
+map TCSeqEnumExpression{location, members} to TRSeqEnumExpression(location, members);
 map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
 map TCVariableExpression{name} to TRVariableExpression(name);
-
-
-map TCEqualsExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
 
 #############################################################################
@@ -99,6 +131,12 @@ map TCCharacterType{} to TRBasicType(this);
 map TCTokenType{} to TRBasicType(this);
 
 map TCQuoteType{location, value} to TRQuoteType(location, value);
+
+map TCMapType{location, from, to} to TRMapType(location, from, to);
+map TCNamedType{typename, type} to TRNamedType(typename, type);
+map TCSetType{location, setof, empty} to TRSetType(location, setof, empty);
+#map TCSet1Type{location, setof} to TRSetType(location, setof);
+map TCSeqType{location, seqof} to TRSeqType(location, seqof);
 
 #############################################################################
 # Classes that are not mapped

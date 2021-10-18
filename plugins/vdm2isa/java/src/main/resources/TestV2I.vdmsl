@@ -10,17 +10,21 @@ values
 	y: nat1 = 20;
 	r: real = 4.5;
 	
+	--s1 = {1,2,3};
+	--s2 = [1,2,3];
+	--ss1= {{1,2},{2,4}};
+	--ss2= [[1,2],[3,4]];
 	v1 = abs 10;
 	v2 = floor 5;
 	v3 = floor 4.5;
-	--v4 = card S;
-	--v5 = len l;
-	--v6 = hd l;
-	--v7 = tl l;
-	--v8 = inds l;
-	--v9 = conc [l];
-	--v10= dinter SS;
-	--v11= dunion SS;
+	--v4 = card s1;
+	--v5 = len s2;
+	--v6 = hd s2;
+	--v7 = tl s2;
+	--v8 = inds s2;
+	--v9 = conc ss2;
+	--v10= dinter ss1;
+	--v11= dunion ss1;
 	--v12= merge mm;
 	
 functions
