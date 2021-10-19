@@ -4,8 +4,10 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCAbsoluteExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCardinalityExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIndicesExpression;
+import com.fujitsu.vdmj.tc.expressions.TCElementsExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistConcatExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistIntersectExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapInverseExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistMergeExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistUnionExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapDomainExpression;
@@ -93,6 +95,13 @@ public class TRUnaryExpression extends TRExpression {
 		this.exp = exp;
 	}
 
+    public TRUnaryExpression(TCElementsExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
     public TRUnaryExpression(TCDistConcatExpression owner, TRExpression exp)
 	{
 		super(owner.location);
@@ -135,6 +144,13 @@ public class TRUnaryExpression extends TRExpression {
 		this.exp = exp;
 	}
 
+    public TRUnaryExpression(TCMapInverseExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
     public TRUnaryExpression(TCNotExpression owner, TRExpression exp)
 	{
 		super(owner.location);
@@ -165,9 +181,9 @@ public class TRUnaryExpression extends TRExpression {
         else if (owner instanceof TCFloorExpression)
             return IsaToken.FLOOR;
         else if (owner instanceof TCUnaryMinusExpression)
-            return IsaToken.MINUS;
+            return IsaToken.UMINUS;
         else if (owner instanceof TCUnaryPlusExpression)
-            return IsaToken.PLUS;
+            return IsaToken.UPLUS;
         else if (owner instanceof TCCardinalityExpression)
             return IsaToken.CARD;
         else if (owner instanceof TCDistUnionExpression)
@@ -182,8 +198,12 @@ public class TRUnaryExpression extends TRExpression {
             return IsaToken.TAIL;
         else if (owner instanceof TCIndicesExpression)
             return IsaToken.INDS;
+        else if (owner instanceof TCElementsExpression)
+            return IsaToken.ELEMS;
         else if (owner instanceof TCDistConcatExpression)
             return IsaToken.DISTCONC;
+        else if (owner instanceof TCMapInverseExpression)
+            return IsaToken.INVERSE;
         else if (owner instanceof TCDistMergeExpression)
             return IsaToken.MERGE;
         else if (owner instanceof TCMapDomainExpression)

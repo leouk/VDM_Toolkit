@@ -31,7 +31,7 @@ public class TRValueDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.translate());
-		sb.append(IsaTemplates.translateValueDefinition(pattern, type.translate(), exp.translate()));
+		sb.append(IsaTemplates.translateVDMValueDefinition(pattern, type.translate(), exp.translate()));
 		return sb.toString();
 	}
 }

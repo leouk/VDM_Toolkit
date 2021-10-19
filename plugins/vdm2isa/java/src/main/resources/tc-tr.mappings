@@ -33,11 +33,13 @@ map TCLenExpression{exp} to TRUnaryExpression(this, exp);
 map TCHeadExpression{exp} to TRUnaryExpression(this, exp);
 map TCTailExpression{exp} to TRUnaryExpression(this, exp);
 map TCIndicesExpression{exp} to TRUnaryExpression(this, exp);
+map TCElementsExpression{exp} to TRUnaryExpression(this, exp);
 map TCDistConcatExpression{exp} to TRUnaryExpression(this, exp);
 map TCDistMergeExpression{exp} to TRUnaryExpression(this, exp);
+map TCReverseExpression{exp} to TRUnaryExpression(this, exp);
 map TCMapDomainExpression{exp} to TRUnaryExpression(this, exp);
 map TCMapRangeExpression{exp} to TRUnaryExpression(this, exp);
-map TCReverseExpression{exp} to TRUnaryExpression(this, exp);
+map TCMapInverseExpression{exp} to TRUnaryExpression(this, exp);
 
 map TCAndExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCOrExpression{left, op, right} to TRBinaryExpression(left, op, right);
@@ -76,6 +78,7 @@ map TCDomainResToExpression{left, op, right} to TRBinaryExpression(left, op, rig
 map TCRangeResByExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCRangeResToExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCMapUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
+map TCCompExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
 map TCApplyExpression{root, args} to TRApplyExpression(root, args);
 map TCSetEnumExpression{location, members} to TRSetEnumExpression(location, members);
