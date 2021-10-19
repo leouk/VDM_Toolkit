@@ -7,25 +7,35 @@ theory TestV2I
 imports VDMToolkit
 begin
 
+(* S = seq of nat1; 
+   T = seq of S;
+
+   R = seq of seq nat1;
+   s = [1,2]
+   t = [s,s]  *)
+lemma "inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) [[1,2],[1,2]]"
+  unfolding inv_VDMSeq'_def 
+  unfolding inv_SeqElems_def inv_VDMNat1_def apply simp done
+
 abbreviation
-	a :: "\<bool>"
+	a :: "bool"
 where
 	"a \<equiv> (True::\<bool>)"
 
 definition
 	inv_a :: "\<bool>"
 where
-	"inv_a \<equiv> inv_\<bool> a"
+	"inv_a \<equiv> inv_bool a"
 
 abbreviation
-	c :: "\<bool>"
+	c :: "VDMChar"
 where
-	"c \<equiv> (a::VDMChar)"
+	"c \<equiv> (CHR ''A''::VDMChar)"
 
 definition
 	inv_c :: "\<bool>"
 where
-	"inv_c \<equiv> inv_\<bool> c"
+	"inv_c \<equiv> inv_VDMChar c"
 
 abbreviation
 	i :: "VDMInt"
@@ -68,9 +78,9 @@ where
 	"inv_r \<equiv> inv_VDMReal r"
 
 abbreviation
-	s1 :: "VDMSet1"
+	s1 :: "VDMNat1 VDMSet1"
 where
-	"s1 \<equiv> [(1::VDMNat),(2::VDMNat),(3::VDMNat)]"
+	"s1 \<equiv> {(1::VDMNat),(2::VDMNat),(3::VDMNat)}"
 
 definition
 	inv_s1 :: "\<bool>"
@@ -78,34 +88,34 @@ where
 	"inv_s1 \<equiv> inv_VDMSet1 s1"
 
 abbreviation
-	s2 :: "VDMSeq1"
+	s2 :: "VDMNat1 VDMSeq1"
 where
 	"s2 \<equiv> [(1::VDMNat),(2::VDMNat),(3::VDMNat)]"
 
 definition
 	inv_s2 :: "\<bool>"
 where
-	"inv_s2 \<equiv> inv_VDMSeq1 s2"
+	"inv_s2 \<equiv> inv_VDMNat1 VDMSeq1 s2"
 
 abbreviation
-	ss1 :: "VDMSet1"
+	ss1 :: "VDMNat1 VDMSet1 VDMSet1"
 where
-	"ss1 \<equiv> [[(1::VDMNat),(2::VDMNat)],[(2::VDMNat),(4::VDMNat)]]"
+	"ss1 \<equiv> {{(1::VDMNat),(2::VDMNat)},{(2::VDMNat),(4::VDMNat)}}"
 
 definition
 	inv_ss1 :: "\<bool>"
 where
-	"inv_ss1 \<equiv> inv_VDMSet1 ss1"
+	"inv_ss1 \<equiv> inv_VDMNat1 VDMSet1 VDMSet1 ss1"
 
 abbreviation
-	ss2 :: "VDMSeq1"
+	ss2 :: "VDMNat1 VDMSeq1 VDMSeq1"
 where
 	"ss2 \<equiv> [[(1::VDMNat),(2::VDMNat)],[(3::VDMNat),(4::VDMNat)]]"
 
 definition
 	inv_ss2 :: "\<bool>"
 where
-	"inv_ss2 \<equiv> inv_VDMSeq1 ss2"
+	"inv_ss2 \<equiv> inv_VDMNat1 VDMSeq1 VDMSeq1 ss2"
 
 abbreviation
 	v1 :: "VDMNat1"
@@ -168,54 +178,54 @@ where
 	"inv_v6 \<equiv> inv_VDMNat1 v6"
 
 abbreviation
-	v7 :: "VDMSeq"
+	v7 :: "VDMNat1 VDMSeq"
 where
 	"v7 \<equiv> (tl s2)"
 
 definition
 	inv_v7 :: "\<bool>"
 where
-	"inv_v7 \<equiv> inv_VDMSeq v7"
+	"inv_v7 \<equiv> inv_VDMNat1 VDMSeq v7"
 
 abbreviation
-	v8 :: "VDMSet"
+	v8 :: "VDMNat1 VDMSet"
 where
 	"v8 \<equiv> (inds s2)"
 
 definition
 	inv_v8 :: "\<bool>"
 where
-	"inv_v8 \<equiv> inv_VDMSet v8"
+	"inv_v8 \<equiv> inv_VDMNat1 VDMSet v8"
 
 abbreviation
-	v9 :: "VDMSeq1"
+	v9 :: "VDMNat1 VDMSeq1"
 where
 	"v9 \<equiv> (conc ss2)"
 
 definition
 	inv_v9 :: "\<bool>"
 where
-	"inv_v9 \<equiv> inv_VDMSeq1 v9"
+	"inv_v9 \<equiv> inv_VDMNat1 VDMSeq1 v9"
 
 abbreviation
-	v10 :: "VDMSet1"
+	v10 :: "VDMNat1 VDMSet1"
 where
 	"v10 \<equiv> (\<Inter> ss1)"
 
 definition
 	inv_v10 :: "\<bool>"
 where
-	"inv_v10 \<equiv> inv_VDMSet1 v10"
+	"inv_v10 \<equiv> inv_VDMNat1 VDMSet1 v10"
 
 abbreviation
-	v11 :: "VDMSet1"
+	v11 :: "VDMNat1 VDMSet1"
 where
 	"v11 \<equiv> (\<Union> ss1)"
 
 definition
 	inv_v11 :: "\<bool>"
 where
-	"inv_v11 \<equiv> inv_VDMSet1 v11"
+	"inv_v11 \<equiv> inv_VDMNat1 VDMSet1 v11"
 
 
 end

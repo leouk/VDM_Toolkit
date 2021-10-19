@@ -94,6 +94,7 @@ public enum IsaToken {
 
 	APPLY(null, ""),
 	VARIABLE(null, ""),
+	INV(null, "inv_"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "\\<inverse>"), //@todo this is post-fix? 

@@ -46,8 +46,20 @@ public class TRLiteralExpression extends TRExpression
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
-		sb.append(exp.toString());
-		sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); //True/False?
+		if (exp instanceof TCBooleanLiteralExpression)
+		{
+			sb.append(exp.toString());
+			sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); //True/False?
+		} else if (exp instanceof TCCharLiteralExpression)
+		{
+			sb.append("CHR ''");
+			sb.append(exp.toString());
+			sb.append("''");
+		}
+		else
+		{
+			sb.append(exp.toString());
+		}
 		sb.append("::");
 		sb.append(isaToken().toString());
 		sb.append(")");

@@ -13,11 +13,11 @@ public class TRSetEnumExpression extends TREnumeratedExpression
 
     @Override
     public IsaToken leftBracket() {
-        return IsaToken.SEQ_OPEN;
+        return IsaToken.SET_OPEN;
     }
 
     @Override
     public IsaToken rightBracket() {
-       return IsaToken.SEQ_CLOSE;
+       return IsaToken.SET_CLOSE;
     }
 }

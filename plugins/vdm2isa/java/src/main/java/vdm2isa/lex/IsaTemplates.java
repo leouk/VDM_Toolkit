@@ -28,7 +28,7 @@ public final class IsaTemplates {
 
     public static void main(String args[])
     {
-        System.out.println(translateVDMValueDefinition("x", "VDMNat1", "10"));
+        //System.out.println(translateVDMValueDefinition("x", "VDMNat1", "10"));
         System.out.println(typeSynonymDefinition("T", "VDMNat1", "x", "x > 10"));
         StringBuilder name = new StringBuilder("(true::bool)");
         name.setCharAt(1, Character.toUpperCase(name.charAt(1)));
@@ -112,13 +112,18 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String translateVDMValueDefinition(String name, String type, String exp)
+    public static String translateVDMValueDefinition(String name, TRType type, TRExpression exp)
     {
         assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(translateAbbreviation(name, type, exp));
+    	
+        // there is no "inv_\<bool>" in the translation; add inv_bool for completeness. 
+        String typeStr = type.isaToken() == IsaToken.BOOL ? "bool" : type.translate();
+        String expStr  = exp.translate();
+
+        sb.append(translateAbbreviation(name, typeStr, expStr));
         sb.append("\n");
-        sb.append(translateInvariantAbbreviation(name, type));
+        sb.append(translateInvariantAbbreviation(name, typeStr));
         sb.append("\n");
         return sb.toString();
     }

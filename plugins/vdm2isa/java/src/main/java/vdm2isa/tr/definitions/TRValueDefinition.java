@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
 
@@ -31,7 +32,7 @@ public class TRValueDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.translate());
-		sb.append(IsaTemplates.translateVDMValueDefinition(pattern, type.translate(), exp.translate()));
+		sb.append(IsaTemplates.translateVDMValueDefinition(pattern, type, exp));
 		return sb.toString();
 	}
 }
