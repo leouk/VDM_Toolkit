@@ -76,6 +76,14 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
+	public String invTranslate(String varName)
+	{
+		// there is no "inv_\<bool>" in the translation; add inv_bool for completeness. 
+		String typeStr = isaToken() == IsaToken.BOOL ? "bool" : translate();
+		return IsaToken.INV + typeStr + " " + varName;
+	}
+
+	@Override
 	public IsaToken isaToken()
 	{
 		if (type instanceof TCNaturalType)
@@ -91,7 +99,7 @@ public class TRBasicType extends TRType
 		else if (type instanceof TCBooleanType)
 			return IsaToken.BOOL;
 		else if (type instanceof TCCharacterType)
-			return IsaToken.BOOL;
+			return IsaToken.CHAR;
 		else if (type instanceof TCTokenType)
 			return IsaToken.TOKEN;
 		else

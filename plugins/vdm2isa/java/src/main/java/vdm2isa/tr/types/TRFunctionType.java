@@ -33,4 +33,9 @@ public class TRFunctionType extends TRType
 	public IsaToken isaToken() {
 		return partial ? IsaToken.FUN : IsaToken.TFUN;
 	}
+
+	@Override
+	public String invTranslate(String varName) {
+		return "null";
+	}
 }

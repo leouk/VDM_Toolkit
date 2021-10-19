@@ -25,4 +25,9 @@ public class TRNamedType extends TRInvariantType
     public String translate() {
         return typename.toString() + " = " + type.translate();
     }
+
+    @Override
+	public String invTranslate(String varName) {
+		return "null";
+	}
 }

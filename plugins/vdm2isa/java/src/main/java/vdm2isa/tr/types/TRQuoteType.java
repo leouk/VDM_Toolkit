@@ -23,4 +23,8 @@ public class TRQuoteType extends TRType
         return IsaToken.QUOTE;
     }
     
+    @Override
+	public String invTranslate(String varName) {
+		return "null";
+	}
 }

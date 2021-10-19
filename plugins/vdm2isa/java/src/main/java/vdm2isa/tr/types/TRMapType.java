@@ -23,7 +23,26 @@ public class TRMapType extends TRType
     }
 
     @Override
+    public String invTranslate(String varName) 
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(IsaToken.INV.toString());
+        int i = sb.length();
+        sb.append(isaToken().vdmToken().toString());
+        sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+        sb.append("' ");
+        sb.append(from.invTranslate(null));
+        sb.append(" ");
+        sb.append(to.invTranslate(null));
+        sb.append(")");
+        return sb.toString();
+    }
+
+    @Override
     public IsaToken isaToken() {
         return IsaToken.MAP;
     }    
+
+
 }
