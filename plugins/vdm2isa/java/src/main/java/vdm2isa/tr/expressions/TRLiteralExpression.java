@@ -44,7 +44,14 @@ public class TRLiteralExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return "(" + exp.toString() + "::" + isaToken().toString() + ")";
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(exp.toString());
+		sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); //True/False?
+		sb.append("::");
+		sb.append(isaToken().toString());
+		sb.append(")");
+		return sb.toString();
 	}
 
 	@Override

@@ -10,7 +10,7 @@ begin
 abbreviation
 	a :: "\<bool>"
 where
-	"a \<equiv> (true::\<bool>)"
+	"a \<equiv> (True::\<bool>)"
 
 definition
 	inv_a :: "\<bool>"

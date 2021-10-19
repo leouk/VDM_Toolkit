@@ -7,75 +7,99 @@ import com.fujitsu.vdmj.lex.Dialect;
 //@todo merge this into IsaToken
 import com.fujitsu.vdmj.lex.Token;
 
+//@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
 	// Basic types; use VDMToolkit names 
 	BOOL(Token.BOOL, "\\<bool>"),
-	 NAT(Token.NAT, "VDMNat"),
+	NAT(Token.NAT, "VDMNat"),
  	NAT1(Token.NAT1, "VDMNat1"),
-	 INT(Token.INT, "VDMInt"),
-	 RAT(Token.RAT, "VDMRat"),
+	INT(Token.INT, "VDMInt"),
+	RAT(Token.RAT, "VDMRat"),
 	REAL(Token.REAL, "VDMReal"),
 	CHAR(Token.CHAR, "VDMChar"),
-  TOKEN(Token.TOKEN, "VDMToken"),
+  	TOKEN(Token.TOKEN, "VDMToken"),
 	CROSSPROD(Token.TIMES, "\\<times>"),
 	QUOTE(Token.QUOTE, ""),
+	SET(Token.SET, "VDMSet"),
+	SET1(Token.SET1, "VDMSet1"),
+	SEQ(Token.SEQ, "VDMSeq"),
+	SEQ1(Token.SEQ1, "VDMSeq1"),
+	MAP(Token.MAP, "\\<rightharpoonup>"),
+	INMAP(Token.INMAP, "\\<rightharpoonup>"),
+	FUN(Token.ARROW, "\\<Rightarrow>"),
+	TRUE(Token.TRUE, "True"),
+	FALSE(Token.FALSE, "False"),
 
-	APPLY(null, ""),
-	VARIABLE(null, ""),
-  	// Operators
-	PLUS(Token.PLUS, "+"),
-	MINUS(Token.MINUS, "-"),
-	TIMES(Token.TIMES, "*"),
-	DIVIDE(Token.DIVIDE, "/"),
-	REM(Token.REM, "vdmrem"),
-	MOD(Token.MOD, "vdmmod"),
-	DIV(Token.DIV, "vdmdiv"),
+	// Unary Operators
+	NOT(Token.NOT, "\\<not>"),
+	ABS(Token.ABS, "vdm_abs"),
+	FLOOR(Token.FLOOR, "vdm_floor"),
+	UPLUS(Token.PLUS, "+"),
+	UMINUS(Token.MINUS, "-"),
+	CARD(Token.CARD, "vdm_card"),
+	DUNION(Token.DUNION, "\\<Union>"),
+	DINTER(Token.DINTER, "\\<Inter>"),
+	LEN(Token.LEN, "len"),
+	HEAD(Token.HEAD, "hd"),
+	TAIL(Token.TAIL, "tl"),
+	INDS(Token.INDS, "inds"),
+	ELEMS(Token.ELEMS, "elems"),				//@nb no TCElemsExpression? 
+	DISTCONC(Token.DISTCONC, "conc"),
+	REVERSE(Token.REVERSE, "vdm_reverse"),
+	MERGE(Token.MERGE, "vdm_merge"),
+	DOM(Token.DOM, "dom"),
+	RNG(Token.RNG, "rng"),
+	//@todo POWER("power", "power"),
+
+	// Binary Operators
+	AND(Token.AND, "\\<and>"),
+	OR(Token.OR, "\\<or>"),
+	IMPLIES(Token.IMPLIES, "\\<longrightarrow>"),
+	EQUIVALENT(Token.EQUIVALENT, "\\<longleftrightarrow>"),
+
+	EQUALS(Token.EQUALS, "="),
+	NE(Token.NE, "\\<noteq>"),
 	LT(Token.LT, "<"),
 	LE(Token.LE, "\\<le>"),
 	GT(Token.GT, ">"),
 	GE(Token.GE, "\\<ge>"),
-	NE(Token.NE, "\\<noteq>"),
-	EQUALS(Token.EQUALS, "="),
-	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
-	EQUIVALENT(Token.EQUIVALENT, "\\<longleftrightarrow>"),
-	IMPLIES(Token.IMPLIES, "\\<longrightarrow>"),
-	ABS(Token.ABS, "vdm_abs"),
+
+	PLUS(Token.PLUS, "+"),
+	MINUS(Token.MINUS, "-"),
+	TIMES(Token.TIMES, "*"),
+	DIV(Token.DIV, "vdmdiv"),
+	DIVIDE(Token.DIVIDE, "/"),
+	MOD(Token.MOD, "vdmmod"),
+	REM(Token.REM, "vdmrem"),
 	STARSTAR(Token.STARSTAR, "vdmpow"), //@doc vdmpow expects real_normed_algebra_1 types only
-	NOT(Token.NOT, "\\<not>"),
-	SUBSET(Token.SUBSET, "\\<subsetseq>"),
-	PSUBSET(Token.PSUBSET, "\\<subset>"),
+
 	INSET(Token.INSET, "\\<in>"),
 	NOTINSET(Token.NOTINSET, "\\<notin>"),
-	SETDIFF(Token.SETDIFF, "-"),
-	MUNION(Token.MUNION, "\\<union>m"),	//@todo add \<sub>?
-	PLUSPLUS(Token.PLUSPLUS, "\\<dagger>"),
 	UNION(Token.UNION, "\\<union>"),
 	INTER(Token.INTER, "\\<inter>"),
-	INVERSE(Token.INVERSE, "\\<inverse>"),
+	SETDIFF(Token.SETDIFF, "-"),
+	SUBSET(Token.SUBSET, "\\<subsetseq>"),
+	PSUBSET(Token.PSUBSET, "\\<subset>"),
+
 	CONCATENATE(Token.CONCATENATE, "@"),
-	MAPLET(Token.MAPLET, "\\<mapsto>"),
-	RANGE(Token.RANGE, ".."),
-	REVERSE(Token.REVERSE, "vdm_reverse"),
+
+	PLUSPLUS(Token.PLUSPLUS, "\\<dagger>"),
 	DOMRESTO(Token.DOMRESTO, "\\<triangleleft>"),
 	DOMRESBY(Token.DOMRESBY, "-\\<triangleleft>"),
 	RANGERESTO(Token.RANGERESTO, "\\<triangleright>"),
 	RANGERESBY(Token.RANGERESBY, "\\<triangleright>-"),
-	CARD(Token.CARD, "vdm_card"),
-	DOM(Token.DOM, "dom"),
-	LEN(Token.LEN, "len"),
-	//@todo POWER("power", "power"),
-	RNG(Token.RNG, "rng"),
-	ELEMS(Token.ELEMS, "elems"),
-	DINTER(Token.DINTER, "\\<Inter>"),
-	MERGE(Token.MERGE, "vdm_merge"),
-	HEAD(Token.HEAD, "hd"),
-	TAIL(Token.TAIL, "tl"),
-	FLOOR(Token.FLOOR, "vdm_floor"),
-	DUNION(Token.DUNION, "\\<Union>"),
-	DISTCONC(Token.DISTCONC, "conc"),
-	INDS(Token.INDS, "inds"),
-	//POINT("."),
+	MUNION(Token.MUNION, "\\<union>m"),	//@todo add \<sub>?
 	COMP(Token.COMP, "\\<circ>m"),
+	
+
+	APPLY(null, ""),
+	VARIABLE(null, ""),
+  	
+	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
+	INVERSE(Token.INVERSE, "\\<inverse>"), //@todo this is post-fix? 
+	MAPLET(Token.MAPLET, "\\<mapsto>"),
+	RANGE(Token.RANGE, ".."),
+	//POINT("."),
 	FORALL(Token.FORALL, "\\<forall>"),
 	EXISTS(Token.EXISTS, "\\<exists>"),
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),
@@ -89,16 +113,9 @@ public enum IsaToken {
 	COMMA(Token.COMMA, ","),
 
 	MODULE(Token.MODULE, "theory"),
-	SET(Token.SET, "VDMSet"),
-	SET1(Token.SET1, "VDMSet1"),
-	SEQ(Token.SEQ, "VDMSeq"),
-	SEQ1(Token.SEQ1, "VDMSeq1"),
-	MAP(Token.MAP, "\\<rightharpoonup>"),
-	INMAP(Token.INMAP, "\\<rightharpoonup>"),
 	IF(Token.IF, "if"),
 	THEN(Token.THEN, "then"),
 	ELSE(Token.ELSE, "else"),
-	FUN(Token.ARROW, "\\<Rightarrow>"),
 	TFUN(Token.TOTAL_FUNCTION, "\\<Rightarrow>"),
 	EOF(Token.EOF, "EOF");
 
@@ -133,6 +150,7 @@ public enum IsaToken {
 		return false;
 	}
 
+	//@TODO fix after finalisaing Token above. 
 	public static IsaToken from(Token operator)
 	{
 		assert operator != null; 
