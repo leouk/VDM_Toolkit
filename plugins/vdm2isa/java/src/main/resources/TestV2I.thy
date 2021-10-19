@@ -13,7 +13,7 @@ begin
    R = seq of seq nat1;
    s = [1,2]
    t = [s,s]  *)
-lemma "inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) [[1,2],[1,2]]"
+lemma "(inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) [[1,2],[1,2]])"
   unfolding inv_VDMSeq'_def 
   unfolding inv_SeqElems_def inv_VDMNat1_def apply simp done
 
