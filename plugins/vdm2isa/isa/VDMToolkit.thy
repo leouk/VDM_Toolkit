@@ -40,6 +40,18 @@ definition
   where
   [intro!]: "inv_True \<equiv> \<lambda> x . True"
 
+definition
+  inv_VDMInt :: "\<int> \<Rightarrow> \<bool>"
+where
+  (*<*) [intro!]: (*>*) 
+  "inv_VDMInt i \<equiv> inv_True i"
+
+definition
+  inv_VDMReal :: "\<real> \<Rightarrow> \<bool>"
+where
+  (*<*) [intro!]: (*>*) 
+  "inv_VDMReal r \<equiv> inv_True r"
+
 lemma l_inv_True_True[simp]: "inv_True r" 
   by (simp add: inv_True_def)  
 
@@ -594,9 +606,6 @@ lemma l_inds_empty[simp]: "inds [] = {}"
 
 lemma l_inds_as_nat_append: "inds_as_nat (xs @ [x]) = insert (length (xs @ [x])) (inds_as_nat xs)"
 unfolding inds_as_nat_def len_def by auto 
-
-lemma l_len_nat1[simp]: "s \<noteq> [] \<Longrightarrow> 0 < len s"
-  unfolding len_def by simp
 
 lemma l_applyVDM_len1: "s $ (len s + 1) = undefined"
   unfolding applyVDMSeq_def len_def by simp
