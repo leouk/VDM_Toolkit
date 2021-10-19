@@ -41,6 +41,18 @@ definition
   [intro!]: "inv_True \<equiv> \<lambda> x . True"
 
 definition
+  "inv_bool" :: "\<bool> \<Rightarrow> \<bool>"
+where
+  (*<*) [intro!]: (*>*) 
+  "inv_bool i \<equiv> inv_True i"
+
+definition
+  inv_VDMChar :: "VDMChar \<Rightarrow> \<bool>"
+where
+  (*<*) [intro!]: (*>*) 
+  "inv_VDMChar c \<equiv> inv_True c"
+
+definition
   inv_VDMInt :: "\<int> \<Rightarrow> \<bool>"
 where
   (*<*) [intro!]: (*>*) 
@@ -286,7 +298,20 @@ unfolding inv_SetElems_def by simp
 
 lemma l_invSetElems_inv_True_True[simp]: "inv_SetElems inv_True r" 
   by (simp add: inv_SetElems_def)
-  
+
+text \<open> Added wrapped version of the definition so that we can translate 
+complex structured types (e.g. seq of seq of T, etc.). Param order matter
+for partial instantiation (e.g. inv_VDMSet' (inv_VDMSet' inv_VDMNat) s).\<close>
+definition
+  inv_VDMSet' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSet' einv s \<equiv> inv_VDMSet s \<and> inv_SetElems einv s"
+    
+definition
+  inv_VDMSet1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet1 \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSet1' einv s \<equiv> inv_VDMSet1 s \<and> inv_SetElems einv s"
+
 definition
   vdm_card :: "'a VDMSet \<Rightarrow> VDMNat"
   where
@@ -383,6 +408,16 @@ text \<open>  Isabelle's list @{term hd} and @{term tl} functions have the
 same name as VDM. Nevertheless, their results is defined for empty lists.
 We need to rule them out.
 \<close>
+
+definition
+  inv_VDMSeq' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSeq' einv s \<equiv> inv_SeqElems einv s"
+    
+definition
+  inv_VDMSeq1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSeq1 \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSeq1' einv s \<equiv> inv_VDMSeq1 s \<and> inv_SeqElems einv s"
 
 (*****************************************************************)
 subsection \<open> Sequence operators specification \<close>  
