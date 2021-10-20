@@ -6,16 +6,19 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.types.TRType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 public final class IsaTemplates {
     
+    private final static Map<String, IsaItem> translatedItems = new HashMap<String, IsaItem>();
     //@todo add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
 
-    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports VDMToolkit\nbegin\n\n%4$s\nend";
+    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports \"VDMToolkit\"\nbegin\n\n%4$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
     private final static String ABBREV_INV   = "definition\n\t%1$s :: \"\\<bool>\"\nwhere\n\t\"%1$s \\<equiv> %2$s\"\n";
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s \\<Rightarrow> %3$s\"\nwhere\n\t\"%1$s %4$s \\<equiv> %5$s\"\n";
@@ -62,11 +65,20 @@ public final class IsaTemplates {
 		return sb.toString();
 	}
 
+    private static void updateTranslatedIsaItem(String name, IsaItem item)
+    {
+        //@todo accumulate all def names for latter creation of lemmas xyz_def etc...? 
+        if (translatedItems.containsKey(name))
+            throw new IllegalArgumentException("Invalid IsaItem " + item + ": " + name + " has already been defined."); 
+        translatedItems.put(name, item);    
+    }
+
     public static String translateAbbreviation(String name, String type, String exp)
     {
         assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(ABBREVIATION, name, type, exp));
+        updateTranslatedIsaItem(name, IsaItem.ABBREVIATION);
         return sb.toString();
     }
     
@@ -74,7 +86,8 @@ public final class IsaTemplates {
     {
         assert name != null && type != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(ABBREV_INV, "inv_" + name, "inv_" + type + " " + name));
+        sb.append(String.format(ABBREV_INV, IsaToken.INV + name, type));
+        updateTranslatedIsaItem(IsaToken.INV + name, IsaItem.DEFINITION);
         return sb.toString();
     }
 
@@ -84,13 +97,14 @@ public final class IsaTemplates {
         assert name != null && inType != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(DEFINITION, name, inType, outType, inVars, exp));
+        updateTranslatedIsaItem(name, IsaItem.DEFINITION);
         return sb.toString();
     }
 
     public static String translateInvariantDefinition(String name, String inType, String inVars, String exp)
     {
         assert name != null && inType != null && inVars != null && exp != null;
-        return translateDefinition("inv_" + name, inType, IsaToken.BOOL.toString(), inVars, exp);
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp);
     }
 
     /**
@@ -105,6 +119,7 @@ public final class IsaTemplates {
         assert name != null && inv != null && inVar != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
+        updateTranslatedIsaItem(name, IsaItem.TYPE_SYNONYM);
         sb.append("\n");
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
         inv = "inv_" + exp + " " + inVar + " " + IsaToken.AND + " " + ((inv == null) ? IsaToken.TRUE : inv);
@@ -112,18 +127,15 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String translateVDMValueDefinition(String name, TRType type, TRExpression exp)
+    public static String translateVDMValueDefinition(String name, TRType type, String varName, TRExpression exp)
     {
         assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder();
     	
-        // there is no "inv_\<bool>" in the translation; add inv_bool for completeness. 
-        String typeStr = type.isaToken() == IsaToken.BOOL ? "bool" : type.translate();
-        String expStr  = exp.translate();
-
-        sb.append(translateAbbreviation(name, typeStr, expStr));
+        if (varName == null) varName = name.toLowerCase();
+        sb.append(translateAbbreviation(name, type.translate(), exp.translate()));
         sb.append("\n");
-        sb.append(translateInvariantAbbreviation(name, typeStr));
+        sb.append(translateInvariantAbbreviation(name, type.invTranslate(varName)));
         sb.append("\n");
         return sb.toString();
     }
