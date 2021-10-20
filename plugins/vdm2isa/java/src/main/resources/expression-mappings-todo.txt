@@ -67,6 +67,9 @@
 -TCUndefinedExpression
 -TCMapExpression
 -TCNewExpression
+*TCMapEnumExpression
+*TCMapletExpression
+*TCMapletExpressionList
 
 
 TCPostOpExpression
@@ -89,9 +92,6 @@ TCLambdaExpression
 TCLetBeStExpression
 TCLetDefExpression
 TCMapCompExpression
-TCMapEnumExpression
-TCMapletExpression
-TCMapletExpressionList
 TCMkBasicExpression
 TCMkTypeExpression
 TCMuExpression

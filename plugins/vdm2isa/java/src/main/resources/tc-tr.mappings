@@ -80,9 +80,13 @@ map TCRangeResToExpression{left, op, right} to TRBinaryExpression(left, op, righ
 map TCMapUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
 map TCCompExpression{left, op, right} to TRBinaryExpression(left, op, right);
 
-map TCApplyExpression{root, args} to TRApplyExpression(root, args);
 map TCSetEnumExpression{location, members} to TRSetEnumExpression(location, members);
 map TCSeqEnumExpression{location, members} to TRSeqEnumExpression(location, members);
+map TCMapletExpressionList{} to TRMapletExpressionList(this);
+map TCMapEnumExpression{location, members} to TRMapEnumExpression(location, members);
+map TCMapletExpression{left, right} to TRMapletExpression(left, right);
+
+map TCApplyExpression{root, args} to TRApplyExpression(root, args);
 map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
 map TCVariableExpression{name} to TRVariableExpression(name);
 
