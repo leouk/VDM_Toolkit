@@ -20,6 +20,7 @@ public class TRBinaryExpression extends TRExpression
 	{
 		super(op.location);
 		this.left = left;
+		//@todo equals expression has to be specialised because of record and other equality tests ? 
 		this.op = op;
 		this.right = right;
 	}

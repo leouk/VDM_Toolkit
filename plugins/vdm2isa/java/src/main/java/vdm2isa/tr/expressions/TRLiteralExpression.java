@@ -95,7 +95,7 @@ public class TRLiteralExpression extends TRExpression
 		if (!(exp instanceof TCStringLiteralExpression || 
 			  exp instanceof TCQuoteLiteralExpression))
 		{
-			sb.append("::");
+			sb.append(IsaToken.TYPEOF.toString());
 			sb.append(isaToken().toString());
 		}
 

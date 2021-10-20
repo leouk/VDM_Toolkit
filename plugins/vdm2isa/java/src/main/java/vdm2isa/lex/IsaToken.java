@@ -31,6 +31,7 @@ public enum IsaToken {
 	FALSE(Token.FALSE, "False"),
 	NIL(Token.NIL, "None"),
 	UNKNOWN(null, "'UNKNOWN"),
+	TYPEOF(null, "::"),
 
 	// Unary Operators
 	NOT(Token.NOT, "\\<not>"),
@@ -99,10 +100,12 @@ public enum IsaToken {
 	SEQAPPLY(null, "$"),
 	VARIABLE(null, ""),
 	INV(null, "inv_"),
+	RECORD(Token.COLONCOLON, "record"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "\\<inverse>"), //@todo this is post-fix? 
 	MAPLET(Token.MAPLET, "\\<mapsto>"),
+	RECORD_MODIFIER(Token.MAPLET, ":="),
 	RANGE(Token.RANGE, ".."),
 	//POINT("."),
 	FORALL(Token.FORALL, "\\<forall>"),
@@ -119,6 +122,8 @@ public enum IsaToken {
 	MAP_CLOSE(Token.SET_CLOSE, "]"),
 	LPAREN(Token.BRA, "("),
 	RPAREN(Token.KET, ")"),
+	LRECORD(null, "\\<lparr>"),
+	RRECORD(null, "\\<rparr>"),
 	COMMA(Token.COMMA, ","),
 	OPTIONAL(null, "option"),
 
