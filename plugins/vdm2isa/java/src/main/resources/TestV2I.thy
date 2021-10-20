@@ -28,6 +28,21 @@ where
 	"inv_c \<equiv> inv_VDMChar c"
 
 abbreviation
+	q :: "VDMChar VDMSeq"
+where
+	"q \<equiv> (''just text'')"
+
+definition
+	inv_q :: "\<bool>"
+where
+	"inv_q \<equiv> (inv_VDMSeq' inv_VDMChar q)"
+
+(* @ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 8:37
+
+string literals can be VDMChar VDMSeq for Isabelle string type 
+
+*)
+abbreviation
 	i :: "VDMInt"
 where
 	"i \<equiv> (10::VDMNat)"
@@ -86,6 +101,16 @@ definition
 	inv_s2 :: "\<bool>"
 where
 	"inv_s2 \<equiv> (inv_VDMSeq1' inv_VDMNat1 s2)"
+
+abbreviation
+	s3 :: "VDMNat1 VDMSet1"
+where
+	"s3 \<equiv> {(1::VDMNat)..(5::VDMNat)}"
+
+definition
+	inv_s3 :: "\<bool>"
+where
+	"inv_s3 \<equiv> (inv_VDMSet1' inv_VDMNat1 s3)"
 
 abbreviation
 	ss1 :: "VDMNat1 VDMSet VDMSet"
@@ -226,6 +251,46 @@ definition
 	inv_v11 :: "\<bool>"
 where
 	"inv_v11 \<equiv> (inv_VDMSet' inv_VDMNat1 v11)"
+
+abbreviation
+	v12 :: "VDMNat1 VDMSeq"
+where
+	"v12 \<equiv> (s2 {(2::VDMNat)$$(3::VDMNat)})"
+
+definition
+	inv_v12 :: "\<bool>"
+where
+	"inv_v12 \<equiv> (inv_VDMSeq' inv_VDMNat1 v12)"
+
+abbreviation
+	v13 :: "VDMNat option"
+where
+	"v13 \<equiv> None"
+
+definition
+	inv_v13 :: "\<bool>"
+where
+	"inv_v13 \<equiv> (inv_Option inv_VDMNat v13)"
+
+abbreviation
+	v14 :: "'UNKNOWN option"
+where
+	"v14 \<equiv> None"
+
+definition
+	inv_v14 :: "\<bool>"
+where
+	"inv_v14 \<equiv> (inv_Option inv_True v14)"
+
+abbreviation
+	v15 :: "VDMNat1 VDMSet VDMSet"
+where
+	"v15 \<equiv> (Fpow {(1::VDMNat),(2::VDMNat)})"
+
+definition
+	inv_v15 :: "\<bool>"
+where
+	"inv_v15 \<equiv> (inv_VDMSet' (inv_VDMSet' inv_VDMNat1) v15)"
 
 
 end

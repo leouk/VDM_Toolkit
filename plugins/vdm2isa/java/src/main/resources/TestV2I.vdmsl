@@ -5,6 +5,7 @@ definitions
 values
 	a: bool = true;
 	c: char = 'a';
+	q: seq of char = "just text"; --string literals can be VDMChar VDMSeq for Isabelle string type 
 	i: int  = 10;
 	x: nat  = 10;
 	y: nat1 = 20;
@@ -12,6 +13,7 @@ values
 	
 	s1: set1 of nat1 = {1,2,3};
 	s2: seq1 of nat1 = [1,2,3];
+	s3: set1 of nat1 = {1,...,5};
 	ss1: set of set of nat1 = {{1,2},{2,4}};
 	ss2: seq of seq of nat1 = [[1,2],[3,4]];
 	m1: map nat1 to nat1 = {1 |-> 1, 2 |-> 3};
@@ -26,7 +28,12 @@ values
 	v9 = conc ss2;
 	v10= dinter ss1;
 	v11= dunion ss1;
-	--v12= merge mm;
+	v12= s2(2,...,3);
+	v13: [nat] = nil;
+	v14= nil;
+	v15= power {1,2};
+	-- quote literal requires quote type prior definition for Isabelle 
+	--v13= merge mm;
 	
 functions
 

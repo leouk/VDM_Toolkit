@@ -184,6 +184,7 @@ definition
   where
   "pre_vdm_rem x y \<equiv> y \<noteq> 0"
 
+value "((1::nat),(2::nat),(3::nat))"
 definition
   post_vdm_rem :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>"
   where
@@ -484,6 +485,18 @@ definition
                       (l ! nat (n - 1)) 
                    else 
                       undefined)"
+
+definition
+  applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq" ("(1_ {_$$_})")
+  where
+  "applyVDMSubseq l i j \<equiv> (if (inv_VDMNat1 i \<and> inv_VDMNat1 j) then
+                             nths l {nat i.. nat j}
+                           else
+                             undefined 
+                          )"
+
+value "nths [1,2,(3::nat)] {2..3}"
+value "[1,2,3::nat] {2$$3}"
 
 text \<open> VDM \verb'l1 ++ l2' is just @{term "l1 @ l2"} \<close> 
 thm append_def
