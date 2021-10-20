@@ -8,7 +8,9 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCharLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIntegerLiteralExpression;
+import com.fujitsu.vdmj.tc.expressions.TCQuoteLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCRealLiteralExpression;
+import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
 
 import vdm2isa.lex.IsaToken;
 
@@ -40,7 +42,19 @@ public class TRLiteralExpression extends TRExpression
 		super(exp.location); 
 		this.exp = exp;
 	}
-	
+
+	public TRLiteralExpression(TCStringLiteralExpression exp)
+	{
+		super(exp.location); 
+		this.exp = exp;
+	}
+
+	public TRLiteralExpression(TCQuoteLiteralExpression exp)
+	{
+		super(exp.location); 
+		this.exp = exp;
+	}
+
 	@Override
 	public String translate()
 	{
@@ -48,20 +62,43 @@ public class TRLiteralExpression extends TRExpression
 		sb.append("(");
 		if (exp instanceof TCBooleanLiteralExpression)
 		{
+			//True/False for true/false
 			sb.append(exp.toString());
-			sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); //True/False?
-		} else if (exp instanceof TCCharLiteralExpression)
+			sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); 
+		} 
+		else if (exp instanceof TCCharLiteralExpression)
 		{
+			// Isabelle chars are transformed from string through CHR
 			sb.append("CHR ''");
 			sb.append(exp.toString());
 			sb.append("''");
+		}
+		else if (exp instanceof TCStringLiteralExpression)
+		{
+			sb.append("''");
+			// remove the "xxxx" 
+			sb.append(exp.toString().substring(1, exp.toString().length() - 1));
+			sb.append("''");
+		}
+		else if (exp instanceof TCQuoteLiteralExpression)
+		{
+			// remove the "< ... >"
+			TCQuoteLiteralExpression qexp = (TCQuoteLiteralExpression)exp;
+			sb.append(qexp.type.value);
 		}
 		else
 		{
 			sb.append(exp.toString());
 		}
-		sb.append("::");
-		sb.append(isaToken().toString());
+
+		// no casting needed for those two 
+		if (!(exp instanceof TCStringLiteralExpression || 
+			  exp instanceof TCQuoteLiteralExpression))
+		{
+			sb.append("::");
+			sb.append(isaToken().toString());
+		}
+
 		sb.append(")");
 		return sb.toString();
 	}
@@ -84,6 +121,10 @@ public class TRLiteralExpression extends TRExpression
 		}
 		else if (exp instanceof TCRealLiteralExpression)
 			return IsaToken.REAL;
+		else if (exp instanceof TCStringLiteralExpression)
+			return IsaToken.CHAR;
+		else if (exp instanceof TCQuoteLiteralExpression)
+			return IsaToken.CHAR;
 		else
 			throw new RuntimeException("Invalid VDM literal type " + exp.getClass().getName() + " = " + exp.toString());
 	}

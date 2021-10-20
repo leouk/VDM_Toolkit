@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.tc.expressions.TCDistUnionExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapDomainExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapRangeExpression;
 import com.fujitsu.vdmj.tc.expressions.TCNotExpression;
+import com.fujitsu.vdmj.tc.expressions.TCPowerSetExpression;
 import com.fujitsu.vdmj.tc.expressions.TCReverseExpression;
 import com.fujitsu.vdmj.tc.expressions.TCFloorExpression;
 import com.fujitsu.vdmj.tc.expressions.TCHeadExpression;
@@ -61,6 +62,13 @@ public class TRUnaryExpression extends TRExpression {
 	}
 
     public TRUnaryExpression(TCCardinalityExpression owner, TRExpression exp)
+	{
+		super(owner.location);
+        this.owner = owner;
+		this.exp = exp;
+	}
+
+    public TRUnaryExpression(TCPowerSetExpression owner, TRExpression exp)
 	{
 		super(owner.location);
         this.owner = owner;
@@ -186,6 +194,8 @@ public class TRUnaryExpression extends TRExpression {
             return IsaToken.UPLUS;
         else if (owner instanceof TCCardinalityExpression)
             return IsaToken.CARD;
+        else if (owner instanceof TCPowerSetExpression)
+            return IsaToken.POWER;
         else if (owner instanceof TCDistUnionExpression)
             return IsaToken.DUNION;
         else if (owner instanceof TCDistIntersectExpression)

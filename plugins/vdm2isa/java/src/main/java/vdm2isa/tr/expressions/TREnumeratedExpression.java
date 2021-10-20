@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 
 public abstract class TREnumeratedExpression extends TRExpression 
 {
+	private static final long serialVersionUID = 1L;
 	private final TRExpressionList members;
 
 	public TREnumeratedExpression(LexLocation location, TRExpressionList members)

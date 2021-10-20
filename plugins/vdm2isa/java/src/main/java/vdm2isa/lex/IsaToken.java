@@ -29,6 +29,8 @@ public enum IsaToken {
 	FUN(Token.ARROW, "\\<Rightarrow>"),
 	TRUE(Token.TRUE, "True"),
 	FALSE(Token.FALSE, "False"),
+	NIL(Token.NIL, "None"),
+	UNKNOWN(null, "'UNKNOWN"),
 
 	// Unary Operators
 	NOT(Token.NOT, "\\<not>"),
@@ -49,7 +51,7 @@ public enum IsaToken {
 	MERGE(Token.MERGE, "vdm_merge"),
 	DOM(Token.DOM, "dom"),
 	RNG(Token.RNG, "rng"),
-	//@todo POWER("power", "power"),
+	POWER(Token.POWER, "Fpow"),
 
 	// Binary Operators
 	AND(Token.AND, "\\<and>"),
@@ -82,6 +84,7 @@ public enum IsaToken {
 	PSUBSET(Token.PSUBSET, "\\<subset>"),
 
 	CONCATENATE(Token.CONCATENATE, "@"),
+	SUBSEQ(null, "$$"),
 
 	PLUSPLUS(Token.PLUSPLUS, "\\<dagger>"),
 	DOMRESTO(Token.DOMRESTO, "\\<triangleleft>"),
@@ -92,7 +95,8 @@ public enum IsaToken {
 	COMP(Token.COMP, "\\<circ>m"),
 	
 
-	APPLY(null, ""),
+	APPLY(null, " "),
+	SEQAPPLY(null, "$"),
 	VARIABLE(null, ""),
 	INV(null, "inv_"),
   	
@@ -113,7 +117,10 @@ public enum IsaToken {
 	SEQ_CLOSE(Token.SEQ_CLOSE, "]"),
 	MAP_OPEN(Token.SET_OPEN, "["),
 	MAP_CLOSE(Token.SET_CLOSE, "]"),
+	LPAREN(Token.BRA, "("),
+	RPAREN(Token.KET, ")"),
 	COMMA(Token.COMMA, ","),
+	OPTIONAL(null, "option"),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
@@ -183,7 +190,7 @@ public enum IsaToken {
 			case IMPLIES		: return IsaToken.IMPLIES;
 			
 			case CARD			: return IsaToken.CARD;
-			//case POWER		: return IsaToken.POWER;
+			case POWER			: return IsaToken.POWER;
 
 			case UNION			: return IsaToken.UNION;
 			case INTER			: return IsaToken.INTER;

@@ -185,7 +185,7 @@ public final class IsaTemplates {
             case MERGE:
             case DOM:
             case RNG:
-            //case POWER:
+            case POWER:
                 if (args.length != 1)
                     throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
                 sb.append("(");
