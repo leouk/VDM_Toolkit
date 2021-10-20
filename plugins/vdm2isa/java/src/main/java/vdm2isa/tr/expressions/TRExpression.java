@@ -5,7 +5,6 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.tr.TRNode;
-import vdm2isa.lex.IsaToken;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;

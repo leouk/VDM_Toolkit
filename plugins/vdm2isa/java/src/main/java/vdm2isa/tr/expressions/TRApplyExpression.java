@@ -24,6 +24,7 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public String translate()
 	{
+		assert this.args.separator != null;
 		return "(" + root.translate() + this.args.separator + args.translate() + ")";
 	}
 

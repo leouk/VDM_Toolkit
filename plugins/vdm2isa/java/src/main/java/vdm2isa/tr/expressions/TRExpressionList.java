@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
@@ -21,13 +22,13 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	protected TRExpressionList() 
 	{
 		super();
-		separator = " ";
+		separator = IsaToken.COMMA.toString();
 	}  
 
 	public TRExpressionList(TCExpressionList list) throws Exception
 	{
 		super(list);
-		separator = " ";
+		separator = IsaToken.COMMA.toString();
 	}
 
 	public String translate()

@@ -12,20 +12,14 @@ public abstract class TREnumeratedExpression extends TRExpression
 	{
 		super(location);
 		this.members = members;
-        this.members.separator = separator().toString();
+        this.members.separator = IsaToken.COMMA.toString();
 	}
 
     public abstract IsaToken leftBracket();
     public abstract IsaToken rightBracket();
 
-    public IsaToken separator()
-    {
-        return IsaToken.COMMA;
-    }
-
     @Override
     public String translate() {
-        members.separator = separator().toString();
         return leftBracket().toString() + members.translate() + rightBracket().toString(); 
     }
 
@@ -34,6 +28,4 @@ public abstract class TREnumeratedExpression extends TRExpression
     {
         return IsaToken.EOF;
     }
-    
-
 }

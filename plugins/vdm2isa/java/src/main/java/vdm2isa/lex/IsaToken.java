@@ -111,6 +111,8 @@ public enum IsaToken {
 	SET_CLOSE(Token.SET_CLOSE, "}"),
 	SEQ_OPEN(Token.SEQ_OPEN, "["),
 	SEQ_CLOSE(Token.SEQ_CLOSE, "]"),
+	MAP_OPEN(Token.SET_OPEN, "["),
+	MAP_CLOSE(Token.SET_CLOSE, "]"),
 	COMMA(Token.COMMA, ","),
 
 	MODULE(Token.MODULE, "theory"),
