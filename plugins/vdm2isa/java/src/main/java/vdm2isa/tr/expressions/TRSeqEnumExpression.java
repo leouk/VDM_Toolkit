@@ -6,7 +6,9 @@ import vdm2isa.lex.IsaToken;
 
 public class TRSeqEnumExpression extends TREnumeratedExpression 
 {
-	public TRSeqEnumExpression(LexLocation location, TRExpressionList members)
+	private static final long serialVersionUID = 1L;
+
+    public TRSeqEnumExpression(LexLocation location, TRExpressionList members)
 	{
 		super(location, members);
 	}

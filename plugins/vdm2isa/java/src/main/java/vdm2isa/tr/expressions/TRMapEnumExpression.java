@@ -6,8 +6,9 @@ import vdm2isa.lex.IsaToken;
 
 public class TRMapEnumExpression extends TRExpression 
 {
+	private static final long serialVersionUID = 1L;
     protected final TRMapletExpressionList members;
-    
+
 	public TRMapEnumExpression(LexLocation location, TRMapletExpressionList members)
 	{
 		super(location);

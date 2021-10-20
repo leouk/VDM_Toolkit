@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRNamedType extends TRInvariantType
 {
+	private static final long serialVersionUID = 1L;
     private final TCNameToken typename;
     private final TRType type;
     
@@ -18,7 +19,7 @@ public class TRNamedType extends TRInvariantType
 
     @Override
     public IsaToken isaToken() {
-        return null;
+        return IsaToken.EOF;
     }
 
     @Override
@@ -28,6 +29,9 @@ public class TRNamedType extends TRInvariantType
 
     @Override
 	public String invTranslate(String varName) {
-		return "null";
+		return IsaToken.LPAREN.toString() +
+            IsaToken.INV.toString() + typename +
+            (varName != null ? " " + varName : "") + 
+            IsaToken.RPAREN.toString();
 	}
 }

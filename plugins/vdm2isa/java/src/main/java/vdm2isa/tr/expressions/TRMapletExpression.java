@@ -4,6 +4,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRMapletExpression extends TRExpression 
 {
+	private static final long serialVersionUID = 1L;
     private final TRExpression left;
     private final TRExpression right; 
 
