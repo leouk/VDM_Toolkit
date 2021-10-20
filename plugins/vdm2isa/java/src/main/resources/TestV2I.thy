@@ -7,6 +7,15 @@ theory TestV2I
 imports "VDMToolkit"
 begin
 
+(* @ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 5:3
+
+types
+
+@ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 6:3
+
+	R :: field1: nat field2: nat;
+
+*)
 abbreviation
 	a :: "\<bool>"
 where
@@ -37,7 +46,7 @@ definition
 where
 	"inv_q \<equiv> (inv_VDMSeq' inv_VDMChar q)"
 
-(* @ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 8:37
+(* @ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 11:37
 
 string literals can be VDMChar VDMSeq for Isabelle string type 
 

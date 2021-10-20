@@ -56,4 +56,11 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		}
  		return sb.toString();
 	}
+/*
+	public static String translate(TRType... args)
+	{
+		TRExpressionList list = new TRExpressionList();
+		list.addAll(Arrays.asList(args));
+		return list.translate();	
+*/
 }

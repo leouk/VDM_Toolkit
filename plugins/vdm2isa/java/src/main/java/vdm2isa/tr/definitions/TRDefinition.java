@@ -32,7 +32,7 @@ public abstract class TRDefinition extends TRNode
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (comments.size() > 0) 
+		if (comments != null && comments.size() > 0) 
 		{
 			sb.append("(* ");
 			for (LexComment c: comments)
@@ -45,6 +45,10 @@ public abstract class TRDefinition extends TRNode
 			}
 			sb.append("*)");
 			sb.append("\n");
+		}
+		if (annotations != null && annotations.size() > 0)
+		{
+			sb.append("(* NOT YET PROCESSING ANNOTATIONS *)\n");
 		}
 		return sb.toString();
 	}

@@ -77,6 +77,9 @@
 *TCStringLiteralExpression
 *TCSubseqExpression
 *TCTupleExpression
+*TCMuExpression
+*TCRecordModifier
+*TCRecordModifierList
 
 TCPostOpExpression
 TCCaseAlternative
@@ -96,7 +99,6 @@ TCIsExpression
 TCForAllExpression
 
 TCIotaExpression
-TCMuExpression
 TCLambdaExpression
 
 TCLetBeStExpression
@@ -108,8 +110,6 @@ TCNarrowExpression
 TCNotYetSpecifiedExpression
 TCPreExpression
 TCPreOpExpression
-TCRecordModifier
-TCRecordModifierList
 TCSeqCompExpression
 TCSetCompExpression
 

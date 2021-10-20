@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 
 public class TRNamedType extends TRInvariantType
@@ -24,6 +25,9 @@ public class TRNamedType extends TRInvariantType
 
     @Override
     public String translate() {
+        //IsaTemplates.typeSynonymDefinition(typename.toString(), 
+        //    type.translate(), inVar, inv);
+        //IsaTemplates.typeSynonymDefinition(typename.toString(), )
         return typename.toString() + " = " + type.translate();
     }
 

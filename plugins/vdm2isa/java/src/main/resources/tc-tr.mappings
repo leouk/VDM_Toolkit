@@ -95,6 +95,10 @@ map TCMapEnumExpression{location, members} to TRMapEnumExpression(location, memb
 map TCMapletExpression{left, right} to TRMapletExpression(left, right);
 map TCTupleExpression{location, args} to TRTupleExpression(location, args); 
 
+map TCRecordModifier{tag, value} to TRRecordModifier(tag, value);
+map TCRecordModifierList{} to TRRecordModifierList(this);
+map TCMuExpression{location, record, modifiers} to TRMuExpression(location, record, modifiers);
+
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
 map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);

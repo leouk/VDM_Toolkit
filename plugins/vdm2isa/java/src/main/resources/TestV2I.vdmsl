@@ -2,6 +2,9 @@ module TestV2I
 exports all
 definitions
 
+--types
+--	R :: field1: nat field2: nat;
+	
 values
 	a: bool = true;
 	c: char = 'a';
@@ -34,6 +37,8 @@ values
 	v15= power {1,2};
 	-- quote literal requires quote type prior definition for Isabelle 
 	--v13= merge mm;
+--	v16: R = mk_R(1, 2);
+--	v17: R = mu(v16, field1 |-> 10, field2 |-> 20);
 	
 functions
 
