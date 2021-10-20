@@ -246,12 +246,12 @@ definition
   (* same as the floor_correct axiom of Archimedian_Field*)
 
 definition 
-  vdm_abs :: "VDMReal \<Rightarrow> VDMReal"
+  vdm_abs :: "('a::{zero,abs,ord}) \<Rightarrow> ('a::{zero,abs,ord})"
   where
   [intro!]: "vdm_abs x \<equiv> \<bar>x\<bar>"
 
 definition
-  post_vdm_abs :: "VDMReal \<Rightarrow> VDMReal \<Rightarrow> \<bool>"
+  post_vdm_abs :: "('a::{zero,abs,ord}) \<Rightarrow> ('a::{zero,abs,ord}) \<Rightarrow> \<bool>"
   where
   "post_vdm_abs x RESULT \<equiv> RESULT \<ge> 0" (*inv_VDMNat RESULT"*)
 
