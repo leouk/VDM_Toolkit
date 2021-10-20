@@ -11,9 +11,10 @@ values
 	r: real = 4.5;
 	
 	s1: set1 of nat1 = {1,2,3};
-	s2 = [1,2,3];
-	ss1= {{1,2},{2,4}};
-	ss2= [[1,2],[3,4]];
+	s2: seq1 of nat1 = [1,2,3];
+	ss1: set of set of nat1 = {{1,2},{2,4}};
+	ss2: seq of seq of nat1 = [[1,2],[3,4]];
+	m1: map nat1 to nat1 = {1 |-> 1};
 	v1 = abs 10;
 	v2 = floor 5;
 	v3 = floor 4.5;
