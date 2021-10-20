@@ -37,7 +37,6 @@ public class TRSeqType extends TRType
 
     @Override
     public String invTranslate(String varName) {
-        //@todo qualify whether to add parenthesis or not? e.g. setof instanceof TRBasicType = no ()? 
-        return IsaToken.INV.toString() + isaToken().toString() + "' (" + seqof.invTranslate(varName) + ") " + varName;
+        return "(" + IsaToken.INV.toString() + isaToken().toString() + "' " + seqof.invTranslate(null) + (varName != null ? " " + varName : "") + ")";        
     }
 }
