@@ -11,13 +11,7 @@ Time monitoring annotation that works as a specification profiler. Useful to asc
 Witness annotation useful as a automatic existential-proof discharger through VDMJ interpreation. That is, a witness to a record type will be type checked and interpreted; if that succeeds, this is akin to an exitentially quantified variable witness useful for later translation to theorem provers. 
  
 ## experiments
-Colleciton of interesting VDM-SL experiments
-
-### Asynch
-Attempt to include in VDM-SL what exists in VDM-RT as asynchronous operation calls. This needs some extending.
-
-### Folderol
-Larry Paulson's Folderol theorem prover in VDM-SL.
+Colleciton of interesting VDM-SL experiments of vaired size and complexity.
 
 ## issues 
 Collection of minimal examples highlighting tool issues/errors. These were all reported to and fixed by corresponding tool builders.
@@ -31,4 +25,8 @@ Overture and VDMJ type checker (and occasionally parsing) issues.
 ## libraries 
 Collection of VDM-SL libraries for various uses. 
 
-* **TODO: document each library + fix Support1/2.vdmsl! **
+## plugins 
+Collection of VDMJ plugins.
+
+## scripts 
+Collection of VDMJ scripts useful to make it seemless across updates. Works for Linux/Mac (haven't tested on Windows). 
