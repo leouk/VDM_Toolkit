@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.tc.expressions.TCIntegerLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCQuoteLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCRealLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
+import com.fujitsu.vdmj.tc.types.TCRationalType;
 
 import vdm2isa.lex.IsaToken;
 
@@ -91,9 +92,10 @@ public class TRLiteralExpression extends TRExpression
 			sb.append(exp.toString());
 		}
 
-		// no casting needed for those two 
+		// no casting needed for those three 
 		if (!(exp instanceof TCStringLiteralExpression || 
-			  exp instanceof TCQuoteLiteralExpression))
+			  exp instanceof TCQuoteLiteralExpression ||
+			  exp instanceof TCRealLiteralExpression))
 		{
 			sb.append(IsaToken.TYPEOF.toString());
 			sb.append(isaToken().toString());
