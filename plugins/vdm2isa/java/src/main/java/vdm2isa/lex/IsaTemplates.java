@@ -4,6 +4,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
+import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 import java.util.HashMap;
@@ -38,6 +39,11 @@ public final class IsaTemplates {
         StringBuilder name2 = new StringBuilder("(10::nat)");
         name2.setCharAt(1, Character.toUpperCase(name2.charAt(1)));
         System.out.println(name.toString() + " " + name2.toString());
+    }
+
+    public static void reset()
+    {
+        translatedItems.clear();
     }
 
     public static String listToString(List<? extends TRNode> list, String separator)
@@ -116,6 +122,7 @@ public final class IsaTemplates {
      */
     public static String typeSynonymDefinition(String name, String exp, String inVar, String inv)
     {
+        //@todo pass TRNamedType ? 
         assert name != null && inv != null && inVar != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
