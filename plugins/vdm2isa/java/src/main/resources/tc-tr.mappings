@@ -5,6 +5,7 @@ package com.fujitsu.vdmj.tc.definitions to vdm2isa.tr.definitions;
 
 map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
+map TCTypeDefinition{annotations, name, type, invExpression} to TRTypeDefinition(annotations, name, type, invExpression);
 map TCValueDefinition{comments, pattern, type, exp} to TRValueDefinition(comments, pattern, type, exp);
 map TCExplicitFunctionDefinition{comments, name, type, paramPatternList, body} to TRExplicitFunctionDefinition(comments, name, type, paramPatternList, body);
 map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp);
@@ -98,6 +99,7 @@ map TCTupleExpression{location, args} to TRTupleExpression(location, args);
 map TCRecordModifier{tag, value} to TRRecordModifier(tag, value);
 map TCRecordModifierList{} to TRRecordModifierList(this);
 map TCMuExpression{location, record, modifiers} to TRMuExpression(location, record, modifiers);
+map TCMkTypeExpression{typename, args} to TRMkTypeExpression(typename, args);
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
@@ -153,9 +155,13 @@ map TCCharacterType{} to TRBasicType(this);
 map TCTokenType{} to TRBasicType(this);
 
 map TCQuoteType{location, value} to TRQuoteType(location, value);
-
+map TCProductType{location, types} to TRProductType(location, types);
 map TCMapType{location, from, to} to TRMapType(location, from, to);
-map TCNamedType{typename, type} to TRNamedType(typename, type); 
+map TCInvariantType{} to TRInvariantType();
+map TCNamedType{typename, type} to TRNamedType(typename, type);
+map TCRecordType{name, fields, composed} to TRRecordType(name, fields, composed);
+map TCField{tagname, type, equalityAbstraction} to TRField(tagname, type, equalityAbstraction);
+map TCFieldList{} to TRFieldList(this);
 map TCSetType{setof} to TRSetType(this, setof);
 map TCSet1Type{setof} to TRSetType(this, setof);
 map TCSeqType{seqof} to TRSeqType(this, seqof);

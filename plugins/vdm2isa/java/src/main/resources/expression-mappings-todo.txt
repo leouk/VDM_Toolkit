@@ -80,6 +80,8 @@
 *TCMuExpression
 *TCRecordModifier
 *TCRecordModifierList
+*TCMkTypeExpression
+
 
 TCPostOpExpression
 TCCaseAlternative
@@ -105,7 +107,6 @@ TCLetBeStExpression
 TCLetDefExpression
 TCMapCompExpression
 TCMkBasicExpression
-TCMkTypeExpression
 TCNarrowExpression
 TCNotYetSpecifiedExpression
 TCPreExpression
