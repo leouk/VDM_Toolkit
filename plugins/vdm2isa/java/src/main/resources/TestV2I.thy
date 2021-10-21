@@ -121,7 +121,7 @@ TCNaturalOneType
 abbreviation
 	r :: "VDMReal"
 where
-	"r \<equiv> (4.5::VDMReal)"
+	"r \<equiv> (4.5)"
 
 definition
 	inv_r :: "\<bool>"
@@ -136,7 +136,7 @@ TCRealType,TCRealLiteralExpression
 abbreviation
 	w :: "VDMRat"
 where
-	"w \<equiv> (4.5::VDMReal)"
+	"w \<equiv> (4.5)"
 
 definition
 	inv_w :: "\<bool>"
@@ -271,7 +271,7 @@ TCFloorExpression
 abbreviation
 	v3 :: "VDMInt"
 where
-	"v3 \<equiv> (vdm_floor (4.5::VDMReal))"
+	"v3 \<equiv> (vdm_floor (4.5))"
 
 definition
 	inv_v3 :: "\<bool>"
@@ -296,7 +296,7 @@ TCUnaryMinusExpression
 abbreviation
 	v5 :: "VDMNat1"
 where
-	"v5 \<equiv> ((5::VDMNat))"
+	"v5 \<equiv> (5::VDMNat)"
 
 definition
 	inv_v5 :: "\<bool>"
@@ -551,7 +551,7 @@ TCMapRangeExpression
 abbreviation
 	v22 :: "VDMNat1 \<rightharpoonup> VDMNat1"
 where
-	"v22 \<equiv> NYI = \<inverse> m1"
+	"v22 \<equiv> (vdm_inverse m1)"
 
 definition
 	inv_v22 :: "\<bool>"
@@ -671,7 +671,8 @@ TCRemExpression
 abbreviation
 	v30 :: "VDMNat1"
 where
-	"v30 \<equiv> ((2::VDMNat) vdmpow (3::VDMNat))"
+	"v30 \<equiv> ((2::VDMNat) ^ nat (3::VDMNat))
+\<comment>\<open>result context dependenant on nat or real. Adjust to ^ nat or just ^\<close>"
 
 definition
 	inv_v30 :: "\<bool>"
@@ -1061,7 +1062,7 @@ TCSetDifferenceExpression
 abbreviation
 	v56 :: "\<bool>"
 where
-	"v56 \<equiv> (s1 \<subsetseq> s3)"
+	"v56 \<equiv> (s1 \<subseteq> s3)"
 
 definition
 	inv_v56 :: "\<bool>"
@@ -1156,7 +1157,8 @@ where
 definition
 	inv_v62 :: "\<bool>"
 where
-	"inv_v62 \<equiv> NYI invTranslate for productType for v62"
+	"inv_v62 \<equiv> (inv_VDMNat1 (fst v62)\<and>
+		inv_VDMNat1 (fst v62)\<comment>\<open>TODO! This is messy, but easy: fst, fst snd, fst snd snd, snd snd snd say for 4-tuple\<close>)"
 
 (* @ in 'TestV2I' (./src/main/resources/TestV2I.vdmsl) at line 88:39
 
