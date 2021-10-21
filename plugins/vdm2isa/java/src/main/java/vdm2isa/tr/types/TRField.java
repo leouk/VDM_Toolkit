@@ -6,9 +6,9 @@ import vdm2isa.lex.IsaToken;
 
 public class TRField extends TRType {
     
-    private final TCNameToken tagname;
-    private final TRType type;
-    private final boolean equalityAbstraction; 
+    protected final TCNameToken tagname;
+    protected final TRType type;
+    protected final boolean equalityAbstraction; 
     
     public TRField(TCNameToken tagname, TRType type, boolean equalityAbstraction)
     {
@@ -20,7 +20,9 @@ public class TRField extends TRType {
 
     @Override
     public String invTranslate(String varName) {
-        return type.invTranslate(varName);
+        String fieldName = varName == null ? varName : 
+            IsaToken.LPAREN.toString() + tagname.toString() + " " + varName + IsaToken.RPAREN.toString(); 
+        return IsaToken.LPAREN.toString() + type.invTranslate(fieldName) + IsaToken.RPAREN.toString();
     }
 
     @Override
@@ -32,5 +34,15 @@ public class TRField extends TRType {
     public String translate() {
         return this.tagname.toString() + " " + IsaToken.TYPEOF.toString() + " " + 
             "\"" + this.type.translate() + "\"";
+    }
+
+    public TCNameToken getTagName() 
+    {
+        return this.tagname;
+    }
+
+    public boolean equalityAbstraction()
+    {
+        return this.equalityAbstraction;
     }
 }

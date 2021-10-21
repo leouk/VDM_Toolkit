@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.types.TCFieldList;
 import com.fujitsu.vdmj.tc.types.TCField;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
 public class TRFieldList extends TRMappedList<TCField, TRField>
@@ -22,7 +23,22 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 
     public String invTranslate(String varName)
     {
-        return "TODO";//IsaTemplates.listToString(list, separator)
+        StringBuilder sb = new StringBuilder();
+
+		if (!this.isEmpty())
+		{
+			sb.append(this.get(0).invTranslate(varName));
+
+			for (int i = 1; i < this.size(); i++)
+			{
+				sb.append(" ");
+                sb.append(IsaToken.AND.toString());
+                sb.append("\n\t\t ");
+				sb.append(this.get(i).invTranslate(varName));
+			}
+		}
+
+		return sb.toString();  
     }
 
 	public String translate()
