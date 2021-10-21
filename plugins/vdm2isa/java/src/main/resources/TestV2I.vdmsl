@@ -2,48 +2,116 @@ module TestV2I
 exports all
 definitions
 
---types
---	R :: field1: nat field2: nat;
+types
+	R :: field1: nat field2: nat;	--TCRecordType,TCField,TCFieldList
 	
+	--S :: ;
 values
-	a: bool = true;
-	c: char = 'a';
-	q: seq of char = "just text"; --string literals can be VDMChar VDMSeq for Isabelle string type 
-	i: int  = 10;
-	x: nat  = 10;
-	y: nat1 = 20;
-	r: real = 4.5;
-	
-	s1: set1 of nat1 = {1,2,3};
-	s2: seq1 of nat1 = [1,2,3];
-	s3: set1 of nat1 = {1,...,5};
+	a: bool = true;				  	--TCBooleanType,TCBooleanLiteralExpression
+	c: char = 'a';					--TCCharacterType,TCCharLiteralExpression
+	q: seq of char = "just text"; 	--TCStringLiteralExpression; string literals can be VDMChar VDMSeq for Isabelle string type 
+	i: int  = 10;					--TCIntegerType, TCIntegerLiteralExpression
+	x: nat  = 10;					--TCNaturalType
+	y: nat1 = 20;					--TCNaturalOneType
+	r: real = 4.5;					--TCRealType,TCRealLiteralExpression
+	w: rat = 4.5;					--TCRationalType
+		
+	s1: set1 of nat1 = {1,2,3};					--TCSetType
+	s2: seq1 of nat1 = [1,2,3];					--TCSeqType, TCSeq1Type
+	s3: set1 of nat1 = {1,...,5};				--TCSet1Type
 	ss1: set of set of nat1 = {{1,2},{2,4}};
 	ss2: seq of seq of nat1 = [[1,2],[3,4]];
-	m1: map nat1 to nat1 = {1 |-> 1, 2 |-> 3};
-	v1 = abs 10;
-	v2 = floor 5;
-	v3 = floor 4.5;
-	v4 = card s1;
-	v5 = len s2;
-	v6 = hd s2;
-	v7 = tl s2;
-	v8 = inds s2;
-	v9 = conc ss2;
-	v10= dinter ss1;
-	v11= dunion ss1;
-	v12= s2(2,...,3);
-	v13: [nat] = nil;
-	v14= nil;
-	v15= power {1,2};
-	-- quote literal requires quote type prior definition for Isabelle 
-	--v13= merge mm;
---	v16: R = mk_R(1, 2);
---	v17: R = mu(v16, field1 |-> 10, field2 |-> 20);
+	m1: map nat1 to nat1 = {1 |-> 1, 2 |-> 3};	--TCMapType
+	m2: map nat1 to nat1 = {3 |-> 1};
 	
+	v1 = abs 10;					--TCAbsoluteExpression	
+	v2 = floor 5;					--TCFloorExpression 		
+	v3 = floor 4.5;
+	v4 = -4; 						--TCUnaryMinusExpression
+	v5 = +5;						--TCUnaryPlusExpression	
+	v6 = card s1;					--TCCardinalityExpression
+	v7 = power {1,2};				--TCPowerSetExpression
+	v8 = dunion ss1;				--TCDistUnionExpression	
+	v9 = dinter ss1;				--TCDistIntersectExpression
+	v10= len s2;					--TCLenExpression
+	v11= hd s2;						--TCHeadExpression
+	v12= tl s2;						--TCTailExpression
+	v13= inds s2;					--TCIndicesExpression
+	v14= elems s2;					--TCElementsExpression 
+	v15= conc ss2;					--TCDistConcatExpression
+	v16= reverse s2;				--TCReverseExpression
+	v17= s2 ^ s2;					--TCSeqConcatExpression		
+	v18= s2(2,...,3);				--TCSubseqExpression
+	v19= merge {m1,m2};				--TCDistMergeExpression
+	v20= dom m1;					--TCMapDomainExpression
+	v21= rng m1;					--TCMapRangeExpression
+	v22= inverse m1;				--TCMapInverseExpression
+	v23= 4+3;						--TCPlusExpression		
+	v24= 4-2;						--TCSubtractExpression	
+	v25= 4*2;						--TCTimesExpression		
+	v26= 4 div 2;					--TCDivExpression			
+	v27= 4 / 2;						--TCDivideExpression		
+	v28= 4 mod 3;					--TCModExpression			
+	v29= 4 rem 3;					--TCRemExpression			
+	v30= 2 ** 3;					--TCStarStarExpression	
+	v31= 3 = 3;						--TCEqualsExpression		
+	v32= 3 <> 4;					--TCNotEqualExpression	
+	v33= 4 <= 5;					--TCLessEqualExpression	
+	v34= 4 < 5;						--TCLessExpression		
+	v35= 5 >= 4;					--TCGreaterEqualExpression
+	v36= 5 > 4;						--TCGreaterExpression		
+	v37: [nat] = nil;				--TCNilExpression			TCOptionalType,
+	v38= nil;						--TCNilExpression (untyped)!TCUnknownType	
+	v39= m1++m2;					--TCPlusPlusExpression	
+	v40= s1 <: m1;					--TCDomainResByExpression	
+	v41= s1 <-: m1;					--TCDomainResToExpression	
+	v42= m1 :> s1;					--TCRangeResByExpression	
+	v43= m1 :-> s1;					--TCRangeResToExpression	
+	v44= m1 munion m2;				--TCMapUnionExpression	
+	v45= m1 comp m2;				--TCCompExpression			
+	v46= not a;						--TCNotExpression
+	v47= a and a;					--TCAndExpression
+	v48= a or a;					--TCOrExpression
+	v49= a => a;					--TCImpliesExpression
+	v50= a <=> a;					--TCEquivalentExpression
+	v51= 1 in set s1;					--TCInSetExpression		
+	v52= 5 not in set s1;				--TCNotInSetExpression	
+	v53: set of nat = s1 union s3;				--TCSetUnionExpression	
+	v54: set of nat = s1 inter s3;				--TCSetIntersectExpression
+	v55: set of nat = s1 \ s3;					--TCSetDifferenceExpression
+	v56= s1 subset s3;				--TCSubsetExpression		
+	v57= s1 psubset s3;				--TCProperSubsetExpression	
+	v58= {1,...,3};					--TCSetRangeExpression	
+	v59= {1,2,3,4};					--TCSetEnumExpression		
+	v60= [1,3,4];					--TCSeqEnumExpression		
+	v61= {1 |-> 2, 2|->3};			--TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression	
+	v62= mk_(1,2);					--TCTupleExpression						
+	--TODO: TCQuoteLiteralExpression quote literal requires quote type prior definition for Isabelle 
+	--v13= merge mm;	
+	--v18: S = mk_S();
+	v63: R = mk_R(1, 2);			--TCMkTypeExpression		
+	v64: R = mu(v63, field1 |-> 10, field2 |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
+	--TODO: not yet v65= m1(1);						--TCApplyExpression
 functions
 
 --f: nat -> nat
 --f(x) == x + 1;
+
+
+	
+/*
+			
+TCIfExpression			
+TCVariableExpression	
+
+ALSO ADD TYPE DECLARATIONS OF EACH KIND !  
+
+TCFunctionType	
+TCTokenType		
+TCQuoteType		
+TCNamedType		
+
+*/
 
 
 end TestV2I

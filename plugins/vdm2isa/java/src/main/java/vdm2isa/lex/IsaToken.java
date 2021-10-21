@@ -171,6 +171,44 @@ public enum IsaToken {
 		assert operator != null; 
 		switch (operator)
 		{
+
+			case NOT			: return IsaToken.NOT;
+			case ABS			: return IsaToken.ABS;
+			case FLOOR			: return IsaToken.FLOOR;
+			//case UMINUS			: return IsaToken.UMINUS;
+			//case UPLUS			: return IsaToken.UPLUS;
+
+			case CARD			: return IsaToken.CARD;
+			case POWER			: return IsaToken.POWER;
+			case DUNION			: return IsaToken.DUNION;
+			case DINTER			: return IsaToken.DINTER;
+
+			case LEN			: return IsaToken.LEN;
+			case HEAD			: return IsaToken.HEAD;
+			case TAIL			: return IsaToken.TAIL;
+			case INDS			: return IsaToken.INDS;
+			case ELEMS			: return IsaToken.ELEMS;
+			case DISTCONC		: return IsaToken.DISTCONC;
+			case REVERSE		: return IsaToken.REVERSE;
+
+			case DOM			: return IsaToken.DOM;
+			case RNG			: return IsaToken.RNG;
+			case MERGE			: return IsaToken.MERGE;
+			case INVERSE		: return IsaToken.INVERSE;
+
+			case AND			: return IsaToken.AND;
+			case OR				: return IsaToken.OR;
+			case IMPLIES		: return IsaToken.IMPLIES;
+			case EQUIVALENT 	: return IsaToken.EQUIVALENT;
+
+			// binary relational operators
+			case LT				: return IsaToken.LT;
+			case LE				: return IsaToken.LE;
+			case GT				: return IsaToken.GT;
+			case GE				: return IsaToken.GE;
+			case NE				: return IsaToken.NE;
+			case EQUALS			: return IsaToken.EQUALS;
+			
 			// binary arithmetic operators
 			case PLUS			: return IsaToken.PLUS;
 			case MINUS			: return IsaToken.MINUS;
@@ -180,64 +218,35 @@ public enum IsaToken {
 			case MOD			: return IsaToken.MOD;
 			case DIV			: return IsaToken.DIV;
 			case STARSTAR		: return IsaToken.STARSTAR;
-			
-			// binary relational operators
-			case LT				: return IsaToken.LT;
-			case LE				: return IsaToken.LE;
-			case GT				: return IsaToken.GT;
-			case GE				: return IsaToken.GE;
-			case NE				: return IsaToken.NE;
-			case EQUALS			: return IsaToken.EQUALS;
-			
+				
 			//case EQUALSEQUALS: return IsaToken.;
-			
-			case EQUIVALENT	    : return IsaToken.EQUIVALENT;
-			case IMPLIES		: return IsaToken.IMPLIES;
-			
-			case CARD			: return IsaToken.CARD;
-			case POWER			: return IsaToken.POWER;
-
+		
+			case INSET			: return IsaToken.INSET;
+			case NOTINSET		: return IsaToken.NOTINSET;
 			case UNION			: return IsaToken.UNION;
 			case INTER			: return IsaToken.INTER;
 			case SUBSET			: return IsaToken.SUBSET;
 			case PSUBSET		: return IsaToken.PSUBSET;
-			case INSET			: return IsaToken.INSET;
-			case NOTINSET		: return IsaToken.NOTINSET;
 			case SETDIFF		: return IsaToken.SETDIFF;
 			
-			case DOM			: return IsaToken.DOM;
-			case RNG			: return IsaToken.RNG;
+			case CONCATENATE	: return IsaToken.CONCATENATE;
+
 			case MUNION			: return IsaToken.MUNION;
-			case MERGE			: return IsaToken.MERGE;
 			case PLUSPLUS		: return IsaToken.PLUSPLUS;
-			case RANGE			: return IsaToken.RANGE;
 			case DOMRESTO		: return IsaToken.DOMRESTO;
 			case DOMRESBY		: return IsaToken.DOMRESBY;
 			case RANGERESTO		: return IsaToken.RANGERESTO;
 			case RANGERESBY		: return IsaToken.RANGERESBY;
-			
-			case INVERSE		: return IsaToken.INVERSE;
-			case CONCATENATE	: return IsaToken.CONCATENATE;
+			case COMP			: return IsaToken.COMP;
 			case MAPLET			: return IsaToken.MAPLET;
-			case LEN			: return IsaToken.LEN;
-			case DINTER			: return IsaToken.DINTER;
-			case ELEMS			: return IsaToken.ELEMS;
-			case HEAD			: return IsaToken.HEAD;
-			case TAIL			: return IsaToken.TAIL;
-			case DISTCONC		: return IsaToken.DISTCONC;
-			case INDS			: return IsaToken.INDS;
-
-			case ABS			: return IsaToken.ABS;
-			case FLOOR			: return IsaToken.FLOOR;
-			case DUNION			: return IsaToken.DUNION;
+			case RANGE			: return IsaToken.RANGE;
 
 			//case POINT		: return IsaToken.POINT;
-			case COMP			: return IsaToken.COMP;
-			case FORALL			: return IsaToken.FORALL;
-			case EXISTS			: return IsaToken.EXISTS;
-			case EXISTS1		: return IsaToken.EXISTS1;
-			case IOTA			: return IsaToken.IOTA;
-			case LAMBDA			: return IsaToken.LAMBDA;
+			//case FORALL			: return IsaToken.FORALL;
+			//case EXISTS			: return IsaToken.EXISTS;
+			//case EXISTS1		: return IsaToken.EXISTS1;
+			//case IOTA			: return IsaToken.IOTA;
+			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
 		throw new RuntimeException("Invalid VDM token for Isabelle translation " + operator.toString());  
