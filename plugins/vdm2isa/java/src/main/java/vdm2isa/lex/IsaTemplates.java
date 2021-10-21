@@ -127,15 +127,33 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
+    public static String typeRecordDefinition(TRRecordType type)
+    {
+        return "";
+    }
+
     public static String translateVDMValueDefinition(String name, TRType type, String varName, TRExpression exp)
     {
         assert name != null && type != null && exp != null;
-        StringBuilder sb = new StringBuilder();
-    	
+        StringBuilder sb = new StringBuilder(); 
         if (varName == null) varName = name.toLowerCase();
-        sb.append(translateAbbreviation(name, type.translate(), exp.translate()));
+        String typeStr;
+        // For values "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
+        if (type instanceof TRRecordType)
+            typeStr = ((TRRecordType)type).getName().toString();
+        else    
+            typeStr = type.translate();
+        sb.append(translateAbbreviation(name, typeStr, exp.translate()));
         sb.append("\n");
-        sb.append(translateInvariantAbbreviation(name, type.invTranslate(varName)));
+        String invStr;
+        if (type instanceof TRRecordType)
+        {
+            invStr = type.invTranslate(null) + varName;
+        }
+        else
+            invStr = type.invTranslate(varName);
+        //System.out.println("VDMValue translation invariant for " + name);
+        sb.append(translateInvariantAbbreviation(name, invStr));
         sb.append("\n");
         return sb.toString();
     }
