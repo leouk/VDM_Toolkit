@@ -64,6 +64,12 @@ where
   (*<*) [intro!]: (*>*) 
   "inv_VDMReal r \<equiv> inv_True r"
 
+definition
+  inv_VDMRat :: "\<rat> \<Rightarrow> \<bool>"
+where
+  (*<*) [intro!]: (*>*) 
+  "inv_VDMRat r \<equiv> inv_True r"
+
 lemma l_inv_True_True[simp]: "inv_True r" 
   by (simp add: inv_True_def)  
 
@@ -216,7 +222,7 @@ find_theorems "_ _ (_::real)" name:powr
 lemma "4 powr (1/(2::int)) = 2" by simp
 
 definition
-  vdm_pow :: "VDMReal \<Rightarrow> VDMReal \<Rightarrow> VDMReal" (infixl "vdmpow" 80)
+  vdm_pow :: "'a::ln \<Rightarrow> 'a::ln \<Rightarrow> 'a::ln" (infixl "vdmpow" 80)
   where
   [intro!]: "x vdmpow y \<equiv> x powr y"
 
@@ -548,14 +554,14 @@ where
   "post_tl s RESULT \<equiv> pre_tl s \<longrightarrow> elems RESULT \<subseteq> elems s"
 
 definition
-  reverse :: "'a VDMSeq \<Rightarrow> 'a VDMSeq"
+  vdm_reverse :: "'a VDMSeq \<Rightarrow> 'a VDMSeq"
   where
-  [intro!]: "reverse xs \<equiv> rev xs"
+  [intro!]: "vdm_reverse xs \<equiv> rev xs"
 
 definition
-  post_reverse :: "'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
+  post_vdm_reverse :: "'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
   where
-  "post_reverse xs R \<equiv> elems xs = elems R"
+  "post_vdm_reverse xs R \<equiv> elems xs = elems R"
   
 definition
   conc :: "'a VDMSeq VDMSeq \<Rightarrow> 'a VDMSeq"
@@ -893,6 +899,16 @@ definition
 where
   [intro!]: "m \<triangleright>- s \<equiv> (\<lambda>x . if (\<exists> y. m x = Some y \<and> y \<in> s) then None else m x)"
    (* same as VDM   m :-> s *)
+
+definition
+  vdm_merge :: "('a \<rightharpoonup> 'b) VDMSet \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "vdm_merge mm \<equiv> undefined" (*TODO: (\<lambda> x . x \<in> \<Union> { dom mmi | mmi \<in> mm )} )"*)
+
+definition
+  vdm_inverse :: "('a \<rightharpoonup> 'b) \<Rightarrow> ('b \<rightharpoonup> 'a)"
+  where
+  "vdm_inverse m \<equiv> undefined" (*(\<lambda> x . if (x \<in> rng m) then (m x) else None)"*)
 
 definition
   map_subset :: "('a \<rightharpoonup> 'b) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> ('b \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> \<bool>"  ("((_)/ \<subseteq>\<^sub>s (_)/, (_))" [0, 0, 50] 50)
