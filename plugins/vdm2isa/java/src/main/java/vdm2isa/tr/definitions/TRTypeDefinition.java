@@ -7,6 +7,8 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
 
+import vdm2isa.lex.IsaTemplates;  
+
 public class TRTypeDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +30,13 @@ public class TRTypeDefinition extends TRDefinition {
         StringBuilder sb = new StringBuilder();
         sb.append(super.translate());
         if (type instanceof TRRecordType)
+        {
             sb.append(type.translate());
+            String varName = "x";
+            sb.append(IsaTemplates.translateInvariantDefinition(
+                    name.toString(), name.toString(), varName, 
+                    type.invTranslate(varName)));
+        }
         return sb.toString();
     }
 }
