@@ -196,7 +196,6 @@ public final class IsaTemplates {
             case ABS: 
             case FLOOR:
             case UMINUS:
-            case UPLUS:
             case CARD:
             case DUNION:
             case DINTER:
@@ -210,14 +209,21 @@ public final class IsaTemplates {
             case MERGE:
             case DOM:
             case RNG:
+            case INVERSE:
             case POWER:
                 if (args.length != 1)
                     throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
                 sb.append("(");
+                
                 sb.append(token.toString());
                 sb.append(" ");
                 sb.append(args[0].translate());
                 sb.append(")");
+                break;
+            case UPLUS: // +x is just x
+                if (args.length != 1)
+                    throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                sb.append(args[0].translate());
                 break;
             
             // Binary Operators
@@ -238,7 +244,6 @@ public final class IsaTemplates {
             case DIVIDE:
             case MOD:
             case REM:
-            case STARSTAR:
             case INSET:
             case NOTINSET:
             case UNION:
@@ -263,6 +268,22 @@ public final class IsaTemplates {
                 sb.append(" ");
                 sb.append(args[1].translate());
                 sb.append(")");
+                break;
+            case STARSTAR:
+            case STARSTARNAT:
+                if (args.length != 2)
+                    throw new RuntimeException("Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                sb.append("(");
+                sb.append(args[0].translate());
+                sb.append(" ");
+                sb.append(token.toString());
+                sb.append(" ");
+                sb.append(args[1].translate());
+                sb.append(")\n");
+                sb.append(IsaToken.COMMENT.toString());
+                sb.append(IsaToken.COMMENT_OPEN.toString());
+                sb.append("result context dependenant on nat or real. Adjust to " + token.toString() + " or just ^");
+                sb.append(IsaToken.COMMENT_CLOSE.toString());
                 break;
             
             default:

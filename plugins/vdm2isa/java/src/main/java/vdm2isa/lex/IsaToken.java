@@ -75,13 +75,13 @@ public enum IsaToken {
 	MOD(Token.MOD, "vdmmod"),
 	REM(Token.REM, "vdmrem"),
 	STARSTAR(Token.STARSTAR, "vdmpow"), //@doc vdmpow expects real_normed_algebra_1 types only
-
+	STARSTARNAT(Token.STARSTAR, "^ nat"),
 	INSET(Token.INSET, "\\<in>"),
 	NOTINSET(Token.NOTINSET, "\\<notin>"),
 	UNION(Token.UNION, "\\<union>"),
 	INTER(Token.INTER, "\\<inter>"),
 	SETDIFF(Token.SETDIFF, "-"),
-	SUBSET(Token.SUBSET, "\\<subsetseq>"),
+	SUBSET(Token.SUBSET, "\\<subseteq>"),
 	PSUBSET(Token.PSUBSET, "\\<subset>"),
 
 	CONCATENATE(Token.CONCATENATE, "@"),
@@ -103,7 +103,7 @@ public enum IsaToken {
 	RECORD(Token.COLONCOLON, "record"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
-	INVERSE(Token.INVERSE, "\\<inverse>"), //@todo this is post-fix? 
+	INVERSE(Token.INVERSE, "vdm_inverse"),
 	MAPLET(Token.MAPLET, "\\<mapsto>"),
 	RECORD_MODIFIER(Token.MAPLET, ":="),
 	RANGE(Token.RANGE, ".."),
@@ -126,6 +126,11 @@ public enum IsaToken {
 	RRECORD(null, "\\<rparr>"),
 	COMMA(Token.COMMA, ","),
 	OPTIONAL(null, "option"),
+	COMMENT(null, "\\<comment>"),
+	COMMENT_OPEN(null,"\\<open>"),
+	COMMENT_CLOSE(null, "\\<close>"),
+	FST(null, "fst"),
+	SND(null, "snd"),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
@@ -217,7 +222,8 @@ public enum IsaToken {
 			case REM			: return IsaToken.REM;
 			case MOD			: return IsaToken.MOD;
 			case DIV			: return IsaToken.DIV;
-			case STARSTAR		: return IsaToken.STARSTAR;
+			//@todo needs context information to know whether to use STARSTARNAT or STARSTAR
+			case STARSTAR		: return IsaToken.STARSTARNAT;
 				
 			//case EQUALSEQUALS: return IsaToken.;
 		
