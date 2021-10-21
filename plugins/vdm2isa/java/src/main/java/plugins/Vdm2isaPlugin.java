@@ -17,6 +17,9 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.tr.types.TRRecordType;
+
 public class Vdm2isaPlugin extends CommandPlugin
 {
 	public Vdm2isaPlugin(Interpreter interpreter)
@@ -29,20 +32,33 @@ public class Vdm2isaPlugin extends CommandPlugin
 	{
 		if (interpreter instanceof ModuleInterpreter)
 		{
-			ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-			TCModuleList tclist = minterpreter.getTC();
-			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+			// reset internal tables in case of restranslation
+			IsaTemplates.reset();
+			TRRecordType.reset();
 
-			for (TRModule module: trModules)
+			try
 			{
-				String dir = module.name.getLocation().file.getParent();
-				if (dir == null) dir = ".";
-				String name = module.name.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-				System.out.println("Translating into " + dir + "/" + name);
-				File outfile = new File(dir, name);
-				PrintWriter out = new PrintWriter(outfile);
-				out.write(module.translate());
-				out.close();
+				ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
+				TCModuleList tclist = minterpreter.getTC();
+				TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+
+				for (TRModule module: trModules)
+				{
+					String dir = module.name.getLocation().file.getParent();
+					if (dir == null) dir = ".";
+					String name = module.name.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
+					System.out.println("Translating into " + dir + "/" + name);
+					File outfile = new File(dir, name);
+					PrintWriter out = new PrintWriter(outfile);
+					out.write(module.translate());
+					out.close();
+				}
+			}
+			catch (Throwable t)
+			{
+				System.out.println("Exception uncaught " + t.getMessage());
+				t.printStackTrace();
+				throw t;
 			}
 
 			//System.out.println(trModules.translate());
