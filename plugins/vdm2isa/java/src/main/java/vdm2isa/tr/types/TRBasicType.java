@@ -80,7 +80,8 @@ public class TRBasicType extends TRType
 	{
 		// there is no "inv_\<bool>" in the translation; add inv_bool for completeness. 
 		String typeStr = isaToken() == IsaToken.BOOL ? "bool" : translate();
-		return IsaToken.INV + typeStr + (varName == null ? "" : " " + varName);
+		return IsaToken.LPAREN.toString() + IsaToken.INV.toString() + 
+			typeStr + (varName == null ? "" : " " + varName) + IsaToken.RPAREN.toString();
 	}
 
 	@Override
