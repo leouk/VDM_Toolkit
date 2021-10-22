@@ -15,8 +15,8 @@ definition
 	inv_R :: "R \<Rightarrow> \<bool>"
 where
 	"inv_R x \<equiv> 
-		((inv_VDMNat (field1 x)) \<and>
-		 (inv_VDMNat (field2 x))
+		(((inv_VDMNat (field1 x))) \<and>
+		 ((inv_VDMNat (field2 x)))
 		)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 6:39
@@ -36,7 +36,7 @@ where
 definition
 	inv_a :: "\<bool>"
 where
-	"inv_a \<equiv> inv_bool a"
+	"inv_a \<equiv> (inv_bool a)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 10:39
 
@@ -51,7 +51,7 @@ where
 definition
 	inv_c :: "\<bool>"
 where
-	"inv_c \<equiv> inv_VDMChar c"
+	"inv_c \<equiv> (inv_VDMChar c)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 11:39
 
@@ -66,7 +66,7 @@ where
 definition
 	inv_q :: "\<bool>"
 where
-	"inv_q \<equiv> (inv_VDMSeq' inv_VDMChar q)"
+	"inv_q \<equiv> (inv_VDMSeq' (inv_VDMChar) q)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 12:39
 
@@ -81,7 +81,7 @@ where
 definition
 	inv_i :: "\<bool>"
 where
-	"inv_i \<equiv> inv_VDMInt i"
+	"inv_i \<equiv> (inv_VDMInt i)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 13:39
 
@@ -96,7 +96,7 @@ where
 definition
 	inv_x :: "\<bool>"
 where
-	"inv_x \<equiv> inv_VDMNat x"
+	"inv_x \<equiv> (inv_VDMNat x)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 14:39
 
@@ -111,7 +111,7 @@ where
 definition
 	inv_y :: "\<bool>"
 where
-	"inv_y \<equiv> inv_VDMNat1 y"
+	"inv_y \<equiv> (inv_VDMNat1 y)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 15:39
 
@@ -126,7 +126,7 @@ where
 definition
 	inv_r :: "\<bool>"
 where
-	"inv_r \<equiv> inv_VDMReal r"
+	"inv_r \<equiv> (inv_VDMReal r)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 16:39
 
@@ -141,7 +141,7 @@ where
 definition
 	inv_w :: "\<bool>"
 where
-	"inv_w \<equiv> inv_VDMRat w"
+	"inv_w \<equiv> (inv_VDMRat w)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 17:39
 
@@ -156,7 +156,7 @@ where
 definition
 	inv_s1 :: "\<bool>"
 where
-	"inv_s1 \<equiv> (inv_VDMSet1' inv_VDMNat1 s1)"
+	"inv_s1 \<equiv> (inv_VDMSet1' (inv_VDMNat1) s1)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 19:51
 
@@ -171,7 +171,7 @@ where
 definition
 	inv_s2 :: "\<bool>"
 where
-	"inv_s2 \<equiv> (inv_VDMSeq1' inv_VDMNat1 s2)"
+	"inv_s2 \<equiv> (inv_VDMSeq1' (inv_VDMNat1) s2)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 20:51
 
@@ -186,7 +186,7 @@ where
 definition
 	inv_s3 :: "\<bool>"
 where
-	"inv_s3 \<equiv> (inv_VDMSet1' inv_VDMNat1 s3)"
+	"inv_s3 \<equiv> (inv_VDMSet1' (inv_VDMNat1) s3)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 21:51
 
@@ -201,7 +201,7 @@ where
 definition
 	inv_ss1 :: "\<bool>"
 where
-	"inv_ss1 \<equiv> (inv_VDMSet' (inv_VDMSet' inv_VDMNat1) ss1)"
+	"inv_ss1 \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) ss1)"
 
 abbreviation
 	ss2 :: "VDMNat1 VDMSeq VDMSeq"
@@ -211,7 +211,7 @@ where
 definition
 	inv_ss2 :: "\<bool>"
 where
-	"inv_ss2 \<equiv> (inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) ss2)"
+	"inv_ss2 \<equiv> (inv_VDMSeq' (inv_VDMSeq' (inv_VDMNat1)) ss2)"
 
 abbreviation
 	m1 :: "VDMNat1 \<rightharpoonup> VDMNat1"
@@ -221,7 +221,7 @@ where
 definition
 	inv_m1 :: "\<bool>"
 where
-	"inv_m1 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 m1)"
+	"inv_m1 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) m1)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 24:51
 
@@ -236,7 +236,7 @@ where
 definition
 	inv_m2 :: "\<bool>"
 where
-	"inv_m2 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 m2)"
+	"inv_m2 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) m2)"
 
 abbreviation
 	v1 :: "VDMNat1"
@@ -246,7 +246,7 @@ where
 definition
 	inv_v1 :: "\<bool>"
 where
-	"inv_v1 \<equiv> inv_VDMNat1 v1"
+	"inv_v1 \<equiv> (inv_VDMNat1 v1)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 27:39
 
@@ -261,7 +261,7 @@ where
 definition
 	inv_v2 :: "\<bool>"
 where
-	"inv_v2 \<equiv> inv_VDMInt v2"
+	"inv_v2 \<equiv> (inv_VDMInt v2)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 28:39
 
@@ -276,7 +276,7 @@ where
 definition
 	inv_v3 :: "\<bool>"
 where
-	"inv_v3 \<equiv> inv_VDMInt v3"
+	"inv_v3 \<equiv> (inv_VDMInt v3)"
 
 abbreviation
 	v4 :: "VDMInt"
@@ -286,7 +286,7 @@ where
 definition
 	inv_v4 :: "\<bool>"
 where
-	"inv_v4 \<equiv> inv_VDMInt v4"
+	"inv_v4 \<equiv> (inv_VDMInt v4)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 30:39
 
@@ -301,7 +301,7 @@ where
 definition
 	inv_v5 :: "\<bool>"
 where
-	"inv_v5 \<equiv> inv_VDMNat1 v5"
+	"inv_v5 \<equiv> (inv_VDMNat1 v5)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 31:39
 
@@ -316,7 +316,7 @@ where
 definition
 	inv_v6 :: "\<bool>"
 where
-	"inv_v6 \<equiv> inv_VDMNat1 v6"
+	"inv_v6 \<equiv> (inv_VDMNat1 v6)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 32:39
 
@@ -331,7 +331,7 @@ where
 definition
 	inv_v7 :: "\<bool>"
 where
-	"inv_v7 \<equiv> (inv_VDMSet' (inv_VDMSet' inv_VDMNat1) v7)"
+	"inv_v7 \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) v7)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 33:39
 
@@ -346,7 +346,7 @@ where
 definition
 	inv_v8 :: "\<bool>"
 where
-	"inv_v8 \<equiv> (inv_VDMSet' inv_VDMNat1 v8)"
+	"inv_v8 \<equiv> (inv_VDMSet' (inv_VDMNat1) v8)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 34:39
 
@@ -361,7 +361,7 @@ where
 definition
 	inv_v9 :: "\<bool>"
 where
-	"inv_v9 \<equiv> (inv_VDMSet' inv_VDMNat1 v9)"
+	"inv_v9 \<equiv> (inv_VDMSet' (inv_VDMNat1) v9)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 35:39
 
@@ -376,7 +376,7 @@ where
 definition
 	inv_v10 :: "\<bool>"
 where
-	"inv_v10 \<equiv> inv_VDMNat1 v10"
+	"inv_v10 \<equiv> (inv_VDMNat1 v10)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 36:39
 
@@ -391,7 +391,7 @@ where
 definition
 	inv_v11 :: "\<bool>"
 where
-	"inv_v11 \<equiv> inv_VDMNat1 v11"
+	"inv_v11 \<equiv> (inv_VDMNat1 v11)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 37:39
 
@@ -406,7 +406,7 @@ where
 definition
 	inv_v12 :: "\<bool>"
 where
-	"inv_v12 \<equiv> (inv_VDMSeq' inv_VDMNat1 v12)"
+	"inv_v12 \<equiv> (inv_VDMSeq' (inv_VDMNat1) v12)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 38:39
 
@@ -421,7 +421,7 @@ where
 definition
 	inv_v13 :: "\<bool>"
 where
-	"inv_v13 \<equiv> (inv_VDMSet' inv_VDMNat1 v13)"
+	"inv_v13 \<equiv> (inv_VDMSet' (inv_VDMNat1) v13)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 39:39
 
@@ -436,7 +436,7 @@ where
 definition
 	inv_v14 :: "\<bool>"
 where
-	"inv_v14 \<equiv> (inv_VDMSet' inv_VDMNat1 v14)"
+	"inv_v14 \<equiv> (inv_VDMSet' (inv_VDMNat1) v14)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 40:39
 
@@ -451,7 +451,7 @@ where
 definition
 	inv_v15 :: "\<bool>"
 where
-	"inv_v15 \<equiv> (inv_VDMSeq' inv_VDMNat1 v15)"
+	"inv_v15 \<equiv> (inv_VDMSeq' (inv_VDMNat1) v15)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 41:39
 
@@ -466,7 +466,7 @@ where
 definition
 	inv_v16 :: "\<bool>"
 where
-	"inv_v16 \<equiv> (inv_VDMSeq1' inv_VDMNat1 v16)"
+	"inv_v16 \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v16)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 42:39
 
@@ -481,7 +481,7 @@ where
 definition
 	inv_v17 :: "\<bool>"
 where
-	"inv_v17 \<equiv> (inv_VDMSeq1' inv_VDMNat1 v17)"
+	"inv_v17 \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v17)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 43:39
 
@@ -496,7 +496,7 @@ where
 definition
 	inv_v18 :: "\<bool>"
 where
-	"inv_v18 \<equiv> (inv_VDMSeq' inv_VDMNat1 v18)"
+	"inv_v18 \<equiv> (inv_VDMSeq' (inv_VDMNat1) v18)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 44:39
 
@@ -511,7 +511,7 @@ where
 definition
 	inv_v19 :: "\<bool>"
 where
-	"inv_v19 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v19)"
+	"inv_v19 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v19)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 45:39
 
@@ -526,7 +526,7 @@ where
 definition
 	inv_v20 :: "\<bool>"
 where
-	"inv_v20 \<equiv> (inv_VDMSet' inv_VDMNat1 v20)"
+	"inv_v20 \<equiv> (inv_VDMSet' (inv_VDMNat1) v20)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 46:39
 
@@ -541,7 +541,7 @@ where
 definition
 	inv_v21 :: "\<bool>"
 where
-	"inv_v21 \<equiv> (inv_VDMSet' inv_VDMNat1 v21)"
+	"inv_v21 \<equiv> (inv_VDMSet' (inv_VDMNat1) v21)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 47:39
 
@@ -556,7 +556,7 @@ where
 definition
 	inv_v22 :: "\<bool>"
 where
-	"inv_v22 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v22)"
+	"inv_v22 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v22)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 48:39
 
@@ -571,7 +571,7 @@ where
 definition
 	inv_v23 :: "\<bool>"
 where
-	"inv_v23 \<equiv> inv_VDMNat1 v23"
+	"inv_v23 \<equiv> (inv_VDMNat1 v23)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 49:39
 
@@ -586,7 +586,7 @@ where
 definition
 	inv_v24 :: "\<bool>"
 where
-	"inv_v24 \<equiv> inv_VDMInt v24"
+	"inv_v24 \<equiv> (inv_VDMInt v24)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 50:39
 
@@ -601,7 +601,7 @@ where
 definition
 	inv_v25 :: "\<bool>"
 where
-	"inv_v25 \<equiv> inv_VDMNat1 v25"
+	"inv_v25 \<equiv> (inv_VDMNat1 v25)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 51:39
 
@@ -616,7 +616,7 @@ where
 definition
 	inv_v26 :: "\<bool>"
 where
-	"inv_v26 \<equiv> inv_VDMInt v26"
+	"inv_v26 \<equiv> (inv_VDMInt v26)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 52:39
 
@@ -631,7 +631,7 @@ where
 definition
 	inv_v27 :: "\<bool>"
 where
-	"inv_v27 \<equiv> inv_VDMReal v27"
+	"inv_v27 \<equiv> (inv_VDMReal v27)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 53:39
 
@@ -646,7 +646,7 @@ where
 definition
 	inv_v28 :: "\<bool>"
 where
-	"inv_v28 \<equiv> inv_VDMInt v28"
+	"inv_v28 \<equiv> (inv_VDMInt v28)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 54:39
 
@@ -661,7 +661,7 @@ where
 definition
 	inv_v29 :: "\<bool>"
 where
-	"inv_v29 \<equiv> inv_VDMInt v29"
+	"inv_v29 \<equiv> (inv_VDMInt v29)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:39
 
@@ -677,7 +677,7 @@ where
 definition
 	inv_v30 :: "\<bool>"
 where
-	"inv_v30 \<equiv> inv_VDMNat1 v30"
+	"inv_v30 \<equiv> (inv_VDMNat1 v30)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 56:39
 
@@ -692,7 +692,7 @@ where
 definition
 	inv_v31 :: "\<bool>"
 where
-	"inv_v31 \<equiv> inv_bool v31"
+	"inv_v31 \<equiv> (inv_bool v31)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 57:39
 
@@ -707,7 +707,7 @@ where
 definition
 	inv_v32 :: "\<bool>"
 where
-	"inv_v32 \<equiv> inv_bool v32"
+	"inv_v32 \<equiv> (inv_bool v32)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 58:39
 
@@ -722,7 +722,7 @@ where
 definition
 	inv_v33 :: "\<bool>"
 where
-	"inv_v33 \<equiv> inv_bool v33"
+	"inv_v33 \<equiv> (inv_bool v33)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 59:39
 
@@ -737,7 +737,7 @@ where
 definition
 	inv_v34 :: "\<bool>"
 where
-	"inv_v34 \<equiv> inv_bool v34"
+	"inv_v34 \<equiv> (inv_bool v34)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 60:39
 
@@ -752,7 +752,7 @@ where
 definition
 	inv_v35 :: "\<bool>"
 where
-	"inv_v35 \<equiv> inv_bool v35"
+	"inv_v35 \<equiv> (inv_bool v35)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 61:39
 
@@ -767,7 +767,7 @@ where
 definition
 	inv_v36 :: "\<bool>"
 where
-	"inv_v36 \<equiv> inv_bool v36"
+	"inv_v36 \<equiv> (inv_bool v36)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 62:39
 
@@ -782,7 +782,7 @@ where
 definition
 	inv_v37 :: "\<bool>"
 where
-	"inv_v37 \<equiv> (inv_Option inv_VDMNat v37)"
+	"inv_v37 \<equiv> (inv_Option (inv_VDMNat) v37)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 63:39
 
@@ -812,7 +812,7 @@ where
 definition
 	inv_v39 :: "\<bool>"
 where
-	"inv_v39 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v39)"
+	"inv_v39 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v39)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 65:39
 
@@ -827,7 +827,7 @@ where
 definition
 	inv_v40 :: "\<bool>"
 where
-	"inv_v40 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v40)"
+	"inv_v40 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v40)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
 
@@ -842,7 +842,7 @@ where
 definition
 	inv_v41 :: "\<bool>"
 where
-	"inv_v41 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v41)"
+	"inv_v41 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v41)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 67:39
 
@@ -857,7 +857,7 @@ where
 definition
 	inv_v42 :: "\<bool>"
 where
-	"inv_v42 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v42)"
+	"inv_v42 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v42)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 68:39
 
@@ -872,7 +872,7 @@ where
 definition
 	inv_v43 :: "\<bool>"
 where
-	"inv_v43 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v43)"
+	"inv_v43 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v43)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 69:39
 
@@ -887,7 +887,7 @@ where
 definition
 	inv_v44 :: "\<bool>"
 where
-	"inv_v44 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v44)"
+	"inv_v44 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v44)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 70:39
 
@@ -902,7 +902,7 @@ where
 definition
 	inv_v45 :: "\<bool>"
 where
-	"inv_v45 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v45)"
+	"inv_v45 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v45)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 71:39
 
@@ -917,7 +917,7 @@ where
 definition
 	inv_v46 :: "\<bool>"
 where
-	"inv_v46 \<equiv> inv_bool v46"
+	"inv_v46 \<equiv> (inv_bool v46)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 72:39
 
@@ -932,7 +932,7 @@ where
 definition
 	inv_v47 :: "\<bool>"
 where
-	"inv_v47 \<equiv> inv_bool v47"
+	"inv_v47 \<equiv> (inv_bool v47)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 73:39
 
@@ -947,7 +947,7 @@ where
 definition
 	inv_v48 :: "\<bool>"
 where
-	"inv_v48 \<equiv> inv_bool v48"
+	"inv_v48 \<equiv> (inv_bool v48)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 74:39
 
@@ -962,7 +962,7 @@ where
 definition
 	inv_v49 :: "\<bool>"
 where
-	"inv_v49 \<equiv> inv_bool v49"
+	"inv_v49 \<equiv> (inv_bool v49)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 75:39
 
@@ -977,7 +977,7 @@ where
 definition
 	inv_v50 :: "\<bool>"
 where
-	"inv_v50 \<equiv> inv_bool v50"
+	"inv_v50 \<equiv> (inv_bool v50)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 76:39
 
@@ -992,7 +992,7 @@ where
 definition
 	inv_v51 :: "\<bool>"
 where
-	"inv_v51 \<equiv> inv_bool v51"
+	"inv_v51 \<equiv> (inv_bool v51)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 77:43
 
@@ -1007,7 +1007,7 @@ where
 definition
 	inv_v52 :: "\<bool>"
 where
-	"inv_v52 \<equiv> inv_bool v52"
+	"inv_v52 \<equiv> (inv_bool v52)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 78:43
 
@@ -1022,7 +1022,7 @@ where
 definition
 	inv_v53 :: "\<bool>"
 where
-	"inv_v53 \<equiv> (inv_VDMSet' inv_VDMNat v53)"
+	"inv_v53 \<equiv> (inv_VDMSet' (inv_VDMNat) v53)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 79:51
 
@@ -1037,7 +1037,7 @@ where
 definition
 	inv_v54 :: "\<bool>"
 where
-	"inv_v54 \<equiv> (inv_VDMSet' inv_VDMNat v54)"
+	"inv_v54 \<equiv> (inv_VDMSet' (inv_VDMNat) v54)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 80:51
 
@@ -1052,7 +1052,7 @@ where
 definition
 	inv_v55 :: "\<bool>"
 where
-	"inv_v55 \<equiv> (inv_VDMSet' inv_VDMNat v55)"
+	"inv_v55 \<equiv> (inv_VDMSet' (inv_VDMNat) v55)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 81:51
 
@@ -1067,7 +1067,7 @@ where
 definition
 	inv_v56 :: "\<bool>"
 where
-	"inv_v56 \<equiv> inv_bool v56"
+	"inv_v56 \<equiv> (inv_bool v56)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 82:39
 
@@ -1082,7 +1082,7 @@ where
 definition
 	inv_v57 :: "\<bool>"
 where
-	"inv_v57 \<equiv> inv_bool v57"
+	"inv_v57 \<equiv> (inv_bool v57)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 83:39
 
@@ -1097,7 +1097,7 @@ where
 definition
 	inv_v58 :: "\<bool>"
 where
-	"inv_v58 \<equiv> (inv_VDMSet' inv_VDMNat1 v58)"
+	"inv_v58 \<equiv> (inv_VDMSet' (inv_VDMNat1) v58)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 84:39
 
@@ -1112,7 +1112,7 @@ where
 definition
 	inv_v59 :: "\<bool>"
 where
-	"inv_v59 \<equiv> (inv_VDMSet1' inv_VDMNat1 v59)"
+	"inv_v59 \<equiv> (inv_VDMSet1' (inv_VDMNat1) v59)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 85:39
 
@@ -1127,7 +1127,7 @@ where
 definition
 	inv_v60 :: "\<bool>"
 where
-	"inv_v60 \<equiv> (inv_VDMSeq1' inv_VDMNat1 v60)"
+	"inv_v60 \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v60)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 86:39
 
@@ -1142,7 +1142,7 @@ where
 definition
 	inv_v61 :: "\<bool>"
 where
-	"inv_v61 \<equiv> (inv_Map inv_VDMNat1 inv_VDMNat1 v61)"
+	"inv_v61 \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v61)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 87:39
 
@@ -1157,9 +1157,10 @@ where
 definition
 	inv_v62 :: "\<bool>"
 where
-	"inv_v62 \<equiv> (
-    inv_VDMNat1 (fst v62)\<and>
-		inv_VDMNat1 (snd v62))"
+	"inv_v62 \<equiv> 
+		((inv_VDMNat1 (fst v62))\<and>
+		 (inv_VDMNat1 (snd v62))
+		)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 88:39
 
@@ -1174,10 +1175,11 @@ where
 definition
 	inv_v63 :: "\<bool>"
 where
-	"inv_v63 \<equiv> (
-    inv_VDMNat1 (fst v63)\<and>
-		inv_VDMNat1 (snd v63)\<and>
-		inv_VDMNat1 (snd (snd v63)))"
+	"inv_v63 \<equiv> 
+		((inv_VDMNat1 (fst v63))\<and>
+		 (inv_VDMNat1 (fst (snd v63)))\<and>
+		 (inv_VDMNat1 (snd (snd v63)))
+		)"
 
 abbreviation
 	v64 :: "(VDMNat1\<times>VDMNat1\<times>VDMNat1\<times>VDMNat1)"
@@ -1187,10 +1189,12 @@ where
 definition
 	inv_v64 :: "\<bool>"
 where
-	"inv_v64 \<equiv> (inv_VDMNat1 (fst v64)\<and>
-		inv_VDMNat1 (snd v64)\<and>
-		inv_VDMNat1 (snd v64)(snd v64)\<and>
-		inv_VDMNat1 (snd v64)(snd v64)(snd v64))"
+	"inv_v64 \<equiv> 
+		((inv_VDMNat1 (fst v64))\<and>
+		 (inv_VDMNat1 (fst (snd v64)))\<and>
+		 (inv_VDMNat1 (fst (snd (snd v64))))\<and>
+		 (inv_VDMNat1 (snd (snd (snd v64))))
+		)"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 91:7
 

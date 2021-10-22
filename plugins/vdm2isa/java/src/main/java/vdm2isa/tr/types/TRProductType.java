@@ -27,23 +27,32 @@ public class TRProductType extends TRType {
             fieldVarName.append(" ");
             fieldVarName.append(varName);
             fieldVarName.append(IsaToken.RPAREN.toString());
-        } else 
+        } /*
+        else if (this.types.size() == 2 && index == 1)
         {
-            // repeat (snd x) index-times
             fieldVarName.append(IsaToken.LPAREN.toString());
             fieldVarName.append(IsaToken.SND.toString());
             fieldVarName.append(" ");
             fieldVarName.append(varName);
             fieldVarName.append(IsaToken.RPAREN.toString());
-
-            String snd = fieldVarName.toString();
-            fieldVarName = new StringBuilder();
-            fieldVarName.append(String.format("%0" + index + "d", 0).replace("0", snd));
+        }*/
+        else 
+        {
+            // repeat (snd x) index-times
+            fieldVarName.append(IsaToken.LPAREN.toString());
+            fieldVarName.append(IsaToken.SND.toString());
+            fieldVarName.append(" ");
+            if (index > 1)
+            {    
+                fieldVarName.append(String.format("%0" + (index-1) + "d", 0).replace("0", fieldVarName.toString()));
+            }
+            fieldVarName.append(varName);
+            fieldVarName.append(String.format("%0" + index + "d", 0).replace("0", IsaToken.RPAREN.toString()));
             
             // add final external fst (snd .... (snd x)) or just final snd 
             if (index < this.types.size() - 1) 
             {
-                fieldProjection(0, fieldVarName.toString());
+                return fieldProjection(0, fieldVarName.toString());
             }
         }
         return fieldVarName.toString();
@@ -55,11 +64,7 @@ public class TRProductType extends TRType {
 		StringBuilder sb = new StringBuilder();
 		if (!this.types.isEmpty())
 		{
-			sb.append("(");
-            if (this.types.size() > 1)
-            {
-                sb.append("\n\t\t");
-            }
+			sb.append("\n\t\t(");
             String fieldVarName = varName == null ? "" : fieldProjection(0, varName); 
 			sb.append(this.types.get(0).invTranslate(fieldVarName));
 
@@ -72,7 +77,7 @@ public class TRProductType extends TRType {
 			for (int i=1; i < this.types.size(); i++)
 			{
 				sb.append(IsaToken.AND.toString());
-				sb.append("\n\t\t");
+				sb.append("\n\t\t ");
                 fieldVarName = varName == null ? "" : fieldProjection(i, varName); 
                 sb.append(this.types.get(i).invTranslate(fieldVarName));
                 //sb.append(IsaToken.COMMENT.toString());
@@ -80,7 +85,7 @@ public class TRProductType extends TRType {
                 //sb.append("This is messy, but easy: fst, fst snd, fst snd snd, snd snd snd say for 4-tuple");
                 //sb.append(IsaToken.COMMENT_CLOSE.toString()); 
 			}
-			sb.append(")");
+			sb.append("\n\t\t)");
 		}
 		return sb.toString();	
 	}
