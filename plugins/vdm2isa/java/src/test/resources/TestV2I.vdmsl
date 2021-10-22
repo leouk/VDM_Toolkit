@@ -85,12 +85,14 @@ values
 	v59= {1,2,3,4};					--TCSetEnumExpression		
 	v60= [1,3,4];					--TCSeqEnumExpression		
 	v61= {1 |-> 2, 2|->3};			--TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression	
-	v62= mk_(1,2);					--TCTupleExpression						
+	v62= mk_(1,2);					--TCTupleExpression		
+	v63= mk_(1,2,3);
+	v64= mk_(1,2,3,4);				
 	--TODO: TCQuoteLiteralExpression quote literal requires quote type prior definition for Isabelle 
 	--v13= merge mm;	
 	--v18: S = mk_S();
-	v63: R = mk_R(1, 2);			--TCMkTypeExpression		
-	v64: R = mu(v63, field1 |-> 10, field2 |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
+	v65: R = mk_R(1, 2);			--TCMkTypeExpression		
+	v66: R = mu(v65, field1 |-> 10, field2 |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
 	--TODO: not yet v65= m1(1);						--TCApplyExpression
 functions
 
