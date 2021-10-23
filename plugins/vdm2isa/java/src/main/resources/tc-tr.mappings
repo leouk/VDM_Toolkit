@@ -100,8 +100,11 @@ map TCRecordModifier{tag, value} to TRRecordModifier(tag, value);
 map TCRecordModifierList{} to TRRecordModifierList(this);
 map TCMuExpression{location, record, modifiers} to TRMuExpression(location, record, modifiers);
 map TCMkTypeExpression{typename, args} to TRMkTypeExpression(typename, args);
-map TCFieldNumberExpression{tuple, field} to TRFieldNumberExpression(tuple, field);
+map TCFieldNumberExpression{tuple, field, type} to TRFieldNumberExpression(tuple, field, type);
 map TCFieldExpression{object, field} to TRFieldExpression(object, field);
+
+map TCNotYetSpecifiedExpression{location} to TRNotYetSpecifiedExpression(location);
+map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpression(location, typename, basictype, test);
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
