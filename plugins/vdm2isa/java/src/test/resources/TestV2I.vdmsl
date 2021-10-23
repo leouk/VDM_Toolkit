@@ -93,6 +93,11 @@ values
 	--v18: S = mk_S();
 	v65: R = mk_R(1, 2);			--TCMkTypeExpression		
 	v66: R = mu(v65, field1 |-> 10, field2 |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
+	v67= v65.field1;          --TCFieldExpression
+	v68= v64.#1;               --TCFieldNumberExpression 
+	v69= v64.#2;
+	v70= v64.#3;
+	v71= v64.#4;
 	--TODO: not yet v65= m1(1);						--TCApplyExpression
 functions
 

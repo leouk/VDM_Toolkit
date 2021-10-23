@@ -81,6 +81,8 @@
 *TCRecordModifier
 *TCRecordModifierList
 *TCMkTypeExpression
+*TCFieldNumberExpression
+*TCFieldExpression
 
 
 TCPostOpExpression
@@ -93,8 +95,6 @@ TCElseIfExpressionList
 TCExists1Expression
 TCExistsExpression
 
-TCFieldExpression
-TCFieldNumberExpression
 TCFuncInstantiationExpression
 
 TCIsExpression

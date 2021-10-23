@@ -7,7 +7,7 @@ import vdm2isa.lex.IsaToken;
 public class TRProductType extends TRType {
     private static final long serialVersionUID = 1L;
 
-    private final TRTypeList types;
+    public final TRTypeList types;
 
     public TRProductType(LexLocation location, TRTypeList types)
     {
@@ -16,9 +16,10 @@ public class TRProductType extends TRType {
         this.types.setCurried(false);
     }
 
-    protected String fieldProjection(int index, String varName)
+    public static String fieldProjection(long index, long size, String varName)
     {
-        assert index >= 0 && index < this.types.size() && varName != null;
+        // using long because index in field num expression is a long :-()
+        assert index >= 0 && index < size && varName != null;
         StringBuilder fieldVarName = new StringBuilder();
         if (index == 0)
         {
@@ -50,9 +51,9 @@ public class TRProductType extends TRType {
             fieldVarName.append(String.format("%0" + index + "d", 0).replace("0", IsaToken.RPAREN.toString()));
             
             // add final external fst (snd .... (snd x)) or just final snd 
-            if (index < this.types.size() - 1) 
+            if (index < size - 1) 
             {
-                return fieldProjection(0, fieldVarName.toString());
+                return fieldProjection(0, size, fieldVarName.toString());
             }
         }
         return fieldVarName.toString();
@@ -65,7 +66,8 @@ public class TRProductType extends TRType {
 		if (!this.types.isEmpty())
 		{
 			sb.append("\n\t\t(");
-            String fieldVarName = varName == null ? "" : fieldProjection(0, varName); 
+            int size = this.types.size();
+            String fieldVarName = varName == null ? "" : TRProductType.fieldProjection(0, size, varName); 
 			sb.append(this.types.get(0).invTranslate(fieldVarName));
 
             // For larger products, the answer is to have fst (n-times-snd x), where snd are for all but the last.
@@ -74,11 +76,11 @@ public class TRProductType extends TRType {
             // idx=1 x.#2 = fst (snd x)       = 2 = fst (2,(3,4))
             // idx=2 x.#3 = fst (snd (snd x)) = 3 = fst (3,4)
             // idx=3 x.#4 = snd (snd (snd x)) = 4 = snd (3,4)
-			for (int i=1; i < this.types.size(); i++)
+			for (int i=1; i < size; i++)
 			{
 				sb.append(IsaToken.AND.toString());
 				sb.append("\n\t\t ");
-                fieldVarName = varName == null ? "" : fieldProjection(i, varName); 
+                fieldVarName = varName == null ? "" : TRProductType.fieldProjection(i, size, varName); 
                 sb.append(this.types.get(i).invTranslate(fieldVarName));
                 //sb.append(IsaToken.COMMENT.toString());
                 //sb.append(IsaToken.COMMENT_OPEN.toString());
