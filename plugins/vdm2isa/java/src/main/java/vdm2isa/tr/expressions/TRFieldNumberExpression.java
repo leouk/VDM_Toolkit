@@ -4,20 +4,24 @@ import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRProductType;
+import vdm2isa.tr.types.TRType;
 
 public class TRFieldNumberExpression extends TRExpression {
     
     private final TRExpression tuple;
     private final LexIntegerToken field; 
-    private final TRProductType type;
+    private final TRType type;
 
-    public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field)
+    public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type)
     {
         super(tuple);
         this.tuple = tuple;
         this.field = field;
-        //TODO has to get this info from TCFieldNumberExpression, but it's private . 
-        this.type = null;
+        this.type = type;
+        if (!(type instanceof TRProductType))
+            throw new IllegalArgumentException("Invalid type for tuple projection expression " + tuple.translate() + ".#" + field.toString() + " = " + type.getClass().getName());
+        if (this.field.value <= 0 || this.field.value > getProductType().types.size())
+            throw new IllegalArgumentException("Invalid tuple projection field (" + this.field.value + ") is bigger than tuple size (" + getProductType().types.size() + ")"); 
     }
 
     @Override
@@ -25,9 +29,15 @@ public class TRFieldNumberExpression extends TRExpression {
         return IsaToken.EOF;
     }
 
+    protected TRProductType getProductType()
+    {
+        return (TRProductType)type;
+    }
+
     @Override
     public String translate() {
-        return TRProductType.fieldProjection(field.value, type.types.size(), 
-            IsaToken.LPAREN.toString() + tuple.translate() + IsaToken.RPAREN.toString());
+        assert field.value > 0 && field.value <= getProductType().types.size();
+        return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
+            IsaToken.parenthesise(tuple.translate()));
     }
 }

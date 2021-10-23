@@ -1234,5 +1234,85 @@ definition
 where
 	"inv_v66 \<equiv> inv_R v66"
 
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 95:54
+
+TCMuExpression,TCRecordModifierList, TCRecordModifier
+
+*)
+abbreviation
+	v67 :: "VDMNat"
+where
+	"v67 \<equiv> (field1 (v65))"
+
+definition
+	inv_v67 :: "\<bool>"
+where
+	"inv_v67 \<equiv> (inv_VDMNat v67)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 96:33
+
+TCFieldExpression
+
+*)
+abbreviation
+	v68 :: "VDMNat1"
+where
+	"v68 \<equiv> (fst (v64))"
+
+definition
+	inv_v68 :: "\<bool>"
+where
+	"inv_v68 \<equiv> (inv_VDMNat1 v68)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 97:34
+
+TCFieldNumberExpression 
+
+*)
+abbreviation
+	v69 :: "VDMNat1"
+where
+	"v69 \<equiv> (fst (snd (v64)))"
+
+definition
+	inv_v69 :: "\<bool>"
+where
+	"inv_v69 \<equiv> (inv_VDMNat1 v69)"
+
+abbreviation
+	v70 :: "VDMNat1"
+where
+	"v70 \<equiv> (fst (snd (snd (v64))))"
+
+definition
+	inv_v70 :: "\<bool>"
+where
+	"inv_v70 \<equiv> (inv_VDMNat1 v70)"
+
+abbreviation
+	v71 :: "VDMNat1"
+where
+	"v71 \<equiv> (snd (snd (snd (v64))))"
+
+definition
+	inv_v71 :: "\<bool>"
+where
+	"inv_v71 \<equiv> (inv_VDMNat1 v71)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 101:7
+
+v72= not yet specified;	--TCNotYetSpecifiedExpression
+
+*)
+abbreviation
+	v72 :: "VDMNat1"
+where
+	"v72 \<equiv> (((4.0))::VDMNat1)\<comment>\<open>VDM narrow expressions might create Isabelle type errors!\<close>"
+
+definition
+	inv_v72 :: "\<bool>"
+where
+	"inv_v72 \<equiv> (inv_VDMNat1 v72)"
+
 
 end
