@@ -16,6 +16,6 @@ public class TRIsExpression extends TRVDMTestExpression {
     @Override
     public String translate() {
         // TODO needs to register all is_X expressions and define it? 
-        return null;
+        return "not yet";
     }
 }

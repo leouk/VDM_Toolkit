@@ -105,6 +105,7 @@ map TCFieldExpression{object, field} to TRFieldExpression(object, field);
 
 map TCNotYetSpecifiedExpression{location} to TRNotYetSpecifiedExpression(location);
 map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpression(location, typename, basictype, test);
+map TCIsExpression{location, typename, basictype, test} to TRIsExpression(location, typename, basictype, test);
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);

@@ -85,21 +85,23 @@
 *TCFieldExpression
 *TCNotYetSpecifiedExpression
 *TCNarrowExpression
+*TCIsExpression
 
 
 TCPostOpExpression
 TCCaseAlternative
 TCCaseAlternativeList
 TCCasesExpression
+
 TCDefExpression
 TCElseIfExpression
 TCElseIfExpressionList
-TCExists1Expression
-TCExistsExpression
+
 
 TCFuncInstantiationExpression
 
-TCIsExpression
+TCExists1Expression
+TCExistsExpression
 TCForAllExpression
 
 TCIotaExpression
