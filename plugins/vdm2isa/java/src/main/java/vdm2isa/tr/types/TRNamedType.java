@@ -33,9 +33,8 @@ public class TRNamedType extends TRInvariantType
 
     @Override
 	public String invTranslate(String varName) {
-		return IsaToken.LPAREN.toString() +
+		return IsaToken.parenthesise(
             IsaToken.INV.toString() + typename +
-            (varName != null ? " " + varName : "") + 
-            IsaToken.RPAREN.toString();
+            (varName != null ? " " + varName : ""));
 	}
 }

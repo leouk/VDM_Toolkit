@@ -37,8 +37,7 @@ public class TRSeqType extends TRType
 
     @Override
     public String invTranslate(String varName) {
-        return IsaToken.LPAREN.toString() + IsaToken.INV.toString() + isaToken().toString() + 
-            "' " + seqof.invTranslate(null) + (varName != null ? " " + varName : "") + 
-            IsaToken.RPAREN.toString();        
+        return IsaToken.parenthesise(IsaToken.INV.toString() + isaToken().toString() + 
+            "' " + seqof.invTranslate(null) + (varName != null ? " " + varName : ""));
     }
 }

@@ -21,9 +21,9 @@ public class TRField extends TRType {
     @Override
     public String invTranslate(String varName) {
         String fieldName = varName == null ? varName : 
-            IsaToken.LPAREN.toString() + tagname.toString() + " " + varName + IsaToken.RPAREN.toString(); 
-        return IsaToken.LPAREN.toString() + type.invTranslate(fieldName) + IsaToken.RPAREN.toString();
-    }
+            IsaToken.parenthesise(tagname.toString() + " " + varName);
+        return IsaToken.parenthesise(type.invTranslate(fieldName));
+     }
 
     @Override
     public IsaToken isaToken() {

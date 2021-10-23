@@ -101,6 +101,7 @@ public enum IsaToken {
 	VARIABLE(null, ""),
 	INV(null, "inv_"),
 	RECORD(Token.COLONCOLON, "record"),
+	UNDEFINED(Token.UNDEFINED, "undefined"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
@@ -165,9 +166,19 @@ public enum IsaToken {
 		return vdm;
 	}
 
-	public static boolean parenthesise(IsaToken i)
+	public static String parenthesise(String s)
 	{
-		return false;
+		return bracketit(IsaToken.LPAREN, s, IsaToken.RPAREN);
+	}
+
+	public static String comment(String s)
+	{
+		return IsaToken.COMMENT.toString() + IsaToken.bracketit(IsaToken.COMMENT_OPEN, s, IsaToken.COMMENT_CLOSE);
+	}
+
+	public static String bracketit(IsaToken left, String s, IsaToken right)
+	{
+		return left.toString() + s + right.toString();
 	}
 
 	//@TODO fix after finalisaing Token above. 

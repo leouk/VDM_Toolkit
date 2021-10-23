@@ -37,10 +37,9 @@ public class TRSetType extends TRType
     //lemma "inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) [[1,2],[1,2]]"
     @Override
     public String invTranslate(String varName) {
-        return IsaToken.LPAREN.toString() + 
+        return IsaToken.parenthesise( 
             IsaToken.INV.toString() + isaToken().toString() + "' " + 
-            setof.invTranslate(null) + (varName != null ? " " + varName : "") + 
-            IsaToken.RPAREN.toString();        
+            setof.invTranslate(null) + (varName != null ? " " + varName : ""));
     }
 
     

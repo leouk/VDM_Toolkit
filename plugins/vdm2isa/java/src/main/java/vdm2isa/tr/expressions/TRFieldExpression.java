@@ -23,11 +23,9 @@ public class TRFieldExpression extends TRExpression {
 
     @Override
     public String translate() {
-        return IsaToken.LPAREN.toString() +
-            field.getName() + " " +
-            IsaToken.LPAREN.toString() + 
-            object.translate() + 
-            IsaToken.RPAREN.toString() +
-            IsaToken.RPAREN.toString();
+        return IsaToken.parenthesise(
+                    field.getName() + " " +
+                    IsaToken.parenthesise(object.translate())
+                );
     }
 }

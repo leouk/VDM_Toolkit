@@ -99,6 +99,6 @@ public class TRProductType extends TRType {
 
     @Override
     public String translate() {
-        return IsaToken.LPAREN.toString() + this.types.translate() + IsaToken.RPAREN.toString();
+        return IsaToken.parenthesise(this.types.translate());
     }
 }

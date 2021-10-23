@@ -18,7 +18,6 @@ public class TROptionalType extends TRType {
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(IsaToken.LPAREN.toString());
         sb.append(IsaToken.INV.toString());
         // transform "map" => "Map" for inv_Map call
         int i = sb.length();
@@ -29,8 +28,7 @@ public class TROptionalType extends TRType {
         sb.append(type.invTranslate(null));
         sb.append(" ");
         sb.append(varName);
-        sb.append(IsaToken.RPAREN.toString());
-        return sb.toString();
+        return IsaToken.parenthesise(sb.toString());
     }
 
     @Override

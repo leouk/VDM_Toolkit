@@ -25,12 +25,8 @@ public class TRMuExpression extends TRExpression {
 
     @Override
     public String translate() {
-        return IsaToken.LPAREN.toString() + 
-            record.translate() + 
-            IsaToken.RPAREN.toString() +
-            IsaToken.LRECORD.toString() +
-            modifiers.translate() +
-            IsaToken.RRECORD.toString();
+        return IsaToken.parenthesise(record.translate()) + 
+            IsaToken.bracketit(IsaToken.LRECORD, modifiers.translate(), IsaToken.RRECORD);
     }
 
 

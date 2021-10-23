@@ -21,7 +21,7 @@ public abstract class TREnumeratedExpression extends TRExpression
 
     @Override
     public String translate() {
-        return leftBracket().toString() + members.translate() + rightBracket().toString(); 
+        return IsaToken.bracketit(leftBracket(), members.translate(), rightBracket()); 
     }
 
     @Override
