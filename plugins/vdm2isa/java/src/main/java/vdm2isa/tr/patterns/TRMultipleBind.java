@@ -6,7 +6,7 @@ public abstract class TRMultipleBind extends TRNode
 {
     private static final long serialVersionUID = 1L;
 
-    protected final TRPatternList plist; 
+    public final TRPatternList plist; 
 
     public TRMultipleBind(TRPatternList plist)
     {

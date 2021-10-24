@@ -107,7 +107,7 @@ map TCNotYetSpecifiedExpression{location} to TRNotYetSpecifiedExpression(locatio
 map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpression(location, typename, basictype, test);
 map TCIsExpression{location, typename, basictype, test} to TRIsExpression(location, typename, basictype, test);
 
-map TCIotaExpression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
+map TCIotaExpression{location, bind, predicate} to TRIotaExpression(location, bind, predicate);
 map TCLambdaExpression{location, bindList, expression} to TRLambdaExpression(location, bindList, expression); 
 map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
 map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
@@ -162,9 +162,8 @@ map TCMultipleSeqBind{plist, sequence} to TRMultipleSeqBind(plist, sequence);
 map TCTypeBind{pattern, type} to TRMultipleTypeBind(pattern, type);
 map TCMultipleTypeBind{plist, type} to TRMultipleTypeBind(plist, type); 
 
-map TCIdentifierPattern{} to TRPattern(this);
+map TCIdentifierPattern{} to TRIsabellePattern(this);
 #unmapped com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
-#unmapped com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;

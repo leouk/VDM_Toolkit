@@ -1,20 +1,17 @@
 package vdm2isa.tr.patterns;
 
-import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
-import com.fujitsu.vdmj.tc.statements.TCIdentifierDesignator;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 
-public class TRPattern extends TRNode {
+public abstract class TRPattern extends TRNode {
     
-    private final String pattern; 
+    private static final long serialVersionUID = 1L;
 
-    public TRPattern(TCIdentifierPattern owner)
+    public TRPattern(TCPattern owner)
     {
         super(owner.location);
-        pattern = owner.toString();
     }
 
     public TRPatternList getPatternList()
@@ -29,8 +26,5 @@ public class TRPattern extends TRNode {
         return IsaToken.EOF;
     }
 
-    @Override
-    public String translate() {
-        return pattern;
-    }
+    public abstract String translate();
 }
