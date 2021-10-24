@@ -10,19 +10,20 @@ import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRType;
 
 public class TRValueDefinition extends TRDefinition
 {
 	private static final long serialVersionUID = 1L;
-	private final String pattern;
+	private final TRPattern pattern;
 	private final TRType type;
 	private final TRExpression exp;
 	
-	public TRValueDefinition(LexCommentList comments, TCPattern pattern, TRType type, TRExpression exp)
+	public TRValueDefinition(LexCommentList comments, TRPattern pattern, TRType type, TRExpression exp)
 	{
-		super(comments);
-		this.pattern = pattern.toString();
+		super(pattern.location, comments);
+		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
 	}
@@ -32,7 +33,7 @@ public class TRValueDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.translate());
-		sb.append(IsaTemplates.translateVDMValueDefinition(pattern, type, null, exp));
+		sb.append(IsaTemplates.translateVDMValueDefinition(pattern.translate(), type, null, exp));
 		return sb.toString();
 	}
 }
