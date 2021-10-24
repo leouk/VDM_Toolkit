@@ -8,6 +8,8 @@ import vdm2isa.tr.types.TRType;
 
 public class TRIsExpression extends TRVDMTestExpression {
 
+	private static final long serialVersionUID = 1L;
+
     public TRIsExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test)
     {
         super(location, typename, basictype, test);

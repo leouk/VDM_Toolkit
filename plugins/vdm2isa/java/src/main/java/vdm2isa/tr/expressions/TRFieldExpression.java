@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRFieldExpression extends TRExpression {
     
+	private static final long serialVersionUID = 1L;
     private final TRExpression object;
     private final TCIdentifierToken field; 
 

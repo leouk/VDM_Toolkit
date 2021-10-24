@@ -6,6 +6,8 @@ import vdm2isa.lex.IsaToken;
 
 public class TRNotYetSpecifiedExpression extends TRExpression {
     
+	private static final long serialVersionUID = 1L;
+
     public TRNotYetSpecifiedExpression(LexLocation location)
     {
         super(location);

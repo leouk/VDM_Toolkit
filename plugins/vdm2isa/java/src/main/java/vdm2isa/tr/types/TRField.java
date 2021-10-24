@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRField extends TRType {
     
+	private static final long serialVersionUID = 1L;
     protected final TCNameToken tagname;
     protected final TRType type;
     protected final boolean equalityAbstraction; 

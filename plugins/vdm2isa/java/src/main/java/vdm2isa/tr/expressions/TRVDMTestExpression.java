@@ -9,6 +9,7 @@ import vdm2isa.tr.types.TRType;
 
 public abstract class TRVDMTestExpression extends TRExpression {
     
+	private static final long serialVersionUID = 1L;
     protected final TCNameToken typename;
     protected final TRType basictype;
     protected final TRExpression test;

@@ -8,6 +8,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRSeqType extends TRType
 {
+	private static final long serialVersionUID = 1L;
     private final TRType seqof;
     private final boolean seq1;
 

@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRQuoteType extends TRType
 {
+	private static final long serialVersionUID = 1L;
     private final String value;
 
     public TRQuoteType(LexLocation location, String value) {

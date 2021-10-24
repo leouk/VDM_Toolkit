@@ -7,6 +7,7 @@ import vdm2isa.lex.IsaToken;
 
 public class TRSetType extends TRType
 {
+	private static final long serialVersionUID = 1L;
     private final TRType setof;
     private final boolean set1;
 

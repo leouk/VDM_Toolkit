@@ -8,6 +8,7 @@ import vdm2isa.tr.types.TRType;
 
 public class TRFieldNumberExpression extends TRExpression {
     
+	private static final long serialVersionUID = 1L;
     private final TRExpression tuple;
     private final LexIntegerToken field; 
     private final TRType type;
