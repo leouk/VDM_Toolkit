@@ -147,7 +147,7 @@ public class TRUnaryExpression extends TRExpression {
     public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = IsaToken.RANGE;//owner;
+        this.owner = IsaToken.RNG;//owner;
 		this.exp = exp;
 	}
 
