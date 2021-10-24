@@ -30,146 +30,146 @@ public class TRUnaryExpression extends TRExpression {
 
     private static final long serialVersionUID = 1L;
 
-    protected final TCExpression owner;
+    protected final IsaToken owner;
 	protected final TRExpression exp;
 
 	public TRUnaryExpression(TCAbsoluteExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.ABS;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCFloorExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.FLOOR;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCUnaryMinusExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.UMINUS;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCUnaryPlusExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.UPLUS;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCCardinalityExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.CARD;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCPowerSetExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.POWER;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCLenExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.LEN;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCHeadExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.HEAD;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCTailExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.TAIL;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCIndicesExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.INDS;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCElementsExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.ELEMS;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCDistConcatExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.DISTCONC;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCDistIntersectExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.DINTER;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCDistUnionExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.DUNION;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCDistMergeExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.MERGE;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCMapDomainExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.DOM;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.RANGE;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCMapInverseExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.INVERSE;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCNotExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.NOT;//owner;
 		this.exp = exp;
 	}
 
     public TRUnaryExpression(TCReverseExpression owner, TRExpression exp)
 	{
 		super(owner.location);
-        this.owner = owner;
+        this.owner = IsaToken.REVERSE;//owner;
 		this.exp = exp;
 	}
 
@@ -182,7 +182,8 @@ public class TRUnaryExpression extends TRExpression {
     @Override
     public IsaToken isaToken() 
     {
-        //TODO fold this into owner as the IsaToken parameter (i.e. compute once at construction time only?)
+        return owner;
+        /* TODO fold this into owner as the IsaToken parameter (i.e. compute once at construction time only?)
         if (owner instanceof TCNotExpression)
             return IsaToken.NOT;
         else if (owner instanceof TCAbsoluteExpression)
@@ -225,6 +226,7 @@ public class TRUnaryExpression extends TRExpression {
             return IsaToken.REVERSE;
         else
 			throw new RuntimeException("Invalid VDM unary expression " + owner.getClass().getName() + " = " + owner.toString());
+        */
     }
 
 
