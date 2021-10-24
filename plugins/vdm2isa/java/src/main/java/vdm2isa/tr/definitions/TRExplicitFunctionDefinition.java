@@ -49,7 +49,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			TRExpression precondition,
 			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp)
 	{
-		super(comments, annotations);
+		super(name.getLocation(), comments, annotations);
 		this.name = name;
 		this.typeParams = typeParams;
 		this.type = type;

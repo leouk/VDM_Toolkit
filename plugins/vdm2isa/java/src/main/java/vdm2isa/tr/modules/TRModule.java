@@ -22,6 +22,7 @@ public class TRModule extends TRNode
 	
 	public TRModule(TCIdentifierToken name, TRDefinitionList definitions, FileList files)
 	{
+		super(name.getLocation());
 		this.name = name;
 		this.definitions = definitions;
 		this.files = files;

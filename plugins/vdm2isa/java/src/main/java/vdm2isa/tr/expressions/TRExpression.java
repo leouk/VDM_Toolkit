@@ -15,13 +15,11 @@ public abstract class TRExpression extends TRNode
 {
 	private static final long serialVersionUID = 1L;
 	
-	public final LexLocation location;
-
 	public LexCommentList comments;
 
 	public TRExpression(LexLocation location)
 	{
-		this.location = location;
+		super(location);
 	}
 
 	public TRExpression(TRExpression exp)

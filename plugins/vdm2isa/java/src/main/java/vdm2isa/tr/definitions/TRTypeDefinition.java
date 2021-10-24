@@ -18,7 +18,7 @@ public class TRTypeDefinition extends TRDefinition {
 
     public TRTypeDefinition(TCAnnotationList annotations, TCNameToken name, TRInvariantType type, TRExpression invExpression)
     {
-        super(null, annotations);
+        super(name.getLocation(), null, annotations);
         this.name = name;
         this.type = type;
         this.invExpr = invExpression;

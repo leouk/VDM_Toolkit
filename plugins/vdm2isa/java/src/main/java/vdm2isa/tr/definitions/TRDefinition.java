@@ -6,6 +6,7 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.ast.lex.LexComment;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
 import vdm2isa.lex.IsaToken;
@@ -17,13 +18,14 @@ public abstract class TRDefinition extends TRNode
 	protected final LexCommentList comments;
 	protected final TCAnnotationList annotations;
 	
-	protected TRDefinition(LexCommentList comments)
+	protected TRDefinition(LexLocation location, LexCommentList comments)
 	{
-		this(comments, null);
+		this(location, comments, null);
 	}
 	
-	protected TRDefinition(LexCommentList comments, TCAnnotationList annotations)
+	protected TRDefinition(LexLocation location, LexCommentList comments, TCAnnotationList annotations)
 	{
+		super(location); 
 		this.comments = comments;
 		this.annotations = annotations;
 	}

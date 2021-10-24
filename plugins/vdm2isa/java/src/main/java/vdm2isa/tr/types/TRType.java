@@ -13,11 +13,9 @@ abstract public class TRType extends TRNode
 {
 	private static final long serialVersionUID = 1L;
 
-	protected final LexLocation location;
-
 	public TRType(LexLocation location)
 	{
-		this.location = location;
+		super(location);
 	}
 
 	/**

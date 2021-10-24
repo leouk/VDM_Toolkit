@@ -35,16 +35,6 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	{
 		assert separator != null;
 		return IsaTemplates.listToString(this, separator);
-		/*
-		StringBuilder sb = new StringBuilder();
-		int l = size();
-		for (TRExpression exp: this)
-		{
-			l = l - 1;
-			sb.append(exp.translate());
-			if (l > 0) sb.append(separator);
-		}
-		return sb.toString();*/
 	}
 
 	public static String translate(TRExpression... args)
