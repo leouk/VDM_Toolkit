@@ -2,7 +2,6 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
@@ -10,14 +9,14 @@ import vdm2isa.tr.types.TRRecordType;
 public class TRMkTypeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
-    private final TCNameToken typename;
+    //private final TCNameToken typename;
     private final TRFieldList fields; 
     private final TRExpressionList args;
 
     public TRMkTypeExpression(TCNameToken typename, TRExpressionList args)
     {
         super(typename.getLocation());
-        this.typename = typename;
+        //this.typename = typename;
         this.args = args;
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)

@@ -3,7 +3,6 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
 
 public class TRIsExpression extends TRVDMTestExpression {

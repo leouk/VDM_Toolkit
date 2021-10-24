@@ -1,7 +1,5 @@
 package vdm2isa.tr.patterns;
 
-import com.fujitsu.vdmj.tc.patterns.TCPatternList;
-
 import vdm2isa.tr.TRNode;
 
 public abstract class TRMultipleBind extends TRNode

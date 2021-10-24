@@ -5,10 +5,8 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRType;

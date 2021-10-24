@@ -11,6 +11,7 @@ import vdm2isa.tr.TRMappedList;
 
 public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
     
+    private static final long serialVersionUID = 1L;
 	protected String separator; 
 
 	protected TRPatternList() 

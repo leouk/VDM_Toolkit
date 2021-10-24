@@ -2,17 +2,15 @@ package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
 
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
-import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
 import com.fujitsu.vdmj.tc.patterns.TCTypeBindList;
 
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
 public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind> {
     
+    private static final long serialVersionUID = 1L;
 	protected String separator; 
 
 	protected TRTypeBindList() 

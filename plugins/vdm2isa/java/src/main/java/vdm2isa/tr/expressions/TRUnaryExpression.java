@@ -1,6 +1,5 @@
 package vdm2isa.tr.expressions;
 
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCAbsoluteExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCardinalityExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIndicesExpression;

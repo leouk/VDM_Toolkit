@@ -11,7 +11,6 @@ import com.fujitsu.vdmj.tc.expressions.TCIntegerLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCQuoteLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCRealLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
-import com.fujitsu.vdmj.tc.types.TCRationalType;
 
 import vdm2isa.lex.IsaToken;
 

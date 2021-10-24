@@ -4,8 +4,6 @@
 
 package vdm2isa.tr.expressions;
 
-import com.fujitsu.vdmj.tc.expressions.TCMapletExpression;
-import com.fujitsu.vdmj.tc.expressions.TCMapletExpressionList;
 import com.fujitsu.vdmj.tc.expressions.TCRecordModifier;
 import com.fujitsu.vdmj.tc.expressions.TCRecordModifierList;
 

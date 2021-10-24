@@ -1,12 +1,9 @@
 package vdm2isa.tr.expressions;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCExists1Expression;
 import com.fujitsu.vdmj.tc.expressions.TCExistsExpression;
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIotaExpression;
-import com.fujitsu.vdmj.tc.expressions.TCLambdaExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.patterns.TRMultipleBind;
