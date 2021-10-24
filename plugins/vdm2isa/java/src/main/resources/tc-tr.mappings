@@ -147,21 +147,24 @@ map TCModule{name, defs, files} to TRModule(name, defs, files);
 package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;
 #############################################################################
 
-#map TCPattern{} to TRPattern();
+map TCPattern{} to TRPattern();
 map TCPatternList{} to TRPatternList(this);
 map TCPatternListList{} to TRParameterList(this); 
-#map TCBind{} to TRMultipleBind();
-#map TCMultipleBind{} to TRMultipleBind();
-#map TCMultipleBindList{} to TRMultipleBindList(this);
+map TCBind{} to TRMultipleBind();
+map TCMultipleBind{} to TRMultipleBind();
+map TCMultipleBindList{} to TRMultipleBindList(this);
+map TCTypeBindList{} to TRTypeBindList(this);
 
-#map TCSetBind{pattern, set} to TRMultipleSetBind(pattern, set);
+map TCSetBind{pattern, set} to TRMultipleSetBind(pattern, set);
 map TCMultipleSetBind{plist, set} to TRMultipleSetBind(plist, set);
-#map TCSeqBind{pattern, sequence} to TRMultipleSeqBind(pattern, sequence);
+map TCSeqBind{pattern, sequence} to TRMultipleSeqBind(pattern, sequence);
 map TCMultipleSeqBind{plist, sequence} to TRMultipleSeqBind(plist, sequence);
-#map TCTypeBind{pattern, type} to TRMultipleTypeBind(pattern, type);
+map TCTypeBind{pattern, type} to TRMultipleTypeBind(pattern, type);
 map TCMultipleTypeBind{plist, type} to TRMultipleTypeBind(plist, type); 
 
-unmapped com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+map TCIdentifierPattern{} to TRPattern(this);
+#unmapped com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+#unmapped com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
