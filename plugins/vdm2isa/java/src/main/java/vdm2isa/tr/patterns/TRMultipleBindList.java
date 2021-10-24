@@ -20,6 +20,11 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         separator = " ";
     }    
 
+    public TRMultipleBindList(TCMultipleBind bind) throws Exception
+    {
+        this(bind.getMultipleBindList()); 
+    }
+
     public TRMultipleBindList(TCMultipleBindList list) throws Exception
 	{
 		super(list);

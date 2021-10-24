@@ -1,8 +1,5 @@
 package vdm2isa.tr.patterns;
 
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
-import com.fujitsu.vdmj.tc.patterns.TCPatternList;
-
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
