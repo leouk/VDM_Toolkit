@@ -36,6 +36,6 @@ public class TRFunctionType extends TRType
 
 	@Override
 	public String invTranslate(String varName) {
-		throw new UnsupportedOperationException("Not yet");
+		return ("Not yet");
 	}
 }
