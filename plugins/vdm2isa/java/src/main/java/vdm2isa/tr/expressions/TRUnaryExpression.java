@@ -182,6 +182,7 @@ public class TRUnaryExpression extends TRExpression {
     @Override
     public IsaToken isaToken() 
     {
+        //TODO fold this into owner as the IsaToken parameter (i.e. compute once at construction time only?)
         if (owner instanceof TCNotExpression)
             return IsaToken.NOT;
         else if (owner instanceof TCAbsoluteExpression)
