@@ -5,6 +5,7 @@ package vdm2isa.tr;
 
 import java.util.List;
 
+import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.MappedList;
 
 public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
@@ -13,7 +14,23 @@ public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
 	
 	public TRMappedList(List<FROM> from) throws Exception
 	{
-		super(TRNode.MAPPINGS, from);
+		super();
+		//super(TRNode.MAPPINGS, from);
+		// to enable debugging
+		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);	
+		
+		for (FROM type: from)
+		{
+			try
+			{
+				add((TO)mapper.convert(type));
+			}
+			catch (Throwable t)
+			{
+				System.out.println("Exception when creating " + from.getClass().getName());
+				t.printStackTrace();
+			}
+		}
 	}
 	
 	public TRMappedList()
