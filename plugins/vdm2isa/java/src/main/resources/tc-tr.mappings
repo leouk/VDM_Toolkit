@@ -107,6 +107,14 @@ map TCNotYetSpecifiedExpression{location} to TRNotYetSpecifiedExpression(locatio
 map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpression(location, typename, basictype, test);
 map TCIsExpression{location, typename, basictype, test} to TRIsExpression(location, typename, basictype, test);
 
+map TCIotaExpression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
+map TCLambdaExpression{location, bindList, expression} to TRLambdaExpression(location, bindList, expression); 
+map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
+map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
+map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
+#map TCLetBeStExpression{location, bind, suchThat, value} to
+#map TCLetDefExpression{location, localDefs, expression} to
+
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
 map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
