@@ -108,7 +108,7 @@ public enum IsaToken {
 	MAPLET(Token.MAPLET, "\\<mapsto>"),
 	RECORD_MODIFIER(Token.MAPLET, ":="),
 	RANGE(Token.RANGE, ".."),
-	//POINT("."),
+	POINT(Token.POINT, "."),
 	FORALL(Token.FORALL, "\\<forall>"),
 	EXISTS(Token.EXISTS, "\\<exists>"),
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),

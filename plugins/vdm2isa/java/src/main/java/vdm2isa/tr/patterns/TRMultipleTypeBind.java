@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
 
@@ -26,8 +30,25 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     }
 
     @Override
-    //TODO this will be tricky, because it has to be on the declared variable type? 
     public String translate() {
-        return IsaToken.parenthesise(IsaToken.parenthesise(plist.translate()) + IsaToken.TYPEOF + type.translate()); 
+        StringBuilder sb = new StringBuilder();
+		
+		if (!plist.isEmpty())
+		{
+            String typeStr = IsaToken.TYPEOF.toString() + type.translate();
+			sb.append(IsaToken.LPAREN.toString());
+            sb.append(plist.get(0).translate());
+            sb.append(typeStr);
+            sb.append(IsaToken.RPAREN.toString());
+
+            for (int i=1; i<plist.size(); i++)
+			{
+				sb.append(IsaToken.LPAREN.toString());
+                sb.append(plist.get(0).translate());
+                sb.append(typeStr);
+                sb.append(IsaToken.RPAREN.toString());
+			}
+		}
+		return sb.toString();
     }
 }
