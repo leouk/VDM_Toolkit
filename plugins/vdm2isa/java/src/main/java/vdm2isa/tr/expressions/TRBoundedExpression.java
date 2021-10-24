@@ -16,14 +16,6 @@ public class TRBoundedExpression extends TRExpression {
 	private final TRExpression predicate;
     private final IsaToken owner;
      
-    public TRBoundedExpression(TCIotaExpression owner, TRMultipleBind bind, TRExpression predicate)
-    {
-        super(owner.location);
-        this.bindList = bind.getMultipleBindList();
-        this.predicate = predicate;
-        this.owner = IsaToken.IOTA;
-    }
-
     public TRBoundedExpression(TCExists1Expression owner, TRMultipleBind bind, TRExpression predicate)
     {
         super(owner.location);
