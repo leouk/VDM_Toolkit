@@ -22,8 +22,8 @@ public final class IsaTemplates {
 
     private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports \"VDMToolkit\"\nbegin\n\n%4$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
-    private final static String ABBREV_INV   = "definition\n\t%1$s :: \"\\<bool>\"\nwhere\n\t\"%1$s \\<equiv> %2$s\"\n";
-    private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s \\<Rightarrow> %3$s\"\nwhere\n\t\"%1$s %4$s \\<equiv> %5$s\"\n";
+    //private final static String ABBREV_INV   = "definition\n\t%1$s :: \"\\<bool>\"\nwhere\n\t\"%1$s \\<equiv> %2$s\"\n";
+    private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
     private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
 
     //@todo could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
@@ -80,30 +80,52 @@ public final class IsaTemplates {
         translatedItems.put(name, item);    
     }
 
-    public static String translateAbbreviation(String name, String type, String exp)
+    public static String translateAbbreviation(String name, TRType type, TRExpression exp)
     {
         assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(ABBREVIATION, name, type, exp));
+        String typeStr;
+        // For values "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
+        if (type instanceof TRRecordType)
+            typeStr = ((TRRecordType)type).getName().toString();
+        else
+            typeStr = type.translate();
+        sb.append(String.format(ABBREVIATION, name, typeStr, exp.translate()));
         updateTranslatedIsaItem(name, IsaItem.ABBREVIATION);
         return sb.toString();
     }
     
-    public static String translateInvariantAbbreviation(String name, String type)
+    public static String translateInvariantAbbreviation(String name, String varName, TRType type)
     {
-        assert name != null && type != null;
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format(ABBREV_INV, IsaToken.INV + name, type));
-        updateTranslatedIsaItem(IsaToken.INV + name, IsaItem.DEFINITION);
-        return sb.toString();
+        assert name != null && type != null;    
+        String inType = null;
+        String invStr;
+        if (type instanceof TRRecordType)
+        {
+            invStr = type.invTranslate(null) + varName;
+        }
+        else
+        {
+            invStr = type.invTranslate(varName);
+            // function typed abbreviations (i.e. lambdas) need different input signature for invariant! 
+            if (type instanceof TRFunctionType)
+            {
+                inType = ((TRFunctionType)type).parameters.translate();
+                //varName = ((TRFunctionType)type).dummyVarNames(varName);
+                varName = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size());
+            }
+        }
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), varName, invStr);
     }
 
     //@todo perhaps have multiple inType and inVars params? 
     public static String translateDefinition(String name, String inType, String outType, String inVars, String exp)
     {
-        assert name != null && inType != null && outType != null && inVars != null && exp != null;
+        assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(DEFINITION, name, inType, outType, inVars, exp));
+        // null input types leads to just the resulting type as the signature, e.g. basic type abbreviation invariants
+        String signature = inType != null ? inType + " " + IsaToken.FUN.toString() + " " + outType : outType;
+        sb.append(String.format(DEFINITION, name, signature, inVars, exp));
         updateTranslatedIsaItem(name, IsaItem.DEFINITION);
         return sb.toString();
     }
@@ -145,23 +167,10 @@ public final class IsaTemplates {
         assert name != null && type != null && exp != null;
         StringBuilder sb = new StringBuilder(); 
         if (varName == null) varName = name.toLowerCase();
-        String typeStr;
-        // For values "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
-        if (type instanceof TRRecordType)
-            typeStr = ((TRRecordType)type).getName().toString();
-        else
-            typeStr = type.translate();
-        sb.append(translateAbbreviation(name, typeStr, exp.translate()));
+        sb.append(translateAbbreviation(name, type, exp));
         sb.append("\n");
-        String invStr;
-        if (type instanceof TRRecordType)
-        {
-            invStr = type.invTranslate(null) + varName;
-        }
-        else
-            invStr = type.invTranslate(varName);
         //System.out.println("VDMValue translation invariant for " + name);
-        sb.append(translateInvariantAbbreviation(name, invStr));
+        sb.append(translateInvariantAbbreviation(name, varName, type));
         sb.append("\n");
         return sb.toString();
     }
