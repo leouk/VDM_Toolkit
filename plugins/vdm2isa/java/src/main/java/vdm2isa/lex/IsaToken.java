@@ -17,6 +17,7 @@ public enum IsaToken {
 	RAT(Token.RAT, "VDMRat"),
 	REAL(Token.REAL, "VDMReal"),
 	CHAR(Token.CHAR, "VDMChar"),
+	STRING(Token.STRING, "VDMChar VDMSeq"),
   	TOKEN(Token.TOKEN, "VDMToken"),
 	CROSSPROD(Token.TIMES, "\\<times>"),
 	QUOTE(Token.QUOTE, ""),
@@ -102,6 +103,9 @@ public enum IsaToken {
 	INV(null, "inv_"),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),
+	ISACHAR(null, "CHR"),
+	ISASTR(null/*Token.STRING*/, "''"),
+	DUMMY(null, "dummy"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
@@ -179,6 +183,20 @@ public enum IsaToken {
 	public static String bracketit(IsaToken left, String s, IsaToken right)
 	{
 		return left.toString() + s + right.toString();
+	}
+
+	public static String dummyVarNames(int count)
+	{
+		if (count <= 0)
+			throw new IllegalArgumentException("Dummy var names call must be strictly positive = " + count);
+		StringBuilder sb = new StringBuilder();
+		sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
+		for (int i = 1; i < count; i++)
+		{
+			sb.append(" "); 
+			sb.append(IsaToken.DUMMY.toString() + Integer.toString(i));
+		}	
+		return sb.toString();
 	}
 
 	//@TODO fix after finalisaing Token above. 

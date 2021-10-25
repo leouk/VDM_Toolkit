@@ -76,7 +76,7 @@ TCStringLiteralExpression; string literals can be VDMChar VDMSeq for Isabelle st
 abbreviation
 	i :: "VDMInt"
 where
-	"i \<equiv> (10::VDMNat)"
+	"i \<equiv> (10::VDMNat1)"
 
 definition
 	inv_i :: "\<bool>"
@@ -91,7 +91,7 @@ TCIntegerType, TCIntegerLiteralExpression
 abbreviation
 	x :: "VDMNat"
 where
-	"x \<equiv> (10::VDMNat)"
+	"x \<equiv> (10::VDMNat1)"
 
 definition
 	inv_x :: "\<bool>"
@@ -106,7 +106,7 @@ TCNaturalType
 abbreviation
 	y :: "VDMNat1"
 where
-	"y \<equiv> (20::VDMNat)"
+	"y \<equiv> (20::VDMNat1)"
 
 definition
 	inv_y :: "\<bool>"
@@ -151,7 +151,7 @@ TCRationalType
 abbreviation
 	s1 :: "VDMNat1 VDMSet1"
 where
-	"s1 \<equiv> {(1::VDMNat),(2::VDMNat),(3::VDMNat)}"
+	"s1 \<equiv> {(1::VDMNat1),(2::VDMNat1),(3::VDMNat1)}"
 
 definition
 	inv_s1 :: "\<bool>"
@@ -166,7 +166,7 @@ TCSetType
 abbreviation
 	s2 :: "VDMNat1 VDMSeq1"
 where
-	"s2 \<equiv> [(1::VDMNat),(2::VDMNat),(3::VDMNat)]"
+	"s2 \<equiv> [(1::VDMNat1),(2::VDMNat1),(3::VDMNat1)]"
 
 definition
 	inv_s2 :: "\<bool>"
@@ -181,7 +181,7 @@ TCSeqType, TCSeq1Type
 abbreviation
 	s3 :: "VDMNat1 VDMSet1"
 where
-	"s3 \<equiv> {(1::VDMNat)..(5::VDMNat)}"
+	"s3 \<equiv> {(1::VDMNat1)..(5::VDMNat1)}"
 
 definition
 	inv_s3 :: "\<bool>"
@@ -196,7 +196,7 @@ TCSet1Type
 abbreviation
 	ss1 :: "VDMNat1 VDMSet VDMSet"
 where
-	"ss1 \<equiv> {{(1::VDMNat),(2::VDMNat)},{(2::VDMNat),(4::VDMNat)}}"
+	"ss1 \<equiv> {{(1::VDMNat1),(2::VDMNat1)},{(2::VDMNat1),(4::VDMNat1)}}"
 
 definition
 	inv_ss1 :: "\<bool>"
@@ -206,7 +206,7 @@ where
 abbreviation
 	ss2 :: "VDMNat1 VDMSeq VDMSeq"
 where
-	"ss2 \<equiv> [[(1::VDMNat),(2::VDMNat)],[(3::VDMNat),(4::VDMNat)]]"
+	"ss2 \<equiv> [[(1::VDMNat1),(2::VDMNat1)],[(3::VDMNat1),(4::VDMNat1)]]"
 
 definition
 	inv_ss2 :: "\<bool>"
@@ -216,7 +216,7 @@ where
 abbreviation
 	m1 :: "VDMNat1 \<rightharpoonup> VDMNat1"
 where
-	"m1 \<equiv> [(1::VDMNat)\<mapsto>(1::VDMNat),(2::VDMNat)\<mapsto>(3::VDMNat)]"
+	"m1 \<equiv> [(1::VDMNat1)\<mapsto>(1::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
 definition
 	inv_m1 :: "\<bool>"
@@ -231,7 +231,7 @@ TCMapType
 abbreviation
 	m2 :: "VDMNat1 \<rightharpoonup> VDMNat1"
 where
-	"m2 \<equiv> [(3::VDMNat)\<mapsto>(1::VDMNat)]"
+	"m2 \<equiv> [(3::VDMNat1)\<mapsto>(1::VDMNat1)]"
 
 definition
 	inv_m2 :: "\<bool>"
@@ -241,7 +241,7 @@ where
 abbreviation
 	v1 :: "VDMNat1"
 where
-	"v1 \<equiv> (vdm_abs (10::VDMNat))"
+	"v1 \<equiv> (vdm_abs (10::VDMNat1))"
 
 definition
 	inv_v1 :: "\<bool>"
@@ -256,7 +256,7 @@ TCAbsoluteExpression
 abbreviation
 	v2 :: "VDMInt"
 where
-	"v2 \<equiv> (vdm_floor (5::VDMNat))"
+	"v2 \<equiv> (vdm_floor (5::VDMNat1))"
 
 definition
 	inv_v2 :: "\<bool>"
@@ -281,7 +281,7 @@ where
 abbreviation
 	v4 :: "VDMInt"
 where
-	"v4 \<equiv> (- (4::VDMNat))"
+	"v4 \<equiv> (- (4::VDMNat1))"
 
 definition
 	inv_v4 :: "\<bool>"
@@ -296,7 +296,7 @@ TCUnaryMinusExpression
 abbreviation
 	v5 :: "VDMNat1"
 where
-	"v5 \<equiv> (5::VDMNat)"
+	"v5 \<equiv> (5::VDMNat1)"
 
 definition
 	inv_v5 :: "\<bool>"
@@ -326,7 +326,7 @@ TCCardinalityExpression
 abbreviation
 	v7 :: "VDMNat1 VDMSet VDMSet"
 where
-	"v7 \<equiv> (Fpow {(1::VDMNat),(2::VDMNat)})"
+	"v7 \<equiv> (Fpow {(1::VDMNat1),(2::VDMNat1)})"
 
 definition
 	inv_v7 :: "\<bool>"
@@ -491,7 +491,7 @@ TCSeqConcatExpression
 abbreviation
 	v18 :: "VDMNat1 VDMSeq"
 where
-	"v18 \<equiv> (s2 {(2::VDMNat)$$(3::VDMNat)})"
+	"v18 \<equiv> (s2 {(2::VDMNat1)$$(3::VDMNat1)})"
 
 definition
 	inv_v18 :: "\<bool>"
@@ -536,7 +536,7 @@ TCMapDomainExpression
 abbreviation
 	v21 :: "VDMNat1 VDMSet"
 where
-	"v21 \<equiv> rng m1"
+	"v21 \<equiv> (rng m1)"
 
 definition
 	inv_v21 :: "\<bool>"
@@ -566,7 +566,7 @@ TCMapInverseExpression
 abbreviation
 	v23 :: "VDMNat1"
 where
-	"v23 \<equiv> ((4::VDMNat) + (3::VDMNat))"
+	"v23 \<equiv> ((4::VDMNat1) + (3::VDMNat1))"
 
 definition
 	inv_v23 :: "\<bool>"
@@ -581,7 +581,7 @@ TCPlusExpression
 abbreviation
 	v24 :: "VDMInt"
 where
-	"v24 \<equiv> ((4::VDMNat) - (2::VDMNat))"
+	"v24 \<equiv> ((4::VDMNat1) - (2::VDMNat1))"
 
 definition
 	inv_v24 :: "\<bool>"
@@ -596,7 +596,7 @@ TCSubtractExpression
 abbreviation
 	v25 :: "VDMNat1"
 where
-	"v25 \<equiv> ((4::VDMNat) * (2::VDMNat))"
+	"v25 \<equiv> ((4::VDMNat1) * (2::VDMNat1))"
 
 definition
 	inv_v25 :: "\<bool>"
@@ -611,7 +611,7 @@ TCTimesExpression
 abbreviation
 	v26 :: "VDMInt"
 where
-	"v26 \<equiv> ((4::VDMNat) vdmdiv (2::VDMNat))"
+	"v26 \<equiv> ((4::VDMNat1) vdmdiv (2::VDMNat1))"
 
 definition
 	inv_v26 :: "\<bool>"
@@ -626,7 +626,7 @@ TCDivExpression
 abbreviation
 	v27 :: "VDMReal"
 where
-	"v27 \<equiv> ((4::VDMNat) / (2::VDMNat))"
+	"v27 \<equiv> ((4::VDMNat1) / (2::VDMNat1))"
 
 definition
 	inv_v27 :: "\<bool>"
@@ -641,7 +641,7 @@ TCDivideExpression
 abbreviation
 	v28 :: "VDMInt"
 where
-	"v28 \<equiv> ((4::VDMNat) vdmmod (3::VDMNat))"
+	"v28 \<equiv> ((4::VDMNat1) vdmmod (3::VDMNat1))"
 
 definition
 	inv_v28 :: "\<bool>"
@@ -656,7 +656,7 @@ TCModExpression
 abbreviation
 	v29 :: "VDMInt"
 where
-	"v29 \<equiv> ((4::VDMNat) vdmrem (3::VDMNat))"
+	"v29 \<equiv> ((4::VDMNat1) vdmrem (3::VDMNat1))"
 
 definition
 	inv_v29 :: "\<bool>"
@@ -671,7 +671,7 @@ TCRemExpression
 abbreviation
 	v30 :: "VDMNat1"
 where
-	"v30 \<equiv> ((2::VDMNat) ^ nat (3::VDMNat))
+	"v30 \<equiv> ((2::VDMNat1) ^ nat (3::VDMNat1))
 \<comment>\<open>result context dependenant on nat or real. Adjust to ^ nat or just ^\<close>"
 
 definition
@@ -687,7 +687,7 @@ TCStarStarExpression
 abbreviation
 	v31 :: "\<bool>"
 where
-	"v31 \<equiv> ((3::VDMNat) = (3::VDMNat))"
+	"v31 \<equiv> ((3::VDMNat1) = (3::VDMNat1))"
 
 definition
 	inv_v31 :: "\<bool>"
@@ -702,7 +702,7 @@ TCEqualsExpression
 abbreviation
 	v32 :: "\<bool>"
 where
-	"v32 \<equiv> ((3::VDMNat) \<noteq> (4::VDMNat))"
+	"v32 \<equiv> ((3::VDMNat1) \<noteq> (4::VDMNat1))"
 
 definition
 	inv_v32 :: "\<bool>"
@@ -717,7 +717,7 @@ TCNotEqualExpression
 abbreviation
 	v33 :: "\<bool>"
 where
-	"v33 \<equiv> ((4::VDMNat) \<le> (5::VDMNat))"
+	"v33 \<equiv> ((4::VDMNat1) \<le> (5::VDMNat1))"
 
 definition
 	inv_v33 :: "\<bool>"
@@ -732,7 +732,7 @@ TCLessEqualExpression
 abbreviation
 	v34 :: "\<bool>"
 where
-	"v34 \<equiv> ((4::VDMNat) < (5::VDMNat))"
+	"v34 \<equiv> ((4::VDMNat1) < (5::VDMNat1))"
 
 definition
 	inv_v34 :: "\<bool>"
@@ -747,7 +747,7 @@ TCLessExpression
 abbreviation
 	v35 :: "\<bool>"
 where
-	"v35 \<equiv> ((5::VDMNat) \<ge> (4::VDMNat))"
+	"v35 \<equiv> ((5::VDMNat1) \<ge> (4::VDMNat1))"
 
 definition
 	inv_v35 :: "\<bool>"
@@ -762,7 +762,7 @@ TCGreaterEqualExpression
 abbreviation
 	v36 :: "\<bool>"
 where
-	"v36 \<equiv> ((5::VDMNat) > (4::VDMNat))"
+	"v36 \<equiv> ((5::VDMNat1) > (4::VDMNat1))"
 
 definition
 	inv_v36 :: "\<bool>"
@@ -987,7 +987,7 @@ TCEquivalentExpression
 abbreviation
 	v51 :: "\<bool>"
 where
-	"v51 \<equiv> ((1::VDMNat) \<in> s1)"
+	"v51 \<equiv> ((1::VDMNat1) \<in> s1)"
 
 definition
 	inv_v51 :: "\<bool>"
@@ -1002,7 +1002,7 @@ TCInSetExpression
 abbreviation
 	v52 :: "\<bool>"
 where
-	"v52 \<equiv> ((5::VDMNat) \<notin> s1)"
+	"v52 \<equiv> ((5::VDMNat1) \<notin> s1)"
 
 definition
 	inv_v52 :: "\<bool>"
@@ -1092,7 +1092,7 @@ TCProperSubsetExpression
 abbreviation
 	v58 :: "VDMNat1 VDMSet"
 where
-	"v58 \<equiv> {(1::VDMNat)..(3::VDMNat)}"
+	"v58 \<equiv> {(1::VDMNat1)..(3::VDMNat1)}"
 
 definition
 	inv_v58 :: "\<bool>"
@@ -1107,7 +1107,7 @@ TCSetRangeExpression
 abbreviation
 	v59 :: "VDMNat1 VDMSet1"
 where
-	"v59 \<equiv> {(1::VDMNat),(2::VDMNat),(3::VDMNat),(4::VDMNat)}"
+	"v59 \<equiv> {(1::VDMNat1),(2::VDMNat1),(3::VDMNat1),(4::VDMNat1)}"
 
 definition
 	inv_v59 :: "\<bool>"
@@ -1122,7 +1122,7 @@ TCSetEnumExpression
 abbreviation
 	v60 :: "VDMNat1 VDMSeq1"
 where
-	"v60 \<equiv> [(1::VDMNat),(3::VDMNat),(4::VDMNat)]"
+	"v60 \<equiv> [(1::VDMNat1),(3::VDMNat1),(4::VDMNat1)]"
 
 definition
 	inv_v60 :: "\<bool>"
@@ -1137,7 +1137,7 @@ TCSeqEnumExpression
 abbreviation
 	v61 :: "VDMNat1 \<rightharpoonup> VDMNat1"
 where
-	"v61 \<equiv> [(1::VDMNat)\<mapsto>(2::VDMNat),(2::VDMNat)\<mapsto>(3::VDMNat)]"
+	"v61 \<equiv> [(1::VDMNat1)\<mapsto>(2::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
 definition
 	inv_v61 :: "\<bool>"
@@ -1152,7 +1152,7 @@ TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression
 abbreviation
 	v62 :: "(VDMNat1\<times>VDMNat1)"
 where
-	"v62 \<equiv> ((1::VDMNat),(2::VDMNat))"
+	"v62 \<equiv> ((1::VDMNat1),(2::VDMNat1))"
 
 definition
 	inv_v62 :: "\<bool>"
@@ -1170,7 +1170,7 @@ TCTupleExpression
 abbreviation
 	v63 :: "(VDMNat1\<times>VDMNat1\<times>VDMNat1)"
 where
-	"v63 \<equiv> ((1::VDMNat),(2::VDMNat),(3::VDMNat))"
+	"v63 \<equiv> ((1::VDMNat1),(2::VDMNat1),(3::VDMNat1))"
 
 definition
 	inv_v63 :: "\<bool>"
@@ -1184,7 +1184,7 @@ where
 abbreviation
 	v64 :: "(VDMNat1\<times>VDMNat1\<times>VDMNat1\<times>VDMNat1)"
 where
-	"v64 \<equiv> ((1::VDMNat),(2::VDMNat),(3::VDMNat),(4::VDMNat))"
+	"v64 \<equiv> ((1::VDMNat1),(2::VDMNat1),(3::VDMNat1),(4::VDMNat1))"
 
 definition
 	inv_v64 :: "\<bool>"
@@ -1212,7 +1212,7 @@ v18: S = mk_S();
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>field1 = (1::VDMNat), field2 = (2::VDMNat)\<rparr>"
+	"v65 \<equiv> \<lparr>field1 = (1::VDMNat1), field2 = (2::VDMNat1)\<rparr>"
 
 definition
 	inv_v65 :: "\<bool>"
@@ -1227,7 +1227,7 @@ TCMkTypeExpression
 abbreviation
 	v66 :: "R"
 where
-	"v66 \<equiv> (v65)\<lparr>field1:=(10::VDMNat),field2:=(20::VDMNat)\<rparr>"
+	"v66 \<equiv> (v65)\<lparr>field1:=(10::VDMNat1),field2:=(20::VDMNat1)\<rparr>"
 
 definition
 	inv_v66 :: "\<bool>"
@@ -1322,7 +1322,7 @@ TCNarrowExpression
 abbreviation
 	v73 :: "VDMNat1"
 where
-	"v73 \<equiv> (SOME var . var \<in> s1 \<and> (var < (2::VDMNat)))"
+	"v73 \<equiv> (SOME var. (var \<in> s1)\<and>(var < (2::VDMNat1)))"
 
 definition
 	inv_v73 :: "\<bool>"
@@ -1335,14 +1335,21 @@ TCIotaExpression
 
 *)
 abbreviation
-	v74 :: "VDMNat\<times>VDMNat \<Rightarrow> VDMNat"
+	v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> VDMNat"
 where
-	"v74 \<equiv> (\<lambda> ((var::VDMNat), (var2::VDMNat)). (var + var2))"
+	"v74 \<equiv> (
+	\<lambda> (var::VDMNat) (var2::VDMNat).
+		(if ((inv_VDMNat var) \<and> (inv_VDMNat var2)) then
+			(var + var2)
+		 else
+			undefined
+		)
+	)"
 
 definition
-	inv_v74 :: "\<bool>"
+	inv_v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
 where
-	"inv_v74 \<equiv> Not yet"
+	"inv_v74 dummy0 dummy1\<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant call depends on its lambda definition!\<close>"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:56
 
@@ -1352,7 +1359,7 @@ TCLambdaExpression
 abbreviation
 	v75 :: "\<bool>"
 where
-	"v75 \<equiv> (\<exists>! var \<in> s1. (var < (2::VDMNat)))"
+	"v75 \<equiv> (\<exists>! var \<in> s1. (var < (2::VDMNat1)))"
 
 definition
 	inv_v75 :: "\<bool>"
@@ -1367,7 +1374,7 @@ where
 abbreviation
 	v76 :: "\<bool>"
 where
-	"v76 \<equiv> (\<exists> var \<in> s1. (var < (2::VDMNat)))"
+	"v76 \<equiv> (\<exists> var \<in> s1. (var < (2::VDMNat1)))"
 
 definition
 	inv_v76 :: "\<bool>"
@@ -1382,7 +1389,7 @@ where
 abbreviation
 	v78 :: "\<bool>"
 where
-	"v78 \<equiv> (\<forall> var \<in> s1. (var \<le> (3::VDMNat)))"
+	"v78 \<equiv> (\<forall> var \<in> s1. (var \<le> (3::VDMNat1)))"
 
 definition
 	inv_v78 :: "\<bool>"
