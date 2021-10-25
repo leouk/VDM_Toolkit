@@ -24,7 +24,37 @@ public class TRLambdaExpression extends TRExpression {
 
     @Override
     public String translate() {
-        return IsaToken.parenthesise(isaToken().toString() + " " + 
-            bindList.translate() + IsaToken.POINT + " " + expression.translate());
+        StringBuilder sb = new StringBuilder();
+        // lambda x: nat, y: nat1 & x + y
+        // =
+        // (% (x::VDMNat) (y::VDMNat1) . 
+        //      (if (inv_VDMNat x) /\ (inv_VDMNat1 y) then
+        //          (x + y)
+        //       else 
+        //          undefined
+        //      )
+        // )
+        sb.append("\n\t");
+        sb.append(isaToken().toString());
+        sb.append(" ");
+        sb.append(bindList.translate());
+        sb.append(IsaToken.POINT.toString());
+        sb.append("\n\t\t");
+        sb.append(IsaToken.LPAREN.toString());
+        sb.append(IsaToken.IF.toString());
+        sb.append(" ");
+        sb.append(bindList.invTranslate());
+        sb.append(" ");
+        sb.append(IsaToken.THEN.toString());
+        sb.append("\n\t\t\t");
+        sb.append(expression.translate());        
+        sb.append("\n\t\t ");
+        sb.append(IsaToken.ELSE.toString());
+        sb.append("\n\t\t\t");
+        sb.append(IsaToken.UNDEFINED.toString());
+        sb.append("\n\t\t"); 
+        sb.append(IsaToken.RPAREN.toString());
+        sb.append("\n\t");
+        return IsaToken.parenthesise(sb.toString());
     }
 }

@@ -19,6 +19,8 @@ public class TRFunctionType extends TRType
 	{
 		super(location);
 		this.parameters = parameters;
+		// presume that all function types will be curried
+		this.parameters.setCurried(true);
 		this.partial = partial;
 		this.result = result;
 	}
@@ -36,6 +38,15 @@ public class TRFunctionType extends TRType
 
 	@Override
 	public String invTranslate(String varName) {
-		return ("Not yet");
+		// function type invariants are implicit? e.g. v = (lambda x: nat, y: nat & x + y)
+		// we can't really check inv_VDMNat1 of x or y; that's the LambdaExpression's job
+		// we must, however, check the type invariant of the result!
+		// that also means, the declaring party must take that into account in the inv_XXX def!
+		// e.g. inv_v x y == "inv_VDMNat (v x y)"
+		String rVarName = varName != null ? 
+			IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size())) 
+			: varName; 
+		return result.invTranslate(rVarName) +
+			   IsaToken.comment("function type invariant depends on its lambda definition and same dummy names being used!");
 	}
 }
