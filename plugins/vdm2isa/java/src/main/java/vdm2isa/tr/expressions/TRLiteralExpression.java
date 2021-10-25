@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.expressions;
 
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCharLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIntegerLiteralExpression;
@@ -17,47 +16,68 @@ import vdm2isa.lex.IsaToken;
 public class TRLiteralExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	private final TCExpression exp;
+	private final IsaToken token;
+	private final String exp;
 
 	public TRLiteralExpression(TCBooleanLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.exp = exp;
+		this.token = IsaToken.BOOL;
+		this.exp = exp.value.value ? IsaToken.TRUE.toString() : IsaToken.FALSE.toString();
 	}
 
 	public TRLiteralExpression(TCCharLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.exp = exp;
+		this.token = IsaToken.CHAR;
+		this.exp = IsaToken.ISACHAR + " " + 
+			IsaToken.bracketit(IsaToken.ISASTR, exp.toString(), IsaToken.ISASTR);
 	}
 
 	public TRLiteralExpression(TCIntegerLiteralExpression exp)
 	{
-		super(exp.location); 
-		this.exp = exp;
+		super(exp.location);
+		this.token = exp.value.value >= 0 
+			? (exp.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : 
+			  IsaToken.INT; 
+		this.exp = exp.toString();
 	}
 	
 	public TRLiteralExpression(TCRealLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.exp = exp;
+		this.token = IsaToken.REAL;
+		this.exp = exp.toString();
 	}
 
 	public TRLiteralExpression(TCStringLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.exp = exp;
+		assert exp.toString().length() > 1;
+		this.token = IsaToken.STRING;
+		// remove the quotes from "xxx" -> xxxx
+		this.exp = IsaToken.bracketit(IsaToken.ISASTR,
+			exp.toString().substring(1, exp.toString().length() - 1), 
+			IsaToken.ISASTR);
 	}
 
 	public TRLiteralExpression(TCQuoteLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.exp = exp;
+		this.token = IsaToken.QUOTE;
+		// remove the <XXX> -> XXX
+		this.exp = exp.type.value;
 	}
 
 	@Override
 	public String translate()
 	{
+		// no casting needed for real, string, quote literals
+		String typeStr =  
+			!(token == IsaToken.REAL || token == IsaToken.STRING || token == IsaToken.QUOTE) ?
+				IsaToken.TYPEOF.toString() + isaToken().toString() : "";
+		return IsaToken.parenthesise(exp + typeStr);
+		/*
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
 		if (exp instanceof TCBooleanLiteralExpression)
@@ -102,11 +122,14 @@ public class TRLiteralExpression extends TRExpression
 
 		sb.append(")");
 		return sb.toString();
+		*/
 	}
 
 	@Override
 	public IsaToken isaToken() 
 	{
+		return token;
+		/*
 		//@todo return IsaToken.literalTokenType(exp);? Or keep to minimise dependenceis?
 		if (exp instanceof TCBooleanLiteralExpression)
 			return IsaToken.BOOL;
@@ -128,5 +151,6 @@ public class TRLiteralExpression extends TRExpression
 			return IsaToken.CHAR;
 		else
 			throw new RuntimeException("Invalid VDM literal type " + exp.getClass().getName() + " = " + exp.toString());
+			*/
 	}
 }

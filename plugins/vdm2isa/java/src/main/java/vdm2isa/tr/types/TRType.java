@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.types;
 
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 
 import com.fujitsu.vdmj.lex.LexLocation;

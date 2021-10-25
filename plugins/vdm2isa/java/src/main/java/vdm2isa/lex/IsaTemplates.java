@@ -4,6 +4,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
+import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
@@ -148,7 +149,7 @@ public final class IsaTemplates {
         // For values "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
         if (type instanceof TRRecordType)
             typeStr = ((TRRecordType)type).getName().toString();
-        else    
+        else
             typeStr = type.translate();
         sb.append(translateAbbreviation(name, typeStr, exp.translate()));
         sb.append("\n");

@@ -19,54 +19,54 @@ import vdm2isa.lex.IsaToken;
 public class TRBasicType extends TRType
 {
 	private static final long serialVersionUID = 1L;
-	private final TCType type;
+	private final IsaToken token;
 
 	public TRBasicType(TCNaturalType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.NAT;
 	}
 
 	public TRBasicType(TCNaturalOneType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.NAT1;
 	}
 
 	public TRBasicType(TCIntegerType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.INT;
 	}
 
 	public TRBasicType(TCRationalType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.RAT;
 	}
 
 	public TRBasicType(TCRealType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.REAL;
 	}
 
 	public TRBasicType(TCBooleanType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.BOOL;
 	}
 
 	public TRBasicType(TCCharacterType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.CHAR;
 	}
 
 	public TRBasicType(TCTokenType type)
 	{
 		super(type.location);
-		this.type = type;
+		this.token = IsaToken.TOKEN;
 	}
 
 	@Override
@@ -88,24 +88,6 @@ public class TRBasicType extends TRType
 	@Override
 	public IsaToken isaToken()
 	{
-		if (type instanceof TCNaturalType)
-			return IsaToken.NAT; 
-		else if (type instanceof TCNaturalOneType)
-			return IsaToken.NAT1;
-		else if (type instanceof TCIntegerType)
-			return IsaToken.INT;
-		else if (type instanceof TCRationalType)	
-			return IsaToken.RAT;
-		else if (type instanceof TCRealType)
-			return IsaToken.REAL;
-		else if (type instanceof TCBooleanType)
-			return IsaToken.BOOL;
-		else if (type instanceof TCCharacterType)
-			return IsaToken.CHAR;
-		else if (type instanceof TCTokenType)
-			return IsaToken.TOKEN;
-		else
-			throw new RuntimeException("Untranslatable type " + type.toDetailedString());
-
+		return token;
 	}
 }

@@ -1,6 +1,5 @@
 package vdm2isa.tr.types;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSeqType;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 

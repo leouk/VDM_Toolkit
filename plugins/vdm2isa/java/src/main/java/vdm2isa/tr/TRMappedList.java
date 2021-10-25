@@ -14,8 +14,8 @@ public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
 	
 	public TRMappedList(List<FROM> from) throws Exception
 	{
-		super();
 		//super(TRNode.MAPPINGS, from);
+		super();
 		// to enable debugging
 		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);	
 		
