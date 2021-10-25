@@ -11,9 +11,9 @@ import com.fujitsu.vdmj.lex.LexLocation;
 public class TRFunctionType extends TRType
 {
 	private static final long serialVersionUID = 1L;
-	private final TRTypeList parameters;
-	private final boolean partial;
-	private final TRType result;
+	public final TRTypeList parameters;
+	public final boolean partial;
+	public final TRType result;
 	
 	public TRFunctionType(LexLocation location, TRTypeList parameters, boolean partial, TRType result)
 	{
@@ -36,6 +36,12 @@ public class TRFunctionType extends TRType
 		return partial ? IsaToken.FUN : IsaToken.TFUN;
 	}
 
+	public String dummyVarNames(String varName)
+	{
+		assert varName != null;
+		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size()));
+	}
+
 	@Override
 	public String invTranslate(String varName) {
 		// function type invariants are implicit? e.g. v = (lambda x: nat, y: nat & x + y)
@@ -43,9 +49,7 @@ public class TRFunctionType extends TRType
 		// we must, however, check the type invariant of the result!
 		// that also means, the declaring party must take that into account in the inv_XXX def!
 		// e.g. inv_v x y == "inv_VDMNat (v x y)"
-		String rVarName = varName != null ? 
-			IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size())) 
-			: varName; 
+		String rVarName = varName != null ? dummyVarNames(varName) : varName; 
 		return result.invTranslate(rVarName) +
 			   IsaToken.comment("function type invariant depends on its lambda definition and same dummy names being used!");
 	}
