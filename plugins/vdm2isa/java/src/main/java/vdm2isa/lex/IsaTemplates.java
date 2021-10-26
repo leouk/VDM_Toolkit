@@ -14,6 +14,7 @@ import java.util.Map;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 public final class IsaTemplates {
     
@@ -72,12 +73,14 @@ public final class IsaTemplates {
 		return sb.toString();
 	}
 
+    //@todo pass TCNameToken? Or LexLocation?
     private static void updateTranslatedIsaItem(String name, IsaItem item)
     {
         //@todo accumulate all def names for latter creation of lemmas xyz_def etc...? 
         if (translatedItems.containsKey(name))
-            throw new IllegalArgumentException("Invalid IsaItem " + item + ": " + name + " has already been defined."); 
-        translatedItems.put(name, item);    
+            TypeChecker.report(IsaToken.error(17), "Invalid IsaItem " + item + ": " + name + " has already been defined.", LexLocation.ANY); 
+        else
+            translatedItems.put(name, item);    
     }
 
     public static String translateAbbreviation(String name, TRType type, TRExpression exp)
@@ -100,6 +103,7 @@ public final class IsaTemplates {
         assert name != null && type != null;    
         String inType = null;
         String invStr;
+        String dummyNames = "";
         if (type instanceof TRRecordType)
         {
             invStr = type.invTranslate(null) + varName;
@@ -112,10 +116,10 @@ public final class IsaTemplates {
             {
                 inType = ((TRFunctionType)type).parameters.translate();
                 //varName = ((TRFunctionType)type).dummyVarNames(varName);
-                varName = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size());
+                dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
             }
         }
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), varName, invStr);
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr);
     }
 
     //@todo perhaps have multiple inType and inVars params? 
@@ -222,18 +226,21 @@ public final class IsaTemplates {
             case INVERSE:
             case POWER:
                 if (args.length != 1)
-                    throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
-                sb.append("(");
-                
-                sb.append(token.toString());
-                sb.append(" ");
-                sb.append(args[0].translate());
-                sb.append(")");
+                    TypeChecker.report(IsaToken.error(13), "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                else
+                {
+                    sb.append("(");
+                    sb.append(token.toString());
+                    sb.append(" ");
+                    sb.append(args[0].translate());
+                    sb.append(")");
+                }
                 break;
             case UPLUS: // +x is just x
                 if (args.length != 1)
-                    throw new RuntimeException("Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
-                sb.append(args[0].translate());
+                    TypeChecker.report(IsaToken.error(13), "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                else
+                    sb.append(args[0].translate());
                 break;
             
             // Binary Operators
@@ -270,73 +277,43 @@ public final class IsaTemplates {
             case MUNION:
             case COMP:
                 if (args.length != 2)
-                    throw new RuntimeException("Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
-                sb.append("(");
-                sb.append(args[0].translate());
-                sb.append(" ");
-                sb.append(token.toString());
-                sb.append(" ");
-                sb.append(args[1].translate());
-                sb.append(")");
+                    TypeChecker.report(IsaToken.error(14), "Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                else
+                {
+                    sb.append("(");
+                    sb.append(args[0].translate());
+                    sb.append(" ");
+                    sb.append(token.toString());
+                    sb.append(" ");
+                    sb.append(args[1].translate());
+                    sb.append(")");
+                }
                 break;
             case STARSTAR:
             case STARSTARNAT:
                 if (args.length != 2)
-                    throw new RuntimeException("Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
-                sb.append("(");
-                sb.append(args[0].translate());
-                sb.append(" ");
-                sb.append(token.toString());
-                sb.append(" ");
-                sb.append(args[1].translate());
-                sb.append(")\n");
-                sb.append(IsaToken.COMMENT.toString());
-                sb.append(IsaToken.COMMENT_OPEN.toString());
-                sb.append("result context dependenant on nat or real. Adjust to " + token.toString() + " or just ^");
-                sb.append(IsaToken.COMMENT_CLOSE.toString());
+                    TypeChecker.report(IsaToken.error(15), "Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                else
+                {
+                    String comment = "result context dependenant on nat or real. Adjust to " + token.toString() + " or just ^";
+                    sb.append("(");
+                    sb.append(args[0].translate());
+                    sb.append(" ");
+                    sb.append(token.toString());
+                    sb.append(" ");
+                    sb.append(args[1].translate());
+                    sb.append(")\n");
+                    sb.append(IsaToken.COMMENT.toString());
+                    sb.append(IsaToken.COMMENT_OPEN.toString());
+                    sb.append(comment);
+                    sb.append(IsaToken.COMMENT_CLOSE.toString());
+                    TypeChecker.warning(IsaToken.warning(1), comment, location);
+                }
                 break;
             
             default:
-                sb.append("NYI = " + token.toString() + " " + TRExpressionList.translate(args));
+                TypeChecker.report(IsaToken.error(16), "Not yet implemented translation for token " + token.toString() + " " + TRExpressionList.translate(args), location);
         }
         return sb.toString();
-        /*
-        StringBuilder sb = new StringBuilder();
-        boolean parenthesise = false;
-        int parenCnt = 0;
-        for(Object i : args)
-        {
-            if (i instanceof IsaToken)
-            {
-                if (IsaToken.parenthesise((IsaToken)i)) 
-                { 
-                    parenCnt++;
-                    sb.append("(");
-                }
-                sb.append(String.valueOf(i));
-            }
-            else if (i instanceof TRType)
-            {
-                sb.append(((TRType)i).translate());
-            }
-            else if (i instanceof TRExpression)
-            {
-                sb.append(((TRExpression)i).translate());
-            }
-            else if (i instanceof TRDefinition)
-            {
-                sb.append(((TRDefinition)i).translate());
-            }
-            else if (i instanceof LexToken)
-            {
-                // deal with it! 
-            }
-            else
-            {
-                System.out.println("Ignoring " + i.toString() + " of class" + i.getClass().getName());
-            }
-        }
-        return sb.toString();
-        */
     }
 }
