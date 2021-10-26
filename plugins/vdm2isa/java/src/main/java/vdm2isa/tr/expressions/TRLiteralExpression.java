@@ -57,7 +57,7 @@ public class TRLiteralExpression extends TRExpression
 		this.token = IsaToken.STRING;
 		// remove the quotes from "xxx" -> xxxx
 		this.exp = IsaToken.bracketit(IsaToken.ISASTR,
-			exp.toString().substring(1, exp.toString().length() - 1), 
+			exp.value.value, //exp.toString().substring(1, exp.toString().length() - 1), 
 			IsaToken.ISASTR);
 	}
 

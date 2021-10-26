@@ -33,6 +33,8 @@ public enum IsaToken {
 	NIL(Token.NIL, "None"),
 	UNKNOWN(null, "'UNKNOWN"),
 	TYPEOF(null, "::"),
+	PLACEHOLDER(null, "_"),
+	//TUPLE(null/*mk_*/, ""),
 
 	// Unary Operators
 	NOT(Token.NOT, "\\<not>"),

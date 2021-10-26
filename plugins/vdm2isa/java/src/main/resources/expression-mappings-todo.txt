@@ -86,6 +86,13 @@
 *TCNotYetSpecifiedExpression
 *TCNarrowExpression
 *TCIsExpression
+*TCIotaExpression
+*TCLambdaExpression
+*TCExists1Expression
+*TCExistsExpression
+*TCForAllExpression
+*TCLetBeStExpression
+*TCLetDefExpression
 
 
 TCPostOpExpression
@@ -100,21 +107,12 @@ TCElseIfExpressionList
 
 TCFuncInstantiationExpression
 
-TCExists1Expression
-TCExistsExpression
-TCForAllExpression
 
-TCIotaExpression
-TCLambdaExpression
-
-TCLetBeStExpression
-TCLetDefExpression
 TCMapCompExpression
-TCMkBasicExpression
-
-TCPreExpression
-TCPreOpExpression
 TCSeqCompExpression
 TCSetCompExpression
+TCMkBasicExpression
+TCPreExpression
+TCPreOpExpression
 
 TCStateInitExpression

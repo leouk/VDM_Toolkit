@@ -162,8 +162,27 @@ map TCMultipleSeqBind{plist, sequence} to TRMultipleSeqBind(plist, sequence);
 map TCTypeBind{pattern, type} to TRMultipleTypeBind(pattern, type);
 map TCMultipleTypeBind{plist, type} to TRMultipleTypeBind(plist, type); 
 
-map TCIdentifierPattern{} to TRIsabellePattern(this);
-#unmapped com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+map TCIdentifierPattern{} to TRBasicPattern(this);
+map TCBooleanPattern{} to TRBasicPattern(this);
+map TCCharacterPattern{} to TRBasicPattern(this);
+map TCIntegerPattern{} to TRBasicPattern(this);
+map TCQuotePattern{} to TRBasicPattern(this);
+map TCRealPattern{} to TRBasicPattern(this);
+map TCStringPattern{} to TRBasicPattern(this);
+map TCNilPattern{} to TRBasicPattern(this);
+map TCIgnorePattern{} to TRBasicPattern(this);
+
+map TCSetPattern{plist} to TRStructuredPattern(this, plist);
+map TCSeqPattern{plist} to TRStructuredPattern(this, plist);
+map TCTuplePattern{plist} to TRStructuredPattern(this, plist);
+map TCConcatenationPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCUnionPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
+
+#@NB is this pattern list mapping okay?
+map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
+map TCMapletPatternList{} to TRPatternList(this);
+map TCMapPattern{maplets} to TRPatternList(this, maplets);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
