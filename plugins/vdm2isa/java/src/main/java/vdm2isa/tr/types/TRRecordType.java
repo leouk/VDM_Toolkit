@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 
@@ -24,7 +25,7 @@ public class TRRecordType extends TRInvariantType
         //@todo collect field's abstraction to see how to compare equals
         this.fields = fields;
         if (this.fields.size() == 0)
-            throw new IllegalArgumentException("Isabelle does not allow empty records for VDM record type " + name.toString() + ".\n@" + name.getLocation().toString());
+            TypeChecker.report(IsaToken.error(2), "Isabelle does not allow empty records for VDM record type " + name.toString(), location);
         this.composed = composed;
         recordMap.put(name, fields); 
     }

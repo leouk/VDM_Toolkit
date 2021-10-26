@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
@@ -17,6 +18,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     
     @Override
     public String translate() {
+        String problem = "VDM narrow expressions might create Isabelle type errors!";
         if (isBasicTyped())
         {
             switch (basictype.isaToken())
@@ -32,18 +34,21 @@ public class TRNarrowExpression extends TRVDMTestExpression {
                 default:
                     break;
             }
+            TypeChecker.warning(IsaToken.warning(0), problem, location);
             return IsaToken.parenthesise(IsaToken.parenthesise(test.translate()) + 
                 IsaToken.TYPEOF + basictype.translate()) +
-                IsaToken.comment("VDM narrow expressions might create Isabelle type errors!");
+                IsaToken.comment(problem);
         } else if (isNameTyped())
         {
+            TypeChecker.warning(IsaToken.warning(0), problem, location);
             return IsaToken.parenthesise(IsaToken.parenthesise(test.translate()) + 
                 IsaToken.TYPEOF + typename.getName()) +
-                IsaToken.comment("VDM narrow expressions might create Isabelle type errors!");
-
+                IsaToken.comment(problem);
         }
         else
-            return IsaToken.comment("Cannot translate this VDM narrow expression to Isabelle");
+        {
+            TypeChecker.report(IsaToken.error(1), "Cannot translate this VDM narrow expression to Isabelle", location);
+            return IsaToken.ERROR.toString();
+        }
     }
-    
 }

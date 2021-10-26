@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRBasicType;
@@ -21,9 +22,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
         this.basictype = basictype;
         this.test = test;
         if (basictype != null && typename != null)
-            throw new IllegalArgumentException("Invalid " + getClass().getName() + " expression - contains both type name and basic type information");
+            TypeChecker.report(IsaToken.error(8), "Invalid " + getClass().getName() + " expression - contains both type name and basic type information", this.location);
         if (basictype != null && !(basictype instanceof TRBasicType))
-            throw new IllegalArgumentException(getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName());      
+            TypeChecker.report(IsaToken.error(9), getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName(), this.location);      
     }
 
     @Override

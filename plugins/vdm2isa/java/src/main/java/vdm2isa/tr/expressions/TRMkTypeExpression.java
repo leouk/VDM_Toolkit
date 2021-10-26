@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRFieldList;
@@ -20,11 +21,11 @@ public class TRMkTypeExpression extends TRExpression {
         this.args = args;
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)
-            throw new IllegalArgumentException("Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.\n@" + typename.getLocation().toString()); 
+            TypeChecker.report(IsaToken.error(5), "Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.", location);
         else if (this.fields.size() != this.args.size())
-            throw new IllegalArgumentException("Invalid record arguments: incompatible number of fields for VDM mk_" + typename.toString() + " expression.\n@" + typename.getLocation().toString());
+            TypeChecker.report(IsaToken.error(6), "Invalid record arguments: incompatible number of fields for VDM mk_" + typename.toString() + " expression.", location);
         else if (this.args.size() == 0)
-            throw new IllegalArgumentException("Isabelle does not allow empty records for VDM mk_" + typename.toString() + " expression.\n@" + typename.getLocation().toString());
+            TypeChecker.report(IsaToken.error(7), "Isabelle does not allow empty records for VDM mk_" + typename.toString() + " expression.", location);
     }
 
     @Override

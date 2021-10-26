@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 
@@ -26,6 +27,7 @@ public class TRQuoteType extends TRType
     
     @Override
 	public String invTranslate(String varName) {
-		throw new UnsupportedOperationException("Not yet");
+        TypeChecker.report(IsaToken.error(0), "Not yet implemented", location);
+        return IsaToken.ERROR.toString();
 	}
 }

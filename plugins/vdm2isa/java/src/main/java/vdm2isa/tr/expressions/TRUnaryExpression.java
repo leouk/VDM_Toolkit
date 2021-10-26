@@ -182,50 +182,6 @@ public class TRUnaryExpression extends TRExpression {
     public IsaToken isaToken() 
     {
         return owner;
-        /* TODO fold this into owner as the IsaToken parameter (i.e. compute once at construction time only?)
-        if (owner instanceof TCNotExpression)
-            return IsaToken.NOT;
-        else if (owner instanceof TCAbsoluteExpression)
-            return IsaToken.ABS;
-        else if (owner instanceof TCFloorExpression)
-            return IsaToken.FLOOR;
-        else if (owner instanceof TCUnaryMinusExpression)
-            return IsaToken.UMINUS;
-        else if (owner instanceof TCUnaryPlusExpression)
-            return IsaToken.UPLUS;
-        else if (owner instanceof TCCardinalityExpression)
-            return IsaToken.CARD;
-        else if (owner instanceof TCPowerSetExpression)
-            return IsaToken.POWER;
-        else if (owner instanceof TCDistUnionExpression)
-            return IsaToken.DUNION;
-        else if (owner instanceof TCDistIntersectExpression)
-            return IsaToken.DINTER;
-        else if (owner instanceof TCLenExpression)
-            return IsaToken.LEN;
-        else if (owner instanceof TCHeadExpression)
-            return IsaToken.HEAD;
-        else if (owner instanceof TCTailExpression)
-            return IsaToken.TAIL;
-        else if (owner instanceof TCIndicesExpression)
-            return IsaToken.INDS;
-        else if (owner instanceof TCElementsExpression)
-            return IsaToken.ELEMS;
-        else if (owner instanceof TCDistConcatExpression)
-            return IsaToken.DISTCONC;
-        else if (owner instanceof TCMapInverseExpression)
-            return IsaToken.INVERSE;
-        else if (owner instanceof TCDistMergeExpression)
-            return IsaToken.MERGE;
-        else if (owner instanceof TCMapDomainExpression)
-            return IsaToken.DOM;
-        else if (owner instanceof TCMapRangeExpression)
-            return IsaToken.RNG;
-        else if (owner instanceof TCReverseExpression)
-            return IsaToken.REVERSE;
-        else
-			throw new RuntimeException("Invalid VDM unary expression " + owner.getClass().getName() + " = " + owner.toString());
-        */
     }
 
 

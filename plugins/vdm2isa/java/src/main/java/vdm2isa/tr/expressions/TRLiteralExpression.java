@@ -129,28 +129,5 @@ public class TRLiteralExpression extends TRExpression
 	public IsaToken isaToken() 
 	{
 		return token;
-		/*
-		//@todo return IsaToken.literalTokenType(exp);? Or keep to minimise dependenceis?
-		if (exp instanceof TCBooleanLiteralExpression)
-			return IsaToken.BOOL;
-		else if (exp instanceof TCCharLiteralExpression)
-			return IsaToken.CHAR;
-		else if (exp instanceof TCIntegerLiteralExpression)
-		{
-			long v = ((TCIntegerLiteralExpression)exp).value.value;
-			if (v >= 0)
-				return IsaToken.NAT;
-			else 
-				return IsaToken.INT; 
-		}
-		else if (exp instanceof TCRealLiteralExpression)
-			return IsaToken.REAL;
-		else if (exp instanceof TCStringLiteralExpression)
-			return IsaToken.CHAR;
-		else if (exp instanceof TCQuoteLiteralExpression)
-			return IsaToken.CHAR;
-		else
-			throw new RuntimeException("Invalid VDM literal type " + exp.getClass().getName() + " = " + exp.toString());
-			*/
 	}
 }

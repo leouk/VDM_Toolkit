@@ -3,9 +3,12 @@ package vdm2isa.lex;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.Dialect;
+import com.fujitsu.vdmj.lex.LexLocation;
 //@todo merge this into IsaToken
 import com.fujitsu.vdmj.lex.Token;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
@@ -108,6 +111,7 @@ public enum IsaToken {
 	ISACHAR(null, "CHR"),
 	ISASTR(null/*Token.STRING*/, "''"),
 	DUMMY(null, "dummy"),
+	ERROR(Token.ERROR, "ERROR"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
@@ -152,11 +156,11 @@ public enum IsaToken {
 	private IsaToken(Token vdm, String isa)
 	{
 		assert isa != null; 
-		//@nb could this be available somehow? Token.lookup(vdm.toString(), Dialect.VDM_SL)
-		//if (vdm == null ||
-		//	Token.lookup(vdm.toString(), Dialect.VDM_PP) != null ||
-	   	//    Token.lookup(vdm.toString(), Dialect.VDM_RT) != null)
-		//	   throw new IllegalArgumentException("Invalid VDM PP or RT token " + vdm.toString());
+		String vdmstr = vdm != null ? vdm.toString() : "null";
+		if (Token.lookup(vdmstr, Dialect.VDM_PP) != null 
+			||
+			Token.lookup(vdmstr, Dialect.VDM_SL) != null)
+			TypeChecker.report(IsaToken.error(11), "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -187,25 +191,28 @@ public enum IsaToken {
 		return left.toString() + s + right.toString();
 	}
 
-	public static String dummyVarNames(int count)
+	public static String dummyVarNames(int count, LexLocation location)
 	{
-		if (count <= 0)
-			throw new IllegalArgumentException("Dummy var names call must be strictly positive = " + count);
 		StringBuilder sb = new StringBuilder();
-		sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
-		for (int i = 1; i < count; i++)
+		if (count <= 0)
+			TypeChecker.report(IsaToken.error(12), "Dummy var names call must be strictly positive; count = " + count, location);
+		else
 		{
-			sb.append(" "); 
-			sb.append(IsaToken.DUMMY.toString() + Integer.toString(i));
-		}	
+			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
+			for (int i = 1; i < count; i++)
+			{
+				sb.append(" "); 
+				sb.append(IsaToken.DUMMY.toString() + Integer.toString(i));
+			}	
+		}
 		return sb.toString();
 	}
 
 	//@TODO fix after finalisaing Token above. 
-	public static IsaToken from(Token operator)
+	public static IsaToken from(LexToken operator)
 	{
 		assert operator != null; 
-		switch (operator)
+		switch (operator.type)
 		{
 
 			case NOT			: return IsaToken.NOT;
@@ -286,6 +293,22 @@ public enum IsaToken {
 			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
-		throw new RuntimeException("Invalid VDM token for Isabelle translation " + operator.toString());  
+		TypeChecker.report(IsaToken.error(10), "Invalid VDM token for Isabelle translation " + operator.toString(), operator.location);  
+		return IsaToken.ERROR;
+	}
+
+	private static final int ISABELLE_ERROR_BASE   = 10000;
+	private static final int ISABELLE_WARNING_BASE = ISABELLE_ERROR_BASE + 500;
+
+	public static int warning(int number)
+	{
+		assert number >= 0;
+		return number + ISABELLE_WARNING_BASE;
+	}
+
+	public static int error(int number)
+	{
+		assert number >= 0;
+		return number + ISABELLE_ERROR_BASE;
 	}
 }

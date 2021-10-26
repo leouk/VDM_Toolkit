@@ -28,7 +28,7 @@ public class TRBinaryExpression extends TRExpression
 	@Override
 	public IsaToken isaToken()
 	{
-		return IsaToken.from(op.type);
+		return IsaToken.from(op);
 	}
 
 	@Override
