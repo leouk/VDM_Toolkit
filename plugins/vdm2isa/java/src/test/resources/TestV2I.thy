@@ -1322,7 +1322,7 @@ TCNarrowExpression
 abbreviation
 	v73 :: "VDMNat1"
 where
-	"v73 \<equiv> (SOME var. (var \<in> s1)\<and>(var < (2::VDMNat1)))"
+	"v73 \<equiv> (SOME var. (var \<in> s1) \<and> (var < (2::VDMNat1)))"
 
 definition
 	inv_v73 :: "\<bool>"
@@ -1349,7 +1349,7 @@ where
 definition
 	inv_v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
 where
-	"inv_v74  \<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant depends on its lambda definition and same dummy names being used!\<close>"
+	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant depends on its lambda definition and same dummy names being used!\<close>"
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:56
 
