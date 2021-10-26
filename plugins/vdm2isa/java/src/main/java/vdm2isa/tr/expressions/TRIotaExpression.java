@@ -26,7 +26,7 @@ public class TRIotaExpression extends TRExpression {
     public String translate() {
         return IsaToken.parenthesise(isaToken().toString() + " " + 
             bind.plist.get(0).translate() + IsaToken.POINT.toString() + " " + 
-            IsaToken.parenthesise(bind.translate()) + IsaToken.AND.toString() +
+            IsaToken.parenthesise(bind.translate()) + " " + IsaToken.AND.toString() + " " +
             predicate.translate());
     }
 

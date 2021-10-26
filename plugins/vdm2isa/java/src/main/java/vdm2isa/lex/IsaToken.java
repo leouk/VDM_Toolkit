@@ -148,6 +148,8 @@ public enum IsaToken {
 	THEN(Token.THEN, "then"),
 	ELSE(Token.ELSE, "else"),
 	TFUN(Token.TOTAL_FUNCTION, "\\<Rightarrow>"),
+	LET(Token.LET, "let"),
+	IN(Token.IN, "in"),
 	EOF(Token.EOF, "EOF");
 
 	private final Token  vdm;

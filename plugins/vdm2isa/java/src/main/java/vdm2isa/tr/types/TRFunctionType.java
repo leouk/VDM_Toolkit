@@ -39,7 +39,7 @@ public class TRFunctionType extends TRType
 	public String dummyVarNames(String varName)
 	{
 		assert varName != null;
-		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size()));
+		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size(), location));
 	}
 
 	@Override

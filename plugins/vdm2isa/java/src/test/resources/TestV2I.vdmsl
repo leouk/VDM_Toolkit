@@ -106,6 +106,7 @@ values
 	v76= (exists var in set s1 & var < 2); -- TCExistsExpression
 	v78= (forall var in set s1 & var <= 3); -- TCForallExpression
 	--TODO: not yet v65= m1(1);						--TCApplyExpression
+	v79= (let var : nat = 10 in var + x);	-- TCLetDefExpression
 functions
 
 --f: nat -> nat

@@ -2,6 +2,8 @@ package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
 
+import com.fujitsu.vdmj.tc.patterns.TCMapletPattern;
+import com.fujitsu.vdmj.tc.patterns.TCMapletPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 

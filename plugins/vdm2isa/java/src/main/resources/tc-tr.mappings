@@ -113,7 +113,7 @@ map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, pred
 map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
 map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
 #map TCLetBeStExpression{location, bind, suchThat, value} to
-#map TCLetDefExpression{location, localDefs, expression} to
+map TCLetDefExpression{location, localDefs, expression} to TRLetDefExpression(location, localDefs, expression);
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
@@ -181,8 +181,8 @@ map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
 
 #@NB is this pattern list mapping okay?
 map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
-map TCMapletPatternList{} to TRPatternList(this);
-map TCMapPattern{maplets} to TRPatternList(this, maplets);
+#map TCMapletPatternList{} to TRPatternList(this);
+#map TCMapPattern{maplets} to TRStructuredPattern(this, maplets);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
