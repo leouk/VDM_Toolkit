@@ -1427,5 +1427,37 @@ definition
 where
 	"inv_v79  \<equiv> (inv_VDMNat v79)"
 
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:47
+
+ TCLetDefExpression
+
+*)
+abbreviation
+	v80 :: "VDMNat1 VDMSet"
+where
+	"v80 \<equiv> { var \<in> s | var . (var > (1::VDMNat1)) }"
+
+lemma "v80 = A" 
+apply simp
+definition
+	inv_v80 :: "\<bool>"
+where
+	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:47
+
+ TCSetCompExpression
+
+*)
+abbreviation
+	v81 :: "VDMNat1 VDMSeq"
+where
+	"v81 \<equiv> [ var . var \<in> s1 | (var > (1::VDMNat1)) ]"
+
+definition
+	inv_v81 :: "\<bool>"
+where
+	"inv_v81  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v81)"
+
 
 end

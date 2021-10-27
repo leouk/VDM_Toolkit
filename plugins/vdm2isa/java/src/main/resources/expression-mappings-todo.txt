@@ -94,6 +94,9 @@
 *TCLetBeStExpression
 *TCLetDefExpression
 
+TCMapCompExpression
+TCSeqCompExpression
+TCSetCompExpression
 
 TCPostOpExpression
 TCCaseAlternative
@@ -108,9 +111,6 @@ TCElseIfExpressionList
 TCFuncInstantiationExpression
 
 
-TCMapCompExpression
-TCSeqCompExpression
-TCSetCompExpression
 TCMkBasicExpression
 TCPreExpression
 TCPreOpExpression
