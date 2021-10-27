@@ -107,8 +107,15 @@ values
 	v78= (forall var in set s1 & var <= 3); -- TCForallExpression
 	--TODO: not yet v65= m1(1);						--TCApplyExpression
 	v79= (let var : nat = 10 in var + x);	-- TCLetDefExpression
-	v80= { var | var in set s1 & var > 1 }; -- TCSetCompExpression
-	v81= [ var | var in set s1 & var > 1 ]; -- TCSeqCompExpression
+	v80= { var+var2 | var in set s1, var2 in seq s2 & var > var2 }; -- TCSetCompExpression
+	v85= [ var | var in set s1 & var > 1 ]; -- TCSeqCompExpression
+	v86= [ var | var in seq s2 & var > 1 ]; -- TCSeqCompExpression
+	/*
+	"v85 ≡ [ (var , var2) . var ← [1,2,3], var2 ← [4,5,6] , (var > (1::VDMNat1)) ]"
+	"v86 ≡ [ var . var ← [1,2,3,7,8,9] , (var > 4) ]"
+	"v87 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
+	value "sorted_list_of_set {1,2,(3::int)} = s2"
+	*/
 functions
 
 --f: nat -> nat

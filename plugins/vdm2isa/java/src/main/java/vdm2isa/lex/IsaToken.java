@@ -108,6 +108,7 @@ public enum IsaToken {
 	SEQAPPLY(null, "$"),
 	VARIABLE(null, ""),
 	INV(null, "inv_"),
+	IDENTIFIER(Token.IDENTIFIER, "identifier"),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),
 	ISACHAR(null, "CHR"),

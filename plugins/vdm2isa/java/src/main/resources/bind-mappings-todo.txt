@@ -31,9 +31,9 @@
 -TCObjectPattern
 *TCMapletPattern
 *TCMapletPatternList
-TCMapPattern
+*TCMapPattern
 
-TCExpressionPattern
 TCPatternBind
+TCExpressionPattern
 TCRecordPattern
 

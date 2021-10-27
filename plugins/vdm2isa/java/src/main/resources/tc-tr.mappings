@@ -115,8 +115,8 @@ map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindLis
 #map TCLetBeStExpression{location, bind, suchThat, value} to
 map TCLetDefExpression{location, localDefs, expression} to TRLetDefExpression(location, localDefs, expression);
 
-map TCSetCompExpression{first, bindings, predicate} to TRCompExpression(this, first, bindings, predicate);
-map TCSeqCompExpression{first, bind, predicate} to TRCompExpression(this, first, bind, predicate);
+map TCSetCompExpression{location, first, bindings, predicate} to TRSetCompExpression(location, first, bindings, predicate);
+map TCSeqCompExpression{location, first, bind, predicate} to TRSeqCompExpression(location, first, bind, predicate);
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
