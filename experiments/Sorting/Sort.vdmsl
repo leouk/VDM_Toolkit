@@ -49,4 +49,8 @@ functions
 		else (if e = hd s then 1 else 0) + occurs[@T](e, tl s)
 	measure len s;	-- Strictly decreasing
 
+	gX : () -> nat
+	gX () ==
+	let x in set {1,2,3} be st x > 1 in 0;
+
 end Sort
