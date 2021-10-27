@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCInMapType;
+import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
 
@@ -9,12 +11,22 @@ public class TRMapType extends TRType
     private static final long serialVersionUID = 1L;
 	private final TRType from;
 	private final TRType to;
+    private final boolean injective;
 
-	public TRMapType(LexLocation location, TRType from, TRType to)
+	public TRMapType(TCMapType owner, LexLocation location, TRType from, TRType to)
 	{
 		super(location);
 		this.from = from;
 		this.to = to;
+        this.injective = false;
+	}
+
+	public TRMapType(TCInMapType owner, LexLocation location, TRType from, TRType to)
+	{
+		super(location);
+		this.from = from;
+		this.to = to;
+        this.injective = true;
 	}
 
     @Override
@@ -28,6 +40,7 @@ public class TRMapType extends TRType
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.INV.toString());
         // transform "map" => "Map" for inv_Map call
+        //          "inmap"=> "Inmap" for inv_Inmap call
         int i = sb.length();
         sb.append(isaToken().vdmToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
@@ -43,7 +56,7 @@ public class TRMapType extends TRType
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.MAP;
+        return injective ? IsaToken.INMAP : IsaToken.MAP;
     }    
 
 

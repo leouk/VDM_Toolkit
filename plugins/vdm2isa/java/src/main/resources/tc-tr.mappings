@@ -204,7 +204,8 @@ map TCTokenType{} to TRBasicType(this);
 
 map TCQuoteType{location, value} to TRQuoteType(location, value);
 map TCProductType{location, types} to TRProductType(location, types);
-map TCMapType{location, from, to} to TRMapType(location, from, to);
+map TCMapType{location, from, to} to TRMapType(this, location, from, to);
+map TCInMapType{location, from, to} to TRMapType(this, location, from, to);
 map TCInvariantType{} to TRInvariantType();
 map TCNamedType{typename, type} to TRNamedType(typename, type);
 map TCRecordType{name, fields, composed} to TRRecordType(name, fields, composed);
