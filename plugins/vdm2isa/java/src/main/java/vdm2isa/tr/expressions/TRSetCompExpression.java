@@ -14,6 +14,7 @@ public class TRSetCompExpression extends TRExpression {
     private final TRExpression first;
     private final TRMultipleBindList binds;
     private final TRExpression predicate;
+    private final boolean existential;
 
     public TRSetCompExpression(LexLocation location, 
         TRExpression first, TRMultipleBindList bindings, 
@@ -23,6 +24,11 @@ public class TRSetCompExpression extends TRExpression {
         this.first = first;
         this.binds = bindings;
         this.predicate = predicate;
+        // if anything other than variable expression is used, we need to convert to the existential comprehension form
+        // { x     | x in set S & P } = { x       . x : S /\ P   } (existential = false)
+        // { x + x | x in set S & P } = { x + x | x . x : S /\ P } = { u . (? x . u = x + x /\ x : S /\ P)  } (existential = true) 
+        this.existential = !(first instanceof TRVariableExpression);
+        System.out.println("SetComp first = " + first.getClass().getName() + " plist (" + binds.size() + ")[" + binds.toString() + "] = " + binds.translate());
     }
 
     @Override
@@ -33,18 +39,23 @@ public class TRSetCompExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
+        // I could arguably do binds.compTranslate first if not existential? Keep it simpler? 
         sb.append(IsaToken.SET_OPEN.toString());
         sb.append(" ");
         sb.append(first.translate());
         sb.append(" ");
-        sb.append(IsaToken.POINT.toString());
+        sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
         sb.append(" ");
+        this.binds.separator = " ";
+        sb.append(existential ? binds.compTranslate(true) + " " + IsaToken.POINT.toString() : "");
+        sb.append(" ");
+        // The binds translation as the type (binding) restriction has to be part of the Isabelle predicate filter 
+        this.binds.separator = " " + IsaToken.AND.toString() + " ";
         sb.append(binds.translate());
+        sb.append(" ");
         if (predicate != null)
         {
-            sb.append(" ");
-            sb.append("|");
-            sb.append(" ");
+            sb.append(binds.separator);
             sb.append(predicate.translate());
         }
         sb.append(" ");

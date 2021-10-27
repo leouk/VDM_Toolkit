@@ -40,6 +40,8 @@ public enum IsaToken {
 	TYPEOF(null, "::"),
 	PLACEHOLDER(null, "_"),
 	//TUPLE(null/*mk_*/, ""),
+	SEQBIND(null, "\\<leftarrow>"),
+	SETSEQBIND(null, "\\<leftarrow> sorted_list_of_set"),
 
 	// Unary Operators
 	NOT(Token.NOT, "\\<not>"),
@@ -122,6 +124,7 @@ public enum IsaToken {
 	RECORD_MODIFIER(Token.MAPLET, ":="),
 	RANGE(Token.RANGE, ".."),
 	POINT(Token.POINT, "."),
+	BAR(Token.PIPE, "|"),
 	FORALL(Token.FORALL, "\\<forall>"),
 	EXISTS(Token.EXISTS, "\\<exists>"),
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),

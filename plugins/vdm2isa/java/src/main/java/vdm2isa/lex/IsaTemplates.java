@@ -55,6 +55,7 @@ public final class IsaTemplates {
         return listToString("", list, separator, "");
     }
 
+    //TODO have other methods beyond translate or use reflection? We have translate, invTranslate, compTranslate sprinkled around :-(
     public static String listToString(String before, List<? extends TRNode> list, String separator, String after)
 	{
 		StringBuilder sb = new StringBuilder();

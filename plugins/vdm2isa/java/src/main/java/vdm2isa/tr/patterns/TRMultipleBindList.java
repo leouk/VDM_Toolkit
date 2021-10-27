@@ -12,7 +12,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 {
     private static final long serialVersionUID = 1L;
 
-    protected final String separator;
+    public String separator;
     
     public TRMultipleBindList()
     {
@@ -30,6 +30,22 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		super(list);
         separator = " ";
 	}
+
+    public String compTranslate(boolean patternsOnly)
+    {
+        StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(get(0).compTranslate(patternsOnly));
+
+			for (int i=1; i<size(); i++)
+			{
+				sb.append(separator);
+				sb.append(get(i).compTranslate(patternsOnly));
+			}
+		}
+		return sb.toString();
+    } 
 
 	public String translate()
 	{

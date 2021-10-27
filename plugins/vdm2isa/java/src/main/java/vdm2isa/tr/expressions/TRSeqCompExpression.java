@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.expressions.TCSetCompExpression;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.patterns.TRMultipleSetBind;
 
 /**
  * Isabelle sequence compression is "[ expr(bind1, bind2) . bind1 <- gen1, bind2 <- gen2, filter ]".
@@ -27,7 +28,10 @@ public class TRSeqCompExpression extends TRExpression {
         this.first = first;
         this.bind = bind;
         this.predicate = predicate;
-        System.out.println("SeqComp bind = " + bind.getClass().getName() + " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + bind.plist.toString());
+        // Tell set bind it's for a sequence
+        if (this.bind instanceof TRMultipleSetBind)
+            ((TRMultipleSetBind)this.bind).seqBind = true;
+        //System.out.println("SeqComp bind = " + bind.getClass().getName() + " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + bind.plist.toString());
     }
 
     @Override
@@ -35,6 +39,14 @@ public class TRSeqCompExpression extends TRExpression {
         return IsaToken.SEQ;
     }
 
+    public boolean isSetSeqBind()
+    {
+        return (this.bind instanceof TRMultipleSetBind) && ((TRMultipleSetBind)this.bind).seqBind;
+    }
+
+    /**
+     * Sequence comprehension in Isabelle 
+     */
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
@@ -44,16 +56,22 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(" ");
         sb.append(IsaToken.POINT.toString());
         sb.append(" ");
-        sb.append(bind.translate());
+        sb.append(bind.compTranslate(false));
         if (predicate != null)
         {
             sb.append(" ");
-            sb.append("|");
+            // predicate separator in Isabelle is "," not "|"
+            sb.append(IsaToken.COMMA.toString());
             sb.append(" ");
             sb.append(predicate.translate());
         }
         sb.append(" ");
         sb.append(IsaToken.SEQ_CLOSE.toString());
+        if (isSetSeqBind())
+        {
+            String setbindProblem = "Translator does not have sequence bind type info. If VDM (ordered) set bind used, need to add append to seq expression " + IsaToken.SETSEQBIND.toString();
+            sb.append("\n\t" + IsaToken.comment(setbindProblem));
+        }
         return sb.toString();
     }
 

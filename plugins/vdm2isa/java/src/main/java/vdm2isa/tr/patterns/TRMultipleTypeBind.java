@@ -48,6 +48,12 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 		return sb.toString();
     }
 
+    @Override
+    public String compTranslate(boolean patternsOnly)
+    {
+        return IsaToken.parenthesise(plist.translate() + " " + IsaToken.TYPEOF + " " + type.translate());
+    }
+
     protected String translate(int index, String typeStr)
     {
         assert index >= 0 && index < plist.size();
