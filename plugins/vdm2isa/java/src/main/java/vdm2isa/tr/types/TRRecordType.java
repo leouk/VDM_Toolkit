@@ -25,7 +25,7 @@ public class TRRecordType extends TRInvariantType
         //@todo collect field's abstraction to see how to compare equals
         this.fields = fields;
         if (this.fields.size() == 0)
-            TypeChecker.report(IsaToken.error(2), "Isabelle does not allow empty records for VDM record type " + name.toString(), location);
+            report(10002, "Isabelle does not allow empty records for VDM record type " + name.toString());
         this.composed = composed;
         recordMap.put(name, fields); 
     }

@@ -21,11 +21,11 @@ public class TRMkTypeExpression extends TRExpression {
         this.args = args;
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)
-            TypeChecker.report(IsaToken.error(5), "Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.", location);
+            report(10005, "Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.");
         else if (this.fields.size() != this.args.size())
-            TypeChecker.report(IsaToken.error(6), "Invalid record arguments: incompatible number of fields for VDM mk_" + typename.toString() + " expression.", location);
+            report(10006, "Invalid record arguments: incompatible number of fields for VDM mk_" + typename.toString() + " expression.");
         else if (this.args.size() == 0)
-            TypeChecker.report(IsaToken.error(7), "Isabelle does not allow empty records for VDM mk_" + typename.toString() + " expression.", location);
+            report(10007, "Isabelle does not allow empty records for VDM mk_" + typename.toString() + " expression.");
     }
 
     @Override
@@ -37,6 +37,7 @@ public class TRMkTypeExpression extends TRExpression {
     {
         assert index >= 0 && index < this.fields.size(); 
         StringBuilder sb = new StringBuilder();
+        //TODO check whether there are any errors before proceeding?
         sb.append(this.fields.get(index).getTagName().toString());
         sb.append(" ");
         sb.append(IsaToken.EQUALS.toString());

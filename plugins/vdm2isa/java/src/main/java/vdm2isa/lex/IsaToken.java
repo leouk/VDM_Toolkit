@@ -10,6 +10,8 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.Vdm2isaPlugin;
+
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
 	// Basic types; use VDMToolkit names 
@@ -162,7 +164,7 @@ public enum IsaToken {
 		if (Token.lookup(vdmstr, Dialect.VDM_PP) != null 
 			||
 			Token.lookup(vdmstr, Dialect.VDM_SL) != null)
-			TypeChecker.report(IsaToken.error(11), "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
+			Vdm2isaPlugin.report(10011, "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -197,7 +199,7 @@ public enum IsaToken {
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
-			TypeChecker.report(IsaToken.error(12), "Dummy var names call must be strictly positive; count = " + count, location);
+			Vdm2isaPlugin.report(10012, "Dummy var names call must be strictly positive; count = " + count, location);
 		else
 		{
 			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
@@ -295,22 +297,7 @@ public enum IsaToken {
 			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
-		TypeChecker.report(IsaToken.error(10), "Invalid VDM token for Isabelle translation " + operator.toString(), operator.location);  
+		Vdm2isaPlugin.report(10010, "Invalid VDM token for Isabelle translation " + operator.toString(), operator.location);  
 		return IsaToken.ERROR;
-	}
-
-	private static final int ISABELLE_ERROR_BASE   = 10000;
-	private static final int ISABELLE_WARNING_BASE = ISABELLE_ERROR_BASE + 500;
-
-	public static int warning(int number)
-	{
-		assert number >= 0;
-		return number + ISABELLE_WARNING_BASE;
-	}
-
-	public static int error(int number)
-	{
-		assert number >= 0;
-		return number + ISABELLE_ERROR_BASE;
 	}
 }

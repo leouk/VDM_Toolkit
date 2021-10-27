@@ -16,6 +16,8 @@ import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.Vdm2isaPlugin;
+
 public final class IsaTemplates {
     
     private final static Map<String, IsaItem> translatedItems = new HashMap<String, IsaItem>();
@@ -78,7 +80,7 @@ public final class IsaTemplates {
     {
         //@todo accumulate all def names for latter creation of lemmas xyz_def etc...? 
         if (translatedItems.containsKey(name))
-            TypeChecker.report(IsaToken.error(17), "Invalid IsaItem " + item + ": " + name + " has already been defined.", LexLocation.ANY); 
+            Vdm2isaPlugin.report(10017, "Invalid IsaItem " + item + ": " + name + " has already been defined.", LexLocation.ANY); 
         else
             translatedItems.put(name, item);    
     }
@@ -226,7 +228,7 @@ public final class IsaTemplates {
             case INVERSE:
             case POWER:
                 if (args.length != 1)
-                    TypeChecker.report(IsaToken.error(13), "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                    Vdm2isaPlugin.report(10013, "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else
                 {
                     sb.append("(");
@@ -238,7 +240,7 @@ public final class IsaTemplates {
                 break;
             case UPLUS: // +x is just x
                 if (args.length != 1)
-                    TypeChecker.report(IsaToken.error(13), "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                    Vdm2isaPlugin.report(10013, "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else
                     sb.append(args[0].translate());
                 break;
@@ -277,7 +279,7 @@ public final class IsaTemplates {
             case MUNION:
             case COMP:
                 if (args.length != 2)
-                    TypeChecker.report(IsaToken.error(14), "Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                    Vdm2isaPlugin.report(10014, "Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else
                 {
                     sb.append("(");
@@ -292,7 +294,7 @@ public final class IsaTemplates {
             case STARSTAR:
             case STARSTARNAT:
                 if (args.length != 2)
-                    TypeChecker.report(IsaToken.error(15), "Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
+                    Vdm2isaPlugin.report(10015, "Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else
                 {
                     String comment = "result context dependenant on nat or real. Adjust to " + token.toString() + " or just ^";
@@ -307,12 +309,12 @@ public final class IsaTemplates {
                     sb.append(IsaToken.COMMENT_OPEN.toString());
                     sb.append(comment);
                     sb.append(IsaToken.COMMENT_CLOSE.toString());
-                    TypeChecker.warning(IsaToken.warning(1), comment, location);
+                    Vdm2isaPlugin.warning(11001, comment, location);
                 }
                 break;
             
             default:
-                TypeChecker.report(IsaToken.error(16), "Not yet implemented translation for token " + token.toString() + " " + TRExpressionList.translate(args), location);
+                Vdm2isaPlugin.report(10016, "Not yet implemented translation for token " + token.toString() + " " + TRExpressionList.translate(args), location);
         }
         return sb.toString();
     }

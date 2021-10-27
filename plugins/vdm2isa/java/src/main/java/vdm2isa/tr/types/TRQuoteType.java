@@ -27,7 +27,7 @@ public class TRQuoteType extends TRType
     
     @Override
 	public String invTranslate(String varName) {
-        TypeChecker.report(IsaToken.error(0), "Not yet implemented", location);
+        report(10000, "Not yet implemented");
         return IsaToken.ERROR.toString();
 	}
 }
