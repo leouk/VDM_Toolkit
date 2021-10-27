@@ -3,18 +3,37 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
+import vdm2isa.tr.types.TRFunctionType;
 
 public class TRLambdaExpression extends TRExpression {
 
     private TRTypeBindList bindList;
     private TRExpression expression;
 
-    public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression)
+    private TRFunctionType type;
+	private TRPatternList paramPatterns;
+	private TRDefinitionList paramDefinitions;
+	private TRDefinition def;
+
+    public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
+        TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def)
     {
         super(location);
         this.bindList = bindList;
         this.expression = expression;
+        this.type = type;
+        this.paramPatterns = paramPatterns; 
+        this.paramDefinitions = paramDefinitions; 
+        System.out.println("LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
+            "\n\tFcnType    = " + type.translate() +
+            "\n\tParamPttrs = " + paramPatterns.translate() + 
+            "\n\tParamDefs  = " + paramDefinitions.translate() +
+            "\n\tDef        = " + def.toString() + 
+            "\n");
     }
 
     @Override

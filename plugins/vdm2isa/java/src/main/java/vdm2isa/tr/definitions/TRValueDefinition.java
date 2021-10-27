@@ -17,13 +17,16 @@ public class TRValueDefinition extends TRDefinition
 	private final TRPattern pattern;
 	private final TRType type;
 	private final TRExpression exp;
+	private final TRDefinitionList defs;
 	
-	public TRValueDefinition(LexCommentList comments, TRPattern pattern, TRType type, TRExpression exp)
+	public TRValueDefinition(LexCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
 	{
 		super(pattern.location, comments);
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
+		this.defs = defs;
+		//System.out.println("Value Def for " + pattern.translate() + " \ndefs =\n " + defs.translate());
 	}
 
 	@Override
