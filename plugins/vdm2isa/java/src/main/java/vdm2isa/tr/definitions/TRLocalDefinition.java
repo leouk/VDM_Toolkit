@@ -50,9 +50,52 @@ public class TRLocalDefinition extends TRDefinition {
 		return IsaToken.LOCAL;
 	}
 
-    public String getDeclaredName()
+    protected String getDeclaredName()
     {
-        return name.toString();
+        // make sure it doesn't fall on null; but TRValueDefinition ought to override this method to consider its bindings!
+        return String.valueOf(name);
+    }
+
+    protected String getTypeString()
+    {
+        // type string depends on TRType class
+        String typeStr;
+        if (type instanceof TRRecordType)
+            // "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
+            typeStr = ((TRRecordType)type).getName().toString();
+        else
+            // other types, translate it directly
+            typeStr = type.translate();
+        return typeStr;
+    }
+
+    protected String getInvariantString(String varName)
+    {
+        // invariant type string depends on the TRType class
+		String invStr;
+
+        if (type instanceof TRRecordType)
+        {
+			// records have to apply to the varName rather than use it as part of the type-inv-translate string
+			invStr = type.invTranslate(null) + varName;
+        }
+        else
+        {
+            invStr = type.invTranslate(varName);
+        }
+        //System.out.println("getInvariantString(" + String.valueOf(varName) + ") = " + invStr);
+        return invStr;
+    }
+
+    protected String dummyVarNames()
+    {
+        String dummyNames = "";
+        if (type instanceof TRFunctionType)
+        {   
+            // function types require dummy names for invariant string translation
+            dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
+        }
+        return dummyNames;
     }
 
     @Override
@@ -62,54 +105,20 @@ public class TRLocalDefinition extends TRDefinition {
 		StringBuilder sb = new StringBuilder();
 
 		// add any annotations or comments
-		sb.append(super.translate());
-
-		// get declared and invariant variable names
-		String declName = getDeclaredName();
-
-		// type string depends on TRType class
-		String typeStr;
-		if (type instanceof TRRecordType)
-			// "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
-			typeStr = ((TRRecordType)type).getName().toString();
-		else
-			// other types, translate it directly
-			typeStr = type.translate();
-
-		sb.append(IsaToken.parenthesise(declName + IsaToken.TYPEOF.toString() + typeStr));
-		System.out.println(toString());
+		sb.append(translatePreamble());
+		sb.append(IsaToken.parenthesise(getDeclaredName() + IsaToken.TYPEOF.toString() + getTypeString()));
+		//System.out.println(toString());
         return sb.toString();
     }
 
     @Override
     public String invTranslate()
     {
-		// get declared and invariant variable names
-		String declName = getDeclaredName();
-		String varName = declName.toLowerCase();
-
-		// translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
-        String inType = null;
-		String dummyNames = "";
+		// get invariant variable name
+		String varName = getDeclaredName();//.toLowerCase();
+		String dummyNames = dummyVarNames();
         
-		// invariant type string depends on the TRType class
-		String invStr;
-        if (type instanceof TRRecordType)
-        {
-			// records have to apply to the varName rather than use it as part of the type-inv-translate string
-			invStr = type.invTranslate(null) + varName;
-        }
-        else
-        {
-            invStr = type.invTranslate(varName);
-            // function typed abbreviations (i.e. lambdas) need different input signature for invariant! 
-            if (type instanceof TRFunctionType)
-            {
-                inType = ((TRFunctionType)type).parameters.translate();
-                dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
-            }
-        }
-
-        return IsaToken.parenthesise(invStr + " " + dummyNames);
+        // translate the type invariant definition calss as (inv_T v), possibly with dummy names for lambdas
+		return IsaToken.parenthesise(getInvariantString(varName) + (dummyNames.isEmpty() ? "" : " " + dummyNames));
     }
 }
