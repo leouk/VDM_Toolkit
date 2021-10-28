@@ -22,7 +22,7 @@ public class TRBasicPattern extends TRPattern {
     public TRBasicPattern(TCIdentifierPattern owner)
     {
         super(owner);
-        this.token = IsaToken.EOF;
+        this.token = IsaToken.IDENTIFIER;
         this.pattern = owner.toString();
     }
 

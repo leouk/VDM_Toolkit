@@ -77,52 +77,6 @@ public class TRLiteralExpression extends TRExpression
 			!(token == IsaToken.REAL || token == IsaToken.STRING || token == IsaToken.QUOTE) ?
 				IsaToken.TYPEOF.toString() + isaToken().toString() : "";
 		return IsaToken.parenthesise(exp + typeStr);
-		/*
-		StringBuilder sb = new StringBuilder();
-		sb.append("(");
-		if (exp instanceof TCBooleanLiteralExpression)
-		{
-			//True/False for true/false
-			sb.append(exp.toString());
-			sb.setCharAt(1, Character.toUpperCase(sb.charAt(1))); 
-		} 
-		else if (exp instanceof TCCharLiteralExpression)
-		{
-			// Isabelle chars are transformed from string through CHR
-			sb.append("CHR ''");
-			sb.append(exp.toString());
-			sb.append("''");
-		}
-		else if (exp instanceof TCStringLiteralExpression)
-		{
-			sb.append("''");
-			// remove the "xxxx" 
-			sb.append(exp.toString().substring(1, exp.toString().length() - 1));
-			sb.append("''");
-		}
-		else if (exp instanceof TCQuoteLiteralExpression)
-		{
-			// remove the "< ... >"
-			TCQuoteLiteralExpression qexp = (TCQuoteLiteralExpression)exp;
-			sb.append(qexp.type.value);
-		}
-		else
-		{
-			sb.append(exp.toString());
-		}
-
-		// no casting needed for those three 
-		if (!(exp instanceof TCStringLiteralExpression || 
-			  exp instanceof TCQuoteLiteralExpression ||
-			  exp instanceof TCRealLiteralExpression))
-		{
-			sb.append(IsaToken.TYPEOF.toString());
-			sb.append(isaToken().toString());
-		}
-
-		sb.append(")");
-		return sb.toString();
-		*/
 	}
 
 	@Override

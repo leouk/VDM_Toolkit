@@ -20,4 +20,9 @@ public abstract class TRMultipleBind extends TRNode
       list.add(this);
       return list;
     }
+
+    /**
+     * Binds translation within in comprehension expressions 
+     */
+    public abstract String compTranslate(boolean patternsOnly);
 }

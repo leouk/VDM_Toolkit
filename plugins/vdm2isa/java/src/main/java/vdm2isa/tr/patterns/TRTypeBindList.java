@@ -40,6 +40,7 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 			sb.append(this.get(0).invTranslate());
 			for (int i=1; i < this.size(); i++)
 			{
+				//TODO refactor this so as to have the listToString with adequate method call and separator? 
 				sb.append(" " + IsaToken.AND.toString() + " ");
 				sb.append(this.get(i).invTranslate());
 			}

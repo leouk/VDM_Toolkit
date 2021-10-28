@@ -3,10 +3,15 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * Field number expressions (e.g., x.#n) have to be transformed to the adequate tuple product/pair projection
+ * (see TRProductType). 
+ */
 public class TRFieldNumberExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
@@ -21,9 +26,9 @@ public class TRFieldNumberExpression extends TRExpression {
         this.field = field;
         this.type = type;
         if (!(type instanceof TRProductType))
-            TypeChecker.report(IsaToken.error(3), "Invalid type for tuple projection expression " + tuple.translate() + ".#" + field.toString() + " = " + type.getClass().getName(), location);
+            report(10003, "Invalid type for tuple projection expression " + tuple.translate() + ".#" + field.toString() + " = " + type.getClass().getName());
         if (this.field.value <= 0 || this.field.value > getProductType().types.size())
-            TypeChecker.report(IsaToken.error(4), "Invalid tuple projection field (" + this.field.value + ") is bigger than tuple size (" + getProductType().types.size() + ")", location); 
+            report(10004, "Invalid tuple projection field (" + this.field.value + ") is bigger than tuple size (" + getProductType().types.size() + ")"); 
     }
 
     @Override
@@ -39,6 +44,7 @@ public class TRFieldNumberExpression extends TRExpression {
     @Override
     public String translate() {
         assert field.value > 0 && field.value <= getProductType().types.size();
+        //if (Vdm2isaPlugin.getErrorCount() == 0)
         return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
             IsaToken.parenthesise(tuple.translate()));
     }

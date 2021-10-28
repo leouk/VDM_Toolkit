@@ -22,8 +22,6 @@ public class TRVariableExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		//name.getPreName(name.getLocation());
-		//@todo name location info as well? 
 		return name.getName().toString();
 	}
 

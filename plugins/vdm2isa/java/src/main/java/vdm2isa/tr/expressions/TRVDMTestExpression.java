@@ -22,9 +22,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
         this.basictype = basictype;
         this.test = test;
         if (basictype != null && typename != null)
-            TypeChecker.report(IsaToken.error(8), "Invalid " + getClass().getName() + " expression - contains both type name and basic type information", this.location);
+            report(10008, "Invalid " + getClass().getName() + " expression - contains both type name and basic type information");
         if (basictype != null && !(basictype instanceof TRBasicType))
-            TypeChecker.report(IsaToken.error(9), getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName(), this.location);      
+            report(10009, getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName());      
     }
 
     @Override

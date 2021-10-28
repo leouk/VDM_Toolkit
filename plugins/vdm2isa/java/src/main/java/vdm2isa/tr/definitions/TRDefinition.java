@@ -50,13 +50,11 @@ public abstract class TRDefinition extends TRNode
 		}
 		if (annotations != null && annotations.size() > 0)
 		{
+			warning(11050, "Not yet processing annotations");
 			sb.append("(* NOT YET PROCESSING ANNOTATIONS *)\n");
 		}
 		return sb.toString();
 	}
 
-	public IsaToken isaToken()
-	{
-		return null;
-	}
+	public abstract String invTranslate();
 }

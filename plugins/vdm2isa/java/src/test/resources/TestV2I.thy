@@ -1338,7 +1338,7 @@ abbreviation
 	v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> VDMNat"
 where
 	"v74 \<equiv> (
-	\<lambda> (var::VDMNat) (var2::VDMNat).
+	\<lambda> (var::VDMNat) (var2::VDMNat) .
 		(if ((inv_VDMNat var) \<and> (inv_VDMNat var2)) then
 			(var + var2)
 		 else
@@ -1426,6 +1426,67 @@ definition
 	inv_v79 :: "\<bool>"
 where
 	"inv_v79  \<equiv> (inv_VDMNat v79)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:47
+
+ TCLetDefExpression
+
+*)
+abbreviation
+	v80 :: "VDMNat1 VDMSet"
+where
+	"v80 \<equiv> { var .  var \<in> s1  \<and> (var > (1::VDMNat1)) }"
+
+definition
+	inv_v80 :: "\<bool>"
+where
+	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:47
+
+ TCSetCompExpression
+
+*)
+abbreviation
+	v81 :: "VDMNat1 VDMSet"
+where
+	"v81 \<equiv> { (var + var2) | var var2 . var \<in> s1 \<and> var2 \<in> (elems s2)  \<and> (var > var2) }"
+
+definition
+	inv_v81 :: "\<bool>"
+where
+	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:71
+
+ TCSetCompExpression
+
+*)
+abbreviation
+	v85 :: "VDMNat1 VDMSeq"
+where
+	"v85 \<equiv> [ var . var\<leftarrow> sorted_list_of_set (s1) , (var > (1::VDMNat1)) ]
+	\<comment>\<open>Translator does not have sequence bind type info. If VDM (ordered) set bind used, need to add append to seq expression \<leftarrow> sorted_list_of_set\<close>"
+
+definition
+	inv_v85 :: "\<bool>"
+where
+	"inv_v85  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v85)"
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:47
+
+ TCSeqCompExpression
+
+*)
+abbreviation
+	v86 :: "VDMNat1 VDMSeq"
+where
+	"v86 \<equiv> [ var . var \<leftarrow> s2 , (var > (1::VDMNat1)) ]"
+
+definition
+	inv_v86 :: "\<bool>"
+where
+	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
 
 
 end

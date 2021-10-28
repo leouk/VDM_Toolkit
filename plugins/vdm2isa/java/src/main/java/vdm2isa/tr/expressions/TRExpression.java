@@ -9,6 +9,8 @@ import vdm2isa.tr.TRNode;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import plugins.Vdm2isaPlugin;
+
 //@nb how to add this? 
 //@todo add comments and/or location? 
 public abstract class TRExpression extends TRNode

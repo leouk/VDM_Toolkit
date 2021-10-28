@@ -7,7 +7,8 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
 
-import vdm2isa.lex.IsaTemplates;  
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;  
 
 public class TRTypeDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
@@ -24,6 +25,12 @@ public class TRTypeDefinition extends TRDefinition {
         this.invExpr = invExpression;
     }
 
+    @Override
+    public IsaToken isaToken()
+    {
+        return IsaToken.TYPEOF;
+    }
+
     @Override 
     public String translate()
     {
@@ -38,5 +45,11 @@ public class TRTypeDefinition extends TRDefinition {
                     type.invTranslate(varName)));
         }
         return sb.toString();
+    }
+
+    @Override
+    public String invTranslate() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

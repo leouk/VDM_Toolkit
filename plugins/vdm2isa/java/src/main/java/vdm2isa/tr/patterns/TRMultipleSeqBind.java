@@ -9,9 +9,9 @@ public class TRMultipleSeqBind extends TRMultipleBind
 
     private TRExpression seq;
 
-    public TRMultipleSeqBind(TRPattern pattern, TRExpression set)
+    public TRMultipleSeqBind(TRPattern pattern, TRExpression seq)
     {
-        this(pattern.getPatternList(), set);
+        this(pattern.getPatternList(), seq);
     }
 
     public TRMultipleSeqBind(TRPatternList plist, TRExpression seq)
@@ -25,6 +25,21 @@ public class TRMultipleSeqBind extends TRMultipleBind
         return IsaToken.INSET;
     }
 
+    @Override
+    public String compTranslate(boolean patternsOnly)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(plist.translate());
+        if (!patternsOnly)
+        {
+            sb.append(" ");
+            sb.append(IsaToken.SEQBIND.toString());
+            sb.append(" ");
+            sb.append(seq.translate());
+        } 
+        return sb.toString();
+    }
+    
     @Override
     public String translate() {
         return plist.translate() + " " + isaToken().toString() + " " + 

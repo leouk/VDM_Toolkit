@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRParameterList;
 import vdm2isa.tr.types.TRFunctionType;
@@ -89,5 +90,17 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		sb.append(";\n}\n");
 		*/
 		return sb.toString();
+	}
+
+	@Override
+	public String invTranslate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IsaToken isaToken() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
