@@ -5,11 +5,13 @@ package vdm2isa.tr;
 
 import java.util.List;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
 import vdm2isa.lex.IsaTemplates;
+import plugins.Vdm2isaPlugin;
 
 public class TRMappedList<FROM extends Mappable, TO extends TRNode> extends MappedList<FROM, TO>
 {
@@ -31,9 +33,14 @@ public class TRMappedList<FROM extends Mappable, TO extends TRNode> extends Mapp
 			{
 				add((TO)mapper.convert(type));
 			}
+			catch (Exception e)
+			{
+				Vdm2isaPlugin.report(11111, "Could not yet convert " + from.getClass().getName() + " = " + e.toString(), LexLocation.ANY);
+				//e.printStackTrace();
+			}
 			catch (Throwable t)
 			{
-				System.out.println("Exception when creating " + from.getClass().getName());
+				Vdm2isaPlugin.report(11111, "Unexpected exception when converting " + from.getClass().getName() + " = " + t.toString(), LexLocation.ANY);
 				t.printStackTrace();
 			}
 		}

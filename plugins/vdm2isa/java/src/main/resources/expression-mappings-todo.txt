@@ -93,17 +93,18 @@
 *TCForAllExpression
 *TCLetBeStExpression
 *TCLetDefExpression
+*TCSeqCompExpression
+*TCSetCompExpression
+*TCDefExpression
 
 TCMapCompExpression
-TCSeqCompExpression
-TCSetCompExpression
 
 TCPostOpExpression
 TCCaseAlternative
 TCCaseAlternativeList
 TCCasesExpression
 
-TCDefExpression
+
 TCElseIfExpression
 TCElseIfExpressionList
 

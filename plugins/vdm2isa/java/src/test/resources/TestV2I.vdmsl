@@ -124,22 +124,12 @@ functions
 --f: nat -> nat
 --f(x) == x + 1;
 
-
-	
-/*
-			
-TCIfExpression			
-TCVariableExpression	
-
-ALSO ADD TYPE DECLARATIONS OF EACH KIND !  
-
-TCFunctionType	
-TCTokenType		
-TCQuoteType		
-TCNamedType		
-
-*/
-
+state State of
+   st1: nat
+   st2: set of nat
+inv mk_State(st1, st2) == st1 in set st2
+init s == s = mk_State(1, {1,2,3})
+end
 
 end TestV2I
 

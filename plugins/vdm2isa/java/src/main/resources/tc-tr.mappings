@@ -6,12 +6,12 @@ package com.fujitsu.vdmj.tc.definitions to vdm2isa.tr.definitions;
 map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
 map TCTypeDefinition{annotations, name, type, invExpression} to TRTypeDefinition(annotations, name, type, invExpression);
-map TCValueDefinition{comments, pattern, type, exp, defs} to TRValueDefinition(comments, pattern, type, exp, defs);
 map TCExplicitFunctionDefinition{comments, name, type, paramPatternList, body} to TRExplicitFunctionDefinition(comments, name, type, paramPatternList, body);
 map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp);
 
 # This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
 map TCLocalDefinition{location, comments, name, type} to TRLocalDefinition(location, comments, name, type);
+map TCValueDefinition{comments, pattern, type, exp, defs} to TRValueDefinition(comments, pattern, type, exp, defs);
 
 # This is an odd one from within TCLambdaExpression; 
 #map TCMultiBindListDefinition{location, bindings, defs} to TRMultiBindListDefinition(location, bindings, defs);
