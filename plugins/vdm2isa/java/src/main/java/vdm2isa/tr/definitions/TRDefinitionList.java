@@ -46,16 +46,21 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 
 	public String translate()
 	{
+		return IsaTemplates.listToString(this, separator);
+	}
+
+	public String invTranslate()
+	{
 		StringBuilder sb = new StringBuilder();
-		Class<?> last = null;
-		
-		for (TRDefinition def: this)
+		if (!isEmpty())
 		{
-			if (last != null && def.getClass() != last) sb.append(separator);
-			sb.append(def.translate());
-			last = def.getClass();
+			sb.append(get(0).invTranslate());
+			for (int i = 1; i < size(); i++)
+			{
+				sb.append(separator);
+				sb.append(get(i).invTranslate());
+			}
 		}
-		
 		return sb.toString();
 	}
 }

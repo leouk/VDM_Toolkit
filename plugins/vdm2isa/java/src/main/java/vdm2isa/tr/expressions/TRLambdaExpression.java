@@ -16,7 +16,7 @@ import vdm2isa.tr.types.TRFunctionType;
  * names for the corresponding lambda invariant check. The TCLambdaExpression TRDefinition def field is not needed
  * given that paramPatterns/Definitions are sufficient.  
  */
-public class TRLambdaExpression extends TRExpression {
+public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 
     private TRTypeBindList bindList;
     private TRExpression expression;

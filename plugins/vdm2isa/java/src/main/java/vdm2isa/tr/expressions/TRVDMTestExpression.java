@@ -8,6 +8,9 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * Super class for VDM is_X and narrow expressions.
+ */
 public abstract class TRVDMTestExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;

@@ -5,7 +5,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
-public class TRLetDefExpression extends TRExpression {
+public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
     private final TRDefinitionList localDefs;
@@ -15,7 +15,8 @@ public class TRLetDefExpression extends TRExpression {
     {
         super(location);
         this.localDefs = localDefs;
-        this.localDefs.separator = IsaToken.COMMA.toString() + "\n\t\t";
+        //TODO add this to IsaToken? see the reporting library 
+        this.localDefs.separator = IsaToken.COMMA.toString() + this.tabs;
         this.localDefs.setLocal(true);
         this.expression = expression;
         System.out.println(toString());
@@ -33,7 +34,7 @@ public class TRLetDefExpression extends TRExpression {
        return IsaToken.LET;
     }
 
-    
+    /*
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
@@ -45,30 +46,26 @@ public class TRLetDefExpression extends TRExpression {
         sb.append("\n\t\t");
         sb.append(IsaToken.parenthesise(expression.translate()));
         return IsaToken.parenthesise(sb.toString());
-    }
-/*
+    }*/
+
     public String translate() {
         StringBuilder sb = new StringBuilder();
         // let x: T1 = v1, y: T2 = v2 in exp(x, y)
         // =
-        // (let x = v1; y = v2 in (x::VDMNat) (y::VDMNat1) . 
-        //      (if (inv_VDMNat x) /\ (inv_VDMNat1 y) then
-        //          (x + y)
-        //       else 
-        //          undefined
-        //      )
+        // (let x = v1; y = v2 in (x::VDMNat) (y::VDMNat1) in 
+        //      exp(x, y)
         // )
         sb.append("\n\t");
         sb.append(isaToken().toString());
         sb.append(" ");
-        sb.append(bindList.translate());
-        sb.append(" ");
-        sb.append(IsaToken.POINT.toString());
+        sb.append(localDefs.translate());
+        sb.append("\n\t");
+        sb.append(IsaToken.IN.toString());
         sb.append("\n\t\t");
         sb.append(IsaToken.LPAREN.toString());
         sb.append(IsaToken.IF.toString());
         sb.append(" ");
-        sb.append(bindList.invTranslate());
+        sb.append(localDefs.invTranslate());
         sb.append(" ");
         sb.append(IsaToken.THEN.toString());
         sb.append("\n\t\t\t");
@@ -81,5 +78,5 @@ public class TRLetDefExpression extends TRExpression {
         sb.append(IsaToken.RPAREN.toString());
         sb.append("\n\t");
         return IsaToken.parenthesise(sb.toString());
-    }*/
+    }
 }
