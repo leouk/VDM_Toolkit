@@ -3,7 +3,6 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
@@ -21,20 +20,27 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     private TRTypeBindList bindList;
 
     private TRFunctionType type;
-	private TRPatternList paramPatterns;
-	private TRDefinitionList paramDefinitions;
+	//private TRPatternList paramPatterns;
+	//private TRDefinitionList paramDefinitions;
 	//private TRDefinition def;
 
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions)
+        TRFunctionType type 
+        /*, TRPatternList paramPatterns, TRDefinitionList paramDefinitions */ /* , TRDefinition def */
+        )
     {
         super(location, expression);
         this.bindList = bindList;
         this.type = type;
-        //TODO refactor these two out as it turns out the use of bind translation is better? 
-        this.paramPatterns = paramPatterns; 
-        this.paramDefinitions = paramDefinitions; 
-        this.paramDefinitions.setLocal(true);
+        // See NB's email on 28/10/2021 8:59 Subject TCLambdaExpression.paraDefinitions.implicitDefinitions
+        // There is no need for those in the end. So remove them. 
+        //this.paramPatterns = paramPatterns; 
+        //this.paramDefinitions = paramDefinitions; 
+        //this.paramDefinitions.setLocal(true);
+        
+        // There is no need for these either
+        //this.def = def;
+        
         //System.out.println(toString());
     }
 
@@ -43,8 +49,8 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     {
         return "LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
                     "\n\tFcnType    = " + type.translate() +
-                    "\n\tParamPttrs = " + paramPatterns.translate() + 
-                    "\n\tParamDefs  = " + paramDefinitions.translate() +
+                    //"\n\tParamPttrs = " + paramPatterns.translate() + 
+                    //"\n\tParamDefs  = " + paramDefinitions.translate() +
                     //"\n\tDef        = " + def.toString() + 
                     "\n";
         /*

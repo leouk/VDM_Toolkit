@@ -114,8 +114,9 @@ map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpressio
 map TCIsExpression{location, typename, basictype, test} to TRIsExpression(location, typename, basictype, test);
 
 map TCIotaExpression{location, bind, predicate} to TRIotaExpression(location, bind, predicate);
+map TCLambdaExpression{location, bindList, expression, type} to TRLambdaExpression(location, bindList, expression, type); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions); 
 #map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def); 
-map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions); 
 map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
 map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
 map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
