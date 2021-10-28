@@ -118,6 +118,7 @@ public enum IsaToken {
 	ISASTR(null/*Token.STRING*/, "''"),
 	DUMMY(null, "dummy"),
 	ERROR(Token.ERROR, "ERROR"),
+	SEMICOLON(Token.SEMICOLON, ";"),
 
 	TERM(null, "term"),
 	TYP(null, "typ"),

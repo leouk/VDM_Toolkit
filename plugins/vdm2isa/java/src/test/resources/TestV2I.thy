@@ -1501,21 +1501,11 @@ abbreviation
 	v79 :: "VDMNat1"
 where
 	"v79 \<equiv> (
-	let (var::VDMNat),
-		(var2::VDMNat1)
+	let (var::VDMNat) = (10::VDMNat1);
+		(var2::VDMNat1) = (20::VDMNat1)
 	in
-		(if definition
-	inv_var :: "\<bool>"
-where
-	"inv_var  \<equiv> (inv_VDMNat var)"
-
-,
-		definition
-	inv_var2 :: "\<bool>"
-where
-	"inv_var2  \<equiv> (inv_VDMNat1 var2)"
-
- then
+		(if ((inv_VDMNat var)) \<and>
+		((inv_VDMNat1 var2)) then
 			(var + var2)
 		 else
 			undefined
@@ -1621,26 +1611,6 @@ definition
 	inv_v86 :: "\<bool>"
 where
 	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
-
-
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
-
-v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
-
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
-
-Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
-
-*)
-abbreviation
-	[A,B] :: "VDMNat1 VDMSeq1"
-where
-	"[A,B] \<equiv> [(1::VDMNat1),(2::VDMNat1)]"
-
-definition
-	inv_[A,B] :: "\<bool>"
-where
-	"inv_[A,B]  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) [a,b])"
 
 
 end
