@@ -21,6 +21,14 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 		separator = "\n";
 	}
 
+	public void setLocal(boolean local)
+	{
+		for (TRDefinition def : this)
+		{
+			def.local = local;
+		}
+	}
+
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();

@@ -106,7 +106,7 @@ values
 	v76= (exists var in set s1 & var < 2); -- TCExistsExpression
 	v78= (forall var in set s1 & var <= 3); -- TCForallExpression
 	--TODO: not yet v65= m1(1);						--TCApplyExpression
-	v79= (let var : nat = 10 in var + x);	-- TCLetDefExpression
+	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
 	v80= { var | var in set s1 & var > 1 }; -- TCSetCompExpression
 	v81= { var+var2 | var in set s1, var2 in seq s2 & var > var2 }; -- TCSetCompExpression
 	v85= [ var | var in set s1 & var > 1 ]; -- TCSeqCompExpression
@@ -117,6 +117,7 @@ values
 	"v87 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
 	value "sorted_list_of_set {1,2,(3::int)} = s2"
 	*/
+	--v87= let with func decl into it!
 functions
 
 --f: nat -> nat

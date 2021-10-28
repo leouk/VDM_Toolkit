@@ -17,6 +17,7 @@ public abstract class TRDefinition extends TRNode
 	private static final long serialVersionUID = 1L;
 	protected final LexCommentList comments;
 	protected final TCAnnotationList annotations;
+	public boolean local;
 	
 	protected TRDefinition(LexLocation location, LexCommentList comments)
 	{
@@ -28,6 +29,7 @@ public abstract class TRDefinition extends TRNode
 		super(location); 
 		this.comments = comments;
 		this.annotations = annotations;
+		this.local = false;
 	}
 	
 	public String translate()

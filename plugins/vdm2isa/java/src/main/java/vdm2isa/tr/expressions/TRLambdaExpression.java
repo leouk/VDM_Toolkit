@@ -36,6 +36,7 @@ public class TRLambdaExpression extends TRExpression {
         //TODO refactor these two out as it turns out the use of bind translation is better? 
         this.paramPatterns = paramPatterns; 
         this.paramDefinitions = paramDefinitions; 
+        this.paramDefinitions.setLocal(true);
         /*
         System.out.println("LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
             "\n\tFcnType    = " + type.translate() +

@@ -19,6 +19,7 @@ public class TRLocalDefinition extends TRDefinition {
         super(location, null);
         this.name = name;
         this.type = type;
+        this.local = true;
     }
 
     @Override
