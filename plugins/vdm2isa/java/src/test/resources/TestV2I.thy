@@ -1488,5 +1488,13 @@ definition
 where
 	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
 
+function even :: "nat \<Rightarrow> bool"
+      and odd :: "nat \<Rightarrow> bool"
+where
+  "even 0 = True"
+| "odd 0 = False"
+| "even (Suc n) = odd n"
+| "odd (Suc n) = even n"
+  by pat_completeness auto
 
 end
