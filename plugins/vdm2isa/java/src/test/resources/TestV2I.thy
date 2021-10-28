@@ -1586,15 +1586,17 @@ where
 
 *)
 abbreviation
-	v85 :: "VDMNat1 VDMSeq"
+	v82 :: "VDMNat1 VDMSeq"
 where
-	"v85 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (s1) , (var > (1::VDMNat1)) ]
-	\<comment>\<open>Set bind @{term \<open>var \<in> s1\<close>} in sequence comprehension requires VDM set to be ordered.\<close>"
+	"v82 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (s1) , (var > (1::VDMNat1)) ]
+	\<comment>\<open>Set bind @{term \<open>var \<in> s1\<close>} in sequence comprehension requires VDM set to be ordered 
+	 (i.e. its Isabelle type instantiates type class linorder). 
+	 This can be a problem if the target type is ordered with VDM ord_ predicate.\<close>"
 
 definition
-	inv_v85 :: "\<bool>"
+	inv_v82 :: "\<bool>"
 where
-	"inv_v85  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v85)"
+	"inv_v82  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v82)"
 
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:47
@@ -1603,14 +1605,46 @@ where
 
 *)
 abbreviation
-	v86 :: "VDMNat1 VDMSeq"
+	v83 :: "VDMNat1 VDMSeq"
 where
-	"v86 \<equiv> [ var . var \<leftarrow> s2 , (var > (1::VDMNat1)) ]"
+	"v83 \<equiv> [ var . var \<leftarrow> s2 , (var > (1::VDMNat1)) ]"
 
 definition
-	inv_v86 :: "\<bool>"
+	inv_v83 :: "\<bool>"
 where
-	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
+	"inv_v83  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v83)"
+
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:47
+
+ TCSeqCompExpression
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:7
+
+ VDM doesn't like those
+	"v84 ≡ [ (var , var2) . var ← [1,2,3], var2 ← [4,5,6] , (var > (1::VDMNat1)) ]"
+	"v85 ≡ [ var . var ← [1,2,3,7,8,9] , (var > 4) ]"
+	"v86 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
+	value "sorted_list_of_set {1,2,(3::int)} = s2"
+	
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
+
+v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
+
+*)
+abbreviation
+	v88 :: "(VDMNat1 VDMSet1\<times>VDMNat1 VDMSeq1)"
+where
+	"v88 \<equiv> (s1,s2)"
+
+definition
+	inv_v88 :: "\<bool>"
+where
+	"inv_v88  \<equiv> 
+		((inv_VDMSet1' (inv_VDMNat1) (fst v88))\<and>
+		 (inv_VDMSeq1' (inv_VDMNat1) (snd v88))
+		)"
 
 
 end
