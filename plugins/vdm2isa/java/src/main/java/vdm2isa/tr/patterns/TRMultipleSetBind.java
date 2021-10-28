@@ -51,8 +51,8 @@ public class TRMultipleSetBind extends TRMultipleBind
         // whenever it's not just for the patterns, which should never be the case any how.  
         if (!patternsOnly && seqBind)
         { 
-            //NB perhaps this is always true on type checked seq comp? 
-            String setbindProblem = "Set bind \"" + translate() + "\" in sequence comprehension requires VDM set to be ordered.";
+            // On type checked VDM values the underlying type is ordered; but possibly with an ord_ clause, which might not work for Isabelle 
+            String setbindProblem = "Set bind \"" + translate() + "\" in sequence comprehension requires VDM set to be ordered (i.e. its Isabelle type instantiates type class linorder).";
             warning(11111, setbindProblem);
             sb.append(" ");
             sb.append(IsaToken.SETSEQBIND);
