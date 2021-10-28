@@ -1501,28 +1501,8 @@ abbreviation
 	v79 :: "VDMNat1"
 where
 	"v79 \<equiv> (
-	let abbreviation
-	var :: "VDMNat"
-where
-	"var \<equiv> (10::VDMNat1)"
-
-definition
-	inv_var :: "\<bool>"
-where
-	"inv_var  \<equiv> (inv_VDMNat var)"
-
-,
-		abbreviation
-	var2 :: "VDMNat1"
-where
-	"var2 \<equiv> (20::VDMNat1)"
-
-definition
-	inv_var2 :: "\<bool>"
-where
-	"inv_var2  \<equiv> (inv_VDMNat1 var2)"
-
-
+	let (var::VDMNat),
+		(var2::VDMNat1)
 	in
 		(if definition
 	inv_var :: "\<bool>"
@@ -1649,17 +1629,14 @@ v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendi
 
 *)
 abbreviation
-	v88 :: "(VDMNat1 VDMSet1\<times>VDMNat1 VDMSeq1)"
+	[A,B] :: "VDMNat1 VDMSeq1"
 where
-	"v88 \<equiv> (s1,s2)"
+	"[A,B] \<equiv> [(1::VDMNat1),(2::VDMNat1)]"
 
 definition
-	inv_v88 :: "\<bool>"
+	inv_[A,B] :: "\<bool>"
 where
-	"inv_v88  \<equiv> 
-		((inv_VDMSet1' (inv_VDMNat1) (fst v88))\<and>
-		 (inv_VDMSeq1' (inv_VDMNat1) (snd v88))
-		)"
+	"inv_[A,B]  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) [a,b])"
 
 
 end

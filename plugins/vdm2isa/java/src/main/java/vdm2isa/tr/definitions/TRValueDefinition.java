@@ -38,12 +38,15 @@ public class TRValueDefinition extends TRDefinition
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
-
-		// these are always TRLocalDefinition within the list? 
-		this.defs = defs;
 		this.abbreviation = true;
+
+		// these are always TRLocalDefinition within the list. 
+		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
+		this.defs = defs;
+		if (this.defs.size() > 1)
+			report(11111, "Multiple local names in VDM value definitions (e.g., \"[A,B] = [1,2]\") cannot be translated.");
 		
-		System.out.println(toString());
+		//if (local) System.out.println(toString());
 	}
 
 	@Override
@@ -62,6 +65,12 @@ public class TRValueDefinition extends TRDefinition
 	@Override
 	public String translate()
 	{
+		// translate the "v: T = e" as an abbreviation or definition
+		StringBuilder sb = new StringBuilder();
+
+		// add any annotations or comments
+		sb.append(super.translate());
+
 		// get declared and invariant variable names
 		String declName = pattern.translate();
 
@@ -74,22 +83,35 @@ public class TRValueDefinition extends TRDefinition
 			// other types, translate it directly
 			typeStr = type.translate();
 
-		String expStr = exp.translate();
-	
-		// translate the "v: T = e" as an abbreviation or definition
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.translate());
-        sb.append(IsaTemplates.translateAbbreviation(declName, typeStr, expStr));
-        sb.append("\n");
+		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
+		if (!local)
+		{
+			// translate the value expression
+			String expStr = exp.translate();
+			
+			sb.append(IsaTemplates.translateAbbreviation(declName, typeStr, expStr));
+			sb.append("\n");
 
-		// translate inv_v as definition
-		sb.append(invTranslate());
+			// translate inv_v as definition
+			sb.append(invTranslate());
+		}
+		// local definitions (e.g. let v: T = e1 in e2) only require the type info
+		else
+		{
+			//TODO perhaps do not need this beyond checking for bad patterns; don't want to reinvent above in TRLocalDefinition
+			//		neither have them as subclasses of each other or something like that?
+			//defs.separator = " ";
+			//sb.append(defs.translate());
+			sb.append(IsaToken.parenthesise(declName + IsaToken.TYPEOF.toString() + type.translate()));
+		}
         return sb.toString();
 	}
 
 	@Override
 	public String invTranslate()
 	{
+		StringBuilder sb = new StringBuilder();
+
 		// get declared and invariant variable names
 		String declName = pattern.translate();
 		String varName = declName.toLowerCase();
@@ -117,7 +139,6 @@ public class TRValueDefinition extends TRDefinition
         }
 		
 		// assemble the template
-		StringBuilder sb = new StringBuilder();
 		sb.append(IsaTemplates.translateInvariantAbbreviation(declName, inType, dummyNames, invStr));
         sb.append("\n");
 		return sb.toString();

@@ -116,7 +116,9 @@ values
 	--v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
 	v86= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
 	--v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
-	v88= mk_(s1,s2);
+	
+	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
+	--[A,B]=[1,2];
 functions
 
 --f: nat -> nat
