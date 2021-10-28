@@ -30,7 +30,15 @@ public class TRSeqCompExpression extends TRExpression {
         // Tell set bind it's for a sequence
         if (this.bind instanceof TRMultipleSetBind)
             ((TRMultipleSetBind)this.bind).seqBind = true;
-        //System.out.println("SeqComp bind = " + bind.getClass().getName() + " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + bind.plist.toString());
+        //System.out.println(toString());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SeqComp bind = " + bind.getClass().getName() + 
+            " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + 
+            bind.plist.translate();
     }
 
     @Override

@@ -15,10 +15,16 @@ public class TRLetDefExpression extends TRExpression {
     {
         super(location);
         this.localDefs = localDefs;
-        System.out.println("LetDef expression with " + localDefs.size() + " = " + localDefs.get(0).getClass().getName());
         this.localDefs.separator = IsaToken.COMMA.toString() + "\n\t\t";
         this.localDefs.setLocal(true);
         this.expression = expression;
+        System.out.println(toString());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "]";
     }
 
     @Override

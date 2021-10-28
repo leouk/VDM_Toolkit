@@ -40,9 +40,15 @@ public class TRValueDefinition extends TRDefinition
 		this.exp = exp;
 		this.defs = defs;
 		this.abbreviation = true;
-		System.out.println("Value Def for " + pattern.translate() + " defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "] = " + defs.translate());
+		//System.out.println(toString());
 	}
 
+	@Override
+	public String toString()
+	{
+		return "TRValueDef for " + pattern.translate() + 
+			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "] = " + defs.translate();
+	}
 	@Override
 	public IsaToken isaToken()
 	{

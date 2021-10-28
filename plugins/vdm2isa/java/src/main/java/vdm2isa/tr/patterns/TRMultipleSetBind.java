@@ -45,7 +45,6 @@ public class TRMultipleSetBind extends TRMultipleBind
     {
         StringBuilder sb = new StringBuilder();
         sb.append(plist.translate());
-        //System.out.println("Hitting with po = " + patternsOnly + " " + sb.toString());
         // for seq comprehension with ordered seq bind, we need the extra SETSEQBIND mapping
         // whenever it's not just for the patterns, which should never be the case any how.  
         if (!patternsOnly && seqBind)

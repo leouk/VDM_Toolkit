@@ -35,7 +35,14 @@ public class TRSetCompExpression extends TRExpression {
         this.predicate = predicate;
         // if anything other than variable expression is used, we need to convert to the existential comprehension form
         this.existential = !(first instanceof TRVariableExpression);
-        //System.out.println("SetComp first = " + first.getClass().getName() + " plist (" + binds.size() + ")[" + binds.toString() + "] = " + binds.translate());
+        //System.out.println(toString());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SetComp exp = " + first.getClass().getName() + 
+            " plist (" + binds.size() + ")[" + binds.toString() + "] = " + binds.translate();  
     }
 
     @Override

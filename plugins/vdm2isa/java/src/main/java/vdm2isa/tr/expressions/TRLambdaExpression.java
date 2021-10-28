@@ -37,13 +37,19 @@ public class TRLambdaExpression extends TRExpression {
         this.paramPatterns = paramPatterns; 
         this.paramDefinitions = paramDefinitions; 
         this.paramDefinitions.setLocal(true);
+        //System.out.println(toString());
+    }
+
+    @Override 
+    public String toString()
+    {
+        return "LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
+                    "\n\tFcnType    = " + type.translate() +
+                    "\n\tParamPttrs = " + paramPatterns.translate() + 
+                    "\n\tParamDefs  = " + paramDefinitions.translate() +
+                    //"\n\tDef        = " + def.toString() + 
+                    "\n";
         /*
-        System.out.println("LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
-            "\n\tFcnType    = " + type.translate() +
-            "\n\tParamPttrs = " + paramPatterns.translate() + 
-            "\n\tParamDefs  = " + paramDefinitions.translate() +
-            //"\n\tDef        = " + def.toString() + 
-            "\n");
         "v74= (lambda var : nat, var2: nat & var + var2);""
         LambdaExpr: (lambda (var::VDMNat) (var2::VDMNat) & (var + var2) )
             FcnType    = VDMNat\<Rightarrow>VDMNat \<Rightarrow> VDMNat
