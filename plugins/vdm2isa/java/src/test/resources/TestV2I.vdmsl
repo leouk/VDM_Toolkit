@@ -111,12 +111,10 @@ values
 	v81= { var+var2 | var in set s1, var2 in seq s2 & var > var2 }; -- TCSetCompExpression
 	v82= [ var | var in set s1 & var > 1 ]; -- TCSeqCompExpression
 	v83= [ var | var in seq s2 & var > 1 ]; -- TCSeqCompExpression
-	/* VDM doesn't like those
-	"v84 ≡ [ (var , var2) . var ← [1,2,3], var2 ← [4,5,6] , (var > (1::VDMNat1)) ]"
-	"v85 ≡ [ var . var ← [1,2,3,7,8,9] , (var > 4) ]"
-	"v86 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
-	value "sorted_list_of_set {1,2,(3::int)} = s2"
-	*/
+	--VDM not happy with v84-86, Isabelle would allow them
+	--v84= [ mk_(var, var2) | var in set s1, var2 in seq s2 & var > var2 ];
+	--v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
+	v86= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
 	--v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 	v88= mk_(s1,s2);
 functions

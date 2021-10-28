@@ -1621,14 +1621,29 @@ where
 
 @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:7
 
- VDM doesn't like those
-	"v84 ≡ [ (var , var2) . var ← [1,2,3], var2 ← [4,5,6] , (var > (1::VDMNat1)) ]"
-	"v85 ≡ [ var . var ← [1,2,3,7,8,9] , (var > 4) ]"
-	"v86 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
-	value "sorted_list_of_set {1,2,(3::int)} = s2"
-	
+VDM not happy with v84-86, Isabelle would allow them
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:7
+
+v84= [ mk_(var, var2) | var in set s1, var2 in seq s2 & var > var2 ];
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 116:7
+
+v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
+
+*)
+abbreviation
+	v86 :: "VDMNat1 VDMSeq"
+where
+	"v86 \<equiv> [ var . var \<leftarrow> [(1::VDMNat1),(2::VDMNat1),(3::VDMNat1),(7::VDMNat1),(8::VDMNat1),(9::VDMNat1)] , (var > (4::VDMNat1)) ]"
+
+definition
+	inv_v86 :: "\<bool>"
+where
+	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
+
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
 
 v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 
