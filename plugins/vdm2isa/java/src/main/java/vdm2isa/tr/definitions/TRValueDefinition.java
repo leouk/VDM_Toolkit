@@ -57,6 +57,12 @@ public class TRValueDefinition extends TRLocalDefinition
 	}
 
 	@Override
+    protected String getDeclaredName()
+    {
+		return pattern.translate();
+    }
+
+	@Override
 	public IsaToken isaToken()
 	{
 		return IsaToken.VARIABLE;
@@ -68,28 +74,16 @@ public class TRValueDefinition extends TRLocalDefinition
 		// translate the "v: T = e" as an abbreviation or definition
 		StringBuilder sb = new StringBuilder();
 
-		// add any annotations or comments
-		sb.append(super.translate());
-
-		// get declared and invariant variable names
-		String declName = pattern.translate();
-
-		// type string depends on TRType class
-		String typeStr;
-		if (type instanceof TRRecordType)
-			// "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
-			typeStr = ((TRRecordType)type).getName().toString();
-		else
-			// other types, translate it directly
-			typeStr = type.translate();
-
+		// translate the value expression
+		String expStr = exp.translate();
+		
 		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
 		if (!local)
 		{
-			// translate the value expression
-			String expStr = exp.translate();
-			
-			sb.append(IsaTemplates.translateAbbreviation(declName, typeStr, expStr));
+			// add any annotations or comments (i.e. TRDefinition.translate(), given super.translate won't work here)
+			sb.append(translatePreamble());
+
+			sb.append(IsaTemplates.translateAbbreviation(getDeclaredName(), getTypeString(), expStr));
 			sb.append("\n");
 
 			// translate inv_v as definition
@@ -102,7 +96,12 @@ public class TRValueDefinition extends TRLocalDefinition
 			//		neither have them as subclasses of each other or something like that?
 			//defs.separator = " ";
 			//sb.append(defs.translate());
-			sb.append(IsaToken.parenthesise(declName + IsaToken.TYPEOF.toString() + type.translate()));
+
+			sb.append(super.translate());
+			sb.append(" ");
+			sb.append(IsaToken.EQUALS.toString());
+			sb.append(" ");
+			sb.append(expStr);
 		}
         return sb.toString();
 	}
@@ -111,36 +110,28 @@ public class TRValueDefinition extends TRLocalDefinition
 	public String invTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
+		if (!local)
+		{
+			// translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
+			// input type is possibly empty (null) in case of non function type
+			String inType = null;
+			if (type instanceof TRFunctionType)
+			{
+				inType = ((TRFunctionType)type).parameters.translate();
+			}
+			
+			//type instanceof TRFunctionType => inType != null
+			assert !(type instanceof TRFunctionType) || inType != null; 
 
-		// get declared and invariant variable names
-		String declName = pattern.translate();
-		String varName = declName.toLowerCase();
-
-		// translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
-        String inType = null;
-		String dummyNames = "";
-        
-		// invariant type string depends on the TRType class
-		String invStr;
-        if (type instanceof TRRecordType)
-        {
-			// records have to apply to the varName rather than use it as part of the type-inv-translate string
-			invStr = type.invTranslate(null) + varName;
-        }
-        else
-        {
-            invStr = type.invTranslate(varName);
-            // function typed abbreviations (i.e. lambdas) need different input signature for invariant! 
-            if (type instanceof TRFunctionType)
-            {
-                inType = ((TRFunctionType)type).parameters.translate();
-                dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
-            }
-        }
-		
-		// assemble the template
-		sb.append(IsaTemplates.translateInvariantAbbreviation(declName, inType, dummyNames, invStr));
-        sb.append("\n");
+			String varName = getDeclaredName();//.toLowerCase();
+			// assemble the template
+			sb.append(IsaTemplates.translateInvariantAbbreviation(varName, inType, dummyVarNames(), getInvariantString(varName)));
+			sb.append("\n");
+		}
+		else
+		{
+			sb.append(super.invTranslate());
+		}
 		return sb.toString();
 	}
 }

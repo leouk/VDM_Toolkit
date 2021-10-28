@@ -42,8 +42,7 @@ public abstract class TRDefinition extends TRNode
 		return "{local=" + local + "}" + super.toString();
 	}
 
-	@Override
-	public String translate()
+	protected String translatePreamble()
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -67,6 +66,12 @@ public abstract class TRDefinition extends TRNode
 			sb.append("(* NOT YET PROCESSING ANNOTATIONS *)\n");
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public String translate()
+	{
+		return translatePreamble();
 	}
 
 	public abstract String invTranslate();
