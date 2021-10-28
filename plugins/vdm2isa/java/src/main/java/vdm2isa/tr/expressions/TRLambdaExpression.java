@@ -19,7 +19,6 @@ import vdm2isa.tr.types.TRFunctionType;
 public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 
     private TRTypeBindList bindList;
-    private TRExpression expression;
 
     private TRFunctionType type;
 	private TRPatternList paramPatterns;
@@ -29,9 +28,8 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
         TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions)
     {
-        super(location);
+        super(location, expression);
         this.bindList = bindList;
-        this.expression = expression;
         this.type = type;
         //TODO refactor these two out as it turns out the use of bind translation is better? 
         this.paramPatterns = paramPatterns; 
@@ -85,22 +83,17 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(bindList.translate());
         sb.append(" ");
         sb.append(IsaToken.POINT.toString());
-        sb.append("\n\t\t");
-        sb.append(IsaToken.LPAREN.toString());
-        sb.append(IsaToken.IF.toString());
-        sb.append(" ");
-        sb.append(bindList.invTranslate());
-        sb.append(" ");
-        sb.append(IsaToken.THEN.toString());
-        sb.append("\n\t\t\t");
-        sb.append(expression.translate());        
-        sb.append("\n\t\t ");
-        sb.append(IsaToken.ELSE.toString());
-        sb.append("\n\t\t\t");
-        sb.append(IsaToken.UNDEFINED.toString());
-        sb.append("\n\t\t"); 
-        sb.append(IsaToken.RPAREN.toString());
-        sb.append("\n\t");
+        sb.append(tabs);
+        sb.append(invTranslate());
         return IsaToken.parenthesise(sb.toString());
+    }
+
+    /**
+     * Local definitions invariant translation
+     */
+    @Override
+    public String localInvTranslate()
+    {
+        return bindList.invTranslate();
     }
 }

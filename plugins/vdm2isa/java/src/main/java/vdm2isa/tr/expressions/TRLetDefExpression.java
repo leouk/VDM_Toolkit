@@ -32,20 +32,6 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
        return IsaToken.LET;
     }
 
-    /*
-    @Override
-    public String translate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(isaToken().toString());
-        sb.append(" ");
-        sb.append(localDefs.translate());
-        sb.append("\n\t");
-        sb.append(IsaToken.IN.toString());
-        sb.append("\n\t\t");
-        sb.append(IsaToken.parenthesise(expression.translate()));
-        return IsaToken.parenthesise(sb.toString());
-    }*/
-
     public String translate() {
         StringBuilder sb = new StringBuilder();
         // let x: T1 = v1, y: T2 = v2 in exp(x, y)
@@ -59,22 +45,17 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(localDefs.translate());
         sb.append("\n\t");
         sb.append(IsaToken.IN.toString());
-        sb.append("\n\t\t");
-        sb.append(IsaToken.LPAREN.toString());
-        sb.append(IsaToken.IF.toString());
-        sb.append(" ");
-        sb.append(localDefs.invTranslate());
-        sb.append(" ");
-        sb.append(IsaToken.THEN.toString());
-        sb.append("\n\t\t\t");
-        sb.append(expression.translate());        
-        sb.append("\n\t\t ");
-        sb.append(IsaToken.ELSE.toString());
-        sb.append("\n\t\t\t");
-        sb.append(IsaToken.UNDEFINED.toString());
-        sb.append("\n\t\t"); 
-        sb.append(IsaToken.RPAREN.toString());
-        sb.append("\n\t");
+        sb.append(tabs);
+        sb.append(invTranslate());
         return IsaToken.parenthesise(sb.toString());
+    }
+
+    /**
+     * Local definitions invariant translation
+     */
+    @Override
+    public String localInvTranslate()
+    {
+        return localDefs.invTranslate();
     }
 }
