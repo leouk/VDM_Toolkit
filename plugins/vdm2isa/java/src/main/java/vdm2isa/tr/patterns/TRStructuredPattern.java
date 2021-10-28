@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.patterns.TCTuplePattern;
 import com.fujitsu.vdmj.tc.patterns.TCUnionPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRStructuredPattern extends TRPattern {
     
@@ -89,4 +90,10 @@ public class TRStructuredPattern extends TRPattern {
     public IsaToken isaToken() {
         return token;
     }
+
+	@Override
+	public <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseStructuredPattern(this, arg);
+	}
 }

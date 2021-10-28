@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.tc.patterns.TCRealPattern;
 import com.fujitsu.vdmj.tc.patterns.TCStringPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRBasicPattern extends TRPattern {
     
@@ -102,4 +103,9 @@ public class TRBasicPattern extends TRPattern {
         return token;
     }
 
+	@Override
+	public <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseBasicPattern(this, arg);
+	}
 }

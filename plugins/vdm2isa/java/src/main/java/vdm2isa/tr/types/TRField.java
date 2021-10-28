@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRField extends TRType {
     
@@ -46,4 +47,10 @@ public class TRField extends TRType {
     {
         return this.equalityAbstraction;
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseField(this, arg);
+	}
 }

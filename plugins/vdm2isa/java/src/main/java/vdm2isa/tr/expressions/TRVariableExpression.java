@@ -7,6 +7,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRVariableExpression extends TRExpression
 {
@@ -28,5 +29,11 @@ public class TRVariableExpression extends TRExpression
 	@Override
 	public IsaToken isaToken() {
 		return IsaToken.VARIABLE;
+	}
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseVariableExpression(this, arg);
 	}
 }

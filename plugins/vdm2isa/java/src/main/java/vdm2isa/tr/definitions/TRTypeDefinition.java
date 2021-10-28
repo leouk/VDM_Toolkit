@@ -3,6 +3,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
+import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
@@ -61,4 +62,10 @@ public class TRTypeDefinition extends TRDefinition {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseTypeDefinition(this, arg);
+	}
 }

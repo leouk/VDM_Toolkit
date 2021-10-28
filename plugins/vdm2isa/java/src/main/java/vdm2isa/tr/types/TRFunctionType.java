@@ -5,6 +5,7 @@
 package vdm2isa.tr.types;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -52,5 +53,11 @@ public class TRFunctionType extends TRType
 		String rVarName = varName != null ? dummyVarNames(varName) : varName; 
 		return result.invTranslate(rVarName) +
 			   IsaToken.comment("function type invariant depends on its lambda definition and same dummy names being used!");
+	}
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseFunctionType(this, arg);
 	}
 }

@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 /**
  * Super class for VDM expressions with declared local definitions (e.g. lambda, let, etc.) 
@@ -43,4 +44,10 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
         sb.append("\n\t");
         return sb.toString();
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseVDMLocalDefinitionListExpression(this, arg);
+	}
 }

@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 
 public class TRIotaExpression extends TRExpression {
@@ -30,4 +31,10 @@ public class TRIotaExpression extends TRExpression {
             predicate.translate());
     }
 
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseIotaExpression(this, arg);
+	}
 }

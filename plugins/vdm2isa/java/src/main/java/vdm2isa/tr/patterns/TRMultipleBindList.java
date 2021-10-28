@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
 {

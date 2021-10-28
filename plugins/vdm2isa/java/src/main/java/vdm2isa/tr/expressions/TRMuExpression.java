@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRMuExpression extends TRExpression {
 
@@ -29,5 +30,9 @@ public class TRMuExpression extends TRExpression {
             IsaToken.bracketit(IsaToken.LRECORD, modifiers.translate(), IsaToken.RRECORD);
     }
 
-
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseMuExpression(this, arg);
+	}
 }

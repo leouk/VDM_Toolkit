@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.ast.lex.LexToken;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRBinaryExpression extends TRExpression
 {
@@ -35,5 +36,11 @@ public class TRBinaryExpression extends TRExpression
 	public String translate()
 	{
 		return IsaTemplates.tokenise(isaToken(), location, left, right);
+	}
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseBinaryExpression(this, arg);
 	}
 }

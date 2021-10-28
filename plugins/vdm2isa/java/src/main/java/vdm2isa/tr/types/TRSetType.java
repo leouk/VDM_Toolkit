@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.types.TCSetType;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRSetType extends TRType
 {
@@ -44,4 +45,10 @@ public class TRSetType extends TRType
     }
 
     
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseSetType(this, arg);
+	}
 }

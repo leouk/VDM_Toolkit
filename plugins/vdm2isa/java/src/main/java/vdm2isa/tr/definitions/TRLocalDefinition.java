@@ -1,11 +1,11 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
-import com.fujitsu.vdmj.ast.modules.ASTModule;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
@@ -19,7 +19,8 @@ import vdm2isa.tr.types.TRType;
  */
 public class TRLocalDefinition extends TRDefinition {
     
-    private TCNameToken name;
+    private static final long serialVersionUID = 1L;
+	private TCNameToken name;
     private TRType type;
 
     // For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
@@ -121,4 +122,10 @@ public class TRLocalDefinition extends TRDefinition {
         // translate the type invariant definition calss as (inv_T v), possibly with dummy names for lambdas
 		return IsaToken.parenthesise(getInvariantString(varName) + (dummyNames.isEmpty() ? "" : " " + dummyNames));
     }
+
+	@Override
+	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseLocalDefinition(this, arg);
+	}
 }

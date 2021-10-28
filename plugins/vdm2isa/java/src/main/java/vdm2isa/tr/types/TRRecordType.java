@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRRecordType extends TRInvariantType
 {
@@ -94,4 +95,10 @@ public class TRRecordType extends TRInvariantType
     {
         return recordMap.get(recordName);
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseRecordType(this, arg);
+	}
 }

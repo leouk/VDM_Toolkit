@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public abstract class TREnumeratedExpression extends TRExpression 
 {
@@ -29,4 +30,10 @@ public abstract class TREnumeratedExpression extends TRExpression
     {
         return IsaToken.EOF;
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseEnumeratedExpression(this, arg);
+	}
 }

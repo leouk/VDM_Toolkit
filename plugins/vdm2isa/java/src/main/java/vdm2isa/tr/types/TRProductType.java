@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRProductType extends TRType {
     private static final long serialVersionUID = 1L;
@@ -108,4 +109,10 @@ public class TRProductType extends TRType {
     public String translate() {
         return IsaToken.parenthesise(this.types.translate());
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseProductType(this, arg);
+	}
 }

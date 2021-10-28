@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.tc.expressions.TCRealLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRLiteralExpression extends TRExpression
 {
@@ -83,5 +84,11 @@ public class TRLiteralExpression extends TRExpression
 	public IsaToken isaToken() 
 	{
 		return token;
+	}
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseLiteralExpression(this, arg);
 	}
 }

@@ -5,11 +5,10 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
-
-import plugins.Vdm2isaPlugin;
 
 //@nb how to add this? 
 //@todo add comments and/or location? 
@@ -38,4 +37,6 @@ public abstract class TRExpression extends TRNode
         report(11111, "Expression \"" + toString() + "\" does not support Isabelle invariant translation.");
         return "";
     }
+
+	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 }

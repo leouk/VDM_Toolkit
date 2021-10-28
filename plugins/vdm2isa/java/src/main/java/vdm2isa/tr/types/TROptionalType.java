@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TROptionalType extends TRType {
     private static final long serialVersionUID = 1L;
@@ -40,4 +41,10 @@ public class TROptionalType extends TRType {
     public String translate() {
         return type.translate() + " " + isaToken().toString();
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseOptionalType(this, arg);
+	}
 }

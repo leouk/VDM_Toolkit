@@ -15,6 +15,8 @@ import com.fujitsu.vdmj.tc.types.TCTokenType;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBasicType extends TRType
 {
@@ -89,5 +91,11 @@ public class TRBasicType extends TRType
 	public IsaToken isaToken()
 	{
 		return token;
+	}
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseBasicType(this, arg);
 	}
 }

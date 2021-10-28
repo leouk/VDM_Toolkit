@@ -1,11 +1,8 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.expressions.TCSeqCompExpression;
-import com.fujitsu.vdmj.tc.expressions.TCSetCompExpression;
-
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
 /**
@@ -77,4 +74,9 @@ public class TRSetCompExpression extends TRExpression {
         return sb.toString();
     }
 
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseSetCompExpression(this, arg);
+	}
 }

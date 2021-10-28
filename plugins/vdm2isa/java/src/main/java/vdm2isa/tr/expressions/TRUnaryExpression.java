@@ -23,6 +23,7 @@ import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 //@todo uncertain whether to have unique cases or not, like in the "literal" sense. 
 public class TRUnaryExpression extends TRExpression {
@@ -184,5 +185,9 @@ public class TRUnaryExpression extends TRExpression {
         return owner;
     }
 
-
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseUnaryExpression(this, arg);
+	}
 }

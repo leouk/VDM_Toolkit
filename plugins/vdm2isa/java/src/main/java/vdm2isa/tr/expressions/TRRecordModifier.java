@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRRecordModifier extends TRExpression 
 {
@@ -26,5 +27,11 @@ public class TRRecordModifier extends TRExpression
     public String translate() {
         return tag.toString() + isaToken().toString() + value.translate();
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseRecordModifier(this, arg);
+	}
             
 }

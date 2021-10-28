@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRSubseqExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
@@ -28,4 +29,10 @@ public class TRSubseqExpression extends TRExpression {
             IsaToken.SET_OPEN.toString() + from.translate() + IsaToken.SUBSEQ.toString() + 
             to.translate() + IsaToken.SET_CLOSE.toString() + ")";
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseSubseqExpression(this, arg);
+	}
 }

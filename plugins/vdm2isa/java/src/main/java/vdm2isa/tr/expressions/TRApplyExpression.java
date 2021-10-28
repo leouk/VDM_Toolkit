@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
 
@@ -36,5 +37,11 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public IsaToken isaToken() {
 		return IsaToken.APPLY;
+	}
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseApplyExpression(this, arg);
 	}
 }

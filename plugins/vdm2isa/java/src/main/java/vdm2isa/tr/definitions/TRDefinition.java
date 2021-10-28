@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public abstract class TRDefinition extends TRNode
 {
@@ -74,5 +75,8 @@ public abstract class TRDefinition extends TRNode
 		return translatePreamble();
 	}
 
+	@Override
 	public abstract String invTranslate();
+
+	public abstract <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg);
 }

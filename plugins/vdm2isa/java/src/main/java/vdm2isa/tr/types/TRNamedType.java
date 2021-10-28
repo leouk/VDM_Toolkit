@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRNamedType extends TRInvariantType
 {
@@ -32,5 +33,11 @@ public class TRNamedType extends TRInvariantType
 		return IsaToken.parenthesise(
             IsaToken.INV.toString() + typename +
             (varName != null ? " " + varName : ""));
+	}
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseNamedType(this, arg);
 	}
 }

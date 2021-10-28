@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRNotYetSpecifiedExpression extends TRExpression {
     
@@ -22,4 +23,10 @@ public class TRNotYetSpecifiedExpression extends TRExpression {
     public String translate() {
         return isaToken().toString();
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseNotYetSpecifiedExpression(this, arg);
+	}
 }

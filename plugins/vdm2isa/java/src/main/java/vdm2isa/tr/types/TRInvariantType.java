@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -15,4 +16,10 @@ public abstract class TRInvariantType extends TRType
     {
         super(location);
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseInvariantType(this, arg);
+	}
 }

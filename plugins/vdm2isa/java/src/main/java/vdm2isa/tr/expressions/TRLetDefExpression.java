@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
@@ -63,4 +64,10 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         localDefs.separator = old;
         return result;
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseLetDefExpression(this, arg);
+	}
 }

@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRType;
 
@@ -48,4 +49,10 @@ public class TRFieldNumberExpression extends TRExpression {
         return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
             IsaToken.parenthesise(tuple.translate()));
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseFieldNumberExpression(this, arg);
+	}
 }

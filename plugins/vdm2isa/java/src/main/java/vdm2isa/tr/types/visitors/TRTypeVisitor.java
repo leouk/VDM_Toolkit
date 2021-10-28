@@ -5,6 +5,7 @@
 package vdm2isa.tr.types.visitors;
 
 import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRMapType;
@@ -83,6 +84,11 @@ public abstract class TRTypeVisitor<R, S>
 	}
 
  	public R caseUnknownType(TRUnknownType node, S arg)
+	{
+		return caseType(node, arg);
+	}
+
+	public R caseField(TRField node, S arg)
 	{
 		return caseType(node, arg);
 	}

@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -35,5 +36,11 @@ public class TRIfExpression extends TRExpression
 	@Override
 	public IsaToken isaToken() {
 		return IsaToken.IF;
+	}
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseIfExpression(this, arg);
 	}
 }

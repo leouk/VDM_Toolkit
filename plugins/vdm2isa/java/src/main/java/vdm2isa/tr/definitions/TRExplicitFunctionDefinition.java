@@ -6,22 +6,15 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
-import com.fujitsu.vdmj.tc.definitions.TCAccessSpecifier;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
-import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
-import com.fujitsu.vdmj.tc.types.TCFunctionType;
-import com.fujitsu.vdmj.tc.types.TCTypeList;
-
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRParameterList;
 import vdm2isa.tr.types.TRFunctionType;
-import vdm2isa.tr.types.TRTypeList;
 
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
@@ -142,5 +135,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	@Override
 	public IsaToken isaToken() {
 		return IsaToken.FUN;
+	}
+
+	@Override
+	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseExplicitFunctionDefinition(this, arg);
 	}
 }

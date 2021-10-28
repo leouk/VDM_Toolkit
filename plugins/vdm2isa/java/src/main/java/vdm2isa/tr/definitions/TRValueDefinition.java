@@ -7,14 +7,13 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRFunctionType;
-import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.IsaTemplates;
 
 /**
  * VDM values are translated as Isabelle constants. 
@@ -133,5 +132,11 @@ public class TRValueDefinition extends TRLocalDefinition
 			sb.append(super.invTranslate());
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseValueDefinition(this, arg);
 	}
 }

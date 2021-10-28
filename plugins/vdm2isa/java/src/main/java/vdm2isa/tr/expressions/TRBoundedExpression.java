@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.expressions.TCExistsExpression;
 import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
@@ -49,4 +50,10 @@ public class TRBoundedExpression extends TRExpression {
         return IsaToken.parenthesise(isaToken().toString() + " " + 
             bindList.translate() + IsaToken.POINT + " " + predicate.translate());
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseBoundedExpression(this, arg);
+	}
 }

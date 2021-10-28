@@ -2,6 +2,7 @@ package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
 public class TRMultipleSeqBind extends TRMultipleBind 
 {
@@ -45,4 +46,10 @@ public class TRMultipleSeqBind extends TRMultipleBind
         return plist.translate() + " " + isaToken().toString() + " " + 
             IsaToken.parenthesise(IsaToken.ELEMS.toString() + " " + seq.translate());
     }
+
+	@Override
+	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseMultipleSeqBind(this, arg);
+	}
 }

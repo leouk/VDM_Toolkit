@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
 public abstract class TRMultipleBind extends TRNode
 {
@@ -37,4 +38,5 @@ public abstract class TRMultipleBind extends TRNode
      */
     public abstract String compTranslate(boolean patternsOnly);
 
+	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 }

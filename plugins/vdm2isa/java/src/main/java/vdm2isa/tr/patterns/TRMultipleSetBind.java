@@ -2,6 +2,7 @@ package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
 /**
  * VDM set binds represent "x in set S". Depending on the translation context, different outcomes are needed.
@@ -66,4 +67,10 @@ public class TRMultipleSetBind extends TRMultipleBind
     public String translate() {
         return plist.translate() + " " + isaToken().toString() + " " + set.translate();
     }
+
+	@Override
+	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseMultipleSetBind(this, arg);
+	}
 }

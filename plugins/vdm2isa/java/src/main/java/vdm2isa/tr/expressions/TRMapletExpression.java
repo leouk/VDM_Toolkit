@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRMapletExpression extends TRExpression 
 {
@@ -25,4 +26,10 @@ public class TRMapletExpression extends TRExpression
         //@todo add spacing control on the Isa token?
         return left.translate() + isaToken().toString() + right.translate();
     }
+
+	@Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseMapletExpression(this, arg);
+	}
 }

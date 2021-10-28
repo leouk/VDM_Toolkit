@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 /**
  * We need this for expressions like "c = nil", where type is indeed unknown.
@@ -36,4 +37,10 @@ public class TRUnknownType extends TRType {
         // unknown type assume polymorphic one
         return IsaToken.UNKNOWN.toString();
     }    
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseUnknownType(this, arg);
+	}
 }

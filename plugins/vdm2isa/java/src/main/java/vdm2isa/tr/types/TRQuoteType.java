@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRQuoteType extends TRType
 {
@@ -29,5 +30,11 @@ public class TRQuoteType extends TRType
 	public String invTranslate(String varName) {
         report(10000, "Not yet implemented");
         return IsaToken.ERROR.toString();
+	}
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseQuoteType(this, arg);
 	}
 }

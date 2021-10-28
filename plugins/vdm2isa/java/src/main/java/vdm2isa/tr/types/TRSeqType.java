@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.types.TCSeqType;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRSeqType extends TRType
 {
@@ -40,4 +41,10 @@ public class TRSeqType extends TRType
         return IsaToken.parenthesise(IsaToken.INV.toString() + isaToken().toString() + 
             "' " + seqof.invTranslate(null) + (varName != null ? " " + varName : ""));
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseSeqType(this, arg);
+	}
 }

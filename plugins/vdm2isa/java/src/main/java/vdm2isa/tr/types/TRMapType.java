@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCInMapType;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRMapType extends TRType
 {
@@ -59,5 +60,9 @@ public class TRMapType extends TRType
         return injective ? IsaToken.INMAP : IsaToken.MAP;
     }    
 
-
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseMapType(this, arg);
+	}
 }
