@@ -9,24 +9,22 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
     private final TRDefinitionList localDefs;
-    private final TRExpression expression;
 
     public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression)
     {
-        super(location);
+        super(location, expression);
         this.localDefs = localDefs;
         //TODO add this to IsaToken? see the reporting library 
         this.localDefs.separator = IsaToken.COMMA.toString() + this.tabs;
         this.localDefs.setLocal(true);
-        this.expression = expression;
         System.out.println(toString());
     }
 
     @Override
     public String toString()
     {
-        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "]\n" +
-            localDefs.toString();
+        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "] = " +
+            localDefs.toString() + " in " + expression.toString();
     }
 
     @Override

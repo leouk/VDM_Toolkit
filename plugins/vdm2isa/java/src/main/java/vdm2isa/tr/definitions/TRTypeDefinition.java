@@ -29,8 +29,8 @@ public class TRTypeDefinition extends TRDefinition {
     @Override
 	public String toString()
 	{
-		return "TRTypeDef for " + name.toString() + 
-			" type " + type.getClass().getName() + 
+		return "TRTypeDef for \"" + name.toString() + 
+			"\" type " + type.toString() + 
             " inv " + String.valueOf(invExpr);
 	}
 

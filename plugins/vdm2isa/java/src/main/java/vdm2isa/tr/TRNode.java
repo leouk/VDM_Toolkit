@@ -24,6 +24,15 @@ abstract public class TRNode extends MappedObject
 		this.location = location; 
 	}
 
+	/**
+	 * General debug string for all TRNode classes
+	 */
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + "[" + String.valueOf(isaToken()) + "] = " + translate();
+    }
+
 	public void report(int number, String msg)
 	{
 		Vdm2isaPlugin.report(number, msg, location);

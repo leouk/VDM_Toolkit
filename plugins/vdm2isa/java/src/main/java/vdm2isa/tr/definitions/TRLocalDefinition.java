@@ -26,8 +26,7 @@ public class TRLocalDefinition extends TRDefinition {
     @Override
 	public String toString()
 	{
-		return "TRLocalDef for " + name.toString() + 
-			" type " + type.getClass().getName();
+		return "TRLocalDef for \"" + name.toString() + "\" type = " + type.toString();
 	}
 
     @Override
