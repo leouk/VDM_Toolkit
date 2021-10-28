@@ -15,16 +15,16 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         super(location, expression);
         this.localDefs = localDefs;
         //TODO add this to IsaToken? see the reporting library 
-        this.localDefs.separator = IsaToken.COMMA.toString() + this.tabs;
+        this.localDefs.separator = IsaToken.SEMICOLON.toString() + this.tabs;
         this.localDefs.setLocal(true);
-        
+
         System.out.println(toString());
     }
 
     @Override
     public String toString()
     {
-        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "] = " +
+        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "] = \n" +
             localDefs.toString() + " in " + expression.toString();
     }
 
@@ -57,6 +57,10 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     public String localInvTranslate()
     {
-        return localDefs.invTranslate();
+        String old = localDefs.separator; 
+        localDefs.separator = " " + IsaToken.AND.toString() + this.tabs;
+        String result = localDefs.invTranslate();
+        localDefs.separator = old;
+        return result;
     }
 }
