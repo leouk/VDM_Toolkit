@@ -13,20 +13,15 @@ public class TRModuleList extends TRMappedList<TCModule, TRModule>
 {
 	private static final long serialVersionUID = 1L;
 	
+	public TRModuleList()
+	{
+		super();
+		separator = "";
+	}
+	
 	public TRModuleList(TCModuleList list) throws Exception
 	{
 		super(list);
-	}
-
-	public String translate()
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		for (TRModule module: this)
-		{
-			sb.append(module.translate());
-		}
-		
-		return sb.toString();
+		separator = "";
 	}
 }

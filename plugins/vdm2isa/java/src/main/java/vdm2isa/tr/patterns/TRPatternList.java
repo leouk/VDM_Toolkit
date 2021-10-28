@@ -14,7 +14,6 @@ import vdm2isa.tr.TRMappedList;
 public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
     
     private static final long serialVersionUID = 1L;
-	protected String separator; 
 
 	protected TRPatternList() 
 	{
@@ -26,12 +25,6 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 	{
 		super(list);
 		separator = IsaToken.COMMA.toString();
-	}
-
-	public String translate()
-	{
-		assert separator != null;
-		return IsaTemplates.listToString(this, separator);
 	}
 
 	public static String translate(TRPattern... args)

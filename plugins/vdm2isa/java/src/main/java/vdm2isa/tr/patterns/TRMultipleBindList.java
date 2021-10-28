@@ -11,8 +11,6 @@ import vdm2isa.tr.TRMappedList;
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
 {
     private static final long serialVersionUID = 1L;
-
-    public String separator;
     
     public TRMultipleBindList()
     {
@@ -46,11 +44,6 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		}
 		return sb.toString();
     } 
-
-	public String translate()
-	{
-		return IsaTemplates.listToString(this, separator);
-	}
 
 	public static String translate(TRMultipleBind... args)
 	{

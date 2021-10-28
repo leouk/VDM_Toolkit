@@ -15,8 +15,6 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected final String separator; 
-
 	public TRRecordModifierList()
 	{
 		super();
@@ -27,11 +25,5 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	{
 		super(list);
 		separator = IsaToken.COMMA.toString();
-	}
-
-	public String translate()
-	{
-		assert separator != null;
-		return IsaTemplates.listToString(this, separator);
 	}
 }

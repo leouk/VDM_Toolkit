@@ -17,8 +17,6 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected String separator; 
-
 	protected TRExpressionList() 
 	{
 		super();
@@ -29,12 +27,6 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	{
 		super(list);
 		separator = IsaToken.COMMA.toString();
-	}
-
-	public String translate()
-	{
-		assert separator != null;
-		return IsaTemplates.listToString(this, separator);
 	}
 
 	public static String translate(TRExpression... args)

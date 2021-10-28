@@ -12,7 +12,6 @@ import vdm2isa.tr.TRMappedList;
 public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind> {
     
     private static final long serialVersionUID = 1L;
-	protected String separator; 
 
 	protected TRTypeBindList() 
 	{
@@ -26,27 +25,13 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		separator = " ";
 	}
 
-	public String translate()
-	{
-		assert separator != null;
-		return IsaTemplates.listToString(this, separator);
-	}
-
 	public String invTranslate()
 	{
-		StringBuilder sb = new StringBuilder();
-		if (!this.isEmpty())
-		{
-			sb.append(this.get(0).invTranslate());
-			for (int i=1; i < this.size(); i++)
-			{
-				//TODO refactor this so as to have the listToString with adequate method call and separator? 
-				sb.append(" " + IsaToken.AND.toString() + " ");
-				sb.append(this.get(i).invTranslate());
-			}
-			return IsaToken.parenthesise(sb.toString());
-		}
-		return sb.toString();	
+		String old = separator; 
+		separator = " " + IsaToken.AND.toString() + " ";
+		String result = super.invTranslate();
+		separator = old;
+		return result;
 	}
 
 	public static String translate(TRMultipleTypeBind... args)

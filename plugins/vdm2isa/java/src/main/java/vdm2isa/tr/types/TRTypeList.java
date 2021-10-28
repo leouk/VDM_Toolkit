@@ -17,8 +17,6 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 {
 	private static final long serialVersionUID = 1L;
 	
-	private boolean curried;
-
 	protected TRTypeList()
 	{
 		super();
@@ -31,24 +29,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setCurried(false);
 	}
 
-	public boolean getCurried() 
+	public void setCurried(boolean curried) 
 	{
-		return curried;
-	}
-
-	public void setCurried(boolean b) 
-	{
-		curried = b;
-	}
-
-	public String separator()
-	{
-		return curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString();
-	}
-
-	public String translate()
-	{
-		return IsaTemplates.listToString(this, separator());
+		separator = curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString();	
 	}
 
 	public String invTranslate(String varName)

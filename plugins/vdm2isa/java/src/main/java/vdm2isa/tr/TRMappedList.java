@@ -8,9 +8,14 @@ import java.util.List;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.MappedList;
 
-public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
+import vdm2isa.lex.IsaTemplates;
+
+//NB shouldn't this TO extends be added everywhere? 
+public class TRMappedList<FROM, TO extends TRNode> extends MappedList<FROM, TO>
 {
 	private static final long serialVersionUID = 1L;
+
+	public String separator; 
 	
 	public TRMappedList(List<FROM> from) throws Exception
 	{
@@ -31,13 +36,32 @@ public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
 				t.printStackTrace();
 			}
 		}
+		separator = "";
 	}
 	
 	public TRMappedList()
 	{
 		super();
+		separator = "";
 	}
 	
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(get(0).toString());
+			for (int i = 1; i < size(); i++)
+			{
+				// in case of silly null separator!
+				sb.append(String.valueOf(separator));
+				sb.append(get(i).toString());
+			}
+		}
+		return sb.toString();
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -47,5 +71,27 @@ public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
 		}
 		
 		return false;
+	}
+
+	public String translate()
+	{
+		return IsaTemplates.listToString(this, separator);
+		//throw new UnsupportedOperationException("Base TRMappedList class cannot be translated to Isabelle");
+	}
+
+	public String invTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(get(0).invTranslate());
+			for (int i = 1; i < size(); i++)
+			{
+				sb.append(separator);
+				sb.append(get(i).invTranslate());
+			}
+		}
+		return sb.toString();
+		//throw new UnsupportedOperationException("Base TRMappedList class does not have invariant translation to Isabelle");
 	}
 }

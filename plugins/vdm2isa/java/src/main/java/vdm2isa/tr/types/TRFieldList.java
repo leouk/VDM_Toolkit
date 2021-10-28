@@ -14,11 +14,13 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	public TRFieldList()
 	{
 		super();
+		separator = "\n\t";
 	}
 
 	public TRFieldList(TCFieldList list) throws Exception
 	{
 		super(list);
+		separator = "\n\t";
 	}
 
     public String invTranslate(String varName)
@@ -40,9 +42,4 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 
 		return sb.toString();  
     }
-
-	public String translate()
-	{
-		return IsaTemplates.listToString(this, "\n\t");
-	}
 }

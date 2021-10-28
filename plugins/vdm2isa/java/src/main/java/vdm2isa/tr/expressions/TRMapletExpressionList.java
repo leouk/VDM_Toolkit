@@ -15,8 +15,6 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected final String separator; 
-
 	public TRMapletExpressionList()
 	{
 		super();
@@ -27,11 +25,5 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	{
 		super(list);
 		separator = IsaToken.COMMA.toString();
-	}
-
-	public String translate()
-	{
-		assert separator != null;
-		return IsaTemplates.listToString(this, separator);
 	}
 }
