@@ -72,6 +72,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.paramDefinitionList = paramDefinitionList;
 		this.local = false; // LetDefExpression to set this to true if/when needed
         //System.out.println(toString());
+
+		if (this.isCurried)
+			warning(11111, "VDM (curried) explicit function definition still with some problems!");
     }
 
     @Override
@@ -117,33 +120,22 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(super.translate());
-		/*
-		sb.append(IsaTemplates.translateValueDefinition(pattern, type.translate(), exp.translate()));
-		IsaTemplates.explicitFunctionDefnition(
-			name.toString(),
-			type.getParameters().translate() 
-			inTypeSig, outTypeSig, inParam, exp)
-		sb.append(type.getResult().translate() + " " + name.getName() + "(");
-		TRTypeList ptypes = type.getParameters();
 		
-		for (int i=0; i<ptypes.size(); i++)
-		{
-			sb.append(ptypes.get(i).translate());
-			sb.append(" ");
-			sb.append(parameters.get(i));
-		}
-		
-		sb.append(")\n");
-		sb.append("{\n    return ");
-		sb.append(body.translate());
-		sb.append(";\n}\n");
-		*/
+		sb.append(IsaTemplates.translateDefinition(
+				name.toString(), 
+				type.parameters.translate(), 
+				type.result.translate(), 
+				parameters.toString(), 
+				body.translate()));
+
+		warning(11111, "TODO: processing explicit function pre/post definitions please!");
 		return sb.toString();
 	}
 
 	@Override
 	public String invTranslate() {
 		StringBuilder sb = new StringBuilder();
+		warning(11111, "TODO: processing explicit function invTranslate please!");
 		return sb.toString();
 	}
 

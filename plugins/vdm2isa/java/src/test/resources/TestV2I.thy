@@ -1626,5 +1626,9 @@ Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with
 [A,B]=[1,2];
 
 *)
+definition
+	f :: "VDMNat \<Rightarrow> VDMNat"
+where
+	"f leo \<equiv> (leo + (1::VDMNat1))"
 
 end

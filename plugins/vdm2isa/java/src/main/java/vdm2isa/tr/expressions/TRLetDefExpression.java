@@ -18,7 +18,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         this.localDefs.separator = IsaToken.SEMICOLON.toString() + this.tabs;
         this.localDefs.setLocal(true);
 
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     @Override
