@@ -1,5 +1,6 @@
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.ast.modules.ASTModule;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -10,7 +11,11 @@ import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 /**
- * VDM local definitions are useful to give context to the translation of named types.
+ * VDM local definitions are useful to give context to the translation of named types. 
+ * Given these named types have to be translated with the same set of considerations irrespective of 
+ * context, TRValueDefinition derives from TRLocalDefinition, where extra top-level considerations 
+ * are added for the TLD value. This normalises the named type handling at the cost of possibly 
+ * confusing/complicating the hierarchy slightly.  
  */
 public class TRLocalDefinition extends TRDefinition {
     
@@ -21,16 +26,16 @@ public class TRLocalDefinition extends TRDefinition {
     protected TRLocalDefinition()
     {
         //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-        this(LexLocation.ANY, null, null);
+        this(LexLocation.ANY, null, null, null);
     }
 
-    public TRLocalDefinition(LexLocation location, TCNameToken name, TRType type)
+    public TRLocalDefinition(LexLocation location, LexCommentList comments, TCNameToken name, TRType type)
     {
-        super(location, null);
+        super(location, comments);
         this.name = name;
         this.type = type;
-        this.local = true;
-        //System.out.println(toString());
+        // TRValueDefinition have patterns hence can pass name as null; it will have to change its own locality further
+        this.local = name != null;
     }
 
     @Override

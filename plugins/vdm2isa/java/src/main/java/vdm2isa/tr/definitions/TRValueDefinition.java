@@ -19,7 +19,7 @@ import vdm2isa.lex.IsaTemplates;
 /**
  * VDM values are translated as Isabelle constants. 
  */
-public class TRValueDefinition extends TRDefinition
+public class TRValueDefinition extends TRLocalDefinition
 {
 	private static final long serialVersionUID = 1L;
 	private final TRPattern pattern;
@@ -34,7 +34,7 @@ public class TRValueDefinition extends TRDefinition
 	
 	public TRValueDefinition(LexCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
 	{
-		super(pattern.location, comments);
+		super(pattern.location, comments, null, type);
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
@@ -46,8 +46,7 @@ public class TRValueDefinition extends TRDefinition
 		if (this.defs.size() > 1)
 			report(11111, "Multiple local names in VDM value definitions (e.g., \"[A,B] = [1,2]\") cannot be translated.");
 		
-		//if (local) 
-		System.out.println(toString());
+		if (local) System.out.println(toString());
 	}
 
 	@Override
