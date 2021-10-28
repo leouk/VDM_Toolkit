@@ -1,5 +1,6 @@
 package vdm2isa.lex;
 
+//TODO remove all dependencies to vdm2isa.tr TRNode AST.
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.TRExpression;
@@ -14,10 +15,17 @@ import java.util.Map;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import plugins.Vdm2isaPlugin;
 
+/**
+ * Isabelle templates for VDM translation. These are to be independent of VDMJ's TRNode AST (i.e. no imports from vdm2isa.tr). 
+ * This is important to ensure the right TRNode contains the right set of considerations, rather than
+ * having them checked within templates. This is important so that as Isabelle evolves the templates
+ * can evolve accordingly, where any broken dependencies will be at the appropriate site (in context)
+ * within the TRNode AST, rather than ad-hoc wihtin IsaTemplates. Also, if/when we migrate to ST, this 
+ * will be smoother as well.  
+ */
 public final class IsaTemplates {
     
     private final static Map<String, IsaItem> translatedItems = new HashMap<String, IsaItem>();
@@ -86,43 +94,13 @@ public final class IsaTemplates {
             translatedItems.put(name, item);    
     }
 
-    public static String translateAbbreviation(String name, TRType type, TRExpression exp)
+    public static String translateAbbreviation(String name, String typeStr, String exp)
     {
-        assert name != null && type != null && exp != null;
+        assert name != null && typeStr != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        String typeStr;
-        // For values "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
-        if (type instanceof TRRecordType)
-            typeStr = ((TRRecordType)type).getName().toString();
-        else
-            typeStr = type.translate();
-        sb.append(String.format(ABBREVIATION, name, typeStr, exp.translate()));
+        sb.append(String.format(ABBREVIATION, name, typeStr, exp));
         updateTranslatedIsaItem(name, IsaItem.ABBREVIATION);
         return sb.toString();
-    }
-    
-    public static String translateInvariantAbbreviation(String name, String varName, TRType type)
-    {
-        assert name != null && type != null;    
-        String inType = null;
-        String invStr;
-        String dummyNames = "";
-        if (type instanceof TRRecordType)
-        {
-            invStr = type.invTranslate(null) + varName;
-        }
-        else
-        {
-            invStr = type.invTranslate(varName);
-            // function typed abbreviations (i.e. lambdas) need different input signature for invariant! 
-            if (type instanceof TRFunctionType)
-            {
-                inType = ((TRFunctionType)type).parameters.translate();
-                //varName = ((TRFunctionType)type).dummyVarNames(varName);
-                dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
-            }
-        }
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr);
     }
 
     //@todo perhaps have multiple inType and inVars params? 
@@ -136,6 +114,13 @@ public final class IsaTemplates {
         updateTranslatedIsaItem(name, IsaItem.DEFINITION);
         return sb.toString();
     }
+    
+    public static String translateInvariantAbbreviation(String name, String inType, String dummyNames, String invStr)
+    {
+        assert name != null && inType != null & dummyNames != null && invStr != null;    
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr);
+    }
+
 
     public static String translateInvariantDefinition(String name, String inType, String inVars, String exp)
     {
@@ -168,21 +153,6 @@ public final class IsaTemplates {
     {
         return "";
     }
-
-    public static String translateVDMValueDefinition(String name, TRType type, String varName, TRExpression exp)
-    {
-        assert name != null && type != null && exp != null;
-        StringBuilder sb = new StringBuilder(); 
-        if (varName == null) varName = name.toLowerCase();
-        sb.append(translateAbbreviation(name, type, exp));
-        sb.append("\n");
-        //System.out.println("VDMValue translation invariant for " + name);
-        sb.append(translateInvariantAbbreviation(name, varName, type));
-        sb.append("\n");
-        return sb.toString();
-    }
-
-
 
     public static String explicitFunctionDefnition(String name, String inTypeSig, String outTypeSig, 
         String inParam, String exp, String pre, String post)

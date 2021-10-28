@@ -56,8 +56,5 @@ public abstract class TRDefinition extends TRNode
 		return sb.toString();
 	}
 
-	public IsaToken isaToken()
-	{
-		return IsaToken.EOF;
-	}
+	public abstract String invTranslate();
 }

@@ -108,7 +108,8 @@ public enum IsaToken {
 
 	APPLY(null, " "),
 	SEQAPPLY(null, "$"),
-	VARIABLE(null, ""),
+	VARIABLE(null, "variable"),
+	LOCAL(null, "local"),
 	INV(null, "inv_"),
 	IDENTIFIER(Token.IDENTIFIER, "identifier"),
 	RECORD(Token.COLONCOLON, "record"),

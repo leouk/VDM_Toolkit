@@ -21,11 +21,19 @@ public class TRLocalDefinition extends TRDefinition {
         this.type = type;
     }
 
+    @Override
+    public IsaToken isaToken()
+	{
+		return IsaToken.LOCAL;
+	}
+
+    @Override
     public String translate()
     {
         return IsaToken.parenthesise(name.toString() + IsaToken.TYPEOF.toString() + type.translate());
     }
 
+    @Override
     public String invTranslate()
     {
         return type.invTranslate(name.toString());
