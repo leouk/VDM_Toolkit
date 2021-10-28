@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.runtime.Interpreter;
@@ -32,56 +33,96 @@ public class Vdm2isaPlugin extends CommandPlugin
 {
 	private static List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
 	private static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
+	
 	// assuming max translation errors equals max type errors for now
 	private static int MAX = Properties.tc_max_errors;
-
+	
+	private TRModuleList translatedModules;
+	
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
+		this.translatedModules = new TRModuleList();
 	}
 
 	@Override
 	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
+	//TODO add plugin option about raising warnings? or just raise them 
 	public boolean run(String[] argv) throws Exception
 	{
 		if (interpreter instanceof ModuleInterpreter)
 		{
+			long before = System.currentTimeMillis();
+			int errs = 0;
+	
 			// reset internal tables in case of restranslation
+			Vdm2isaPlugin.clearErrors();
 			IsaTemplates.reset();
 			TRRecordType.reset();
 
+			ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
+			TCModuleList tclist = minterpreter.getTC();			
 			try
 			{
-				ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-				TCModuleList tclist = minterpreter.getTC();
-				TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 
-				for (TRModule module: trModules)
+				for (TRModule module: translatedModules)
 				{
 					String dir = module.name.getLocation().file.getParent();
 					if (dir == null) dir = ".";
 					String name = module.name.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-					System.out.println("Translating into " + dir + "/" + name);
+					System.out.println("Translating module " + module.name.getName() + " as " + dir + "/" + name);
 					File outfile = new File(dir, name);
 					PrintWriter out = new PrintWriter(outfile);
 					out.write(module.translate());
 					out.close();
 				}
 			}
+			catch (InternalException e)
+			{
+				Console.out.println(e.toString());
+			}
 			catch (Throwable t)
 			{
-				System.out.println("Exception uncaught " + t.getMessage());
+				Console.out.println("Uncaught exception: " + t.toString());
 				t.printStackTrace();
-				throw t;
+				errs++;
 			}
 
-			//System.out.println(trModules.translate());
+			long after = System.currentTimeMillis();
+			errs = errs + Vdm2isaPlugin.getErrorCount();
+
+			if (errs > 0)
+			{
+				Vdm2isaPlugin.printErrors(Console.out);
+			}
+
+			int warn = Vdm2isaPlugin.getWarningCount();
+			boolean warnings = true; //Properties.get("vdm2isa.warnings") or something like that;
+
+			if (warn > 0 && warnings)
+			{
+				Vdm2isaPlugin.printWarnings(Console.out);
+			}
+
+			Console.out.println("Translated " + plural(translatedModules.size(), "module", "s") +
+				" in " + (double)(after-before)/1000 + " secs. ");
+			Console.out.print(errs == 0 ? "No translation errors" :
+				"Found " + plural(errs, "translation error", "s"));
+			Console.out.println(warn == 0 ? "" : " and " +
+				(warnings ? "" : "suppressed ") + plural(warn, "warning", "s"));
+			
 			return true;
 		}
 		else
 		{
 			return false;
 		}
+	}
+
+	protected String plural(int n, String s, String pl)
+	{
+		return n + " " + (n != 1 ? s + pl : s);
 	}
 
 	@Override
