@@ -145,10 +145,11 @@ public enum IsaToken {
 	COMMA(Token.COMMA, ","),
 	OPTIONAL(null, "option"),
 	COMMENT(null, "\\<comment>"),
-	COMMENT_OPEN(null,"\\<open>"),
-	COMMENT_CLOSE(null, "\\<close>"),
+	ISA_OPEN(null,"\\<open>"),
+	ISA_CLOSE(null, "\\<close>"),
 	FST(null, "fst"),
 	SND(null, "snd"),
+	AT(null, "@"),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
@@ -166,10 +167,10 @@ public enum IsaToken {
 	{
 		assert isa != null; 
 		String vdmstr = vdm != null ? vdm.toString() : "null";
-		if (Token.lookup(vdmstr, Dialect.VDM_PP) != null 
-			||
-			Token.lookup(vdmstr, Dialect.VDM_SL) != null)
-			Vdm2isaPlugin.report(10011, "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
+		//if (Token.lookup(vdmstr, Dialect.VDM_PP) != null 
+		//	||
+		//	Token.lookup(vdmstr, Dialect.VDM_SL) != null)
+		//	Vdm2isaPlugin.report(10011, "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -192,7 +193,16 @@ public enum IsaToken {
 
 	public static String comment(String s)
 	{
-		return IsaToken.COMMENT.toString() + IsaToken.bracketit(IsaToken.COMMENT_OPEN, s, IsaToken.COMMENT_CLOSE);
+		return IsaToken.COMMENT.toString() + IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE);
+	}
+
+	public static String antiquotation(String kind, String yxml)
+	{
+		return IsaToken.AT.toString() +
+					IsaToken.bracketit(IsaToken.SET_OPEN, 
+					kind + " " + 
+					IsaToken.bracketit(IsaToken.ISA_OPEN, yxml, IsaToken.ISA_CLOSE),
+					IsaToken.SET_CLOSE);
 	}
 
 	public static String bracketit(IsaToken left, String s, IsaToken right)

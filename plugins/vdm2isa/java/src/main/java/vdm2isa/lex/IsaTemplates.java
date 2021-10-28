@@ -66,6 +66,7 @@ public final class IsaTemplates {
     //TODO have other methods beyond translate or use reflection? We have translate, invTranslate, compTranslate sprinkled around :-(
     public static String listToString(String before, List<? extends TRNode> list, String separator, String after)
 	{
+        assert separator != null && before != null && after != null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(before);
 
@@ -276,10 +277,7 @@ public final class IsaTemplates {
                     sb.append(" ");
                     sb.append(args[1].translate());
                     sb.append(")\n");
-                    sb.append(IsaToken.COMMENT.toString());
-                    sb.append(IsaToken.COMMENT_OPEN.toString());
-                    sb.append(comment);
-                    sb.append(IsaToken.COMMENT_CLOSE.toString());
+                    sb.append(IsaToken.comment(comment));
                     Vdm2isaPlugin.warning(11001, comment, location);
                 }
                 break;
