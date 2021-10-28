@@ -38,6 +38,7 @@ definition
 where
 	"inv_a  \<equiv> (inv_bool a)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 10:39
 
 TCBooleanType,TCBooleanLiteralExpression
@@ -52,6 +53,7 @@ definition
 	inv_c :: "\<bool>"
 where
 	"inv_c  \<equiv> (inv_VDMChar c)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 11:39
 
@@ -68,6 +70,7 @@ definition
 where
 	"inv_q  \<equiv> (inv_VDMSeq' (inv_VDMChar) q)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 12:39
 
 TCStringLiteralExpression; string literals can be VDMChar VDMSeq for Isabelle string type 
@@ -82,6 +85,7 @@ definition
 	inv_i :: "\<bool>"
 where
 	"inv_i  \<equiv> (inv_VDMInt i)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 13:39
 
@@ -98,6 +102,7 @@ definition
 where
 	"inv_x  \<equiv> (inv_VDMNat x)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 14:39
 
 TCNaturalType
@@ -112,6 +117,7 @@ definition
 	inv_y :: "\<bool>"
 where
 	"inv_y  \<equiv> (inv_VDMNat1 y)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 15:39
 
@@ -128,6 +134,7 @@ definition
 where
 	"inv_r  \<equiv> (inv_VDMReal r)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 16:39
 
 TCRealType,TCRealLiteralExpression
@@ -142,6 +149,7 @@ definition
 	inv_w :: "\<bool>"
 where
 	"inv_w  \<equiv> (inv_VDMRat w)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 17:39
 
@@ -158,6 +166,7 @@ definition
 where
 	"inv_s1  \<equiv> (inv_VDMSet1' (inv_VDMNat1) s1)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 19:51
 
 TCSetType
@@ -172,6 +181,7 @@ definition
 	inv_s2 :: "\<bool>"
 where
 	"inv_s2  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) s2)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 20:51
 
@@ -188,6 +198,7 @@ definition
 where
 	"inv_s3  \<equiv> (inv_VDMSet1' (inv_VDMNat1) s3)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 21:51
 
 TCSet1Type
@@ -203,6 +214,7 @@ definition
 where
 	"inv_ss1  \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) ss1)"
 
+
 abbreviation
 	ss2 :: "VDMNat1 VDMSeq VDMSeq"
 where
@@ -213,6 +225,7 @@ definition
 where
 	"inv_ss2  \<equiv> (inv_VDMSeq' (inv_VDMSeq' (inv_VDMNat1)) ss2)"
 
+
 abbreviation
 	m1 :: "VDMNat1 \<rightharpoonup> VDMNat1"
 where
@@ -222,6 +235,7 @@ definition
 	inv_m1 :: "\<bool>"
 where
 	"inv_m1  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) m1)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 24:51
 
@@ -238,6 +252,7 @@ definition
 where
 	"inv_m2  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) m2)"
 
+
 abbreviation
 	v1 :: "VDMNat1"
 where
@@ -247,6 +262,7 @@ definition
 	inv_v1 :: "\<bool>"
 where
 	"inv_v1  \<equiv> (inv_VDMNat1 v1)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 27:39
 
@@ -263,6 +279,7 @@ definition
 where
 	"inv_v2  \<equiv> (inv_VDMInt v2)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 28:39
 
 TCFloorExpression 		
@@ -278,6 +295,7 @@ definition
 where
 	"inv_v3  \<equiv> (inv_VDMInt v3)"
 
+
 abbreviation
 	v4 :: "VDMInt"
 where
@@ -287,6 +305,7 @@ definition
 	inv_v4 :: "\<bool>"
 where
 	"inv_v4  \<equiv> (inv_VDMInt v4)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 30:39
 
@@ -303,6 +322,7 @@ definition
 where
 	"inv_v5  \<equiv> (inv_VDMNat1 v5)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 31:39
 
 TCUnaryPlusExpression	
@@ -317,6 +337,7 @@ definition
 	inv_v6 :: "\<bool>"
 where
 	"inv_v6  \<equiv> (inv_VDMNat1 v6)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 32:39
 
@@ -333,6 +354,7 @@ definition
 where
 	"inv_v7  \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) v7)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 33:39
 
 TCPowerSetExpression
@@ -347,6 +369,7 @@ definition
 	inv_v8 :: "\<bool>"
 where
 	"inv_v8  \<equiv> (inv_VDMSet' (inv_VDMNat1) v8)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 34:39
 
@@ -363,6 +386,7 @@ definition
 where
 	"inv_v9  \<equiv> (inv_VDMSet' (inv_VDMNat1) v9)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 35:39
 
 TCDistIntersectExpression
@@ -377,6 +401,7 @@ definition
 	inv_v10 :: "\<bool>"
 where
 	"inv_v10  \<equiv> (inv_VDMNat1 v10)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 36:39
 
@@ -393,6 +418,7 @@ definition
 where
 	"inv_v11  \<equiv> (inv_VDMNat1 v11)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 37:39
 
 TCHeadExpression
@@ -407,6 +433,7 @@ definition
 	inv_v12 :: "\<bool>"
 where
 	"inv_v12  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v12)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 38:39
 
@@ -423,6 +450,7 @@ definition
 where
 	"inv_v13  \<equiv> (inv_VDMSet' (inv_VDMNat1) v13)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 39:39
 
 TCIndicesExpression
@@ -437,6 +465,7 @@ definition
 	inv_v14 :: "\<bool>"
 where
 	"inv_v14  \<equiv> (inv_VDMSet' (inv_VDMNat1) v14)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 40:39
 
@@ -453,6 +482,7 @@ definition
 where
 	"inv_v15  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v15)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 41:39
 
 TCDistConcatExpression
@@ -467,6 +497,7 @@ definition
 	inv_v16 :: "\<bool>"
 where
 	"inv_v16  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v16)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 42:39
 
@@ -483,6 +514,7 @@ definition
 where
 	"inv_v17  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v17)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 43:39
 
 TCSeqConcatExpression		
@@ -497,6 +529,7 @@ definition
 	inv_v18 :: "\<bool>"
 where
 	"inv_v18  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v18)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 44:39
 
@@ -513,6 +546,7 @@ definition
 where
 	"inv_v19  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v19)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 45:39
 
 TCDistMergeExpression
@@ -527,6 +561,7 @@ definition
 	inv_v20 :: "\<bool>"
 where
 	"inv_v20  \<equiv> (inv_VDMSet' (inv_VDMNat1) v20)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 46:39
 
@@ -543,6 +578,7 @@ definition
 where
 	"inv_v21  \<equiv> (inv_VDMSet' (inv_VDMNat1) v21)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 47:39
 
 TCMapRangeExpression
@@ -557,6 +593,7 @@ definition
 	inv_v22 :: "\<bool>"
 where
 	"inv_v22  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v22)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 48:39
 
@@ -573,6 +610,7 @@ definition
 where
 	"inv_v23  \<equiv> (inv_VDMNat1 v23)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 49:39
 
 TCPlusExpression		
@@ -587,6 +625,7 @@ definition
 	inv_v24 :: "\<bool>"
 where
 	"inv_v24  \<equiv> (inv_VDMInt v24)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 50:39
 
@@ -603,6 +642,7 @@ definition
 where
 	"inv_v25  \<equiv> (inv_VDMNat1 v25)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 51:39
 
 TCTimesExpression		
@@ -617,6 +657,7 @@ definition
 	inv_v26 :: "\<bool>"
 where
 	"inv_v26  \<equiv> (inv_VDMInt v26)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 52:39
 
@@ -633,6 +674,7 @@ definition
 where
 	"inv_v27  \<equiv> (inv_VDMReal v27)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 53:39
 
 TCDivideExpression		
@@ -648,6 +690,7 @@ definition
 where
 	"inv_v28  \<equiv> (inv_VDMInt v28)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 54:39
 
 TCModExpression			
@@ -662,6 +705,7 @@ definition
 	inv_v29 :: "\<bool>"
 where
 	"inv_v29  \<equiv> (inv_VDMInt v29)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:39
 
@@ -679,6 +723,7 @@ definition
 where
 	"inv_v30  \<equiv> (inv_VDMNat1 v30)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 56:39
 
 TCStarStarExpression	
@@ -693,6 +738,7 @@ definition
 	inv_v31 :: "\<bool>"
 where
 	"inv_v31  \<equiv> (inv_bool v31)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 57:39
 
@@ -709,6 +755,7 @@ definition
 where
 	"inv_v32  \<equiv> (inv_bool v32)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 58:39
 
 TCNotEqualExpression	
@@ -723,6 +770,7 @@ definition
 	inv_v33 :: "\<bool>"
 where
 	"inv_v33  \<equiv> (inv_bool v33)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 59:39
 
@@ -739,6 +787,7 @@ definition
 where
 	"inv_v34  \<equiv> (inv_bool v34)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 60:39
 
 TCLessExpression		
@@ -753,6 +802,7 @@ definition
 	inv_v35 :: "\<bool>"
 where
 	"inv_v35  \<equiv> (inv_bool v35)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 61:39
 
@@ -769,6 +819,7 @@ definition
 where
 	"inv_v36  \<equiv> (inv_bool v36)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 62:39
 
 TCGreaterExpression		
@@ -783,6 +834,7 @@ definition
 	inv_v37 :: "\<bool>"
 where
 	"inv_v37  \<equiv> (inv_Option (inv_VDMNat) v37)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 63:39
 
@@ -799,6 +851,7 @@ definition
 where
 	"inv_v38  \<equiv> (inv_Option inv_True v38)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 64:39
 
 TCNilExpression (untyped)!TCUnknownType	
@@ -813,6 +866,7 @@ definition
 	inv_v39 :: "\<bool>"
 where
 	"inv_v39  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v39)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 65:39
 
@@ -829,6 +883,7 @@ definition
 where
 	"inv_v40  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v40)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
 
 TCDomainResByExpression	
@@ -843,6 +898,7 @@ definition
 	inv_v41 :: "\<bool>"
 where
 	"inv_v41  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v41)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 67:39
 
@@ -859,6 +915,7 @@ definition
 where
 	"inv_v42  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v42)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 68:39
 
 TCRangeResByExpression	
@@ -873,6 +930,7 @@ definition
 	inv_v43 :: "\<bool>"
 where
 	"inv_v43  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v43)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 69:39
 
@@ -889,6 +947,7 @@ definition
 where
 	"inv_v44  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v44)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 70:39
 
 TCMapUnionExpression	
@@ -903,6 +962,7 @@ definition
 	inv_v45 :: "\<bool>"
 where
 	"inv_v45  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v45)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 71:39
 
@@ -919,6 +979,7 @@ definition
 where
 	"inv_v46  \<equiv> (inv_bool v46)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 72:39
 
 TCNotExpression
@@ -933,6 +994,7 @@ definition
 	inv_v47 :: "\<bool>"
 where
 	"inv_v47  \<equiv> (inv_bool v47)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 73:39
 
@@ -949,6 +1011,7 @@ definition
 where
 	"inv_v48  \<equiv> (inv_bool v48)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 74:39
 
 TCOrExpression
@@ -963,6 +1026,7 @@ definition
 	inv_v49 :: "\<bool>"
 where
 	"inv_v49  \<equiv> (inv_bool v49)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 75:39
 
@@ -979,6 +1043,7 @@ definition
 where
 	"inv_v50  \<equiv> (inv_bool v50)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 76:39
 
 TCEquivalentExpression
@@ -993,6 +1058,7 @@ definition
 	inv_v51 :: "\<bool>"
 where
 	"inv_v51  \<equiv> (inv_bool v51)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 77:43
 
@@ -1009,6 +1075,7 @@ definition
 where
 	"inv_v52  \<equiv> (inv_bool v52)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 78:43
 
 TCNotInSetExpression	
@@ -1023,6 +1090,7 @@ definition
 	inv_v53 :: "\<bool>"
 where
 	"inv_v53  \<equiv> (inv_VDMSet' (inv_VDMNat) v53)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 79:51
 
@@ -1039,6 +1107,7 @@ definition
 where
 	"inv_v54  \<equiv> (inv_VDMSet' (inv_VDMNat) v54)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 80:51
 
 TCSetIntersectExpression
@@ -1053,6 +1122,7 @@ definition
 	inv_v55 :: "\<bool>"
 where
 	"inv_v55  \<equiv> (inv_VDMSet' (inv_VDMNat) v55)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 81:51
 
@@ -1069,6 +1139,7 @@ definition
 where
 	"inv_v56  \<equiv> (inv_bool v56)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 82:39
 
 TCSubsetExpression		
@@ -1083,6 +1154,7 @@ definition
 	inv_v57 :: "\<bool>"
 where
 	"inv_v57  \<equiv> (inv_bool v57)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 83:39
 
@@ -1099,6 +1171,7 @@ definition
 where
 	"inv_v58  \<equiv> (inv_VDMSet' (inv_VDMNat1) v58)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 84:39
 
 TCSetRangeExpression	
@@ -1113,6 +1186,7 @@ definition
 	inv_v59 :: "\<bool>"
 where
 	"inv_v59  \<equiv> (inv_VDMSet1' (inv_VDMNat1) v59)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 85:39
 
@@ -1129,6 +1203,7 @@ definition
 where
 	"inv_v60  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v60)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 86:39
 
 TCSeqEnumExpression		
@@ -1143,6 +1218,7 @@ definition
 	inv_v61 :: "\<bool>"
 where
 	"inv_v61  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v61)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 87:39
 
@@ -1161,6 +1237,7 @@ where
 		((inv_VDMNat1 (fst v62))\<and>
 		 (inv_VDMNat1 (snd v62))
 		)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 88:39
 
@@ -1181,6 +1258,7 @@ where
 		 (inv_VDMNat1 (snd (snd v63)))
 		)"
 
+
 abbreviation
 	v64 :: "(VDMNat1\<times>VDMNat1\<times>VDMNat1\<times>VDMNat1)"
 where
@@ -1195,6 +1273,7 @@ where
 		 (inv_VDMNat1 (fst (snd (snd v64))))\<and>
 		 (inv_VDMNat1 (snd (snd (snd v64))))
 		)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 91:7
 
@@ -1219,6 +1298,7 @@ definition
 where
 	"inv_v65  \<equiv> inv_R v65"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 94:39
 
 TCMkTypeExpression		
@@ -1233,6 +1313,7 @@ definition
 	inv_v66 :: "\<bool>"
 where
 	"inv_v66  \<equiv> inv_R v66"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 95:54
 
@@ -1249,6 +1330,7 @@ definition
 where
 	"inv_v67  \<equiv> (inv_VDMNat v67)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 96:33
 
 TCFieldExpression
@@ -1263,6 +1345,7 @@ definition
 	inv_v68 :: "\<bool>"
 where
 	"inv_v68  \<equiv> (inv_VDMNat1 v68)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 97:34
 
@@ -1279,6 +1362,7 @@ definition
 where
 	"inv_v69  \<equiv> (inv_VDMNat1 v69)"
 
+
 abbreviation
 	v70 :: "VDMNat1"
 where
@@ -1289,6 +1373,7 @@ definition
 where
 	"inv_v70  \<equiv> (inv_VDMNat1 v70)"
 
+
 abbreviation
 	v71 :: "VDMNat1"
 where
@@ -1298,6 +1383,7 @@ definition
 	inv_v71 :: "\<bool>"
 where
 	"inv_v71  \<equiv> (inv_VDMNat1 v71)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 101:7
 
@@ -1314,6 +1400,7 @@ definition
 where
 	"inv_v72  \<equiv> (inv_VDMNat1 v72)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 102:35
 
 TCNarrowExpression
@@ -1329,6 +1416,7 @@ definition
 where
 	"inv_v73  \<equiv> (inv_VDMNat1 v73)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 103:44
 
 TCIotaExpression
@@ -1339,7 +1427,7 @@ abbreviation
 where
 	"v74 \<equiv> (
 	\<lambda> (var::VDMNat) (var2::VDMNat) .
-		(if ((inv_VDMNat var) \<and> (inv_VDMNat var2)) then
+		(if (inv_VDMNat var) \<and> (inv_VDMNat var2) then
 			(var + var2)
 		 else
 			undefined
@@ -1350,6 +1438,7 @@ definition
 	inv_v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
 where
 	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant depends on its lambda definition and same dummy names being used!\<close>"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:56
 
@@ -1366,6 +1455,7 @@ definition
 where
 	"inv_v75  \<equiv> (inv_bool v75)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 105:47
 
  TCExists1Expression
@@ -1380,6 +1470,7 @@ definition
 	inv_v76 :: "\<bool>"
 where
 	"inv_v76  \<equiv> (inv_bool v76)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 106:46
 
@@ -1396,6 +1487,7 @@ definition
 where
 	"inv_v78  \<equiv> (inv_bool v78)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:47
 
  TCForallExpression
@@ -1406,9 +1498,10 @@ TODO: not yet v65= m1(1);						--TCApplyExpression
 
 *)
 abbreviation
-	v79 :: "VDMNat"
+	v79 :: "VDMNat1"
 where
-	"v79 \<equiv> (let abbreviation
+	"v79 \<equiv> (
+	let abbreviation
 	var :: "VDMNat"
 where
 	"var \<equiv> (10::VDMNat1)"
@@ -1418,16 +1511,44 @@ definition
 where
 	"inv_var  \<equiv> (inv_VDMNat var)"
 
+,
+		abbreviation
+	var2 :: "VDMNat1"
+where
+	"var2 \<equiv> (20::VDMNat1)"
+
+definition
+	inv_var2 :: "\<bool>"
+where
+	"inv_var2  \<equiv> (inv_VDMNat1 var2)"
+
 
 	in
-		((var + x)))"
+		(if definition
+	inv_var :: "\<bool>"
+where
+	"inv_var  \<equiv> (inv_VDMNat var)"
+
+,
+		definition
+	inv_var2 :: "\<bool>"
+where
+	"inv_var2  \<equiv> (inv_VDMNat1 var2)"
+
+ then
+			(var + var2)
+		 else
+			undefined
+		)
+	)"
 
 definition
 	inv_v79 :: "\<bool>"
 where
-	"inv_v79  \<equiv> (inv_VDMNat v79)"
+	"inv_v79  \<equiv> (inv_VDMNat1 v79)"
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:47
+
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:67
 
  TCLetDefExpression
 
@@ -1441,6 +1562,7 @@ definition
 	inv_v80 :: "\<bool>"
 where
 	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:47
 
@@ -1457,6 +1579,7 @@ definition
 where
 	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
 
+
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:71
 
  TCSetCompExpression
@@ -1465,13 +1588,14 @@ where
 abbreviation
 	v85 :: "VDMNat1 VDMSeq"
 where
-	"v85 \<equiv> [ var . var\<leftarrow> sorted_list_of_set (s1) , (var > (1::VDMNat1)) ]
-	\<comment>\<open>Translator does not have sequence bind type info. If VDM (ordered) set bind used, need to add append to seq expression \<leftarrow> sorted_list_of_set\<close>"
+	"v85 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (s1) , (var > (1::VDMNat1)) ]
+	\<comment>\<open>Set bind @{term \<open>var \<in> s1\<close>} in sequence comprehension requires VDM set to be ordered.\<close>"
 
 definition
 	inv_v85 :: "\<bool>"
 where
 	"inv_v85  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v85)"
+
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:47
 

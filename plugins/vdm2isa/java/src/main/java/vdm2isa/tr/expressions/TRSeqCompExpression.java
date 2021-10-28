@@ -76,7 +76,9 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(IsaToken.SEQ_CLOSE.toString());
         if (isSetSeqBind())
         {
-            String setbindProblem = "Translator does not have sequence bind type info. If VDM (ordered) set bind used, need to add append to seq expression " + IsaToken.SETSEQBIND.toString();
+            String setbindProblem = "Set bind " + 
+                IsaToken.antiquotation(IsaToken.TERM, bind.translate()) +
+                " in sequence comprehension requires VDM set to be ordered.";
             sb.append("\n\t" + IsaToken.comment(setbindProblem));
         }
         return sb.toString();
