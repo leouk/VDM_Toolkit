@@ -17,6 +17,10 @@ public abstract class TRDefinition extends TRNode
 	private static final long serialVersionUID = 1L;
 	protected final LexCommentList comments;
 	protected final TCAnnotationList annotations;
+
+	/**
+	 * Whether or not this definition is part of a local definition of someone else
+	 */
 	public boolean local;
 	
 	protected TRDefinition(LexLocation location, LexCommentList comments)
@@ -31,7 +35,14 @@ public abstract class TRDefinition extends TRNode
 		this.annotations = annotations;
 		this.local = false;
 	}
-	
+
+	@Override
+	public String toString()
+	{
+		return "{local=" + local + "}" + super.toString();
+	}
+
+	@Override
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();

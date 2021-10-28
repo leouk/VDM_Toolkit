@@ -17,6 +17,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         //TODO add this to IsaToken? see the reporting library 
         this.localDefs.separator = IsaToken.COMMA.toString() + this.tabs;
         this.localDefs.setLocal(true);
+        
         System.out.println(toString());
     }
 

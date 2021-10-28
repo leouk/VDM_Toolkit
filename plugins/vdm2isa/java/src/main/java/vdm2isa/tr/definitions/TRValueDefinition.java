@@ -26,7 +26,7 @@ public class TRValueDefinition extends TRDefinition
 	private final TRType type;
 	private final TRExpression exp;
 	private final TRDefinitionList defs;
-
+	
 	/**
 	 * Default=true; translate VDM values as Isabelle abbreviations.
 	 */
@@ -38,15 +38,18 @@ public class TRValueDefinition extends TRDefinition
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
+
+		// these are always TRLocalDefinition within the list? 
 		this.defs = defs;
 		this.abbreviation = true;
-		//System.out.println(toString());
+		
+		System.out.println(toString());
 	}
 
 	@Override
 	public String toString()
 	{
-		return "TRValueDef for " + pattern.translate() + 
+		return "TRValueDef [local=" + local + "] for " + pattern.translate() + 
 			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "] = " + defs.translate();
 	}
 

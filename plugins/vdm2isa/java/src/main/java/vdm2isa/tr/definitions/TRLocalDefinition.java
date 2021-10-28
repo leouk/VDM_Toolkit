@@ -1,5 +1,6 @@
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.ast.modules.ASTModule;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
@@ -14,6 +15,13 @@ public class TRLocalDefinition extends TRDefinition {
     private TCNameToken name;
     private TRType type;
 
+    // For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
+    protected TRLocalDefinition()
+    {
+        //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
+        this(LexLocation.ANY, null, null);
+    }
+
     public TRLocalDefinition(LexLocation location, TCNameToken name, TRType type)
     {
         super(location, null);
@@ -26,7 +34,7 @@ public class TRLocalDefinition extends TRDefinition {
     @Override
 	public String toString()
 	{
-		return "TRLocalDef for \"" + name.toString() + "\" type = " + type.toString();
+		return "TRLocalDef for \"" + String.valueOf(name) + "\" type = " + String.valueOf(type);
 	}
 
     @Override
