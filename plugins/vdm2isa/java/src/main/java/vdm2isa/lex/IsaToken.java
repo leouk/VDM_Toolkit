@@ -118,6 +118,10 @@ public enum IsaToken {
 	ISASTR(null/*Token.STRING*/, "''"),
 	DUMMY(null, "dummy"),
 	ERROR(Token.ERROR, "ERROR"),
+
+	TERM(null, "term"),
+	TYP(null, "typ"),
+	THM(null, "thm"),
   	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
@@ -196,11 +200,11 @@ public enum IsaToken {
 		return IsaToken.COMMENT.toString() + IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE);
 	}
 
-	public static String antiquotation(String kind, String yxml)
+	public static String antiquotation(IsaToken kind, String yxml)
 	{
 		return IsaToken.AT.toString() +
 					IsaToken.bracketit(IsaToken.SET_OPEN, 
-					kind + " " + 
+					kind.toString() + " " + 
 					IsaToken.bracketit(IsaToken.ISA_OPEN, yxml, IsaToken.ISA_CLOSE),
 					IsaToken.SET_CLOSE);
 	}
