@@ -14,7 +14,7 @@ map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, 
 map TCLocalDefinition{location, name, type} to TRLocalDefinition(location, name, type);
 
 # This is an odd one from within TCLambdaExpression; 
-map TCMultiBindListDefinition{location, bindings, defs} to TRMultiBindListDefinition(location, bindings, defs);
+#map TCMultiBindListDefinition{location, bindings, defs} to TRMultiBindListDefinition(location, bindings, defs);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
@@ -114,7 +114,8 @@ map TCNarrowExpression{location, typename, basictype, test} to TRNarrowExpressio
 map TCIsExpression{location, typename, basictype, test} to TRIsExpression(location, typename, basictype, test);
 
 map TCIotaExpression{location, bind, predicate} to TRIotaExpression(location, bind, predicate);
-map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def); 
+map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions); 
 map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
 map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
 map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
