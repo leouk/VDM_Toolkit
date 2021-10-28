@@ -33,6 +33,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         return IsaToken.parenthesise(IsaToken.INV + type.translate() + " " + plist.get(index).translate());
     }
 
+    @Override
     public String invTranslate()
     {
         StringBuilder sb = new StringBuilder();

@@ -22,7 +22,19 @@ public abstract class TRMultipleBind extends TRNode
     }
 
     /**
-     * Binds translation within in comprehension expressions 
+     * Binds do not support invariant translation in general. Some type-bound binds do and can extend this behaviour.
+     */
+    @Override
+    public String invTranslate()
+    {
+        report(11111, "Multiple bind \"" + plist.translate() + "\" does not support Isabelle invariant translation.");
+        return "";
+    }
+
+    /**
+     * Binds that allow translation within in comprehension expressions. 
+     * @param patternsOnly whether to consider binding type/expr (if availale) or patterns only  
      */
     public abstract String compTranslate(boolean patternsOnly);
+
 }

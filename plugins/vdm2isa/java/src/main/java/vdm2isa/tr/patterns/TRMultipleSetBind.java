@@ -13,6 +13,8 @@ public class TRMultipleSetBind extends TRMultipleBind
     private static final long serialVersionUID = 1L;
 
     private final TRExpression set;
+
+    // TRSeqComp sets this to true for the case [ x | x in set S ], where S is ordered
     public boolean seqBind;
 
     public TRMultipleSetBind(TRPattern pattern, TRExpression set)
@@ -49,8 +51,10 @@ public class TRMultipleSetBind extends TRMultipleBind
         // whenever it's not just for the patterns, which should never be the case any how.  
         if (!patternsOnly && seqBind)
         { 
-            String setbindProblem = "Translator does not have sequence bind type info. If VDM (ordered) set bind used, need to add \"\" to seq expression";
+            //NB perhaps this is always true on type checked seq comp? 
+            String setbindProblem = "Set bind " + translate() + " in sequence comprehension requires VDM set to be ordered.";
             warning(11111, setbindProblem);
+            sb.append(" ");
             sb.append(IsaToken.SETSEQBIND);
             sb.append(" ");
             sb.append(IsaToken.parenthesise(set.translate()));

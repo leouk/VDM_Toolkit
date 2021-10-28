@@ -24,4 +24,14 @@ abstract public class TRType extends TRNode
 	 * @return the invariant check expression 
 	 */
 	public abstract String invTranslate(String varName);
+
+	/**
+	 * Types do not have context information about the invariant name, so implement as unknown/don't-care name
+	 * for general TRNode invTranslate method
+	 */
+	@Override
+	public String invTranslate()
+	{
+		return invTranslate(null);
+	}
 }

@@ -28,6 +28,12 @@ public class TRModule extends TRNode
 		this.files = files;
 	}
 
+	@Override
+	public IsaToken isaToken() {
+		return IsaToken.MODULE;
+	}
+
+	@Override
 	public String translate()
 	{
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
@@ -35,8 +41,13 @@ public class TRModule extends TRNode
 		return IsaTemplates.translateModule("", loc, name.toString(), definitions.translate());
 	}
 
-	@Override
-	public IsaToken isaToken() {
-		return IsaToken.MODULE;
-	}
+    /**
+     * Modules do not support invariant translation.
+     */
+    @Override
+    public String invTranslate()
+    {
+        report(11111, "Module \"" + name.toString() + "\" does not required Isabelle invariant translation.");
+        return "";
+    }
 }
