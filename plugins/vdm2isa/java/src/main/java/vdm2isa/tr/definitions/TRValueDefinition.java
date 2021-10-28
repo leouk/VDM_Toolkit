@@ -46,7 +46,8 @@ public class TRValueDefinition extends TRDefinition
 		if (this.defs.size() > 1)
 			report(11111, "Multiple local names in VDM value definitions (e.g., \"[A,B] = [1,2]\") cannot be translated.");
 		
-		//if (local) System.out.println(toString());
+		//if (local) 
+		System.out.println(toString());
 	}
 
 	@Override
