@@ -121,8 +121,8 @@ values
 	--[A,B]=[1,2];
 functions
 
---f: nat -> nat
---f(x) == x + 1;
+	f: nat -> nat
+	f(x) == x + 1;
 
 state State of
    st1: nat

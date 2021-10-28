@@ -6,8 +6,7 @@ package com.fujitsu.vdmj.tc.definitions to vdm2isa.tr.definitions;
 map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
 map TCTypeDefinition{annotations, name, type, invExpression} to TRTypeDefinition(annotations, name, type, invExpression);
-map TCExplicitFunctionDefinition{comments, name, type, paramPatternList, body} to TRExplicitFunctionDefinition(comments, name, type, paramPatternList, body);
-map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp);
+map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList);
 
 # This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
 map TCLocalDefinition{location, comments, name, type} to TRLocalDefinition(location, comments, name, type);
@@ -123,7 +122,6 @@ map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindLis
 #map TCLetBeStExpression{location, bind, suchThat, value} to
 map TCLetDefExpression{location, localDefs, expression} to TRLetDefExpression(location, localDefs, expression);
 
-
 map TCSetCompExpression{location, first, bindings, predicate} to TRSetCompExpression(location, first, bindings, predicate);
 map TCSeqCompExpression{location, first, bind, predicate} to TRSeqCompExpression(location, first, bind, predicate);
 
@@ -147,6 +145,7 @@ unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
 unmapped com.fujitsu.vdmj.lex.LexLocation;
 unmapped com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+unmapped com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 
 #############################################################################
 package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;

@@ -1613,4 +1613,18 @@ where
 	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
 
 
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
+
+v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
+
+Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 121:7
+
+[A,B]=[1,2];
+
+*)
+
 end

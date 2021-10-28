@@ -26,18 +26,20 @@ import vdm2isa.tr.types.TRTypeList;
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
 	private static final long serialVersionUID = 1L;
-	public final TCNameToken name;
-	public final TCNameList typeParams;
-	public final TRFunctionType type;
-	public final TRParameterList parameters;
-	public final TRExpression body;
-	public final TRExpression precondition;
-	public final TRExpression postcondition;
-	public final boolean isTypeInvariant;
-	public final TRExpression measureExp;
-	public TCExplicitFunctionDefinition predef;
-	public TCExplicitFunctionDefinition postdef;
-	public TCDefinitionListList paramDefinitionList;
+	private final TCNameToken name;
+	private final TCNameList typeParams;
+	private final TRFunctionType type;
+	private final TRParameterList parameters;
+	private final TRExpression body;
+	private final TRExpression precondition;
+	private final TRExpression postcondition;
+	private final boolean isTypeInvariant;
+	private final TRExpression measureExp;
+	private final boolean isCurried;
+
+	private TRExplicitFunctionDefinition predef;
+	private TRExplicitFunctionDefinition postdef;
+	private TCDefinitionListList paramDefinitionList;
 
 	public boolean recursive = false;
 	public boolean isUndefined = false;
@@ -48,7 +50,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			TCNameList typeParams, TRFunctionType type,
 			TRParameterList parameters, TRExpression body,
 			TRExpression precondition,
-			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp)
+			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp,
+			boolean isCurried, 
+			TRExplicitFunctionDefinition predef,
+			TRExplicitFunctionDefinition postdef,
+			TCDefinitionListList paramDefinitionList)
 	{
 		super(name.getLocation(), comments, annotations);
 		this.name = name;
@@ -60,14 +66,47 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.postcondition = postcondition;
 		this.isTypeInvariant = typeInvariant;
 		this.measureExp = measureExp;
+		this.isCurried = isCurried;
+		this.predef = predef;
+		this.postdef = postdef;
+		this.paramDefinitionList = paramDefinitionList;
         //System.out.println(toString());
     }
 
     @Override
 	public String toString()
 	{
-		return "TRExplicitFuncDef for " + name.toString() + 
-			" type " + type.getClass().getName() + " TODO";
+		return "TRExplicitFuncDef for " + 
+			" \n\tname        = " + String.valueOf(name) +
+			" \n\ttype params = " + String.valueOf(typeParams) + 
+			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
+			" \n\tparameters  = " + String.valueOf(parameters) + //TODO make this properly
+			" \n\tbody        = " + (body != null ? body.translate() : "null") + 
+			" \n\tpre         = " + (precondition != null ? precondition.translate() : "null") + 
+			" \n\tpost        = " + (postcondition != null ? postcondition.translate() : "null") + 
+			" \n\tisTypeInv   = " + isTypeInvariant +
+			" \n\tmeasure     = " + (measureExp != null ? measureExp.translate() : "null") +
+			" \n\tisCurried   = " + isCurried +
+			" \n\tpredef      = " + (predef != null ? predef.translate() : "null") +
+			" \n\tpostdef     = " + (postdef != null ? postdef.translate() : "null") +
+			" \n\tparamDefList= " + String.valueOf(paramDefinitionList);
+	
+		// f: nat -> nat
+		// f(x) == x + 1;
+		//
+		// TRExplicitFuncDef for f 
+		// 	type params = null 
+		// 	type        = VDMNat \<Rightarrow> VDMNat 
+		// 	parameters  = [x] 
+		// 	body        = (x + (1::VDMNat1)) 
+		// 	pre         = null 
+		// 	post        = null 
+		// 	isTypeInv   = false 
+		// 	measure     = null 
+		// 	isCurried   = false 
+		// 	predef      = null 
+		// 	postdef     = null 
+		// 	paramDefList= [x = nat]
 	}
 
 	@Override
@@ -102,13 +141,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	@Override
 	public String invTranslate() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder sb = new StringBuilder();
+		return sb.toString();
 	}
 
 	@Override
 	public IsaToken isaToken() {
-		// TODO Auto-generated method stub
-		return null;
+		return IsaToken.FUN;
 	}
 }
