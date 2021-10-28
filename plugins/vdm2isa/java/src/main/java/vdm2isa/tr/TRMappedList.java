@@ -6,17 +6,18 @@ package vdm2isa.tr;
 import java.util.List;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
 import vdm2isa.lex.IsaTemplates;
 
-//NB shouldn't this TO extends be added everywhere? 
-public class TRMappedList<FROM, TO extends TRNode> extends MappedList<FROM, TO>
+public class TRMappedList<FROM extends Mappable, TO extends TRNode> extends MappedList<FROM, TO>
 {
 	private static final long serialVersionUID = 1L;
 
 	public String separator; 
 	
+	@SuppressWarnings("unchecked")
 	public TRMappedList(List<FROM> from) throws Exception
 	{
 		//super(TRNode.MAPPINGS, from);
