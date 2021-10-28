@@ -70,6 +70,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.predef = predef;
 		this.postdef = postdef;
 		this.paramDefinitionList = paramDefinitionList;
+		this.local = false; // LetDefExpression to set this to true if/when needed
         //System.out.println(toString());
     }
 
@@ -78,6 +79,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		return "TRExplicitFuncDef for " + 
 			" \n\tname        = " + String.valueOf(name) +
+			" \n\tlocal		  = " + local + 
 			" \n\ttype params = " + String.valueOf(typeParams) + 
 			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
 			" \n\tparameters  = " + String.valueOf(parameters) + //TODO make this properly
