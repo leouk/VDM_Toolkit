@@ -6,12 +6,14 @@ package vdm2isa.tr;
 import java.util.List;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
-public class TRMappedList<FROM, TO> extends MappedList<FROM, TO>
+public class TRMappedList<FROM extends Mappable, TO extends Mappable> extends MappedList<FROM, TO>
 {
 	private static final long serialVersionUID = 1L;
 	
+	@SuppressWarnings("unchecked")
 	public TRMappedList(List<FROM> from) throws Exception
 	{
 		//super(TRNode.MAPPINGS, from);
