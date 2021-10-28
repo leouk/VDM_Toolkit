@@ -52,7 +52,7 @@ public class TRMultipleSetBind extends TRMultipleBind
         if (!patternsOnly && seqBind)
         { 
             //NB perhaps this is always true on type checked seq comp? 
-            String setbindProblem = "Set bind " + translate() + " in sequence comprehension requires VDM set to be ordered.";
+            String setbindProblem = "Set bind \"" + translate() + "\" in sequence comprehension requires VDM set to be ordered.";
             warning(11111, setbindProblem);
             sb.append(" ");
             sb.append(IsaToken.SETSEQBIND);
