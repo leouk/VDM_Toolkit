@@ -49,6 +49,7 @@ public class TRValueDefinition extends TRDefinition
 		return "TRValueDef for " + pattern.translate() + 
 			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "] = " + defs.translate();
 	}
+
 	@Override
 	public IsaToken isaToken()
 	{

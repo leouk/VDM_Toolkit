@@ -60,6 +60,14 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.postcondition = postcondition;
 		this.isTypeInvariant = typeInvariant;
 		this.measureExp = measureExp;
+        //System.out.println(toString());
+    }
+
+    @Override
+	public String toString()
+	{
+		return "TRExplicitFuncDef for " + name.toString() + 
+			" type " + type.getClass().getName() + " TODO";
 	}
 
 	@Override

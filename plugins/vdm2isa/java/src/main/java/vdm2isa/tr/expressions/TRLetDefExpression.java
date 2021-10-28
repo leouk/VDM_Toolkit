@@ -24,7 +24,8 @@ public class TRLetDefExpression extends TRExpression {
     @Override
     public String toString()
     {
-        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "]";
+        return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "]\n" +
+            localDefs.toString();
     }
 
     @Override

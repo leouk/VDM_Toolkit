@@ -20,7 +20,15 @@ public class TRLocalDefinition extends TRDefinition {
         this.name = name;
         this.type = type;
         this.local = true;
+        //System.out.println(toString());
     }
+
+    @Override
+	public String toString()
+	{
+		return "TRLocalDef for " + name.toString() + 
+			" type " + type.getClass().getName();
+	}
 
     @Override
     public IsaToken isaToken()

@@ -23,7 +23,16 @@ public class TRTypeDefinition extends TRDefinition {
         this.name = name;
         this.type = type;
         this.invExpr = invExpression;
+        //System.out.println(toString());
     }
+
+    @Override
+	public String toString()
+	{
+		return "TRTypeDef for " + name.toString() + 
+			" type " + type.getClass().getName() + 
+            " inv " + String.valueOf(invExpr);
+	}
 
     @Override
     public IsaToken isaToken()

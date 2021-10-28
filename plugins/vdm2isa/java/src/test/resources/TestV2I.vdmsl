@@ -117,7 +117,7 @@ values
 	"v87 ≡ [ var . var ← [1,2,3,7,8,9], var2 ← [4,5,6] , (var > var2) ]"
 	value "sorted_list_of_set {1,2,(3::int)} = s2"
 	*/
-	--v87= let with func decl into it!
+	--v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 functions
 
 --f: nat -> nat

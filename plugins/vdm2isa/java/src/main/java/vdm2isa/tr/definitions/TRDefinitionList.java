@@ -7,6 +7,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRMappedList;
 
 public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
@@ -19,6 +20,20 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	{
 		super(list);
 		separator = "\n";
+	}
+
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(get(0).toString());
+			for (int i = 1; i < size(); i++)
+			{
+				sb.append("\n" + get(i).toString());
+			}
+		}
+		return sb.toString();
 	}
 
 	public void setLocal(boolean local)
