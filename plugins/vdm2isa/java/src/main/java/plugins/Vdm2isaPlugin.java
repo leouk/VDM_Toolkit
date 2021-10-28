@@ -41,6 +41,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 	}
 
 	@Override
+	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
 	public boolean run(String[] argv) throws Exception
 	{
 		if (interpreter instanceof ModuleInterpreter)

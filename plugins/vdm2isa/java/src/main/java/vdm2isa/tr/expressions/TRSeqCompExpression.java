@@ -11,9 +11,8 @@ import vdm2isa.tr.patterns.TRMultipleSetBind;
 
 /**
  * Isabelle sequence compression is "[ expr(bind1, bind2) . bind1 <- gen1, bind2 <- gen2, filter ]".
- * VDM sequence compression is "[ expr(bind1) . bin1 in set(q) expr2 & filter ]".
- * 
- * That is despite the fact that TCSeqCompExpression bind has a TCPatternList? In any case, we need to extract bind name 
+ * VDM sequence compression is "[ expr(bind1) . bin1 in set(q) expr2 & filter ]". If the sequence 
+ * comprehension generator is a set bind, it has to be transformed to a list using IsaToken.SETSEQBIND. 
  */
 public class TRSeqCompExpression extends TRExpression {
     private static final long serialVersionUID = 1L;

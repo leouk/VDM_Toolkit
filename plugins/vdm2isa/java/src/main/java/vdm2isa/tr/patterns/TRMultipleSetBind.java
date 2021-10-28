@@ -3,6 +3,11 @@ package vdm2isa.tr.patterns;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.TRExpression;
 
+/**
+ * VDM set binds represent "x in set S". Depending on the translation context, different outcomes are needed.
+ * For typing or parameters context, that is just "x : S"; whereas for comprehension contexts, it depends on
+ * whether this bind is for a set or seq comprehenion, in which case certain transformations are needed.
+ */
 public class TRMultipleSetBind extends TRMultipleBind 
 {
     private static final long serialVersionUID = 1L;
@@ -29,7 +34,11 @@ public class TRMultipleSetBind extends TRMultipleBind
     }
 
     /**
-     * Set bindings translation in comprehension just needs the name, given the actual bind will be in the predicate part. See TRSetCompExpression 
+     * Set bindings translation in comprehension just needs the name, given the actual bind will be in the 
+     * predicate part (see TRSetCompExpression). If this bind is for a sequence comprehension, Isabelle 
+     * requires the set to be ordered and to be translated to a sequence. Given VDM enforces set ordering 
+     * as well, a call to "sorted_set_as_list" is issued through IsaToken.SETSEQBIND under the right circumstances.
+     * Pattern only parameter is for when the bind is used in the generator field, rather than predicate field.  
      */
     @Override
     public String compTranslate(boolean patternsOnly)

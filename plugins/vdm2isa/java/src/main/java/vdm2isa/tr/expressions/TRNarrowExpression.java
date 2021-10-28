@@ -8,6 +8,11 @@ import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * Isabelle only allows type casting between "proper" types (and their classes), rather than various forms of type synonyms.  
+ * Thus, some narrow expressions will fail to translate and will require the user to properly instantiate the offending 
+ * type within the target type class of interest related to the narrowed type.
+ */
 public class TRNarrowExpression extends TRVDMTestExpression {
 
 	private static final long serialVersionUID = 1L;

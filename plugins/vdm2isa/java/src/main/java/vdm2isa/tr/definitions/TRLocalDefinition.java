@@ -3,8 +3,12 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * VDM local definitions are useful to give context to the translation of named types.
+ */
 public class TRLocalDefinition extends TRDefinition {
     
     private TCNameToken name;
@@ -19,7 +23,11 @@ public class TRLocalDefinition extends TRDefinition {
 
     public String translate()
     {
-        warning(11111, "Local definitions ought not be translated!");
-        return "LOCAL = " + name.toString() + " : " + type.translate();
+        return IsaToken.parenthesise(name.toString() + IsaToken.TYPEOF.toString() + type.translate());
+    }
+
+    public String invTranslate()
+    {
+        return type.invTranslate(name.toString());
     }
 }

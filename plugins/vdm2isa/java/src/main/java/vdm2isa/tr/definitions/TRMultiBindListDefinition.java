@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
+//TODO delete
 public class TRMultiBindListDefinition extends TRDefinition {
     
     private final TRMultipleBindList bindings;

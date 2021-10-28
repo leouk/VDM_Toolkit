@@ -8,6 +8,15 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
+/**
+ * Isabelle (explicit) set compression can be defined in two different ways (implicit comprehensions exists for 
+ * quantifiers, "! x : S . P" etc.):
+ *      1. Simple       : Isa = "{ x . x : S /\ P }";         VDM = "{ x | x in set S & P }";
+ *      2. Existential  : Isa = "{ x + x | x . x : S /\ P }"; VDM = "{ x + x | x in set S & P }"  
+ *
+ * Existential here in the sense that the expression is syntactic sugar for "{ u . (? x . u = x + x /\ x : S /\ P) }",
+ * whenever the expression field is not a variable expression.  
+ */
 public class TRSetCompExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
@@ -25,8 +34,6 @@ public class TRSetCompExpression extends TRExpression {
         this.binds = bindings;
         this.predicate = predicate;
         // if anything other than variable expression is used, we need to convert to the existential comprehension form
-        // { x     | x in set S & P } = { x       . x : S /\ P   } (existential = false)
-        // { x + x | x in set S & P } = { x + x | x . x : S /\ P } = { u . (? x . u = x + x /\ x : S /\ P)  } (existential = true) 
         this.existential = !(first instanceof TRVariableExpression);
         System.out.println("SetComp first = " + first.getClass().getName() + " plist (" + binds.size() + ")[" + binds.toString() + "] = " + binds.translate());
     }

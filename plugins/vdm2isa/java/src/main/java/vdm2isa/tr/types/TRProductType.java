@@ -16,6 +16,13 @@ public class TRProductType extends TRType {
         this.types.setCurried(false);
     }
 
+    /**
+     * Isabelle only have tuples (or pairs). So, VDM n-tuples have to be projected out of pairs. 
+     * @param index which tuple index (e.g. x.#index)
+     * @param size overall tuple size
+     * @param varName variable name being projected out (e.g., varName.#index)
+     * @return Isabelle projection as combination of multiple fst/snd expressions over varName depending on index.
+     */
     public static String fieldProjection(long index, long size, String varName)
     {
         // using long because index in field num expression is a long :-()

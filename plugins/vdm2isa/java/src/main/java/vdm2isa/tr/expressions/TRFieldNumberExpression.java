@@ -8,6 +8,10 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * Field number expressions (e.g., x.#n) have to be transformed to the adequate tuple product/pair projection
+ * (see TRProductType). 
+ */
 public class TRFieldNumberExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
