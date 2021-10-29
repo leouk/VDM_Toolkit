@@ -1634,31 +1634,28 @@ Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with
 
 [A,B]=[1,2];
 
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 125:7
+
+To test VDM warnings as errors
+
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 126:7
+
+x = 10;
+
 *)
-abbreviation
-	x :: "VDMNat1"
-where
-	"x \<equiv> (10::VDMNat1)"
-
-definition
-	inv_x :: "\<bool>"
-where
-	"inv_x  \<equiv> (inv_VDMNat1 x)"
-
-
 definition
 	f :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"f [x] \<equiv> (x + (1::VDMNat1))"
+	"f vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (x + (1::VDMNat1))"
 
 definition
 	g :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"g [x] \<equiv> (x + (1::VDMNat1))"
+	"g vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (x + (1::VDMNat1))"
 
 definition
 	h :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"h [x] \<equiv> (g x)"
+	"h vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (g x)"
 
 end
