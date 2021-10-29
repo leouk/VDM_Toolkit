@@ -119,6 +119,9 @@ public enum IsaToken {
 	DUMMY(null, "dummy"),
 	ERROR(Token.ERROR, "ERROR"),
 	SEMICOLON(Token.SEMICOLON, ";"),
+	VDMINT_NARROW(null, "vdm_narrow_real"),
+	NARROW(null/*Token.NARROW doesn't exist?*/, "vdm_narrow"),
+	ISEXPR(Token.IS, "is"),
 
 	TERM(null, "term"),
 	TYP(null, "typ"),

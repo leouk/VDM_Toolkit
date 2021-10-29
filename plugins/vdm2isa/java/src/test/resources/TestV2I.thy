@@ -858,7 +858,9 @@ where
 definition
 	inv_v38 :: "\<bool>"
 where
-	"inv_v38  \<equiv> (inv_Option inv_True v38)"
+	"inv_v38  \<equiv> (inv_Option inv_True\<comment>\<open>
+Unknown VDM types will generate Isabelle warning for additional type variable `a.
+\<close> v38)"
 
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
@@ -1402,7 +1404,7 @@ v72= not yet specified;	--TCNotYetSpecifiedExpression
 abbreviation
 	v72 :: "VDMNat1"
 where
-	"v72 \<equiv> (((4.0))::VDMNat1)\<comment>\<open>VDM narrow expressions might create Isabelle type errors!\<close>"
+	"v72 \<equiv> vdm_narrow_real (((4.0))::VDMReal)"
 
 definition
 	inv_v72 :: "\<bool>"
@@ -1416,6 +1418,25 @@ TCNarrowExpression
 
 *)
 abbreviation
+	v722 :: "VDMNat1"
+where
+	"v722 \<equiv> (
+	let (r::VDMReal) = (4.0)
+	in
+		(if ((inv_VDMReal r)) then
+			vdm_narrow_real ((r)::VDMReal)
+		 else
+			undefined
+		)
+	)"
+
+definition
+	inv_v722 :: "\<bool>"
+where
+	"inv_v722  \<equiv> (inv_VDMNat1 v722)"
+
+
+abbreviation
 	v73 :: "VDMNat1"
 where
 	"v73 \<equiv> (SOME var. (var \<in> t9) \<and> (var < (2::VDMNat1)))"
@@ -1426,7 +1447,7 @@ where
 	"inv_v73  \<equiv> (inv_VDMNat1 v73)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 105:44
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 106:44
 
 TCIotaExpression
 
@@ -1449,7 +1470,7 @@ where
 	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant depends on its lambda definition and same dummy names being used!\<close>"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 106:56
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:56
 
 TCLambdaExpression
 
@@ -1465,7 +1486,7 @@ where
 	"inv_v75  \<equiv> (inv_bool v75)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 108:47
 
  TCExists1Expression
 
@@ -1481,7 +1502,7 @@ where
 	"inv_v76  \<equiv> (inv_bool v76)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 108:46
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:46
 
  TCExistsExpression
 
@@ -1497,11 +1518,11 @@ where
 	"inv_v78  \<equiv> (inv_bool v78)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:47
 
  TCForallExpression
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:7
 
 TODO: not yet v65= t14(1);						--TCApplyExpression
 
@@ -1527,7 +1548,7 @@ where
 	"inv_v79  \<equiv> (inv_VDMNat1 v79)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:67
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:67
 
  TCLetDefExpression
 
@@ -1543,7 +1564,7 @@ where
 	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:47
 
  TCSetCompExpression
 
@@ -1559,7 +1580,7 @@ where
 	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:72
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:72
 
  TCSetCompExpression
 
@@ -1578,7 +1599,7 @@ where
 	"inv_v82  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v82)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:47
 
  TCSeqCompExpression
 
@@ -1594,19 +1615,19 @@ where
 	"inv_v83  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v83)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:48
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 116:48
 
  TCSeqCompExpression
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 116:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 117:7
 
 VDM not happy with v84-86, Isabelle would allow them
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 117:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
 
 v84= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 119:7
 
 v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
 
@@ -1622,23 +1643,23 @@ where
 	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 121:7
 
 v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 122:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 123:7
 
 Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 123:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 124:7
 
 [A,B]=[1,2];
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 125:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 126:7
 
 To test VDM warnings as errors
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 126:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 127:7
 
 x = 10;
 

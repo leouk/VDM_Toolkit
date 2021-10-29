@@ -98,7 +98,13 @@ value "0 div (-3::\<int>) = 0"
 lemma "\<lfloor>10.01323\<rfloor> = 10" apply (simp only: floor_eq_iff)
   by (simp add: floor_eq_iff)
 
+text \<open>VDM narrow expressions are tricky; but at least for reals/rat (floor_ceiling class) to VDMInt is fine\<close>
 definition 
+  vdm_narrow_real :: "('a::floor_ceiling) \<Rightarrow> VDMInt"
+  where
+  "vdm_narrow_real r \<equiv> \<lfloor>r\<rfloor>"
+
+definition
   vdm_div :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" (infixl "vdmdiv" 70)
 where
   [intro!] :

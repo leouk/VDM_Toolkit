@@ -102,6 +102,7 @@ values
 	v71= v64.#4;
 	--v72= not yet specified;	--TCNotYetSpecifiedExpression
 	v72= narrow_(4.0, nat1);	--TCNarrowExpression
+	v722=let r: real = 4.0 in narrow_(r, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
 	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
