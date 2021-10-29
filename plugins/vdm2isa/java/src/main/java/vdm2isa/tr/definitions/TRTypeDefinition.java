@@ -7,7 +7,7 @@ import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
-
+import vdm2isa.tr.types.TRType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;  
 
@@ -67,5 +67,25 @@ public class TRTypeDefinition extends TRDefinition {
 	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseTypeDefinition(this, arg);
+	}
+
+	public TRExpression getInvExpression()
+	{
+		return null;	// TODO!
+	}
+
+	public TRExpression getEqExpression()
+	{
+		return null;	// TODO!
+	}
+
+	public TRExpression getOrdExpression()
+	{
+		return null;	// TODO!
+	}
+
+	public TRType getType()
+	{
+		return type;
 	}
 }

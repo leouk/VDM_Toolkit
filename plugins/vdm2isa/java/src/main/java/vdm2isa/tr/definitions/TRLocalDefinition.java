@@ -3,6 +3,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -127,5 +128,10 @@ public class TRLocalDefinition extends TRDefinition {
 	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseLocalDefinition(this, arg);
+	}
+
+	public TRType getType()
+	{
+		return type;
 	}
 }

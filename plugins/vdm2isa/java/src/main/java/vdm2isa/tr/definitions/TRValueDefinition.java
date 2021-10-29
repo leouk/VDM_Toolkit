@@ -139,4 +139,14 @@ public class TRValueDefinition extends TRLocalDefinition
 	{
 		return visitor.caseValueDefinition(this, arg);
 	}
+
+	public TRPattern getPattern()
+	{
+		return pattern;
+	}
+
+	public TRExpression getExp()
+	{
+		return exp;
+	}
 }
