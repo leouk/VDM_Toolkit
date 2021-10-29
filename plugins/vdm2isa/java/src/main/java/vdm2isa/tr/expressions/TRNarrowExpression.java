@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -18,14 +19,30 @@ public class TRNarrowExpression extends TRVDMTestExpression {
 
 	private static final long serialVersionUID = 1L;
 
-    public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test)
+    private final TRType exptype;
+
+    public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {
-        super(location, typename, basictype, test);
+        super(location, typename, basictype, test, typedef);
+        this.exptype = exptype;
+    }
+
+    @Override
+    public String toString()
+    {
+        return super.toString() + "\n\t exptype  = " + (exptype != null ? exptype.translate() : "null");
     }
     
     @Override
+    public IsaToken isaToken() {
+        return IsaToken.NARROW;
+    }
+
+    @Override
     public String translate() {
-        String problem = "VDM narrow expressions might create Isabelle type errors!";
+        StringBuilder sb = new StringBuilder();
+        String problem = null;
+        String testStr = IsaToken.parenthesise(test.translate());
         if (isBasicTyped())
         {
             switch (basictype.isaToken())
@@ -35,28 +52,35 @@ public class TRNarrowExpression extends TRVDMTestExpression {
                 case INT:
                 case RAT:
                 case REAL:
+                    // presume it's a real or rat to narrow from; floor_ceiling is a type class that encompass all these
+                    // vdm_narrow_real :: "('a::floor_ceiling) => VDMInt"
+                    sb.append(IsaToken.VDMINT_NARROW.toString());
+                    sb.append(" ");
+                                        // presume the widest type for testStr, even if not quite right
+                    sb.append(IsaToken.parenthesise(testStr + IsaToken.TYPEOF.toString() + IsaToken.REAL.toString())); 
+                    break;
                 case BOOL:
                 case CHAR:
                 case TOKEN:
                 default:
+                    problem = "VDM narrow expressions of basic type " + basictype.isaToken().toString() + " might create Isabelle type errors!";
+                    warning(11000, problem);
                     break;
             }
-            warning(11000, problem);
-            return IsaToken.parenthesise(IsaToken.parenthesise(test.translate()) + 
-                IsaToken.TYPEOF + basictype.translate()) +
-                IsaToken.comment(problem);
+            if (problem != null)
+                sb.append(IsaToken.comment(problem));
         } else if (isNameTyped())
-        {
+        { 
+            problem = "VDM narrow expressions of defined type " + typedef.toString() + " might create Isabelle type errors!";
             warning(11000, problem);
-            return IsaToken.parenthesise(IsaToken.parenthesise(test.translate()) + 
-                IsaToken.TYPEOF + typename.getName()) +
-                IsaToken.comment(problem);
+            sb.append(IsaToken.parenthesise(testStr + IsaToken.TYPEOF.toString() + typename.toString()));              
         }
         else
         {
             report(10001, "Cannot translate this VDM narrow expression to Isabelle");
-            return IsaToken.ERROR.toString();
+            sb.append(IsaToken.ERROR.toString());
         }
+        return sb.toString();
     }
 
 	@Override

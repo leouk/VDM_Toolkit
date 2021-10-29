@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
@@ -17,22 +18,30 @@ public abstract class TRVDMTestExpression extends TRExpression {
     protected final TCNameToken typename;
     protected final TRType basictype;
     protected final TRExpression test;
+    protected final TRDefinition typedef;
 
-    public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test)
+    public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef)
     {
         super(location);
         this.typename = typename;
         this.basictype = basictype;
         this.test = test;
+        this.typedef = typedef;
         if (basictype != null && typename != null)
             report(10008, "Invalid " + getClass().getName() + " expression - contains both type name and basic type information");
         if (basictype != null && !(basictype instanceof TRBasicType))
             report(10009, getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName());      
+        System.out.println(toString());
     }
 
     @Override
-    public IsaToken isaToken() {
-        return IsaToken.EOF;
+    public String toString()
+    {
+        return getClass().getName () + " for " +
+            "\n\t typename = " + String.valueOf(typename) +
+            "\n\t basictype= " + (basictype != null ? basictype.translate() : "null") +
+            "\n\t test     = " + (test != null ? test.translate() : "null") +
+            "\n\t typedef  = " + (typedef != null ? typedef.translate() : "null");
     }
 
     public boolean isBasicTyped()
