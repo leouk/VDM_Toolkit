@@ -25,12 +25,12 @@
 *TCSetType
 *TCTokenType
 *TCUnknownType
-
 -TCBasicType
 -TCBracketType
 -TCClassType
 -TCInstantiate
 -TCUnresolvedType
+
 TCOperationType
 TCParameterType
 TCPatternListTypePair
@@ -41,3 +41,5 @@ TCUndefinedType
 TCUnionType
 TCVoidReturnType
 TCVoidType
+
+(32 out 42) = 76

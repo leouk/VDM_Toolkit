@@ -1646,16 +1646,36 @@ x = 10;
 definition
 	f :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"f vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (x + (1::VDMNat1))"
+	"f x \<equiv> (x + (1::VDMNat1))"
+
+definition
+	pre_g :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"pre_g x \<equiv> (x > (10::VDMNat1))"
+
+definition
+	post_g :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
+where
+	"post_g x RESULT \<equiv> (x < RESULT)"
 
 definition
 	g :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"g vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (x + (1::VDMNat1))"
+	"g x \<equiv> (x + (1::VDMNat1))"
+
+definition
+	pre_h :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"pre_h x \<equiv> ((pre_g x) \<and> (x < (20::VDMNat1)))"
+
+definition
+	post_h :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
+where
+	"post_h x RESULT \<equiv> ((post_g x RESULT) \<and> (x > (20::VDMNat1)))"
 
 definition
 	h :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"h vdm2isa.tr.patterns.TRBasicPattern[identifier] = x \<equiv> (g x)"
+	"h x \<equiv> (g x)"
 
 end
