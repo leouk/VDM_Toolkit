@@ -95,25 +95,25 @@
 *TCLetDefExpression
 *TCSeqCompExpression
 *TCSetCompExpression
-*TCDefExpression
+TCPreExpression
+TCPreOpExpression
+TCPostOpExpression
 
+
+TCDefExpression
 TCMapCompExpression
 
-TCPostOpExpression
 TCCaseAlternative
 TCCaseAlternativeList
 TCCasesExpression
 
-
 TCElseIfExpression
 TCElseIfExpressionList
 
-
 TCFuncInstantiationExpression
 
-
 TCMkBasicExpression
-TCPreExpression
-TCPreOpExpression
 
 TCStateInitExpression
+
+(100 of 110) = 91
