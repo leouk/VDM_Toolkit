@@ -112,7 +112,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		
+		// add any comments and annotations
 		sb.append(super.translate());
+		
 		
 		sb.append(IsaTemplates.translateDefinition(
 				name.toString(), 
