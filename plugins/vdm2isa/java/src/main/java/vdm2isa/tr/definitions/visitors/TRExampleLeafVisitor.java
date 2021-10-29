@@ -16,6 +16,17 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRExampleLeafVisitor extends TRLeafDefinitionVisitor<TCNameToken, TCNameSet, Object>
 {
+	/**
+	 * A VisitorSet defines a group of visitors that are used to complete the task,
+	 * with one visitor for each grammatical group that matters. The parent leaf visitor
+	 * will apply the corresponding visitor to branches of the AST - eg. a function definition
+	 * node might apply the pattern visitor to the arguments, the type visitor to the type
+	 * and the expression visitor to the body and pre/posts.
+	 * 
+	 * Note that the "lead visitor" is passed to the constructor. This is usually the
+	 * definition visitor, though it need not be. See the comment in the TRExampleLeafVisitor
+	 * constructor below. 
+	 */
 	private static class VisitorSet extends TRVisitorSet<TCNameToken, TCNameSet, Object>
 	{
 		private final TRExampleLeafVisitor defVisitor;
@@ -56,16 +67,34 @@ public class TRExampleLeafVisitor extends TRLeafDefinitionVisitor<TCNameToken, T
 		}
 	}
 
+	/**
+	 * The "leader" of the set of related visitors has a constructor with no parameters, and
+	 * creates the VisitorSet (defined above). The other auxilliary visitors define a
+	 * constructor that takes the VisitorSet argument - these are created in the VisitorSet
+	 * constructor above. They obviously just assign visitorSet to the argument passed. That
+	 * way, all members of the set share the same set of visitors and can jump around
+	 * between them as required. The end user just creates the lead visitor to start the
+	 * process.
+	 */
 	public TRExampleLeafVisitor()
 	{
 		visitorSet = new VisitorSet(this);
 	}
 
+	/**
+	 * This has to be provided to return a new collection of the generic type passed to
+	 * the leaf visitor in the "extends" clause.
+	 */
 	@Override
 	protected TCNameSet newCollection()
 	{
 		return new TCNameSet();
 	}
+	
+	/**
+	 * Then the visitor just overrides the cases that it cares about. The search process
+	 * is handled by the parent leaf visitor.
+	 */
 
 	@Override
 	public TCNameSet caseDefinition(TRDefinition node, Object arg)
