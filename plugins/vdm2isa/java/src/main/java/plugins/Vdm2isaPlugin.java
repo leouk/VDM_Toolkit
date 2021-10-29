@@ -5,7 +5,9 @@
 package plugins;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -16,9 +18,12 @@ import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
@@ -31,17 +36,23 @@ import vdm2isa.tr.types.TRRecordType;
 
 public class Vdm2isaPlugin extends CommandPlugin
 {
-	private static List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
-	private static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
+	private final static List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
+	private final static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
+	
+	// list of VDM warning numbers to raise as errors
+	private final static List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011, 5012, 5013, 5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
 	
 	// assuming max translation errors equals max type errors for now
-	private static int MAX = Properties.tc_max_errors;
-	
+	private final static int MAX = Properties.tc_max_errors;
+
+	// strict handling of errors (e.g. print output or not etc.)
+	private boolean strict;	
 	private TRModuleList translatedModules;
 	
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
+		this.strict = true;
 		this.translatedModules = new TRModuleList();
 	}
 
@@ -54,28 +65,34 @@ public class Vdm2isaPlugin extends CommandPlugin
 		{
 			long before = System.currentTimeMillis();
 			int errs = 0;
+			int tcount = 0;
+			this.strict = true;
 	
 			// reset internal tables in case of restranslation
 			Vdm2isaPlugin.clearErrors();
 			IsaTemplates.reset();
 			TRRecordType.reset();
 
+			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
+			processVDMWarnings();
+
 			ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
+
 			try
 			{
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 
 				for (TRModule module: translatedModules)
 				{
-					String dir = module.name.getLocation().file.getParent();
-					if (dir == null) dir = ".";
-					String name = module.name.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-					System.out.println("Translating module " + module.name.getName() + " as " + dir + "/" + name);
-					File outfile = new File(dir, name);
-					PrintWriter out = new PrintWriter(outfile);
-					out.write(module.translate());
-					out.close();
+					String result = module.translate();
+					
+					// be strict on translation output
+					if (strict && Vdm2isaPlugin.getErrorCount() == 0)
+					{
+						tcount++;
+						outputModule(module.name, result);
+					}
 				}
 			}
 			catch (InternalException e)
@@ -105,19 +122,31 @@ public class Vdm2isaPlugin extends CommandPlugin
 				Vdm2isaPlugin.printWarnings(Console.out);
 			}
 
-			Console.out.println("Translated " + plural(translatedModules.size(), "module", "s") +
+			Console.out.println("Translated " + plural(tcount, "module", "s") +
 				" in " + (double)(after-before)/1000 + " secs. ");
 			Console.out.print(errs == 0 ? "No translation errors" :
 				"Found " + plural(errs, "translation error", "s"));
-			Console.out.println(warn == 0 ? "" : " and " +
-				(warnings ? "" : "suppressed ") + plural(warn, "warning", "s"));
-			
+			Console.out.print(warn == 0 ? "" : " and " +
+				(warnings ? "" : "suppressed ") + plural(warn, "warning", "s") + ".");
+			Console.out.println(errs > 0 ? " You must fix the errors first!" : "");
 			return true;
 		}
 		else
 		{
 			return false;
 		}
+	}
+
+	protected void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
+	{
+		String dir = moduleName.getLocation().file.getParent();
+		if (dir == null) dir = ".";
+		String name = moduleName.getName() + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
+		Console.out.println("Translating module " + moduleName.getName() + " as " + dir + "/" + name);
+		File outfile = new File(dir, name);
+		PrintWriter out = new PrintWriter(outfile);
+		out.write(result);
+		out.close();
 	}
 
 	protected String plural(int n, String s, String pl)
@@ -129,6 +158,26 @@ public class Vdm2isaPlugin extends CommandPlugin
 	public String help()
 	{
 		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL";
+	}
+
+	public void processVDMWarnings()
+	{
+		List<VDMWarning> vdmWarnings = TypeChecker.getWarnings();
+		int warnings2raiseCount = 0;
+		// tad inneficient, but fine (for now) as I want to "warn" user of this first
+		for (int i = 0; i < vdmWarnings.size(); i++)
+		{
+			if (vdmWarningOfInterest.contains(vdmWarnings.get(i).number))
+				warnings2raiseCount++;
+		}
+		if (warnings2raiseCount > 0)
+		{
+			Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
+			for(VDMWarning w : vdmWarnings)
+			{
+				reportAsError(w);
+			}
+		}
 	}
 
 	public static void report(int number, String problem, LexLocation location)
@@ -143,6 +192,14 @@ public class Vdm2isaPlugin extends CommandPlugin
     			errors.add(new VDM2IsaError(10, "Too many translation errors", location));
     			throw new InternalException(10, "Too many translation errors");
     		}
+		}
+	}
+
+	public static void reportAsError(VDMWarning w)
+	{
+		if (Vdm2isaPlugin.vdmWarningOfInterest.contains(w.number))
+		{
+			report(11111 + w.number, w.message, w.location);
 		}
 	}
 

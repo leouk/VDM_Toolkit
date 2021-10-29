@@ -121,6 +121,7 @@ values
 	
 	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
 	--[A,B]=[1,2];
+	x = 10;
 functions
 
 	f: nat -> nat

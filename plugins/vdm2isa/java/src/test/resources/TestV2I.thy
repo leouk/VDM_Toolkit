@@ -1635,6 +1635,17 @@ Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with
 [A,B]=[1,2];
 
 *)
+abbreviation
+	x :: "VDMNat1"
+where
+	"x \<equiv> (10::VDMNat1)"
+
+definition
+	inv_x :: "\<bool>"
+where
+	"inv_x  \<equiv> (inv_VDMNat1 x)"
+
+
 definition
 	f :: "VDMNat \<Rightarrow> VDMNat"
 where
