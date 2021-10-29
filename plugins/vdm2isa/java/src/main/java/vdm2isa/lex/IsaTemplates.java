@@ -1,5 +1,6 @@
 package vdm2isa.lex;
 
+import vdm2isa.tr.MappableNode;
 //TODO remove all dependencies to vdm2isa.tr TRNode AST.
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
@@ -52,13 +53,13 @@ public final class IsaTemplates {
         translatedItems.clear();
     }
 
-    public static String listToString(List<? extends TRNode> list, String separator)
+    public static String listToString(List<? extends MappableNode> list, String separator)
 	{
         return listToString("", list, separator, "");
     }
 
     //TODO have other methods beyond translate or use reflection? We have translate, invTranslate, compTranslate sprinkled around :-(
-    public static String listToString(String before, List<? extends TRNode> list, String separator, String after)
+    public static String listToString(String before, List<? extends MappableNode> list, String separator, String after)
 	{
         assert separator != null && before != null && after != null;
 		StringBuilder sb = new StringBuilder();

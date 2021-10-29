@@ -11,7 +11,7 @@ import com.fujitsu.vdmj.mapper.MappedObject;
 
 import plugins.Vdm2isaPlugin;
 
-abstract public class TRNode extends MappedObject
+abstract public class TRNode extends MappedObject implements MappableNode
 {
 	private static final long serialVersionUID = 1L;
 	public final static String MAPPINGS = "tc-tr.mappings";

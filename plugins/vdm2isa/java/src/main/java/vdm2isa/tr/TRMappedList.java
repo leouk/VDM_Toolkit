@@ -13,7 +13,10 @@ import com.fujitsu.vdmj.mapper.MappedList;
 import vdm2isa.lex.IsaTemplates;
 import plugins.Vdm2isaPlugin;
 
-public class TRMappedList<FROM extends Mappable, TO extends TRNode> extends MappedList<FROM, TO>
+/**
+ * Tighthened target (TO) type with an interface containing the key TRNode-related methods
+ */
+public class TRMappedList<FROM extends Mappable, TO extends MappableNode> extends MappedList<FROM, TO> implements MappableNode
 {
 	private static final long serialVersionUID = 1L;
 
