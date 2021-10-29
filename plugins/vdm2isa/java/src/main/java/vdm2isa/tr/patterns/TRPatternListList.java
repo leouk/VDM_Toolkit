@@ -30,4 +30,15 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		//	add(p.toString());
 		//}
 	}
+
+	public String setSeparator(String sep)
+	{
+		String result = separator;
+		separator = sep;
+		for (TRPatternList p : this)
+		{
+			p.separator = sep;
+		}
+		return result;
+	}
 }

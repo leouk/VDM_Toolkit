@@ -68,10 +68,22 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.isUndefined = isUndefined;
 		this.local = false; // LetDefExpression to set this to true if/when needed
         
+		//TODO type parameters are comma separated?	
+
+		// parameters are curried not "," separated
+		this.parameters.setSeparator(" ");
+		
 		System.out.println(toString());
 
+		if (precondition != null && predef == null)
+			report(11111, "Explicit funciton has declared precondition but no pre definition.");
+		if (postcondition != null && postdef == null)
+			report(11111, "Explicit funciton has declared postcondition but no post definition.");
+
 		if (this.isCurried)
+		{
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
+		}
     }
 
     @Override
@@ -84,13 +96,14 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
 			" \n\tparameters  = " + String.valueOf(parameters) + //TODO make this properly
 			" \n\tbody        = " + (body != null ? body.translate() : "null") + 
-			" \n\tpre         = " + (precondition != null ? precondition.translate() : "null") + 
-			" \n\tpost        = " + (postcondition != null ? postcondition.translate() : "null") + 
+			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.translate()  : "null") + 
+			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.translate() : "null") + 
 			" \n\tisTypeInv   = " + isTypeInvariant +
-			" \n\tmeasure     = " + (measureExp != null ? measureExp.translate() : "null") +
+			" \n\tmeasure     = " + (measureExp != null ? measureExp.getClass().getName() + ": " + measureExp.translate() : "null") +
 			" \n\tisCurried   = " + isCurried +
-			" \n\tpredef      = " + (predef != null ? predef.translate() : "null") +
-			" \n\tpostdef     = " + (postdef != null ? postdef.translate() : "null") +
+			// avoid calling translate for TLD as it creates a record of what has been translated!  
+			" \n\tpredef      = " + (predef  != null ? predef.getClass().getName()  + ": \n========" + predef.toString() + "\n========"/*predef.translate()*/  : "null") +
+			" \n\tpostdef     = " + (postdef != null ? postdef.getClass().getName() + ": \n========" + postdef.toString() + "\n========"/*postdef.translate()*/ : "null") +
 			" \n\tparamDefList= " + String.valueOf(paramDefinitionList) +
 			" \n\trecursive   = " + recursive +
 			" \n\tisUndefined = " + isUndefined;
@@ -121,15 +134,30 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// add any comments and annotations
 		sb.append(super.translate());
 		
-		
+		//TODO implcit type invariant checks on both pre and post
+
+		// translate the precondition
+		if (predef != null) 
+		{
+			sb.append(predef.translate());
+			sb.append("\n");
+		}
+
+		// translate the postcondition
+		if (postdef != null)
+		{
+			sb.append(postdef.translate());
+			sb.append("\n");
+		}
+
+		// translate the explicit function definition
 		sb.append(IsaTemplates.translateDefinition(
 				name.toString(), 
 				type.parameters.translate(), 
 				type.result.translate(), 
-				parameters.toString(), 
+				parameters.translate(), 
 				body.translate()));
-
-		warning(11111, "TODO: processing explicit function pre/post definitions please!");
+		
 		return sb.toString();
 	}
 
