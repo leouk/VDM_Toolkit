@@ -6,7 +6,7 @@ package com.fujitsu.vdmj.tc.definitions to vdm2isa.tr.definitions;
 map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
 map TCTypeDefinition{annotations, name, type, invExpression} to TRTypeDefinition(annotations, name, type, invExpression);
-map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList);
+map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined);
 
 # This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
 map TCLocalDefinition{location, comments, name, type} to TRLocalDefinition(location, comments, name, type);
@@ -160,7 +160,7 @@ package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;
 
 map TCPattern{} to TRPattern();
 map TCPatternList{} to TRPatternList(this);
-map TCPatternListList{} to TRParameterList(this); 
+map TCPatternListList{} to TRPatternListList(this); 
 map TCBind{} to TRMultipleBind();
 map TCMultipleBind{} to TRMultipleBind();
 map TCMultipleBindList{} to TRMultipleBindList(this);

@@ -13,7 +13,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.patterns.TRParameterList;
+import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRFunctionType;
 
 public class TRExplicitFunctionDefinition extends TRDefinition
@@ -22,32 +22,33 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final TCNameToken name;
 	private final TCNameList typeParams;
 	private final TRFunctionType type;
-	private final TRParameterList parameters;
+	private final TRPatternListList parameters;
 	private final TRExpression body;
 	private final TRExpression precondition;
 	private final TRExpression postcondition;
 	private final boolean isTypeInvariant;
 	private final TRExpression measureExp;
 	private final boolean isCurried;
-
+	private final boolean recursive;
+	private final boolean isUndefined;
+	
 	private TRExplicitFunctionDefinition predef;
 	private TRExplicitFunctionDefinition postdef;
 	private TCDefinitionListList paramDefinitionList;
 
-	public boolean recursive = false;
-	public boolean isUndefined = false;
-	
 	public TRExplicitFunctionDefinition(LexCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
 			TCNameList typeParams, TRFunctionType type,
-			TRParameterList parameters, TRExpression body,
+			TRPatternListList parameters, TRExpression body,
 			TRExpression precondition,
 			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp,
 			boolean isCurried, 
 			TRExplicitFunctionDefinition predef,
 			TRExplicitFunctionDefinition postdef,
-			TCDefinitionListList paramDefinitionList)
+			TCDefinitionListList paramDefinitionList,
+			boolean recursive,
+			boolean isUndefined)
 	{
 		super(name.getLocation(), comments, annotations);
 		this.name = name;
@@ -63,8 +64,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.predef = predef;
 		this.postdef = postdef;
 		this.paramDefinitionList = paramDefinitionList;
+		this.recursive = recursive;
+		this.isUndefined = isUndefined;
 		this.local = false; // LetDefExpression to set this to true if/when needed
-        //System.out.println(toString());
+        
+		System.out.println(toString());
 
 		if (this.isCurried)
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
@@ -87,7 +91,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			" \n\tisCurried   = " + isCurried +
 			" \n\tpredef      = " + (predef != null ? predef.translate() : "null") +
 			" \n\tpostdef     = " + (postdef != null ? postdef.translate() : "null") +
-			" \n\tparamDefList= " + String.valueOf(paramDefinitionList);
+			" \n\tparamDefList= " + String.valueOf(paramDefinitionList) +
+			" \n\trecursive   = " + recursive +
+			" \n\tisUndefined = " + isUndefined;
 	
 		// f: nat -> nat
 		// f(x) == x + 1;
