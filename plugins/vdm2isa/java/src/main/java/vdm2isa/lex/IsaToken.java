@@ -171,11 +171,8 @@ public enum IsaToken {
 	private IsaToken(Token vdm, String isa)
 	{
 		assert isa != null; 
-		String vdmstr = vdm != null ? vdm.toString() : "null";
-		//if (Token.lookup(vdmstr, Dialect.VDM_PP) != null 
-		//	||
-		//	Token.lookup(vdmstr, Dialect.VDM_SL) != null)
-		//	Vdm2isaPlugin.report(10011, "Invalid VDM PP or RT token " + vdmstr, LexLocation.ANY);
+		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
+			Vdm2isaPlugin.report(10011, "Invalid VDM SL token " + vdm.name(), LexLocation.ANY);
 		this.vdm = vdm;
 		this.isa = isa;
 	}

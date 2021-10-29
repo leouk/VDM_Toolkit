@@ -44,13 +44,7 @@ public final class IsaTemplates {
 
     public static void main(String args[])
     {
-        //System.out.println(translateVDMValueDefinition("x", "VDMNat1", "10"));
-        System.out.println(typeSynonymDefinition("T", "VDMNat1", "x", "x > 10"));
-        StringBuilder name = new StringBuilder("(true::bool)");
-        name.setCharAt(1, Character.toUpperCase(name.charAt(1)));
-        StringBuilder name2 = new StringBuilder("(10::nat)");
-        name2.setCharAt(1, Character.toUpperCase(name2.charAt(1)));
-        System.out.println(name.toString() + " " + name2.toString());
+        
     }
 
     public static void reset()
