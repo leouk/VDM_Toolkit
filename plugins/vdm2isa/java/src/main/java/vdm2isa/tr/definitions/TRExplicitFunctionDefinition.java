@@ -4,6 +4,13 @@
 
 package vdm2isa.tr.definitions;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import com.fujitsu.vdmj.Release;
+import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
@@ -47,10 +54,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final boolean isCurried;
 	private final boolean recursive;
 	private final boolean isUndefined;
-	
-	private TRExplicitFunctionDefinition predef;
-	private TRExplicitFunctionDefinition postdef;
-	private TCDefinitionListList paramDefinitionList;
+	private final TRSpecificationKind implicitSpecificationKind;
+	private final TRExplicitFunctionDefinition predef;
+	private final TRExplicitFunctionDefinition postdef;
+	private final TCDefinitionListList paramDefinitionList;
 
 	public TRExplicitFunctionDefinition(LexCommentList comments,
 			TCAnnotationList annotations,
@@ -71,6 +78,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.typeParams = typeParams;
 		this.type = type;
 		this.parameters = parameters;
+		// null body for case where user does not define the pre/post explicitly but we need its TRDefinition for implicit invariant type checks?
 		this.body = body;
 		this.precondition = precondition;
 		this.postcondition = postcondition;
@@ -83,23 +91,33 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.recursive = recursive;
 		this.isUndefined = isUndefined;
 		this.local = false; // LetDefExpression to set this to true if/when needed
-        
-		//TODO type parameters are comma separated?	
 
+		this.implicitSpecificationKind = impliSpecificationDefinition();
+
+		//TODO type parameters are comma separated?	
 		// parameters are curried not "," separated
 		this.parameters.setSeparator(" ");
 		
-		System.out.println(toString());
-
 		if (precondition != null && predef == null)
 			report(11111, "Explicit funciton has declared precondition but no pre definition.");
 		if (postcondition != null && postdef == null)
 			report(11111, "Explicit funciton has declared postcondition but no post definition.");
+		
+		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
+		// which *must* be of a specific specification kind.
+		if (body == null && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+		{
+			report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
+				". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
+		}
 
 		if (this.isCurried)
 		{
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
+
+
+		System.out.println(toString());
     }
 
     @Override
@@ -110,7 +128,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			" \n\tlocal		  = " + local + 
 			" \n\ttype params = " + String.valueOf(typeParams) + 
 			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
-			" \n\tparameters  = " + String.valueOf(parameters) + //TODO make this properly
+			" \n\tparameters  = " + String.valueOf(parameters) + 
 			" \n\tbody        = " + (body != null ? body.translate() : "null") + 
 			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.translate()  : "null") + 
 			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.translate() : "null") + 
