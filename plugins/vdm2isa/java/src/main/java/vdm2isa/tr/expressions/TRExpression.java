@@ -6,7 +6,10 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRRecordType;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -154,5 +157,66 @@ public abstract class TRExpression extends TRNode
                 report(10016, "Not yet implemented translation for token " + token.toString() + " " + TRExpressionList.translate(args));
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns the record name of the type associated with the expression, if that's the case.
+     * This is important so that Isabelle record related translations take into account field name
+     * changes according to the underlying record type involved (e.g. "R :: x: nat" becomes "record R = x\^<sub>R :: VDMNat").
+     * 
+     * Given TLD types must be uniquely named, then the record type name plus the field name should be
+     * sufficient to resolve the global name conflict associated with implicitly declared global record field projections
+     * functions Isabelle creates (e.g. x :: R => VDMNat) for every record field. 
+     * 
+     * Thus, this TRExpression is viewed as a record name of its underlying associated type.
+     * Common cases are TRVariableExpression (e.g. r.x) or TRMkTypeExpression (e.g. mk_R(1).x). 
+     * Also possible is TRApplyExpression (e.g. g(10).x, for some g: nat -> R), etc.
+     * 
+     * There might be more cases than those catered for here, hence this became a method of TRExpression
+     * rather than TRFieldExpression say for its object TRExpression field. As we discover more cases those
+     * can be added below.   
+     * 
+     * If the case is not handled, a warning is raised and an Isabelle comment is included with the offending case.
+     * Ultimately, this means no field renaming will take place, so translation outcome can still be type error free,
+     * so long as the record field name is not used anywhere else (globally or locally!) though.  
+     * 
+     * @return record name of the underlying type associated with this expression, if possible, or empty string otherwise.
+     */
+    public String getRecordTypeName()
+    {
+        StringBuilder sb = new StringBuilder();
+        // e.g. R :: x : nat, r.x ; could variable have other inner? 
+        if (this instanceof TRVariableExpression && 
+            ((TRVariableExpression)this).getVarDef() instanceof TRLocalDefinition &&
+            ((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType() instanceof TRRecordType) 
+            sb.append(((TRRecordType)((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType()).translate());
+        // e.g. mk_R(v).x  (bit wacky, but)
+        else if (this instanceof TRMkTypeExpression)
+            sb.append(((TRMkTypeExpression)this).typename);   
+        // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
+        else if (this instanceof TRApplyExpression && ((TRApplyExpression)this).type instanceof TRFunctionType &&
+            ((TRFunctionType)((TRApplyExpression)this).type).result instanceof TRRecordType)
+            sb.append(((TRRecordType)((TRFunctionType)((TRApplyExpression)this).type).result).getName().toString());
+        else
+        {
+            // do not change Isabelle record name. issue warning
+            String problem = "Could not retrieve field expression record name for " + 
+                getClass().getName() + "[" + 
+                // add inner information about casts above; horrible! but will be deleted once above completes?
+                (this instanceof TRVariableExpression ? ((TRVariableExpression)this).getVarDef().getClass().getName() + ", " : "")  +
+                (this instanceof TRVariableExpression && ((TRVariableExpression)this).getVarDef() instanceof TRLocalDefinition &&
+                 !(((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType() instanceof TRRecordType) ? 
+                 ((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType().getClass().getName() + ", " : "") + 
+                ((this instanceof TRApplyExpression) && !(((TRApplyExpression)this).type instanceof TRFunctionType) &&
+                  !(((TRFunctionType)((TRApplyExpression)this).type).result instanceof TRRecordType) ? 
+                  ((TRFunctionType)((TRApplyExpression)this).type).result.getClass().getName() : "") +
+                "]" + 
+                translate();
+            warning(11111, problem);
+            // Don't add this as it's within the context of \<^sub>!
+            //sb.append("\n\t");
+            //sb.append(IsaToken.comment(problem));
+        }
+        return sb.toString(); 
     }
 }
