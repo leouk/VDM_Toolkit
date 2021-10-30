@@ -34,6 +34,7 @@ public abstract class TRPattern extends TRNode {
     @Override
     public String invTranslate()
     {
+        // this is a "wrong" call somewhere in the code as patterns should be translated, not invTranslated (mostly)! 
         report(11111, "Pattern " + toString() + " does not support Isabelle invariant translation.");
         return "";
     }

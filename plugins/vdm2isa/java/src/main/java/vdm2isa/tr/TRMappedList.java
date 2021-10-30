@@ -87,7 +87,6 @@ public class TRMappedList<FROM extends Mappable, TO extends MappableNode> extend
 	public String translate()
 	{
 		return IsaTemplates.listToString(this, separator);
-		//throw new UnsupportedOperationException("Base TRMappedList class cannot be translated to Isabelle");
 	}
 
 	public String invTranslate()
@@ -103,6 +102,15 @@ public class TRMappedList<FROM extends Mappable, TO extends MappableNode> extend
 			}
 		}
 		return sb.toString();
-		//throw new UnsupportedOperationException("Base TRMappedList class does not have invariant translation to Isabelle");
+	}
+
+	public void report(int number, String msg, LexLocation location)
+	{
+		Vdm2isaPlugin.report(number, msg, location);
+	}
+
+	public void warning(int number, String msg, LexLocation location)
+	{
+		Vdm2isaPlugin.warning(number, msg, location);
 	}
 }

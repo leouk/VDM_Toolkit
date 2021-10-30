@@ -4,6 +4,8 @@
 
 package vdm2isa.tr.patterns;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
@@ -12,6 +14,11 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 
 import vdm2isa.tr.TRMappedList;
 
+/**
+ * Pattern lists lists are mostly singleton (e.g. f(x,y) = TRPatternListList[TRPatternList[x,y]]),
+ * yet it can have multiple list entries for curried calls (e.g., f(x,y)(z) = TRPatternListList[TRPatternList[x,y],TRPatternList[z]]).
+ * Isabelle is mostly always curried, hence flattening of such lists is the norm, yet when needed might keep the structure.  
+ */
 public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList>
 {
 	private static final long serialVersionUID = 1L;
@@ -24,11 +31,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public TRPatternListList(TCPatternListList from) throws Exception
 	{
 		super(from);
-		//NB why this here? Think because of simpler stuff for v2c? 
-		//for (TCPattern p: list.get(0))	// Only the first - no curried sets!
-		//{
-		//	add(p.toString());
-		//}
 	}
 
 	public String setSeparator(String sep)
@@ -40,5 +42,29 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 			p.separator = sep;
 		}
 		return result;
+	}
+
+	/**
+	 * Pattern list lists can be flatenned to single list result given Isabelle mostly always prefers curried calls
+	 * Situations (yet to be observed) might occur which requires knowledge about the VDM currying structure, in which
+	 * case this method ought to return List<List<String>>. For now, will flatten it out. See also TRPatternList.varNameTranslate.  
+	 */
+	public List<String> varNameTranslate()
+	{
+		List<String> result;
+		int concSize = 0;
+		if (!isEmpty())
+		{
+			result = new Vector<String>();
+			for (TRPatternList plist : this)
+			{
+				result.addAll(plist.varNameTranslate());
+				concSize += plist.size();
+			}
+		}
+		else
+			result = Collections.emptyList();
+		assert result.size() == concSize;	
+		return result; 
 	}
 }
