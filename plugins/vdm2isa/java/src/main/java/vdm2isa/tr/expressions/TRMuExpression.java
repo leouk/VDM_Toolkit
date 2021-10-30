@@ -17,11 +17,12 @@ public class TRMuExpression extends TRExpression {
         super(location);    
         this.record = record;
         this.modifiers = modifiers;
+        this.modifiers.setRecordTypeName(record.getRecordTypeName());
     }
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.RECORD_MODIFIER;
     }
 
     @Override

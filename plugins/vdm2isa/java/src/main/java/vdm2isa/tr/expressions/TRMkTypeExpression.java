@@ -10,7 +10,7 @@ import vdm2isa.tr.types.TRRecordType;
 public class TRMkTypeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
-    //private final TCNameToken typename;
+    protected final TCNameToken typename;
     private final TRFieldList fields; 
     private final TRExpressionList args;
 
@@ -19,6 +19,7 @@ public class TRMkTypeExpression extends TRExpression {
         super(typename.getLocation());
         //this.typename = typename;
         this.args = args;
+        this.typename = typename;
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)
             report(10005, "Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.");
@@ -30,15 +31,14 @@ public class TRMkTypeExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.RECORD;
     }
 
     protected String translateField(int index)
     {
         assert index >= 0 && index < this.fields.size(); 
         StringBuilder sb = new StringBuilder();
-        //TODO check whether there are any errors before proceeding?
-        sb.append(this.fields.get(index).getTagName().toString());
+        sb.append(this.fields.get(index).getIsabelleTagName());
         sb.append(" ");
         sb.append(IsaToken.EQUALS.toString());
         sb.append(" ");

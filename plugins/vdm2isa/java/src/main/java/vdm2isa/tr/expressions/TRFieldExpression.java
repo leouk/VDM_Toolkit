@@ -2,8 +2,10 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRField;
 
 public class TRFieldExpression extends TRExpression {
     
@@ -16,17 +18,19 @@ public class TRFieldExpression extends TRExpression {
         super(object);
         this.object = object;
         this.field = field;
+        //System.out.println(toString());
     }
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF; 
+        return IsaToken.POINT; 
     }
 
     @Override
     public String translate() {
+        // attempt to get underlying object record type name to change record field name according to TRRecordType TLD considerations 
         return IsaToken.parenthesise(
-                    field.getName() + " " +
+                    IsaTemplates.isabelleRecordFieldName(object.getRecordTypeName(), field.getName()) + " " +
                     IsaToken.parenthesise(object.translate())
                 );
     }

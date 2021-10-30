@@ -17,12 +17,20 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	public TRRecordModifierList()
 	{
 		super();
-		separator = IsaToken.COMMA.toString();
+		separator = IsaToken.COMMA.toString() + " ";
 	}
 
 	public TRRecordModifierList(TCRecordModifierList list) throws Exception
 	{
 		super(list);
-		separator = IsaToken.COMMA.toString();
+		separator = IsaToken.COMMA.toString() + " ";
+	}
+
+	public void setRecordTypeName(String recordTypeName)
+	{
+		for (TRRecordModifier rm : this)
+		{
+			rm.recordTypeName = recordTypeName;
+		}
 	}
 }
