@@ -11,6 +11,7 @@ import java.util.Vector;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
 /**
@@ -30,6 +31,15 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public TRPatternListList(TCPatternListList from) throws Exception
 	{
 		super(from);
+		setPartOfListList();
+	}
+
+	private void setPartOfListList()
+	{
+		for(TRPatternList p : this)
+		{
+			p.partOfListList = true;
+		}
 	}
 
 	public String setSeparator(String sep)
@@ -41,6 +51,50 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 			p.separator = sep;
 		}
 		return result;
+	}
+
+	public boolean hasRecordPatternParameters()
+	{
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).hasRecordPatternParameters();
+		}
+		return result;
+	}
+
+	/**
+	 * Local context for record patterns is flattened out at list list if exists or added otherwise. 
+	 * @return
+	 */
+	public String recordPatternOpenContext()
+	{
+		return IsaToken.LET.toString() + " ";
+	}
+
+	public String recordPatternCloseContext()
+	{
+		return " " + IsaToken.IN.toString() + " ";
+	}
+
+	public String recordPatternTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			// set the let separator
+			String old = setSeparator(IsaToken.SEMICOLON.toString() + " ");
+			sb.append(recordPatternOpenContext());
+			sb.append(get(0).recordPatternTranslate());
+			for (int i = 1; i < size(); i++)
+			{
+				sb.append(separator);
+				sb.append(get(i).recordPatternTranslate());
+			}
+			setSeparator(old);
+			sb.append(recordPatternCloseContext());
+		}
+		return sb.toString();
 	}
 
 	/**

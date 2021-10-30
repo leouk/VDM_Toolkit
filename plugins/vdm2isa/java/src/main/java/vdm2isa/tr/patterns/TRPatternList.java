@@ -15,18 +15,71 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
     
     private static final long serialVersionUID = 1L;
 
+	private final List<Integer> recordPatternIndices;
+	protected boolean partOfListList;
+
 	protected TRPatternList() 
 	{
 		super();
+		partOfListList = false;
 		separator = IsaToken.COMMA.toString();
+		recordPatternIndices = getRecordPatternIndeces();
 	}  
 
 	public TRPatternList(TCPatternList list) throws Exception
 	{
 		super(list);
+		partOfListList = false; 
 		separator = IsaToken.COMMA.toString();
+		recordPatternIndices = getRecordPatternIndeces();
 	}
 
+	private List<Integer> getRecordPatternIndeces()
+	{
+		List<Integer> result = new Vector<Integer>(size());
+		for(int i = 0; i < size(); i++)
+		{
+			if (get(i) instanceof TRRecordPattern)
+				result.add(i);
+		}
+		return result;
+	}
+
+	public boolean hasRecordPatternParameters()
+	{
+		return !recordPatternIndices.isEmpty();
+	}
+
+	/**
+	 * Local context for record patterns is flattened out at list list if exists or added otherwise. 
+	 * @return
+	 */
+	public String recordPatternOpenContext()
+	{
+		return partOfListList ? "" : IsaToken.LET.toString() + " ";
+	}
+
+	public String recordPatternCloseContext()
+	{
+		return partOfListList ? "" : " " + IsaToken.IN.toString() + " ";
+	}
+
+	public String recordPatternTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (hasRecordPatternParameters())
+		{
+			sb.append(recordPatternOpenContext());
+			sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
+			for (int i = 1; i < recordPatternIndices.size(); i++)
+			{
+				sb.append(separator);
+				sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
+			}
+			sb.append(recordPatternCloseContext());
+		}
+		return sb.toString();
+	}
 	/**
 	 * Pattern lists can be translated (i.e. all one string with chosen separator) or 
 	 * can be varName translated (i.e. each translation structurally separated). The 
