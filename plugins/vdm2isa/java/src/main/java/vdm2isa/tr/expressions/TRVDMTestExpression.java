@@ -30,7 +30,6 @@ public abstract class TRVDMTestExpression extends TRExpression {
             report(10008, "Invalid " + getClass().getName() + " expression - contains both type name and basic type information");
         if (basictype != null && !(basictype instanceof TRBasicType))
             report(10009, getClass().getName() + " expression basic type invalid class " + basictype.getClass().getName());      
-        System.out.println(toString());
     }
 
     @Override

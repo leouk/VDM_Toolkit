@@ -23,6 +23,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     {
         super(location, typename, basictype, test, typedef);
         this.exptype = exptype;
+        System.out.println(toString());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
                     // vdm_narrow_real :: "('a::floor_ceiling) => VDMInt"
                     sb.append(IsaToken.VDMINT_NARROW.toString());
                     sb.append(" ");
-                                        // presume the widest type for testStr, even if not quite right
+                                        // presume the widest type for testStr, even if not quite "real"
                     sb.append(IsaToken.parenthesise(testStr + IsaToken.TYPEOF.toString() + IsaToken.REAL.toString())); 
                     break;
                 case BOOL:
