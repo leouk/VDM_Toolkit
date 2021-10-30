@@ -13,8 +13,13 @@ types
 	--S :: ;
 	
 functions
+	-- Auxiliary to allow for TCApplicationExpression of TCRecordType result for mkr(1).x
 	mkr: nat -> R
 	mkr(n) == mk_R(n,n+1);
+	
+	--TCRecordBind
+	recbind: R -> nat
+	recbind(mk_R(x,y)) == x+y;
 	
 values
 -- Explicitly typed values

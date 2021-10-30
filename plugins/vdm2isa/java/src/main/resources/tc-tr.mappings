@@ -192,6 +192,7 @@ map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCExpressionPattern{exp} to TRStructuredPattern(this, exp);
 
 map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
+map TCRecordPattern{location, typename, plist, type} to TRRecordPattern(location, typename, plist, type);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
