@@ -7,7 +7,6 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.tc.expressions.TCRecordModifier;
 import com.fujitsu.vdmj.tc.expressions.TCRecordModifierList;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 

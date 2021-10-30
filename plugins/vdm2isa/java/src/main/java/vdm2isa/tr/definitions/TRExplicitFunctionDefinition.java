@@ -5,18 +5,13 @@
 package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import com.fujitsu.vdmj.Release;
-import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;

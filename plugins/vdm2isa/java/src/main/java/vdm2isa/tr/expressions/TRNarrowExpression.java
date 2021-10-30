@@ -2,9 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
-import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;

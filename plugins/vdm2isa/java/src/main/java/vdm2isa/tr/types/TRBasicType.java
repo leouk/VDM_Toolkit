@@ -4,18 +4,16 @@
 
 package vdm2isa.tr.types;
 
+import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCCharacterType;
 import com.fujitsu.vdmj.tc.types.TCIntegerType;
 import com.fujitsu.vdmj.tc.types.TCNaturalOneType;
 import com.fujitsu.vdmj.tc.types.TCNaturalType;
 import com.fujitsu.vdmj.tc.types.TCRationalType;
 import com.fujitsu.vdmj.tc.types.TCRealType;
-import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBasicType extends TRType

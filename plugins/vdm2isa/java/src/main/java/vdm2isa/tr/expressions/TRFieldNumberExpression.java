@@ -1,9 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
-import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRProductType;

@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 

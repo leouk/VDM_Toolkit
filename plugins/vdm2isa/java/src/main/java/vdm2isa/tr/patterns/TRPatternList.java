@@ -5,12 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-import com.fujitsu.vdmj.tc.patterns.TCMapletPattern;
-import com.fujitsu.vdmj.tc.patterns.TCMapletPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 

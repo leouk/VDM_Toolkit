@@ -1,8 +1,6 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
-
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 

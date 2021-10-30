@@ -4,12 +4,10 @@
 
 package vdm2isa.tr.definitions;
 
-import java.util.Collections;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRMappedList;
 
 public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>

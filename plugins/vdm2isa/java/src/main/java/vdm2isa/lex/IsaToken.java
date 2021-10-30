@@ -1,14 +1,9 @@
 package vdm2isa.lex;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
-//@todo merge this into IsaToken
 import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import plugins.Vdm2isaPlugin;
 
@@ -314,7 +309,7 @@ public enum IsaToken {
 			case COMP			: return IsaToken.COMP;
 			case MAPLET			: return IsaToken.MAPLET;
 			case RANGE			: return IsaToken.RANGE;
-
+		
 			//case POINT		: return IsaToken.POINT;
 			//case FORALL			: return IsaToken.FORALL;
 			//case EXISTS			: return IsaToken.EXISTS;

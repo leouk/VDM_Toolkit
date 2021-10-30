@@ -12,7 +12,6 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
 import plugins.Vdm2isaPlugin;
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
@@ -83,10 +82,10 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return list.translate();	
 	}
 
-	public static String invTranslate(List<String> varNames, TRType... args)
+	public static String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)
 	{
 		TRTypeList list = new TRTypeList();
 		list.addAll(Arrays.asList(args));
-		return list.invTranslate(varNames);	
+		return list.invTranslate(varNames, formattingSeparator);	
 	}
 }

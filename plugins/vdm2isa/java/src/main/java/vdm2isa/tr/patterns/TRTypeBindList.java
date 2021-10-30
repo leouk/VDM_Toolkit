@@ -5,7 +5,6 @@ import java.util.Arrays;
 import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
 import com.fujitsu.vdmj.tc.patterns.TCTypeBindList;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 

@@ -21,7 +21,6 @@ import com.fujitsu.vdmj.tc.expressions.TCTailExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryMinusExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
