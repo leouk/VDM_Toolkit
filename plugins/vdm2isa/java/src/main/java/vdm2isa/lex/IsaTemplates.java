@@ -30,15 +30,15 @@ import plugins.Vdm2isaPlugin;
 public final class IsaTemplates {
     
     private final static Map<String, IsaItem> translatedItems = new HashMap<String, IsaItem>();
-    //@todo add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
+    //TODO add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
 
+    //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
+    //TODO generalise the tabbing/newlining later 
     private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports \"VDMToolkit\"\nbegin\n\n%4$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
-    //private final static String ABBREV_INV   = "definition\n\t%1$s :: \"\\<bool>\"\nwhere\n\t\"%1$s \\<equiv> %2$s\"\n";
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
     private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
 
-    //@todo could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
@@ -104,7 +104,8 @@ public final class IsaTemplates {
     {
         assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        // null input types leads to just the resulting type as the signature, e.g. basic type abbreviation invariants
+        // null input types leads to just the resulting type as the signature, 
+        // e.g. basic type abbreviation invariants or function constants
         String signature = inType != null ? inType + " " + IsaToken.FUN.toString() + " " + outType : outType;
         sb.append(String.format(DEFINITION, name, signature, inVars, exp));
         updateTranslatedIsaItem(name, IsaItem.DEFINITION);
