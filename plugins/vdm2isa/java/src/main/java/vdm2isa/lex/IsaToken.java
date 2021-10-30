@@ -198,7 +198,13 @@ public enum IsaToken {
 
 	public static String comment(String s)
 	{
-		return IsaToken.COMMENT.toString() + IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE);
+		return comment(s, "");
+	}
+
+	public static String comment(String s, String formattingSeparator)
+	{
+		return IsaToken.COMMENT.toString() + 
+			   IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE) + formattingSeparator;
 	}
 
 	public static String antiquotation(IsaToken kind, String yxml)

@@ -38,5 +38,7 @@ public abstract class TRMultipleBind extends TRNode
      */
     public abstract String compTranslate(boolean patternsOnly);
 
+    public abstract TRNode getRHS();
+
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 }

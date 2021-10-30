@@ -264,14 +264,14 @@ public final class IsaTemplates {
                     Vdm2isaPlugin.report(10015, "Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else
                 {
-                    String comment = "result context dependenant on nat or real. Adjust to " + token.toString() + " or just ^";
                     sb.append("(");
                     sb.append(args[0].translate());
                     sb.append(" ");
                     sb.append(token.toString());
                     sb.append(" ");
                     sb.append(args[1].translate());
-                    sb.append(")\n");
+                    sb.append(")\n\t");
+                    String comment = "result is context dependenant on second argument type being nat or real.";
                     sb.append(IsaToken.comment(comment));
                     Vdm2isaPlugin.warning(11001, comment, location);
                 }

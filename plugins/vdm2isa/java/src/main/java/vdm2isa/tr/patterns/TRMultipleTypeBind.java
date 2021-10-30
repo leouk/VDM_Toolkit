@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -79,6 +80,11 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 			}
 		}
 		return sb.toString();
+    }
+
+    @Override
+    public TRNode getRHS() {
+        return type;
     }
 
 	@Override

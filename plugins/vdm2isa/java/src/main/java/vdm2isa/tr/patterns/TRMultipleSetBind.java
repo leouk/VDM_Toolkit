@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
@@ -66,6 +67,11 @@ public class TRMultipleSetBind extends TRMultipleBind
     @Override
     public String translate() {
         return plist.translate() + " " + isaToken().toString() + " " + set.translate();
+    }
+
+    @Override
+    public TRNode getRHS() {
+        return set;
     }
 
 	@Override

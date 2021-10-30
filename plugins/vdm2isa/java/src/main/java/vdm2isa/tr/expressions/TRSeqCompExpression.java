@@ -75,9 +75,11 @@ public class TRSeqCompExpression extends TRExpression {
         {
             String setbindProblem = "Set bind " + 
                 IsaToken.antiquotation(IsaToken.TERM, bind.translate()) +
-                " in sequence comprehension requires VDM set to be ordered \n\t" + 
-                " (i.e. its Isabelle type instantiates type class linorder). \n\t" +
-                " This can be a problem if the target type is ordered with VDM ord_ predicate.";
+                " in sequence comprehension requires VDM set " + "\n\t" + "  " +
+                " to be ordered (i.e. its Isabelle type instantiates type class linorder)." + "\n\t" + "  " + 
+                " This can be a problem if the target type of " + 
+                IsaToken.antiquotation(IsaToken.TERM, bind.getRHS().translate()) + "\n\t" + "  " +
+                "has a VDM ord_ predicate.";
             sb.append("\n\t" + IsaToken.comment(setbindProblem));
         }
         return sb.toString();
