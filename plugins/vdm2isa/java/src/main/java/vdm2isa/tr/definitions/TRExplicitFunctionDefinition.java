@@ -18,6 +18,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
+import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -91,7 +92,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.recursive = recursive;
 		this.isUndefined = isUndefined;
 		this.local = false; // LetDefExpression to set this to true if/when needed
-
 		this.implicitSpecificationKind = impliSpecificationDefinition();
 
 		//TODO type parameters are comma separated?	
@@ -126,6 +126,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		return "TRExplicitFuncDef for " + 
 			" \n\tname        = " + String.valueOf(name) +
 			" \n\tlocal		  = " + local + 
+			" \n\tkind		  = " + implicitSpecificationKind +
 			" \n\ttype params = " + String.valueOf(typeParams) + 
 			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
 			" \n\tparameters  = " + String.valueOf(parameters) + 
@@ -206,6 +207,61 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	}
 
 	/**
+	 * Implicit checks for pre/post. They are similar with minor differences, so parameterised here to avoid repetition
+	 * at possibly the cost of making it slightly harder to follow. 
+	 * @param kind
+	 * @param formattingSeparator
+	 * @return
+	 */
+	protected String translateImplicitChecks(TRSpecificationKind kind, String formattingSeparator)
+	{
+		StringBuilder fcnBody = new StringBuilder();
+
+		if (kind == TRSpecificationKind.PRE && isConstantFunction())
+		{
+			// constant function preconditions do not require invariant checks (no parameters)
+		}	
+		else
+		{
+			// pre/post checks on input (including RESULT for post) types
+			// there is no need to check type.result type because for PRE/POST defs that's always bool! 
+			fcnBody.append(formattingSeparator);
+			fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", formattingSeparator));
+			
+			List<String> varNames = parameters.varNameTranslate();
+			String paramsStr = type.parameters.invTranslate(varNames, formattingSeparator);
+			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+			{
+				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
+				assert name.getName().startsWith("post_");
+				String preCall = "pre_" + name.getName().substring("post_".length()) + " ";
+				boolean removed = varNames.remove("RESULT");//varNames.remove(varNames.size()-1)
+				if (!removed)
+				{
+					warning(11111, "Could not find \"RESULT\" variable in implicit post condition specification definition");
+				}
+				// transform "[x,y]" into "x y", "[x]" into "x", "[]" into ""
+				String varList = varNames.toString().replace(',', ' ');
+				assert varList.length() >= 2;
+				paramsStr = IsaToken.parenthesise(
+						preCall + varList.substring(1, varList.length()-1) + " " +
+						IsaToken.IMPLIES.toString() + " " + // formattingSeparator +
+						paramsStr);
+				//TODO this will possibly create "messy" formatting if separator includes \n! 
+			}
+			fcnBody.append(paramsStr);
+			
+			// if there is a user defined body, add the missing conjunction for it
+			if (!isImplicitlyGenerated())
+			{
+				fcnBody.append(" ");
+				fcnBody.append(IsaToken.AND.toString());
+			}
+		}
+		return fcnBody.toString();
+	}
+
+	/**
 	 * For situations where the user does not define pre/posts, like in 
 	 * 		f: nat -> nat
 	 * 		f(x) == x;
@@ -260,17 +316,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// include implicit function parameters invariant checks
 			case PRE:
 			case POST:
-				// pre/post checks on input (including RESULT for post) types
-				// there is no need to check type.result type because for PRE/POST defs that's always bool! 
-				fcnBody.append(formattingSeparator);
-				fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", formattingSeparator));
-				fcnBody.append(type.parameters.invTranslate(parameters.varNameTranslate(), formattingSeparator));
-				// if there is a user defined body, add the missing conjunction for it
-				if (!isImplicitlyGenerated())
-				{
-					fcnBody.append(" ");
-					fcnBody.append(IsaToken.AND.toString());
-				}	
+				fcnBody.append(translateImplicitChecks(implicitSpecificationKind, formattingSeparator));	
 				break;
 
 			case INV:
@@ -303,6 +349,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	@Override
 	public String invTranslate() {
 		StringBuilder sb = new StringBuilder();
+		//TODO perhaps not needed? Maybe in let locally defined? 
 		warning(11111, "TODO: processing explicit function invTranslate please!");
 		return sb.toString();
 	}

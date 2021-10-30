@@ -39,7 +39,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 
 	/**
 	 * This call constructs impicit type invariant checks for the given variable names for every TRType in the list.
-	 * Invariant checks are chained with IsaToken.AND, yet the user might want to varry output formatting (e.g. \\n\\t etc.). 
+	 * Invariant checks are chained with IsaToken.AND, yet the user might want to varry output formatting (e.g. \\n\\t etc.).
+	 * If varNames is smaller than the list, gets the first types up to varNames size. This is useful, for example, to 
+	 * remove "RESULT" from post condition checks where relevant (i.e. linient post_f translations have to call pre_f)
 	 * @param varNames invariant call variable names per TRType; size must equal list size
 	 * @param formattingSeparator non-null possibly empty, formatting separator 
 	 * @return implicit invariant check string for given var names and formatting separator 
@@ -47,7 +49,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	public String invTranslate(List<String> varNames, String formattingSeparator)
 	{
 		assert formattingSeparator != null;
-		if (varNames.size() != this.size())
+		if (varNames.size() > this.size())
 		{
 			this.report(11111, "Inconsistent invariant translation call: " + 
 					varNames.size() + " variable " + Vdm2isaPlugin.plural(varNames.size(), "name", "s") + " for " + 
@@ -55,13 +57,13 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 					this.size() == 0 ? LexLocation.ANY : this.get(0).location);
 		}
 		StringBuilder sb = new StringBuilder();
-		if (!isEmpty() && varNames.size() == this.size()) 
+		if (!isEmpty() && varNames.size() <= this.size()) 
 		{
 			sb.append("(");
 
 			sb.append(get(0).invTranslate(varNames.get(0)));
 
-			for (int i=1; i<size(); i++)
+			for (int i=1; i< varNames.size(); i++)
 			{
 				sb.append(" ");
 				sb.append(IsaToken.AND.toString());

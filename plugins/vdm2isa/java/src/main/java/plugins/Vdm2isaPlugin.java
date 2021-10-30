@@ -43,19 +43,24 @@ public class Vdm2isaPlugin extends CommandPlugin
 	private final static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
 	
 	// list of VDM warning numbers to raise as errors
-	private final static List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011, 5012, 5013, 5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
+	private final static List<Integer> vdmWarningOfInterest = 
+		Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011, 5012, 5013, 
+					  5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
 	
-	// assuming max translation errors equals max type errors for now
-	private final static int MAX = Properties.tc_max_errors;
+  	private TRModuleList translatedModules;
 
+	// plugin properties
+
+	// assuming max translation errors equals max type errors for now
+	public static int maxErrors;
 	// strict handling of errors (e.g. print output or not etc.)
-	private boolean strict;	
-	private TRModuleList translatedModules;
-	
+	public static boolean strict;	
+	// determines whether to add "pre_f =>" on post condition definitions
+	public static boolean linientPost;
+
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
-		this.strict = true;
 		this.translatedModules = new TRModuleList();
 	}
 
@@ -69,7 +74,8 @@ public class Vdm2isaPlugin extends CommandPlugin
 			long before = System.currentTimeMillis();
 			int errs = 0;
 			int tcount = 0;
-			this.strict = true;
+
+			Vdm2isaPlugin.setupProperties();
 	
 			Vdm2isaPlugin.reset();
 
@@ -149,14 +155,6 @@ public class Vdm2isaPlugin extends CommandPlugin
 		}
 	}
 
-	private static void reset()
-	{
-		// reset internal tables in case of restranslation
-		Vdm2isaPlugin.clearErrors();
-		IsaTemplates.reset();
-		TRRecordType.reset();
-	} 
-
 	protected void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
 	{
 		String dir = moduleName.getLocation().file.getParent();
@@ -167,11 +165,6 @@ public class Vdm2isaPlugin extends CommandPlugin
 		PrintWriter out = new PrintWriter(outfile);
 		out.write(result);
 		out.close();
-	}
-
-	public static String plural(int n, String s, String pl)
-	{
-		return n + " " + (n != 1 ? s + pl : s);
 	}
 
 	@Override
@@ -207,7 +200,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		{
 			errors.add(error);
 
-    		if (errors.size() >= MAX-1)
+    		if (errors.size() >= maxErrors-1)
     		{
     			errors.add(new VDM2IsaError(10, "Too many translation errors", location));
     			throw new InternalException(10, "Too many translation errors");
@@ -273,5 +266,25 @@ public class Vdm2isaPlugin extends CommandPlugin
 		{
 			out.println(w.toString());
 		}
+	}
+
+	public static String plural(int n, String s, String pl)
+	{
+		return n + " " + (n != 1 ? s + pl : s);
+	}
+
+	private static void reset()
+	{
+		// reset internal tables in case of restranslation
+		Vdm2isaPlugin.clearErrors();
+		IsaTemplates.reset();
+		TRRecordType.reset();
+	}
+	
+	private static void setupProperties()
+	{
+		Vdm2isaPlugin.maxErrors 	= Properties.tc_max_errors;
+		Vdm2isaPlugin.strict 		= true;
+		Vdm2isaPlugin.linientPost 	= false;
 	}
 }
