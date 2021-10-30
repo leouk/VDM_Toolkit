@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class TRRecordType extends TRInvariantType
         this.composed = composed;
         if (this.fields.size() == 0)
             report(10002, "Isabelle does not allow empty records for VDM record type " + name.toString());
+
+        this.fields.setRecordType(this);
         recordMap.put(name, fields); 
     }
 
@@ -49,7 +52,7 @@ public class TRRecordType extends TRInvariantType
         {
             // definition for a reference to record, i.e. variable of its type
             sb.append(IsaToken.INV);
-            sb.append(name.toString());
+            sb.append(translate());
             sb.append(" "); 
         }
         return sb.toString();
@@ -62,16 +65,17 @@ public class TRRecordType extends TRInvariantType
 
     @Override
     public String translate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(isaToken().toString() + " "); 
-        sb.append(name.toString() + " = \n\t");
-        sb.append(fields.translate() + "\n\n");
-        return sb.toString(); 
+        return name.toString(); 
     }
 
     public TCNameToken getName()
     {
         return this.name;
+    }
+
+    public TRFieldList getFields()
+    {
+        return fields;
     }
 
     public int fieldCount()
@@ -83,7 +87,7 @@ public class TRRecordType extends TRInvariantType
 	{
 		for (TRField f: fields)
 		{
-			if (f.tagname.getName().equals(tag))
+			if (f.getTagName().equals(tag))
 			{
 				return f;
 			}

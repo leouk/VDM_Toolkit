@@ -161,6 +161,8 @@ public enum IsaToken {
 	TFUN(Token.TOTAL_FUNCTION, "\\<Rightarrow>"),
 	LET(Token.LET, "let"),
 	IN(Token.IN, "in"),
+	SUBSCRIPT(null, "\\<^sub>"),
+	SUPSCRIPT(null, "\\<^sup>"),
 	EOF(Token.EOF, "EOF");
 
 	private final Token  vdm;

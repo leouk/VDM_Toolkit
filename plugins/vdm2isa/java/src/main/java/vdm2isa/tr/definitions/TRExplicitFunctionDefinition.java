@@ -111,7 +111,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
-		if (!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)) 
+		if (local || 
+			!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)) 
 			System.out.println(toString());
     }
 
@@ -336,7 +337,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		fcnBody.append(body.translate());
 
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString()));
+		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
 
 		return sb.toString();
 	}

@@ -46,15 +46,27 @@ public class TRTypeDefinition extends TRDefinition {
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.translate());
+        // TLD for records
         if (type instanceof TRRecordType)
         {
             TRRecordType trtype = (TRRecordType)type;
+            
+            // translate record definition 
+            sb.append(trtype.isaToken().toString() + " "); 
             sb.append(trtype.translate());
-            String varName = IsaToken.dummyVarNames(trtype.fieldCount(), name.getLocation());
+            sb.append(" = ");
+            sb.append("\n\t");
+            sb.append(trtype.getFields().translate());
+            sb.append("\n\n");
+
+            // translate implicit record type invariant
+            String varName = IsaToken.dummyVarNames(1, name.getLocation());
             sb.append(IsaTemplates.translateInvariantDefinition(
                     name.toString(), name.toString(), varName, 
-                    type.invTranslate(varName)));
+                    trtype.invTranslate(varName), false));
+            
         }
+        //TODO user defined invariant on TLD 
         return sb.toString();
     }
 
