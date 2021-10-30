@@ -21,11 +21,10 @@ public class TRRecordType extends TRInvariantType
     {
         super(name.getLocation());
         this.name = name;
-        //@todo collect field's abstraction to see how to compare equals
         this.fields = fields;
+        this.composed = composed;
         if (this.fields.size() == 0)
             report(10002, "Isabelle does not allow empty records for VDM record type " + name.toString());
-        this.composed = composed;
         recordMap.put(name, fields); 
     }
 
@@ -42,8 +41,6 @@ public class TRRecordType extends TRInvariantType
             // definition of the type for "inv_R x" itself
             sb.append("\n\t\t");
             sb.append(IsaToken.LPAREN.toString());
-            //sb.append(IsaToken.INV.toString());
-            //sb.append(name.toString());
             sb.append(fields.invTranslate(varName));
             sb.append("\n\t\t");
             sb.append(IsaToken.RPAREN.toString());
@@ -75,6 +72,11 @@ public class TRRecordType extends TRInvariantType
     public TCNameToken getName()
     {
         return this.name;
+    }
+
+    public int fieldCount()
+    {
+        return fields.size();
     }
 
     public TRField findField(String tag)

@@ -3,8 +3,11 @@ exports all
 definitions
 
 types
-	R :: field1: nat field2: nat	--TCRecordType,TCField,TCFieldList
-	inv r == r.field1 < r.field2;
+	--TCRecordType,TCField,TCFieldList
+	R :: 
+		x: nat 
+		y: nat	
+	inv r == r.x < r.y;
 	
 	--S :: ;
 values
@@ -95,15 +98,17 @@ values
 	--v13= merge mm;	
 	--v18: S = mk_S();
 	v65: R = mk_R(1, 2);			--TCMkTypeExpression		
-	v66: R = mu(v65, field1 |-> 10, field2 |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
-	v67= v65.field1;          --TCFieldExpression
+	v66: R = mu(v65, x |-> 10, y |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
+	v67= v65.x;          --TCFieldExpression
 	v68= v64.#1;               --TCFieldNumberExpression 
 	v69= v64.#2;
 	v70= v64.#3;
 	v71= v64.#4;
 	--v72= not yet specified;	--TCNotYetSpecifiedExpression
 	v72= narrow_(4.0, nat1);	--TCNarrowExpression
+	v721=narrow_(4.0, int);
 	v722=let r: real = 4.0 in narrow_(r, nat1);
+	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
 	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression

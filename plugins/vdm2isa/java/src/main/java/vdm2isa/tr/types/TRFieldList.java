@@ -41,4 +41,18 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 
 		return sb.toString();  
     }
+
+	/**
+	 * Returns true if any field requires equality abstraction
+	 * @return
+	 */
+	public boolean equalityAbstraction()
+	{
+		boolean result = false;
+		for (int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).equalityAbstraction;
+		}
+		return result;
+	}
 }

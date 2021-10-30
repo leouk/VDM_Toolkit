@@ -48,8 +48,9 @@ public class TRTypeDefinition extends TRDefinition {
         sb.append(super.translate());
         if (type instanceof TRRecordType)
         {
-            sb.append(type.translate());
-            String varName = "x";
+            TRRecordType trtype = (TRRecordType)type;
+            sb.append(trtype.translate());
+            String varName = IsaToken.dummyVarNames(trtype.fieldCount(), name.getLocation());
             sb.append(IsaTemplates.translateInvariantDefinition(
                     name.toString(), name.toString(), varName, 
                     type.invTranslate(varName)));

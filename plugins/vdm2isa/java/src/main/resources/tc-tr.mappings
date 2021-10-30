@@ -189,7 +189,7 @@ map TCTuplePattern{plist} to TRStructuredPattern(this, plist);
 map TCConcatenationPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCUnionPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
-map TCExpressionPattern{exp} to to TRStructuredPattern(this, exp);
+map TCExpressionPattern{exp} to TRStructuredPattern(this, exp);
 
 map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
 
