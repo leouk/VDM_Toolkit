@@ -1666,6 +1666,22 @@ x = 10;
 
 *)
 definition
+	pre_const :: "\<bool>"
+where
+	"pre_const  \<equiv> 
+	 \<comment>\<open>User defined body\<close>
+	 (True::\<bool>)"
+
+definition
+	post_const :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"post_const RESULT \<equiv> 
+	 \<comment>\<open>Implicitly defined type invariant checks\<close>
+	 (pre_const  \<longrightarrow> ((inv_VDMNat RESULT))) \<and>
+	 \<comment>\<open>User defined body\<close>
+	 (True::\<bool>)"
+
+definition
 	const :: "VDMNat"
 where
 	"const  \<equiv> 
@@ -1694,9 +1710,9 @@ definition
 where
 	"post_g x y RESULT \<equiv> 
 	 \<comment>\<open>Implicitly defined type invariant checks\<close>
-	 ((inv_VDMNat x) \<and>
+	 (pre_g x  y \<longrightarrow> ((inv_VDMNat x) \<and>
 	 (inv_VDMNat1 y) \<and>
-	 (inv_VDMNat1 RESULT)) \<and>
+	 (inv_VDMNat1 RESULT))) \<and>
 	 \<comment>\<open>User defined body\<close>
 	 (x < RESULT)"
 
@@ -1721,8 +1737,8 @@ definition
 where
 	"post_h x RESULT \<equiv> 
 	 \<comment>\<open>Implicitly defined type invariant checks\<close>
-	 ((inv_VDMNat x) \<and>
-	 (inv_VDMNat RESULT)) \<and>
+	 (pre_h x \<longrightarrow> ((inv_VDMNat x) \<and>
+	 (inv_VDMNat RESULT))) \<and>
 	 \<comment>\<open>User defined body\<close>
 	 ((post_g x x RESULT) \<and> (x > (20::VDMNat1)))"
 

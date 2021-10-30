@@ -128,7 +128,10 @@ values
 functions
 
 	const: () -> nat
-	const() == 10;
+	const() == 10
+	-- testing linient post pre calls for constant functions! 
+	pre true
+	post true;
 
 	f: nat * nat1 -> nat1
 	f(x, y) == x + y;
