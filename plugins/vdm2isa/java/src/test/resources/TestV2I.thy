@@ -725,7 +725,7 @@ abbreviation
 	v30 :: "VDMNat1"
 where
 	"v30 \<equiv> ((2::VDMNat1) ^ nat (3::VDMNat1))
-\<comment>\<open>result context dependenant on nat or real. Adjust to ^ nat or just ^\<close>"
+	\<comment>\<open>result is context dependenant on second argument type being nat or real.\<close>"
 
 definition
 	inv_v30 :: "\<bool>"
@@ -858,9 +858,8 @@ where
 definition
 	inv_v38 :: "\<bool>"
 where
-	"inv_v38  \<equiv> (inv_Option inv_True\<comment>\<open>
-Unknown VDM types will generate Isabelle warning for additional type variable `a.
-\<close> v38)"
+	"inv_v38  \<equiv> (inv_Option inv_True
+	\<comment>\<open>Unknown VDM types will generate Isabelle additional type variable `a warning.\<close> v38)"
 
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
@@ -1467,7 +1466,8 @@ where
 definition
 	inv_v74 :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
 where
-	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))\<comment>\<open>function type invariant depends on its lambda definition and same dummy names being used!\<close>"
+	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))
+	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>"
 
 
 (* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:56
@@ -1589,9 +1589,10 @@ abbreviation
 	v82 :: "VDMNat1 VDMSeq"
 where
 	"v82 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , (var > (1::VDMNat1)) ]
-	\<comment>\<open>Set bind @{term \<open>var \<in> t9\<close>} in sequence comprehension requires VDM set to be ordered 
-	 (i.e. its Isabelle type instantiates type class linorder). 
-	 This can be a problem if the target type is ordered with VDM ord_ predicate.\<close>"
+	\<comment>\<open>Set bind @{term \<open>var \<in> t9\<close>} in sequence comprehension requires VDM set 
+	   to be ordered (i.e. its Isabelle type instantiates type class linorder).
+	   This can be a problem if the target type of @{term \<open>t9\<close>}
+	  has a VDM ord_ predicate.\<close>"
 
 definition
 	inv_v82 :: "\<bool>"
@@ -1665,38 +1666,71 @@ x = 10;
 
 *)
 definition
-	f :: "VDMNat \<Rightarrow> VDMNat"
+	const :: "VDMNat"
 where
-	"f x \<equiv> (x + (1::VDMNat1))"
+	"const  \<equiv> 
+	 \<comment>\<open>User defined body\<close>
+	 (10::VDMNat1)"
 
 definition
-	pre_g :: "VDMNat \<Rightarrow> \<bool>"
+	f :: "VDMNat\<Rightarrow>VDMNat1 \<Rightarrow> VDMNat1"
 where
-	"pre_g x \<equiv> (x > (10::VDMNat1))"
+	"f x y \<equiv> 
+	 \<comment>\<open>User defined body\<close>
+	 (x + y)"
 
 definition
-	post_g :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
+	pre_g :: "VDMNat\<Rightarrow>VDMNat1 \<Rightarrow> \<bool>"
 where
-	"post_g x RESULT \<equiv> (x < RESULT)"
+	"pre_g x y \<equiv> 
+	 \<comment>\<open>Implicitly defined type invariant checks\<close>
+	 ((inv_VDMNat x) \<and>
+	 (inv_VDMNat1 y)) \<and>
+	 \<comment>\<open>User defined body\<close>
+	 (x > (10::VDMNat1))"
 
 definition
-	g :: "VDMNat \<Rightarrow> VDMNat"
+	post_g :: "VDMNat\<Rightarrow>VDMNat1\<Rightarrow>VDMNat1 \<Rightarrow> \<bool>"
 where
-	"g x \<equiv> (x + (1::VDMNat1))"
+	"post_g x y RESULT \<equiv> 
+	 \<comment>\<open>Implicitly defined type invariant checks\<close>
+	 ((inv_VDMNat x) \<and>
+	 (inv_VDMNat1 y) \<and>
+	 (inv_VDMNat1 RESULT)) \<and>
+	 \<comment>\<open>User defined body\<close>
+	 (x < RESULT)"
+
+definition
+	g :: "VDMNat\<Rightarrow>VDMNat1 \<Rightarrow> VDMNat1"
+where
+	"g x y \<equiv> 
+	 \<comment>\<open>User defined body\<close>
+	 (x + y)"
 
 definition
 	pre_h :: "VDMNat \<Rightarrow> \<bool>"
 where
-	"pre_h x \<equiv> ((pre_g x) \<and> (x < (20::VDMNat1)))"
+	"pre_h x \<equiv> 
+	 \<comment>\<open>Implicitly defined type invariant checks\<close>
+	 ((inv_VDMNat x)) \<and>
+	 \<comment>\<open>User defined body\<close>
+	 ((pre_g x x) \<and> (x < (20::VDMNat1)))"
 
 definition
 	post_h :: "VDMNat\<Rightarrow>VDMNat \<Rightarrow> \<bool>"
 where
-	"post_h x RESULT \<equiv> ((post_g x RESULT) \<and> (x > (20::VDMNat1)))"
+	"post_h x RESULT \<equiv> 
+	 \<comment>\<open>Implicitly defined type invariant checks\<close>
+	 ((inv_VDMNat x) \<and>
+	 (inv_VDMNat RESULT)) \<and>
+	 \<comment>\<open>User defined body\<close>
+	 ((post_g x x RESULT) \<and> (x > (20::VDMNat1)))"
 
 definition
 	h :: "VDMNat \<Rightarrow> VDMNat"
 where
-	"h x \<equiv> (g x)"
+	"h x \<equiv> 
+	 \<comment>\<open>User defined body\<close>
+	 (g x x)"
 
 end
