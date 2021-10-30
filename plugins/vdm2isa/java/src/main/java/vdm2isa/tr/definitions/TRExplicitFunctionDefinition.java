@@ -142,6 +142,65 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// 	paramDefList= [x = nat]
 	}
 
+	/**
+	 * Determines wether this TRExplicitFunctionDefinition is one of those constructed by the typechecker.
+	 * Depending on which kind (if any), then translation has to take into account different considerations. 
+	 * Decision is based on VDM naming conventions (e.g., pre_, post_, inv_, ord_, eq_, etc.).
+	 * @return the kind of implicit specification associated with this definition
+	 */
+	private TRSpecificationKind impliSpecificationDefinition()
+	{
+		TRSpecificationKind result = TRSpecificationKind.NONE;
+
+		// presumes Settings.release = VDM_10 and dialect = VDMSL. This is checked by Vdm2isaPlugin.run anyhow
+		if (name.isReserved())
+		{
+			String fcnName = name.getName();
+			if (fcnName.startsWith("pre_")) 
+				result = TRSpecificationKind.PRE;
+			else if (fcnName.startsWith("post_"))
+				result = TRSpecificationKind.POST;
+			else if (fcnName.startsWith("inv_"))
+				result = TRSpecificationKind.INV;
+			else if (fcnName.startsWith("init_"))
+				result = TRSpecificationKind.INIT;
+			else if (fcnName.startsWith("measure_"))
+				result = TRSpecificationKind.MEASURE;
+			else if (fcnName.startsWith("eq_"))
+				result = TRSpecificationKind.EQ;
+			else if (fcnName.startsWith("ord_"))
+				result = TRSpecificationKind.ORD;
+			else if (fcnName.startsWith("min_"))
+				result = TRSpecificationKind.MIN;
+			else if (fcnName.startsWith("max_"))	
+				result = TRSpecificationKind.MAX;
+		}
+		return result;
+	} 
+
+	/**
+	 * VDM constant functions (e.g., f:() -> nat) are translated as Isabelle constants.  
+	 * @return if this is a constant function
+	 */
+	protected boolean isConstantFunction()
+	{
+		return type.parameters.isEmpty();
+	}
+
+	/**
+	 * For situations where the user does not define pre/posts, like in 
+	 * 		f: nat -> nat
+	 * 		f(x) == x;
+	 * We still have to translate a pre/post_f calls to check type invariants. 
+	 * Implicitily generated pre/post TRExplicitFunctionDefinition *must* have null body and pre/post/inv names!
+	 *  
+	 * @return true when pre/post are being implicitly generated
+	 */
+	protected boolean isImplicitlyGenerated()
+	{
+		return body == null;
+	}
+
 	@Override
 	public String translate()
 	{
@@ -166,14 +225,60 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			sb.append("\n");
 		}
 
-		// translate the explicit function definition
-		sb.append(IsaTemplates.translateDefinition(
-				name.toString(), 
-				type.parameters.translate(), 
-				type.result.translate(), 
-				parameters.translate(), 
-				body.translate()));
-		
+		// translate the explicit function definition taking into consideration TRSpecificationKind
+		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
+		String fcnName     = name.getName();
+		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
+		String fcnOutType  = type.result.translate();
+		String fcnParams   = parameters.translate();
+		String formattingSeparator = "\n\t "; // " " "\n\t" "\n\t\t" etc.
+		StringBuilder fcnBody = new StringBuilder();
+		switch (implicitSpecificationKind)
+		{
+			// ready; do nothing else
+			case NONE:
+				break;
+
+			// include implicit function parameters invariant checks
+			case PRE:
+			case POST:
+				// pre/post checks on input (including RESULT for post) types
+				// there is no need to check type.result type because for PRE/POST defs that's always bool! 
+				fcnBody.append(formattingSeparator);
+				fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", formattingSeparator));
+				fcnBody.append(type.parameters.invTranslate(parameters.varNameTranslate(), formattingSeparator));
+				// if there is a user defined body, add the missing conjunction for it
+				if (!isImplicitlyGenerated())
+				{
+					fcnBody.append(" ");
+					fcnBody.append(IsaToken.AND.toString());
+				}	
+				break;
+
+			case INV:
+				//TODO
+				break;
+			case EQ:
+				break;
+			case ORD:
+				break;
+			case MEASURE:
+				break;
+			case INIT:
+				break;
+			case MAX:
+				break;
+			case MIN:
+				break;			
+		}
+		// include the user declared body after including implicit considerations
+		fcnBody.append(formattingSeparator);
+		fcnBody.append(IsaToken.comment("User defined body", formattingSeparator));
+		fcnBody.append(body.translate());
+
+		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
+		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString()));
+
 		return sb.toString();
 	}
 
