@@ -91,8 +91,8 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    //@todo perhaps have multiple inType and inVars params? 
-    public static String translateDefinition(String name, String inType, String outType, String inVars, String exp)
+    //TODO perhaps have multiple inType and inVars params? 
+    public static String translateDefinition(String name, String inType, String outType, String inVars, String exp, boolean local)
     {
         assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
@@ -100,21 +100,56 @@ public final class IsaTemplates {
         // e.g. basic type abbreviation invariants or function constants
         String signature = inType != null ? inType + " " + IsaToken.FUN.toString() + " " + outType : outType;
         sb.append(String.format(DEFINITION, name, signature, inVars, exp));
-        updateTranslatedIsaItem(name, IsaItem.DEFINITION);
+        // do not consider for the mapping of "known" translation local definitions, as they might
+        // appear multiple times, due to the type checker having created them and sprinkled around 
+        // the TRNode AST for various uses. The actual string will still be returned, so care needs 
+        // to be taken here by caller to consider whether to add local definitions to the output or not. 
+        if (!local)
+            updateTranslatedIsaItem(name, IsaItem.DEFINITION);
         return sb.toString();
     }
     
-    public static String translateInvariantAbbreviation(String name, String inType, String dummyNames, String invStr)
+    public static String translateInvariantAbbreviation(String name, String inType, String dummyNames, String invStr, boolean local)
     {
         assert name != null && inType != null & dummyNames != null && invStr != null;    
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr);
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr, local);
     }
 
-
-    public static String translateInvariantDefinition(String name, String inType, String inVars, String exp)
+    public static String translateInvariantDefinition(String name, String inType, String inVars, String exp, boolean local)
     {
         assert name != null && inType != null && inVars != null && exp != null;
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp);
+        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+    }
+
+    //public static String isabelleIdentifier(String vdmIdentifier)
+    //{
+        //TODO Look at LexTokenReader.startOfName for what would be useful to use.  
+    //    return "reserved_" + vdmIdentifier;
+    //}
+
+    /**
+     * VDM identifiers will not have sup/sub, so these are good substitutes for uniqueness. 
+     * @param recordName as in "R" for "R :: x : nat"
+     * @param vdmFieldName as in "x" for "R :: x : nat"
+     * @return Isabelle field name subscripted with record name as in "x\\<^sub>R".
+     */
+    public static String isabelleRecordFieldName(String recordName, String vdmFieldName)
+    {
+        assert recordName != null && vdmFieldName != null && vdmFieldName.length() > 0;
+        // if recordName has multiple caracters, get the whole name with SUB! 
+        StringBuilder sb = new StringBuilder();
+        sb.append(vdmFieldName);
+
+        // If recordname is empty then there will be no change to vdmFieldName
+        // split record name by its characters, e.g "MyRec" becomes ["M","y","R","e","c"]
+        for (String ch : recordName.split("(?<=.)"))
+        {
+            // for each inner character string, append subscript to the name
+            sb.append(IsaToken.SUBSCRIPT.toString());
+            sb.append(ch);
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -134,19 +169,7 @@ public final class IsaTemplates {
         sb.append("\n");
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
         inv = "inv_" + exp + " " + inVar + " " + IsaToken.AND + " " + ((inv == null) ? IsaToken.TRUE : inv);
-        sb.append(translateInvariantDefinition(name, exp, inVar, inv));
-        return sb.toString();
-    }
-
-    public static String explicitFunctionDefnition(String name, String inTypeSig, String outTypeSig, 
-        String inParam, String exp, String pre, String post)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format(DEFINITION,  "pre_" + name, inTypeSig, IsaToken.BOOL, inParam, pre));
-        sb.append("\n");
-        sb.append(String.format(DEFINITION, "post_" + name, inTypeSig + IsaToken.FUN + outTypeSig, IsaToken.BOOL, inParam + " RESULT", post));
-        sb.append("\n");
-        sb.append(String.format(DEFINITION,           name, inTypeSig,    outTypeSig, inParam, exp));
+        sb.append(translateInvariantDefinition(name, exp, inVar, inv, false));
         return sb.toString();
     }
 
