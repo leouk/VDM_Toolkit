@@ -279,8 +279,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// add any comments and annotations
 		sb.append(super.translate());
 		
-		//TODO implcit type invariant checks on both pre and post
-
 		// translate the precondition
 		if (predef != null) 
 		{
@@ -330,6 +328,16 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;
 			case MIN:
 				break;			
+		}
+		// include any record patterns within a single let definition for all of them
+		// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
+		//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
+		if (parameters.hasRecordPatternParameters())
+		{
+			fcnBody.append(formattingSeparator);
+			fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", formattingSeparator));
+			formattingSeparator = "\n\t\t";
+			fcnBody.append(parameters.recordPatternTranslate());
 		}
 		// include the user declared body after including implicit considerations
 		fcnBody.append(formattingSeparator);
