@@ -116,8 +116,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
-
-		System.out.println(toString());
+		if (!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)) 
+			System.out.println(toString());
     }
 
     @Override

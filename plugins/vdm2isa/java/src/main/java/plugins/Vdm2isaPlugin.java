@@ -51,6 +51,9 @@ public class Vdm2isaPlugin extends CommandPlugin
 
 	// plugin properties
 
+	
+	// target isabelle version (i.e. result of "isabelle version" call)
+	public static String isaVersion; 
 	// assuming max translation errors equals max type errors for now
 	public static int maxErrors;
 	// strict handling of errors (e.g. print output or not etc.)
@@ -170,7 +173,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 	@Override
 	public String help()
 	{
-		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL";
+		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL (v. " + Vdm2isaPlugin.isaVersion + ")";
 	}
 
 	public void processVDMWarnings()
@@ -286,5 +289,6 @@ public class Vdm2isaPlugin extends CommandPlugin
 		Vdm2isaPlugin.maxErrors 	= Properties.tc_max_errors;
 		Vdm2isaPlugin.strict 		= true;
 		Vdm2isaPlugin.linientPost 	= false;
+		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";
 	}
 }
