@@ -32,7 +32,7 @@ public class TRFieldNumberExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.CROSSPROD;
     }
 
     protected TRProductType getProductType()

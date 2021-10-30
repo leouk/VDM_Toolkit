@@ -31,13 +31,13 @@ public class TRUnknownType extends TRType {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.UNKNOWN;
     }
 
     @Override
     public String translate() {
         // unknown type assume polymorphic one
-        return IsaToken.UNKNOWN.toString();
+        return isaToken().toString();
     }    
 
 	@Override

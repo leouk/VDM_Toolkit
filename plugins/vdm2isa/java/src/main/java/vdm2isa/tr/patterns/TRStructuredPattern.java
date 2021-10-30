@@ -38,7 +38,7 @@ public class TRStructuredPattern extends TRPattern {
     public TRStructuredPattern(TCTuplePattern owner, TRPatternList list)
     {
         super(owner);
-        this.token = IsaToken.EOF;
+        this.token = IsaToken.CROSSPROD;
         this.pattern = IsaToken.parenthesise(list.translate());
     }
 

@@ -25,12 +25,6 @@ public abstract class TREnumeratedExpression extends TRExpression
         return IsaToken.bracketit(leftBracket(), members.translate(), rightBracket()); 
     }
 
-    @Override
-    public IsaToken isaToken() 
-    {
-        return IsaToken.EOF;
-    }
-
 	@Override
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{

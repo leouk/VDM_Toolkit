@@ -20,7 +20,7 @@ public class TRSubseqExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.SEQ;
     }
 
     @Override

@@ -24,6 +24,11 @@ public class TRTupleExpression extends TREnumeratedExpression {
         return IsaToken.RPAREN;
     }
 
+    @Override
+    public IsaToken isaToken() {
+        return IsaToken.CROSSPROD;
+    }
+
 	@Override
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{

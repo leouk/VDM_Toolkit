@@ -29,4 +29,9 @@ public class TRSeqEnumExpression extends TREnumeratedExpression
 	{
 		return visitor.caseSeqEnumExpression(this, arg);
 	}
+
+    @Override
+    public IsaToken isaToken() {
+        return IsaToken.SEQ;
+    }
 }

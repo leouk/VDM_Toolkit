@@ -20,7 +20,7 @@ public class TRSetRangeExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.SET;
     }
 
     @Override

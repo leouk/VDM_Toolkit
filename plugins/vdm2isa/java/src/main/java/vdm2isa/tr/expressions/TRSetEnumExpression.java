@@ -24,6 +24,11 @@ public class TRSetEnumExpression extends TREnumeratedExpression
        return IsaToken.SET_CLOSE;
     }
 
+    @Override
+    public IsaToken isaToken() {
+        return IsaToken.SET;
+    }
+
 	@Override
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{

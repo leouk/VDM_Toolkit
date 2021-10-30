@@ -26,7 +26,7 @@ public class TRMapEnumExpression extends TRExpression
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.MAP;
     }
 
     @Override

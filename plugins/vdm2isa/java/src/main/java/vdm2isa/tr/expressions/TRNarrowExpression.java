@@ -23,7 +23,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     {
         super(location, typename, basictype, test, typedef);
         this.exptype = exptype;
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     @Override

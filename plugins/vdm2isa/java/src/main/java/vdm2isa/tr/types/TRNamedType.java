@@ -20,7 +20,7 @@ public class TRNamedType extends TRInvariantType
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.EOF;
+        return IsaToken.IDENTIFIER;
     }
 
     @Override
