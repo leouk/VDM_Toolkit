@@ -35,7 +35,7 @@ public class TRBinaryExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return IsaTemplates.tokenise(isaToken(), location, left, right);
+		return tokenise(isaToken(), location, left, right);
 	}
 
 	@Override

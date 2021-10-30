@@ -176,7 +176,7 @@ public class TRUnaryExpression extends TRExpression {
     @Override
     public String translate() 
     {
-        return IsaTemplates.tokenise(isaToken(), location, exp);
+        return tokenise(isaToken(), location, exp);
     }
 
     @Override

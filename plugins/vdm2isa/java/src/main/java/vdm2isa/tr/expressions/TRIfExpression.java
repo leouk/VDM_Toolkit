@@ -30,7 +30,7 @@ public class TRIfExpression extends TRExpression
 	public String translate()
 	{
 		// attempt at shifting the parenthesing and expression handling elsewhere
-		return IsaTemplates.tokenise(isaToken(), location, ifExp, thenExp, elseExp);
+		return tokenise(isaToken(), location, ifExp, thenExp, elseExp);
 	}
 
 	@Override
