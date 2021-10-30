@@ -11,8 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import com.fujitsu.vdmj.Release;
+import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
+import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
@@ -68,10 +71,19 @@ public class Vdm2isaPlugin extends CommandPlugin
 			int tcount = 0;
 			this.strict = true;
 	
-			// reset internal tables in case of restranslation
-			Vdm2isaPlugin.clearErrors();
-			IsaTemplates.reset();
-			TRRecordType.reset();
+			Vdm2isaPlugin.reset();
+
+			if (Settings.dialect != Dialect.VDM_SL)
+			{
+				report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+				errs++;
+			}
+			if (Settings.release != Release.VDM_10)
+			{
+				// This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
+				// For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
+				warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+			}
 
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
 			processVDMWarnings();
@@ -137,6 +149,14 @@ public class Vdm2isaPlugin extends CommandPlugin
 		}
 	}
 
+	private static void reset()
+	{
+		// reset internal tables in case of restranslation
+		Vdm2isaPlugin.clearErrors();
+		IsaTemplates.reset();
+		TRRecordType.reset();
+	} 
+
 	protected void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
 	{
 		String dir = moduleName.getLocation().file.getParent();
@@ -149,7 +169,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		out.close();
 	}
 
-	protected String plural(int n, String s, String pl)
+	public static String plural(int n, String s, String pl)
 	{
 		return n + " " + (n != 1 ? s + pl : s);
 	}
