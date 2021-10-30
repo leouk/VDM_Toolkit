@@ -218,7 +218,6 @@ public final class IsaTemplates {
             case OR:
             case IMPLIES:
             case EQUIVALENT:
-            case EQUALS:
             case NE:
             case LT:
             case LE:
@@ -246,6 +245,9 @@ public final class IsaTemplates {
             case RANGERESBY:
             case MUNION:
             case COMP:
+            //TODO equals *must* be reimplemented for record types because of record equality abstraction! 
+            //     Might even need a separate class from TRBinaryExpression! 
+            case EQUALS:
                 if (args.length != 2)
                     Vdm2isaPlugin.report(10014, "Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args), location);
                 else

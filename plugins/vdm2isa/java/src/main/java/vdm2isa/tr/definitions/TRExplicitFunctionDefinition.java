@@ -21,6 +21,20 @@ import vdm2isa.tr.types.TRFunctionType;
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Only pre/post/inv can be implicitly generated when the user doesn't explicitly define them
+	 * yet we must check the related (sub-)type invariants. Equality is added also because of 
+	 * VDM record equality abstraction (":-"), which will require an implicit definition in Isabelle
+	 * about record equality.   
+	 */
+	private static final List<TRSpecificationKind> 
+		VALID_IMPLICITLY_GENERATED_SPEC_KIND = 
+			Arrays.asList(TRSpecificationKind.PRE, 
+						TRSpecificationKind.POST, 
+						TRSpecificationKind.INV, 
+						TRSpecificationKind.EQ);
+
 	private final TCNameToken name;
 	private final TCNameList typeParams;
 	private final TRFunctionType type;
