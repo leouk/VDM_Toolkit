@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.tc.patterns.TCConcatenationPattern;
+import com.fujitsu.vdmj.tc.patterns.TCExpressionPattern;
 import com.fujitsu.vdmj.tc.patterns.TCMapPattern;
 import com.fujitsu.vdmj.tc.patterns.TCMapUnionPattern;
 import com.fujitsu.vdmj.tc.patterns.TCMapletPattern;
@@ -10,6 +11,7 @@ import com.fujitsu.vdmj.tc.patterns.TCTuplePattern;
 import com.fujitsu.vdmj.tc.patterns.TCUnionPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRStructuredPattern extends TRPattern {
@@ -79,6 +81,13 @@ public class TRStructuredPattern extends TRPattern {
         super(owner);
         this.token = IsaToken.MAP;
         this.pattern = IsaToken.bracketit(IsaToken.MAP_OPEN, maplets.translate(), IsaToken.MAP_CLOSE);
+    }
+
+    public TRStructuredPattern(TCExpressionPattern owner, TRExpression exp)
+    {
+        super(owner);
+        this.token = IsaToken.MAP;
+        this.pattern = IsaToken.parenthesise(exp.translate());
     }
 
     @Override

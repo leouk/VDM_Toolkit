@@ -32,9 +32,9 @@
 *TCMapletPattern
 *TCMapletPatternList
 *TCMapPattern
+*TCExpressionPattern
+*TCRecordPattern
 
 TCPatternBind
-TCExpressionPattern
-TCRecordPattern
 
 (34 out 37) = 91

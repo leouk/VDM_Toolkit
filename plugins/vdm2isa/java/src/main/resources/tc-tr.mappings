@@ -189,11 +189,9 @@ map TCTuplePattern{plist} to TRStructuredPattern(this, plist);
 map TCConcatenationPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCUnionPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCExpressionPattern{exp} to to TRStructuredPattern(this, exp);
 
-#@NB is this pattern list mapping okay?
 map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
-#map TCMapletPatternList{} to TRPatternList(this);
-#map TCMapPattern{maplets} to TRStructuredPattern(this, maplets);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
