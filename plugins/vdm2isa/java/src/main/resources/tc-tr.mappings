@@ -128,7 +128,7 @@ map TCSeqCompExpression{location, first, bind, predicate} to TRSeqCompExpression
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
 map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
-map TCVariableExpression{name} to TRVariableExpression(name);
+map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
 
 
 #############################################################################

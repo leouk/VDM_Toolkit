@@ -124,7 +124,7 @@ public class TRValueDefinition extends TRLocalDefinition
 
 			String varName = getDeclaredName();//.toLowerCase();
 			// assemble the template
-			sb.append(IsaTemplates.translateInvariantAbbreviation(varName, inType, dummyVarNames(), getInvariantString(varName)));
+			sb.append(IsaTemplates.translateInvariantAbbreviation(varName, inType, dummyVarNames(), getInvariantString(varName), false));
 			sb.append("\n");
 		}
 		else

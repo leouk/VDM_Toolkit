@@ -9,7 +9,13 @@ types
 		y: nat	
 	inv r == r.x < r.y;
 	
+	--Isabelle does not allow empty records
 	--S :: ;
+	
+functions
+	mkr: nat -> R
+	mkr(n) == mk_R(n,n+1);
+	
 values
 -- Explicitly typed values
 	t1 : bool = true;				  	--TCBooleanType,TCBooleanLiteralExpression
@@ -98,8 +104,11 @@ values
 	--v13= merge mm;	
 	--v18: S = mk_S();
 	v65: R = mk_R(1, 2);			--TCMkTypeExpression		
-	v66: R = mu(v65, x |-> 10, y |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
-	v67= v65.x;          --TCFieldExpression
+	v651 = mk_R(1,2).x;				 --TCFieldExpression via TRMkTypeExpression
+	v652 = v65.x;     			     --TCFieldExpression via TRVariableExpression
+	v653 = mkr(1).x;					--TCFieldExpression via TRApplyExpression
+	v67: R = mu(v65, x |-> 10, y |-> 20);--TCMuExpression,TCRecordModifierList, TCRecordModifier
+	
 	v68= v64.#1;               --TCFieldNumberExpression 
 	v69= v64.#2;
 	v70= v64.#3;
