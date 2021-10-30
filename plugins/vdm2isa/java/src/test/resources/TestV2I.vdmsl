@@ -3,7 +3,8 @@ exports all
 definitions
 
 types
-	R :: field1: nat field2: nat;	--TCRecordType,TCField,TCFieldList
+	R :: field1: nat field2: nat	--TCRecordType,TCField,TCFieldList
+	inv r == r.field1 < r.field2;
 	
 	--S :: ;
 values

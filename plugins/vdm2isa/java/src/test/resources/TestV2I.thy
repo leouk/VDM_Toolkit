@@ -19,15 +19,11 @@ where
 		 ((inv_VDMNat (field2 x)))
 		)"
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 6:39
-
-TCRecordType,TCField,TCFieldList
-
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 8:7
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 9:7
 
 S :: ;
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 10:3
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 11:3
 
  Explicitly typed values
 
@@ -43,7 +39,7 @@ where
 	"inv_t1  \<equiv> (inv_bool t1)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 11:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 12:43
 
 TCBooleanType,TCBooleanLiteralExpression
 
@@ -59,7 +55,7 @@ where
 	"inv_t2  \<equiv> (inv_VDMChar t2)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 12:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 13:43
 
 TCCharacterType,TCCharLiteralExpression
 
@@ -75,7 +71,7 @@ where
 	"inv_t3  \<equiv> (inv_VDMSeq' (inv_VDMChar) t3)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 13:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 14:43
 
 TCStringLiteralExpression; string literals can be VDMChar VDMSeq for Isabelle string type 
 
@@ -91,7 +87,7 @@ where
 	"inv_t4  \<equiv> (inv_VDMInt t4)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 14:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 15:39
 
 TCIntegerType, TCIntegerLiteralExpression
 
@@ -107,7 +103,7 @@ where
 	"inv_t5  \<equiv> (inv_VDMNat t5)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 15:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 16:39
 
 TCNaturalType
 
@@ -123,7 +119,7 @@ where
 	"inv_t6  \<equiv> (inv_VDMNat1 t6)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 16:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 17:39
 
 TCNaturalOneType
 
@@ -139,7 +135,7 @@ where
 	"inv_t7  \<equiv> (inv_VDMReal t7)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 17:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 18:43
 
 TCRealType,TCRealLiteralExpression
 
@@ -155,7 +151,7 @@ where
 	"inv_t8  \<equiv> (inv_VDMRat t8)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 18:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 19:39
 
 TCRationalType
 
@@ -171,7 +167,7 @@ where
 	"inv_t9  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t9)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 20:55
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 21:55
 
 TCSetType
 
@@ -187,7 +183,7 @@ where
 	"inv_t10  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) t10)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 21:55
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 22:55
 
 TCSeqType, TCSeq1Type
 
@@ -203,7 +199,7 @@ where
 	"inv_t11  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t11)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 22:51
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 23:51
 
 TCSet1Type
 
@@ -241,7 +237,7 @@ where
 	"inv_t14  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t14)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 25:51
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 26:51
 
 TCMapType
 
@@ -257,7 +253,7 @@ where
 	"inv_t15  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t15)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 28:3
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 29:3
 
  Implicitly typed values	
 
@@ -273,7 +269,7 @@ where
 	"inv_v1  \<equiv> (inv_VDMNat1 v1)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 29:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 30:39
 
 TCAbsoluteExpression	
 
@@ -289,7 +285,7 @@ where
 	"inv_v2  \<equiv> (inv_VDMInt v2)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 30:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 31:39
 
 TCFloorExpression 		
 
@@ -316,7 +312,7 @@ where
 	"inv_v4  \<equiv> (inv_VDMInt v4)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 32:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 33:39
 
 TCUnaryMinusExpression
 
@@ -332,7 +328,7 @@ where
 	"inv_v5  \<equiv> (inv_VDMNat1 v5)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 33:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 34:39
 
 TCUnaryPlusExpression	
 
@@ -348,7 +344,7 @@ where
 	"inv_v6  \<equiv> (inv_VDMNat1 v6)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 34:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 35:39
 
 TCCardinalityExpression
 
@@ -364,7 +360,7 @@ where
 	"inv_v7  \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) v7)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 35:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 36:39
 
 TCPowerSetExpression
 
@@ -380,7 +376,7 @@ where
 	"inv_v8  \<equiv> (inv_VDMSet' (inv_VDMNat1) v8)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 36:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 37:39
 
 TCDistUnionExpression	
 
@@ -396,7 +392,7 @@ where
 	"inv_v9  \<equiv> (inv_VDMSet' (inv_VDMNat1) v9)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 37:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 38:39
 
 TCDistIntersectExpression
 
@@ -412,7 +408,7 @@ where
 	"inv_v10  \<equiv> (inv_VDMNat1 v10)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 38:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 39:39
 
 TCLenExpression
 
@@ -428,7 +424,7 @@ where
 	"inv_v11  \<equiv> (inv_VDMNat1 v11)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 39:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 40:43
 
 TCHeadExpression
 
@@ -444,7 +440,7 @@ where
 	"inv_v12  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v12)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 40:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 41:43
 
 TCTailExpression
 
@@ -460,7 +456,7 @@ where
 	"inv_v13  \<equiv> (inv_VDMSet' (inv_VDMNat1) v13)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 41:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 42:39
 
 TCIndicesExpression
 
@@ -476,7 +472,7 @@ where
 	"inv_v14  \<equiv> (inv_VDMSet' (inv_VDMNat1) v14)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 42:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 43:39
 
 TCElementsExpression 
 
@@ -492,7 +488,7 @@ where
 	"inv_v15  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v15)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 43:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 44:39
 
 TCDistConcatExpression
 
@@ -508,7 +504,7 @@ where
 	"inv_v16  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v16)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 44:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 45:39
 
 TCReverseExpression
 
@@ -524,7 +520,7 @@ where
 	"inv_v17  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v17)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 45:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 46:39
 
 TCSeqConcatExpression		
 
@@ -540,7 +536,7 @@ where
 	"inv_v18  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v18)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 46:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 47:39
 
 TCSubseqExpression
 
@@ -556,7 +552,7 @@ where
 	"inv_v19  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v19)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 47:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 48:43
 
 TCDistMergeExpression
 
@@ -572,7 +568,7 @@ where
 	"inv_v20  \<equiv> (inv_VDMSet' (inv_VDMNat1) v20)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 48:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 49:39
 
 TCMapDomainExpression
 
@@ -588,7 +584,7 @@ where
 	"inv_v21  \<equiv> (inv_VDMSet' (inv_VDMNat1) v21)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 49:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 50:39
 
 TCMapRangeExpression
 
@@ -604,7 +600,7 @@ where
 	"inv_v22  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v22)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 50:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 51:39
 
 TCMapInverseExpression
 
@@ -620,7 +616,7 @@ where
 	"inv_v23  \<equiv> (inv_VDMNat1 v23)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 51:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 52:39
 
 TCPlusExpression		
 
@@ -636,7 +632,7 @@ where
 	"inv_v24  \<equiv> (inv_VDMInt v24)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 52:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 53:39
 
 TCSubtractExpression	
 
@@ -652,7 +648,7 @@ where
 	"inv_v25  \<equiv> (inv_VDMNat1 v25)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 53:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 54:39
 
 TCTimesExpression		
 
@@ -668,7 +664,7 @@ where
 	"inv_v26  \<equiv> (inv_VDMInt v26)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 54:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:39
 
 TCDivExpression			
 
@@ -684,7 +680,7 @@ where
 	"inv_v27  \<equiv> (inv_VDMReal v27)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 56:39
 
 TCDivideExpression		
 
@@ -700,7 +696,7 @@ where
 	"inv_v28  \<equiv> (inv_VDMInt v28)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 56:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 57:39
 
 TCModExpression			
 
@@ -716,7 +712,7 @@ where
 	"inv_v29  \<equiv> (inv_VDMInt v29)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 57:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 58:39
 
 TCRemExpression			
 
@@ -733,7 +729,7 @@ where
 	"inv_v30  \<equiv> (inv_VDMNat1 v30)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 58:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 59:39
 
 TCStarStarExpression	
 
@@ -749,7 +745,7 @@ where
 	"inv_v31  \<equiv> (inv_bool v31)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 59:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 60:39
 
 TCEqualsExpression		
 
@@ -765,7 +761,7 @@ where
 	"inv_v32  \<equiv> (inv_bool v32)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 60:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 61:39
 
 TCNotEqualExpression	
 
@@ -781,7 +777,7 @@ where
 	"inv_v33  \<equiv> (inv_bool v33)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 61:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 62:39
 
 TCLessEqualExpression	
 
@@ -797,7 +793,7 @@ where
 	"inv_v34  \<equiv> (inv_bool v34)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 62:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 63:39
 
 TCLessExpression		
 
@@ -813,7 +809,7 @@ where
 	"inv_v35  \<equiv> (inv_bool v35)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 63:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 64:39
 
 TCGreaterEqualExpression
 
@@ -829,7 +825,7 @@ where
 	"inv_v36  \<equiv> (inv_bool v36)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 64:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 65:39
 
 TCGreaterExpression		
 
@@ -845,7 +841,7 @@ where
 	"inv_v37  \<equiv> (inv_Option (inv_VDMNat) v37)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 65:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
 
 TCNilExpression			TCOptionalType,
 
@@ -862,7 +858,7 @@ where
 	\<comment>\<open>Unknown VDM types will generate Isabelle additional type variable `a warning.\<close> v38)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 67:39
 
 TCNilExpression (untyped)!TCUnknownType	
 
@@ -878,7 +874,7 @@ where
 	"inv_v39  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v39)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 67:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 68:39
 
 TCPlusPlusExpression	
 
@@ -894,7 +890,7 @@ where
 	"inv_v40  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v40)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 68:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 69:39
 
 TCDomainResByExpression	
 
@@ -910,7 +906,7 @@ where
 	"inv_v41  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v41)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 69:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 70:43
 
 TCDomainResToExpression	
 
@@ -926,7 +922,7 @@ where
 	"inv_v42  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v42)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 70:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 71:39
 
 TCRangeResByExpression	
 
@@ -942,7 +938,7 @@ where
 	"inv_v43  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v43)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 71:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 72:43
 
 TCRangeResToExpression	
 
@@ -958,7 +954,7 @@ where
 	"inv_v44  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v44)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 72:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 73:43
 
 TCMapUnionExpression	
 
@@ -974,7 +970,7 @@ where
 	"inv_v45  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v45)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 73:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 74:39
 
 TCCompExpression			
 
@@ -990,7 +986,7 @@ where
 	"inv_v46  \<equiv> (inv_bool v46)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 74:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 75:43
 
 TCNotExpression
 
@@ -1006,7 +1002,7 @@ where
 	"inv_v47  \<equiv> (inv_bool v47)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 75:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 76:39
 
 TCAndExpression
 
@@ -1022,7 +1018,7 @@ where
 	"inv_v48  \<equiv> (inv_bool v48)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 76:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 77:39
 
 TCOrExpression
 
@@ -1038,7 +1034,7 @@ where
 	"inv_v49  \<equiv> (inv_bool v49)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 77:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 78:39
 
 TCImpliesExpression
 
@@ -1054,7 +1050,7 @@ where
 	"inv_v50  \<equiv> (inv_bool v50)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 78:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 79:39
 
 TCEquivalentExpression
 
@@ -1070,7 +1066,7 @@ where
 	"inv_v51  \<equiv> (inv_bool v51)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 79:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 80:43
 
 TCInSetExpression		
 
@@ -1086,7 +1082,7 @@ where
 	"inv_v52  \<equiv> (inv_bool v52)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 80:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 81:43
 
 TCNotInSetExpression	
 
@@ -1102,7 +1098,7 @@ where
 	"inv_v53  \<equiv> (inv_VDMSet' (inv_VDMNat) v53)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 81:51
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 82:51
 
 TCSetUnionExpression	
 
@@ -1118,7 +1114,7 @@ where
 	"inv_v54  \<equiv> (inv_VDMSet' (inv_VDMNat) v54)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 82:51
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 83:51
 
 TCSetIntersectExpression
 
@@ -1134,7 +1130,7 @@ where
 	"inv_v55  \<equiv> (inv_VDMSet' (inv_VDMNat) v55)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 83:51
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 84:51
 
 TCSetDifferenceExpression
 
@@ -1150,7 +1146,7 @@ where
 	"inv_v56  \<equiv> (inv_bool v56)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 84:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 85:39
 
 TCSubsetExpression		
 
@@ -1166,7 +1162,7 @@ where
 	"inv_v57  \<equiv> (inv_bool v57)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 85:43
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 86:43
 
 TCProperSubsetExpression	
 
@@ -1182,7 +1178,7 @@ where
 	"inv_v58  \<equiv> (inv_VDMSet' (inv_VDMNat1) v58)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 86:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 87:39
 
 TCSetRangeExpression	
 
@@ -1198,7 +1194,7 @@ where
 	"inv_v59  \<equiv> (inv_VDMSet1' (inv_VDMNat1) v59)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 87:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 88:39
 
 TCSetEnumExpression		
 
@@ -1214,7 +1210,7 @@ where
 	"inv_v60  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v60)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 88:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 89:39
 
 TCSeqEnumExpression		
 
@@ -1230,7 +1226,7 @@ where
 	"inv_v61  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v61)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 89:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 90:39
 
 TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression	
 
@@ -1249,7 +1245,7 @@ where
 		)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 90:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 91:39
 
 TCTupleExpression		
 
@@ -1285,15 +1281,15 @@ where
 		)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 93:7
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 94:7
 
 TODO: TCQuoteLiteralExpression quote literal requires quote type prior definition for Isabelle 
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 94:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 95:7
 
 v13= merge mm;	
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 95:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 96:7
 
 v18: S = mk_S();
 
@@ -1309,7 +1305,7 @@ where
 	"inv_v65  \<equiv> inv_R v65"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 96:39
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 97:39
 
 TCMkTypeExpression		
 
@@ -1325,7 +1321,7 @@ where
 	"inv_v66  \<equiv> inv_R v66"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 97:54
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 98:54
 
 TCMuExpression,TCRecordModifierList, TCRecordModifier
 
@@ -1341,7 +1337,7 @@ where
 	"inv_v67  \<equiv> (inv_VDMNat v67)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 98:33
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 99:33
 
 TCFieldExpression
 
@@ -1357,7 +1353,7 @@ where
 	"inv_v68  \<equiv> (inv_VDMNat1 v68)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 99:34
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 100:34
 
 TCFieldNumberExpression 
 
@@ -1395,7 +1391,7 @@ where
 	"inv_v71  \<equiv> (inv_VDMNat1 v71)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 103:7
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:7
 
 v72= not yet specified;	--TCNotYetSpecifiedExpression
 
@@ -1411,7 +1407,7 @@ where
 	"inv_v72  \<equiv> (inv_VDMNat1 v72)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:35
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 105:35
 
 TCNarrowExpression
 
@@ -1446,7 +1442,7 @@ where
 	"inv_v73  \<equiv> (inv_VDMNat1 v73)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 106:44
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:44
 
 TCIotaExpression
 
@@ -1470,7 +1466,7 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 107:56
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 108:56
 
 TCLambdaExpression
 
@@ -1486,7 +1482,7 @@ where
 	"inv_v75  \<equiv> (inv_bool v75)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 108:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:47
 
  TCExists1Expression
 
@@ -1502,7 +1498,7 @@ where
 	"inv_v76  \<equiv> (inv_bool v76)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:46
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:46
 
  TCExistsExpression
 
@@ -1518,11 +1514,11 @@ where
 	"inv_v78  \<equiv> (inv_bool v78)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:47
 
  TCForallExpression
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:7
 
 TODO: not yet v65= t14(1);						--TCApplyExpression
 
@@ -1548,7 +1544,7 @@ where
 	"inv_v79  \<equiv> (inv_VDMNat1 v79)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:67
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:67
 
  TCLetDefExpression
 
@@ -1564,7 +1560,7 @@ where
 	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:47
 
  TCSetCompExpression
 
@@ -1580,7 +1576,7 @@ where
 	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:72
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:72
 
  TCSetCompExpression
 
@@ -1600,7 +1596,7 @@ where
 	"inv_v82  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v82)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:47
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 116:47
 
  TCSeqCompExpression
 
@@ -1616,19 +1612,19 @@ where
 	"inv_v83  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v83)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 116:48
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 117:48
 
  TCSeqCompExpression
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 117:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
 
 VDM not happy with v84-86, Isabelle would allow them
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 118:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 119:7
 
 v84= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 119:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 120:7
 
 v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
 
@@ -1644,23 +1640,23 @@ where
 	"inv_v86  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v86)"
 
 
-(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 121:7
+(* @ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 122:7
 
 v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 123:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 124:7
 
 Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 124:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 125:7
 
 [A,B]=[1,2];
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 126:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 127:7
 
 To test VDM warnings as errors
 
-@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 127:7
+@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 128:7
 
 x = 10;
 
