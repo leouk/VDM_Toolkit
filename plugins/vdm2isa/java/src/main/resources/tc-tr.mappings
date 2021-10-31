@@ -148,7 +148,6 @@ unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
 unmapped com.fujitsu.vdmj.lex.LexLocation;
 unmapped com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
-unmapped com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 
 #############################################################################
 package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;

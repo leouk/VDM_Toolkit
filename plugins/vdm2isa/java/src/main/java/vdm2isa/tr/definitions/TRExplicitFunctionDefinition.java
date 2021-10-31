@@ -60,7 +60,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final TRSpecificationKind implicitSpecificationKind;
 	private final TRExplicitFunctionDefinition predef;
 	private final TRExplicitFunctionDefinition postdef;
-	private final TCDefinitionListList paramDefinitionList;
+	private final TRDefinitionListList paramDefinitionList;
 
 	public TRExplicitFunctionDefinition(
 			LexCommentList comments,
@@ -77,7 +77,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			boolean isCurried, 
 			TRExplicitFunctionDefinition predef,
 			TRExplicitFunctionDefinition postdef,
-			TCDefinitionListList paramDefinitionList,
+			TRDefinitionListList paramDefinitionList,
 			boolean recursive,
 			boolean isUndefined)
 	{
@@ -127,17 +127,23 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
-		// create TRExplicitFunctionDefinitions for undeclared pre/post to allow for type invariant checks
-		if (precondition == null && predef == null)
-			;//predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
-		if (postcondition == null && postcondition == null)
-			;//postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+		// only create undeclared specification for those who need it: when precondition/predef are null but
+		// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
+		// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
+		if (!isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			// create TRExplicitFunctionDefinitions for undeclared pre/post to allow for type invariant checks
+			if (precondition == null && predef == null)
+				predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+			if (postcondition == null && postcondition == null)
+				postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+		}
 
 		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
 		if (!Arrays.asList(
 				TRSpecificationKind.PRE 
 				,TRSpecificationKind.POST
-				,TRSpecificationKind.NONE
+			//	,TRSpecificationKind.NONE
 			).contains(implicitSpecificationKind)
 			//|| local
 			) 
@@ -192,18 +198,13 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private TRFunctionType createUndeclaredSpecificationFunctionType(TRSpecificationKind kind)
 	{
 		TRFunctionType result = null;
-		TRType resultType;
 		switch (kind)
 		{
 			case PRE:
-				resultType = new TRBasicType(type.location, IsaToken.BOOL);
-				result = new TRFunctionType(type.location, type.parameters, true, resultType);
+				result = this.type.getCurriedPre(this.isCurried);
 				break;
 			case POST:
-				resultType = new TRBasicType(type.location, IsaToken.BOOL);
-				TRTypeList inSig = new TRTypeList(type.parameters);
-				inSig.add(type.result);
-				result = new TRFunctionType(type.location, inSig, true, resultType);
+				result = this.type.getCurriedPost(this.isCurried);
 				break;
 
 		case EQ:
@@ -231,7 +232,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	private TRPatternListList createUndeclaredSpecificationParameters(TRSpecificationKind kind)
 	{
-		TRPatternListList result = new TRPatternListList(parameters);
+		TRPatternListList result = parameters.copy();
 		if (kind == TRSpecificationKind.POST)
 		{
 			// add synthetic RESULT extra parameter to the last patternList
@@ -249,13 +250,16 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 */
 	private TRExplicitFunctionDefinition createUndeclaredSpecification(TRSpecificationKind kind)
 	{
+		TCNameToken undeclaredName = null;
 		switch (kind)
 		{
 			case PRE:
 				assert predef == null && precondition == null;
+				undeclaredName = name.getPreName(location);
 				break;
 			case POST:
 				assert postdef == null && postcondition == null;
+				undeclaredName = name.getPostName(location);
 				break;			
 			// case EQ:
 			// 	break;
@@ -278,6 +282,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				kind + " for function " + name.toString());
 				break;
 		}
+		assert undeclaredName != null;
 		LexCommentList comments = new LexCommentList();
 		comments.add(location, "implicitly constructed " + kind + " specification", false);
 		
@@ -287,7 +292,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		TRExplicitFunctionDefinition result = new TRExplicitFunctionDefinition(
 					comments,										//  LexCommentList comments,								
 					null,											// 	TCAnnotationList annotations,
-					name.getPerName(location),						// 	TCNameToken name,
+					undeclaredName,									// 	TCNameToken name,
 					typeParams,										// 	TCNameList typeParams, 
 					createUndeclaredSpecificationFunctionType(kind),// 	TRFunctionType type,
 					createUndeclaredSpecificationParameters(kind),	// 	TRPatternListList parameters, 

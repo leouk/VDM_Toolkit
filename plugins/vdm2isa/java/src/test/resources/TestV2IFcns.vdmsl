@@ -4,15 +4,16 @@ definitions
 
 functions
 
+	f: nat * nat1 -> nat1
+	f(x, y) == x + y;
+
+/*	
 	const: () -> nat
 	const() == 10
 	-- testing linient post pre calls for constant functions! 
 	pre true
 	post true;
 
-	f: nat * nat1 -> nat1
-	f(x, y) == x + y;
-	
 	g: nat * nat1 -> nat1
 	g(x, y) == x + y
 	pre x > 10
@@ -27,5 +28,5 @@ functions
 	curried(x)(y) == x + y
 	post
 		x < RESULT and y < RESULT;
-
+*/
 end TestV2IFcns

@@ -5,17 +5,28 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 abstract public class TRType extends TRNode
 {
 	private static final long serialVersionUID = 1L;
 
+	public TRDefinitionList definitions; 
+
 	public TRType(LexLocation location)
 	{
 		super(location);
+		definitions = null;
+	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString() + " defs = " + (definitions != null ? definitions.toString() : "null");
 	}
 
 	/**

@@ -83,6 +83,11 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return sb.toString();	
 	}
 
+	public TRTypeList copy()
+	{
+		return new TRTypeList(this); 
+	}
+
 	public static String translate(TRType... args)
 	{
 		TRTypeList list = new TRTypeList();

@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRQuoteType extends TRType

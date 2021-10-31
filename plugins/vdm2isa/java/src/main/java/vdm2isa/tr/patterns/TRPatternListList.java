@@ -126,4 +126,16 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	{
 		return getFlatPatternList().varNameTranslate();
 	}
+
+	public TRPatternListList copy()
+	{
+		// this one don't create from this list as we want deep copy please
+		TRPatternListList result = new TRPatternListList();
+		for(TRPatternList p : this)
+		{
+			result.add(p.copy());
+		}
+		return result; 
+	}
+
 }

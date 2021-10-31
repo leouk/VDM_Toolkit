@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRRecordType extends TRInvariantType

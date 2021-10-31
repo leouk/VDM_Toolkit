@@ -61,4 +61,9 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 		}
 		return result;
 	}
+
+	public TRDefinitionList copy()
+	{
+		return new TRDefinitionList(this); 
+	}
 }

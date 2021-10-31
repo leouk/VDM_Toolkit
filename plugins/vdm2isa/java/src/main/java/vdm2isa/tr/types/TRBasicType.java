@@ -18,6 +18,7 @@ import com.fujitsu.vdmj.tc.types.TCRealType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBasicType extends TRType
@@ -41,6 +42,7 @@ public class TRBasicType extends TRType
 		this.token = token;
 		if (!VALID_TOKENS.contains(this.token))
 			report(11111, "Invalid basic type token " + token.toString());
+		//System.out.println(toString());	
 	}
 
 	public TRBasicType(TCNaturalType type)

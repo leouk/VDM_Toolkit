@@ -8,93 +8,9 @@ imports "VDMToolkit"
 begin
 
 definition
-	pre_const :: "\<bool>"
-where
-	"pre_const  \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(True::\<bool>)"
-
-definition
-	post_const :: "VDMNat \<Rightarrow> \<bool>"
-where
-	"post_const RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks\<close>
-		((inv_VDMNat RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
-		(True::\<bool>)"
-
-definition
-	const :: "VDMNat"
-where
-	"const  \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(10::VDMNat1)"
-
-		definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"f x y \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(x + y)"
-
-		definition
-	pre_g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
-where
-	"pre_g x y \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks\<close>
-		((inv_VDMNat x) \<and>
-		(inv_VDMNat1 y)) \<and>
-		\<comment>\<open>User defined body\<close>
-		(x > (10::VDMNat1))"
-
-definition
-	post_g :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
-where
-	"post_g x y RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks\<close>
-		((inv_VDMNat x) \<and>
-		(inv_VDMNat1 y) \<and>
-		(inv_VDMNat1 RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
-		(x < RESULT)"
-
-definition
-	g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
-where
-	"g x y \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(x + y)"
-
-		definition
-	pre_h :: "VDMNat \<Rightarrow> \<bool>"
-where
-	"pre_h x \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks\<close>
-		((inv_VDMNat x)) \<and>
-		\<comment>\<open>User defined body\<close>
-		((pre_g x  x) \<and> (x < (20::VDMNat1)))"
-
-definition
-	post_h :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
-where
-	"post_h x RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks\<close>
-		((inv_VDMNat x) \<and>
-		(inv_VDMNat RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
-		((post_g x  x  RESULT) \<and> (x > (20::VDMNat1)))"
-
-definition
-	h :: "VDMNat \<Rightarrow> VDMNat"
-where
-	"h x \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(g x  x)"
-
-		definition
-	curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat"
-where
-	"curried x y \<equiv> 
 		\<comment>\<open>User defined body\<close>
 		(x + y)"
 

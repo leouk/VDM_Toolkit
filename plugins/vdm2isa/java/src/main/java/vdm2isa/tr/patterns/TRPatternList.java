@@ -118,6 +118,11 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		return result; 
 	}
 
+	public TRPatternList copy()
+	{
+		return new TRPatternList(this); 
+	}
+
 	public static String translate(TRPattern... args)
 	{
 		TRPatternList list = new TRPatternList();

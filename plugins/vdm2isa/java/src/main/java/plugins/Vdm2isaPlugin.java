@@ -71,7 +71,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 
 	public static void main(String args[])
     {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "./java/src/test/resources/*.vdmsl"});
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
     }
 
 	@Override

@@ -46,4 +46,16 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 		assert result.size() == concSize;	
 		return result; 
 	}
+
+	public TRDefinitionListList copy()
+	{
+		// this one don't create from this list as we want deep copy please
+		TRDefinitionListList result = new TRDefinitionListList();
+		for(TRDefinitionList d : this)
+		{
+			result.add(d.copy());
+		}
+		return result; 
+	}
+
 }

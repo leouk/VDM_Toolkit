@@ -5,6 +5,7 @@
 package vdm2isa.tr.types;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -18,6 +19,7 @@ public class TRFunctionType extends TRType
 	
 	public TRFunctionType(LexLocation location, TRTypeList parameters, boolean partial, TRType result)
 	{
+		//NB tried to get definitions through this one, and got NPEs all over during mappings conversion!
 		super(location);
 		this.parameters = parameters;
 		// presume that all function types will be curried
@@ -59,5 +61,45 @@ public class TRFunctionType extends TRType
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseFunctionType(this, arg);
+	}
+
+	public TRFunctionType getPreType()
+	{
+		//NB technically, this can be partial (i.e. run-time error failing pre)?
+		return new TRFunctionType(location, parameters, false, new TRBasicType(location, IsaToken.BOOL));
+	}
+
+	public TRFunctionType getCurriedPre(boolean isCurried)
+	{
+		if (isCurried && result instanceof TRFunctionType)
+		{
+			TRFunctionType ft = (TRFunctionType)result;
+			return new TRFunctionType(location, parameters, false, ft.getCurriedPre(isCurried));
+		}
+		else
+		{
+			return getPreType();
+		}
+	}
+
+	public TRFunctionType getPostType()
+	{
+		TRTypeList inSig = parameters.copy();
+		inSig.add(result);
+		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
+		return new TRFunctionType(location, inSig, false, new TRBasicType(location, IsaToken.BOOL));
+	}
+
+	public TRFunctionType getCurriedPost(boolean isCurried)
+	{
+		if (isCurried && result instanceof TRFunctionType)
+		{
+			TRFunctionType ft = (TRFunctionType)result;
+			return new TRFunctionType(location, parameters, false, ft.getCurriedPre(isCurried));
+		}
+		else
+		{
+			return getPostType();
+		}
 	}
 }
