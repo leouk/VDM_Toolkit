@@ -3,7 +3,7 @@ exports all
 definitions
 
 functions
-
+/*
 	f: nat * nat1 -> nat1
 	f(x, y) == x + y;
 
@@ -22,10 +22,11 @@ functions
 	h(x) == g(x, x)
 	pre pre_g(x, x) and x < 20
 	post post_g(x, x, RESULT) and x > 20;
-	
-	--curried: nat -> nat -> nat
-	--curried(x)(y) == x + y
+*/	
+	curried: nat -> nat -> nat
+	curried(x)(y) == x + y
 	--post
-	--	x < RESULT and y < RESULT;
+	--	x < RESULT and y < RESULT
+	;
 
 end TestV2IFcns
