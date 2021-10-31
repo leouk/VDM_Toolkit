@@ -10,13 +10,14 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
 import plugins.Vdm2isaPlugin;
+import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public abstract class TRDefinition extends TRNode
 {
 	private static final long serialVersionUID = 1L;
-	protected final LexCommentList comments;
+	protected final TRIsaCommentList comments;
 	protected final TCAnnotationList annotations;
 
 	/**
@@ -24,12 +25,12 @@ public abstract class TRDefinition extends TRNode
 	 */
 	public boolean local;
 	
-	protected TRDefinition(LexLocation location, LexCommentList comments)
+	protected TRDefinition(LexLocation location, TRIsaCommentList comments)
 	{
 		this(location, comments, null);
 	}
 	
-	protected TRDefinition(LexLocation location, LexCommentList comments, TCAnnotationList annotations)
+	protected TRDefinition(LexLocation location, TRIsaCommentList comments, TCAnnotationList annotations)
 	{
 		super(location); 
 		this.comments = comments;
@@ -47,20 +48,8 @@ public abstract class TRDefinition extends TRNode
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (Vdm2isaPlugin.printComments && comments != null && comments.size() > 0) 
-		{
-			sb.append("(* ");
-			for (LexComment c: comments)
-			{
-				sb.append("@ ");
-				sb.append(c.location.toString());
-				sb.append("\n\n");
-				sb.append(c.comment);
-				sb.append("\n\n");
-			}
-			sb.append("*)");
-			sb.append("\n");
-		}
+		sb.append(comments.translate());
+		
 		if (annotations != null && annotations.size() > 0)
 		{
 			warning(11050, "Not yet processing annotations");
