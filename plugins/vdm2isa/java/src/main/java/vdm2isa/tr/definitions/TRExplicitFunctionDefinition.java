@@ -377,6 +377,85 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		return implicitSpecificationKind != TRSpecificationKind.NONE;
 	}
 
+	private String paramsInvTranslate(TRSpecificationKind kind)
+	{
+		StringBuilder paramsStr = new StringBuilder();
+		if (isCurried)
+		{
+			// if curried there are more names than parameters on the first entry
+			if (type.result instanceof TRFunctionType)
+			{
+				assert !parameters.isEmpty();
+
+				// get the curried parameters
+				List<List<String>> curriedVarNames = parameters.varNameTranslate();
+				ListIterator<List<String>> iter = curriedVarNames.listIterator();
+
+				// translate the outmost parameters first
+				List<String> varNames = iter.next();
+				paramsStr.append(type.parameters.invTranslate(varNames));
+				// get the innermost parameters next
+				TRType next = type.result;
+				while (next instanceof TRFunctionType && iter.hasNext())
+				{
+					// copy it for the case where we have to remove RESULT; remove RESULT from parameters as it will be treated in the next.result 
+					varNames = new Vector<String>(iter.next());
+					if (kind == TRSpecificationKind.POST)
+					{
+						String resultName = name.getResultName(location).toString();
+						boolean removed = varNames.remove(resultName);
+						if (!removed)
+						{
+							warning(11111, "Could not find \"" + resultName + "\" variable in implicit post condition specification definition");
+						}
+					}
+					paramsStr.append(type.parameters.getFormattingSeparator());
+					paramsStr.append(type.parameters.getInvTranslateSeparator());
+					paramsStr.append(((TRFunctionType)next).parameters.invTranslate(varNames));
+					next = ((TRFunctionType)next).result;
+				}
+
+				if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+				{
+					warning(11111, "Linient post condition translation for curried definitions yet to be implemented!");
+				}
+			} 
+			else
+			{
+				// should never happen for a type checked VDM?
+				report(11111, "Inconsistent curried function declaration: intermediate result does not have function type - " + type.result.getClass().getSimpleName());
+			}
+		}
+		else
+		{
+			// if not curried flat list and translate
+			List<String> varNames = parameters.flatVarNameTranslate();
+			paramsStr.append(type.parameters.invTranslate(varNames));
+
+			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+			{
+				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
+				assert name.getName().startsWith("post_");
+				String preCall = "pre_" + name.getName().substring("post_".length()) + " ";
+				String resultName = name.getResultName(location).toString();
+				boolean removed = varNames.remove(resultName);
+				if (!removed)
+				{
+					warning(11111, "Could not find \"" + resultName + "\" variable in implicit post condition specification definition");
+				}
+				// transform "[x,y]" into "x y", "[x]" into "x", "[]" into ""
+				String varList = varNames.toString().replace(',', ' ');
+				assert varList.length() >= 2;
+				paramsStr = new StringBuilder(IsaToken.parenthesise(
+						preCall + varList.substring(1, varList.length()-1) + " " +
+						IsaToken.IMPLIES.toString() + " " + // getFormattingSeparator() +
+						paramsStr.toString()));
+				//TODO this will possibly create "messy" formatting if separator includes \n! 
+			}
+		}
+		return paramsStr.toString();
+	}
+
 	/**
 	 * Implicit checks for pre/post. They are similar with minor differences, so parameterised here to avoid repetition
 	 * at possibly the cost of making it slightly harder to follow. 
