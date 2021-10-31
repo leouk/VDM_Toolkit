@@ -150,6 +150,8 @@ public enum IsaToken {
 	COMMENT(null, "\\<comment>"),
 	ISA_OPEN(null,"\\<open>"),
 	ISA_CLOSE(null, "\\<close>"),
+	BLOCK_COMMENT_OPEN(null, "(*"),
+	BLOCK_COMMENT_CLOSE(null, "*)"),
 	FST(null, "fst"),
 	SND(null, "snd"),
 	AT(null, "@"),
@@ -201,8 +203,11 @@ public enum IsaToken {
 
 	public static String comment(String s, String formattingSeparator)
 	{
-		return IsaToken.COMMENT.toString() + 
-			   IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE) + formattingSeparator;
+		if (Vdm2isaPlugin.printIsaComments)
+			return IsaToken.COMMENT.toString() + 
+				IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE) + formattingSeparator;
+		else
+			return "";
 	}
 
 	public static String antiquotation(IsaToken kind, String yxml)

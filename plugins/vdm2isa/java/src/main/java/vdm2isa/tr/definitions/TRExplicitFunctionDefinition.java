@@ -58,8 +58,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final boolean recursive;
 	private final boolean isUndefined;
 	private final TRSpecificationKind implicitSpecificationKind;
-	private final TRExplicitFunctionDefinition predef;
-	private final TRExplicitFunctionDefinition postdef;
+	private TRExplicitFunctionDefinition predef;
+	private TRExplicitFunctionDefinition postdef;
 	private final TRDefinitionListList paramDefinitionList;
 
 	public TRExplicitFunctionDefinition(
@@ -103,6 +103,20 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 		assert this.type != null && this.name != null && this.parameters != null; 
 
+		setup();
+		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
+		if (!Arrays.asList(
+				TRSpecificationKind.PRE 
+				,TRSpecificationKind.POST
+				,TRSpecificationKind.NONE
+			).contains(implicitSpecificationKind)
+			//|| local
+			) 
+			System.out.println(toString());
+    }
+
+	private void setup()
+	{
 		setFormattingSeparator("\n\t\t");
 		//TODO type parameters are comma separated?	
 		// parameters are curried not "," separated
@@ -130,25 +144,15 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// only create undeclared specification for those who need it: when precondition/predef are null but
 		// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
 		// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
-		if (!isImplicitlyGeneratedUndeclaredSpecification())
+		if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
 		{
-			// create TRExplicitFunctionDefinitions for undeclared pre/post to allow for type invariant checks
-			if (precondition == null && predef == null)
-				predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+			// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
+			if (this.precondition == null && this.predef == null)
+				this.predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
 			if (postcondition == null && postcondition == null)
-				postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+				this.postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
 		}
-
-		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
-		if (!Arrays.asList(
-				TRSpecificationKind.PRE 
-				,TRSpecificationKind.POST
-			//	,TRSpecificationKind.NONE
-			).contains(implicitSpecificationKind)
-			//|| local
-			) 
-			System.out.println(toString());
-    }
+	} 
 
 	@Override
 	public String toString()
@@ -357,6 +361,31 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	}
 
 	/**
+	 * For situations where the user does not define pre/posts, like in 
+	 * 		f: nat -> nat
+	 * 		f(x) == x;
+	 * We still have to translate a pre/post_f calls to check type invariants. 
+	 * Implicitily generated pre/post TRExplicitFunctionDefinition *must* have null body and pre/post/inv names!
+	 *  
+	 * @return true when pre/post are being implicitly generated
+	 */
+	protected boolean isImplicitlyGeneratedUndeclaredSpecification()
+	{
+		return body == null;
+	}
+
+	/**
+	 * If inferred specification kind is not NONE, it means this is a TRExplicitFunctionDeclaration for either
+	 * user defined specification (e.g., pre/post etc.) or implicitly generated undeclared specification 
+	 * (e.g., missing pre/post checks on input types etc.). Testing this is important to avoid looping (e.g. pre_post_pre_f).
+	 * @return
+	 */
+	protected boolean isSpecificationDefinition()
+	{
+		return implicitSpecificationKind != TRSpecificationKind.NONE;
+	}
+
+	/**
 	 * Implicit checks for pre/post. They are similar with minor differences, so parameterised here to avoid repetition
 	 * at possibly the cost of making it slightly harder to follow. 
 	 * @param kind
@@ -372,11 +401,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}	
 		else
 		{
-			String implicitComment = "Implicitly defined type invariant checks" +
-				(isImplicitlyGeneratedUndeclaredSpecification() ? " for undeclared" + 
+			String implicitComment = "Implicitly defined type invariant checks for " +
+				(isImplicitlyGeneratedUndeclaredSpecification() ? "undeclared " : "")+ 
 				// No need to append the kind, given it will be as part of its own definition?
-				//kind.toString().toLowerCase() + 
-				" specification": "");
+				/*kind.toString().toLowerCase() + */ name.toString() + " specification";
 
 			// pre/post checks on input (including RESULT for post) types
 			// there is no need to check type.result type because for PRE/POST defs that's always bool! 
@@ -422,20 +450,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			}
 		}
 		return fcnBody.toString();
-	}
-
-	/**
-	 * For situations where the user does not define pre/posts, like in 
-	 * 		f: nat -> nat
-	 * 		f(x) == x;
-	 * We still have to translate a pre/post_f calls to check type invariants. 
-	 * Implicitily generated pre/post TRExplicitFunctionDefinition *must* have null body and pre/post/inv names!
-	 *  
-	 * @return true when pre/post are being implicitly generated
-	 */
-	protected boolean isImplicitlyGeneratedUndeclaredSpecification()
-	{
-		return body == null;
 	}
 
 	@Override
@@ -506,10 +520,15 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			setFormattingSeparator("\n\t\t\t");
 			fcnBody.append(parameters.recordPatternTranslate());
 		}
-		// include the user declared body after including implicit considerations
-		fcnBody.append(getFormattingSeparator());
-		fcnBody.append(IsaToken.comment("User defined body", getFormattingSeparator()));
-		fcnBody.append(body.translate());
+
+		// implicitly generated undeclared specifications have no body
+		if (!isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			// include the user declared body after including implicit considerations
+			fcnBody.append(getFormattingSeparator());
+			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
+			fcnBody.append(body.translate());
+		}
 
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
