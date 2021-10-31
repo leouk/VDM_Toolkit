@@ -26,6 +26,7 @@ public class TRFunctionType extends TRType
 		this.parameters.setCurried(true);
 		this.partial = partial;
 		this.result = result;
+		setFormattingSeparator("\n\t");
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class TRFunctionType extends TRType
 		// that also means, the declaring party must take that into account in the inv_XXX def!
 		// e.g. inv_v x y == "inv_VDMNat (v x y)"
 		String rVarName = varName != null ? dummyVarNames(varName) : varName; 
-		return result.invTranslate(rVarName) + "\n\t" +
+		return result.invTranslate(rVarName) + getFormattingSeparator() +
 			   IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal.");
 	}
 

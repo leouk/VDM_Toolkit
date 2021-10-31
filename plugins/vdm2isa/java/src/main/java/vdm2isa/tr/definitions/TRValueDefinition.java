@@ -4,8 +4,6 @@
 
 package vdm2isa.tr.definitions;
 
-import com.fujitsu.vdmj.ast.lex.LexCommentList;
-
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;

@@ -1,6 +1,5 @@
 package vdm2isa.tr.definitions;
 
-import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
