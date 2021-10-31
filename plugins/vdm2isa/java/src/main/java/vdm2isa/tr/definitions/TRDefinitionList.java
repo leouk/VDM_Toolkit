@@ -14,11 +14,17 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 {
 	private static final long serialVersionUID = 1L;
 
-	public TRDefinitionList()
+	protected TRDefinitionList()
 	{
 		super();
 		setup();
 	} 
+
+	public TRDefinitionList(TRDefinitionList from)
+	{
+		this();
+		addAll(from);
+	}	
 
 	public TRDefinitionList(TCDefinitionList list) throws Exception
 	{

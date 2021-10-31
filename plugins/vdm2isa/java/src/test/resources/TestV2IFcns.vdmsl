@@ -22,5 +22,10 @@ functions
 	h(x) == g(x, x)
 	pre pre_g(x, x) and x < 20
 	post post_g(x, x, RESULT) and x > 20;
+	
+	curried: nat -> nat -> nat
+	curried(x)(y) == x + y
+	post
+		x < RESULT and y < RESULT;
 
 end TestV2IFcns

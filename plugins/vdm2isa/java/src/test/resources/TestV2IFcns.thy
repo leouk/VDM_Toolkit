@@ -91,4 +91,11 @@ where
 		\<comment>\<open>User defined body\<close>
 		(g x  x)"
 
+		definition
+	curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat"
+where
+	"curried x y \<equiv> 
+		\<comment>\<open>User defined body\<close>
+		(x + y)"
+
 end
