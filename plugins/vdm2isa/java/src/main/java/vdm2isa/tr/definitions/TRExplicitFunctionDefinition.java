@@ -5,18 +5,13 @@
 package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
 
-import javax.management.RuntimeErrorException;
-
-import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
-import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-
-import org.junit.internal.Throwables;
 
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
@@ -26,10 +21,8 @@ import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
-import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeList;
 
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
@@ -138,10 +131,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
 				". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
-		}
-		if (this.isCurried)
-		{
-			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
 		// only create undeclared specification for those who need it: when precondition/predef are null but
@@ -291,7 +280,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 		assert undeclaredName != null;
 		TRIsaCommentList comments = new TRIsaCommentList();
-		comments.add(location, "implicitly constructed " + kind + " specification", false);
+		//comments.add(location, "implicitly constructed " + kind + " specification", false);
 		
 		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
 		// The translator will then take this into account as the "missing" (now found) specification definition, and
