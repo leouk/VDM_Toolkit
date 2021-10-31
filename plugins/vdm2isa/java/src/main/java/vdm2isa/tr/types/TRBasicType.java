@@ -4,6 +4,10 @@
 
 package vdm2isa.tr.types;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCCharacterType;
 import com.fujitsu.vdmj.tc.types.TCIntegerType;
@@ -21,52 +25,62 @@ public class TRBasicType extends TRType
 	private static final long serialVersionUID = 1L;
 	private final IsaToken token;
 
+	private static final List<IsaToken> VALID_TOKENS = 
+		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
+					  IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
+					  IsaToken.CHAR, IsaToken.TOKEN); 
+
+	/**
+	 * Constructor useful for synthetically constructed types 
+	 * @param location
+	 * @param token
+	 */
+	public TRBasicType(LexLocation location, IsaToken token)
+	{
+		super(location);
+		this.token = token;
+		if (!VALID_TOKENS.contains(this.token))
+			report(11111, "Invalid basic type token " + token.toString());
+	}
+
 	public TRBasicType(TCNaturalType type)
 	{
-		super(type.location);
-		this.token = IsaToken.NAT;
+		this(type.location, IsaToken.NAT);
 	}
 
 	public TRBasicType(TCNaturalOneType type)
 	{
-		super(type.location);
-		this.token = IsaToken.NAT1;
+		this(type.location, IsaToken.NAT1);
 	}
 
 	public TRBasicType(TCIntegerType type)
 	{
-		super(type.location);
-		this.token = IsaToken.INT;
+		this(type.location, IsaToken.INT);
 	}
 
 	public TRBasicType(TCRationalType type)
 	{
-		super(type.location);
-		this.token = IsaToken.RAT;
+		this(type.location, IsaToken.RAT);
 	}
 
 	public TRBasicType(TCRealType type)
 	{
-		super(type.location);
-		this.token = IsaToken.REAL;
+		this(type.location, IsaToken.REAL);
 	}
 
 	public TRBasicType(TCBooleanType type)
 	{
-		super(type.location);
-		this.token = IsaToken.BOOL;
+		this(type.location, IsaToken.BOOL);
 	}
 
 	public TRBasicType(TCCharacterType type)
 	{
-		super(type.location);
-		this.token = IsaToken.CHAR;
+		this(type.location, IsaToken.CHAR);
 	}
 
 	public TRBasicType(TCTokenType type)
 	{
-		super(type.location);
-		this.token = IsaToken.TOKEN;
+		this(type.location, IsaToken.TOKEN);
 	}
 
 	@Override

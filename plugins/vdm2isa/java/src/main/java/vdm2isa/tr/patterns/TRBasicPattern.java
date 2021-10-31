@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.patterns.TCBooleanPattern;
 import com.fujitsu.vdmj.tc.patterns.TCCharacterPattern;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
@@ -20,77 +24,82 @@ public class TRBasicPattern extends TRPattern {
     private final String pattern;
     private IsaToken token;
 
+    private static final List<IsaToken> VALID_TOKENS = 
+        Arrays.asList(IsaToken.IDENTIFIER, IsaToken.BOOL, IsaToken.CHAR,
+                      IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
+                      IsaToken.REAL, IsaToken.STRING, IsaToken.QUOTE,
+                      IsaToken.NIL, IsaToken.PLACEHOLDER);
+
+    /**
+     * Constructor useful for synthetically constructed types 
+     * @param location
+     * @param token
+     */
+    public TRBasicPattern(LexLocation location, IsaToken token, String pattern)
+    {
+        super(location);
+        this.token = token;
+        this.pattern = pattern;
+        if (!VALID_TOKENS.contains(this.token))
+            report(11111, "Invalid basic pattern token " + token.toString());
+    }
+    
     public TRBasicPattern(TCIdentifierPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.IDENTIFIER;
-        this.pattern = owner.toString();
+        this(owner.location, IsaToken.IDENTIFIER, owner.toString());
     }
 
     public TRBasicPattern(TCBooleanPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.BOOL;
-        this.pattern = owner.toString();
+        this(owner.location, IsaToken.BOOL, owner.toString());
     }
 
     public TRBasicPattern(TCCharacterPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.CHAR;
-        this.pattern =  
+        this(owner.location, IsaToken.CHAR, 
             IsaToken.ISACHAR + " " + 
                 IsaToken.bracketit(IsaToken.ISASTR, 
                     Character.isISOControl(owner.value.unicode) ?
                     Integer.toString(owner.value.unicode) : 
                     Character.toString(owner.value.unicode),//owner.toString(),
                     IsaToken.ISASTR
-                );
+                )
+            );
     }
 
     public TRBasicPattern(TCIntegerPattern owner)
     {
-        super(owner);
-        this.token = (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT);
-        this.pattern = owner.toString();
+        this(owner.location, (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT), owner.toString());
     }
 
     public TRBasicPattern(TCRealPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.REAL;
-        this.pattern = owner.toString();
+        this(owner.location, IsaToken.REAL, owner.toString());
     }
 
     public TRBasicPattern(TCStringPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.STRING;
-        // remove the quotes "value"
-        this.pattern = IsaToken.bracketit(IsaToken.ISASTR,
-            owner.value.value,//owner.toString(),
-            IsaToken.ISASTR);
+        // you don't want the "X" just the X 
+        this(owner.location, IsaToken.STRING, 
+            IsaToken.bracketit(IsaToken.ISASTR, owner.value.value,//owner.toString(),
+               IsaToken.ISASTR)
+            );
     }   
 
     public TRBasicPattern(TCQuotePattern owner)
     {
-        super(owner);
-        this.token = IsaToken.QUOTE;
-        this.pattern = owner.value.value;//owner.toString();
+        // you don't want the <X> just the X 
+        this(owner.location, IsaToken.QUOTE, owner.value.value);//owner.toString());
     }
 
     public TRBasicPattern(TCNilPattern owner)
     {
-        super(owner);
-        this.token = IsaToken.NIL;
-        this.pattern = IsaToken.NIL.toString();
+        this(owner.location, IsaToken.NIL, IsaToken.NIL.toString());
     }
 
     public TRBasicPattern(TCIgnorePattern owner)
     {
-        super(owner);
-        this.token = IsaToken.PLACEHOLDER;
-        this.pattern = IsaToken.PLACEHOLDER.toString();
+        this(owner.location, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
     }
 
     @Override
