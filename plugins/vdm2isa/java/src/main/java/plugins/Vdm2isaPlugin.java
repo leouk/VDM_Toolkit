@@ -298,7 +298,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		Vdm2isaPlugin.strict 		= true;
 		Vdm2isaPlugin.linientPost 	= false;
 		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";
-		Vdm2isaPlugin.printVDMComments = false;
+		Vdm2isaPlugin.printVDMComments = true;
 		Vdm2isaPlugin.printIsaComments = true;
 	}
 }

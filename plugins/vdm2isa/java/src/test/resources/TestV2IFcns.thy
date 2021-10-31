@@ -7,6 +7,8 @@ theory TestV2IFcns
 imports "VDMToolkit"
 begin
 
+\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 7:5
+implicitly constructed PRE specification\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -15,6 +17,9 @@ where
 		((inv_VDMNat x) \<and>
 		(inv_VDMNat1 y))"
 
+\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 7:5
+implicitly constructed POST specification
+\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -28,14 +33,14 @@ definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"f x y \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(x + y)"
+	\<comment>\<open>User defined body of f\<close>
+	(x + y)"
 
-		definition
+	definition
 	pre_const :: "\<bool>"
 where
 	"pre_const  \<equiv> 
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of pre_const\<close>
 		(True::\<bool>)"
 
 definition
@@ -44,24 +49,24 @@ where
 	"post_const RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_const specification\<close>
 		((inv_VDMNat RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of post_const\<close>
 		(True::\<bool>)"
 
 definition
 	const :: "VDMNat"
 where
 	"const  \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(10::VDMNat1)"
+	\<comment>\<open>User defined body of const\<close>
+	(10::VDMNat1)"
 
-		definition
+	definition
 	pre_g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
 	"pre_g x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_g specification\<close>
 		((inv_VDMNat x) \<and>
 		(inv_VDMNat1 y)) \<and>
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of pre_g\<close>
 		(x > (10::VDMNat1))"
 
 definition
@@ -72,23 +77,23 @@ where
 		((inv_VDMNat x) \<and>
 		(inv_VDMNat1 y) \<and>
 		(inv_VDMNat1 RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of post_g\<close>
 		(x < RESULT)"
 
 definition
 	g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"g x y \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(x + y)"
+	\<comment>\<open>User defined body of g\<close>
+	(x + y)"
 
-		definition
+	definition
 	pre_h :: "VDMNat \<Rightarrow> \<bool>"
 where
 	"pre_h x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_h specification\<close>
 		((inv_VDMNat x)) \<and>
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of pre_h\<close>
 		((pre_g x  x) \<and> (x < (20::VDMNat1)))"
 
 definition
@@ -98,14 +103,14 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for post_h specification\<close>
 		((inv_VDMNat x) \<and>
 		(inv_VDMNat RESULT)) \<and>
-		\<comment>\<open>User defined body\<close>
+		\<comment>\<open>User defined body of post_h\<close>
 		((post_g x  x  RESULT) \<and> (x > (20::VDMNat1)))"
 
 definition
 	h :: "VDMNat \<Rightarrow> VDMNat"
 where
 	"h x \<equiv> 
-		\<comment>\<open>User defined body\<close>
-		(g x  x)"
+	\<comment>\<open>User defined body of h\<close>
+	(g x  x)"
 
 end

@@ -26,7 +26,8 @@ public class TRIsaComment extends TRNode {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        if (Vdm2isaPlugin.printVDMComments) 
+        // only print comments if desired and if sensible
+        if (Vdm2isaPlugin.printVDMComments && comment.comment != null && comment.comment.length() > 0) 
 		{
             if (comment.block)
             {
@@ -39,15 +40,20 @@ public class TRIsaComment extends TRNode {
                 sb.append(location.toString());
                 sb.append(getFormattingSeparator());
             }
-            sb.append(comment);
+            sb.append(comment.comment);
             sb.append(getFormattingSeparator());
 
             if (comment.block)
+            {
                 sb.append(IsaToken.BLOCK_COMMENT_CLOSE.toString());
-
-            sb.append(getFormattingSeparator());
+                sb.append(getFormattingSeparator());
+            }
+            else
+            {
+                sb = new StringBuilder(IsaToken.comment(sb.toString()));
+            }
 		}
-        return comment.block ? sb.toString() : IsaToken.comment(sb.toString());
+        return sb.toString();
     }
 
     @Override

@@ -135,9 +135,10 @@ map TCElseIfExpression{location, elseIfExp, thenExp} to TRElseIfExpression(locat
 map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
 
 #############################################################################
-package com.fujitsu.vdmj.ast.lex to vdn2isa.tr.lex;
+package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
 #############################################################################
 map LexCommentList{} to TRIsaCommentList(this);
+map LexComment{} to TRIsaComment(this);
 
 #unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
 

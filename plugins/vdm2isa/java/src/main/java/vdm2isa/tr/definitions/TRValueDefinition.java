@@ -14,6 +14,7 @@ import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.lex.TRIsaCommentList;
 
 /**
  * VDM values are translated as Isabelle constants. 
@@ -31,7 +32,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	 */
 	public boolean abbreviation; 
 	
-	public TRValueDefinition(LexCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
+	public TRValueDefinition(TRIsaCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
 	{
 		super(pattern.location, comments, null, type);
 		this.pattern = pattern;

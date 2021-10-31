@@ -48,8 +48,11 @@ public abstract class TRDefinition extends TRNode
 	{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(comments.translate());
-		
+		if (comments != null)
+		{
+			sb.append(comments.translate());
+		}
+
 		if (annotations != null && annotations.size() > 0)
 		{
 			warning(11050, "Not yet processing annotations");
