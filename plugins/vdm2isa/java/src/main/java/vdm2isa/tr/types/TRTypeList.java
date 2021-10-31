@@ -25,6 +25,12 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setFormattingSeparator(" ");
 	}
 
+	public TRTypeList(TRTypeList from)
+	{
+		this();
+		addAll(from);
+	}
+
 	public TRTypeList(TCTypeList from) throws Exception
 	{
 		super(from);

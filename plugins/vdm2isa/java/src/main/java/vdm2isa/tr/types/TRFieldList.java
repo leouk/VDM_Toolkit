@@ -10,10 +10,16 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 {
 	private static final long serialVersionUID = 1L;
 	
-	public TRFieldList()
+	protected TRFieldList()
 	{
 		super();
 		setFormattingSeparator("\n\t ");
+	}
+
+	public TRFieldList(TRFieldList from)
+	{
+		this();
+		addAll(from);
 	}
 
 	public TRFieldList(TCFieldList list) throws Exception

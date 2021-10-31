@@ -23,9 +23,15 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		setFormattingSeparator(" ");
 	}  
 
-	public TRExpressionList(TCExpressionList list) throws Exception
+	public TRExpressionList(TRExpressionList from)
 	{
-		super(list);
+		this();
+		addAll(from);
+	}
+
+	public TRExpressionList(TCExpressionList from) throws Exception
+	{
+		super(from);
 		setSeparator(IsaToken.COMMA.toString());
 		setFormattingSeparator(" ");
 	}

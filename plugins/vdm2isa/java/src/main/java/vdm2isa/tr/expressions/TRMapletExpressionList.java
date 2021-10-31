@@ -14,10 +14,16 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 {
 	private static final long serialVersionUID = 1L;
 	
-	public TRMapletExpressionList()
+	protected TRMapletExpressionList()
 	{
 		super();
 		setSeparator(IsaToken.COMMA.toString());
+	}
+
+	public TRMapletExpressionList(TRMapletExpressionList from)
+	{
+		this();
+		addAll(from);
 	}
 
 	public TRMapletExpressionList(TCMapletExpressionList list) throws Exception

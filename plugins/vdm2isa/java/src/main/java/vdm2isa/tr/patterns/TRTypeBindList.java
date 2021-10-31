@@ -18,6 +18,13 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		setSeparator(" ");
 	}  
 
+	public TRTypeBindList(TRTypeBindList from)
+	{
+		this();
+		addAll(from);
+	}
+
+
 	public TRTypeBindList(TCTypeBindList list) throws Exception
 	{
 		super(list);

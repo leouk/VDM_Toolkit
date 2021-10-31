@@ -14,10 +14,16 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 {
 	private static final long serialVersionUID = 1L;
 	
-	public TRRecordModifierList()
+	protected TRRecordModifierList()
 	{
 		super();
 		setSeparator(IsaToken.COMMA.toString() + " ");
+	}
+
+	public TRRecordModifierList(TRRecordModifierList from)
+	{
+		this();
+		addAll(from);
 	}
 
 	public TRRecordModifierList(TCRecordModifierList list) throws Exception

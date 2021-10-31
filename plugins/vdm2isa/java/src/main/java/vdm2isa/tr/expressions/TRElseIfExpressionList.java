@@ -9,11 +9,17 @@ import vdm2isa.tr.TRMappedList;
 
 public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRElseIfExpression>{
     
-    public TRElseIfExpressionList()
+    protected TRElseIfExpressionList()
     {
         super();
         setFormattingSeparator("\n\t\t");
     }
+
+    public TRElseIfExpressionList(TRElseIfExpressionList from)
+	{
+		this();
+		addAll(from);
+	}
 
     public TRElseIfExpressionList(TCElseIfExpressionList from) throws Exception
     {

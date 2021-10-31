@@ -17,14 +17,20 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setSeparator(" ");
     }    
 
+	public TRMultipleBindList(TRMultipleBindList from)  
+	{
+		this();
+		addAll(from);
+	}
+
     public TRMultipleBindList(TCMultipleBind bind) throws Exception
     {
         this(bind.getMultipleBindList()); 
     }
 
-    public TRMultipleBindList(TCMultipleBindList list) throws Exception
+    public TRMultipleBindList(TCMultipleBindList from) throws Exception
 	{
-		super(list);
+		super(from);
         setSeparator(" ");
 	}
 

@@ -26,6 +26,12 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		setSeparator(IsaToken.COMMA.toString());
 	}  
 
+	public TRPatternList(TRPatternList from)
+	{
+		this();
+		addAll(from);
+	}
+
 	public TRPatternList(TCPatternList list) throws Exception
 	{
 		super(list);

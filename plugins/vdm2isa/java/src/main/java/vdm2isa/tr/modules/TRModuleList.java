@@ -13,9 +13,18 @@ public class TRModuleList extends TRMappedList<TCModule, TRModule>
 {
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Allow this top top level list to be public empty
+	 */
 	public TRModuleList()
 	{
 		super();
+	}
+
+	public TRModuleList(TRModuleList from)
+	{
+		this();
+		addAll(from);
 	}
 	
 	public TRModuleList(TCModuleList list) throws Exception

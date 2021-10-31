@@ -21,10 +21,16 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 {
 	private static final long serialVersionUID = 1L;
 
-	public TRPatternListList()
+	protected TRPatternListList()
 	{
 		super();
 		setPartOfListList(true);
+	}
+
+	public TRPatternListList(TRPatternListList from)
+	{
+		this();
+		addAll(from);
 	}
 
 	public TRPatternListList(TCPatternListList from) throws Exception
