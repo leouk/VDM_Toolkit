@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.Settings;
+import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.Dialect;
@@ -60,12 +61,18 @@ public class Vdm2isaPlugin extends CommandPlugin
 	public static boolean strict;	
 	// determines whether to add "pre_f =>" on post condition definitions
 	public static boolean linientPost;
+	public static boolean printComments;
 
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 		this.translatedModules = new TRModuleList();
 	}
+
+	public static void main(String args[])
+    {
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "./java/src/test/resources/*.vdmsl"});
+    }
 
 	@Override
 	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
@@ -290,5 +297,6 @@ public class Vdm2isaPlugin extends CommandPlugin
 		Vdm2isaPlugin.strict 		= true;
 		Vdm2isaPlugin.linientPost 	= false;
 		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";
+		Vdm2isaPlugin.printComments = false;
 	}
 }
