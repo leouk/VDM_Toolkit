@@ -21,6 +21,7 @@ package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
 
 map TCExpression{} to TRExpression();
 map TCExpressionList{} to TRExpressionList(this);
+map TCElseIfExpressionList{} to TRElseIfExpressionList(this);
 
 map TCBooleanLiteralExpression{} to TRLiteralExpression(this); 
 map TCCharLiteralExpression{} to TRLiteralExpression(this);
@@ -127,9 +128,9 @@ map TCSeqCompExpression{location, first, bind, predicate} to TRSeqCompExpression
 
 map TCNilExpression{location} to TRNilExpression(location);
 map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
-map TCIfExpression{location, ifExp, thenExp, elseExp} to TRIfExpression(location, ifExp, thenExp, elseExp);
+map TCIfExpression{location, ifExp, thenExp, elseList, elseExp} to TRIfExpression(location, ifExp, thenExp, elseList, elseExp);
+map TCElseIfExpression{location, elseIfExp, thenExp} to TRElseIfExpression(location, elseIfExp, thenExp);
 map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
-
 
 #############################################################################
 package com.fujitsu.vdmj.tc.lex to vdm2isa.tr.lex;

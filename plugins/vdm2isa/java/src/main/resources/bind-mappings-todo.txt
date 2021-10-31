@@ -34,7 +34,6 @@
 *TCMapPattern
 *TCExpressionPattern
 *TCRecordPattern
+*TCPatternBind
 
-TCPatternBind
-
-(34 out 37) = 91
+(37 out 37) = 100

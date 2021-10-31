@@ -14,27 +14,58 @@ public class TRIfExpression extends TRExpression
 	private static final long serialVersionUID = 1L;
 	private final TRExpression ifExp;
 	private final TRExpression thenExp;
+	private final TRElseIfExpressionList elseList;
 	private final TRExpression elseExp;
 	
 	//@todo TCElseIfExpressionList! 
-	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, TRExpression elseExp)
+	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, TRElseIfExpressionList elseList, TRExpression elseExp)
 	{
 		super(location);
+		assert ifExp != null && thenExp != null && elseExp != null && elseList != null;
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;
+		this.elseList = elseList;
+		this.setFormattingSeparator("\n\t\t");
+		this.elseList.setFormattingSeparator(getFormattingSeparator());		
+		//System.out.println(toString());
 	}
 
-	@Override
-	public String translate()
+	@Override 
+	public String toString()
 	{
-		// attempt at shifting the parenthesing and expression handling elsewhere
-		return tokenise(isaToken(), location, ifExp, thenExp, elseExp);
+		return super.toString() + 
+			"\n\t if   = " + ifExp.translate() +
+			"\n\t then = " + thenExp.translate() +
+			"\n\t elseL= " + elseList.size() + 
+			"\n\t      = " + elseList.translate() +
+			// could this be null for operations? No. TCIfStatement.
+			"\n\t else = " + elseExp.translate();  
 	}
 
 	@Override
 	public IsaToken isaToken() {
 		return IsaToken.IF;
+	}
+	
+	@Override
+	public String translate()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(getFormattingSeparator());
+		sb.append(isaToken().toString());
+		sb.append(" ");
+		sb.append(IsaToken.parenthesise(ifExp.translate()));
+		sb.append(" ");
+		sb.append(IsaToken.THEN.toString());
+		sb.append(getFormattingSeparator());
+		sb.append(IsaToken.parenthesise(thenExp.translate()));
+		sb.append(elseList.translate());
+		sb.append(getFormattingSeparator());
+		sb.append(IsaToken.ELSE.toString());
+		sb.append(getFormattingSeparator());
+		sb.append(IsaToken.parenthesise(elseExp.translate()));
+		return IsaToken.parenthesise(sb.toString());
 	}
 
 	@Override
