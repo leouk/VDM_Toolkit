@@ -10,7 +10,6 @@ import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
-import vdm2isa.lex.IsaTemplates;
 import plugins.Vdm2isaPlugin;
 
 /**

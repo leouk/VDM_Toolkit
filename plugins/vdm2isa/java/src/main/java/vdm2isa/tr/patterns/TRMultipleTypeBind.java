@@ -10,7 +10,6 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     private static final long serialVersionUID = 1L;
 
     private final TRType type;
-    private final String separator;
 
     public TRMultipleTypeBind(TRPattern pattern, TRType type)
     {
@@ -21,7 +20,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     {
         super(plist);
         this.type = type;
-        this.separator = " ";
+        setSeparator(" ");
     }
 
     @Override

@@ -1,6 +1,5 @@
 package vdm2isa.tr.types;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

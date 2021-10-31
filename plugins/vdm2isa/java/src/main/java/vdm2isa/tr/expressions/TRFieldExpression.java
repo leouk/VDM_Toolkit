@@ -5,7 +5,6 @@ import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
-import vdm2isa.tr.types.TRField;
 
 public class TRFieldExpression extends TRExpression {
     
