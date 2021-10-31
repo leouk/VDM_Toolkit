@@ -465,10 +465,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	protected String translateImplicitChecks(TRSpecificationKind kind)
 	{
 		StringBuilder fcnBody = new StringBuilder();
-
-		if (kind == TRSpecificationKind.PRE && isConstantFunction())
+		
+		if (kind == TRSpecificationKind.PRE && isConstantFunction() && isImplicitlyGeneratedUndeclaredSpecification())
 		{
-			// constant function preconditions do not require invariant checks (no parameters)
+			// undeclared pre of constant functions get "True" 
+			fcnBody.append(IsaToken.TRUE.toString());
 		}	
 		else
 		{
@@ -482,42 +483,24 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			fcnBody.append(getFormattingSeparator());
 			fcnBody.append(IsaToken.comment(implicitComment, getFormattingSeparator()));
 			
-			List<String> varNames = parameters.varNameTranslate();
-			String old = type.parameters.setFormattingSeparator(getFormattingSeparator());
+			// translate the parameters taking currying into account!
+			//String old = type.parameters.setFormattingSeparator(getFormattingSeparator()); //uncomment if want to see differently "shaped" output
+			String paramsStr = paramsInvTranslate(kind);
+			//type.parameters.setFormattingSeparator(old);
+			fcnBody.append(paramsStr);
+
 			// System.out.println("Implicit translation with: " + 
 			// 	"\n\t params = " + parameters.getFlatPatternList().size() + 
 			// 	"\n\t types  = " + type.parameters.size() +
 			// 	"\n\t vars   = " + varNames.toString() +
 			// 	"\n\t" + toString());
-			String paramsStr = type.parameters.invTranslate(varNames);
-			type.parameters.setFormattingSeparator(old);
 
-			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+			// if there is a user defined body, add the missing conjunction for it, so long as not pre of constant function! 
+			if (!isConstantFunction() && !isImplicitlyGeneratedUndeclaredSpecification())
 			{
-				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
-				assert name.getName().startsWith("post_");
-				String preCall = "pre_" + name.getName().substring("post_".length()) + " ";
-				boolean removed = varNames.remove("RESULT");//varNames.remove(varNames.size()-1)
-				if (!removed)
-				{
-					warning(11111, "Could not find \"RESULT\" variable in implicit post condition specification definition");
-				}
-				// transform "[x,y]" into "x y", "[x]" into "x", "[]" into ""
-				String varList = varNames.toString().replace(',', ' ');
-				assert varList.length() >= 2;
-				paramsStr = IsaToken.parenthesise(
-						preCall + varList.substring(1, varList.length()-1) + " " +
-						IsaToken.IMPLIES.toString() + " " + // getFormattingSeparator() +
-						paramsStr);
-				//TODO this will possibly create "messy" formatting if separator includes \n! 
-			}
-			fcnBody.append(paramsStr);
-			
-			// if there is a user defined body, add the missing conjunction for it
-			if (!isImplicitlyGeneratedUndeclaredSpecification())
-			{
-				fcnBody.append(" ");
-				fcnBody.append(IsaToken.AND.toString());
+				// " \<and>"
+				fcnBody.append(type.parameters.getFormattingSeparator());
+				fcnBody.append(type.parameters.getInvTranslateSeparator());
 			}
 		}
 		return fcnBody.toString();
