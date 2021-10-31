@@ -6,6 +6,7 @@ package vdm2isa.tr.patterns.visitors;
 
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternBind;
 import vdm2isa.tr.patterns.TRRecordPattern;
 import vdm2isa.tr.patterns.TRStructuredPattern;
 
@@ -29,6 +30,11 @@ public abstract class TRPatternVisitor<R, S>
 	}
 
 	public R caseRecordPattern(TRRecordPattern node, S arg)
+	{
+		return casePattern(node, arg);
+	}
+
+	public R casePatternBind(TRPatternBind node, S arg)
 	{
 		return casePattern(node, arg);
 	}
