@@ -1,5 +1,6 @@
 package vdm2isa.tr;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
 /**
@@ -21,4 +22,14 @@ public interface MappableNode extends Mappable {
 	 * @return Isabelle YXML string.
 	 */
 	public String invTranslate();
+
+	public LexLocation getLocation();
+	
+	public void report(int number, String msg);
+	public void warning(int number, String msg);
+
+	public String getSeparator();
+	public String setSeparator(String sep);
+	public String getFormattingSeparator();
+	public String setFormattingSeparator(String sep);
 }
