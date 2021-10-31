@@ -89,6 +89,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.local = false; // LetDefExpression to set this to true if/when needed
 		this.implicitSpecificationKind = impliSpecificationDefinition();
 
+		assert this.type != null && this.name != null && this.parameters != null; 
+
+		setFormattingSeparator("\n\t\t");
 		//TODO type parameters are comma separated?	
 		// parameters are curried not "," separated
 		this.parameters.setSeparator(" ");
@@ -111,8 +114,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
-		if (local || 
-			!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)) 
+		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
+		if (!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)
+			|| local) 
 			System.out.println(toString());
     }
 
@@ -121,11 +125,13 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		return "TRExplicitFuncDef for " + 
 			" \n\tname        = " + String.valueOf(name) +
-			" \n\tlocal		  = " + local + 
-			" \n\tkind		  = " + implicitSpecificationKind +
+			" \n\tlocal	      = " + local + 
+			" \n\tkind	      = " + implicitSpecificationKind +
 			" \n\ttype params = " + String.valueOf(typeParams) + 
-			" \n\ttype        = " + (type != null ? type.translate() : "null") + 
-			" \n\tparameters  = " + String.valueOf(parameters) + 
+			" \n\ttype sig    = " + (type != null ? type.translate() : "null") + 
+			" \n\ttype sig in = " + (type != null ? type.parameters.translate() + " [" + type.parameters.size() + "]": "null") +
+			" \n\ttype sig out= " + (type != null ? type.result.translate() : "null") +
+			" \n\tparameters  = " + (parameters != null ? parameters.toString() : null)+ 
 			" \n\tbody        = " + (body != null ? body.translate() : "null") + 
 			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.translate()  : "null") + 
 			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.translate() : "null") + 
@@ -206,10 +212,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 * Implicit checks for pre/post. They are similar with minor differences, so parameterised here to avoid repetition
 	 * at possibly the cost of making it slightly harder to follow. 
 	 * @param kind
-	 * @param formattingSeparator
 	 * @return
 	 */
-	protected String translateImplicitChecks(TRSpecificationKind kind, String formattingSeparator)
+	protected String translateImplicitChecks(TRSpecificationKind kind)
 	{
 		StringBuilder fcnBody = new StringBuilder();
 
@@ -221,11 +226,19 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			// pre/post checks on input (including RESULT for post) types
 			// there is no need to check type.result type because for PRE/POST defs that's always bool! 
-			fcnBody.append(formattingSeparator);
-			fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", formattingSeparator));
+			fcnBody.append(getFormattingSeparator());
+			fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", getFormattingSeparator()));
 			
 			List<String> varNames = parameters.varNameTranslate();
-			String paramsStr = type.parameters.invTranslate(varNames, formattingSeparator);
+			String old = type.parameters.setFormattingSeparator(getFormattingSeparator());
+			// System.out.println("Implicit translation with: " + 
+			// 	"\n\t params = " + parameters.getFlatPatternList().size() + 
+			// 	"\n\t types  = " + type.parameters.size() +
+			// 	"\n\t vars   = " + varNames.toString() +
+			// 	"\n\t" + toString());
+			String paramsStr = type.parameters.invTranslate(varNames);
+			type.parameters.setFormattingSeparator(old);
+
 			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
 			{
 				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
@@ -241,7 +254,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				assert varList.length() >= 2;
 				paramsStr = IsaToken.parenthesise(
 						preCall + varList.substring(1, varList.length()-1) + " " +
-						IsaToken.IMPLIES.toString() + " " + // formattingSeparator +
+						IsaToken.IMPLIES.toString() + " " + // getFormattingSeparator() +
 						paramsStr);
 				//TODO this will possibly create "messy" formatting if separator includes \n! 
 			}
@@ -299,7 +312,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
 		String fcnOutType  = type.result.translate();
 		String fcnParams   = parameters.translate();
-		String formattingSeparator = "\n\t "; // " " "\n\t" "\n\t\t" etc.
 		StringBuilder fcnBody = new StringBuilder();
 		switch (implicitSpecificationKind)
 		{
@@ -310,7 +322,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// include implicit function parameters invariant checks
 			case PRE:
 			case POST:
-				fcnBody.append(translateImplicitChecks(implicitSpecificationKind, formattingSeparator));	
+				fcnBody.append(translateImplicitChecks(implicitSpecificationKind));	
 				break;
 
 			case INV:
@@ -329,25 +341,34 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			case MIN:
 				break;			
 		}
+		String old = getFormattingSeparator();
 		// include any record patterns within a single let definition for all of them
 		// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
 		//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
 		if (parameters.hasRecordPatternParameters())
 		{
-			fcnBody.append(formattingSeparator);
-			fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", formattingSeparator));
-			formattingSeparator = "\n\t\t";
+			fcnBody.append(getFormattingSeparator());
+			fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
+			setFormattingSeparator("\n\t\t\t");
 			fcnBody.append(parameters.recordPatternTranslate());
 		}
 		// include the user declared body after including implicit considerations
-		fcnBody.append(formattingSeparator);
-		fcnBody.append(IsaToken.comment("User defined body", formattingSeparator));
+		fcnBody.append(getFormattingSeparator());
+		fcnBody.append(IsaToken.comment("User defined body", getFormattingSeparator()));
 		fcnBody.append(body.translate());
 
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
 
+		setFormattingSeparator(old);
+
 		return sb.toString();
+	}
+
+	@Override
+	public String setFormattingSeparator(String sep)
+	{
+		return super.setFormattingSeparator(sep);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ package vdm2isa.tr.expressions.visitors;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRBoundedExpression;
+import vdm2isa.tr.expressions.TRElseIfExpression;
 import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRFieldExpression;
@@ -77,6 +78,11 @@ public abstract class TRExpressionVisitor<R, S>
 	}
 
  	public R caseIfExpression(TRIfExpression node, S arg)
+	{
+		return caseExpression(node, arg);
+	}
+
+	public R caseElseIfExpression(TRElseIfExpression node, S arg)
 	{
 		return caseExpression(node, arg);
 	}

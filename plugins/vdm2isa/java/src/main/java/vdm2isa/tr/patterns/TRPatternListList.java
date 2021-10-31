@@ -26,31 +26,27 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public TRPatternListList()
 	{
 		super();
+		setPartOfListList(true);
 	}
 
 	public TRPatternListList(TCPatternListList from) throws Exception
 	{
 		super(from);
-		setPartOfListList();
+		setPartOfListList(true);
 	}
 
-	private void setPartOfListList()
+	@Override
+	public String toString()
+	{
+		return super.toString() + " [PLL=" + size() + "]";
+	}
+
+	private void setPartOfListList(boolean b)
 	{
 		for(TRPatternList p : this)
 		{
-			p.partOfListList = true;
+			p.partOfListList = b;
 		}
-	}
-
-	public String setSeparator(String sep)
-	{
-		String result = separator;
-		separator = sep;
-		for (TRPatternList p : this)
-		{
-			p.separator = sep;
-		}
-		return result;
 	}
 
 	public boolean hasRecordPatternParameters()
@@ -88,13 +84,33 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 			sb.append(get(0).recordPatternTranslate());
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(separator);
+				sb.append(getSeparator());
+				sb.append(getFormattingSeparator());
 				sb.append(get(i).recordPatternTranslate());
 			}
 			setSeparator(old);
 			sb.append(recordPatternCloseContext());
 		}
 		return sb.toString();
+	}
+
+	//TODO maybe make this a field called once given the structure never changes?
+	public TRPatternList getFlatPatternList()
+	{
+		TRPatternList result = new TRPatternList();
+		int concSize = 0;
+		if (!isEmpty())
+		{
+			result.setSeparator(get(0).getSeparator());
+			result.setFormattingSeparator(get(0).getFormattingSeparator());
+			for (TRPatternList plist : this)
+			{
+				result.addAll(plist);
+				concSize += plist.size();
+			}
+		}
+		assert result.size() == concSize;	
+		return result; 
 	}
 
 	/**
@@ -104,20 +120,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	 */
 	public List<String> varNameTranslate()
 	{
-		List<String> result;
-		int concSize = 0;
-		if (!isEmpty())
-		{
-			result = new Vector<String>();
-			for (TRPatternList plist : this)
-			{
-				result.addAll(plist.varNameTranslate());
-				concSize += plist.size();
-			}
-		}
-		else
-			result = Collections.emptyList();
-		assert result.size() == concSize;	
-		return result; 
+		return getFlatPatternList().varNameTranslate();
 	}
 }
