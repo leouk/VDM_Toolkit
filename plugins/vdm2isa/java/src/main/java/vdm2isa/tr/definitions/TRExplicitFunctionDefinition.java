@@ -5,7 +5,10 @@
 package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import javax.management.RuntimeErrorException;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
@@ -18,8 +21,12 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
+import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
@@ -55,13 +62,18 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final TRExplicitFunctionDefinition postdef;
 	private final TCDefinitionListList paramDefinitionList;
 
-	public TRExplicitFunctionDefinition(LexCommentList comments,
+	public TRExplicitFunctionDefinition(
+			LexCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
-			TCNameList typeParams, TRFunctionType type,
-			TRPatternListList parameters, TRExpression body,
+			TCNameList typeParams, 
+			TRFunctionType type,
+			TRPatternListList parameters, 
+			TRExpression body,
 			TRExpression precondition,
-			TRExpression postcondition, boolean typeInvariant, TRExpression measureExp,
+			TRExpression postcondition, 
+			boolean typeInvariant, 
+			TRExpression measureExp,
 			boolean isCurried, 
 			TRExplicitFunctionDefinition predef,
 			TRExplicitFunctionDefinition postdef,
@@ -96,31 +108,43 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// parameters are curried not "," separated
 		this.parameters.setSeparator(" ");
 		
-		if (precondition != null && predef == null)
+		// check stuff is consistent to expectations
+		if ((precondition != null && predef == null) || (precondition == null && predef != null))
+			//TODO don't want two messages for effectively same thing; review text latter
 			report(11111, "Explicit funciton has declared precondition but no pre definition.");
-		if (postcondition != null && postdef == null)
+		if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
 			report(11111, "Explicit funciton has declared postcondition but no post definition.");
 		
 		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
 		// which *must* be of a specific specification kind.
-		if (body == null && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+		if (isImplicitlyGeneratedUndeclaredSpecification() && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
 		{
 			report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
 				". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
 		}
-
 		if (this.isCurried)
 		{
 			warning(11111, "VDM (curried) explicit function definition still with some problems!");
 		}
 
+		// create TRExplicitFunctionDefinitions for undeclared pre/post to allow for type invariant checks
+		if (precondition == null && predef == null)
+			;//predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+		if (postcondition == null && postcondition == null)
+			;//postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+
 		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
-		if (!Arrays.asList(TRSpecificationKind.PRE, TRSpecificationKind.POST, TRSpecificationKind.NONE).contains(implicitSpecificationKind)
-			|| local) 
+		if (!Arrays.asList(
+				TRSpecificationKind.PRE 
+				,TRSpecificationKind.POST
+				,TRSpecificationKind.NONE
+			).contains(implicitSpecificationKind)
+			//|| local
+			) 
 			System.out.println(toString());
     }
 
-    @Override
+	@Override
 	public String toString()
 	{
 		return "TRExplicitFuncDef for " + 
@@ -141,9 +165,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// avoid calling translate for TLD as it creates a record of what has been translated!  
 			" \n\tpredef      = " + (predef  != null ? predef.getClass().getName()  + ": \n========" + predef.toString() + "\n========"/*predef.translate()*/  : "null") +
 			" \n\tpostdef     = " + (postdef != null ? postdef.getClass().getName() + ": \n========" + postdef.toString() + "\n========"/*postdef.translate()*/ : "null") +
-			" \n\tparamDefList= " + String.valueOf(paramDefinitionList) +
+			" \n\tparamDefList= " + (paramDefinitionList != null ? paramDefinitionList.toString() : "") +//paramDefinitionList.getFlatDefinitionList().toString() : "null") +
 			" \n\trecursive   = " + recursive +
-			" \n\tisUndefined = " + isUndefined;
+			" \n\tisUndefined = " + isUndefined +
+			" \n\tsynthetic   = " + isImplicitlyGeneratedUndeclaredSpecification() +
+			" \n\tin		  = " + location.toString();
 	
 		// f: nat -> nat
 		// f(x) == x + 1;
@@ -163,6 +189,123 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// 	paramDefList= [x = nat]
 	}
 
+	private TRFunctionType createUndeclaredSpecificationFunctionType(TRSpecificationKind kind)
+	{
+		TRFunctionType result = null;
+		TRType resultType;
+		switch (kind)
+		{
+			case PRE:
+				resultType = new TRBasicType(type.location, IsaToken.BOOL);
+				result = new TRFunctionType(type.location, type.parameters, true, resultType);
+				break;
+			case POST:
+				resultType = new TRBasicType(type.location, IsaToken.BOOL);
+				TRTypeList inSig = new TRTypeList(type.parameters);
+				inSig.add(type.result);
+				result = new TRFunctionType(type.location, inSig, true, resultType);
+				break;
+
+		case EQ:
+			break;
+		case INIT:
+			break;
+		case INV:
+			break;
+		case MAX:
+			break;
+		case MEASURE:
+			break;
+		case MIN:
+			break;
+		case NONE:
+			break;
+		case ORD:
+			break;
+		default:
+			throw new UnsupportedOperationException();
+		}
+		assert result != null;
+		return result;
+	}
+
+	private TRPatternListList createUndeclaredSpecificationParameters(TRSpecificationKind kind)
+	{
+		TRPatternListList result = new TRPatternListList(parameters);
+		if (kind == TRSpecificationKind.POST)
+		{
+			// add synthetic RESULT extra parameter to the last patternList
+			// e.g., uncurried(x,y)== x + y, will lead to [[x,y]] then [[x,y,RESULT]]
+			// 		 curried(x)(y) == x + y, will lead to [[x],[y]] then [[x],[y,RESULT]]
+			result.lastElement().add(new TRBasicPattern(parameters.getLocation(), IsaToken.IDENTIFIER, 
+				name.getResultName(parameters.getLocation()).toString()));
+		}
+		return result;
+	}
+
+	/**
+	 * Constructs corresponding definition for TRExplicitFunction of interest at the same location as this function definition. 
+	 * @param kind
+	 */
+	private TRExplicitFunctionDefinition createUndeclaredSpecification(TRSpecificationKind kind)
+	{
+		switch (kind)
+		{
+			case PRE:
+				assert predef == null && precondition == null;
+				break;
+			case POST:
+				assert postdef == null && postcondition == null;
+				break;			
+			// case EQ:
+			// 	break;
+			// case INIT:
+			// 	break;
+			// case INV:
+			// 	break;
+			// case MAX:
+			// 	break;
+			// case MEASURE:
+			// 	break;
+			// case MIN:
+			// 	break;
+			// case NONE:
+			// 	break;
+			// case ORD:
+			// 	break;
+			default:
+				warning(11111, "Not yet creating implicit definition for missing specification " + 
+				kind + " for function " + name.toString());
+				break;
+		}
+		LexCommentList comments = new LexCommentList();
+		comments.add(location, "implicitly constructed " + kind + " specification", false);
+		
+		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
+		// The translator will then take this into account as the "missing" (now found) specification definition, and
+		// treat it as if the user has given it (e.g. equivalent to as if the user had typed "pre true", "post true");  
+		TRExplicitFunctionDefinition result = new TRExplicitFunctionDefinition(
+					comments,										//  LexCommentList comments,								
+					null,											// 	TCAnnotationList annotations,
+					name.getPerName(location),						// 	TCNameToken name,
+					typeParams,										// 	TCNameList typeParams, 
+					createUndeclaredSpecificationFunctionType(kind),// 	TRFunctionType type,
+					createUndeclaredSpecificationParameters(kind),	// 	TRPatternListList parameters, 
+					null,											// 	TRExpression body,
+					null,											// 	TRExpression precondition,
+					null,											// 	TRExpression postcondition, 
+					false,											// 	boolean typeInvariant, 
+					null, 											// 	TRExpression measureExp,
+					isCurried,										// 	boolean isCurried, 
+					null,											// 	TRExplicitFunctionDefinition predef,
+					null,											// 	TRExplicitFunctionDefinition postdef,
+					paramDefinitionList,							// 	TRDefinitionListList paramDefinitionList,
+					false,											// 	boolean recursive,
+					false 											// 	boolean isUndefined
+					);
+		return result;
+	} 
+	
 	/**
 	 * Determines wether this TRExplicitFunctionDefinition is one of those constructed by the typechecker.
 	 * Depending on which kind (if any), then translation has to take into account different considerations. 
@@ -224,10 +367,16 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}	
 		else
 		{
+			String implicitComment = "Implicitly defined type invariant checks" +
+				(isImplicitlyGeneratedUndeclaredSpecification() ? " for undeclared" + 
+				// No need to append the kind, given it will be as part of its own definition?
+				//kind.toString().toLowerCase() + 
+				" specification": "");
+
 			// pre/post checks on input (including RESULT for post) types
 			// there is no need to check type.result type because for PRE/POST defs that's always bool! 
 			fcnBody.append(getFormattingSeparator());
-			fcnBody.append(IsaToken.comment("Implicitly defined type invariant checks", getFormattingSeparator()));
+			fcnBody.append(IsaToken.comment(implicitComment, getFormattingSeparator()));
 			
 			List<String> varNames = parameters.varNameTranslate();
 			String old = type.parameters.setFormattingSeparator(getFormattingSeparator());
@@ -261,7 +410,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			fcnBody.append(paramsStr);
 			
 			// if there is a user defined body, add the missing conjunction for it
-			if (!isImplicitlyGenerated())
+			if (!isImplicitlyGeneratedUndeclaredSpecification())
 			{
 				fcnBody.append(" ");
 				fcnBody.append(IsaToken.AND.toString());
@@ -279,7 +428,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 *  
 	 * @return true when pre/post are being implicitly generated
 	 */
-	protected boolean isImplicitlyGenerated()
+	protected boolean isImplicitlyGeneratedUndeclaredSpecification()
 	{
 		return body == null;
 	}
