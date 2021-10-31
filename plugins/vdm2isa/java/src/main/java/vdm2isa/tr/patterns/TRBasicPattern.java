@@ -109,7 +109,7 @@ public class TRBasicPattern extends TRPattern {
 
     @Override
     public String invTranslate() {
-        return pattern;
+        return translate();
     }
 
     @Override

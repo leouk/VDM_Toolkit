@@ -61,7 +61,8 @@ public class Vdm2isaPlugin extends CommandPlugin
 	public static boolean strict;	
 	// determines whether to add "pre_f =>" on post condition definitions
 	public static boolean linientPost;
-	public static boolean printComments;
+	public static boolean printVDMComments;
+	public static boolean printIsaComments;
 
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
@@ -297,6 +298,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		Vdm2isaPlugin.strict 		= true;
 		Vdm2isaPlugin.linientPost 	= false;
 		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";
-		Vdm2isaPlugin.printComments = false;
+		Vdm2isaPlugin.printVDMComments = false;
+		Vdm2isaPlugin.printIsaComments = true;
 	}
 }
