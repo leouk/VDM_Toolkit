@@ -5,6 +5,7 @@
 package vdm2isa.tr.patterns;
 
 import java.util.List;
+import java.util.Vector;
 
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
@@ -122,9 +123,19 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	 * Situations (yet to be observed) might occur which requires knowledge about the VDM currying structure, in which
 	 * case this method ought to return List<List<String>>. For now, will flatten it out. See also TRPatternList.varNameTranslate.  
 	 */
-	public List<String> varNameTranslate()
+	public List<String> flatVarNameTranslate()
 	{
 		return getFlatPatternList().varNameTranslate();
+	}
+
+	public List<List<String>> varNameTranslate()
+	{
+		List<List<String>> result = new Vector<List<String>>(size());
+		for(TRPatternList plist : this)
+		{
+			result.add(plist.varNameTranslate());
+		}
+		return result;
 	}
 
 	public TRPatternListList copy()

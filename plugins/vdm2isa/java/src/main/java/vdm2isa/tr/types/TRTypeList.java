@@ -18,6 +18,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 {
 	private static final long serialVersionUID = 1L;
 	
+	private boolean curried;
+	private String invTranslateSeparator;
+
 	protected TRTypeList()
 	{
 		super();
@@ -38,9 +41,39 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setFormattingSeparator(" ");
 	}
 
+	public boolean isCurried()
+	{
+		return curried;//getSeparator().equals(IsaToken.FUN.toString()
+	}
+
 	public void setCurried(boolean curried) 
 	{
-		setSeparator(curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
+		this.curried = curried;
+		setSeparator(this.curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
+		setInvTranslateSeparator(IsaToken.AND.toString());
+	}
+
+	public String getInvTranslateSeparator()
+	{
+		return invTranslateSeparator;
+	}
+
+	protected String setInvTranslateSeparator(String sep)
+	{
+		String old = invTranslateSeparator;
+		if (sep == null)
+			report(11111, "Cannot translate with a null separator");
+		else
+		{
+			invTranslateSeparator = sep;
+			//System.out.println("sep = " + sep + " for " + this.toString());
+		}	
+		return old;
+	}
+
+	private boolean isValidInvTranslateCall(List<String> varNames)
+	{
+		return varNames.size() > size();
 	}
 
 	/**
@@ -54,7 +87,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	 */
 	public String invTranslate(List<String> varNames)
 	{
-		if (varNames.size() > size())
+		if (isValidInvTranslateCall(varNames))
 		{
 			report(11111, "Inconsistent invariant translation call in type list: " + 
 					Vdm2isaPlugin.plural(varNames.size(), "variable name", "s") + 
@@ -67,15 +100,12 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		if (!isEmpty() && varNames.size() <= this.size()) 
 		{
 			sb.append("(");
-
 			sb.append(get(0).invTranslate(varNames.get(0)));
-
-			for (int i=1; i< varNames.size(); i++)
+			for (int i = 1; i < varNames.size(); i++)
 			{
-				sb.append(" ");
-				sb.append(IsaToken.AND.toString());
-				// presumes the user defines sensible separator?
-				sb.append(getFormattingSeparator());//sb.append("\n\t\t");
+				sb.append(getFormattingSeparator());
+				sb.append(getInvTranslateSeparator());
+				sb.append(getFormattingSeparator());
 				sb.append(get(i).invTranslate(varNames.get(i)));
 			}
 			sb.append(")");
