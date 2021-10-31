@@ -5,6 +5,8 @@ package com.fujitsu.vdmj.tc.definitions to vdm2isa.tr.definitions;
 
 map TCDefinition{} to TRDefinition();
 map TCDefinitionList{} to TRDefinitionList(this);
+map TCDefinitionListList{} to TRDefinitionListList(this); 
+
 map TCTypeDefinition{annotations, name, type, invExpression} to TRTypeDefinition(annotations, name, type, invExpression);
 map TCExplicitFunctionDefinition{comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined} to TRExplicitFunctionDefinition(comments, annotations, name, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined);
 

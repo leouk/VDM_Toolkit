@@ -13,11 +13,21 @@ import vdm2isa.tr.TRMappedList;
 public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 {
 	private static final long serialVersionUID = 1L;
-	
+
+	public TRDefinitionList()
+	{
+		super();
+		setup();
+	} 
+
 	public TRDefinitionList(TCDefinitionList list) throws Exception
 	{
 		super(list);
-		// let each specific definition decide how to format separate between themselves! 
+		setup();
+	}
+
+	protected void setup()
+	{
 		setFormattingSeparator("\n\t\t");
 		if (allAreLocalDefinition())
 			setLocal(true);
