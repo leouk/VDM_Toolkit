@@ -1,10 +1,6 @@
 package vdm2isa.lex;
 
-
-import vdm2isa.tr.MappableNode;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -35,42 +31,10 @@ public final class IsaTemplates {
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
 
-    public static void main(String args[])
-    {
-        
-    }
-
     public static void reset()
     {
         translatedItems.clear();
     }
-
-    public static String listToString(List<? extends MappableNode> list, String separator)
-	{
-        return listToString("", list, separator, "");
-    }
-
-    //TODO have other methods beyond translate or use reflection? We have translate, invTranslate, compTranslate sprinkled around :-(
-    public static String listToString(String before, List<? extends MappableNode> list, String separator, String after)
-	{
-        assert separator != null && before != null && after != null;
-		StringBuilder sb = new StringBuilder();
-		sb.append(before);
-
-		if (!list.isEmpty())
-		{
-			sb.append(list.get(0).translate());
-
-			for (int i=1; i<list.size(); i++)
-			{
-				sb.append(separator);
-				sb.append(list.get(i).translate());
-			}
-		}
-
-		sb.append(after);
-		return sb.toString();
-	}
 
     //@todo pass TCNameToken? Or LexLocation?
     private static void updateTranslatedIsaItem(String name, IsaItem item)

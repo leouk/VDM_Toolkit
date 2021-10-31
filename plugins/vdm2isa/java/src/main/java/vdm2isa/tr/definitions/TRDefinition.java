@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
+import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
@@ -46,7 +47,7 @@ public abstract class TRDefinition extends TRNode
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (comments != null && comments.size() > 0) 
+		if (Vdm2isaPlugin.printComments && comments != null && comments.size() > 0) 
 		{
 			sb.append("(* ");
 			for (LexComment c: comments)

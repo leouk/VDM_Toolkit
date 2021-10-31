@@ -132,7 +132,7 @@ public enum IsaToken {
 	FORALL(Token.FORALL, "\\<forall>"),
 	EXISTS(Token.EXISTS, "\\<exists>"),
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),
-	IOTA(Token.IOTA, "SOME"),
+	IOTA(Token.IOTA, "THE"),
 	LAMBDA(Token.LAMBDA, "\\<lambda>"),
 	
 	SET_OPEN(Token.SET_OPEN, "{"),
@@ -158,6 +158,7 @@ public enum IsaToken {
 	IF(Token.IF, "if"),
 	THEN(Token.THEN, "then"),
 	ELSE(Token.ELSE, "else"),
+	ELSEIF(Token.ELSEIF, "else if"),
 	TFUN(Token.TOTAL_FUNCTION, "\\<Rightarrow>"),
 	LET(Token.LET, "let"),
 	IN(Token.IN, "in"),
