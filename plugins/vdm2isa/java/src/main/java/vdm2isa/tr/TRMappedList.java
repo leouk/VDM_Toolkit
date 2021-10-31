@@ -111,7 +111,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		if (!isEmpty())
 		{
 			sb.append(get(0).toString());
-			//sb.append(getFormattingSeparator());
+			sb.append(getFormattingSeparator());
 			for (int i = 1; i < size(); i++)
 			{
 				//TODO workout whether to include before/after formatting separators? 

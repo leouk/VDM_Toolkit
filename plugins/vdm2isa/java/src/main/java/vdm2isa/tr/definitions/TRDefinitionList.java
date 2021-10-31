@@ -34,7 +34,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 
 	protected void setup()
 	{
-		setFormattingSeparator("\n\t\t");
+		setFormattingSeparator("\n\t");
 		if (allAreLocalDefinition())
 			setLocal(true);
 	}

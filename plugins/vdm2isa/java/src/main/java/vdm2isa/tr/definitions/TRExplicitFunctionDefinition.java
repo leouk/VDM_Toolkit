@@ -16,9 +16,12 @@ import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
+import org.junit.internal.Throwables;
+
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -63,7 +66,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final TRDefinitionListList paramDefinitionList;
 
 	public TRExplicitFunctionDefinition(
-			LexCommentList comments,
+			TRIsaCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
 			TCNameList typeParams, 
@@ -287,7 +290,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;
 		}
 		assert undeclaredName != null;
-		LexCommentList comments = new LexCommentList();
+		TRIsaCommentList comments = new TRIsaCommentList();
 		comments.add(location, "implicitly constructed " + kind + " specification", false);
 		
 		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
@@ -541,6 +544,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	@Override
 	public String setFormattingSeparator(String sep)
 	{
+		// if (getFormattingSeparator() != null && sep != null && getFormattingSeparator().equals("\n\t\t") && !sep.equals("\n\t\t"))
+		// {
+		// 	Throwable t = new Throwable(); 
+		// 	System.out.println("Change format sep from " + getFormattingSeparator().length() + getFormattingSeparator() + " to " + sep.length() + sep); 
+		// 	t.printStackTrace();
+		// }
 		return super.setFormattingSeparator(sep);
 	}
 
