@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
 
@@ -31,6 +32,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         super(location, expression);
         this.bindList = bindList;
         this.type = type;
+        this.setFormattingSeparator("\n\t");
         // See NB's email on 28/10/2021 8:59 Subject TCLambdaExpression.paraDefinitions.implicitDefinitions
         // There is no need for those in the end. So remove them. 
         //this.paramPatterns = paramPatterns; 
@@ -82,13 +84,13 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         //          undefined
         //      )
         // )
-        sb.append("\n\t");
+        sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(" ");
         sb.append(bindList.translate());
         sb.append(" ");
         sb.append(IsaToken.POINT.toString());
-        sb.append(tabs);
+        sb.append(getFormattingSeparator() + "\t");
         sb.append(invTranslate());
         return IsaToken.parenthesise(sb.toString());
     }

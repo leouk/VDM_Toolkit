@@ -17,7 +17,8 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	public TRDefinitionList(TCDefinitionList list) throws Exception
 	{
 		super(list);
-		separator = "\n";
+		// let each specific definition decide how to format separate between themselves! 
+		setFormattingSeparator("\n\t\t");
 		if (allAreLocalDefinition())
 			setLocal(true);
 	}

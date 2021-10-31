@@ -19,13 +19,15 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	protected TRExpressionList() 
 	{
 		super();
-		separator = IsaToken.COMMA.toString();
+		setSeparator(IsaToken.COMMA.toString());
+		setFormattingSeparator(" ");
 	}  
 
 	public TRExpressionList(TCExpressionList list) throws Exception
 	{
 		super(list);
-		separator = IsaToken.COMMA.toString();
+		setSeparator(IsaToken.COMMA.toString());
+		setFormattingSeparator(" ");
 	}
 
 	public static String translate(TRExpression... args)

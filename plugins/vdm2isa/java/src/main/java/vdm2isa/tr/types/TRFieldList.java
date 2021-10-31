@@ -13,13 +13,13 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	public TRFieldList()
 	{
 		super();
-		separator = "\n\t";
+		setFormattingSeparator("\n\t ");
 	}
 
 	public TRFieldList(TCFieldList list) throws Exception
 	{
 		super(list);
-		separator = "\n\t";
+		setFormattingSeparator("\n\t ");
 	}
 
 	public void setRecordType(TRRecordType rtype)
@@ -54,9 +54,10 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 
 			for (int i = 1; i < this.size(); i++)
 			{
+				//TODO should these be pushed to the get(i).getSeparator()? i.e. each node with its semantic and formatting separators? 
 				sb.append(" ");
                 sb.append(IsaToken.AND.toString());
-                sb.append("\n\t\t ");
+                sb.append(getFormattingSeparator());
 				sb.append(this.get(i).invTranslate(varName));
 			}
 		}

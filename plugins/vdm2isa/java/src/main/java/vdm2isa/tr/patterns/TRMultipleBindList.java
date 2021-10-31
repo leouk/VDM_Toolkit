@@ -14,7 +14,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
     public TRMultipleBindList()
     {
         super();
-        separator = " ";
+        setSeparator(" ");
     }    
 
     public TRMultipleBindList(TCMultipleBind bind) throws Exception
@@ -25,7 +25,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
     public TRMultipleBindList(TCMultipleBindList list) throws Exception
 	{
 		super(list);
-        separator = " ";
+        setSeparator(" ");
 	}
 
     public String compTranslate(boolean patternsOnly)
@@ -37,7 +37,8 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 
 			for (int i=1; i<size(); i++)
 			{
-				sb.append(separator);
+				sb.append(getSeparator());
+				sb.append(getFormattingSeparator());
 				sb.append(get(i).compTranslate(patternsOnly));
 			}
 		}

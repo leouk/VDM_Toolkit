@@ -23,8 +23,7 @@ public class TRApplyExpression extends TRExpression
 		this.root = root;
 		this.args = args;
 		//@todo depending on the root:  map(x) is different from list(x) etc.? 
-		this.args.separator = type instanceof TRSeqType ? 
-			IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString();
+		this.args.setSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());
 	}
 
@@ -37,8 +36,7 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		assert this.args.separator != null;
-		return "(" + root.translate() + this.args.separator + args.translate() + ")";
+		return "(" + root.translate() + this.args.getSeparator() + args.translate() + ")";
 	}
 
 	@Override

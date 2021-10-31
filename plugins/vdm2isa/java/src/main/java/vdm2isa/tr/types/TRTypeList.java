@@ -23,17 +23,19 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		super();
 		setCurried(false);
+		setFormattingSeparator(" ");
 	}
 
-	public TRTypeList(TCTypeList list) throws Exception
+	public TRTypeList(TCTypeList from) throws Exception
 	{
-		super(list);
+		super(from);
 		setCurried(false);
+		setFormattingSeparator(" ");
 	}
 
 	public void setCurried(boolean curried) 
 	{
-		separator = curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString();	
+		setSeparator(curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
 	}
 
 	/**
@@ -45,15 +47,16 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	 * @param formattingSeparator non-null possibly empty, formatting separator 
 	 * @return implicit invariant check string for given var names and formatting separator 
 	 */
-	public String invTranslate(List<String> varNames, String formattingSeparator)
+	public String invTranslate(List<String> varNames)
 	{
-		assert formattingSeparator != null;
-		if (varNames.size() > this.size())
+		if (varNames.size() > size())
 		{
-			this.report(11111, "Inconsistent invariant translation call: " + 
-					varNames.size() + " variable " + Vdm2isaPlugin.plural(varNames.size(), "name", "s") + " for " + 
-					this.size()     + " declared " + Vdm2isaPlugin.plural(this.size(), "type", "s") + ".",
-					this.size() == 0 ? LexLocation.ANY : this.get(0).location);
+			report(11111, "Inconsistent invariant translation call in type list: " + 
+					Vdm2isaPlugin.plural(varNames.size(), "variable name", "s") + 
+					" " + varNames.toString() + " for " + 
+					Vdm2isaPlugin.plural(size(), "declared type", "s") + ".");
+			//System.out.println(varNames);
+			//Throwable t = new Throwable();t.printStackTrace();
 		}
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty() && varNames.size() <= this.size()) 
@@ -67,7 +70,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 				sb.append(" ");
 				sb.append(IsaToken.AND.toString());
 				// presumes the user defines sensible separator?
-				sb.append(formattingSeparator);//sb.append("\n\t\t");
+				sb.append(getFormattingSeparator());//sb.append("\n\t\t");
 				sb.append(get(i).invTranslate(varNames.get(i)));
 			}
 			sb.append(")");
@@ -85,7 +88,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	public static String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)
 	{
 		TRTypeList list = new TRTypeList();
+		list.setFormattingSeparator(formattingSeparator);
 		list.addAll(Arrays.asList(args));
-		return list.invTranslate(varNames, formattingSeparator);	
+		return list.invTranslate(varNames);	
 	}
 }

@@ -17,12 +17,12 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	public TRMapletExpressionList()
 	{
 		super();
-		separator = IsaToken.COMMA.toString();
+		setSeparator(IsaToken.COMMA.toString());
 	}
 
 	public TRMapletExpressionList(TCMapletExpressionList list) throws Exception
 	{
 		super(list);
-		separator = IsaToken.COMMA.toString();
+		setSeparator(IsaToken.COMMA.toString());
 	}
 }

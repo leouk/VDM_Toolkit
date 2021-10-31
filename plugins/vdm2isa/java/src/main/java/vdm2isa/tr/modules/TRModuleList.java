@@ -16,12 +16,10 @@ public class TRModuleList extends TRMappedList<TCModule, TRModule>
 	public TRModuleList()
 	{
 		super();
-		separator = "";
 	}
 	
 	public TRModuleList(TCModuleList list) throws Exception
 	{
 		super(list);
-		separator = "";
 	}
 }

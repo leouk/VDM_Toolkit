@@ -72,10 +72,11 @@ public class TRMultipleTypeBind extends TRMultipleBind {
             String typeStr = IsaToken.TYPEOF.toString() + type.translate();
 			sb.append(translate(0, typeStr));
 
-            for (int i=1; i<plist.size(); i++)
+            for (int i = 1; i < plist.size(); i++)
 			{
                 //TODO doesn't this need a separator? Like " "?
-                sb.append(separator);
+                sb.append(getSeparator());
+                sb.append(getFormattingSeparator());
 				sb.append(translate(i, typeStr));
 			}
 		}

@@ -15,21 +15,21 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	protected TRTypeBindList() 
 	{
 		super();
-		separator = " ";
+		setSeparator(" ");
 	}  
 
 	public TRTypeBindList(TCTypeBindList list) throws Exception
 	{
 		super(list);
-		separator = " ";
+		setSeparator(" ");
 	}
 
 	public String invTranslate()
 	{
-		String old = separator; 
-		separator = " " + IsaToken.AND.toString() + " ";
+		// Inv separator forms a chained conjunction
+		String old = setSeparator(" " + IsaToken.AND.toString() + " "); 
 		String result = super.invTranslate();
-		separator = old;
+		setSeparator(old);
 		return result;
 	}
 

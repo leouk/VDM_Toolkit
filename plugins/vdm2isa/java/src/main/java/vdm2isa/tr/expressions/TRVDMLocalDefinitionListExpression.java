@@ -12,13 +12,12 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     
     private static final long serialVersionUID = 1L;
     protected final TRExpression expression;
-    protected String tabs;
 
     public TRVDMLocalDefinitionListExpression(LexLocation location, TRExpression expression)
     {
         super(location);
         this.expression = expression;
-        this.tabs = "\n\t\t";
+        this.setFormattingSeparator("\n\t\t");
     }
 
     public abstract String localInvTranslate();
@@ -33,15 +32,15 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
         sb.append(localInvTranslate());
         sb.append(" ");
         sb.append(IsaToken.THEN.toString());
-        sb.append(tabs + "\t");
+        sb.append(getFormattingSeparator() + "\t");
         sb.append(expression.translate());        
-        sb.append(tabs + " ");
+        sb.append(getFormattingSeparator() + " ");
         sb.append(IsaToken.ELSE.toString());
-        sb.append(tabs + "\t");
+        sb.append(getFormattingSeparator() + "\t");
         sb.append(IsaToken.UNDEFINED.toString());
-        sb.append(tabs); 
+        sb.append(getFormattingSeparator()); 
         sb.append(IsaToken.RPAREN.toString());
-        sb.append("\n\t");
+        sb.append(getFormattingSeparator());
         return sb.toString();
     }
 
