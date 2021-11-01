@@ -16,11 +16,6 @@ public class ExuPlugin extends AbstractIsaPlugin {
 		super(interpreter);
 	}
 
-	public static void main(String args[])
-    {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
-    }
-
     @Override
     public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception {
         boolean result = false;
@@ -36,7 +31,7 @@ public class ExuPlugin extends AbstractIsaPlugin {
     }
 
     @Override
-    public String getSummaryPrefix()
+    protected String getSummaryPrefix()
     {
         return "Exu analysed ";
     }

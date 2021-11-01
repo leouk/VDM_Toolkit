@@ -11,6 +11,7 @@ import javax.swing.text.AbstractDocument;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.Settings;
+import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.Dialect;
@@ -46,6 +47,11 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
     private int localWarnings;
     private int localModules;
 
+    public static void main(String args[])
+    {
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
+    }
+
     public AbstractIsaPlugin(Interpreter interpreter) {
         super(interpreter);
         localReset();
@@ -60,7 +66,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
     public abstract boolean isaRun(TCModuleList tclist, String[] argv) throws Exception;
 
-    public String getSummaryPrefix()
+    protected String getSummaryPrefix()
     {
         return "Translated ";
     }
@@ -126,12 +132,14 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
             long after = System.currentTimeMillis();
 			addLocalErrors(Vdm2isaPlugin.getErrorCount());
+            addLocalErrors(AbstractIsaPlugin.getErrorCount());
 
 			if (getLocalErrorCount() > 0)
 			{
 				AbstractIsaPlugin.printErrors(Console.out);
 			}
 
+			addLocalWarnings(Vdm2isaPlugin.getWarningCount());
 			addLocalWarnings(AbstractIsaPlugin.getWarningCount());
 			if (getLocalWarningCount() > 0 && AbstractIsaPlugin.reportWarnings)
 			{
@@ -240,7 +248,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
     public static void setupProperties() {
         AbstractIsaPlugin.errs = 0;
-        AbstractIsaPlugin.strict = true;
+        AbstractIsaPlugin.strict = false;
         AbstractIsaPlugin.maxErrors = Properties.tc_max_errors;
         AbstractIsaPlugin.isaVersion = "Isabelle2021: February 2021";
         AbstractIsaPlugin.reportWarnings = true;

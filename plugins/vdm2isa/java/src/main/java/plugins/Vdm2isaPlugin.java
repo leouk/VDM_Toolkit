@@ -13,7 +13,6 @@ import java.util.Vector;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.Settings;
-import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.Dialect;
@@ -23,7 +22,6 @@ import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
-import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
@@ -67,11 +65,6 @@ public class Vdm2isaPlugin extends CommandPlugin
 	public static boolean printVDMComments;
 	public static boolean printIsaComments;
 	public static boolean runExu;
-
-	public static void main(String args[])
-    {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
-    }
 
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
@@ -125,7 +118,8 @@ public class Vdm2isaPlugin extends CommandPlugin
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 
 				// be strict on translation output
-				if (strict && Vdm2isaPlugin.getErrorCount() == 0)
+				// strict => Vdm2isaPlugin.getErrorCount() == 0
+				if (!Vdm2isaPlugin.strict || Vdm2isaPlugin.getErrorCount() == 0)
 				{
 					for (TRModule module: translatedModules)
 					{
