@@ -14,7 +14,10 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 {
 	private static final long serialVersionUID = 1L;
 
-	protected TRDefinitionList()
+	/**
+	 * Allow this top-level list to be defined empty
+	 */
+	public TRDefinitionList()
 	{
 		super();
 	} 

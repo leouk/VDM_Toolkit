@@ -64,8 +64,5 @@ public abstract class TRDefinition extends TRNode
 		return translatePreamble();
 	}
 
-	@Override
-	public abstract String invTranslate();
-
 	public abstract <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg);
 }

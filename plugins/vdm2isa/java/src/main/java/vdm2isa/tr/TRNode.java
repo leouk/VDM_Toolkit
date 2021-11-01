@@ -135,5 +135,14 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	 * variable name to be used for invariant translation). See TRType#invTranslate(String). 
 	 * @return Isabelle YXML string.
 	 */
-	public abstract String invTranslate();
+	//public abstract String invTranslate();
+	/**
+     * Expressions do not support invariant translation in general. Some type-bound/local expressions do and can extend this behaviour.
+     */
+    @Override
+    public String invTranslate()
+    {
+        report(11111, getClass().getName() + " \"" + toString() + "\" does not support Isabelle invariant translation.");
+        return "";
+    }
 }
