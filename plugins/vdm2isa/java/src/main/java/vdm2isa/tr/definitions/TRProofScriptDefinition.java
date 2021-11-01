@@ -35,4 +35,20 @@ public class TRProofScriptDefinition extends TRDefinition {
     public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg) {
         return visitor.caseProofScriptDefinition(this, arg);
     }
+    
+    /**
+     * Creates an optimistic proof script delegating the proof to sledgehammer then oopsing (done?) it
+     * @param location
+     * @return
+     */
+    public static TRProofScriptDefinition optimistic(LexLocation location)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+            TRIsaCommentList.newComment(location, "Hope Sldegehammer can help", false), 
+            TRProofScriptStepDefinitionList.proofScript(
+                TRBasicProofScriptStepDefinition.sledgehammer(location),
+                TRBasicProofScriptStepDefinition.oops(location))
+            );
+        return result;
+    }
 }
