@@ -23,6 +23,7 @@ import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
+import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
@@ -50,9 +51,10 @@ public class Vdm2isaPlugin extends CommandPlugin
 	
   	private TRModuleList translatedModules;
 
+	public static int errs;
+
 	// plugin properties
 
-	
 	// target isabelle version (i.e. result of "isabelle version" call)
 	public static String isaVersion; 
 	// assuming max translation errors equals max type errors for now
@@ -61,8 +63,15 @@ public class Vdm2isaPlugin extends CommandPlugin
 	public static boolean strict;	
 	// determines whether to add "pre_f =>" on post condition definitions
 	public static boolean linientPost;
+	public static boolean reportWarnings;
 	public static boolean printVDMComments;
 	public static boolean printIsaComments;
+	public static boolean runExu;
+
+	public static void main(String args[])
+    {
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
+    }
 
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
@@ -70,36 +79,39 @@ public class Vdm2isaPlugin extends CommandPlugin
 		this.translatedModules = new TRModuleList();
 	}
 
-	public static void main(String args[])
-    {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
-    }
+	public TRModuleList getTranslatedModules()
+	{
+		return this.translatedModules;
+	}
 
 	@Override
 	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
 	//TODO add plugin option about raising warnings? or just raise them 
 	public boolean run(String[] argv) throws Exception
 	{
+		boolean result = false;
 		if (interpreter instanceof ModuleInterpreter)
 		{
 			long before = System.currentTimeMillis();
-			int errs = 0;
+			errs = 0;
 			int tcount = 0;
 
 			Vdm2isaPlugin.setupProperties();
 	
 			Vdm2isaPlugin.reset();
 
-			if (Settings.dialect != Dialect.VDM_SL)
+			Vdm2isaPlugin.checkVDMSettings();
+
+			if (Vdm2isaPlugin.runExu)
 			{
-				Vdm2isaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
-				errs++;
+				ExuPlugin exu = new ExuPlugin(interpreter);
+				// plugin run worked if exu's run works
+				result = exu.run(argv);
 			}
-			if (Settings.release != Release.VDM_10)
+			else
 			{
-				// This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
-				// For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-				Vdm2isaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+				// plugin run worked
+				result = true;
 			}
 
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
@@ -114,13 +126,13 @@ public class Vdm2isaPlugin extends CommandPlugin
 
 				for (TRModule module: translatedModules)
 				{
-					String result = module.translate();
+					String output = module.translate();
 					
 					// be strict on translation output
 					if (strict && Vdm2isaPlugin.getErrorCount() == 0)
 					{
 						tcount++;
-						outputModule(module.name, result);
+						outputModule(module.name, output);
 					}
 				}
 			}
@@ -144,9 +156,8 @@ public class Vdm2isaPlugin extends CommandPlugin
 			}
 
 			int warn = Vdm2isaPlugin.getWarningCount();
-			boolean warnings = true; //Properties.get("vdm2isa.warnings") or something like that;
-
-			if (warn > 0 && warnings)
+			
+			if (warn > 0 && Vdm2isaPlugin.reportWarnings)
 			{
 				Vdm2isaPlugin.printWarnings(Console.out);
 			}
@@ -156,14 +167,10 @@ public class Vdm2isaPlugin extends CommandPlugin
 			Console.out.print(errs == 0 ? "No translation errors" :
 				"Found " + plural(errs, "translation error", "s"));
 			Console.out.print(warn == 0 ? "" : " and " +
-				(warnings ? "" : "suppressed ") + plural(warn, "warning", "s") + ".");
+				(Vdm2isaPlugin.reportWarnings ? "" : "suppressed ") + plural(warn, "warning", "s") + ".");
 			Console.out.println(errs > 0 ? " You must fix the errors first!" : "");
-			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return result;
 	}
 
 	protected /*static*/ void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
@@ -183,6 +190,21 @@ public class Vdm2isaPlugin extends CommandPlugin
 	{
 		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL (v. " + Vdm2isaPlugin.isaVersion + ")";
 	}
+
+	public static void checkVDMSettings()
+    {
+        if (Settings.dialect != Dialect.VDM_SL)
+        {
+            Vdm2isaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+            Vdm2isaPlugin.errs++;
+        }
+        if (Settings.release != Release.VDM_10)
+        {
+            // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
+            // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
+            Vdm2isaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+        }
+    }
 
 	public static void processVDMWarnings()
 	{
@@ -297,8 +319,10 @@ public class Vdm2isaPlugin extends CommandPlugin
 		Vdm2isaPlugin.maxErrors 	= Properties.tc_max_errors;
 		Vdm2isaPlugin.strict 		= true;
 		Vdm2isaPlugin.linientPost 	= false;
+		Vdm2isaPlugin.reportWarnings= true;
 		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";
 		Vdm2isaPlugin.printVDMComments = true;
 		Vdm2isaPlugin.printIsaComments = true;
+		Vdm2isaPlugin.runExu			= true;
 	}
 }
