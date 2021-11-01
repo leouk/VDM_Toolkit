@@ -7,6 +7,8 @@ package vdm2isa.tr.definitions.visitors;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
+import vdm2isa.tr.definitions.TRProofObligationDefinition;
+import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.definitions.TRTypeDefinition;
 import vdm2isa.tr.definitions.TRValueDefinition;
 
@@ -38,4 +40,12 @@ public abstract class TRDefinitionVisitor<R, S>
 	{
 		return caseLocalDefinition(node, arg);
 	}
+
+    public R caseProofObligationDefinition(TRProofObligationDefinition node, S arg) {
+        return caseProofObligationDefinition(node, arg);
+    }
+
+    public R caseProofScriptDefinition(TRProofScriptDefinition node, S arg) {
+        return caseProofScriptDefinition(node, arg);
+    }
 }
