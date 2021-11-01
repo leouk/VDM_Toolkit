@@ -123,6 +123,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
             
             AbstractIsaPlugin.setupProperties();
 			AbstractIsaPlugin.reset();
+            localReset();
             AbstractIsaPlugin.checkVDMSettings();
 
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
@@ -132,8 +133,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
             long after = System.currentTimeMillis();
 			addLocalErrors(Vdm2isaPlugin.getErrorCount());
-            addLocalErrors(AbstractIsaPlugin.getErrorCount());
-
+			addLocalErrors(AbstractIsaPlugin.getErrorCount());
 			if (getLocalErrorCount() > 0)
 			{
 				AbstractIsaPlugin.printErrors(Console.out);
