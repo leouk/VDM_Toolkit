@@ -134,6 +134,7 @@ map TCIfExpression{location, ifExp, thenExp, elseList, elseExp} to TRIfExpressio
 map TCElseIfExpression{location, elseIfExp, thenExp} to TRElseIfExpression(location, elseIfExp, thenExp);
 map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
 
+
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
 #############################################################################
@@ -207,7 +208,6 @@ map TCPatternBind{location, pattern, bind} to TRPatternBind(location, pattern, b
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
 #############################################################################
-
 map TCType{} to TRType();
 map TCTypeList{} to TRTypeList(this);
 
@@ -246,3 +246,10 @@ unmapped java.lang.Boolean;
 unmapped java.lang.String;
 unmapped java.lang.Long;
 unmapped com.fujitsu.vdmj.mapper.FileList;
+
+#############################################################################
+# initializers, called by ClassMapper.init()
+#############################################################################
+init vdm2isa.lex.IsaTemplates.reset();
+init vdm2isa.tr.types.TRRecordType.reset();
+
