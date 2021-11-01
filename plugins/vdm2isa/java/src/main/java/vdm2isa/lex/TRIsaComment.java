@@ -15,7 +15,7 @@ public class TRIsaComment extends TRNode {
     {
         super(comment.location);
         this.comment = comment;
-        setSeparator(" ");
+        setSemanticSeparator(" ");
         setFormattingSeparator("\n");
     }
 

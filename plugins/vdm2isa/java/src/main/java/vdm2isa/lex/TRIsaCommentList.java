@@ -11,19 +11,19 @@ public class TRIsaCommentList extends TRMappedList<LexComment, TRIsaComment>{
     public TRIsaCommentList()
     {
         super();
-        setup();
     }
 
     public TRIsaCommentList(LexCommentList from) throws Exception
     {
         super(from);
-        setup();
     }
 
-    private void setup()
+    @Override
+    protected void setup()
     {
+        super.setup();
         // set format separator as \n given it's called even with one element
-        setSeparator(" ");
+        setSemanticSeparator(" ");
         setFormattingSeparator("\n");
     }
 

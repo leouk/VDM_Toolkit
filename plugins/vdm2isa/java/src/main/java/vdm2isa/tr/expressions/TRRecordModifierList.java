@@ -17,7 +17,7 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	protected TRRecordModifierList()
 	{
 		super();
-		setSeparator(IsaToken.COMMA.toString() + " ");
+		setSemanticSeparator(IsaToken.COMMA.toString() + " ");
 	}
 
 	public TRRecordModifierList(TRRecordModifierList from)
@@ -29,7 +29,7 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	public TRRecordModifierList(TCRecordModifierList list) throws Exception
 	{
 		super(list);
-		setSeparator(IsaToken.COMMA.toString() + " ");
+		setSemanticSeparator(IsaToken.COMMA.toString() + " ");
 	}
 
 	public void setRecordTypeName(String recordTypeName)

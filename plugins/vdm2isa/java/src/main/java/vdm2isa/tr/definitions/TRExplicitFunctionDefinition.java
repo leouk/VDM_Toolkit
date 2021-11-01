@@ -111,38 +111,45 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			System.out.println(toString());
     }
 
-	private void setup()
+	@Override
+	protected void setup()
 	{
-		setFormattingSeparator("\n\t\t");
-		//TODO type parameters are comma separated?	
-		// parameters are curried not "," separated
-		this.parameters.setSeparator(" ");
-		
-		// check stuff is consistent to expectations
-		if ((precondition != null && predef == null) || (precondition == null && predef != null))
-			//TODO don't want two messages for effectively same thing; review text latter
-			report(11111, "Explicit funciton has declared precondition but no pre definition.");
-		if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
-			report(11111, "Explicit funciton has declared postcondition but no post definition.");
-		
-		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
-		// which *must* be of a specific specification kind.
-		if (isImplicitlyGeneratedUndeclaredSpecification() && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+		// don't call super.setup(); as we won't have the various input params yet then!
+		if (this.type == null)
+			super.setup();
+		else
 		{
-			report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
-				". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
-		}
+			setFormattingSeparator("\n\t\t");
+			//TODO type parameters are comma separated?	
+			// parameters are curried not "," separated
+			this.parameters.setSemanticSeparator(" ");
+			
+			// check stuff is consistent to expectations
+			if ((precondition != null && predef == null) || (precondition == null && predef != null))
+				//TODO don't want two messages for effectively same thing; review text latter
+				report(11111, "Explicit funciton has declared precondition but no pre definition.");
+			if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
+				report(11111, "Explicit funciton has declared postcondition but no post definition.");
+			
+			// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
+			// which *must* be of a specific specification kind.
+			if (isImplicitlyGeneratedUndeclaredSpecification() && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+			{
+				report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
+					". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
+			}
 
-		// only create undeclared specification for those who need it: when precondition/predef are null but
-		// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
-		// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
-		if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
-		{
-			// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
-			if (this.precondition == null && this.predef == null)
-				this.predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
-			if (postcondition == null && postcondition == null)
-				this.postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+			// only create undeclared specification for those who need it: when precondition/predef are null but
+			// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
+			// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
+			if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
+			{
+				// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
+				if (this.precondition == null && this.predef == null)
+					this.predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+				if (postcondition == null && postcondition == null)
+					this.postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+			}
 		}
 	} 
 

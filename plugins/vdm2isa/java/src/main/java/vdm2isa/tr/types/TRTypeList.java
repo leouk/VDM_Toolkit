@@ -19,13 +19,10 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	private static final long serialVersionUID = 1L;
 	
 	private boolean curried;
-	private String invTranslateSeparator;
 
 	protected TRTypeList()
 	{
 		super();
-		setCurried(false);
-		setFormattingSeparator(" ");
 	}
 
 	public TRTypeList(TRTypeList from)
@@ -37,6 +34,12 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	public TRTypeList(TCTypeList from) throws Exception
 	{
 		super(from);
+	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
 		setCurried(false);
 		setFormattingSeparator(" ");
 	}
@@ -49,26 +52,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	public void setCurried(boolean curried) 
 	{
 		this.curried = curried;
-		setSeparator(this.curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
+		setSemanticSeparator(this.curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
 		setInvTranslateSeparator(IsaToken.AND.toString());
-	}
-
-	public String getInvTranslateSeparator()
-	{
-		return invTranslateSeparator;
-	}
-
-	protected String setInvTranslateSeparator(String sep)
-	{
-		String old = invTranslateSeparator;
-		if (sep == null)
-			report(11111, "Cannot translate with a null separator");
-		else
-		{
-			invTranslateSeparator = sep;
-			//System.out.println("sep = " + sep + " for " + this.toString());
-		}	
-		return old;
 	}
 
 	private boolean isValidInvTranslateCall(List<String> varNames)

@@ -17,7 +17,7 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	protected TRMapletExpressionList()
 	{
 		super();
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 	}
 
 	public TRMapletExpressionList(TRMapletExpressionList from)
@@ -29,6 +29,6 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	public TRMapletExpressionList(TCMapletExpressionList list) throws Exception
 	{
 		super(list);
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 	}
 }

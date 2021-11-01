@@ -17,7 +17,6 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	protected TRDefinitionList()
 	{
 		super();
-		setup();
 	} 
 
 	public TRDefinitionList(TRDefinitionList from)
@@ -29,11 +28,12 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	public TRDefinitionList(TCDefinitionList list) throws Exception
 	{
 		super(list);
-		setup();
 	}
 
+	@Override
 	protected void setup()
 	{
+		super.setup();
 		setFormattingSeparator("\n\t");
 		if (allAreLocalDefinition())
 			setLocal(true);

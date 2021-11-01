@@ -20,7 +20,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     {
         super(plist);
         this.type = type;
-        setSeparator(" ");
+        setSemanticSeparator(" ");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
             for (int i = 1; i < plist.size(); i++)
 			{
                 //TODO doesn't this need a separator? Like " "?
-                sb.append(getSeparator());
+                sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
 				sb.append(translate(i, typeStr));
 			}

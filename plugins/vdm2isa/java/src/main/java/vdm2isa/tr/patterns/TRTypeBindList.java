@@ -15,7 +15,7 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	protected TRTypeBindList() 
 	{
 		super();
-		setSeparator(" ");
+		setSemanticSeparator(" ");
 	}  
 
 	public TRTypeBindList(TRTypeBindList from)
@@ -28,15 +28,15 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	public TRTypeBindList(TCTypeBindList list) throws Exception
 	{
 		super(list);
-		setSeparator(" ");
+		setSemanticSeparator(" ");
 	}
 
 	public String invTranslate()
 	{
 		// Inv separator forms a chained conjunction
-		String old = setSeparator(" " + IsaToken.AND.toString() + " "); 
+		String old = setSemanticSeparator(" " + IsaToken.AND.toString() + " "); 
 		String result = super.invTranslate();
-		setSeparator(old);
+		setSemanticSeparator(old);
 		return result;
 	}
 

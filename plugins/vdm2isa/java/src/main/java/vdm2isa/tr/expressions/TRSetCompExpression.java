@@ -57,21 +57,21 @@ public class TRSetCompExpression extends TRExpression {
         sb.append(" ");
         sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
         sb.append(" ");
-        String old = binds.setSeparator(" ");
+        String old = binds.setSemanticSeparator(" ");
         sb.append(existential ? binds.compTranslate(true) + " " + IsaToken.POINT.toString() : "");
         sb.append(" ");
         // The binds translation as the type (binding) restriction has to be part of the Isabelle predicate filter 
-        binds.setSeparator(" " + IsaToken.AND.toString() + " ");
+        binds.setSemanticSeparator(" " + IsaToken.AND.toString() + " ");
         sb.append(binds.translate());
         sb.append(" ");
         if (predicate != null)
         {
-            sb.append(binds.getSeparator());
+            sb.append(binds.getSemanticSeparator());
             sb.append(predicate.translate());
         }
         sb.append(" ");
         sb.append(IsaToken.SET_CLOSE.toString());
-        binds.setSeparator(old);
+        binds.setSemanticSeparator(old);
         return sb.toString();
     }
 

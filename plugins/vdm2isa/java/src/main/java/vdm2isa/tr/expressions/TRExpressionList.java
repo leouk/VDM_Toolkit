@@ -19,7 +19,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	protected TRExpressionList() 
 	{
 		super();
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 		setFormattingSeparator(" ");
 	}  
 
@@ -32,7 +32,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	public TRExpressionList(TCExpressionList from) throws Exception
 	{
 		super(from);
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 		setFormattingSeparator(" ");
 	}
 

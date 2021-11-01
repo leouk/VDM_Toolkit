@@ -23,7 +23,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		super();
 		partOfListList = false;
 		recordPatternIndices = getRecordPatternIndeces();
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 	}  
 
 	public TRPatternList(TRPatternList from)
@@ -37,7 +37,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		super(list);
 		partOfListList = false; 
 		recordPatternIndices = getRecordPatternIndeces();
-		setSeparator(IsaToken.COMMA.toString());
+		setSemanticSeparator(IsaToken.COMMA.toString());
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 			sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
 			for (int i = 1; i < recordPatternIndices.size(); i++)
 			{
-				sb.append(getSeparator());
+				sb.append(getSemanticSeparator());
 				sb.append(getFormattingSeparator());
 				sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
 			}

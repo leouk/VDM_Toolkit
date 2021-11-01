@@ -28,8 +28,10 @@ public interface MappableNode extends Mappable {
 	public void report(int number, String msg);
 	public void warning(int number, String msg);
 
-	public String getSeparator();
-	public String setSeparator(String sep);
+	public String getSemanticSeparator();
+	public String setSemanticSeparator(String sep);
+	public String getInvTranslateSeparator();
+	public String setInvTranslateSeparator(String sep);
 	public String getFormattingSeparator();
 	public String setFormattingSeparator(String sep);
 }
