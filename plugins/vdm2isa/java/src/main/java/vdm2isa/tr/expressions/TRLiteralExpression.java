@@ -65,7 +65,7 @@ public class TRLiteralExpression extends TRExpression
 	public TRLiteralExpression(TCQuoteLiteralExpression exp)
 	{
 		super(exp.location); 
-		this.token = IsaToken.QUOTE;
+		this.token = IsaToken.VDMQUOTE;
 		// remove the <XXX> -> XXX
 		this.exp = exp.type.value;
 	}
@@ -75,7 +75,7 @@ public class TRLiteralExpression extends TRExpression
 	{
 		// no casting needed for real, string, quote literals
 		String typeStr =  
-			!(token == IsaToken.REAL || token == IsaToken.STRING || token == IsaToken.QUOTE) ?
+			!(token == IsaToken.REAL || token == IsaToken.STRING || token == IsaToken.VDMQUOTE) ?
 				IsaToken.TYPEOF.toString() + isaToken().toString() : "";
 		return IsaToken.parenthesise(exp + typeStr);
 	}

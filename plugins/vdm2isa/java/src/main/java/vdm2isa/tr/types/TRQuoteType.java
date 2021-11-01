@@ -22,7 +22,7 @@ public class TRQuoteType extends TRType
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.QUOTE;
+        return IsaToken.VDMQUOTE;
     }
     
     @Override

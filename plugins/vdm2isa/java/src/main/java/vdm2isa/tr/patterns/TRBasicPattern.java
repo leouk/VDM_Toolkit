@@ -27,7 +27,7 @@ public class TRBasicPattern extends TRPattern {
     private static final List<IsaToken> VALID_TOKENS = 
         Arrays.asList(IsaToken.IDENTIFIER, IsaToken.BOOL, IsaToken.CHAR,
                       IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
-                      IsaToken.REAL, IsaToken.STRING, IsaToken.QUOTE,
+                      IsaToken.REAL, IsaToken.STRING, IsaToken.VDMQUOTE,
                       IsaToken.NIL, IsaToken.PLACEHOLDER);
 
     /**
@@ -89,7 +89,7 @@ public class TRBasicPattern extends TRPattern {
     public TRBasicPattern(TCQuotePattern owner)
     {
         // you don't want the <X> just the X 
-        this(owner.location, IsaToken.QUOTE, owner.value.value);//owner.toString());
+        this(owner.location, IsaToken.VDMQUOTE, owner.value.value);//owner.toString());
     }
 
     public TRBasicPattern(TCNilPattern owner)

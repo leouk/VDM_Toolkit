@@ -20,7 +20,8 @@ public enum IsaToken {
 	STRING(Token.STRING, "VDMChar VDMSeq"),
   	TOKEN(Token.TOKEN, "VDMToken"),
 	CROSSPROD(Token.TIMES, "\\<times>"),
-	QUOTE(Token.QUOTE, ""),
+	VDMQUOTE(Token.QUOTE, ""), // i.e. "<X>" => X (empty string for Token.QUOTE)
+	ISAQUOTE(null, "\""),
 	SET(Token.SET, "VDMSet"),
 	SET1(Token.SET1, "VDMSet1"),
 	SEQ(Token.SEQ, "VDMSeq"),
@@ -114,14 +115,11 @@ public enum IsaToken {
 	DUMMY(null, "dummy"),
 	ERROR(Token.ERROR, "ERROR"),
 	SEMICOLON(Token.SEMICOLON, ";"),
+	COLON(Token.COLON, ":"),
 	VDMINT_NARROW(null, "vdm_narrow_real"),
 	NARROW(null/*Token.NARROW doesn't exist?*/, "vdm_narrow"),
 	ISEXPR(Token.IS, "is"),
 
-	TERM(null, "term"),
-	TYP(null, "typ"),
-	THM(null, "thm"),
-  	
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
 	MAPLET(Token.MAPLET, "\\<mapsto>"),
@@ -156,9 +154,17 @@ public enum IsaToken {
 	SND(null, "snd"),
 	AT(null, "@"),
 
+	VDMTOOLKIT(null, "VDMToolkit"),
 	THEOREM(null, "theorem"),
 	LEMMA(null, "lemma"),
 	LEMMAS(null, "lemmas"),
+	TERM(null, "term"),
+	TYP(null, "typ"),
+	THM(null, "thm"),
+  	DONE(null, "done"),
+	OOPS(null, "oops"),
+	SORRY(null, "sorry"),
+	PROOF(null, ""),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
@@ -226,6 +232,10 @@ public enum IsaToken {
 	public static String bracketit(IsaToken left, String s, IsaToken right)
 	{
 		return left.toString() + s + right.toString();
+	}
+
+	public static String innerSyntaxIt(String s) {
+		return IsaToken.bracketit(IsaToken.ISAQUOTE, s, IsaToken.ISAQUOTE);
 	}
 
 	public static String dummyVarNames(int count, LexLocation location)

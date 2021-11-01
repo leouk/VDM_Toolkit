@@ -23,7 +23,7 @@ public final class IsaTemplates {
 
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //TODO generalise the tabbing/newlining later 
-    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports \"VDMToolkit\"\nbegin\n\n%4$s\nend";
+    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports %4$s\nbegin\n\n%5$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
     private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
@@ -192,11 +192,16 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String translateModule(String comment, String loc, String name, String defs) 
+    public static String translateModule(String comment, String loc, String name, String imports, String defs) 
     {
         assert comment != null && loc != null && name != null && defs != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(MODULE, comment, loc, name, defs));
+        if (imports == null || imports.isEmpty()) imports = IsaToken.VDMTOOLKIT.toString();
+        sb.append(String.format(MODULE, comment, loc, name, imports, defs));
 		return sb.toString();
+    }
+
+    public static String getPOModuleName(String module) {
+        return module + "_PO";
     }
 }
