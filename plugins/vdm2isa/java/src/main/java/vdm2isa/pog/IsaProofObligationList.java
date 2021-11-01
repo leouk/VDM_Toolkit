@@ -8,7 +8,7 @@ import java.util.Vector;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
-import plugins.Pog2isaPlugin;
+import plugins.IsapogPlugin;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
@@ -69,15 +69,15 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
         // create the module list view of the this proof obligation definition list
         TRModuleList result = new TRModuleList();
         if (!checkAllDefinitionsArePOS())
-            Pog2isaPlugin.report(11111, "Invalid module PO list: only PO expressions or proofs scripts are allowed", LexLocation.ANY);
+            IsapogPlugin.report(11111, "Invalid module PO list: only PO expressions or proofs scripts are allowed", LexLocation.ANY);
         else
         {
             // create PO modules per TRDefininitionList of POs or PSs for the correspoding PO module name 
             for(String module : poModuleMap.keySet())
             {
-                result.add(new TRProofObligationModule(
-                        new TCIdentifierToken(null, IsaTemplates.getPOModuleName(module), false), 
-                        poModuleMap.get(module)));
+                TRDefinitionList pos = poModuleMap.get(module);
+                result.add(new TRProofObligationModule(module,
+                        new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(module), false), pos));
             }
         }
 
@@ -90,8 +90,8 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
         {
             for(TRDefinition po : pos)
             {
-                if (po instanceof TRProofObligationDefinition || 
-                    po instanceof TRProofScriptDefinition)
+                if (!(po instanceof TRProofObligationDefinition || 
+                      po instanceof TRProofScriptDefinition))
                     return false; 
             }
         }

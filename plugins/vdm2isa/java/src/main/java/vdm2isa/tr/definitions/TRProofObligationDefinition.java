@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.pog.ProofObligation;
@@ -31,29 +30,33 @@ public class TRProofObligationDefinition extends TRDefinition {
     public TRProofObligationDefinition(TRIsaCommentList comments, ProofObligation po,
         TRExpression poExpr, TRType poType, TRProofScriptDefinition poScript)
     {
-        this(comments, po, poExpr, poType, TRProofObligationDefinition.asProofScriptDefinitionList(poScript));
+        this(comments, po, poExpr, poType, poScript != null ? 
+            TRProofObligationDefinition.asProofScriptDefinitionList(poScript) : 
+            new TRDefinitionList());
     }
 
     public TRProofObligationDefinition(TRIsaCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
-        super(po.location, comments, null);
+        super(po.location/* LexLocation.ANY? */, comments, null);
         this.po = po;
         this.poExpr = poExpr;
         this.poType = poType;
         this.poScripts = poScripts;
+        setup();
     }
 
     @Override 
     protected void setup()
     {
+        super.setup();
         setFormattingSeparator("\n\t");
-        poScripts.setFormattingSeparator("\n\t");
+        if (poScripts != null) poScripts.setFormattingSeparator("\n\t");
     }
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.THEOREM;
+        return IsaToken.ISAR_THEOREM;
     }
 
     @Override
@@ -67,6 +70,8 @@ public class TRProofObligationDefinition extends TRDefinition {
         sb.append(isaToken().toString());
         sb.append(" ");
         sb.append(po.name);
+        sb.append(IsaToken.UNDERSCORE.toString());
+        sb.append(po.kind.name());
         sb.append(IsaToken.COLON.toString());
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExpr.translate())));
@@ -81,7 +86,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         }
         else
         {
-            sb.append(IsaToken.OOPS.toString());
+            sb.append(TRBasicProofScriptStepDefinition.oops(location));
         }
         sb.append(getFormattingSeparator());
         return sb.toString();
