@@ -3,11 +3,13 @@ package plugins;
 import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
-public class ExuPlugin extends AbstractISAPlugin {
+public class ExuPlugin extends AbstractIsaPlugin {
 
 	public ExuPlugin(Interpreter interpreter)
 	{
@@ -20,43 +22,42 @@ public class ExuPlugin extends AbstractISAPlugin {
     }
 
     @Override
-    public boolean run(String[] argv) throws Exception {
+    public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception {
+        boolean result = false;
         if (interpreter instanceof ModuleInterpreter)
 		{
-			long before = System.currentTimeMillis();
-			int errs = 0;
-			int tcount = 0;
+            Console.out.println("Calling Exu VDM analyser...");
 
-            AbstractISAPlugin.setupProperties();
-			AbstractISAPlugin.reset();
+            //TODO perform the analysis
 
-            
-
-            return true;
+            result = true;
         }
-        else
-        {
-            return false;
-        }
+        return result;
+    }
+
+    @Override
+    public String getSummaryPrefix()
+    {
+        return "Exu analysed ";
     }
 
     @Override
     public String help() {
-        return "exu - analyse all loaded VDM modules for Isabelle/HOL (v. " + AbstractISAPlugin.isaVersion + ") translation";
+        return "exu - analyse all loaded VDM modules for Isabelle/HOL (v. " + AbstractIsaPlugin.isaVersion + ") translation";
     }
 
     public static void report(int number, String problem, LexLocation location)
 	{
-		AbstractISAPlugin.report(number, problem, location);
+		AbstractIsaPlugin.report(number, problem, location);
 	}
 
 	public static void reportAsError(VDMWarning w)
 	{
-		AbstractISAPlugin.reportAsError(w);
+		AbstractIsaPlugin.reportAsError(w);
 	}
 
 	public static void warning(int number, String problem, LexLocation location)
 	{
-		AbstractISAPlugin.warning(number, problem, location);
+		AbstractIsaPlugin.warning(number, problem, location);
 	}
 }
