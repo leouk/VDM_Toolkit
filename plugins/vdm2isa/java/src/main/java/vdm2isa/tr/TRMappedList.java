@@ -64,6 +64,9 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		setup();
 	}
 
+	/**
+	 * Set up of basic parameters (separators etc) for the list. This cannot rely on fields being set on super calls!
+	 */
 	protected void setup()
 	{
 		setSemanticSeparator("");
