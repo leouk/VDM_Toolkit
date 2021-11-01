@@ -15,7 +15,7 @@ VDM po: g: post condition obligation in 'TestV2IFcns' (./src/test/resources/Test
 \<close>theorem g_FUNC_POST_CONDITION:
 	"((\<forall> (x::VDMNat) (y::VDMNat1). ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y)))))"
 	
-	sledgehammer
+	try
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18
@@ -26,7 +26,7 @@ VDM po: h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns
 \<close>theorem h_SUB_TYPE:
 	"((\<forall> (x::VDMNat). (x > (0::VDMNat))))"
 	
-	sledgehammer
+	try
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 27:5
@@ -37,7 +37,7 @@ VDM po: h: post condition obligation in 'TestV2IFcns' (./src/test/resources/Test
 \<close>theorem h_FUNC_POST_CONDITION:
 	"((\<forall> (x::VDMNat). ((pre_h x) \<longrightarrow> (post_h x  (g x  x)))))"
 	
-	sledgehammer
+	try
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:13
@@ -48,7 +48,7 @@ VDM po: h: function apply obligation in 'TestV2IFcns' (./src/test/resources/Test
 \<close>theorem h_FUNC_APPLY:
 	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (pre_g x  x))))"
 	
-	sledgehammer
+	try
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:18
@@ -59,7 +59,7 @@ VDM po: h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns
 \<close>theorem h_SUB_TYPE:
 	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (x > (0::VDMNat)))))"
 	
-	sledgehammer
+	try
 	oops
 	
 end
