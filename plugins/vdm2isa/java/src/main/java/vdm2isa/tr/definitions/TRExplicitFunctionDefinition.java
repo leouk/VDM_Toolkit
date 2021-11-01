@@ -204,10 +204,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		switch (kind)
 		{
 			case PRE:
-				result = this.type.getCurriedPre(this.isCurried);
+				result = this.type.getCurriedPreType(this.isCurried);
 				break;
 			case POST:
-				result = this.type.getCurriedPost(this.isCurried);
+				result = this.type.getCurriedPostType(this.isCurried);
 				break;
 
 		case EQ:

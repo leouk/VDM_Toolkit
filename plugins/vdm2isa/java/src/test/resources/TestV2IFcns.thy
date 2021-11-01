@@ -142,7 +142,7 @@ where
 		((inv_VDMNat x)) \<and>((inv_VDMNat y))"
 
 definition
-	post_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+	post_curried :: "VDMNat \<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"post_curried x y RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_curried specification\<close>

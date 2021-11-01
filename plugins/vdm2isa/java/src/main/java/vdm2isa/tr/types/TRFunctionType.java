@@ -70,12 +70,12 @@ public class TRFunctionType extends TRType
 		return new TRFunctionType(location, parameters, false, new TRBasicType(location, IsaToken.BOOL));
 	}
 
-	public TRFunctionType getCurriedPre(boolean isCurried)
+	public TRFunctionType getCurriedPreType(boolean isCurried)
 	{
 		if (isCurried && result instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)result;
-			return new TRFunctionType(location, parameters, false, ft.getCurriedPre(isCurried));
+			return new TRFunctionType(location, parameters, false, ft.getCurriedPreType(isCurried));
 		}
 		else
 		{
