@@ -18,8 +18,10 @@ import com.fujitsu.vdmj.typechecker.TypeCheckException;
 
 import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.pog.IsaProofObligationList;
+import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
+import vdm2isa.tr.definitions.TRProofScriptStepDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
@@ -32,6 +34,7 @@ import vdm2isa.tr.types.TRType;
 public class IsapogPlugin extends AbstractIsaPlugin {
 
     private int localPOCount;
+    private IsaProofStrategy strategy;
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
@@ -42,6 +45,7 @@ public class IsapogPlugin extends AbstractIsaPlugin {
     {
         super.localReset();
         localPOCount = 0;
+        strategy = IsaProofStrategy.REALISTIC;
     }
 
     public int getLocalPOCount()
@@ -57,12 +61,21 @@ public class IsapogPlugin extends AbstractIsaPlugin {
 
     protected TRProofScriptDefinition chooseProofScript(ProofObligation po, TRExpression poExpr)
     {
-        return TRProofScriptDefinition.optimistic(po.location);
+        switch (strategy)
+        {
+            case HOPEFUL    : return TRProofScriptDefinition.hopeful(po.location);
+            case OPTIMISTIC : return TRProofScriptDefinition.optimistic(po.location);
+            case PESSIMISTIC: return TRProofScriptDefinition.pessimistic(po.location);
+            case REALISTIC  : return TRProofScriptDefinition.realistic(po.location);
+            case SURRENDER  :
+            default         : return TRProofScriptDefinition.surrender(po.location);
+        }
     }
 
     protected String getSummaryPrefix()
     {
-        return "Translated POs for ";
+        return "Translated " + plural(getLocalPOCount(), "PO", "s") + 
+            " with " + this.strategy.name().toLowerCase() + " proof strategy for ";
     }
 
     @Override
