@@ -92,18 +92,18 @@ public class Vdm2isaPlugin extends CommandPlugin
 
 			if (Settings.dialect != Dialect.VDM_SL)
 			{
-				report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+				Vdm2isaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
 				errs++;
 			}
 			if (Settings.release != Release.VDM_10)
 			{
 				// This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
 				// For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-				warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+				Vdm2isaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
 			}
 
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-			processVDMWarnings();
+			Vdm2isaPlugin.processVDMWarnings();
 
 			ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
@@ -166,7 +166,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		}
 	}
 
-	protected void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
+	protected /*static*/ void outputModule(TCIdentifierToken moduleName, String result) throws FileNotFoundException
 	{
 		String dir = moduleName.getLocation().file.getParent();
 		if (dir == null) dir = ".";
@@ -184,7 +184,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL (v. " + Vdm2isaPlugin.isaVersion + ")";
 	}
 
-	public void processVDMWarnings()
+	public static void processVDMWarnings()
 	{
 		List<VDMWarning> vdmWarnings = TypeChecker.getWarnings();
 		int warnings2raiseCount = 0;
@@ -211,7 +211,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 		{
 			errors.add(error);
 
-    		if (errors.size() >= maxErrors-1)
+    		if (errors.size() >= Vdm2isaPlugin.maxErrors-1)
     		{
     			errors.add(new VDM2IsaError(10, "Too many translation errors", location));
     			throw new InternalException(10, "Too many translation errors");
