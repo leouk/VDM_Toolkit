@@ -4,11 +4,13 @@
 
 package vdm2isa.tr.definitions.visitors;
 
+import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
+import vdm2isa.tr.definitions.TRProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRTypeDefinition;
 import vdm2isa.tr.definitions.TRValueDefinition;
 
@@ -48,4 +50,13 @@ public abstract class TRDefinitionVisitor<R, S>
     public R caseProofScriptDefinition(TRProofScriptDefinition node, S arg) {
         return caseProofScriptDefinition(node, arg);
     }
+
+    public R caseProofScriptStepDefinition(TRProofScriptStepDefinition node, S arg) {
+        return caseProofScriptStepDefinition(node, arg);
+    }
+
+    public R caseBasicProofScriptStepDefinition(TRBasicProofScriptStepDefinition node, S arg) {
+        return caseBasicProofScriptStepDefinition(node, arg);
+    }
+	
 }
