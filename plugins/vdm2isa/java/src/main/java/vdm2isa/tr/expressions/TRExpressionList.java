@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import java.util.Arrays;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
