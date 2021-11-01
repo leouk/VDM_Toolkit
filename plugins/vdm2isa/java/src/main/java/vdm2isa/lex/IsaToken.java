@@ -156,6 +156,10 @@ public enum IsaToken {
 	SND(null, "snd"),
 	AT(null, "@"),
 
+	THEOREM(null, "theorem"),
+	LEMMA(null, "lemma"),
+	LEMMAS(null, "lemmas"),
+
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
 	THEN(Token.THEN, "then"),
