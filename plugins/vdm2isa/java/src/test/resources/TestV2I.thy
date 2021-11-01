@@ -1,10 +1,10 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-files = [./src/test/resources/TestV2I.vdmsl]
+in './src/test/resources/TestV2I.vdmsl' at line 1:8files = [./src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
-imports "VDMToolkit"
+imports VDMToolkit
 begin
 
 record R = 

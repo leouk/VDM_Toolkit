@@ -1,10 +1,10 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-files = [./src/test/resources/TestV2IFcns.vdmsl]
+in './src/test/resources/TestV2IFcns.vdmsl' at line 1:8files = [./src/test/resources/TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns
-imports "VDMToolkit"
+imports VDMToolkit
 begin
 
 \<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 6:7
