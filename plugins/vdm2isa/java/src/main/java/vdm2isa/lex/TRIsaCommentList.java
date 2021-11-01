@@ -8,7 +8,7 @@ import vdm2isa.tr.TRMappedList;
 
 public class TRIsaCommentList extends TRMappedList<LexComment, TRIsaComment>{
     
-    public TRIsaCommentList()
+    protected TRIsaCommentList()
     {
         super();
     }
@@ -30,5 +30,12 @@ public class TRIsaCommentList extends TRMappedList<LexComment, TRIsaComment>{
     public void add(LexLocation location, String comment, boolean block)
     {
         this.add(new TRIsaComment(new LexComment(location, comment, block)));
-    }		
+    }
+    
+    public static TRIsaCommentList newComment(LexLocation location, String comment, boolean block)
+    {
+        TRIsaCommentList result = new TRIsaCommentList();
+        result.add(location, comment, block);
+        return result;
+    }
 }

@@ -12,7 +12,6 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
     protected TRElseIfExpressionList()
     {
         super();
-        setFormattingSeparator("\n\t\t");
     }
 
     public TRElseIfExpressionList(TRElseIfExpressionList from)
@@ -24,6 +23,12 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
     public TRElseIfExpressionList(TCElseIfExpressionList from) throws Exception
     {
         super(from);
+    }
+
+    @Override
+    protected void setup()
+    {
+        super.setup();
         setFormattingSeparator("\n\t\t");
     }
 

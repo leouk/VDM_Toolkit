@@ -286,8 +286,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;
 		}
 		assert undeclaredName != null;
-		TRIsaCommentList comments = new TRIsaCommentList();
-		//comments.add(location, "implicitly constructed " + kind + " specification", false);
+		TRIsaCommentList comments = null;//TRIsaCommentList.newComment(location, "implicitly constructed " + kind + " specification", false);
 		
 		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
 		// The translator will then take this into account as the "missing" (now found) specification definition, and

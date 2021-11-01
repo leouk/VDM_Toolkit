@@ -15,7 +15,6 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	protected TRTypeBindList() 
 	{
 		super();
-		setSemanticSeparator(" ");
 	}  
 
 	public TRTypeBindList(TRTypeBindList from)
@@ -24,13 +23,19 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		addAll(from);
 	}
 
-
 	public TRTypeBindList(TCTypeBindList list) throws Exception
 	{
 		super(list);
+	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
 		setSemanticSeparator(" ");
 	}
 
+	@Override
 	public String invTranslate()
 	{
 		// Inv separator forms a chained conjunction

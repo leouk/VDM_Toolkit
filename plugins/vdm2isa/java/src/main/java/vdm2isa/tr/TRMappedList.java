@@ -53,7 +53,12 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		setup();
 	}
 	
-	public TRMappedList()
+	/**
+	 * Allow for empty list creation so that subclasses can call super when creating concrete empty lists, in which case their 
+	 * location will be LexLocation.ANY. All subclasses *must* not make their default constructors public, so that we will always
+	 * have location information from the TC AST. 
+	 */
+	protected TRMappedList()
 	{
 		super();
 		setup();

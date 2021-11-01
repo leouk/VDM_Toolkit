@@ -17,7 +17,6 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	protected TRRecordModifierList()
 	{
 		super();
-		setSemanticSeparator(IsaToken.COMMA.toString() + " ");
 	}
 
 	public TRRecordModifierList(TRRecordModifierList from)
@@ -29,6 +28,12 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	public TRRecordModifierList(TCRecordModifierList list) throws Exception
 	{
 		super(list);
+	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
 		setSemanticSeparator(IsaToken.COMMA.toString() + " ");
 	}
 

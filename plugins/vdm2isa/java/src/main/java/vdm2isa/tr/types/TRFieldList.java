@@ -13,7 +13,6 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	protected TRFieldList()
 	{
 		super();
-		setFormattingSeparator("\n\t ");
 	}
 
 	public TRFieldList(TRFieldList from)
@@ -25,6 +24,12 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	public TRFieldList(TCFieldList list) throws Exception
 	{
 		super(list);
+	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
 		setFormattingSeparator("\n\t ");
 	}
 

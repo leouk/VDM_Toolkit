@@ -9,6 +9,7 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 {
 	private static final long serialVersionUID = 1L;
 	
+	// no extended setup() for definition list list
 	protected TRDefinitionListList() 
 	{
 		super();
