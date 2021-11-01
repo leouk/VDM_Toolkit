@@ -1,5 +1,7 @@
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -10,21 +12,23 @@ public class TRProofScriptDefinition extends TRDefinition {
 
 	private static final long serialVersionUID = 1L;
 
-    public TRProofScriptDefinition(TRIsaCommentList comments, TRExpression poExpr)
+    private TRProofScriptStepDefinitionList poScript;
+
+    public TRProofScriptDefinition(LexLocation location, TRIsaCommentList comments,
+        TRProofScriptStepDefinitionList poScript)
     {
-        super(poExpr.location, comments, null);
+        super(location, comments, null);
+        this.poScript = poScript;
     }
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.PROOF;
+        return IsaToken.ISAR_PROOF;
     }
 
     @Override
     public String translate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(IsaToken.comment("Not yet handling proof scripts fully!"));
-        return sb.toString();
+        return poScript.translate();
     }
 
     @Override
