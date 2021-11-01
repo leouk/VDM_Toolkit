@@ -15,16 +15,46 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.tc.types.TCType;
 
+import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.pog.IsaProofObligationList;
+import vdm2isa.tr.definitions.TRProofObligationDefinition;
+import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.TRExpressionList;
-import vdm2isa.tr.expressions.TRProofObligationExpression;
+import vdm2isa.tr.modules.TRModule;
+import vdm2isa.tr.modules.TRModuleList;
+import vdm2isa.tr.modules.TRProofObligationModule;
 import vdm2isa.tr.types.TRType;
 
 public class Pog2isaPlugin extends AbstractIsaPlugin {
 
+    private int localPOCount;
+
     public Pog2isaPlugin(Interpreter interpreter) {
         super(interpreter);
+    }
+
+    @Override
+    protected void localReset()
+    {
+        super.localReset();
+        localPOCount = 0;
+    }
+
+    public int getLocalPOCount()
+    {
+        return localPOCount;
+    }
+
+    protected void addLocalPOS(int toadd)
+    {
+        assert toadd >= 0;
+        localPOCount += toadd;
+    }
+
+    protected TRProofScriptDefinition chooseProofScript(ProofObligation po)
+    {
+        warning(11111, "Not yet implemented proof script strategies for proof obligation " + po.name, po.location);
+        return null;
     }
 
     @Override
@@ -34,19 +64,15 @@ public class Pog2isaPlugin extends AbstractIsaPlugin {
         {
             Vdm2isaPlugin vdm2isa = new Vdm2isaPlugin(interpreter);
             result = vdm2isa.run(argv);  
-            int localerrs = 0;
-            int poCount = 0;
-            int modCount = 0;
             try
 			{
                 // create an isabelle module interpreter 
                 ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
                 IsaInterpreter isaInterpreter = new IsaInterpreter(minterpreter);
 
-                // get the POG and IsaPOG lists 
+                // get the POG and create a corresponding TRModuleList with its PO definitions 
                 ProofObligationList pogl = isaInterpreter.getProofObligations();
                 IsaProofObligationList isapogl = new IsaProofObligationList();
-                
                 for(ProofObligation po : pogl)
                 {
                     // type check PO as an TC AST
@@ -55,19 +81,28 @@ public class Pog2isaPlugin extends AbstractIsaPlugin {
 
                     // translate the PO back to TR world
                     Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
-                    TRProofObligationExpression poe = new TRProofObligationExpression(po, mpair.key, mpair.value);
+                    TRProofScriptDefinition poScript = chooseProofScript(po);
+                    TRIsaCommentList comments = TRIsaCommentList.newComment(po.location, "VDM po: " + po.value, false);
+                    TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, mpair.key, mpair.value, poScript);
                     isapogl.add(poe);
                 }
 
-                if (AbstractIsaPlugin.strict && AbstractIsaPlugin.getErrorCount() == 0 && localerrs == 0)
+                if (AbstractIsaPlugin.strict && AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0)
                 {
                     // output POs per module
-                    Map<String, TRExpressionList> modules = isapogl.getModulePOs();
-                    modCount += modules.size();
-                    for (Map.Entry<String, TRExpressionList> entry : modules.entrySet())
+                    TRModuleList modules = isapogl.getModulePOs();
+                    addLocalModules(modules.size());
+                    for (TRModule module : modules)
                     {
-                        poCount += entry.getValue().size();
-                        outputModule(entry.getValue().getLocation(), entry.getKey(), entry.getValue().translate());
+                        if (module instanceof TRProofObligationModule) 
+                        {
+                            addLocalPOS(module.definitions.size());
+                            outputModule(module.getLocation(), module.name.toString(), module.translate());    
+                        }
+                        else
+                        {
+                            report(11111, "Invalid proof obligations module " + module.name.toString(), module.name.getLocation());
+                        }
                     }
                 }
 			}

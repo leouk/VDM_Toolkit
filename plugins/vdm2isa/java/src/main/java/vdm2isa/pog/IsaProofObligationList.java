@@ -5,17 +5,31 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import vdm2isa.tr.expressions.TRExpressionList;
-import vdm2isa.tr.expressions.TRProofObligationExpression;
+import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
-public class IsaProofObligationList extends Vector<TRProofObligationExpression> {
+import plugins.Pog2isaPlugin;
+import vdm2isa.tr.definitions.TRProofScriptDefinition;
+import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRProofObligationDefinition;
+import vdm2isa.tr.modules.TRModuleList;
+import vdm2isa.tr.modules.TRProofObligationModule;
+
+/**
+ * Class to manage a flat list of PO definitions into a TRModuleList (i.e. POs per module) 
+ */
+public class IsaProofObligationList extends Vector<TRProofObligationDefinition> {
     
-    private Map<String, TRExpressionList> modulePOmap;
+    private Map<String, TRDefinitionList> poModuleMap;
 
     public IsaProofObligationList()
     {
         super();
-        this.modulePOmap = new TreeMap<String, TRExpressionList>();
+        this.poModuleMap = new TreeMap<String, TRDefinitionList>();
     }
 
     /**
@@ -23,17 +37,17 @@ public class IsaProofObligationList extends Vector<TRProofObligationExpression> 
      * @param module
      * @return
      */
-    protected TRExpressionList getModulePOList(String module)
+    protected TRDefinitionList getModulePOList(String module)
     {
-        TRExpressionList modulePOS;
-        if (!modulePOmap.containsKey(module))
+        TRDefinitionList modulePOS;
+        if (!poModuleMap.containsKey(module))
         {
-            modulePOS = null;//new TRExpressionList();   
-            modulePOmap.put(module, modulePOS);  
+            modulePOS = new TRDefinitionList();   
+            poModuleMap.put(module, modulePOS);  
         }
         else
         {
-            modulePOS = modulePOmap.get(module);
+            modulePOS = poModuleMap.get(module);
         }
         return modulePOS;
     }
@@ -43,14 +57,44 @@ public class IsaProofObligationList extends Vector<TRProofObligationExpression> 
      * This is a type conversion from a flat list of pairs to a map of lists for each module. 
      * @return
      */
-    public Map<String, TRExpressionList> getModulePOs() {
-        modulePOmap.clear();
+    public TRModuleList getModulePOs() {
+        poModuleMap.clear();
         // type transform this list of POs into a corresponding maps of lists per module
-        for (TRProofObligationExpression pair : this)
+        for (TRProofObligationDefinition pod : this)
         {
-            TRExpressionList poList = getModulePOList(pair.po.location.module);
-            poList.add(pair.poExpr);
+            TRDefinitionList poList = getModulePOList(pod.po.location.module);
+            poList.add(pod);
         } 
-        return Collections.unmodifiableMap(modulePOmap);
+
+        // create the module list view of the this proof obligation definition list
+        TRModuleList result = new TRModuleList();
+        if (!checkAllDefinitionsArePOS())
+            Pog2isaPlugin.report(11111, "Invalid module PO list: only PO expressions or proofs scripts are allowed", LexLocation.ANY);
+        else
+        {
+            // create PO modules per TRDefininitionList of POs or PSs for the correspoding PO module name 
+            for(String module : poModuleMap.keySet())
+            {
+                result.add(new TRProofObligationModule(
+                        new TCIdentifierToken(null, IsaTemplates.getPOModuleName(module), false), 
+                        poModuleMap.get(module)));
+            }
+        }
+
+        return result;
+    }
+
+    private boolean checkAllDefinitionsArePOS()
+    {
+        for(TRDefinitionList pos : poModuleMap.values())
+        {
+            for(TRDefinition po : pos)
+            {
+                if (po instanceof TRProofObligationDefinition || 
+                    po instanceof TRProofScriptDefinition)
+                    return false; 
+            }
+        }
+        return true;
     }
 }
