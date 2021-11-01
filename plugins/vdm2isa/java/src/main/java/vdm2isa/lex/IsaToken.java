@@ -168,6 +168,9 @@ public enum IsaToken {
 	ISAR_PROOF(null, ""),
 	ISAR_APPLY(null, "apply"),
 	ISAR_SLEDGEHAMMER(null, "sledgehammer"),
+	ISAR_TRY(null, "try"),
+	ISAR_TRY0(null, "try0"),
+	ISAR_NITPICK(null, "nitpick"),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),
