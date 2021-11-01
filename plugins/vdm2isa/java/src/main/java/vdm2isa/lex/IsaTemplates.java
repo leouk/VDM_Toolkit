@@ -2,6 +2,7 @@ package vdm2isa.lex;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -45,6 +46,60 @@ public final class IsaTemplates {
         else
             translatedItems.put(name, item);    
     }
+
+    public static boolean matches(String pattern, String value)
+    {
+        return Pattern.matches(pattern, value);
+    }
+
+    /**
+     * Checks the string against white space character class (i.e. \n, \t, \f, \r, ' ', \x0B)
+     * @param sep
+     * @return
+     */
+    public static boolean isValidFormatingSeparator(String sep)
+    {
+        return Pattern.matches("\\s*", sep);
+    }
+
+    public static boolean isValidSemanticSeparator(String sep)
+    {
+        //TODO add here a check against certain IsaToken characters only? 
+        return isValidFormatingSeparator(sep) || true;
+    }
+
+    /**
+     * Checks the given separator at its location to see whether it's valid or not. Formatting separators must be white space,
+     * whereas semantic separators must only contain IsaToken or white space
+     * @param location
+     * @param sep
+     * @param kind
+     * @return
+     */
+    public static boolean checkSeparator(LexLocation location, String sep, IsaSeparator kind)
+    {
+        // assume it's not okay
+        boolean result = false;
+		if (sep == null)
+            // null sep is not okay
+			Vdm2isaPlugin.report(11111, "Cannot translate with a null " + kind.toString().toLowerCase() + " separator", location);
+		else if (!sep.isEmpty()) 
+        {
+            if (kind == IsaSeparator.FORMATING && !IsaTemplates.isValidFormatingSeparator(sep))
+                // non white space formatting sep is not okay
+			    Vdm2isaPlugin.report(11111, "Invalid formatting separator: only white space characters are allowed", location);
+            else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
+                // non valid isatoken sep is not okay 
+                Vdm2isaPlugin.report(11111, "Invalid semantic separator: only Isabelle tokens or white space characters are allowed", location);
+            else
+                // validated sep is okay
+                result = true;
+        }
+        else 
+            // empty sep is okay
+            result = true;
+        return result;
+    } 
 
     public static String translateAbbreviation(String name, String typeStr, String exp)
     {

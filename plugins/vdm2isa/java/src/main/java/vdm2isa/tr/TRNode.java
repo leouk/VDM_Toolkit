@@ -4,6 +4,8 @@
 
 package vdm2isa.tr;
 
+import vdm2isa.lex.IsaSeparator;
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -19,13 +21,20 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	public final LexLocation location; 
 	private String separator;
 	private String formattingSeparator;
+	private String invTranslateSeparator;
 
 	protected TRNode(LexLocation location)
 	{
 		super();
 		this.location = location; 
-		setSeparator("");
+		setup();
+	}
+
+	protected void setup()
+	{
+		setSemanticSeparator("");
 		setFormattingSeparator("");
+		setInvTranslateSeparator("");
 	}
 
 	/**
@@ -38,17 +47,20 @@ abstract public class TRNode extends MappedObject implements MappableNode
     }
 
 	@Override
-	public String getSeparator()
+	public String getSemanticSeparator()
 	{
 		return separator;
 	}
 
 	@Override
-	public String setSeparator(String sep)
+	public String setSemanticSeparator(String sep)
 	{
-		String result = separator;
-		separator = sep;
-		return result;
+		String old = getSemanticSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			separator = sep;
+		}
+		return old;
 	}
 
 	@Override
@@ -60,9 +72,30 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	@Override
 	public String setFormattingSeparator(String sep)
 	{
-		String result = formattingSeparator;
-		formattingSeparator = sep;
-		return result;
+		String old = getFormattingSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.FORMATING))
+		{
+			formattingSeparator = sep;
+		}
+		return old;
+	}
+
+	@Override
+	public String getInvTranslateSeparator()
+	{
+		return invTranslateSeparator;
+	}
+
+	@Override
+	public String setInvTranslateSeparator(String sep)
+	{
+		String old = getInvTranslateSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			invTranslateSeparator = sep;
+			//System.out.println("sep = " + sep + " for " + this.toString());
+		}	
+		return old;
 	}
 
 	@Override

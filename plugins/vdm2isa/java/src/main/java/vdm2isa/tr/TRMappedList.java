@@ -11,6 +11,8 @@ import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
 import plugins.Vdm2isaPlugin;
+import vdm2isa.lex.IsaSeparator;
+import vdm2isa.lex.IsaTemplates;
 
 /**
  * Tighthened target (TO) type with an interface containing the key TRNode-related methods
@@ -20,7 +22,8 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	private static final long serialVersionUID = 1L;
 
 	private String separator;
-	private String formattingSeparator; 
+	private String formattingSeparator;
+	private String invTranslateSeparator; 
 	
 	@SuppressWarnings("unchecked")
 	public TRMappedList(List<FROM> from) throws Exception
@@ -47,35 +50,38 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 				t.printStackTrace();
 			}
 		}
-		setSeparator("");
-		setFormattingSeparator("");
+		setup();
 	}
 	
 	public TRMappedList()
 	{
 		super();
-		setSeparator("");
+		setup();
+	}
+
+	protected void setup()
+	{
+		setSemanticSeparator("");
 		setFormattingSeparator("");
+		setInvTranslateSeparator("");
 	}
 
 	@Override
-	public String getSeparator()
+	public String getSemanticSeparator()
 	{
 		return separator;
 	}
 
 	@Override
-	public String setSeparator(String sep)
+	public String setSemanticSeparator(String sep)
 	{
-		String result = separator;
-		if (sep == null)
-			report(11111, "Cannot translate with a null separator");
-		else
+		String result = getSemanticSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
 		{
 			separator = sep;
 			for (MappableNode n : this)
 			{
-				n.setSeparator(sep);
+				n.setSemanticSeparator(sep);
 			}
 		}
 		return result;
@@ -90,10 +96,8 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	@Override
 	public String setFormattingSeparator(String sep)
 	{
-		String result = formattingSeparator;
-		if (sep == null)
-			report(11111, "Cannot translate with a null separator");
-		else
+		String old = getFormattingSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.FORMATING))
 		{
 			formattingSeparator = sep;
 			for (MappableNode n : this)
@@ -101,7 +105,28 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 				n.setFormattingSeparator(sep);
 			}
 		}
-		return result;
+		return old;
+	}
+
+	@Override
+	public String getInvTranslateSeparator()
+	{
+		return invTranslateSeparator;
+	}
+
+	@Override
+	public String setInvTranslateSeparator(String sep)
+	{
+		String old = getInvTranslateSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			invTranslateSeparator = sep;
+			for (MappableNode n : this)
+			{
+				n.setInvTranslateSeparator(sep);
+			}
+		}	
+		return old;
 	}
 
 	@Override
@@ -115,7 +140,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			for (int i = 1; i < size(); i++)
 			{
 				//TODO workout whether to include before/after formatting separators? 
-				sb.append(getSeparator());
+				sb.append(getSemanticSeparator());
 				sb.append(getFormattingSeparator());
 				sb.append(get(i).toString());
 			}
@@ -143,7 +168,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			sb.append(get(0).translate());
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(getSeparator());
+				sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
 				sb.append(get(i).translate());
 			}
@@ -160,7 +185,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			sb.append(get(0).invTranslate());
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(getSeparator());
+				sb.append(getSemanticSeparator());
 				sb.append(getFormattingSeparator());
 				sb.append(get(i).invTranslate());
 			}
