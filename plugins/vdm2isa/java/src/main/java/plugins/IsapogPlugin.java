@@ -1,5 +1,8 @@
 package plugins;
 
+import java.util.List;
+import java.util.Vector;
+
 import com.fujitsu.vdmj.lex.LexException;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
@@ -96,6 +99,7 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                 // get the POG and create a corresponding TRModuleList with its PO definitions 
                 ProofObligationList pogl = isaInterpreter.getProofObligations();
                 IsaProofObligationList isapogl = new IsaProofObligationList();
+                List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
                 for(ProofObligation po : pogl)
                 {
                     try 
@@ -116,38 +120,44 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                     catch(LexException le)
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        AbstractIsaPlugin.report(11111, "VDM PO lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
+                        AbstractIsaPlugin.report(11111, "VDM PO " + po.name + "lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
                     }
                     catch(ParserException pe) 
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        AbstractIsaPlugin.report(11111, "VDM PO parsing error \"" + pe.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//pe.location);
+                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " parsing error \"" + pe.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//pe.location);
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, pe));
                     }
                     catch(TypeCheckException te)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        AbstractIsaPlugin.report(11111, "VDM PO type checking error \"" + te.toString() + "\"; carrying on...", LexLocation.ANY);//te.location);
+                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + te.toString() + "\"; carrying on...", LexLocation.ANY);//te.location);
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, te));
                     }
                     catch(VDMErrorsException ve)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        AbstractIsaPlugin.report(11111, "VDM PO type checking error \"" + ve.toString() + "\"; carrying on...", 
+                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + ve.toString() + "\"; carrying on...", 
                             ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location);                        
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, ve));
                     }
                     catch(Exception e)
                     {
                         // This is something quite bad, so stop
-                        AbstractIsaPlugin.report(11111, "VDM PO class mapping / unexpected error \"" + e.toString() + "\"; cannot carry on.", LexLocation.ANY);                        
+                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " class mapping / unexpected error \"" + e.toString() + "\"; cannot carry on.", LexLocation.ANY);                        
+                        // in case we decide to comment the throw?
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, e));
                         throw e;
                     }
                 }
-                //TODO hum... addLocalErrors(AbstractIsaPlugin.getErrorCount());
+                addLocalErrors(AbstractIsaPlugin.getErrorCount());
 
 				// be strict on translation output
 				// strict => AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0
-                if (!AbstractIsaPlugin.strict || (AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0))
+                if (!AbstractIsaPlugin.strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
                 {
                     // output POs per module
                     TRModuleList modules = isapogl.getModulePOs();
@@ -157,7 +167,10 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                         if (module instanceof TRProofObligationModule) 
                         {
                             addLocalPOS(module.definitions.size());
-                            outputModule(module.getLocation(), module.name.toString(), module.translate());    
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(module.translate());
+                            sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, module));
+                            outputModule(module.getLocation(), module.name.toString(), sb.toString());    
                         }
                         else
                         {
@@ -178,6 +191,12 @@ public class IsapogPlugin extends AbstractIsaPlugin {
 			}
         }
         return result;
+    }
+
+    private String getUntranslatedPOSAsComments(List<Pair<ProofObligation, Exception>> notTranslatedPOS,
+            TRModule module) {
+        // only within the POs of the same module; remove from the list afterwards 
+        return "";//TODO 
     }
 
     @Override
