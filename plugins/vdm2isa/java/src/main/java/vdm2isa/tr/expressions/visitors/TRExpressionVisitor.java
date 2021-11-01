@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.expressions.visitors;
 
+import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRBoundedExpression;
@@ -25,7 +26,6 @@ import vdm2isa.tr.expressions.TRMuExpression;
 import vdm2isa.tr.expressions.TRNarrowExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
-import vdm2isa.tr.expressions.TRProofObligationExpression;
 import vdm2isa.tr.expressions.TRRecordModifier;
 import vdm2isa.tr.expressions.TRSeqCompExpression;
 import vdm2isa.tr.expressions.TRSeqEnumExpression;
@@ -204,11 +204,6 @@ public abstract class TRExpressionVisitor<R, S>
 	}
 
  	public R caseVDMTestExpression(TRVDMTestExpression node, S arg)
-	{
-		return caseExpression(node, arg);
-	}
-
-	public R caseProofObligationExpression(TRProofObligationExpression node, S arg)
 	{
 		return caseExpression(node, arg);
 	}

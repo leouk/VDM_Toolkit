@@ -32,16 +32,6 @@ public abstract class TRExpression extends TRNode
 		this(exp.location);
 	}
 
-    /**
-     * Expressions do not support invariant translation in general. Some type-bound/local expressions do and can extend this behaviour.
-     */
-    @Override
-    public String invTranslate()
-    {
-        report(11111, "Expression \"" + toString() + "\" does not support Isabelle invariant translation.");
-        return "";
-    }
-
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
 	public String tokenise(IsaToken token, LexLocation location, TRExpression... args)
