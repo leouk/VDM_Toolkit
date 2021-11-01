@@ -124,16 +124,14 @@ public class Vdm2isaPlugin extends CommandPlugin
 			{
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 
-				for (TRModule module: translatedModules)
+				// be strict on translation output
+				if (strict && Vdm2isaPlugin.getErrorCount() == 0)
 				{
-					String output = module.translate();
-					
-					// be strict on translation output
-					if (strict && Vdm2isaPlugin.getErrorCount() == 0)
+					for (TRModule module: translatedModules)
 					{
-						tcount++;
-						outputModule(module.name, output);
+						outputModule(module.name, module.translate());
 					}
+					tcount += translatedModules.size();
 				}
 			}
 			catch (InternalException e)
