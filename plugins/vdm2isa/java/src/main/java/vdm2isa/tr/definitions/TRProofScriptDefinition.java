@@ -37,18 +37,82 @@ public class TRProofScriptDefinition extends TRDefinition {
     }
     
     /**
-     * Creates an optimistic proof script delegating the proof to sledgehammer then oopsing (done?) it
+     * Creates an optimistic proof script delegating the proof to the try0 method then oopsing (done?) it
      * @param location
      * @return
      */
     public static TRProofScriptDefinition optimistic(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Hope Sldegehammer can help", false), 
+            TRIsaCommentList.newComment(location, "Expect the goal is trivial", false), 
+            TRProofScriptStepDefinitionList.proofScript(
+                TRBasicProofScriptStepDefinition.isaTry0(location),
+                TRBasicProofScriptStepDefinition.oops(location))
+            );
+        return result;
+    }
+
+    /**
+     * Creates hopeful proof script delegating the proof to sledgehammer then oopsing (done?) it
+     * @param location
+     * @return
+     */
+    public static TRProofScriptDefinition hopeful(LexLocation location)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+            TRIsaCommentList.newComment(location, "Expect sldegehammer can find the proof", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.sledgehammer(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
         return result;
     }
+
+    /**
+     * Creates a pessimistic proof script expecting nitpick will find a counter example
+     * @param location
+     * @return
+     */
+    public static TRProofScriptDefinition pessimistic(LexLocation location)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+            TRIsaCommentList.newComment(location, "Expect Nitpick can find a counter example", false), 
+            TRProofScriptStepDefinitionList.proofScript(
+                TRBasicProofScriptStepDefinition.nitpick(location),
+                TRBasicProofScriptStepDefinition.oops(location))
+            );
+        return result;
+    }
+
+    /**
+     * Creates a realistic proof script attempting all tools in the box (including try0, nitpick and sledgehammer) 
+     * @param location
+     * @return
+     */
+    public static TRProofScriptDefinition realistic(LexLocation location)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+            TRIsaCommentList.newComment(location, "Try to be optimisstic, hopeful, then pessimistic", false), 
+            TRProofScriptStepDefinitionList.proofScript(
+                TRBasicProofScriptStepDefinition.isaTry(location),
+                TRBasicProofScriptStepDefinition.oops(location))
+            );
+        return result;
+    }
+
+    /**
+     * Creates a proof script that accepts defeat against the PO
+     * @param location
+     * @return
+     */
+    public static TRProofScriptDefinition surrender(LexLocation location)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+            TRIsaCommentList.newComment(location, "Surrender", false), 
+            TRProofScriptStepDefinitionList.proofScript(
+                TRBasicProofScriptStepDefinition.oops(location))
+            );
+        return result;
+    }
+
 }

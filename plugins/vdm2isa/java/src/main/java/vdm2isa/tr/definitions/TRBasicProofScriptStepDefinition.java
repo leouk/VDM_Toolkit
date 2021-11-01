@@ -12,7 +12,7 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
 
     private final IsaToken isarScriptStep;
 
-    public TRBasicProofScriptStepDefinition(LexLocation location, TRIsaCommentList comments, IsaToken isarScriptStep)
+    protected TRBasicProofScriptStepDefinition(LexLocation location, TRIsaCommentList comments, IsaToken isarScriptStep)
     {
         super(location, comments);
         this.isarScriptStep = isarScriptStep;
@@ -34,12 +34,32 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
         return isaToken().toString() + getFormattingSeparator();
     }
 
-    public static final TRBasicProofScriptStepDefinition sledgehammer(LexLocation location)
+    protected static final TRBasicProofScriptStepDefinition sledgehammer(LexLocation location)
     {
         return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_SLEDGEHAMMER);
     }
     
-    public static final TRBasicProofScriptStepDefinition oops(LexLocation location)
+    protected static final TRBasicProofScriptStepDefinition nitpick(LexLocation location)
+    {
+        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_NITPICK);
+    }
+    
+    protected static final TRBasicProofScriptStepDefinition isaTry0(LexLocation location)
+    {
+        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_TRY0);
+    }
+
+    protected static final TRBasicProofScriptStepDefinition isaTry(LexLocation location)
+    {
+        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_TRY);
+    }
+
+    protected static final TRBasicProofScriptStepDefinition done(LexLocation location)
+    {
+        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_DONE);
+    }
+    
+    protected static final TRBasicProofScriptStepDefinition oops(LexLocation location)
     {
         return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_OOPS);
     }    
