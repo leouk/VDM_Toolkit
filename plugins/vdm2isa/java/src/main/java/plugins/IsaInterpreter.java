@@ -31,7 +31,9 @@ public class IsaInterpreter extends ModuleInterpreter {
      */
     public Pair<TCExpression, TCType> typeCheck(String vdmInput, String module) throws Exception
     {
-        TCExpression expr = this.parseExpression(vdmInput, module);
+        // avoid RESULT as a name because type checker doesn't like / allow them. 
+        //TODO properly handle this! 
+        TCExpression expr = this.parseExpression(vdmInput.replaceAll("RESULT", "result"), module);
         TCType type = this.typeCheck(expr);
         return new Pair<TCExpression, TCType>(expr, type);
     }
