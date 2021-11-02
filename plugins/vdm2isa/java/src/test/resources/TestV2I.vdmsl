@@ -124,10 +124,12 @@ values
 	v722=let r: real = 4.0 in narrow_(r, nat1);
 	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
-	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression
+	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression + TCMultipleTypeBind
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
+	v781=(forall var1, var2 in set t9 & var1 <= var2); --TCForallExpression multiple set binds!
+	v783=(forall var1, var2 in seq t10 & var1 <= var2);--TCForallExpression multiple seq binds!
 	--TODO: not yet v65= t14(1);						--TCApplyExpression
 	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
 	v80= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
@@ -147,6 +149,14 @@ values
 	
 	--To test VDM warnings as errors
 	--x = 10;
+
+functions
+	-- has to be a function for executability because of the type bind!
+	v782: () -> bool
+	v782() == (forall var1:nat, var2:nat & var1 < var2);-- multiple type binds
+
+	v7821: () -> bool
+	v7821() == (forall var1:nat, var2:nat, var3, var4 in set t9 & var1 + var3 < var2 + var4);-- multiple type binds
 
 --state MyState of
 --   x : nat
