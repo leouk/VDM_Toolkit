@@ -42,7 +42,8 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			catch (Exception e)
 			{
 				Vdm2isaPlugin.report(11111, "Could not convert " + from.getClass().getName() + " = " + e.toString(), LexLocation.ANY);
-				e.printStackTrace();
+				// don't debug "can't convert errors"! 
+				//e.printStackTrace();
 			}
 			catch (Throwable t)
 			{

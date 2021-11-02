@@ -8,7 +8,7 @@ public class TRProofObligationModule extends TRModule
 {
 	private static final long serialVersionUID = 1L;
 
-    private final String poModuleOwner;
+    public final String poModuleOwner;
 
     /**
      * This is created by the IsaProofObligationsList class with the module responsible for generating this PO module.
@@ -19,7 +19,7 @@ public class TRProofObligationModule extends TRModule
      */
     public TRProofObligationModule(String poModuleOwner, TCIdentifierToken poModuleName, TRDefinitionList definitions)
     {
-        super(poModuleName, definitions, null);//Pass the POFile? No need
+        super(poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation().file));
         this.poModuleOwner = poModuleOwner;
     }
 
