@@ -9,10 +9,18 @@ public abstract class TRMultipleBind extends TRNode
 
     public final TRPatternList plist; 
 
+    /**
+     * PO binds have to be treated carefully, as the implicit checks for their type invariants have to be taken into account.
+     * Moreover, depending on the bind and on the bounded expression it belongs to, various adjustments are needed. 
+     * e.g., forall x, y in set S & P =>
+     */
+    public boolean poBind;
+
     public TRMultipleBind(TRPatternList plist)
     {
         super(plist.get(0).location);
         this.plist = plist;
+        this.poBind = false;
     }
 
     public TRMultipleBindList getMultipleBindList()
@@ -20,16 +28,6 @@ public abstract class TRMultipleBind extends TRNode
       TRMultipleBindList list = new TRMultipleBindList();
       list.add(this);
       return list;
-    }
-
-    /**
-     * Binds do not support invariant translation in general. Some type-bound binds do and can extend this behaviour.
-     */
-    @Override
-    public String invTranslate()
-    {
-        report(11111, "Multiple bind \"" + plist.translate() + "\" does not support Isabelle invariant translation.");
-        return "";
     }
 
     /**
