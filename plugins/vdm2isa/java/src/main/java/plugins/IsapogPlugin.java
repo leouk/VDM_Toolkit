@@ -1,5 +1,6 @@
 package plugins;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,6 +20,7 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeCheckException;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaCommentList;
 import vdm2isa.pog.IsaProofObligationList;
 import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
@@ -99,6 +101,7 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                 // get the POG and create a corresponding TRModuleList with its PO definitions 
                 ProofObligationList pogl = isaInterpreter.getProofObligations();
                 IsaProofObligationList isapogl = new IsaProofObligationList();
+                int poNumber = 1;
                 List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
                 for(ProofObligation po : pogl)
                 {
@@ -111,9 +114,10 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                         // translate the PO back to TR world
                         Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
                         TRProofScriptDefinition poScript = chooseProofScript(po, mpair.key);
-                        TRIsaCommentList comments = TRIsaCommentList.newComment(po.location, "VDM po: " + po.toString(), false);
+                        TRIsaCommentList comments = TRIsaCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
                         TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, mpair.key, mpair.value, poScript);
                         isapogl.add(poe);
+                        poNumber++;
                     }
                     // added those after the problem with post_constS(,10)! for constS: ()->nat constS()==10 post RESULT <= 10;
                     // because these are "console" (not within the file) location info is mostly pointless? Except perhaps for VDMErrorsException
@@ -169,7 +173,7 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                             addLocalPOS(module.definitions.size());
                             StringBuilder sb = new StringBuilder();
                             sb.append(module.translate());
-                            sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, module));
+                            sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, (TRProofObligationModule)module));
                             outputModule(module.getLocation(), module.name.toString(), sb.toString());    
                         }
                         else
@@ -182,6 +186,7 @@ public class IsapogPlugin extends AbstractIsaPlugin {
 			catch (InternalException e)
 			{
 				Console.out.println(e.toString());
+                AbstractIsaPlugin.errs++;
 			}
 			catch (Throwable t)
 			{
@@ -193,10 +198,34 @@ public class IsapogPlugin extends AbstractIsaPlugin {
         return result;
     }
 
-    private String getUntranslatedPOSAsComments(List<Pair<ProofObligation, Exception>> notTranslatedPOS,
-            TRModule module) {
+    /**
+     * Consider failed PO translation at least adding them as comments. For now at the end of the file. Later perhaps as part of
+     * a proper TRIsaCommentList. 
+     * @param listOfnotTranslatedPOS
+     * @param module
+     * @return
+     */
+    private String getUntranslatedPOSAsComments(List<Pair<ProofObligation, Exception>> listOfnotTranslatedPOS, TRProofObligationModule module) {
+        StringBuilder sb = new StringBuilder();
         // only within the POs of the same module; remove from the list afterwards 
-        return "";//TODO 
+        Iterator<Pair<ProofObligation, Exception>> it = listOfnotTranslatedPOS.iterator();
+        while (it.hasNext())
+        {
+            Pair<ProofObligation, Exception> pair = it.next();
+            if (pair.key.location.module.equals(module.poModuleOwner))
+            {
+                it.remove();
+                sb.append("\n");
+                sb.append(IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN, 
+                    "\n\tCould not translate VDM PO because of a " + pair.value.getClass().getName() + " error:" +
+                    "\n\tVDM PO: " + pair.key.toString() + 
+                    "\n\tReason: " + pair.value.getMessage() +
+                    "\n", 
+                    IsaToken.BLOCK_COMMENT_CLOSE));
+                sb.append("\n");
+            } 
+        }
+        return sb.toString();
     }
 
     @Override
