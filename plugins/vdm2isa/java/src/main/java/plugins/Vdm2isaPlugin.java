@@ -106,6 +106,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 				// plugin run worked
 				result = true;
 			}
+            Console.out.println("Starting Isabelle to VDM translation.");
 
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
 			Vdm2isaPlugin.processVDMWarnings();
@@ -309,7 +310,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 	private static void setupProperties()
 	{
 		Vdm2isaPlugin.maxErrors 	= Properties.tc_max_errors;
-		Vdm2isaPlugin.strict 		= true;
+		Vdm2isaPlugin.strict 		= false;
 		Vdm2isaPlugin.linientPost 	= false;
 		Vdm2isaPlugin.reportWarnings= true;
 		Vdm2isaPlugin.isaVersion    = "Isabelle2021: February 2021";

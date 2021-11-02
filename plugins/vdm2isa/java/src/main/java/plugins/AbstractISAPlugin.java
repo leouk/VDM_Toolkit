@@ -226,12 +226,14 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
     }
 
     public static void printErrors(ConsoleWriter out) {
+        if (Vdm2isaPlugin.getErrorCount() > 0) Vdm2isaPlugin.printErrors(out);
         for (VDM2IsaError e : AbstractIsaPlugin.errors) {
             out.println(e.toString());
         }
     }
 
     public static void printWarnings(ConsoleWriter out) {
+        if (Vdm2isaPlugin.getWarningCount() > 0) Vdm2isaPlugin.printWarnings(out);
         for (VDM2IsaWarning w : AbstractIsaPlugin.warnings) {
             out.println(w.toString());
         }
