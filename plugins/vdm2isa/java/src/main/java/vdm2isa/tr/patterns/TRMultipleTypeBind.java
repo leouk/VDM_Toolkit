@@ -20,7 +20,15 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     {
         super(plist);
         this.type = type;
+    }
+
+    @Override 
+    protected void setup()
+    {
+        // multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
+        setFormattingSeparator(" ");
+        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
     }
 
     @Override
@@ -31,9 +39,13 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     protected String invTranslate(int index)
     {
         assert index >= 0 && index < plist.size();
-        return IsaToken.parenthesise(IsaToken.INV + type.translate() + " " + plist.get(index).translate());
+        return IsaToken.parenthesise(IsaToken.INV + type.translate() + getFormattingSeparator() + plist.get(index).translate());
     }
 
+    /**
+     * Multiple type binds invariant translate have to issue the inv_T check
+     * e.g., "forall x:T . P(x)" => "! (x::T) . inv_T x /\ P(x)"
+     */
     @Override
     public String invTranslate()
     {
@@ -43,7 +55,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 			sb.append(invTranslate(0));
             for (int i=1; i<plist.size(); i++)
 			{
-                sb.append(" " + IsaToken.AND.toString() + " ");
+                sb.append(getInvTranslateSeparator());
 				sb.append(invTranslate(i));
 			}
 		}
@@ -53,7 +65,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     @Override
     public String compTranslate(boolean patternsOnly)
     {
-        return IsaToken.parenthesise(plist.translate() + " " + IsaToken.TYPEOF + " " + type.translate());
+        return IsaToken.parenthesise(plist.translate() + getFormattingSeparator() + IsaToken.TYPEOF + getFormattingSeparator() + type.translate());
     }
 
     protected String translate(int index, String typeStr)

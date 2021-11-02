@@ -42,7 +42,8 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 	protected void setup()
 	{
 		super.setup();
-		setSemanticSeparator(IsaToken.COMMA.toString());
+		// pattern lists are space separated in Isabelle, not commas please. 
+		setSemanticSeparator(" ");//IsaToken.COMMA.toString());
 	}
 
 	@Override

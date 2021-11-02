@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -48,16 +49,18 @@ public class TRProductType extends TRType {
         }*/
         else 
         {
+            assert index > 0; // replicate(0) = ERROR! 
             // repeat (snd x) index-times
             fieldVarName.append(IsaToken.LPAREN.toString());
             fieldVarName.append(IsaToken.SND.toString());
             fieldVarName.append(" ");
             if (index > 1)
             {    
-                fieldVarName.append(String.format("%0" + (index-1) + "d", 0).replace("0", fieldVarName.toString()));
+                // repeats string f
+                fieldVarName.append(IsaTemplates.replicate(fieldVarName.toString(), index-1));
             }
             fieldVarName.append(varName);
-            fieldVarName.append(String.format("%0" + index + "d", 0).replace("0", IsaToken.RPAREN.toString()));
+            fieldVarName.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), index));
             
             // add final external fst (snd .... (snd x)) or just final snd 
             if (index < size - 1) 

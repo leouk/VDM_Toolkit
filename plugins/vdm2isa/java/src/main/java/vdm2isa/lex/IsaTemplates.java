@@ -204,4 +204,10 @@ public final class IsaTemplates {
     public static String getPOModuleName(String module) {
         return module + "_PO";
     }
+
+    public static String replicate(String s, long count)
+    {
+        assert count > 0;
+        return String.format("%0" + (count) + "d", 0).replace("0", s);
+    }
 }

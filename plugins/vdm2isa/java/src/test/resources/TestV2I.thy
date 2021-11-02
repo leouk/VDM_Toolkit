@@ -1,7 +1,7 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2I.vdmsl' at line 1:8files = [./src/test/resources/TestV2I.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl' at line 1:8files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit
@@ -19,15 +19,15 @@ where
 	 ((inv_VDMNat (y\<^sub>R dummy0)))
 		)"
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 12:7
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 12:7
 Isabelle does not allow empty records
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 13:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 13:7
 S :: ;
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 16:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 16:7
  Auxiliary to allow for TCApplicationExpression of TCRecordType result for mkr(1).x
 \<close>
 definition
@@ -54,7 +54,7 @@ where
 	\<comment>\<open>User defined body of mkr\<close>
 	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 20:7
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 20:7
 TCRecordBind
 \<close>
 definition
@@ -86,7 +86,7 @@ where
 			\<comment>\<open>User defined body of recbind\<close>
 			(x + y)"
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 25:3
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 25:3
  Explicitly typed values
 \<close>
 abbreviation
@@ -100,7 +100,7 @@ where
 	"inv_t1  \<equiv> (inv_bool t1)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 26:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 26:43
 TCBooleanType,TCBooleanLiteralExpression
 \<close>
 abbreviation
@@ -114,7 +114,7 @@ where
 	"inv_t2  \<equiv> (inv_VDMChar t2)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 27:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 27:43
 TCCharacterType,TCCharLiteralExpression
 \<close>
 abbreviation
@@ -128,7 +128,7 @@ where
 	"inv_t3  \<equiv> (inv_VDMSeq' (inv_VDMChar) t3)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 28:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 28:43
 TCStringLiteralExpression; string literals can be VDMChar VDMSeq for Isabelle string type 
 \<close>
 abbreviation
@@ -142,7 +142,7 @@ where
 	"inv_t4  \<equiv> (inv_VDMInt t4)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 29:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 29:39
 TCIntegerType, TCIntegerLiteralExpression
 \<close>
 abbreviation
@@ -156,7 +156,7 @@ where
 	"inv_t5  \<equiv> (inv_VDMNat t5)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 30:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 30:39
 TCNaturalType
 \<close>
 abbreviation
@@ -170,7 +170,7 @@ where
 	"inv_t6  \<equiv> (inv_VDMNat1 t6)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 31:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 31:39
 TCNaturalOneType
 \<close>
 abbreviation
@@ -184,7 +184,7 @@ where
 	"inv_t7  \<equiv> (inv_VDMReal t7)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 32:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 32:43
 TCRealType,TCRealLiteralExpression
 \<close>
 abbreviation
@@ -198,7 +198,7 @@ where
 	"inv_t8  \<equiv> (inv_VDMRat t8)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 33:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 33:39
 TCRationalType
 \<close>
 abbreviation
@@ -212,7 +212,7 @@ where
 	"inv_t9  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t9)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 35:55
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 35:55
 TCSetType
 \<close>
 abbreviation
@@ -226,7 +226,7 @@ where
 	"inv_t10  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) t10)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 36:55
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 36:55
 TCSeqType, TCSeq1Type
 \<close>
 abbreviation
@@ -240,7 +240,7 @@ where
 	"inv_t11  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t11)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 37:51
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 37:51
 TCSet1Type
 \<close>
 abbreviation
@@ -276,7 +276,7 @@ where
 	"inv_t14  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t14)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 40:51
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 40:51
 TCMapType
 \<close>
 abbreviation
@@ -290,7 +290,7 @@ where
 	"inv_t15  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t15)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 43:3
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 43:3
  Implicitly typed values	
 \<close>
 abbreviation
@@ -304,7 +304,7 @@ where
 	"inv_v1  \<equiv> (inv_VDMNat1 v1)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 44:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 44:39
 TCAbsoluteExpression	
 \<close>
 abbreviation
@@ -318,7 +318,7 @@ where
 	"inv_v2  \<equiv> (inv_VDMInt v2)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 45:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 45:39
 TCFloorExpression 		
 \<close>
 abbreviation
@@ -343,7 +343,7 @@ where
 	"inv_v4  \<equiv> (inv_VDMInt v4)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 47:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 47:39
 TCUnaryMinusExpression
 \<close>
 abbreviation
@@ -357,7 +357,7 @@ where
 	"inv_v5  \<equiv> (inv_VDMNat1 v5)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 48:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 48:39
 TCUnaryPlusExpression	
 \<close>
 abbreviation
@@ -371,7 +371,7 @@ where
 	"inv_v6  \<equiv> (inv_VDMNat1 v6)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 49:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 49:39
 TCCardinalityExpression
 \<close>
 abbreviation
@@ -385,7 +385,7 @@ where
 	"inv_v7  \<equiv> (inv_VDMSet' (inv_VDMSet' (inv_VDMNat1)) v7)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 50:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 50:39
 TCPowerSetExpression
 \<close>
 abbreviation
@@ -399,7 +399,7 @@ where
 	"inv_v8  \<equiv> (inv_VDMSet' (inv_VDMNat1) v8)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 51:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 51:39
 TCDistUnionExpression	
 \<close>
 abbreviation
@@ -413,7 +413,7 @@ where
 	"inv_v9  \<equiv> (inv_VDMSet' (inv_VDMNat1) v9)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 52:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 52:39
 TCDistIntersectExpression
 \<close>
 abbreviation
@@ -427,7 +427,7 @@ where
 	"inv_v10  \<equiv> (inv_VDMNat1 v10)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 53:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 53:39
 TCLenExpression
 \<close>
 abbreviation
@@ -441,7 +441,7 @@ where
 	"inv_v11  \<equiv> (inv_VDMNat1 v11)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 54:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 54:43
 TCHeadExpression
 \<close>
 abbreviation
@@ -455,7 +455,7 @@ where
 	"inv_v12  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v12)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 55:43
 TCTailExpression
 \<close>
 abbreviation
@@ -469,7 +469,7 @@ where
 	"inv_v13  \<equiv> (inv_VDMSet' (inv_VDMNat1) v13)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 56:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 56:39
 TCIndicesExpression
 \<close>
 abbreviation
@@ -483,7 +483,7 @@ where
 	"inv_v14  \<equiv> (inv_VDMSet' (inv_VDMNat1) v14)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 57:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 57:39
 TCElementsExpression 
 \<close>
 abbreviation
@@ -497,7 +497,7 @@ where
 	"inv_v15  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v15)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 58:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 58:39
 TCDistConcatExpression
 \<close>
 abbreviation
@@ -511,7 +511,7 @@ where
 	"inv_v16  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v16)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 59:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 59:39
 TCReverseExpression
 \<close>
 abbreviation
@@ -525,7 +525,7 @@ where
 	"inv_v17  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v17)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 60:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 60:39
 TCSeqConcatExpression		
 \<close>
 abbreviation
@@ -539,7 +539,7 @@ where
 	"inv_v18  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v18)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 61:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 61:39
 TCSubseqExpression
 \<close>
 abbreviation
@@ -553,7 +553,7 @@ where
 	"inv_v19  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v19)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 62:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 62:43
 TCDistMergeExpression
 \<close>
 abbreviation
@@ -567,7 +567,7 @@ where
 	"inv_v20  \<equiv> (inv_VDMSet' (inv_VDMNat1) v20)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 63:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 63:39
 TCMapDomainExpression
 \<close>
 abbreviation
@@ -581,7 +581,7 @@ where
 	"inv_v21  \<equiv> (inv_VDMSet' (inv_VDMNat1) v21)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 64:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 64:39
 TCMapRangeExpression
 \<close>
 abbreviation
@@ -595,7 +595,7 @@ where
 	"inv_v22  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v22)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 65:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 65:39
 TCMapInverseExpression
 \<close>
 abbreviation
@@ -609,7 +609,7 @@ where
 	"inv_v23  \<equiv> (inv_VDMNat1 v23)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 66:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 66:39
 TCPlusExpression		
 \<close>
 abbreviation
@@ -623,7 +623,7 @@ where
 	"inv_v24  \<equiv> (inv_VDMInt v24)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 67:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 67:39
 TCSubtractExpression	
 \<close>
 abbreviation
@@ -637,7 +637,7 @@ where
 	"inv_v25  \<equiv> (inv_VDMNat1 v25)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 68:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 68:39
 TCTimesExpression		
 \<close>
 abbreviation
@@ -651,7 +651,7 @@ where
 	"inv_v26  \<equiv> (inv_VDMInt v26)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 69:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 69:39
 TCDivExpression			
 \<close>
 abbreviation
@@ -665,7 +665,7 @@ where
 	"inv_v27  \<equiv> (inv_VDMReal v27)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 70:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 70:39
 TCDivideExpression		
 \<close>
 abbreviation
@@ -679,7 +679,7 @@ where
 	"inv_v28  \<equiv> (inv_VDMInt v28)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 71:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 71:39
 TCModExpression			
 \<close>
 abbreviation
@@ -693,7 +693,7 @@ where
 	"inv_v29  \<equiv> (inv_VDMInt v29)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 72:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 72:39
 TCRemExpression			
 \<close>
 abbreviation
@@ -708,7 +708,7 @@ where
 	"inv_v30  \<equiv> (inv_VDMNat1 v30)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 73:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 73:39
 TCStarStarExpression	
 \<close>
 abbreviation
@@ -722,7 +722,7 @@ where
 	"inv_v31  \<equiv> (inv_bool v31)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 74:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 74:39
 TCEqualsExpression		
 \<close>
 abbreviation
@@ -736,7 +736,7 @@ where
 	"inv_v32  \<equiv> (inv_bool v32)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 75:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 75:39
 TCNotEqualExpression	
 \<close>
 abbreviation
@@ -750,7 +750,7 @@ where
 	"inv_v33  \<equiv> (inv_bool v33)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 76:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 76:39
 TCLessEqualExpression	
 \<close>
 abbreviation
@@ -764,7 +764,7 @@ where
 	"inv_v34  \<equiv> (inv_bool v34)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 77:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 77:39
 TCLessExpression		
 \<close>
 abbreviation
@@ -778,7 +778,7 @@ where
 	"inv_v35  \<equiv> (inv_bool v35)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 78:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 78:39
 TCGreaterEqualExpression
 \<close>
 abbreviation
@@ -792,7 +792,7 @@ where
 	"inv_v36  \<equiv> (inv_bool v36)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 79:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 79:39
 TCGreaterExpression		
 \<close>
 abbreviation
@@ -806,7 +806,7 @@ where
 	"inv_v37  \<equiv> (inv_Option (inv_VDMNat) v37)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 80:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 80:39
 TCNilExpression			TCOptionalType,
 \<close>
 abbreviation
@@ -821,7 +821,7 @@ where
 	\<comment>\<open>Unknown VDM types will generate Isabelle additional type variable `a warning.\<close> v38)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 81:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 81:39
 TCNilExpression (untyped)!TCUnknownType	
 \<close>
 abbreviation
@@ -835,7 +835,7 @@ where
 	"inv_v39  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v39)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 82:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 82:39
 TCPlusPlusExpression	
 \<close>
 abbreviation
@@ -849,7 +849,7 @@ where
 	"inv_v40  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v40)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 83:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 83:39
 TCDomainResByExpression	
 \<close>
 abbreviation
@@ -863,7 +863,7 @@ where
 	"inv_v41  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v41)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 84:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 84:43
 TCDomainResToExpression	
 \<close>
 abbreviation
@@ -877,7 +877,7 @@ where
 	"inv_v42  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v42)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 85:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 85:39
 TCRangeResByExpression	
 \<close>
 abbreviation
@@ -891,7 +891,7 @@ where
 	"inv_v43  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v43)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 86:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 86:43
 TCRangeResToExpression	
 \<close>
 abbreviation
@@ -905,7 +905,7 @@ where
 	"inv_v44  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v44)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 87:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 87:43
 TCMapUnionExpression	
 \<close>
 abbreviation
@@ -919,7 +919,7 @@ where
 	"inv_v45  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v45)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 88:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 88:39
 TCCompExpression			
 \<close>
 abbreviation
@@ -933,7 +933,7 @@ where
 	"inv_v46  \<equiv> (inv_bool v46)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 89:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 89:43
 TCNotExpression
 \<close>
 abbreviation
@@ -947,7 +947,7 @@ where
 	"inv_v47  \<equiv> (inv_bool v47)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 90:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 90:39
 TCAndExpression
 \<close>
 abbreviation
@@ -961,7 +961,7 @@ where
 	"inv_v48  \<equiv> (inv_bool v48)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 91:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 91:39
 TCOrExpression
 \<close>
 abbreviation
@@ -975,7 +975,7 @@ where
 	"inv_v49  \<equiv> (inv_bool v49)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 92:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 92:39
 TCImpliesExpression
 \<close>
 abbreviation
@@ -989,7 +989,7 @@ where
 	"inv_v50  \<equiv> (inv_bool v50)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 93:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 93:39
 TCEquivalentExpression
 \<close>
 abbreviation
@@ -1003,7 +1003,7 @@ where
 	"inv_v51  \<equiv> (inv_bool v51)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 94:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 94:43
 TCInSetExpression		
 \<close>
 abbreviation
@@ -1017,7 +1017,7 @@ where
 	"inv_v52  \<equiv> (inv_bool v52)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 95:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 95:43
 TCNotInSetExpression	
 \<close>
 abbreviation
@@ -1031,7 +1031,7 @@ where
 	"inv_v53  \<equiv> (inv_VDMSet' (inv_VDMNat) v53)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 96:51
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 96:51
 TCSetUnionExpression	
 \<close>
 abbreviation
@@ -1045,7 +1045,7 @@ where
 	"inv_v54  \<equiv> (inv_VDMSet' (inv_VDMNat) v54)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 97:51
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 97:51
 TCSetIntersectExpression
 \<close>
 abbreviation
@@ -1059,7 +1059,7 @@ where
 	"inv_v55  \<equiv> (inv_VDMSet' (inv_VDMNat) v55)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 98:51
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 98:51
 TCSetDifferenceExpression
 \<close>
 abbreviation
@@ -1073,7 +1073,7 @@ where
 	"inv_v56  \<equiv> (inv_bool v56)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 99:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 99:39
 TCSubsetExpression		
 \<close>
 abbreviation
@@ -1087,7 +1087,7 @@ where
 	"inv_v57  \<equiv> (inv_bool v57)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 100:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 100:43
 TCProperSubsetExpression	
 \<close>
 abbreviation
@@ -1101,7 +1101,7 @@ where
 	"inv_v58  \<equiv> (inv_VDMSet' (inv_VDMNat1) v58)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 101:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 101:39
 TCSetRangeExpression	
 \<close>
 abbreviation
@@ -1115,7 +1115,7 @@ where
 	"inv_v59  \<equiv> (inv_VDMSet1' (inv_VDMNat1) v59)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 102:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 102:39
 TCSetEnumExpression		
 \<close>
 abbreviation
@@ -1129,7 +1129,7 @@ where
 	"inv_v60  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) v60)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 103:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 103:39
 TCSeqEnumExpression		
 \<close>
 abbreviation
@@ -1143,7 +1143,7 @@ where
 	"inv_v61  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v61)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 104:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 104:39
 TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression	
 \<close>
 abbreviation
@@ -1160,7 +1160,7 @@ where
 		)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 105:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 105:39
 TCTupleExpression		
 \<close>
 abbreviation
@@ -1194,15 +1194,15 @@ where
 		)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 108:7
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 108:7
 TODO: TCQuoteLiteralExpression quote literal requires quote type prior definition for Isabelle 
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 109:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 109:7
 v13= merge mm;	
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 110:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 110:7
 v18: S = mk_S();
 \<close>
 abbreviation
@@ -1216,7 +1216,7 @@ where
 	"inv_v65  \<equiv> inv_R v65"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 111:39
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 111:39
 TCMkTypeExpression		
 \<close>
 abbreviation
@@ -1230,7 +1230,7 @@ where
 	"inv_v651  \<equiv> (inv_VDMNat v651)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 112:40
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 112:40
 TCFieldExpression via TRMkTypeExpression
 \<close>
 abbreviation
@@ -1244,7 +1244,7 @@ where
 	"inv_v652  \<equiv> (inv_VDMNat v652)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 113:40
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 113:40
 TCFieldExpression via TRVariableExpression
 \<close>
 abbreviation
@@ -1258,7 +1258,7 @@ where
 	"inv_v653  \<equiv> (inv_VDMNat v653)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 114:43
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 114:43
 TCFieldExpression via TRApplyExpression
 \<close>
 abbreviation
@@ -1272,7 +1272,7 @@ where
 	"inv_v67  \<equiv> inv_R v67"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 115:44
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 115:44
 TCMuExpression,TCRecordModifierList, TCRecordModifier
 \<close>
 abbreviation
@@ -1286,7 +1286,7 @@ where
 	"inv_v68  \<equiv> (inv_VDMNat1 v68)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 117:34
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 117:34
 TCFieldNumberExpression 
 \<close>
 abbreviation
@@ -1322,7 +1322,7 @@ where
 	"inv_v71  \<equiv> (inv_VDMNat1 v71)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 121:7
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 121:7
 v72= not yet specified;	--TCNotYetSpecifiedExpression
 \<close>
 abbreviation
@@ -1336,7 +1336,7 @@ where
 	"inv_v72  \<equiv> (inv_VDMNat1 v72)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 122:35
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 122:35
 TCNarrowExpression
 \<close>
 abbreviation
@@ -1391,7 +1391,7 @@ where
 	"inv_v73  \<equiv> (inv_VDMNat1 v73)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 126:44
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 126:44
 TCIotaExpression
 \<close>
 abbreviation
@@ -1399,7 +1399,7 @@ abbreviation
 where
 	"v74 \<equiv> (
 	\<lambda> (var::VDMNat) (var2::VDMNat) .
-		(if (inv_VDMNat var) \<and> (inv_VDMNat var2) then
+		(if (inv_VDMNatvar) \<and> (inv_VDMNatvar2) then
 		(var + var2)
 	 else
 		undefined
@@ -1413,13 +1413,13 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 127:56
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 127:56
 TCLambdaExpression + TCMultipleTypeBind
 \<close>
 abbreviation
 	v75 :: "\<bool>"
 where
-	"v75 \<equiv> (\<exists>! var \<in> t9. (var < (2::VDMNat1)))"
+	"v75 \<equiv> (\<exists>! var \<in> t9 . (var < (2::VDMNat1)))"
 
 definition
 	inv_v75 :: "\<bool>"
@@ -1427,13 +1427,13 @@ where
 	"inv_v75  \<equiv> (inv_bool v75)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 128:47
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 128:47
  TCExists1Expression
 \<close>
 abbreviation
 	v76 :: "\<bool>"
 where
-	"v76 \<equiv> (\<exists> var \<in> t9. (var < (2::VDMNat1)))"
+	"v76 \<equiv> (\<exists> var \<in> t9 . (var < (2::VDMNat1)))"
 
 definition
 	inv_v76 :: "\<bool>"
@@ -1441,13 +1441,13 @@ where
 	"inv_v76  \<equiv> (inv_bool v76)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 129:46
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 129:46
  TCExistsExpression
 \<close>
 abbreviation
 	v78 :: "\<bool>"
 where
-	"v78 \<equiv> (\<forall> var \<in> t9. (var \<le> (3::VDMNat1)))"
+	"v78 \<equiv> (\<forall> var \<in> t9 . (var \<le> (3::VDMNat1)))"
 
 definition
 	inv_v78 :: "\<bool>"
@@ -1455,13 +1455,13 @@ where
 	"inv_v78  \<equiv> (inv_bool v78)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 130:47
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 130:47
  TCForallExpression
 \<close>
 abbreviation
 	v781 :: "\<bool>"
 where
-	"v781 \<equiv> (\<forall> var1 var2 \<in> t9. (var1 \<le> var2))"
+	"v781 \<equiv> (\<forall> var1 var2 \<in> t9 . (var1 \<le> var2))"
 
 definition
 	inv_v781 :: "\<bool>"
@@ -1469,13 +1469,13 @@ where
 	"inv_v781  \<equiv> (inv_bool v781)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 131:58
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 131:58
 TCForallExpression multiple set binds!
 \<close>
 abbreviation
 	v783 :: "\<bool>"
 where
-	"v783 \<equiv> (\<forall> var1 var2 \<in> (elems t10). (var1 \<le> var2))"
+	"v783 \<equiv> (\<forall> var1 var2 \<in> (elems t10) . (var1 \<le> var2))"
 
 definition
 	inv_v783 :: "\<bool>"
@@ -1483,11 +1483,11 @@ where
 	"inv_v783  \<equiv> (inv_bool v783)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 132:58
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 132:58
 TCForallExpression multiple seq binds!
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 133:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 133:7
 TODO: not yet v65= t14(1);						--TCApplyExpression
 \<close>
 abbreviation
@@ -1511,7 +1511,7 @@ where
 	"inv_v79  \<equiv> (inv_VDMNat1 v79)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 134:67
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 134:67
  TCLetDefExpression
 \<close>
 abbreviation
@@ -1525,7 +1525,7 @@ where
 	"inv_v80  \<equiv> (inv_VDMSet' (inv_VDMNat1) v80)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 135:47
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 135:47
  TCSetCompExpression
 \<close>
 abbreviation
@@ -1539,7 +1539,7 @@ where
 	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 136:72
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 136:72
  TCSetCompExpression
 \<close>
 abbreviation
@@ -1557,7 +1557,7 @@ where
 	"inv_v82  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v82)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 137:47
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 137:47
  TCSeqCompExpression
 \<close>
 abbreviation
@@ -1571,19 +1571,19 @@ where
 	"inv_v83  \<equiv> (inv_VDMSeq' (inv_VDMNat1) v83)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 138:48
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 138:48
  TCSeqCompExpression
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 139:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 139:7
 VDM not happy with v84-86, Isabelle would allow them
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 140:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 140:7
 v84= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 141:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 141:7
 v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
 \<close>
 abbreviation
@@ -1612,7 +1612,7 @@ where
 	"inv_v87  \<equiv> (inv_VDMInt v87)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 143:59
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 143:59
 TCIfExpression
 \<close>
 abbreviation
@@ -1634,31 +1634,31 @@ where
 	"inv_v88  \<equiv> (inv_VDMInt v88)"
 
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 144:63
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 144:63
 TCElseIfListExpression
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 145:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 145:7
 v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 147:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 147:7
 Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 148:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 148:7
 [A,B]=[1,2];
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 150:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 150:7
 To test VDM warnings as errors
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 151:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 151:7
 x = 10;
 \<close>
  
-\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 154:7
+\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 154:7
  has to be a function for executability because of the type bind!
 \<close>
 definition
@@ -1678,9 +1678,9 @@ definition
 where
 	"v782  \<equiv> 
 	\<comment>\<open>User defined body of v782\<close>
-	(\<forall> (var1::VDMNat) (var2::VDMNat). (var1 < var2))"
+	((var1::VDMNat) (var2::VDMNat) ((inv_VDMNatvar1)(inv_VDMNatvar2) \<longrightarrow> (var1 < var2))"
 
-	\<comment>\<open>@ in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 156:59
+	\<comment>\<open>@ in 'TestV2I' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl) at line 156:59
  multiple type binds
 \<close>
 definition
@@ -1700,6 +1700,6 @@ definition
 where
 	"v7821  \<equiv> 
 	\<comment>\<open>User defined body of v7821\<close>
-	(\<forall> (var1::VDMNat) (var2::VDMNat) var3 var4 \<in> t9. ((var1 + var3) < (var2 + var4)))"
+	(\<forall> (var1::VDMNat) . (\<forall> (var2::VDMNat) . (\<forall> var3 var4 \<in> t9 . ((inv_VDMNatvar1)(inv_VDMNatvar2) \<longrightarrow> ((var1 + var3) < (var2 + var4))))))"
 
 end

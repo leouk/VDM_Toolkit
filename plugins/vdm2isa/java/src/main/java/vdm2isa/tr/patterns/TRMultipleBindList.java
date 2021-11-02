@@ -39,6 +39,26 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		setSemanticSeparator(" ");
 	}
 
+	/**
+	 * Multiple bind list translation must take into consideration the kind of bind within it. For type binds
+	 */
+	@Override
+	public String translate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(get(0).translate());
+			for (int i = 1; i < size(); i++)
+			{
+				sb.append(getSemanticSeparator());
+                sb.append(getFormattingSeparator());
+				sb.append(get(i).translate());
+			}
+		}
+		return sb.toString();
+	}
+
     public String compTranslate(boolean patternsOnly)
     {
         StringBuilder sb = new StringBuilder();
