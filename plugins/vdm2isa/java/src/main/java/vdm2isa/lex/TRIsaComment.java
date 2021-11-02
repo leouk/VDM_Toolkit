@@ -47,12 +47,12 @@ public class TRIsaComment extends TRNode {
             if (comment.block)
             {
                 sb.append(IsaToken.BLOCK_COMMENT_CLOSE.toString());
-                sb.append(getFormattingSeparator());
             }
             else
             {
                 sb = new StringBuilder(IsaToken.comment(sb.toString()));
             }
+            sb.append(getFormattingSeparator());
 		}
         return sb.toString();
     }

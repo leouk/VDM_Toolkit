@@ -9,7 +9,8 @@ begin
 
 \<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 6:7
  constant function with undeclared specification
-\<close>definition
+\<close>
+definition
 	pre_const :: "\<bool>"
 where
 	"pre_const  \<equiv> True"
@@ -30,7 +31,8 @@ where
 
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 10:7
  constant function with declared specification
-\<close>definition
+\<close>
+definition
 	pre_constS :: "\<bool>"
 where
 	"pre_constS  \<equiv> 
@@ -57,7 +59,8 @@ where
 
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 16:7
  "normal" function with undeclared specification
-\<close>definition
+\<close>
+definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
 	"pre_f x y \<equiv> 
@@ -80,7 +83,8 @@ where
 
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 20:7
  "normal" function with declared specification
-\<close>definition
+\<close>
+definition
 	pre_g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
 	"pre_g x y \<equiv> 
@@ -107,7 +111,8 @@ where
 
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 26:7
  "normal" function with declared specification and pre/post references
-\<close>definition
+\<close>
+definition
 	pre_h :: "VDMNat \<Rightarrow> \<bool>"
 where
 	"pre_h x \<equiv> 
@@ -133,8 +138,37 @@ where
 	(g x  x)"
 
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 32:7
+ "normal" function with declared specification without pre/post references
+\<close>
+definition
+	pre_h' :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"pre_h' x \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for pre_h' specification\<close>
+		((inv_VDMNat x)) \<and>
+		\<comment>\<open>User defined body of pre_h'\<close>
+		(x < (20::VDMNat1))"
+
+definition
+	post_h' :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+where
+	"post_h' x RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for post_h' specification\<close>
+		((inv_VDMNat x) \<and> (inv_VDMNat RESULT)) \<and>
+		\<comment>\<open>User defined body of post_h'\<close>
+		(x > (20::VDMNat1))"
+
+definition
+	h' :: "VDMNat \<Rightarrow> VDMNat"
+where
+	"h' x \<equiv> 
+	\<comment>\<open>User defined body of h'\<close>
+	(g x  x)"
+
+	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 38:7
  curried function with undeclared specification	
-\<close>definition
+\<close>
+definition
 	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"pre_curried x y \<equiv> 
@@ -155,9 +189,10 @@ where
 	\<comment>\<open>User defined body of curried\<close>
 	(x + y)"
 
-	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 36:7
+	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 42:7
  curried function with declared specification	
-\<close>definition
+\<close>
+definition
 	pre_curriedS :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"pre_curriedS x y \<equiv> 

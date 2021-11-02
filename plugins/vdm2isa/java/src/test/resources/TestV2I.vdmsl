@@ -148,4 +148,10 @@ values
 	--To test VDM warnings as errors
 	--x = 10;
 
+--state MyState of
+--   x : nat
+--inv mk_MyState(x) == x > 10
+--init s == s = mk_MyState(20)
+--end
+
 end TestV2I
