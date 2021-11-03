@@ -23,6 +23,8 @@ public interface MappableNode extends Mappable {
 	 */
 	public String invTranslate();
 
+	//public String tldIsaComment();
+
 	public LexLocation getLocation();
 	
 	public void report(int number, String msg);
