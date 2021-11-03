@@ -1,0 +1,28 @@
+module TestV2IComplexExpr
+exports all
+definitions
+
+values
+    t9  : set1 of nat1 = {1,2,3};
+    t10 : seq1 of int  = [1,2,3];
+    vc1 =(forall var1, var2 in set t9 & var1 <= var2); --TCForallExpression multiple set binds!
+	vc2 =(forall var1, var2 in seq t10 & var1 <= var2);--TCForallExpression multiple seq binds!
+	
+functions
+	-- has to be a function for executability because of the type bind!
+	vc3: () -> bool
+	vc3() == (forall var1:nat, var2:nat & var1 < var2);-- multiple type binds
+
+	vc4: () -> bool
+	vc4() == (forall var1:nat, var2:nat, var3, var4 in set t9 & var1 + var3 < var2 + var4);-- multiple type binds
+	
+    -- for issuing pre/post calls needs spec
+    f: nat * nat1 -> nat
+    f(x,y) == x + y
+    pre x < y 
+    post RESULT > 0;
+    
+	vc5: () -> bool
+	vc5() == (forall x:nat, y:nat1 & pre_f(x, y) => post_f(x, y, (x + y))); -- multiple binds PO needs inv onn inputs
+
+end TestV2IComplexExpr

@@ -16,7 +16,6 @@ theorem constS_FUNC_POST_CONDITION:
 	"(((pre_constS ) \<longrightarrow> (post_constS (10::VDMNat1))))"
 	
 	try
-	by (simp add: inv_VDMNat_def post_constS_def)
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 21:5
@@ -26,10 +25,9 @@ VDM PO(2): "g: post condition obligation in 'TestV2IFcns' (./src/test/resources/
 "
 \<close>
 theorem g_FUNC_POST_CONDITION:
-	"((\<forall> (x::VDMNat) (y::VDMNat1). ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y)))))"
+	"(((x::VDMNat)  (y::VDMNat1) ((inv_VDMNat x) \<and> (inv_VDMNat1 y) \<and>  \<longrightarrow> ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y)))))"
 	
 	try
-	by (simp add: inv_VDMNat1_def post_g_def pre_g_def)
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18
@@ -39,7 +37,7 @@ VDM PO(3): "h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2I
 "
 \<close>
 theorem h_SUB_TYPE:
-	"((\<forall> (x::VDMNat). (x > (0::VDMNat))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> (x > (0::VDMNat))))"
 	
 	try
 	oops
@@ -51,10 +49,9 @@ VDM PO(4): "h: post condition obligation in 'TestV2IFcns' (./src/test/resources/
 "
 \<close>
 theorem h_FUNC_POST_CONDITION:
-	"((\<forall> (x::VDMNat). ((pre_h x) \<longrightarrow> (post_h x  (g x  x)))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> ((pre_h x) \<longrightarrow> (post_h x  (g x  x)))))"
 	
 	try
-	using pre_g_def pre_h_def by auto
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:20
@@ -65,7 +62,7 @@ VDM PO(5): "h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2I
 "
 \<close>
 theorem h_SUB_TYPE:
-	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
 		let (result::VDMNat) = (g x  x)
 		in
 			(if ((inv_VDMNat result)) then
@@ -76,7 +73,6 @@ theorem h_SUB_TYPE:
 		))))"
 	
 	try
-	using pre_g_def by fastforce
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:23
@@ -87,7 +83,7 @@ VDM PO(6): "h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2I
 "
 \<close>
 theorem h_SUB_TYPE:
-	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
 		let (result::VDMNat) = (g x  x)
 		in
 			(if ((inv_VDMNat result)) then
@@ -98,7 +94,6 @@ theorem h_SUB_TYPE:
 		))))"
 	
 	try
-	using pre_g_def by force
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:13
@@ -108,10 +103,9 @@ VDM PO(7): "h: function apply obligation in 'TestV2IFcns' (./src/test/resources/
 "
 \<close>
 theorem h_FUNC_APPLY:
-	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (pre_g x  x))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (pre_g x  x))))"
 	
 	try
-	by simp
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:18
@@ -121,10 +115,9 @@ VDM PO(8): "h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2I
 "
 \<close>
 theorem h_SUB_TYPE:
-	"((\<forall> (x::VDMNat). (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (x > (0::VDMNat)))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (x > (0::VDMNat)))))"
 	
 	try
-	by (simp add: pre_g_def)
 	oops
 	
 	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 33:5
@@ -134,7 +127,7 @@ VDM PO(9): "h': post condition obligation in 'TestV2IFcns' (./src/test/resources
 "
 \<close>
 theorem h'_FUNC_POST_CONDITION:
-	"((\<forall> (x::VDMNat). ((pre_h' x) \<longrightarrow> (post_h' x  (g x  x)))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> ((pre_h' x) \<longrightarrow> (post_h' x  (g x  x)))))"
 	
 	try
 	oops
@@ -146,7 +139,7 @@ VDM PO(10): "h': function apply obligation in 'TestV2IFcns' (./src/test/resource
 "
 \<close>
 theorem h'_FUNC_APPLY:
-	"((\<forall> (x::VDMNat). ((x < (20::VDMNat1)) \<longrightarrow> (pre_g x  x))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> ((x < (20::VDMNat1)) \<longrightarrow> (pre_g x  x))))"
 	
 	try
 	oops
@@ -158,7 +151,7 @@ VDM PO(11): "h': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV
 "
 \<close>
 theorem h'_SUB_TYPE:
-	"((\<forall> (x::VDMNat). ((x < (20::VDMNat1)) \<longrightarrow> (x > (0::VDMNat)))))"
+	"(((x::VDMNat) ((inv_VDMNat x) \<and>  \<longrightarrow> ((x < (20::VDMNat1)) \<longrightarrow> (x > (0::VDMNat)))))"
 	
 	try
 	oops
@@ -170,7 +163,7 @@ VDM PO(12): "curriedS: post condition obligation in 'TestV2IFcns' (./src/test/re
 "
 \<close>
 theorem curriedS_FUNC_POST_CONDITION:
-	"((\<forall> (x::VDMNat) (y::VDMNat). (((pre_curriedS x) y) \<longrightarrow> ((post_curriedS x) y  (x + y)))))"
+	"(((x::VDMNat)  (y::VDMNat) ((inv_VDMNat x) \<and> (inv_VDMNat y) \<and>  \<longrightarrow> (((pre_curriedS x) y) \<longrightarrow> ((post_curriedS x) y  (x + y)))))"
 	
 	try
 	oops
