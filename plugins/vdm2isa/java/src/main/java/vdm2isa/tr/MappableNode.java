@@ -23,7 +23,11 @@ public interface MappableNode extends Mappable {
 	 */
 	public String invTranslate();
 
-	//public String tldIsaComment();
+	/**
+	 * Whether or not the TRNode should issue this Isabelle comment. Useful for explicit definitions
+	 * @return
+	 */
+	public String tldIsaComment();
 
 	public LexLocation getLocation();
 	

@@ -138,6 +138,15 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return old;
 	}
 
+	/**
+	 * No Isabelle comment by default 
+	 */
+	@Override 
+	public String tldIsaComment()
+	{
+		return "";
+	}
+
 	@Override
 	public String toString()
 	{

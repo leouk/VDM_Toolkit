@@ -38,6 +38,15 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	}
 
 	/**
+	 * No Isabelle comment by default 
+	 */
+	@Override 
+	public String tldIsaComment()
+	{
+		return "";
+	}
+
+	/**
 	 * General debug string for all TRNode classes
 	 */
     @Override
