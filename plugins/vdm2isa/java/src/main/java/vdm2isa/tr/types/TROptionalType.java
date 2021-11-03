@@ -3,8 +3,6 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.definitions.TRDefinitionList;
-import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TROptionalType extends TRType {
     private static final long serialVersionUID = 1L;
@@ -21,7 +19,7 @@ public class TROptionalType extends TRType {
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.INV.toString());
-        // transform "map" => "Map" for inv_Map call
+        // transform "option" => "Option" for inv_Option call
         int i = sb.length();
         sb.append(isaToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
