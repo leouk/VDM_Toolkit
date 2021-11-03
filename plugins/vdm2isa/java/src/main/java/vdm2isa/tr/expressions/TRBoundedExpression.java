@@ -45,6 +45,7 @@ public class TRBoundedExpression extends TRExpression {
 
      protected void setup()
 	{
+        super.setup();
 	// 	setSemanticSeparator("");
 	 	setFormattingSeparator(" ");
 	// 	setInvTranslateSeparator("");
@@ -71,6 +72,7 @@ public class TRBoundedExpression extends TRExpression {
         //    report(11111, "Translation of multiple binds in \"" + isaToken().vdmToken().toString() + "\" expression must not include the last bind (" + index + ").");
         //else
         //{
+            // should this be pushed upwards towards bindlist? Or not because of the context for bounded quantifier? 
             assert index >= 0 && index < bindList.size() - 1;
             // first LPAREN is done externally
             if (index > 0)
@@ -95,38 +97,48 @@ public class TRBoundedExpression extends TRExpression {
      */
     @Override
     public String translate() {
+        // return IsaToken.parenthesise(isaToken().toString() + " " + 
+        // bindList.translate() + IsaToken.POINT + " " + predicate.translate());
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.LPAREN.toString());
-        int count = 0;
+        // count the number of extra left parenthesis that will be added; cout=0 doesn't given it's outermost
+        int rightParenCountToAdd = 0; 
         if (foundNonTypeBinds())
         {
-            for(; count < bindList.size(); count++)
+            for(; rightParenCountToAdd < bindList.size(); rightParenCountToAdd++)
             {
-                sb.append(bindTranslate(count));
+                sb.append(bindTranslate(rightParenCountToAdd));
             }
         }
         else
         {
+            // translate the quantifier and the specific bind
+            // lists with type binds only don't need multiple quantifiers
+            // but will need the final right parenthesis, so increase count
+            rightParenCountToAdd++; 
+            sb.append(isaToken().toString());
+            sb.append(getFormattingSeparator());
+            
             sb.append(bindList.translate());
+            sb.append(getFormattingSeparator());
+
+            sb.append(getFormattingSeparator());
+            sb.append(IsaToken.POINT.toString());
+
             sb.append(getFormattingSeparator());
         }
         boolean foundTypeBind = foundSomeTypeBinds();
         // if found type bind add implication to predicate and an extra parenthesis pair
+        // this more involved checks account for the mixed case, 
+        // e.g. forall x: nat, y: nat, z in set S & P(x,y,z)
         if (foundTypeBind)
         {
             sb.append(IsaToken.LPAREN.toString());
-            count++;
+            rightParenCountToAdd++;
 
-            // type binds require invariant checks before the user predicate! 
-            for(TRMultipleBind b : bindList)
-            {
-                if (b instanceof TRMultipleTypeBind)
-                {
-                    sb.append(b.invTranslate());
-                    sb.append(b.getInvTranslateSeparator());
-                }
-            }
-            
+            // type binds require invariant checks before the user predicate!
+            // presume the bind list has the right inv separator in place  
+            sb.append(bindList.invTranslate());
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.IMPLIES.toString());
             sb.append(getFormattingSeparator());
@@ -134,9 +146,9 @@ public class TRBoundedExpression extends TRExpression {
         sb.append(predicate.translate());
         // if one required bind went through, it will add its own LPAREN, so close the last;
         // if >1 was required, then we will need count-1 RPAREN closed please
-        if (count > 1)
+        if (rightParenCountToAdd > 1)
         {
-            sb.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), count-1));
+            sb.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), rightParenCountToAdd-1));
         }
         // final overal expression right parenthesis
         sb.append(IsaToken.RPAREN.toString());
