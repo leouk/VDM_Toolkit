@@ -6,7 +6,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.pog.ProofObligation;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
@@ -27,7 +27,7 @@ public class TRProofObligationDefinition extends TRDefinition {
      * @param poExpr
      * @param poScript
      */
-    public TRProofObligationDefinition(TRIsaCommentList comments, ProofObligation po,
+    public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
         TRExpression poExpr, TRType poType, TRProofScriptDefinition poScript)
     {
         this(comments, po, poExpr, poType, poScript != null ? 
@@ -35,7 +35,7 @@ public class TRProofObligationDefinition extends TRDefinition {
             new TRDefinitionList());
     }
 
-    public TRProofObligationDefinition(TRIsaCommentList comments, ProofObligation po,
+    public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
         super(po.location/* LexLocation.ANY? */, comments, null);

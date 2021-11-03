@@ -3,7 +3,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public class TRBasicProofScriptStepDefinition extends TRDefinition {
@@ -12,7 +12,7 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
 
     private final IsaToken isarScriptStep;
 
-    protected TRBasicProofScriptStepDefinition(LexLocation location, TRIsaCommentList comments, IsaToken isarScriptStep)
+    protected TRBasicProofScriptStepDefinition(LexLocation location, TRIsaVDMCommentList comments, IsaToken isarScriptStep)
     {
         super(location, comments);
         this.isarScriptStep = isarScriptStep;

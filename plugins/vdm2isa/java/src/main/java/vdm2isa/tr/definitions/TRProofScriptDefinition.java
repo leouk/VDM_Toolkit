@@ -3,7 +3,7 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -14,7 +14,7 @@ public class TRProofScriptDefinition extends TRDefinition {
 
     private TRProofScriptStepDefinitionList poScript;
 
-    public TRProofScriptDefinition(LexLocation location, TRIsaCommentList comments,
+    public TRProofScriptDefinition(LexLocation location, TRIsaVDMCommentList comments,
         TRProofScriptStepDefinitionList poScript)
     {
         super(location, comments, null);
@@ -44,7 +44,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public static TRProofScriptDefinition optimistic(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Expect the goal is trivial", false), 
+            TRIsaVDMCommentList.newComment(location, "Expect the goal is trivial", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.isaTry0(location),
                 TRBasicProofScriptStepDefinition.oops(location))
@@ -60,7 +60,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public static TRProofScriptDefinition hopeful(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Expect sldegehammer can find the proof", false), 
+            TRIsaVDMCommentList.newComment(location, "Expect sldegehammer can find the proof", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.sledgehammer(location),
                 TRBasicProofScriptStepDefinition.oops(location))
@@ -76,7 +76,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public static TRProofScriptDefinition pessimistic(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Expect Nitpick can find a counter example", false), 
+            TRIsaVDMCommentList.newComment(location, "Expect Nitpick can find a counter example", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.nitpick(location),
                 TRBasicProofScriptStepDefinition.oops(location))
@@ -92,7 +92,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public static TRProofScriptDefinition realistic(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Try to be optimisstic, hopeful, then pessimistic", false), 
+            TRIsaVDMCommentList.newComment(location, "Try to be optimisstic, hopeful, then pessimistic", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.isaTry(location),
                 TRBasicProofScriptStepDefinition.oops(location))
@@ -108,7 +108,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public static TRProofScriptDefinition surrender(LexLocation location)
     {
         TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
-            TRIsaCommentList.newComment(location, "Surrender", false), 
+            TRIsaVDMCommentList.newComment(location, "Surrender", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.oops(location))
             );

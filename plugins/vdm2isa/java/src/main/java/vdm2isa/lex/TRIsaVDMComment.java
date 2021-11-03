@@ -6,12 +6,12 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 
-public class TRIsaComment extends TRNode {
+public class TRIsaVDMComment extends TRNode {
 	private static final long serialVersionUID = 1L;
     
     private final LexComment comment;
 
-    public TRIsaComment(LexComment comment)
+    public TRIsaVDMComment(LexComment comment)
     {
         super(comment.location);
         this.comment = comment;

@@ -16,7 +16,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -59,7 +59,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final TRDefinitionListList paramDefinitionList;
 
 	public TRExplicitFunctionDefinition(
-			TRIsaCommentList comments,
+			TRIsaVDMCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
 			TCNameList typeParams, 
@@ -286,7 +286,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;
 		}
 		assert undeclaredName != null;
-		TRIsaCommentList comments = null;//TRIsaCommentList.newComment(location, "implicitly constructed " + kind + " specification", false);
+		TRIsaVDMCommentList comments = null;//TRIsaCommentList.newComment(location, "implicitly constructed " + kind + " specification", false);
 		
 		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
 		// The translator will then take this into account as the "missing" (now found) specification definition, and
@@ -589,9 +589,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
 			fcnBody.append(body.translate());
 		}
-
+		
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
+		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
 
 		setFormattingSeparator(old);
 

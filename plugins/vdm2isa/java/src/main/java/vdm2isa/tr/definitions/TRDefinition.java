@@ -7,14 +7,14 @@ package vdm2isa.tr.definitions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public abstract class TRDefinition extends TRNode
 {
 	private static final long serialVersionUID = 1L;
-	protected final TRIsaCommentList comments;
+	protected final TRIsaVDMCommentList comments;
 	protected final TCAnnotationList annotations;
 
 	/**
@@ -22,12 +22,12 @@ public abstract class TRDefinition extends TRNode
 	 */
 	public boolean local;
 	
-	protected TRDefinition(LexLocation location, TRIsaCommentList comments)
+	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments)
 	{
 		this(location, comments, null);
 	}
 	
-	protected TRDefinition(LexLocation location, TRIsaCommentList comments, TCAnnotationList annotations)
+	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations)
 	{
 		super(location); 
 		this.comments = comments;

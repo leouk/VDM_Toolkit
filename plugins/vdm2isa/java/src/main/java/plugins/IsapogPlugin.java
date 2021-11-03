@@ -21,7 +21,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeCheckException;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.pog.IsaProofObligationList;
 import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
@@ -114,7 +114,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         // translate the PO back to TR world
                         Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
                         TRProofScriptDefinition poScript = chooseProofScript(po, mpair.key);
-                        TRIsaCommentList comments = TRIsaCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
+                        TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
                         TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, mpair.key, mpair.value, poScript);
                         isapogl.add(poe);
                         poNumber++;

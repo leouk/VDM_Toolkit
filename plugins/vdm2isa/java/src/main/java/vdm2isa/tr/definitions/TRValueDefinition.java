@@ -12,7 +12,7 @@ import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 
 /**
  * VDM values are translated as Isabelle constants. 

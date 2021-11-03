@@ -138,8 +138,8 @@ map TCVariableExpression{location, name, original, vardef} to TRVariableExpressi
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
 #############################################################################
-map LexCommentList{} to TRIsaCommentList(this);
-map LexComment{} to TRIsaComment(this);
+map LexCommentList{} to TRIsaVDMCommentList(this);
+map LexComment{} to TRIsaVDMComment(this);
 
 #unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
 

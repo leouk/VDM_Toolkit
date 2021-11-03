@@ -4,7 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaCommentList;
+import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRRecordType;
@@ -30,7 +30,7 @@ public class TRLocalDefinition extends TRDefinition {
         this(LexLocation.ANY, null, null, null);
     }
 
-    public TRLocalDefinition(LexLocation location, TRIsaCommentList comments, TCNameToken name, TRType type)
+    public TRLocalDefinition(LexLocation location, TRIsaVDMCommentList comments, TCNameToken name, TRType type)
     {
         super(location, comments);
         this.name = name;
