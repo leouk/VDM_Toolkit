@@ -194,7 +194,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			sb.append(get(0).invTranslate());
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(getSemanticSeparator());
+				sb.append(getInvTranslateSeparator());
 				sb.append(getFormattingSeparator());
 				sb.append(get(i).invTranslate());
 			}
