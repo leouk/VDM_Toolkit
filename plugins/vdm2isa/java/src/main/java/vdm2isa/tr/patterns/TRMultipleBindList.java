@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
@@ -36,7 +37,10 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	protected void setup()
 	{
 		super.setup();
-		setSemanticSeparator(" ");
+        // multiple type binds are space (not comma) separated
+        setSemanticSeparator(" ");
+        setFormattingSeparator(" ");
+        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
 	/**

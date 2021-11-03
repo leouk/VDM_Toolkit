@@ -53,7 +53,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		this.curried = curried;
 		setSemanticSeparator(this.curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
-		setInvTranslateSeparator(IsaToken.AND.toString());
+		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
 	private boolean isValidInvTranslateCall(List<String> varNames)

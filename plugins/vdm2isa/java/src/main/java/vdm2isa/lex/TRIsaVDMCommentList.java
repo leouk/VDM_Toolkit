@@ -6,14 +6,14 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.tr.TRMappedList;
 
-public class TRIsaCommentList extends TRMappedList<LexComment, TRIsaComment>{
+public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMComment>{
     
-    protected TRIsaCommentList()
+    protected TRIsaVDMCommentList()
     {
         super();
     }
 
-    public TRIsaCommentList(LexCommentList from) throws Exception
+    public TRIsaVDMCommentList(LexCommentList from) throws Exception
     {
         super(from);
     }
@@ -29,12 +29,12 @@ public class TRIsaCommentList extends TRMappedList<LexComment, TRIsaComment>{
 
     public void add(LexLocation location, String comment, boolean block)
     {
-        this.add(new TRIsaComment(new LexComment(location, comment, block)));
+        this.add(new TRIsaVDMComment(new LexComment(location, comment, block)));
     }
     
-    public static TRIsaCommentList newComment(LexLocation location, String comment, boolean block)
+    public static TRIsaVDMCommentList newComment(LexLocation location, String comment, boolean block)
     {
-        TRIsaCommentList result = new TRIsaCommentList();
+        TRIsaVDMCommentList result = new TRIsaVDMCommentList();
         result.add(location, comment, block);
         return result;
     }
