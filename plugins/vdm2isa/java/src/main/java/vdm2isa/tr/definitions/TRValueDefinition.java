@@ -30,7 +30,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	 */
 	public boolean abbreviation; 
 	
-	public TRValueDefinition(TRIsaCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
+	public TRValueDefinition(TRIsaVDMCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
 	{
 		super(pattern.location, comments, null, type);
 		this.pattern = pattern;
@@ -81,7 +81,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			// add any annotations or comments (i.e. TRDefinition.translate(), given super.translate won't work here)
 			sb.append(translatePreamble());
 
-			sb.append(IsaTemplates.translateAbbreviation(getDeclaredName(), getTypeString(), expStr));
+			sb.append(IsaTemplates.translateAbbreviation(getLocation(), getDeclaredName(), getTypeString(), expStr));
 			sb.append("\n");
 
 			// translate inv_v as definition
@@ -123,7 +123,7 @@ public class TRValueDefinition extends TRLocalDefinition
 
 			String varName = getDeclaredName();//.toLowerCase();
 			// assemble the template
-			sb.append(IsaTemplates.translateInvariantAbbreviation(varName, inType, dummyVarNames(), getInvariantString(varName), false));
+			sb.append(IsaTemplates.translateInvariantAbbreviation(getLocation(), varName, inType, dummyVarNames(), getInvariantString(varName), false));
 			sb.append("\n");
 		}
 		else

@@ -1,7 +1,7 @@
 package vdm2isa.lex;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -18,7 +18,7 @@ import plugins.Vdm2isaPlugin;
  */
 public final class IsaTemplates {
     
-    private final static Map<String, IsaItem> translatedItems = new HashMap<String, IsaItem>();
+    private final static Map<String, Map<String, IsaItem>> translatedItems = new TreeMap<String, Map<String, IsaItem>>();
     //TODO add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
 
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
@@ -38,13 +38,24 @@ public final class IsaTemplates {
     }
 
     //@todo pass TCNameToken? Or LexLocation?
-    private static void updateTranslatedIsaItem(String name, IsaItem item)
+    private static void updateTranslatedIsaItem(LexLocation moduleLoc, String name, IsaItem item)
     {
-        //@todo accumulate all def names for latter creation of lemmas xyz_def etc...? 
-        if (translatedItems.containsKey(name))
-            Vdm2isaPlugin.report(10017, "Invalid IsaItem " + item + ": " + name + " has already been defined.", LexLocation.ANY); 
+        String moduleName = moduleLoc.module;
+        //TODO accumulate all def names for latter creation of lemmas xyz_def etc...? 
+        boolean moduleIsKnown = translatedItems.containsKey(moduleName);
+        if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
+            Vdm2isaPlugin.report(10017, "Invalid IsaItem " + item + ": " + name + " has already been defined in module " + moduleName, moduleLoc); 
+        else if (!moduleIsKnown)
+        {
+            Map<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();
+            mapPerModule.put(name, item);
+            translatedItems.put(moduleName, mapPerModule);
+        }
         else
-            translatedItems.put(name, item);    
+        {
+            assert translatedItems.containsKey(moduleName);
+            translatedItems.get(moduleName).put(name, item);    
+        }
     }
 
     public static boolean matches(String pattern, String value)
@@ -101,17 +112,17 @@ public final class IsaTemplates {
         return result;
     } 
 
-    public static String translateAbbreviation(String name, String typeStr, String exp)
+    public static String translateAbbreviation(LexLocation module, String name, String typeStr, String exp)
     {
         assert name != null && typeStr != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(ABBREVIATION, name, typeStr, exp));
-        updateTranslatedIsaItem(name, IsaItem.ABBREVIATION);
+        updateTranslatedIsaItem(module, name, IsaItem.ABBREVIATION);
         return sb.toString();
     }
 
     //TODO perhaps have multiple inType and inVars params? 
-    public static String translateDefinition(String name, String inType, String outType, String inVars, String exp, boolean local)
+    public static String translateDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
     {
         assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
@@ -124,20 +135,20 @@ public final class IsaTemplates {
         // the TRNode AST for various uses. The actual string will still be returned, so care needs 
         // to be taken here by caller to consider whether to add local definitions to the output or not. 
         if (!local)
-            updateTranslatedIsaItem(name, IsaItem.DEFINITION);
+            updateTranslatedIsaItem(module, name, IsaItem.DEFINITION);
         return sb.toString();
     }
     
-    public static String translateInvariantAbbreviation(String name, String inType, String dummyNames, String invStr, boolean local)
+    public static String translateInvariantAbbreviation(LexLocation module, String name, String inType, String dummyNames, String invStr, boolean local)
     {
         assert name != null && inType != null & dummyNames != null && invStr != null;    
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr, local);
+        return translateDefinition(module, IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr, local);
     }
 
-    public static String translateInvariantDefinition(String name, String inType, String inVars, String exp, boolean local)
+    public static String translateInvariantDefinition(LexLocation module, String name, String inType, String inVars, String exp, boolean local)
     {
         assert name != null && inType != null && inVars != null && exp != null;
-        return translateDefinition(IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        return translateDefinition(module, IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static String isabelleIdentifier(String vdmIdentifier)
@@ -178,17 +189,17 @@ public final class IsaTemplates {
      * @param inv explicit type invariant expression
      * @return Isabelle YXML string
      */
-    public static String typeSynonymDefinition(String name, String exp, String inVar, String inv)
+    public static String typeSynonymDefinition(LexLocation module, String name, String exp, String inVar, String inv)
     {
         //@todo pass TRNamedType ? 
         assert name != null && inv != null && inVar != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
-        updateTranslatedIsaItem(name, IsaItem.TYPE_SYNONYM);
+        updateTranslatedIsaItem(module, name, IsaItem.TYPE_SYNONYM);
         sb.append("\n");
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
-        inv = "inv_" + exp + " " + inVar + " " + IsaToken.AND + " " + ((inv == null) ? IsaToken.TRUE : inv);
-        sb.append(translateInvariantDefinition(name, exp, inVar, inv, false));
+        inv = "inv_" + exp + " " + inVar + " " + IsaToken.AND.toString() + " " + ((inv == null) ? IsaToken.TRUE : inv);
+        sb.append(translateInvariantDefinition(module, name, exp, inVar, inv, false));
         return sb.toString();
     }
 

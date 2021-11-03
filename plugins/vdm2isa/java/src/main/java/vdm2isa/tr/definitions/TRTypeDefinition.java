@@ -61,7 +61,7 @@ public class TRTypeDefinition extends TRDefinition {
 
             // translate implicit record type invariant
             String varName = IsaToken.dummyVarNames(1, name.getLocation());
-            sb.append(IsaTemplates.translateInvariantDefinition(
+            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
                     name.toString(), name.toString(), varName, 
                     trtype.invTranslate(varName), false));
             
