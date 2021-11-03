@@ -42,7 +42,7 @@ definition
 where
 	"post_mkr n  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_mkr specification\<close>
-		((inv_VDMNat n) \<and> 
+		((inv_VDMNat n)  \<and>  
 		(((inv_VDMNat (x\<^sub>R RESULT))) \<and>
 	 ((inv_VDMNat (y\<^sub>R RESULT)))
 		))"
@@ -75,7 +75,7 @@ where
 		(
 		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
 	 ((inv_VDMNat (y\<^sub>R dummy0)))
-		) \<and> (inv_VDMNat RESULT))"
+		)  \<and>  (inv_VDMNat RESULT))"
 
 definition
 	recbind :: "R \<Rightarrow> VDMNat"
@@ -1469,7 +1469,7 @@ where
 		let (var::VDMNat) = (10::VDMNat1);
 	(var2::VDMNat1) = (20::VDMNat1)
 		in
-			(if ((inv_VDMNat var)) \<and>
+			(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then
 			(var + var2)
 		 else

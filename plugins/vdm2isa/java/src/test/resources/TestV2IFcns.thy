@@ -46,7 +46,7 @@ definition
 where
 	"post_constS RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_constS specification\<close>
-		((inv_VDMNat RESULT)) \<and>
+		((inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_constS\<close>
 		(RESULT > (0::VDMNat))"
 
@@ -65,14 +65,14 @@ definition
 where
 	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat1 y))"
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))"
 
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
 	"post_f x  y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat1 y) \<and> (inv_VDMNat1 RESULT))"
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat1 RESULT))"
 
 definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
@@ -89,7 +89,7 @@ definition
 where
 	"pre_g x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_g specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat1 y)) \<and>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))  \<and> 
 		\<comment>\<open>User defined body of pre_g\<close>
 		((x > (10::VDMNat1)) \<and> (y > (20::VDMNat1)))"
 
@@ -98,7 +98,7 @@ definition
 where
 	"post_g x y RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_g specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat1 y) \<and> (inv_VDMNat1 RESULT)) \<and>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat1 RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_g\<close>
 		(x < RESULT)"
 
@@ -117,7 +117,7 @@ definition
 where
 	"pre_h x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_h specification\<close>
-		((inv_VDMNat x)) \<and>
+		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h\<close>
 		((pre_g x  x) \<and> (x < (20::VDMNat1)))"
 
@@ -126,7 +126,7 @@ definition
 where
 	"post_h x RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_h specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat RESULT)) \<and>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h\<close>
 		((post_g x  x  RESULT) \<and> (x > (20::VDMNat1)))"
 
@@ -145,7 +145,7 @@ definition
 where
 	"pre_h' x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_h' specification\<close>
-		((inv_VDMNat x)) \<and>
+		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h'\<close>
 		(x < (20::VDMNat1))"
 
@@ -154,7 +154,7 @@ definition
 where
 	"post_h' x RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_h' specification\<close>
-		((inv_VDMNat x) \<and> (inv_VDMNat RESULT)) \<and>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h'\<close>
 		(x > (20::VDMNat1))"
 
@@ -173,14 +173,14 @@ definition
 where
 	"pre_curried x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_curried specification\<close>
-		((inv_VDMNat x)) \<and>((inv_VDMNat y))"
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))"
 
 definition
 	post_curried :: "VDMNat \<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"post_curried x y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_curried specification\<close>
-		((inv_VDMNat x)) \<and>((inv_VDMNat y))"
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))"
 
 definition
 	curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat"
@@ -197,7 +197,7 @@ definition
 where
 	"pre_curriedS x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_curriedS specification\<close>
-		((inv_VDMNat x)) \<and>((inv_VDMNat y)) \<and>
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))  \<and> 
 		\<comment>\<open>User defined body of pre_curriedS\<close>
 		(x > y)"
 
@@ -206,7 +206,7 @@ definition
 where
 	"post_curriedS x y RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_curriedS specification\<close>
-		((inv_VDMNat x)) \<and>((inv_VDMNat y)) \<and>
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))  \<and> 
 		\<comment>\<open>User defined body of post_curriedS\<close>
 		((x < RESULT) \<and> (y < RESULT))"
 

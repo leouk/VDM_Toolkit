@@ -58,9 +58,9 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     public String localInvTranslate()
     {
-        String old = localDefs.setSemanticSeparator(" " + IsaToken.AND.toString());
+        String old = localDefs.setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
         String result = localDefs.invTranslate();
-        localDefs.setSemanticSeparator(old);
+        localDefs.setInvTranslateSeparator(old);
         return result;
     }
 

@@ -29,7 +29,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         // multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
         setFormattingSeparator(" ");
-        //setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
     }
 
     @Override
