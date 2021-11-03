@@ -36,7 +36,7 @@ import vdm2isa.tr.types.TRType;
 /**
  * VDM POs to Isabelle. Cannot be called "pog2isa" as "pog" is already a command! 
  */
-public class IsapogPlugin extends AbstractIsaPlugin {
+public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private IsaProofStrategy strategy;
@@ -124,44 +124,44 @@ public class IsapogPlugin extends AbstractIsaPlugin {
                     catch(LexException le)
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        AbstractIsaPlugin.report(11111, "VDM PO " + po.name + "lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
+                        GeneralisaPlugin.report(11111, "VDM PO " + po.name + "lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
                     }
                     catch(ParserException pe) 
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " parsing error \"" + pe.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//pe.location);
+                        GeneralisaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " parsing error \"" + pe.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//pe.location);
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, pe));
                     }
                     catch(TypeCheckException te)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + te.toString() + "\"; carrying on...", LexLocation.ANY);//te.location);
+                        GeneralisaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + te.toString() + "\"; carrying on...", LexLocation.ANY);//te.location);
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, te));
                     }
                     catch(VDMErrorsException ve)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + ve.toString() + "\"; carrying on...", 
+                        GeneralisaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " type checking error \"" + ve.toString() + "\"; carrying on...", 
                             ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location);                        
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, ve));
                     }
                     catch(Exception e)
                     {
                         // This is something quite bad, so stop
-                        AbstractIsaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " class mapping / unexpected error \"" + e.toString() + "\"; cannot carry on.", LexLocation.ANY);                        
+                        GeneralisaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + " class mapping / unexpected error \"" + e.toString() + "\"; cannot carry on.", LexLocation.ANY);                        
                         // in case we decide to comment the throw?
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, e));
                         throw e;
                     }
                 }
-                addLocalErrors(AbstractIsaPlugin.getErrorCount());
+                addLocalErrors(GeneralisaPlugin.getErrorCount());
 
 				// be strict on translation output
 				// strict => AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0
-                if (!AbstractIsaPlugin.strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
+                if (!GeneralisaPlugin.strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
                 {
                     // output POs per module
                     TRModuleList modules = isapogl.getModulePOs();
@@ -186,13 +186,13 @@ public class IsapogPlugin extends AbstractIsaPlugin {
 			catch (InternalException e)
 			{
 				Console.out.println(e.toString());
-                AbstractIsaPlugin.errs++;
+                GeneralisaPlugin.errs++;
 			}
 			catch (Throwable t)
 			{
 				Console.out.println("Uncaught exception: " + t.toString());
 				t.printStackTrace();
-				AbstractIsaPlugin.errs++;
+				GeneralisaPlugin.errs++;
 			}
         }
         return result;
@@ -230,21 +230,21 @@ public class IsapogPlugin extends AbstractIsaPlugin {
 
     @Override
     public String help() {
-        return "isapog - translate VDM pog results for Isabelle/HOL (v. " + AbstractIsaPlugin.isaVersion + ")";
+        return "isapog - translate VDM pog results for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ")";
     }
 
     public static void report(int number, String problem, LexLocation location)
 	{
-		AbstractIsaPlugin.report(number, problem, location);
+		GeneralisaPlugin.report(number, problem, location);
 	}
 
 	public static void reportAsError(VDMWarning w)
 	{
-		AbstractIsaPlugin.reportAsError(w);
+		GeneralisaPlugin.reportAsError(w);
 	}
 
 	public static void warning(int number, String problem, LexLocation location)
 	{
-		AbstractIsaPlugin.warning(number, problem, location);
+		GeneralisaPlugin.warning(number, problem, location);
 	}
 }

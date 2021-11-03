@@ -9,7 +9,7 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
-public class ExuPlugin extends AbstractIsaPlugin {
+public class ExuPlugin extends GeneralisaPlugin {
 
 	public ExuPlugin(Interpreter interpreter)
 	{
@@ -38,21 +38,21 @@ public class ExuPlugin extends AbstractIsaPlugin {
 
     @Override
     public String help() {
-        return "exu - analyse all loaded VDM modules for Isabelle/HOL (v. " + AbstractIsaPlugin.isaVersion + ") translation";
+        return "exu - analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
     }
 
     public static void report(int number, String problem, LexLocation location)
 	{
-		AbstractIsaPlugin.report(number, problem, location);
+		GeneralisaPlugin.report(number, problem, location);
 	}
 
 	public static void reportAsError(VDMWarning w)
 	{
-		AbstractIsaPlugin.reportAsError(w);
+		GeneralisaPlugin.reportAsError(w);
 	}
 
 	public static void warning(int number, String problem, LexLocation location)
 	{
-		AbstractIsaPlugin.warning(number, problem, location);
+		GeneralisaPlugin.warning(number, problem, location);
 	}
 }

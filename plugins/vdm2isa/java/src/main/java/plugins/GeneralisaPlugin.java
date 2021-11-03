@@ -27,7 +27,7 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
 
-public abstract class AbstractIsaPlugin extends CommandPlugin {
+public abstract class GeneralisaPlugin extends CommandPlugin {
 
     private final static List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
     private final static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
@@ -52,7 +52,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"});
     }
 
-    public AbstractIsaPlugin(Interpreter interpreter) {
+    public GeneralisaPlugin(Interpreter interpreter) {
         super(interpreter);
         localReset();
     }
@@ -77,7 +77,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
         Console.out.print(getLocalErrorCount() == 0 ? "No issues" :
             "Found " + plural(getLocalErrorCount(), "issues", "s"));
         Console.out.print(getLocalWarningCount() == 0 ? "" : " and " +
-            (AbstractIsaPlugin.reportWarnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
+            (GeneralisaPlugin.reportWarnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
         Console.out.println(getLocalErrorCount() > 0 ? " Proceeding with translation with remaining issues may lead to Isabelle errors!" : "");
     }
 
@@ -121,10 +121,10 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 		{
 			long before = System.currentTimeMillis();
             
-            AbstractIsaPlugin.setupProperties();
-			AbstractIsaPlugin.reset();
+            GeneralisaPlugin.setupProperties();
+			GeneralisaPlugin.reset();
             localReset();
-            AbstractIsaPlugin.checkVDMSettings();
+            GeneralisaPlugin.checkVDMSettings();
 
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
@@ -133,17 +133,17 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
             long after = System.currentTimeMillis();
 			addLocalErrors(Vdm2isaPlugin.getErrorCount());
-			addLocalErrors(AbstractIsaPlugin.getErrorCount());
+			addLocalErrors(GeneralisaPlugin.getErrorCount());
 			if (getLocalErrorCount() > 0)
 			{
-				AbstractIsaPlugin.printErrors(Console.out);
+				GeneralisaPlugin.printErrors(Console.out);
 			}
 
 			addLocalWarnings(Vdm2isaPlugin.getWarningCount());
-			addLocalWarnings(AbstractIsaPlugin.getWarningCount());
-			if (getLocalWarningCount() > 0 && AbstractIsaPlugin.reportWarnings)
+			addLocalWarnings(GeneralisaPlugin.getWarningCount());
+			if (getLocalWarningCount() > 0 && GeneralisaPlugin.reportWarnings)
 			{
-				AbstractIsaPlugin.printWarnings(Console.out);
+				GeneralisaPlugin.printWarnings(Console.out);
 			}
             summarise(after-before);
         }
@@ -166,14 +166,14 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            AbstractIsaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+            GeneralisaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
             errs++;
         }
         if (Settings.release != Release.VDM_10)
         {
             // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
             // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-            AbstractIsaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+            GeneralisaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
         }
     }
 
@@ -182,7 +182,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
         if (!errors.contains(error)) {
             errors.add(error);
 
-            if (errors.size() >= AbstractIsaPlugin.maxErrors - 1) {
+            if (errors.size() >= GeneralisaPlugin.maxErrors - 1) {
                 errors.add(new VDM2IsaError(10, "Too many translation errors", location));
                 throw new InternalException(10, "Too many translation errors");
             }
@@ -190,7 +190,7 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
     }
 
     public static void reportAsError(VDMWarning w) {
-        if (AbstractIsaPlugin.vdmWarningOfInterest.contains(w.number)) {
+        if (GeneralisaPlugin.vdmWarningOfInterest.contains(w.number)) {
             report(11111 + w.number, w.message, w.location);
         }
     }
@@ -204,37 +204,37 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
     }
 
     public static void clearErrors() {
-        AbstractIsaPlugin.errs = 0;
-        AbstractIsaPlugin.errors.clear();
-        AbstractIsaPlugin.warnings.clear();
+        GeneralisaPlugin.errs = 0;
+        GeneralisaPlugin.errors.clear();
+        GeneralisaPlugin.warnings.clear();
     }
 
     public static int getErrorCount() {
-        return AbstractIsaPlugin.errors.size();
+        return GeneralisaPlugin.errors.size();
     }
 
     public static int getWarningCount() {
-        return AbstractIsaPlugin.warnings.size();
+        return GeneralisaPlugin.warnings.size();
     }
 
     public static List<VDM2IsaError> getErrors() {
-        return AbstractIsaPlugin.errors;
+        return GeneralisaPlugin.errors;
     }
 
     public static List<VDM2IsaWarning> getWarnings() {
-        return AbstractIsaPlugin.warnings;
+        return GeneralisaPlugin.warnings;
     }
 
     public static void printErrors(ConsoleWriter out) {
         if (Vdm2isaPlugin.getErrorCount() > 0) Vdm2isaPlugin.printErrors(out);
-        for (VDM2IsaError e : AbstractIsaPlugin.errors) {
+        for (VDM2IsaError e : GeneralisaPlugin.errors) {
             out.println(e.toString());
         }
     }
 
     public static void printWarnings(ConsoleWriter out) {
         if (Vdm2isaPlugin.getWarningCount() > 0) Vdm2isaPlugin.printWarnings(out);
-        for (VDM2IsaWarning w : AbstractIsaPlugin.warnings) {
+        for (VDM2IsaWarning w : GeneralisaPlugin.warnings) {
             out.println(w.toString());
         }
     }
@@ -245,14 +245,14 @@ public abstract class AbstractIsaPlugin extends CommandPlugin {
 
     protected static void reset() {
         // reset internal tables in case of restranslation
-        AbstractIsaPlugin.clearErrors();
+        GeneralisaPlugin.clearErrors();
     }
 
     public static void setupProperties() {
-        AbstractIsaPlugin.errs = 0;
-        AbstractIsaPlugin.strict = false;
-        AbstractIsaPlugin.maxErrors = Properties.tc_max_errors;
-        AbstractIsaPlugin.isaVersion = "Isabelle2021: February 2021";
-        AbstractIsaPlugin.reportWarnings = true;
+        GeneralisaPlugin.errs = 0;
+        GeneralisaPlugin.strict = false;
+        GeneralisaPlugin.maxErrors = Properties.tc_max_errors;
+        GeneralisaPlugin.isaVersion = "Isabelle2021: February 2021";
+        GeneralisaPlugin.reportWarnings = true;
     }
 }
