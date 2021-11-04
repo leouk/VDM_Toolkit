@@ -103,6 +103,13 @@ public class TRBoundedExpression extends TRExpression {
         return sb.toString();
     }
 
+    @Override
+    public boolean requiresImplicitTypeInvariantChecks()
+    {
+        // if found type binds, issue comment about extra invariant checks for subtype soundness
+        return bindList.foundSomeTypeBinds();
+    }
+
     /**
      * Bounded binds translation requires care: it depends on what kind of bind (e.g., forall set bind can only have 1 variable),
      * and might need extra type invariant checks (e.g., type binds require check about it's invariant).
@@ -112,10 +119,21 @@ public class TRBoundedExpression extends TRExpression {
         // return IsaToken.parenthesise(isaToken().toString() + " " + 
         // bindList.translate() + IsaToken.POINT + " " + predicate.translate());
         StringBuilder sb = new StringBuilder();
+
+        // figure out what kind of translation this will be
+        //TODO could this logic be simplified? Probably not given bind kinds can mix and are complicated to enterily classify
+        boolean foundNonTypeBinds = bindList.foundNonTypeBinds();
+        boolean foundTypeBind = bindList.foundSomeTypeBinds();
+
+        if (foundTypeBind) 
+        {
+            sb.append(IsaToken.comment("Implicitly defined type invariant checks for quantified type binds", getFormattingSeparator()));
+        }
+
         sb.append(IsaToken.LPAREN.toString());
         // count the number of extra left parenthesis that will be added; cout=0 doesn't given it's outermost
         int rightParenCountToAdd = 0; 
-        if (foundNonTypeBinds())
+        if (foundNonTypeBinds)
         {
             for(; rightParenCountToAdd < bindList.size(); rightParenCountToAdd++)
             {
@@ -139,7 +157,7 @@ public class TRBoundedExpression extends TRExpression {
 
             sb.append(getFormattingSeparator());
         }
-        boolean foundTypeBind = foundSomeTypeBinds();
+
         // if found type bind add implication to predicate and an extra parenthesis pair
         // this more involved checks account for the mixed case, 
         // e.g. forall x: nat, y: nat, z in set S & P(x,y,z)
@@ -150,6 +168,7 @@ public class TRBoundedExpression extends TRExpression {
 
             // type binds require invariant checks before the user predicate!
             // presume the bind list has the right inv separator in place  
+            // for mixed type + set/seq binds, this gets invovled! 
             sb.append(bindList.invTranslate());
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.IMPLIES.toString());

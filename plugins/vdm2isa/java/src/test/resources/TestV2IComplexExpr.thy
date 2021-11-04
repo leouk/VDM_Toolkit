@@ -1,11 +1,12 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2ICompleExpr.vdmsl' at line 1:8files = [./src/test/resources/TestV2ICompleExpr.vdmsl]
+in './src/test/resources/TestV2IComplexExpr.vdmsl' at line 1:8files = [./src/test/resources/TestV2IComplexExpr.vdmsl]
 *)
 theory TestV2IComplexExpr
 imports VDMToolkit
 begin
+
 
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
@@ -18,7 +19,8 @@ where
 	"inv_t9  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t9)"
 
 
-	abbreviation
+	
+abbreviation
 	t10 :: "VDMInt VDMSeq1"
 where
 	"t10 \<equiv> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)]"
@@ -29,10 +31,11 @@ where
 	"inv_t10  \<equiv> (inv_VDMSeq1' (inv_VDMInt) t10)"
 
 
-	abbreviation
+	
+abbreviation
 	vc1 :: "\<bool>"
 where
-	"vc1 \<equiv> (\<forall> var1  var2 \<in> t9 . (var1 \<le> var2))"
+	"vc1 \<equiv> (\<forall> var1 \<in> t9  var2 \<in> t9 . (var1 \<le> var2))"
 
 definition
 	inv_vc1 :: "\<bool>"
@@ -40,9 +43,7 @@ where
 	"inv_vc1  \<equiv> (inv_bool vc1)"
 
 
-	\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 8:58
-TCForallExpression multiple set binds!
-\<close>
+	
 abbreviation
 	vc2 :: "\<bool>"
 where
@@ -54,13 +55,7 @@ where
 	"inv_vc2  \<equiv> (inv_bool vc2)"
 
 
-	\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 9:58
-TCForallExpression multiple seq binds!
-\<close>
- 
-\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 12:7
- has to be a function for executability because of the type bind!
-\<close>
+	
 definition
 	pre_vc3 :: "\<bool>"
 where
@@ -78,11 +73,69 @@ definition
 where
 	"vc3  \<equiv> 
 	\<comment>\<open>User defined body of vc3\<close>
-	(\<forall> (var1::VDMNat)  (var2::VDMNat)  . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<longrightarrow> (var1 < var2)))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> (\<forall> (var1::VDMNat)  (var2::VDMNat)  . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<longrightarrow> (var1 < var2)))"
 
-	\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 14:58
- multiple type binds
-\<close>
+	
+definition
+	pre_vc31 :: "\<bool>"
+where
+	"pre_vc31  \<equiv> True"
+
+definition
+	post_vc31 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+where
+	"post_vc31 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc31 specification\<close>
+		((inv_VDMSet' (inv_VDMNat) RESULT))"
+
+definition
+	vc31 :: "VDMNat VDMSet"
+where
+	"vc31  \<equiv> 
+	\<comment>\<open>User defined body of vc31\<close>
+	{ x .   (inv_VDMNat x)  \<and> (x > (10::VDMNat1)) }"
+
+	
+definition
+	pre_vc32 :: "\<bool>"
+where
+	"pre_vc32  \<equiv> True"
+
+definition
+	post_vc32 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+where
+	"post_vc32 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc32 specification\<close>
+		((inv_VDMSet' (inv_VDMNat) RESULT))"
+
+definition
+	vc32 :: "VDMNat VDMSet"
+where
+	"vc32  \<equiv> 
+	\<comment>\<open>User defined body of vc32\<close>
+	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) .  (inv_VDMNat x) \<and>  (inv_VDMNat y)  \<and> (x > y) }"
+
+	
+definition
+	pre_vc33 :: "\<bool>"
+where
+	"pre_vc33  \<equiv> True"
+
+definition
+	post_vc33 :: "VDMNat VDMSeq \<Rightarrow> \<bool>"
+where
+	"post_vc33 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc33 specification\<close>
+		((inv_VDMSeq' (inv_VDMNat) RESULT))"
+
+definition
+	vc33 :: "VDMNat VDMSeq"
+where
+	"vc33  \<equiv> 
+	\<comment>\<open>User defined body of vc33\<close>
+	[ x .  (inv_VDMNat x) , (x > (10::VDMNat1)) ]"
+
+	
 definition
 	pre_vc4 :: "\<bool>"
 where
@@ -100,15 +153,118 @@ definition
 where
 	"vc4  \<equiv> 
 	\<comment>\<open>User defined body of vc4\<close>
-	(\<forall> (var1::VDMNat) . (\<forall> (var2::VDMNat) . (\<forall> var3  var4 \<in> t9 . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<and>   \<longrightarrow> ((var1 + var3) < (var2 + var4))))))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  
+\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+(\<forall> (var1::VDMNat) . (\<forall> (var2::VDMNat) . (\<forall> var3 \<in> t9  var4 \<in> t9 . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<and>  var3 \<in> t9 \<and>  var4\<in> t9 \<longrightarrow> ((var1 + var3) < (var2 + var4))))))"
 
-	\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 17:94
- multiple type binds
-\<close>
- 
-\<comment>\<open>@ in 'TestV2IComplexExpr' (./src/test/resources/TestV2ICompleExpr.vdmsl) at line 19:7
- for issuing pre/post calls needs spec
-\<close>
+	
+definition
+	pre_vc41 :: "\<bool>"
+where
+	"pre_vc41  \<equiv> True"
+
+definition
+	post_vc41 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+where
+	"post_vc41 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc41 specification\<close>
+		((inv_VDMSet' (inv_VDMNat) RESULT))"
+
+definition
+	vc41 :: "VDMNat VDMSet"
+where
+	"vc41  \<equiv> 
+	\<comment>\<open>User defined body of vc41\<close>
+	{ x .   (inv_VDMNat x)  \<and> (x > (10::VDMNat1)) }"
+
+	
+definition
+	pre_vc42 :: "\<bool>"
+where
+	"pre_vc42  \<equiv> True"
+
+definition
+	post_vc42 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+where
+	"post_vc42 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc42 specification\<close>
+		((inv_VDMSet' (inv_VDMNat) RESULT))"
+
+definition
+	vc42 :: "VDMNat VDMSet"
+where
+	"vc42  \<equiv> 
+	\<comment>\<open>User defined body of vc42\<close>
+	{ (x + y) | (x :: VDMNat)  y .  (inv_VDMNat x) \<and>  y \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  \<and> (x > y) }"
+
+	
+definition
+	pre_vc5 :: "\<bool>"
+where
+	"pre_vc5  \<equiv> True"
+
+definition
+	post_vc5 :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"post_vc5 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc5 specification\<close>
+		((inv_VDMNat RESULT))"
+
+definition
+	vc5 :: "VDMNat"
+where
+	"vc5  \<equiv> 
+	\<comment>\<open>User defined body of vc5\<close>
+	THE var. ((inv_VDMNat var) \<and> (var < (1::VDMNat1)))(THE var. ((inv_VDMNat var) \<and> (var < (1::VDMNat1))))"
+
+	
+definition
+	pre_vc51 :: "\<bool>"
+where
+	"pre_vc51  \<equiv> True"
+
+definition
+	post_vc51 :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"post_vc51 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc51 specification\<close>
+		((inv_VDMNat RESULT))"
+
+definition
+	vc51 :: "VDMNat"
+where
+	"vc51  \<equiv> 
+	\<comment>\<open>User defined body of vc51\<close>
+	THE var. (var \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)} \<and> (var < (1::VDMNat1)))(THE var. (var \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)} \<and> (var < (1::VDMNat1))))"
+
+	
+definition
+	pre_vc6 :: "\<bool>"
+where
+	"pre_vc6  \<equiv> True"
+
+definition
+	post_vc6 :: "VDMNat1 \<Rightarrow> \<bool>"
+where
+	"post_vc6 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc6 specification\<close>
+		((inv_VDMNat1 RESULT))"
+
+definition
+	vc6 :: "VDMNat1"
+where
+	"vc6  \<equiv> 
+	\<comment>\<open>User defined body of vc6\<close>
+	((
+	\<lambda> (var::VDMNat)  (var2::VDMNat) .
+		(if (inv_VDMNat var) \<and>  (inv_VDMNat var2) then
+		(var + var2)
+	 else
+		undefined
+	)
+	) (10::VDMNat1)  (20::VDMNat1))"
+
+	
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -134,23 +290,24 @@ where
 	\<comment>\<open>User defined body of f\<close>
 	(x + y)"
 
-	definition
-	pre_vc5 :: "\<bool>"
+	
+definition
+	pre_vc7 :: "\<bool>"
 where
-	"pre_vc5  \<equiv> True"
+	"pre_vc7  \<equiv> True"
 
 definition
-	post_vc5 :: "\<bool> \<Rightarrow> \<bool>"
+	post_vc7 :: "\<bool> \<Rightarrow> \<bool>"
 where
-	"post_vc5 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc5 specification\<close>
+	"post_vc7 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc7 specification\<close>
 		((inv_bool RESULT))"
 
 definition
-	vc5 :: "\<bool>"
+	vc7 :: "\<bool>"
 where
-	"vc5  \<equiv> 
-	\<comment>\<open>User defined body of vc5\<close>
-	(\<forall> (x::VDMNat)  (y::VDMNat1)  . ((inv_VDMNat x) \<and>  (inv_VDMNat1 y) \<longrightarrow> ((pre_f x  y) \<longrightarrow> (post_f x  y  (x + y)))))"
+	"vc7  \<equiv> 
+	\<comment>\<open>User defined body of vc7\<close>
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> (\<forall> (x::VDMNat)  (y::VDMNat1)  . ((inv_VDMNat x) \<and>  (inv_VDMNat1 y) \<longrightarrow> ((pre_f x  y) \<longrightarrow> (post_f x  y  (x + y)))))"
 
 end
