@@ -31,7 +31,6 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         super(location, expression);
         this.bindList = bindList;
         this.type = type;
-        this.setFormattingSeparator("\n\t");
         // See NB's email on 28/10/2021 8:59 Subject TCLambdaExpression.paraDefinitions.implicitDefinitions
         // There is no need for those in the end. So remove them. 
         //this.paramPatterns = paramPatterns; 
@@ -43,6 +42,14 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         
         //System.out.println(toString());
     }
+
+    @Override
+    protected void setup()
+	{
+        super.setup();
+	 	setFormattingSeparator("\n\t");
+        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+	}
 
     @Override 
     public String toString()

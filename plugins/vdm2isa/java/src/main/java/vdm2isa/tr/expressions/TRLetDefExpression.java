@@ -15,12 +15,18 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     {
         super(location, expression);
         this.localDefs = localDefs;
-        //TODO add this to IsaToken? see the reporting library (this.tabs that is)!
-        this.setFormattingSeparator("\n\t\t");
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
         this.localDefs.setLocal(true);
         //System.out.println(toString());
     }
+
+    @Override
+    protected void setup()
+	{
+        super.setup();
+        setFormattingSeparator("\n\t\t");
+	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+	}
 
     @Override
     public String toString()
@@ -58,7 +64,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     public String localInvTranslate()
     {
-        String old = localDefs.setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        String old = localDefs.setInvTranslateSeparator(getInvTranslateSeparator());
         String result = localDefs.invTranslate();
         localDefs.setInvTranslateSeparator(old);
         return result;
