@@ -1,6 +1,8 @@
 package vdm2isa.tr.patterns;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
 public abstract class TRMultipleBind extends TRNode
@@ -20,21 +22,40 @@ public abstract class TRMultipleBind extends TRNode
     {
         super(plist.get(0).location);
         this.plist = plist;
+        this.plist.setInvTranslateSeparator(getInvTranslateSeparator());
         this.poBind = false;
+    }
+
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+        setSemanticSeparator(" ");
+        setFormattingSeparator(" ");
+        setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
     }
 
     public TRMultipleBindList getMultipleBindList()
     {
-      TRMultipleBindList list = new TRMultipleBindList();
-      list.add(this);
-      return list;
+        TRMultipleBindList list = new TRMultipleBindList();
+        list.add(this);
+        return list;
     }
 
     /**
      * Binds that allow translation within in comprehension expressions. 
-     * @param patternsOnly whether to consider binding type/expr (if availale) or patterns only  
+     * @param vdmPatternsOnly whether to consider binding type/expr (if availale) 
+     * or VDM patterns only. This is important for the existential set comprehension case in Isabelle 
+     * (i.e. all comprehension where expr is not a pattern, e.g., { x+x | bind & pred }).
      */
-    public abstract String compTranslate(boolean patternsOnly);
+    public abstract String compTranslate(boolean vdmPatternsOnly);
+
+    /**
+     * Binds within certain expressions require a combination of translation + invariant translation. For example,  
+     * @param owner
+     * @return
+     */
+    public  String bindTranslate(TRExpression owner) { return "TODO"; };
 
     public abstract TRNode getRHS();
 

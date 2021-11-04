@@ -28,7 +28,6 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         super.setup();
         // multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
-        setFormattingSeparator(" ");
         setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
     }
 
@@ -64,7 +63,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     }
 
     @Override
-    public String compTranslate(boolean patternsOnly)
+    public String compTranslate(boolean vdmPatternsOnly)
     {
         return IsaToken.parenthesise(plist.translate() + getFormattingSeparator() + IsaToken.TYPEOF + getFormattingSeparator() + type.translate());
     }

@@ -29,15 +29,16 @@ public class TRMultipleSeqBind extends TRMultipleBind
     }
 
     @Override
-    public String compTranslate(boolean patternsOnly)
+    public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(plist.translate());
-        if (!patternsOnly)
+        if (!vdmPatternsOnly)
         {
-            sb.append(" ");
+            // translate the bind within comprehension
+            sb.append(getFormattingSeparator());
             sb.append(IsaToken.SEQBIND.toString());
-            sb.append(" ");
+            sb.append(getFormattingSeparator());
             sb.append(seq.translate());
         } 
         return sb.toString();
@@ -45,8 +46,24 @@ public class TRMultipleSeqBind extends TRMultipleBind
     
     @Override
     public String translate() {
-        return plist.translate() + " " + isaToken().toString() + " " + 
-            IsaToken.parenthesise(IsaToken.ELEMS.toString() + " " + seq.translate());
+        StringBuilder sb = new StringBuilder();
+        sb.append(plist.translate());
+        sb.append(getFormattingSeparator());
+        sb.append(isaToken().toString()); 
+        sb.append(getFormattingSeparator());
+        sb.append(IsaToken.parenthesise(IsaToken.ELEMS.toString() + getFormattingSeparator() + seq.translate()));
+        return sb.toString();
+    }
+
+    /**
+     * Allow invTranslate calls for MultipleSeq bind, given it only contains one pattern;
+     * in the context where they are within a mixed type and set/seq binds! 
+     */
+    @Override
+    public String invTranslate()
+    {
+        // super issues error
+        return translate();//super.invTranslate();
     }
 
     @Override
