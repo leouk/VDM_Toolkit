@@ -45,20 +45,20 @@ public class TRMultipleSetBind extends TRMultipleBind
      * Pattern only parameter is for when the bind is used in the generator field, rather than predicate field.  
      */
     @Override
-    public String compTranslate(boolean patternsOnly)
+    public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(plist.translate());
         // for seq comprehension with ordered seq bind, we need the extra SETSEQBIND mapping
         // whenever it's not just for the patterns, which should never be the case any how.  
-        if (!patternsOnly && seqBind)
+        if (!vdmPatternsOnly && seqBind)
         { 
             // On type checked VDM values the underlying type is ordered; but possibly with an ord_ clause, which might not work for Isabelle 
             String setbindProblem = "Set bind \"" + translate() + "\" in sequence comprehension requires VDM set to be ordered (i.e. its Isabelle type instantiates type class linorder).";
             warning(11111, setbindProblem);
-            sb.append(" ");
+            sb.append(getFormattingSeparator());
             sb.append(IsaToken.SETSEQBIND);
-            sb.append(" ");
+            sb.append(getFormattingSeparator());
             sb.append(IsaToken.parenthesise(set.translate()));
         }
         return sb.toString();

@@ -68,13 +68,13 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(IsaToken.POINT.toString());
         if (predicate != null)
         {
-            sb.append(" ");
+            sb.append(getFormattingSeparator());
             // predicate separator in Isabelle is "," not "|"
             sb.append(IsaToken.COMMA.toString());
-            sb.append(" ");
+            sb.append(getFormattingSeparator());
             sb.append(predicate.translate());
         }
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(IsaToken.SEQ_CLOSE.toString());
         if (isSetSeqBind())
         {

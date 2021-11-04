@@ -17,8 +17,14 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     {
         super(location);
         this.expression = expression;
-        this.setFormattingSeparator("\n\t\t");
     }
+
+    @Override
+    protected void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t");
+    } 
 
     public abstract String localInvTranslate();
 

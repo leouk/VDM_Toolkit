@@ -37,48 +37,55 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	protected void setup()
 	{
 		super.setup();
-        // multiple type binds are space (not comma) separated
+		// multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
         setFormattingSeparator(" ");
-        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+		//Multiple bind list translation must take into consideration the kind of bind within it; for type binds that involves adding inv_T dummy; others just empty
+        setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
-	/**
-	 * Multiple bind list translation must take into consideration the kind of bind within it. For type binds
-	 */
-	@Override
-	public String translate()
-	{
-		StringBuilder sb = new StringBuilder();
-		if (!isEmpty())
-		{
-			sb.append(get(0).translate());
-			for (int i = 1; i < size(); i++)
-			{
-				sb.append(getSemanticSeparator());
-                sb.append(getFormattingSeparator());
-				sb.append(get(i).translate());
-			}
-		}
-		return sb.toString();
-	}
-
-    public String compTranslate(boolean patternsOnly)
+    public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			sb.append(get(0).compTranslate(patternsOnly));
+			sb.append(get(0).compTranslate(vdmPatternsOnly));
 
 			for (int i=1; i<size(); i++)
 			{
 				sb.append(getSemanticSeparator());
 				sb.append(getFormattingSeparator());
-				sb.append(get(i).compTranslate(patternsOnly));
+				sb.append(get(i).compTranslate(vdmPatternsOnly));
 			}
 		}
 		return sb.toString();
     } 
+
+	/**
+     * If any bind is not type bind, requires multiple quantifiers and parenthesis 
+     * @return true whether set/seq binds were found within this bind list
+     */
+	public boolean foundNonTypeBinds() {
+        for(TRMultipleBind b : this)
+        {
+            if (!(b instanceof TRMultipleTypeBind))
+                return true;
+        }
+        return false;
+    }
+	
+	/**
+	 * If any type bind has been found within this bind list 
+	 * @return
+	 */
+    public boolean foundSomeTypeBinds() {
+        for(TRMultipleBind b : this)
+        {
+            if (b instanceof TRMultipleTypeBind)
+                return true;
+        }
+        return false;
+    }
 
 	public static String translate(TRMultipleBind... args)
 	{

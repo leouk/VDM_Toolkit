@@ -43,7 +43,8 @@ public class TRBoundedExpression extends TRExpression {
         this.owner = IsaToken.FORALL;
     }
 
-     protected void setup()
+    @Override
+    protected void setup()
 	{
         super.setup();
 	// 	setSemanticSeparator("");
@@ -54,6 +55,15 @@ public class TRBoundedExpression extends TRExpression {
     @Override
     public IsaToken isaToken() {
         return owner;
+    }
+
+    @Override
+    public String tldIsaComment()
+    {
+        if (requiresImplicitTypeInvariantChecks())
+            return IsaToken.comment("Implicitly defined type invariant checks for quantified type binds", getFormattingSeparator());
+        else
+           return super.tldIsaComment();
     }
 
     /**
@@ -82,6 +92,8 @@ public class TRBoundedExpression extends TRExpression {
             // translate the quantifier and the specific bind
             sb.append(isaToken().toString());
             sb.append(getFormattingSeparator());
+            // VDM AST has the bind list within the set/seq binds themselves!
+            //TODO perhaps push this into TRMultipleSetBind? 
             sb.append(bindList.get(index).translate());
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.POINT.toString());
@@ -153,28 +165,6 @@ public class TRBoundedExpression extends TRExpression {
         // final overal expression right parenthesis
         sb.append(IsaToken.RPAREN.toString());
         return sb.toString();
-    }
-
-    /**
-     * If any bind is not type bind, requires multiple quantifiers and parenthesis 
-     * @return
-     */
-	private boolean foundNonTypeBinds() {
-        for(TRMultipleBind b : bindList)
-        {
-            if (!(b instanceof TRMultipleTypeBind))
-                return true;
-        }
-        return false;
-    }
-
-    private boolean foundSomeTypeBinds() {
-        for(TRMultipleBind b : bindList)
-        {
-            if (b instanceof TRMultipleTypeBind)
-                return true;
-        }
-        return false;
     }
 
     @Override
