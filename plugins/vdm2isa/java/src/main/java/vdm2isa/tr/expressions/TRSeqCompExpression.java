@@ -5,6 +5,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleSetBind;
+import vdm2isa.tr.patterns.TRMultipleTypeBind;
 
 /**
  * Isabelle sequence compression is "[ expr(bind1, bind2) . bind1 <- gen1, bind2 <- gen2, filter ]".
@@ -66,6 +67,29 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(first.translate());
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.POINT.toString());
+        sb.append(getFormattingSeparator());
+        if (bind instanceof TRMultipleTypeBind)
+        {
+            report(11111, "Type bound sequence compression is not supported in Isabelle.");
+        }
+        // vdmPatternsOnly=false because sequence comp expr are allowed within Isabelle [x+x | x in seq S ] 
+        // type binds in sequence don't need compTranslate, given their invariants will be checked later in bindStr 
+        String bindCompTranslate = bind instanceof TRMultipleTypeBind ? "" : bind.compTranslate(false);
+        sb.append(bindCompTranslate);        
+        // include filtering predicates for type binds; include it if not empty
+        String bindStr = bind.invTranslate();
+        if (!bindStr.isEmpty()) 
+        {
+            // if there were other bind(s) add comma; or would this never happen because seq bind is singleton? Anyhow. 
+            if (!bindCompTranslate.isEmpty())
+            {
+                sb.append(getFormattingSeparator());
+                sb.append(IsaToken.COMMA.toString());
+            }
+            sb.append(getFormattingSeparator());
+            sb.append(bindStr);    
+        }
+        // include filtering predicate
         if (predicate != null)
         {
             sb.append(getFormattingSeparator());
