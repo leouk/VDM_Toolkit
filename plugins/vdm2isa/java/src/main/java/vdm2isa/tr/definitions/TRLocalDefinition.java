@@ -98,14 +98,14 @@ public class TRLocalDefinition extends TRDefinition {
         }
         return dummyNames;
     }
-
+    
     @Override
     public String translate()
     {
 		// translate the "v: T"
 		StringBuilder sb = new StringBuilder();
 
-		// add any annotations or comments
+        // add any annotations or comments
 		sb.append(translatePreamble());
 		sb.append(IsaToken.parenthesise(getDeclaredName() + IsaToken.TYPEOF.toString() + getTypeString()));
 		//System.out.println(toString());

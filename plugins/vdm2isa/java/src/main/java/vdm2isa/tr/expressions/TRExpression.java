@@ -37,6 +37,7 @@ public abstract class TRExpression extends TRNode
 	public String tokenise(IsaToken token, LexLocation location, TRExpression... args)
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(tldIsaComment());
         switch (token)
         {
             case NOT:
@@ -208,5 +209,13 @@ public abstract class TRExpression extends TRNode
             //sb.append(IsaToken.comment(problem));
         }
         return sb.toString(); 
+    }
+
+    /**
+     * Whether or not implicit type invariant checks are needed for this class. 
+     * @return
+     */
+    public boolean requiresImplicitTypeInvariantChecks() {
+        return false;
     }
 }

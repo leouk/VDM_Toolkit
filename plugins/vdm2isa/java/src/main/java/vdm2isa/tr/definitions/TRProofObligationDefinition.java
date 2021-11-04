@@ -60,6 +60,12 @@ public class TRProofObligationDefinition extends TRDefinition {
     }
 
     @Override
+    public String tldIsaComment()
+    {
+        return tldIsaCommentTranslate(poExpr);
+    }
+
+    @Override
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -74,6 +80,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         sb.append(po.kind.name());
         sb.append(IsaToken.COLON.toString());
         sb.append(getFormattingSeparator());
+        sb.append(tldIsaComment());
         sb.append(IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExpr.translate())));
         sb.append(getFormattingSeparator());
         

@@ -24,7 +24,7 @@ public interface MappableNode extends Mappable {
 	public String invTranslate();
 
 	/**
-	 * Whether or not the TRNode should issue this Isabelle comment. Useful for explicit definitions
+	 * Whether or not the TRNode should issue this Isabelle comment. Useful for top-level definitions involving expressions.
 	 * @return
 	 */
 	public String tldIsaComment();

@@ -31,6 +31,15 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
     {
         this.add(new TRIsaVDMComment(new LexComment(location, comment, block)));
     }
+
+    @Override
+    public String translate()
+    {
+        StringBuilder sb = new StringBuilder();
+        // add final formatting separator to separate the last comment in the list from the remaining associated definitions
+        sb.append(getFormattingSeparator());
+        return sb.toString();
+    }
     
     public static TRIsaVDMCommentList newComment(LexLocation location, String comment, boolean block)
     {

@@ -67,13 +67,19 @@ public class TRValueDefinition extends TRLocalDefinition
 	}
 
 	@Override
+    public String tldIsaComment()
+    {
+        return tldIsaCommentTranslate(exp);
+    }
+
+	@Override
 	public String translate()
 	{
 		// translate the "v: T = e" as an abbreviation or definition
 		StringBuilder sb = new StringBuilder();
 
 		// translate the value expression
-		String expStr = exp.translate();
+		String expStr = tldIsaComment() + exp.translate();
 		
 		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
 		if (!local)

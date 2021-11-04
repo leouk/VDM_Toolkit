@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.expressions.TRExpression;
 
 public abstract class TRDefinition extends TRNode
 {
@@ -55,8 +56,28 @@ public abstract class TRDefinition extends TRNode
 			warning(11050, "Not yet processing annotations");
 			sb.append("(* NOT YET PROCESSING ANNOTATIONS *)\n");
 		}
+
+		// issue TLD comment, if any
+		// if (!tldIsaComment().isEmpty())
+		// {
+		// 	sb.append(getFormattingSeparator());
+		// 	sb.append(tldIsaComment());
+		// 	sb.append(getFormattingSeparator());
+		// }
 		return sb.toString();
 	}
+
+    public String tldIsaCommentTranslate(TRExpression exp)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.tldIsaComment());
+        if (exp.requiresImplicitTypeInvariantChecks())
+        {
+            sb.append(exp.tldIsaComment());
+            sb.append(exp.getFormattingSeparator());
+        }   
+        return sb.toString();
+    }
 
 	@Override
 	public String translate()

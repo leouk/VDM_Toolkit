@@ -512,6 +512,15 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		return fcnBody.toString();
 	}
 
+	/**
+	 * Add any top-level isa comment that inner expressions might want, if we have an explicitly defined body. 
+	 */
+	@Override
+    public String tldIsaComment()
+    {
+        return body != null ? tldIsaCommentTranslate(body) : super.tldIsaComment();
+    }
+
 	@Override
 	public String translate()
 	{
@@ -587,6 +596,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// include the user declared body after including implicit considerations
 			fcnBody.append(getFormattingSeparator());
 			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
+			fcnBody.append(tldIsaComment());
 			fcnBody.append(body.translate());
 		}
 		
