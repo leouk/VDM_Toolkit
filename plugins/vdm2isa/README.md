@@ -36,13 +36,14 @@ This plugin project creates an interconnected eco system of plugins as:
 4. [Isabelle/HOL 2021-RC1](http://isabelle.in.tum.de)>=
 
 
-# Installation
 The instructions below presumes a Linux/MacOS environment, but Windows should be similar with necessary adjustments. 
 
 1. Assumptions:
 	* All dependencies are properly installed
-	* VDMJ and VDM_Toolkit repos are downloaded 
-	
+	* `VDMJ` repo is cloned (`git clone https://github.com/nickbattle/vdmj.git`) 
+	* `VDM_Toolkit` repo is cloned 
+	(`git clone https://github.com/leouk/VDM_Toolkit`) 
+
 2. Set these environment variables: 
 	* `export VDMJ_HOME=$HOME/git/vdmj`
 	* `export VDMJTK_HOME=$HOME/git/VDM_Toolkit`
