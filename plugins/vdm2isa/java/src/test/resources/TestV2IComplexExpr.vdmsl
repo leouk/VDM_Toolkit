@@ -1,0 +1,72 @@
+module TestV2IComplexExpr
+exports all
+definitions
+
+values
+    t9  : set1 of nat1 = {1,2,3};
+    t10 : seq1 of int  = [1,2,3];
+    vc1 =(forall var1, var2 in set t9 & var1 <= var2); --TCForallExpression multiple set binds!
+	vc2 =(forall var1, var2 in seq t10 & var1 <= var2);--TCForallExpression multiple seq binds!
+	
+functions
+	-- has to be a function for executability because of the type bind!
+
+	-- multiple type binds in predicates
+	vc3: () -> bool
+	vc3() == (forall var1:nat, var2:nat & var1 < var2);-- multiple type binds
+
+	-- multiple type binds in simple set comp
+	vc31: () -> set of nat
+	vc31() == { x | x : nat & x > 10 };
+	
+	-- multiple type binds in existential set comp
+	vc32: () -> set of nat
+	vc32() == { x + y | x : nat, y: nat & x > y };
+
+	-- multiple type binds in seq comp
+	vc33: () -> seq of nat
+	vc33() == [ x | x : nat & x > 10];
+	
+	-- multiple type + set binds in predicates
+	vc4: () -> bool
+	vc4() == (forall var1:nat, var2:nat, var3, var4 in set t9 & var1 + var3 < var2 + var4);
+
+	-- multiple type binds in simple set comp
+	vc41: () -> set of nat
+	vc41() == { x | x : nat & x > 10 };
+	
+	-- multiple type + set  binds in existential set comp
+	vc42: () -> set of nat
+	vc42() == { x + y | x : nat, y in set {1,2,3} & x > y };
+
+	-- no multiple type + set binds in seq comp
+	--vc43: () -> seq of nat
+	--vc43() == [ x | x : nat, y in set {1,2,3} & x > y];
+
+	-- iota with type binds	
+	vc5: () -> nat
+	vc5() == (iota var : nat & var < 1);
+
+	-- iota with set binds	
+	vc51: () -> nat
+	vc51() == (iota var in set {1,2,3} & var < 1);
+	
+	-- lambda with multiple type binds
+	vc6: () -> nat1
+	vc6() == (lambda var : nat, var2: nat & var + var2)(10,20); --TCLambdaExpression + TCMultipleTypeBind
+
+	-- lambda with mixed type + set binds = type error! Phew
+	--vc61: () -> nat1
+	--vc61() == (lambda var : nat, var2: nat, var3, var4 in set {1,2,3} & var + var2 + var3 + var4)(10,20,1,5); 
+	
+    -- for issuing pre/post calls needs spec
+    f: nat * nat1 -> nat
+    f(x,y) == x + y
+    pre x < y 
+    post RESULT > 0;
+    
+    -- type binds with reference to specification (akin to what you get in POG POs)
+	vc7: () -> bool
+	vc7() == (forall x:nat, y:nat1 & pre_f(x, y) => post_f(x, y, (x + y))); 
+	
+end TestV2IComplexExpr
