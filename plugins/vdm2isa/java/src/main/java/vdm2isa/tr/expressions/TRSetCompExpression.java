@@ -35,6 +35,13 @@ public class TRSetCompExpression extends TRExpression {
         //System.out.println(toString());
     }
 
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+        setFormattingSeparator(" ");
+    }
+
     @Override
     public String toString()
     {
@@ -52,18 +59,15 @@ public class TRSetCompExpression extends TRExpression {
         StringBuilder sb = new StringBuilder();
         // I could arguably do binds.compTranslate first if not existential? Keep it simpler? 
         sb.append(IsaToken.SET_OPEN.toString());
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(first.translate());
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         String old = binds.setSemanticSeparator(" ");
-        sb.append(existential ? binds.compTranslate(true) + " " + IsaToken.POINT.toString() : "");
-        sb.append(" ");
+        sb.append(existential ? binds.compTranslate(true) + getFormattingSeparator() + IsaToken.POINT.toString() : "");
+        sb.append(getFormattingSeparator());
         // The binds translation as the type (binding) restriction has to be part of the Isabelle predicate filter 
-        binds.setSemanticSeparator(" " + IsaToken.AND.toString() + " ");
-        sb.append(binds.translate());
-        sb.append(" ");
         if (predicate != null)
         {
             sb.append(binds.getSemanticSeparator());

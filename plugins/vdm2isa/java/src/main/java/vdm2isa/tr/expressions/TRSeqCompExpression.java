@@ -30,6 +30,13 @@ public class TRSeqCompExpression extends TRExpression {
         //System.out.println(toString());
     }
 
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+        setFormattingSeparator(" ");
+    }
+
     @Override
     public String toString()
     {
@@ -55,12 +62,10 @@ public class TRSeqCompExpression extends TRExpression {
     public String translate() {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.SEQ_OPEN.toString());
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(first.translate());
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(IsaToken.POINT.toString());
-        sb.append(" ");
-        sb.append(bind.compTranslate(false));
         if (predicate != null)
         {
             sb.append(" ");
