@@ -134,7 +134,7 @@ values
 	v81= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
 	v82= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
 	v83= [ var | var in seq t10 & var > 1 ]; -- TCSeqCompExpression
-	--VDM not happy with v84-86, Isabelle would allow them
+	--VDM not happy with v84-85, Isabelle would allow them
 	--v84= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
 	--v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
 	v86= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
