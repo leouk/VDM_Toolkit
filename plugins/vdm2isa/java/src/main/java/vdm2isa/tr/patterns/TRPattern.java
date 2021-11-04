@@ -28,16 +28,5 @@ public abstract class TRPattern extends TRNode {
         return list; 
     }
 
-    /**
-     * Patterns do not support invariant translation in general. Some type-bound patterns do and can extend this behaviour.
-     */
-    @Override
-    public String invTranslate()
-    {
-        // this is a "wrong" call somewhere in the code as patterns should be translated, not invTranslated (mostly)! 
-        report(11111, "Pattern " + toString() + " does not support Isabelle invariant translation.");
-        return "";
-    }
-
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
 }
