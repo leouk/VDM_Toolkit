@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaWarning;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
@@ -74,9 +75,8 @@ public class TRSetCompExpression extends TRExpression {
         // type bound set comprehension will lead to heavy PO!
         if (binds.foundBinds(TRMultipleBindKind.TYPE))
         {
-            String commentStr = "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"; 
-            warning(11111, commentStr);
-            sb.append(IsaToken.comment(commentStr, getFormattingSeparator()));
+            warning(IsaWarning.SETCOMP_TYPEBOUND);
+            sb.append(IsaToken.comment(IsaWarning.SETCOMP_TYPEBOUND.format(null), getFormattingSeparator()));
         }
 
         // call inv translate as type binds require inv_T binds in the pattern, whereas set/seq is just translate (don't)

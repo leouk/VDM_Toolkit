@@ -24,6 +24,8 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
+import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
 
@@ -170,16 +172,26 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            GeneralisaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+            GeneralisaPlugin.report(IsaMessage.VDMSL_ONLY, LexLocation.ANY);
             errs++;
         }
         if (Settings.release != Release.VDM_10)
         {
             // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
             // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-            GeneralisaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+            GeneralisaPlugin.warning(IsaWarning.VDMSL_VDM10, LexLocation.ANY);	
         }
     }
+
+	public static void report(IsaMessage message, LexLocation location)
+	{
+		report(message, location, (Object[])null);
+	}
+
+	public static void report(IsaMessage message, LexLocation location, Object... args)
+	{
+		report(message.number, message.format(args), location);
+	}
 
     public static void report(int number, String problem, LexLocation location) {
         VDM2IsaError error = new VDM2IsaError(number, problem, location);
@@ -198,6 +210,16 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             report(11111 + w.number, w.message, w.location);
         }
     }
+
+	public static void warning(IsaWarning message, LexLocation location)
+	{
+		warning(message, location, (Object[])null);
+	}
+
+	public static void warning(IsaWarning message, LexLocation location, Object... args)
+	{
+		report(message.number, message.format(args), location);
+	}
 
     public static void warning(int number, String problem, LexLocation location) {
         VDM2IsaWarning warning = new VDM2IsaWarning(number, problem, location);

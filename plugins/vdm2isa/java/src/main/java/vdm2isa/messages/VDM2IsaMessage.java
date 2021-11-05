@@ -5,7 +5,8 @@ import com.fujitsu.vdmj.messages.VDMMessage;
 
 public class VDM2IsaMessage extends VDMMessage {
 
-    protected static final int ISABELLE_ERROR_BASE   = 10000;
+    protected static final int ISABELLE_ERROR_BASE     = 10000;
+    protected static final int ISABELLE_WARNING_BASE   = 11000;
     
     public VDM2IsaMessage(int number, String message, LexLocation location) 
     {
