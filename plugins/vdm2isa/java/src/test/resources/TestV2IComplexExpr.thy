@@ -1,7 +1,7 @@
 (* VDM to Isabelle Translated
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IComplexExpr.vdmsl' at line 1:8files = [./src/test/resources/TestV2IComplexExpr.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IComplexExpr.vdmsl' at line 1:8files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IComplexExpr.vdmsl]
 *)
 theory TestV2IComplexExpr
 imports VDMToolkit

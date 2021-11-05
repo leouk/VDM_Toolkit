@@ -50,7 +50,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     {
         super.localReset();
         localPOCount = 0;
-        strategy = IsaProofStrategy.REALISTIC;
+        strategy = IsaProofStrategy.SURRENDER;//IsaProofStrategy.REALISTIC;
     }
 
     public int getLocalPOCount()
@@ -124,7 +124,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     catch(LexException le)
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        GeneralisaPlugin.report(11111, "VDM PO " + po.name + "lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
+                        GeneralisaPlugin.report(11111, "VDM PO (" + po.number + ") " + po.name + "lexing error \"" + le.toString() + "\"; should never happen, carrying on...", LexLocation.ANY);//le.location                        
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
                     }
                     catch(ParserException pe) 

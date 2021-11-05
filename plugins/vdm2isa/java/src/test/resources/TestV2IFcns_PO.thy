@@ -7,28 +7,18 @@ theory TestV2IFcns_PO
 imports TestV2IFcns
 begin
 
-\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18
-VDM PO(16): "h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18
-(forall x:nat &
-  x > 0)
-"
-\<close>
+
 theorem h_SUB_TYPE:
-	"((\<forall> (x::VDMNat)  . ((inv_VDMNat x) \<longrightarrow> (x > (0::VDMNat)))))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<forall> (x :: VDMNat)  . (((inv_VDMNat x)) \<longrightarrow> (x > (0::VDMNat)))))"
 	
-	try
 	oops
 	
-	\<comment>\<open>@ in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 34:19
-VDM PO(17): "h': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 34:19
-(forall x:nat & (x < 20) =>
-  x > 0)
-"
-\<close>
-theorem h'_SUB_TYPE:
-	"((\<forall> (x::VDMNat)  . ((inv_VDMNat x) \<longrightarrow> ((x < (20::VDMNat1)) \<longrightarrow> (x > (0::VDMNat))))))"
 	
-	try
+theorem h'_SUB_TYPE:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<forall> (x :: VDMNat)  . (((inv_VDMNat x)) \<longrightarrow> ((x < (20::VDMNat1)) \<longrightarrow> (x > (0::VDMNat))))))"
+	
 	oops
 	
 end

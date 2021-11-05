@@ -1364,7 +1364,7 @@ where
 		(v1)
 		else
 		(v2))"
-
+ 
 definition
 	inv_v87 :: "\<bool>"
 where
