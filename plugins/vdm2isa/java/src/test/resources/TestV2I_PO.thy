@@ -10,14 +10,17 @@ begin
 
 theorem R_INV_SATISFIABILITY:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<exists> (r :: R)  . (((inv_R r)) \<longrightarrow> ((x\<^sub>R (r)) < (y\<^sub>R (r))))))"
+	"((\<exists> (r :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R r))) \<and>
+	 ((inv_VDMNat (y\<^sub>R r)))
+		))) \<longrightarrow> ((x\<^sub>R (r)) < (y\<^sub>R (r))))))"
 	
 	oops
 	
 	
 theorem mkr_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<forall> (n :: VDMNat)  . (((inv_VDMNat n)) \<longrightarrow> (inv_R \<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>))))"
+	"((\<forall> (n :: VDMNat)  . ((((inv_VDMNat n))) \<longrightarrow> (inv_R \<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>))))"
 	
 	oops
 	
@@ -29,7 +32,7 @@ theorem t11_SUB_TYPE:
 	
 	
 theorem t14_MAP_SEQ_OF_COMPATIBLE:
-	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((m1 d3) = (m2 d4))))))))"
+	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((the(m1 d3)) = (the(m2 d4)))))))))"
 	
 	oops
 	
@@ -41,7 +44,7 @@ theorem v9_NON_EMPTY_SET:
 	
 	
 theorem v19_MAP_SET_OF_COMPATIBLE:
-	"((\<forall> m1 \<in> {t14, t15}  . (\<forall> m2 \<in> {t14, t15}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((m1 d3) = (m2 d4))))))))"
+	"((\<forall> m1 \<in> {t14, t15}  . (\<forall> m2 \<in> {t14, t15}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((the(m1 d3)) = (the(m2 d4)))))))))"
 	
 	oops
 	
@@ -53,7 +56,7 @@ theorem v22_INVARIANT:
 	
 	
 theorem v44_MAP_COMPATIBLE:
-	"((\<forall> ldom1 \<in> (dom t14)  . (\<forall> rdom2 \<in> (dom t15)  . ((ldom1 = rdom2) \<longrightarrow> ((t14 ldom1) = (t15 rdom2))))))"
+	"((\<forall> ldom1 \<in> (dom t14)  . (\<forall> rdom2 \<in> (dom t15)  . ((ldom1 = rdom2) \<longrightarrow> ((the(t14 ldom1)) = (the(t15 rdom2)))))))"
 	
 	oops
 	
@@ -65,7 +68,7 @@ theorem v45_MAP_COMPOSE:
 	
 	
 theorem v61_MAP_SEQ_OF_COMPATIBLE:
-	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((m1 d3) = (m2 d4))))))))"
+	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((the(m1 d3)) = (the(m2 d4)))))))))"
 	
 	oops
 	
@@ -108,12 +111,3 @@ theorem v73_UNIQUE_EXISTENCE:
 	oops
 	
 end
-(*
-	Could not translate VDM PO because of a com.fujitsu.vdmj.messages.VDMErrorsException error:
-	VDM PO: v12: non-empty sequence obligation in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 55:13
-t10 <> []
-
-	Reason: Error 3136: Left and right of '<>' different types in 'TestV2I' (console) at line 1:5
-Left: seq1 of (nat1)
-Right: []
-*)

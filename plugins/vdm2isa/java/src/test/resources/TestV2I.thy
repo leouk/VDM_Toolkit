@@ -232,7 +232,7 @@ where
 
 	
 abbreviation
-	t14 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	t14 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"t14 \<equiv> [(1::VDMNat1)\<mapsto>(1::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
@@ -244,7 +244,7 @@ where
 
 	
 abbreviation
-	t15 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	t15 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"t15 \<equiv> [(3::VDMNat1)\<mapsto>(1::VDMNat1)]"
 
@@ -472,7 +472,7 @@ where
 
 	
 abbreviation
-	v19 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v19 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v19 \<equiv> (vdm_merge {t14, t15})"
 
@@ -508,7 +508,7 @@ where
 
 	
 abbreviation
-	v22 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v22 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v22 \<equiv> (vdm_inverse t14)"
 
@@ -714,7 +714,7 @@ where
 
 	
 abbreviation
-	v39 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v39 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v39 \<equiv> (t14 \<dagger> t15)"
 
@@ -726,7 +726,7 @@ where
 
 	
 abbreviation
-	v40 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v40 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v40 \<equiv> (t9 \<triangleleft> t14)"
 
@@ -738,7 +738,7 @@ where
 
 	
 abbreviation
-	v41 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v41 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v41 \<equiv> (t9 -\<triangleleft> t14)"
 
@@ -750,7 +750,7 @@ where
 
 	
 abbreviation
-	v42 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v42 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v42 \<equiv> (t14 \<triangleright> t9)"
 
@@ -762,7 +762,7 @@ where
 
 	
 abbreviation
-	v43 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v43 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v43 \<equiv> (t14 \<triangleright>- t9)"
 
@@ -774,7 +774,7 @@ where
 
 	
 abbreviation
-	v44 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v44 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v44 \<equiv> (t14 \<union>m t15)"
 
@@ -786,7 +786,7 @@ where
 
 	
 abbreviation
-	v45 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v45 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v45 \<equiv> (t14 \<circ>m t15)"
 
@@ -978,7 +978,7 @@ where
 
 	
 abbreviation
-	v61 :: "VDMNat1 \<rightharpoonup> VDMNat1"
+	v61 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v61 \<equiv> [(1::VDMNat1)\<mapsto>(2::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
@@ -1218,7 +1218,7 @@ abbreviation
 where
 	"v74 \<equiv> (
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if ((inv_VDMNat var)) \<and>  ((inv_VDMNat var2)) then
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) then
 		(var + var2)
 	 else
 		undefined
@@ -1364,7 +1364,7 @@ where
 		(v1)
 		else
 		(v2))"
- 
+
 definition
 	inv_v87 :: "\<bool>"
 where
