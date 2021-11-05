@@ -81,6 +81,6 @@ end
 (forall x:nat, y:nat1 &
   pre_f(x, y) => post_f(x, y, (x + y)))
 
-	Reason: Error 3182: Name 'pre_f' is not in scope in 'TestV2I' (console) at line 2:3
-Error 3182: Name 'post_f' is not in scope in 'TestV2I' (console) at line 2:18
+	Reason: Error 3182: Name 'pre_f' is not in scope in 'TestV2IComplexExpr' (console) at line 2:3
+Error 3182: Name 'post_f' is not in scope in 'TestV2IComplexExpr' (console) at line 2:18
 *)
