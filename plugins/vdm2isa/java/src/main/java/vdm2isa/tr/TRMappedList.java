@@ -13,7 +13,7 @@ import com.fujitsu.vdmj.mapper.MappedList;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 
 /**
@@ -220,7 +220,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	//@Override
-	public void report(IsaMessage message, String args)
+	public void report(IsaErrorMessage message, String args)
 	{
 		Vdm2isaPlugin.report(message, getLocation(), args);
 	}
@@ -232,7 +232,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public void report(IsaMessage message)
+	public void report(IsaErrorMessage message)
 	{
 		Vdm2isaPlugin.report(message, getLocation(), (Object[])null);
 	}

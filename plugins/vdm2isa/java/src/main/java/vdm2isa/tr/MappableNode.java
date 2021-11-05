@@ -3,7 +3,7 @@ package vdm2isa.tr;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
-import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 
 /**
@@ -34,7 +34,7 @@ public interface MappableNode extends Mappable {
 
 	public LexLocation getLocation();
 	
-	public void report(IsaMessage message);
+	public void report(IsaErrorMessage message);
 	public void warning(IsaWarning message);
 
 	public String getSemanticSeparator();
