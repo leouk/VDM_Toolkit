@@ -33,7 +33,7 @@ import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
@@ -190,14 +190,14 @@ public class Vdm2isaPlugin extends CommandPlugin
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            Vdm2isaPlugin.report(11111, "Only VDMSL supports Isabelle translation", LexLocation.ANY);
+            Vdm2isaPlugin.report(IsaErrorMessage.VDMSL_ONLY, LexLocation.ANY);
             Vdm2isaPlugin.errs++;
         }
         if (Settings.release != Release.VDM_10)
         {
             // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
             // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-            Vdm2isaPlugin.warning(11111, "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release.", LexLocation.ANY);	
+            Vdm2isaPlugin.warning(IsaWarning.VDMSL_VDM10, LexLocation.ANY);	
         }
     }
 
@@ -221,12 +221,12 @@ public class Vdm2isaPlugin extends CommandPlugin
 		}
 	}
 
-	public static void report(IsaMessage message, LexLocation location)
+	public static void report(IsaErrorMessage message, LexLocation location)
 	{
 		report(message, location, (Object[])null);
 	}
 
-	public static void report(IsaMessage message, LexLocation location, Object... args)
+	public static void report(IsaErrorMessage message, LexLocation location, Object... args)
 	{
 		report(message.number, message.format(args), location);
 	}
@@ -250,7 +250,7 @@ public class Vdm2isaPlugin extends CommandPlugin
 	{
 		if (Vdm2isaPlugin.vdmWarningOfInterest.contains(w.number))
 		{
-			report(11111 + w.number, w.message, w.location);
+			report(VDM2IsaWarning.ISABELLE_WARNING_BASE + w.number, w.message, w.location);
 		}
 	}
 

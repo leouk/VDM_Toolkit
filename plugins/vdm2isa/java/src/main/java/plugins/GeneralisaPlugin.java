@@ -24,7 +24,7 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
-import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
@@ -172,7 +172,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            GeneralisaPlugin.report(IsaMessage.VDMSL_ONLY, LexLocation.ANY);
+            GeneralisaPlugin.report(IsaErrorMessage.VDMSL_ONLY, LexLocation.ANY);
             errs++;
         }
         if (Settings.release != Release.VDM_10)
@@ -183,12 +183,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-	public static void report(IsaMessage message, LexLocation location)
+	public static void report(IsaErrorMessage message, LexLocation location)
 	{
 		report(message, location, (Object[])null);
 	}
 
-	public static void report(IsaMessage message, LexLocation location, Object... args)
+	public static void report(IsaErrorMessage message, LexLocation location, Object... args)
 	{
 		report(message.number, message.format(args), location);
 	}
@@ -207,7 +207,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     public static void reportAsError(VDMWarning w) {
         if (GeneralisaPlugin.vdmWarningOfInterest.contains(w.number)) {
-            report(11111 + w.number, w.message, w.location);
+            report(VDM2IsaWarning.ISABELLE_WARNING_BASE + w.number, w.message, w.location);
         }
     }
 
