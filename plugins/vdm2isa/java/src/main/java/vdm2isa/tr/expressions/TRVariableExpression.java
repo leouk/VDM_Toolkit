@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRVariableExpression extends TRExpression
@@ -47,6 +48,27 @@ public class TRVariableExpression extends TRExpression
 	{
 		return name.getName().toString();
 	}
+
+	/**
+	 * Variable expressions can inv translate with their known types, or with specification if explicit funciton def
+	 */
+	@Override 
+	public String invTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (vardef instanceof TRLocalDefinition)
+		{
+			TRLocalDefinition lvardef = (TRLocalDefinition)vardef;
+			sb.append(lvardef.invTranslate());
+			sb.append(getFormattingSeparator());
+			// callee is responsible for issuing any extra getInvTranslateSeparators()!
+		}
+		else 
+		{
+			warning(11111, "not yet handling invariant translate for complex variable expr " + vardef.getClass().getName());
+		}
+		return sb.toString();
+	} 
 
 	@Override
 	public IsaToken isaToken() {
