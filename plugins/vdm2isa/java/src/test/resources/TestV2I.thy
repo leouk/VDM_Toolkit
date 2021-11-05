@@ -1204,7 +1204,7 @@ where
 abbreviation
 	v73 :: "VDMNat1"
 where
-	"v73 \<equiv> THE var. (var \<in> t9 \<and> (var < (2::VDMNat1)))(THE var. (var \<in> t9 \<and> (var < (2::VDMNat1))))"
+	"v73 \<equiv> (THE var. (((var \<in>t9)) \<and> (var < (2::VDMNat1))))"
 
 definition
 	inv_v73 :: "\<bool>"
@@ -1217,8 +1217,8 @@ abbreviation
 	v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> VDMNat"
 where
 	"v74 \<equiv> (
-	\<lambda> (var::VDMNat)  (var2::VDMNat) .
-		(if (inv_VDMNat var) \<and>  (inv_VDMNat var2) then
+	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
+		(if ((inv_VDMNat var)) \<and>  ((inv_VDMNat var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -1228,15 +1228,16 @@ where
 definition
 	inv_v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
-	"inv_v74 dummy0 dummy1 \<equiv> (inv_VDMNat (v74 dummy0 dummy1))
-	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>"
+	"inv_v74 dummy0 dummy1 \<equiv> 
+	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
+	(inv_VDMNat (v74 dummy0 dummy1))"
 
 
 	
 abbreviation
 	v75 :: "\<bool>"
 where
-	"v75 \<equiv> (\<exists>! var \<in> t9 . (var < (2::VDMNat1)))"
+	"v75 \<equiv> (\<exists>! var \<in> t9  . (var < (2::VDMNat1)))"
 
 definition
 	inv_v75 :: "\<bool>"
@@ -1248,7 +1249,7 @@ where
 abbreviation
 	v76 :: "\<bool>"
 where
-	"v76 \<equiv> (\<exists> var \<in> t9 . (var < (2::VDMNat1)))"
+	"v76 \<equiv> (\<exists> var \<in> t9  . (var < (2::VDMNat1)))"
 
 definition
 	inv_v76 :: "\<bool>"
@@ -1260,7 +1261,7 @@ where
 abbreviation
 	v78 :: "\<bool>"
 where
-	"v78 \<equiv> (\<forall> var \<in> t9 . (var \<le> (3::VDMNat1)))"
+	"v78 \<equiv> (\<forall> var \<in> t9  . (var \<le> (3::VDMNat1)))"
 
 definition
 	inv_v78 :: "\<bool>"
@@ -1294,7 +1295,7 @@ where
 abbreviation
 	v80 :: "VDMNat1 VDMSet"
 where
-	"v80 \<equiv> { var .   var \<in> t9  \<and> (var > (1::VDMNat1)) }"
+	"v80 \<equiv> { var .   ((var \<in>t9))  \<and> (var > (1::VDMNat1)) }"
 
 definition
 	inv_v80 :: "\<bool>"
@@ -1306,7 +1307,7 @@ where
 abbreviation
 	v81 :: "VDMNat1 VDMSet"
 where
-	"v81 \<equiv> { (var + var2) | var  var2 .  var \<in> t9 \<and>  var2 \<in> (elems t10)  \<and> (var > var2) }"
+	"v81 \<equiv> { (var + var2) | var  var2 .  ((var \<in>t9)) \<and>  ((var2 \<in>(elems t10)))  \<and> (var > var2) }"
 
 definition
 	inv_v81 :: "\<bool>"
@@ -1318,8 +1319,8 @@ where
 abbreviation
 	v82 :: "VDMNat1 VDMSeq"
 where
-	"v82 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , var \<in> t9 , (var > (1::VDMNat1)) ]
-	\<comment>\<open>Set bind @{term \<open>var \<in> t9\<close>} in sequence comprehension requires VDM set 
+	"v82 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ]
+	\<comment>\<open>Set bind @{term \<open>(var \<in> t9)\<close>} in sequence comprehension requires VDM set 
 	   to be ordered (i.e. its Isabelle type instantiates type class linorder).
 	   This can be a problem if the target type of @{term \<open>t9\<close>}
 	  has a VDM ord_ predicate.\<close>"
@@ -1334,7 +1335,7 @@ where
 abbreviation
 	v83 :: "VDMNat1 VDMSeq"
 where
-	"v83 \<equiv> [ var . var \<leftarrow> t10 , var \<in> (elems t10) , (var > (1::VDMNat1)) ]"
+	"v83 \<equiv> [ var . var \<leftarrow> t10 , ((var \<in>(elems t10))) , (var > (1::VDMNat1)) ]"
 
 definition
 	inv_v83 :: "\<bool>"
@@ -1346,7 +1347,7 @@ where
 abbreviation
 	v86 :: "VDMNat1 VDMSeq"
 where
-	"v86 \<equiv> [ var . var \<leftarrow> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)] , var \<in> (elems [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)]) , (var > (4::VDMNat1)) ]"
+	"v86 \<equiv> [ var . var \<leftarrow> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)] , ((var \<in>(elems [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)]))) , (var > (4::VDMNat1)) ]"
 
 definition
 	inv_v86 :: "\<bool>"

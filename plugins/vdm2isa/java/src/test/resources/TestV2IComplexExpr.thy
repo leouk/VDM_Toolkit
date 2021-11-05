@@ -35,7 +35,7 @@ where
 abbreviation
 	vc1 :: "\<bool>"
 where
-	"vc1 \<equiv> (\<forall> var1 \<in> t9  var2 \<in> t9 . (var1 \<le> var2))"
+	"vc1 \<equiv> (\<forall> var1 \<in> t9  . (\<forall> var2 \<in> t9  . (var1 \<le> var2)))"
 
 definition
 	inv_vc1 :: "\<bool>"
@@ -47,7 +47,7 @@ where
 abbreviation
 	vc2 :: "\<bool>"
 where
-	"vc2 \<equiv> (\<forall> var1  var2 \<in> (elems t10) . (var1 \<le> var2))"
+	"vc2 \<equiv> (\<forall> var1 \<in> (elems t10)  . (\<forall> var2 \<in> (elems t10)  . (var1 \<le> var2)))"
 
 definition
 	inv_vc2 :: "\<bool>"
@@ -73,7 +73,8 @@ definition
 where
 	"vc3  \<equiv> 
 	\<comment>\<open>User defined body of vc3\<close>
-	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> (\<forall> (var1::VDMNat)  (var2::VDMNat)  . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<longrightarrow> (var1 < var2)))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	(\<forall> (var1 :: VDMNat)  (var2 :: VDMNat)  . (((inv_VDMNat var1)) \<and>  ((inv_VDMNat var2)) \<longrightarrow> (var1 < var2)))"
 
 	
 definition
@@ -93,7 +94,7 @@ definition
 where
 	"vc31  \<equiv> 
 	\<comment>\<open>User defined body of vc31\<close>
-	{ x .   (inv_VDMNat x)  \<and> (x > (10::VDMNat1)) }"
+	{ x .   ((inv_VDMNat x))  \<and> (x > (10::VDMNat1)) }"
 
 	
 definition
@@ -113,7 +114,7 @@ definition
 where
 	"vc32  \<equiv> 
 	\<comment>\<open>User defined body of vc32\<close>
-	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) .  (inv_VDMNat x) \<and>  (inv_VDMNat y)  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) .  ((inv_VDMNat x)) \<and>  ((inv_VDMNat y))  \<and> (x > y) }"
 
 	
 definition
@@ -133,7 +134,7 @@ definition
 where
 	"vc33  \<equiv> 
 	\<comment>\<open>User defined body of vc33\<close>
-	[ x .  (inv_VDMNat x) , (x > (10::VDMNat1)) ]"
+	[ x . \<comment>\<open>Type bound sequence compression is not supported in Isabelle.\<close>  ((inv_VDMNat x)) , (x > (10::VDMNat1)) ]"
 
 	
 definition
@@ -153,9 +154,8 @@ definition
 where
 	"vc4  \<equiv> 
 	\<comment>\<open>User defined body of vc4\<close>
-	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  
-\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-(\<forall> (var1::VDMNat) . (\<forall> (var2::VDMNat) . (\<forall> var3 \<in> t9  var4 \<in> t9 . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<and>  var3 \<in> t9 \<and>  var4\<in> t9 \<longrightarrow> ((var1 + var3) < (var2 + var4))))))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	(\<forall> var1 :: VDMNat  . (\<forall> var2 :: VDMNat  . (\<forall> var3 \<in> t9  . (\<forall> var4 \<in> t9  . ((inv_VDMNat var1) \<and>  (inv_VDMNat var2) \<and>  (var3 \<in>t9) \<and>  (var4 \<in>t9) \<longrightarrow> ((var1 + var3) < (var2 + var4)))))))"
 
 	
 definition
@@ -175,7 +175,7 @@ definition
 where
 	"vc41  \<equiv> 
 	\<comment>\<open>User defined body of vc41\<close>
-	{ x .   (inv_VDMNat x)  \<and> (x > (10::VDMNat1)) }"
+	{ x .   ((inv_VDMNat x))  \<and> (x > (10::VDMNat1)) }"
 
 	
 definition
@@ -195,7 +195,7 @@ definition
 where
 	"vc42  \<equiv> 
 	\<comment>\<open>User defined body of vc42\<close>
-	{ (x + y) | (x :: VDMNat)  y .  (inv_VDMNat x) \<and>  y \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  y .  ((inv_VDMNat x)) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
 
 	
 definition
@@ -215,7 +215,7 @@ definition
 where
 	"vc5  \<equiv> 
 	\<comment>\<open>User defined body of vc5\<close>
-	THE var. ((inv_VDMNat var) \<and> (var < (1::VDMNat1)))(THE var. ((inv_VDMNat var) \<and> (var < (1::VDMNat1))))"
+	(THE var. (((inv_VDMNat var)) \<and> (var < (1::VDMNat1))))"
 
 	
 definition
@@ -235,7 +235,7 @@ definition
 where
 	"vc51  \<equiv> 
 	\<comment>\<open>User defined body of vc51\<close>
-	THE var. (var \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)} \<and> (var < (1::VDMNat1)))(THE var. (var \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)} \<and> (var < (1::VDMNat1))))"
+	(THE var. (((var \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and> (var < (1::VDMNat1))))"
 
 	
 definition
@@ -256,8 +256,8 @@ where
 	"vc6  \<equiv> 
 	\<comment>\<open>User defined body of vc6\<close>
 	((
-	\<lambda> (var::VDMNat)  (var2::VDMNat) .
-		(if (inv_VDMNat var) \<and>  (inv_VDMNat var2) then
+	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
+		(if ((inv_VDMNat var)) \<and>  ((inv_VDMNat var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -308,6 +308,7 @@ definition
 where
 	"vc7  \<equiv> 
 	\<comment>\<open>User defined body of vc7\<close>
-	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close>  \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> (\<forall> (x::VDMNat)  (y::VDMNat1)  . ((inv_VDMNat x) \<and>  (inv_VDMNat1 y) \<longrightarrow> ((pre_f x  y) \<longrightarrow> (post_f x  y  (x + y)))))"
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	(\<forall> (x :: VDMNat)  (y :: VDMNat1)  . (((inv_VDMNat x)) \<and>  ((inv_VDMNat1 y)) \<longrightarrow> ((pre_f x  y) \<longrightarrow> (post_f x  y  (x + y)))))"
 
 end
