@@ -53,9 +53,13 @@ public class TRFunctionType extends TRType
 		// we must, however, check the type invariant of the result!
 		// that also means, the declaring party must take that into account in the inv_XXX def!
 		// e.g. inv_v x y == "inv_VDMNat (v x y)"
-		String rVarName = varName != null ? dummyVarNames(varName) : varName; 
-		return result.invTranslate(rVarName) + getFormattingSeparator() +
-			   IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal.");
+		String rVarName = varName != null ? dummyVarNames(varName) : varName;
+		StringBuilder sb = new StringBuilder();
+		sb.append(getFormattingSeparator());
+		sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
+		sb.append(getFormattingSeparator());
+		sb.append(result.invTranslate(rVarName)); 
+		return sb.toString();
 	}
 
 	@Override

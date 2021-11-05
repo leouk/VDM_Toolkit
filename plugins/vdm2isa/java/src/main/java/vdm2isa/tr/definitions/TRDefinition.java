@@ -74,7 +74,7 @@ public abstract class TRDefinition extends TRNode
         if (exp.requiresImplicitTypeInvariantChecks())
         {
             sb.append(exp.tldIsaComment());
-            sb.append(exp.getFormattingSeparator());
+            sb.append(getFormattingSeparator());
         }   
         return sb.toString();
     }

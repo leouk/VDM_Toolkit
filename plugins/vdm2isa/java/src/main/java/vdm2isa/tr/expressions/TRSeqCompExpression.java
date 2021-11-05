@@ -70,7 +70,9 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(getFormattingSeparator());
         if (bind instanceof TRMultipleTypeBind)
         {
-            report(11111, "Type bound sequence compression is not supported in Isabelle.");
+            String commentStr = "Type bound sequence compression is not supported in Isabelle."; 
+            report(11111, commentStr);
+            sb.append(IsaToken.comment(commentStr, getFormattingSeparator()));
         }
         // vdmPatternsOnly=false because sequence comp expr are allowed within Isabelle [x+x | x in seq S ] 
         // type binds in sequence don't need compTranslate, given their invariants will be checked later in bindStr 
@@ -84,6 +86,7 @@ public class TRSeqCompExpression extends TRExpression {
             if (!bindCompTranslate.isEmpty())
             {
                 sb.append(getFormattingSeparator());
+                //TODO should this be AND? (i.e. better in proofs/user readability? semantically equal)
                 sb.append(IsaToken.COMMA.toString());
             }
             sb.append(getFormattingSeparator());
