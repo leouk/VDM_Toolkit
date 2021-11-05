@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import plugins.Vdm2isaPlugin;
+import vdm2isa.messages.IsaErrorMessage;
 
 /**
  * Isabelle templates for VDM translation. These are to be independent of VDMJ's TRNode AST (i.e. no imports from vdm2isa.tr). 
@@ -44,7 +45,7 @@ public final class IsaTemplates {
         //TODO accumulate all def names for latter creation of lemmas xyz_def etc...? 
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
         if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
-            Vdm2isaPlugin.report(10017, "Invalid IsaItem " + item + ": " + name + " has already been defined in module " + moduleName, moduleLoc); 
+            Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF, moduleLoc, item, name, moduleName);
         else if (!moduleIsKnown)
         {
             Map<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();
