@@ -108,6 +108,8 @@ public enum IsaToken {
 	VARIABLE(null, "variable"),
 	LOCAL(null, "local"),
 	INV(null, "inv_"),
+	PRE(Token.PRE, "pre"),
+	POST(Token.POST, "post"),
 	IDENTIFIER(Token.IDENTIFIER, "identifier"),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),

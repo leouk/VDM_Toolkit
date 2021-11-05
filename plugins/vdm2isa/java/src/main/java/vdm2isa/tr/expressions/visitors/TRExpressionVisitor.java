@@ -11,6 +11,7 @@ import vdm2isa.tr.expressions.TRBoundedExpression;
 import vdm2isa.tr.expressions.TRElseIfExpression;
 import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.expressions.TRFieldExpression;
 import vdm2isa.tr.expressions.TRFieldNumberExpression;
 import vdm2isa.tr.expressions.TRIfExpression;
@@ -26,6 +27,7 @@ import vdm2isa.tr.expressions.TRMuExpression;
 import vdm2isa.tr.expressions.TRNarrowExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
+import vdm2isa.tr.expressions.TRPreExpression;
 import vdm2isa.tr.expressions.TRRecordModifier;
 import vdm2isa.tr.expressions.TRSeqCompExpression;
 import vdm2isa.tr.expressions.TRSeqEnumExpression;
@@ -207,4 +209,8 @@ public abstract class TRExpressionVisitor<R, S>
 	{
 		return caseExpression(node, arg);
 	}
+
+    public R casePreExpression(TRPreExpression trPreExpression, TRExpressionList args) {
+        return casePreExpression(trPreExpression, args);
+    }
 }

@@ -134,6 +134,7 @@ map TCIfExpression{location, ifExp, thenExp, elseList, elseExp} to TRIfExpressio
 map TCElseIfExpression{location, elseIfExp, thenExp} to TRElseIfExpression(location, elseIfExp, thenExp);
 map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
 
+map TCPreExpression{location, function, args} to TRPreExpression(location, function, args);
 
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
