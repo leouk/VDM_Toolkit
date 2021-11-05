@@ -7,6 +7,8 @@ package vdm2isa.tr;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaWarning;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;
@@ -114,15 +116,27 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	}
 	
 	@Override
-	public void report(int number, String msg)
+	public void report(IsaMessage message)
 	{
-		Vdm2isaPlugin.report(number, msg, getLocation());
+		Vdm2isaPlugin.report(message, getLocation());
 	}
 
 	@Override
-	public void warning(int number, String msg)
+	public void warning(IsaWarning warning)
 	{
-		Vdm2isaPlugin.warning(number, msg, getLocation());
+		Vdm2isaPlugin.warning(warning, getLocation());
+	}
+	
+	//@Override
+	public void report(int number, String message)
+	{
+		Vdm2isaPlugin.report(number, message, getLocation());
+	}
+
+	//@Override
+	public void warning(int number, String warning)
+	{
+		Vdm2isaPlugin.warning(number, warning, getLocation());
 	}
 	
 	/**

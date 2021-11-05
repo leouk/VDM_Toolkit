@@ -3,6 +3,9 @@ package vdm2isa.tr;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
+import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaWarning;
+
 /**
  * Interface for all mappable nodes (i.e. TRNode and its lists and lists of lists etc.)
  */
@@ -31,8 +34,8 @@ public interface MappableNode extends Mappable {
 
 	public LexLocation getLocation();
 	
-	public void report(int number, String msg);
-	public void warning(int number, String msg);
+	public void report(IsaMessage message);
+	public void warning(IsaWarning message);
 
 	public String getSemanticSeparator();
 	public String setSemanticSeparator(String sep);

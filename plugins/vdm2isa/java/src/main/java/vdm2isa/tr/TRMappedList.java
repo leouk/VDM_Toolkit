@@ -13,6 +13,8 @@ import com.fujitsu.vdmj.mapper.MappedList;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaWarning;
 
 /**
  * Tighthened target (TO) type with an interface containing the key TRNode-related methods
@@ -217,15 +219,41 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return size() == 0 ? LexLocation.ANY : this.get(0).getLocation();
 	}
 
-	@Override
-	public void report(int number, String msg)
+	//@Override
+	public void report(IsaMessage message, String args)
 	{
-		Vdm2isaPlugin.report(number, msg, getLocation());
+		Vdm2isaPlugin.report(message, getLocation(), args);
+	}
+
+	//@Override
+	public void warning(IsaWarning warning, String args)
+	{
+		Vdm2isaPlugin.warning(warning, getLocation(), args);
 	}
 
 	@Override
-	public void warning(int number, String msg)
+	public void report(IsaMessage message)
 	{
-		Vdm2isaPlugin.warning(number, msg, getLocation());
+		Vdm2isaPlugin.report(message, getLocation(), (Object[])null);
 	}
+
+	@Override
+	public void warning(IsaWarning warning)
+	{
+		Vdm2isaPlugin.warning(warning, getLocation(), (Object[])null);
+	}
+
+	//TODO remove
+	//@Override
+	public void report(int number, String message)
+	{
+		Vdm2isaPlugin.report(number, message, getLocation());
+	}
+
+	//@Override
+	public void warning(int number, String warning)
+	{
+		Vdm2isaPlugin.warning(number, warning, getLocation());
+	}
+	
 }

@@ -33,6 +33,8 @@ import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.messages.IsaMessage;
+import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
 import vdm2isa.tr.types.TRRecordType;
@@ -219,17 +221,27 @@ public class Vdm2isaPlugin extends CommandPlugin
 		}
 	}
 
+	public static void report(IsaMessage message, LexLocation location)
+	{
+		report(message, location, (Object[])null);
+	}
+
+	public static void report(IsaMessage message, LexLocation location, Object... args)
+	{
+		report(message.number, message.format(args), location);
+	}
+
 	public static void report(int number, String problem, LexLocation location)
 	{
 		VDM2IsaError error = new VDM2IsaError(number, problem, location);
 		if (!errors.contains(error))
 		{
 			errors.add(error);
-
     		if (errors.size() >= Vdm2isaPlugin.maxErrors-1)
     		{
-    			errors.add(new VDM2IsaError(10, "Too many translation errors", location));
-    			throw new InternalException(10, "Too many translation errors");
+				String tooMany = "Too many translation errors";
+    			errors.add(new VDM2IsaError(10, tooMany, location));
+    			throw new InternalException(10, tooMany);
     		}
 		}
 	}
@@ -240,6 +252,16 @@ public class Vdm2isaPlugin extends CommandPlugin
 		{
 			report(11111 + w.number, w.message, w.location);
 		}
+	}
+
+	public static void warning(IsaWarning message, LexLocation location)
+	{
+		warning(message, location, (Object[])null);
+	}
+
+	public static void warning(IsaWarning message, LexLocation location, Object... args)
+	{
+		report(message.number, message.format(args), location);
 	}
 
 	public static void warning(int number, String problem, LexLocation location)
