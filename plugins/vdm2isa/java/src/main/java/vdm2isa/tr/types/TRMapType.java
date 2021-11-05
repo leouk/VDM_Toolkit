@@ -33,7 +33,13 @@ public class TRMapType extends TRType
 
     @Override
     public String translate() {
-        return from.translate() + " " + isaToken() + " " + to.translate();
+        StringBuilder sb = new StringBuilder();
+        sb.append(from.translate());
+        sb.append(getFormattingSeparator());
+        sb.append(isaToken().toString());
+        sb.append(getFormattingSeparator());
+        sb.append(to.translate());
+        return IsaToken.parenthesise(sb.toString());
     }
 
     @Override
@@ -46,15 +52,21 @@ public class TRMapType extends TRType
         int i = sb.length();
         sb.append(isaToken().vdmToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(from.invTranslate(null));
-        sb.append(" ");
+        sb.append(getFormattingSeparator());
         sb.append(to.invTranslate(null));
-        sb.append(" ");
-        sb.append(varName);
+        sb.append(getFormattingSeparator());
+        sb.append(varName);        
         return IsaToken.parenthesise(sb.toString());
     }
+
+    @Override
+    public String invTranslate()
+	{
+		return invTranslate(null);
+	}
 
     @Override
     public IsaToken isaToken() {

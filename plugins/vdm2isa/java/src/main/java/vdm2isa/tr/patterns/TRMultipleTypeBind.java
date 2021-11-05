@@ -48,10 +48,8 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 
     @Override
     public String boundExpressionTranslate(int index, boolean invTr) {
-        String typeStr = getRHS().translate();
-        return invTr ?
-            IsaToken.parenthesise(IsaToken.INV.toString() + typeStr + getFormattingSeparator() + plist.get(index).translate())
-            : typeStr;
+        assert index >= 0 && index < plist.size();
+        return invTr ? IsaToken.parenthesise(type.invTranslate(plist.get(index).translate())) : type.translate();
     }
 
     @Override

@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
 
@@ -22,7 +23,7 @@ public class TRApplyExpression extends TRExpression
 		this.type = type;
 		this.root = root;
 		this.args = args;
-		//@todo depending on the root:  map(x) is different from list(x) etc.? 
+		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());
 	}
@@ -36,7 +37,23 @@ public class TRApplyExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return "(" + root.translate() + this.args.getSemanticSeparator() + args.translate() + ")";
+		StringBuilder call = new StringBuilder();
+		call.append(root.translate());
+		call.append(args.getSemanticSeparator());
+		call.append(args.translate());
+	
+		StringBuilder sb = new StringBuilder();
+		// for map applications, we need to add "the" for optional removal
+		if (type instanceof TRMapType)
+		{
+			sb.append(IsaToken.OPTIONAL_THE.toString());
+			sb.append(IsaToken.parenthesise(call.toString()));
+		}
+		else
+		{
+			sb.append(call.toString());
+		}
+		return IsaToken.parenthesise(sb.toString());
 	}
 
 	@Override

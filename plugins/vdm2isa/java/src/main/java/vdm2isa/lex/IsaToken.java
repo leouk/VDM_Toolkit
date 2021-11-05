@@ -155,6 +155,9 @@ public enum IsaToken {
 	SND(null, "snd"),
 	AT(null, "@"),
 
+	OPTIONAL_THE(null, "the"),
+	OPTIONAL_SOME(null, "Some"),
+
 	VDMTOOLKIT(null, "VDMToolkit"),
 	ISAR_THEOREM(null, "theorem"),
 	ISAR_LEMMA(null, "lemma"),
