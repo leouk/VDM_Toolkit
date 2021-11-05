@@ -9,7 +9,8 @@ public abstract class TRMultipleBind extends TRNode
 {
     private static final long serialVersionUID = 1L;
 
-    public final TRPatternList plist; 
+    public final TRPatternList plist;
+    private boolean parenthesise;  
 
     /**
      * PO binds have to be treated carefully, as the implicit checks for their type invariants have to be taken into account.
@@ -24,15 +25,29 @@ public abstract class TRMultipleBind extends TRNode
         this.plist = plist;
         this.plist.setInvTranslateSeparator(getInvTranslateSeparator());
         this.poBind = false;
+        this.parenthesise = true;
     }
 
     @Override 
     protected void setup()
     {
         super.setup();
+        // multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
         setFormattingSeparator(" ");
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+    }
+
+    public boolean getParenthesise()
+    {
+        return parenthesise;
+    }
+
+    public final boolean setParenthesise(boolean b)
+    {
+        boolean old = parenthesise;
+        parenthesise = b;
+        return old;
     }
 
     public TRMultipleBindList getMultipleBindList()

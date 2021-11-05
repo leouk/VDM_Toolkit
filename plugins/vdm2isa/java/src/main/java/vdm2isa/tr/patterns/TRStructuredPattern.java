@@ -95,10 +95,10 @@ public class TRStructuredPattern extends TRPattern {
         return pattern;
     }
 
-    @Override
-    public String invTranslate() {
-        return pattern;
-    }
+    // @Override
+    // public String invTranslate() {
+    //     return pattern;
+    // }
 
     @Override
     public IsaToken isaToken() {

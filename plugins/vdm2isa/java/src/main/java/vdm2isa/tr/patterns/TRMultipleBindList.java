@@ -1,7 +1,15 @@
 package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
@@ -11,6 +19,9 @@ import vdm2isa.tr.TRMappedList;
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
 {
     private static final long serialVersionUID = 1L;
+
+	private Map<TRMultipleBindKind, SortedSet<Integer>> bindSpread = null;
+	private boolean parenthesise;
     
     public TRMultipleBindList()
     {
@@ -37,6 +48,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	protected void setup()
 	{
 		super.setup();
+		setParenthesise(true);
 		// multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
         setFormattingSeparator(" ");
@@ -44,7 +56,17 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
-    public String compTranslate(boolean vdmPatternsOnly)
+    public boolean setParenthesise(boolean p) {
+		boolean old = p;
+		this.parenthesise = p;
+		for(TRMultipleBind b : this)
+		{
+			b.setParenthesise(p);
+		}
+		return old;
+	}
+
+	public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
@@ -62,29 +84,62 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
     } 
 
 	/**
-     * If any bind is not type bind, requires multiple quantifiers and parenthesis 
-     * @return true whether set/seq binds were found within this bind list
-     */
-	public boolean foundNonTypeBinds() {
-        for(TRMultipleBind b : this)
-        {
-            if (!(b instanceof TRMultipleTypeBind))
-                return true;
-        }
-        return false;
-    }
-	
-	/**
-	 * If any type bind has been found within this bind list 
+	 * Returns a map of how many binds in the list have what kind where range contains the indexes of what kind 
 	 * @return
 	 */
-    public boolean foundSomeTypeBinds() {
-        for(TRMultipleBind b : this)
-        {
-            if (b instanceof TRMultipleTypeBind)
-                return true;
-        }
-        return false;
+	public Map<TRMultipleBindKind, SortedSet<Integer>> figureBindsOut()
+	{
+		if (bindSpread == null)
+		{
+			bindSpread = new HashMap<TRMultipleBindKind, SortedSet<Integer>>();
+			// add the zero values as well so that other checks count them up
+			bindSpread.put(TRMultipleBindKind.SET, new TreeSet<Integer>());
+			bindSpread.put(TRMultipleBindKind.SEQ, new TreeSet<Integer>());
+			bindSpread.put(TRMultipleBindKind.TYPE, new TreeSet<Integer>());
+			for(int i = 0; i < size(); i++)
+			{
+				TRMultipleBind b = get(i);
+				if (b instanceof TRMultipleSetBind)
+					bindSpread.get(TRMultipleBindKind.SET).add(i);
+				else if (b instanceof TRMultipleSeqBind)
+					bindSpread.get(TRMultipleBindKind.SEQ).add(i);
+				else if (b instanceof TRMultipleTypeBind)
+					bindSpread.get(TRMultipleBindKind.TYPE).add(i);
+				else 
+					throw new InternalException(11111, "Invalid type bind kind " + b.getClass().getName());
+			}
+			assert size() == bindSpread.get(TRMultipleBindKind.SET).size() + 
+							 bindSpread.get(TRMultipleBindKind.SEQ).size() + 
+							 bindSpread.get(TRMultipleBindKind.TYPE).size();
+		}	
+		// everyone is accounted for, including zero cases
+		assert bindSpread != null && !bindSpread.isEmpty() && 
+			   bindSpread.containsKey(TRMultipleBindKind.SET) && 
+			   bindSpread.containsKey(TRMultipleBindKind.SEQ) && 
+			   bindSpread.containsKey(TRMultipleBindKind.TYPE);
+		return Collections.unmodifiableMap(bindSpread);
+	}
+
+	/**
+	 * Checks whether there are binds of the given kind in the list
+	 * @param kind
+	 * @return
+	 */	
+    public boolean foundBinds(TRMultipleBindKind kind) {
+		return !figureBindsOut().get(kind).isEmpty();
+    }
+
+	public boolean areBindsUniform(TRMultipleBindKind kind) {
+		return figureBindsOut().get(kind).size() == size();
+	}
+
+	/**
+	 * Checks whether all binds are of the same kind in the list 
+	 * @param kind
+	 * @return
+	 */	
+	public boolean areBindsUniform() {
+		return areBindsUniform(TRMultipleBindKind.SET) || areBindsUniform(TRMultipleBindKind.SEQ) || areBindsUniform(TRMultipleBindKind.TYPE);   
     }
 
 	public static String translate(TRMultipleBind... args)
