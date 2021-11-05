@@ -34,28 +34,20 @@ public class TRIotaExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        if (bind.plist.size() != 1)
+        sb.append(isaToken().toString());
+        sb.append(getFormattingSeparator());
+        // don't translate the bind, but the pattern within; bind translate is after 
+        sb.append(bind.plist.get(0).translate());//sb.append(bind.translate());
+        sb.append(IsaToken.POINT.toString());
+        sb.append(getFormattingSeparator());
+        StringBuilder bindStr = new StringBuilder();
+        bindStr.append(bind.invTranslate());
+        if (bindStr.length() > 0)
         {
-            report(11111, "Malformed iota expression: must have a single pattern in its bind");
+            bindStr.append(getInvTranslateSeparator());
         }
-        else
-        {
-            sb.append(isaToken().toString());
-            sb.append(getFormattingSeparator());
-            // don't translate the bind, but the pattern within; 
-            //TODO hum... normalise this later
-            sb.append(bind.plist.get(0).translate());//sb.append(bind.translate());
-            sb.append(IsaToken.POINT.toString());
-            sb.append(getFormattingSeparator());
-            StringBuilder bindStr = new StringBuilder();
-            bindStr.append(bind.invTranslate());
-            if (bindStr.length() > 0)
-            {
-                bindStr.append(getInvTranslateSeparator());
-            }
-            bindStr.append(predicate.translate());
-            sb.append(IsaToken.parenthesise(bindStr.toString()));
-        }
+        bindStr.append(predicate.translate());
+        sb.append(IsaToken.parenthesise(bindStr.toString()));
         return IsaToken.parenthesise(sb.toString()); 
     }
 
