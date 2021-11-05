@@ -94,7 +94,7 @@ definition
 where
 	"vc31  \<equiv> 
 	\<comment>\<open>User defined body of vc31\<close>
-	{ x .   (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
+	{ x .  \<comment>\<open>Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'.\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
 definition
@@ -114,7 +114,7 @@ definition
 where
 	"vc32  \<equiv> 
 	\<comment>\<open>User defined body of vc32\<close>
-	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) .  (((inv_VDMNat x))) \<and>  (((inv_VDMNat y)))  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) . \<comment>\<open>Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'.\<close>  (((inv_VDMNat x))) \<and>  (((inv_VDMNat y)))  \<and> (x > y) }"
 
 	
 definition
@@ -175,7 +175,7 @@ definition
 where
 	"vc41  \<equiv> 
 	\<comment>\<open>User defined body of vc41\<close>
-	{ x .   (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
+	{ x .  \<comment>\<open>Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'.\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
 definition
@@ -195,7 +195,7 @@ definition
 where
 	"vc42  \<equiv> 
 	\<comment>\<open>User defined body of vc42\<close>
-	{ (x + y) | (x :: VDMNat)  y .  (((inv_VDMNat x))) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  y . \<comment>\<open>Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'.\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
 
 	
 definition

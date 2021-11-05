@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
 /**
@@ -69,6 +70,14 @@ public class TRSetCompExpression extends TRExpression {
         sb.append(getFormattingSeparator());
         // The binds translation as the type (binding) restriction has to be part of the Isabelle predicate filter 
         binds.setSemanticSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+
+        // type bound set comprehension will lead to heavy PO!
+        if (binds.foundBinds(TRMultipleBindKind.TYPE))
+        {
+            String commentStr = "Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'."; 
+            warning(11111, commentStr);
+            sb.append(IsaToken.comment(commentStr, getFormattingSeparator()));
+        }
 
         // call inv translate as type binds require inv_T binds in the pattern, whereas set/seq is just translate (don't)
         String bindStr = binds.invTranslate();
