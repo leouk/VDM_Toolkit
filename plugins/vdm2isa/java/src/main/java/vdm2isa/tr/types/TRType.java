@@ -24,6 +24,14 @@ abstract public class TRType extends TRNode
 	}
 
 	@Override
+	protected void setup()
+	{
+		super.setup();
+		setSemanticSeparator(" ");
+		setFormattingSeparator(" ");
+	}
+
+	@Override
 	public String toString()
 	{
 		return super.toString() + " defs = " + (definitions != null ? definitions.toString() : "null");
