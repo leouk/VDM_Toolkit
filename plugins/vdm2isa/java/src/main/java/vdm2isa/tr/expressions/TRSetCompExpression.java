@@ -74,7 +74,7 @@ public class TRSetCompExpression extends TRExpression {
         // type bound set comprehension will lead to heavy PO!
         if (binds.foundBinds(TRMultipleBindKind.TYPE))
         {
-            String commentStr = "Type bound set compression will generate a difficult existential proof of a finite map limiting the set as finite! This might be spurious, given the check associated with inv_VDMSet'."; 
+            String commentStr = "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"; 
             warning(11111, commentStr);
             sb.append(IsaToken.comment(commentStr, getFormattingSeparator()));
         }
