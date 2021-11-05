@@ -65,67 +65,11 @@ public class TRMultipleSetBind extends TRMultipleBind
     }
     
     @Override
-    public String translate() {
-        StringBuilder sb = new StringBuilder();
-		if (plist.isEmpty())
-        {   //TODO is this even possible? 
-            report(11111, "Invalid empty set bind pattern.");
-        }
-        else
-		{
-            String setStr = set.translate();
-			sb.append(plist.get(0).translate());
-			sb.append(getFormattingSeparator());
-			sb.append(isaToken().toString());
-	        sb.append(getFormattingSeparator());
-			sb.append(setStr);
-    		for (int i = 1; i < plist.size(); i++)
-			{
-				sb.append(getSemanticSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(plist.get(i).translate());
-                sb.append(getFormattingSeparator());
-				sb.append(isaToken().toString());
-				sb.append(getFormattingSeparator());
-				sb.append(setStr);
-			}
-		}
-		return sb.toString();
-    }
-
-    /**
-     * Allow invTranslate calls for MultipleSeq bind, given it only contains one pattern;
-     * in the context where they are within a mixed type and set/seq binds! 
-     * 
-     * For set binds, translate each individual pattern like translate above. (i.e. )
-     */
-    @Override
-    public String invTranslate()
-    {
-        StringBuilder sb = new StringBuilder();
-		if (plist.isEmpty())
-        {   //TODO is this even possible? 
-            report(11111, "Invalid empty set bind pattern.");
-        }
-        else
-		{
-            String setStr = set.translate();
-			sb.append(plist.get(0).invTranslate());
-			sb.append(getFormattingSeparator());
-			sb.append(isaToken().toString());
-	        sb.append(getFormattingSeparator());
-			sb.append(setStr);
-    		for (int i = 1; i < plist.size(); i++)
-			{
-				sb.append(getInvTranslateSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(plist.get(i).invTranslate());
-				sb.append(isaToken().toString());
-				sb.append(getFormattingSeparator());
-				sb.append(setStr);
-			}
-		}
-		return sb.toString();
+    public String boundExpressionTranslate(int index, boolean invTr) {
+        String rhsStr = getRHS().translate(); 
+        return invTr ? 
+                IsaToken.parenthesise(plist.get(index).translate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SetElems ?
+                : rhsStr;
     }
 
     @Override

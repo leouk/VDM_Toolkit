@@ -22,76 +22,36 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         this.type = type;
     }
 
-    @Override 
-    protected void setup()
+    @Override
+    public boolean getParenthesise()
     {
-        super.setup();
-        // multiple type binds are space (not comma) separated
-        setSemanticSeparator(" ");
-        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
-    }
+        return true;//always parenthesise type binds, regardless
+     }
+
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.INSET;
-    }
-
-    protected String invTranslate(int index)
-    {
-        assert index >= 0 && index < plist.size();
-        return IsaToken.parenthesise(IsaToken.INV + type.translate() + getFormattingSeparator() + plist.get(index).translate());
-    }
-
-    /**
-     * Multiple type binds invariant translate have to issue the inv_T check
-     * e.g., "forall x:T . P(x)" => "! (x::T) . inv_T x /\ P(x)"
-     */
-    @Override
-    public String invTranslate()
-    {
-        StringBuilder sb = new StringBuilder();
-		if (!plist.isEmpty())
-		{
-			sb.append(invTranslate(0));
-            for (int i=1; i<plist.size(); i++)
-			{
-                sb.append(getInvTranslateSeparator());
-				sb.append(invTranslate(i));
-			}
-		}
-		return sb.toString();
+        return IsaToken.TYPEOF;
     }
 
     @Override
     public String compTranslate(boolean vdmPatternsOnly)
     {
-        return IsaToken.parenthesise(plist.translate() + getFormattingSeparator() + IsaToken.TYPEOF + getFormattingSeparator() + type.translate());
-    }
-
-    protected String translate(int index, String typeStr)
-    {
-        assert index >= 0 && index < plist.size();
-        return IsaToken.parenthesise(plist.get(index).translate() + typeStr);
+        StringBuilder sb = new StringBuilder();
+        sb.append(plist.translate());
+        sb.append(getFormattingSeparator());
+        sb.append(isaToken().toString());
+        sb.append(getFormattingSeparator());
+        sb.append(getRHS().translate());
+        return IsaToken.parenthesise(sb.toString());
     }
 
     @Override
-    public String translate() {
-        StringBuilder sb = new StringBuilder();
-		if (!plist.isEmpty())
-		{
-            // translate each item with it's type case, e.g. "(x::VDMNat)"
-            String typeStr = IsaToken.TYPEOF.toString() + type.translate();
-			sb.append(translate(0, typeStr));
-
-            for (int i = 1; i < plist.size(); i++)
-			{
-                //TODO doesn't this need a separator? Like " "?
-                sb.append(getSemanticSeparator());
-                sb.append(getFormattingSeparator());
-				sb.append(translate(i, typeStr));
-			}
-		}
-		return sb.toString();
+    public String boundExpressionTranslate(int index, boolean invTr) {
+        String typeStr = getRHS().translate();
+        return invTr ?
+            IsaToken.parenthesise(IsaToken.INV.toString() + typeStr + getFormattingSeparator() + plist.get(index).translate())
+            : typeStr;
     }
 
     @Override

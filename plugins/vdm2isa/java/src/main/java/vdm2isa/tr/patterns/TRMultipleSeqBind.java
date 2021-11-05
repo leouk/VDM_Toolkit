@@ -45,25 +45,11 @@ public class TRMultipleSeqBind extends TRMultipleBind
     }
     
     @Override
-    public String translate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(plist.translate());
-        sb.append(getFormattingSeparator());
-        sb.append(isaToken().toString()); 
-        sb.append(getFormattingSeparator());
-        sb.append(IsaToken.parenthesise(IsaToken.ELEMS.toString() + getFormattingSeparator() + seq.translate()));
-        return sb.toString();
-    }
-
-    /**
-     * Allow invTranslate calls for MultipleSeq bind, given it only contains one pattern;
-     * in the context where they are within a mixed type and set/seq binds! 
-     */
-    @Override
-    public String invTranslate()
-    {
-        // super issues error
-        return translate();//super.invTranslate();
+    public String boundExpressionTranslate(int index, boolean invTr) {
+        String rhsStr = IsaToken.parenthesise(IsaToken.ELEMS.toString() + getFormattingSeparator() + getRHS().translate()); 
+        return invTr ? 
+                IsaToken.parenthesise(plist.get(index).translate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SeqElems ?
+                : rhsStr;
     }
 
     @Override
