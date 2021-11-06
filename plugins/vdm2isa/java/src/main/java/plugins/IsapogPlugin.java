@@ -24,10 +24,8 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.pog.IsaProofObligationList;
-import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
-import vdm2isa.tr.definitions.TRProofScriptStepDefinition;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
@@ -125,34 +123,34 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     catch(LexException le)
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR, LexLocation.ANY, po.number, po.name, "lexing", le.toString());//le.location
+                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "lexing", le.toString());//le.location
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
                     }
                     catch(ParserException pe) 
                     {
                         // POs shouldn't fail to parse? VDMJ error?
-                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR, LexLocation.ANY, po.number, po.name, "parsing", pe.toString());//pe.location
+                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "parsing", pe.toString());//pe.location
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, pe));
                     }
                     catch(TypeCheckException te)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR, LexLocation.ANY, po.number, po.name, "type checking", te.toString());//te.location
+                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "type checking", te.toString());//te.location
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, te));
                     }
                     catch(VDMErrorsException ve)
                     {
                         // POs shouldn't fail to type check, but if they do...
                         //TODO consider any related context
-                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR, ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location, 
+                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location, 
                             po.number, po.name, "type checking", ve.toString());
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, ve));
                     }
                     catch(Exception e)
                     {
                         // This is something quite bad, so stop
-                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR, LexLocation.ANY, po.number, po.name, "class mapping / unexpected", e.toString());
+                        GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "class mapping / unexpected", e.toString());
                         // in case we decide to comment the throw?
                         notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, e));
                         throw e;
@@ -179,7 +177,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         }
                         else
                         {
-                            report(IsaErrorMessage.PO_INVALID_PO_MODULE, module.name.getLocation(), module.name.toString());
+                            report(IsaErrorMessage.PO_INVALID_PO_MODULE_1P, module.name.getLocation(), module.name.toString());
                         }
                     }
                 }

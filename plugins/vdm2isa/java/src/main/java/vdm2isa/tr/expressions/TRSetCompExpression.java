@@ -76,7 +76,7 @@ public class TRSetCompExpression extends TRExpression {
         if (binds.foundBinds(TRMultipleBindKind.TYPE))
         {
             warning(IsaWarning.SETCOMP_TYPEBOUND);
-            sb.append(IsaToken.comment(IsaWarning.SETCOMP_TYPEBOUND.format(null), getFormattingSeparator()));
+            sb.append(IsaToken.comment(IsaWarning.SETCOMP_TYPEBOUND.format((Object[])null), getFormattingSeparator()));
         }
 
         // call inv translate as type binds require inv_T binds in the pattern, whereas set/seq is just translate (don't)

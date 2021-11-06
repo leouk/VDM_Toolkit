@@ -45,7 +45,7 @@ public final class IsaTemplates {
         //TODO accumulate all def names for latter creation of lemmas xyz_def etc...? 
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
         if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
-            Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF, moduleLoc, item, name, moduleName);
+            Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
         else if (!moduleIsKnown)
         {
             Map<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();
@@ -94,15 +94,15 @@ public final class IsaTemplates {
         boolean result = false;
 		if (sep == null)
             // null sep is not okay
-			Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "null", kind.toString().toLowerCase());
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "null", kind.toString().toLowerCase());
 		else if (!sep.isEmpty()) 
         {
             if (kind == IsaSeparator.FORMATING && !IsaTemplates.isValidFormatingSeparator(sep))
                 // non white space formatting sep is not okay
-                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "formatting", "white space");
+                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "formatting", "white space");
            else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
                 // non valid isatoken sep is not okay 
-                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "semantic", "Isabelle tokens or white space");
+                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "semantic", "Isabelle tokens or white space");
             else
                 // validated sep is okay
                 result = true;

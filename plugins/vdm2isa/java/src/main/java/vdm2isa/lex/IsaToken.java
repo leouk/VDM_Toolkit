@@ -197,7 +197,7 @@ public enum IsaToken {
 	{
 		assert isa != null; 
 		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
-			Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR, LexLocation.ANY, vdm.name());
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -254,7 +254,7 @@ public enum IsaToken {
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
-			Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR, location, count);
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR_1P, location, count);
 		else
 		{
 			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
@@ -352,7 +352,7 @@ public enum IsaToken {
 			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
-		Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR, operator.location, operator.toString());
+		Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
 		return IsaToken.ERROR;
 	}
 }
