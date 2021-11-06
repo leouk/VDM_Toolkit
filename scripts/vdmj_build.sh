@@ -22,11 +22,11 @@ then
     exit 1
 fi
 
-if [ ! -e $VDMJ_TARGET ]
-then
-    echo "Setting VDMJ linking target to /usr/local/lib"
-    exit 1
-fi
+#if [ ! -e $VDMJ_TARGET ]
+#then
+#    echo "Setting VDMJ linking target to /usr/local/lib"
+#    exit 1
+#fi
 
 echo "Pull latest version of VDMJ from $VDMJ_HOME"
 cd $VDMJ_HOME
