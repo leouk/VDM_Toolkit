@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRField extends TRType {
@@ -28,7 +29,7 @@ public class TRField extends TRType {
     private void checkRecordType()
     {
         if (record == null)
-            report(11111, "Field " + getTagName() + " does not have its record type set.");
+            report(IsaErrorMessage.VDMSL_FIELD_MISSING_RECORDTYPE_1P, getTagName());
     }
 
     @Override

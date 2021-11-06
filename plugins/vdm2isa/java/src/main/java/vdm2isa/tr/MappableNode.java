@@ -35,8 +35,10 @@ public interface MappableNode extends Mappable {
 	public LexLocation getLocation();
 	
 	public void report(IsaErrorMessage message);
+	public void report(IsaErrorMessage message, Object... args);
 	public void warning(IsaWarning message);
-
+	public void warning(IsaWarning warning, Object... args);
+	
 	public String getSemanticSeparator();
 	public String setSemanticSeparator(String sep);
 	public String getInvTranslateSeparator();

@@ -190,7 +190,7 @@ public class Vdm2isaPlugin extends CommandPlugin
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            Vdm2isaPlugin.report(IsaErrorMessage.VDMSL_ONLY, LexLocation.ANY);
+            Vdm2isaPlugin.report(IsaErrorMessage.VDMSL_VDM10_ONLY, LexLocation.ANY);
             Vdm2isaPlugin.errs++;
         }
         if (Settings.release != Release.VDM_10)

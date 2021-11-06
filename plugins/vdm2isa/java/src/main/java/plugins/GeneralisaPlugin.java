@@ -170,7 +170,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
-            GeneralisaPlugin.report(IsaErrorMessage.VDMSL_ONLY, LexLocation.ANY);
+            GeneralisaPlugin.report(IsaErrorMessage.VDMSL_VDM10_ONLY, LexLocation.ANY);
             errs++;
         }
         if (Settings.release != Release.VDM_10)

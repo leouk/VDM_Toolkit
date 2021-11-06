@@ -6,8 +6,17 @@ package vdm2isa.messages;
 public enum IsaErrorMessage {
      
     //PLUGIN_MESSAGES
-              VDMSL_ONLY(VDM2IsaError.ISABELLE_ERROR_BASE + 0, 
+    PLUGIN_NYI_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0, 
+                            "Not yet implemented %1$s for %2$s"),
+    //VDM_MESSAGES
+         VDMSL_VDM10_ONLY(VDM2IsaError.ISABELLE_ERROR_BASE + 1, 
                             "Only VDMSL supports Isabelle translation."),
+    VDMSL_INVALID_PATTERN(VDM2IsaError.ISABELLE_ERROR_BASE + 2, 
+                            "Invalid empty bind pattern list."),
+    VDMSL_INVALID_PATTERN_BIND(VDM2IsaError.ISABELLE_ERROR_BASE + 3, 
+                            "Cannot have null pattern and bind in TRPatternBind"),
+    VDMSL_FIELD_MISSING_RECORDTYPE_1P(VDM2IsaError.ISABELLE_ERROR_BASE + 4, 
+                            "Field %1$s does not have its record type set."),
     //POG_MESSAGES
     PO_PROCESSING_ERROR_4P(VDM2IsaError.ISABELLE_ERROR_BASE + 1, 
                             "VDM PO (%1$s) %2$s %3$s error \"%4$s\"; should never happen."),
@@ -24,9 +33,13 @@ public enum IsaErrorMessage {
                             "Invalid VDM SL token %1$s"),
      ISA_DUMMYNAME_ERROR_1P(VDM2IsaError.ISABELLE_ERROR_BASE + 7,
                             "Dummy var names call must be strictly positive; count = %1$s"),
+   ISA_VDM_EMPTYRECORD_PATTERN_1P(VDM2IsaError.ISABELLE_ERROR_BASE + 8,    
+                            "Isabelle does not allow empty patterns for VDM record pattern for record type %1$s"),
 
 
     TEST(11111, " ");
+
+    //private static final Set<Integer> numbers = new TreeSet<Integer>(); 
 
     public final int number;
     public final String message; 

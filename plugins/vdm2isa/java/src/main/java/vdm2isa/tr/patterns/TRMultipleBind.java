@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
@@ -77,8 +78,8 @@ public abstract class TRMultipleBind extends TRNode
         StringBuilder sb = new StringBuilder();
         if (plist.isEmpty())
         {   
-            //TODO is this even possible as typechecked VDM AST? 
-            report(11111, "Invalid empty bind pattern list.");
+            // is this even possible as typechecked VDM AST? 
+            report(IsaErrorMessage.VDMSL_INVALID_PATTERN);
         }
         else
 		{
@@ -103,8 +104,7 @@ public abstract class TRMultipleBind extends TRNode
         StringBuilder sb = new StringBuilder();
 		if (plist.isEmpty())
         {   
-            //TODO is this even possible as typechecked VDM AST? 
-            report(11111, "Invalid empty bind pattern list.");
+            report(IsaErrorMessage.VDMSL_INVALID_PATTERN);
         }
         else
         {

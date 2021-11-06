@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -21,7 +22,8 @@ public class TRRecordPattern extends TRPattern {
         this.plist = plist;
         this.type = type;
         if (this.plist.size() == 0)
-            report(10002, "Isabelle does not allow empty patterns for VDM record pattern for record type " + typename.toString());
+            report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, typename.toString());
+            
 
         //System.out.println(toString());
     }

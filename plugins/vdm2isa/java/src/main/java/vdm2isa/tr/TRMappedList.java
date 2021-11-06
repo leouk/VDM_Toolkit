@@ -219,14 +219,14 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return size() == 0 ? LexLocation.ANY : this.get(0).getLocation();
 	}
 
-	//@Override
-	public void report(IsaErrorMessage message, String args)
+	@Override
+	public void report(IsaErrorMessage message, Object... args)
 	{
 		Vdm2isaPlugin.report(message, getLocation(), args);
 	}
 
-	//@Override
-	public void warning(IsaWarning warning, String args)
+	@Override
+	public void warning(IsaWarning warning, Object... args)
 	{
 		Vdm2isaPlugin.warning(warning, getLocation(), args);
 	}

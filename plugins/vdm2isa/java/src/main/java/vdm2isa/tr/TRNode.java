@@ -126,6 +126,18 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	{
 		Vdm2isaPlugin.warning(warning, getLocation());
 	}
+
+	@Override
+	public void report(IsaErrorMessage message, Object... args)
+	{
+		Vdm2isaPlugin.report(message, getLocation(), args);
+	}
+
+	@Override
+	public void warning(IsaWarning warning, Object... args)
+	{
+		Vdm2isaPlugin.warning(warning, getLocation(), args);
+	}
 	
 	//@Override
 	public void report(int number, String message)

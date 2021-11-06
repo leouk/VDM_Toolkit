@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRQuoteType extends TRType
@@ -26,7 +27,7 @@ public class TRQuoteType extends TRType
     
     @Override
 	public String invTranslate(String varName) {
-        report(10000, "Not yet implemented");
+        report(IsaErrorMessage.PLUGIN_NYI_2P, "invTranslate", getClass().getName());
         return IsaToken.ERROR.toString();
 	}
 

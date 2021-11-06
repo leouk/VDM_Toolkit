@@ -3,6 +3,7 @@ package vdm2isa.tr.patterns;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRPatternBind extends TRPattern {
@@ -17,8 +18,9 @@ public class TRPatternBind extends TRPattern {
         this.bind = bind;
 
         if (pattern == null && bind == null)
-            report(11111, "Cannot have null pattern and bind in TRPatternBind");
-            
+        {
+            report(IsaErrorMessage.VDMSL_INVALID_PATTERN_BIND);
+        }
         System.out.println(toString());
     }
 
