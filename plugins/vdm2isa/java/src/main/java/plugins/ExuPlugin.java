@@ -1,7 +1,5 @@
 package plugins;
 
-import com.fujitsu.vdmj.VDMJ;
-import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.VDMWarning;

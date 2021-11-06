@@ -1,6 +1,5 @@
 package vdm2isa.pog;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -10,8 +9,6 @@ import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import plugins.IsapogPlugin;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
-import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinition;

@@ -5,8 +5,6 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
-import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRProofScriptDefinition extends TRDefinition {
 

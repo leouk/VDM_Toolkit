@@ -1,8 +1,5 @@
 package vdm2isa.tr.expressions;
 
-import java.util.Map;
-import java.util.SortedSet;
-
 import com.fujitsu.vdmj.tc.expressions.TCExists1Expression;
 import com.fujitsu.vdmj.tc.expressions.TCExistsExpression;
 import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
@@ -13,9 +10,6 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
-import vdm2isa.tr.patterns.TRMultipleSetBind;
-import vdm2isa.tr.patterns.TRMultipleTypeBind;
-import vdm2isa.tr.patterns.TRPattern;
 
 public class TRBoundedExpression extends TRExpression {
     

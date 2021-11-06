@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.expressions.visitors;
 
-import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRBoundedExpression;

@@ -3,9 +3,7 @@ package vdm2isa.tr.patterns;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -54,6 +52,11 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setFormattingSeparator(" ");
 		//Multiple bind list translation must take into consideration the kind of bind within it; for type binds that involves adding inv_T dummy; others just empty
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+	}
+
+	public boolean getParenthesise()
+	{
+		return parenthesise;
 	}
 
     public boolean setParenthesise(boolean p) {

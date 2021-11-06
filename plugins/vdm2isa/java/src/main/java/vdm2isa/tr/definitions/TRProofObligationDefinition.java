@@ -2,7 +2,6 @@ package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.pog.ProofObligation;
 
 import vdm2isa.lex.IsaToken;
