@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 
 import plugins.Vdm2isaPlugin;
+import vdm2isa.messages.IsaErrorMessage;
 
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
@@ -196,7 +197,7 @@ public enum IsaToken {
 	{
 		assert isa != null; 
 		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
-			Vdm2isaPlugin.report(10011, "Invalid VDM SL token " + vdm.name(), LexLocation.ANY);
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -253,7 +254,7 @@ public enum IsaToken {
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
-			Vdm2isaPlugin.report(10012, "Dummy var names call must be strictly positive; count = " + count, location);
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR, location, count);
 		else
 		{
 			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
@@ -351,7 +352,7 @@ public enum IsaToken {
 			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
-		Vdm2isaPlugin.report(10010, "Invalid VDM token for Isabelle translation " + operator.toString(), operator.location);  
+		Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR, operator.location, operator.toString());
 		return IsaToken.ERROR;
 	}
 }

@@ -94,15 +94,15 @@ public final class IsaTemplates {
         boolean result = false;
 		if (sep == null)
             // null sep is not okay
-			Vdm2isaPlugin.report(11111, "Cannot translate with a null " + kind.toString().toLowerCase() + " separator", location);
+			Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "null", kind.toString().toLowerCase());
 		else if (!sep.isEmpty()) 
         {
             if (kind == IsaSeparator.FORMATING && !IsaTemplates.isValidFormatingSeparator(sep))
                 // non white space formatting sep is not okay
-			    Vdm2isaPlugin.report(11111, "Invalid formatting separator: only white space characters are allowed", location);
-            else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
+                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "formatting", "white space");
+           else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
                 // non valid isatoken sep is not okay 
-                Vdm2isaPlugin.report(11111, "Invalid semantic separator: only Isabelle tokens or white space characters are allowed", location);
+                Vdm2isaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR, location, "semantic", "Isabelle tokens or white space");
             else
                 // validated sep is okay
                 result = true;
