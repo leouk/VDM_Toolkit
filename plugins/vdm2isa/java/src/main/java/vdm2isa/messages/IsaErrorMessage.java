@@ -8,6 +8,11 @@ public enum IsaErrorMessage {
     //PLUGIN_MESSAGES
     PLUGIN_NYI_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0, 
                             "Not yet implemented %1$s for %2$s"),
+    PLUGIN_MISSING_MAPPING_ERROR_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0,
+                            "Cannot yet convert %1$s = %2$s"),
+    PLUGIN_UNEXPECTED_ERROR_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0,
+                            "Unexpected exception when converting %1$s = %2$s"),
+
     //VDM_MESSAGES
          VDMSL_VDM10_ONLY(VDM2IsaError.ISABELLE_ERROR_BASE + 1, 
                             "Only VDMSL supports Isabelle translation."),

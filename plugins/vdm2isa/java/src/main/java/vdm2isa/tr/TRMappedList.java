@@ -43,13 +43,13 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Exception e)
 			{
-				Vdm2isaPlugin.report(11111, "Could not convert " + from.getClass().getName() + " = " + e.toString(), LexLocation.ANY);
+				Vdm2isaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_2P, LexLocation.ANY, from.getClass().getName(), e.toString());
 				// don't debug "can't convert errors"! 
 				//e.printStackTrace();
 			}
 			catch (Throwable t)
 			{
-				Vdm2isaPlugin.report(11111, "Unexpected exception when converting " + from.getClass().getName() + " = " + t.toString(), LexLocation.ANY);
+				Vdm2isaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, LexLocation.ANY, from.getClass().getName(), t.toString());
 				t.printStackTrace();
 			}
 		}
