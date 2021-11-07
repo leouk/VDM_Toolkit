@@ -13,6 +13,7 @@ import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 
 /**
  * VDM values are translated as Isabelle constants. 
@@ -42,7 +43,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
 		this.defs = defs;
 		if (this.defs.size() > 1)
-			report(11111, "Multiple local names in VDM value definitions (e.g., \"[A,B] = [1,2]\") cannot be translated.");
+			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
 		
 		//if (local) System.out.println(toString());
 	}

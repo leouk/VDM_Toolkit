@@ -17,6 +17,7 @@ import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -120,23 +121,23 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		else
 		{
 			setFormattingSeparator("\n\t\t");
-			//TODO type parameters are comma separated?	
-			// parameters are curried not "," separated
+			// parameters and type parameters are curried not "," separated
+			//this.typeParams.setSemanticSeparator(" ");
 			this.parameters.setSemanticSeparator(" ");
 			
 			// check stuff is consistent to expectations
 			if ((precondition != null && predef == null) || (precondition == null && predef != null))
-				//TODO don't want two messages for effectively same thing; review text latter
-				report(11111, "Explicit funciton has declared precondition but no pre definition.");
+				report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "precondition");
 			if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
-				report(11111, "Explicit funciton has declared postcondition but no post definition.");
+				report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "postcondition");
 			
 			// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
 			// which *must* be of a specific specification kind.
-			if (isImplicitlyGeneratedUndeclaredSpecification() && !VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+			if (isImplicitlyGeneratedUndeclaredSpecification() && 
+				!VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
 			{
-				report(11111, "Invalid implicitly generated specificaiton check for " + name.toString() + 
-					". Must be one of " + VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
+				report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.toString(),
+					VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
 			}
 
 			// only create undeclared specification for those who need it: when precondition/predef are null but
@@ -429,7 +430,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			else
 			{
 				// should never happen for a type checked VDM?
-				report(11111, "Inconsistent curried function declaration: intermediate result does not have function type - " + type.result.getClass().getSimpleName());
+				report(IsaErrorMessage.VDMSL_INVALID_CURRIED_FCNTYPE_2P, this.name.toString(), this.type.result.getClass().getSimpleName());
 			}
 		}
 		else

@@ -177,7 +177,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
     @Override
     public String invTranslate()
     {
-        report(11111, getClass().getName() + " \"" + toString() + "\" does not support Isabelle invariant translation.");
-        return "";
+        report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getName(), toString());
+		return "";
     }
 }
