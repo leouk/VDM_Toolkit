@@ -141,6 +141,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
 
+            //if (argv != null && argv.length > 0)
+            //    Console.out.println("Params = " + Arrays.asList(argv).toString());
             result = isaRun(tclist, argv);
 
             long after = System.currentTimeMillis();
