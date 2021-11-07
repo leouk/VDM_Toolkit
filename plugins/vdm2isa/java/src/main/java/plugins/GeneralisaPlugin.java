@@ -23,7 +23,6 @@ import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;

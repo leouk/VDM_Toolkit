@@ -13,7 +13,6 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
-import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
