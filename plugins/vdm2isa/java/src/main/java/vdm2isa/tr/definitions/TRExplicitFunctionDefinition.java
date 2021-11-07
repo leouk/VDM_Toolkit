@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
+import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -324,7 +325,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		TRSpecificationKind result = TRSpecificationKind.NONE;
 
-		// presumes Settings.release = VDM_10 and dialect = VDMSL. This is checked by Vdm2isaPlugin.run anyhow
+		// presumes Settings.release = VDM_10 and dialect = VDMSL. This is checked by GeneralisaPlugin.run anyhow
 		if (name.isReserved())
 		{
 			String fcnName = name.getName();

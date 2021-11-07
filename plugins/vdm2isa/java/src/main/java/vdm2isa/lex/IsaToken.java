@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 
+import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.messages.IsaErrorMessage;
 
@@ -197,7 +198,7 @@ public enum IsaToken {
 	{
 		assert isa != null; 
 		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
-			Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
+			GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
 		this.isa = isa;
 	}
@@ -254,7 +255,7 @@ public enum IsaToken {
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
-			Vdm2isaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR_1P, location, count);
+			GeneralisaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR_1P, location, count);
 		else
 		{
 			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
@@ -352,7 +353,7 @@ public enum IsaToken {
 			//case LAMBDA			: return IsaToken.LAMBDA;
 			
 		}
-		Vdm2isaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
+		GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
 		return IsaToken.ERROR;
 	}
 }

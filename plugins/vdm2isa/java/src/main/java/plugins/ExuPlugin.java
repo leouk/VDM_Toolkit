@@ -38,19 +38,4 @@ public class ExuPlugin extends GeneralisaPlugin {
     public String help() {
         return "exu - analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
     }
-
-    public static void report(int number, String problem, LexLocation location)
-	{
-		GeneralisaPlugin.report(number, problem, location);
-	}
-
-	public static void reportAsError(VDMWarning w)
-	{
-		GeneralisaPlugin.reportAsError(w);
-	}
-
-	public static void warning(int number, String problem, LexLocation location)
-	{
-		GeneralisaPlugin.warning(number, problem, location);
-	}
 }

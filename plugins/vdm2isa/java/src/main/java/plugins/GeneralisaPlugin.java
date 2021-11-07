@@ -21,7 +21,9 @@ import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarning;
 import vdm2isa.messages.VDM2IsaError;
@@ -36,13 +38,17 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private final static List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
             5012, 5013, 5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
 
-    // assuming max translation errors equals max type errors for now
-    public static int maxErrors;
-    public static String isaVersion;
+	// target isabelle version (i.e. result of "isabelle version" call)
+	public static String isaVersion; 
+	// assuming max translation errors equals max type errors for now
+	public static int maxErrors;
+	// strict handling of errors (e.g. print output or not etc.)
+	public static boolean strict;	
+    // whether to report or hide warnings
 	public static boolean reportWarnings;
-    public static boolean strict;
-    public static int errs;
 
+
+    protected static int errs;
     private int localErrors;
     private int localWarnings;
     private int localModules;
@@ -130,20 +136,23 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             localReset();
             GeneralisaPlugin.checkVDMSettings();
 
+			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
+			GeneralisaPlugin.processVDMWarnings();
+
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
 
             result = isaRun(tclist, argv);
 
             long after = System.currentTimeMillis();
-			addLocalErrors(Vdm2isaPlugin.getErrorCount());
+			//addLocalErrors(Vdm2isaPlugin.getErrorCount());
 			addLocalErrors(GeneralisaPlugin.getErrorCount());
 			if (getLocalErrorCount() > 0)
 			{
 				GeneralisaPlugin.printErrors(Console.out);
 			}
 
-			addLocalWarnings(Vdm2isaPlugin.getWarningCount());
+			//addLocalWarnings(Vdm2isaPlugin.getWarningCount());
 			addLocalWarnings(GeneralisaPlugin.getWarningCount());
 			if (getLocalWarningCount() > 0 && GeneralisaPlugin.reportWarnings)
 			{
@@ -196,9 +205,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         if (!errors.contains(error)) {
             errors.add(error);
 
-            if (errors.size() >= GeneralisaPlugin.maxErrors - 1) {
-                errors.add(new VDM2IsaError(10, "Too many translation errors", location));
-                throw new InternalException(10, "Too many translation errors");
+            if (errors.size() >= GeneralisaPlugin.maxErrors - 1) 
+            {
+				String tooMany = "Too many translation errors";
+    			errors.add(new VDM2IsaError(10, tooMany, location));
+    			throw new InternalException(10, tooMany);
             }
         }
     }
@@ -208,6 +219,26 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             report(VDM2IsaWarning.ISABELLE_WARNING_BASE + w.number, w.message, w.location);
         }
     }
+
+    public static void processVDMWarnings()
+	{
+		List<VDMWarning> vdmWarnings = TypeChecker.getWarnings();
+		int warnings2raiseCount = 0;
+		// tad inneficient, but fine (for now) as I want to "warn" user of this first
+		for (int i = 0; i < vdmWarnings.size(); i++)
+		{
+			if (vdmWarningOfInterest.contains(vdmWarnings.get(i).number))
+				warnings2raiseCount++;
+		}
+		if (warnings2raiseCount > 0)
+		{
+			Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
+			for(VDMWarning w : vdmWarnings)
+			{
+				reportAsError(w);
+			}
+		}
+	}
 
 	public static void warning(IsaWarning message, LexLocation location)
 	{
@@ -250,14 +281,14 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     }
 
     public static void printErrors(ConsoleWriter out) {
-        if (Vdm2isaPlugin.getErrorCount() > 0) Vdm2isaPlugin.printErrors(out);
+        //if (Vdm2isaPlugin.getErrorCount() > 0) Vdm2isaPlugin.printErrors(out);
         for (VDM2IsaError e : GeneralisaPlugin.errors) {
             out.println(e.toString());
         }
     }
 
     public static void printWarnings(ConsoleWriter out) {
-        if (Vdm2isaPlugin.getWarningCount() > 0) Vdm2isaPlugin.printWarnings(out);
+        //if (Vdm2isaPlugin.getWarningCount() > 0) Vdm2isaPlugin.printWarnings(out);
         for (VDM2IsaWarning w : GeneralisaPlugin.warnings) {
             out.println(w.toString());
         }
@@ -270,6 +301,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected static void reset() {
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
+		// These are now a tc-tr.mappings init actions
+        //IsaTemplates.reset();
+		//TRRecordType.reset();
     }
 
     public static void setupProperties() {

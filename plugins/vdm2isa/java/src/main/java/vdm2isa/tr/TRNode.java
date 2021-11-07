@@ -13,7 +13,7 @@ import vdm2isa.messages.IsaWarning;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;
 
-import plugins.Vdm2isaPlugin;
+import plugins.GeneralisaPlugin;
 
 abstract public class TRNode extends MappedObject implements MappableNode
 {
@@ -118,37 +118,37 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	@Override
 	public void report(IsaErrorMessage message)
 	{
-		Vdm2isaPlugin.report(message, getLocation());
+		GeneralisaPlugin.report(message, getLocation());
 	}
 
 	@Override
 	public void warning(IsaWarning warning)
 	{
-		Vdm2isaPlugin.warning(warning, getLocation());
+		GeneralisaPlugin.warning(warning, getLocation());
 	}
 
 	@Override
 	public void report(IsaErrorMessage message, Object... args)
 	{
-		Vdm2isaPlugin.report(message, getLocation(), args);
+		GeneralisaPlugin.report(message, getLocation(), args);
 	}
 
 	@Override
 	public void warning(IsaWarning warning, Object... args)
 	{
-		Vdm2isaPlugin.warning(warning, getLocation(), args);
+		GeneralisaPlugin.warning(warning, getLocation(), args);
 	}
 	
 	//@Override
 	public void report(int number, String message)
 	{
-		Vdm2isaPlugin.report(number, message, getLocation());
+		GeneralisaPlugin.report(number, message, getLocation());
 	}
 
 	//@Override
 	public void warning(int number, String warning)
 	{
-		Vdm2isaPlugin.warning(number, warning, getLocation());
+		GeneralisaPlugin.warning(number, warning, getLocation());
 	}
 	
 	/**

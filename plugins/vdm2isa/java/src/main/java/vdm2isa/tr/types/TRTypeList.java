@@ -10,7 +10,7 @@ import java.util.List;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
-import plugins.Vdm2isaPlugin;
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
@@ -75,9 +75,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		if (isValidInvTranslateCall(varNames))
 		{
 			report(11111, "Inconsistent invariant translation call in type list: " + 
-					Vdm2isaPlugin.plural(varNames.size(), "variable name", "s") + 
+					GeneralisaPlugin.plural(varNames.size(), "variable name", "s") + 
 					" " + varNames.toString() + " for " + 
-					Vdm2isaPlugin.plural(size(), "declared type", "s") + ".");
+					GeneralisaPlugin.plural(size(), "declared type", "s") + ".");
 			//System.out.println(varNames);
 			//Throwable t = new Throwable();t.printStackTrace();
 		}

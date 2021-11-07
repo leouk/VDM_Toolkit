@@ -43,7 +43,7 @@ public class TRFieldNumberExpression extends TRExpression {
     @Override
     public String translate() {
         assert field.value > 0 && field.value <= getProductType().types.size();
-        //if (Vdm2isaPlugin.getErrorCount() == 0)
+        //if (GeneralisaPlugin.getErrorCount() == 0)
         return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
             IsaToken.parenthesise(tuple.translate()));
     }

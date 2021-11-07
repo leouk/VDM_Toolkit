@@ -49,19 +49,6 @@ theorem vc51_UNIQUE_EXISTENCE:
 	oops
 	
 	
-theorem vc6_FUNC_APPLY:
-	"(pre_((
-	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) then
-		(var + var2)
-	 else
-		undefined
-	)
-	), (10::VDMNat1), (20::VDMNat1)))"
-	
-	oops
-	
-	
 theorem vc6_SUB_TYPE:
 	"((((
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .

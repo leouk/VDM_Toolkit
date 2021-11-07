@@ -10,7 +10,7 @@ import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
 
-import plugins.Vdm2isaPlugin;
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
@@ -43,13 +43,13 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Exception e)
 			{
-				Vdm2isaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_2P, LexLocation.ANY, from.getClass().getName(), e.toString());
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_2P, LexLocation.ANY, from.getClass().getName(), e.toString());
 				// don't debug "can't convert errors"! 
 				//e.printStackTrace();
 			}
 			catch (Throwable t)
 			{
-				Vdm2isaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, LexLocation.ANY, from.getClass().getName(), t.toString());
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, LexLocation.ANY, from.getClass().getName(), t.toString());
 				t.printStackTrace();
 			}
 		}
@@ -222,38 +222,38 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	@Override
 	public void report(IsaErrorMessage message, Object... args)
 	{
-		Vdm2isaPlugin.report(message, getLocation(), args);
+		GeneralisaPlugin.report(message, getLocation(), args);
 	}
 
 	@Override
 	public void warning(IsaWarning warning, Object... args)
 	{
-		Vdm2isaPlugin.warning(warning, getLocation(), args);
+		GeneralisaPlugin.warning(warning, getLocation(), args);
 	}
 
 	@Override
 	public void report(IsaErrorMessage message)
 	{
-		Vdm2isaPlugin.report(message, getLocation(), (Object[])null);
+		GeneralisaPlugin.report(message, getLocation(), (Object[])null);
 	}
 
 	@Override
 	public void warning(IsaWarning warning)
 	{
-		Vdm2isaPlugin.warning(warning, getLocation(), (Object[])null);
+		GeneralisaPlugin.warning(warning, getLocation(), (Object[])null);
 	}
 
 	//TODO remove
 	//@Override
 	public void report(int number, String message)
 	{
-		Vdm2isaPlugin.report(number, message, getLocation());
+		GeneralisaPlugin.report(number, message, getLocation());
 	}
 
 	//@Override
 	public void warning(int number, String warning)
 	{
-		Vdm2isaPlugin.warning(number, warning, getLocation());
+		GeneralisaPlugin.warning(number, warning, getLocation());
 	}
 	
 }

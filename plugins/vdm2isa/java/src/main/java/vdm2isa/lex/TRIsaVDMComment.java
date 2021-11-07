@@ -3,6 +3,7 @@ package vdm2isa.lex;
 import com.fujitsu.vdmj.ast.lex.LexComment;
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 
