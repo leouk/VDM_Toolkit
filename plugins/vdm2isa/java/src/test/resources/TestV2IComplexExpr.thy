@@ -13,48 +13,48 @@ abbreviation
 where
 	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
 
-definition
+	definition
 	inv_t9 :: "\<bool>"
 where
 	"inv_t9  \<equiv> (inv_VDMSet1' (inv_VDMNat1) t9)"
 
-
+	
 	
 abbreviation
 	t10 :: "VDMInt VDMSeq1"
 where
 	"t10 \<equiv> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)]"
 
-definition
+	definition
 	inv_t10 :: "\<bool>"
 where
 	"inv_t10  \<equiv> (inv_VDMSeq1' (inv_VDMInt) t10)"
 
-
+	
 	
 abbreviation
 	vc1 :: "\<bool>"
 where
 	"vc1 \<equiv> (\<forall> var1 \<in> t9  . (\<forall> var2 \<in> t9  . (var1 \<le> var2)))"
 
-definition
+	definition
 	inv_vc1 :: "\<bool>"
 where
 	"inv_vc1  \<equiv> (inv_bool vc1)"
 
-
+	
 	
 abbreviation
 	vc2 :: "\<bool>"
 where
 	"vc2 \<equiv> (\<forall> var1 \<in> (elems t10)  . (\<forall> var2 \<in> (elems t10)  . (var1 \<le> var2)))"
 
-definition
+	definition
 	inv_vc2 :: "\<bool>"
 where
 	"inv_vc2  \<equiv> (inv_bool vc2)"
 
-
+	
 	
 definition
 	pre_vc3 :: "\<bool>"

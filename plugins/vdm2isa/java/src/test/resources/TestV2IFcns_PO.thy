@@ -15,11 +15,13 @@ theorem h_SUB_TYPE:
 	oops
 	
 	
+	
 theorem h'_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((x < (20::VDMNat1)) \<longrightarrow> (x > (0::VDMNat))))))"
 	
 	oops
+	
 	
 end
 (*

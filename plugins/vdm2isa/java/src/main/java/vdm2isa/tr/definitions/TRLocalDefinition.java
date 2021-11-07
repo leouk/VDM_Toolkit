@@ -2,6 +2,7 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -27,16 +28,24 @@ public class TRLocalDefinition extends TRDefinition {
     protected TRLocalDefinition()
     {
         //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-        this(LexLocation.ANY, null, null, null);
+        this(LexLocation.ANY, null, null, null, false, false, null);
     }
 
-    public TRLocalDefinition(LexLocation location, TRIsaVDMCommentList comments, TCNameToken name, TRType type)
+    public TRLocalDefinition(LexLocation location, 
+        TRIsaVDMCommentList comments, 
+        TCNameToken name, 
+        NameScope nameScope, 
+        boolean used, 
+        boolean excluded,
+        TRType type)
     {
-        super(location, comments);
+        super(location, comments, null, name, nameScope, used, excluded);
         this.name = name;
         this.type = type;
         // TRValueDefinition have patterns hence can pass name as null; it will have to change its own locality further
         this.local = name != null;
+
+        //TODO get TCLocalDefinition.valueDefinition?
     }
 
     @Override

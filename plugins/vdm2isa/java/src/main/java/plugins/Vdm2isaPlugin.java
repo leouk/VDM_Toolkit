@@ -26,6 +26,12 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	// whether to run exu before starting
 	public static boolean runExu;
 
+		/**
+	 * Default=true; translate VDM values as Isabelle abbreviations.
+	 */
+	public static boolean valueAsAbbreviation; 
+
+
 	private TRModuleList translatedModules;
 
 	public Vdm2isaPlugin(Interpreter interpreter)
@@ -122,5 +128,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		Vdm2isaPlugin.printVDMComments = true;
 		Vdm2isaPlugin.printIsaComments = true;
 		Vdm2isaPlugin.runExu			= true;
+		Vdm2isaPlugin.valueAsAbbreviation = true;
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Vector;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
@@ -42,7 +43,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 						TRSpecificationKind.INV, 
 						TRSpecificationKind.EQ);
 
-	private final TCNameToken name;
+	//private final TCNameToken name;
 	private final TCNameList typeParams;
 	private final TRFunctionType type;
 	private final TRPatternListList parameters;
@@ -63,6 +64,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			TRIsaVDMCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
+			NameScope nameScope, 
+			boolean used, 
+			boolean excluded,
 			TCNameList typeParams, 
 			TRFunctionType type,
 			TRPatternListList parameters, 
@@ -77,9 +81,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			TRDefinitionListList paramDefinitionList,
 			boolean recursive,
 			boolean isUndefined)
-	{
-		super(name.getLocation(), comments, annotations);
-		this.name = name;
+	{	
+		super(name.getLocation(), comments, annotations, name, nameScope, used, excluded);
 		this.typeParams = typeParams;
 		this.type = type;
 		this.parameters = parameters;
@@ -296,6 +299,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 					comments,										//  LexCommentList comments,								
 					null,											// 	TCAnnotationList annotations,
 					undeclaredName,									// 	TCNameToken name,
+					nameScope, used, excluded,						//  extra TRDefinition parameters, 
 					typeParams,										// 	TCNameList typeParams, 
 					createUndeclaredSpecificationFunctionType(kind),// 	TRFunctionType type,
 					createUndeclaredSpecificationParameters(kind),	// 	TRPatternListList parameters, 

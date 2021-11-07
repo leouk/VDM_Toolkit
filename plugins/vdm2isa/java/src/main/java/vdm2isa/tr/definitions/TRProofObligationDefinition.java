@@ -3,6 +3,7 @@ package vdm2isa.tr.definitions;
 import java.util.Arrays;
 
 import com.fujitsu.vdmj.pog.ProofObligation;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -34,10 +35,14 @@ public class TRProofObligationDefinition extends TRDefinition {
             new TRDefinitionList());
     }
 
-    public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
+    //, nameScope, used, excluded
+//    protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+ //   TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
+
+     public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
-        super(po.location/* LexLocation.ANY? */, comments, null);
+        super(po.location, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
         this.po = po;
         this.poExpr = poExpr;
         this.poType = poType;

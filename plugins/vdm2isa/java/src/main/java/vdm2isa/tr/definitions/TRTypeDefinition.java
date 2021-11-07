@@ -2,6 +2,7 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
@@ -9,19 +10,45 @@ import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.lex.IsaToken;  
+import vdm2isa.lex.IsaToken;
+import vdm2isa.lex.TRIsaVDMCommentList;  
 
 public class TRTypeDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
 
-    private final TCNameToken name;
     private final TRInvariantType type;
     private final TRExpression invExpr;
 
-    public TRTypeDefinition(TCAnnotationList annotations, TCNameToken name, TRInvariantType type, TRExpression invExpression)
+    // public TCInvariantType type;
+	// public final TCTypeList unresolved;
+	// public final TCPattern invPattern;
+	// public final TCExpression invExpression;
+	// public final TCPattern eqPattern1;
+	// public final TCPattern eqPattern2;
+	// public final TCExpression eqExpression;
+	// public final TCPattern ordPattern1;
+	// public final TCPattern ordPattern2;
+	// public final TCExpression ordExpression;
+	
+	// public TCExplicitFunctionDefinition invdef;
+	// public TCExplicitFunctionDefinition eqdef;
+	// public TCExplicitFunctionDefinition orddef;
+	// public TCExplicitFunctionDefinition mindef;
+	// public TCExplicitFunctionDefinition maxdef;
+	
+	// public boolean infinite = false;
+	// private TCDefinitionList composeDefinitions;
+
+    public TRTypeDefinition(TRIsaVDMCommentList comments, 
+        TCAnnotationList annotations, 
+        TCNameToken name, 
+        NameScope nameScope,
+        boolean used,
+        boolean excluded,
+        TRInvariantType type, 
+        TRExpression invExpression)
     {
-        super(name.getLocation(), null, annotations);
-        this.name = name;
+        super(name.getLocation(), comments, annotations, name, nameScope, used, excluded);
         this.type = type;
         this.invExpr = invExpression;
         //System.out.println(toString());
@@ -54,17 +81,18 @@ public class TRTypeDefinition extends TRDefinition {
             // translate record definition 
             sb.append(trtype.isaToken().toString() + " "); 
             sb.append(trtype.translate());
-            sb.append(" = ");
-            sb.append("\n\t");
+            sb.append(" ");
+            sb.append(IsaToken.EQUALS.toString());
+            sb.append(" ");
+            sb.append(getFormattingSeparator());
             sb.append(trtype.getFields().translate());
-            sb.append("\n\n");
+            sb.append(getFormattingSeparator() + getFormattingSeparator());
 
             // translate implicit record type invariant
             String varName = IsaToken.dummyVarNames(1, name.getLocation());
             sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
                     name.toString(), name.toString(), varName, 
-                    trtype.invTranslate(varName), false));
-            
+                    trtype.invTranslate(varName), false));            
         }
         //TODO user defined invariant on TLD 
         return sb.toString();

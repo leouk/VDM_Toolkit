@@ -4,6 +4,10 @@
 
 package vdm2isa.tr.definitions;
 
+import javax.naming.event.NamespaceChangeListener;
+
+import com.fujitsu.vdmj.typechecker.NameScope;
+
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
@@ -25,19 +29,24 @@ public class TRValueDefinition extends TRLocalDefinition
 	private final TRType type;
 	private final TRExpression exp;
 	private final TRDefinitionList defs;
-	
-	/**
-	 * Default=true; translate VDM values as Isabelle abbreviations.
-	 */
-	public boolean abbreviation; 
-	
-	public TRValueDefinition(TRIsaVDMCommentList comments, TRPattern pattern, TRType type, TRExpression exp, TRDefinitionList defs)
+	private final TRType expType;
+
+	public TRValueDefinition(TRIsaVDMCommentList comments, 
+		NameScope nameScope,
+		boolean used,
+		boolean excluded, 
+		TRPattern pattern, 
+		TRType type, 
+		TRExpression exp,
+		TRType expType, 
+		TRDefinitionList defs)
 	{
-		super(pattern.location, comments, null, type);
+		// value names are null; their local definitions have the TCNameToken instead! 
+		super(pattern.location, comments, null, nameScope, used, excluded, type);
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
-		this.abbreviation = true;
+		this.expType = expType;
 
 		// these are always TRLocalDefinition within the list. 
 		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
@@ -89,7 +98,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			sb.append(translatePreamble());
 
 			sb.append(IsaTemplates.translateAbbreviation(getLocation(), getDeclaredName(), getTypeString(), expStr));
-			sb.append("\n");
+			sb.append(getFormattingSeparator());
 
 			// translate inv_v as definition
 			sb.append(invTranslate());
@@ -131,7 +140,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			String varName = getDeclaredName();//.toLowerCase();
 			// assemble the template
 			sb.append(IsaTemplates.translateInvariantAbbreviation(getLocation(), varName, inType, dummyVarNames(), getInvariantString(varName), false));
-			sb.append("\n");
+			sb.append(getFormattingSeparator());
 		}
 		else
 		{

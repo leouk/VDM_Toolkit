@@ -1,6 +1,7 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -14,7 +15,7 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
 
     protected TRBasicProofScriptStepDefinition(LexLocation location, TRIsaVDMCommentList comments, IsaToken isarScriptStep)
     {
-        super(location, comments);
+        super(location, comments, null, null, NameScope.GLOBAL, true, false);
         this.isarScriptStep = isarScriptStep;
     }
 

@@ -6,6 +6,8 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.TRNode;
@@ -18,22 +20,45 @@ public abstract class TRDefinition extends TRNode
 	protected final TRIsaVDMCommentList comments;
 	protected final TCAnnotationList annotations;
 
+	// /** The name of the object being defined. */
+	public final TCNameToken name;	
+	// /** The scope of the definition name. */
+	public final NameScope nameScope;
+
+	// /** True if the definition has been used by the rest of the code. */
+	public boolean used;
+	
+	/** True if the definition should be excluded from name lookups */
+	public boolean excluded;
+		
 	/**
 	 * Whether or not this definition is part of a local definition of someone else
 	 */
 	public boolean local;
 	
-	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments)
-	{
-		this(location, comments, null);
-	}
+	// protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments)
+	// {
+	// 	this(location, comments, null);
+	// }
 	
-	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations)
+	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+		TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
 	{
 		super(location); 
 		this.comments = comments;
 		this.annotations = annotations;
+		this.name = name;
+		this.nameScope = nameScope;
+		this.used = used;
+		this.excluded = excluded;
 		this.local = false;
+	}
+
+	@Override 
+	protected void setup()
+	{
+		super.setup();
+		setFormattingSeparator("\n\t");
 	}
 
 	@Override
