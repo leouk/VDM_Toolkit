@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
@@ -17,27 +18,23 @@ public class TRTypeDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
 
     private final TRInvariantType type;
-    private final TRExpression invExpr;
-
-    // public TCInvariantType type;
-	// public final TCTypeList unresolved;
-	// public final TCPattern invPattern;
-	// public final TCExpression invExpression;
-	// public final TCPattern eqPattern1;
-	// public final TCPattern eqPattern2;
-	// public final TCExpression eqExpression;
-	// public final TCPattern ordPattern1;
-	// public final TCPattern ordPattern2;
-	// public final TCExpression ordExpression;
+    private final TRPattern invPattern;
+    private final TRExpression invExpression;
+    private final TRPattern eqPattern1;
+    private final TRPattern eqPattern2;
+    private final TRExpression eqExpression;
+    private final TRPattern ordPattern1;
+    private final TRPattern ordPattern2;
+    private final TRExpression ordExpression;
 	
-	// public TCExplicitFunctionDefinition invdef;
-	// public TCExplicitFunctionDefinition eqdef;
-	// public TCExplicitFunctionDefinition orddef;
-	// public TCExplicitFunctionDefinition mindef;
-	// public TCExplicitFunctionDefinition maxdef;
-	
-	// public boolean infinite = false;
-	// private TCDefinitionList composeDefinitions;
+    private final TRExplicitFunctionDefinition invdef;
+    private final TRExplicitFunctionDefinition eqdef;
+    private final TRExplicitFunctionDefinition orddef;
+    private final TRExplicitFunctionDefinition mindef;
+    private final TRExplicitFunctionDefinition maxdef;
+    
+    private boolean infinite; 
+	private TRDefinitionList composeDefinitions;
 
     public TRTypeDefinition(TRIsaVDMCommentList comments, 
         TCAnnotationList annotations, 
@@ -45,12 +42,41 @@ public class TRTypeDefinition extends TRDefinition {
         NameScope nameScope,
         boolean used,
         boolean excluded,
-        TRInvariantType type, 
-        TRExpression invExpression)
+        TRInvariantType type,
+        TRPattern invPattern,  
+        TRExpression invExpression,
+        TRPattern eqPattern1,
+        TRPattern eqPattern2,
+        TRExpression eqExpression,
+        TRPattern ordPattern1,
+        TRPattern ordPattern2,
+        TRExpression ordExpression,
+        TRExplicitFunctionDefinition invdef,
+        TRExplicitFunctionDefinition eqdef,
+        TRExplicitFunctionDefinition orddef,
+        TRExplicitFunctionDefinition mindef,
+        TRExplicitFunctionDefinition maxdef,
+        boolean infinite,
+        TRDefinitionList composeDefinitions
+        )
     {
         super(name.getLocation(), comments, annotations, name, nameScope, used, excluded);
         this.type = type;
-        this.invExpr = invExpression;
+        this.invPattern = invPattern;
+        this.invExpression = invExpression;
+        this.eqPattern1 = eqPattern1;
+        this.eqPattern2 = eqPattern2;
+        this.eqExpression = eqExpression;
+        this.ordPattern1 = ordPattern1;
+        this.ordPattern2 = ordPattern2;
+        this.ordExpression = ordExpression;
+        this.invdef = invdef;
+        this.eqdef = eqdef;
+        this.orddef = orddef;
+        this.mindef = mindef;
+        this.maxdef = maxdef;
+        this.infinite = infinite;
+        this.composeDefinitions = composeDefinitions;
         //System.out.println(toString());
     }
 
@@ -59,7 +85,7 @@ public class TRTypeDefinition extends TRDefinition {
 	{
 		return "TRTypeDef for \"" + name.toString() + 
 			"\" type " + type.toString() + 
-            " inv " + String.valueOf(invExpr);
+            " inv " + String.valueOf(invExpression);
 	}
 
     @Override
