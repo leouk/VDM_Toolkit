@@ -20,7 +20,7 @@ theorem R_INV_SATISFIABILITY:
 	
 theorem mkr_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<forall> (n :: VDMNat)  . ((((inv_VDMNat n))) \<longrightarrow> (inv_R \<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>))))"
+	"((\<forall> (n :: VDMNat)  . ((((inv_VDMNat n))) \<longrightarrow> (inv_R \<lparr>x\<^sub>R = n, y\<^sub>R = (n,+,(1::VDMNat1))\<rparr>))))"
 	
 	oops
 	

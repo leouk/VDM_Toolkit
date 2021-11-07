@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
@@ -22,11 +23,11 @@ public class TRMkTypeExpression extends TRExpression {
         this.typename = typename;
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)
-            report(10005, "Record type " + typename.toString() + " has not been translated yet; couldn't find its fields.");
+            report(IsaErrorMessage.ISA_RECORD_EARLYUSE_1P, typename.toString());
         else if (this.fields.size() != this.args.size())
-            report(10006, "Invalid record arguments: incompatible number of fields for VDM mk_" + typename.toString() + " expression.");
+            report(IsaErrorMessage.VDMSL_INVALID_MKARGS_3P, typename.toString(), args.size(), fields.size()); 
         else if (this.args.size() == 0)
-            report(10007, "Isabelle does not allow empty records for VDM mk_" + typename.toString() + " expression.");
+            report(IsaErrorMessage.ISA_NO_EMPTYRECORD_1P, typename.toString());
     }
 
     @Override

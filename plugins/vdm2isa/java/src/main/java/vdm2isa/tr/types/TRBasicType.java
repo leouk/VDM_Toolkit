@@ -18,6 +18,7 @@ import com.fujitsu.vdmj.tc.types.TCRealType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBasicType extends TRType
@@ -40,7 +41,7 @@ public class TRBasicType extends TRType
 		super(location);
 		this.token = token;
 		if (!VALID_TOKENS.contains(this.token))
-			report(11111, "Invalid basic type token " + token.toString());
+			report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
 		//System.out.println(toString());	
 	}
 

@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 
 public class TRPreExpression extends TRExpression {
@@ -38,7 +39,7 @@ public class TRPreExpression extends TRExpression {
         sb.append(args.getFormattingSeparator());
         sb.append(args.translate());
         sb.append(IsaToken.RPAREN.toString());
-        report(11111, "Function pre expressions require top-level definition of corresponding implicit pre. NOT YET!");
+        report(IsaErrorMessage.PLUGIN_NYI_2P, "translation", "function pre expression");
         return sb.toString();
     } 
 }

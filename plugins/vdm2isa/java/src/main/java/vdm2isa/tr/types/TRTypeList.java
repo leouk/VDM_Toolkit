@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.tc.types.TCTypeList;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 
 public class TRTypeList extends TRMappedList<TCType, TRType>
@@ -58,7 +59,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 
 	private boolean isValidInvTranslateCall(List<String> varNames)
 	{
-		return varNames.size() > size();
+		return varNames.size() <= size();
 	}
 
 	/**
@@ -72,19 +73,18 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	 */
 	public String invTranslate(List<String> varNames)
 	{
-		if (isValidInvTranslateCall(varNames))
+		boolean validCall = isValidInvTranslateCall(varNames);
+		if (!validCall)
 		{
-			report(11111, "Inconsistent invariant translation call in type list: " + 
-					GeneralisaPlugin.plural(varNames.size(), "variable name", "s") + 
-					" " + varNames.toString() + " for " + 
-					GeneralisaPlugin.plural(size(), "declared type", "s") + ".");
-			//System.out.println(varNames);
-			//Throwable t = new Throwable();t.printStackTrace();
+			report(IsaErrorMessage.ISA_TYPELIST_INVTR_SIZE_3P, GeneralisaPlugin.plural(varNames.size(), "variable name", "s"), 
+				varNames.toString(), GeneralisaPlugin.plural(size(), "declared type", "s"));
+			//System.out.println(varNames);//Throwable t = new Throwable();t.printStackTrace();
 		}
+		// can ask to up to size but not beyond
 		StringBuilder sb = new StringBuilder();
-		if (!isEmpty() && varNames.size() <= this.size()) 
+		if (!isEmpty() && validCall) 
 		{
-			sb.append("(");
+			sb.append(IsaToken.LPAREN.toString());
 			sb.append(get(0).invTranslate(varNames.get(0)));
 			for (int i = 1; i < varNames.size(); i++)
 			{
@@ -93,7 +93,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 				sb.append(getFormattingSeparator());
 				sb.append(get(i).invTranslate(varNames.get(i)));
 			}
-			sb.append(")");
+			sb.append(IsaToken.RPAREN.toString());
 		}
 		return sb.toString();	
 	}

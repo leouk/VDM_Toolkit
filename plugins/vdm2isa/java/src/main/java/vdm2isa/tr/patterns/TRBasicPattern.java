@@ -15,6 +15,7 @@ import com.fujitsu.vdmj.tc.patterns.TCRealPattern;
 import com.fujitsu.vdmj.tc.patterns.TCStringPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRBasicPattern extends TRPattern {
@@ -41,7 +42,7 @@ public class TRBasicPattern extends TRPattern {
         this.token = token;
         this.pattern = pattern;
         if (!VALID_TOKENS.contains(this.token))
-            report(11111, "Invalid basic pattern token " + token.toString());
+            report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
     }
     
     public TRBasicPattern(TCIdentifierPattern owner)

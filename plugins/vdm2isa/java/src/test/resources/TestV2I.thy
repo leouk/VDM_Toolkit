@@ -42,7 +42,7 @@ definition
 where
 	"mkr n \<equiv> 
 	\<comment>\<open>User defined body of mkr\<close>
-	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
+	\<lparr>x\<^sub>R = n, y\<^sub>R = (n,+,(1::VDMNat1))\<rparr>"
 
 	
 definition
@@ -607,7 +607,7 @@ abbreviation
 	v30 :: "VDMNat1"
 where
 	"v30 \<equiv> ((2::VDMNat1) ^ nat (3::VDMNat1))
-	\<comment>\<open>result is context dependenant on second argument type being nat or real.\<close>"
+	\<comment>\<open>result of the power operator is context dependenant on second argument type being nat or real.\<close>"
 
 definition
 	inv_v30 :: "\<bool>"

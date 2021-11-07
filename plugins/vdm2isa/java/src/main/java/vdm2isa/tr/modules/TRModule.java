@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.mapper.FileList;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
@@ -66,7 +67,7 @@ public class TRModule extends TRNode
     @Override
     public String invTranslate()
     {
-        report(11111, "Module \"" + name.toString() + "\" does not required Isabelle invariant translation.");
+		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getName(), name.toString());
         return "";
     }
 

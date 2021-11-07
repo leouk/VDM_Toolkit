@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleSetBind;
@@ -70,9 +71,8 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(getFormattingSeparator());
         if (bind instanceof TRMultipleTypeBind)
         {
-            String commentStr = "Type bound sequence compression is not supported in Isabelle."; 
-            report(11111, commentStr);
-            sb.append(IsaToken.comment(commentStr, getFormattingSeparator()));
+            report(IsaErrorMessage.ISA_TYPEBOUND_SEQCOMP);
+            sb.append(IsaToken.comment(IsaErrorMessage.ISA_TYPEBOUND_SEQCOMP.message, getFormattingSeparator()));
         }
         // vdmPatternsOnly=false because sequence comp expr are allowed within Isabelle [x+x | x in seq S ] 
         // type binds in sequence don't need compTranslate, given their invariants will be checked later in bindStr 
@@ -113,6 +113,7 @@ public class TRSeqCompExpression extends TRExpression {
                 IsaToken.antiquotation(IsaToken.ISAR_TERM, bind.getRHS().translate()) + "\n\t" + "  " +
                 "has a VDM ord_ predicate.";
             sb.append("\n\t" + IsaToken.comment(setbindProblem));
+            warning(11111, "SAY SAME AS ABOVE SHORTER");
         }
         return sb.toString();
     }
