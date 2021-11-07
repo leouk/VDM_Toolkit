@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -34,7 +35,14 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
-	public String tokenise(IsaToken token, LexLocation location, TRExpression... args)
+    /**
+     * General tokenisation of operator-based expressions. The underlying caller's semantic separator is used
+     * @param token
+     * @param location
+     * @param args
+     * @return
+     */
+	protected String tokenise(IsaToken token, LexLocation location, TRExpression... args)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(tldIsaComment());
@@ -60,19 +68,19 @@ public abstract class TRExpression extends TRNode
             case INVERSE:
             case POWER:
                 if (args.length != 1)
-                    report(10013, "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append("(");
+                    sb.append(IsaToken.LPAREN.toString());
                     sb.append(token.toString());
-                    sb.append(" ");
+                    sb.append(getSemanticSeparator());
                     sb.append(args[0].translate());
-                    sb.append(")");
+                    sb.append(IsaToken.RPAREN.toString());
                 }
                 break;
             case UPLUS: // +x is just x
                 if (args.length != 1)
-                    report(10013, "Invalid TRUnaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                     sb.append(args[0].translate());
                 break;
@@ -113,39 +121,41 @@ public abstract class TRExpression extends TRNode
             //     Might even need a separate class from TRBinaryExpression! 
             case EQUALS:
                 if (args.length != 2)
-                    report(10014, "Invalid TRBinaryExpression arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append("(");
+                    sb.append(IsaToken.LPAREN.toString());
                     sb.append(args[0].translate());
-                    sb.append(" ");
+                    sb.append(getSemanticSeparator());
                     sb.append(token.toString());
-                    sb.append(" ");
+                    sb.append(getSemanticSeparator());
                     sb.append(args[1].translate());
-                    sb.append(")");
+                    sb.append(IsaToken.RPAREN.toString());
                 }
                 break;
             case STARSTAR:
             case STARSTARNAT:
                 if (args.length != 2)
-                    report(10015, "Invalid power arguments for " + token + " length(" + args.length + ") = " + TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append("(");
+                    sb.append(IsaToken.LPAREN.toString());
                     sb.append(args[0].translate());
-                    sb.append(" ");
+                    sb.append(getSemanticSeparator());
                     sb.append(token.toString());
-                    sb.append(" ");
+                    sb.append(getSemanticSeparator());
                     sb.append(args[1].translate());
-                    sb.append(")\n\t");
-                    String comment = "result is context dependenant on second argument type being nat or real.";
+                    sb.append(IsaToken.RPAREN.toString());
+                    sb.append(getFormattingSeparator());
+                    //sb.append("\n\t");
+                    String comment = "result of the power operator is context dependenant on second argument type being nat or real.";
                     sb.append(IsaToken.comment(comment));
                     warning(11001, comment);
                 }
                 break;
             
             default:
-                report(10016, "Not yet implemented translation for token " + token.toString() + " " + TRExpressionList.translate(args));
+                report(IsaErrorMessage.PLUGIN_NYI_2P, "token " + token.toString(), TRExpressionList.translate(args));
         }
         return sb.toString();
     }

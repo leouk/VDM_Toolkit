@@ -23,7 +23,18 @@ public class TRBinaryExpression extends TRExpression
 		//@todo equals expression has to be specialised because of record and other equality tests ? 
 		this.op = op;
 		this.right = right;
+		if (isaToken().equals(IsaToken.STARSTAR) || isaToken().equals(IsaToken.STARSTARNAT))
+			// add because of comment on potential problem? 
+			setFormattingSeparator("\n\t");
 	}
+
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+		// binary operator are spaced given Isabelle currying
+        setSemanticSeparator(" ");
+    }
 
 	@Override
 	public IsaToken isaToken()

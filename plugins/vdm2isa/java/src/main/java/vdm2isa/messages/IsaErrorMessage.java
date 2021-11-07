@@ -5,7 +5,7 @@ package vdm2isa.messages;
  */
 public enum IsaErrorMessage {
      
-    //PLUGIN_MESSAGES
+    //Plugin messages relate to incomplete or incompatible issues
     PLUGIN_NYI_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0, 
                             "Not yet implemented %1$s for %2$s"),
     PLUGIN_MISSING_MAPPING_ERROR_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0,
@@ -13,7 +13,7 @@ public enum IsaErrorMessage {
     PLUGIN_UNEXPECTED_ERROR_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 0,
                             "Unexpected exception when converting %1$s = %2$s"),
 
-    //VDM_MESSAGES
+    //VDM messages relate to ill formed ASTs; properly (VDMJ) typechecked ASts should never raise those
     VDMSL_VDM10_ONLY        (VDM2IsaError.ISABELLE_ERROR_BASE + 1, 
                             "Only VDMSL supports Isabelle translation."),
     VDMSL_INVALID_PATTERN   (VDM2IsaError.ISABELLE_ERROR_BASE + 2, 
@@ -26,15 +26,22 @@ public enum IsaErrorMessage {
                             "Explicit funciton has declared %1$s but no definition AST."),
     VDMSL_INVALID_CURRIED_FCNTYPE_2P(VDM2IsaError.ISABELLE_ERROR_BASE + 5,
                             "Inconsistent curried function declaration \"%1$s\": intermediate result does not have function type - %2$s"),
-                   
-    //POG_MESSAGES
+    VDMSL_INVALID_EXPR_4P(VDM2IsaError.ISABELLE_ERROR_BASE + 5,
+                            "Invalid %1$s arguments for \"%2$s\" length(%3$s) = %4$s."),
+    VDMSL_INVALID_TUPLE_TYPE_3P(VDM2IsaError.ISABELLE_ERROR_BASE + 5, 
+                            "Invalid type for tuple projection expression %1$s.#%2$s = %3$s"),
+    VDMSL_INVALID_TUPLE_PROJECTION_3P(VDM2IsaError.ISABELLE_ERROR_BASE + 5,
+                            "Invalid tuple projection field (%1$s) is bigger than tuple size (%2$s)."), 
+                            
+    //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_ERROR_BASE + 1, 
                             "VDM PO (%1$s) %2$s %3$s error \"%4$s\"; should never happen."),
     PO_INVALID_PO_MODULE_1P (VDM2IsaError.ISABELLE_ERROR_BASE + 2, 
                             "Invalid proof obligations module %1$s"),
     PO_INVALID_DEF_ERROR    (VDM2IsaError.ISABELLE_ERROR_BASE + 3, 
                             "Invalid module PO list: only PO expressions or proofs scripts are allowed"),
-    //ISA_MESSAGES
+
+    //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_ERROR_BASE + 4,
                             "Invalid IsaItem %1$s: %2$s has already been defined in module %3$s"), 
     ISA_SEP_ERROR_2P        (VDM2IsaError.ISABELLE_ERROR_BASE + 5,

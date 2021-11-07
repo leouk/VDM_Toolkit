@@ -172,6 +172,14 @@ public class TRUnaryExpression extends TRExpression {
 		this.exp = exp;
 	}
 
+	@Override 
+    protected void setup()
+    {
+        super.setup();
+		// unary operator are spaced given Isabelle currying
+        setSemanticSeparator(" ");
+    }
+
     @Override
     public String translate() 
     {
