@@ -214,5 +214,33 @@ functions
 	 
 	isa_rng_antirestr[@D,@R]: (map @D to @R) * (set of @R) -> (map @D to @R)
 	isa_rng_antirestr(m, S) == m :-> S;
+
+
+	min: nat * nat -> nat
+	min(x, y) == if x < y then x else y;
+	
+	take[@e]: nat * seq of @e -> seq of @e
+	take(n, s) == s(1,...,n)
+	--pre n <= len s
+	post
+		len RESULT = min(n, len s)
+		and
+		elems RESULT subset elems s;
+
+	--@doc checks whether s is prefix closed with t (i.e. subseq of t).
+	seq_prefix[@e]: seq of @e * seq of @e -> bool
+	seq_prefix(s,t) == 
+		(s = t) or (s = []) 
+		or 
+		(len s <= len t and (exists i in set inds t & s = take[@e](i, t)))
+	post
+		--@OnFail("seq prefix %1$s [= %2$s", s, t)
+		(RESULT 
+		 =>
+		 (elems s subset elems t
+		  and
+		  len s <= len t
+		 )
+		);
 								
 end VDMToolkit
