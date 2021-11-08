@@ -421,7 +421,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 						boolean removed = varNames.remove(resultName);
 						if (!removed)
 						{
-							warning(11111, "Could not find \"" + resultName + "\" variable in implicit post condition specification definition");
+							warning(IsaWarningMessage.VDMSL_MISSING_RESULT_IN_POST_1P, resultName);
 						}
 					}
 					paramsStr.append(type.parameters.getFormattingSeparator());
@@ -432,7 +432,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 				if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
 				{
-					warning(11111, "Linient post condition translation for curried definitions yet to be implemented!");
+					warning(IsaWarningMessage.PLUGIN_NYI_2P, "linient post condition for curried definitions", name.toString());
 				}
 			} 
 			else
