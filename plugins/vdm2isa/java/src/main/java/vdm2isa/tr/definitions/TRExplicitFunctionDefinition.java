@@ -19,6 +19,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -288,8 +289,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// case ORD:
 			// 	break;
 			default:
-				warning(11111, "Not yet creating implicit definition for missing specification " + 
-				kind + " for function " + name.toString());
+				warning(IsaWarningMessage.PLUGIN_NYI_2P, "implicit definition for missing specification " + kind.name(), 
+					name.toString());
 				break;
 		}
 		assert undeclaredName != null;

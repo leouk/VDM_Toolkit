@@ -9,7 +9,9 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
@@ -78,8 +80,10 @@ public abstract class TRDefinition extends TRNode
 
 		if (annotations != null && annotations.size() > 0)
 		{
-			warning(11050, "Not yet processing annotations");
-			sb.append("(* NOT YET PROCESSING ANNOTATIONS *)\n");
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, "annotations", getClass().getName());
+			sb.append(IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN,	
+				IsaWarningMessage.PLUGIN_NYI_2P.format("annotations", getClass().getName()),
+				IsaToken.BLOCK_COMMENT_CLOSE));
 		}
 
 		// issue TLD comment, if any

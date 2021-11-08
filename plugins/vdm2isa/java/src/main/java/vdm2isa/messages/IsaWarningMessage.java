@@ -1,7 +1,12 @@
 package vdm2isa.messages;
 
 public enum IsaWarningMessage {
-          VDMSL_VDM10(VDM2IsaWarning.ISABELLE_WARNING_BASE + 0, 
+
+    //Plugin messages relate to incomplete or incompatible issues
+    PLUGIN_NYI_2P(VDM2IsaWarning.ISABELLE_W_PLUGIN_BASE + 0, 
+        "Not yet implemented %1$s for %2$s"),
+
+    VDMSL_VDM10(VDM2IsaWarning.ISABELLE_WARNING_BASE + 0, 
                       "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release."),
     SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_WARNING_BASE + 1, 
                       "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"),
