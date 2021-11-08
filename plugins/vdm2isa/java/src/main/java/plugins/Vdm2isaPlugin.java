@@ -4,11 +4,15 @@
 
 package plugins;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import vdm2isa.tr.TRNode;
@@ -85,7 +89,19 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 
 			try
 			{
-				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+				TCModuleList tclist_filtered = new TCModuleList(); 
+				tclist_filtered.addAll(tclist);
+				Iterator<TCModule> mi = tclist_filtered.iterator();
+				while (mi.hasNext())
+				{
+					if (mi.next().name.getName().equals("VDMToolkit"))
+					{
+						mi.remove();
+						break;
+					}
+				} 
+
+				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist_filtered);//tclist);
 
 				// be strict on translation output
 				// strict => GeneralisaPlugin.getErrorCount() == 0
