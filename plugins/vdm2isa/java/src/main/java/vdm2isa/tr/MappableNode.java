@@ -4,7 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarning;
+import vdm2isa.messages.IsaWarningMessage;
 
 /**
  * Interface for all mappable nodes (i.e. TRNode and its lists and lists of lists etc.)
@@ -36,8 +36,8 @@ public interface MappableNode extends Mappable {
 	
 	public void report(IsaErrorMessage message);
 	public void report(IsaErrorMessage message, Object... args);
-	public void warning(IsaWarning message);
-	public void warning(IsaWarning warning, Object... args);
+	public void warning(IsaWarningMessage message);
+	public void warning(IsaWarningMessage warning, Object... args);
 	
 	public String getSemanticSeparator();
 	public String setSemanticSeparator(String sep);

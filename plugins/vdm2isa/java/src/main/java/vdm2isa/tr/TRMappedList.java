@@ -14,7 +14,7 @@ import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarning;
+import vdm2isa.messages.IsaWarningMessage;
 
 /**
  * Tighthened target (TO) type with an interface containing the key TRNode-related methods
@@ -226,7 +226,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public void warning(IsaWarning warning, Object... args)
+	public void warning(IsaWarningMessage warning, Object... args)
 	{
 		GeneralisaPlugin.warning(warning, getLocation(), args);
 	}
@@ -238,7 +238,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public void warning(IsaWarning warning)
+	public void warning(IsaWarningMessage warning)
 	{
 		GeneralisaPlugin.warning(warning, getLocation(), (Object[])null);
 	}

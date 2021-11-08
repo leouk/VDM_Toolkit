@@ -24,7 +24,7 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarning;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
 
@@ -187,7 +187,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         {
             // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
             // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-            GeneralisaPlugin.warning(IsaWarning.VDMSL_VDM10, LexLocation.ANY);	
+            GeneralisaPlugin.warning(IsaWarningMessage.VDMSL_VDM10, LexLocation.ANY);	
         }
     }
 
@@ -241,12 +241,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		}
 	}
 
-	public static void warning(IsaWarning message, LexLocation location)
+	public static void warning(IsaWarningMessage message, LexLocation location)
 	{
 		warning(message, location, (Object[])null);
 	}
 
-	public static void warning(IsaWarning message, LexLocation location, Object... args)
+	public static void warning(IsaWarningMessage message, LexLocation location, Object... args)
 	{
 		report(message.number, message.format(args), location);
 	}

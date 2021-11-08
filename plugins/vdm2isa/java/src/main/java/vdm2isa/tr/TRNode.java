@@ -8,7 +8,7 @@ import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarning;
+import vdm2isa.messages.IsaWarningMessage;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;
@@ -122,7 +122,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	}
 
 	@Override
-	public void warning(IsaWarning warning)
+	public void warning(IsaWarningMessage warning)
 	{
 		GeneralisaPlugin.warning(warning, getLocation());
 	}
@@ -134,7 +134,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	}
 
 	@Override
-	public void warning(IsaWarning warning, Object... args)
+	public void warning(IsaWarningMessage warning, Object... args)
 	{
 		GeneralisaPlugin.warning(warning, getLocation(), args);
 	}

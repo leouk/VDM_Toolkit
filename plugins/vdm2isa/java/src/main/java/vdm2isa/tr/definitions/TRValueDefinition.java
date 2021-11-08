@@ -4,8 +4,6 @@
 
 package vdm2isa.tr.definitions;
 
-import javax.naming.event.NamespaceChangeListener;
-
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
