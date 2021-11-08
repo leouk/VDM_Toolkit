@@ -31,6 +31,8 @@
 -TCInstantiate
 -TCUnresolvedType
 
+TCUnionType
+
 TCOperationType
 TCParameterType
 TCPatternListTypePair
@@ -38,7 +40,6 @@ TCPatternListTypePairList
 TCPatternTypePair
 TCTypeSet
 TCUndefinedType
-TCUnionType
 TCVoidReturnType
 TCVoidType
 

@@ -21,5 +21,11 @@ types
 	eq  s1 = s2 == elems s1 = elems s2
 	ord s1 < s2 == seq_prefix[TSet](s1, s2); 
 	
+	TOptional = [nat1]
+	inv o == o <> nil => o > 10;
+	
+	TFcn = (nat1 -> nat1)
+	inv f == (forall x in set {1,2,3} & f(x) > 10);
+	
 
 end TestV2ITypes
