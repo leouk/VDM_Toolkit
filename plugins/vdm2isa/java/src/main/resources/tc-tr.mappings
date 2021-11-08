@@ -212,6 +212,7 @@ map TCPatternBind{location, pattern, bind} to TRPatternBind(location, pattern, b
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
 #############################################################################
 map TCType{} to TRType();
+map TCInvariantType{} to TRInvariantType();
 map TCTypeList{} to TRTypeList(this);
 
 map TCFunctionType{location, parameters, partial, result} to TRFunctionType(location, parameters, partial, result);
@@ -229,9 +230,8 @@ map TCQuoteType{location, value} to TRQuoteType(location, value);
 map TCProductType{location, types} to TRProductType(location, types);
 map TCMapType{location, from, to} to TRMapType(this, location, from, to);
 map TCInMapType{location, from, to} to TRMapType(this, location, from, to);
-map TCInvariantType{} to TRInvariantType();
-map TCNamedType{typename, type} to TRNamedType(typename, type);
-map TCRecordType{name, fields, composed} to TRRecordType(name, fields, composed);
+map TCNamedType{typename, type, invdef, eqdef, orddef} to TRNamedType(typename, type, invdef, eqdef, orddef);
+map TCRecordType{name, fields, composed, invdef, eqdef, orddef} to TRRecordType(name, fields, composed, invdef, eqdef, orddef);
 map TCField{tagname, type, equalityAbstraction} to TRField(tagname, type, equalityAbstraction);
 map TCFieldList{} to TRFieldList(this);
 map TCSetType{setof} to TRSetType(this, setof);

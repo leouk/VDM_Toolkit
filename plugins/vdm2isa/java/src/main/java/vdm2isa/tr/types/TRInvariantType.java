@@ -8,13 +8,16 @@ import com.fujitsu.vdmj.lex.LexLocation;
 public abstract class TRInvariantType extends TRType 
 {
 	private static final long serialVersionUID = 1L;
-    protected TRExplicitFunctionDefinition invdef = null;
-    protected TRExplicitFunctionDefinition eqdef  = null;
-    protected TRExplicitFunctionDefinition orddef = null;
+    public final TRExplicitFunctionDefinition invdef;
+    public final TRExplicitFunctionDefinition eqdef;
+    public final TRExplicitFunctionDefinition orddef;
 
-    public TRInvariantType(LexLocation location)
+    public TRInvariantType(LexLocation location, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
         super(location);
+        this.invdef = invdef;
+        this.eqdef = eqdef;
+        this.orddef = orddef;
     }
 
 	@Override
