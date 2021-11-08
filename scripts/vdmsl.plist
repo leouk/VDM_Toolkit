@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BBEditDocumentType</key>
+	<string>CodelessLanguageModule</string>
+	<key>BBLMColorsSyntax</key>
+	<true/>
+	<key>BBLMIsCaseSensitive</key>
+	<true/>
+	<key>BBLMKeywordList</key>
+	<array>
+		<string>RESULT</string>
+		<string>abs</string>
+		<string>all</string>
+		<string>always</string>
+		<string>and</string>
+		<string>as</string>
+		<string>be</string>
+		<string>bool</string>
+		<string>by</string>
+		<string>card</string>
+		<string>cases</string>
+		<string>char</string>
+		<string>comp</string>
+		<string>compose</string>
+		<string>conc</string>
+		<string>dcl</string>
+		<string>def</string>
+		<string>definitions</string>
+		<string>dinter</string>
+		<string>div</string>
+		<string>dlmodule</string>
+		<string>do</string>
+		<string>dom</string>
+		<string>dunion</string>
+		<string>elems</string>
+		<string>else</string>
+		<string>elseif</string>
+		<string>end</string>
+		<string>error</string>
+		<string>errs</string>
+		<string>exists</string>
+		<string>exists1</string>
+		<string>exit</string>
+		<string>exports</string>
+		<string>ext</string>
+		<string>false</string>
+		<string>floor</string>
+		<string>for</string>
+		<string>forall</string>
+		<string>from</string>
+		<string>functions</string>
+		<string>hd</string>
+		<string>if</string>
+		<string>imports</string>
+		<string>in</string>
+		<string>inds</string>
+		<string>init</string>
+		<string>inmap</string>
+		<string>int</string>
+		<string>inter</string>
+		<string>inv</string>
+		<string>inverse</string>
+		<string>iota</string>
+		<string>is</string>
+		<string>lambda</string>
+		<string>len</string>
+		<string>let</string>
+		<string>map</string>
+		<string>measure</string>
+		<string>merge</string>
+		<string>mk</string>
+		<string>mod</string>
+		<string>module</string>
+		<string>mu</string>
+		<string>munion</string>
+		<string>nat</string>
+		<string>nat1</string>
+		<string>nil</string>
+		<string>not</string>
+		<string>of</string>
+		<string>operations</string>
+		<string>or</string>
+		<string>others</string>
+		<string>post</string>
+		<string>power</string>
+		<string>pre</string>
+		<string>psubset</string>
+		<string>rat</string>
+		<string>rd</string>
+		<string>real</string>
+		<string>rem</string>
+		<string>renamed</string>
+		<string>return</string>
+		<string>reverse</string>
+		<string>rng</string>
+		<string>seq</string>
+		<string>seq1</string>
+		<string>set</string>
+		<string>skip</string>
+		<string>specified</string>
+		<string>st</string>
+		<string>state</string>
+		<string>struct</string>
+		<string>subset</string>
+		<string>then</string>
+		<string>tixe</string>
+		<string>tl</string>
+		<string>to</string>
+		<string>token</string>
+		<string>traces</string>
+		<string>trap</string>
+		<string>true</string>
+		<string>types</string>
+		<string>undefined</string>
+		<string>union</string>
+		<string>uselib</string>
+		<string>values</string>
+		<string>while</string>
+		<string>with</string>
+		<string>wr</string>
+		<string>yet</string>
+	</array>
+	<key>BBLMLanguageCode</key>
+	<string>leo</string>
+	<key>BBLMLanguageDisplayName</key>
+	<string>leo</string>
+	<key>BBLMScansFunctions</key>
+	<false/>
+	<key>BBLMSuffixMap</key>
+	<array>
+		<dict>
+			<key>BBLMIsSourceKind</key>
+			<true/>
+			<key>BBLMLanguageSuffix</key>
+			<string>.vdmsl</string>
+		</dict>
+	</array>
+	<key>Language Features</key>
+	<dict>
+		<key>Close Parameter Lists</key>
+		<string/>
+		<key>Close Statement Blocks</key>
+		<string/>
+		<key>Close Strings 1</key>
+		<string>"</string>
+		<key>Close Strings 2</key>
+		<string>'</string>
+		<key>End-of-line Ends Strings 1</key>
+		<true/>
+		<key>End-of-line Ends Strings 2</key>
+		<true/>
+		<key>Escape Char in Strings 1</key>
+		<string>\</string>
+		<key>Escape Char in Strings 2</key>
+		<string>\</string>
+		<key>Identifier and Keyword Characters</key>
+		<string>01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'</string>
+		<key>Open Line Comments</key>
+		<string>-- </string>
+		<key>Open Parameter Lists</key>
+		<string/>
+		<key>Open Stament Blocks</key>
+		<string/>
+		<key>Open Strings 1</key>
+		<string>"</string>
+		<key>Open Strings 2</key>
+		<string>'</string>
+		<key>Prefix for Functions</key>
+		<string/>
+		<key>Prefix for Procedures</key>
+		<string/>
+		<key>Terminator for Prototypes 1</key>
+		<string/>
+		<key>Terminator for Prototypes 2</key>
+		<string/>
+	</dict>
+</dict>
+</plist>

@@ -36,22 +36,25 @@ The instructions below presumes a Linux/MacOS environment, but Windows should be
 
 # Scripts
 
-## setlinks
+## `setlinks`
 Sets new VDMJ version links into VSCode distribution
 
-## unsetlinks
+## `unsetlinks`
 Unsets new VDMJ version links into VSCode distribution
 
-## vdmj_build
+## `vdmj_build`
 Build's VDMJ linking jars to `/usr/local/lib` (or other set in)  `vdmj_env` variables. Assumes `vdmj` linked to `/usr/local/bin`.
 
-## vdmj_env
+## `vdmj_env`
 Sets key VDMJ and build environment variables.
 
 * **TODO: fix/complete! **
 
-## vdmj
+## `vdmj`
 `rlwrap`ped script call for VDMJ. This enables console "history" in VDMJ. It uses my prefered VDMJ flags too. Link to `/usr/local/bin`.
 
-## vdmj0
+## `vdmj0`
 Simplest/raw script call for VDMJ. This enables external tool (e.g. Overture builders) integration with VDMJ without console wrapping and other xinenegans. Link to `/usr/local/bin`.
+
+## `vdmsl.plist`
+[BBEdit](http://www.barebones.com) Language module for VDM-SL for quick syntax highlighting. Past it into right directory as described in their [documention](http://www.barebones.com/support/bbedit/plugin_library.html).
