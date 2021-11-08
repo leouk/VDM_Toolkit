@@ -9,8 +9,8 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRNamedType extends TRInvariantType
 {
 	private static final long serialVersionUID = 1L;
-    private final TCNameToken typename;
-    private final TRType type;
+    public  final TCNameToken typename;
+    public final TRType type;
     
     public TRNamedType(TCNameToken typename, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {

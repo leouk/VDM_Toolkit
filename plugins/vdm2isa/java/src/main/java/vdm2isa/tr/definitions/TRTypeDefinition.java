@@ -7,9 +7,16 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRInvariantType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
+import vdm2isa.tr.types.TROptionalType;
+import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRSeqType;
+import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -28,6 +35,7 @@ public class TRTypeDefinition extends TRDefinition {
     private final TRPattern ordPattern1;
     private final TRPattern ordPattern2;
     private final TRExpression ordExpression;
+    private final TRNamedTypeDefinitionKind nameDefKind;
 	
     private final TRExplicitFunctionDefinition invdef;
     private final TRExplicitFunctionDefinition eqdef;
@@ -37,6 +45,10 @@ public class TRTypeDefinition extends TRDefinition {
     
     private boolean infinite; 
 	private TRDefinitionList composeDefinitions;
+
+    public enum TRNamedTypeDefinitionKind {
+        UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, QUOTE, SEQ, SET, UNION  
+    }
 
     public TRTypeDefinition(TRIsaVDMCommentList comments, 
         TCAnnotationList annotations, 
@@ -79,6 +91,7 @@ public class TRTypeDefinition extends TRDefinition {
         this.maxdef = maxdef;
         this.infinite = infinite;
         this.composeDefinitions = composeDefinitions;
+        this.nameDefKind = figureOutTypeDefinitionKind();
         System.out.println(toString());
     }
 
@@ -88,6 +101,7 @@ public class TRTypeDefinition extends TRDefinition {
         return "TRTypeDef for " + 
         " \n\tname        = " + String.valueOf(name) +
         " \n\tlocal	      = " + local + 
+        " \n\tkind        = " + nameDefKind + 
         " \n\tused	      = " + used + 
         " \n\texcluded    = " + excluded + 
         " \n\tinfinite    = " + infinite +
@@ -111,6 +125,34 @@ public class TRTypeDefinition extends TRDefinition {
         " \n\tin		  = " + location.toString();
 	}
     
+    private TRNamedTypeDefinitionKind figureOutTypeDefinitionKind()
+    {
+        TRNamedTypeDefinitionKind result = TRNamedTypeDefinitionKind.UNKNOWN; 
+        if (type instanceof TRRecordType)
+            result = TRNamedTypeDefinitionKind.RECORD;
+        else if (type instanceof TRNamedType)
+        {
+            TRNamedType tnt = (TRNamedType)type;
+            if (tnt.type instanceof TRBasicType)
+                result = TRNamedTypeDefinitionKind.BASIC;
+            else if (tnt.type instanceof TRFunctionType)
+                result = TRNamedTypeDefinitionKind.FUNCTION;
+            else if (tnt.type instanceof TRMapType)
+                result = TRNamedTypeDefinitionKind.MAP;
+            else if (tnt.type instanceof TROptionalType)
+                result = TRNamedTypeDefinitionKind.OPTIONAL;
+            else if (tnt.type instanceof TRQuoteType)
+                result = TRNamedTypeDefinitionKind.QUOTE;
+            else if (tnt.type instanceof TRSeqType)
+                result = TRNamedTypeDefinitionKind.SEQ;
+            else if (tnt.type instanceof TRSetType)
+                result = TRNamedTypeDefinitionKind.SET;
+            // else if (tnt.type instanceof TRUnionType)
+            //     result = TRNamedTypeDefinitionKind.UNION;
+        }
+        return result;
+    }
+
     @Override
     public IsaToken isaToken()
     {
@@ -147,6 +189,33 @@ public class TRTypeDefinition extends TRDefinition {
         {
             // named type translation is relative to what kind of type it is 
             TRNamedType trtype = (TRNamedType)type;
+
+            switch (nameDefKind)
+            {
+            case BASIC:
+                break;
+            case FUNCTION:
+                break;
+            case MAP:
+                break;
+            case OPTIONAL:
+                break;
+            case QUOTE:
+                break;
+            case RECORD:
+                break;
+            case SEQ:
+                break;
+            case SET:
+                break;
+            case UNION:
+                break;
+            case UNKNOWN:
+                break;
+            default:
+                break;
+                
+            }
 
             // translate named type definition
             
