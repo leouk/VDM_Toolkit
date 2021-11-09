@@ -26,6 +26,12 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 		super(list);
 	}
 
+	@Override
+	public String toString()
+	{
+		return getFlatDefinitionList().toString();
+	}
+
     //TODO maybe make this a field called once given the structure never changes?
 	public TRDefinitionList getFlatDefinitionList()
 	{

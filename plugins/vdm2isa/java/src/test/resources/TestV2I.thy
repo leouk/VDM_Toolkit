@@ -8,24 +8,72 @@ imports VDMToolkit
 begin
 
 
-definition
-	pre_recbind :: "\<bool>"
+record R = 
+	x\<^sub>R :: "VDMNat"
+	 y\<^sub>R :: "VDMNat"
+	
+	definition
+	inv_R :: "R \<Rightarrow> \<bool>"
 where
-	"pre_recbind  \<equiv> True"
+	"inv_R dummy0 \<equiv> 
+		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+	 ((inv_VDMNat (y\<^sub>R dummy0)))
+		)"
+
+	
+definition
+	pre_mkr :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"pre_mkr n \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_mkr specification\<close>
+		((inv_VDMNat n))"
 
 definition
-	post_recbind :: "VDMNat \<Rightarrow> \<bool>"
+	post_mkr :: "VDMNat\<Rightarrow> R \<Rightarrow> \<bool>"
 where
-	"post_recbind RESULT \<equiv> 
+	"post_mkr n  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_mkr specification\<close>
+		((inv_VDMNat n)  \<and>  
+		(((inv_VDMNat (x\<^sub>R RESULT))) \<and>
+	 ((inv_VDMNat (y\<^sub>R RESULT)))
+		))"
+
+definition
+	mkr :: "VDMNat \<Rightarrow> R"
+where
+	"mkr n \<equiv> 
+	\<comment>\<open>User defined body of mkr\<close>
+	\<lparr>x\<^sub>R = n, y\<^sub>R = (n+(1::VDMNat1))\<rparr>"
+
+	
+definition
+	pre_recbind :: "R \<Rightarrow> \<bool>"
+where
+	"pre_recbind dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_recbind specification\<close>
+		(
+		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+	 ((inv_VDMNat (y\<^sub>R dummy0)))
+		))"
+
+definition
+	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+where
+	"post_recbind dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_recbind specification\<close>
-		((inv_VDMNat RESULT))"
+		(
+		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+	 ((inv_VDMNat (y\<^sub>R dummy0)))
+		)  \<and>  (inv_VDMNat RESULT))"
 
 definition
-	recbind :: "VDMNat"
+	recbind :: "R \<Rightarrow> VDMNat"
 where
-	"recbind  \<equiv> 
-	\<comment>\<open>User defined body of recbind\<close>
-	(x + y)"
+	"recbind dummy0 \<equiv> 
+	\<comment>\<open>Implicit record pattern projection conversion\<close>
+	let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+			\<comment>\<open>User defined body of recbind\<close>
+			(x + y)"
 
 	
 abbreviation
@@ -991,6 +1039,18 @@ where
 	
 	
 abbreviation
+	v65 :: "R"
+where
+	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
+
+	definition
+	inv_v65 :: "\<bool>"
+where
+	"inv_v65  \<equiv> inv_R v65"
+
+	
+	
+abbreviation
 	v651 :: "VDMNat"
 where
 	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>))"
@@ -999,6 +1059,42 @@ where
 	inv_v651 :: "\<bool>"
 where
 	"inv_v651  \<equiv> (inv_VDMNat v651)"
+
+	
+	
+abbreviation
+	v652 :: "VDMNat"
+where
+	"v652 \<equiv> (x\<^sub>R (v65))"
+
+	definition
+	inv_v652 :: "\<bool>"
+where
+	"inv_v652  \<equiv> (inv_VDMNat v652)"
+
+	
+	
+abbreviation
+	v653 :: "VDMNat"
+where
+	"v653 \<equiv> (x\<^sub>R ((mkr (1::VDMNat1))))"
+
+	definition
+	inv_v653 :: "\<bool>"
+where
+	"inv_v653  \<equiv> (inv_VDMNat v653)"
+
+	
+	
+abbreviation
+	v67 :: "R"
+where
+	"v67 \<equiv> (v65)\<lparr>x\<^sub>R := (10::VDMNat1), y\<^sub>R := (20::VDMNat1)\<rparr>"
+
+	definition
+	inv_v67 :: "\<bool>"
+where
+	"inv_v67  \<equiv> inv_R v67"
 
 	
 	

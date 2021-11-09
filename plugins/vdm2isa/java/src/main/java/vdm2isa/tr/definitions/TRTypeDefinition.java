@@ -114,22 +114,22 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         " \n\texcluded    = " + excluded + 
         " \n\tinfinite    = " + infinite +
         " \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
-        " \n\ttype        = " + (getType() != null ? getType().translate() : "null") + 
-        " \n\tinvPattern  = " + (invPattern != null ? invPattern.translate() + " [" + invPattern.getClass().getName() + "]": "null") +
-        " \n\tinvExpr     = " + (invExpression != null ? invExpression.translate() : "null") +
-        " \n\teqPattern1  = " + (eqPattern1 != null ? eqPattern1.translate() + " [" + eqPattern1.getClass().getName() + "]": "null") + 
-        " \n\teqPattern2  = " + (eqPattern2 != null ? eqPattern2.translate() + " [" + eqPattern2.getClass().getName() + "]": "null") +
-        " \n\teqExpr      = " + (eqExpression != null ? eqExpression.translate() : "null") +
-        " \n\tordPattern1 = " + (ordPattern1 != null ? ordPattern1.translate() + " [" + ordPattern1.getClass().getName() + "]": "null") +
-        " \n\tordPattern2 = " + (ordPattern2 != null ? ordPattern2.translate() + " [" + ordPattern2.getClass().getName() + "]": "null") +
-        " \n\tordExpr     = " + (ordExpression != null ? ordExpression.translate() : "null") +
+        " \n\ttype        = " + String.valueOf(getType()) + //(getType() != null ? getType().translate() : "null") + 
+        " \n\tinvPattern  = " + (invPattern != null ? invPattern.getClass().getName() + ": " + invPattern.toString() : "null") +
+        " \n\tinvExpr     = " + String.valueOf(invExpression) + //(invExpression != null ? invExpression.translate() : "null") +
+        " \n\teqPattern1  = " + (eqPattern1 != null ? eqPattern1.getClass().getName() + ": " + eqPattern1.toString() : "null") + 
+        " \n\teqPattern2  = " + (eqPattern2 != null ? eqPattern2.getClass().getName() + ": " + eqPattern2.toString() : "null") +
+        " \n\teqExpr      = " + String.valueOf(eqExpression) + //(eqExpression != null ? eqExpression.translate() : "null") +
+        " \n\tordPattern1 = " + (ordPattern1 != null ? ordPattern1.getClass().getName() + ": " + ordPattern1.toString() : "null") +
+        " \n\tordPattern2 = " + (ordPattern2 != null ? ordPattern1.getClass().getName() + ": " + ordPattern2.toString() : "null") +
+        " \n\tordExpr     = " + String.valueOf(ordExpression) + //(ordExpression != null ? ordExpression.translate() : "null") +
         // avoid calling translate for TLD as it creates a record of what has been translated!  
         " \n\tinvdef      = " + (invdef  != null ? invdef.getClass().getName()  + ": \n\t========\n\t" + invdef.toString() + "\n\t=======\n\t"/*invdef.translate()*/  : "null") +
         " \n\teqdef       = " + (eqdef  != null ? eqdef.getClass().getName()  + ": \n\t========\n\t" + eqdef.toString() + "\n\t=======\n\t"/*eqdef.translate()*/  : "null") +
         " \n\torddef      = " + (orddef != null ? orddef.getClass().getName() + ": \n\t========\n\t" + orddef.toString() + "\n\t========\n\t"/*orddef.translate()*/ : "null") +
         " \n\tmindef      = " + (mindef  != null ? mindef.getClass().getName()  + ": \n\t========\n\t" + mindef.toString() + "\n\t=======\n\t"/*mindef.translate()*/  : "null") +
         " \n\tmaxdef      = " + (maxdef  != null ? maxdef.getClass().getName()  + ": \n\t========\n\t" + maxdef.toString() + "\n\t=======\n\t"/*maxdef.translate()*/  : "null") +
-        " \n\tcomposeDefs = " + (composeDefinitions != null ? composeDefinitions.toString() : "") +//composeDefinitions.getFlatDefinitionList().toString() : "null") +
+        " \n\tcomposeDefs = " + String.valueOf(composeDefinitions) + //(composeDefinitions != null ? composeDefinitions.toString() : "") +//composeDefinitions.getFlatDefinitionList().toString() : "null") +
         " \n\tin		  = " + location.toString();
 	}
     

@@ -169,15 +169,16 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			" \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
 			" \n\tkind	      = " + implicitSpecificationKind +
 			" \n\ttype params = " + String.valueOf(typeParams) + 
-			" \n\ttype sig    = " + (type != null ? type.translate() : "null") + 
-			" \n\ttype sig in = " + (type != null ? type.parameters.translate() + " [" + type.parameters.size() + "]": "null") +
-			" \n\ttype sig out= " + (type != null ? type.result.translate() : "null") +
-			" \n\tparameters  = " + (parameters != null ? parameters.toString() : null)+ 
-			" \n\tbody        = " + (body != null ? body.translate() : "null") + 
-			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.translate()  : "null") + 
-			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.translate() : "null") + 
+			" \n\ttype sig    = " + String.valueOf(type) + //(type != null ? type.translate() : "null") + 
+			" \n\ttype sig in = " + (type != null ? String.valueOf(type.parameters)//.translate() + " [" + type.parameters.size() + "]" 
+													: "null") +
+			" \n\ttype sig out= " + String.valueOf(type) + //(type != null ? type.result.translate() : "null") +
+			" \n\tparameters  = " + String.valueOf(parameters) + //(parameters != null ? parameters.toString() : null)+ 
+			" \n\tbody        = " + String.valueOf(body) + // (body != null ? body.translate() : "null") + 
+			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.toString()  : "null") + 
+			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.toString() : "null") + 
 			" \n\tisTypeInv   = " + isTypeInvariant +
-			" \n\tmeasure     = " + (measureExp != null ? measureExp.getClass().getName() + ": " + measureExp.translate() : "null") +
+			" \n\tmeasure     = " + (measureExp != null ? measureExp.getClass().getName() + ": " + measureExp.toString() : "null") +
 			" \n\tisCurried   = " + isCurried +
 			// avoid calling translate for TLD as it creates a record of what has been translated!  
 			" \n\tpredef      = " + (predef  != null ? predef.getClass().getName()  + ": \n\t========\n\t" + predef.toString() + "\n\t========\n\t"/*predef.translate()*/  : "null") +
