@@ -8,19 +8,6 @@ imports VDMToolkit
 begin
 
 
-record R = 
-	x\<^sub>R :: "VDMNat"
-	 y\<^sub>R :: "VDMNat"
-	
-	definition
-	inv_R :: "R \<Rightarrow> \<bool>"
-where
-	"inv_R dummy0 \<equiv> 
-		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-	 ((inv_VDMNat (y\<^sub>R dummy0)))
-		)"
-
-	
 definition
 	pre_mkr :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -1174,7 +1161,7 @@ abbreviation
 	v722 :: "VDMNat1"
 where
 	"v722 \<equiv> (
-		let (r::VDMReal) = (4.0)
+		let (r::VDMReal);=;(4.0)
 		in
 			(if ((inv_VDMReal r)) then
 			vdm_narrow_real ((r)::VDMReal)
@@ -1275,8 +1262,8 @@ abbreviation
 	v79 :: "VDMNat1"
 where
 	"v79 \<equiv> (
-		let (var::VDMNat) = (10::VDMNat1);
-	(var2::VDMNat1) = (20::VDMNat1)
+		let (var::VDMNat);=;(10::VDMNat1);
+	(var2::VDMNat1);=;(20::VDMNat1)
 		in
 			(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then

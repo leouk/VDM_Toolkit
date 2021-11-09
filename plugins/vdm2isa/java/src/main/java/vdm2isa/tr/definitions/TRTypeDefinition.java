@@ -23,10 +23,9 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;  
 
-public class TRTypeDefinition extends TRDefinition {
+public class TRTypeDefinition extends TRAbstractTypedDefinition {
     private static final long serialVersionUID = 1L;
 
-    private final TRInvariantType type;
     private final TRPattern invPattern;
     private final TRExpression invExpression;
     private final TRPattern eqPattern1;
@@ -95,6 +94,15 @@ public class TRTypeDefinition extends TRDefinition {
         System.out.println(toString());
     }
 
+    /**
+     * From construction, we know that the type is an invariant type, so this is safe
+     * @return
+     */
+    public TRInvariantType getInvariantType()
+    {
+        return (TRInvariantType)getType();
+    }
+
     @Override
 	public String toString()
 	{
@@ -106,7 +114,7 @@ public class TRTypeDefinition extends TRDefinition {
         " \n\texcluded    = " + excluded + 
         " \n\tinfinite    = " + infinite +
         " \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
-        " \n\ttype        = " + (type != null ? type.translate() : "null") + 
+        " \n\ttype        = " + (getType() != null ? getType().translate() : "null") + 
         " \n\tinvPattern  = " + (invPattern != null ? invPattern.translate() + " [" + invPattern.getClass().getName() + "]": "null") +
         " \n\tinvExpr     = " + (invExpression != null ? invExpression.translate() : "null") +
         " \n\teqPattern1  = " + (eqPattern1 != null ? eqPattern1.translate() + " [" + eqPattern1.getClass().getName() + "]": "null") + 
@@ -127,12 +135,13 @@ public class TRTypeDefinition extends TRDefinition {
     
     private TRNamedTypeDefinitionKind figureOutTypeDefinitionKind()
     {
-        TRNamedTypeDefinitionKind result = TRNamedTypeDefinitionKind.UNKNOWN; 
-        if (type instanceof TRRecordType)
+        TRNamedTypeDefinitionKind result = TRNamedTypeDefinitionKind.UNKNOWN;
+        TRType t = getType(); 
+        if (t instanceof TRRecordType)
             result = TRNamedTypeDefinitionKind.RECORD;
-        else if (type instanceof TRNamedType)
+        else if (t instanceof TRNamedType)
         {
-            TRNamedType tnt = (TRNamedType)type;
+            TRNamedType tnt = (TRNamedType)t;
             if (tnt.type instanceof TRBasicType)
                 result = TRNamedTypeDefinitionKind.BASIC;
             else if (tnt.type instanceof TRFunctionType)
@@ -163,11 +172,12 @@ public class TRTypeDefinition extends TRDefinition {
     public String translate()
     {
         StringBuilder sb = new StringBuilder();
+        TRType t = getType();
         sb.append(super.translate());
         // TLD for records
-        if (type instanceof TRRecordType)
+        if (t instanceof TRRecordType)
         {
-            TRRecordType trtype = (TRRecordType)type;
+            TRRecordType trtype = (TRRecordType)t;
             
             // translate record definition 
             sb.append(trtype.isaToken().toString() + " "); 
@@ -185,43 +195,55 @@ public class TRTypeDefinition extends TRDefinition {
                     name.toString(), name.toString(), varName, 
                     trtype.invTranslate(varName), false));            
         }
-        else if (type instanceof TRNamedType)
+        else if (t instanceof TRNamedType)
         {
             // named type translation is relative to what kind of type it is 
-            TRNamedType trtype = (TRNamedType)type;
+            TRNamedType trtype = (TRNamedType)t;
 
+            // translate named type TLD 
             switch (nameDefKind)
             {
-            case BASIC:
-                break;
-            case FUNCTION:
-                break;
-            case MAP:
-                break;
-            case OPTIONAL:
-                break;
-            case QUOTE:
-                break;
-            case RECORD:
-                break;
-            case SEQ:
-                break;
-            case SET:
-                break;
-            case UNION:
-                break;
-            case UNKNOWN:
-                break;
-            default:
-                break;
-                
+                // straightforward type synonym cases
+                case BASIC:
+                case FUNCTION:
+                case MAP:
+                case OPTIONAL:
+                case SEQ:
+                case SET:
+                    sb.append(IsaTemplates.typeSynonymDefinition(location, name.toString(), trtype.translate()));
+                    break;
+                case QUOTE:
+                case UNION:
+                    report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getName());
+                    break;
+                case RECORD:
+                case UNKNOWN:
+                default:
+                    report(IsaErrorMessage.PLUGIN_NYI_2P, "invalid type definition", name.toString() + ": " + t.getClass().getName());
+                    break;                
             }
+            sb.append(getFormattingSeparator());
+            sb.append(getFormattingSeparator());
 
-            // translate named type definition
-            
+            // translate named type specification definition   
+            String inType = "";
+            String inv = "";
+            sb.append(IsaTemplates.translateInvariantTypeSynonym(location, name.toString(), inType, dummyVarNames(), inv));
+            /* 
+            T = nat
+            inv t == t > 10;
+
+            type_synonym T = "VDMNat"
+
+            definition
+               inv_T :: "VDMNat => bool"
+            where
+               "inv_T dummy == inv_VDMNat dummy"
+            */
+
         }
         else 
-            report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), type.getClass().getName());
+            report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getName());
         //TODO user defined invariant on TLD 
         return sb.toString();
     }
@@ -240,21 +262,16 @@ public class TRTypeDefinition extends TRDefinition {
 
 	public TRExpression getInvExpression()
 	{
-		return null;	// TODO!
+		return invExpression;
 	}
 
 	public TRExpression getEqExpression()
 	{
-		return null;	// TODO!
+		return eqExpression;
 	}
 
 	public TRExpression getOrdExpression()
 	{
-		return null;	// TODO!
-	}
-
-	public TRType getType()
-	{
-		return type;
+		return ordExpression;
 	}
 }
