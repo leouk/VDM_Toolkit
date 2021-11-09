@@ -72,9 +72,9 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         boolean infinite,
         TRDefinitionList composeDefinitions
         )
-    {
-        super(name.getLocation(), comments, annotations, name, nameScope, used, excluded);
-        this.type = type;
+    {        
+        super(name.getLocation(), comments, annotations, name, nameScope, used, excluded, type);
+        this.local = false; // Type definitions are never local? 
         this.invPattern = invPattern;
         this.invExpression = invExpression;
         this.eqPattern1 = eqPattern1;
