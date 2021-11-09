@@ -199,7 +199,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         {
             // named type translation is relative to what kind of type it is 
             TRNamedType trtype = (TRNamedType)t;
-
             // translate named type TLD 
             switch (nameDefKind)
             {
@@ -210,7 +209,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 case OPTIONAL:
                 case SEQ:
                 case SET:
-                    sb.append(IsaTemplates.typeSynonymDefinition(location, name.toString(), trtype.translate()));
+                    //TODO @NB is there a case where name is diffeerent from trtype.typename? 
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.translate()));
                     break;
                 case QUOTE:
                 case UNION:
@@ -226,8 +226,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             sb.append(getFormattingSeparator());
 
             // translate named type specification definition   
-            String inType = "";
-            String inv = "";
+            String inType = trtype.type.translate();
+            String inv = invTranslate();
             sb.append(IsaTemplates.translateInvariantTypeSynonym(location, name.toString(), inType, dummyVarNames(), inv));
             /* 
             T = nat
@@ -246,12 +246,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getName());
         //TODO user defined invariant on TLD 
         return sb.toString();
-    }
-
-    @Override
-    public String invTranslate() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 	@Override

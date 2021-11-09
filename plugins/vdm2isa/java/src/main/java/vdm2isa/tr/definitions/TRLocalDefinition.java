@@ -22,7 +22,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     protected TRLocalDefinition()
     {
         //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-        this(LexLocation.ANY, null, null, null, null, false, false, null);
+        this(LexLocation.ANY, null, null,null, null, false, false, null);
     }
 
     public TRLocalDefinition(LexLocation location, 
@@ -58,17 +58,6 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 		sb.append(IsaToken.parenthesise(getDeclaredName() + IsaToken.TYPEOF.toString() + getTypeString()));
 		//System.out.println(toString());
         return sb.toString();
-    }
-
-    @Override
-    public String invTranslate()
-    {
-		// get invariant variable name
-		String varName = getDeclaredName();//.toLowerCase();
-		String dummyNames = dummyVarNames();
-        
-        // translate the type invariant definition calss as (inv_T v), possibly with dummy names for lambdas
-		return IsaToken.parenthesise(getInvariantString(varName) + (dummyNames.isEmpty() ? "" : getSemanticSeparator() + dummyNames));
     }
 
 	@Override

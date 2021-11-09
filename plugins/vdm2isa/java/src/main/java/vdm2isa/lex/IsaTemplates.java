@@ -27,7 +27,7 @@ public final class IsaTemplates {
     private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports %4$s\nbegin\n\n%5$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
-    private final static String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
+    private final static String TSYNONYM     = "type_synonym %1$s";
 
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
 
@@ -198,12 +198,12 @@ public final class IsaTemplates {
      * @param inv explicit type invariant expression
      * @return Isabelle YXML string
      */
-    public static String typeSynonymDefinition(LexLocation module, String name, String exp)
+    public static String translateTypeSynonymDefinition(LexLocation module, String name, String exp)
     {
-        //@todo pass TRNamedType ? 
+        // TRNamedType will handle this, but the name is useful for IsaItem logging
         assert name != null && exp != null;
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(TSYNONYM, name, exp));
+        sb.append(String.format(TSYNONYM, exp));
         updateTranslatedIsaItem(module, name, IsaItem.TYPE_SYNONYM);
         return sb.toString();
     }

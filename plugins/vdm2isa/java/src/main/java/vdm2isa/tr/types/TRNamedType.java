@@ -21,20 +21,33 @@ public class TRNamedType extends TRInvariantType
     }
 
     @Override
+    protected void setup()
+    {
+        super.setup();
+        setSemanticSeparator(" ");
+    }
+
+    @Override
     public IsaToken isaToken() {
         return IsaToken.IDENTIFIER;
     }
 
     @Override
     public String translate() {
-        return typename.toString() + " = " + type.translate();
+        StringBuilder sb = new StringBuilder();
+        sb.append(typename.toString());
+        sb.append(getSemanticSeparator());
+        sb.append(IsaToken.EQUALS.toString());
+        sb.append(getSemanticSeparator());
+        sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, type.translate(), IsaToken.ISAQUOTE));
+        return sb.toString();
     }
 
     @Override
 	public String invTranslate(String varName) {
 		return IsaToken.parenthesise(
-            IsaToken.INV.toString() + typename +
-            (varName != null ? " " + varName : ""));
+            IsaToken.INV.toString() + typename.toString() +
+            (varName != null ? getSemanticSeparator() + varName : ""));
 	}
 
 	@Override

@@ -107,4 +107,15 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
         }
         return dummyNames;
     }
+
+    @Override
+    public String invTranslate()
+    {
+		// get invariant variable name
+		String varName = getDeclaredName();//.toLowerCase();
+		String dummyNames = dummyVarNames();
+        
+        // translate the type invariant definition calss as (inv_T v), possibly with dummy names for lambdas
+		return IsaToken.parenthesise(getInvariantString(varName) + (dummyNames.isEmpty() ? "" : getSemanticSeparator() + dummyNames));
+    }
 }
