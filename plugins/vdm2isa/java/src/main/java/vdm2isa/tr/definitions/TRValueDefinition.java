@@ -112,9 +112,9 @@ public class TRValueDefinition extends TRLocalDefinition
 			//sb.append(defs.translate());
 
 			sb.append(super.translate());
-			sb.append(getSemanticSeparator());
+			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
 			sb.append(IsaToken.EQUALS.toString());
-			sb.append(getSemanticSeparator());
+			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
 			sb.append(expStr);
 		}
         return sb.toString();

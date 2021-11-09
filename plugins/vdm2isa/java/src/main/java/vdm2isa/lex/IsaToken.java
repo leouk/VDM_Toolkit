@@ -69,6 +69,7 @@ public enum IsaToken {
 	IMPLIES(Token.IMPLIES, "\\<longrightarrow>"),
 	EQUIVALENT(Token.EQUIVALENT, "\\<longleftrightarrow>"),
 
+	SPACE(null, " "),
 	EQUALS(Token.EQUALS, "="),
 	NE(Token.NE, "\\<noteq>"),
 	LT(Token.LT, "<"),
