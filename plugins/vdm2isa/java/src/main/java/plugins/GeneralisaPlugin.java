@@ -187,7 +187,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         {
             // This refers to stuff like TCNameToken filtering important names out for CLASSIC say.
             // For now, it only affects TRExplicitFunctionDefinition, but this might get wider. 
-            GeneralisaPlugin.warning(IsaWarningMessage.VDMSL_VDM10, LexLocation.ANY);	
+            GeneralisaPlugin.warning(IsaWarningMessage.VDMSL_VDM10_ONLY, LexLocation.ANY);	
         }
     }
 

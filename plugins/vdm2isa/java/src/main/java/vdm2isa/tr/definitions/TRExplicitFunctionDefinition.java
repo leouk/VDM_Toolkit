@@ -111,7 +111,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				,TRSpecificationKind.POST
 				,TRSpecificationKind.NONE
 			).contains(implicitSpecificationKind)
-			//|| local
+			|| local
 			) 
 			System.out.println(toString());
     }
