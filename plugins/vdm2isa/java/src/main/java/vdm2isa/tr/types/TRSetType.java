@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRSetType extends TRType
@@ -19,21 +20,21 @@ public class TRSetType extends TRType
      * @param seqof
      * @param seq1
      */
-    protected TRSetType(LexLocation location, TRType setof, boolean set1)
+    protected TRSetType(LexLocation location, TRDefinitionList definitions, TRType setof, boolean set1)
     {
-        super(location);
+        super(location, definitions);
         this.setof = setof;
         this.set1 = set1;
     }
 
-    public TRSetType(TCSetType owner, TRType setof)    
+    public TRSetType(TCSetType owner, TRDefinitionList definitions, TRType setof)    
     {
-       this(owner.location, setof, false);
+       this(owner.location, definitions, setof, false);
     }
 
-    public TRSetType(TCSet1Type owner, TRType setof)    
+    public TRSetType(TCSet1Type owner, TRDefinitionList definitions, TRType setof)    
     {
-        this(owner.location, setof, true);
+        this(owner.location, definitions, setof, true);
     }
 
     @Override

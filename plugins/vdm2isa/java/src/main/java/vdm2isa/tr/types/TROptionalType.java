@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TROptionalType extends TRType {
@@ -10,9 +11,9 @@ public class TROptionalType extends TRType {
     
     private final TRType type; 
     
-    public TROptionalType(LexLocation location, TRType type)
+    public TROptionalType(LexLocation location, TRDefinitionList definitions, TRType type)
     {
-        super(location);
+        super(location, definitions);
         this.type = type;
     }
 

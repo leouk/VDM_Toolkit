@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -12,9 +13,12 @@ public abstract class TRInvariantType extends TRType
     public final TRExplicitFunctionDefinition eqdef;
     public final TRExplicitFunctionDefinition orddef;
 
-    public TRInvariantType(LexLocation location, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    public TRInvariantType(LexLocation location, TRDefinitionList definitions, 
+        TRExplicitFunctionDefinition invdef, 
+        TRExplicitFunctionDefinition eqdef, 
+        TRExplicitFunctionDefinition orddef)
     {
-        super(location);
+        super(location, definitions);
         this.invdef = invdef;
         this.eqdef = eqdef;
         this.orddef = orddef;

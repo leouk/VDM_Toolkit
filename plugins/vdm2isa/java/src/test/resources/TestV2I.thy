@@ -1275,8 +1275,8 @@ abbreviation
 	v79 :: "VDMNat1"
 where
 	"v79 \<equiv> (
-		let (var::VDMNat)=(10::VDMNat1);
-	(var2::VDMNat1)=(20::VDMNat1)
+		let (var::VDMNat) = (10::VDMNat1);
+	(var2::VDMNat1) = (20::VDMNat1)
 		in
 			(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then

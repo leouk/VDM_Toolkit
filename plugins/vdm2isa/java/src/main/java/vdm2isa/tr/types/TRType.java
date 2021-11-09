@@ -16,10 +16,15 @@ abstract public class TRType extends TRNode
 
 	public TRDefinitionList definitions; 
 
-	public TRType(LexLocation location)
+	// public TRType(LexLocation location)
+	// {
+	// 	this(location, null);
+	// }
+
+	public TRType(LexLocation location, TRDefinitionList definitions)
 	{
 		super(location);
-		definitions = null;
+		this.definitions = definitions;
 	}
 
 	@Override
@@ -45,7 +50,9 @@ abstract public class TRType extends TRNode
 	@Override
 	public String toString()
 	{
-		return super.toString() + " defs = " + String.valueOf(definitions);//(definitions != null ? definitions.toString() : "null");
+		return super.toString() + " defs = " + (definitions != null ? definitions.size() : "0"); 
+		//TODO this loops given the outer definition list is contained here. Still to figure out how definitions will be useful 
+		//String.valueOf(definitions);//(definitions != null ? definitions.toString() : "null");
 	}
 
 	/**

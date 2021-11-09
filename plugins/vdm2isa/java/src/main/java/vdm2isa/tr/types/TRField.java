@@ -7,6 +7,10 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
+/**
+ * TRField has to inherit from TRType instead of TRNode (as per TCField hierarchy). That's because
+ * invTranslate(String) is needed for TRFieldList and TRRecordType.
+ */
 public class TRField extends TRType {
     
 	private static final long serialVersionUID = 1L;
@@ -19,7 +23,7 @@ public class TRField extends TRType {
     
     public TRField(TCNameToken tagname, TRType type, boolean equalityAbstraction)
     {
-        super(tagname.getLocation());
+        super(tagname.getLocation(), null);
         this.tagname = tagname;
         this.type = type;
         this.equalityAbstraction = equalityAbstraction;

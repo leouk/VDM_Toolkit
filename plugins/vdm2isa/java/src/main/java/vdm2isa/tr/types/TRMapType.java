@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCInMapType;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRMapType extends TRType
@@ -14,17 +15,17 @@ public class TRMapType extends TRType
 	private final TRType to;
     private final boolean injective;
 
-	public TRMapType(TCMapType owner, LexLocation location, TRType from, TRType to)
+	public TRMapType(TCMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		super(location);
+		super(location, definitions);
 		this.from = from;
 		this.to = to;
         this.injective = false;
 	}
 
-	public TRMapType(TCInMapType owner, LexLocation location, TRType from, TRType to)
+	public TRMapType(TCInMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		super(location);
+		super(location, definitions);
 		this.from = from;
 		this.to = to;
         this.injective = true;

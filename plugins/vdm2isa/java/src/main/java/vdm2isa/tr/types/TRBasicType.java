@@ -19,6 +19,7 @@ import com.fujitsu.vdmj.tc.types.TCTokenType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBasicType extends TRType
@@ -36,53 +37,53 @@ public class TRBasicType extends TRType
 	 * @param location
 	 * @param token
 	 */
-	public TRBasicType(LexLocation location, IsaToken token)
+	public TRBasicType(LexLocation location, TRDefinitionList definitions, IsaToken token)
 	{
-		super(location);
+		super(location, definitions);
 		this.token = token;
 		if (!VALID_TOKENS.contains(this.token))
 			report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
 		//System.out.println(toString());	
 	}
 
-	public TRBasicType(TCNaturalType type)
+	public TRBasicType(TCNaturalType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.NAT);
+		this(type.location, definitions, IsaToken.NAT);
 	}
 
-	public TRBasicType(TCNaturalOneType type)
+	public TRBasicType(TCNaturalOneType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.NAT1);
+		this(type.location, definitions, IsaToken.NAT1);
 	}
 
-	public TRBasicType(TCIntegerType type)
+	public TRBasicType(TCIntegerType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.INT);
+		this(type.location, definitions, IsaToken.INT);
 	}
 
-	public TRBasicType(TCRationalType type)
+	public TRBasicType(TCRationalType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.RAT);
+		this(type.location, definitions, IsaToken.RAT);
 	}
 
-	public TRBasicType(TCRealType type)
+	public TRBasicType(TCRealType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.REAL);
+		this(type.location, definitions, IsaToken.REAL);
 	}
 
-	public TRBasicType(TCBooleanType type)
+	public TRBasicType(TCBooleanType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.BOOL);
+		this(type.location, definitions, IsaToken.BOOL);
 	}
 
-	public TRBasicType(TCCharacterType type)
+	public TRBasicType(TCCharacterType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.CHAR);
+		this(type.location, definitions, IsaToken.CHAR);
 	}
 
-	public TRBasicType(TCTokenType type)
+	public TRBasicType(TCTokenType type, TRDefinitionList definitions)
 	{
-		this(type.location, IsaToken.TOKEN);
+		this(type.location, definitions, IsaToken.TOKEN);
 	}
 
 	@Override

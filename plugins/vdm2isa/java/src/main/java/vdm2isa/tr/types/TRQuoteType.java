@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRQuoteType extends TRType
@@ -10,8 +11,8 @@ public class TRQuoteType extends TRType
 	private static final long serialVersionUID = 1L;
     private final String value;
 
-    public TRQuoteType(LexLocation location, String value) {
-        super(location);
+    public TRQuoteType(LexLocation location, TRDefinitionList definitions, String value) {
+        super(location, definitions);
         this.value = value;
     }
 

@@ -12,9 +12,9 @@ public class TRUnionType extends TRType {
     private TRTypeSet types; 
     private boolean expanded = false;
     
-    public TRUnionType(LexLocation location, TRTypeSet types)
+    public TRUnionType(LexLocation location, TRDefinitionList definitions, TRTypeSet types)
 	{
-		super(location);
+		super(location, definitions);
 		this.types = types;
         //TODO not sure whether this is needed, given the TRTypeSet passed will already have been 
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need

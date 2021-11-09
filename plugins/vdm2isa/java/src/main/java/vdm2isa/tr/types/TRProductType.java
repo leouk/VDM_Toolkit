@@ -12,9 +12,9 @@ public class TRProductType extends TRType {
 
     public final TRTypeList types;
 
-    public TRProductType(LexLocation location, TRTypeList types)
+    public TRProductType(LexLocation location, TRDefinitionList definitions, TRTypeList types)
     {
-        super(location);
+        super(location, definitions);
         this.types = types;
         this.types.setCurried(false);
     }

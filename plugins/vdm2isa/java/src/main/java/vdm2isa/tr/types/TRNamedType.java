@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -12,9 +13,9 @@ public class TRNamedType extends TRInvariantType
     public  final TCNameToken typename;
     public final TRType type;
     
-    public TRNamedType(TCNameToken typename, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    public TRNamedType(TCNameToken typename, TRDefinitionList definitions, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
-        super(typename.getLocation(), invdef, eqdef, orddef);
+        super(typename.getLocation(), definitions, invdef, eqdef, orddef);
         this.typename = typename;
         this.type = type;
     }

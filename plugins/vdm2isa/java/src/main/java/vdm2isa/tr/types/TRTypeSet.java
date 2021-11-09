@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
 import com.fujitsu.vdmj.util.Utils;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 
 /**
@@ -53,7 +54,7 @@ public class TRTypeSet extends TreeSet<TRType>
 			// we ignore the TRSeq1Type.
 			
 			TRSeqType s1t = (TRSeqType)t;
-			TRSeqType st = new TRSeqType(s1t.location, s1t.seqof, s1t.seq1);
+			TRSeqType st = new TRSeqType(s1t.location, s1t.definitions, s1t.seqof, s1t.seq1);
 			
 			if (contains(st))
 			{
@@ -66,7 +67,7 @@ public class TRTypeSet extends TreeSet<TRType>
 			// we ignore the TRSet1Type.
 			
 			TRSetType s1t = (TRSetType)t;
-			TRSetType st = new TRSetType(s1t.location, s1t.setof, s1t.set1);
+			TRSetType st = new TRSetType(s1t.location, s1t.definitions, s1t.setof, s1t.set1);
 			
 			if (contains(st))
 			{
@@ -108,7 +109,7 @@ public class TRTypeSet extends TreeSet<TRType>
 	@Override
 	public String toString()
 	{
-		return Utils.setToString(this, ", ");
+		return Utils.setToString(this, IsaToken.COMMA.toString());
 	}
 
 	public TRType getType(LexLocation location)
@@ -127,10 +128,10 @@ public class TRTypeSet extends TreeSet<TRType>
 		}
 		else
 		{
-			result = new TRUnionType(location, this);
+			result = new TRUnionType(location, null, this);
 		}
 
-		return (optional ? new TROptionalType(location, result) : result);
+		return (optional ? new TROptionalType(location, null, result) : result);
 	}
 
 	public TRTypeList getComposeTypes()

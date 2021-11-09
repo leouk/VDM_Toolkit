@@ -5,6 +5,7 @@
 package vdm2isa.tr.types;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -16,10 +17,10 @@ public class TRFunctionType extends TRType
 	public final boolean partial;
 	public final TRType result;
 	
-	public TRFunctionType(LexLocation location, TRTypeList parameters, boolean partial, TRType result)
+	public TRFunctionType(LexLocation location, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
 	{
 		//NB tried to get definitions through this one, and got NPEs all over during mappings conversion!
-		super(location);
+		super(location, definitions);
 		this.parameters = parameters;
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
@@ -70,7 +71,7 @@ public class TRFunctionType extends TRType
 	public TRFunctionType getPreType()
 	{
 		//NB technically, this can be partial (i.e. run-time error failing pre)?
-		return new TRFunctionType(location, parameters, false, new TRBasicType(location, IsaToken.BOOL));
+		return new TRFunctionType(location, definitions, parameters, false, new TRBasicType(location, null, IsaToken.BOOL));
 	}
 
 	public TRFunctionType getCurriedPreType(boolean isCurried)
@@ -78,7 +79,7 @@ public class TRFunctionType extends TRType
 		if (isCurried && result instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)result;
-			return new TRFunctionType(location, parameters, false, ft.getCurriedPreType(isCurried));
+			return new TRFunctionType(location, definitions, parameters, false, ft.getCurriedPreType(isCurried));
 		}
 		else
 		{
@@ -91,7 +92,7 @@ public class TRFunctionType extends TRType
 		TRTypeList inSig = parameters.copy();
 		inSig.add(result);
 		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
-		return new TRFunctionType(location, inSig, false, new TRBasicType(location, IsaToken.BOOL));
+		return new TRFunctionType(location, definitions, inSig, false, new TRBasicType(location, null, IsaToken.BOOL));
 	}
 
 	public TRFunctionType getCurriedPostType(boolean isCurried)
@@ -99,7 +100,7 @@ public class TRFunctionType extends TRType
 		if (isCurried && result instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)result;
-			return new TRFunctionType(location, parameters, false, ft.getCurriedPostType(isCurried));
+			return new TRFunctionType(location, definitions, parameters, false, ft.getCurriedPostType(isCurried));
 		}
 		else
 		{
