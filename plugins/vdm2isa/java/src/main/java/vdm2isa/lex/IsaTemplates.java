@@ -142,14 +142,21 @@ public final class IsaTemplates {
     
     public static String translateInvariantAbbreviation(LexLocation module, String name, String inType, String dummyNames, String invStr, boolean local)
     {
-        assert name != null && inType != null & dummyNames != null && invStr != null;    
-        return translateDefinition(module, IsaToken.INV + name, inType, IsaToken.BOOL.toString(), dummyNames, invStr, local);
+        return translateInvariantDefinition(module, name, inType, dummyNames, invStr, local);
+    }
+
+    public static String translateInvariantTypeSynonym(LexLocation module, String name, String inType, String dummyNames, String inv)
+    {
+        assert name != null && inType != null && dummyNames != null;// && inv != null;
+        // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
+        inv = IsaToken.INV.toString() + name + " " + dummyNames + " " + IsaToken.AND.toString() + " " + ((inv == null) ? IsaToken.TRUE.toString() : inv);
+        return translateInvariantDefinition(module, name, inType, dummyNames, inv, false);
     }
 
     public static String translateInvariantDefinition(LexLocation module, String name, String inType, String inVars, String exp, boolean local)
     {
         assert name != null && inType != null && inVars != null && exp != null;
-        return translateDefinition(module, IsaToken.INV + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        return translateDefinition(module, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static String isabelleIdentifier(String vdmIdentifier)
@@ -185,22 +192,19 @@ public final class IsaTemplates {
 
     /**
      * Creates a type synonum definition, including its type invariant definition, for VDM Type "NAME = EXPR inv x == INV"
+     * @param module module where this comes from; can be the TRNode location itself. 
      * @param name type name
      * @param exp type expression 
      * @param inv explicit type invariant expression
      * @return Isabelle YXML string
      */
-    public static String typeSynonymDefinition(LexLocation module, String name, String exp, String inVar, String inv)
+    public static String typeSynonymDefinition(LexLocation module, String name, String exp)
     {
         //@todo pass TRNamedType ? 
-        assert name != null && inv != null && inVar != null && exp != null;
+        assert name != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
         updateTranslatedIsaItem(module, name, IsaItem.TYPE_SYNONYM);
-        sb.append("\n");
-        // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
-        inv = "inv_" + exp + " " + inVar + " " + IsaToken.AND.toString() + " " + ((inv == null) ? IsaToken.TRUE : inv);
-        sb.append(translateInvariantDefinition(module, name, exp, inVar, inv, false));
         return sb.toString();
     }
 
