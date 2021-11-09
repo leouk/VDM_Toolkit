@@ -24,10 +24,10 @@ public class TROptionalType extends TRType {
         int i = sb.length();
         sb.append(isaToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-        sb.append(" ");
+        sb.append(getSemanticSeparator());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(type.invTranslate(null));
-        sb.append(" ");
+        sb.append(getSemanticSeparator());
         sb.append(varName);
         return IsaToken.parenthesise(sb.toString());
     }
@@ -39,7 +39,7 @@ public class TROptionalType extends TRType {
 
     @Override
     public String translate() {
-        return type.translate() + " " + isaToken().toString();
+        return type.translate() + getSemanticSeparator() + isaToken().toString();
     }
 
 	@Override

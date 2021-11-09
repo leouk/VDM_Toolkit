@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSeqType;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
 import vdm2isa.lex.IsaToken;
@@ -9,21 +10,30 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRSeqType extends TRType
 {
 	private static final long serialVersionUID = 1L;
-    private final TRType seqof;
-    private final boolean seq1;
+    protected final TRType seqof;
+    protected final boolean seq1;
+
+    /**
+     * Constructor needed for TRUnionType
+     * @param location
+     * @param seqof
+     * @param seq1
+     */
+    protected TRSeqType(LexLocation location, TRType seqof, boolean seq1)
+    {
+        super(location);
+        this.seqof = seqof;
+        this.seq1 = seq1;
+    }
 
     public TRSeqType(TCSeqType owner, TRType seqof)    
     {
-        super(owner.location);
-        this.seqof = seqof;
-        this.seq1 = false;
+        this(owner.location, seqof, false);
     }
 
     public TRSeqType(TCSeq1Type owner, TRType seqof)    
     {
-        super(owner.location);
-        this.seqof = seqof;
-        this.seq1 = true;
+        this(owner.location, seqof, true);
     }
 
     @Override

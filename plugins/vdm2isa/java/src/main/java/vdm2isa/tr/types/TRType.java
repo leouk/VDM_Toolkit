@@ -30,6 +30,18 @@ abstract public class TRType extends TRNode
 		setFormattingSeparator(" ");
 	}
 
+	/**
+	 * Reinventing this here from TCType to cater for TRUnionType needs. All derived classes must reimplement this
+	 * to take into account how their compose types work 
+	 * @return
+	 */
+	//TODO all type extend on this! 
+	public TRTypeList getComposeTypes()
+	{
+		return new TRTypeList();
+	}
+
+
 	@Override
 	public String toString()
 	{

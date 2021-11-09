@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSetType;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
 import vdm2isa.lex.IsaToken;
@@ -9,21 +10,30 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRSetType extends TRType
 {
 	private static final long serialVersionUID = 1L;
-    private final TRType setof;
-    private final boolean set1;
+    protected final TRType setof;
+    protected final boolean set1;
+
+    /**
+     * Constructor needed for TRUnionType
+     * @param location
+     * @param seqof
+     * @param seq1
+     */
+    protected TRSetType(LexLocation location, TRType setof, boolean set1)
+    {
+        super(location);
+        this.setof = setof;
+        this.set1 = set1;
+    }
 
     public TRSetType(TCSetType owner, TRType setof)    
     {
-        super(owner.location);
-        this.setof = setof;
-        this.set1 = false;
+       this(owner.location, setof, false);
     }
 
     public TRSetType(TCSet1Type owner, TRType setof)    
     {
-        super(owner.location);
-        this.setof = setof;
-        this.set1 = true;
+        this(owner.location, setof, true);
     }
 
     @Override
