@@ -30,8 +30,7 @@
 -TCClassType
 -TCInstantiate
 -TCUnresolvedType
-
-TCUnionType
+*TCUnionType
 
 TCOperationType
 TCParameterType

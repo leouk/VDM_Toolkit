@@ -11,8 +11,8 @@ map TCTypeDefinition{comments, annotations, name, nameScope, used, excluded, typ
 map TCExplicitFunctionDefinition{comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined} to TRExplicitFunctionDefinition(comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined);
 
 # This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
-map TCLocalDefinition{location, comments, name, nameScope, used, excluded, type} to TRLocalDefinition(location, comments, name, nameScope, used, excluded, type);
-map TCValueDefinition{comments, nameScope, used, excluded, pattern, type, exp, expType, defs} to TRValueDefinition(comments, nameScope, used, excluded, pattern, type, exp, expType, defs);
+map TCLocalDefinition{location, comments, annotations, name, nameScope, used, excluded, type} to TRLocalDefinition(location, comments, annotations, name, nameScope, used, excluded, type);
+map TCValueDefinition{comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs} to TRValueDefinition(comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
 
 # This is an odd one from within TCLambdaExpression; 
 #map TCMultiBindListDefinition{location, bindings, defs} to TRMultiBindListDefinition(location, bindings, defs);
@@ -214,6 +214,7 @@ package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
 map TCType{} to TRType();
 map TCInvariantType{} to TRInvariantType();
 map TCTypeList{} to TRTypeList(this);
+map TCTypeSet{} to TRTypeSet(this);
 
 map TCFunctionType{location, parameters, partial, result} to TRFunctionType(location, parameters, partial, result);
 
@@ -240,6 +241,7 @@ map TCSeqType{seqof} to TRSeqType(this, seqof);
 map TCSeq1Type{seqof} to TRSeqType(this, seqof);
 map TCOptionalType{location, type} to TROptionalType(location, type);
 map TCUnknownType{location} to TRUnknownType(location);
+map TCUnionType{location, types} to TRUnionType(location, types);
 
 #############################################################################
 # Classes that are not mapped
