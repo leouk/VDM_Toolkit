@@ -22,7 +22,9 @@ import vdm2isa.tr.types.TRType;
 public abstract class TRAbstractTypedDefinition extends TRDefinition {
     
     private static final long serialVersionUID = 1L;
-    private final TRType type;
+
+    // keep public (but final) so that ClassMapping works and object access is not a problem in derived classes. 
+    public final TRType type;
 
     protected TRAbstractTypedDefinition(LexLocation location, 
         TRIsaVDMCommentList comments, 

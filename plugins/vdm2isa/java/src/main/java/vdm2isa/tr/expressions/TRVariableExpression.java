@@ -38,9 +38,9 @@ public class TRVariableExpression extends TRExpression
 	{
 		// avoid vardef.translate, as if a top-level definition like TRExplicitFunction will "mark" as done for Isabelle and
 		// generate a "repeated" item error! 
-		return super.toString() + " ; original = " + original + 
-			"\n\t def = " + vardef.getClass().getName() + ":" + 
-				"\n\t\t " + vardef.toString(); 
+		return super.toString() + " ; original = " + String.valueOf(original) + 
+			"\n\t def = " + (vardef != null ? vardef.getClass().getName() : "null") + ":" + 
+				"\n\t\t " + String.valueOf(vardef); 
 	}
 
 	@Override

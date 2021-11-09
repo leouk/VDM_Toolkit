@@ -28,8 +28,8 @@ public class TRPatternBind extends TRPattern {
     public String toString()
     {
         return super.toString() + 
-            "\n\t pattern = " + (pattern != null ? pattern.translate() : "null") +
-            "\n\t bind    = " + (bind != null ? bind.translate() : "null");
+            "\n\t pattern = " + String.valueOf(pattern) + //(pattern != null ? pattern.translate() : "null") +
+            "\n\t bind    = " + String.valueOf(bind) + // (bind != null ? bind.translate() : "null");
     }
 
     @Override

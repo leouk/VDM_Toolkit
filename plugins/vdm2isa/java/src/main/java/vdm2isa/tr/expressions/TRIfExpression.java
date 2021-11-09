@@ -35,12 +35,12 @@ public class TRIfExpression extends TRExpression
 	public String toString()
 	{
 		return super.toString() + 
-			"\n\t if   = " + ifExp.translate() +
-			"\n\t then = " + thenExp.translate() +
-			"\n\t elseL= " + elseList.size() + 
-			"\n\t      = " + elseList.translate() +
+			"\n\t if   = " + String.valueOf(ifExp) +//.translate() +
+			"\n\t then = " + String.valueOf(thenExp) +//.translate() +
+			"\n\t elseL= " + (elseList != null ? elseList.size() : "null") + 
+			"\n\t      = " + String.valueOf(elseList) +//.translate() +
 			// could this be null for operations? No. TCIfStatement.
-			"\n\t else = " + elseExp.translate();  
+			"\n\t else = " + String.valueOf(elseExp);//.translate();  
 	}
 
 	@Override

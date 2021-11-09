@@ -47,8 +47,12 @@ public class TRSetCompExpression extends TRExpression {
     @Override
     public String toString()
     {
-        return "SetComp exp = " + first.getClass().getName() + 
-            " plist (" + binds.size() + ")[" + binds.toString() + "] = " + binds.translate();  
+        if (first != null && binds != null)
+            return "SetComp exp = " + first.getClass().getName() + 
+                " plist (" + binds.size() + ") = " + String.valueOf(binds);// + "] = " + binds.translate();  
+        else 
+            return "SetComp exp = " + (first != null ? first.getClass().getName() : "null") +
+                " plist(0) = null";
     }
 
     @Override

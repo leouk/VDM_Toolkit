@@ -42,9 +42,13 @@ public class TRSeqCompExpression extends TRExpression {
     @Override
     public String toString()
     {
-        return "SeqComp bind = " + bind.getClass().getName() + 
-            " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + 
-            bind.plist.translate();
+        if (bind != null && bind.plist != null)
+            return "SeqComp bind = " + bind.getClass().getName() + 
+                " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + 
+                String.valueOf(bind.plist);//bind.plist.translate();
+        else 
+            return "SeqComp bind = " + (bind != null ? bind.getClass().getName() : "null") + 
+                " plist(0)[null] = null"; 
     }
 
     @Override

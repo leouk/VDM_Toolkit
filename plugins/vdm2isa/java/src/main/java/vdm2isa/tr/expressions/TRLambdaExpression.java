@@ -54,8 +54,9 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     @Override 
     public String toString()
     {
-        return "LambdaExpr: (lambda " + bindList.translate() + " & " + expression.translate() + " )" +
-                    "\n\tFcnType    = " + type.translate() +
+        return "LambdaExpr: (lambda " + String.valueOf(bindList) + //.translate() + 
+            " & " + String.valueOf(expression) + //.translate() + 
+            " )" + "\n\tFcnType    = " + String.valueOf(type) + //.translate() +
                     //"\n\tParamPttrs = " + paramPatterns.translate() + 
                     //"\n\tParamDefs  = " + paramDefinitions.translate() +
                     //"\n\tDef        = " + def.toString() + 

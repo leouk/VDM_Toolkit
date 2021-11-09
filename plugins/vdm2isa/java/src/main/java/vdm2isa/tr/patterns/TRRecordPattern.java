@@ -31,7 +31,10 @@ public class TRRecordPattern extends TRPattern {
     @Override
     public String toString()
     {
-        return super.toString() + " tname " + typename.toString() + " plist = " + plist.translate() + " type = " + type.translate();
+        return super.toString() + 
+            " tname " + String.valueOf(typename) + 
+            " plist = " + String.valueOf(plist) + //.translate() + 
+            " type = " + String.valueOf(type); //type.translate();
     }
 
     @Override

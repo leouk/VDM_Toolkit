@@ -38,9 +38,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
     {
         return getClass().getName () + " for " +
             "\n\t typename = " + String.valueOf(typename) +
-            "\n\t basictype= " + (basictype != null ? basictype.translate() : "null") +
-            "\n\t test     = " + (test != null ? test.translate() : "null") +
-            "\n\t typedef  = " + (typedef != null ? typedef.translate() : "null");
+            "\n\t basictype= " + String.valueOf(basictype) + //(basictype != null ? basictype.translate() : "null") +
+            "\n\t test     = " + String.valueOf(test) + //(test != null ? test.translate() : "null") +
+            "\n\t typedef  = " + String.valueOf(typedef); //(typedef != null ? typedef.translate() : "null");
     }
 
     public boolean isBasicTyped()

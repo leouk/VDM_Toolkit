@@ -60,9 +60,9 @@ public class TRValueDefinition extends TRLocalDefinition
 	@Override
 	public String toString()
 	{
-		return "TRValueDef [local=" + local + "] for " + pattern.translate() + 
+		return "TRValueDef [local=" + local + "] for " + String.valueOf(pattern) + 
 			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "]{" + 
-			(expType != null ? expType.translate() : "null") + "} = " + defs.translate();
+			String.valueOf(expType) + "} = " + String.valueOf(defs);
 	}
 
 	@Override

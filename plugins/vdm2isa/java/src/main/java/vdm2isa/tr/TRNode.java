@@ -54,7 +54,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
     @Override
     public String toString()
     {
-        return getClass().getSimpleName() + "[" + String.valueOf(isaToken()) + "] = " + translate();
+        return getClass().getSimpleName() + "[" + String.valueOf(isaToken()) + "]"; // + translate();
     }
 
 	@Override

@@ -45,7 +45,7 @@ abstract public class TRType extends TRNode
 	@Override
 	public String toString()
 	{
-		return super.toString() + " defs = " + (definitions != null ? definitions.toString() : "null");
+		return super.toString() + " defs = " + String.valueOf(definitions);//(definitions != null ? definitions.toString() : "null");
 	}
 
 	/**

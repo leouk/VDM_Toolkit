@@ -29,7 +29,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     @Override
     public String toString()
     {
-        return super.toString() + "\n\t exptype  = " + (exptype != null ? exptype.translate() : "null");
+        return super.toString() + "\n\t exptype  = " + String.valueOf(exptype);//(exptype != null ? exptype.translate() : "null");
     }
     
     @Override
