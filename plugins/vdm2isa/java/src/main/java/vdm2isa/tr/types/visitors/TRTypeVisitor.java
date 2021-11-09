@@ -17,6 +17,7 @@ import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRUnknownType;
 
 /**
@@ -92,4 +93,8 @@ public abstract class TRTypeVisitor<R, S>
 	{
 		return caseType(node, arg);
 	}
+
+    public R caseUnionType(TRUnionType node, S arg) {
+        return caseType(node, arg);
+    }
 }
