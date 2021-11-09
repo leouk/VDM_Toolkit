@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
@@ -30,6 +31,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	private final TRType expType;
 
 	public TRValueDefinition(TRIsaVDMCommentList comments, 
+		TCAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
 		boolean excluded, 
@@ -40,7 +42,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRDefinitionList defs)
 	{
 		// value names are null; their local definitions have the TCNameToken instead! 
-		super(pattern.location, comments, null, nameScope, used, excluded, type);
+		super(pattern.location, comments, annotations, null, nameScope, used, excluded, type);
 		this.pattern = pattern;
 		this.type = type;
 		this.exp = exp;
@@ -59,7 +61,8 @@ public class TRValueDefinition extends TRLocalDefinition
 	public String toString()
 	{
 		return "TRValueDef [local=" + local + "] for " + pattern.translate() + 
-			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "] = " + defs.translate();
+			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "]{" + 
+			(expType != null ? expType.translate() : "null") + "} = " + defs.translate();
 	}
 
 	@Override
@@ -106,13 +109,12 @@ public class TRValueDefinition extends TRLocalDefinition
 		{
 			//TODO perhaps do not need this beyond checking for bad patterns; don't want to reinvent above in TRLocalDefinition
 			//		neither have them as subclasses of each other or something like that?
-			//defs.separator = " ";
 			//sb.append(defs.translate());
 
 			sb.append(super.translate());
-			sb.append(" ");
+			sb.append(getSemanticSeparator());
 			sb.append(IsaToken.EQUALS.toString());
-			sb.append(" ");
+			sb.append(getSemanticSeparator());
 			sb.append(expStr);
 		}
         return sb.toString();

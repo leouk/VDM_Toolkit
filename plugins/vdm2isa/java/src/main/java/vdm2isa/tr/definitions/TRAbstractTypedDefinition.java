@@ -1,0 +1,108 @@
+package vdm2isa.tr.definitions;
+
+import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
+
+import vdm2isa.lex.IsaToken;
+import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
+
+/**
+ * General class for typed definitions, namely TRLocalDefinition, TRValueDefinition, and TRTypedDefinition. 
+ * These named typed definitions have to be translated with the same set of considerations irrespective of 
+ * context. TRValueDefinition derives from TRLocalDefinition, where extra top-level considerations 
+ * are added for the TLD value. Similarly, TRTypeDefinition needs to take into account similar issues regarding
+ * the structure of its declared type. This class normalises the named type handling at the cost of possibly 
+ * confusing/complicating the hierarchy slightly.
+ */
+public abstract class TRAbstractTypedDefinition extends TRDefinition {
+    
+    private static final long serialVersionUID = 1L;
+    private final TRType type;
+
+    protected TRAbstractTypedDefinition(LexLocation location, 
+        TRIsaVDMCommentList comments, 
+        TCAnnotationList annotations, 
+        TCNameToken name, 
+        NameScope nameScope, 
+        boolean used, 
+        boolean excluded,
+        TRType type)
+    {
+        // name might be null in some cases. See TRLocalDefinition and TRValueDefinition
+        super(location, comments, annotations, name, nameScope, used, excluded);
+        this.type = type;
+
+        //TODO get TCLocalDefinition.valueDefinition?
+    }
+
+    @Override
+	public String toString()
+	{
+		return getClass().getName() + " for \"" + getDeclaredName() + "\" type = " + String.valueOf(getType());
+	}
+
+    @Override
+    protected void setup()
+    {
+        super.setup();
+        setSemanticSeparator(" ");
+    }
+
+    protected String getDeclaredName()
+    {
+        // make sure it doesn't fall on null; but TRValueDefinition ought to override this method to consider its bindings!
+        return String.valueOf(name);
+    }
+
+    public TRType getType()
+	{
+		return type;
+	}
+
+    protected String getTypeString()
+    {
+        // type string depends on TRType class
+        String typeStr;
+        if (type instanceof TRRecordType)
+            // "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
+            typeStr = ((TRRecordType)type).getName().toString();
+        else
+            // other types, translate it directly
+            typeStr = type.translate();
+        return typeStr;
+    }
+
+    protected String getInvariantString(String varName)
+    {
+        // invariant type string depends on the TRType class
+		String invStr;
+
+        if (type instanceof TRRecordType)
+        {
+			// records have to apply to the varName rather than use it as part of the type-inv-translate string
+			invStr = type.invTranslate(null) + varName;
+        }
+        else
+        {
+            invStr = type.invTranslate(varName);
+        }
+        //System.out.println("getInvariantString(" + String.valueOf(varName) + ") = " + invStr);
+        return invStr;
+    }
+
+    protected String dummyVarNames()
+    {
+        String dummyNames = "";
+        if (type instanceof TRFunctionType)
+        {   
+            // function types require dummy names for invariant string translation
+            dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
+        }
+        return dummyNames;
+    }
+}
