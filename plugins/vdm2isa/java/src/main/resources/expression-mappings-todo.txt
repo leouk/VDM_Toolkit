@@ -97,16 +97,12 @@
 *TCSetCompExpression
 *TCElseIfExpression
 *TCElseIfExpressionList
+*TCPreExpression
 
-
-TCPreExpression
 TCPreOpExpression
 TCPostOpExpression
-
-
 TCDefExpression
 TCMapCompExpression
-
 TCCaseAlternative
 TCCaseAlternativeList
 TCCasesExpression
