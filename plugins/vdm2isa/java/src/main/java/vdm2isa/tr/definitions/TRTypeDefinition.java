@@ -18,6 +18,7 @@ import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -91,7 +92,60 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         this.infinite = infinite;
         this.composeDefinitions = composeDefinitions;
         this.nameDefKind = figureOutTypeDefinitionKind();
+
+        checkTypeDefinitionConsistency();
         System.out.println(toString());
+    }
+
+    private void checkTypeDefinitionConsistency()
+    {
+        //(invPattern == null <=> invExpression == null)
+        //=
+        //(invPattern == null => invExpression == null) && (invExpression == null => invPattern == null)
+        //=
+        //(invPattern != null || invExpression == null) && (invExpression != null || invPattern == null)
+        //=
+        //((invPattern != null || invExpression == null) && invExpression != null) || 
+        //((invPattern != null || invExpression == null) && invPattern == null)
+        //=
+        //((invPattern != null && invExpression != null) || (invExpression == null && invExpression != null)) ||
+        //((invPattern != null && invPattern == null) || (invExpression == null && invPattern == null))
+        //= 
+        //((invPattern != null && invExpression != null) || (invExpression == null && invPattern == null))
+        //
+        //now negate it to check for inconsistency
+        //
+        //!(invPattern != null && invExpression != null) && !(invExpression == null && invPattern == null)
+        //=
+        //(invPattern == null || invExpression == null) && (invExpression != null || invPattern != null)
+        //
+        //rather be explicit than rely on confusing xor, particularly with three operands?
+        if (invPattern == null ^ invExpression == null)
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "invariant", name.toString());
+        if ((eqPattern1 == null ^ eqExpression == null) || (eqPattern1 == null ^ eqPattern2 == null) || (eqPattern2 == null ^ eqExpression == null))
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "equality", name.toString());
+        if ((ordPattern1 == null ^ ordExpression == null) || (ordPattern1 == null ^ ordPattern2 == null) || (ordPattern2 == null ^ ordExpression == null))
+           report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "ordering", name.toString());
+
+        			// check stuff is consistent to expectations
+		if ((invExpression != null && invdef == null) || (invExpression == null && invdef != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "invariant");
+        if ((eqExpression != null && eqdef == null) || (eqExpression == null && eqdef != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "equality");
+        if ((ordExpression != null && orddef == null) || (ordExpression == null && orddef != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "ordering");
+        if ((ordExpression != null && mindef == null) || (ordExpression == null && mindef != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "minimum");
+        if ((ordExpression != null && maxdef == null) || (ordExpression == null && maxdef != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "maximum");
+    }
+
+
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+        setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
     }
 
     /**
@@ -156,8 +210,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 result = TRNamedTypeDefinitionKind.SEQ;
             else if (tnt.type instanceof TRSetType)
                 result = TRNamedTypeDefinitionKind.SET;
-            // else if (tnt.type instanceof TRUnionType)
-            //     result = TRNamedTypeDefinitionKind.UNION;
+            else if (tnt.type instanceof TRUnionType)
+                result = TRNamedTypeDefinitionKind.UNION;
         }
         return result;
     }
@@ -189,6 +243,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             sb.append(trtype.getFields().translate());
             sb.append(getFormattingSeparator() + getFormattingSeparator());
 
+            //TODO this has to take into account invPattern if one exists, as well as the AND True when it doesn't!
             // translate implicit record type invariant
             String varName = IsaToken.dummyVarNames(1, name.getLocation());
             sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
@@ -223,12 +278,19 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     break;                
             }
             sb.append(getFormattingSeparator());
-            sb.append(getFormattingSeparator());
+            sb.append("\n");
 
+            //TODO this has to take into account invPattern if one exists, as well as the AND True when it doesn't!
             // translate named type specification definition   
             String inType = trtype.type.translate();
             String inv = invTranslate();
             sb.append(IsaTemplates.translateInvariantTypeSynonym(location, name.toString(), inType, dummyVarNames(), inv));
+
+            String varName = IsaToken.dummyVarNames(1, name.getLocation());
+            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
+                    name.toString(), name.toString(), varName, 
+                    trtype.invTranslate(varName), false));            
+
             /* 
             T = nat
             inv t == t > 10;

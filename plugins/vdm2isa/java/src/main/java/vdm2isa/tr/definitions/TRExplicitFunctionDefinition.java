@@ -105,11 +105,16 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		assert this.type != null && this.name != null && this.parameters != null; 
 
 		setup();
-		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print
+		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
 		if (!Arrays.asList(
 				TRSpecificationKind.PRE 
 				,TRSpecificationKind.POST
 				,TRSpecificationKind.NONE
+				,TRSpecificationKind.INV
+				,TRSpecificationKind.EQ
+				,TRSpecificationKind.ORD
+				,TRSpecificationKind.MAX
+				,TRSpecificationKind.MIN
 			).contains(implicitSpecificationKind)
 			|| local
 			) 
