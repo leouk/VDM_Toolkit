@@ -28,6 +28,12 @@ public class TRRecordPattern extends TRPattern {
         //System.out.println(toString());
     }
 
+    @Override 
+    public String getPattern()
+    {
+        return IsaToken.bracketit(IsaToken.LRECORD, String.valueOf(plist), IsaToken.RRECORD);
+    }
+
     @Override
     public String toString()
     {

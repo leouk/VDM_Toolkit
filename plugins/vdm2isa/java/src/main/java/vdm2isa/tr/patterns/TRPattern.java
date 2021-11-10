@@ -28,5 +28,13 @@ public abstract class TRPattern extends TRNode {
         return list; 
     }
 
+    @Override
+    public String toString()
+    {
+        return super.toString() + " = " + getPattern(); // + translate();
+    }
+
+    public abstract String getPattern();
+
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
 }

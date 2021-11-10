@@ -104,8 +104,15 @@ public class TRBasicPattern extends TRPattern {
     }
 
     @Override
-    public String translate() {
-        return pattern;
+    public String getPattern()
+    {
+        return String.valueOf(pattern);
+    }
+
+    @Override
+    public String translate()
+    {
+        return getPattern();
     }
 
     @Override
