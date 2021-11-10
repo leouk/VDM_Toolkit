@@ -241,14 +241,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             sb.append(" ");
             sb.append(getFormattingSeparator());
             sb.append(trtype.getFields().translate());
-            sb.append(getFormattingSeparator() + getFormattingSeparator());
-
-            //TODO this has to take into account invPattern if one exists, as well as the AND True when it doesn't!
-            // translate implicit record type invariant
-            String varName = IsaToken.dummyVarNames(1, name.getLocation());
-            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
-                    name.toString(), name.toString(), varName, 
-                    trtype.invTranslate(varName), false));            
+            sb.append(getFormattingSeparator());
+            sb.append("\n");
         }
         else if (t instanceof TRNamedType)
         {
@@ -279,34 +273,20 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             }
             sb.append(getFormattingSeparator());
             sb.append("\n");
-
-            //TODO this has to take into account invPattern if one exists, as well as the AND True when it doesn't!
-            // translate named type specification definition   
-            String inType = trtype.type.translate();
-            String inv = invTranslate();
-            sb.append(IsaTemplates.translateInvariantTypeSynonym(location, name.toString(), inType, dummyVarNames(), inv));
-
-            String varName = IsaToken.dummyVarNames(1, name.getLocation());
-            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
-                    name.toString(), name.toString(), varName, 
-                    trtype.invTranslate(varName), false));            
-
-            /* 
-            T = nat
-            inv t == t > 10;
-
-            type_synonym T = "VDMNat"
-
-            definition
-               inv_T :: "VDMNat => bool"
-            where
-               "inv_T dummy == inv_VDMNat dummy"
-            */
-
         }
         else 
             report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getName());
-        //TODO user defined invariant on TLD 
+
+        if (t instanceof TRInvariantType)
+        {
+            TRInvariantType trit = (TRInvariantType)t;
+            //sb.append(trit.translateTLD());
+            // translate implicit type invariant
+            String varName = IsaToken.dummyVarNames(1, name.getLocation());
+            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
+                    name.toString(), name.toString(), varName, 
+                    t.invTranslate(varName), false));            
+        }
         return sb.toString();
     }
 

@@ -13,10 +13,6 @@ type_synonym TBasic = "VDMNat1"
 definition
 	inv_TBasic :: "VDMNat1 \<Rightarrow> \<bool>"
 where
-	"inv_TBasic  \<equiv> inv_TBasic  \<and> ((inv_TBasic TBasic))"
-definition
-	inv_TBasic :: "TBasic \<Rightarrow> \<bool>"
-where
-	"inv_TBasic dummy0 \<equiv> (inv_TBasic dummy0)"
+	"inv_TBasic dummy0 \<equiv> (inv_VDMNat1 dummy0)"
 
 end

@@ -68,6 +68,8 @@ public enum IsaErrorMessage {
     "Type bound sequence compression is not supported in Isabelle."), 
     ISA_TYPELIST_INVTR_SIZE_3P(VDM2IsaError.ISABELLE_E_ISA_BASE + 11,
     "Inconsistent invariant translation call in type list: %1$s %2$s for %3$s." ),
+    ISA_TYPE_HAS_NO_NAME_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 12,
+    "VDMSL type (isaToken = %1$s) does not have an explicitly given name."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

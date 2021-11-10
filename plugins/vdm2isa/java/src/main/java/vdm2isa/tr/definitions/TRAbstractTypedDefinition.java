@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
@@ -70,9 +71,9 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
     {
         // type string depends on TRType class
         String typeStr;
-        if (type instanceof TRRecordType)
+        if (type instanceof TRInvariantType)
             // "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
-            typeStr = ((TRRecordType)type).getName().toString();
+            typeStr = type.getName();
         else
             // other types, translate it directly
             typeStr = type.translate();
@@ -84,7 +85,7 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
         // invariant type string depends on the TRType class
 		String invStr;
 
-        if (type instanceof TRRecordType)
+        if (type instanceof TRInvariantType)
         {
 			// records have to apply to the varName rather than use it as part of the type-inv-translate string
 			invStr = type.invTranslate(null) + varName;
