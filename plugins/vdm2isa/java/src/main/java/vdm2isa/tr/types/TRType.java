@@ -6,6 +6,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -53,6 +54,12 @@ abstract public class TRType extends TRNode
 		return super.toString() + " defs = " + (definitions != null ? definitions.size() : "0"); 
 		//TODO this loops given the outer definition list is contained here. Still to figure out how definitions will be useful 
 		//String.valueOf(definitions);//(definitions != null ? definitions.toString() : "null");
+	}
+
+	public String getName()
+	{
+		report(IsaErrorMessage.ISA_TYPE_HAS_NO_NAME_1P, isaToken().toString());
+		return "";
 	}
 
 	/**

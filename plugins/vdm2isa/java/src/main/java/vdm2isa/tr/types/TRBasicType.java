@@ -87,9 +87,15 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
-	public String translate()
+	public String getName()
 	{
 		return isaToken().toString();
+	}
+
+	@Override
+	public String translate()
+	{
+		return getName();
 	}
 
 	@Override

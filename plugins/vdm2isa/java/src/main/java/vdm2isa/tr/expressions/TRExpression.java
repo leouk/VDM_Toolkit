@@ -197,7 +197,7 @@ public abstract class TRExpression extends TRNode
         // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
         else if (this instanceof TRApplyExpression && ((TRApplyExpression)this).type instanceof TRFunctionType &&
             ((TRFunctionType)((TRApplyExpression)this).type).result instanceof TRRecordType)
-            sb.append(((TRRecordType)((TRFunctionType)((TRApplyExpression)this).type).result).getName().toString());
+            sb.append(((TRRecordType)((TRFunctionType)((TRApplyExpression)this).type).result).getName());
         else
         {
             // do not change Isabelle record name. issue warning

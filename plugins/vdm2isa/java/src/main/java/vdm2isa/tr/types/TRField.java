@@ -41,6 +41,12 @@ public class TRField extends TRType {
         return IsaToken.POINT;
     }
 
+    @Override 
+    public String getName()
+    {
+        return type.getName();
+    }
+
     @Override
     public String translate() {
         return getIsabelleTagName() + " " + IsaToken.TYPEOF.toString() + " " + 
@@ -71,7 +77,7 @@ public class TRField extends TRType {
     public String getIsabelleTagName()
     {
         checkRecordType();
-        return IsaTemplates.isabelleRecordFieldName(record != null ? record.getName().toString() : "null", getTagName());
+        return IsaTemplates.isabelleRecordFieldName(record != null ? record.getName() : "null", getTagName());
     }
 
     public boolean equalityAbstraction()

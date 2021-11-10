@@ -29,6 +29,7 @@ public class TRRecordType extends TRInvariantType
             report(10002, "Isabelle does not allow empty records for VDM record type " + name.toString());
 
         this.fields.setRecordType(this);
+        this.fields.setFormattingSeparator(getFormattingSeparator());
         recordMap.put(name, fields); 
     }
 
@@ -37,16 +38,29 @@ public class TRRecordType extends TRInvariantType
         recordMap.clear();
     }
 
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t ");
+    }
+
+    @Override
+	public String getName()
+	{
+		return String.valueOf(this.name);//.toString();
+	}
+
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
         if (varName != null)
         {
             // definition of the type for "inv_R x" itself
-            sb.append("\n\t\t");
+            sb.append(getFormattingSeparator());
             sb.append(IsaToken.LPAREN.toString());
             sb.append(fields.invTranslate(varName));
-            sb.append("\n\t\t");
+            sb.append(getFormattingSeparator());
             sb.append(IsaToken.RPAREN.toString());
         }
         else
@@ -67,11 +81,6 @@ public class TRRecordType extends TRInvariantType
     @Override
     public String translate() {
         return name.toString(); 
-    }
-
-    public TCNameToken getName()
-    {
-        return this.name;
     }
 
     public TRFieldList getFields()

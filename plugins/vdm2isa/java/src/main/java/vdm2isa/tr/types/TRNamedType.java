@@ -32,10 +32,17 @@ public class TRNamedType extends TRInvariantType
         return IsaToken.IDENTIFIER;
     }
 
+
+    @Override
+	public String getName()
+	{
+		return typename.toString();
+	}
+
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        sb.append(typename.toString());
+        sb.append(getName());
         sb.append(getSemanticSeparator());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(getSemanticSeparator());

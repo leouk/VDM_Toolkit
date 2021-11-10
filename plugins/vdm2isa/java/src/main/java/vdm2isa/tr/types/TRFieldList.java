@@ -30,7 +30,7 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	protected void setup()
 	{
 		super.setup();
-		setFormattingSeparator("\n\t ");
+		setFormattingSeparator("\n\t\t ");
 	}
 
 	public void setRecordType(TRRecordType rtype)
