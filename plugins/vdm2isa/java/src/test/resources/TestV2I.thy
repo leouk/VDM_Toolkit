@@ -7,7 +7,6 @@ theory TestV2I
 imports VDMToolkit
 begin
 
-
 record R = 
 	x\<^sub>R :: "VDMNat"
 	 y\<^sub>R :: "VDMNat"
