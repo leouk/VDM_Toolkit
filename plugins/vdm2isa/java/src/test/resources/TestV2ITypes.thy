@@ -8,40 +8,40 @@ imports VDMToolkit
 begin
 
 
-type_synonym TBasic = "TBasic = VDMNat1"
+type_synonym TBasic = "VDMNat1"
 	
 	definition
-	inv_TBasic :: " \<Rightarrow> \<bool>"
+	inv_TBasic :: "VDMNat1 \<Rightarrow> \<bool>"
 where
-	"inv_TBasic  \<equiv> inv_TBasic  \<and> "
+	"inv_TBasic  \<equiv> inv_TBasic  \<and> ((inv_TBasic TBasic))"
 
 	
-type_synonym TSet = "TSet = TBasic = VDMNat1 VDMSet"
+type_synonym TSet = "TBasic = "VDMNat1" VDMSet"
 	
 	definition
-	inv_TSet :: " \<Rightarrow> \<bool>"
+	inv_TSet :: "TBasic = "VDMNat1" VDMSet \<Rightarrow> \<bool>"
 where
-	"inv_TSet  \<equiv> inv_TSet  \<and> "
+	"inv_TSet  \<equiv> inv_TSet  \<and> ((inv_TSet TSet))"
 
 	
-type_synonym TOptional = "TOptional = VDMNat1\<Rightarrow>option"
+type_synonym TOptional = "VDMNat1\<Rightarrow>option"
 	
 	definition
-	inv_TOptional :: " \<Rightarrow> \<bool>"
+	inv_TOptional :: "VDMNat1\<Rightarrow>option \<Rightarrow> \<bool>"
 where
-	"inv_TOptional  \<equiv> inv_TOptional  \<and> "
+	"inv_TOptional  \<equiv> inv_TOptional  \<and> ((inv_TOptional TOptional))"
 
 	
-type_synonym TFcn = "TFcn = VDMNat1 \<Rightarrow> VDMNat1"
+type_synonym TFcn = "VDMNat1 \<Rightarrow> VDMNat1"
 	
 	definition
-	inv_TFcn :: " \<Rightarrow> \<bool>"
+	inv_TFcn :: "VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
-	"inv_TFcn  \<equiv> inv_TFcn  \<and> "
+	"inv_TFcn  \<equiv> inv_TFcn  \<and> ((inv_TFcn TFcn))"
 
 	
 abbreviation
-	v :: "TFcn = VDMNat1 \<Rightarrow> VDMNat1"
+	v :: "TFcn = "VDMNat1 \<Rightarrow> VDMNat1""
 where
 	"v \<equiv> (
 	\<lambda> (x :: VDMNat1) .
