@@ -1,0 +1,316 @@
+/**
+ * This file is part of the INTO-CPS toolchain.
+ *
+ * Copyright (c) 2017-2019, INTO-CPS Association,
+ * c/o Professor Peter Gorm Larsen, Department of Engineering
+ * Finlandsgade 22, 8200 Aarhus N.
+ *
+ * All rights reserved.
+ *
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS INTO-CPS ASSOCIATION PUBLIC LICENSE VERSION 1.0.
+ * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES
+ * RECIPIENT'S ACCEPTANCE OF THE OSMC PUBLIC LICENSE OR THE GPL 
+ * VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
+ *
+ * The INTO-CPS toolchain  and the INTO-CPS Association Public License are
+ * obtained from the INTO-CPS Association, either from the above address, from
+ * the URLs: http://www.into-cps.org, and in the INTO-CPS toolchain distribution.
+ * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY; without
+ * even the implied warranty of  MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE, EXCEPT AS EXPRESSLY SET FORTH IN THE
+ * BY RECIPIENT SELECTED SUBSIDIARY LICENSE CONDITIONS OF
+ * THE INTO-CPS ASSOCIATION.
+ *
+ * See the full INTO-CPS Association Public License conditions for more details.
+ */
+types
+	/**
+	 * A point in superdense time is represented by a real quantity and a whole
+	 * number instant "within" that time.
+	 */
+	Time ::
+		r	: real
+		i	: nat
+	inv t ==
+		t.r >= 0	-- Times must be positive
+	ord a < b ==
+		(a.r < b.r) or (a.r = b.r and a.i < b.i);	-- NB using real equality!
+
+	/**
+	 * Possible "interval" values for a Clock variable
+	 */
+	Interval = <constant> | <fixed> | <calculated> | <tunable> | <changing> | <countdown> | <triggered>;
+
+	/**
+	 * A variable or clock reference. These are unique within an FMU.
+	 */
+	Ref = nat;
+
+	/**
+	 * A convenient way to name FMUs.
+	 */
+	Name = seq1 of char;
+
+	/**
+	 * A reference to a connection point in a specific named FMU.
+	 */
+	FMURef ::
+		name	: Name
+		ref		: Ref;
+
+	/**
+	 * The current known FMU variable values. These are usually used by FMUs, but note that
+	 * Clocks can produce temporary environments that are not committed until a step.
+	 */
+	Environment = map Ref to Value;
+
+	/**
+	 * The value that a clock or variable can have. Simplified for now.
+	 */
+	Value = real | int | bool;
+
+	/**
+	 * An Equation is used to modify the values of an FMU in order to compute a new
+	 * step in time. A clock defines a set of equations to activate.
+	 */
+	Equation = Environment -> Environment;
+
+	/**
+	 * A variable is identified by a Ref (within an FMU).
+	 */
+	Variable ::
+		ref			: Ref
+		type		: <input> | <output>
+		clocks		: set of Ref;
+
+	/**
+	 * A clock is identified by a Ref (within an FMU) and activates a set of equations.
+	 */
+	Clock ::
+		ref			: Ref
+		type		: <input> | <output>
+		interval	: Interval
+		equations	: set of Equation;	-- Enabled when clock is active
+
+	/**
+	 * An FMU is comprised of a set of clocks and variables, plus an environment that holds
+	 * the current values for both. The references must be unique and the references within
+	 * the environment must all refer to known variables.
+	 */
+	FMU ::
+		name				: Name				-- m
+		clocks				: set of Clock		-- Ucm + Ycm
+		vars				: set of Variable	-- Um + Ym
+		mode				: <STEP> | <EVENT>
+		time				: Time				-- time is per FMU
+		env					: Environment
+		nextScheduledTick	: [Time]
+		nextScheduledClocks	: set of Ref
+		activeClocks		: set of Ref
+		activeEquations		: set of Equation
+	inv fmu ==
+		let crefs = { c.ref | c in set fmu.clocks },
+			vrefs = { v.ref | v in set fmu.vars },
+			refs  = crefs union vrefs
+		in
+			-- All clock and variable references are unique
+			card refs = card fmu.clocks + card fmu.vars
+			-- All references in the environment are defined
+			and (dom fmu.env subset refs)
+			-- All active clocks are defined
+			and (fmu.activeClocks subset crefs)
+			-- All variables' clocks are defined
+			and (forall var in set fmu.vars & var.clocks subset crefs)
+			-- All scheduled clocks are defined
+			and (if fmu.nextScheduledTick = nil
+				 then fmu.nextScheduledClocks = {}
+				 else fmu.nextScheduledClocks subset crefs);
+
+	/**
+	 * A machine is a collection of FMUs, plus a connection map between them. The connection
+	 * sources must be FMU outputs and the destinations must be FMU inputs.
+	 */
+	Machine ::
+		fmus		: map Name to FMU
+		connections	: map FMURef to FMURef
+	inv m ==
+		(forall fmuref in set dom m.connections &
+			-- Every connection's source is a known FMU
+			fmuref.name in set dom m.fmus
+			-- Every connection's source is an output from its FMU
+			and let fmu = m.fmus(fmuref.name) in
+				(exists c in set fmu.clocks & fmuref.ref = c.ref and c.type = <output>)
+				or (exists v in set fmu.vars & fmuref.ref = v.ref and v.type = <output>))
+		and
+		(forall fmuref in set rng m.connections &
+			-- Every connection's destination is a known FMU
+			fmuref.name in set dom m.fmus
+			-- Every connection's destination is an input of its FMU
+			and let fmu = m.fmus(fmuref.name) in
+				(exists c in set fmu.clocks & fmuref.ref = c.ref and c.type = <input>)
+				or (exists v in set fmu.vars & fmuref.ref = v.ref and v.type = <input>));
+
+functions
+	/**
+	 * These functions are total, because the error conditions that you would expect
+	 * on an API are modelled by preconditions or type invariants.
+	 */
+	set_m: FMU * Ref * Value +> FMU
+	set_m(fmu, ref, val) ==
+		mu(fmu, env |-> fmu.env ++ { ref |-> val })
+		-- and calculate equations?
+	pre exists v in set fmu.vars & v.ref = ref and v.type = <output>;
+
+	get_m: FMU * Ref +> FMU * Value
+	get_m(fmu, ref) ==
+		-- calculate equations?
+		mk_(fmu, fmu.env(ref))
+	pre exists v in set fmu.vars & v.ref = ref and v.type = <input>;
+
+	set_cm: FMU * Ref * bool +> FMU
+	set_cm(fmu, ref, val) ==
+		mu(fmu,
+			env				|-> fmu.env ++ { ref |-> val },
+			activeClocks	|-> if val then fmu.activeClocks union {ref} else fmu.activeClocks \ {ref})
+		-- and calculate equations?
+	pre val <=> not ref in set fmu.activeClocks
+		and exists v in set fmu.clocks & v.ref = ref and v.type = <output>
+	post val <=> ref in set fmu.activeClocks;
+
+	get_cm: FMU * Ref +> FMU * bool
+	get_cm(fmu, ref) ==
+		-- calculate equations?
+		mk_(fmu, fmu.env(ref))
+	pre exists v in set fmu.clocks & v.ref = ref and v.type = <input>;
+
+	step_tm: FMU * real +> FMU * real * bool
+	step_tm(fmu, step) ==
+		is not yet specified
+	pre fmu.mode = <STEP>
+	post RESULT.#3 => RESULT.#1.mode = <EVENT>		-- FMU moved to event mode
+		and RESULT.#2 <= step;
+
+	step_e: FMU +> FMU * bool
+	step_e(fmu) ==
+		is not yet specified
+	pre fmu.mode = <EVENT>
+	post RESULT.#2 => RESULT.#1.mode = <EVENT>;		-- FMU remains in event mode
+
+	next_tm: FMU * Ref +> real | <NaN>
+	next_tm(fmu, ref) ==
+		is not yet specified
+	pre exists v in set fmu.clocks & v.ref = ref
+		and v.interval in set { <tunable>, <changing>, <countdown> };
+
+	/**
+	 * Dereference a clock in a given FMU.
+	 */
+	derefClock: FMU * Ref -> Clock
+	derefClock(fmu, ref) ==
+		iota c in set fmu.clocks & c.ref = ref
+	pre exists c in set fmu.clocks & c.ref = ref;
+
+	/**
+	 * Move all FMUs in M into event mode.
+	 */
+	enterEventMode: Machine -> Machine
+	enterEventMode(M) ==
+		mk_Machine
+		(
+			{ name |-> mu(M.fmus(name), mode |-> <EVENT>) | name in set dom M.fmus },
+			M.connections
+		)
+	pre forall m' in set rng M.fmus &
+		m'.time.i = 0;
+
+	/**
+	 * Activate the clocks in one FMU that are due at this time.
+	 */
+	activateFMUClocks: FMU -> FMU
+	activateFMUClocks(fmu) ==
+		if fmu.nextScheduledTick = nil
+		then fmu
+		else mu(fmu,
+				nextScheduledTick	|-> nil,
+				nextScheduledClocks	|-> {},
+				activeClocks		|-> fmu.nextScheduledClocks,
+				activeEquations		|-> dunion { derefClock(fmu, c).equations |
+													c in set fmu.nextScheduledClocks } );
+
+	/**
+	 * Activate the clocks in all FMUs that are due to tick at this time.
+	 */
+	activateClocks: Machine -> Machine
+	activateClocks(M) ==
+		mk_Machine
+		(
+			{ name |-> activateFMUClocks(M.fmus(name)) | name in set dom M.fmus },
+			M.connections
+		);
+
+	/**
+	 * Propagate one FMU's output clock activations.
+	 */
+	propagateFMUActivation: Machine * Name -> Machine
+	propagateFMUActivation(M, name) ==
+		is not yet specified;
+
+	/**
+	 * Propagate activation from all output clocks to input clocks. The names passed
+	 * are the FMU names to process (initially all of them).
+	 */
+	propagateActivations: Machine * set of Name -> Machine
+	propagateActivations(M, names) ==
+		if names = {}
+		then M
+		else let name in set names in
+			let M2 = propagateFMUActivation(M, name) in
+				propagateActivations(M2, names \ {name})
+	measure card names;
+
+	/**
+	 * Let M denote the set of FMU instances participating in the simulation. We
+	 * assume that one FMU instance m in set M or the importer has requested to enter
+	 * Event mode. Therefore we assume that every other instance m' in set M and m' <> m
+	 * has been stepped up to the same super-dense time (t.r, 0).
+	 */
+	clockedSimulationAlgorithm: Machine -> Machine
+	clockedSimulationAlgorithm(M) ==
+		/**
+		 * 1. Every m in set M enters Event mode (super-dense time instant is t.i = 0);
+		 */
+		let M1 = enterEventMode(M) in
+
+		/**
+		 * 2. Activate any time-based clocks scheduled to tick at (t.r , 0), by
+		 *    invoking set_cm(_, wcm0) for any input or output clock wcm0 in set
+		 *    Ucm union Ycm and any instance m in set M;
+		 */
+
+		let M2 = activateClocks(M1) in
+
+		/**
+		 * 3. Construct and solve system of equations for t.i :
+		 * 		(a) For all ycm in set Ycm of any instance m in set M, forward activation state of
+		 *		    triggered clocks:
+		 * 			i. Invoke get_cm (_, ycm ), and set_cm(_, ucm0 ) or get_cm (_, ycm0 ),
+		 *			   for any other clock ucm0 in set Ucm or ycm0 in set Ycm and instance
+		 *			   m in set M that is transitively connected to ycm or has become active
+		 *			   as a result of the clock activations;
+		 *		(b) Invoke get_m(_, ym0) and set_m(_, um0, _) in the appropriate order,
+		 *		    for any instance m in set M.
+		 */
+
+		let M3 = propagateActivations(M2, dom M2.fmus) in
+
+		/**
+		 * 4. Invoke step_e(_) for m in set M (signals end of Event iteration t.i).
+		 * 5. Schedule clocks by invoking next_tm on every relevant clock, for m in set M.
+		 * 6. If any m in set M wishes to repeat the event iteration, or if a clock returned a
+		 *    zero interval, go to Step 3 (start iteration t.i + 1).
+		 */
+		M3
+	pre card { fmu.time | fmu in set rng M.fmus } = 1;

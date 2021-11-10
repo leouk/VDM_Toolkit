@@ -36,8 +36,8 @@ TCStateDefinition
 (21 of 33) = 63%
 
 21 33 defs
-34 37 binds
-32 42 types
-100 110 exp
+37 37 binds
+33 42 types
+101 110 exp
 
-187 222 total = 85%
+190 222 total = 85%

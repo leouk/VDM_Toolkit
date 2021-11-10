@@ -98,6 +98,7 @@
 *TCElseIfExpression
 *TCElseIfExpressionList
 *TCPreExpression
+*TCFuncInstantiationExpression
 
 TCPreOpExpression
 TCPostOpExpression
@@ -108,10 +109,9 @@ TCCaseAlternativeList
 TCCasesExpression
 
 
-TCFuncInstantiationExpression
 
 TCMkBasicExpression
 
 TCStateInitExpression
 
-(100 of 110) = 91
+(101 of 110) = 92
