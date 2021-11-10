@@ -28,8 +28,9 @@ public class TRQuoteType extends TRType
     
     @Override
 	public String invTranslate(String varName) {
-        report(IsaErrorMessage.PLUGIN_NYI_2P, "invTranslate", getClass().getName());
-        return IsaToken.ERROR.toString();
+		// there is no "inv_True" in the translation for completeness. 
+		String typeStr = IsaToken.INV.toString() + IsaToken.UNDERSCORE.toString() + IsaToken.TRUE.toString();
+        return IsaToken.parenthesise(typeStr + (varName == null ? "" : " " + varName));
 	}
 
 	@Override

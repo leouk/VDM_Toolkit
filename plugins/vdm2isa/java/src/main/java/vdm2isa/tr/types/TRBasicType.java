@@ -95,8 +95,8 @@ public class TRBasicType extends TRType
 	@Override
 	public String invTranslate(String varName)
 	{
-		// there is no "inv_\<bool>" in the translation; add inv_bool for completeness. 
-		String typeStr = isaToken() == IsaToken.BOOL ? "bool" : translate();
+		// there is no "inv_bool" in the translation; add inv_bool for completeness. 
+		String typeStr = isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : translate();
 		return IsaToken.parenthesise(
 			IsaToken.INV.toString() + 
 			typeStr + (varName == null ? "" : " " + varName));
