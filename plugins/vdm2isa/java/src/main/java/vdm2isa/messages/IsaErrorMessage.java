@@ -40,6 +40,8 @@ public enum IsaErrorMessage {
      "%1$s expression invalid basic type (%2$s)."),      
     VDMSL_INVALID_INVTYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 12,
     "Invalid VDMSL invartiant type %1$s: %2$s."),
+    VDMSL_INVALID_TYPEDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 13, 
+    "Invalid type %1$s definition for %2$s. Both pattern and expression must be present."),
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
