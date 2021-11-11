@@ -4,6 +4,7 @@ import java.util.TreeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
 import com.fujitsu.vdmj.util.Utils;
@@ -12,10 +13,11 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 
 /**
- * This is an adjusted copy of TCTypeSet. Not sure if this is right 
+ * This is an adjusted copy of TCTypeSet. Not sure if this is right.
  */
+//TODO Implement Mappable (instead of MappableNode, for now), given you don't call translate() etc on it? 
 @SuppressWarnings("serial")
-public class TRTypeSet extends TreeSet<TRType>
+public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 {
 	private static final long serialVersionUID = 1L;
 
