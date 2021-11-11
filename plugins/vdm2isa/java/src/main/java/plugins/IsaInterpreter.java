@@ -1,6 +1,7 @@
 package plugins;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.types.TCType;
 
@@ -49,5 +50,10 @@ public class IsaInterpreter extends ModuleInterpreter {
         TRExpression expr = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr.key);
         TRType type = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr.value);
         return new Pair<TRExpression, TRType>(expr, type);
+    }
+
+    public TRExpression map2isa(TCExpression tcexpr) throws Exception
+    {
+        return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
     }
 }

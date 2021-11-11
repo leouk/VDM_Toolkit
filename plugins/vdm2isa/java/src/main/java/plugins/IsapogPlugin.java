@@ -107,14 +107,19 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     try 
                     {
                         // type check PO as an TC AST
-                        Pair<TCExpression, TCType> pair  = isaInterpreter.typeCheck(po.value, po.location.module);
+                        
+                        //Pair<TCExpression, TCType> pair  = isaInterpreter.typeCheck(po.value, po.location.module);
                         //TODO check pair.value is type okay; for VDM POGs should always be fine, but there will be "mine" as well ;-)
 
+                        TCExpression potcExpr = po.getCheckedExpression();
+
                         // translate the PO back to TR world
-                        Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
-                        TRProofScriptDefinition poScript = chooseProofScript(po, mpair.key);
+                        //Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
+                        TRExpression potrExpr = isaInterpreter.map2isa(potcExpr);
+
+                        TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
                         TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
-                        TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, mpair.key, mpair.value, poScript);
+                        TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, potrExpr, null/* TRType for potrExpr!*/, poScript);
                         isapogl.add(poe);
                         poNumber++;
                     }

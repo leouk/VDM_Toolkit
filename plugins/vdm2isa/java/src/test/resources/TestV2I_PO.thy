@@ -11,9 +11,9 @@ begin
 theorem R_INV_SATISFIABILITY:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<exists> (r :: R)  . (((
-		(((inv_VDMNat (x\<^sub>R r))) \<and>
-	 ((inv_VDMNat (y\<^sub>R r)))
-		))) \<longrightarrow> ((x\<^sub>R (r)) < (y\<^sub>R (r))))))"
+		 (((inv_VDMNat (x\<^sub>R r))) \<and>
+		 ((inv_VDMNat (y\<^sub>R r)))
+		 ))) \<longrightarrow> ((x\<^sub>R (r)) < (y\<^sub>R (r))))))"
 	
 	oops
 	

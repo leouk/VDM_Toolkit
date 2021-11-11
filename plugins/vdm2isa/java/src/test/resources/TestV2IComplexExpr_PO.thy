@@ -68,13 +68,12 @@ theorem vc6_SUB_TYPE:
 	oops
 	
 	
+	
+theorem f_FUNC_POST_CONDITION:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<forall> (x :: VDMNat)  (y :: VDMNat1)  . ((((inv_VDMNat x))) \<and>  (((inv_VDMNat1 y))) \<longrightarrow> ((pre_f x  y) \<longrightarrow> (post_f x  y  (x + y))))))"
+	
+	oops
+	
+	
 end
-(*
-	Could not translate VDM PO because of a com.fujitsu.vdmj.messages.VDMErrorsException error:
-	VDM PO: f: post condition obligation in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 63:5
-(forall x:nat, y:nat1 &
-  pre_f(x, y) => post_f(x, y, (x + y)))
-
-	Reason: Error 3182: Name 'pre_f' is not in scope in 'TestV2IComplexExpr' (console) at line 2:3
-Error 3182: Name 'post_f' is not in scope in 'TestV2IComplexExpr' (console) at line 2:18
-*)

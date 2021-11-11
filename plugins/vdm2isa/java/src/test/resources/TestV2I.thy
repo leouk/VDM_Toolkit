@@ -7,17 +7,16 @@ theory TestV2I
 imports VDMToolkit
 begin
 
+
 record R = 
 	x\<^sub>R :: "VDMNat"
-	 y\<^sub>R :: "VDMNat"
+		 y\<^sub>R :: "VDMNat"
 	
-	definition
+definition
 	inv_R :: "R \<Rightarrow> \<bool>"
 where
-	"inv_R dummy0 \<equiv> 
-		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-	 ((inv_VDMNat (y\<^sub>R dummy0)))
-		)"
+	"inv_R dummy0 \<equiv>  (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )"
 
 	
 definition
@@ -32,10 +31,8 @@ definition
 where
 	"post_mkr n  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_mkr specification\<close>
-		((inv_VDMNat n)  \<and>  
-		(((inv_VDMNat (x\<^sub>R RESULT))) \<and>
-	 ((inv_VDMNat (y\<^sub>R RESULT)))
-		))"
+		((inv_VDMNat n)  \<and>   (((inv_VDMNat (x\<^sub>R RESULT))) \<and>
+		 ((inv_VDMNat (y\<^sub>R RESULT))) ))"
 
 definition
 	mkr :: "VDMNat \<Rightarrow> R"
@@ -50,20 +47,16 @@ definition
 where
 	"pre_recbind dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_recbind specification\<close>
-		(
-		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-	 ((inv_VDMNat (y\<^sub>R dummy0)))
-		))"
+		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))"
 
 definition
 	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"post_recbind dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_recbind specification\<close>
-		(
-		(((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-	 ((inv_VDMNat (y\<^sub>R dummy0)))
-		)  \<and>  (inv_VDMNat RESULT))"
+		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )  \<and>  (inv_VDMNat RESULT))"
 
 definition
 	recbind :: "R \<Rightarrow> VDMNat"
