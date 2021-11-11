@@ -1,5 +1,6 @@
 package vdm2isa.lex;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ public final class IsaTemplates {
 
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //TODO generalise the tabbing/newlining later 
-    private final static String MODULE       = "(* VDM to Isabelle Translated\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%1$s\n%2$s\n*)\ntheory %3$s\nimports %4$s\nbegin\n\n%5$s\nend";
+    private final static String MODULE       = "(* VDM to Isabelle Translation @%1$s\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%2$s\n%3$s\n*)\ntheory %4$s\nimports %5$s\nbegin\n\n%6$s\nend";
     private final static String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
     private final static String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
     private final static String TSYNONYM     = "type_synonym %1$s";
@@ -213,7 +214,7 @@ public final class IsaTemplates {
         assert comment != null && loc != null && name != null && defs != null;
         StringBuilder sb = new StringBuilder();
         if (imports == null || imports.isEmpty()) imports = IsaToken.VDMTOOLKIT.toString();
-        sb.append(String.format(MODULE, comment, loc, name, imports, defs));
+        sb.append(String.format(MODULE, Instant.now().toString(), comment, loc, name, imports, defs));
 		return sb.toString();
     }
 
