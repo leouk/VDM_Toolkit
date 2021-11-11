@@ -9,7 +9,6 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRInvariantType;
-import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 /**
