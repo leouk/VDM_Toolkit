@@ -11,6 +11,8 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
 import plugins.GeneralisaPlugin;
+import vdm2isa.lex.IsaSeparator;
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
@@ -20,6 +22,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	private static final long serialVersionUID = 1L;
 	
 	private boolean curried;
+	private String separator;
 
 	protected TRTypeList()
 	{
@@ -57,6 +60,24 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
+	@Override
+	public String setSemanticSeparator(String sep)
+	{
+		String result = getSemanticSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			this.separator = sep;
+			// do not change the inner separator list elements separator? 
+		}
+		return result;
+	}
+
+	@Override
+	public String getSemanticSeparator()
+	{
+		return separator;
+	}
+	
 	private boolean isValidInvTranslateCall(List<String> varNames)
 	{
 		return varNames.size() <= size();
