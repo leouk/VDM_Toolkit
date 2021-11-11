@@ -56,7 +56,7 @@ public class TRModule extends TRNode
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
 		if (files != null && !files.isEmpty())
 		{ 
-			loc += "files = " + files.toString();
+			loc += "\nfiles = " + files.toString();
 		}
 		return IsaTemplates.translateModule("", loc, name.toString(), getImports(), definitions.translate());
 	}

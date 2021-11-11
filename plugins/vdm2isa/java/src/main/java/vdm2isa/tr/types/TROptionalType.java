@@ -17,6 +17,12 @@ public class TROptionalType extends TRType {
         this.type = type;
     }
 
+    // @Override
+    // public String setSemanticSeparator(String sep)
+    // {
+    //     return super.setSemanticSeparator(sep);
+    // }
+
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();

@@ -1,7 +1,8 @@
-(* VDM to Isabelle Translated
+(* VDM to Isabelle Translation @2021-11-11T13:30:44.817966Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2I.vdmsl' at line 1:8files = [./src/test/resources/TestV2I.vdmsl]
+in './src/test/resources/TestV2I.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit
@@ -15,8 +16,13 @@ record R =
 definition
 	inv_R :: "R \<Rightarrow> \<bool>"
 where
-	"inv_R dummy0 \<equiv>  (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		 ((inv_VDMNat (y\<^sub>R dummy0))) )"
+	"inv_R r \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
+		( (((inv_VDMNat (x\<^sub>R r))) \<and>
+		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
+		\<comment>\<open>User defined body of inv_R\<close>
+		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
+ 
 
 	
 definition

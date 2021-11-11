@@ -40,4 +40,4 @@ TCStateDefinition
 33 42 types
 101 110 exp
 
-190 222 total = 85%
+192 222 total = 87%

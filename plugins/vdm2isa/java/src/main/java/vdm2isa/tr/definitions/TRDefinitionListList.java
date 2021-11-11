@@ -47,7 +47,7 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
             // set local now we have defs within; and (spurious) default separators
             result.setup();
             // set separator according to the first on this list list 
-            result.setSemanticSeparator(get(0).getSemanticSeparator());
+            //result.setSemanticSeparator(get(0).getSemanticSeparator());
 			result.setFormattingSeparator(get(0).getFormattingSeparator());
         }
 		assert result.size() == concSize;	

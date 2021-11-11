@@ -36,7 +36,7 @@ public abstract class TRInvariantType extends TRType
     protected void setup()
     {
         super.setup();
-        setFormattingSeparator("\n\t\t");
+        setFormattingSeparator("\n\t\t ");
     }
 
 	@Override
