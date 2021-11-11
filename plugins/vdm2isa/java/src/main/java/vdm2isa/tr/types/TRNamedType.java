@@ -52,8 +52,9 @@ public class TRNamedType extends TRInvariantType
 
     @Override
 	public String invTranslate(String varName) {
-		return IsaToken.parenthesise(
-            IsaToken.INV.toString() + typename.toString() +
+        //TODO not all type.getName() will directly work! Needs to take into account structure types etc. Okay for now. 
+        return IsaToken.parenthesise(
+            IsaToken.INV.toString() + type.getName() +
             (varName != null ? getSemanticSeparator() + varName : ""));
 	}
 

@@ -12,6 +12,8 @@ import java.util.Vector;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+import com.fujitsu.vdmj.tc.statements.TCIdentifierDesignator;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.Vdm2isaPlugin;
@@ -255,7 +257,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// add synthetic RESULT extra parameter to the last patternList
 			// e.g., uncurried(x,y)== x + y, will lead to [[x,y]] then [[x,y,RESULT]]
 			// 		 curried(x)(y) == x + y, will lead to [[x],[y]] then [[x],[y,RESULT]]
-			result.lastElement().add(new TRBasicPattern(parameters.getLocation(), IsaToken.IDENTIFIER, 
+			result.lastElement().add(new TRBasicPattern(new TCIdentifierPattern(name), IsaToken.IDENTIFIER, 
 				name.getResultName(parameters.getLocation()).toString()));
 		}
 		return result;
@@ -483,10 +485,13 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 * @param kind
 	 * @return
 	 */
+	//TODO should/could this be pushed to say TRType tree for the implicitly defined checks belonging there? Would be more elegant,
+	//	   but would demand an extra TRExplicitFunctionDefinition? Hum... Not sure.
 	protected String translateImplicitChecks(TRSpecificationKind kind)
 	{
 		StringBuilder fcnBody = new StringBuilder();
 		
+		// constant function without explicit pre gets just True
 		if (kind == TRSpecificationKind.PRE && isConstantFunction() && isImplicitlyGeneratedUndeclaredSpecification())
 		{
 			// undeclared pre of constant functions get "True" 
@@ -574,23 +579,17 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// include implicit function parameters invariant checks
 			case PRE:
 			case POST:
+			case INV:
+			case EQ:
+			case ORD:
+			case MAX:
+			case MIN:
 				fcnBody.append(translateImplicitChecks(implicitSpecificationKind));	
 				break;
 
-			case INV:
-				//TODO
-				break;
-			case EQ:
-				break;
-			case ORD:
-				break;
 			case MEASURE:
 				break;
 			case INIT:
-				break;
-			case MAX:
-				break;
-			case MIN:
 				break;			
 		}
 		String old = getFormattingSeparator();

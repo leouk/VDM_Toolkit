@@ -254,13 +254,13 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 // straightforward type synonym cases
                 case BASIC:
                 case FUNCTION:
-                case MAP:
                 case OPTIONAL:
-                case SEQ:
-                case SET:
                     //TODO @NB is there a case where name is diffeerent from trtype.typename? 
                     sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.translate()));
                     break;
+                case SEQ:
+                case SET:
+                case MAP:
                 case QUOTE:
                 case UNION:
                     report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getName());
@@ -280,12 +280,13 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         if (t instanceof TRInvariantType)
         {
             TRInvariantType trit = (TRInvariantType)t;
-            //sb.append(trit.translateTLD());
+            sb.append(trit.translateTLD());
             // translate implicit type invariant
-            String varName = IsaToken.dummyVarNames(1, name.getLocation());
-            sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
-                    name.toString(), name.toString(), varName, 
-                    t.invTranslate(varName), false));            
+            // sb.append("\n\n\n");
+            // String varName = IsaToken.dummyVarNames(1, name.getLocation());
+            // sb.append(IsaTemplates.translateInvariantDefinition(getLocation(),
+            //         name.toString(), name.toString(), varName, 
+            //         t.invTranslate(varName), false));            
         }
         return sb.toString();
     }
