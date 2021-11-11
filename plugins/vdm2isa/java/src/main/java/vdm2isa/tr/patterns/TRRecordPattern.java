@@ -2,6 +2,7 @@ package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -15,23 +16,21 @@ public class TRRecordPattern extends TRPattern {
     private final TRPatternList plist;
     private final TRType type;
     
-    public TRRecordPattern(LexLocation location, TCNameToken typename, TRPatternList plist, TRType type)
+    public TRRecordPattern(TCRecordPattern owner, TCNameToken typename, TRPatternList plist, TRType type)
     {
-        super(location);
+        super(owner);
         this.typename = typename;
         this.plist = plist;
         this.type = type;
         if (this.plist.size() == 0)
             report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, typename.toString());
-            
-
         //System.out.println(toString());
     }
 
     @Override 
     public String getPattern()
     {
-        return IsaToken.bracketit(IsaToken.LRECORD, String.valueOf(plist), IsaToken.RRECORD);
+        return typeAware(IsaToken.bracketit(IsaToken.LRECORD, String.valueOf(plist), IsaToken.RRECORD));
     }
 
     @Override

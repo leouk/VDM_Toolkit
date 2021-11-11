@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 import com.fujitsu.vdmj.tc.patterns.TCIgnorePattern;
 import com.fujitsu.vdmj.tc.patterns.TCIntegerPattern;
 import com.fujitsu.vdmj.tc.patterns.TCNilPattern;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCQuotePattern;
 import com.fujitsu.vdmj.tc.patterns.TCRealPattern;
 import com.fujitsu.vdmj.tc.patterns.TCStringPattern;
@@ -36,28 +37,29 @@ public class TRBasicPattern extends TRPattern {
      * @param location
      * @param token
      */
-    public TRBasicPattern(LexLocation location, IsaToken token, String pattern)
+    public TRBasicPattern(TCPattern owner, IsaToken token, String pattern)
     {
-        super(location);
+        super(owner);
         this.token = token;
         this.pattern = pattern;
         if (!VALID_TOKENS.contains(this.token))
             report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
+        checkValidIsaIdentifier();
     }
     
     public TRBasicPattern(TCIdentifierPattern owner)
     {
-        this(owner.location, IsaToken.IDENTIFIER, owner.toString());
+        this(owner, IsaToken.IDENTIFIER, owner.toString());
     }
 
     public TRBasicPattern(TCBooleanPattern owner)
     {
-        this(owner.location, IsaToken.BOOL, owner.toString());
+        this(owner, IsaToken.BOOL, owner.toString());
     }
 
     public TRBasicPattern(TCCharacterPattern owner)
     {
-        this(owner.location, IsaToken.CHAR, 
+        this(owner, IsaToken.CHAR, 
             IsaToken.ISACHAR + " " + 
                 IsaToken.bracketit(IsaToken.ISASTR, 
                     Character.isISOControl(owner.value.unicode) ?
@@ -70,18 +72,18 @@ public class TRBasicPattern extends TRPattern {
 
     public TRBasicPattern(TCIntegerPattern owner)
     {
-        this(owner.location, (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT), owner.toString());
+        this(owner, (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT), owner.toString());
     }
 
     public TRBasicPattern(TCRealPattern owner)
     {
-        this(owner.location, IsaToken.REAL, owner.toString());
+        this(owner, IsaToken.REAL, owner.toString());
     }
 
     public TRBasicPattern(TCStringPattern owner)
     {
         // you don't want the "X" just the X 
-        this(owner.location, IsaToken.STRING, 
+        this(owner, IsaToken.STRING, 
             IsaToken.bracketit(IsaToken.ISASTR, owner.value.value,//owner.toString(),
                IsaToken.ISASTR)
             );
@@ -90,23 +92,23 @@ public class TRBasicPattern extends TRPattern {
     public TRBasicPattern(TCQuotePattern owner)
     {
         // you don't want the <X> just the X 
-        this(owner.location, IsaToken.VDMQUOTE, owner.value.value);//owner.toString());
+        this(owner, IsaToken.VDMQUOTE, owner.value.value);//owner.toString());
     }
 
     public TRBasicPattern(TCNilPattern owner)
     {
-        this(owner.location, IsaToken.NIL, IsaToken.NIL.toString());
+        this(owner, IsaToken.NIL, IsaToken.NIL.toString());
     }
 
     public TRBasicPattern(TCIgnorePattern owner)
     {
-        this(owner.location, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
+        this(owner, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
     }
 
     @Override
     public String getPattern()
     {
-        return String.valueOf(pattern);
+        return typeAware(String.valueOf(pattern));
     }
 
     @Override

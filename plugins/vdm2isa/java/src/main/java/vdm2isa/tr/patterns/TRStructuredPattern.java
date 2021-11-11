@@ -54,7 +54,7 @@ public class TRStructuredPattern extends TRPattern {
 
     public TRStructuredPattern(TCMapletPattern owner, TRPattern from, TRPattern to)
     {
-        super(from.location);//owner is not TCPattern!
+        super(owner.from);//owner is not TCPattern!!! Will be a problem?
         this.token = IsaToken.MAPLET;
         this.pattern = IsaToken.parenthesise( 
             from.translate() + " " + IsaToken.MAPLET.toString() + " " + to.translate());
@@ -93,7 +93,7 @@ public class TRStructuredPattern extends TRPattern {
     @Override
     public String getPattern()
     {
-        return String.valueOf(pattern);
+        return typeAware(String.valueOf(pattern));
     }
 
     @Override
