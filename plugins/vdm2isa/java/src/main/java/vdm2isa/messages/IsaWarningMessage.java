@@ -9,9 +9,10 @@ public enum IsaWarningMessage {
     VDMSL_VDM10_ONLY(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 0, 
     "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release."),
     VDMSL_MISSING_RESULT_IN_POST_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 1, 
-    "Could not find \"%1$s\" variable in implicit post condition specification definition."),
+    "Could not find `%1$s` variable in implicit post condition specification definition."),
 
-    
+    ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
+    "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     
                       SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_WARNING_BASE + 1, 
                       "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"),
