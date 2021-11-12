@@ -4,7 +4,10 @@ import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
 
 public class TRFieldExpression extends TRExpression {
     
@@ -18,6 +21,15 @@ public class TRFieldExpression extends TRExpression {
         this.object = object;
         this.field = field;
         //System.out.println(toString());
+    }
+
+    @Override 
+    public TRType getType()
+    {
+        TRType t = object.getType();
+        if (t instanceof TRRecordType)
+            report(IsaErrorMessage.VDMSL_FIELD_MISSING_RECORDTYPE_1P, field.toString());
+        return t;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRMapType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMapletExpression extends TRExpression 
 {
@@ -14,6 +17,12 @@ public class TRMapletExpression extends TRExpression
         super(left);
         this.left = left;
         this.right = right;
+    }
+
+    @Override
+    public TRType getType()
+    {
+        return new TRMapType(location, new TRDefinitionList(), left.getType(), right.getType(), false);
     }
 
     @Override

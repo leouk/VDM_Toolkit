@@ -3,7 +3,10 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRMapType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMapEnumExpression extends TRExpression 
 {
@@ -16,6 +19,12 @@ public class TRMapEnumExpression extends TRExpression
         this.members = members;
 	}
 
+    @Override
+    public TRType getType()
+    {
+        return members.getType();
+    }
+    
     public IsaToken leftBracket() {
         return IsaToken.MAP_OPEN;
     }

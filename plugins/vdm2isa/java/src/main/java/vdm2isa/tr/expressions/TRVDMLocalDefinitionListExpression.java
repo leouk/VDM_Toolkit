@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRType;
 
 /**
  * Super class for VDM expressions with declared local definitions (e.g. lambda, let, etc.) 
@@ -25,6 +26,13 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
         super.setup();
         setFormattingSeparator("\n\t\t");
     } 
+
+    @Override
+	public TRType getType()
+	{
+		return expression.getType();
+	}
+
 
     public abstract String localInvTranslate();
 

@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRType;
 
 public class TRSubseqExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
@@ -16,6 +17,12 @@ public class TRSubseqExpression extends TRExpression {
         this.seq = seq;
         this.from = from;
         this.to = to;
+    }
+
+    @Override
+    public TRType getType()
+    {
+        return seq.getType();
     }
 
     @Override

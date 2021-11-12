@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.expressions.TCRecordModifierList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.types.TRRecordType;
 
 public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecordModifier>
 {
@@ -37,11 +38,11 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 		setSemanticSeparator(IsaToken.COMMA.toString() + " ");
 	}
 
-	public void setRecordTypeName(String recordTypeName)
+	public void setRecordType(TRRecordType recordType)
 	{
 		for (TRRecordModifier rm : this)
 		{
-			rm.recordTypeName = recordTypeName;
+			rm.recordType = recordType;
 		}
 	}
 }

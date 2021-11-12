@@ -8,7 +8,7 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 public abstract class TREnumeratedExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
-	private final TRExpressionList members;
+	protected final TRExpressionList members;
 
 	public TREnumeratedExpression(LexLocation location, TRExpressionList members)
 	{

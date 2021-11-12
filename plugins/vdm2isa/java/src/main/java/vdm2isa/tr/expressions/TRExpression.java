@@ -6,11 +6,18 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnknownType;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -55,6 +62,27 @@ public abstract class TRExpression extends TRNode
 		this(exp.location);
 	}
 
+    /**
+     * Attempt at getting the type for the expression. Important for pattern translation with context, like optional types. 
+     * @return
+     */
+    public TRType getType()
+    {
+        //TODO report? instead of warning? 
+        warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
+        return TRExpression.unknownType(location);
+    }
+
+    /**
+     * Keep the static method to allow others (e.g. empty expression lists) to return the same as above.
+     * @param location
+     * @return
+     */
+    public static TRType unknownType(LexLocation location)
+    {
+        return new TRUnknownType(location);
+    }
+
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
     /**
@@ -88,7 +116,7 @@ public abstract class TRExpression extends TRNode
             case DOM:
             case RNG:
             case INVERSE:
-            case POWER:
+            case FPOWERSET:
                 if (args.length != 1)
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
@@ -182,6 +210,50 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
+    protected TRType/* Might not be record type? */ getRecordType()
+    {
+        // e.g. R :: x : nat, r.x ; could variable have other inner? 
+        if (this instanceof TRVariableExpression && 
+            ((TRVariableExpression)this).getVarDef() instanceof TRLocalDefinition &&
+            ((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType() instanceof TRRecordType) 
+            return ((TRRecordType)((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType());
+        // e.g. mk_R(v).x  (bit wacky, but)
+        else if (this instanceof TRMkTypeExpression && ((TRMkTypeExpression)this).getType() instanceof TRRecordType)
+            return (TRRecordType)((TRMkTypeExpression)this).getType();   
+        // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
+        else if (this instanceof TRApplyExpression && 
+                    ((TRApplyExpression)this).type instanceof TRFunctionType &&
+                    ((TRFunctionType)((TRApplyExpression)this).type).result instanceof TRRecordType)
+            return ((TRRecordType)((TRFunctionType)((TRApplyExpression)this).type).result);
+        //TODO missing various cases, like iota, mu, if, etc.!!!!
+        else
+        {
+            // do not change Isabelle record name. issue warning
+            String problem = "Could not retrieve field expression record name for " + 
+                getClass().getName() + "[" + 
+                // add inner information about casts above; horrible! but will be deleted once above completes?
+                (this instanceof TRVariableExpression ? ((TRVariableExpression)this).getVarDef().getClass().getName() + ", " : "")  +
+                
+                (this instanceof TRVariableExpression && ((TRVariableExpression)this).getVarDef() instanceof TRLocalDefinition &&
+                !(((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType() instanceof TRRecordType) ? 
+                ((TRLocalDefinition)((TRVariableExpression)this).getVarDef()).getType().getClass().getName() + ", " : "") + 
+                
+                ((this instanceof TRMkTypeExpression && !(((TRMkTypeExpression)this).getType() instanceof TRRecordType)) ?
+                ((TRMkTypeExpression)this).getType().getClass().getName() + ", " : "") +
+
+                ((this instanceof TRApplyExpression) && !(((TRApplyExpression)this).type instanceof TRFunctionType) &&
+                !(((TRFunctionType)((TRApplyExpression)this).type).result instanceof TRRecordType) ? 
+                ((TRFunctionType)((TRApplyExpression)this).type).result.getClass().getName() : "") +
+
+                "]" + translate();
+            warning(11111, problem);
+            // Don't add this as it's within the context of \<^sub>!
+            //sb.append("\n\t");
+            //sb.append(IsaToken.comment(problem));
+            return getType();
+        }        
+    }
+
     /**
      * Returns the record name of the type associated with the expression, if that's the case.
      * This is important so that Isabelle record related translations take into account field name
@@ -207,6 +279,7 @@ public abstract class TRExpression extends TRNode
      */
     public String getRecordTypeName()
     {
+        //TODO refactor getRecordType to be called from here? Problem for TRMkTypeExpression? 
         StringBuilder sb = new StringBuilder();
         // e.g. R :: x : nat, r.x ; could variable have other inner? 
         if (this instanceof TRVariableExpression && 

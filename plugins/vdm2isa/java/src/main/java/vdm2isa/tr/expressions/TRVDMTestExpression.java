@@ -5,6 +5,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
+import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
@@ -52,6 +54,22 @@ public abstract class TRVDMTestExpression extends TRExpression {
     {
         return basictype == null && typename != null;
     }
+
+    @Override 
+	public TRType getType()
+	{
+		TRType result; 
+        if (isBasicTyped())
+            result = basictype;
+		else if (typedef instanceof TRLocalDefinition)
+			result = ((TRLocalDefinition)typedef).getType();
+		else if (typedef instanceof TRExplicitFunctionDefinition)
+			result = ((TRExplicitFunctionDefinition)typedef).getType().result;
+		else
+            //TODO any more missing typedef options?
+			result = super.getType();
+		return result;
+	}
 
 	@Override
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)

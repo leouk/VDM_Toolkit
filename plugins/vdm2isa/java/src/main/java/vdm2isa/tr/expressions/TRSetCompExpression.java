@@ -3,9 +3,12 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRType;
 
 /**
  * Isabelle (explicit) set compression can be defined in two different ways (implicit comprehensions exists for 
@@ -53,6 +56,12 @@ public class TRSetCompExpression extends TRExpression {
         else 
             return "SetComp exp = " + (first != null ? first.getClass().getName() : "null") +
                 " plist(0) = null";
+    }
+
+    @Override
+    public TRType getType()
+    {
+        return new TRSetType(location, new TRDefinitionList(), first.getType(), false);
     }
 
     @Override

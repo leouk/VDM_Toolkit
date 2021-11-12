@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -29,6 +30,15 @@ public class TRIfExpression extends TRExpression
 		this.setFormattingSeparator("\n\t\t");
 		this.elseList.setFormattingSeparator(getFormattingSeparator());		
 		//System.out.println(toString());
+	}
+
+	/**
+	 * Choose the thenExp type as the resulting type (could have been elseExp); this is to attempt to solve the "(the (pattern))" problem
+	 */
+	@Override
+	public TRType getType()
+	{
+		return thenExp.getType();
 	}
 
 	@Override 

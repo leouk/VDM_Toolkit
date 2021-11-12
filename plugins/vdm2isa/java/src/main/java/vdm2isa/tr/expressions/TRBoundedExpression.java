@@ -10,6 +10,8 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRType;
 
 public class TRBoundedExpression extends TRExpression {
     
@@ -52,6 +54,15 @@ public class TRBoundedExpression extends TRExpression {
 	 	setFormattingSeparator(" ");
 	 	setInvTranslateSeparator(getFormattingSeparator() + IsaToken.IMPLIES.toString() + getFormattingSeparator());
 	}
+
+    /**
+     * Bounded expressions are necessarily boolean result; which would be the same as the predicate.getType()?
+     */
+    @Override
+	public TRType getType()
+	{
+		return predicate.getType();//TRBasicType.boolType(location);?
+    }
 
     @Override
     public IsaToken isaToken() {

@@ -7,6 +7,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMkTypeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
@@ -28,6 +29,12 @@ public class TRMkTypeExpression extends TRExpression {
             report(IsaErrorMessage.VDMSL_INVALID_MKARGS_3P, typename.toString(), args.size(), fields.size()); 
         else if (this.args.size() == 0)
             report(IsaErrorMessage.ISA_NO_EMPTYRECORD_1P, typename.toString());
+    }
+
+    @Override 
+    public TRType getType()
+    {
+        return TRRecordType.recordTypeFor(typename);
     }
 
     @Override

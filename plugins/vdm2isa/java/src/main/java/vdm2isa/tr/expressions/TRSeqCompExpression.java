@@ -3,10 +3,13 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleSetBind;
 import vdm2isa.tr.patterns.TRMultipleTypeBind;
+import vdm2isa.tr.types.TRSeqType;
+import vdm2isa.tr.types.TRType;
 
 /**
  * Isabelle sequence compression is "[ expr(bind1, bind2) . bind1 <- gen1, bind2 <- gen2, filter ]".
@@ -37,6 +40,12 @@ public class TRSeqCompExpression extends TRExpression {
     {
         super.setup();
         setFormattingSeparator(" ");
+    }
+
+    @Override
+    public TRType getType()
+    {
+        return new TRSeqType(location, new TRDefinitionList(), first.getType(), false);
     }
 
     @Override

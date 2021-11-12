@@ -94,6 +94,37 @@ public class TRLiteralExpression extends TRExpression
 		return IsaToken.parenthesise(exp + typeStr);
 	}
 
+	@Override 
+	public TRType getType()
+	{
+		TRType result;
+		switch (isaToken())
+		{
+			case BOOL:
+			case CHAR:
+			case NAT:
+			case NAT1:
+			case INT:
+			case RAT:
+			case REAL:
+				result = TRBasicType.newBasicType(location, token);
+				break;
+			
+			case STRING:
+				result = new TRSeqType(location, new TRDefinitionList(), TRBasicType.charType(location), !exp.isEmpty());
+				break;
+
+			case VDMQUOTE:	
+				result = new TRQuoteType(location, new TRDefinitionList(), exp);
+				break;
+			
+			default:
+				result = super.getType();
+				break;
+		}
+		return result;
+	}
+
 	@Override
 	public IsaToken isaToken() 
 	{

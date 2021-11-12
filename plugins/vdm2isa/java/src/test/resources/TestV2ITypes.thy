@@ -52,7 +52,8 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TOptional specification\<close>
 		((inv_Option (inv_VDMNat1) o1))  \<and> 
 		\<comment>\<open>User defined body of inv_TOptional\<close>
-		((\<comment>\<open>Optional type variable "o1" might not need extra "the" operator!\<close>(the(o1)) \<noteq> None) \<longrightarrow> (\<comment>\<open>Optional type variable "o1" might not need extra "the" operator!\<close>(the(o1)) > (10::VDMNat1)))"
+		((\<comment>\<open>Optional type variable  might not need extra the operator!\<close>
+    ((o1)) \<noteq> None) \<longrightarrow> (\<comment>\<open>Optional type variable might not need extra @{term the} operator!\<close>(the(o1)) > (10::VDMNat1)))"
 
 		 
 

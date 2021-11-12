@@ -29,6 +29,12 @@ public class TRApplyExpression extends TRExpression
 	}
 
 	@Override
+	public TRType getType()
+	{
+		return type;
+	}
+
+	@Override
     public String toString()
     {
         return super.toString() + " type = " + String.valueOf(type);

@@ -158,6 +158,130 @@ public class TRUnaryExpression extends TRExpression {
         setSemanticSeparator(" ");
     }
 
+	/**
+	 * Choose the type according to the operator
+	 */
+	@Override
+	public TRType getType()
+	{
+		TRType result;
+		TRType expType = exp.getType();
+		switch (isaToken())
+		{
+            case NOT:
+				result = TRBasicType.boolType(location);
+				break;
+
+			case ABS: 
+            case FLOOR:
+            case CARD:
+            case LEN:
+				result = TRBasicType.natType(location);
+				break;
+
+			case UMINUS:
+            case UPLUS:
+				// might be -1 or -1.5
+				result = expType;
+				if (!(result instanceof TRBasicType))
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects basic type");
+				break;
+
+			case DUNION:
+            case DINTER:
+            case INDS:
+            case ELEMS:
+				result = expType;
+				if (!(result instanceof TRSetType))
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects set type");
+				break;
+
+			case REVERSE:
+			case TAIL:
+				result = expType;
+				if (!(result instanceof TRSeqType))
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects seq type");
+				break;
+
+			case HEAD:
+				if (expType instanceof TRSeqType)
+				{
+					TRSeqType seqt = (TRSeqType)expType;
+					result = seqt.seqof;
+				}
+				else
+					result = super.getType();
+				break;
+	
+			case DISTCONC:
+				if (expType instanceof TRSeqType)
+				{
+					TRSeqType seqt = (TRSeqType)expType;
+					//TODO normalise these choices between raising a more specific error or delegating to super?  
+					if (seqt.seqof instanceof TRSeqType)
+						result = seqt.seqof;
+					else	
+						result = super.getType();
+				}
+				else
+					result = super.getType();
+				break;
+
+			case MERGE:
+				if (expType instanceof TRSetType)
+				{
+					TRSetType sexp = (TRSetType)expType;
+					result = sexp.setof;
+					if (!(result instanceof TRMapType))
+						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects map type");
+				}
+				else
+					result = super.getType();
+				break;
+
+            case INVERSE:
+				result = expType;
+				if (!(result instanceof TRMapType))
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects map type");
+				break;
+
+			case DOM:
+				if (expType instanceof TRMapType)
+				{
+					TRMapType mtyp = (TRMapType)expType;
+					result = mtyp.from;
+				}
+				else
+					result = super.getType();
+				break;
+
+			case RNG:
+				if (expType instanceof TRMapType)
+				{
+					TRMapType mtyp = (TRMapType)expType;
+					result = mtyp.to;
+				}
+				else
+					result = super.getType();
+				break;
+
+			case FPOWERSET:
+				if (expType instanceof TRSetType)
+				{
+					TRSetType sexp = (TRSetType)expType;
+					result = new TRSetType(sexp.location, new TRDefinitionList(), sexp, true);
+				}
+				else
+					result = super.getType();
+				break;
+			
+			default:
+				result = super.getType();
+				break;
+		}
+		return result;
+	}
+
     @Override
     public String translate() 
     {

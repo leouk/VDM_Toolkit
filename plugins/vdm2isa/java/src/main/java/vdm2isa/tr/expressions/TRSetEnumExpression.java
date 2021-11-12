@@ -3,7 +3,10 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRType;
 
 public class TRSetEnumExpression extends TREnumeratedExpression 
 {
@@ -13,6 +16,12 @@ public class TRSetEnumExpression extends TREnumeratedExpression
 	{
 		super(location, members);
 	}
+
+    @Override
+    public TRType getType()
+    {
+        return new TRSetType(location, new TRDefinitionList(), members.getType(), !members.isEmpty());
+    }
 
     @Override
     public IsaToken leftBracket() {

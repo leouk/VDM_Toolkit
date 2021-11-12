@@ -74,6 +74,19 @@ public class TRVariableExpression extends TRExpression
 		return sb.toString();		
 	}
 
+	@Override 
+	public TRType getType()
+	{
+		TRType result; 
+		if (vardef instanceof TRLocalDefinition)
+			result = ((TRLocalDefinition)vardef).getType();
+		else if (vardef instanceof TRExplicitFunctionDefinition)
+			result = ((TRExplicitFunctionDefinition)vardef).getType().result;
+		else
+			result = super.getType();
+		return result;
+	}
+
 	@Override
 	public String translate()
 	{

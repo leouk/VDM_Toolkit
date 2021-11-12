@@ -10,6 +10,8 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 {
@@ -29,6 +31,14 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	public TRExpressionList(TCExpressionList from) throws Exception
 	{
 		super(from);
+	}
+
+	/**
+	 * Choose the first element type (could have been any); this is to attempt to solve the "(the (pattern))" problem
+	 */
+	public TRType getType()
+	{
+		return isEmpty() ? TRExpression.unknownType(getLocation()) : get(0).getType();
 	}
 
 	@Override 

@@ -27,13 +27,12 @@ public class TRUnknownType extends TRType {
     @Override
     public String invTranslate(String varName) {
         // unknown type is just inv_True
-        String problem = "Unknown VDM types will generate Isabelle additional type variable `a warning.";
-        warning(11111, problem);
+        warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
         return 
             IsaToken.INV.toString() + 
                 IsaToken.TRUE.toString() +
                 (varName == null ? "" : " " + varName) +
-                "\n\t" + IsaToken.comment(problem);
+                "\n\t" + IsaToken.comment(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE.message);
     }
 
     @Override

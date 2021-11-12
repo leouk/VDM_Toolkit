@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.types.TRType;
 
 public class TRIotaExpression extends TRExpression {
 
@@ -17,6 +18,12 @@ public class TRIotaExpression extends TRExpression {
         this.bind = bind;
         this.predicate = predicate;
     }
+
+	@Override
+	public TRType getType()
+	{
+		return predicate.getType();
+	}
 
     @Override
     protected void setup()

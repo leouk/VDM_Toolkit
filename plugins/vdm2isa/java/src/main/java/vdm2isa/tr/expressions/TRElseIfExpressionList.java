@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.expressions.TCElseIfExpression;
 import com.fujitsu.vdmj.tc.expressions.TCElseIfExpressionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.types.TRType;
 
 public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRElseIfExpression>{
     
@@ -24,6 +25,15 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
     {
         super(from);
     }
+
+    /**
+	 * Choose the first element type (could have been any); this is to attempt to solve the "(the (pattern))" problem
+	 */
+	public TRType getType()
+	{
+		return isEmpty() ? TRExpression.unknownType(getLocation()) : get(0).getType();
+	}
+
 
     @Override
     protected void setup()

@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRType;
 
 /**
  * VDM Lambda expressions are complex to translate because of the need for local invariant checks and the need
@@ -72,6 +73,12 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
                     bindings: (var::VDMNat) (var2::VDMNat)
                     defs    : (var::VDMNat)(var2::VDMNat)
         */
+    }
+
+    @Override
+    public TRType getType()
+    {
+        return type;//type.result;
     }
 
     @Override

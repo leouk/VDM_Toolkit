@@ -32,6 +32,12 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     }
 
     @Override
+    public TRType getType()
+    {
+        return type.result;
+    }
+
+    @Override
     public String toString()
     {
         return function.toString() + (type != null ? "[" + type.toString() + "]" : "");

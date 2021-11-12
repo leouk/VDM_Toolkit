@@ -31,11 +31,31 @@ public class TRFieldNumberExpression extends TRExpression {
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_PROJECTION_3P, field.value, getProductType().types.size());
     }
 
+    /**
+     * Specifc type within the product for this product type
+     */
+    @Override 
+    public TRType getType()
+    {
+        if (type instanceof TRProductType)
+        {
+            assert field.value <= Integer.MAX_VALUE;
+            int index = (int)field.value;
+            return getProductType().types.get(index);                
+        }
+        else 
+            return super.getType();
+    }
+
     @Override
     public IsaToken isaToken() {
         return IsaToken.CROSSPROD;
     }
 
+    /**
+     * Overall product type within this field number expression
+     * @return
+     */
     protected TRProductType getProductType()
     {
         return (TRProductType)type;

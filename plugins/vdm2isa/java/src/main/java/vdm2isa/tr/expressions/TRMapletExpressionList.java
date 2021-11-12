@@ -9,6 +9,9 @@ import com.fujitsu.vdmj.tc.expressions.TCMapletExpressionList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.types.TRMapType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRMapletExpression>
 {
@@ -35,5 +38,13 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	{
 		super.setup();
 		setSemanticSeparator(IsaToken.COMMA.toString());
+	}
+
+	/**
+	 * Choose the first element type (could have been any); this is to attempt to solve the "(the (pattern))" problem
+	 */
+	public TRType getType()
+	{
+		return isEmpty() ? new TRMapType(getLocation(), new TRDefinitionList(), TRExpression.unknownType(getLocation()), TRExpression.unknownType(getLocation()), false) : get(0).getType();
 	}
 }
