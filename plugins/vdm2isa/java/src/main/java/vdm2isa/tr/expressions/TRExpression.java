@@ -11,6 +11,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnknownType;
@@ -85,6 +86,32 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
+    //TODO Perhaps add this to translate? Yes! 
+    /**
+     * Add any extra type-aware wrapping to expression. 
+     * @param expr
+     * @return
+     */
+	protected String typeAware(String expr)
+	{
+        StringBuilder sb = new StringBuilder();
+        // add type info extra expression if of optional type (either as variable "x" or function call "f(x)"). 
+		if (getType() instanceof TROptionalType)
+		{	
+			TRType t = getType();
+			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getName());
+			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getName());
+			sb.append(IsaToken.comment(comment, getFormattingSeparator()));	
+			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
+		}
+		else
+		{
+			//if vardef is null, ctor reports the error; 
+			sb.append(expr);
+		}
+		return sb.toString();	
+	}
+    
     /**
      * General tokenisation of operator-based expressions. The underlying caller's semantic separator is used
      * @param token
@@ -136,40 +163,40 @@ public abstract class TRExpression extends TRNode
                 break;
             
             // Binary Operators
-            case AND:
+			case AND:
             case OR:
             case IMPLIES:
             case EQUIVALENT:
-            case NE:
+            case INSET:
+            case NOTINSET:
+            case SUBSET:
+            case PSUBSET:
             case LT:
             case LE:
             case GT:
             case GE:
+			
             case PLUS:
             case MINUS:
             case TIMES:
             case DIV:
             case DIVIDE:
             case MOD:
-            case REM:
-            case INSET:
-            case NOTINSET:
-            case UNION:
+            case REM:		
+
+			case UNION:
             case INTER:
             case SETDIFF:
-            case SUBSET:
-            case PSUBSET:
-            case CONCATENATE:
+
+			case CONCATENATE:
+
+            case MUNION:
             case PLUSPLUS:
-            case DOMRESTO:
+            case COMP:
+			case DOMRESTO:  
             case DOMRESBY:
             case RANGERESTO:
             case RANGERESBY:
-            case MUNION:
-            case COMP:
-            //TODO equals *must* be reimplemented for record types because of record equality abstraction! 
-            //     Might even need a separate class from TRBinaryExpression! 
-            case EQUALS:
                 if (args.length != 2)
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
@@ -183,6 +210,7 @@ public abstract class TRExpression extends TRNode
                     sb.append(IsaToken.RPAREN.toString());
                 }
                 break;
+
             case STARSTAR:
             case STARSTARNAT:
                 if (args.length != 2)
@@ -203,7 +231,24 @@ public abstract class TRExpression extends TRNode
                     warning(11001, comment);
                 }
                 break;
-            
+
+            //TODO equals *must* be reimplemented for record types because of record equality abstraction! 
+            //     Might even need a separate class from TRBinaryExpression! 
+            case NE:
+            case EQUALS:
+                if (args.length != 2)
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                else
+                {
+                    sb.append(IsaToken.LPAREN.toString());
+                    sb.append(args[0].translate());
+                    sb.append(getSemanticSeparator());
+                    sb.append(token.toString());
+                    sb.append(getSemanticSeparator());
+                    sb.append(args[1].translate());
+                    sb.append(IsaToken.RPAREN.toString());
+                }
+                break;    
             default:
                 report(IsaErrorMessage.PLUGIN_NYI_2P, "token " + token.toString(), TRExpressionList.translate(args));
         }

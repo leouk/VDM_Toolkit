@@ -51,29 +51,6 @@ public class TRVariableExpression extends TRExpression
 				"\n\t\t " + String.valueOf(vardef); 
 	}
 
-	protected String typeAware(String expr)
-	{
-        StringBuilder sb = new StringBuilder();
-        // add type info extra expression if of optional type (either as variable "x" or function call "f(x)"). 
-		if ((vardef instanceof TRLocalDefinition && ((TRLocalDefinition)vardef).type instanceof TROptionalType) ||
-			(vardef instanceof TRExplicitFunctionDefinition && 
-				((TRExplicitFunctionDefinition)vardef).getType().result instanceof TROptionalType))
-		{	
-			TRType t = vardef instanceof TRLocalDefinition ? ((TRLocalDefinition)vardef).type : 
-						vardef instanceof TRExplicitFunctionDefinition ? ((TRExplicitFunctionDefinition)vardef).getType().result : null;
-			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getName());
-			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getName());
-			sb.append(IsaToken.comment(comment, getFormattingSeparator()));	
-			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
-		}
-		else
-		{
-			//if vardef is null, ctor reports the error; 
-			sb.append(expr);
-		}
-		return sb.toString();		
-	}
-
 	@Override 
 	public TRType getType()
 	{

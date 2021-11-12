@@ -54,12 +54,20 @@ public class TRBinaryExpression extends TRExpression
             case NOTINSET:
             case SUBSET:
             case PSUBSET:
-			case NE:
             case LT:
             case LE:
             case GT:
             case GE:
 				result = TRBasicType.boolType(location);
+				break;
+			
+			case NE:
+			case EQUALS:
+				result = left.getType();
+				if (result instanceof TRUnknownType)
+					result = right.getType(); 
+				if (result instanceof TRUnknownType)
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects equivalent type");
 				break;
 
             case PLUS:
@@ -69,13 +77,15 @@ public class TRBinaryExpression extends TRExpression
             case DIVIDE:
             case MOD:
             case REM:
-            case PLUSPLUS:
+			case STARSTAR:
+			case STARSTARNAT:				
 				result = left.getType();
 				if (result instanceof TRUnknownType)
 					result = right.getType(); 
 				if (!(result instanceof TRBasicType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects basic type");
-
+				break; 
+				
 			case UNION:
             case INTER:
             case SETDIFF:
@@ -86,14 +96,17 @@ public class TRBinaryExpression extends TRExpression
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects set type");
 
 				break;
+
 			case CONCATENATE:
 				result = left.getType();
 				if (result instanceof TRUnknownType)
 					result = right.getType(); 
 				if (!(result instanceof TRSeqType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects seq type");
+				break;
 
             case MUNION:
+            case PLUSPLUS:
             case COMP:
 				result = left.getType();
 				if (result instanceof TRUnknownType)
@@ -101,7 +114,7 @@ public class TRBinaryExpression extends TRExpression
 				if (!(result instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects map type");
 				break;
-					
+
 			case DOMRESTO:  // S <: m , get right  
             case DOMRESBY:
 				result = right.getType();
@@ -115,7 +128,7 @@ public class TRBinaryExpression extends TRExpression
 				if (!(result instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects map type");
 				break;
-			
+
 			default:
 				result = super.getType();
 				break;
