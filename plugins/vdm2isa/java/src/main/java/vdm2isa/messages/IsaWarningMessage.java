@@ -1,5 +1,9 @@
 package vdm2isa.messages;
 
+/*
+ * Plugin warning messages by category. "_XP" on the name hints at the number of parameters expect.
+ * Do not add \"v\" within messages, but `v` instead; this is in case message is also issued as an Isabelle comment. 
+ */
 public enum IsaWarningMessage {
 
     //Plugin messages relate to incomplete or incompatible issues
@@ -11,7 +15,9 @@ public enum IsaWarningMessage {
     VDMSL_MISSING_RESULT_IN_POST_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 1, 
     "Could not find `%1$s` variable in implicit post condition specification definition."),
 
-    ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
+    ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
+    "Unknown VDM types will generate Isabelle additional type variable `a warning."),
+    ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     
                       SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_WARNING_BASE + 1, 

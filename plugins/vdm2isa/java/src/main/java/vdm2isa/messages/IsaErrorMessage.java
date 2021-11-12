@@ -1,7 +1,8 @@
 package vdm2isa.messages;
 
 /**
- * Plugin error messages by category. "_XP" on the name hints at the number of parameters expect
+ * Plugin error messages by category. "_XP" on the name hints at the number of parameters expect.
+ * Do not add \"v\" within messages, but `v` instead; this is in case message is also issued as an Isabelle comment. 
  */
 public enum IsaErrorMessage {
     
@@ -44,6 +45,8 @@ public enum IsaErrorMessage {
     "Invalid type %1$s definition for %2$s. Both pattern and expression must be present."),
     VDMSL_INVALID_VAREXPR_VARDEF_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 14, 
     "Invalid variable expression - null vardef."),
+    VDMSL_INVALID_EXPROP_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 15, 
+    "Invalid expression operator `%1$s`."),
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
@@ -74,6 +77,8 @@ public enum IsaErrorMessage {
     "VDMSL type (isaToken = %1$s) does not have an explicitly given name."),
     ISA_INVALID_IDENTIFIER_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 13, 
     "Invalid Isabelle identifier in pattern `%1$s`."),
+    ISA_INVALID_RECORDNAME_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 14, 
+    "Unknown record name `%1$s` - not yet declared."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

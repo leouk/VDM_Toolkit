@@ -61,7 +61,7 @@ public enum IsaToken {
 	MERGE(Token.MERGE, "vdm_merge"),
 	DOM(Token.DOM, "dom"),
 	RNG(Token.RNG, "rng"),
-	POWER(Token.POWER, "Fpow"),
+	FPOWERSET(Token.POWER, "Fpow"),
 
 	// Binary Operators
 	AND(Token.AND, "\\<and>"),
@@ -283,7 +283,7 @@ public enum IsaToken {
 			//case UPLUS			: return IsaToken.UPLUS;
 
 			case CARD			: return IsaToken.CARD;
-			case POWER			: return IsaToken.POWER;
+			case POWER			: return IsaToken.FPOWERSET;
 			case DUNION			: return IsaToken.DUNION;
 			case DINTER			: return IsaToken.DINTER;
 
