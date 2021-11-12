@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -17,7 +20,7 @@ public class TRRecordType extends TRInvariantType
     private final TRFieldList fields;
     private final boolean composed; 
 
-    private final static Map<TCNameToken, TRFieldList> recordMap = new HashMap<TCNameToken, TRFieldList>(); 
+    private final static Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
 
     public TRRecordType(TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
@@ -30,7 +33,7 @@ public class TRRecordType extends TRInvariantType
 
         this.fields.setRecordType(this);
         this.fields.setFormattingSeparator(getFormattingSeparator());
-        recordMap.put(name, fields); 
+        recordMap.put(name, this); 
     }
 
     public static void reset()
@@ -105,9 +108,22 @@ public class TRRecordType extends TRInvariantType
 		return null;
 	}
 
+
+    public static TRRecordType recordTypeFor(TCNameToken recordName)
+    {
+        TRRecordType result = recordMap.get(recordName); 
+        if (result == null)
+            GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_RECORDNAME_1P, recordName.getLocation(), recordName.toString());
+        return result;
+    }
+
     public static TRFieldList fieldsOf(TCNameToken recordName)
     {
-        return recordMap.get(recordName);
+        TRRecordType t = recordTypeFor(recordName); 
+        TRFieldList result = null;
+        if (t != null)
+            result = t.fields;
+        return result;
     }
 
 	@Override

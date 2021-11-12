@@ -5,7 +5,9 @@
 package vdm2isa.tr.types;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
@@ -27,10 +29,10 @@ public class TRBasicType extends TRType
 	private static final long serialVersionUID = 1L;
 	private final IsaToken token;
 
-	private static final List<IsaToken> VALID_TOKENS = 
+	private static final Set<IsaToken> VALID_TOKENS = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 					  IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
-					  IsaToken.CHAR, IsaToken.TOKEN); 
+					  IsaToken.CHAR, IsaToken.TOKEN)); 
 
 	/**
 	 * Constructor useful for synthetically constructed types 
@@ -119,4 +121,23 @@ public class TRBasicType extends TRType
 	{
 		return visitor.caseBasicType(this, arg);
 	}
+
+	public static TRType newBasicType(LexLocation location, IsaToken token)  
+	{
+		return new TRBasicType(location, new TRDefinitionList(), token);
+	}
+
+	public static TRType boolType(LexLocation location)  
+	{
+		return newBasicType(location, IsaToken.BOOL);
+	}
+
+	public static TRType natType(LexLocation location) {
+		return newBasicType(location, IsaToken.NAT);
+	}
+
+	public static TRType charType(LexLocation location) {
+		return newBasicType(location, IsaToken.CHAR);
+	}
+
 }

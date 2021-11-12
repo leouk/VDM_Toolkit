@@ -16,6 +16,8 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
 
 public class TRTypeList extends TRMappedList<TCType, TRType>
 {
@@ -77,7 +79,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		return separator;
 	}
-	
+
 	private boolean isValidInvTranslateCall(List<String> varNames)
 	{
 		return varNames.size() <= size();
@@ -138,4 +140,14 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		list.addAll(Arrays.asList(args));
 		return list.invTranslate(varNames);	
 	}
+
+	public static TRTypeList newTypeList(TRExpressionList members) {
+		TRTypeList result = new TRTypeList();
+		for(TRExpression e : members)
+		{
+			result.add(e.getType());
+		}
+		return result;
+	}
+
 }

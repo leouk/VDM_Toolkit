@@ -71,7 +71,7 @@ public class TRFunctionType extends TRType
 	public TRFunctionType getPreType()
 	{
 		//NB technically, this can be partial (i.e. run-time error failing pre)?
-		return new TRFunctionType(location, definitions, parameters, false, new TRBasicType(location, null, IsaToken.BOOL));
+		return new TRFunctionType(location, definitions, parameters, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPreType(boolean isCurried)
@@ -92,7 +92,7 @@ public class TRFunctionType extends TRType
 		TRTypeList inSig = parameters.copy();
 		inSig.add(result);
 		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
-		return new TRFunctionType(location, definitions, inSig, false, new TRBasicType(location, null, IsaToken.BOOL));
+		return new TRFunctionType(location, definitions, inSig, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPostType(boolean isCurried)
