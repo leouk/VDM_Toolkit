@@ -226,24 +226,24 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				result = this.type.getCurriedPostType(this.isCurried);
 				break;
 
-		case EQ:
-			break;
-		case INIT:
-			break;
-		case INV:
-			break;
-		case MAX:
-			break;
-		case MEASURE:
-			break;
-		case MIN:
-			break;
-		case NONE:
-			break;
-		case ORD:
-			break;
-		default:
-			throw new UnsupportedOperationException();
+			case EQ:
+				break;
+			case INIT:
+				break;
+			case INV:
+				break;
+			case MAX:
+				break;
+			case MEASURE:
+				break;
+			case MIN:
+				break;
+			case NONE:
+				break;
+			case ORD:
+				break;
+			default:
+				throw new UnsupportedOperationException();
 		}
 		assert result != null;
 		return result;
@@ -280,11 +280,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				assert postdef == null && postcondition == null;
 				undeclaredName = name.getPostName(location);
 				break;			
-			// case EQ:
+			//case INV:
+			//	assert pre
+			//	break;
+		    // case EQ:
 			// 	break;
 			// case INIT:
-			// 	break;
-			// case INV:
 			// 	break;
 			// case MAX:
 			// 	break;
@@ -566,6 +567,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// translate the explicit function definition taking into consideration TRSpecificationKind
 		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
 		String fcnName     = name.getName();
+		//TODO STOPPED HERE; requires thought for TRNamedTypes in parameters! 
 		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
 		String fcnOutType  = type.result.translate();
 		String fcnParams   = parameters.translate();
