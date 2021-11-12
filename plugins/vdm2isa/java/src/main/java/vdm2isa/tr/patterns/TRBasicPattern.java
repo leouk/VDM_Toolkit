@@ -1,9 +1,12 @@
 package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.patterns.TCBooleanPattern;
 import com.fujitsu.vdmj.tc.patterns.TCCharacterPattern;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
@@ -26,11 +29,11 @@ public class TRBasicPattern extends TRPattern {
     private final String pattern;
     private IsaToken token;
 
-    private static final List<IsaToken> VALID_TOKENS = 
+    public static final Set<IsaToken> VALID_TOKENS = new HashSet<IsaToken>(
         Arrays.asList(IsaToken.IDENTIFIER, IsaToken.BOOL, IsaToken.CHAR,
-                      IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
+                      IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, IsaToken.RAT,
                       IsaToken.REAL, IsaToken.STRING, IsaToken.VDMQUOTE,
-                      IsaToken.NIL, IsaToken.PLACEHOLDER);
+                      IsaToken.NIL, IsaToken.PLACEHOLDER));
 
     /**
      * Constructor useful for synthetically constructed types 
@@ -77,7 +80,7 @@ public class TRBasicPattern extends TRPattern {
 
     public TRBasicPattern(TCRealPattern owner)
     {
-        this(owner, IsaToken.REAL, owner.toString());
+        this(owner, owner.value.type.equals(Token.RAT) ? IsaToken.RAT : IsaToken.REAL, owner.toString());
     }
 
     public TRBasicPattern(TCStringPattern owner)

@@ -11,8 +11,8 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRSetType extends TRType
 {
 	private static final long serialVersionUID = 1L;
-    protected final TRType setof;
-    protected final boolean set1;
+    public final TRType setof;
+    public final boolean set1;
 
     /**
      * Constructor needed for TRUnionType
@@ -20,7 +20,7 @@ public class TRSetType extends TRType
      * @param seqof
      * @param seq1
      */
-    protected TRSetType(LexLocation location, TRDefinitionList definitions, TRType setof, boolean set1)
+    public TRSetType(LexLocation location, TRDefinitionList definitions, TRType setof, boolean set1)
     {
         super(location, definitions);
         this.setof = setof;

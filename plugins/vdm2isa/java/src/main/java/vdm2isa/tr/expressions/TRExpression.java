@@ -20,8 +20,30 @@ import com.fujitsu.vdmj.lex.LexLocation;
 public abstract class TRExpression extends TRNode
 {
 	private static final long serialVersionUID = 1L;
+
+    protected static final Set<IsaToken> VALID_BINARY_OPS = new HashSet<IsaToken>(
+        Arrays.asList(IsaToken.AND, IsaToken.OR, IsaToken.IMPLIES, IsaToken.EQUIVALENT, 
+                      IsaToken.NE, IsaToken.LT, IsaToken.LE, IsaToken.GT, IsaToken.GE, 
+                      IsaToken.PLUS, IsaToken.MINUS, IsaToken.TIMES, IsaToken.DIV, 
+                      IsaToken.DIVIDE, IsaToken.MOD, IsaToken.REM, IsaToken.INSET, 
+                      IsaToken.NOTINSET, IsaToken.UNION, IsaToken.INTER, IsaToken.SETDIFF, 
+                      IsaToken.SUBSET, IsaToken.PSUBSET, IsaToken.CONCATENATE, IsaToken.PLUSPLUS, 
+                      IsaToken.DOMRESTO, IsaToken.DOMRESBY, IsaToken.RANGERESTO, IsaToken.RANGERESBY, 
+                      IsaToken.MUNION, IsaToken.COMP, IsaToken.EQUALS, IsaToken.STARSTAR, IsaToken.STARSTARNAT));
 	
-	public LexCommentList comments;
+    protected static final Set<IsaToken> VALID_UNARY_OPS = new HashSet<IsaToken>(
+        Arrays.asList(IsaToken.NOT, IsaToken.ABS, IsaToken.FLOOR, IsaToken.UMINUS, IsaToken.CARD, 
+                      IsaToken.DUNION, IsaToken.DINTER, IsaToken.LEN, IsaToken.HEAD, IsaToken.TAIL, 
+                      IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
+                      IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
+	
+    protected static final Set<IsaToken> VALID_LITERAL_TOKENS = new HashSet<IsaToken>(
+        Arrays.asList(IsaToken.NOT, IsaToken.ABS, IsaToken.FLOOR, IsaToken.UMINUS, IsaToken.CARD, 
+                    IsaToken.DUNION, IsaToken.DINTER, IsaToken.LEN, IsaToken.HEAD, IsaToken.TAIL, 
+                    IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
+                    IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
+
+    public LexCommentList comments;
 
 	public TRExpression(LexLocation location)
 	{

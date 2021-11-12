@@ -17,10 +17,10 @@ abstract public class TRType extends TRNode
 
 	public TRDefinitionList definitions; 
 
-	// public TRType(LexLocation location)
-	// {
-	// 	this(location, null);
-	// }
+	public TRType(LexLocation location)
+	{
+	 	this(location, new TRDefinitionList());
+	}
 
 	public TRType(LexLocation location, TRDefinitionList definitions)
 	{

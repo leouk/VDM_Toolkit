@@ -11,24 +11,26 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRMapType extends TRType
 {
     private static final long serialVersionUID = 1L;
-	private final TRType from;
-	private final TRType to;
-    private final boolean injective;
+	public final TRType from;
+	public final TRType to;
+    public final boolean injective;
+
+    public TRMapType(LexLocation location, TRDefinitionList definitions, TRType from, TRType to, boolean injective)
+	{
+        super(location, definitions);
+        this.from = from;
+        this.to = to;
+        this.injective = injective;
+    }
 
 	public TRMapType(TCMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		super(location, definitions);
-		this.from = from;
-		this.to = to;
-        this.injective = false;
+		this(location, definitions, from, to, false);
 	}
 
 	public TRMapType(TCInMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		super(location, definitions);
-		this.from = from;
-		this.to = to;
-        this.injective = true;
+		this(location, definitions, from, to, true);
 	}
 
     @Override
