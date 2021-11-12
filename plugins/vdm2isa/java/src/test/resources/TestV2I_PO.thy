@@ -1,7 +1,8 @@
-(* VDM to Isabelle Translated
+(* VDM to Isabelle Translation @2021-11-12T12:25:20.662169Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 7:5files = [./src/test/resources/TestV2I.vdmsl]
+in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 7:5
+files = [./src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I_PO
 imports TestV2I

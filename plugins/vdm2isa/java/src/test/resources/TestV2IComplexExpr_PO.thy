@@ -1,7 +1,8 @@
-(* VDM to Isabelle Translated
+(* VDM to Isabelle Translation @2021-11-12T12:25:20.663312Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 20:15files = [./src/test/resources/TestV2IComplexExpr.vdmsl]
+in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 20:15
+files = [./src/test/resources/TestV2IComplexExpr.vdmsl]
 *)
 theory TestV2IComplexExpr_PO
 imports TestV2IComplexExpr
