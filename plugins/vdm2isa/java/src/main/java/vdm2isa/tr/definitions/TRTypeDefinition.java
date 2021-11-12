@@ -47,7 +47,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	private TRDefinitionList composeDefinitions;
 
     public enum TRNamedTypeDefinitionKind {
-        UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, QUOTE, SEQ, SET, UNION  
+        UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, QUOTE, SEQ, SET, UNION, RENAMED  
     }
 
     public TRTypeDefinition(TRIsaVDMCommentList comments, 
@@ -212,6 +212,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 result = TRNamedTypeDefinitionKind.SET;
             else if (tnt.type instanceof TRUnionType)
                 result = TRNamedTypeDefinitionKind.UNION;
+            else if (tnt.type instanceof TRNamedType)
+                result = TRNamedTypeDefinitionKind.RENAMED;
         }
         return result;
     }
@@ -255,17 +257,25 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 case BASIC:
                 case FUNCTION:
                 case OPTIONAL:
-                    //TODO @NB is there a case where name is diffeerent from trtype.typename? 
-                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.translate()));
-                    break;
                 case SEQ:
                 case SET:
                 case MAP:
+                    //TODO @NB is there a case where name is diffeerent from trtype.typename? 
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.translate()));
+                    break;
+                // get the inner type name for the synonym translation
+                case RENAMED:
+                    assert trtype.type instanceof TRNamedType; 
+                    //trtype = (TRNamedType)trtype.type;
+                    //TODO @NB is there a case where name is diffeerent from trtype.typename? 
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.translate()));
+                    break;
+                case RECORD:
+                    //TODO re-named record (e.g. TRecord' = TRecord inv r == ...; for TRecord :: ...;) requires some thinking
                 case QUOTE:
                 case UNION:
                     report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getName());
                     break;
-                case RECORD:
                 case UNKNOWN:
                 default:
                     report(IsaErrorMessage.PLUGIN_NYI_2P, "invalid type definition", name.toString() + ": " + t.getClass().getName());

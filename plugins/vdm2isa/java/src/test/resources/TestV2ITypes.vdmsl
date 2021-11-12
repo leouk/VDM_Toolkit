@@ -6,15 +6,14 @@ exports all
 definitions
 
 types
-	-- basic (re-)named types with basic patterns
-	TBasic = nat1
+	-- basic (re-)named types with basic patterns with undeclared implicit specification for inv
+	TBasic1 = nat1;
+
+	-- basic (re-)named types with basic patterns with explicitly declared specifications and type rename
+	TBasic2 = TBasic1
 	inv t       == t > 10
 	eq  t1 = t2 == t1 = t2
 	ord t1 < t2 == t1 < t2;
-
-	TOptional = [nat1]
-	inv o1 == o1 <> nil => o1 > 10
-	;
 
 /*
 	TSet = set of TBasic
@@ -22,6 +21,7 @@ types
 	eq  s1 = s2 == s1 subset s2
 	ord s1 < s2 == card s1 < card s2
 	;
+
 	
 	TSeq = seq1 of TSet
 	inv s       == card elems s = len s
@@ -29,6 +29,20 @@ types
 	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
 	; 
 	
+
+	TRecord ::
+		x: nat 
+		y: nat	
+	inv r == r.x < r.y;
+	
+	TRecord' = TRecord
+	inv r == r.x > 10;
+
+ 
+	TOptional = [nat1]
+	inv o1 == o1 <> nil => o1 > 10
+	;
+
 	
 	TFcn = (nat1 -> nat1)
 	inv f == (forall x in set {1,2,3} & x > 1 => f(x) > 10)

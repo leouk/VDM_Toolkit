@@ -46,7 +46,17 @@ public class TRNamedType extends TRInvariantType
         sb.append(getSemanticSeparator());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(getSemanticSeparator());
-        sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, type.translate(), IsaToken.ISAQUOTE));
+        if (type instanceof TRNamedType)
+        {
+            TRNamedType tnt = (TRNamedType)type;
+            // for VDM named type synonyms (e.g. T = nat; T2 = T;)
+            sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, tnt.getName(), IsaToken.ISAQUOTE));
+        }
+        else
+        {
+            // for new types (e.g. T = nat, T = set of X, etc.)
+            sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, type.translate(), IsaToken.ISAQUOTE));
+        }
         return sb.toString();
     }
 
