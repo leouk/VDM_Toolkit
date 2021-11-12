@@ -498,6 +498,7 @@ definition
                    else 
                       undefined)"
 
+(* TODO: fold these three into proper one *)
 definition
   applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq" ("(1_ {_$$_})")
   where
@@ -509,6 +510,126 @@ definition
 
 value "nths [1,2,(3::nat)] {2..3}"
 value "[1,2,3::nat] {2$$3}"
+
+definition
+  applyVDMSubseq' :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq"        ("_ $$ (1{_.._})") where
+  "s$${l..u} \<equiv> if inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> (l \<le> u) then 
+                  nths s {(nat l)-1..(nat u)-1}
+                else
+                  []"
+
+\<comment> \<open>Thanks to Tom Hayle for this generalised version\<close>
+definition
+  extendedSubSeq :: "'a VDMSeq \<Rightarrow> VDMNat1 VDMSet \<Rightarrow> 'a VDMSeq" 
+  where
+  "extendedSubSeq xs s \<equiv> nths xs {x::nat | x . x+1 \<in> s }"
+
+(*lemma "s$${l..u} = subSeq s {l..u}" *)
+(* negatives give funny result, as nat -4 = 0 and nat -1 = 0! *)
+value "nths [A,B,C,D] {(nat (-1))..(nat (-4))}"
+value "nths [A,B,C,D] {(nat (-4))..(nat (-1))}"
+value "[A,B,C,D]$${-4..-1}"
+value "[A,B,C,D]$${-1..-4}"
+value "[A,B,C,D,E]$${4..1}"
+value "[A,B,C,D,E]$${1..5}" (* 5-1+1*)
+value "[A,B,C,D,E]$${2..5}" (* 5-2+1*)
+value "[A,B,C,D,E]$${1..3}"
+value "[A,B,C,D,E]$${0..2}"
+value "[A,B,C,D,E]$${-1..2}"
+value "[A,B,C,D,E]$${-10..20}"
+value "[A,B,C,D,E]$${2..-1}"
+value "[A,B,C,D,E]$${2..2}"
+value "[A,B,C,D,E]$${0..1}"
+value "len ([A,B,C,D,E]$${2..2})"
+value "len ([A]$${2..2})"
+value "card {(2::int)..2}"
+value "[A,B,C,D,E]$${0..0}"
+find_theorems "card {_.._}"
+
+lemma l_vdmsubseq_empty[simp]: 
+  "[] $$ {l..u} = []" unfolding applyVDMSubseq'_def by simp
+
+lemma l_vdmsubseq_beyond[simp]: 
+  "l > u \<Longrightarrow> s $$ {l..u} = []" unfolding applyVDMSubseq'_def by simp
+
+\<comment> \<open> The nat conversion makes int a nat, but the subtration of Suc 0 makes it int again! \<close>
+lemma l_vdmsubseq_len_l0: "{i. i < length s \<and>  nat l - Suc 0 \<le> i \<and> i \<le>  nat u - Suc 0} = 
+       {nat l - Suc 0..nat u - Suc 0} \<inter> {0..<(length s)}"  
+  by (safe;simp)
+
+lemma l_vdmsubseq_len_l1: "
+       {nat l - Suc (0::\<nat>)..nat u - Suc (0::\<nat>)} \<inter> {0::\<nat>..<length s} =
+       {int (nat l - Suc (0::\<nat>))..int (nat u - Suc (0::\<nat>))} \<inter> {0::\<int>..<int (length s)}"
+  by simp
+
+lemma l_vdmsubseq_len[simp]:
+  "len (s $$ {(l::int)..u}) = (if inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> (l \<le> u) then card ({(nat l) - Suc 0..(nat u) - Suc 0} \<inter> {0..<(len s)}) else 0)"
+  unfolding applyVDMSubseq'_def len_def min_def inv_VDMNat1_def
+  apply (simp add: length_nths l_vdmsubseq_len_l0) 
+  apply (safe;simp) using[[show_types]]
+  apply (insert l_vdmsubseq_len_l1[of l u s])
+  apply (simp add: l_isa_card_inter_bound)
+  find_theorems "card (_ \<inter> _)"
+  oops
+
+lemma "l \<le> u \<Longrightarrow> s \<noteq> [] \<Longrightarrow> len (s $$ {l..u}) = (if l \<le> 1 then min 0 (min u (len s)) else u - l + 1)" 
+  unfolding applyVDMSubseq_def inv_VDMNat1_def len_def min_def
+  apply (simp add: length_nths;safe) nitpick
+     apply (subgoal_tac "{i. i < length s \<and> i \<le> nat u - Suc 0} = {0..u-1}")
+  apply (subgoal_tac "card {0..u - 1} = u", simp)
+  oops
+
+lemma l_vdmsubseq_len[simp]: 
+  "len (s $$ {l..u}) = (if (s = [] \<or> l > u \<or> l \<le> 0 \<or> u \<le> 0) then 0 else u - l + 1)" 
+  unfolding applyVDMSubseq'_def inv_VDMNat1_def len_def
+  apply (simp)  
+   apply (subgoal_tac "{i. i < length s \<and> nat l - Suc 0 \<le> i \<and> i \<le> nat u - Suc 0} = {nat l - Suc 0..nat u - Suc 0+1}")
+   apply simp_all
+  nitpick
+  oops
+
+(*
+s(i,...,j) = 
+
+          1.........(len s)
+            i.......j       = j - i + 1  
+          i....j            = j - i + 1
+      -1..0..1
+       i............j       = j - 1 + 1
+       i.......j            = j - 1 + 1
+       i...............j    = len s - 1 + 1
+
+       i..j                 = j - i + 1 = 0
+
+                     = (min j (len s) - max 1 i) + 1
+  "len (s $$ {l..u}) = (min 0 (max 1 ((min u (len s)) - (min l 1) + 1)))"
+*)
+
+
+lemma l1: "{i. i < length s \<and> nat l - Suc 0 \<le> i \<and> i \<le> nat u - Suc 0} = 
+            (if l < u then {(nat l) - 1..(nat u) - 1} else {})"
+  apply (safe) nitpick oops
+
+lemma l_vdmsubseq_len[simp]: 
+  "len (s $$ {l..u}) = max 0 ((min (nat u) (len s) - max 1 (nat l)) + 1)" 
+  unfolding applyVDMSubseq'_def inv_VDMNat1_def len_def 
+  apply (simp add: length_nths;safe)
+   defer
+   apply simp
+  apply (simp ) (*add: l1) *)
+  nitpick oops
+  
+lemma l_vdmsubseq_ext_eq:
+  "inv_VDMNat1 l \<Longrightarrow> inv_VDMNat1 u \<Longrightarrow> s $$ {l..u} = (extendedSubSeq s {l..u})" 
+  unfolding extendedSubSeq_def applyVDMSubseq'_def inv_VDMNat1_def 
+  apply (simp;safe)
+  apply (subgoal_tac "{nat l - Suc 0..nat u - Suc 0} = {x. l \<le> int x + 1 \<and> int x + 1 \<le> u}")
+   apply (erule subst; simp)
+   apply (safe;simp)
+     apply linarith+
+  apply (subgoal_tac "{x. l \<le> int x + 1 \<and> int x + 1 \<le> u} = {}")
+   apply (erule ssubst,simp)
+  by auto
 
 text \<open> VDM \verb'l1 ++ l2' is just @{term "l1 @ l2"} \<close> 
 thm append_def
@@ -525,7 +646,25 @@ definition
 where
   "post_applyVDMSeq xs i R \<equiv> pre_applyVDMSeq xs i \<longrightarrow> R = xs $ i"
 
+theorem PO_applyVDMSeq_fsb:
+  "\<forall> xs i . pre_applyVDMSeq xs i \<longrightarrow> post_applyVDMSeq xs i (xs$i)"  
+  unfolding post_applyVDMSeq_def pre_applyVDMSeq_def by simp
+
 definition 
+  pre_applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
+where
+  "pre_applyVDMSubseq xs l u \<equiv> inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> l \<le> u" 
+
+definition 
+  post_applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
+where
+  "post_applyVDMSubseq xs l u R \<equiv> R = (if pre_applyVDMSubseq xs l u then (xs$${l..u}) else [])"
+
+theorem PO_applyVDMSubseq_fsb:
+  "\<forall> xs i . pre_applyVDMSubseq xs l u \<longrightarrow> post_applyVDMSubseq xs l u (xs$${l..u})"  
+  unfolding post_applyVDMSubseq_def pre_applyVDMSubseq_def by simp
+
+definition
   post_append :: "'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
   where
   "post_append s t r \<equiv> r = s @ t"
@@ -1349,6 +1488,13 @@ lemma l_dom_ar_disjoint_weakening:
 (* IJW: TODO: not used? *)
 lemma l_dom_ar_singletons_comm: "{x}-\<triangleleft> {y} -\<triangleleft> f = {y}-\<triangleleft> {x} -\<triangleleft> f" 
     by (metis l_dom_ar_insert insert_commute)
+
+lemma l_dom_r_ar_set_minus: 
+  "S \<triangleleft> (T -\<triangleleft> m) = (S - T) \<triangleleft> m" 
+  find_theorems "_ = _" name:HOL name:"fun"
+  apply (rule ext)
+  unfolding dom_restr_def dom_antirestr_def restrict_map_def
+  by simp
 
 lemmas antirestr_simps = f_in_dom_ar_subsume f_in_dom_ar_notelem f_in_dom_ar_the_subsume
 f_in_dom_ar_apply_subsume f_in_dom_ar_apply_not_elem f_dom_ar_subset_dom
