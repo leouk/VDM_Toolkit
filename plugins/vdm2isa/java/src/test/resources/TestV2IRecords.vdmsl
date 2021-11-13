@@ -1,0 +1,39 @@
+module TestV2IRecords
+exports all
+definitions
+
+types
+	-- record with explicit  invariant
+	TRecord ::
+		x: nat 
+		y: nat	
+	inv r == r.x < r.y;
+	
+	-- implicitly checked (re-)named type for records; "figure out" inv_TRecord as the call
+	TRecord2 = TRecord
+	;
+
+	-- explicitly checked (re-)named type for records; calls inv_TRecord + user defined
+	TRecord3 = TRecord
+	inv r == r.x > 10
+	;
+
+	--recursively chase named type for inner invariant
+	TRecord4 = TRecord2
+	;
+
+	--recursively chase named type for inner invariant + user defined
+	TRecord5 = TRecord2
+	inv r == r.x > 20
+	;
+
+	--recursively chase named type for inner invariant a few degrees away from defining record
+	TRecord6 = TRecord3
+	;
+
+	--recursively chase named type for inner invariant + user defined a few degrees away from defining record
+	TRecord7 = TRecord5
+	inv r == r.x > 30
+	;
+	
+end TestV2IRecords
