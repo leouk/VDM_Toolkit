@@ -15,7 +15,7 @@ public class TRPatternBind extends TRPattern {
 
     public TRPatternBind(TCPatternBind owner, TRPattern pattern, TRMultipleBind bind)
     {
-        super(owner.pattern);
+        super(owner.location);
         this.pattern = pattern;
         this.bind = bind;
 

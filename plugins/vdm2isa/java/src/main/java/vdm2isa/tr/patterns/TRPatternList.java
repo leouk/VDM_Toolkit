@@ -137,4 +137,11 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		list.addAll(Arrays.asList(args));
 		return list.translate();	
 	}
+
+	public static TRPatternList newPatternList(TRPattern... args)
+	{
+		TRPatternList list = new TRPatternList();
+		list.addAll(Arrays.asList(args));
+		return list;	
+	}
 }

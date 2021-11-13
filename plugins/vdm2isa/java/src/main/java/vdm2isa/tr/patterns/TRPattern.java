@@ -13,13 +13,12 @@ public abstract class TRPattern extends TRNode {
     
     private static final long serialVersionUID = 1L;
 
-    protected final TCPattern owner;
+    //private final TCPattern owner;
 
-    public TRPattern(TCPattern owner)
+    public TRPattern(LexLocation location)
     {
-        // for TCPatternBind, the pattern might be null? 
-        super(owner != null ? owner.location : LexLocation.ANY);
-        this.owner = owner;
+        super(location);
+        //this.owner = owner;
     }
 
     public TRPatternList getPatternList()
@@ -45,11 +44,11 @@ public abstract class TRPattern extends TRNode {
         if (pattern != null)
         {
             //TODO this won't work because getPossibleType() is returning TUnknownType! :-(
-            if (owner != null && owner.getPossibleType() instanceof TCOptionalType)
-            {
-                sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(pattern)));
-            }
-            else
+            //if (owner != null && owner.getPossibleType() instanceof TCOptionalType)
+            //{
+            //    sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(pattern)));
+            //}
+            //else
             {
                 //TODO: if owner is null raise a warning? 
                 sb.append(pattern);
@@ -63,11 +62,11 @@ public abstract class TRPattern extends TRNode {
      */
     protected void checkValidIsaIdentifier()
     {
-        if (isaToken().equals(IsaToken.IDENTIFIER) && !validIsaIdentifier(getPattern()))
+        if (isaToken().equals(IsaToken.IDENTIFIER) && !TRPattern.validIsaIdentifier(getPattern()))
             report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, getPattern());   
     }
 
-    protected boolean validIsaIdentifier(String identifier)
+    protected static boolean validIsaIdentifier(String identifier)
     {
         return !identifier.equals("o");
     }
@@ -75,4 +74,5 @@ public abstract class TRPattern extends TRNode {
     public abstract String getPattern();
 
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
+
 }

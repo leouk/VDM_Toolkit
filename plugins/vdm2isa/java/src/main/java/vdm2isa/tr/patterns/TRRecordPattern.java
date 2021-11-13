@@ -18,7 +18,7 @@ public class TRRecordPattern extends TRPattern {
     
     public TRRecordPattern(TCRecordPattern owner, TCNameToken typename, TRPatternList plist, TRType type)
     {
-        super(owner);
+        super(owner.location);
         this.typename = typename;
         this.plist = plist;
         this.type = type;
