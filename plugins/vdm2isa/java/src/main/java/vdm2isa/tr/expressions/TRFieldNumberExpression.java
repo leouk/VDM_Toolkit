@@ -19,9 +19,9 @@ public class TRFieldNumberExpression extends TRExpression {
     private final LexIntegerToken field; 
     private final TRType type;
 
-    public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type)
+    public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type, TRType exptype)
     {
-        super(tuple);
+        super(tuple.location, exptype);
         this.tuple = tuple;
         this.field = field;
         this.type = type;

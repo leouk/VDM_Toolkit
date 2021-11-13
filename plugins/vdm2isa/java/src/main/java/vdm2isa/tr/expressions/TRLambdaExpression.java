@@ -25,11 +25,11 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 	//private TRDefinition def;
 
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        TRFunctionType type 
+        TRFunctionType type, TRType exptype 
         /*, TRPatternList paramPatterns, TRDefinitionList paramDefinitions */ /* , TRDefinition def */
         )
     {
-        super(location, expression);
+        super(location, expression, exptype);
         this.bindList = bindList;
         this.type = type;
         // See NB's email on 28/10/2021 8:59 Subject TCLambdaExpression.paraDefinitions.implicitDefinitions

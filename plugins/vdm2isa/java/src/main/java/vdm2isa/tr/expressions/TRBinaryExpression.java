@@ -23,9 +23,9 @@ public class TRBinaryExpression extends TRExpression
 	protected final TRExpression right;
 	protected final LexToken op;
 	
-	public TRBinaryExpression(TRExpression left, LexToken op, TRExpression right)
+	public TRBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
-		super(op.location);
+		super(op.location, exptype);
 		this.left = left;
 		//@todo equals expression has to be specialised because of record and other equality tests ? 
 		this.op = op;
@@ -85,7 +85,7 @@ public class TRBinaryExpression extends TRExpression
 				if (!(result instanceof TRBasicType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects basic type");
 				break; 
-				
+
 			case UNION:
             case INTER:
             case SETDIFF:

@@ -19,9 +19,10 @@ public class TRIfExpression extends TRExpression
 	private final TRExpression elseExp;
 	
 	//@todo TCElseIfExpressionList! 
-	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, TRElseIfExpressionList elseList, TRExpression elseExp)
+	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, 
+		TRElseIfExpressionList elseList, TRExpression elseExp, TRType exptype)
 	{
-		super(location);
+		super(location, exptype);
 		assert ifExp != null && thenExp != null && elseExp != null && elseList != null;
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;

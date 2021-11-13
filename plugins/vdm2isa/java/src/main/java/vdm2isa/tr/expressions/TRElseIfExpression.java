@@ -11,9 +11,9 @@ public class TRElseIfExpression extends TRExpression {
     private final TRExpression elseIfExp;
     private final TRExpression thenExp;
 
-    public TRElseIfExpression(LexLocation location, TRExpression elseIfExp, TRExpression thenExp)
+    public TRElseIfExpression(LexLocation location, TRExpression elseIfExp, TRExpression thenExp, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.elseIfExp = elseIfExp;
         this.thenExp = thenExp;
     }

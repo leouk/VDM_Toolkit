@@ -16,9 +16,9 @@ public class TRMkTypeExpression extends TRExpression {
     private final TRFieldList fields; 
     private final TRExpressionList args;
 
-    public TRMkTypeExpression(TCNameToken typename, TRExpressionList args)
+    public TRMkTypeExpression(TCNameToken typename, TRExpressionList args, TRType exptype)
     {
-        super(typename.getLocation());
+        super(typename.getLocation(), exptype);
         //this.typename = typename;
         this.args = args;
         this.typename = typename;

@@ -22,9 +22,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
     protected final TRExpression test;
     protected final TRDefinition typedef;
 
-    public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef)
+    public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.typename = typename;
         this.basictype = basictype;
         this.test = test;

@@ -13,9 +13,9 @@ public class TRPreExpression extends TRExpression {
     private TRExpression function;
     private TRExpressionList args;
 
-    public TRPreExpression(LexLocation location, TRExpression function, TRExpressionList args)
+    public TRPreExpression(LexLocation location, TRExpression function, TRExpressionList args, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.function = function;
         this.args = args;
     }

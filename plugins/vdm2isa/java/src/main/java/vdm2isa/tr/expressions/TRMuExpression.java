@@ -15,9 +15,9 @@ public class TRMuExpression extends TRExpression {
     private final TRExpression record;
     private final TRRecordModifierList modifiers;
 
-    public TRMuExpression(LexLocation location, TRExpression record, TRRecordModifierList modifiers)
+    public TRMuExpression(LexLocation location, TRExpression record, TRRecordModifierList modifiers, TRType exptype)
     {
-        super(location);    
+        super(location, exptype);    
         this.record = record;
         this.modifiers = modifiers;
         TRType t = record.getRecordType();

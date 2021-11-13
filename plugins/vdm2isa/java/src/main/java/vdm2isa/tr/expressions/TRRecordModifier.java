@@ -19,7 +19,7 @@ public class TRRecordModifier extends TRExpression
 
     public TRRecordModifier(TCIdentifierToken tag, TRExpression value)
     {
-        super(tag.getLocation());
+        super(tag.getLocation(), value.getType());
         this.tag = tag;
         this.value = value;
         // empty if can't yet know which record this modification is associated with; TRMuExpression must set this once known.

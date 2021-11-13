@@ -15,9 +15,9 @@ public class TRFieldExpression extends TRExpression {
     private final TRExpression object;
     private final TCIdentifierToken field; 
 
-    public TRFieldExpression(TRExpression object, TCIdentifierToken field)
+    public TRFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)
     {
-        super(object);
+        super(object.location, exptype);
         this.object = object;
         this.field = field;
         //System.out.println(toString());

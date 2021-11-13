@@ -15,9 +15,9 @@ public class TRSetRangeExpression extends TRExpression {
     private final TRExpression first;
     private final TRExpression last;
 
-    public TRSetRangeExpression(LexLocation start, TRExpression first, TRExpression last)
+    public TRSetRangeExpression(LexLocation start, TRExpression first, TRExpression last, TRType exptype)
     {
-        super(start);
+        super(start, exptype);
         this.first = first;
         this.last = last;
     }

@@ -51,16 +51,12 @@ public abstract class TRExpression extends TRNode
                     IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
                     IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
 
-    public LexCommentList comments;
+   protected final TRType exptype;
 
-	public TRExpression(LexLocation location)
+	public TRExpression(LexLocation location, TRType exptype)
 	{
 		super(location);
-	}
-
-	public TRExpression(TRExpression exp)
-	{
-		this(exp.location);
+        this.exptype = exptype;
 	}
 
     /**

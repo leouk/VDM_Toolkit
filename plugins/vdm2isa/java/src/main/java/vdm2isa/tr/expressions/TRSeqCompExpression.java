@@ -23,9 +23,9 @@ public class TRSeqCompExpression extends TRExpression {
     private final TRMultipleBind bind;
     private final TRExpression predicate;
 
-    public TRSeqCompExpression(LexLocation location, TRExpression first, TRMultipleBind bind, TRExpression predicate)
+    public TRSeqCompExpression(LexLocation location, TRExpression first, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.first = first;
         this.bind = bind;
         this.predicate = predicate;

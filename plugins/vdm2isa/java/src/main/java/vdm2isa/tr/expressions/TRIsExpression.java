@@ -12,9 +12,9 @@ public class TRIsExpression extends TRVDMTestExpression {
 
 	private static final long serialVersionUID = 1L;
 
-    public TRIsExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef)
+    public TRIsExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {
-        super(location, typename, basictype, test, typedef);
+        super(location, typename, basictype, test, typedef, exptype);
     }
 
     @Override

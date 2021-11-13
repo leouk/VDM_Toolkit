@@ -29,9 +29,9 @@ public class TRSetCompExpression extends TRExpression {
 
     public TRSetCompExpression(LexLocation location, 
         TRExpression first, TRMultipleBindList bindings, 
-        TRExpression predicate)
+        TRExpression predicate, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.first = first;
         this.binds = bindings;
         this.predicate = predicate;

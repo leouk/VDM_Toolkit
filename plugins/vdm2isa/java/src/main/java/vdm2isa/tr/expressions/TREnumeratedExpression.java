@@ -4,15 +4,16 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRType;
 
 public abstract class TREnumeratedExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
 	protected final TRExpressionList members;
 
-	public TREnumeratedExpression(LexLocation location, TRExpressionList members)
+	public TREnumeratedExpression(LexLocation location, TRExpressionList members, TRType exptype)
 	{
-		super(location);
+		super(location, exptype);
 		this.members = members;
         this.members.setSemanticSeparator(IsaToken.COMMA.toString());
         this.members.setFormattingSeparator(" ");

@@ -13,9 +13,9 @@ public class TRMapEnumExpression extends TRExpression
 	private static final long serialVersionUID = 1L;
     protected final TRMapletExpressionList members;
 
-	public TRMapEnumExpression(LexLocation location, TRMapletExpressionList members)
+	public TRMapEnumExpression(LexLocation location, TRMapletExpressionList members, TRType exptype)
 	{
-		super(location);
+		super(location, exptype);
         this.members = members;
 	}
 

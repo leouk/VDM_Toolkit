@@ -14,9 +14,9 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
     protected final TRExpression expression;
 
-    public TRVDMLocalDefinitionListExpression(LexLocation location, TRExpression expression)
+    public TRVDMLocalDefinitionListExpression(LexLocation location, TRExpression expression, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.expression = expression;
     }
 

@@ -12,9 +12,9 @@ public class TRIotaExpression extends TRExpression {
     private TRMultipleBind bind;
     private TRExpression predicate;
     
-    public TRIotaExpression(LexLocation location, TRMultipleBind bind, TRExpression predicate)
+    public TRIotaExpression(LexLocation location, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
-        super(location);
+        super(location, exptype);
         this.bind = bind;
         this.predicate = predicate;
     }

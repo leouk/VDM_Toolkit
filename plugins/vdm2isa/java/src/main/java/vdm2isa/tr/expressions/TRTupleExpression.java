@@ -13,9 +13,9 @@ public class TRTupleExpression extends TREnumeratedExpression {
     
 	private static final long serialVersionUID = 1L;
 
-    public TRTupleExpression(LexLocation location, TRExpressionList args)
+    public TRTupleExpression(LexLocation location, TRExpressionList args, TRType exptype)
     {
-        super(location, args);
+        super(location, args, exptype);
     }
 
     @Override

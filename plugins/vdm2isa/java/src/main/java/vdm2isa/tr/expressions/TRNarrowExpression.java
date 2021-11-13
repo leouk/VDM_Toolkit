@@ -17,19 +17,19 @@ public class TRNarrowExpression extends TRVDMTestExpression {
 
 	private static final long serialVersionUID = 1L;
 
-    private final TRType exptype;
+    private final TRType testtype;
 
-    public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
+    public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType testtype, TRType exptype)
     {
-        super(location, typename, basictype, test, typedef);
-        this.exptype = exptype;
+        super(location, typename, basictype, test, typedef, exptype);
+        this.testtype = testtype;
         //System.out.println(toString());
     }
 
     @Override
     public String toString()
     {
-        return super.toString() + "\n\t exptype  = " + String.valueOf(exptype);//(exptype != null ? exptype.translate() : "null");
+        return super.toString() + "\n\t exptype  = " + String.valueOf(testtype);//(exptype != null ? exptype.translate() : "null");
     }
     
     @Override

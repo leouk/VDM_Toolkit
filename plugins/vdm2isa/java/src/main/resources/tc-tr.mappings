@@ -24,118 +24,118 @@ package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
 map TCExpression{} to TRExpression();
 map TCExpressionList{} to TRExpressionList(this);
 map TCElseIfExpressionList{} to TRElseIfExpressionList(this);
-
-map TCBooleanLiteralExpression{} to TRLiteralExpression(this); 
-map TCCharLiteralExpression{} to TRLiteralExpression(this);
-map TCIntegerLiteralExpression{} to TRLiteralExpression(this);
-map TCRealLiteralExpression{} to TRLiteralExpression(this);
-map TCStringLiteralExpression{} to TRLiteralExpression(this);
-map TCQuoteLiteralExpression{} to TRLiteralExpression(this);
-
-map TCNotExpression{exp} to TRUnaryExpression(this, exp);
-map TCAbsoluteExpression{exp} to TRUnaryExpression(this, exp);
-map TCFloorExpression{exp} to TRUnaryExpression(this, exp);
-map TCUnaryMinusExpression{exp} to TRUnaryExpression(this, exp);
-map TCUnaryPlusExpression{exp} to TRUnaryExpression(this, exp);
-
-map TCCardinalityExpression{exp} to TRUnaryExpression(this, exp);
-map TCPowerSetExpression{exp} to TRUnaryExpression(this, exp);
-map TCDistUnionExpression{exp} to TRUnaryExpression(this, exp);
-map TCDistIntersectExpression{exp} to TRUnaryExpression(this, exp);
-
-map TCLenExpression{exp} to TRUnaryExpression(this, exp);
-map TCHeadExpression{exp} to TRUnaryExpression(this, exp);
-map TCTailExpression{exp} to TRUnaryExpression(this, exp);
-map TCIndicesExpression{exp} to TRUnaryExpression(this, exp);
-map TCElementsExpression{exp} to TRUnaryExpression(this, exp);
-map TCDistConcatExpression{exp} to TRUnaryExpression(this, exp);
-map TCReverseExpression{exp} to TRUnaryExpression(this, exp);
-
-map TCDistMergeExpression{exp} to TRUnaryExpression(this, exp);
-map TCMapDomainExpression{exp} to TRUnaryExpression(this, exp);
-map TCMapRangeExpression{exp} to TRUnaryExpression(this, exp);
-map TCMapInverseExpression{exp} to TRUnaryExpression(this, exp);
-
-map TCAndExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCOrExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCEquivalentExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCImpliesExpression{left, op, right} to TRBinaryExpression(left, op, right);
-
-map TCEqualsExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCNotEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCLessEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCLessExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCGreaterEqualExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCGreaterExpression{left, op, right} to TRBinaryExpression(left, op, right);
-
-map TCPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSubtractExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCTimesExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCDivExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCDivideExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCModExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCRemExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCStarStarExpression{left, op, right} to TRBinaryExpression(left, op, right);
-
-map TCInSetExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCNotInSetExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSetUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSetIntersectExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSetDifferenceExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSubsetExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCProperSubsetExpression{left, op, right} to TRBinaryExpression(left, op, right);
-
-map TCSeqConcatExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCSubseqExpression{seq, from, to} to TRSubseqExpression(seq, from, to);
-
-map TCPlusPlusExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCDomainResByExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCDomainResToExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCRangeResByExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCRangeResToExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCMapUnionExpression{left, op, right} to TRBinaryExpression(left, op, right);
-map TCCompExpression{left, op, right} to TRBinaryExpression(left, op, right);
-
-map TCSetRangeExpression{location, first, last} to TRSetRangeExpression(location, first, last);
-map TCSetEnumExpression{location, members} to TRSetEnumExpression(location, members);
-map TCSeqEnumExpression{location, members} to TRSeqEnumExpression(location, members);
 map TCMapletExpressionList{} to TRMapletExpressionList(this);
-map TCMapEnumExpression{location, members} to TRMapEnumExpression(location, members);
+map TCRecordModifierList{} to TRRecordModifierList(this);
+
+map TCBooleanLiteralExpression{exptype} to TRLiteralExpression(this, exptype); 
+map TCCharLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCIntegerLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCRealLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCStringLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCQuoteLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+
+map TCNotExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCAbsoluteExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCFloorExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCUnaryMinusExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCUnaryPlusExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCCardinalityExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCPowerSetExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistUnionExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistIntersectExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCLenExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCHeadExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCTailExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCIndicesExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCElementsExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistConcatExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCReverseExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCDistMergeExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapDomainExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapRangeExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapInverseExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCAndExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCOrExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCEquivalentExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCImpliesExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+
+map TCEqualsExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCNotEqualExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCLessEqualExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCLessExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCGreaterEqualExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCGreaterExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+
+map TCPlusExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSubtractExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCTimesExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCDivExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCDivideExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCModExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCRemExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCStarStarExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+
+map TCInSetExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCNotInSetExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSetUnionExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSetIntersectExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSetDifferenceExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSubsetExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCProperSubsetExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+
+map TCSeqConcatExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCSubseqExpression{seq, from, to, exptype} to TRSubseqExpression(seq, from, to, exptype);
+
+map TCPlusPlusExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCDomainResByExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCDomainResToExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCRangeResByExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCRangeResToExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCMapUnionExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+map TCCompExpression{left, op, right, exptype} to TRBinaryExpression(left, op, right, exptype);
+
+map TCSetRangeExpression{location, first, last, exptype} to TRSetRangeExpression(location, first, last, exptype);
+map TCSetEnumExpression{location, members, exptype} to TRSetEnumExpression(location, members, exptype);
+map TCSeqEnumExpression{location, members, exptype} to TRSeqEnumExpression(location, members, exptype);
+map TCMapEnumExpression{location, members, exptype} to TRMapEnumExpression(location, members, exptype);
 map TCMapletExpression{left, right} to TRMapletExpression(left, right);
-map TCTupleExpression{location, args} to TRTupleExpression(location, args); 
+map TCTupleExpression{location, args, exptype} to TRTupleExpression(location, args, exptype); 
 
 map TCRecordModifier{tag, value} to TRRecordModifier(tag, value);
-map TCRecordModifierList{} to TRRecordModifierList(this);
-map TCMuExpression{location, record, modifiers} to TRMuExpression(location, record, modifiers);
-map TCMkTypeExpression{typename, args} to TRMkTypeExpression(typename, args);
-map TCFieldNumberExpression{tuple, field, type} to TRFieldNumberExpression(tuple, field, type);
-map TCFieldExpression{object, field} to TRFieldExpression(object, field);
+map TCMuExpression{location, record, modifiers, exptype} to TRMuExpression(location, record, modifiers, exptype);
+map TCMkTypeExpression{typename, args, exptype} to TRMkTypeExpression(typename, args, exptype);
+map TCFieldNumberExpression{tuple, field, type, exptype} to TRFieldNumberExpression(tuple, field, type, exptype);
+map TCFieldExpression{object, field, exptype} to TRFieldExpression(object, field, exptype);
 
-map TCNotYetSpecifiedExpression{location} to TRNotYetSpecifiedExpression(location);
-map TCNarrowExpression{location, typename, basictype, test, typedef, exptype} to TRNarrowExpression(location, typename, basictype, test, typedef, exptype);
-map TCIsExpression{location, typename, basictype, test, typedef} to TRIsExpression(location, typename, basictype, test, typedef);
+map TCNotYetSpecifiedExpression{location, exptype} to TRNotYetSpecifiedExpression(location, exptype);
+map TCNarrowExpression{location, typename, basictype, test, typedef, exptype, exptype} to TRNarrowExpression(location, typename, basictype, test, typedef, exptype, exptype);
+map TCIsExpression{location, typename, basictype, test, typedef, exptype} to TRIsExpression(location, typename, basictype, test, typedef, exptype);
 
-map TCIotaExpression{location, bind, predicate} to TRIotaExpression(location, bind, predicate);
-map TCLambdaExpression{location, bindList, expression, type} to TRLambdaExpression(location, bindList, expression, type); 
-#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions); 
-#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def); 
-map TCExists1Expression{bind, predicate} to TRBoundedExpression(this, bind, predicate);
-map TCExistsExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
-map TCForAllExpression{bindList, predicate} to TRBoundedExpression(this, bindList, predicate);
+map TCIotaExpression{location, bind, predicate, exptype} to TRIotaExpression(location, bind, predicate, exptype);
+map TCLambdaExpression{location, bindList, expression, type, exptype} to TRLambdaExpression(location, bindList, expression, type, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype); 
+map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, bind, predicate, exptype);
+map TCExistsExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
+map TCForAllExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 #map TCLetBeStExpression{location, bind, suchThat, value} to
-map TCLetDefExpression{location, localDefs, expression} to TRLetDefExpression(location, localDefs, expression);
+map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(location, localDefs, expression, exptype);
 
-map TCSetCompExpression{location, first, bindings, predicate} to TRSetCompExpression(location, first, bindings, predicate);
-map TCSeqCompExpression{location, first, bind, predicate} to TRSeqCompExpression(location, first, bind, predicate);
+map TCSetCompExpression{location, first, bindings, predicate, exptype} to TRSetCompExpression(location, first, bindings, predicate, exptype);
+map TCSeqCompExpression{location, first, bind, predicate, exptype} to TRSeqCompExpression(location, first, bind, predicate, exptype);
 
-map TCNilExpression{location} to TRNilExpression(location);
-map TCApplyExpression{type, root, args} to TRApplyExpression(type, root, args);
-map TCIfExpression{location, ifExp, thenExp, elseList, elseExp} to TRIfExpression(location, ifExp, thenExp, elseList, elseExp);
-map TCElseIfExpression{location, elseIfExp, thenExp} to TRElseIfExpression(location, elseIfExp, thenExp);
-map TCVariableExpression{location, name, original, vardef} to TRVariableExpression(location, name, original, vardef);
+map TCNilExpression{location, exptype, exptype} to TRNilExpression(location, exptype);
+map TCApplyExpression{type, root, args, exptype} to TRApplyExpression(type, root, args, exptype);
+map TCIfExpression{location, ifExp, thenExp, elseList, elseExp, exptype} to TRIfExpression(location, ifExp, thenExp, elseList, elseExp, exptype);
+map TCElseIfExpression{location, elseIfExp, thenExp, exptype} to TRElseIfExpression(location, elseIfExp, thenExp, exptype);
+map TCVariableExpression{location, name, original, vardef, exptype} to TRVariableExpression(location, name, original, vardef, exptype);
 
-map TCPreExpression{location, function, args} to TRPreExpression(location, function, args);
-map TCFuncInstantiationExpression{function, type, unresolved, actualTypes, expdef} to TRFunctionInstantiationExpression(function, type, unresolved, actualTypes, expdef);
+map TCPreExpression{location, function, args, exptype} to TRPreExpression(location, function, args, exptype);
+map TCFuncInstantiationExpression{function, type, unresolved, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(function, type, unresolved, actualTypes, expdef, exptype);
 
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;

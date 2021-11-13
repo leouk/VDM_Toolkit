@@ -12,9 +12,9 @@ public class TRSetEnumExpression extends TREnumeratedExpression
 {
 	private static final long serialVersionUID = 1L;
 
-    public TRSetEnumExpression(LexLocation location, TRExpressionList members)
+    public TRSetEnumExpression(LexLocation location, TRExpressionList members, TRType exptype)
 	{
-		super(location, members);
+		super(location, members, exptype);
 	}
 
     @Override

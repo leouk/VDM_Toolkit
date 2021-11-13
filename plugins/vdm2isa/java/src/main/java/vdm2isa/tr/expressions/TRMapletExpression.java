@@ -14,7 +14,7 @@ public class TRMapletExpression extends TRExpression
 
     public TRMapletExpression(TRExpression left, TRExpression right)
     {
-        super(left);
+        super(left.location, new TRMapType(left.location, new TRDefinitionList(), left.getType(), right.getType(), false));
         this.left = left;
         this.right = right;
     }

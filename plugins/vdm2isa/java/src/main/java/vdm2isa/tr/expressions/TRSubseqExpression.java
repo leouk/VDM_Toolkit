@@ -11,9 +11,9 @@ public class TRSubseqExpression extends TRExpression {
     private final TRExpression from;
     private final TRExpression to;
 
-    public TRSubseqExpression(TRExpression seq, TRExpression from, TRExpression to)
+    public TRSubseqExpression(TRExpression seq, TRExpression from, TRExpression to, TRType exptype)
     {
-        super(seq.location);
+        super(seq.location, exptype);
         this.seq = seq;
         this.from = from;
         this.to = to;

@@ -41,113 +41,113 @@ public class TRUnaryExpression extends TRExpression {
     protected final IsaToken owner;
 	protected final TRExpression exp;
 
-	protected TRUnaryExpression(LexLocation location, IsaToken token, TRExpression exp)
+	protected TRUnaryExpression(LexLocation location, IsaToken token, TRExpression exp, TRType exptype)
 	{
-		super(location);
+		super(location, exptype);
 		this.owner = token;
 		this.exp = exp;
 		if (!VALID_UNARY_OPS.contains(isaToken()))
 			report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, isaToken().toString());
 	}
 
-	public TRUnaryExpression(TCAbsoluteExpression owner, TRExpression exp)
+	public TRUnaryExpression(TCAbsoluteExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.ABS, exp);
+		this(owner.location, IsaToken.ABS, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCFloorExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCFloorExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.FLOOR, exp);
+		this(owner.location, IsaToken.FLOOR, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCUnaryMinusExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCUnaryMinusExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.UMINUS, exp);
+		this(owner.location, IsaToken.UMINUS, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCUnaryPlusExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCUnaryPlusExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.UPLUS, exp);
+		this(owner.location, IsaToken.UPLUS, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCCardinalityExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCCardinalityExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.CARD, exp);
+		this(owner.location, IsaToken.CARD, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCPowerSetExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCPowerSetExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.FPOWERSET, exp);
+		this(owner.location, IsaToken.FPOWERSET, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCLenExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCLenExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.LEN, exp);
+		this(owner.location, IsaToken.LEN, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCHeadExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCHeadExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.HEAD, exp);
+		this(owner.location, IsaToken.HEAD, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCTailExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCTailExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.TAIL, exp);
+		this(owner.location, IsaToken.TAIL, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCIndicesExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCIndicesExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.INDS, exp);
+		this(owner.location, IsaToken.INDS, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCElementsExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCElementsExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.ELEMS, exp);
+		this(owner.location, IsaToken.ELEMS, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCDistConcatExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCDistConcatExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.DISTCONC, exp);
+		this(owner.location, IsaToken.DISTCONC, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCDistIntersectExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCDistIntersectExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.DINTER, exp);
+		this(owner.location, IsaToken.DINTER, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCDistUnionExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCDistUnionExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.DUNION, exp);
+		this(owner.location, IsaToken.DUNION, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCDistMergeExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCDistMergeExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.MERGE, exp);
+		this(owner.location, IsaToken.MERGE, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCMapDomainExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCMapDomainExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.DOM, exp);
+		this(owner.location, IsaToken.DOM, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.RNG, exp);
+		this(owner.location, IsaToken.RNG, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCMapInverseExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCMapInverseExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.INVERSE, exp);
+		this(owner.location, IsaToken.INVERSE, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCNotExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCNotExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.NOT, exp);
+		this(owner.location, IsaToken.NOT, exp, exptype);
 	}
 
-    public TRUnaryExpression(TCReverseExpression owner, TRExpression exp)
+    public TRUnaryExpression(TCReverseExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner.location, IsaToken.REVERSE, exp);
+		this(owner.location, IsaToken.REVERSE, exp, exptype);
 	}
 
 	@Override 

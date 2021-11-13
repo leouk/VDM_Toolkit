@@ -21,9 +21,9 @@ public class TRFunctionInstantiationExpression extends TRExpression {
 
     //TODO get the other stuff
     public TRFunctionInstantiationExpression(TRExpression function, TRFunctionType type, 
-        TRTypeList unresolved, TRTypeList actualTypes, TRExplicitFunctionDefinition expdef)
+        TRTypeList unresolved, TRTypeList actualTypes, TRExplicitFunctionDefinition expdef, TRType exptype)
     {
-        super(function);
+        super(function.location, exptype);
         this.function = function;
         this.type = type;
         this.actualTypes = actualTypes;

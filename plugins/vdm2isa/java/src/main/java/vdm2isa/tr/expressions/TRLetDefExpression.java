@@ -5,15 +5,16 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRType;
 
 public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
     private final TRDefinitionList localDefs;
 
-    public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression)
+    public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
     {
-        super(location, expression);
+        super(location, expression, exptype);
         this.localDefs = localDefs;
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
         this.localDefs.setLocal(true);

@@ -17,9 +17,9 @@ public class TRApplyExpression extends TRExpression
 	private final TRExpression root;
 	private final TRExpressionList args;
 	
-	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args)
+	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args, TRType exptype)
 	{
-		super(root);
+		super(root.location, exptype);
 		this.type = type;
 		this.root = root;
 		this.args = args;

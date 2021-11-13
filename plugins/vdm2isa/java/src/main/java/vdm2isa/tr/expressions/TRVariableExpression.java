@@ -25,9 +25,9 @@ public class TRVariableExpression extends TRExpression
 
 	private final TRDefinition vardef;
 	
-	public TRVariableExpression(LexLocation location, TCNameToken name, String original, TRDefinition vardef)
+	public TRVariableExpression(LexLocation location, TCNameToken name, String original, TRDefinition vardef, TRType exptype)
 	{
-		super(name.getLocation());
+		super(name.getLocation(), exptype);
 		this.name = name;
 		//NB when would original ever be different from name? 
 		this.original = original;
