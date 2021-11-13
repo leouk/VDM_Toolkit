@@ -1,7 +1,6 @@
 package plugins;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
-import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.types.TCType;
 

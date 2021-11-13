@@ -9,12 +9,10 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
-import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
 
 public class TRVariableExpression extends TRExpression

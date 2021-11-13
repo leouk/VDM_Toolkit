@@ -6,7 +6,6 @@ package vdm2isa.tr.types;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;

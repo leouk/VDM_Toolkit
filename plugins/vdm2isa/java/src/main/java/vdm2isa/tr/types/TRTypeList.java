@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.types;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 

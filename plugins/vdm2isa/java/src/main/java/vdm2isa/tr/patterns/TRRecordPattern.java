@@ -1,6 +1,5 @@
 package vdm2isa.tr.patterns;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
 

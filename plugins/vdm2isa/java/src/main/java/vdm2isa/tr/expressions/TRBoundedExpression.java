@@ -11,7 +11,6 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
-import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
 
 public class TRBoundedExpression extends TRExpression {

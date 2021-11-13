@@ -2,7 +2,6 @@ package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -13,7 +12,6 @@ import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 import com.fujitsu.vdmj.tc.patterns.TCIgnorePattern;
 import com.fujitsu.vdmj.tc.patterns.TCIntegerPattern;
 import com.fujitsu.vdmj.tc.patterns.TCNilPattern;
-import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCQuotePattern;
 import com.fujitsu.vdmj.tc.patterns.TCRealPattern;
 import com.fujitsu.vdmj.tc.patterns.TCStringPattern;

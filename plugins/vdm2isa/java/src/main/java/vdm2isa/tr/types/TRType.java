@@ -9,7 +9,6 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
-import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 abstract public class TRType extends TRNode

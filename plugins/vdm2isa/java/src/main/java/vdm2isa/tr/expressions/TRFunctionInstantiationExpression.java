@@ -1,7 +1,5 @@
 package vdm2isa.tr.expressions;
 
-import com.fujitsu.vdmj.util.Utils;
-
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
