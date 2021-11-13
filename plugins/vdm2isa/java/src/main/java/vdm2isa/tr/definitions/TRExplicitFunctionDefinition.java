@@ -5,8 +5,10 @@
 package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
@@ -16,6 +18,7 @@ import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 import com.fujitsu.vdmj.tc.statements.TCIdentifierDesignator;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -477,6 +480,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			// if not curried flat list and translate
 			List<String> varNames = parameters.flatVarNameTranslate();
+
+			// for TRNamedType for records, we need to adjust the inner call to the inv_R of original record,
+			// rather than explicitly redefining inv_R! Fix type.parameters in TRTypeDEfinition.
 			paramsStr.append(type.parameters.invTranslate(varNames));
 
 			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
@@ -521,7 +527,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// undeclared pre of constant functions get "True" 
 			fcnBody.append(IsaToken.TRUE.toString());
 		}	
-		else
+		else if (VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(kind))
 		{
 			String implicitComment = "Implicitly defined type invariant checks for " +
 				(isImplicitlyGeneratedUndeclaredSpecification() ? "undeclared " : "")+ 
@@ -607,12 +613,13 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			case INV:
 			case EQ:
 			case ORD:
-			case MAX:
-			case MIN:
 				fcnBody.append(translateImplicitChecks(implicitSpecificationKind));	
 				break;
 
+			case MAX:
+			case MIN:
 			case MEASURE:
+				// no implicit checks, given these return non-boolean results!
 				break;
 			case INIT:
 				break;			
