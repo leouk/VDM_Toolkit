@@ -28,6 +28,8 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	public static boolean printIsaComments;
 	// whether to run exu before starting
 	public static boolean runExu;
+	// whether to generate min/max defs from TRTypeDefinition
+	public static boolean translateTypeDefMinMax;
 
 		/**
 	 * Default=true; translate VDM values as Isabelle abbreviations.
@@ -144,5 +146,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		Vdm2isaPlugin.printIsaComments = true;
 		Vdm2isaPlugin.runExu			= true;
 		Vdm2isaPlugin.valueAsAbbreviation = true;
+		Vdm2isaPlugin.translateTypeDefMinMax = true;
 	}
 }

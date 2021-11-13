@@ -8,7 +8,7 @@ import vdm2isa.tr.TRMappedList;
 
 public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMComment>{
     
-    protected TRIsaVDMCommentList()
+    public TRIsaVDMCommentList()
     {
         super();
     }

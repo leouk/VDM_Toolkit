@@ -15,10 +15,12 @@ public enum IsaWarningMessage {
     VDMSL_MISSING_RESULT_IN_POST_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 1, 
     "Could not find `%1$s` variable in implicit post condition specification definition."),
 
-    ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
+    ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
     "Unknown VDM types will generate Isabelle additional type variable `a warning."),
     ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
+    ISA_TYPDEF_MINMAX_ORD_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 2, 
+    "%1$s type definition min/max specification requires Isabelle type to instantiate `ord` class!"),
     
                       SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_WARNING_BASE + 1, 
                       "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"),

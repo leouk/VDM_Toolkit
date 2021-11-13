@@ -47,7 +47,7 @@ public abstract class TRDefinition extends TRNode
 		TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
 	{
 		super(location); 
-		this.comments = comments;
+		this.comments = comments == null ? new TRIsaVDMCommentList() : comments;
 		this.annotations = annotations;
 		this.name = name;
 		this.nameScope = nameScope;
