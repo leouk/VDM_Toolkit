@@ -189,11 +189,32 @@ public class TRUnaryExpression extends TRExpression {
 
 			case DUNION:
             case DINTER:
-            case INDS:
-            case ELEMS:
-				result = expType;
-				if (!(result instanceof TRSetType))
-					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects set type");
+				if (expType instanceof TRSetType)
+				{
+					result = ((TRSetType)expType).setof;
+					if (!(result instanceof TRSetType))
+						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects set type");
+				}
+				else
+					result = super.getType();
+				break;
+			
+			case INDS:
+				if (expType instanceof TRSeqType)
+				{
+					result = new TRSetType(location, new TRDefinitionList(), TRBasicType.nat1Type(location), ((TRSeqType)expType).seq1);
+				}	
+				else
+					result = super.getType();
+				break;
+
+			case ELEMS:
+				if (expType instanceof TRSeqType)
+				{
+					result = new TRSetType(location, new TRDefinitionList(), ((TRSeqType)expType).seqof, ((TRSeqType)expType).seq1);
+				}	
+				else
+					result = super.getType();
 				break;
 
 			case REVERSE:
