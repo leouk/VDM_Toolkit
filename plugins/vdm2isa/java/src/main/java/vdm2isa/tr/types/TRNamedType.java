@@ -24,7 +24,7 @@ public class TRNamedType extends TRInvariantType
         super(typename.getLocation(), definitions, invdef, eqdef, orddef);
         this.typename = typename;
         this.type = type;
-        this.atTLD = true;
+        this.atTLD = false;
     }
 
     @Override
@@ -98,14 +98,23 @@ public class TRNamedType extends TRInvariantType
 
     @Override
 	public String invTranslate(String varName) {
+
+        StringBuilder sb = new StringBuilder();
+        if (atTopLevelDefinition() || ultimateType() instanceof TRRecordType)
+            sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + type.getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
+        else if (type instanceof TRNamedType) 
+            sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
+        else
+            sb.append(type.invTranslate(varName));
+        return sb.toString();
         //TODO not all type.getName() will directly work! Needs to take into account structure types etc. Okay for now. 
         // renamed records are slightly different: you call the inv_Type of the record itself, which must have been previously defined.  
-        TRType utype = type;//ultimateType();//type;
-        String nameStr = atTopLevelDefinition() ? utype.getName() : getName();//getName();//utype instanceof TRRecordType ? utype.getName() : getName();
-        //STOPPED HERE: might need utype.invTranslate(varName)? and then the change of atTopLevel somewhere! 
-        return IsaToken.parenthesise(
-            IsaToken.INV.toString() + nameStr +
-            (varName != null ? getSemanticSeparator() + varName : ""));
+//        TRType utype = type;//ultimateType();//type;
+ //       String nameStr = atTopLevelDefinition() ? utype.invTranslate(varName) : getName();//getName();//utype instanceof TRRecordType ? utype.getName() : getName();
+        // return atTopLevelDefinition() ? utype.invTranslate(varName) : 
+        //     IsaToken.parenthesise(
+        //         IsaToken.INV.toString() + nameStr +
+        //         (varName != null ? getSemanticSeparator() + varName : ""));
 	}
 
 	@Override

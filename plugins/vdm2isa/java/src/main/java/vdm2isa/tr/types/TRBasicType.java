@@ -34,6 +34,10 @@ public class TRBasicType extends TRType
 					  IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
 					  IsaToken.CHAR, IsaToken.TOKEN)); 
 
+	private static final Set<IsaToken> ORDERED_TYPES = new HashSet<IsaToken>(
+		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
+						IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
+						IsaToken.CHAR, IsaToken.TOKEN)); 
 	/**
 	 * Constructor useful for synthetically constructed types 
 	 * @param location
@@ -86,6 +90,12 @@ public class TRBasicType extends TRType
 	public TRBasicType(TCTokenType type, TRDefinitionList definitions)
 	{
 		this(type.location, definitions, IsaToken.TOKEN);
+	}
+
+	@Override 
+	public boolean isOrdered()
+	{
+		return ORDERED_TYPES.contains(isaToken());
 	}
 
 	@Override

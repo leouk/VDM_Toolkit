@@ -81,6 +81,16 @@ abstract public class TRType extends TRNode
 		return invTranslate(null);
 	}
 
+	public boolean isOrdered()
+	{
+		return false;
+	}
+
+	public TRType ultimateType()
+	{
+		return this;
+	}
+
 	public abstract <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg);
 
 }

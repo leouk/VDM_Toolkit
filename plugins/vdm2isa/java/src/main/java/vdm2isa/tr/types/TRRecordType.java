@@ -36,6 +36,11 @@ public class TRRecordType extends TRInvariantType
         recordMap.put(name, this); 
     }
 
+    // public TRType copy()
+    // {
+    //     return new TRRecordType(name, definitions, fields, composed, invdef, eqdef, orddef);
+    // }
+
     public static void reset()
     {
         recordMap.clear();
