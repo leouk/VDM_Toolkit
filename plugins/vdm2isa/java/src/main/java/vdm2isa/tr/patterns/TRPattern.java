@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
@@ -60,13 +64,8 @@ public abstract class TRPattern extends TRNode {
      */
     protected void checkValidIsaIdentifier()
     {
-        if (isaToken().equals(IsaToken.IDENTIFIER) && !TRPattern.validIsaIdentifier(getPattern()))
+        if (isaToken().equals(IsaToken.IDENTIFIER) && !IsaToken.validIsaIdentifier(getPattern()))
             report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, getPattern());   
-    }
-
-    protected static boolean validIsaIdentifier(String identifier)
-    {
-        return !identifier.equals("o");
     }
 
     public abstract String getPattern();

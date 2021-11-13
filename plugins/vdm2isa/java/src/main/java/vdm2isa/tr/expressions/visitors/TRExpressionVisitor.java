@@ -17,6 +17,7 @@ import vdm2isa.tr.expressions.TRIfExpression;
 import vdm2isa.tr.expressions.TRIotaExpression;
 import vdm2isa.tr.expressions.TRIsExpression;
 import vdm2isa.tr.expressions.TRLambdaExpression;
+import vdm2isa.tr.expressions.TRLetBeStExpression;
 import vdm2isa.tr.expressions.TRLetDefExpression;
 import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRMapEnumExpression;
@@ -209,7 +210,11 @@ public abstract class TRExpressionVisitor<R, S>
 		return caseExpression(node, arg);
 	}
 
-    public R casePreExpression(TRPreExpression trPreExpression, TRExpressionList args) {
-        return casePreExpression(trPreExpression, args);
+    public R casePreExpression(TRPreExpression node, S args) {
+        return caseExpression(node, args);
+    }
+
+    public R caseLetBeStExpression(TRLetBeStExpression node, S arg) {
+        return caseVDMLocalDefinitionListExpression(node, arg);
     }
 }

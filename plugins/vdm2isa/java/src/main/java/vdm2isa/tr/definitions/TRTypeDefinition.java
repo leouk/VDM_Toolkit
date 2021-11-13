@@ -148,6 +148,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 this.getInvariantType().setInvariantDefinition(this.invdef);
             }
 
+            //TODO update the inner parameters to call inv_T, instead of its invTranslate! 
             if (eqdef != null)
             {
                 updateExplicitDefinition(eqdef);

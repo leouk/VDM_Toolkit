@@ -33,7 +33,7 @@ public class TRPreExpression extends TRExpression {
 
     @Override
     public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) {
-        return visitor.casePreExpression(this, args);
+        return visitor.casePreExpression(this, arg);
     }
 
     @Override

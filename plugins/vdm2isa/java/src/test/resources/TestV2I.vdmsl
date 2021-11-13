@@ -128,18 +128,18 @@ values
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
-	--TODO: not yet v65= t14(1);						--TCApplyExpression
 	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
-	v80= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
-	v81= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
-	v82= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
-	v83= [ var | var in seq t10 & var > 1 ]; -- TCSeqCompExpression
+	v80= (let x, y in set t9 be st x > 2 and y < x in x + y); --TCLetBeStExpression
+	v81= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
+	v82= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
+	v83= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
+	v84= [ var | var in seq t10 & var > 1 ]; -- TCSeqCompExpression
 	--VDM not happy with v84-85, Isabelle would allow them
-	--v84= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
-	--v85= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
-	v86= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
-	v87= if v1 > v2 then v1 else v2;					--TCIfExpression
-	v88= if v1 > v2 then v1 else if v1 < v2 then v2 else 0; --TCElseIfListExpression
+	--v85= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
+	--v86= [ var | var in seq [1,2,3,7,8,9], var2 in seq [4,5,6] & var > var2];
+	v88= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
+	v89= if v1 > v2 then v1 else v2;					--TCIfExpression
+	v90= if v1 > v2 then v1 else if v1 < v2 then v2 else 0; --TCElseIfListExpression
 	--v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 	
 	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!

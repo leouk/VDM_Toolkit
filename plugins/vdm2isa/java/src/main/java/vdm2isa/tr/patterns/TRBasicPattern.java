@@ -136,7 +136,7 @@ public class TRBasicPattern extends TRPattern {
 	}
 
     public static TRPattern identifier(LexLocation location, String name) {
-        if (!TRPattern.validIsaIdentifier(name))
+        if (!IsaToken.validIsaIdentifier(name))
             GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
         return new TRBasicPattern(location, IsaToken.IDENTIFIER, name);
     }
