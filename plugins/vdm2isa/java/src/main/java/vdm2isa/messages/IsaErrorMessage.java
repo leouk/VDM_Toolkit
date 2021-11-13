@@ -79,6 +79,12 @@ public enum IsaErrorMessage {
     "Invalid Isabelle identifier in pattern `%1$s`."),
     ISA_INVALID_RECORDNAME_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 14, 
     "Unknown record name `%1$s` - not yet declared."),
+    ISA_INVALID_INVTYP_2P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 15, 
+    "Invalid invariant type for %1$s : %2$s."),
+    ISA_INVALID_TYPEINVARIANT_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 16, 
+    "Could not figure out invariant specification for type definition %1$s"),
+    ISA_FIELDEXPR_RECORDNAME_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 17, 
+    "Could not retrieve record type in field expression for %1$s; found %2$s type"),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

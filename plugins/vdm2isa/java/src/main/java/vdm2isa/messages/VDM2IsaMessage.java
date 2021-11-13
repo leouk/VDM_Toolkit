@@ -41,12 +41,12 @@ public class VDM2IsaMessage extends VDMMessage {
             prefix = "VDMSL ";
          else if ((number >= VDM2IsaMessage.ISABELLE_E_ISA_BASE && number < VDM2IsaMessage.ISABELLE_E_PO_BASE) || //[10200..10300[
                   (number >= VDM2IsaMessage.ISABELLE_W_ISA_BASE && number < VDM2IsaMessage.ISABELLE_W_PO_BASE))   //[11200..11300[
-            prefix = "ISA";
+            prefix = "ISA   ";
          else if ((number >= VDM2IsaMessage.ISABELLE_E_PO_BASE && number < VDM2IsaMessage.ISABELLE_WARNING_BASE) || //[10300..11000[
                   (number >= VDM2IsaMessage.ISABELLE_W_PO_BASE && number < VDM2IsaMessage.ISABELLE_WARNING_BASE+1000))//[11300..12000[
-            prefix = "PO"; 
+            prefix = "PO    "; 
         else
-            prefix = "?";
-        return String.format("[%s]%05d: %s %s", prefix, number, message, location);
+            prefix = "?     ";
+        return String.format("[%s] %05d: %s %s", prefix, number, message, location);
 	}
 }
