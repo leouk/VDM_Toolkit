@@ -59,8 +59,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 //                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl"
 //                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"
 //                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IComplexExpr.vdmsl"
-                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
-});
+//                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IRecords.vdmsl"
+//                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2INamedTypes.vdmsl"
+        });
     }
 
     public GeneralisaPlugin(Interpreter interpreter) {
@@ -250,7 +252,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
 	public static void warning(IsaWarningMessage message, LexLocation location, Object... args)
 	{
-		report(message.number, message.format(args), location);
+		warning(message.number, message.format(args), location);
 	}
 
     public static void warning(int number, String problem, LexLocation location) {

@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -25,7 +26,8 @@ import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
-import vdm2isa.messages.IsaErrorMessage;  
+import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;  
 
 public class TRTypeDefinition extends TRAbstractTypedDefinition {
     private static final long serialVersionUID = 1L;
@@ -98,7 +100,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         this.nameDefKind = figureOutTypeDefinitionKind();
 
         setup();
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     @Override
@@ -156,13 +158,25 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 updateExplicitDefinition(orddef);
                 getInvariantType().setOrderingDefinition(orddef);
             }
-            if (mindef != null)
+            if (Vdm2isaPlugin.translateTypeDefMinMax)
             {
-                updateExplicitDefinition(mindef);
-            }
-            if (maxdef != null)
-            {
-                updateExplicitDefinition(maxdef);
+                TRType ultimate = type.ultimateType();
+                 if ((mindef != null || maxdef != null) && 
+                      ultimate instanceof TRRecordType)
+                     warning(IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P, name.toString());
+                if (!(ultimate instanceof TRRecordType))
+                {
+                    if (mindef != null)
+                    {
+                        updateExplicitDefinition(mindef);
+                    //    mindef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
+                    }
+                    if (maxdef != null)
+                    {
+                        updateExplicitDefinition(maxdef);
+                    //    maxdef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
+                    }
+                }
             }
         }
     }
@@ -194,8 +208,11 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             TRNamedType trtype = (TRNamedType)type;
             // renamed record types get themselves too
             if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMEDRECORD) ||
-               trtype.ultimateType() instanceof TRRecordType) 
+                trtype.ultimateType() instanceof TRRecordType) 
+            {
+                trtype.setAtTopLevelDefinition(true);
                 result = trtype;
+            }
             // other renamed types get original type
             else    
                 result = trtype;//trtype.type;
@@ -409,20 +426,23 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             sb.append(getInvariantType().translateTLD());
         }
 
-        if (mindef != null)
+        if (Vdm2isaPlugin.translateTypeDefMinMax)
         {
-            sb.append(mindef.translate());
-            sb.append(getFormattingSeparator());
-            sb.append("\n");
-        }
+            TRType ultimate = type.ultimateType();
+            if (mindef != null && !(ultimate instanceof TRRecordType))
+            {
+                sb.append(mindef.translate());
+                sb.append(getFormattingSeparator());
+                sb.append("\n");
+            }
 
-        if (maxdef != null)
-        {
-            sb.append(maxdef.translate());
-            sb.append(getFormattingSeparator());
-            sb.append("\n");
+            if (maxdef != null && !(ultimate instanceof TRRecordType))
+            {
+                sb.append(maxdef.translate());
+                sb.append(getFormattingSeparator());
+                sb.append("\n");
+            }
         }
-
         return sb.toString();
     }
 
