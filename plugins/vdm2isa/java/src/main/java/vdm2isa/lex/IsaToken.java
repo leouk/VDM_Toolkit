@@ -1,5 +1,9 @@
 package vdm2isa.lex;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -125,6 +129,7 @@ public enum IsaToken {
 	VDMINT_NARROW(null, "vdm_narrow_real"),
 	NARROW(null/*Token.NARROW doesn't exist?*/, "vdm_narrow"),
 	ISEXPR(Token.IS, "is"),
+	SOME(Token.LET, "SOME"),
 
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
@@ -195,6 +200,11 @@ public enum IsaToken {
 	private final Token  vdm;
 	private final String isa;
 
+	//TODO complete this list! 
+	private static final Set<String> INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
+        Arrays.asList("o", "SOME", "THE", "let", "in", "case", "if")        
+    );
+	
 	private IsaToken(Token vdm, String isa)
 	{
 		assert isa != null; 
@@ -251,6 +261,13 @@ public enum IsaToken {
 	public static String innerSyntaxIt(String s) {
 		return IsaToken.bracketit(IsaToken.ISAQUOTE, s, IsaToken.ISAQUOTE);
 	}
+
+    public static boolean validIsaIdentifier(String identifier)
+    {
+        return identifier != null && identifier.length() > 0 && 
+			!INVALID_ISA_IDENTIFIERS.contains(identifier) && identifier.startsWith(IsaToken.UNDERSCORE.toString());
+    }
+
 
 	public static String dummyVarNames(int count, LexLocation location)
 	{

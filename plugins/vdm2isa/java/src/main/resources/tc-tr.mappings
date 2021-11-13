@@ -14,8 +14,7 @@ map TCExplicitFunctionDefinition{comments, annotations, name, nameScope, used, e
 map TCLocalDefinition{location, comments, annotations, name, nameScope, used, excluded, type} to TRLocalDefinition(location, comments, annotations, name, nameScope, used, excluded, type);
 map TCValueDefinition{comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs} to TRValueDefinition(comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
 
-# This is an odd one from within TCLambdaExpression; 
-#map TCMultiBindListDefinition{location, bindings, defs} to TRMultiBindListDefinition(location, bindings, defs);
+map TCMultiBindListDefinition{location, comments, annotations, name, nameScope, used, excluded, bindings, defs} to TRMultiBindListDefinition(location, comments, annotations, name, nameScope, used, excluded, bindings, defs);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
@@ -122,7 +121,7 @@ map TCLambdaExpression{location, bindList, expression, type, exptype} to TRLambd
 map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, bind, predicate, exptype);
 map TCExistsExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 map TCForAllExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
-#map TCLetBeStExpression{location, bind, suchThat, value} to
+map TCLetBeStExpression{location, bind, suchThat, value, def, exptype} to TRLetBeStExpression(location, bind, suchThat, value, def, exptype);
 map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(location, localDefs, expression, exptype);
 
 map TCSetCompExpression{location, first, bindings, predicate, exptype} to TRSetCompExpression(location, first, bindings, predicate, exptype);
