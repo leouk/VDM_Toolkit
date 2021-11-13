@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.types;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -150,4 +151,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result;
 	}
 
+	public static TRTypeList newTypeList(TRType... members) {
+		TRTypeList result = new TRTypeList();
+		result.addAll(Arrays.asList(members));
+		return result;
+	}
 }

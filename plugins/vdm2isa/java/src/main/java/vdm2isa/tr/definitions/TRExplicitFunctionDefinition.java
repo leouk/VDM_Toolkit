@@ -39,12 +39,13 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 * VDM record equality abstraction (":-"), which will require an implicit definition in Isabelle
 	 * about record equality.   
 	 */
-	private static final List<TRSpecificationKind> 
-		VALID_IMPLICITLY_GENERATED_SPEC_KIND = 
+	//TODO should this be extended to other bits? Probably not! 
+	private static final Set<TRSpecificationKind> 
+		VALID_IMPLICITLY_GENERATED_SPEC_KIND = new HashSet<TRSpecificationKind>( 
 			Arrays.asList(TRSpecificationKind.PRE, 
 						TRSpecificationKind.POST, 
 						TRSpecificationKind.INV, 
-						TRSpecificationKind.EQ);
+						TRSpecificationKind.EQ));
 
 	//private final TCNameToken name;
 	private final TCNameList typeParams;
@@ -126,11 +127,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	@Override
 	protected void setup()
 	{
-		// don't call super.setup(); as we won't have the various input params yet then!
 		if (this.type == null)
+			// not fully class mapped do nothing
 			super.setup();
 		else
 		{
+			// don't call super.setup(); as we won't have the various input params yet then!
 			setFormattingSeparator("\n\t\t");
 			// parameters and type parameters are curried not "," separated
 			//this.typeParams.setSemanticSeparator(" ");
@@ -158,9 +160,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			{
 				// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
 				if (this.precondition == null && this.predef == null)
-					this.predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+					this.predef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
+						type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.PRE); 
 				if (postcondition == null && postcondition == null)
-					this.postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+					this.postdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
+					type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.POST); 
 			}
 		}
 	} 
@@ -214,42 +218,44 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// 	paramDefList= [x = nat]
 	}
 
-	private TRFunctionType createUndeclaredSpecificationFunctionType(TRSpecificationKind kind)
+	protected static TRFunctionType createUndeclaredSpecificationFunctionType(TRFunctionType type, boolean isCurried, TRSpecificationKind kind)
 	{
 		TRFunctionType result = null;
 		switch (kind)
 		{
 			case PRE:
-				result = this.type.getCurriedPreType(this.isCurried);
+				result = type.getCurriedPreType(isCurried);
 				break;
 			case POST:
-				result = this.type.getCurriedPostType(this.isCurried);
+				result = type.getCurriedPostType(isCurried);
 				break;
 
-			case EQ:
-				break;
-			case INIT:
-				break;
 			case INV:
+				result = type.getInvariantType();
 				break;
-			case MAX:
-				break;
-			case MEASURE:
-				break;
-			case MIN:
-				break;
-			case NONE:
-				break;
+
 			case ORD:
+			case EQ:
+			case MAX:
+			case MIN:
+				result = type.getComparisonType();
 				break;
+
+			case MEASURE:
+				result = type.getMeasureType();
+				break;
+
+			case INIT:
+			case NONE:
 			default:
-				throw new UnsupportedOperationException();
+				type.report(IsaErrorMessage.PLUGIN_NYI_2P, "undeclared specification function type", kind);
+				result = type.getUnknownType();
 		}
 		assert result != null;
 		return result;
 	}
 
-	private TRPatternListList createUndeclaredSpecificationParameters(TRSpecificationKind kind)
+	protected static TRPatternListList createUndeclaredSpecificationParameters(TCNameToken name, TRPatternListList parameters, TRSpecificationKind kind)
 	{
 		TRPatternListList result = parameters.copy();
 		if (kind == TRSpecificationKind.POST)
@@ -257,8 +263,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// add synthetic RESULT extra parameter to the last patternList
 			// e.g., uncurried(x,y)== x + y, will lead to [[x,y]] then [[x,y,RESULT]]
 			// 		 curried(x)(y) == x + y, will lead to [[x],[y]] then [[x],[y,RESULT]]
-			result.lastElement().add(new TRBasicPattern(new TCIdentifierPattern(name), IsaToken.IDENTIFIER, 
-				name.getResultName(parameters.getLocation()).toString()));
+			result.lastElement().add(
+				TRBasicPattern.identifier(
+						parameters.getLocation(), 
+						name.getResultName(parameters.getLocation()).toString()
+				)
+			);
 		}
 		return result;
 	}
@@ -267,39 +277,52 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 * Constructs corresponding definition for TRExplicitFunction of interest at the same location as this function definition. 
 	 * @param kind
 	 */
-	private TRExplicitFunctionDefinition createUndeclaredSpecification(TRSpecificationKind kind)
+	protected static TRExplicitFunctionDefinition createUndeclaredSpecification(
+		TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TCNameList typeParams, 
+		TRFunctionType type, boolean isCurried, TRPatternListList parameters, 
+		TRDefinitionListList paramDefinitionList, TRSpecificationKind kind)
 	{
 		TCNameToken undeclaredName = null;
 		switch (kind)
 		{
 			case PRE:
-				assert predef == null && precondition == null;
-				undeclaredName = name.getPreName(location);
+				//assert owner.predef == null && owner.precondition == null;
+				undeclaredName = name.getPreName(name.getLocation());
 				break;
 			case POST:
-				assert postdef == null && postcondition == null;
-				undeclaredName = name.getPostName(location);
+				//assert owner.postdef == null && owner.postcondition == null;
+				undeclaredName = name.getPostName(name.getLocation());
 				break;			
-			//case INV:
-			//	assert pre
-			//	break;
-		    // case EQ:
-			// 	break;
-			// case INIT:
-			// 	break;
-			// case MAX:
-			// 	break;
-			// case MEASURE:
-			// 	break;
-			// case MIN:
-			// 	break;
-			// case NONE:
-			// 	break;
-			// case ORD:
-			// 	break;
+			case INV:
+				undeclaredName = name.getInvName(name.getLocation());
+				break;
+	    	case EQ:
+				undeclaredName = name.getEqName(name.getLocation());
+				break;
+			case ORD:
+				undeclaredName = name.getOrdName(name.getLocation());
+				break;
+			case MAX:
+				undeclaredName = name.getMaxName(name.getLocation());
+				break;
+			case MIN:
+				undeclaredName = name.getMinName(name.getLocation());
+				break;
+			case MEASURE:
+				undeclaredName = name.getMeasureName(name.getLocation());
+				break;
+			case INIT:
+				undeclaredName = name.getInitName(name.getLocation());
+				break;
+			case NONE:
+				undeclaredName = name; 
+				GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.getLocation(), name.toString(), 
+					VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
+				break;
 			default:
-				warning(IsaWarningMessage.PLUGIN_NYI_2P, "implicit definition for missing specification " + kind.name(), 
-					name.toString());
+				undeclaredName = name; 
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, name.getLocation(), 
+					"implicit definition for missing specification " + kind.name(), name.toString());
 				break;
 		}
 		assert undeclaredName != null;
@@ -314,17 +337,17 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 					undeclaredName,									// 	TCNameToken name,
 					nameScope, used, excluded,						//  extra TRDefinition parameters, 
 					typeParams,										// 	TCNameList typeParams, 
-					createUndeclaredSpecificationFunctionType(kind),// 	TRFunctionType type,
-					createUndeclaredSpecificationParameters(kind),	// 	TRPatternListList parameters, 
+					TRExplicitFunctionDefinition.createUndeclaredSpecificationFunctionType(type, isCurried, kind),// 	TRFunctionType type,
+					TRExplicitFunctionDefinition.createUndeclaredSpecificationParameters(name, parameters, kind),	// 	TRPatternListList parameters, 
 					null,											// 	TRExpression body,
 					null,											// 	TRExpression precondition,
 					null,											// 	TRExpression postcondition, 
 					false,											// 	boolean typeInvariant, 
 					null, 											// 	TRExpression measureExp,
-					isCurried,										// 	boolean isCurried, 
+					isCurried,								// 	boolean isCurried, 
 					null,											// 	TRExplicitFunctionDefinition predef,
 					null,											// 	TRExplicitFunctionDefinition postdef,
-					paramDefinitionList,							// 	TRDefinitionListList paramDefinitionList,
+					paramDefinitionList,						// 	TRDefinitionListList paramDefinitionList,
 					false,											// 	boolean recursive,
 					false 											// 	boolean isUndefined
 					);

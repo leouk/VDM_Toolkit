@@ -6,6 +6,7 @@ package vdm2isa.tr.types;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -107,4 +108,22 @@ public class TRFunctionType extends TRType
 			return getPostType();
 		}
 	}
+
+	public TRFunctionType getInvariantType() {
+		return new TRFunctionType(location, definitions, parameters, partial, TRBasicType.boolType(location));
+	}
+
+    public TRFunctionType getComparisonType() {
+		TRTypeList params = parameters.copy();
+		params.addAll(parameters.copy());
+        return new TRFunctionType(location, definitions, params, partial, TRBasicType.boolType(location));
+    }
+
+    public TRFunctionType getMeasureType() {
+        return new TRFunctionType(location, definitions, parameters, partial, TRBasicType.natType(location));
+    }
+
+    public TRFunctionType getUnknownType() {
+        return new TRFunctionType(location, definitions, parameters, partial, TRExpression.unknownType(location));
+    }
 }

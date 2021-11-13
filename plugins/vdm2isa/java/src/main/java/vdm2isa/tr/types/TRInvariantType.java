@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -9,9 +10,10 @@ import com.fujitsu.vdmj.lex.LexLocation;
 public abstract class TRInvariantType extends TRType 
 {
 	private static final long serialVersionUID = 1L;
-    protected final TRExplicitFunctionDefinition invdef;
-    protected final TRExplicitFunctionDefinition eqdef;
-    protected final TRExplicitFunctionDefinition orddef;
+    // those that might require implicit undeclared specification are not final
+    private TRExplicitFunctionDefinition invdef;
+    private TRExplicitFunctionDefinition eqdef;
+    private TRExplicitFunctionDefinition orddef;
 
     public TRInvariantType(LexLocation location, TRDefinitionList definitions, 
         TRExplicitFunctionDefinition invdef, 
@@ -20,17 +22,26 @@ public abstract class TRInvariantType extends TRType
     {
         super(location, definitions);
 
-        // make any given definitions local to the type
-        this.invdef = invdef;
-        if (this.invdef != null) 
-            this.invdef.local = true;
-        this.eqdef = eqdef;
-        if (this.eqdef != null) 
-            this.eqdef.local = true;
-        this.orddef = orddef;
-        if (this.orddef != null) 
-            this.orddef.local = true;
+        setInvariantDefinition(invdef);
+        setEqualityDefinition(eqdef);
+        setOrderingDefinition(orddef);
     }
+
+    public void setInvariantDefinition(TRExplicitFunctionDefinition invdef)
+    {
+        this.invdef = invdef;
+    }
+
+    public void setEqualityDefinition(TRExplicitFunctionDefinition eqdef)
+    {
+        this.eqdef = eqdef;
+    }
+
+    public void setOrderingDefinition(TRExplicitFunctionDefinition orddef)
+    {
+        this.orddef = orddef;
+    }
+
 
     @Override 
     protected void setup()
@@ -70,5 +81,17 @@ public abstract class TRInvariantType extends TRType
         }
 
         return sb.toString();
+    }
+
+    public void checkTypeDefinitionConsistency(TRExplicitFunctionDefinition invdef2,
+            TRExplicitFunctionDefinition eqdef2, TRExplicitFunctionDefinition orddef2) 
+    {
+        // check stuff is consistent to expectations
+		if ((invdef != null && invdef2 == null) || (invdef == null && invdef2 != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "invariant");
+        if ((eqdef != null && eqdef2 == null) || (eqdef == null && eqdef2 != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "equality");
+        if ((orddef != null && orddef2 == null) || (orddef == null && orddef2 != null))
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "ordering");
     }
 }

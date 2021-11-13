@@ -140,4 +140,8 @@ public class TRBasicType extends TRType
 		return newBasicType(location, IsaToken.CHAR);
 	}
 
+	public static TRType nat1Type(LexLocation location) {
+		return newBasicType(location, IsaToken.NAT1);
+	}
+
 }
