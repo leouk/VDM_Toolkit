@@ -5,7 +5,8 @@ module TestV2ITypes
 exports all
 definitions
 
-types
+types	
+
 	-- basic (re-)named types with basic patterns with undeclared implicit specification for inv
 	TBasic1 = nat1;
 
@@ -13,30 +14,34 @@ types
 	TBasic2 = TBasic1
 	inv t       == t > 10
 	eq  t1 = t2 == t1 = t2
-	ord t1 < t2 == t1 < t2;
-
-/*
-	TSet = set of TBasic
+	ord t1 < t2 == t1 < t2
+	;
+	
+	TSet = set of TBasic2
 	inv s       == s <> {}
 	eq  s1 = s2 == s1 subset s2
 	ord s1 < s2 == card s1 < card s2
 	;
 
+/*
 	
-	TSeq = seq1 of TSet
+	
+
+
+	TSeq = seq of TBasic1
+	inv s       == card elems s = len s
+	eq  s1 = s2 == elems s1 = elems s2
+	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
+	; 
+
+	TSeq2 = seq1 of TSet
 	inv s       == card elems s = len s
 	eq  s1 = s2 == elems s1 = elems s2
 	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
 	; 
 	
-
-	TRecord ::
-		x: nat 
-		y: nat	
-	inv r == r.x < r.y;
 	
-	TRecord' = TRecord
-	inv r == r.x > 10;
+
 
  
 	TOptional = [nat1]
