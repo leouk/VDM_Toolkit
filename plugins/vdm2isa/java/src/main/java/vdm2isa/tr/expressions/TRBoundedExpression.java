@@ -1,5 +1,6 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCExists1Expression;
 import com.fujitsu.vdmj.tc.expressions.TCExistsExpression;
 import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
@@ -18,31 +19,31 @@ public class TRBoundedExpression extends TRExpression {
 	private static final long serialVersionUID = 1L;
 	private final TRMultipleBindList bindList;
 	private final TRExpression predicate;
-    private final IsaToken owner;
+    private final IsaToken quantifier;
     private int rParenCount;
-     
-    public TRBoundedExpression(TCExists1Expression owner, TRMultipleBind bind, TRExpression predicate)
-    {
-        super(owner.location);
-        this.bindList = bind.getMultipleBindList();
-        this.predicate = predicate;
-        this.owner = IsaToken.EXISTS1;
-    }
 
-    public TRBoundedExpression(TCExistsExpression owner, TRMultipleBindList bindList, TRExpression predicate)
+    protected TRBoundedExpression(LexLocation location, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
     {
-        super(owner.location);
+        super(location, exptype);
         this.bindList = bindList;
         this.predicate = predicate;
-        this.owner = IsaToken.EXISTS;
+        this.quantifier = quantifier;
+        this.rParenCount = 0;
+    }
+    
+    public TRBoundedExpression(TCExists1Expression owner, TRMultipleBind bind, TRExpression predicate, TRType exptype)
+    {
+        this(owner.location, IsaToken.EXISTS1, bind.getMultipleBindList(), predicate, exptype);
     }
 
-    public TRBoundedExpression(TCForAllExpression owner, TRMultipleBindList bindList, TRExpression predicate)
+    public TRBoundedExpression(TCExistsExpression owner, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
     {
-        super(owner.location);
-        this.bindList = bindList;
-        this.predicate = predicate;
-        this.owner = IsaToken.FORALL;
+        this(owner.location, IsaToken.EXISTS, bindList, predicate, exptype);
+    }
+
+    public TRBoundedExpression(TCForAllExpression owner, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
+    {
+        this(owner.location, IsaToken.FORALL, bindList, predicate, exptype);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class TRBoundedExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return owner;
+        return quantifier;
     }
 
     @Override
