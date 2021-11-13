@@ -7,7 +7,9 @@ types
 	TRecord ::
 		x: nat 
 		y: nat	
-	inv r == r.x < r.y;
+	inv r == r.x < r.y
+	eq r1 = r2 == r1.x = r2.x
+	ord r1 < r2 == r1.x < r2.x;
 	
 	-- implicitly checked (re-)named type for records; "figure out" inv_TRecord as the call
 	TRecord2 = TRecord

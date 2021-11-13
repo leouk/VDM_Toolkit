@@ -1,4 +1,4 @@
-module TestV2ITypes
+module TestV2INamedTypes
 --avoid TRRenamedDefinition for now! 
 --imports from VDMToolkit 
 --	functions seq_prefix renamed seq_prefix;
@@ -11,37 +11,28 @@ types
 	TBasic1 = nat1;
 
 	-- basic (re-)named types with basic patterns with explicitly declared specifications and type rename
-	TBasic2 = nat1
+	TBasic2 = TBasic1
 	inv t       == t > 10
 	eq  t1 = t2 == t1 = t2
 	ord t1 < t2 == t1 < t2
 	;
 	
-	TSet = set of nat1
+/*
+	
+	TSet = set of TBasic2
 	inv s       == s <> {}
 	eq  s1 = s2 == s1 subset s2
 	ord s1 < s2 == card s1 < card s2
 	;
 
-	TSeq = seq1 of nat1
+	
+
+
+	TSeq = seq of TBasic1
 	inv s       == card elems s = len s
 	eq  s1 = s2 == elems s1 = elems s2
 	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
 	; 
-	
-	TMap = map nat1 to nat1 
-	inv m == dom m <> {}
-	eq m1 = m2 == dom m1 = dom m2 and (forall x in set dom m1 & m1(x) = m2(x))
-	ord m1 < m2 == 
-		dom m1 subset dom m2
-		or
-		(dom m1 = dom m2 and (forall x in set dom m1 & m1(x) < m2(x)))
-	;
-/*
-	
-	
-
-
 
 	TSeq2 = seq1 of TSet
 	inv s       == card elems s = len s
@@ -66,4 +57,4 @@ values
 	v: TFcn = (lambda x: nat1 & (x * x) + 10)
 	;
 	*/
-end TestV2ITypes
+end TestV2INamedTypes
