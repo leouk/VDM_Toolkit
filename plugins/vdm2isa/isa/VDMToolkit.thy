@@ -3,7 +3,11 @@
   Author: Leo Freitas
 *)
 theory VDMToolkit
-imports Complex_Main
+  imports 
+(* Include real fields, list and option type ordering *)
+    Complex_Main 
+    "HOL-Library.List_Lexorder"
+    "HOL-Library.Option_ord"
 begin
 
 type_notation bool ("\<bool>")
