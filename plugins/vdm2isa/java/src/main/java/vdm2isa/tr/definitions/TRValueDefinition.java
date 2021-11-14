@@ -13,6 +13,7 @@ import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRRecordPattern;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
@@ -66,7 +67,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		this(pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
 		// these are always TRLocalDefinition within the list. 
 		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
-		if (this.defs.size() > 1)
+		if (!(pattern instanceof TRRecordPattern) && this.defs.size() > 1)
 			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
 		
 		//if (local) System.out.println(toString());
