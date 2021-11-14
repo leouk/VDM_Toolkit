@@ -18,8 +18,7 @@ type_notation real ("\<real>")
 
 (*****************************************************************)      
 section \<open> Basic types \<close>  
-  
-type_synonym VDMToken = string
+                                                     
 type_synonym VDMNat  = \<int>
 type_synonym VDMNat1 = \<int>
 type_synonym VDMInt  = \<int>
@@ -271,6 +270,16 @@ definition
   post_vdm_abs :: "('a::{zero,abs,ord}) \<Rightarrow> ('a::{zero,abs,ord}) \<Rightarrow> \<bool>"
   where
   "post_vdm_abs x RESULT \<equiv> RESULT \<ge> 0" (*inv_VDMNat RESULT"*)
+
+subsection \<open>VDM tokens\<close>
+
+text 
+\<open>VDM tokens are like a record of parametric type (i.e. you can 
+have anything inside a mk_token(x) expression, akin to a VDM record
+like Token :: token : ?. Isabelle does not allow parametric records.
+Chose to use datatypes instead. \<close>
+
+datatype 'a VDMToken = Token 'a
 
 (*****************************************************************)
 section \<open> Sets \<close>
