@@ -14,6 +14,7 @@ import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
@@ -95,7 +96,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				Iterator<TCModule> mi = tclist_filtered.iterator();
 				while (mi.hasNext())
 				{
-					if (mi.next().name.getName().equals("VDMToolkit"))
+					if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
 					{
 						mi.remove();
 						break;

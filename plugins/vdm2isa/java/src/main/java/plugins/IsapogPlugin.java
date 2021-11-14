@@ -104,6 +104,9 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
                 for(ProofObligation po : pogl)
                 {
+                    // do not process VDMToolkit.vdmsl POs
+                    if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())) continue;
+
                     try 
                     {
                         // type check PO as an TC AST
