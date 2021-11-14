@@ -15,14 +15,9 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
     
     private static final long serialVersionUID = 1L;
 
-	private final List<Integer> recordPatternIndices;
-	protected boolean partOfListList;
-
 	protected TRPatternList() 
 	{
 		super();
-		partOfListList = false;
-		recordPatternIndices = getRecordPatternIndeces();
 	}  
 
 	public TRPatternList(TRPatternList from)
@@ -34,8 +29,6 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 	public TRPatternList(TCPatternList list) throws Exception
 	{
 		super(list);
-		partOfListList = false; 
-		recordPatternIndices = getRecordPatternIndeces();
 	}
 
 	@Override
@@ -54,7 +47,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		return super.toString() + " [PL=" + size() + "]";
 	}
 
-	private List<Integer> getRecordPatternIndeces()
+	protected List<Integer> getRecordPatternIndeces()
 	{
 		List<Integer> result = new Vector<Integer>(size());
 		for(int i = 0; i < size(); i++)
@@ -65,9 +58,9 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		return result;
 	}
 
-	public boolean hasRecordPatternParameters()
+	public boolean hasRecordPatterns()
 	{
-		return !recordPatternIndices.isEmpty();
+		return !getRecordPatternIndeces().isEmpty();
 	}
 
 	/**
@@ -76,20 +69,27 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 	 */
 	public String recordPatternOpenContext()
 	{
-		return partOfListList ? "" : IsaToken.LET.toString() + " ";
+		return //partOfListList ? "" : " " + 
+			IsaToken.LET.toString() + " "
+			;
 	}
 
 	public String recordPatternCloseContext()
 	{
-		return partOfListList ? "" : " " + IsaToken.IN.toString() + " ";
+		return //partOfListList ? "" : " " + 
+			" " + IsaToken.IN.toString() + " "
+			;
 	}
 
 	public String recordPatternTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
-		if (hasRecordPatternParameters())
+		if (hasRecordPatterns())
 		{
+			String old = getSemanticSeparator();
+			setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
 			sb.append(recordPatternOpenContext());
+			List<Integer> recordPatternIndices = getRecordPatternIndeces();
 			sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
 			for (int i = 1; i < recordPatternIndices.size(); i++)
 			{
@@ -98,6 +98,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 				sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).recordPatternTranslate());
 			}
 			sb.append(recordPatternCloseContext());
+			setSemanticSeparator(old);
 		}
 		return sb.toString();
 	}

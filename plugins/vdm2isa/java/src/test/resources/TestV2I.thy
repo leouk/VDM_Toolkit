@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-14T13:22:57.937797Z
+(* VDM to Isabelle Translation @2021-11-14T15:44:04.265475Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2I.vdmsl' at line 1:8
@@ -74,9 +74,45 @@ definition
 where
 	"recbind dummy0 \<equiv> 
 	\<comment>\<open>Implicit record pattern projection conversion\<close>
-	let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+	(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 			\<comment>\<open>User defined body of recbind\<close>
-			(x + y)"
+			(x + y))"
+
+	
+
+definition
+	pre_recbindSpec :: "R \<Rightarrow> \<bool>"
+where
+	"pre_recbindSpec dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for pre_recbindSpec specification\<close>
+		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))  \<and> 
+		\<comment>\<open>Implicit record pattern projection conversion\<close>
+		(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+			\<comment>\<open>User defined body of pre_recbindSpec\<close>
+			(x < y))"
+
+
+definition
+	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+where
+	"post_recbindSpec dummy0 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for post_recbindSpec specification\<close>
+		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )  \<and>  (inv_VDMNat RESULT))  \<and> 
+		\<comment>\<open>Implicit record pattern projection conversion\<close>
+		(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+			\<comment>\<open>User defined body of post_recbindSpec\<close>
+			((x < RESULT) \<and> (y < RESULT)))"
+
+definition
+	recbindSpec :: "R \<Rightarrow> VDMNat"
+where
+	"recbindSpec dummy0 \<equiv> 
+	\<comment>\<open>Implicit record pattern projection conversion\<close>
+	(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+			\<comment>\<open>User defined body of recbindSpec\<close>
+			(x + y))"
 
 	
 
@@ -99,8 +135,8 @@ where
 	"letbest  \<equiv> 
 	\<comment>\<open>User defined body of letbest\<close>
 	(
-		SOME dummy0 .(dummy0 \<in> { (x + y) | (dummy0 :: R) . \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (x > y) }))"
+		SOME (dummy0::VDMNat) .(dummy0 \<in> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | (dummy0 :: R) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)) }))"
 
 	
 abbreviation
@@ -1277,6 +1313,28 @@ where
 	
 	
 abbreviation
+	v741 :: "R \<Rightarrow> VDMNat"
+where
+	"v741 \<equiv> (
+	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
+		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) then
+		(x + y)
+	 else
+		undefined
+	)
+	)"
+
+	definition
+	inv_v741 :: "R \<Rightarrow> \<bool>"
+where
+	"inv_v741 dummy0 \<equiv> 
+	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
+	(inv_VDMNat (v741 dummy0))"
+
+	
+	
+abbreviation
 	v75 :: "\<bool>"
 where
 	"v75 \<equiv> (\<exists>! var \<in> t9  . (var < (2::VDMNat1)))"
@@ -1321,8 +1379,7 @@ where
 		
 (var2::VDMNat1) = (20::VDMNat1)
 		in
-			
-		(if ((inv_VDMNat var)) \<and> 
+			(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then
 			(var + var2)
 		 else
@@ -1346,7 +1403,7 @@ where
 		
 (var1::VDMNat) = (10::VDMNat1)
 		in
-			
+			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (inv_R dummy0) \<and> 
 	((inv_VDMNat var1)) then
 			((var1 + x) + y)
@@ -1366,7 +1423,7 @@ abbreviation
 	v80 :: "VDMNat1"
 where
 	"v80 \<equiv> (
-		SOME dummy0 .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > (2::VDMNat1)) \<and> (y < x)) }))"
+		SOME (dummy0::VDMNat1) .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > (2::VDMNat1)) \<and> (y < x)) }))"
 
 	definition
 	inv_v80 :: "\<bool>"
@@ -1379,7 +1436,7 @@ abbreviation
 	v801 :: "VDMNat"
 where
 	"v801 \<equiv> (
-		SOME dummy0 .(dummy0 \<in> { (x + y) | dummy0 .  ((dummy0 \<in>{v65}))  \<and> (x < y) }))"
+		SOME (dummy0::VDMNat) .(dummy0 \<in> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | dummy0 .  ((dummy0 \<in>{v65}))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x < y)) }))"
 
 	definition
 	inv_v801 :: "\<bool>"
@@ -1512,7 +1569,7 @@ where
 		let 
 (dummy0::R) = v65
 		in
-			(if (inv_R dummy0) then
+			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (if (inv_R dummy0) then
 			(x + y)
 		 else
 			undefined
@@ -1529,9 +1586,11 @@ where
 abbreviation
 	v93 :: "VDMNat"
 where
-	"v93 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)))| 
-		_ \<Rightarrow> (0::VDMNat))"
+	"v93 \<equiv> (
+  \<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>
+  case 
+  \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>((v37)) of None \<Rightarrow> (0::VDMNat)| 
+		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
 
 	definition
 	inv_v93 :: "\<bool>"
@@ -1543,9 +1602,8 @@ where
 abbreviation
 	v931 :: "VDMNat"
 where
-	"v931 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v371` might not need extra @{term the} operator!\<close>(the(v371)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)))| 
-		_ \<Rightarrow> (0::VDMNat))"
+	"v931 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v371` might not need extra @{term the} operator!\<close>((v371)) of None \<Rightarrow> (0::VDMNat)| 
+		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
 
 	definition
 	inv_v931 :: "\<bool>"

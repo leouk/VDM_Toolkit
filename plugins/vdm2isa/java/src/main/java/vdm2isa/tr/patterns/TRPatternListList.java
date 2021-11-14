@@ -26,7 +26,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	protected TRPatternListList()
 	{
 		super();
-		setPartOfListList(true);
 	}
 
 	public TRPatternListList(TRPatternListList from)
@@ -38,7 +37,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public TRPatternListList(TCPatternListList from) throws Exception
 	{
 		super(from);
-		setPartOfListList(true);
 	}
 
 	@Override
@@ -47,20 +45,12 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return super.toString() + " [PLL=" + size() + "]";
 	}
 
-	private void setPartOfListList(boolean b)
-	{
-		for(TRPatternList p : this)
-		{
-			p.partOfListList = b;
-		}
-	}
-
-	public boolean hasRecordPatternParameters()
+	public boolean hasRecordPatterns()
 	{
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
 		{
-			result = get(i).hasRecordPatternParameters();
+			result = get(i).hasRecordPatterns();
 		}
 		return result;
 	}
@@ -86,16 +76,21 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		{
 			// set the let separator
 			String old = setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
-			sb.append(recordPatternOpenContext());
-			sb.append(get(0).recordPatternTranslate());
+			//sb.append(recordPatternOpenContext());
+			String recTranslate = get(0).recordPatternTranslate(); 
+			sb.append(recTranslate);
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(getSemanticSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(get(i).recordPatternTranslate());
+				if (!recTranslate.isEmpty())
+				{
+					sb.append(getSemanticSeparator());
+					sb.append(getFormattingSeparator());
+				}
+				recTranslate = get(i).recordPatternTranslate();
+				sb.append(recTranslate);
 			}
 			setSemanticSeparator(old);
-			sb.append(recordPatternCloseContext());
+			//sb.append(recordPatternCloseContext());
 		}
 		return sb.toString();
 	}
