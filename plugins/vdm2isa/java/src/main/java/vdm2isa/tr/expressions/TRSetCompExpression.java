@@ -72,10 +72,30 @@ public class TRSetCompExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
+        boolean hasRecPattern = binds.hasRecordPatterns();
+        String recTranslate = "";
+        if (hasRecPattern)
+        {
+            recTranslate = binds.recordPatternTranslate();
+        }
+
         // I could arguably do binds.compTranslate first if not existential? Keep it simpler? 
         sb.append(IsaToken.SET_OPEN.toString());
         sb.append(getFormattingSeparator());
+        
+        if (hasRecPattern)
+        {
+            sb.append(IsaToken.LPAREN.toString());
+            sb.append(recTranslate);
+        }
+
         sb.append(first.translate());
+        
+        if (hasRecPattern)
+        {
+            sb.append(IsaToken.RPAREN.toString());
+        }
+
         sb.append(getFormattingSeparator());
         sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
@@ -89,7 +109,7 @@ public class TRSetCompExpression extends TRExpression {
         if (binds.foundBinds(TRMultipleBindKind.TYPE))
         {
             warning(IsaWarningMessage.VDMSL_SETCOMP_TYPEBOUND);
-            sb.append(IsaToken.comment(IsaWarningMessage.VDMSL_SETCOMP_TYPEBOUND.message, getFormattingSeparator()));
+            sb.append(getFormattingSeparator() + IsaToken.comment(IsaWarningMessage.VDMSL_SETCOMP_TYPEBOUND.message, getFormattingSeparator()));
         }
 
         // call inv translate as type binds require inv_T binds in the pattern, whereas set/seq is just translate (don't)
@@ -97,13 +117,25 @@ public class TRSetCompExpression extends TRExpression {
         if (!bindStr.isEmpty())
         {
             sb.append(getFormattingSeparator());
-            sb.append(binds.invTranslate());
+            sb.append(bindStr);
             sb.append(getFormattingSeparator());
         }
         if (predicate != null)
         {
             sb.append(binds.getSemanticSeparator());
+
+            if (hasRecPattern)
+            {
+                sb.append(IsaToken.LPAREN.toString());
+                sb.append(recTranslate);
+            }
+    
             sb.append(predicate.translate());
+            
+            if (hasRecPattern)
+            {
+                sb.append(IsaToken.RPAREN.toString());
+            }            
         }
 
         sb.append(getFormattingSeparator());

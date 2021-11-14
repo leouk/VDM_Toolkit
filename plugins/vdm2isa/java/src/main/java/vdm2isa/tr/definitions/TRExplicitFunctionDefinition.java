@@ -591,10 +591,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			sb.append("\n");
 		}
 
+		String old = getFormattingSeparator();
+		
+		
 		// translate the explicit function definition taking into consideration TRSpecificationKind
 		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
 		String fcnName     = name.getName();
-		//TODO STOPPED HERE; requires thought for TRNamedTypes in parameters! 
 		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
 		String fcnOutType  = type.result.translate();
 		String fcnParams   = parameters.translate();
@@ -622,26 +624,33 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			case INIT:
 				break;			
 		}
-		String old = getFormattingSeparator();
-		// include any record patterns within a single let definition for all of them
-		// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
-		//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
-		if (parameters.hasRecordPatternParameters())
-		{
-			fcnBody.append(getFormattingSeparator());
-			fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
-			setFormattingSeparator("\n\t\t\t");
-			fcnBody.append(parameters.recordPatternTranslate());
-		}
-
+		
 		// implicitly generated undeclared specifications have no body
 		if (!isImplicitlyGeneratedUndeclaredSpecification())
 		{
+			// include any record patterns within a single let definition for all of them
+			// but only if there is user body, given the implicit checks rely on TRecordType's own structuring. 
+			// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
+			//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
+			boolean hasRecPattern = parameters.hasRecordPatterns();
+			if (hasRecPattern)
+			{
+				fcnBody.append(getFormattingSeparator());
+				fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
+				setFormattingSeparator("\n\t\t\t");
+				fcnBody.append(IsaToken.LPAREN.toString());
+				fcnBody.append(parameters.recordPatternTranslate());
+			}
 			// include the user declared body after including implicit considerations
 			fcnBody.append(getFormattingSeparator());
 			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
 			fcnBody.append(tldIsaComment());
 			fcnBody.append(body.translate());
+			if (hasRecPattern)
+			{
+				// let expression requires parenthesis 
+				fcnBody.append(IsaToken.RPAREN.toString());
+			}
 		}
 		
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions

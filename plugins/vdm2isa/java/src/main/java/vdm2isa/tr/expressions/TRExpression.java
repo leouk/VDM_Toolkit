@@ -60,7 +60,10 @@ public abstract class TRExpression extends TRNode
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         if (exptype == null)
-            report(IsaErrorMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
+        {
+            warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
+            exptype = TRExpression.unknownType(location);
+        }
 	}
 
 	/**
@@ -76,7 +79,7 @@ public abstract class TRExpression extends TRNode
      * Attempt at getting the type for the expression. Important for pattern translation with context, like optional types. 
      * @return
      */
-    public TRType getType()
+    public  TRType getType()
     {
         if (exptype instanceof TRUnknownType && !hasWarnedAboutUnknownType)
         {
@@ -114,7 +117,7 @@ public abstract class TRExpression extends TRNode
 			TRType t = getType();
 			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getSimpleName());
 			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getSimpleName());
-			sb.append(IsaToken.comment(comment, getFormattingSeparator()));	
+			sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
 			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
 		}
 		else

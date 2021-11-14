@@ -158,4 +158,13 @@ public abstract class TRMultipleBind extends TRNode
     public abstract TRNode getRHS();
 
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
+
+    public boolean hasRecordPatterns() {
+        return plist.hasRecordPatterns();
+    }
+
+    public String recordPatternTranslate()
+    {
+        return plist.recordPatternTranslate();
+    }
 }

@@ -76,7 +76,10 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE);
-        sb.append(IsaToken.dummyVarNames(1, location));
+        sb.append(IsaToken.parenthesise(
+            IsaToken.dummyVarNames(1, location) +
+            IsaToken.TYPEOF.toString() +
+            exptype.translate()));
         sb.append(IsaToken.SPACE);
         sb.append(IsaToken.POINT);
         //TODO someone has to call the inner binds record translate? 

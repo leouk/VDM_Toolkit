@@ -146,6 +146,36 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return areBindsUniform(TRMultipleBindKind.SET) || areBindsUniform(TRMultipleBindKind.SEQ) || areBindsUniform(TRMultipleBindKind.TYPE);   
     }
 
+	public boolean hasRecordPatterns() {
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).hasRecordPatterns();
+		}
+		return result;
+	}
+
+    public String recordPatternTranslate() {
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			String recTranslate = get(0).recordPatternTranslate();
+			sb.append(recTranslate);
+			for(int i = 1; i < size(); i++)
+			{
+				if (!recTranslate.isEmpty())
+				{
+					// no need for semantic separator since the PatternList keeps all the context in control up to "in" part
+					//sb.append(getSemanticSeparator());
+					sb.append(getFormattingSeparator());					
+				}
+				recTranslate = get(i).recordPatternTranslate();
+				sb.append(recTranslate);
+			}
+		}
+		return sb.toString();
+    }
+	
 	public static String translate(TRMultipleBind... args)
 	{
 		TRMultipleBindList list = new TRMultipleBindList();

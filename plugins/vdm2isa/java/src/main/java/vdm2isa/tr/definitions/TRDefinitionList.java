@@ -116,12 +116,18 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			sb.append(recordPatternTranslate(0));	
+			String recTranslate = recordPatternTranslate(0);
+			sb.append(recTranslate);	
 			for (int i = 1; i < size(); i++)
 			{
-				//sb.append(getSemanticSeparator());
-				sb.append(getFormattingSeparator());					
-				sb.append(recordPatternTranslate(i));	
+				if (!recTranslate.isEmpty())
+				{
+					// no need for semantic separator since the PatternList keeps all the context in control up to "in" part
+					//sb.append(getSemanticSeparator());
+					sb.append(getFormattingSeparator());					
+				}
+				recTranslate = recordPatternTranslate(i);
+				sb.append(recTranslate);	
 			}
 		}
 		return sb.toString();

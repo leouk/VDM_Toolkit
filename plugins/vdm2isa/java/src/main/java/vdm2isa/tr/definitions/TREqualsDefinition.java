@@ -71,15 +71,4 @@ public class TREqualsDefinition extends TRValueDefinition {
         assert typebind.plist.size() == 1;
         return getPattern() != null ? getPattern().translate() : typebind.plist.translate();    
     }
-
-    // // include any record patterns within a single let definition for all of them
-	// 	// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
-	// 	//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
-	// 	if (parameters.hasRecordPatternParameters())
-	// 	{
-	// 		fcnBody.append(getFormattingSeparator());
-	// 		fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
-	// 		setFormattingSeparator("\n\t\t\t");
-	// 		fcnBody.append(parameters.recordPatternTranslate());
-	// 	}
 }
