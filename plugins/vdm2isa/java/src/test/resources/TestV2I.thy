@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-13T15:04:48.123858Z
+(* VDM to Isabelle Translation @2021-11-14T07:36:41.395847Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2I.vdmsl' at line 1:8
@@ -1302,7 +1302,8 @@ where
 abbreviation
 	v80 :: "VDMNat1"
 where
-	"v80 \<equiv> null"
+	"v80 \<equiv> (
+		SOME dummy0 .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > (2::VDMNat1)) \<and> (y < x)) }))"
 
 	definition
 	inv_v80 :: "\<bool>"
