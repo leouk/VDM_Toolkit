@@ -190,6 +190,8 @@ public enum IsaToken {
 	THEN(Token.THEN, "then"),
 	ELSE(Token.ELSE, "else"),
 	ELSEIF(Token.ELSEIF, "else if"),
+	CASE(Token.CASES, "case"),
+	OF(null, "of"),
 	TFUN(Token.TOTAL_FUNCTION, "\\<Rightarrow>"),
 	LET(Token.LET, "let"),
 	IN(Token.IN, "in"),
@@ -271,7 +273,9 @@ public enum IsaToken {
     {
         return identifier != null && identifier.length() > 0 && 
 			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 
-			!identifier.startsWith(IsaToken.UNDERSCORE.toString());
+			// single "_" is valid "dummy" identifier pattern! Can't have _x though. 
+			(identifier.equals(IsaToken.UNDERSCORE.toString()) ||
+			!identifier.startsWith(IsaToken.UNDERSCORE.toString()));
     }
 
 

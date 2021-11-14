@@ -30,9 +30,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
         this.test = test;
         this.typedef = typedef;
         if (basictype != null && typename != null)
-            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_2P, typename.toString(), basictype.getClass().getName());
+            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getName(), typename.toString(), basictype.getClass().getName());
         if (basictype != null && !(basictype instanceof TRBasicType))
-            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_BASICTYPE_2P, getClass().getName(), basictype.getClass().getName()); 
+            report(IsaErrorMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getName(), basictype.getClass().getName()); 
     }
 
     @Override

@@ -1,6 +1,7 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
@@ -54,8 +55,8 @@ public class TRMultipleSetBind extends TRMultipleBind
         if (!vdmPatternsOnly && seqBind)
         { 
             // On type checked VDM values the underlying type is ordered; but possibly with an ord_ clause, which might not work for Isabelle 
-            String setbindProblem = "Set bind \"" + translate() + "\" in sequence comprehension requires VDM set to be ordered (i.e. its Isabelle type instantiates type class linorder).";
-            warning(11111, setbindProblem);
+            String trStr = translate();
+            warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, trStr);
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.SETSEQBIND);
             sb.append(getFormattingSeparator());

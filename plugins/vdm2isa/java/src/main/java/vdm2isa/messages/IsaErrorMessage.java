@@ -35,10 +35,10 @@ public enum IsaErrorMessage {
     "Invalid tuple projection field (%1$s) is bigger than tuple size (%2$s)."), 
     VDMSL_INVALID_MKARGS_3P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 9,
     "Invalid record arguments: incompatible number of fields for VDM mk_%1$s expression. Found %2$s, expected %3$s."),
-    VDMSL_INVALID_TESTEXPR_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 10,
+    VDMSL_INVALID_TESTEXPR_3P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 10,
     "Invalid %1$s expression: contains both type name `%2$s` and basic type `%3$s`."),
-    VDMSL_INVALID_TESTEXPR_BASICTYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 11,
-     "%1$s expression invalid basic type (%2$s)."),      
+    VDMSL_INVALID_EXPR_TYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 11,
+     "%1$s expression invalid type (%2$s)."),      
     VDMSL_INVALID_INVTYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 12,
     "Invalid VDMSL invartiant type %1$s: %2$s."),
     VDMSL_INVALID_TYPEDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 13, 
@@ -96,7 +96,7 @@ public enum IsaErrorMessage {
     
 
     
-    TEST(11111, " ");
+    TEST(VDM2IsaError.ISABELLE_E_PO_BASE, " ");
     
     //private static final Set<Integer> numbers = new TreeSet<Integer>(); 
                              

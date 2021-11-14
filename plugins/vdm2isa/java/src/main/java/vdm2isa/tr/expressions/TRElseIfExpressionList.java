@@ -34,7 +34,6 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
 		return isEmpty() ? TRExpression.unknownType(getLocation()) : get(0).getType();
 	}
 
-
     @Override
     protected void setup()
     {

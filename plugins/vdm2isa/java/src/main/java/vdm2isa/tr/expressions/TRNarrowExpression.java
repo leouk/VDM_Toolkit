@@ -4,6 +4,8 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -62,22 +64,45 @@ public class TRNarrowExpression extends TRVDMTestExpression {
                 case CHAR:
                 case TOKEN:
                 default:
-                    problem = "VDM narrow expressions of basic type " + basictype.isaToken().toString() + " might create Isabelle type errors!";
-                    warning(11000, problem);
+                    warning(IsaWarningMessage.ISA_TYPED_NARROW_1P, basictype.isaToken().toString());
+                    sb.append(IsaToken.comment(IsaWarningMessage.ISA_TYPED_NARROW_1P.format(basictype.isaToken().toString()), getFormattingSeparator()));
                     break;
             }
-            if (problem != null)
-                sb.append(IsaToken.comment(problem));
-        } else if (isNameTyped())
+        } 
+        else if (isNameTyped())
         { 
-            problem = "VDM narrow expressions of defined type " + typedef.toString() + " might create Isabelle type errors!";
-            warning(11000, problem);
+            String typeDefStr = typedef.translate();
+            warning(IsaWarningMessage.ISA_TYPED_NARROW_1P, typeDefStr);
+            sb.append(IsaToken.comment(IsaWarningMessage.ISA_TYPED_NARROW_1P.format(typeDefStr), getFormattingSeparator()));
             sb.append(IsaToken.parenthesise(testStr + IsaToken.TYPEOF.toString() + typename.toString()));              
         }
         else
         {
-            report(10001, "Cannot translate this VDM narrow expression to Isabelle");
-            sb.append(IsaToken.ERROR.toString());
+            // should never reach really for valid TC tree
+            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getName(), 
+                String.valueOf(basictype), String.valueOf(typename));
+            // basictype == null || !basictype instanceof TRBasicType || typename != null)
+            // &&
+            // (basictype != null || typename == null)
+            // =
+            // (basictype != null || typename == null) && basictype == null
+            // ||
+            // (basictype != null || typename == null) && !basictype instanceof TRBasicType
+            // ||
+            // (basictype != null || typename == null) && typename != null
+            // =
+            // (basictype != null && basictype == null || typename == null && basictype == null)
+            // ||
+            // (basictype != null && !basictype instanceof TRBasicType || typename == null && !basictype instanceof TRBasicType)
+            // ||
+            // (basictype != null && typename != null || typename == null && typename != null)
+            // =
+            // (typename == null && basictype == null)
+            // ||
+            // (basictype != null || typename == null) && !basictype instanceof TRBasicType
+            // ||
+            // (basictype != null && typename != null)
+
         }
         return sb.toString();
     }

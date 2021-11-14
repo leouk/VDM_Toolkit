@@ -236,10 +236,8 @@ public abstract class TRExpression extends TRNode
                     sb.append(args[1].translate());
                     sb.append(IsaToken.RPAREN.toString());
                     sb.append(getFormattingSeparator());
-                    //sb.append("\n\t");
-                    String comment = "result of the power operator is context dependenant on second argument type being nat or real.";
-                    sb.append(IsaToken.comment(comment));
-                    warning(11001, comment);
+                    sb.append(IsaToken.comment(IsaWarningMessage.ISA_POWEROP_TYPEDEP.message, getFormattingSeparator()));
+                    warning(IsaWarningMessage.ISA_POWEROP_TYPEDEP);
                 }
                 break;
 

@@ -88,8 +88,8 @@ public class TRSetCompExpression extends TRExpression {
         // type bound set comprehension will lead to heavy PO!
         if (binds.foundBinds(TRMultipleBindKind.TYPE))
         {
-            warning(IsaWarningMessage.SETCOMP_TYPEBOUND);
-            sb.append(IsaToken.comment(IsaWarningMessage.SETCOMP_TYPEBOUND.format((Object[])null), getFormattingSeparator()));
+            warning(IsaWarningMessage.VDMSL_SETCOMP_TYPEBOUND);
+            sb.append(IsaToken.comment(IsaWarningMessage.VDMSL_SETCOMP_TYPEBOUND.message, getFormattingSeparator()));
         }
 
         // call inv translate as type binds require inv_T binds in the pattern, whereas set/seq is just translate (don't)

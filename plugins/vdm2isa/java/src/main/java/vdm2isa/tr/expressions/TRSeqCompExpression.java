@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
@@ -118,15 +119,14 @@ public class TRSeqCompExpression extends TRExpression {
         sb.append(IsaToken.SEQ_CLOSE.toString());
         if (isSetSeqBind())
         {
-            String setbindProblem = "Set bind " + 
-                IsaToken.antiquotation(IsaToken.ISAR_TERM, bind.translate()) +
-                " in sequence comprehension requires VDM set " + "\n\t" + "  " +
-                " to be ordered (i.e. its Isabelle type instantiates type class linorder)." + "\n\t" + "  " + 
-                " This can be a problem if the target type of " + 
-                IsaToken.antiquotation(IsaToken.ISAR_TERM, bind.getRHS().translate()) + "\n\t" + "  " +
-                "has a VDM ord_ predicate.";
-            sb.append("\n\t" + IsaToken.comment(setbindProblem));
-            warning(11111, "SAY SAME AS ABOVE SHORTER");
+            bindStr = bind.translate();
+            String setbindProblem = IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindStr) + 
+                getFormattingSeparator() + " This can be a problem if the target type of " + 
+                IsaToken.antiquotation(IsaToken.ISAR_TERM, bind.getRHS().translate()) + 
+                getFormattingSeparator() + " has a VDM ord_ predicate.";
+            sb.append(getFormattingSeparator());
+            sb.append(IsaToken.comment(setbindProblem, getFormattingSeparator()));
+            warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, bindStr);
         }
         return sb.toString();
     }

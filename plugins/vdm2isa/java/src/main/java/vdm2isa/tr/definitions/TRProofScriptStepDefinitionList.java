@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import plugins.IsapogPlugin;
+import vdm2isa.messages.IsaWarningMessage;
 
 public class TRProofScriptStepDefinitionList extends TRDefinitionList {
 
@@ -25,7 +26,7 @@ public class TRProofScriptStepDefinitionList extends TRDefinitionList {
             else if (d instanceof TRBasicProofScriptStepDefinition)
                 result.add((TRBasicProofScriptStepDefinition)d);
             else
-                IsapogPlugin.warning(11111, "Attempting to create proof step with definition " + d.getClass().getName(), d.location);
+                IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getName());
         }
         return result;
     }

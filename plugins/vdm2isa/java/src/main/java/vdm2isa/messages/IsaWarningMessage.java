@@ -14,6 +14,12 @@ public enum IsaWarningMessage {
     "Isabelle translation is optimal for VDM_10. You might encounter problems with CLASSIC release."),
     VDMSL_MISSING_RESULT_IN_POST_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 1, 
     "Could not find `%1$s` variable in implicit post condition specification definition."),
+    VDMSL_SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 2, 
+    "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"),
+    VDMSL_MISSING_RESULTVAR_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 3, 
+    "Could not find `%1$s` variable in implicit post condition specification definition."),
+    VDMSL_EMPTY_MODULE_FILES_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 4,  
+    "Empty file(s) for module %1$s: Isabelle theory file must have a name"),
 
     ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
     "Unknown VDM types will generate Isabelle additional type variable `a warning."),
@@ -21,11 +27,20 @@ public enum IsaWarningMessage {
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     ISA_TYPDEF_MINMAX_ORD_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 2, 
     "%1$s type definition min/max specification requires Isabelle type to instantiate `ord` class!"),
-    
-                      SETCOMP_TYPEBOUND(VDM2IsaWarning.ISABELLE_WARNING_BASE + 1, 
-                      "Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!"),
+    ISA_CASES_PATTERN_LIMITATION(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 3,
+    "Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur."),
+    ISA_TYPED_NARROW_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 4, 
+    "VDM narrow expressions of type %1$s might create Isabelle type errors!"),
+    ISA_SEQCOMP_LINEAR_TYPEBIND_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 5, 
+    "Set bind `%1$s` in sequence comprehension requires its Isabelle type to instantiate class linorder."),
+    ISA_POWEROP_TYPEDEP(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 6,
+    "Result of the power operator is context dependenant on second argument type being nat or real."),
 
-    TEST(21111, " ");
+    PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
+    "Attempting to create proof step with definition %1$s."),
+
+    
+    TEST(VDM2IsaWarning.ISABELLE_W_PO_BASE, " ");
 
     public final int number;
     public final String message; 

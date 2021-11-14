@@ -492,7 +492,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				boolean removed = varNames.remove(resultName);
 				if (!removed)
 				{
-					warning(11111, "Could not find \"" + resultName + "\" variable in implicit post condition specification definition");
+					warning(IsaWarningMessage.VDMSL_MISSING_RESULTVAR_1P, resultName);
 				}
 				// transform "[x,y]" into "x y", "[x]" into "x", "[]" into ""
 				String varList = varNames.toString().replace(',', ' ');
@@ -668,7 +668,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	public String invTranslate() {
 		StringBuilder sb = new StringBuilder();
 		//TODO perhaps not needed? Maybe in let locally defined? 
-		warning(11111, "TODO: processing explicit function invTranslate please!");
+		warning(IsaWarningMessage.PLUGIN_NYI_2P, "invariant translate", getClass().getName());
 		return sb.toString();
 	}
 

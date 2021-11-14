@@ -14,6 +14,7 @@ import com.fujitsu.vdmj.mapper.FileList;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
@@ -32,7 +33,7 @@ public class TRModule extends TRNode
 		this.files = files;
 
 		if (files == null || files.isEmpty())
-			warning(11111, "Empty module file(s): Isabelle theory file must have a name");
+			warning(IsaWarningMessage.VDMSL_EMPTY_MODULE_FILES_1P, name.toString());
 	}
 
 	@Override

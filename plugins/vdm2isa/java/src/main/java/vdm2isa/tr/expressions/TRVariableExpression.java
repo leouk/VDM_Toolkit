@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
@@ -84,7 +85,7 @@ public class TRVariableExpression extends TRExpression
 		}
 		else 
 		{
-			warning(11111, "not yet handling invariant translate for complex variable expr " + vardef.getClass().getName());
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, vardef.getClass().getName() + " invariant translate", getClass().getName());
 		}
 		return sb.toString();
 	} 
