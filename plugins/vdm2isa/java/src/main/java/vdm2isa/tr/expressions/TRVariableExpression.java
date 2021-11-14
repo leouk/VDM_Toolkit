@@ -46,7 +46,7 @@ public class TRVariableExpression extends TRExpression
 		// avoid vardef.translate, as if a top-level definition like TRExplicitFunction will "mark" as done for Isabelle and
 		// generate a "repeated" item error! 
 		return super.toString() + " ; original = " + String.valueOf(original) + 
-			"\n\t def = " + (vardef != null ? vardef.getClass().getName() : "null") + ":" + 
+			"\n\t def = " + (vardef != null ? vardef.getClass().getSimpleName() : "null") + ":" + 
 				"\n\t\t " + String.valueOf(vardef); 
 	}
 
@@ -85,7 +85,7 @@ public class TRVariableExpression extends TRExpression
 		}
 		else 
 		{
-			warning(IsaWarningMessage.PLUGIN_NYI_2P, vardef.getClass().getName() + " invariant translate", getClass().getName());
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, vardef.getClass().getSimpleName() + " invariant translate", getClass().getSimpleName());
 		}
 		return sb.toString();
 	} 

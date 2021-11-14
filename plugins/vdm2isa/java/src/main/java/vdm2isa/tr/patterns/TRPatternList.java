@@ -101,6 +101,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		}
 		return sb.toString();
 	}
+
 	/**
 	 * Pattern lists can be translated (i.e. all one string with chosen separator) or 
 	 * can be varName translated (i.e. each translation structurally separated). The 

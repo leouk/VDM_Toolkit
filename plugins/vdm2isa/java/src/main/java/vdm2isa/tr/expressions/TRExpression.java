@@ -59,6 +59,8 @@ public abstract class TRExpression extends TRNode
 		super(location);
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
+        if (exptype == null)
+            report(IsaErrorMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
 	}
 
 	/**
@@ -110,8 +112,8 @@ public abstract class TRExpression extends TRNode
 		if (getType() instanceof TROptionalType)
 		{	
 			TRType t = getType();
-			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getName());
-			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getName());
+			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getSimpleName());
+			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getSimpleName());
 			sb.append(IsaToken.comment(comment, getFormattingSeparator()));	
 			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
 		}
@@ -156,7 +158,7 @@ public abstract class TRExpression extends TRNode
             case INVERSE:
             case FPOWERSET:
                 if (args.length != 1)
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
                     sb.append(IsaToken.LPAREN.toString());
@@ -168,7 +170,7 @@ public abstract class TRExpression extends TRNode
                 break;
             case UPLUS: // +x is just x
                 if (args.length != 1)
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                     sb.append(args[0].translate());
                 break;
@@ -209,7 +211,7 @@ public abstract class TRExpression extends TRNode
             case RANGERESTO:
             case RANGERESBY:
                 if (args.length != 2)
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
                     sb.append(IsaToken.LPAREN.toString());
@@ -225,7 +227,7 @@ public abstract class TRExpression extends TRNode
             case STARSTAR:
             case STARSTARNAT:
                 if (args.length != 2)
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
                     sb.append(IsaToken.LPAREN.toString());
@@ -246,7 +248,7 @@ public abstract class TRExpression extends TRNode
             case NE:
             case EQUALS:
                 if (args.length != 2)
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), token.toString(), args.length, TRExpressionList.translate(args));
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
                     sb.append(IsaToken.LPAREN.toString());
@@ -304,7 +306,7 @@ public abstract class TRExpression extends TRNode
         //TODO missing various cases, like iota, mu, if, etc.!!!!
         if (!(result instanceof TRRecordType))
         {
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getName(), result.getClass().getName());            
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), result.getClass().getSimpleName());            
         }
         return result;      
     }
@@ -369,7 +371,7 @@ public abstract class TRExpression extends TRNode
         //TODO missing various cases, like iota, mu, if, etc.!!!!
         if (!okay)
         {
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getName(), "???");            
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), "???");            
         }
         return sb.toString();
     }
@@ -380,5 +382,6 @@ public abstract class TRExpression extends TRNode
      */
     public boolean requiresImplicitTypeInvariantChecks() {
         return false;
+        //TODO who else might need to change this beyond TRBoundedExpression? 
     }
 }

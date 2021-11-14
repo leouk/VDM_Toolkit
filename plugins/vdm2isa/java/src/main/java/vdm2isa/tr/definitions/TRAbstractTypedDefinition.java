@@ -45,7 +45,7 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
     @Override
 	public String toString()
 	{
-		return getClass().getName() + " for \"" + getDeclaredName() + "\" type = " + String.valueOf(getType());
+		return getClass().getSimpleName() + " for \"" + getDeclaredName() + "\" type = " + String.valueOf(getType());
 	}
 
     @Override

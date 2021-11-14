@@ -68,7 +68,7 @@ public class TRModule extends TRNode
     @Override
     public String invTranslate()
     {
-		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getName(), name.toString());
+		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), name.toString());
         return "";
     }
 

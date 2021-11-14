@@ -79,7 +79,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
         else
         {
             // should never reach really for valid TC tree
-            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getName(), 
+            report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getSimpleName(), 
                 String.valueOf(basictype), String.valueOf(typename));
             // basictype == null || !basictype instanceof TRBasicType || typename != null)
             // &&

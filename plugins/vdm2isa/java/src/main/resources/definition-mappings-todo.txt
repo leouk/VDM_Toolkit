@@ -4,7 +4,7 @@
 -TCClassInvariantDefinition
 -TCClassList
 -TCCPUClassDefinition
--TCEqualsDefinition
+*TCEqualsDefinition
 -TCInheritedDefinition
 -TCInstanceVariableDefinition
 -TCMutexSyncDefinition

@@ -49,10 +49,14 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     {
         String exprStr = String.valueOf(expression);//.translate();.toString();
         if (localDefs != null)
-            return "LetDef (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getName() + "] = \n" +
-             localDefs.toString() + " in " + exprStr;
+            return getClass().getSimpleName() + 
+                " (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getSimpleName() + 
+                "] = \n\t" + localDefs.toString() + " in " + 
+                "\n\t exp  = " + exprStr +
+                "\n\t loc  = " + String.valueOf(getLocation());
         else 
-            return "LetDef (0)[null] = null in " + exprStr; 
+            return getClass().getSimpleName() + " (0)[null] = null in " + exprStr +
+                "\n\t loc  = " + String.valueOf(getLocation()); 
     }
 
     @Override

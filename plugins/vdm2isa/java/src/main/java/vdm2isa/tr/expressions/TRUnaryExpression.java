@@ -183,7 +183,7 @@ public class TRUnaryExpression extends TRExpression {
 				// might be -1 or -1.5
 				result = expType;
 				if (!(result instanceof TRBasicType))
-					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects basic type");
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects basic type");
 				break;
 
 			case DUNION:
@@ -192,7 +192,7 @@ public class TRUnaryExpression extends TRExpression {
 				{
 					result = ((TRSetType)expType).setof;
 					if (!(result instanceof TRSetType))
-						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects set type");
+						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects set type");
 				}
 				else
 					result = super.getType();
@@ -220,7 +220,7 @@ public class TRUnaryExpression extends TRExpression {
 			case TAIL:
 				result = expType;
 				if (!(result instanceof TRSeqType))
-					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects seq type");
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects seq type");
 				break;
 
 			case HEAD:
@@ -253,7 +253,7 @@ public class TRUnaryExpression extends TRExpression {
 					TRSetType sexp = (TRSetType)expType;
 					result = sexp.setof;
 					if (!(result instanceof TRMapType))
-						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects map type");
+						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects map type");
 				}
 				else
 					result = super.getType();
@@ -262,7 +262,7 @@ public class TRUnaryExpression extends TRExpression {
             case INVERSE:
 				result = expType;
 				if (!(result instanceof TRMapType))
-					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "1", "expects map type");
+					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects map type");
 				break;
 
 			case DOM:

@@ -221,7 +221,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         else 
         {
             result = type;
-            report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, name.toString(), type.getClass().getName());
+            report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, name.toString(), type.getClass().getSimpleName());
         }
         return result;
     }
@@ -298,20 +298,20 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         " \n\tinfinite    = " + infinite +
         " \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
         " \n\ttype        = " + String.valueOf(getType()) + //(getType() != null ? getType().translate() : "null") + 
-        " \n\tinvPattern  = " + (invPattern != null ? invPattern.getClass().getName() + ": " + invPattern.toString() : "null") +
+        " \n\tinvPattern  = " + (invPattern != null ? invPattern.getClass().getSimpleName() + ": " + invPattern.toString() : "null") +
         " \n\tinvExpr     = " + String.valueOf(invExpression) + //(invExpression != null ? invExpression.translate() : "null") +
-        " \n\teqPattern1  = " + (eqPattern1 != null ? eqPattern1.getClass().getName() + ": " + eqPattern1.toString() : "null") + 
-        " \n\teqPattern2  = " + (eqPattern2 != null ? eqPattern2.getClass().getName() + ": " + eqPattern2.toString() : "null") +
+        " \n\teqPattern1  = " + (eqPattern1 != null ? eqPattern1.getClass().getSimpleName() + ": " + eqPattern1.toString() : "null") + 
+        " \n\teqPattern2  = " + (eqPattern2 != null ? eqPattern2.getClass().getSimpleName() + ": " + eqPattern2.toString() : "null") +
         " \n\teqExpr      = " + String.valueOf(eqExpression) + //(eqExpression != null ? eqExpression.translate() : "null") +
-        " \n\tordPattern1 = " + (ordPattern1 != null ? ordPattern1.getClass().getName() + ": " + ordPattern1.toString() : "null") +
-        " \n\tordPattern2 = " + (ordPattern2 != null ? ordPattern1.getClass().getName() + ": " + ordPattern2.toString() : "null") +
+        " \n\tordPattern1 = " + (ordPattern1 != null ? ordPattern1.getClass().getSimpleName() + ": " + ordPattern1.toString() : "null") +
+        " \n\tordPattern2 = " + (ordPattern2 != null ? ordPattern1.getClass().getSimpleName() + ": " + ordPattern2.toString() : "null") +
         " \n\tordExpr     = " + String.valueOf(ordExpression) + //(ordExpression != null ? ordExpression.translate() : "null") +
         // avoid calling translate for TLD as it creates a record of what has been translated!  
-        " \n\tinvdef      = " + (invdef  != null ? invdef.getClass().getName()  + ": \n\t========\n\t" + invdef.toString() + "\n\t=======\n\t"/*invdef.translate()*/  : "null") +
-        " \n\teqdef       = " + (eqdef  != null ? eqdef.getClass().getName()  + ": \n\t========\n\t" + eqdef.toString() + "\n\t=======\n\t"/*eqdef.translate()*/  : "null") +
-        " \n\torddef      = " + (orddef != null ? orddef.getClass().getName() + ": \n\t========\n\t" + orddef.toString() + "\n\t========\n\t"/*orddef.translate()*/ : "null") +
-        " \n\tmindef      = " + (mindef  != null ? mindef.getClass().getName()  + ": \n\t========\n\t" + mindef.toString() + "\n\t=======\n\t"/*mindef.translate()*/  : "null") +
-        " \n\tmaxdef      = " + (maxdef  != null ? maxdef.getClass().getName()  + ": \n\t========\n\t" + maxdef.toString() + "\n\t=======\n\t"/*maxdef.translate()*/  : "null") +
+        " \n\tinvdef      = " + (invdef  != null ? invdef.getClass().getSimpleName()  + ": \n\t========\n\t" + invdef.toString() + "\n\t=======\n\t"/*invdef.translate()*/  : "null") +
+        " \n\teqdef       = " + (eqdef  != null ? eqdef.getClass().getSimpleName()  + ": \n\t========\n\t" + eqdef.toString() + "\n\t=======\n\t"/*eqdef.translate()*/  : "null") +
+        " \n\torddef      = " + (orddef != null ? orddef.getClass().getSimpleName() + ": \n\t========\n\t" + orddef.toString() + "\n\t========\n\t"/*orddef.translate()*/ : "null") +
+        " \n\tmindef      = " + (mindef  != null ? mindef.getClass().getSimpleName()  + ": \n\t========\n\t" + mindef.toString() + "\n\t=======\n\t"/*mindef.translate()*/  : "null") +
+        " \n\tmaxdef      = " + (maxdef  != null ? maxdef.getClass().getSimpleName()  + ": \n\t========\n\t" + maxdef.toString() + "\n\t=======\n\t"/*maxdef.translate()*/  : "null") +
         " \n\tcomposeDefs = " + String.valueOf(composeDefinitions) + //(composeDefinitions != null ? composeDefinitions.toString() : "") +//composeDefinitions.getFlatDefinitionList().toString() : "null") +
         " \n\tin		  = " + location.toString();
 	}
@@ -407,19 +407,19 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     break;
                 case QUOTE:
                 case UNION:
-                    report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getName() + "(" + nameDefKind.name() + ")");
+                    report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
                     break;
                 case UNKNOWN:
                 case RECORD:
                 default:
-                    report(IsaErrorMessage.PLUGIN_NYI_2P, "invalid type definition", name.toString() + ": " + t.getClass().getName() + "(" + nameDefKind.name() + ")");
+                    report(IsaErrorMessage.PLUGIN_NYI_2P, "invalid type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
                     break;                
             }
             sb.append(getFormattingSeparator());
             sb.append("\n");
         }
         else 
-            report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getName());
+            report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getSimpleName());
 
         // issue inv / eq / ord
         if (t instanceof TRInvariantType)

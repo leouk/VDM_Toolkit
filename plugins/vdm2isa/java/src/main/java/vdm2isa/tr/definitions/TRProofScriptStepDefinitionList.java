@@ -26,7 +26,7 @@ public class TRProofScriptStepDefinitionList extends TRDefinitionList {
             else if (d instanceof TRBasicProofScriptStepDefinition)
                 result.add((TRBasicProofScriptStepDefinition)d);
             else
-                IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getName());
+                IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getSimpleName());
         }
         return result;
     }

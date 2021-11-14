@@ -53,11 +53,11 @@ public class TRSeqCompExpression extends TRExpression {
     public String toString()
     {
         if (bind != null && bind.plist != null)
-            return "SeqComp bind = " + bind.getClass().getName() + 
+            return "SeqComp bind = " + bind.getClass().getSimpleName() + 
                 " plist (" + bind.plist.size() + ")[" + bind.plist.get(0).isaToken().toString() + "] = " + 
                 String.valueOf(bind.plist);//bind.plist.translate();
         else 
-            return "SeqComp bind = " + (bind != null ? bind.getClass().getName() : "null") + 
+            return "SeqComp bind = " + (bind != null ? bind.getClass().getSimpleName() : "null") + 
                 " plist(0)[null] = null"; 
     }
 

@@ -221,7 +221,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 it.remove();
                 sb.append("\n");
                 sb.append(IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN, 
-                    "\n\tCould not translate VDM PO because of a " + pair.value.getClass().getName() + " error:" +
+                    "\n\tCould not translate VDM PO because of a " + pair.value.getClass().getSimpleName() + " error:" +
                     "\n\tVDM PO: " + pair.key.toString() + 
                     "\n\tReason: " + pair.value.getMessage() +
                     "\n", 

@@ -177,7 +177,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
     @Override
     public String invTranslate()
     {
-        report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getName(), toString());
+        report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), toString());
 		return "";
     }
 }

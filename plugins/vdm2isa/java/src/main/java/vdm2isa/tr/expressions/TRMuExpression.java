@@ -30,7 +30,7 @@ public class TRMuExpression extends TRExpression {
     {
         TRType result = record.getRecordType();
         if (!(result instanceof TRRecordType))
-            report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getName(), isaToken().toString(), "2", "expects record type");
+            report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects record type");
         return result;
     }
 

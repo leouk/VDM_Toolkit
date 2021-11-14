@@ -187,14 +187,14 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			" \n\ttype sig out= " + String.valueOf(type) + //(type != null ? type.result.translate() : "null") +
 			" \n\tparameters  = " + String.valueOf(parameters) + //(parameters != null ? parameters.toString() : null)+ 
 			" \n\tbody        = " + String.valueOf(body) + // (body != null ? body.translate() : "null") + 
-			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getName()  + ": " + precondition.toString()  : "null") + 
-			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getName() + ": " + postcondition.toString() : "null") + 
+			" \n\tpre         = " + (precondition  != null ? precondition.getClass().getSimpleName()  + ": " + precondition.toString()  : "null") + 
+			" \n\tpost        = " + (postcondition != null ? postcondition.getClass().getSimpleName() + ": " + postcondition.toString() : "null") + 
 			" \n\tisTypeInv   = " + isTypeInvariant +
-			" \n\tmeasure     = " + (measureExp != null ? measureExp.getClass().getName() + ": " + measureExp.toString() : "null") +
+			" \n\tmeasure     = " + (measureExp != null ? measureExp.getClass().getSimpleName() + ": " + measureExp.toString() : "null") +
 			" \n\tisCurried   = " + isCurried +
 			// avoid calling translate for TLD as it creates a record of what has been translated!  
-			" \n\tpredef      = " + (predef  != null ? predef.getClass().getName()  + ": \n\t========\n\t" + predef.toString() + "\n\t========\n\t"/*predef.translate()*/  : "null") +
-			" \n\tpostdef     = " + (postdef != null ? postdef.getClass().getName() + ": \n\t========\n\t" + postdef.toString() + "\n\t========\n\t"/*postdef.translate()*/ : "null") +
+			" \n\tpredef      = " + (predef  != null ? predef.getClass().getSimpleName()  + ": \n\t========\n\t" + predef.toString() + "\n\t========\n\t"/*predef.translate()*/  : "null") +
+			" \n\tpostdef     = " + (postdef != null ? postdef.getClass().getSimpleName() + ": \n\t========\n\t" + postdef.toString() + "\n\t========\n\t"/*postdef.translate()*/ : "null") +
 			" \n\tparamDefList= " + (paramDefinitionList != null ? paramDefinitionList.toString() : "") +//paramDefinitionList.getFlatDefinitionList().toString() : "null") +
 			" \n\trecursive   = " + recursive +
 			" \n\tisUndefined = " + isUndefined +
@@ -662,14 +662,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// 	t.printStackTrace();
 		// }
 		return super.setFormattingSeparator(sep);
-	}
-
-	@Override
-	public String invTranslate() {
-		StringBuilder sb = new StringBuilder();
-		//TODO perhaps not needed? Maybe in let locally defined? 
-		warning(IsaWarningMessage.PLUGIN_NYI_2P, "invariant translate", getClass().getName());
-		return sb.toString();
 	}
 
 	@Override

@@ -80,9 +80,9 @@ public abstract class TRDefinition extends TRNode
 
 		if (annotations != null && annotations.size() > 0)
 		{
-			warning(IsaWarningMessage.PLUGIN_NYI_2P, "annotations", getClass().getName());
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, "annotations", getClass().getSimpleName());
 			sb.append(IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN,	
-				IsaWarningMessage.PLUGIN_NYI_2P.format("annotations", getClass().getName()),
+				IsaWarningMessage.PLUGIN_NYI_2P.format("annotations", getClass().getSimpleName()),
 				IsaToken.BLOCK_COMMENT_CLOSE));
 		}
 
