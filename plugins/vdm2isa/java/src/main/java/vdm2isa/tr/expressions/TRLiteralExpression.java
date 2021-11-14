@@ -22,6 +22,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
@@ -90,38 +91,41 @@ public class TRLiteralExpression extends TRExpression
 	{
 		// no casting needed for real, string, quote literals
 		String typeStr = TYPED_LITERALS.contains(token) ? IsaToken.TYPEOF.toString() + isaToken().toString() : "";
-		return IsaToken.parenthesise(exp + typeStr);
+		// actually will never be optional for the literal, but variables? 
+		return getType() instanceof TROptionalType ?
+			IsaToken.parenthesise(IsaToken.OPTIONAL_SOME.toString() + IsaToken.parenthesise(exp + typeStr)) : 
+			IsaToken.parenthesise(exp + typeStr);
 	}
 
 	@Override 
 	public TRType getType()
 	{
-		TRType result;
-		switch (isaToken())
-		{
-			case BOOL:
-			case CHAR:
-			case NAT:
-			case NAT1:
-			case INT:
-			case RAT:
-			case REAL:
-				result = TRBasicType.newBasicType(location, token);
-				break;
+		// TRType result;
+		// switch (isaToken())
+		// {
+		// 	case BOOL:
+		// 	case CHAR:
+		// 	case NAT:
+		// 	case NAT1:
+		// 	case INT:
+		// 	case RAT:
+		// 	case REAL:
+		// 		result = TRBasicType.newBasicType(location, token);
+		// 		break;
 			
-			case STRING:
-				result = new TRSeqType(location, new TRDefinitionList(), TRBasicType.charType(location), !exp.isEmpty());
-				break;
+		// 	case STRING:
+		// 		result = new TRSeqType(location, new TRDefinitionList(), TRBasicType.charType(location), !exp.isEmpty());
+		// 		break;
 
-			case VDMQUOTE:	
-				result = new TRQuoteType(location, new TRDefinitionList(), exp);
-				break;
+		// 	case VDMQUOTE:	
+		// 		result = new TRQuoteType(location, new TRDefinitionList(), exp);
+		// 		break;
 			
-			default:
-				result = super.getType();
-				break;
-		}
-		return result;
+		// 	default:
+		// 		result = super.getType();
+		// 		break;
+		// }
+		return super.getType();
 	}
 
 	@Override

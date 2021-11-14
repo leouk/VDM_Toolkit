@@ -7,7 +7,9 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
 
 /**
- * Super class for VDM expressions with declared local definitions (e.g. lambda, let, etc.) 
+ * Super class for VDM expressions with declared local definitions (e.g. lambda, let, let-be-st).
+ * Derived classes have to take potential record binds into account to do the recordTranslate call
+ * within the bind/expressions. Lambdas, thankfully are not allowed (e.g., (lambda mk_R(x,y): R & x+y)) 
  */
 public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     

@@ -73,11 +73,14 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         // )
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
-        sb.append(" ");
+        sb.append(IsaToken.SPACE.toString());
+        String old = localDefs.setFormattingSeparator(getFormattingSeparator());        
         sb.append(localDefs.translate());
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.IN.toString());
         sb.append(getFormattingSeparator() + "\t");
+        sb.append(localDefs.recordPatternTranslate());
+        localDefs.setFormattingSeparator(old);
         sb.append(invTranslate());
         return IsaToken.parenthesise(sb.toString());
     }

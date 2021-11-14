@@ -6,6 +6,7 @@ package vdm2isa.tr.definitions.visitors;
 
 import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TREqualsDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
@@ -44,19 +45,23 @@ public abstract class TRDefinitionVisitor<R, S>
 	}
 
     public R caseProofObligationDefinition(TRProofObligationDefinition node, S arg) {
-        return caseProofObligationDefinition(node, arg);
+        return caseDefinition(node, arg);
     }
 
     public R caseProofScriptDefinition(TRProofScriptDefinition node, S arg) {
-        return caseProofScriptDefinition(node, arg);
+        return caseDefinition(node, arg);
     }
 
     public R caseProofScriptStepDefinition(TRProofScriptStepDefinition node, S arg) {
-        return caseProofScriptStepDefinition(node, arg);
+        return caseDefinition(node, arg);
     }
 
     public R caseBasicProofScriptStepDefinition(TRBasicProofScriptStepDefinition node, S arg) {
-        return caseBasicProofScriptStepDefinition(node, arg);
+        return caseDefinition(node, arg);
+    }
+
+    public R caseEqualsDefinition(TREqualsDefinition node, S arg) {
+        return caseDefinition(node, arg);
     }
 	
 }

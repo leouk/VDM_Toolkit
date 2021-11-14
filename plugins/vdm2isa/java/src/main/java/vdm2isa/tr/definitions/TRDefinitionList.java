@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.patterns.TRMultipleBind;
 
 public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 {
@@ -68,5 +69,61 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	public TRDefinitionList copy()
 	{
 		return new TRDefinitionList(this); 
+	}
+
+	protected String recordPatternTranslate(int i)
+	{
+		assert i >= 0 && i < size();
+		TRDefinition def = get(i);
+		StringBuilder sb = new StringBuilder();
+		if (def instanceof TRValueDefinition)
+		{
+			TRValueDefinition vdef = (TRValueDefinition)def;
+			if (vdef.getPattern() != null)
+			{
+				sb.append(vdef.getPattern().getPatternList().recordPatternTranslate());
+			}
+		}
+		else if (def instanceof TREqualsDefinition)
+		{
+			TREqualsDefinition eqdef = (TREqualsDefinition)def;
+			if (eqdef.getPattern() != null)
+			{
+				sb.append(eqdef.getPattern().getPatternList().recordPatternTranslate());
+			}
+		}
+		else if (def instanceof TRMultiBindListDefinition)
+		{
+			TRMultiBindListDefinition bdef = (TRMultiBindListDefinition)def;
+			if (bdef.getBindings() != null)
+			{
+				for(TRMultipleBind b : bdef.getBindings())
+				{
+					sb.append(b.plist.recordPatternTranslate());
+				}
+			}
+		}
+		//TODO add anyone else with patterns to this
+		return sb.toString();
+	}
+
+	/**
+	 * Introduce any local context for record patterns in any involved binds/patterns. 
+	 * @return
+	 */
+	public String recordPatternTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			sb.append(recordPatternTranslate(0));	
+			for (int i = 1; i < size(); i++)
+			{
+				//sb.append(getSemanticSeparator());
+				sb.append(getFormattingSeparator());					
+				sb.append(recordPatternTranslate(i));	
+			}
+		}
+		return sb.toString();
 	}
 }

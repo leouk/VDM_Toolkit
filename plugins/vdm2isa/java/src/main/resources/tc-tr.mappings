@@ -13,7 +13,7 @@ map TCExplicitFunctionDefinition{comments, annotations, name, nameScope, used, e
 # This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
 map TCLocalDefinition{location, comments, annotations, name, nameScope, used, excluded, type} to TRLocalDefinition(location, comments, annotations, name, nameScope, used, excluded, type);
 map TCValueDefinition{comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs} to TRValueDefinition(comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
-
+map TCEqualsDefinition{location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs} to TREqualsDefinition(location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs);
 map TCMultiBindListDefinition{location, comments, annotations, name, nameScope, used, excluded, bindings, defs} to TRMultiBindListDefinition(location, comments, annotations, name, nameScope, used, excluded, bindings, defs);
 
 #############################################################################
@@ -25,6 +25,7 @@ map TCExpressionList{} to TRExpressionList(this);
 map TCElseIfExpressionList{} to TRElseIfExpressionList(this);
 map TCMapletExpressionList{} to TRMapletExpressionList(this);
 map TCRecordModifierList{} to TRRecordModifierList(this);
+map TCCaseAlternativeList{} to TRCaseAlternativeList(this);
 
 map TCBooleanLiteralExpression{exptype} to TRLiteralExpression(this, exptype); 
 map TCCharLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
@@ -125,6 +126,9 @@ map TCLetBeStExpression{location, bind, suchThat, value, def, exptype} to TRLetB
 map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
 map TCDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
 
+map TCCasesExpression{location, exp, cases, others, exptype} to TRCasesExpression(location, exp, cases, others, exptype);
+map TCCaseAlternative{location, pattern, result} to TRCaseAlternative(location, pattern, result);
+
 map TCSetCompExpression{location, first, bindings, predicate, exptype} to TRSetCompExpression(location, first, bindings, predicate, exptype);
 map TCSeqCompExpression{location, first, bind, predicate, exptype} to TRSeqCompExpression(location, first, bind, predicate, exptype);
 
@@ -206,8 +210,8 @@ map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
 map TCExpressionPattern{exp} to TRStructuredPattern(this, exp);
 
 map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
-map TCRecordPattern{typename, plist, type} to TRRecordPattern(this, typename, plist, type);
-map TCPatternBind{pattern, bind} to TRPatternBind(this, pattern, bind);
+map TCRecordPattern{location, typename, plist, type} to TRRecordPattern(location, typename, plist, type);
+map TCPatternBind{location, pattern, bind} to TRPatternBind(location, pattern, bind);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.types to vdm2isa.tr.types;
