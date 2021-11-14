@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-14T07:36:41.395847Z
+(* VDM to Isabelle Translation @2021-11-14T13:22:57.937797Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2I.vdmsl' at line 1:8
@@ -77,6 +77,30 @@ where
 	let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 			\<comment>\<open>User defined body of recbind\<close>
 			(x + y)"
+
+	
+
+definition
+	pre_letbest :: "\<bool>"
+where
+	"pre_letbest  \<equiv> True"
+
+
+definition
+	post_letbest :: "VDMNat \<Rightarrow> \<bool>"
+where
+	"post_letbest RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_letbest specification\<close>
+		((inv_VDMNat RESULT))"
+
+definition
+	letbest :: "VDMNat"
+where
+	"letbest  \<equiv> 
+	\<comment>\<open>User defined body of letbest\<close>
+	(
+		SOME dummy0 .(dummy0 \<in> { (x + y) | (dummy0 :: R) . \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (x > y) }))"
 
 	
 abbreviation
@@ -611,7 +635,8 @@ abbreviation
 	v30 :: "VDMNat1"
 where
 	"v30 \<equiv> ((2::VDMNat1) ^ nat (3::VDMNat1))
-	\<comment>\<open>result of the power operator is context dependenant on second argument type being nat or real.\<close>"
+	\<comment>\<open>Result of the power operator is context dependenant on second argument type being nat or real.\<close>
+	"
 
 	definition
 	inv_v30 :: "\<bool>"
@@ -701,6 +726,18 @@ where
 	inv_v37 :: "\<bool>"
 where
 	"inv_v37  \<equiv> (inv_Option (inv_VDMNat) v37)"
+
+	
+	
+abbreviation
+	v371 :: "VDMNat option"
+where
+	"v371 \<equiv> Some((100::VDMNat1))"
+
+	definition
+	inv_v371 :: "\<bool>"
+where
+	"inv_v371  \<equiv> (inv_Option (inv_VDMNat) v371)"
 
 	
 	
@@ -1281,10 +1318,11 @@ where
 	"v79 \<equiv> (
 		let 
 (var::VDMNat) = (10::VDMNat1);
-	
+		
 (var2::VDMNat1) = (20::VDMNat1)
 		in
-			(if ((inv_VDMNat var)) \<and> 
+			
+		(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then
 			(var + var2)
 		 else
@@ -1300,6 +1338,31 @@ where
 	
 	
 abbreviation
+	v791 :: "VDMNat"
+where
+	"v791 \<equiv> (
+		let 
+(dummy0::R) = v65;
+		
+(var1::VDMNat) = (10::VDMNat1)
+		in
+			
+		(if (inv_R dummy0) \<and> 
+	((inv_VDMNat var1)) then
+			((var1 + x) + y)
+		 else
+			undefined
+		)
+		)"
+
+	definition
+	inv_v791 :: "\<bool>"
+where
+	"inv_v791  \<equiv> (inv_VDMNat v791)"
+
+	
+	
+abbreviation
 	v80 :: "VDMNat1"
 where
 	"v80 \<equiv> (
@@ -1309,6 +1372,19 @@ where
 	inv_v80 :: "\<bool>"
 where
 	"inv_v80  \<equiv> (inv_VDMNat1 v80)"
+
+	
+	
+abbreviation
+	v801 :: "VDMNat"
+where
+	"v801 \<equiv> (
+		SOME dummy0 .(dummy0 \<in> { (x + y) | dummy0 .  ((dummy0 \<in>{v65}))  \<and> (x < y) }))"
+
+	definition
+	inv_v801 :: "\<bool>"
+where
+	"inv_v801  \<equiv> (inv_VDMNat v801)"
 
 	
 	
@@ -1339,11 +1415,7 @@ where
 abbreviation
 	v83 :: "VDMNat1 VDMSeq"
 where
-	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ]
-	\<comment>\<open>Set bind @{term \<open>(var \<in> t9)\<close>} in sequence comprehension requires VDM set 
-	   to be ordered (i.e. its Isabelle type instantiates type class linorder).
-	   This can be a problem if the target type of @{term \<open>t9\<close>}
-	  has a VDM ord_ predicate.\<close>"
+	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ] \<comment>\<open>Set bind `(var \<in> t9)` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>t9\<close>}  has a VDM ord_ predicate.\<close> "
 
 	definition
 	inv_v83 :: "\<bool>"
@@ -1409,6 +1481,76 @@ where
 	inv_v90 :: "\<bool>"
 where
 	"inv_v90  \<equiv> (inv_VDMInt v90)"
+
+	
+	
+abbreviation
+	v92 :: "VDMNat"
+where
+	"v92 \<equiv> (
+		let 
+(var::VDMNat) = (10::VDMNat1)
+		in
+			(if ((inv_VDMNat var)) then
+			(var + var)
+		 else
+			undefined
+		)
+		)"
+
+	definition
+	inv_v92 :: "\<bool>"
+where
+	"inv_v92  \<equiv> (inv_VDMNat v92)"
+
+	
+	
+abbreviation
+	v921 :: "VDMNat"
+where
+	"v921 \<equiv> (
+		let 
+(dummy0::R) = v65
+		in
+			(if (inv_R dummy0) then
+			(x + y)
+		 else
+			undefined
+		)
+		)"
+
+	definition
+	inv_v921 :: "\<bool>"
+where
+	"inv_v921  \<equiv> (inv_VDMNat v921)"
+
+	
+	
+abbreviation
+	v93 :: "VDMNat"
+where
+	"v93 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) of None \<Rightarrow> (0::VDMNat)| 
+		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)))| 
+		_ \<Rightarrow> (0::VDMNat))"
+
+	definition
+	inv_v93 :: "\<bool>"
+where
+	"inv_v93  \<equiv> (inv_VDMNat v93)"
+
+	
+	
+abbreviation
+	v931 :: "VDMNat"
+where
+	"v931 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v371` might not need extra @{term the} operator!\<close>(the(v371)) of None \<Rightarrow> (0::VDMNat)| 
+		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)))| 
+		_ \<Rightarrow> (0::VDMNat))"
+
+	definition
+	inv_v931 :: "\<bool>"
+where
+	"inv_v931  \<equiv> (inv_VDMNat v931)"
 
 	
 end

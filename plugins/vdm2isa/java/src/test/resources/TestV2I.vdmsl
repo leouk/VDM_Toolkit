@@ -21,6 +21,10 @@ functions
 	recbind: R -> nat
 	recbind(mk_R(x,y)) == x+y;
 	
+	-- The one case where TRDefinition won't handle because of the use of SetComp for let-be-st!  
+	letbest: () -> nat
+	letbest() == let mk_R(x,y): R be st x > y in x+y;
+	
 values
 -- Explicitly typed values
 	t1 : bool = true;				  	--TCBooleanType,TCBooleanLiteralExpression
@@ -78,6 +82,7 @@ values
 	v35= 5 >= 4;					--TCGreaterEqualExpression
 	v36= 5 > 4;						--TCGreaterExpression		
 	v37: [nat] = nil;				--TCNilExpression			TCOptionalType,
+	v371: [nat] = 100;				--TCNilExpression			TCOptionalType,
 	v38= nil;						--TCNilExpression (untyped)!TCUnknownType	
 	v39= t14++t15;					--TCPlusPlusExpression	
 	v40= t9 <: t14;					--TCDomainResByExpression	
@@ -125,11 +130,16 @@ values
 	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
 	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression + TCMultipleTypeBind
+	--v741=(lambda mk_R(x,y): R & x + y); --!!! Phew....
+	--v741=(lambda mk_R(x,y) in set {v65} & x + y);
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
 	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
+	v791=(let mk_R(x,y) = v65, var1: nat = 10 in var1+x+y);
 	v80= (let x, y in set t9 be st x > 2 and y < x in x + y); --TCLetBeStExpression
+	--v801=(let mk_R(x,y) in set {v65}, var: nat = 10 be st x < y in var+x+y);
+	v801=(let mk_R(x,y) in set {v65} be st x < y in x+y);
 	v81= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
 	v82= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
 	v83= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
@@ -140,8 +150,13 @@ values
 	v88= [ var | var in seq [1,2,3,7,8,9] & (var > 4)];
 	v89= if v1 > v2 then v1 else v2;					--TCIfExpression
 	v90= if v1 > v2 then v1 else if v1 < v2 then v2 else 0; --TCElseIfListExpression
-	--v87= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
-	
+	--v91= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
+	v92= (def var : nat = 10 in var+var); --TCDefExpression
+	--v921= (def mk_R(x,y) = v65, var1: nat = 10 in var1+x+y); --TCDefExpression
+	v921= (def mk_R(x,y) = v65 in x+y); --TCDefExpression
+	--v922= (def mk_R(x,y): R in x+y); --TCDefExpression
+	v93= (cases v37: nil -> 0, v -> v+v, others -> 0 end);
+	v931= (cases v371: nil -> 0, v -> v+v, others -> 0 end);
 	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
 	--[A,B]=[1,2];
 	
