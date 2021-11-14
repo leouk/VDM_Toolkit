@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-14T15:44:04.265475Z
+(* VDM to Isabelle Translation @2021-11-14T16:33:06.355110Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2I.vdmsl' at line 1:8
@@ -1586,29 +1586,13 @@ where
 abbreviation
 	v93 :: "VDMNat"
 where
-	"v93 \<equiv> (
-  \<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>
-  case 
-  \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>((v37)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
+	"v93 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case v37 of None \<Rightarrow> (0::VDMNat)| 
+		v \<Rightarrow> (v + v))"
 
 	definition
 	inv_v93 :: "\<bool>"
 where
 	"inv_v93  \<equiv> (inv_VDMNat v93)"
-
-	
-	
-abbreviation
-	v931 :: "VDMNat"
-where
-	"v931 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v371` might not need extra @{term the} operator!\<close>((v371)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
-
-	definition
-	inv_v931 :: "\<bool>"
-where
-	"inv_v931  \<equiv> (inv_VDMNat v931)"
 
 	
 end

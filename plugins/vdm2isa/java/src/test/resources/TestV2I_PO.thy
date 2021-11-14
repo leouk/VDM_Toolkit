@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-12T12:25:20.662169Z
+(* VDM to Isabelle Translation @2021-11-14T16:33:06.449739Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 7:5
@@ -23,6 +23,26 @@ theorem R_INV_SATISFIABILITY:
 theorem mkr_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (n :: VDMNat)  . ((((inv_VDMNat n))) \<longrightarrow> (inv_R \<lparr>x\<^sub>R = n, y\<^sub>R = (n+(1::VDMNat1))\<rparr>))))"
+	
+	oops
+	
+	
+	
+theorem recbindSpec_FUNC_POST_CONDITION:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<forall> (dummy0 :: R)  . ((( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<longrightarrow> ((pre_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<longrightarrow> (post_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>  (x + y))))))"
+	
+	oops
+	
+	
+	
+theorem letbest_LET_BE_EXISTS:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<exists> (dummy0 :: R)  . (((
+		 (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		 ((inv_VDMNat (y\<^sub>R dummy0)))
+		 ))) \<longrightarrow> (x > y))))"
 	
 	oops
 	
@@ -100,7 +120,8 @@ theorem v651_SUB_TYPE:
 	
 theorem v722_SUB_TYPE:
 	"((
-		let (r::VDMReal) = (4.0)
+		let 
+(r::VDMReal) = (4.0)
 		in
 			(if ((inv_VDMReal r)) then
 			not yet
@@ -122,6 +143,59 @@ theorem v723_SUB_TYPE:
 	
 theorem v73_UNIQUE_EXISTENCE:
 	"((\<exists>! var \<in> t9  . (var < (2::VDMNat1))))"
+	
+	oops
+	
+	
+	
+theorem v80_LET_BE_EXISTS:
+	"((\<exists> x \<in> t9  . (\<exists> y \<in> t9  . ((x > (2::VDMNat1)) \<and> (y < x)))))"
+	
+	oops
+	
+	
+	
+theorem v801_LET_BE_EXISTS:
+	"((\<exists> dummy0 \<in> {v65}  . (x < y)))"
+	
+	oops
+	
+	
+	
+theorem v93_SUB_TYPE:
+	"(((\<not> (None = v37)) \<longrightarrow> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> ((v = v37) \<longrightarrow> (
+		let 
+(v::VDMNat option) = Some(v37)
+		in
+			(if ((inv_Option (inv_VDMNat) v)) then
+			not yet
+		 else
+			undefined
+		)
+		))))))"
+	
+	oops
+	
+	
+	
+theorem v93_SUB_TYPE:
+	"(((\<not> (None = v37)) \<longrightarrow> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> ((v = v37) \<longrightarrow> (
+		let 
+(v::VDMNat option) = Some(v37)
+		in
+			(if ((inv_Option (inv_VDMNat) v)) then
+			not yet
+		 else
+			undefined
+		)
+		))))))"
+	
+	oops
+	
+	
+	
+theorem v93_CASES_EXHAUSTIVE:
+	"(((v37 = None) \<or> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> (v37 = v)))))"
 	
 	oops
 	

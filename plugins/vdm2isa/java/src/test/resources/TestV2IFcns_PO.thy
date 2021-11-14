@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-12T12:25:20.664262Z
+(* VDM to Isabelle Translation @2021-11-14T16:33:06.451188Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 11:5
@@ -43,7 +43,8 @@ theorem h_FUNC_POST_CONDITION:
 theorem h_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
-		let (RESULT::VDMNat) = (g x  x)
+		let 
+(RESULT::VDMNat) = (g x  x)
 		in
 			(if ((inv_VDMNat RESULT)) then
 			(x > (0::VDMNat))
@@ -59,7 +60,8 @@ theorem h_SUB_TYPE:
 theorem h_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> (((pre_g x  x) \<and> (x < (20::VDMNat1))) \<longrightarrow> (
-		let (RESULT::VDMNat) = (g x  x)
+		let 
+(RESULT::VDMNat) = (g x  x)
 		in
 			(if ((inv_VDMNat RESULT)) then
 			(RESULT > (0::VDMNat))
