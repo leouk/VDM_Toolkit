@@ -32,7 +32,7 @@ public class TRMkTypeExpression extends TRExpression {
     }
 
     @Override 
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return TRRecordType.recordTypeFor(typename);
     }

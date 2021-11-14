@@ -18,7 +18,7 @@ public class TRSetEnumExpression extends TREnumeratedExpression
 	}
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRSetType(location, new TRDefinitionList(), members.getType(), !members.isEmpty());
     }

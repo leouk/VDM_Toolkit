@@ -20,7 +20,7 @@ public class TRIotaExpression extends TRExpression {
     }
 
 	@Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		return predicate.getType();
 	}

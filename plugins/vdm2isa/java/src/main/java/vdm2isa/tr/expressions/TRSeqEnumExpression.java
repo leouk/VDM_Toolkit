@@ -18,7 +18,7 @@ public class TRSeqEnumExpression extends TREnumeratedExpression
 	}
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRSeqType(location, new TRDefinitionList(), members.getType(), !members.isEmpty());
     }

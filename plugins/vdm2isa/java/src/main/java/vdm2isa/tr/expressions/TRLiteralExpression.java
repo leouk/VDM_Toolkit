@@ -98,7 +98,7 @@ public class TRLiteralExpression extends TRExpression
 	}
 
 	@Override 
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		// TRType result;
 		// switch (isaToken())

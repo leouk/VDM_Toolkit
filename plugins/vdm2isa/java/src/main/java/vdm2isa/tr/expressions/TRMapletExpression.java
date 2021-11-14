@@ -20,7 +20,7 @@ public class TRMapletExpression extends TRExpression
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRMapType(location, new TRDefinitionList(), left.getType(), right.getType(), false);
     }

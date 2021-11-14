@@ -59,7 +59,7 @@ public class TRSetCompExpression extends TRExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRSetType(location, new TRDefinitionList(), first.getType(), false);
     }

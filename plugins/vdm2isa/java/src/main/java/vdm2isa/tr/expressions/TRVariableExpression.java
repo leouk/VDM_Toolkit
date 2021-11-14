@@ -51,7 +51,7 @@ public class TRVariableExpression extends TRExpression
 	}
 
 	@Override 
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		TRType result; 
 		if (vardef instanceof TRLocalDefinition)

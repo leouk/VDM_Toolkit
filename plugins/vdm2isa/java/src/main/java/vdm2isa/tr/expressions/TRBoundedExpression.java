@@ -59,7 +59,7 @@ public class TRBoundedExpression extends TRExpression {
      * Bounded expressions are necessarily boolean result; which would be the same as the predicate.getType()?
      */
     @Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		return predicate.getType();//TRBasicType.boolType(location);?
     }

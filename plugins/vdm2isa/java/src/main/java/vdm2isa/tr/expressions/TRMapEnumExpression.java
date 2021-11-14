@@ -18,7 +18,7 @@ public class TRMapEnumExpression extends TRExpression
 	}
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return members.getType();
     }

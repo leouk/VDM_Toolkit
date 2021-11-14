@@ -3,10 +3,15 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnionType;
+import vdm2isa.tr.types.TRTypeSet;
 
 public class TRCasesExpression extends TRExpression {
 
@@ -21,10 +26,19 @@ public class TRCasesExpression extends TRExpression {
         // add others as a case alternative
         if (others != null)
         {
+            if (exp.getType() instanceof TROptionalType)
+            {
+                report(IsaErrorMessage.ISA_INVALID_OPTION_CASE_1P, exp.getClass().getSimpleName());
+            }
             this.cases.add(new TRCaseAlternative(location, TRBasicPattern.underscore(location), others));
         }
     }
 
+    @Override
+    protected TRType getBestGuessType()
+    {
+        return new TRUnionType(location, new TRDefinitionList(), new TRTypeSet(exp.getType(), cases.getType()));
+    }
     @Override 
     public String toString()
     {

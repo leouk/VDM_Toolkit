@@ -26,7 +26,7 @@ public class TRRecordModifier extends TRExpression
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return value.getType();
     }

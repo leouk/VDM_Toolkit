@@ -35,7 +35,7 @@ public class TRFieldNumberExpression extends TRExpression {
      * Specifc type within the product for this product type
      */
     @Override 
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         if (type instanceof TRProductType)
         {

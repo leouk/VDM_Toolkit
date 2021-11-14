@@ -29,7 +29,7 @@ public class TRApplyExpression extends TRExpression
 	}
 
 	@Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		return type;
 	}

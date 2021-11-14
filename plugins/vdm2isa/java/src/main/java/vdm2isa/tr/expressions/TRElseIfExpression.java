@@ -3,8 +3,11 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeSet;
+import vdm2isa.tr.types.TRUnionType;
 
 public class TRElseIfExpression extends TRExpression {
     
@@ -22,9 +25,10 @@ public class TRElseIfExpression extends TRExpression {
 	 * Choose the then type, is the resulting type (could not have been else); this is to attempt to solve the "(the (pattern))" problem
 	 */
 	@Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
-		return thenExp.getType();
+		return new TRUnionType(location, new TRDefinitionList(), 
+			new TRTypeSet(thenExp.getType(), elseIfExp.getType()));
 	}
 
     @Override

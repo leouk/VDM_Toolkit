@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import java.util.Arrays;
 import java.util.TreeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -36,15 +37,9 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 		super();
 	}
 
-	public TRTypeSet(TRType t)
+	public TRTypeSet(TRType... typs)
 	{
-		add(t);
-	}
-
-	public TRTypeSet(TRType t1, TRType t2)
-	{
-		add(t1);
-		add(t2);
+		addAll(Arrays.asList(typs));
 	}
 
 	@Override

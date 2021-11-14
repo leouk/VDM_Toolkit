@@ -19,7 +19,7 @@ public class TRTupleExpression extends TREnumeratedExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRProductType(location, new TRDefinitionList(), TRTypeList.newTypeList(members));
     }

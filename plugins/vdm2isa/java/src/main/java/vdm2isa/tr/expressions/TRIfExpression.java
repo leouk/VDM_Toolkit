@@ -5,8 +5,11 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnionType;
+import vdm2isa.tr.types.TRTypeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
@@ -37,9 +40,10 @@ public class TRIfExpression extends TRExpression
 	 * Choose the thenExp type as the resulting type (could have been elseExp); this is to attempt to solve the "(the (pattern))" problem
 	 */
 	@Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
-		return thenExp.getType();
+		return new TRUnionType(location, new TRDefinitionList(), 
+			new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType()));
 	}
 
 	@Override 

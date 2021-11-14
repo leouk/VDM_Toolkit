@@ -44,7 +44,7 @@ public class TRSeqCompExpression extends TRExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return new TRSeqType(location, new TRDefinitionList(), first.getType(), false);
     }

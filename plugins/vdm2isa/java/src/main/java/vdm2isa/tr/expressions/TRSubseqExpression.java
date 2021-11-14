@@ -20,7 +20,7 @@ public class TRSubseqExpression extends TRExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return seq.getType();
     }

@@ -51,7 +51,7 @@ public abstract class TRExpression extends TRNode
                     IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
                     IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
 
-    protected final TRType exptype;
+    private final TRType exptype;
     private boolean hasWarnedAboutUnknownType;
 
 	public TRExpression(LexLocation location, TRType exptype)
@@ -79,7 +79,7 @@ public abstract class TRExpression extends TRNode
      * Attempt at getting the type for the expression. Important for pattern translation with context, like optional types. 
      * @return
      */
-    public  TRType getType()
+    public final TRType getType()
     {
         if (exptype instanceof TRUnknownType && !hasWarnedAboutUnknownType)
         {
@@ -87,9 +87,14 @@ public abstract class TRExpression extends TRNode
             warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
             hasWarnedAboutUnknownType = true;
         }
-        return exptype;
+        return exptype instanceof TRUnknownType ? getBestGuessType() : exptype;
     }
 
+    protected TRType getBestGuessType()
+    {
+        return TRExpression.unknownType(location);
+    }
+    
     /**
      * Keep the static method to allow others (e.g. empty expression lists) to return the same as above.
      * @param location

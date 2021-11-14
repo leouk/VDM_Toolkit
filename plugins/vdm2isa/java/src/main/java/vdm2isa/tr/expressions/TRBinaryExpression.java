@@ -41,7 +41,7 @@ public class TRBinaryExpression extends TRExpression
 	 * Choose the type according to the operator
 	 */
 	@Override
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		TRType result;
 		switch (isaToken())

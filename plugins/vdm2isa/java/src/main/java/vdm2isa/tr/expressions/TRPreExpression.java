@@ -21,7 +21,7 @@ public class TRPreExpression extends TRExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return TRBasicType.boolType(location);
     }

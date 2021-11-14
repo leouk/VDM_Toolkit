@@ -13,22 +13,27 @@ public class TRFieldExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
     private final TRExpression object;
-    private final TCIdentifierToken field; 
+    private final TCIdentifierToken field;
+    private boolean hasReportedGuessTypeIssue;
 
     public TRFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)
     {
         super(object.location, exptype);
         this.object = object;
         this.field = field;
+        this.hasReportedGuessTypeIssue = false;
         //System.out.println(toString());
     }
 
     @Override 
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         TRType t = object.getType();
-        if (t instanceof TRRecordType)
+        if (!(t instanceof TRRecordType) && !hasReportedGuessTypeIssue)
+        {
             report(IsaErrorMessage.VDMSL_FIELD_MISSING_RECORDTYPE_1P, field.toString());
+            hasReportedGuessTypeIssue = true;
+        }
         return t;
     }
 

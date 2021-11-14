@@ -14,23 +14,28 @@ public class TRMuExpression extends TRExpression {
 
     private final TRExpression record;
     private final TRRecordModifierList modifiers;
+    private boolean hasReportedGuessedType;
 
     public TRMuExpression(LexLocation location, TRExpression record, TRRecordModifierList modifiers, TRType exptype)
     {
         super(location, exptype);    
         this.record = record;
         this.modifiers = modifiers;
+        this.hasReportedGuessedType = false;
         TRType t = record.getRecordType();
         if (t instanceof TRRecordType)
             this.modifiers.setRecordType((TRRecordType)t);
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         TRType result = record.getRecordType();
-        if (!(result instanceof TRRecordType))
+        if (!(result instanceof TRRecordType) && !hasReportedGuessedType)
+        {
             report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects record type");
+            hasReportedGuessedType = true;
+        }
         return result;
     }
 

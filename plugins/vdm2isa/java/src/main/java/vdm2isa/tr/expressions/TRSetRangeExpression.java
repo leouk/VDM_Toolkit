@@ -23,7 +23,7 @@ public class TRSetRangeExpression extends TRExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         TRType t = first.getType();
         if (t instanceof TRUnknownType)

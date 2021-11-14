@@ -76,7 +76,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     @Override
-    public TRType getType()
+    protected TRType getBestGuessType()
     {
         return type;//type.result;
     }

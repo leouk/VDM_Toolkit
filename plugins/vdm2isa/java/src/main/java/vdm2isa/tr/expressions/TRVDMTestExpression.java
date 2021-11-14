@@ -57,7 +57,7 @@ public abstract class TRVDMTestExpression extends TRExpression {
     }
 
     @Override 
-	public TRType getType()
+	protected TRType getBestGuessType()
 	{
 		TRType result; 
         if (isBasicTyped())
