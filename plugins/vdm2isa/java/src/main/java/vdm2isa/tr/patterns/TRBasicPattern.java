@@ -144,4 +144,8 @@ public class TRBasicPattern extends TRPattern {
     public static TRPattern dummyPattern(LexLocation location) {
         return TRBasicPattern.identifier(location, IsaToken.dummyVarNames(1, location));
     }
+
+    public static TRPattern underscore(LexLocation location) {
+        return TRBasicPattern.identifier(location, IsaToken.UNDERSCORE.toString());
+    }
 }
