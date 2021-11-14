@@ -1,5 +1,6 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.patterns.TCPatternBind;
 
 import vdm2isa.lex.IsaToken;
@@ -11,9 +12,9 @@ public class TRPatternBind extends TRPattern {
     private final TRPattern pattern;
     private final TRMultipleBind bind;
 
-    public TRPatternBind(TCPatternBind owner, TRPattern pattern, TRMultipleBind bind)
+    public TRPatternBind(LexLocation location, TRPattern pattern, TRMultipleBind bind)
     {
-        super(owner.location);
+        super(location);
         this.pattern = pattern;
         this.bind = bind;
 

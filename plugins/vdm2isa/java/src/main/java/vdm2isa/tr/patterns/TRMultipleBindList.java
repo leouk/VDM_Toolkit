@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
@@ -109,7 +110,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 				else if (b instanceof TRMultipleTypeBind)
 					bindSpread.get(TRMultipleBindKind.TYPE).add(i);
 				else 
-					throw new InternalException(11111, "Invalid type bind kind " + b.getClass().getSimpleName());
+					throw new InternalException(IsaErrorMessage.PLUGIN_NYI_2P.number, "Invalid type bind kind " + b.getClass().getSimpleName());
 			}
 			assert size() == bindSpread.get(TRMultipleBindKind.SET).size() + 
 							 bindSpread.get(TRMultipleBindKind.SEQ).size() + 

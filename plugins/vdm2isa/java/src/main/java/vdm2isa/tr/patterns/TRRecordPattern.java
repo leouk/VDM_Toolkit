@@ -1,5 +1,6 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
 
@@ -15,15 +16,22 @@ public class TRRecordPattern extends TRPattern {
     private final TRPatternList plist;
     private final TRType type;
     
-    public TRRecordPattern(TCRecordPattern owner, TCNameToken typename, TRPatternList plist, TRType type)
+    public TRRecordPattern(LexLocation location, TCNameToken typename, TRPatternList plist, TRType type)
     {
-        super(owner.location);
+        super(location);
         this.typename = typename;
         this.plist = plist;
         this.type = type;
         if (this.plist.size() == 0)
             report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, typename.toString());
         //System.out.println(toString());
+    }
+
+    @Override 
+    protected void setup()
+    {
+        super.setup();
+        setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
     }
 
     @Override 
@@ -36,9 +44,9 @@ public class TRRecordPattern extends TRPattern {
     public String toString()
     {
         return super.toString() + 
-            " tname " + String.valueOf(typename) + 
-            " plist = " + String.valueOf(plist) + //.translate() + 
-            " type = " + String.valueOf(type); //type.translate();
+            "\n\t tname = " + String.valueOf(typename) + 
+            "\n\t plist = " + String.valueOf(plist) + //.translate() + 
+            "\n\t type  = " + String.valueOf(type); //type.translate();
     }
 
     @Override
@@ -47,13 +55,24 @@ public class TRRecordPattern extends TRPattern {
     }
 
     /**
-     * Record patterns translate to dummy name, and its invTranslate considers rest? 
+     * Record patterns translate taking a let into context to allow for user names to be available
+     * That means, we are effectively exchanging the pattern for a let, given you can't have record
+     * patterns in Isabelle.
      */
-    @Override
+    // @Override
+    // public String translate() {
+    //     return getPatternList().recordPatternTranslate();
+    // }
+     /**
+      * Record patterns translate taking a let into context to allow for user names to be available
+      * That means, we are effectively exchanging the pattern for a let, given you can't have record
+      * patterns in Isabelle.
+     */
+     @Override
     public String translate() {
-        return IsaToken.dummyVarNames(1, location);
+         return IsaToken.dummyVarNames(1, location);
     }
-
+ 
     protected String fieldNameTranslate(int index, String dummyName)
     {
         assert index >= 0 && index < plist.size();
@@ -62,9 +81,9 @@ public class TRRecordPattern extends TRPattern {
         String fieldName = plist.get(index).invTranslate();
     
         sb.append(fieldName);
-        sb.append(" ");
+        sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.EQUALS.toString());
-        sb.append(" ");
+        sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.parenthesise(IsaTemplates.isabelleRecordFieldName(typename.toString(), fieldName) + " " + dummyName));
         return sb.toString();
     }
@@ -84,7 +103,7 @@ public class TRRecordPattern extends TRPattern {
             sb.append(fieldNameTranslate(0, dummyName));
             for (int i=1; i < plist.size(); i++)
 			{
-                sb.append(IsaToken.SEMICOLON.toString() + " ");
+                sb.append(getSemanticSeparator());
                 sb.append(fieldNameTranslate(i, dummyName));
 			}
 		}

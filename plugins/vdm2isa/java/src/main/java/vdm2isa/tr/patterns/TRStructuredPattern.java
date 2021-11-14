@@ -85,14 +85,10 @@ public class TRStructuredPattern extends TRPattern {
     @Override
     public String getPattern()
     {
-        return typeAware(String.valueOf(pattern));
+        return String.valueOf(pattern);
     }
 
-    @Override
-    public String translate() {
-        return getPattern();
-    }
-
+    //TODO 
     // @Override
     // public String invTranslate() {
     //     return pattern;

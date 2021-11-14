@@ -72,4 +72,9 @@ public abstract class TRPattern extends TRNode {
 
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
 
+    @Override
+    public String translate()
+    {
+        return typeAware(getPattern());
+    }
 }
