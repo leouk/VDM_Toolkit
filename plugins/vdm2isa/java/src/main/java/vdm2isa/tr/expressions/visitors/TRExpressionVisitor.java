@@ -7,6 +7,8 @@ package vdm2isa.tr.expressions.visitors;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRBoundedExpression;
+import vdm2isa.tr.expressions.TRCaseAlternative;
+import vdm2isa.tr.expressions.TRCasesExpression;
 import vdm2isa.tr.expressions.TRElseIfExpression;
 import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
@@ -216,5 +218,13 @@ public abstract class TRExpressionVisitor<R, S>
 
     public R caseLetBeStExpression(TRLetBeStExpression node, S arg) {
         return caseVDMLocalDefinitionListExpression(node, arg);
+    }
+
+	public R caseCaseExpression(TRCasesExpression node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+    public R caseCaseAlternative(TRCaseAlternative node, S arg) {
+        return caseExpression(node, arg);
     }
 }

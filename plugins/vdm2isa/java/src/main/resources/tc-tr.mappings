@@ -122,7 +122,8 @@ map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, b
 map TCExistsExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 map TCForAllExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 map TCLetBeStExpression{location, bind, suchThat, value, def, exptype} to TRLetBeStExpression(location, bind, suchThat, value, def, exptype);
-map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(location, localDefs, expression, exptype);
+map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
+map TCDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
 
 map TCSetCompExpression{location, first, bindings, predicate, exptype} to TRSetCompExpression(location, first, bindings, predicate, exptype);
 map TCSeqCompExpression{location, first, bind, predicate, exptype} to TRSeqCompExpression(location, first, bind, predicate, exptype);
