@@ -49,6 +49,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
             new TRVariableExpression(location, name, original, new TRLocalDefinition(location, null, null, name, NameScope.LOCAL, true, false, exptype), exptype), 
             new LexKeywordToken(Token.INSET, location), 
             new TRSetCompExpression(location, value, bind.getMultipleBindList(), suchThat, new TRSetType(location, exptype.definitions, exptype, false)), exptype);
+       // System.out.println(toString());
     }
 
     @Override
@@ -63,8 +64,10 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
     public String toString()
     {
         return "LetBeStDef " + String.valueOf(bind) + " be st " + 
-            String.valueOf(suchThat) + " in \n\t" + String.valueOf(expression);
-    }
+            "\n\t suchThat = " + String.valueOf(suchThat) + 
+            "\n\t expr     = " + String.valueOf(expression) +
+            "\n\t loc      = " + String.valueOf(getLocation());
+        }
 
     @Override
     public IsaToken isaToken() {

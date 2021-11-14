@@ -3,7 +3,10 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
@@ -17,29 +20,25 @@ import vdm2isa.tr.types.TRType;
  */
 public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 
-    private TRTypeBindList bindList;
+    private final TRTypeBindList bindList;
 
-    private TRFunctionType type;
-	//private TRPatternList paramPatterns;
-	//private TRDefinitionList paramDefinitions;
-	//private TRDefinition def;
+    private final TRFunctionType type;
+	private final TRPatternList paramPatterns;
+	private final TRDefinitionList paramDefinitions;
+	private final TRDefinition def;
 
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        TRFunctionType type, TRType exptype 
-        /*, TRPatternList paramPatterns, TRDefinitionList paramDefinitions */ /* , TRDefinition def */
-        )
+        TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def,
+        TRType exptype)
     {
         super(location, expression, exptype);
         this.bindList = bindList;
         this.type = type;
-        // See NB's email on 28/10/2021 8:59 Subject TCLambdaExpression.paraDefinitions.implicitDefinitions
-        // There is no need for those in the end. So remove them. 
-        //this.paramPatterns = paramPatterns; 
-        //this.paramDefinitions = paramDefinitions; 
-        //this.paramDefinitions.setLocal(true);
-        
-        // There is no need for these either
-        //this.def = def;
+        this.paramPatterns = paramPatterns; 
+        this.paramDefinitions = paramDefinitions; 
+        if (paramDefinitions != null)
+            this.paramDefinitions.setLocal(true);
+        this.def = def;
         
         //System.out.println(toString());
     }
@@ -57,10 +56,11 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     {
         return "LambdaExpr: (lambda " + String.valueOf(bindList) + //.translate() + 
             " & " + String.valueOf(expression) + //.translate() + 
-            " )" + "\n\tFcnType    = " + String.valueOf(type) + //.translate() +
-                    //"\n\tParamPttrs = " + paramPatterns.translate() + 
-                    //"\n\tParamDefs  = " + paramDefinitions.translate() +
-                    //"\n\tDef        = " + def.toString() + 
+            " )" +  "\n\tFcnType    = " + String.valueOf(type) + //.translate() +
+                    "\n\tParamPttrs = " + String.valueOf(paramPatterns) + 
+                    "\n\tParamDefs  = " + String.valueOf(paramDefinitions) +
+                    "\n\tDef        = " + String.valueOf(def) +
+                    "\n\tloc        = " + location.toString() + 
                     "\n";
         /*
         "v74= (lambda var : nat, var2: nat & var + var2);""
@@ -104,8 +104,13 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(bindList.translate());
         sb.append(" ");
         sb.append(IsaToken.POINT.toString());
+        String old = paramPatterns.setFormattingSeparator(getFormattingSeparator());
+        String old2 = paramPatterns.setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());        
+        sb.append(paramPatterns.recordPatternTranslate());
         sb.append(getFormattingSeparator() + "\t");
         sb.append(invTranslate());
+        paramPatterns.setFormattingSeparator(old);
+        paramPatterns.setSemanticSeparator(old2);
         return IsaToken.parenthesise(sb.toString());
     }
 
