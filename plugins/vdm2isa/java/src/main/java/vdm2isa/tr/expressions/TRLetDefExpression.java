@@ -1,6 +1,8 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCDefExpression;
+import com.fujitsu.vdmj.tc.expressions.TCLetDefExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -11,14 +13,27 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
     private final TRDefinitionList localDefs;
+    private final boolean isDefExpression;
 
-    public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
+    public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype, boolean isDefExpression)
     {
         super(location, expression, exptype);
         this.localDefs = localDefs;
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
         this.localDefs.setLocal(true);
+        //TODO limit the scope of things? Or not need, because VDMJ already does that? 
+        this.isDefExpression = isDefExpression;
         //System.out.println(toString());
+    }
+
+    public TRLetDefExpression(TCLetDefExpression letdef, LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
+    {
+        this(location, localDefs, expression, exptype, false);
+    }
+
+    public TRLetDefExpression(TCDefExpression def, LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
+    {
+        this(location, localDefs, expression, exptype, true);
     }
 
     @Override
