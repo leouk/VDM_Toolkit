@@ -32,4 +32,9 @@ public class TRMultiBindListDefinition extends TRDefinition {
     public IsaToken isaToken() {
         return IsaToken.IDENTIFIER;
     }
+
+    public TRMultipleBindList getBindings()
+    {
+        return bindings;
+    }
 }

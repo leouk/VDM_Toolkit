@@ -46,9 +46,12 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 	{
 		return IsaToken.LOCAL;
 	}
-    
-    @Override
-    public String translate()
+
+    /**
+     * Create internal translate to allow jumps within the hierarchy
+     * @return
+     */
+    protected String translateNamedType()
     {
 		// translate the "v: T"
 		StringBuilder sb = new StringBuilder();
@@ -58,6 +61,12 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 		sb.append(IsaToken.parenthesise(getDeclaredName() + IsaToken.TYPEOF.toString() + getTypeString()));
 		//System.out.println(toString());
         return sb.toString();
+    }
+    
+    @Override
+    public String translate()
+    {
+        return translateNamedType();
     }
 
 	@Override

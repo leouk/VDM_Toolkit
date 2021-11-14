@@ -4,14 +4,17 @@
 
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
@@ -25,12 +28,12 @@ public class TRValueDefinition extends TRLocalDefinition
 {
 	private static final long serialVersionUID = 1L;
 	private final TRPattern pattern;
-	private final TRType type;
 	private final TRExpression exp;
 	private final TRDefinitionList defs;
 	private final TRType expType;
 
-	public TRValueDefinition(TRIsaVDMCommentList comments, 
+	protected TRValueDefinition(LexLocation location,
+		TRIsaVDMCommentList comments, 
 		TCAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
@@ -42,15 +45,27 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRDefinitionList defs)
 	{
 		// value names are null; their local definitions have the TCNameToken instead! 
-		super(pattern.location, comments, annotations, null, nameScope, used, excluded, type);
+		super(location, comments, annotations, null, nameScope, used, excluded, type);
 		this.pattern = pattern;
-		this.type = type;
 		this.exp = exp;
 		this.expType = expType;
-
+		this.defs = defs;
+	}
+		
+	public TRValueDefinition(TRIsaVDMCommentList comments, 
+		TCAnnotationList annotations, 
+		NameScope nameScope,
+		boolean used,
+		boolean excluded, 
+		TRPattern pattern, 
+		TRType type, 
+		TRExpression exp,
+		TRType expType, 
+		TRDefinitionList defs)
+	{
+		this(pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
 		// these are always TRLocalDefinition within the list. 
 		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
-		this.defs = defs;
 		if (this.defs.size() > 1)
 			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
 		
@@ -60,9 +75,11 @@ public class TRValueDefinition extends TRLocalDefinition
 	@Override
 	public String toString()
 	{
-		return "TRValueDef [local=" + local + "] for " + String.valueOf(pattern) + 
-			" defs(" + defs.size() +")[" + defs.get(0).getClass().getName() + "]{" + 
-			String.valueOf(expType) + "} = " + String.valueOf(defs);
+		return "ValueDef [local=" + local + "] for " + 
+			"\n\t patt = " + String.valueOf(pattern) + 
+			"\n\t expt = " + String.valueOf(expType) +
+			"\n\t defs = " + String.valueOf(defs) +
+			"\n\t loc  = " + String.valueOf(getLocation());
 	}
 
 	@Override
@@ -83,6 +100,23 @@ public class TRValueDefinition extends TRLocalDefinition
         return tldIsaCommentTranslate(exp);
     }
 
+	protected String translateExpression()
+	{
+		// translate the value expression
+		StringBuilder expStr = new StringBuilder();
+		expStr.append(tldIsaComment());
+		if (getType() instanceof TROptionalType && !(exp instanceof TRNilExpression))
+		{
+			expStr.append(IsaToken.OPTIONAL_SOME.toString());
+			expStr.append(IsaToken.parenthesise(exp.translate()));
+		}
+		else
+		{
+			expStr.append(exp.translate());
+		} 
+		return expStr.toString();
+	}
+
 	@Override
 	public String translate()
 	{
@@ -90,7 +124,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		StringBuilder sb = new StringBuilder();
 
 		// translate the value expression
-		String expStr = tldIsaComment() + exp.translate();
+		String expStr = translateExpression();
 		
 		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
 		if (!local)
@@ -98,7 +132,8 @@ public class TRValueDefinition extends TRLocalDefinition
 			// add any annotations or comments (i.e. TRDefinition.translate(), given super.translate won't work here)
 			sb.append(translatePreamble());
 
-			sb.append(IsaTemplates.translateAbbreviation(getLocation(), getDeclaredName(), getTypeString(), expStr));
+			sb.append(IsaTemplates.translateAbbreviation(getLocation(), getDeclaredName(), getTypeString(), 
+				/*IsaToken.parenthesise*/(expStr)));
 			sb.append(getFormattingSeparator());
 
 			// translate inv_v as definition
@@ -115,7 +150,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
 			sb.append(IsaToken.EQUALS.toString());
 			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
-			sb.append(expStr);
+			sb.append(/*IsaToken.parenthesise*/(expStr));
 		}
         return sb.toString();
 	}
@@ -163,5 +198,15 @@ public class TRValueDefinition extends TRLocalDefinition
 	public TRExpression getExp()
 	{
 		return exp;
+	}
+
+	public TRDefinitionList getDefs()
+	{
+		return defs;
+	}
+
+	public TRType getExpType()
+	{
+		return expType;
 	}
 }
