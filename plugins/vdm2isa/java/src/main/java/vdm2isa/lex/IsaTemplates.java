@@ -37,6 +37,7 @@ public final class IsaTemplates {
     public static void reset()
     {
         translatedItems.clear();
+        IsaToken.dummyCount = 0;
     }
 
     //@todo pass TCNameToken? Or LexLocation?

@@ -278,6 +278,7 @@ public enum IsaToken {
 			!identifier.startsWith(IsaToken.UNDERSCORE.toString()));
     }
 
+	protected static long dummyCount = 0;
 
 	public static String dummyVarNames(int count, LexLocation location)
 	{
@@ -286,11 +287,16 @@ public enum IsaToken {
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR_1P, location, count);
 		else
 		{
-			sb.append(IsaToken.DUMMY.toString() + Integer.toString(0));
+			sb.append(IsaToken.DUMMY.toString() + Long.toString(0));//IsaToken.dummyCount));
+			// keep dummy names unique for user clarity (doesn't matter semantically)
+			// doesn't quite work, becuse it's location senstivive :-(
+			IsaToken.dummyCount++;
 			for (int i = 1; i < count; i++)
 			{
-				sb.append(" "); 
-				sb.append(IsaToken.DUMMY.toString() + Integer.toString(i));
+				sb.append(IsaToken.SPACE.toString()); 
+				sb.append(IsaToken.DUMMY.toString() + Long.toString(i));//IsaToken.dummyCount));
+				// keep dummy names unique for user clarity (doesn't matter semantically)
+				IsaToken.dummyCount++;
 			}	
 		}
 		return sb.toString();
