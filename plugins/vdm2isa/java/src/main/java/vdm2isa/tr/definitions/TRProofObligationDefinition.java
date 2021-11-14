@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
@@ -47,6 +48,10 @@ public class TRProofObligationDefinition extends TRDefinition {
         this.poExpr = poExpr;
         this.poType = poType;//always null for now, given avoiding calls to typeCheck(poExpr);
         this.poScripts = poScripts;
+        if (poExpr == null)
+        {
+            report(IsaErrorMessage.PO_INVALID_POEXPR_2P, po.name, po.value);
+        }
         setup();
     }
 
@@ -66,7 +71,7 @@ public class TRProofObligationDefinition extends TRDefinition {
     @Override
     public String tldIsaComment()
     {
-        return tldIsaCommentTranslate(poExpr);
+        return poExpr != null ? tldIsaCommentTranslate(poExpr) : "";
     }
 
     @Override

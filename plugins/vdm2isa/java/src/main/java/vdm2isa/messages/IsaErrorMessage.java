@@ -85,6 +85,8 @@ public enum IsaErrorMessage {
     "Could not figure out invariant specification for type definition %1$s"),
     ISA_FIELDEXPR_RECORDNAME_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 17, 
     "Could not retrieve record type in field expression for %1$s; found %2$s type"),
+    ISA_INVALID_OPTION_CASE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 18, 
+    "VDM cases other clause for option type expression `%1$s` is not allowed in Isabelle."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
@@ -93,9 +95,9 @@ public enum IsaErrorMessage {
     "Invalid proof obligations module %1$s"),
     PO_INVALID_DEF_ERROR    (VDM2IsaError.ISABELLE_E_PO_BASE + 2, 
     "Invalid module PO list: only PO expressions or proofs scripts are allowed"),
-    
+    PO_INVALID_POEXPR_2P(VDM2IsaError.ISABELLE_E_PO_BASE + 3, 
+    "Invalid proof obligation expression: %1$s = %2$s."),
 
-    
     TEST(VDM2IsaError.ISABELLE_E_PO_BASE, " ");
     
     //private static final Set<Integer> numbers = new TreeSet<Integer>(); 
