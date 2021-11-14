@@ -262,10 +262,16 @@ public enum IsaToken {
 		return IsaToken.bracketit(IsaToken.ISAQUOTE, s, IsaToken.ISAQUOTE);
 	}
 
+	/**
+	 * Valid Isabelle identifiers are non-empty/non-null, cannot start with "_", neither be any of Isabelle's keywords.
+	 * @param identifier
+	 * @return
+	 */
     public static boolean validIsaIdentifier(String identifier)
     {
         return identifier != null && identifier.length() > 0 && 
-			!INVALID_ISA_IDENTIFIERS.contains(identifier) && identifier.startsWith(IsaToken.UNDERSCORE.toString());
+			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 
+			!identifier.startsWith(IsaToken.UNDERSCORE.toString());
     }
 
 
