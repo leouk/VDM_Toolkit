@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.expressions.TCRecordModifierList;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
 
 public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecordModifier>
 {
@@ -44,5 +45,13 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 		{
 			rm.recordType = recordType;
 		}
+	}
+
+    /**
+	 * Choose the first element type (could have been any); this is to attempt to solve the "(the (pattern))" problem
+	 */
+	public TRType getType()
+	{
+		return isEmpty() ? TRExpression.unknownType(getLocation()) : get(0).getType();
 	}
 }
