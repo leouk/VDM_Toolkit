@@ -88,12 +88,19 @@ public class TRRecordPattern extends TRPattern {
         return sb.toString();
     }
 
+    @Override 
+    public boolean hasRecordPatterns()
+    {
+        return true;
+    }
+
     /**
      * On the actual record pattern, invTranslate its TRPatternList with SEMICOLONS. This sets up the 
      * local declaration context to unpick projected fields. The TRPatternList.recordPatternTranslate()
      * call will handle let-in and parenthesis.   
      * @return
      */
+    @Override
     public String recordPatternTranslate()
     {
         StringBuilder sb = new StringBuilder();

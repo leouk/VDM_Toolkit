@@ -5,7 +5,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 
-public abstract class TRMultipleBind extends TRNode
+public abstract class TRMultipleBind extends TRNode implements TRRecordContext
 {
     private static final long serialVersionUID = 1L;
 
@@ -159,10 +159,12 @@ public abstract class TRMultipleBind extends TRNode
 
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 
+    @Override
     public boolean hasRecordPatterns() {
         return plist.hasRecordPatterns();
     }
 
+    @Override
     public String recordPatternTranslate()
     {
         return plist.recordPatternTranslate();

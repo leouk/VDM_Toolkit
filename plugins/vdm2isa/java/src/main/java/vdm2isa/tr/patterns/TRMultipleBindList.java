@@ -15,7 +15,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 
-public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind>
+public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
 {
     private static final long serialVersionUID = 1L;
 
@@ -146,6 +146,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return areBindsUniform(TRMultipleBindKind.SET) || areBindsUniform(TRMultipleBindKind.SEQ) || areBindsUniform(TRMultipleBindKind.TYPE);   
     }
 
+	@Override
 	public boolean hasRecordPatterns() {
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
@@ -155,6 +156,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return result;
 	}
 
+	@Override
     public String recordPatternTranslate() {
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())

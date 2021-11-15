@@ -11,7 +11,10 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
-public abstract class TRPattern extends TRNode {
+/**
+ * All patterns are record-context aware, but only TRRecordPattern properly implements it of course. 
+ */
+public abstract class TRPattern extends TRNode implements TRRecordContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -76,5 +79,17 @@ public abstract class TRPattern extends TRNode {
     public String translate()
     {
         return typeAware(getPattern());
+    }
+
+    @Override
+    public boolean hasRecordPatterns()
+    {
+        return false;
+    }
+
+    @Override 
+    public String recordPatternTranslate()
+    {
+        return translate();
     }
 }

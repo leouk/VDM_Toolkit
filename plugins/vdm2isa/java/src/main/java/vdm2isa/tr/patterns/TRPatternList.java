@@ -11,7 +11,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 
-public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
+public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRRecordContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -58,29 +58,31 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> {
 		return result;
 	}
 
-	public boolean hasRecordPatterns()
-	{
-		return !getRecordPatternIndeces().isEmpty();
-	}
-
 	/**
 	 * Local context for record patterns is flattened out at list list if exists or added otherwise. 
 	 * @return
 	 */
-	public String recordPatternOpenContext()
+	protected String recordPatternOpenContext()
 	{
 		return //partOfListList ? "" : " " + 
 			IsaToken.LET.toString() + " "
 			;
 	}
 
-	public String recordPatternCloseContext()
+	protected String recordPatternCloseContext()
 	{
 		return //partOfListList ? "" : " " + 
 			" " + IsaToken.IN.toString() + " "
 			;
 	}
 
+	@Override
+	public boolean hasRecordPatterns()
+	{
+		return !getRecordPatternIndeces().isEmpty();
+	}
+
+	@Override
 	public String recordPatternTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
