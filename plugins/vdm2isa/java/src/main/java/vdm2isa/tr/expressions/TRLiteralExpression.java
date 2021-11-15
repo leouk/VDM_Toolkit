@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
@@ -138,5 +139,13 @@ public class TRLiteralExpression extends TRExpression
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseLiteralExpression(this, arg);
+	}
+
+	public static final TRLiteralExpression newBooleanLiteralExpression(LexLocation l, boolean v)
+	{
+		assert l != null;
+		return new TRLiteralExpression(
+			new TCBooleanLiteralExpression(
+				new LexBooleanToken(v ? Token.TRUE : Token.FALSE, l)), TRBasicType.boolType(l));
 	}
 }
