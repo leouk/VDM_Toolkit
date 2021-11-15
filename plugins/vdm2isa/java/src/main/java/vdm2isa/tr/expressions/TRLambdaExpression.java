@@ -26,6 +26,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 	private final TRPatternList paramPatterns;
 	private final TRDefinitionList paramDefinitions;
 	private final TRDefinition def;
+    protected boolean isMapComp;
 
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
         TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def,
@@ -39,7 +40,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         if (paramDefinitions != null)
             this.paramDefinitions.setLocal(true);
         this.def = def;
-        
+        this.isMapComp = false;
         //System.out.println(toString());
     }
 
