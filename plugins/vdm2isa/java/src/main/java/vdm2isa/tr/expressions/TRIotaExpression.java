@@ -47,14 +47,14 @@ public class TRIotaExpression extends TRExpression {
         sb.append(bind.plist.get(0).translate());//sb.append(bind.translate());
         sb.append(IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
-        StringBuilder bindStr = new StringBuilder();
-        bindStr.append(bind.invTranslate());
-        if (bindStr.length() > 0)
+        StringBuilder predStr = new StringBuilder();
+        predStr.append(bind.invTranslate());
+        if (predStr.length() > 0)
         {
-            bindStr.append(getInvTranslateSeparator());
+            predStr.append(getInvTranslateSeparator());
         }
-        bindStr.append(predicate.translate());
-        sb.append(IsaToken.parenthesise(bindStr.toString()));
+        predStr.append(predicate.recordPatternTranslate(bind.getMultipleBindList()));
+        sb.append(IsaToken.parenthesise(predStr.toString()));
         return IsaToken.parenthesise(sb.toString()); 
     }
 

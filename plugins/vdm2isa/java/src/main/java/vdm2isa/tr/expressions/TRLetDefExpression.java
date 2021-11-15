@@ -79,6 +79,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.IN.toString());
         sb.append(getFormattingSeparator() + "\t");
+        //TODO don't these recordPattern context needs parenthesis? 
         sb.append(localDefs.recordPatternTranslate());
         localDefs.setFormattingSeparator(old);
         sb.append(invTranslate());

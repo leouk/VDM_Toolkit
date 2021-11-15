@@ -72,30 +72,13 @@ public class TRSetCompExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        boolean hasRecPattern = binds.hasRecordPatterns();
-        String recTranslate = "";
-        if (hasRecPattern)
-        {
-            recTranslate = binds.recordPatternTranslate();
-        }
-
+        
         // I could arguably do binds.compTranslate first if not existential? Keep it simpler? 
         sb.append(IsaToken.SET_OPEN.toString());
         sb.append(getFormattingSeparator());
         
-        if (hasRecPattern)
-        {
-            sb.append(IsaToken.LPAREN.toString());
-            sb.append(recTranslate);
-        }
-
-        sb.append(first.translate());
+        sb.append(first.recordPatternTranslate(binds));
         
-        if (hasRecPattern)
-        {
-            sb.append(IsaToken.RPAREN.toString());
-        }
-
         sb.append(getFormattingSeparator());
         sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
@@ -124,18 +107,7 @@ public class TRSetCompExpression extends TRExpression {
         {
             sb.append(binds.getSemanticSeparator());
 
-            if (hasRecPattern)
-            {
-                sb.append(IsaToken.LPAREN.toString());
-                sb.append(recTranslate);
-            }
-    
-            sb.append(predicate.translate());
-            
-            if (hasRecPattern)
-            {
-                sb.append(IsaToken.RPAREN.toString());
-            }            
+            sb.append(predicate.recordPatternTranslate(binds));
         }
 
         sb.append(getFormattingSeparator());

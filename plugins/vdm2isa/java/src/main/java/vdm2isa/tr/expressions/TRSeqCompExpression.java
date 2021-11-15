@@ -77,9 +77,12 @@ public class TRSeqCompExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
+
         sb.append(IsaToken.SEQ_OPEN.toString());
         sb.append(getFormattingSeparator());
-        sb.append(first.translate());
+
+        sb.append(first.recordPatternTranslate(bind.getMultipleBindList()));
+
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
@@ -113,7 +116,8 @@ public class TRSeqCompExpression extends TRExpression {
             // predicate separator in Isabelle is "," not "|"
             sb.append(IsaToken.COMMA.toString());
             sb.append(getFormattingSeparator());
-            sb.append(predicate.translate());
+
+            sb.append(predicate.recordPatternTranslate(bind.getMultipleBindList()));            
         }
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.SEQ_CLOSE.toString());
