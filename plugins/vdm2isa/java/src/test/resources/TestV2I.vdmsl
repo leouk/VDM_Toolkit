@@ -175,17 +175,17 @@ values
 	v95= { x |-> 10 | x in set {1,2,3} }; --TCMapCompExpression 
 	v952={ x+y |-> 10 | x in set {1,2,3}, y in set {4,5,6} }; --TCMapCompExpression harder ones
 	v953={ mk_R(x,y) |-> 10 | x in set {1,2,3}, y in set {4,5,6} };
-	
+	v954= { x + y |-> 10 | [x,y] in set {[1,2], [3,4], [4,5]} } -- this is getting silly now
 --state MyState of
 --   x : nat
 --inv mk_MyState(x) == x > 10
 --init s == s = mk_MyState(20)
 --end
 functions
-	v954: () -> map nat to nat
-	v954() == { x |-> 10 | x: nat & x < 10 };
+	v96: () -> map nat to nat
+	v96() == { x |-> 10 | x: nat & x < 10 };
 
-	v955: () -> map nat to nat
-	v955() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
+	v961: () -> map nat to nat
+	v962() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
 
 end TestV2I
