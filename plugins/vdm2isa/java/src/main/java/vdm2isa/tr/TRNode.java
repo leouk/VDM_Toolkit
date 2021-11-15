@@ -54,7 +54,9 @@ abstract public class TRNode extends MappedObject implements MappableNode
     @Override
     public String toString()
     {
-        return getClass().getSimpleName() + "[" + String.valueOf(isaToken()) + "]"; // + translate();
+        return getClass().getSimpleName() + "[" + String.valueOf(isaToken()) + "]" //+
+			 	//String.valueOf(getLocation())
+				 ; 
     }
 
 	@Override
@@ -161,6 +163,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	 * Top-level translation associated with this TRNode. 
 	 * @return Isabelle YXML string.
 	 */
+	@Override
 	public abstract String translate();
 
 	/**

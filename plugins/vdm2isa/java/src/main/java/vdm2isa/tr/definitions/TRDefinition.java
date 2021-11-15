@@ -66,7 +66,12 @@ public abstract class TRDefinition extends TRNode
 	@Override
 	public String toString()
 	{
-		return "{local=" + local + "}" + super.toString();
+		return "\n\t name  = " + String.valueOf(name) + 
+			   "\n\t scope = " + String.valueOf(nameScope) +
+			   "\n\t used  = " + used +
+			   "\n\t excld = " + excluded + 
+			   "\n\t local = " + local + 
+			   "\n\t " + super.toString();
 	}
 
 	protected String translatePreamble()

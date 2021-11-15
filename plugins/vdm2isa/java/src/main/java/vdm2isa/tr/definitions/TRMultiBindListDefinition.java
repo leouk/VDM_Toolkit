@@ -24,6 +24,16 @@ public class TRMultiBindListDefinition extends TRDefinition {
     }
 
     @Override
+	public String toString()
+	{
+		return "MultiBindListDef " + 
+            "\n\t bindings = " + String.valueOf(bindings) + 
+            "\n\t defs     = " + String.valueOf(defs) + 
+            super.toString();
+	}
+
+
+    @Override
     public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg) {
         return visitor.caseDefinition(this, arg);
     }
