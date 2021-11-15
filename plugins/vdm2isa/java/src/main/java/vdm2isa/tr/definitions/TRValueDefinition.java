@@ -113,7 +113,8 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		else
 		{
-			expStr.append(exp.translate());
+			// as TLD, no need for record-context translation; this is for non TLD expr!
+			expStr.append(exp.translate());//exp.recordPatternTranslate(pattern));
 		} 
 		return expStr.toString();
 	}
