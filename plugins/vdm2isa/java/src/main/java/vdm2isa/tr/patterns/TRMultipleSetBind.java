@@ -18,7 +18,7 @@ public class TRMultipleSetBind extends TRMultipleBind
     private final TRExpression set;
 
     // TRSeqComp sets this to true for the case [ x | x in set S ], where S is ordered
-    public boolean seqBind;
+    protected boolean seqBind;
 
     public TRMultipleSetBind(TRPattern pattern, TRExpression set)
     {

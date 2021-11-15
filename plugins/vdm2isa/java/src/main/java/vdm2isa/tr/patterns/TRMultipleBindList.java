@@ -3,17 +3,25 @@ package vdm2isa.tr.patterns;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRLiteralExpression;
+import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
+import vdm2isa.tr.types.TRBasicType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
 {
@@ -177,7 +185,91 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		}
 		return sb.toString();
     }
+
+	private TRExpression patternExpression(TRPattern p, LexToken op, TRExpression rhs)
+	{
+		assert TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && IsaToken.from(op).equals(IsaToken.INSET);
+		return null;//return new TRBinaryExpression(lhs, op, rhs, TRBasicType.boolType(p.getLocation()));
+	}
+
+	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)
+	{
+		TRExpression result;
+		return null;
+	}
+
+	private TRExpression bindingExpression(int index)
+	{
+		assert index >= 0 && index < size() && !(get(index) instanceof TRMultipleTypeBind);
+		TRMultipleBind b = get(index);
+		if (b instanceof TRMultipleSetBind)
+		{
+			TRMultipleSetBind bset = (TRMultipleSetBind)b;
+			TRExpression rhs = (TRExpression)bset.getRHS();
+			assert !bset.plist.isEmpty();
+
+		}
+		else if (b instanceof TRMultipleSeqBind)
+		{
+			TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
+		}
+		TRExpression result;
+		return null;//result;				
+	}
+	public TRExpression getBindingsExpression()
+	{
+		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), true);
+		if (!isEmpty())
+		{
+			Map<TRMultipleBindKind, SortedSet<Integer>> structure = figureBindsOut();			
+			SortedSet<Integer> binding_indices_of_interest = new TreeSet<Integer>();
+			for(int i = 0; i < size(); i++) { binding_indices_of_interest.add(i); }
+			binding_indices_of_interest.removeAll(structure.get(TRMultipleBindKind.TYPE));
+
+			if (!binding_indices_of_interest.isEmpty())
+			{
+				Iterator<Integer> indices = binding_indices_of_interest.iterator();
+				
+				while (indices.hasNext())
+				{
+					indices.next();
+				}
+			}
+		}
+		else
+		{
+			// if called on empty, then give up! 
+			//result = new TRNotYetSpecifiedExpression(getLocation(), TRExpression.unknownType(getLocation()));
+			// Perhaps just say "true"? 
+		}
+		return result;
+	}
 	
+	public boolean setSetSeqForMultiBindList()
+	{
+		boolean result = size() == 1 && get(0) instanceof TRMultipleSetBind;
+		if (result)
+		{
+			((TRMultipleSetBind)get(0)).seqBind = true;
+		}	
+		return result; 
+	}
+
+	public boolean isSetSeqBind() {
+		return size() == 1 && 
+			get(0) instanceof TRMultipleSetBind && 
+			((TRMultipleSetBind)get(0)).seqBind;
+	}
+
+	/**
+	 * Returns the first bind RHS or null for empty
+	 * @return
+	 */
+	public TRNode getRHS()
+	{
+		return isEmpty() ? null : get(0).getRHS();
+	}
+
 	public static String translate(TRMultipleBind... args)
 	{
 		TRMultipleBindList list = new TRMultipleBindList();
