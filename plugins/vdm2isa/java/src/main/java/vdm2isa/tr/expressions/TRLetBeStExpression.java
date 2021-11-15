@@ -8,10 +8,12 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.definitions.TRMultiBindListDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
 
@@ -45,10 +47,17 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         // LetBeSt is represented through in set of a set comprehension constructed on the fly, with necessary adjustments to exptype for the set comp.
         String original = IsaToken.dummyVarNames(1, location);
         TCNameToken name = new TCNameToken(location, location.module, original);
+        TRMultipleBindList bindings = bind.getMultipleBindList();
+        //TRDefinitionList defs = new TRDefinitionList();
         this.vInSetS = new TRBinaryExpression(
-            new TRVariableExpression(location, name, original, new TRLocalDefinition(location, null, null, name, NameScope.LOCAL, true, false, exptype), exptype), 
+            TRVariableExpression.newVariableExpr(location, name, original, exptype),
             new LexKeywordToken(Token.INSET, location), 
-            new TRSetCompExpression(location, value, bind.getMultipleBindList(), suchThat, new TRSetType(location, exptype.definitions, exptype, false)), exptype);
+            new TRSetCompExpression(
+                location, value, bindings, suchThat, 
+                this.def, //new TRMultipleBindListDefinition(
+                //    location, null, null, null, null, false, false, bindings, defs),
+                new TRSetType(location, exptype.definitions, exptype, false)), 
+            exptype);    
        // System.out.println(toString());
     }
 
