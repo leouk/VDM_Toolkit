@@ -421,6 +421,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         else 
             report(IsaErrorMessage.VDMSL_INVALID_INVTYPE_2P, name.toString(), t.getClass().getSimpleName());
 
+        // the TRExplicitFunctionDefinition is already record-pattern context aware, so any appearence in 
+        // TRTypeDefinition is handled there. Lovely :-). 
         // issue inv / eq / ord
         if (t instanceof TRInvariantType)
         {
