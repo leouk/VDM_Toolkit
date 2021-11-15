@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-11-15T09:43:13.108574Z
+(* VDM to Isabelle Translation @2021-11-15T11:23:45.759Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2I.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2I.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit
@@ -1619,4 +1619,108 @@ where
 	"inv_v93  \<equiv> (inv_VDMNat v93)"
 
 	
+	
+abbreviation
+	[A  B] :: "VDMNat1 VDMSeq1"
+where
+	"[A  B] \<equiv> [(1::VDMNat1), (2::VDMNat1)]"
+
+	definition
+	inv_[A  B] :: "\<bool>"
+where
+	"inv_[A  B]  \<equiv> (inv_VDMSeq1' (inv_VDMNat1) [A  B])"
+
+	
+	
+abbreviation
+	v94 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v94 \<equiv> [(1::VDMNat1)\<mapsto>(2::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1),(4::VDMNat1)\<mapsto>(5::VDMNat1)]"
+
+	definition
+	inv_v94 :: "\<bool>"
+where
+	"inv_v94  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v94)"
+
+	
+	
+abbreviation
+	v95 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v95 \<equiv> null"
+
+	definition
+	inv_v95 :: "\<bool>"
+where
+	"inv_v95  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v95)"
+
+	
+	
+abbreviation
+	v952 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v952 \<equiv> null"
+
+	definition
+	inv_v952 :: "\<bool>"
+where
+	"inv_v952  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v952)"
+
+	
+	
+abbreviation
+	v953 :: "(R \<rightharpoonup> VDMNat1)"
+where
+	"v953 \<equiv> null"
+
+	definition
+	inv_v953 :: "\<bool>"
+where
+	"inv_v953  \<equiv> (inv_Map inv_R  (inv_VDMNat1) v953)"
+
+	
+	
+
+definition
+	pre_v954 :: "\<bool>"
+where
+	"pre_v954  \<equiv> True"
+
+
+definition
+	post_v954 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+where
+	"post_v954 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v954 specification\<close>
+		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
+
+definition
+	v954 :: "(VDMNat \<rightharpoonup> VDMNat)"
+where
+	"v954  \<equiv> 
+	\<comment>\<open>User defined body of v954\<close>
+	null"
+
+	
+
+definition
+	pre_v955 :: "\<bool>"
+where
+	"pre_v955  \<equiv> True"
+
+
+definition
+	post_v955 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+where
+	"post_v955 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v955 specification\<close>
+		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
+
+definition
+	v955 :: "(VDMNat \<rightharpoonup> VDMNat)"
+where
+	"v955  \<equiv> 
+	\<comment>\<open>User defined body of v955\<close>
+	null"
+
 end

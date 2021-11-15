@@ -136,7 +136,7 @@ values
 	v722=let r: real = 4.0 in narrow_(r, nat1);
 	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
-	--v731=(iota mk_R(x,y) in set {v65} & y < x);
+	v731=(iota mk_R(x,y) in set {v65} & x < y);
 	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression + TCMultipleTypeBind
 	v741=(lambda mk_R(x,y): R & x + y); --!!! Phew....
 	--v742=(lambda mk_R(x,y) in set {v65} & x + y);
@@ -153,7 +153,7 @@ values
 	v810={ x+y | mk_R(x,y) in set {v65} & y < x };
 	v82= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
 	v83= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
-	--v830=[ x+y | mk_R(x,y) in set {v65} & y < x ];
+	v830=[ x | mk_R(x,-) in set {v65} & 0 < x ]; -- can only bind one variable for seqcomp, hence "-" for y! 
 	v84= [ var | var in seq t10 & var > 1 ]; -- TCSeqCompExpression
 	--VDM not happy with v84-85, Isabelle would allow them
 	--v85= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
@@ -169,15 +169,23 @@ values
 	v93= (cases v37: nil -> 0, v -> v+v end);
 	--v931= (cases v371: nil -> 0, v -> v+v, others -> 0 end); --generates error
 	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
-	--[A,B]=[1,2];
+	[A,B]=[1,2];
 	
-	--To test VDM warnings as errors
-	--x = 10;
-
+	v94= { 1 |-> 2, 2 |-> 3, 4 |-> 5 }; --TCMapEnumExpression
+	v95= { x |-> 10 | x in set {1,2,3} }; --TCMapCompExpression 
+	v952={ x+y |-> 10 | x in set {1,2,3}, y in set {4,5,6} }; --TCMapCompExpression harder ones
+	v953={ mk_R(x,y) |-> 10 | x in set {1,2,3}, y in set {4,5,6} };
+	
 --state MyState of
 --   x : nat
 --inv mk_MyState(x) == x > 10
 --init s == s = mk_MyState(20)
 --end
+functions
+	v954: () -> map nat to nat
+	v954() == { x |-> 10 | x: nat & x < 10 };
+
+	v955: () -> map nat to nat
+	v955() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
 
 end TestV2I

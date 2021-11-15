@@ -129,8 +129,9 @@ map TCDefExpression{location, localDefs, expression, exptype} to TRLetDefExpress
 map TCCasesExpression{location, exp, cases, others, exptype} to TRCasesExpression(location, exp, cases, others, exptype);
 map TCCaseAlternative{location, pattern, result} to TRCaseAlternative(location, pattern, result);
 
-map TCSetCompExpression{location, first, bindings, predicate, exptype} to TRSetCompExpression(location, first, bindings, predicate, exptype);
-map TCSeqCompExpression{location, first, bind, predicate, exptype} to TRSeqCompExpression(location, first, bind, predicate, exptype);
+map TCSetCompExpression{location, first, bindings, predicate, def, exptype} to TRSetCompExpression(location, first, bindings, predicate, def, exptype);
+map TCSeqCompExpression{location, first, bind, predicate, def, exptype} to TRSeqCompExpression(location, first, bind, predicate, def, exptype);
+map TCMapCompExpression{location, first, bindings, predicate, def, exptype} to TRMapCompExpression(location, first, bindings, predicate, def, exptype);
 
 map TCNilExpression{location, exptype, exptype} to TRNilExpression(location, exptype);
 map TCApplyExpression{type, root, args, exptype} to TRApplyExpression(type, root, args, exptype);
