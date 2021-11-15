@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-14T16:33:06.355110Z
+(* VDM to Isabelle Translation @2021-11-15T09:43:13.108574Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2I.vdmsl' at line 1:8
@@ -1371,6 +1371,18 @@ where
 	
 	
 abbreviation
+	v781 :: "\<bool>"
+where
+	"v781 \<equiv> (\<forall> dummy0 \<in> {v65}  . (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (y < x)))"
+
+	definition
+	inv_v781 :: "\<bool>"
+where
+	"inv_v781  \<equiv> (inv_bool v781)"
+
+	
+	
+abbreviation
 	v79 :: "VDMNat1"
 where
 	"v79 \<equiv> (
@@ -1454,6 +1466,18 @@ where
 	inv_v81 :: "\<bool>"
 where
 	"inv_v81  \<equiv> (inv_VDMSet' (inv_VDMNat1) v81)"
+
+	
+	
+abbreviation
+	v810 :: "VDMNat VDMSet"
+where
+	"v810 \<equiv> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | dummy0 .  ((dummy0 \<in>{v65}))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (y < x)) }"
+
+	definition
+	inv_v810 :: "\<bool>"
+where
+	"inv_v810  \<equiv> (inv_VDMSet' (inv_VDMNat) v810)"
 
 	
 	

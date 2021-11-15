@@ -136,20 +136,24 @@ values
 	v722=let r: real = 4.0 in narrow_(r, nat1);
 	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
+	--v731=(iota mk_R(x,y) in set {v65} & y < x);
 	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression + TCMultipleTypeBind
 	v741=(lambda mk_R(x,y): R & x + y); --!!! Phew....
 	--v742=(lambda mk_R(x,y) in set {v65} & x + y);
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
+	v781=(forall mk_R(x,y) in set {v65} & y < x);
 	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
 	v791=(let mk_R(x,y) = v65, var1: nat = 10 in var1+x+y);
 	v80= (let x, y in set t9 be st x > 2 and y < x in x + y); --TCLetBeStExpression
 	--v801=(let mk_R(x,y) in set {v65}, var: nat = 10 be st x < y in var+x+y);
 	v801=(let mk_R(x,y) in set {v65} be st x < y in x+y);
 	v81= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
+	v810={ x+y | mk_R(x,y) in set {v65} & y < x };
 	v82= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
 	v83= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression
+	--v830=[ x+y | mk_R(x,y) in set {v65} & y < x ];
 	v84= [ var | var in seq t10 & var > 1 ]; -- TCSeqCompExpression
 	--VDM not happy with v84-85, Isabelle would allow them
 	--v85= [ mk_(var, var2) | var in set s1, var2 in seq t10 & var > var2 ];
