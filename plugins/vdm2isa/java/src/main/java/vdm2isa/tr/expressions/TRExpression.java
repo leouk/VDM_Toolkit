@@ -10,6 +10,8 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.patterns.TRRecordContext;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
@@ -132,7 +134,39 @@ public abstract class TRExpression extends TRNode
 		}
 		return sb.toString();	
 	}
-    
+
+    /**
+     * Given record pattern in expressions with record context (e.g. multiple binding, patterns etc), 
+     * surround this expression translation with the record pattern let-def context projecting out the binding's 
+     * fields so that the user-defined expression can directly access the bindings as named by the user. 
+     * 
+     * Every expression with such context ought to take this into account when translating itself. Nevertheless,
+     * there are still cases where the pattern/binding is "null" when names are available elsewhere. For example
+     * TREqualsDefinition has either a typebind or a pattern for its context, both of which reach this through
+     * TRValueDefinition translate it inherits. So, for that, we allow for null context, in which case we just 
+     * directly translate
+     * @param context if null, normally translate; otherwise take recordpatterns into account. 
+     * @return record-context (or normal) translation 
+     */
+    public String recordPatternTranslate(TRRecordContext context)
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean hasRecPattern = context != null && context.hasRecordPatterns();
+        if (hasRecPattern)
+        {
+            sb.append(IsaToken.LPAREN.toString());
+            sb.append(context.recordPatternTranslate());
+        }
+        // could have a "context.hasRecordPatterns() ? IsaToken.parenthesise(context.recordPatternTranslate() + expr.translate()) : expr.translate()"
+        // but kept it explicitly for clarity. 
+        sb.append(translate());
+        if (hasRecPattern)
+        {
+            sb.append(IsaToken.RPAREN.toString());
+        }
+        return sb.toString();
+    }
+
     /**
      * General tokenisation of operator-based expressions. The underlying caller's semantic separator is used
      * @param token
