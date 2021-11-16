@@ -20,12 +20,9 @@ import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TROptionalType;
-import vdm2isa.tr.types.TRQuoteType;
-import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
 
 public class TRLiteralExpression extends TRExpression

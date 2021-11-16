@@ -1,16 +1,12 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
-import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCSetType;
-import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.definitions.TRDefinitionList;
-import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.definitions.TRMultiBindListDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;

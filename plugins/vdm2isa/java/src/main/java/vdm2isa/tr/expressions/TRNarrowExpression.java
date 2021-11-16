@@ -42,7 +42,6 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        String problem = null;
         String testStr = IsaToken.parenthesise(test.translate());
         if (isBasicTyped())
         {

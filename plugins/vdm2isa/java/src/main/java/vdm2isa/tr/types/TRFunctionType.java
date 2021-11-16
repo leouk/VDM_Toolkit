@@ -9,10 +9,8 @@ import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 public class TRFunctionType extends TRType
 {

@@ -10,7 +10,6 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
 import vdm2isa.tr.TRMappedList;
-import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>

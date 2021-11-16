@@ -18,6 +18,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
@@ -193,9 +194,11 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	private TRExpression patternExpression(TRPattern p, LexToken op, TRExpression rhs)
 	{
 		assert TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && IsaToken.from(op).equals(IsaToken.INSET);
-		return new TRBinaryExpression(
-					TRVariableExpression.newVariableExpr(p.location, name, original, exptype), op, rhs, 
-					TRBasicType.boolType(p.getLocation()));
+		return null;
+		//TRBinaryExpression.newBooleanChain(op, args)
+		// return new TRBinaryExpression(
+		// 			TRVariableExpression.newVariableExpr(p.location, name, original, exptype), op, rhs, 
+		// 			TRBasicType.boolType(p.getLocation()));
 	}
 
 	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)
@@ -225,7 +228,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			btype = stype.seqof;
 			assert !bseq.plist.isEmpty();
 		}
-		TRExpresion result;
+		TRExpression result = null;
 		return result;				
 	}
 

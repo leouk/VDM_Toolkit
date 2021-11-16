@@ -4,7 +4,6 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.patterns.TRMultipleBindList;
-import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRType;
 
 public abstract class TRAbstractCompExpression extends TRExpression {

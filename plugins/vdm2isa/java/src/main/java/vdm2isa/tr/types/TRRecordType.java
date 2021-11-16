@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;

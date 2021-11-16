@@ -7,7 +7,6 @@ import com.fujitsu.vdmj.tc.expressions.TCCaseAlternativeList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
-import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeSet;
 
 public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCaseAlternative> {

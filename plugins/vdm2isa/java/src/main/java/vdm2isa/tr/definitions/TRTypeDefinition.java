@@ -21,7 +21,6 @@ import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeList;
 import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;

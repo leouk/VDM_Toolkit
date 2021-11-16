@@ -10,9 +10,7 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
-import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRPattern;
-import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRRecordContext;
 import vdm2isa.tr.types.TRFunctionType;
@@ -27,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.types.TCUnknownType;
 
 //@nb how to add this? 
 //@todo add comments and/or location? 

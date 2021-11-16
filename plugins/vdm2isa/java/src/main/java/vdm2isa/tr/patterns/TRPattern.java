@@ -1,9 +1,5 @@
 package vdm2isa.tr.patterns;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;

@@ -12,7 +12,6 @@ import vdm2isa.tr.expressions.TRCasesExpression;
 import vdm2isa.tr.expressions.TRElseIfExpression;
 import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.expressions.TRFieldExpression;
 import vdm2isa.tr.expressions.TRFieldNumberExpression;
 import vdm2isa.tr.expressions.TRIfExpression;

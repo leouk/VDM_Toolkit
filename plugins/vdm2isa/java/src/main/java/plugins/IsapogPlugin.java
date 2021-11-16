@@ -17,7 +17,6 @@ import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.syntax.ParserException;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
-import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeCheckException;
 
 import vdm2isa.lex.IsaToken;
@@ -30,7 +29,6 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 import vdm2isa.tr.modules.TRProofObligationModule;
-import vdm2isa.tr.types.TRType;
 
 /**
  * VDM POs to Isabelle. Cannot be called "pog2isa" as "pog" is already a command! 
