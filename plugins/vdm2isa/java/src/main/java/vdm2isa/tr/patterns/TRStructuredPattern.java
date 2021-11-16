@@ -21,32 +21,36 @@ public class TRStructuredPattern extends TRPattern {
 
     private final IsaToken token;
     private final String pattern; 
+    private final TRPatternList plist;
 
-    protected TRStructuredPattern(LexLocation location, IsaToken token, String pattern)
+    protected TRStructuredPattern(LexLocation location, TRPatternList plist, IsaToken token, String pattern)
     {
         super(location);
         this.token = token;
+        this.plist = plist;
         this.pattern = pattern;        
     }
 
     public TRStructuredPattern(TCSetPattern owner, TRPatternList set)
     {  
-        this(owner.location, IsaToken.SET, IsaToken.bracketit(IsaToken.SET_OPEN, set.translate(), IsaToken.SET_CLOSE));
+        this(owner.location, set, IsaToken.SET, IsaToken.bracketit(IsaToken.SET_OPEN, set.translate(), IsaToken.SET_CLOSE));
     }
 
     public TRStructuredPattern(TCSeqPattern  owner, TRPatternList seq)
     {
-        this(owner.location, IsaToken.SEQ, IsaToken.bracketit(IsaToken.SEQ_OPEN, seq.translate(), IsaToken.SEQ_CLOSE));
+        this(owner.location, seq, IsaToken.SEQ, IsaToken.bracketit(IsaToken.SEQ_OPEN, seq.translate(), IsaToken.SEQ_CLOSE));
     }
 
     public TRStructuredPattern(TCTuplePattern owner, TRPatternList list)
     {
-        this(owner.location, IsaToken.CROSSPROD, IsaToken.parenthesise(list.translate()));
+        this(owner.location, list, IsaToken.CROSSPROD, IsaToken.parenthesise(list.translate()));
     }
 
     public TRStructuredPattern(TCConcatenationPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner.location, IsaToken.CONCATENATE, 
+        this(owner.location, 
+            TRPatternList.newPatternList(left, right),
+            IsaToken.CONCATENATE, 
             IsaToken.parenthesise(
                 IsaToken.parenthesise(left.translate()) + 
                 IsaToken.CONCATENATE.toString() + 
@@ -56,30 +60,42 @@ public class TRStructuredPattern extends TRPattern {
     public TRStructuredPattern(TCMapletPattern owner, TRPattern from, TRPattern to)
     {
         this(owner.from.location,//owner is not TCPattern!!! Will be a problem?
-            IsaToken.MAPLET, IsaToken.parenthesise( 
+            TRPatternList.newPatternList(from, to),
+            IsaToken.MAPLET, 
+            IsaToken.parenthesise( 
                 from.translate() + " " + IsaToken.MAPLET.toString() + " " + to.translate()));
     }
 
     public TRStructuredPattern(TCUnionPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner.location, IsaToken.UNION, IsaToken.parenthesise(
-            left.translate() + " " + IsaToken.UNION.toString() + " " + right.translate()));
+        this(owner.location, 
+            TRPatternList.newPatternList(left, right),
+            IsaToken.UNION, 
+            IsaToken.parenthesise(left.translate() + " " + IsaToken.UNION.toString() + " " + right.translate()));
     }
 
     public TRStructuredPattern(TCMapUnionPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner.location, IsaToken.MUNION, IsaToken.parenthesise(
-            left.translate() + " " + IsaToken.MUNION.toString() + " " + right.translate()));
+        this(owner.location, 
+            TRPatternList.newPatternList(left, right),
+            IsaToken.MUNION, 
+            IsaToken.parenthesise(left.translate() + " " + IsaToken.MUNION.toString() + " " + right.translate()));
     }
 
     public TRStructuredPattern(TCMapPattern owner, TRPatternList maplets)
     {
-        this(owner.location, IsaToken.MAP, IsaToken.bracketit(IsaToken.MAP_OPEN, maplets.translate(), IsaToken.MAP_CLOSE));
+        this(owner.location, maplets, IsaToken.MAP, IsaToken.bracketit(IsaToken.MAP_OPEN, maplets.translate(), IsaToken.MAP_CLOSE));
     }
 
     public TRStructuredPattern(TCExpressionPattern owner, TRExpression exp)
     {
-        this(owner.location, IsaToken.MAP, IsaToken.parenthesise(exp.translate()));
+        //TODO? percolate these through TRExpression? 
+        this(owner.location, new TRPatternList()/*exp.getPatternListList().getFlatPatternList()*/, IsaToken.LPAREN, IsaToken.parenthesise(exp.translate()));
+    }
+
+    public TRPatternList getPatternList()
+    {
+        return plist;
     }
 
     @Override

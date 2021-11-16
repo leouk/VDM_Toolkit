@@ -47,6 +47,9 @@ public enum IsaErrorMessage {
     "Invalid expression operator `%1$s`."),
     VDMSL_INVALID_EQUALSDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 15, 
     "Invalid VDMSL equals definition %1$s: %2$s."),
+    VDMSL_INVALID_CASESEXPR(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 16, 
+    "Invalid VDMSL cases expression: empty cases."),
+
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
