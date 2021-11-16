@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRType;
 
 public abstract class TRAbstractCompExpression extends TRExpression {
@@ -30,6 +31,17 @@ public abstract class TRAbstractCompExpression extends TRExpression {
         super.setup();
         setFormattingSeparator(" ");
     }
+
+    //TODO?!
+    // @Override
+    // public TRPatternListList getPatternListList() {
+    //     TRPatternListList result = super.getPatternListList();
+    //     result.addAll(first.getPatternListList());
+    //     result.addAll(predicate.getPatternListList());
+    //     bindings.
+    //     return result;
+    // }
+
 
     @Override
     public String toString()
