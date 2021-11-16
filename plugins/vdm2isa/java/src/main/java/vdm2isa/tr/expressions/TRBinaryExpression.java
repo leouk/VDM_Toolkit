@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -160,5 +161,48 @@ public class TRBinaryExpression extends TRExpression
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseBinaryExpression(this, arg);
+	}
+
+	public static boolean uniformlyTyped(TRType type, TRExpression... args)
+	{
+		boolean result = args == null || args.length == 0;
+		if (!result)
+		{
+			result = args[0].getType().compatible(type);
+			for(int i = 0; i < args.length && !result; i++)
+			{
+				
+			}
+		}
+		return result;
+	}
+	/**
+	 * Creates a boolean chain of expressions (e.g., args[0] and ... and args[i]).
+	 * This presumes op is valid boolean chain operator (e.g. and, or, etc.), and that
+	 * all elements within args have boolean type. Simply "true" is returned otherwise. 
+	 */
+	public static TRExpression newBooleanChain(LexToken op, TRExpression... args)
+	{
+		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(op.location, true);
+		if (!VALID_BOOLEAN_CHAIN_OPS.contains(IsaToken.from(op)))
+		{
+			GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, op.location, IsaToken.from(op).toString());
+		}
+		else if (args != null && args.length > 0)
+		{
+			if (TRBinaryExpression.uniformlyTyped(result.getType(), args))
+			{
+				result = args[0];
+				for(int i = 1; i < args.length; i++)
+				{
+					result = new TRBinaryExpression(result, op, args[i], result.getType());
+				}
+			}
+			else 
+			{
+				GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_EXPRCHAIN_TYPE_1P, op.location, IsaToken.from(op).toString());
+			}
+		}
+		return result;
 	}
 }

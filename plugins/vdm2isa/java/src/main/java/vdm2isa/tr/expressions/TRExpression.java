@@ -31,6 +31,9 @@ public abstract class TRExpression extends TRNode
 {
 	private static final long serialVersionUID = 1L;
 
+    public static final Set<IsaToken> VALID_BOOLEAN_CHAIN_OPS = new HashSet<IsaToken>(
+        Arrays.asList(IsaToken.AND, IsaToken.OR, IsaToken.IMPLIES, IsaToken.EQUIVALENT)); 
+
     public static final Set<IsaToken> VALID_BINARY_OPS = new HashSet<IsaToken>(
         Arrays.asList(IsaToken.AND, IsaToken.OR, IsaToken.IMPLIES, IsaToken.EQUIVALENT, 
                       IsaToken.NE, IsaToken.LT, IsaToken.LE, IsaToken.GT, IsaToken.GE, 

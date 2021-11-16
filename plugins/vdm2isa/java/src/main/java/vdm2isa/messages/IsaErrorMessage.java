@@ -87,6 +87,9 @@ public enum IsaErrorMessage {
     "Could not retrieve record type in field expression for %1$s; found %2$s type"),
     ISA_INVALID_OPTION_CASE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 18, 
     "VDM cases other clause for option type expression `%1$s` is not allowed in Isabelle."),
+    ISA_INVALID_EXPRCHAIN_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 19,
+    "Booleann expression chain for `%1$s` operator must all have boolean type."),
+
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

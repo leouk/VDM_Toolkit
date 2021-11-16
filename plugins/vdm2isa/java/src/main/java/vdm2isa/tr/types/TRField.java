@@ -21,9 +21,9 @@ public class TRField extends TRType {
     // the record this field belongs to; set by TRFieldList
     protected TRRecordType record;    
     
-    public TRField(TCNameToken tagname, TRType type, boolean equalityAbstraction)
+    public TRField(TCType vdmType, TCNameToken tagname, TRType type, boolean equalityAbstraction)
     {
-        super(tagname.getLocation(), null);
+        super(vdmType, new TRDefinitionList());
         this.tagname = tagname;
         this.type = type;
         this.equalityAbstraction = equalityAbstraction;

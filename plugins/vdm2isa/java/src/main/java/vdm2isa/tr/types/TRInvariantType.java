@@ -6,6 +6,7 @@ import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 public abstract class TRInvariantType extends TRType 
 {
@@ -15,12 +16,12 @@ public abstract class TRInvariantType extends TRType
     private TRExplicitFunctionDefinition eqdef;
     private TRExplicitFunctionDefinition orddef;
 
-    public TRInvariantType(LexLocation location, TRDefinitionList definitions, 
+    public TRInvariantType(TCType  vdmType, TRDefinitionList definitions, 
         TRExplicitFunctionDefinition invdef, 
         TRExplicitFunctionDefinition eqdef, 
         TRExplicitFunctionDefinition orddef)
     {
-        super(location, definitions);
+        super(vdmType, definitions);
 
         setInvariantDefinition(invdef);
         setEqualityDefinition(eqdef);
