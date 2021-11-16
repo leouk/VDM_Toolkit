@@ -162,8 +162,9 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			for (int i = 1; i < size(); i++)
 			{
 				//TODO workout whether to include before/after formatting separators? 
-				sb.append(getSemanticSeparator());
-				sb.append(getFormattingSeparator());
+				//sb.append(getSemanticSeparator());
+				//sb.append(getFormattingSeparator());
+				sb.append("\n\t\t");
 				sb.append(get(i).toString());
 			}
 		}

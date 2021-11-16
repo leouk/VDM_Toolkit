@@ -38,7 +38,7 @@ public class TRVariableExpression extends TRExpression
 		else
 			// mark as local, even if TRExplicitFunctionDefinition
 			this.vardef.local = true;
-		System.out.println(toString());
+		//System.out.println(toString());
 	}
 
 	@Override
