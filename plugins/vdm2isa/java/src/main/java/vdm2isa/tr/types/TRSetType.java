@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSetType;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
@@ -20,21 +21,21 @@ public class TRSetType extends TRType
      * @param seqof
      * @param seq1
      */
-    public TRSetType(LexLocation location, TRDefinitionList definitions, TRType setof, boolean set1)
+    public TRSetType(TCType vdmType, TRDefinitionList definitions, TRType setof, boolean set1)
     {
-        super(location, definitions);
+        super(vdmType, definitions);
         this.setof = setof;
         this.set1 = set1;
     }
 
     public TRSetType(TCSetType owner, TRDefinitionList definitions, TRType setof)    
     {
-       this(owner.location, definitions, setof, false);
+       this(owner, definitions, setof, false);
     }
 
     public TRSetType(TCSet1Type owner, TRDefinitionList definitions, TRType setof)    
     {
-        this(owner.location, definitions, setof, true);
+        this(owner, definitions, setof, true);
     }
 
     @Override

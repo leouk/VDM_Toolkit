@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCRecordType;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
@@ -22,9 +24,9 @@ public class TRRecordType extends TRInvariantType
 
     private final static Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
 
-    public TRRecordType(TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    public TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
-        super(name.getLocation(), definitions, invdef, eqdef, orddef);
+        super(vdmType, definitions, invdef, eqdef, orddef);
         this.name = name;
         this.fields = fields;
         this.composed = composed;

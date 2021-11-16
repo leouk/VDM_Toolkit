@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -12,9 +14,9 @@ public class TRUnionType extends TRType {
     private TRTypeSet types; 
     private boolean expanded = false;
     
-    public TRUnionType(LexLocation location, TRDefinitionList definitions, TRTypeSet types)
+    public TRUnionType(TCUnionType vdmType, TRDefinitionList definitions, TRTypeSet types)
 	{
-		super(location, definitions);
+		super(vdmType, definitions);
 		this.types = types;
         //TODO not sure whether this is needed, given the TRTypeSet passed will already have been 
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need

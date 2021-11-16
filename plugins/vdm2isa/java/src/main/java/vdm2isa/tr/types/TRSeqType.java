@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSeqType;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
@@ -20,21 +21,21 @@ public class TRSeqType extends TRType
      * @param seqof
      * @param seq1
      */
-    public TRSeqType(LexLocation location, TRDefinitionList definitions, TRType seqof, boolean seq1)
+    public TRSeqType(TCType vdmType, TRDefinitionList definitions, TRType seqof, boolean seq1)
     {
-        super(location, definitions);
+        super(vdmType, definitions);
         this.seqof = seqof;
         this.seq1 = seq1;
     }
 
     public TRSeqType(TCSeqType owner, TRDefinitionList definitions, TRType seqof)    
     {
-        this(owner.location, definitions, seqof, false);
+        this(owner, definitions, seqof, false);
     }
 
     public TRSeqType(TCSeq1Type owner, TRDefinitionList definitions, TRType seqof)    
     {
-        this(owner.location, definitions, seqof, true);
+        this(owner, definitions, seqof, true);
     }
 
     @Override

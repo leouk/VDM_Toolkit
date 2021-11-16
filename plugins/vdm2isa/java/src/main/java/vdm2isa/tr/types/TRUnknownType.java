@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.tc.types.TCUnknownType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
@@ -16,12 +18,12 @@ public class TRUnknownType extends TRType {
 
     public TRUnknownType(LexLocation location)
     {
-        super(location);
+        this(location, null);
     }
 
     public TRUnknownType(LexLocation location, TRDefinitionList definitions)
     {
-        super(location, definitions);
+        super(new TCUnknownType(location), definitions);
     }
 
     @Override

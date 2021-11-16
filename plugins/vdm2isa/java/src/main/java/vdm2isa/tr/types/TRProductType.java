@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCProductType;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -12,9 +14,9 @@ public class TRProductType extends TRType {
 
     public final TRTypeList types;
 
-    public TRProductType(LexLocation location, TRDefinitionList definitions, TRTypeList types)
+    public TRProductType(TCProductType vdmType, TRDefinitionList definitions, TRTypeList types)
     {
-        super(location, definitions);
+        super(vdmType, definitions);
         this.types = types;
         this.types.setCurried(false);
     }

@@ -10,6 +10,8 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCBooleanType;
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 public class TRFunctionType extends TRType
@@ -19,7 +21,7 @@ public class TRFunctionType extends TRType
 	public final boolean partial;
 	public final TRType result;
 	
-	public TRFunctionType(TCType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
+	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
 	{
 		//NB tried to get definitions through this one, and got NPEs all over during mappings conversion!
 		super(vdmType, definitions);

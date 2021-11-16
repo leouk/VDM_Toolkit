@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCOptionalType;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -9,11 +11,11 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TROptionalType extends TRType {
     private static final long serialVersionUID = 1L;
     
-    private final TRType type; 
-    
-    public TROptionalType(LexLocation location, TRDefinitionList definitions, TRType type)
+    protected final TRType type;
+
+    public TROptionalType(TCOptionalType vdmType, TRDefinitionList definitions, TRType type)
     {
-        super(location, definitions);
+        super(vdmType, definitions);
         this.type = type;
     }
 

@@ -29,7 +29,7 @@ abstract public class TRType extends TRNode
 	{
 		super(vdmType.location);
 		this.vdmType = vdmType;
-		this.definitions = definitions;
+		this.definitions = definitions == null ? new TRDefinitionList() : definitions;
 	}
 
 	@Override
@@ -51,6 +51,10 @@ abstract public class TRType extends TRNode
 		return new TRTypeList();
 	}
 
+	public TRDefinitionList getDefinitions()
+	{
+		return definitions;
+	}
 
 	@Override
 	public String toString()
@@ -104,4 +108,8 @@ abstract public class TRType extends TRNode
 	public TCType getVDMType() {
 		return vdmType;
 	}
+
+	public boolean isNumericType() {
+        return false;
+    }
 }

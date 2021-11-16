@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCNamedType;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -19,9 +21,9 @@ public class TRNamedType extends TRInvariantType
      */
     private boolean atTLD;
     
-    public TRNamedType(TCNameToken typename, TRDefinitionList definitions, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    public TRNamedType(TCNamedType vdmType, TCNameToken typename, TRDefinitionList definitions, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
-        super(typename.getLocation(), definitions, invdef, eqdef, orddef);
+        super(vdmType, definitions, invdef, eqdef, orddef);
         this.typename = typename;
         this.type = type;
         this.atTLD = false;

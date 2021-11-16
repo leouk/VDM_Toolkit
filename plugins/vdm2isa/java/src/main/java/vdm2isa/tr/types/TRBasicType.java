@@ -29,15 +29,20 @@ public class TRBasicType extends TRType
 	private static final long serialVersionUID = 1L;
 	private final IsaToken token;
 
-	private static final Set<IsaToken> VALID_TOKENS = new HashSet<IsaToken>(
+	public static final Set<IsaToken> VALID_TOKENS = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 					  IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
 					  IsaToken.CHAR, IsaToken.TOKEN)); 
 
-	private static final Set<IsaToken> ORDERED_TYPES = new HashSet<IsaToken>(
+	public static final Set<IsaToken> ORDERED_TYPES = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 						IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
 						IsaToken.CHAR, IsaToken.TOKEN)); 
+
+	public static final Set<IsaToken> NUMERIC_TYPES = new HashSet<IsaToken>(
+		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
+						IsaToken.RAT, IsaToken.REAL)); 
+
 	/**
 	 * Constructor useful for synthetically constructed types 
 	 * @param location
@@ -132,26 +137,29 @@ public class TRBasicType extends TRType
 		return visitor.caseBasicType(this, arg);
 	}
 
-	public static TRType newBasicType(LexLocation location, IsaToken token)  
+	public boolean isNumericType() {
+        return NUMERIC_TYPES.contains(isaToken());
+    }
+
+	public static TRType newBasicType(TCType vdmType, IsaToken token)  
 	{
-		return new TRBasicType(location, new TRDefinitionList(), token);
+		return new TRBasicType(vdmType, new TRDefinitionList(), token);
 	}
 
 	public static TRType boolType(LexLocation location)  
 	{
-		return newBasicType(location, IsaToken.BOOL);
+		return newBasicType(new TCBooleanType(location), IsaToken.BOOL);
 	}
 
 	public static TRType natType(LexLocation location) {
-		return newBasicType(location, IsaToken.NAT);
+		return newBasicType(new TCNaturalType(location), IsaToken.NAT);
 	}
 
 	public static TRType charType(LexLocation location) {
-		return newBasicType(location, IsaToken.CHAR);
+		return newBasicType(new TCCharacterType(location), IsaToken.CHAR);
 	}
 
 	public static TRType nat1Type(LexLocation location) {
-		return newBasicType(location, IsaToken.NAT1);
+		return newBasicType(new TCNaturalOneType(location), IsaToken.NAT1);
 	}
-
 }
