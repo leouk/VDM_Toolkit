@@ -169,9 +169,9 @@ public class TRBinaryExpression extends TRExpression
 		if (!result)
 		{
 			result = args[0].getType().compatible(type);
-			for(int i = 0; i < args.length && !result; i++)
+			for(int i = 1; i < args.length && result; i++)
 			{
-				
+				result = result && args[i].getType().compatible(type);				
 			}
 		}
 		return result;

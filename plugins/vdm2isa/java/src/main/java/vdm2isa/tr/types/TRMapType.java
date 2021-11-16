@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCInMapType;
 import com.fujitsu.vdmj.tc.types.TCMapType;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -15,22 +16,22 @@ public class TRMapType extends TRType
 	public final TRType to;
     public final boolean injective;
 
-    public TRMapType(LexLocation location, TRDefinitionList definitions, TRType from, TRType to, boolean injective)
+    public TRMapType(TCType vdmType, TRDefinitionList definitions, TRType from, TRType to, boolean injective)
 	{
-        super(location, definitions);
+        super(vdmType, definitions);
         this.from = from;
         this.to = to;
         this.injective = injective;
     }
 
-	public TRMapType(TCMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
+	public TRMapType(TCMapType owner, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		this(location, definitions, from, to, false);
+		this(owner, definitions, from, to, false);
 	}
 
-	public TRMapType(TCInMapType owner, LexLocation location, TRDefinitionList definitions, TRType from, TRType to)
+	public TRMapType(TCInMapType owner, TRDefinitionList definitions, TRType from, TRType to)
 	{
-		this(location, definitions, from, to, true);
+		this(owner, definitions, from, to, true);
 	}
 
     @Override
