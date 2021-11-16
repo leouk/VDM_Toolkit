@@ -23,11 +23,12 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression predicate, TRDefinition def, TRType exptype) {
         super(location, first, bindings, predicate, def, exptype);
 
+        //bindings.getBindingsExpression();
         this.mapComp = null;
         // this.mapComp = new TRLambdaExpression(
         //     location, bindings, expression, type, paramPatterns, paramDefinitions, 
         //     def, getMapletExpr().getType());//? or exptype?
-        // this.mapComp.isMapComp = true;
+        this.mapComp.isMapComp = true;
     }
 
     public TRMapletExpression getMapletExpr()
@@ -53,8 +54,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     @Override
     public String translate() {
-        // TODO Auto-generated method stub
-        return null;
+       return this.mapComp.translate();
     }
     
 }
