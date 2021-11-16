@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.ast.lex.LexToken;
+import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
@@ -191,44 +193,72 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return sb.toString();
     }
 
-	private TRExpression patternExpression(TRPattern p, LexToken op, TRExpression rhs)
+	private TRExpression patternExpression(TRPattern p, /*LexToken op,*/ TRExpression rhs)
 	{
-		assert TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && IsaToken.from(op).equals(IsaToken.INSET);
-		return null;
-		//TRBinaryExpression.newBooleanChain(op, args)
-		// return new TRBinaryExpression(
-		// 			TRVariableExpression.newVariableExpr(p.location, name, original, exptype), op, rhs, 
-		// 			TRBasicType.boolType(p.getLocation()));
+		assert 
+		//TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && 
+//				IsaToken.from(op).equals(IsaToken.INSET) &&
+				rhs.getType() instanceof TRSetType;
+		TRSetType stype = (TRSetType)rhs.getType();
+		// p in set RHS
+		return new TRBinaryExpression(
+					TRVariableExpression.newVariableExpr(p.location, p.getPattern(), stype.setof), 
+					new LexKeywordToken(Token.INSET, p.location),/*op //IsaToken.INSET,*/ 
+					rhs,
+					TRBasicType.boolType(p.getLocation()));
 	}
 
 	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)
 	{
-		TRExpression result;
-		return null;
+		assert plist != null && plist.size() > 0;
+		TRExpression[] exprs = new TRExpression[plist.size()];
+		for(int i = 0; i < plist.size(); i++)
+		{
+			exprs[i] = patternExpression(plist.get(i), rhs);
+		}
+		// plist(1) in set RHS and ... plist(n) in set RHS as a chained boolean AND 
+		return TRBinaryExpression.newBooleanChain(new LexKeywordToken(Token.AND, plist.getLocation()), exprs);
 	}
 
 	private TRExpression bindingExpression(int index)
 	{
 		assert index >= 0 && index < size() && !(get(index) instanceof TRMultipleTypeBind);
 		TRMultipleBind b = get(index);
-		TRType btype;
+		TRExpression rhs;
+		//TRType btype;
+		TRPatternList plist;
 		if (b instanceof TRMultipleSetBind)
 		{
 			TRMultipleSetBind bset = (TRMultipleSetBind)b;
-			TRExpression rhs = (TRExpression)bset.getRHS();
+			rhs = (TRExpression)bset.getRHS();
 			TRSetType stype = (TRSetType)rhs.getType();
-			btype = stype.setof;
+			//btype = stype.setof;
 			assert !bset.plist.isEmpty();
+			plist = bset.plist;
 		}
 		else if (b instanceof TRMultipleSeqBind)
 		{
 			TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
-			TRExpression rhs = (TRExpression)bseq.getRHS();
+			rhs = (TRExpression)bseq.getRHS();
 			TRSeqType stype = (TRSeqType)rhs.getType();
-			btype = stype.seqof;
+			//btype = stype.seqof;
 			assert !bseq.plist.isEmpty();
+			plist = bseq.plist;
 		}
-		TRExpression result = null;
+		else
+		{
+			// error? imposible to reach?
+			plist = TRPatternList.newPatternList((TRPattern[])null);
+			rhs = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), false);
+			//btype = TRBasicType.boolType(getLocation());
+			//TODO report VDMSL error?
+		}
+		// should never allow empty pattern?
+		TRExpression result;
+		if (plist != null && plist.size() > 0)
+			result = patternListExpression(plist, rhs);
+		else 
+			result = rhs;
 		return result;				
 	}
 
@@ -241,15 +271,17 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			SortedSet<Integer> binding_indices_of_interest = new TreeSet<Integer>();
 			for(int i = 0; i < size(); i++) { binding_indices_of_interest.add(i); }
 			binding_indices_of_interest.removeAll(structure.get(TRMultipleBindKind.TYPE));
-
 			if (!binding_indices_of_interest.isEmpty())
 			{
 				Iterator<Integer> indices = binding_indices_of_interest.iterator();
-				
+				TRExpression[] exprs = new TRExpression[binding_indices_of_interest.size()];
+				int i = 0;
 				while (indices.hasNext())
 				{
-					indices.next();
+					exprs[i] = bindingExpression(indices.next());
+					i++;
 				}
+				result = TRBinaryExpression.newBooleanChain(new LexKeywordToken(Token.AND, getLocation()), exprs);
 			}
 		}
 		else
