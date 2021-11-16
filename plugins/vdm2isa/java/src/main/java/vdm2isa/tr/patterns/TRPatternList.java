@@ -142,10 +142,16 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		return list.translate();	
 	}
 
+	/**
+	 * Allow for null parameters to allow for empty patterns in TRExpression.getPatternListList? 
+	 * @param args
+	 * @return
+	 */
 	public static TRPatternList newPatternList(TRPattern... args)
 	{
 		TRPatternList list = new TRPatternList();
-		list.addAll(Arrays.asList(args));
+		if (args != null)
+			list.addAll(Arrays.asList(args));
 		return list;	
 	}
 }

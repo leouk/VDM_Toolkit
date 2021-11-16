@@ -18,15 +18,18 @@ public class TRProofScriptStepDefinitionList extends TRDefinitionList {
     public static TRProofScriptStepDefinitionList proofScript(TRDefinition... args)
     {
         TRProofScriptStepDefinitionList result = new TRProofScriptStepDefinitionList();
-        List<TRDefinition> list = Arrays.asList(args);
-        for(TRDefinition d : list)
+        if (args != null)
         {
-            if (d instanceof TRProofScriptStepDefinition)
-                result.add((TRProofScriptStepDefinition)d);
-            else if (d instanceof TRBasicProofScriptStepDefinition)
-                result.add((TRBasicProofScriptStepDefinition)d);
-            else
-                IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getSimpleName());
+            List<TRDefinition> list = Arrays.asList(args);
+            for(TRDefinition d : list)
+            {
+                if (d instanceof TRProofScriptStepDefinition)
+                    result.add((TRProofScriptStepDefinition)d);
+                else if (d instanceof TRBasicProofScriptStepDefinition)
+                    result.add((TRBasicProofScriptStepDefinition)d);
+                else
+                    IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getSimpleName());
+            }
         }
         return result;
     }

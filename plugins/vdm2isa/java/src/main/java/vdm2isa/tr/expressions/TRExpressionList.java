@@ -51,7 +51,9 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	public static String translate(TRExpression... args)
 	{
 		TRExpressionList list = new TRExpressionList();
-		list.addAll(Arrays.asList(args));
+		if (args != null)
+			list.addAll(Arrays.asList(args));
 		return list.translate();	
 	}
+
 }

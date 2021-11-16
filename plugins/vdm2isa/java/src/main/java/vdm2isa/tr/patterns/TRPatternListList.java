@@ -134,7 +134,8 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public static TRPatternListList newPatternListList(TRPatternList... args)
 	{
 		TRPatternListList list = new TRPatternListList();
-		list.addAll(Arrays.asList(args));
+		if (args != null)
+			list.addAll(Arrays.asList(args));
 		return list;	
 	}
 

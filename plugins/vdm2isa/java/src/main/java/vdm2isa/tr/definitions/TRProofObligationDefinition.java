@@ -116,7 +116,8 @@ public class TRProofObligationDefinition extends TRDefinition {
     public static TRDefinitionList asProofScriptDefinitionList(TRProofScriptDefinition args)
 	{
 		TRDefinitionList result = new TRDefinitionList();
-		result.addAll(Arrays.asList(args));
+		if (args != null)
+            result.addAll(Arrays.asList(args));
 		return result;
 	}
 
