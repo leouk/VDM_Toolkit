@@ -54,7 +54,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     @Override
     public String translate() {
-       return this.mapComp.translate();
+       return "";//this.mapComp.translate();
     }
     
 }
