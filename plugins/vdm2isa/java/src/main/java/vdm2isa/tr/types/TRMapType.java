@@ -80,4 +80,9 @@ public class TRMapType extends TRType
 	{
 		return visitor.caseMapType(this, arg);
 	}
+
+    public TRFunctionType getFunctionType()
+    {
+        return TRFunctionType.getIsabelleMapType(this);
+    } 
 }

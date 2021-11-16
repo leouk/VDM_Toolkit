@@ -116,15 +116,6 @@ public class TRFunctionType extends TRType
 		}
 	}
 
-//	TRFunctionType invType = new TRFunctionType(this.type.getVDMType(), , TRTypeList.newTypeList(paramType));
-
-	public static TRFunctionType getInvariantType(TRType paramType)
-	{
-		TRTypeList typeList = TRTypeList.newTypeList(paramType);
-		TCFunctionType vdmFcnType = new TCFunctionType(paramType.getLocation(), typeList.getVDMTypeList(), false, new TCBooleanType(paramType.location));
-		return new TRFunctionType(vdmFcnType, paramType.getDefinitions(), typeList, false, TRBasicType.boolType(paramType.getLocation()));
-	}
-
 	public TRFunctionType getInvariantType() {
 		return new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, partial, TRBasicType.boolType(location));
 	}
@@ -142,4 +133,25 @@ public class TRFunctionType extends TRType
     public TRFunctionType getUnknownType() {
         return new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, partial, TRExpression.unknownType(location));
     }
+
+	public static TRFunctionType getInvariantType(TRType paramType)
+	{
+		TRTypeList typeList = TRTypeList.newTypeList(paramType);
+		TCFunctionType vdmFcnType = new TCFunctionType(paramType.getLocation(), typeList.getVDMTypeList(), false, new TCBooleanType(paramType.location));
+		return new TRFunctionType(vdmFcnType, paramType.getDefinitions(), typeList, false, TRBasicType.boolType(paramType.getLocation()));
+	}
+
+	/**
+	 * Given a TRMapType (e.g. map X to Y = X \<righrupharpoon> Y), get an Isabelle optional typed function result (e.g. X => Y option) 
+	 * @param mapType
+	 * @return
+	 */
+	public static TRFunctionType getIsabelleMapType(TRMapType mapType)
+	{
+		TRTypeList typeList = TRTypeList.newTypeList(mapType.from);
+		TROptionalType resultType = TROptionalType.newOptionalType(mapType.to);
+		TCFunctionType vdmFcnType = new TCFunctionType(mapType.getLocation(), typeList.getVDMTypeList(), true, resultType.getVDMType());
+		return new TRFunctionType(vdmFcnType, mapType.getDefinitions(), typeList, false, resultType);
+	}
+
 }
