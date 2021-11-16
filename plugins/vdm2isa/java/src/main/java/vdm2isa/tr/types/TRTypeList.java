@@ -126,6 +126,16 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return new TRTypeList(this); 
 	}
 
+	public TCTypeList getVDMTypeList()
+	{
+		TCTypeList result = new TCTypeList();
+		for(TRType t : this)
+		{
+			result.add(t.getVDMType());
+		}
+		return result;
+	}
+
 	public static String translate(TRType... args)
 	{
 		TRTypeList list = new TRTypeList();

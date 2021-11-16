@@ -6,8 +6,10 @@ import java.util.TreeSet;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.Mappable;
+import com.fujitsu.vdmj.tc.types.TCOptionalType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
+import com.fujitsu.vdmj.tc.types.TCUnionType;
 import com.fujitsu.vdmj.util.Utils;
 
 import vdm2isa.lex.IsaToken;
@@ -51,7 +53,7 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 			// we ignore the TRSeq1Type.
 			
 			TRSeqType s1t = (TRSeqType)t;
-			TRSeqType st = new TRSeqType(s1t.location, s1t.definitions, s1t.seqof, s1t.seq1);
+			TRSeqType st = new TRSeqType(s1t.getVDMType(), s1t.definitions, s1t.seqof, s1t.seq1);
 			
 			if (contains(st))
 			{
@@ -64,7 +66,7 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 			// we ignore the TRSet1Type.
 			
 			TRSetType s1t = (TRSetType)t;
-			TRSetType st = new TRSetType(s1t.location, s1t.definitions, s1t.setof, s1t.set1);
+			TRSetType st = new TRSetType(s1t.getVDMType(), s1t.definitions, s1t.setof, s1t.set1);
 			
 			if (contains(st))
 			{
@@ -72,34 +74,33 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 			}
 		}
         //TODO this needs further investigation 
-		// else if (t instanceof TRNumericType)
-		// {
-		// 	for (TRType x: this)
-		// 	{
-		// 		if (x instanceof TRNumericType)
-		// 		{
-		// 			if (x.getNumeric().getWeight() < t.getNumeric().getWeight())
-		// 			{
-		// 				remove(x);
-		// 				break;
-		// 			}
-		// 			else
-		// 			{
-		// 				return false;	// Was already there
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// else if (t instanceof TROptionalType)
-		// {
-		// 	TROptionalType opt = (TROptionalType)t;
+		else if (t instanceof TRBasicType && ((TRBasicType)t).isNumericType())
+		{
+			for (TRType x : this)
+			{
+				if (x.isNumericType())
+				{
+					if (x.getVDMType().getNumeric().getWeight() < x.getVDMType().getNumeric().getWeight())
+					{
+						remove(x);
+						break;
+					}
+					else
+					{
+						return false;	// Was already there
+					}
+				}
+			}
+		}
+		else if (t instanceof TROptionalType)
+		{
+			TROptionalType opt = (TROptionalType)t;
 			
-		// 	if (!opt.type.isUnknown(opt.type.location) && contains(opt.type))
-		// 	{
-		// 		remove(opt.type);	// Because T | [T] = [T]
-		// 	}
-		// }
-		
+			if (!opt.getVDMType().isUnknown(opt.getVDMType().location) && contains(opt.type))
+			{
+				remove(opt.type);	// Because T | [T] = [T]
+			}
+		}
 		return super.add(t);
 	}
 
@@ -114,21 +115,29 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 		// If there are any Optional(Unknowns) these are the result of
 		// nil values, which set the overall type as optional. Other
 		// optional types stay.
-
 		boolean optional = false;
 		assert this.size() > 0 : "Getting type of empty TypeSet";
-		TRType result = null;
-
-		if (this.size() == 1)
+		TRType result = iterator().next();
+		if (this.size() > 1)
 		{
-			result = iterator().next();
+			TCTypeSet typeSet = new TCTypeSet();
+			for(TRType t : this)
+			{
+				typeSet.add(t.getVDMType());
+			}
+			result = new TRUnionType(new TCUnionType(location, typeSet), result.definitions, this);
 		}
-		else
-		{
-			result = new TRUnionType(location, null, this);
-		}
+		return (optional ? new TROptionalType(new TCOptionalType(location, result.getVDMType()), result.definitions, result) : result);
+	}
 
-		return (optional ? new TROptionalType(location, null, result) : result);
+	public TCTypeSet getVDMTypeSet()
+	{
+		TCTypeSet result = new TCTypeSet();
+		for(TRType t : this)
+		{
+			result.add(t.getVDMType());
+		}
+		return result;
 	}
 
 	public TRTypeList getComposeTypes()
