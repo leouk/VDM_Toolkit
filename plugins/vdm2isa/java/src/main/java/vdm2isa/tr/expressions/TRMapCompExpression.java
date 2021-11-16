@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
 
 /**
@@ -13,6 +14,23 @@ import vdm2isa.tr.types.TRType;
  *      { x |-> free-y | x in set S & P(x, free-y) }
  *      =
  *      (lambda x: typeOf(S) & if inv_typeOf(S) x and x in set S and P(x,free-y) then free-y else nil) 
+ * 
+ * More generally 
+ *      { first.dom |-> first.range | bindings & predicate }
+ *      =
+ *      (% dummy0::typeOf(first.dom) . 
+ *          if bindings.getBindingExpression() /\ predicate /\ dummy0 = first.dom then
+ *              Some (dummy1::typeOf(first.range))
+ *          else
+ *              None
+ *      )
+ * More concretely
+ *      { x+y |-> z | x in set R, y in set S, z in set T }
+ *      =
+ *      (% (dummy::VDMNat1) . 
+ *          if  (? x y z . x : R /\ y : S /\ z : T /\ dummy = x+y) then
+ *              
+ *      )
  */
 public class TRMapCompExpression extends TRAbstractCompExpression {
 
@@ -24,11 +42,18 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         super(location, first, bindings, predicate, def, exptype);
 
         //bindings.getBindingsExpression();
-        this.mapComp = null;
-        // this.mapComp = new TRLambdaExpression(
-        //     location, bindings, expression, type, paramPatterns, paramDefinitions, 
-        //     def, getMapletExpr().getType());//? or exptype?
+        // LexLocation location, TRTypeBindList bindList, TRExpression expression,
+        // TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def,
+        // TRType exptype
+        this.mapComp = new TRLambdaExpression(
+             location, null/*bindings*/, null/*expression */, getMapType().getFunctionType(), null, null, 
+             def, getMapletExpr().getType());
         this.mapComp.isMapComp = true;
+    }
+
+    public TRMapType getMapType()
+    {
+        return (TRMapType)exptype;
     }
 
     public TRMapletExpression getMapletExpr()

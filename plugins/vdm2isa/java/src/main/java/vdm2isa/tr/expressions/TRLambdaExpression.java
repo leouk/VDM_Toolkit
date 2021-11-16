@@ -1,11 +1,15 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRMultiBindListDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.patterns.TRMultipleTypeBind;
 import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
@@ -41,7 +45,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             this.paramDefinitions.setLocal(true);
         this.def = def;
         this.isMapComp = false;
-        //System.out.println(toString());
+        System.out.println(toString());
     }
 
     @Override
@@ -122,6 +126,8 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     public String localInvTranslate()
     {
+        //TODO perhaps now use bindings within TRDefinition TRMultiBindListDefinition,
+        //     ((TRMultiBindListDefinition)def).getBindings().getBindingsExpression().invTranslate()?
         return bindList.invTranslate();
     }
 
@@ -130,4 +136,28 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 	{
 		return visitor.caseLambdaExpression(this, arg);
 	}
+
+    public static TRLambdaExpression newLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
+        TRFunctionType type, TRDefinition def, TRType exptype)
+    {
+        TRMultipleBindList mbinds = new TRMultipleBindList();
+        TRPatternList paramPatterns; 
+        TRDefinitionList paramDefinitions = new TRDefinitionList();
+        // TRMultiBindListDefinition def = null;//new TRMultiBindListDefinition(); 
+        // for (TRMultipleTypeBind tb : bindList)
+		// {
+		// 	mbinds.addAll(tb.getMultipleBindList());
+        //     tb.plist
+		// 	paramDefinitions.addAll(tb.pattern.getDefinitions(tb.type, NameScope.LOCAL));
+		// 	paramPatterns.add(tb.pattern);
+		// 	ptypes.add(tb.type);
+		// }
+
+        // return new TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, 
+        //             new TRMultiBindListDefinition(location, null, null, null, NameScope.LOCAL, true, false, ), exptype);
+
+        //             public TRMultiBindListDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+        //             TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRMultipleBindList bindings, TRDefinitionList defs)
+        return null;    
+    }
 }
