@@ -5,6 +5,8 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.typechecker.TypeComparator;
 
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -15,16 +17,18 @@ abstract public class TRType extends TRNode
 {
 	private static final long serialVersionUID = 1L;
 
-	public TRDefinitionList definitions; 
+	private final TCType vdmType;
+	protected TRDefinitionList definitions; 
 
-	public TRType(LexLocation location)
+	protected TRType(TCType vdmType)
 	{
-	 	this(location, new TRDefinitionList());
+	 	this(vdmType, new TRDefinitionList());
 	}
 
-	public TRType(LexLocation location, TRDefinitionList definitions)
+	public TRType(TCType vdmType, TRDefinitionList definitions)
 	{
-		super(location);
+		super(vdmType.location);
+		this.vdmType = vdmType;
 		this.definitions = definitions;
 	}
 
@@ -92,4 +96,12 @@ abstract public class TRType extends TRNode
 
 	public abstract <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg);
 
+    public boolean compatible(TRType type) {
+        return TypeComparator.compatible(type.getVDMType(), getVDMType());
+
+    }
+
+	public TCType getVDMType() {
+		return vdmType;
+	}
 }

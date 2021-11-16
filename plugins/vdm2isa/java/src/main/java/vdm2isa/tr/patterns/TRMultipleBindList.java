@@ -21,7 +21,11 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
+import vdm2isa.tr.expressions.TRVariableExpression;
 import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRSeqType;
+import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
 {
@@ -189,7 +193,9 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	private TRExpression patternExpression(TRPattern p, LexToken op, TRExpression rhs)
 	{
 		assert TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && IsaToken.from(op).equals(IsaToken.INSET);
-		return null;//return new TRBinaryExpression(lhs, op, rhs, TRBasicType.boolType(p.getLocation()));
+		return new TRBinaryExpression(
+					TRVariableExpression.newVariableExpr(p.location, name, original, exptype), op, rhs, 
+					TRBasicType.boolType(p.getLocation()));
 	}
 
 	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)
@@ -202,20 +208,27 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	{
 		assert index >= 0 && index < size() && !(get(index) instanceof TRMultipleTypeBind);
 		TRMultipleBind b = get(index);
+		TRType btype;
 		if (b instanceof TRMultipleSetBind)
 		{
 			TRMultipleSetBind bset = (TRMultipleSetBind)b;
 			TRExpression rhs = (TRExpression)bset.getRHS();
+			TRSetType stype = (TRSetType)rhs.getType();
+			btype = stype.setof;
 			assert !bset.plist.isEmpty();
-
 		}
 		else if (b instanceof TRMultipleSeqBind)
 		{
 			TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
+			TRExpression rhs = (TRExpression)bseq.getRHS();
+			TRSeqType stype = (TRSeqType)rhs.getType();
+			btype = stype.seqof;
+			assert !bseq.plist.isEmpty();
 		}
-		TRExpression result;
-		return null;//result;				
+		TRExpresion result;
+		return result;				
 	}
+
 	public TRExpression getBindingsExpression()
 	{
 		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), true);
