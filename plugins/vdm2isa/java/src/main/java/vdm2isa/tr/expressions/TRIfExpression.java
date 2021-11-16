@@ -12,6 +12,7 @@ import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRTypeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 public class TRIfExpression extends TRExpression
 {
@@ -42,8 +43,8 @@ public class TRIfExpression extends TRExpression
 	@Override
 	protected TRType getBestGuessType()
 	{
-		return new TRUnionType(location, new TRDefinitionList(), 
-			new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType()));
+		TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType());
+		return new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), new TRDefinitionList(), typeSet);
 	}
 
 	@Override 

@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -27,7 +28,10 @@ public class TRElseIfExpression extends TRExpression {
 	@Override
 	protected TRType getBestGuessType()
 	{
-		return new TRUnionType(location, new TRDefinitionList(), 
+        //NB what is the right VDM type for the elseif union?
+        TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseIfExp.getType());
+		return new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), 
+            new TRDefinitionList(), 
 			new TRTypeSet(thenExp.getType(), elseIfExp.getType()));
 	}
 

@@ -119,12 +119,11 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             // at first pass, this is created with null type ?
             if (needsImplicitlyGeneratedUndeclaredSpecification() && !nameDefKind.equals(TRNamedTypeDefinitionKind.UNKNOWN))//&& this.type != null)
             {
-                assert type != null; // wt...?!
+                assert this.type != null; // wt...?!
                 // the invariant type parameter is the TRInvariantType projected: inner type if named; itself if record
                 TRType paramType = figureOutInvariantType();
                 
-                //TODO in a way, because of how TRFunctionType already works, this is somewhat redundant? 
-                TRFunctionType invType = new TRFunctionType(location, type.definitions, TRTypeList.newTypeList(paramType), false, TRBasicType.boolType(location));
+                TRFunctionType invType = TRFunctionType.getInvariantType(paramType);
                 TRPatternListList parameters = TRPatternListList.newPatternListList(TRBasicPattern.dummyPattern(location));
                 this.invdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(
                     //TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TCNameList typeParams, 
