@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-14T16:33:06.449739Z
+(* VDM to Isabelle Translation @2021-11-16T12:07:17.789135Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2I' (./src/test/resources/TestV2I.vdmsl) at line 7:5
@@ -31,7 +31,7 @@ theorem mkr_SUB_TYPE:
 theorem recbindSpec_FUNC_POST_CONDITION:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (dummy0 :: R)  . ((( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<longrightarrow> ((pre_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<longrightarrow> (post_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>  (x + y))))))"
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<longrightarrow> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in ((pre_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<longrightarrow> (post_recbindSpec \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>  (x + y)))))))"
 	
 	oops
 	
@@ -42,7 +42,7 @@ theorem letbest_LET_BE_EXISTS:
 	"((\<exists> (dummy0 :: R)  . (((
 		 (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
 		 ((inv_VDMNat (y\<^sub>R dummy0)))
-		 ))) \<longrightarrow> (x > y))))"
+		 ))) \<longrightarrow> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)))))"
 	
 	oops
 	
@@ -148,6 +148,13 @@ theorem v73_UNIQUE_EXISTENCE:
 	
 	
 	
+theorem v731_UNIQUE_EXISTENCE:
+	"((\<exists>! dummy0 \<in> {v65}  . (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x < y))))"
+	
+	oops
+	
+	
+	
 theorem v80_LET_BE_EXISTS:
 	"((\<exists> x \<in> t9  . (\<exists> y \<in> t9  . ((x > (2::VDMNat1)) \<and> (y < x)))))"
 	
@@ -156,7 +163,7 @@ theorem v80_LET_BE_EXISTS:
 	
 	
 theorem v801_LET_BE_EXISTS:
-	"((\<exists> dummy0 \<in> {v65}  . (x < y)))"
+	"((\<exists> dummy0 \<in> {v65}  . (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x < y))))"
 	
 	oops
 	
@@ -196,6 +203,36 @@ theorem v93_SUB_TYPE:
 	
 theorem v93_CASES_EXHAUSTIVE:
 	"(((v37 = None) \<or> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> (v37 = v)))))"
+	
+	oops
+	
+	
+	
+theorem v94_MAP_SEQ_OF_COMPATIBLE:
+	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)], [(4::VDMNat1)\<mapsto>(5::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)], [(4::VDMNat1)\<mapsto>(5::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((the(m1 d3)) = (the(m2 d4)))))))))"
+	
+	oops
+	
+	
+	
+theorem v953_SUB_TYPE:
+	"((\<forall> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<forall> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (inv_R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>))))"
+	
+	oops
+	
+	
+	
+theorem v96_FINITE_MAP:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<exists> (finmap1 :: (VDMNat \<rightharpoonup> (VDMNat \<rightharpoonup> VDMNat1)))  . ((((inv_Map (inv_VDMNat) (inv_Map (inv_VDMNat) (inv_VDMNat1) null) finmap1))) \<longrightarrow> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((x < (10::VDMNat1)) \<longrightarrow> (\<exists> findex2 \<in> (dom finmap1)  . ((the(finmap1 findex2)) = [x\<mapsto>(10::VDMNat1)]))))))))"
+	
+	oops
+	
+	
+	
+theorem v961_FINITE_MAP:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<exists> (finmap1 :: (VDMNat \<rightharpoonup> (VDMNat1 \<rightharpoonup> VDMNat1)))  . ((((inv_Map (inv_VDMNat) (inv_Map (inv_VDMNat1) (inv_VDMNat1) null) finmap1))) \<longrightarrow> (\<forall> x :: VDMNat  . (\<forall> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((inv_VDMNat x)) \<and>  (y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}) \<longrightarrow> ((x < (10::VDMNat1)) \<longrightarrow> (\<exists> findex2 \<in> (dom finmap1)  . ((the(finmap1 findex2)) = [(x + y)\<mapsto>(10::VDMNat1)])))))))))"
 	
 	oops
 	

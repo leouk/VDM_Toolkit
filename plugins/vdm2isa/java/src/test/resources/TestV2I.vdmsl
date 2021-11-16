@@ -186,6 +186,6 @@ functions
 	v96() == { x |-> 10 | x: nat & x < 10 };
 
 	v961: () -> map nat to nat
-	v962() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
+	v961() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
 
 end TestV2I

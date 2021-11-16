@@ -223,7 +223,7 @@ map TCTypeList{} to TRTypeList(this);
 map TCTypeSet{} to TRTypeSet(this);
 map TCFieldList{} to TRFieldList(this);
 
-map TCFunctionType{location, definitions, parameters, partial, result} to TRFunctionType(location, definitions, parameters, partial, result);
+map TCFunctionType{definitions, parameters, partial, result} to TRFunctionType(this, definitions, parameters, partial, result);
 
 map TCNaturalOneType{definitions} to TRBasicType(this, definitions);
 map TCNaturalType{definitions} to TRBasicType(this, definitions);
@@ -234,20 +234,20 @@ map TCBooleanType{definitions} to TRBasicType(this, definitions);
 map TCCharacterType{definitions} to TRBasicType(this, definitions);
 map TCTokenType{definitions} to TRBasicType(this, definitions);
 
-map TCQuoteType{location, definitions, value} to TRQuoteType(location, definitions, value);
-map TCProductType{location, definitions, types} to TRProductType(location, definitions, types);
-map TCMapType{location, definitions, from, to} to TRMapType(this, location, definitions, from, to);
-map TCInMapType{location, definitions, from, to} to TRMapType(this, location, definitions, from, to);
-map TCNamedType{typename, definitions, type, invdef, eqdef, orddef} to TRNamedType(typename, definitions, type, invdef, eqdef, orddef);
-map TCRecordType{name, definitions, fields, composed, invdef, eqdef, orddef} to TRRecordType(name, definitions, fields, composed, invdef, eqdef, orddef);
+map TCQuoteType{definitions, value} to TRQuoteType(this, definitions, value);
+map TCProductType{definitions, types} to TRProductType(this, definitions, types);
+map TCMapType{definitions, from, to} to TRMapType(this, definitions, from, to);
+map TCInMapType{definitions, from, to} to TRMapType(this, definitions, from, to);
+map TCNamedType{typename, definitions, type, invdef, eqdef, orddef} to TRNamedType(this, typename, definitions, type, invdef, eqdef, orddef);
+map TCRecordType{name, definitions, fields, composed, invdef, eqdef, orddef} to TRRecordType(this, name, definitions, fields, composed, invdef, eqdef, orddef);
 map TCField{tagname, type, equalityAbstraction} to TRField(tagname, type, equalityAbstraction);
 map TCSetType{setof, definitions} to TRSetType(this, definitions, setof);
 map TCSet1Type{setof, definitions} to TRSetType(this, definitions, setof);
 map TCSeqType{seqof, definitions} to TRSeqType(this, definitions, seqof);
 map TCSeq1Type{seqof, definitions} to TRSeqType(this, definitions, seqof);
-map TCOptionalType{location, definitions, type} to TROptionalType(location, definitions, type);
+map TCOptionalType{definitions, type} to TROptionalType(this, definitions, type);
 map TCUnknownType{location, definitions} to TRUnknownType(location, definitions);
-map TCUnionType{location, definitions, types} to TRUnionType(location, definitions, types);
+map TCUnionType{definitions, types} to TRUnionType(this, definitions, types);
 
 #############################################################################
 # Classes that are not mapped

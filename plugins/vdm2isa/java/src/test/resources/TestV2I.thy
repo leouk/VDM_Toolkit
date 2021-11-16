@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-11-15T11:23:45.759Z
+(* VDM to Isabelle Translation @2021-11-16T12:07:21.912631Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl]
+in './src/test/resources/TestV2I.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit
@@ -1292,6 +1292,18 @@ where
 	
 	
 abbreviation
+	v731 :: "R"
+where
+	"v731 \<equiv> (THE dummy0. (((dummy0 \<in>{v65})) \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x < y))))"
+
+	definition
+	inv_v731 :: "\<bool>"
+where
+	"inv_v731  \<equiv> inv_R v731"
+
+	
+	
+abbreviation
 	v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> VDMNat"
 where
 	"v74 \<equiv> (
@@ -1506,6 +1518,18 @@ where
 	
 	
 abbreviation
+	v830 :: "VDMNat VDMSeq"
+where
+	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (_\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (_\<^sub>R dummy0) in ((0::VDMNat) < x)) ] \<comment>\<open>Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>{v65}\<close>}  has a VDM ord_ predicate.\<close> "
+
+	definition
+	inv_v830 :: "\<bool>"
+where
+	"inv_v830  \<equiv> (inv_VDMSeq' (inv_VDMNat) v830)"
+
+	
+	
+abbreviation
 	v84 :: "VDMNat1 VDMSeq"
 where
 	"v84 \<equiv> [ var . var \<leftarrow> t10 , ((var \<in>(elems t10))) , (var > (1::VDMNat1)) ]"
@@ -1680,47 +1704,59 @@ where
 
 	
 	
+abbreviation
+	v954 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v954 \<equiv> null"
+
+	definition
+	inv_v954 :: "\<bool>"
+where
+	"inv_v954  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v954)"
+
+	
+	
 
 definition
-	pre_v954 :: "\<bool>"
+	pre_v96 :: "\<bool>"
 where
-	"pre_v954  \<equiv> True"
+	"pre_v96  \<equiv> True"
 
 
 definition
-	post_v954 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
 where
-	"post_v954 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v954 specification\<close>
+	"post_v96 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v96 specification\<close>
 		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
 
 definition
-	v954 :: "(VDMNat \<rightharpoonup> VDMNat)"
+	v96 :: "(VDMNat \<rightharpoonup> VDMNat)"
 where
-	"v954  \<equiv> 
-	\<comment>\<open>User defined body of v954\<close>
+	"v96  \<equiv> 
+	\<comment>\<open>User defined body of v96\<close>
 	null"
 
 	
 
 definition
-	pre_v955 :: "\<bool>"
+	pre_v961 :: "\<bool>"
 where
-	"pre_v955  \<equiv> True"
+	"pre_v961  \<equiv> True"
 
 
 definition
-	post_v955 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
 where
-	"post_v955 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v955 specification\<close>
+	"post_v961 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v961 specification\<close>
 		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
 
 definition
-	v955 :: "(VDMNat \<rightharpoonup> VDMNat)"
+	v961 :: "(VDMNat \<rightharpoonup> VDMNat)"
 where
-	"v955  \<equiv> 
-	\<comment>\<open>User defined body of v955\<close>
+	"v961  \<equiv> 
+	\<comment>\<open>User defined body of v961\<close>
 	null"
 
 end

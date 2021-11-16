@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-15T09:52:52.133586Z
+(* VDM to Isabelle Translation @2021-11-16T12:07:21.917657Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2INamedTypes.vdmsl' at line 1:8
