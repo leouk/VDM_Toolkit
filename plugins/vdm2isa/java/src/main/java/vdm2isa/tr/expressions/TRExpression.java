@@ -11,6 +11,9 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternList;
+import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRRecordContext;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRNamedType;
@@ -24,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCUnknownType;
 
 //@nb how to add this? 
 //@todo add comments and/or location? 
@@ -56,7 +60,7 @@ public abstract class TRExpression extends TRNode
                     IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
                     IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
 
-    private final TRType exptype;
+    protected final TRType exptype;
     private boolean hasWarnedAboutUnknownType;
 
 	public TRExpression(LexLocation location, TRType exptype)
@@ -428,5 +432,14 @@ public abstract class TRExpression extends TRNode
     public boolean requiresImplicitTypeInvariantChecks() {
         return false;
         //TODO who else might need to change this beyond TRBoundedExpression? 
+    }
+
+    /**
+     * For TCExpressionPattern, we need to know the expression patterns of interest. 
+     * This might also be useful elsewhere. Any expression with patterns ought to add it here! 
+     * @return
+     */
+    public TRPatternListList getPatternListList() {
+        return TRPatternListList.newPatternListList((TRPattern[])null);
     }
 }
