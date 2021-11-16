@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCSetType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -20,7 +21,7 @@ public class TRSetEnumExpression extends TREnumeratedExpression
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSetType(location, new TRDefinitionList(), members.getType(), !members.isEmpty());
+        return new TRSetType(new TCSetType(location, exptype.getVDMType()), new TRDefinitionList(), exptype, !members.isEmpty());
     }
 
     @Override

@@ -33,7 +33,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSeqType(location, new TRDefinitionList(), first.getType(), false);
+        return new TRSeqType(exptype.getVDMType(), new TRDefinitionList(), first.getType(), false);
     }
 
     @Override

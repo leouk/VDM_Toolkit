@@ -37,7 +37,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSetType(location, new TRDefinitionList(), first.getType(), false);
+        return new TRSetType(exptype.getVDMType(), new TRDefinitionList(), first.getType(), false);
     }
 
     @Override

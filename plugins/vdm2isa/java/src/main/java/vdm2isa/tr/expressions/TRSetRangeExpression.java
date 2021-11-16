@@ -28,7 +28,7 @@ public class TRSetRangeExpression extends TRExpression {
         TRType t = first.getType();
         if (t instanceof TRUnknownType)
             t = last.getType();
-        return new TRSetType(location, new TRDefinitionList(), t, false);
+        return new TRSetType(exptype.getVDMType(), new TRDefinitionList(), t, false);
     }
 
     @Override

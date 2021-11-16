@@ -201,7 +201,8 @@ public class TRUnaryExpression extends TRExpression {
 			case INDS:
 				if (expType instanceof TRSeqType)
 				{
-					result = new TRSetType(location, new TRDefinitionList(), TRBasicType.nat1Type(location), ((TRSeqType)expType).seq1);
+					TRType indsType = TRBasicType.nat1Type(location);
+					result = new TRSetType(indsType.getVDMType(), new TRDefinitionList(), indsType, ((TRSeqType)expType).seq1);
 				}	
 				else
 					result = super.getType();
@@ -210,7 +211,8 @@ public class TRUnaryExpression extends TRExpression {
 			case ELEMS:
 				if (expType instanceof TRSeqType)
 				{
-					result = new TRSetType(location, new TRDefinitionList(), ((TRSeqType)expType).seqof, ((TRSeqType)expType).seq1);
+					TRType elemsType = ((TRSeqType)expType).seqof;
+					result = new TRSetType(elemsType.getVDMType(), new TRDefinitionList(), elemsType, ((TRSeqType)expType).seq1);
 				}	
 				else
 					result = super.getType();
@@ -289,7 +291,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSetType)
 				{
 					TRSetType sexp = (TRSetType)expType;
-					result = new TRSetType(sexp.location, new TRDefinitionList(), sexp, true);
+					result = new TRSetType(sexp.getVDMType(), new TRDefinitionList(), sexp, true);
 				}
 				else
 					result = super.getType();

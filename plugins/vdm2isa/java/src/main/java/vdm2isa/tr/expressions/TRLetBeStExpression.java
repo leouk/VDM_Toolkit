@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCSetType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
@@ -54,9 +55,8 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
             new LexKeywordToken(Token.INSET, location), 
             new TRSetCompExpression(
                 location, value, bindings, suchThat, 
-                this.def, //new TRMultipleBindListDefinition(
-                //    location, null, null, null, null, false, false, bindings, defs),
-                new TRSetType(location, exptype.definitions, exptype, false)), 
+                this.def, //new TRMultipleBindListDefinition(location, null, null, null, null, false, false, bindings, defs),
+                new TRSetType(new TCSetType(location, exptype.getVDMType()), exptype.getDefinitions(), exptype, false)), 
             exptype);    
        // System.out.println(toString());
     }

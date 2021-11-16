@@ -75,7 +75,8 @@ public class TRModule extends TRNode
 	public static FileList asFileList(File... args)
 	{
 		FileList result = new FileList();
-		result.addAll(Arrays.asList(args));
+		if (args != null)
+			result.addAll(Arrays.asList(args));
 		return result;
 	}
 }

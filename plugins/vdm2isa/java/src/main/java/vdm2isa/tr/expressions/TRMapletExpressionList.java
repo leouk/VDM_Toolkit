@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.tc.expressions.TCMapletExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapletExpressionList;
+import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
@@ -45,6 +46,11 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	 */
 	public TRType getType()
 	{
-		return isEmpty() ? new TRMapType(getLocation(), new TRDefinitionList(), TRExpression.unknownType(getLocation()), TRExpression.unknownType(getLocation()), false) : get(0).getType();
+		return isEmpty() ? 
+			new TRMapType(new TCMapType(getLocation()), new TRDefinitionList(), 
+				TRExpression.unknownType(getLocation()), 
+				TRExpression.unknownType(getLocation()), false) 
+			: 
+			get(0).getType();
 	}
 }

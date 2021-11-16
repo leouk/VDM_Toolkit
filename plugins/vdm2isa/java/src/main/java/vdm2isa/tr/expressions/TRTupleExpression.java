@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.types.TCProductType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -21,7 +22,8 @@ public class TRTupleExpression extends TREnumeratedExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRProductType(location, new TRDefinitionList(), TRTypeList.newTypeList(members));
+        TRTypeList typeList = TRTypeList.newTypeList(members);
+        return new TRProductType(new TCProductType(location, typeList.getVDMTypeList()), new TRDefinitionList(), typeList);
     }
 
     @Override

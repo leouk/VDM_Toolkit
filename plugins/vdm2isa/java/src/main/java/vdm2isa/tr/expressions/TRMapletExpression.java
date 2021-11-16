@@ -1,5 +1,7 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.tc.types.TCMapType;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -14,7 +16,10 @@ public class TRMapletExpression extends TRExpression
 
     public TRMapletExpression(TRExpression left, TRExpression right)
     {
-        super(left.location, new TRMapType(left.location, new TRDefinitionList(), left.getType(), right.getType(), false));
+        super(left.location, 
+            new TRMapType(
+                new TCMapType(left.location, left.getType().getVDMType(), right.getType().getVDMType()), 
+                new TRDefinitionList(), left.getType(), right.getType(), false));
         this.left = left;
         this.right = right;
     }
@@ -22,7 +27,7 @@ public class TRMapletExpression extends TRExpression
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRMapType(location, new TRDefinitionList(), left.getType(), right.getType(), false);
+        return new TRMapType(exptype.getVDMType(), new TRDefinitionList(), left.getType(), right.getType(), false);
     }
 
     @Override
