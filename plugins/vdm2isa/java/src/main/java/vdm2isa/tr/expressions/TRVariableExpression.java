@@ -109,6 +109,11 @@ public class TRVariableExpression extends TRExpression
 		return visitor.caseVariableExpression(this, arg);
 	}
 
+	public static TRVariableExpression newVariableExpr(LexLocation location, String original, TRType exptype)
+	{
+		return TRVariableExpression.newVariableExpr(location, new TCNameToken(location, location.module, original), original, exptype);
+	}
+
 	public static TRVariableExpression newVariableExpr(LexLocation location, TCNameToken name, String original, TRType exptype)
 	{
 		return new TRVariableExpression(
