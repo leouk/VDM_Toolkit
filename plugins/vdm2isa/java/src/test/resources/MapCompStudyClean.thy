@@ -246,5 +246,89 @@ lemma ex2'_rng:"rng ex2' = {10}"
   unfolding rng_defs ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
   apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
   by (safe, simp_all, force+)
+
+(* more direct binds even if with range expressions it's fine. UNIV isn't finite! DUH 
+   = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
+definition
+  ex3 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex3 \<equiv> mapCompSetBound {1,2,3,4::VDMNat} UNIV inv_VDMNat inv_VDMNat domid (\<lambda> x . (\<lambda> y . x + 5)) (\<lambda> x . (\<lambda> y . x > 2))"
+
+lemmas ex3_defs = ex3_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex3_none: "x \<notin> dom ex3  \<Longrightarrow> ex3 x = None"
+  by (simp add: domIff)
+
+lemma ex3_dom: "dom ex3 = {5,6,7,8,9}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe)
+  (* Nice example of how it goes "wrong" with undefined! *)
+  oops
+
+lemma ex3_dom: "dom ex3 = {1,2,3,4}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe) oops
+  (* Nice example of how it goes "wrong" with undefined! *)
+
+lemma ex3_dom: "dom ex3 = {3,4}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe) oops
+  (* Nice example of how it goes "wrong" with undefined! *)
+
+(* more direct binds even if with range expressions it's fine. 
+   = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
+definition
+  ex3' :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex3' \<equiv> mapCompSetBound {1,2,3,4::VDMNat} { x + 5 | x . x \<in> {1,2,3,4::VDMNat} } inv_VDMNat inv_VDMNat domid (\<lambda> x . (\<lambda> y . x + 5)) (\<lambda> x . (\<lambda> y . x > 2))"
+
+lemmas ex3'_defs = ex3'_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex3'_none: "x \<notin> dom ex3'  \<Longrightarrow> ex3' x = None"
+  by (simp add: domIff)
+
+lemma ex3'_dom: "dom ex3' = {3,4}"
+  unfolding ex3'_def mapCompSetBound_defs inv_SetElems_def inv_VDMNat_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+  by fastforce+
+
+lemma ex3'_dom': "dom ex3' = {3,4}"
+  unfolding ex3'_defs
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+  using inv_SetElems_def by fastforce+
   
+lemma ex3'_rng: "rng ex3' = {8,9}"
+  unfolding ex3'_defs inv_SetElems_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI)
+   apply (simp_all, safe, simp_all)
+       apply (rule+, force, force, force, force, force, force, force) 
+  apply (rule_tac x=3 in exI, force)
+  by (rule_tac x=4 in exI, force)
+
+(* okay: dead simple ones 
+   = { x |-> 5 | x in set {1,2,3,4} } *)
+definition
+  ex4 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex4 \<equiv> mapCompSetBound {1,2,3,4::VDMNat} { 5::VDMNat } inv_VDMNat inv_VDMNat domid (rngcnst 5) truecnst"
+
+lemmas ex4_defs = ex4_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex4_none: "x \<notin> dom ex4  \<Longrightarrow> ex4 x = None"
+  by (simp add: domIff)
+
+lemma ex4_dom: "dom ex4 = {1,2,3,4}"
+  unfolding ex4_def mapCompSetBound_defs inv_SetElems_def inv_VDMNat_def
+  apply (simp split:if_splits)
+  by (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+    
+lemma ex4_rng: "rng ex4 = {5}"
+  unfolding ex4_defs inv_SetElems_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, force, simp)
+  by (rule_tac x=1 in exI, fastforce)
+
 end
