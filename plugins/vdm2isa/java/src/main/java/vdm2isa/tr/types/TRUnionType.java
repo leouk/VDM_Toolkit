@@ -1,7 +1,11 @@
 package vdm2isa.tr.types;
 
+import java.util.List;
+import java.util.Vector;
+
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -20,44 +24,75 @@ public class TRUnionType extends TRType {
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
 		//expand();
+		this.types.setSemanticSeparator(getSemanticSeparator());
+		this.types.setFormattingSeparator(getFormattingSeparator());
+		this.types.setInvTranslateSeparator(getInvTranslateSeparator());
 	}
 
-    private void expand()
+	@Override 
+	public String toString()
 	{
-		if (expanded) return;
-		TRTypeSet exptypes = new TRTypeSet();
-
-		for (TRType t: types)
-		{
-    		if (t instanceof TRUnionType)
-    		{
-    			TRUnionType ut = (TRUnionType)t;
-  				ut.expand();
-   				exptypes.addAll(ut.types);
-    		}
-    		else
-    		{
-    			exptypes.add(t);
-    		}
-		}
-
-		types = exptypes;
-		expanded = true;
-		definitions = new TRDefinitionList();
-
-		for (TRType t: types)
-		{
-			if (t.definitions != null)
-			{
-				definitions.addAll(t.definitions);
-			}
-		}
+		return "Union " + 
+			"\n\t tset = " + String.valueOf(types) + 
+			"\n\t loc  = " + String.valueOf(getLocation());
 	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
+		setFormattingSeparator(" ");
+		setSemanticSeparator(" " + isaToken() + " ");
+		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+	}
+
+    // private void expand()
+	// {
+	// 	if (expanded) return;
+	// 	TRTypeSet exptypes = new TRTypeSet();
+
+	// 	for (TRType t: types)
+	// 	{
+    // 		if (t instanceof TRUnionType)
+    // 		{
+    // 			TRUnionType ut = (TRUnionType)t;
+  	// 			ut.expand();
+   	// 			exptypes.addAll(ut.types);
+    // 		}
+    // 		else
+    // 		{
+    // 			exptypes.add(t);
+    // 		}
+	// 	}
+
+	// 	types = exptypes;
+	// 	expanded = true;
+	// 	definitions = new TRDefinitionList();
+
+	// 	for (TRType t: types)
+	// 	{
+	// 		if (t.definitions != null)
+	// 		{
+	// 			definitions.addAll(t.definitions);
+	// 		}
+	// 	}
+	// }
 
     @Override
     public String invTranslate(String varName) {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder sb = new StringBuilder();
+		if (varName != null)
+		{
+			List<String> varNames = new Vector<String>(types.size());
+			for(int i = 0; i < types.size(); i ++)
+			{
+				varNames.add(varName + String.valueOf(i));
+			}
+			sb.append(types.invTranslate(varNames));
+		}
+		else
+			sb.append(types.invTranslate());
+		return sb.toString();		
     }
 
     @Override
@@ -67,13 +102,13 @@ public class TRUnionType extends TRType {
 
     @Override
     public IsaToken isaToken() {
-        // TODO Auto-generated method stub
-        return null;
+        return IsaToken.BAR; 
     }
 
     @Override
     public String translate() {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder sb = new StringBuilder();
+		sb.append(types.translate());
+		return sb.toString();
     }
 }

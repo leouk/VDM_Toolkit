@@ -2,6 +2,8 @@ package vdm2isa.tr.types;
 
 import java.util.Arrays;
 import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.List;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
@@ -12,7 +14,13 @@ import com.fujitsu.vdmj.tc.types.TCTypeSet;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 import com.fujitsu.vdmj.util.Utils;
 
+import plugins.GeneralisaPlugin;
+import vdm2isa.lex.IsaSeparator;
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.MappableNode;
 import vdm2isa.tr.TRNode;
 
 /**
@@ -20,12 +28,23 @@ import vdm2isa.tr.TRNode;
  */
 //TODO Implement Mappable (instead of MappableNode, for now), given you don't call translate() etc on it? 
 @SuppressWarnings("serial")
-public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
+public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 {
 	private static final long serialVersionUID = 1L;
 
+	private String separator;
+	private String formattingSeparator;
+	private String invTranslateSeparator;
+
+	public TRTypeSet()
+	{
+		super();
+		setup();
+	}
+
     public TRTypeSet(TCTypeSet from) throws Exception
 	{
+		this();
 		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);
 		
 		for (TCType type: from)
@@ -34,14 +53,17 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 		}
 	}
 	
-	public TRTypeSet()
-	{
-		super();
-	}
-
 	public TRTypeSet(TRType... typs)
 	{
+		this();
 		addAll(Arrays.asList(typs));
+	}
+
+	protected void setup()
+	{
+		setSemanticSeparator("");
+		setFormattingSeparator("");
+		setInvTranslateSeparator("");
 	}
 
 	@Override
@@ -148,7 +170,153 @@ public class TRTypeSet extends TreeSet<TRType> implements Mappable//MappableNode
 		{
 			list.addAll(type.getComposeTypes());
 		}
-		
 		return list;
+	}
+
+	@Override
+	public String getSemanticSeparator()
+	{
+		return separator;
+	}
+
+	@Override
+	public String setSemanticSeparator(String sep)
+	{
+		String result = getSemanticSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			separator = sep;
+			for (TRType n : this)
+			{
+				n.setSemanticSeparator(sep);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public String getFormattingSeparator()
+	{
+		return formattingSeparator;
+	}
+
+	@Override
+	public String setFormattingSeparator(String sep)
+	{
+		String old = getFormattingSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.FORMATING))
+		{
+			formattingSeparator = sep;
+			for (TRType n : this)
+			{
+				n.setFormattingSeparator(sep);
+			}
+		}
+		return old;
+	}
+
+	@Override
+	public String getInvTranslateSeparator()
+	{
+		return invTranslateSeparator;
+	}
+
+	@Override
+	public String setInvTranslateSeparator(String sep)
+	{
+		String old = getInvTranslateSeparator();
+		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
+		{
+			invTranslateSeparator = sep;
+			for (TRType n : this)
+			{
+				n.setInvTranslateSeparator(sep);
+			}
+		}	
+		return old;
+	}
+
+	@Override
+	public LexLocation getLocation()
+	{
+		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
+	}
+
+	@Override
+	public String translate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			Iterator<TRType> it = iterator();
+			TRType t = it.next();
+			sb.append(t.translate());
+			while (it.hasNext())
+			{
+				sb.append(getSemanticSeparator());
+                sb.append(getFormattingSeparator());
+				t = it.next();
+				sb.append(t.translate());
+			}
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String invTranslate()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			Iterator<TRType> it = iterator();
+			TRType t = it.next();
+			sb.append(t.translate());
+			while (it.hasNext())
+			{
+				sb.append(getInvTranslateSeparator());
+                sb.append(getFormattingSeparator());
+				t = it.next();
+				sb.append(t.invTranslate());
+			}
+		}
+		return sb.toString();
+	}
+
+	public TRTypeList asList()
+    {
+        TRTypeList list = new TRTypeList();
+        list.addAll(this);
+        return list;
+    }
+
+	public String invTranslate(List<String> varNames)
+	{
+		//TODO this is dangerous?! 
+		return asList().invTranslate(varNames);
+	}
+
+	@Override
+	public String tldIsaComment() {
+		return "";
+	}
+
+	@Override
+	public void report(IsaErrorMessage message) {
+		GeneralisaPlugin.report(message, getLocation());
+	}
+
+	@Override
+	public void report(IsaErrorMessage message, Object... args) {
+		GeneralisaPlugin.report(message, getLocation(), args);
+	}
+
+	@Override
+	public void warning(IsaWarningMessage message) {
+		GeneralisaPlugin.warning(message, getLocation());
+	}
+
+	@Override
+	public void warning(IsaWarningMessage message, Object... args) {
+		GeneralisaPlugin.warning(message, getLocation(), args);
 	}
 }

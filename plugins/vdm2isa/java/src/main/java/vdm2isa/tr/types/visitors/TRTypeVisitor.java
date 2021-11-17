@@ -5,6 +5,7 @@
 package vdm2isa.tr.types.visitors;
 
 import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRBracketType;
 import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRInvariantType;
@@ -95,6 +96,10 @@ public abstract class TRTypeVisitor<R, S>
 	}
 
     public R caseUnionType(TRUnionType node, S arg) {
+        return caseType(node, arg);
+    }
+
+    public R caseBracketType(TRBracketType node, S arg) {
         return caseType(node, arg);
     }
 }
