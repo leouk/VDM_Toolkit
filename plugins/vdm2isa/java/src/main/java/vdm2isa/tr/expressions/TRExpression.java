@@ -59,17 +59,19 @@ public abstract class TRExpression extends TRNode
 
     protected final TRType exptype;
     private boolean hasWarnedAboutUnknownType;
+    private boolean hasWarnedAboutNullType;
 
 	public TRExpression(LexLocation location, TRType exptype)
 	{
 		super(location);
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
-        if (exptype == null)
-        {
-            warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
-            exptype = TRExpression.unknownType(location);
-        }
+        this.hasWarnedAboutNullType = false;
+        // if (exptype == null)
+        // {
+        //     warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
+        //     exptype = TRExpression.unknownType(location);
+        // }
 	}
 
 	/**
@@ -87,13 +89,24 @@ public abstract class TRExpression extends TRNode
      */
     public final TRType getType()
     {
-        if (exptype instanceof TRUnknownType && !hasWarnedAboutUnknownType)
+        TRType result = exptype;
+        if (result == null)
+        {
+            result = TRExpression.unknownType(location);
+            if (!hasWarnedAboutNullType)
+            {
+                warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
+                hasWarnedAboutNullType = true;
+            }
+        }
+        assert result != null; 
+        if (result instanceof TRUnknownType && !hasWarnedAboutUnknownType)
         {
             // don't inundate user with warnings; just once per expression. 
             warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
             hasWarnedAboutUnknownType = true;
         }
-        return exptype instanceof TRUnknownType ? getBestGuessType() : exptype;
+        return result instanceof TRUnknownType ? getBestGuessType() : result;
     }
 
     protected TRType getBestGuessType()

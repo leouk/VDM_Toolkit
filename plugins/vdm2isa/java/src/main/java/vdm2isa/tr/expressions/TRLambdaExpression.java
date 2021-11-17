@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
@@ -187,6 +188,12 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 			paramDefinitions.addAll(tb.getDefinitions());
             paramPatterns.addAll(tb.plist);
 		}
+        // avoid NPEs on null expression
+        if (mbinds.size() == 0 || expression == null)
+        {
+            GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, LexLocation.ANY, "bindings or expression", "synthetic lambda", mbinds.size(), String.valueOf(expression));
+            expression = TRLiteralExpression.newBooleanLiteralExpression(LexLocation.ANY, false);    
+        }
         TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
         return new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
             paramPatterns, paramDefinitions, TRMultiBindListDefinition.newBindListDef(expression.getLocation(), mbinds));
