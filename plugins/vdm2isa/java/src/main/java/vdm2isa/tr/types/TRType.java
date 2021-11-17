@@ -12,7 +12,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-abstract public class TRType extends TRNode
+abstract public class TRType extends TRNode implements Comparable<TRType>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -111,4 +111,31 @@ abstract public class TRType extends TRNode
 	public boolean isNumericType() {
         return false;
     }
+
+	/**
+	 * Implement equality and comparison according to VDMJ's type rules. No faffing around. 
+	 */
+	@Override
+	public final boolean equals(Object other)
+	{
+		boolean result = false;
+		if (other instanceof TRType)
+		{
+			TRType o = ((TRType)other);
+			result = this.getVDMType().equals(o.getVDMType());
+		}
+		return result;
+	}
+
+	@Override
+	public final int compareTo(TRType o)
+	{
+		return this.getVDMType().compareTo(o.getVDMType());
+	}
+
+	@Override
+	public final int hashCode()
+	{
+		return this.getVDMType().hashCode();
+	}
 }
