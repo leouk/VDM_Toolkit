@@ -159,3 +159,4 @@ This was to allow for list-general functionality through its elements (*i.e.,* `
 * There is no need to `map` abstract classes that are not field types in target classes, but just part of the hierarchy for code reuse. 
 * Duplicate `map` entries: this will generate an error.
 * Put `map` entries after wrong `package` entry: `map` entries must refer to the latest `package` entry before it.  
+* Keep target constructors **very** simple: as part of the mapping process, you might get incomplete field values, particularly in abstract classes (*i.e.,* for checking, better do it on leaf classes, rather than abstract ones, *e.g.,* in a record field expression [`r.x`], the type for `x` will be null on first instance, then gets set finally after the whole record is handled).
