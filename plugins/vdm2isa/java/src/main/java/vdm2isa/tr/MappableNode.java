@@ -39,7 +39,7 @@ public interface MappableNode extends Mappable {
 	public void report(IsaErrorMessage message);
 	public void report(IsaErrorMessage message, Object... args);
 	public void warning(IsaWarningMessage message);
-	public void warning(IsaWarningMessage warning, Object... args);
+	public void warning(IsaWarningMessage message, Object... args);
 	
 	public String getSemanticSeparator();
 	public String setSemanticSeparator(String sep);

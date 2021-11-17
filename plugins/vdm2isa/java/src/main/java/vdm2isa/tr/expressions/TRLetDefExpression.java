@@ -50,8 +50,8 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         String exprStr = String.valueOf(expression);
         if (localDefs != null)
             return getClass().getSimpleName() + 
-                " (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getSimpleName() + 
-                "] = \n\t" + localDefs.toString() + " in " + 
+                " (" + localDefs.size() + ")" + 
+                "\n\t defs = " + localDefs.toString() + " in " + 
                 "\n\t exp  = " + exprStr +
                 "\n\t loc  = " + String.valueOf(getLocation());
         else 

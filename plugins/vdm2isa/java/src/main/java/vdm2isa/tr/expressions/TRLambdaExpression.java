@@ -215,13 +215,16 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     public static TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
             TRExpression predicate, TRMapType mapType) {
                 // predicate can be null for when { x |-> y | x in set S }! 
-        TRLambdaExpression result = TRLambdaExpression.newLambdaExpression(bindings, predicate);
-
         TRPatternList patterns = bindings.getPatternListList().getFlatPatternList();
 
         // simple map comprehension have variable expression for maplet domain 
         boolean simpleMapComp = first.left instanceof TRVariableExpression; 
         
+        // creates the monster binding expression considering the predicate (if any) as well
+        TRExpression expression = bindings.getBindingsExpression(predicate);
+
+        TRLambdaExpression result = TRLambdaExpression.newLambdaExpression(bindings, expression);
+
         // "simple" map comprehension must have single bind. 
         // this avoids the complex expression case for trivial binds?
         // { x |-> 10 | x in set S, y in set T } would require existential for no need?!
