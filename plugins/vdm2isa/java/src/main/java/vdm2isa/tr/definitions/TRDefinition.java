@@ -16,7 +16,11 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 
-public abstract class TRDefinition extends TRNode
+/**
+ * Base class for TRNode definitions. In relation to TCDefinition, we use the same
+ * comparable mechanisms in order to allow the proper construction of defiintion lists 
+ */
+public abstract class TRDefinition extends TRNode implements Comparable<TRDefinition>
 {
 	private static final long serialVersionUID = 1L;
 	protected final TRIsaVDMCommentList comments;
@@ -72,6 +76,18 @@ public abstract class TRDefinition extends TRNode
 			   "\n\t excld = " + excluded + 
 			   "\n\t local = " + local + 
 			   "\n\t " + super.toString();
+	}
+
+	@Override
+	public int compareTo(TRDefinition o)
+	{
+		return name == null ? 0 : name.compareTo(o.name); 
+	};
+
+	@Override
+	public int hashCode()
+	{
+		return name == null ? super.hashCode() : name.hashCode();		// Used for sets of definitions (see equals).
 	}
 
 	protected String translatePreamble()
