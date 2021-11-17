@@ -23,7 +23,7 @@ values
 	v954= { x + y |-> 10 | [x,y] in set {[1,2], [3,4], [4,5]} }; -- this is getting silly now
 	
 	v97 = { x |-> 10 | x in set {1,2,3}, y in set {4,5,6} };
-
+	v98 = { d |-> r | d in set {1,2,3}, r in set {2,4,6} & r = d*2 };
 functions
 	v96: () -> map nat to nat
 	v96() == { x |-> 10 | x: nat & x < 10 };
