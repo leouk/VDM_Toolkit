@@ -4,16 +4,21 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRMultiBindListDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRMultipleTypeBind;
+import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 /**
  * VDM Lambda expressions are complex to translate because of the need for local invariant checks and the need
@@ -26,25 +31,32 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 
     private final TRTypeBindList bindList;
 
-    private final TRFunctionType type;
+    //private final TRFunctionType type; // same as exptype? yes!
 	private final TRPatternList paramPatterns;
 	private final TRDefinitionList paramDefinitions;
 	private final TRDefinition def;
-    protected boolean isMapComp;
+    private TRLambdaExpressionKind lambdaKind;
+
+    /**
+     * Determines the kind of lambda expression this represents as either:
+     *      1) normal VDMSL lambdas      (i.e. as given by the VDM user)
+     *      2) "simple" map comp lambda  (i.e. domain element is a variable,   {   x |-> 10 | x in set S })
+     *      3) "complex" map comp lambda (i.e. domain element is an expression { x+x |-> 10 | x in set S })
+     */
+    protected enum TRLambdaExpressionKind { NORMAL, MAPCOMP, EXISTENTIAL_MAPCOMP }
 
     public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def,
-        TRType exptype)
+        TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def)
     {
-        super(location, expression, exptype);
+        super(location, expression, type);
         this.bindList = bindList;
-        this.type = type;
+        //this.type = type; // this is redundant? Given it's the exptype already? 
         this.paramPatterns = paramPatterns; 
         this.paramDefinitions = paramDefinitions; 
         if (paramDefinitions != null)
             this.paramDefinitions.setLocal(true);
         this.def = def;
-        this.isMapComp = false;
+        this.lambdaKind = TRLambdaExpressionKind.NORMAL;
         System.out.println(toString());
     }
 
@@ -59,9 +71,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     @Override 
     public String toString()
     {
-        return "LambdaExpr: (lambda " + String.valueOf(bindList) + //.translate() + 
-            " & " + String.valueOf(expression) + //.translate() + 
-            " )" +  "\n\tFcnType    = " + String.valueOf(type) + //.translate() +
+        return "LambdaExpr: (lambda " + String.valueOf(bindList) +  
+            " & " + String.valueOf(expression) + 
+            " )" +  "\n\tFcnType    = " + String.valueOf(exptype) + 
+                    "\n\t\t defs    = " + String.valueOf(exptype.getDefinitions()) +
                     "\n\tParamPttrs = " + String.valueOf(paramPatterns) + 
                     "\n\tParamDefs  = " + String.valueOf(paramDefinitions) +
                     "\n\tDef        = " + String.valueOf(def) +
@@ -83,7 +96,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return type;//type.result;
+        return exptype;//type.result;
     }
 
     @Override
@@ -121,14 +134,30 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     /**
-     * Local definitions invariant translation
+     * Local definitions invariant translation. That is, for every input bind, add an invariant 
+     * check on the type; then also an invariant check on the result expression type! 
      */
     @Override
     public String localInvTranslate()
     {
-        //TODO perhaps now use bindings within TRDefinition TRMultiBindListDefinition,
-        //     ((TRMultiBindListDefinition)def).getBindings().getBindingsExpression().invTranslate()?
-        return bindList.invTranslate();
+        StringBuilder sb = new StringBuilder();
+        // normal + "simple" map comp lambdas, check the input/output type invariants
+        if (!this.lambdaKind.equals(TRLambdaExpressionKind.EXISTENTIAL_MAPCOMP))
+        {
+            // check the input parameters inv_Translate
+            sb.append(bindList.invTranslate());
+            sb.append(getInvTranslateSeparator());
+            // check the result expression inv_Translate
+            sb.append(this.expression.getType().invTranslate(expression.translate()));
+        }
+        // map comprehension lambdas require similar input/output type invariant checks
+        // but in the context of an existential mapping between maplet "from" and the 
+        // lambda dummy input name for the input.
+        else
+        {
+            sb.append("TODO!");
+        }
+        return sb.toString();
     }
 
 	@Override
@@ -137,27 +166,77 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 		return visitor.caseLambdaExpression(this, arg);
 	}
 
-    public static TRLambdaExpression newLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        TRFunctionType type, TRDefinition def, TRType exptype)
+    /**
+     * Synthetically construct a lambda expression with minimal information about its parts, where this recreates
+     * the expected internal strcuture that a TC/TRLambdaEpxression is supposed to have (i.e. reinvents what the TC
+     * does for lambda expressions effectively).  
+     * @param location
+     * @param bindList
+     * @param expression
+     * @param def
+     * @return
+     */
+    public static TRLambdaExpression newLambdaExpression(TRTypeBindList bindList, TRExpression expression)
     {
         TRMultipleBindList mbinds = new TRMultipleBindList();
-        TRPatternList paramPatterns; 
+        TRPatternList paramPatterns = TRPatternList.newPatternList((TRPattern[])null); 
         TRDefinitionList paramDefinitions = new TRDefinitionList();
-        // TRMultiBindListDefinition def = null;//new TRMultiBindListDefinition(); 
-        // for (TRMultipleTypeBind tb : bindList)
-		// {
-		// 	mbinds.addAll(tb.getMultipleBindList());
-        //     tb.plist
-		// 	paramDefinitions.addAll(tb.pattern.getDefinitions(tb.type, NameScope.LOCAL));
-		// 	paramPatterns.add(tb.pattern);
-		// 	ptypes.add(tb.type);
-		// }
+        for (TRMultipleTypeBind tb : bindList)
+		{
+			mbinds.addAll(tb.getMultipleBindList());
+			paramDefinitions.addAll(tb.getDefinitions());
+            paramPatterns.addAll(tb.plist);
+		}
+        TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
+        return new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
+            paramPatterns, paramDefinitions, TRMultiBindListDefinition.newBindListDef(expression.getLocation(), mbinds));
+    }
 
-        // return new TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, 
-        //             new TRMultiBindListDefinition(location, null, null, null, NameScope.LOCAL, true, false, ), exptype);
+    /**
+     * Get the type binding list from the multiple bindings then pass the expression for the lambda
+     * @param bindings
+     * @param expression
+     * @return
+     */
+    public static TRLambdaExpression newLambdaExpression(TRMultipleBindList bindings, TRExpression expression)
+    {
+        return TRLambdaExpression.newLambdaExpression(bindings.getTypeBindList(), expression);
+    }
 
-        //             public TRMultiBindListDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
-        //             TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRMultipleBindList bindings, TRDefinitionList defs)
-        return null;    
+    /**
+     * For map comprehension, we transform the inputs into a corresponding lambda (see TRMapCompExpression for details),
+     * where the lambda predicate is constructed from the map comprehension structure inputs.
+     * @param first
+     * @param bindings
+     * @param predicate
+     * @param mapType
+     * @return
+     */
+    public static TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
+            TRExpression predicate, TRMapType mapType) {
+        TRLambdaExpression result = TRLambdaExpression.newLambdaExpression(bindings, predicate);
+
+        TRPatternList patterns = bindings.getPatternListList().getFlatPatternList();
+
+        // simple map comprehension have variable expression for maplet domain 
+        boolean simpleMapComp = first.left instanceof TRVariableExpression; 
+        
+        // "simple" map comprehension must have single bind. 
+        // this avoids the complex expression case for trivial binds?
+        // { x |-> 10 | x in set S, y in set T } would require existential for no need?!
+        result.lambdaKind = simpleMapComp && patterns.size() == 1 ? 
+            TRLambdaExpressionKind.MAPCOMP : 
+            TRLambdaExpressionKind.EXISTENTIAL_MAPCOMP;
+        
+        // warn the user for the silly case, given it will have horrendous existential 
+        // expression within the lambda-if for nothing! 
+        if (simpleMapComp && patterns.size() > 1)
+        {
+            // if VDM unused variable warning (5000) is observed, then this warning doesn't happen
+            result.warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, "map comprehension", 
+                first.translate(), bindings.getPatternListList().getFlatPatternList().size(),
+                patterns.translate());    
+        }
+        return result;
     }
 }

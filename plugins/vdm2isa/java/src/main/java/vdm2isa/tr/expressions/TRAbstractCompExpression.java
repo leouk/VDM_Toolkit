@@ -21,7 +21,6 @@ public abstract class TRAbstractCompExpression extends TRExpression {
         this.bindings = bindings;
         this.predicate = predicate; 
         this.def = def;
-        System.out.println(toString());
     }
 
     @Override 

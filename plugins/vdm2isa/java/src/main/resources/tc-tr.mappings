@@ -116,15 +116,18 @@ map TCNarrowExpression{location, typename, basictype, test, typedef, exptype, ex
 map TCIsExpression{location, typename, basictype, test, typedef, exptype} to TRIsExpression(location, typename, basictype, test, typedef, exptype);
 
 map TCIotaExpression{location, bind, predicate, exptype} to TRIotaExpression(location, bind, predicate, exptype);
-#map TCLambdaExpression{location, bindList, expression, type, exptype} to TRLambdaExpression(location, bindList, expression, type, exptype); 
-#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, exptype); 
-map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype); 
 map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, bind, predicate, exptype);
 map TCExistsExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 map TCForAllExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
 map TCLetBeStExpression{location, bind, suchThat, value, def, exptype} to TRLetBeStExpression(location, bind, suchThat, value, def, exptype);
 map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
 map TCDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
+
+#Lambda type is the same as exptype but as a TCFunctionType; stick to that one
+#map TCLambdaExpression{location, bindList, expression, type, exptype} to TRLambdaExpression(location, bindList, expression, type, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype); 
+map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def); 
 
 map TCCasesExpression{location, exp, cases, others, exptype} to TRCasesExpression(location, exp, cases, others, exptype);
 map TCCaseAlternative{location, pattern, result} to TRCaseAlternative(location, pattern, result);

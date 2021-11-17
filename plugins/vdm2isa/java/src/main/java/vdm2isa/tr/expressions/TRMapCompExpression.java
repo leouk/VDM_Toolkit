@@ -36,20 +36,40 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     private final TRLambdaExpression mapComp;
 
+    /**
+     * TCMapCompExpression has the structure:
+     *      { first.dom |-> first.rng | bindings & predicate }, 
+     *      exptype = TCMapType(first.dom, first.rng)
+     * 
+     * which will become:
+     *      (lambda dummy: first.dom.exptype & 
+     *          if (exists bindings.translate() & 
+     *                  bindings.invTranslate() and 
+     *                  first.rng.invTranslate and
+     *                  dummy = first.dom and
+     *                  predicate)
+     *          then
+     *              first.rng
+     *          else
+     *              nil 
+     *      ),
+     *      exptype = TRFunctionType(TRTypeList(first.dom.exptype), TROptionalType(first.rng.exptype))!
+     */
     public TRMapCompExpression(LexLocation location, 
         TRMapletExpression first, TRMultipleBindList bindings,
         TRExpression predicate, TRDefinition def, TRType exptype) {
         super(location, first, bindings, predicate, def, exptype);
 
-        //bindings.getBindingsExpression();
-        // LexLocation location, TRTypeBindList bindList, TRExpression expression,
-        // TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def,
-        // TRType exptype
-        this.mapComp = new TRLambdaExpression(
-             location, null/*bindings*/, null/*expression */, getMapType().getFunctionType(), null, null, 
-             def, getMapletExpr().getType());
-        this.mapComp.isMapComp = true;
+        this.mapComp = TRLambdaExpression.newMapCompExpression(first, bindings, predicate, getMapType());
+        System.out.println(toString());
     }
+
+    @Override
+    public String toString()
+    {
+        return super.toString() +  
+            "\n\t lambda= " + String.valueOf(mapComp) ;
+    }    
 
     public TRMapType getMapType()
     {

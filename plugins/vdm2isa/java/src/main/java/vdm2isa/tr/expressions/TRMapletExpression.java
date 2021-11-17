@@ -11,8 +11,8 @@ import vdm2isa.tr.types.TRType;
 public class TRMapletExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
-    private final TRExpression left;
-    private final TRExpression right; 
+    protected final TRExpression left;
+    protected final TRExpression right; 
 
     public TRMapletExpression(TRExpression left, TRExpression right)
     {
