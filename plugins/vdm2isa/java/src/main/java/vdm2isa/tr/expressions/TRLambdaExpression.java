@@ -214,6 +214,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      */
     public static TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
             TRExpression predicate, TRMapType mapType) {
+                // predicate can be null for when { x |-> y | x in set S }! 
         TRLambdaExpression result = TRLambdaExpression.newLambdaExpression(bindings, predicate);
 
         TRPatternList patterns = bindings.getPatternListList().getFlatPatternList();
