@@ -251,6 +251,7 @@ map TCSeq1Type{seqof, definitions} to TRSeqType(this, definitions, seqof);
 map TCOptionalType{definitions, type} to TROptionalType(this, definitions, type);
 map TCUnknownType{location, definitions} to TRUnknownType(location, definitions);
 map TCUnionType{definitions, types} to TRUnionType(this, definitions, types);
+map TCBracketType{type} to TRBracketType(this, type);
 
 #############################################################################
 # Classes that are not mapped

@@ -265,9 +265,9 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return result;				
 	}
 
-	public TRExpression getBindingsExpression()
+	public TRExpression getBindingsExpression(TRExpression predicate)
 	{
-		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), true);
+		TRExpression result = predicate == null ? TRLiteralExpression.newBooleanLiteralExpression(getLocation(), true) : predicate;
 		if (!isEmpty())
 		{
 			Map<TRMultipleBindKind, SortedSet<Integer>> structure = figureBindsOut();			
@@ -277,13 +277,16 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			if (!binding_indices_of_interest.isEmpty())
 			{
 				Iterator<Integer> indices = binding_indices_of_interest.iterator();
-				TRExpression[] exprs = new TRExpression[binding_indices_of_interest.size()];
+				TRExpression[] exprs = new TRExpression[binding_indices_of_interest.size() + (predicate == null ? 0 : 1)];
 				int i = 0;
 				while (indices.hasNext())
 				{
 					exprs[i] = bindingExpression(indices.next());
 					i++;
 				}
+				// add the predicate if it exists as the final ping in the chain
+				if (predicate != null)
+					exprs[i] = result;
 				result = TRBinaryExpression.newBooleanChain(new LexKeywordToken(Token.AND, getLocation()), exprs);
 			}
 		}
