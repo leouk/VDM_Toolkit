@@ -93,6 +93,12 @@ public class TRStructuredPattern extends TRPattern {
         this(owner.location, new TRPatternList()/*exp.getPatternListList().getFlatPatternList()*/, IsaToken.LPAREN, IsaToken.parenthesise(exp.translate()));
     }
 
+    @Override
+    public String toString()
+    {
+        return super.toString() + " [" + String.valueOf(plist) + "]";
+    }
+
     public TRPatternList getPatternList()
     {
         return plist;

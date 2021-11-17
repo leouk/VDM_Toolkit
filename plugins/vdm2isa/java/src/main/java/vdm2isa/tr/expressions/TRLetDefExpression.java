@@ -47,7 +47,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     @Override
     public String toString()
     {
-        String exprStr = String.valueOf(expression);//.translate();.toString();
+        String exprStr = String.valueOf(expression);
         if (localDefs != null)
             return getClass().getSimpleName() + 
                 " (" + localDefs.size() + ")[" + localDefs.get(0).getClass().getSimpleName() + 

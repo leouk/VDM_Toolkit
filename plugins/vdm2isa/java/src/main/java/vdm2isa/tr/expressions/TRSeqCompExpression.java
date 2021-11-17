@@ -28,6 +28,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         super(location, first, bind.getMultipleBindList(), predicate, def, exptype);
         // Tell set bind it's for a sequence
         this.bindings.setSetSeqForMultiBindList();
+        //System.out.println(toString());
     }
 
     @Override
@@ -99,6 +100,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         sb.append(IsaToken.SEQ_CLOSE.toString());
         if (isSetSeqBind())
         {
+            assert !bindings.isEmpty();
             bindStr = bindings.translate();
             String setbindProblem = IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindStr) + 
                 getFormattingSeparator() + " This can be a problem if the target type of " + 

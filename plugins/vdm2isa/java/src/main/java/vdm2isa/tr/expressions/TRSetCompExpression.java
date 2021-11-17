@@ -32,6 +32,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         super(location, first, bindings, predicate, def, exptype);
         // if anything other than variable expression is used, we need to convert to the existential comprehension form
         this.existential = !(first instanceof TRVariableExpression);
+        //System.out.println(toString());
     }
 
     @Override
