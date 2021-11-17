@@ -21,13 +21,24 @@ public class TRFunctionType extends TRType
 	
 	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
 	{
-		//NB tried to get definitions through this one, and got NPEs all over during mappings conversion!
+		// definitions are nonempty when the type defines an explicit function definition! 
 		super(vdmType, definitions);
 		this.parameters = parameters;
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
 		this.partial = partial;
 		this.result = result;
+		//System.out.println(toString());
+	}
+
+	@Override 
+	public String toString()
+	{
+		return "TRFunctionType " + 
+			"\n\t\t params = " + String.valueOf(parameters) +
+			"\n\t\t result = " + String.valueOf(result) +
+			"\n\t\t defs   = " + String.valueOf(definitions.size()) +// loops?
+			"\n\t\t loc    = " + String.valueOf(getLocation());
 	}
 
 	@Override
@@ -138,7 +149,7 @@ public class TRFunctionType extends TRType
 	{
 		TRTypeList typeList = TRTypeList.newTypeList(paramType);
 		TCFunctionType vdmFcnType = new TCFunctionType(paramType.getLocation(), typeList.getVDMTypeList(), false, new TCBooleanType(paramType.location));
-		return new TRFunctionType(vdmFcnType, paramType.getDefinitions(), typeList, false, TRBasicType.boolType(paramType.getLocation()));
+		return new TRFunctionType(vdmFcnType, new TRDefinitionList()/*paramType.getDefinitions()*/, typeList, false, TRBasicType.boolType(paramType.getLocation()));
 	}
 
 	/**
@@ -148,10 +159,16 @@ public class TRFunctionType extends TRType
 	 */
 	public static TRFunctionType getIsabelleMapType(TRMapType mapType)
 	{
-		TRTypeList typeList = TRTypeList.newTypeList(mapType.from);
-		TROptionalType resultType = TROptionalType.newOptionalType(mapType.to);
-		TCFunctionType vdmFcnType = new TCFunctionType(mapType.getLocation(), typeList.getVDMTypeList(), true, resultType.getVDMType());
-		return new TRFunctionType(vdmFcnType, mapType.getDefinitions(), typeList, false, resultType);
+		return TRFunctionType.newFunctionType(TROptionalType.newOptionalType(mapType.to), mapType.from);
 	}
+
+    public static TRFunctionType newFunctionType(TRType result, TRType... params) {
+        return TRFunctionType.newFunctionType(result, TRTypeList.newTypeList(params)); 
+    }
+
+    public static TRFunctionType newFunctionType(TRType result, TRTypeList params) {
+		TCFunctionType vdmFcnType = new TCFunctionType(result.getLocation(), params.getVDMTypeList(), true, result.getVDMType());
+        return new TRFunctionType(vdmFcnType, new TRDefinitionList(), params, false, result);
+    }
 
 }

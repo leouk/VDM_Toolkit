@@ -22,7 +22,9 @@ public enum IsaWarningMessage {
     "Empty file(s) for module %1$s: Isabelle theory file must have a name"),
     VDMSL_INVALID_EXPR_TYPE_2P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 5,
     "%1$s expression invalid type (%2$s)? VDMJ might still figure it out."),      
-   
+    VDMSL_INVALID_EXPR_4P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 6,
+    "Invalid %1$s arguments for `%2$s` length(%3$s) = %4$s."),
+    
     ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
     "Unknown VDM types will generate Isabelle additional type variable `a warning."),
     ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
