@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-11-16T12:07:21.912631Z
+(* VDM to Isabelle Translation @2021-11-17T15:42:52.763Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2I.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2I.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2I.vdmsl]
 *)
 theory TestV2I
 imports VDMToolkit
@@ -1308,7 +1308,7 @@ abbreviation
 where
 	"v74 \<equiv> (
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) then
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) \<and> (inv_VDMNat (var + var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -1330,7 +1330,7 @@ where
 	"v741 \<equiv> (
 	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) then
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
 		(x + y)
 	 else
 		undefined
@@ -1667,96 +1667,4 @@ where
 	"inv_v94  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v94)"
 
 	
-	
-abbreviation
-	v95 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
-where
-	"v95 \<equiv> null"
-
-	definition
-	inv_v95 :: "\<bool>"
-where
-	"inv_v95  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v95)"
-
-	
-	
-abbreviation
-	v952 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
-where
-	"v952 \<equiv> null"
-
-	definition
-	inv_v952 :: "\<bool>"
-where
-	"inv_v952  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v952)"
-
-	
-	
-abbreviation
-	v953 :: "(R \<rightharpoonup> VDMNat1)"
-where
-	"v953 \<equiv> null"
-
-	definition
-	inv_v953 :: "\<bool>"
-where
-	"inv_v953  \<equiv> (inv_Map inv_R  (inv_VDMNat1) v953)"
-
-	
-	
-abbreviation
-	v954 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
-where
-	"v954 \<equiv> null"
-
-	definition
-	inv_v954 :: "\<bool>"
-where
-	"inv_v954  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v954)"
-
-	
-	
-
-definition
-	pre_v96 :: "\<bool>"
-where
-	"pre_v96  \<equiv> True"
-
-
-definition
-	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
-where
-	"post_v96 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v96 specification\<close>
-		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
-
-definition
-	v96 :: "(VDMNat \<rightharpoonup> VDMNat)"
-where
-	"v96  \<equiv> 
-	\<comment>\<open>User defined body of v96\<close>
-	null"
-
-	
-
-definition
-	pre_v961 :: "\<bool>"
-where
-	"pre_v961  \<equiv> True"
-
-
-definition
-	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
-where
-	"post_v961 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v961 specification\<close>
-		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
-
-definition
-	v961 :: "(VDMNat \<rightharpoonup> VDMNat)"
-where
-	"v961  \<equiv> 
-	\<comment>\<open>User defined body of v961\<close>
-	null"
-
 end

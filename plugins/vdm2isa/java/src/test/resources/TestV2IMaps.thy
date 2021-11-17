@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-11-16T16:57:38.793749Z
+(* VDM to Isabelle Translation @2021-11-17T15:46:15.327Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IMaps.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IMaps.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IMaps.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IMaps.vdmsl]
 *)
 theory TestV2IMaps
 imports VDMToolkit
@@ -55,7 +55,7 @@ abbreviation
 where
 	"v74 \<equiv> (
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) then
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) \<and> (inv_VDMNat (var + var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -77,7 +77,7 @@ where
 	"v741 \<equiv> (
 	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) then
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
 		(x + y)
 	 else
 		undefined
@@ -164,6 +164,30 @@ where
 	inv_v954 :: "\<bool>"
 where
 	"inv_v954  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v954)"
+
+	
+	
+abbreviation
+	v97 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v97 \<equiv> "
+
+	definition
+	inv_v97 :: "\<bool>"
+where
+	"inv_v97  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v97)"
+
+	
+	
+abbreviation
+	v98 :: "(VDMNat \<rightharpoonup> VDMNat1)"
+where
+	"v98 \<equiv> "
+
+	definition
+	inv_v98 :: "\<bool>"
+where
+	"inv_v98  \<equiv> (inv_Map (inv_VDMNat) (inv_VDMNat1) v98)"
 
 	
 	

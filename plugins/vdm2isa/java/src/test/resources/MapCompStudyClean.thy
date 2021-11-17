@@ -222,24 +222,29 @@ lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
 lemma ex2'_dom_finite: "finite { x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} }"
   by (simp add: finite_image_set2) 
 
-lemma ex2'_dom_clearer: "{ x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} } = {5..9}"
+lemma ex2'_dom_clearer: "{ x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} } = {5..9::VDMNat}"
   apply (safe, simp_all) 
   by presburger
-  
+
+lemma ex2'_dom_inv: "inv_SetElems ((\<le>) (0::VDMNat)) {5..(9::VDMNat)}" 
+  unfolding inv_SetElems_def 
+  by (safe,simp)
+
+lemma ex2'_dom_inv': "inv_SetElems inv_VDMNat {5..9}" 
+  unfolding inv_SetElems_def inv_VDMNat_def
+  by (safe,simp)
+
 lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
-  unfolding ex2'_defs
-  apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits)
-  find_theorems "_ \<in> dom _ \<Longrightarrow> _" 
-  apply (intro equalityI subsetI, drule domD, elim exE, simp split:if_splits)
+  unfolding ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
+  apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
+  unfolding domid_def rngcnst_def inv_True_def inv_VDMNat_def
+  apply (safe, simp_all) 
+  thm option.distinct
+  by (smt (z3) option.distinct(1))
 
-
-lemma ex1_rng:"rng ex1 = {2,4,6}"
-  unfolding rng_defs ex1_defs
-  apply (simp split:if_splits)
-  apply (intro equalityI subsetI, simp_all)
-  (* apply (elim exE conjE impE)*) (* this will be fiddly! *)
-  apply (elim exE conjE disjE, simp_all)
-     apply (fastforce, fastforce, fastforce)
-  by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
-
+lemma ex2'_rng:"rng ex2' = {10}"
+  unfolding rng_defs ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
+  apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
+  by (safe, simp_all, force+)
+  
 end
