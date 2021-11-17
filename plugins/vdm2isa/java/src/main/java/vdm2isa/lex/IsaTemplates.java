@@ -210,6 +210,16 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
+    public static String translateDatatypeDefinition(LexLocation module, String name, String exp)
+    {
+        // TRNamedType will handle this, but the name is useful for IsaItem logging
+        assert name != null && exp != null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format(DATATYPE, name, exp));
+        updateTranslatedIsaItem(module, name, IsaItem.DATATYPE);
+        return sb.toString();
+    }
+
     public static String translateModule(String comment, String loc, String name, String imports, String defs) 
     {
         assert comment != null && loc != null && name != null && defs != null;

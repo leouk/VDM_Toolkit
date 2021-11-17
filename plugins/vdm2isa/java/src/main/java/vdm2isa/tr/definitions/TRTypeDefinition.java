@@ -405,7 +405,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     break;
                 case QUOTE:
                 case UNION:
-                    report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
+                    //report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
+                    sb.append(IsaTemplates.translateDatatypeDefinition(location, name.toString(), trtype.type.translate()));
                     break;
                 case UNKNOWN:
                 case RECORD:
