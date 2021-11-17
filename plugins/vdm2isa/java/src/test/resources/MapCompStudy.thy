@@ -318,4 +318,154 @@ lemma "rng mapComp2 = {2,4,6::VDMNat}"
    apply fastforce
   by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
 
+definition
+  mapComp :: "'a set \<Rightarrow> 'b set \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "mapComp S T inv_S inv_T domexpr rngexpr\<equiv> 
+        (\<lambda> dummy::'a . 
+            if (\<exists> d \<in> S . \<exists> r \<in> T . inv_S d \<and> inv_T r \<and> dummy = (domexpr d) \<and> r = (rngexpr d r)) then
+                Some (THE r . (\<exists> d \<in> S . inv_S d \<and> r \<in> T \<and> inv_T r \<and> dummy = (domexpr d) \<and> r = (rngexpr d r))) 
+            else 
+                None
+        )"
+
+text \<open>Isabelle maps are similar to VDMs, but with some significant differences worth observing. 
+ 
+      If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
+      might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
+      so that @{lemma "[1::nat \<mapsto> 2, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
+
+      In various VDMToolkit definitions, we default to @{term undefined} in case where the situation is out of hand,
+      hence, proofs will fail, and users will know that @{term undefined} being reached means some earlier problem has
+      occurred.  
+    \<close>
+
+text \<open>Type bound map comprehension cannot filter for type invariants, hence won't have @{term undefined} results.
+      This corresponds to the VDMSL expression
+      %
+      \begin{vdmssl}
+        { domexpr(d) |-> rngexpr(d, r) | d:S, r: T & P(d, r) }
+      \end{vdmsl}
+      % 
+      where the maplet expression can be just variables or functions over the domain/range input(s). 
+
+      VDM also issues a proof obligation for type bound maps (i.e. avoid it please!) to ensure the resulting map is finite.
+      Concretely, the example below generates the corresponding proof obligation:
+      %
+      \begin{vdmsl}
+      	ex: () -> map nat to nat
+	      ex() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
+
+        exists finmap1: map nat to (map (nat1) to (nat1)) & 
+            forall x:nat, y in set {4, 5, 6} & (x < 10) => 
+              exists findex2 in set dom finmap1 & 
+                finmap1(findex2) = {(x + y) |-> 10}
+      \end{vdmsl}
+     \<close>
+definition 
+  mapCompTypeBound :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "mapCompTypeBound inv_S inv_T domexpr rngexpr pred \<equiv> 
+        (\<lambda> dummy::'a . 
+            if (\<exists> d r . inv_S d \<and> inv_T r \<and> dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
+                Some (THE r . inv_T r \<and> (\<exists> d . dummy = domexpr d r \<and> r = rngexpr d r)) 
+              else 
+                None
+        )"
+
+text \<open>Set bound map comprehension can filter bound set for their elements invariants.
+      This corresponds to the VDMSL expression
+      %
+      \begin{vdmssl}
+        { domexpr(d) |-> rngexpr(d, r) | d in set S, r in set T & P(d, r) }
+      \end{vdmsl}
+      % 
+      If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
+      might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
+      so that @{lemma "[1::nat \<mapsto> 2, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
+     \<close>
+definition 
+  mapCompSetBind :: "'a set \<Rightarrow> 'b set \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "mapCompSetBind S T inv_S inv_T domexpr rngexpr pred \<equiv> 
+        (\<lambda> dummy::'a . 
+            if inv_VDMSet' inv_S S \<and> inv_VDMSet' inv_T T then
+              if (\<exists> d \<in> S . \<exists> r \<in> T . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
+                Some (THE r . r \<in> T \<and> (\<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r)) 
+              else 
+                None
+            else
+              undefined
+        )"
+
+lemmas mapCompSetBind_defs = mapCompSetBind_def inv_VDMSet'_def inv_VDMSet_def 
+lemmas rng_defs = rng_def ran_def
+
+text \<open>Identity functions to be used for the dom/rng expression functions for the case they are variables.\<close>
+definition 
+  domid :: "'a \<Rightarrow> 'b \<Rightarrow> 'a"
+  where
+  "domid \<equiv> (\<lambda> d . (\<lambda> r . d))"
+
+definition
+  rngid :: "'a \<Rightarrow> 'b \<Rightarrow> 'b"
+  where
+  "rngid \<equiv> (\<lambda> d . id)"
+
+lemma domidI[simp]: "domid d r = d"
+  by (simp add: domid_def)
+
+lemma rngidI[simp]: "rngid d r = r"
+  by (simp add: rngid_def)
+
+text \<open>Constant function to be used for the rng expression function for the case they are constants.\<close>
+definition
+  rngcnst :: "'b \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'b"
+  where
+  "rngcnst v \<equiv> (\<lambda> d . (\<lambda> r . v))"
+
+lemma rngcnstI[simp]: "rngcnst v d r = v"
+  by (simp add: rngcnst_def)
+
+(*On the explicit (narrower/declared) type, add inv_VDMNat1 
+  v98: map nat to nat1 = { d \<mapsto> r | d in set {1,2,3}, r in set {2,4,6} & r = d*2 } *)
+definition
+  ex1 :: "VDMNat \<rightharpoonup> VDMNat1"
+  where
+  "ex1 \<equiv> mapCompSetBind {1,2,3::VDMNat} {2,4,6::VDMNat} inv_VDMNat inv_VDMNat1 domid rngid (\<lambda> d r . r = d*2)"
+
+lemmas ex1_defs = ex1_def mapCompSetBind_defs inv_VDMNat1_def inv_VDMNat_def 
+
+(*On the implicit (wider/presumed) type, add inv_VDMNat 
+  v98 = { x+y |-> 10 | x in set {1,2,3}, y in set {4,5,6} } *)
+definition
+  ex2 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex2 \<equiv> mapCompSetBind {1,2,3::VDMNat} {2,4,6::VDMNat} inv_VDMNat inv_VDMNat (\<lambda> d . (\<lambda> r . d+r)) (rngcnst 10) (\<lambda> d r . r = d*2)"
+
+lemmas ex2_defs = ex2_def mapCompSetBind_defs inv_VDMNat1_def inv_VDMNat_def 
+
+lemma ex1_none: "x \<notin> dom ex1  \<Longrightarrow> ex1 x = None"
+  by (simp add: domIff)
+
+lemma ex1_dom: "dom ex1 = {1,2,3}"
+  unfolding dom_def ex1_defs
+  by (simp split:if_splits, safe)
+
+lemma "mapComp2 = ex1"
+  unfolding ex1_defs mapComp2_def 
+  apply simp
+
+lemma ex1_rng:"rng ex1 = {2,4,6}"
+  unfolding rng_defs ex1_defs
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all)
+  (* apply (elim exE conjE impE)*)
+  (* this will be fiddly! *)
+  apply (elim exE conjE disjE, simp_all)
+     apply fastforce
+  apply fastforce
+   apply fastforce
+  by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
+
 end
