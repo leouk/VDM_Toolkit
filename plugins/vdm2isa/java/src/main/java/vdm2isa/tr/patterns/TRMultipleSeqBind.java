@@ -1,9 +1,12 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
+import vdm2isa.tr.types.TRSeqType;
+import vdm2isa.tr.types.TRType;
 
 public class TRMultipleSeqBind extends TRMultipleBind 
 {
@@ -20,8 +23,19 @@ public class TRMultipleSeqBind extends TRMultipleBind
     {
         super(plist);
         this.seq = seq;
+        if (this.seq == null || !(this.seq.getType() instanceof TRSeqType))
+        report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
+            "seq bind",
+            (this.seq == null ? "null" : this.seq.getType().getClass().getSimpleName()),
+            "1", "expected seq type");
+
     }
 
+    @Override
+    public String toString()
+    {
+        return super.toString() + " " + String.valueOf(plist) + " in seq " + String.valueOf(seq); 
+    }
     
     @Override
     public IsaToken isaToken() {
@@ -55,6 +69,16 @@ public class TRMultipleSeqBind extends TRMultipleBind
     @Override
     public TRNode getRHS() {
         return seq;
+    }
+
+    /**
+     * Returns the set expression inner values type, e.g. x in seq S, 
+     * where S = seq of T, leads to x : T.
+     */
+    @Override 
+    public TRType getRHSType()
+    {
+        return ((TRSeqType)seq.getType()).seqof;
     }
 
 	@Override

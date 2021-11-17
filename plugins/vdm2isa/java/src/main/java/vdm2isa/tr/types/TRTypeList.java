@@ -162,7 +162,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 
 	public static TRTypeList newTypeList(TRType... members) {
 		TRTypeList result = new TRTypeList();
-		result.addAll(Arrays.asList(members));
+		if (members != null) 	
+			result.addAll(Arrays.asList(members));
 		return result;
 	}
 }

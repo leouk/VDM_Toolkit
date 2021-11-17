@@ -47,4 +47,11 @@ public class TRMultiBindListDefinition extends TRDefinition {
     {
         return bindings;
     }
+
+    public static TRMultiBindListDefinition newBindListDef(LexLocation location, 
+        TRMultipleBindList bindings)
+    {
+        return new TRMultiBindListDefinition(location, null, null, null, null, true, false, 
+            bindings, bindings.getDefinitions());
+    }
 }

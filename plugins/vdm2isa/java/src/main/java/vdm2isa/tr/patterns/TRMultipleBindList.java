@@ -20,6 +20,8 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRDefinitionSet;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRLiteralExpression;
@@ -29,6 +31,7 @@ import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRUnknownType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
 {
@@ -315,8 +318,39 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	 */
 	public TRNode getRHS()
 	{
-		return isEmpty() ? null : get(0).getRHS();
+		return isEmpty() ? new TRUnknownType(getLocation()) : get(0).getRHS();
 	}
+
+	public TRTypeBindList getTypeBindList()
+    {
+        // there can't be duplication in the named binds, so a list is fine.
+        TRTypeBindList result = new TRTypeBindList();
+        for(TRMultipleBind b : this)
+        {
+            result.addAll(b.getTypeBindList());
+        }
+        return result;
+    }
+
+	public TRPatternListList getPatternListList()
+	{
+		TRPatternListList result = new TRPatternListList();
+		for(TRMultipleBind b : this)
+		{
+			result.add(b.plist);
+		}
+		return result;
+	}
+
+	public TRDefinitionList getDefinitions()
+    {
+        TRDefinitionSet result = new TRDefinitionSet();
+        for(TRMultipleBind b : this)
+        {
+			result.addAll(b.getDefinitions());
+        }
+        return result.asList();
+    }
 
 	public static String translate(TRMultipleBind... args)
 	{

@@ -7,6 +7,8 @@ import com.fujitsu.vdmj.tc.patterns.TCTypeBindList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind> {
     
@@ -35,6 +37,16 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		setSemanticSeparator(" ");
 		setFormattingSeparator(" ");
 		setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+	}
+
+	public TRTypeList getTypeList()
+	{
+		TRTypeList result = TRTypeList.newTypeList((TRType[])null);
+		for(TRMultipleTypeBind t : this)
+		{
+			result.add((TRType)t.getRHS());	
+		}
+		return result;
 	}
 
 	public static String translate(TRMultipleTypeBind... args)

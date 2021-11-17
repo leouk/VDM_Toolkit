@@ -1,10 +1,13 @@
 package vdm2isa.tr.patterns;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
+import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRType;
 
 /**
  * VDM set binds represent "x in set S". Depending on the translation context, different outcomes are needed.
@@ -31,6 +34,17 @@ public class TRMultipleSetBind extends TRMultipleBind
         this.set = set;
         // If this set bind is part of a sequence bind or not; to be set by the TRSeqCompExpression
         this.seqBind = false;
+        if (this.set == null || !(this.set.getType() instanceof TRSetType))
+            report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
+                "set bind",
+                (this.set == null ? "null" : this.set.getType().getClass().getSimpleName()),
+                "1", "expected set type");
+    }
+
+    @Override
+    public String toString()
+    {
+        return super.toString() + " " + String.valueOf(plist) + " in set " + String.valueOf(set); 
     }
 
     @Override
@@ -78,7 +92,17 @@ public class TRMultipleSetBind extends TRMultipleBind
         return set;
     }
 
-	@Override
+    /**
+     * Returns the set expression inner values type, e.g. x in set S, 
+     * where S = set of T, leads to x : T.
+     */
+    @Override 
+    public TRType getRHSType()
+    {
+        return ((TRSetType)set.getType()).setof;
+    }
+
+    @Override
 	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseMultipleSetBind(this, arg);

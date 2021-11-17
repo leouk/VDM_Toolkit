@@ -1,7 +1,13 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -23,11 +29,16 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     }
 
     @Override
+    public String toString()
+    {
+        return super.toString() + " " + String.valueOf(plist) + ": " + String.valueOf(type); 
+    }
+
+    @Override
     public boolean getParenthesise()
     {
         return true;//always parenthesise type binds, regardless
-     }
-
+    }
 
     @Override
     public IsaToken isaToken() {
@@ -54,6 +65,12 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 
     @Override
     public TRNode getRHS() {
+        return type;
+    }
+
+    @Override 
+    public TRType getRHSType()
+    {
         return type;
     }
 

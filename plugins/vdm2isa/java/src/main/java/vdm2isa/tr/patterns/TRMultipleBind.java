@@ -1,9 +1,17 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.NameScope;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRDefinitionSet;
+import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
+import vdm2isa.tr.types.TRType;
 
 public abstract class TRMultipleBind extends TRNode implements TRRecordContext
 {
@@ -155,7 +163,13 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
      */
     protected abstract String boundExpressionTranslate(int index, boolean invTr);
 
+    /**
+     * RHS can be a TRExpression of TRType
+     * @return
+     */
     public abstract TRNode getRHS();
+
+    public abstract TRType getRHSType();
 
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 
@@ -168,5 +182,29 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
     public String recordPatternTranslate()
     {
         return plist.recordPatternTranslate();
+    }
+
+    public TRTypeBindList getTypeBindList()
+    {
+        // there can't be duplication in the named binds, so a list is fine.
+        TRTypeBindList result = new TRTypeBindList();
+        for(TRPattern p : this.plist)
+        {
+            result.add(new TRMultipleTypeBind(p, getRHSType()));
+        }
+        return result;
+    }
+
+    public TRDefinitionList getDefinitions()
+    {
+        TRDefinitionSet result = new TRDefinitionSet();
+        for(TRPattern p : this.plist)
+        {
+            LexLocation loc = p.getLocation();
+            TCNameToken name = new TCNameToken(loc, loc.module, p.getPattern());
+            TRLocalDefinition localdef = new TRLocalDefinition(loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
+            result.add(localdef);
+        }
+        return result.asList();
     }
 }
