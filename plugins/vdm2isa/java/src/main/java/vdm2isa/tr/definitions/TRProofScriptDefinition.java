@@ -16,7 +16,7 @@ public class TRProofScriptDefinition extends TRDefinition {
     public TRProofScriptDefinition(LexLocation location, TRIsaVDMCommentList comments,
         TRProofScriptStepDefinitionList poScript)
     {
-        super(location, comments, null, null, NameScope.GLOBAL, true, false);
+        super(null, location, comments, null, null, NameScope.GLOBAL, true, false);
         this.poScript = poScript;
     }
 

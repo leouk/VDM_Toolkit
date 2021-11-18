@@ -33,7 +33,9 @@ public class TRValueDefinition extends TRLocalDefinition
 	private final TRDefinitionList defs;
 	private final TRType expType;
 
-	protected TRValueDefinition(LexLocation location,
+	protected TRValueDefinition(
+		TCDefinition definition, 
+		LexLocation location,
 		TRIsaVDMCommentList comments, 
 		TCAnnotationList annotations, 
 		NameScope nameScope,
@@ -46,14 +48,19 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRDefinitionList defs)
 	{
 		// value names are null; their local definitions have the TCNameToken instead! 
-		super(location, comments, annotations, null, nameScope, used, excluded, type);
+		super(definition, location, comments, annotations, null, nameScope, used, excluded, type);
 		this.pattern = pattern;
 		this.exp = exp;
 		this.expType = expType;
-		this.defs = defs;
+		//NB will this ever be null during class mapping? 
+		this.defs = defs;//figureOutDefs(defs);
+		//if (local) 
+		//	System.out.println(toString());
 	}
 		
-	public TRValueDefinition(TRIsaVDMCommentList comments, 
+	public TRValueDefinition(
+		TCValueDefinition definition, 
+		TRIsaVDMCommentList comments, 
 		TCAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
@@ -64,9 +71,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRType expType, 
 		TRDefinitionList defs)
 	{
-		this(pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);		
-		//if (local) 
-		//	System.out.println(toString());
+		this(definition, pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);		
 	}
 
 	@Override

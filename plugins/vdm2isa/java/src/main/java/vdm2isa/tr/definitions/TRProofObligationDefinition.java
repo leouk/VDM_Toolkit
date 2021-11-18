@@ -43,7 +43,7 @@ public class TRProofObligationDefinition extends TRDefinition {
      public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
-        super(po.location, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
+        super(null, po.location, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
         this.po = po;
         this.poExpr = poExpr;
         this.poType = poType;//always null for now, given avoiding calls to typeCheck(poExpr);

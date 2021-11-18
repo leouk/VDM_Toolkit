@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -65,7 +66,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private TRExplicitFunctionDefinition postdef;
 	private final TRDefinitionListList paramDefinitionList;
 
-	public TRExplicitFunctionDefinition(
+	public TRExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
 			TRIsaVDMCommentList comments,
 			TCAnnotationList annotations,
 			TCNameToken name,
@@ -87,7 +88,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			boolean recursive,
 			boolean isUndefined)
 	{	
-		super(name.getLocation(), comments, annotations, name, nameScope, used, excluded);
+		// get the name location, given definition might be null for synthetic cases. 
+		super(definition, name.getLocation(), comments, annotations, name, nameScope, used, excluded);
 		this.typeParams = typeParams;
 		this.type = type;
 		this.parameters = parameters;
@@ -332,6 +334,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// The translator will then take this into account as the "missing" (now found) specification definition, and
 		// treat it as if the user has given it (e.g. equivalent to as if the user had typed "pre true", "post true");  
 		TRExplicitFunctionDefinition result = new TRExplicitFunctionDefinition(
+					null,
 					comments,										//  LexCommentList comments,								
 					null,											// 	TCAnnotationList annotations,
 					undeclaredName,									// 	TCNameToken name,
@@ -410,7 +413,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 */
 	protected boolean isImplicitlyGeneratedUndeclaredSpecification()
 	{
-		return body == null;
+		return body == null;//&& getVDMDefinition() == null;
 	}
 
 	/**
@@ -430,7 +433,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		if (isCurried)
 		{
 			// if curried there are more names than parameters on the first entry
-			if (type.result instanceof TRFunctionType)
+			if (type.getResultType() instanceof TRFunctionType)
 			{
 				assert !parameters.isEmpty();
 
@@ -442,7 +445,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				List<String> varNames = iter.next();
 				paramsStr.append(type.parameters.invTranslate(varNames));
 				// get the innermost parameters next
-				TRType next = type.result;
+				TRType next = type.getResultType();
 				while (next instanceof TRFunctionType && iter.hasNext())
 				{
 					// copy it for the case where we have to remove RESULT; remove RESULT from parameters as it will be treated in the next.result 
@@ -459,7 +462,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 					paramsStr.append(type.parameters.getFormattingSeparator());
 					paramsStr.append(type.parameters.getInvTranslateSeparator());
 					paramsStr.append(((TRFunctionType)next).parameters.invTranslate(varNames));
-					next = ((TRFunctionType)next).result;
+					next = ((TRFunctionType)next).getResultType();
 				}
 
 				if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
@@ -470,7 +473,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			else
 			{
 				// should never happen for a type checked VDM?
-				report(IsaErrorMessage.VDMSL_INVALID_CURRIED_FCNTYPE_2P, this.name.toString(), this.type.result.getClass().getSimpleName());
+				report(IsaErrorMessage.VDMSL_INVALID_CURRIED_FCNTYPE_2P, this.name.toString(), this.type.getResultType().getClass().getSimpleName());
 			}
 		}
 		else
@@ -599,7 +602,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
 		String fcnName     = name.getName();
 		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
-		String fcnOutType  = type.result.translate();
+		String fcnOutType  = type.getResultType().translate();
 		String fcnParams   = parameters.translate();
 		StringBuilder fcnBody = new StringBuilder();
 		switch (implicitSpecificationKind)

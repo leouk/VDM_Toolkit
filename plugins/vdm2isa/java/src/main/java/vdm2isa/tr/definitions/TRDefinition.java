@@ -6,7 +6,10 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCUnknownType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.Vdm2isaPlugin;
@@ -26,6 +29,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	private static final long serialVersionUID = 1L;
 	protected final TRIsaVDMCommentList comments;
 	protected final TCAnnotationList annotations;
+	private final TCDefinition vdmDefinition;
 
 	// /** The name of the object being defined. */
 	public final TCNameToken name;	
@@ -33,25 +37,17 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	public final NameScope nameScope;
 
 	// /** True if the definition has been used by the rest of the code. */
-	public boolean used;
+	public final boolean used;
 	
 	/** True if the definition should be excluded from name lookups */
-	public boolean excluded;
-		
-	/**
-	 * Whether or not this definition is part of a local definition of someone else
-	 */
-	//private boolean local;
+	public final boolean excluded;	
 	
-	// protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments)
-	// {
-	// 	this(location, comments, null);
-	// }
-	
-	protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+	protected TRDefinition(TCDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
 		TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
 	{
 		super(location); 
+		// create a default one in case of synthetic creation (with null), to avoid NPE on getVDMDefinition. 
+		this.vdmDefinition = definition == null ? new TCLocalDefinition(location, name, new TCUnknownType(location), nameScope) : definition;
 		this.comments = comments == null ? new TRIsaVDMCommentList() : comments;
 		this.annotations = annotations;
 		this.name = name;
@@ -59,6 +55,11 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 		this.used = used;
 		this.excluded = excluded;
 		//this.local = false;
+	}
+
+	public final TCDefinition getVDMDefinition()
+	{
+		return vdmDefinition;
 	}
 
 	public boolean isLocal()
@@ -120,10 +121,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 				IsaToken.BLOCK_COMMENT_CLOSE));
 		}
 
-		if (Vdm2isaPlugin.printLocations)
-		{
-			sb.append(IsaToken.comment(getLocation().toString(), "\n"));
-		}
+		sb.append(tldLocationTranslate());
 
 		// issue TLD comment, if any
 		// if (!tldIsaComment().isEmpty())
@@ -133,6 +131,16 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 		// 	sb.append(getFormattingSeparator());
 		// }
 		return sb.toString();
+	}
+
+	/**
+	 * Add TLD location as an isabelle comment, if enabled and not null or not just ANY location. 
+	 * @return
+	 */
+	public String tldLocationTranslate()
+	{
+		return Vdm2isaPlugin.printLocations ? 
+			(getLocation() != null && !LexLocation.ANY.equals(getLocation()) ? IsaToken.comment(String.valueOf(getLocation()), "\n") : "") : "";
 	}
 
     public String tldIsaCommentTranslate(TRExpression exp)

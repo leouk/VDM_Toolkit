@@ -1,6 +1,8 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -55,7 +57,9 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, QUOTE, SEQ, SET, UNION, RENAMED, RENAMEDRECORD
     }
 
-    public TRTypeDefinition(TRIsaVDMCommentList comments, 
+    public TRTypeDefinition(
+        TCTypeDefinition definition, 
+        TRIsaVDMCommentList comments, 
         TCAnnotationList annotations, 
         TCNameToken name, 
         NameScope nameScope,
@@ -79,7 +83,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         TRDefinitionList composeDefinitions
         )
     {        
-        super(name.getLocation(), comments, annotations, name, nameScope, used, excluded, type);
+        super(definition, name.getLocation(), comments, annotations, name, nameScope, used, excluded, type);
         //setLocal(false); // NameScope // Type definitions are never local? 
         this.invPattern = invPattern;
         this.invExpression = invExpression;

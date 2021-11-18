@@ -15,7 +15,7 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
 
     protected TRBasicProofScriptStepDefinition(LexLocation location, TRIsaVDMCommentList comments, IsaToken isarScriptStep)
     {
-        super(location, comments, null, null, NameScope.GLOBAL, true, false);
+        super(null, location, comments, null, null, NameScope.GLOBAL, true, false);
         this.isarScriptStep = isarScriptStep;
     }
 

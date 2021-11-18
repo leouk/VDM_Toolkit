@@ -2,6 +2,8 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCMultiBindListDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -15,10 +17,10 @@ public class TRMultiBindListDefinition extends TRDefinition {
     private final TRMultipleBindList bindings;
     private final TRDefinitionList defs;
 
-    public TRMultiBindListDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+    public TRMultiBindListDefinition(TCMultiBindListDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
         TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRMultipleBindList bindings, TRDefinitionList defs)
     {
-        super(location, comments, annotations, name, nameScope, used, excluded);
+        super(definition, location, comments, annotations, name, nameScope, used, excluded);
         this.bindings = bindings;
         this.defs = defs;
     }
@@ -51,7 +53,7 @@ public class TRMultiBindListDefinition extends TRDefinition {
     public static TRMultiBindListDefinition newBindListDef(LexLocation location, 
         TRMultipleBindList bindings)
     {
-        return new TRMultiBindListDefinition(location, null, null, null, null, true, false, 
+        return new TRMultiBindListDefinition(null, location, null, null, null, null, true, false, 
             bindings, bindings.getDefinitions());
     }
 }

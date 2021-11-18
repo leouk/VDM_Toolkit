@@ -2,6 +2,7 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -26,7 +27,8 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
     // keep public (but final) so that ClassMapping works and object access is not a problem in derived classes. 
     public final TRType type;
 
-    protected TRAbstractTypedDefinition(LexLocation location, 
+    protected TRAbstractTypedDefinition(TCDefinition definition, 
+        LexLocation location, 
         TRIsaVDMCommentList comments, 
         TCAnnotationList annotations, 
         TCNameToken name, 
@@ -36,10 +38,8 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
         TRType type)
     {
         // name might be null in some cases. See TRLocalDefinition and TRValueDefinition
-        super(location, comments, annotations, name, nameScope, used, excluded);
+        super(definition, location, comments, annotations, name, nameScope, used, excluded);
         this.type = type;
-
-        //TODO get TCLocalDefinition.valueDefinition?
     }
 
     @Override

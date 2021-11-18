@@ -5,6 +5,8 @@
 package vdm2isa.tr.definitions;
 
 
+import java.util.Arrays;
+
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 
@@ -51,10 +53,10 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	// 	}
 	// }
 
-	// public  boolean allAreLocalDefinition()
-	// {
-	// 	return allAre(new TRLocalDefinition());
-	// }
+	public  boolean allAreLocalDefinition()
+	{
+		return allAre(new TRLocalDefinition());
+	}
 
 	public <T extends TRDefinition> boolean allAre(T def)
 	{
@@ -131,5 +133,12 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 			}
 		}
 		return sb.toString();
+	}
+
+	public static TRDefinitionList newDefList(TRDefinition... args)
+	{
+		TRDefinitionList result = new TRDefinitionList();
+		result.addAll(Arrays.asList(args));
+		return result; 
 	}
 }

@@ -2,6 +2,8 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCEqualsDefinition;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
@@ -19,18 +21,16 @@ public class TREqualsDefinition extends TRValueDefinition {
     private final TRMultipleTypeBind typebind;
     private final TRMultipleBind bind;
 
-    public TREqualsDefinition(LexLocation location, TRIsaVDMCommentList comments, 
+    public TREqualsDefinition(TCEqualsDefinition definition, LexLocation location, TRIsaVDMCommentList comments, 
             TCAnnotationList annotations, NameScope nameScope, boolean used, boolean excluded,
             TRPattern pattern, TRMultipleTypeBind typebind, TRMultipleBind bind, TRExpression test,
             TRType expType, TRType defType, TRDefinitionList defs) {
-        super(location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);
+        super(definition, location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);
         this.typebind = typebind;
         this.bind = bind;
         //setLocal(true); //leave to NameScope?
         if (pattern == null && typebind == null)
-            report(IsaErrorMessage.VDMSL_INVALID_EQUALSDEF_2P, "structure", "cannot have null pattern and type bind");
-        if (defs == null || defs.isEmpty())
-            report(IsaErrorMessage.VDMSL_INVALID_EQUALSDEF_2P, "definitions", "cannot be null or empty");
+            report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "equals", "structure", "cannot have null pattern and type bind");
         //System.out.println(toString());
     }
 

@@ -2,6 +2,8 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -18,14 +20,16 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     
     private static final long serialVersionUID = 1L;
 
-    // For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
-    // protected TRLocalDefinition()
-    // {
-    //     //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-    //     this(LexLocation.ANY, null, null,null, null, false, false, null);
-    // }
+    //For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
+    protected TRLocalDefinition()
+    {
+        //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
+        this(null, LexLocation.ANY, null, null, null, null, false, false, null);
+    }
 
-    public TRLocalDefinition(LexLocation location, 
+    protected TRLocalDefinition(
+        TCDefinition definition, 
+        LexLocation location, 
         TRIsaVDMCommentList comments, 
         TCAnnotationList annotations, 
         TCNameToken name, 
@@ -34,11 +38,22 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         boolean excluded,
         TRType type)
     {
-        super(location, comments, annotations, name, nameScope, used, excluded, type);
-        // TRValueDefinition have patterns hence can pass name as null; it will have to change its own locality further
-        //setLocal(name != null); leave to namescope
+        super(definition, location, comments, annotations, name, nameScope, used, excluded, type);
+    }
 
-        //TODO get TCLocalDefinition.valueDefinition?
+    // name might be null in some cases. See TRLocalDefinition and TRValueDefinition
+    public TRLocalDefinition(TCLocalDefinition definition,
+        LexLocation location, 
+        TRIsaVDMCommentList comments, 
+        TCAnnotationList annotations, 
+        TCNameToken name, 
+        NameScope nameScope, 
+        boolean used, 
+        boolean excluded,
+        TRType type)
+    {
+        // TRValueDefinition have patterns hence can pass name as null; it will have to change its own locality further
+        this((TCDefinition)definition, location, comments, annotations, name, nameScope, used, excluded, type);
     }
 
     @Override
@@ -46,6 +61,13 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 	{
 		return IsaToken.LOCAL;
 	}
+
+    @Override
+	public String tldLocationTranslate()
+    {
+        // don't add local definitions locations!
+        return ""; 
+    }
 
     /**
      * Create internal translate to allow jumps within the hierarchy
