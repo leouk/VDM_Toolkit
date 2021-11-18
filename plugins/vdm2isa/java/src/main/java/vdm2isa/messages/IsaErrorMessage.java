@@ -42,7 +42,7 @@ public enum IsaErrorMessage {
     VDMSL_INVALID_TYPEDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 12, 
     "Invalid type %1$s definition for %2$s. Both pattern and expression must be present."),
     VDMSL_INVALID_VAREXPR_VARDEF_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 13, 
-    "Invalid variable expression - null vardef."),
+    "Invalid variable expression `%1$s` - null vardef."),
     VDMSL_INVALID_EXPROP_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 14, 
     "Invalid expression operator `%1$s`."),
     VDMSL_INVALID_EQUALSDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 15, 
@@ -92,7 +92,8 @@ public enum IsaErrorMessage {
     "VDM cases other clause for option type expression `%1$s` is not allowed in Isabelle."),
     ISA_INVALID_EXPRCHAIN_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 19,
     "Booleann expression chain for `%1$s` operator must all have boolean type."),
-
+    ISA_INVALID_UNIONTYPE_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 20, 
+    "Union types are not allowed for %1$s `%2$s`: you *must* declare it as a named type."), 
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

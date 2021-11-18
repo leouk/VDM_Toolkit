@@ -2,7 +2,9 @@ package vdm2isa.lex;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -34,10 +36,13 @@ public final class IsaTemplates {
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
 
+    protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
+
     public static void reset()
     {
         translatedItems.clear();
         IsaToken.dummyCount = 0;
+        //IsaTemplates.INVALID_ISA_ISATOKEN_IDENTIFIERS.clear();
     }
 
     //@todo pass TCNameToken? Or LexLocation?
