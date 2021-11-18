@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-16T12:07:21.915852Z
+(* VDM to Isabelle Translation @2021-11-18T12:41:08.392629Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IComplexExpr.vdmsl' at line 1:8
@@ -57,13 +57,16 @@ where
 
 	
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 15:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 15:5\<close>
 definition
 	pre_vc3 :: "\<bool>"
 where
 	"pre_vc3  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 15:5\<close>
 definition
 	post_vc3 :: "\<bool> \<Rightarrow> \<bool>"
 where
@@ -80,13 +83,16 @@ where
 	(\<forall> (var1 :: VDMNat)  (var2 :: VDMNat)  . ((((inv_VDMNat var1))) \<and>  (((inv_VDMNat var2))) \<longrightarrow> (var1 < var2)))"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 19:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 19:5\<close>
 definition
 	pre_vc31 :: "\<bool>"
 where
 	"pre_vc31  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 19:5\<close>
 definition
 	post_vc31 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
 where
@@ -102,13 +108,16 @@ where
 	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 23:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 23:5\<close>
 definition
 	pre_vc32 :: "\<bool>"
 where
 	"pre_vc32  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 23:5\<close>
 definition
 	post_vc32 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
 where
@@ -124,13 +133,16 @@ where
 	{ (x + y) | (x :: VDMNat)  (y :: VDMNat) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  (((inv_VDMNat y)))  \<and> (x > y) }"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 27:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 27:5\<close>
 definition
 	pre_vc33 :: "\<bool>"
 where
 	"pre_vc33  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 27:5\<close>
 definition
 	post_vc33 :: "VDMNat VDMSeq \<Rightarrow> \<bool>"
 where
@@ -146,13 +158,16 @@ where
 	[ x . \<comment>\<open>Type bound sequence compression is not supported in Isabelle.\<close>  (((inv_VDMNat x))) , (x > (10::VDMNat1)) ]"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 31:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 31:5\<close>
 definition
 	pre_vc4 :: "\<bool>"
 where
 	"pre_vc4  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 31:5\<close>
 definition
 	post_vc4 :: "\<bool> \<Rightarrow> \<bool>"
 where
@@ -169,13 +184,16 @@ where
 	(\<forall> var1 :: VDMNat  . (\<forall> var2 :: VDMNat  . (\<forall> var3 \<in> t9  . (\<forall> var4 \<in> t9  . (((inv_VDMNat var1)) \<and>  ((inv_VDMNat var2)) \<and>  (var3 \<in>t9) \<and>  (var4 \<in>t9) \<longrightarrow> ((var1 + var3) < (var2 + var4)))))))"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 35:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 35:5\<close>
 definition
 	pre_vc41 :: "\<bool>"
 where
 	"pre_vc41  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 35:5\<close>
 definition
 	post_vc41 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
 where
@@ -191,13 +209,16 @@ where
 	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 39:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 39:5\<close>
 definition
 	pre_vc42 :: "\<bool>"
 where
 	"pre_vc42  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 39:5\<close>
 definition
 	post_vc42 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
 where
@@ -213,13 +234,16 @@ where
 	{ (x + y) | (x :: VDMNat)  y .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 47:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 47:5\<close>
 definition
 	pre_vc5 :: "\<bool>"
 where
 	"pre_vc5  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 47:5\<close>
 definition
 	post_vc5 :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -235,13 +259,16 @@ where
 	(THE var. ((((inv_VDMNat var))) \<and> (var < (1::VDMNat1))))"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 51:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 51:5\<close>
 definition
 	pre_vc51 :: "\<bool>"
 where
 	"pre_vc51  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 51:5\<close>
 definition
 	post_vc51 :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -257,13 +284,16 @@ where
 	(THE var. (((var \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and> (var < (1::VDMNat1))))"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 55:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 55:5\<close>
 definition
 	pre_vc6 :: "\<bool>"
 where
 	"pre_vc6  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 55:5\<close>
 definition
 	post_vc6 :: "VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -278,7 +308,7 @@ where
 	\<comment>\<open>User defined body of vc6\<close>
 	((
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) then
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) \<and> (inv_VDMNat (var + var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -286,7 +316,9 @@ where
 	) (10::VDMNat1)  (20::VDMNat1))"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 63:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 65:11\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -297,6 +329,7 @@ where
 		(x < y)"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 66:17\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -314,13 +347,16 @@ where
 	(x + y)"
 
 	
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 69:5\<close>
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 69:5\<close>
 definition
 	pre_vc7 :: "\<bool>"
 where
 	"pre_vc7  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IComplexExpr' (./src/test/resources/TestV2IComplexExpr.vdmsl) at line 69:5\<close>
 definition
 	post_vc7 :: "\<bool> \<Rightarrow> \<bool>"
 where

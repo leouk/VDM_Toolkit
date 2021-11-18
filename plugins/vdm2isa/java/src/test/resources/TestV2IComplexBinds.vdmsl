@@ -2,9 +2,21 @@ module TestV2IComplexBinds
 exports all
 definitions
 
+types
+	R:: a: nat b: nat
+	inv mk_R(a,b)==a<b;
+	
 values
 	v0: nat = 10;
-	--v0 = mk_(1,2);
-	--v1 = let mk_(x,y) = v0 in x+y;
+	v1 = mk_(1,2);
+	v11= mk_R(1,2);
+	
+	v2 = let mk_(x,y) = mk_(1,2) in x+y;	-- needs to fix the local def? 
+	v21= let mk_(x,y) = v1 in x+y;	-- needs to fix the local def? 
+	v3 = mk_(1,2).#1 + mk_(1,2).#2; --this surprised me it worked at first! nice
+	
+	v4 = { mk_(x,y) |-> [x,y] | x, y in set {1,2} }; -- whaaaa.... 
+	
+	[v5,v6] = [1,2];
 	
 end TestV2IComplexBinds

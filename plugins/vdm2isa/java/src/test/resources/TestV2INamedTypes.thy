@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-16T12:07:21.917657Z
+(* VDM to Isabelle Translation @2021-11-18T12:41:08.400993Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2INamedTypes.vdmsl' at line 1:8
@@ -9,9 +9,11 @@ imports VDMToolkit
 begin
 
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 11:5\<close>
 type_synonym TBasic1 = "VDMNat1"
 	
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 11:5\<close>
 definition
 	inv_TBasic1 :: "TBasic1 \<Rightarrow> \<bool>"
 where
@@ -21,9 +23,11 @@ where
  
 
 	
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 14:5\<close>
 type_synonym TBasic2 = "TBasic1"
 	
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 15:9\<close>
 definition
 	inv_TBasic2 :: "TBasic2 \<Rightarrow> \<bool>"
 where
@@ -35,6 +39,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 16:23\<close>
 definition
 	eq_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
@@ -46,6 +51,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 17:23\<close>
 definition
 	ord_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
@@ -55,6 +61,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 17:23\<close>
 definition
 	min_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
@@ -68,6 +75,7 @@ where
 
 	
 
+\<comment>\<open>in 'TestV2INamedTypes' (./src/test/resources/TestV2INamedTypes.vdmsl) at line 17:23\<close>
 definition
 	max_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where

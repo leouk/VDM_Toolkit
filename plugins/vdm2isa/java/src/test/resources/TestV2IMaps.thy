@@ -1,19 +1,21 @@
-(* VDM to Isabelle Translation @2021-11-17T15:46:15.327Z
+(* VDM to Isabelle Translation @2021-11-18T12:41:08.399772Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IMaps.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IMaps.vdmsl]
+in './src/test/resources/TestV2IMaps.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IMaps.vdmsl]
 *)
 theory TestV2IMaps
 imports VDMToolkit
 begin
 
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 7:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
 	
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 10:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> \<bool>"
 where
@@ -191,13 +193,16 @@ where
 
 	
 	
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 28:5\<close>
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 28:5\<close>
 definition
 	pre_v96 :: "\<bool>"
 where
 	"pre_v96  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 28:5\<close>
 definition
 	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
 where
@@ -213,13 +218,16 @@ where
 	"
 
 	
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 31:5\<close>
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 31:5\<close>
 definition
 	pre_v961 :: "\<bool>"
 where
 	"pre_v961  \<equiv> True"
 
 
+\<comment>\<open>in 'TestV2IMaps' (./src/test/resources/TestV2IMaps.vdmsl) at line 31:5\<close>
 definition
 	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
 where
