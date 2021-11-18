@@ -31,6 +31,8 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	public static boolean runExu;
 	// whether to generate min/max defs from TRTypeDefinition
 	public static boolean translateTypeDefMinMax;
+	// whether to print location information per TLD
+	public static boolean printLocations;
 
 		/**
 	 * Default=true; translate VDM values as Isabelle abbreviations.
@@ -148,5 +150,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		Vdm2isaPlugin.runExu			= true;
 		Vdm2isaPlugin.valueAsAbbreviation = true;
 		Vdm2isaPlugin.translateTypeDefMinMax = true;
+		Vdm2isaPlugin.printLocations = true;
 	}
 }

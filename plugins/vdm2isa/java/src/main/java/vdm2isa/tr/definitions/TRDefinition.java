@@ -107,6 +107,11 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 				IsaToken.BLOCK_COMMENT_CLOSE));
 		}
 
+		if (Vdm2isaPlugin.printLocations)
+		{
+			sb.append(IsaToken.comment(getLocation().toString(), "\n"));
+		}
+
 		// issue TLD comment, if any
 		// if (!tldIsaComment().isEmpty())
 		// {
