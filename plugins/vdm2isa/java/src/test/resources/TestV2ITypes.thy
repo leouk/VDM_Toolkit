@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-16T12:07:21.919653Z
+(* VDM to Isabelle Translation @2021-11-18T12:41:08.404783Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypes.vdmsl' at line 1:8
@@ -9,9 +9,11 @@ imports VDMToolkit
 begin
 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 11:5\<close>
 type_synonym TBasic1 = "VDMNat1"
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 11:5\<close>
 definition
 	inv_TBasic1 :: "TBasic1 \<Rightarrow> \<bool>"
 where
@@ -22,9 +24,11 @@ where
 		 
 
 	
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 14:5\<close>
 type_synonym TBasic2 = "VDMNat1"
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 15:9\<close>
 definition
 	inv_TBasic2 :: "TBasic2 \<Rightarrow> \<bool>"
 where
@@ -36,6 +40,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 16:23\<close>
 definition
 	eq_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
@@ -47,6 +52,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 17:23\<close>
 definition
 	ord_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
@@ -56,6 +62,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 17:23\<close>
 definition
 	min_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
@@ -69,6 +76,7 @@ where
 
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 17:23\<close>
 definition
 	max_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
@@ -83,9 +91,11 @@ where
 	
 
 	
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 20:5\<close>
 type_synonym TSet = "VDMNat1 VDMSet"
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 21:9\<close>
 definition
 	inv_TSet :: "TSet \<Rightarrow> \<bool>"
 where
@@ -97,6 +107,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 22:23\<close>
 definition
 	eq_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
@@ -108,6 +119,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 23:28\<close>
 definition
 	ord_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
@@ -117,6 +129,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 23:28\<close>
 definition
 	min_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
@@ -130,6 +143,7 @@ where
 
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 23:28\<close>
 definition
 	max_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
@@ -144,9 +158,11 @@ where
 	
 
 	
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 26:5\<close>
 type_synonym TSeq = "VDMNat1 VDMSeq1"
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 27:9\<close>
 definition
 	inv_TSeq :: "TSeq \<Rightarrow> \<bool>"
 where
@@ -158,6 +174,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 28:29\<close>
 definition
 	eq_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
@@ -169,6 +186,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 29:27\<close>
 definition
 	ord_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
@@ -178,6 +196,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 29:27\<close>
 definition
 	min_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
@@ -191,6 +210,7 @@ where
 
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 29:27\<close>
 definition
 	max_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
@@ -205,9 +225,11 @@ where
 	
 
 	
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 32:5\<close>
 type_synonym TMap = "(VDMNat1 \<rightharpoonup> VDMNat1)"
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 33:9\<close>
 definition
 	inv_TMap :: "TMap \<Rightarrow> \<bool>"
 where
@@ -219,6 +241,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 34:35\<close>
 definition
 	eq_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
@@ -230,6 +253,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 37:9\<close>
 definition
 	ord_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
@@ -239,6 +263,7 @@ where
 
 		 
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 37:9\<close>
 definition
 	min_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where
@@ -252,6 +277,7 @@ where
 
 	
 
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 37:9\<close>
 definition
 	max_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where

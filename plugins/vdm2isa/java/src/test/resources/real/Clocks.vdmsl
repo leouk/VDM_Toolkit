@@ -385,7 +385,7 @@ functions
 	 */
 	next_tm: FMU * Ref +> RealNaNLF
 	next_tm(fmu, ref) ==
-		--@LF this gets a union type and thus the error about it having to be "named"! @NB?
+		--@LF this gets a union type and thus the error about it having to be "named"! 
 		--	  will return a <NaN>, just to see if it solves
 		<NaN>--is not yet specified
 	pre exists v in set fmu.clocks & v.ref = ref
@@ -459,7 +459,6 @@ functions
 	activateClocks: Importer * set of FMURef -> Importer 
 	activateClocks(I, clocks)==
 		if clocks = {} then I
-			--@LF @NB didn't know you could have a then without an expression? hence Isa error!
 		else 
 		let clock in set clocks in
 		let I1 = setClock(I, I.scenario.fmus(clock.name), clock.ref, true) in
@@ -982,7 +981,17 @@ calculateSchedule(fmu, clocks, schedule)==
 	else
 	let clock in set clocks in
 		let fmuRef = mk_FMURef(fmu.name, clock) in
-		let S1 = schedule ++ {fmuRef |-> next_tm(fmu, clock)} in
+		--@LF @NB is that fair/accurate? 
+		--@LF because next_tm returns possibly a union, the map is possibly a union.
+		--	  it's good practice to always type your let-defs!
+		--	  this could fail if nex_tm=<NaN>, which would give run time errror given
+		--	  result type is not "map FMURef to RefNaN"! 
+		--	  So either change the result type (and type of S1), or ignore the NaN result!
+		--    Will choose the later, to avoid cascading changes to all the call this function 
+		--Error   [ISA   ] 10220: Union types are not allowed for union type `size = 2`: you *must* declare it as a named type. in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 984:27
+		--let S1 = schedule ++ {fmuRef |-> next_tm(fmu, clock)} in
+		let n : RealNaNLF = next_tm(fmu, clock),
+			S1: map FMURef to real = schedule ++ (if is_real(n) then {fmuRef |-> next_tm(fmu, clock)} else {|->}) in
 		calculateSchedule(fmu, clocks \ {clock}, S1)
 pre 
 let cref = {c.ref | c in set fmu.clocks & c.type = <inputLF> and c.interval <> <triggered> } in 

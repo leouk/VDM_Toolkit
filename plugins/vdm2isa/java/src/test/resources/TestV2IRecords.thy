@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-16T12:07:21.918762Z
+(* VDM to Isabelle Translation @2021-11-18T12:41:08.402418Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IRecords.vdmsl' at line 1:8
@@ -9,11 +9,13 @@ imports VDMToolkit
 begin
 
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 7:5\<close>
 record TRecord = 
 	x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "VDMNat"
 		 y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "VDMNat"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 10:9\<close>
 definition
 	inv_TRecord :: "TRecord \<Rightarrow> \<bool>"
 where
@@ -25,6 +27,7 @@ where
 		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) < (y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)))"
  
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 11:24\<close>
 definition
 	eq_TRecord :: "TRecord\<Rightarrow> TRecord \<Rightarrow> \<bool>"
 where
@@ -37,6 +40,7 @@ where
 		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r1)) = (x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r2)))"
  
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 12:25\<close>
 definition
 	ord_TRecord :: "TRecord\<Rightarrow> TRecord \<Rightarrow> \<bool>"
 where
@@ -46,9 +50,11 @@ where
  
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 15:5\<close>
 type_synonym TRecord2 = "TRecord"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 15:5\<close>
 definition
 	inv_TRecord2 :: "TRecord2 \<Rightarrow> \<bool>"
 where
@@ -58,9 +64,11 @@ where
  
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 19:5\<close>
 type_synonym TRecord3 = "TRecord"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 20:9\<close>
 definition
 	inv_TRecord3 :: "TRecord3 \<Rightarrow> \<bool>"
 where
@@ -73,9 +81,11 @@ where
 		 
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 24:5\<close>
 type_synonym TRecord4 = "TRecord2"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 24:5\<close>
 definition
 	inv_TRecord4 :: "TRecord4 \<Rightarrow> \<bool>"
 where
@@ -86,9 +96,11 @@ where
 		 
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 28:5\<close>
 type_synonym TRecord5 = "TRecord2"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 29:9\<close>
 definition
 	inv_TRecord5 :: "TRecord5 \<Rightarrow> \<bool>"
 where
@@ -100,9 +112,11 @@ where
  
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 33:5\<close>
 type_synonym TRecord6 = "TRecord3"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 33:5\<close>
 definition
 	inv_TRecord6 :: "TRecord6 \<Rightarrow> \<bool>"
 where
@@ -113,9 +127,11 @@ where
 		 
 
 	
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 37:5\<close>
 type_synonym TRecord7 = "TRecord5"
 	
 
+\<comment>\<open>in 'TestV2IRecords' (./src/test/resources/TestV2IRecords.vdmsl) at line 38:9\<close>
 definition
 	inv_TRecord7 :: "TRecord7 \<Rightarrow> \<bool>"
 where
