@@ -75,7 +75,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			// we ignore the TRSeq1Type.
 			
 			TRSeqType s1t = (TRSeqType)t;
-			TRSeqType st = new TRSeqType(s1t.getVDMType(), s1t.definitions, s1t.seqof, s1t.seq1);
+			TRSeqType st = new TRSeqType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.seq1);
 			
 			if (contains(st))
 			{
@@ -88,7 +88,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			// we ignore the TRSet1Type.
 			
 			TRSetType s1t = (TRSetType)t;
-			TRSetType st = new TRSetType(s1t.getVDMType(), s1t.definitions, s1t.setof, s1t.set1);
+			TRSetType st = new TRSetType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.set1);
 			
 			if (contains(st))
 			{
@@ -118,9 +118,9 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			TROptionalType opt = (TROptionalType)t;
 			
-			if (!opt.getVDMType().isUnknown(opt.getVDMType().location) && contains(opt.type))
+			if (!opt.getVDMType().isUnknown(opt.getVDMType().location) && contains(opt.getInnerType()))
 			{
-				remove(opt.type);	// Because T | [T] = [T]
+				remove(opt.getInnerType());	// Because T | [T] = [T]
 			}
 		}
 		return super.add(t);

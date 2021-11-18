@@ -12,11 +12,10 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
  * TRField has to inherit from TRType instead of TRNode (as per TCField hierarchy). That's because
  * invTranslate(String) is needed for TRFieldList and TRRecordType.
  */
-public class TRField extends TRType {
+public class TRField extends TRAbstractInnerTypedType {
     
 	private static final long serialVersionUID = 1L;
     private final TCNameToken tagname;
-    private final TRType type;
     protected final boolean equalityAbstraction; 
 
     // the record this field belongs to; set by TRFieldList
@@ -24,9 +23,8 @@ public class TRField extends TRType {
     
     public TRField(TCNameToken tagname, TRType type, boolean equalityAbstraction)
     {
-        super(type.getVDMType(), new TRDefinitionList());
+        super(type.getVDMType(), null, type);
         this.tagname = tagname;
-        this.type = type;
         this.equalityAbstraction = equalityAbstraction;
         this.record = null;
     }
@@ -42,23 +40,17 @@ public class TRField extends TRType {
         return IsaToken.POINT;
     }
 
-    @Override 
-    public String getName()
-    {
-        return type.getName();
-    }
-
     @Override
     public String translate() {
         return getIsabelleTagName() + " " + IsaToken.TYPEOF.toString() + " " + 
-            "\"" + this.type.translate() + "\"";
+            "\"" + this.getInnerType().translate() + "\"";
     }
 
     @Override
     public String invTranslate(String varName) {
         String fieldName = varName == null ? varName : 
             IsaToken.parenthesise(getIsabelleTagName() + " " + varName);
-        return IsaToken.parenthesise(type.invTranslate(fieldName));
+        return IsaToken.parenthesise(getInnerType().invTranslate(fieldName));
     }
 
     /**
@@ -95,14 +87,15 @@ public class TRField extends TRType {
     @Override
     public void checkForUnionTypes()
     {
+        super.checkForUnionTypes();
         checkRecordType();
-        this.checkForUnionTypes(record != null ? record.getName() : "record field");
+        checkForUnionTypes(record != null ? record.getName() : "record field");
     }
 
     public void checkForUnionTypes(String recordName) {
-        if (type instanceof TRUnionType)
+        if (getInnerType() instanceof TRUnionType)
         {
-            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, recordName, getTagName());   
+            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, recordName, getTagName());   
         }
     }
 }

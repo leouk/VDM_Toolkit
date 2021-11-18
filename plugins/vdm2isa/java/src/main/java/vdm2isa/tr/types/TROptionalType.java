@@ -6,15 +6,12 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TROptionalType extends TRType {
+public class TROptionalType extends TRAbstractInnerTypedType {
     private static final long serialVersionUID = 1L;
     
-    protected final TRType type;
-
     public TROptionalType(TCOptionalType vdmType, TRDefinitionList definitions, TRType type)
     {
-        super(vdmType, definitions);
-        this.type = type;
+        super(vdmType, definitions, type);
     }
 
     // @Override
@@ -33,7 +30,7 @@ public class TROptionalType extends TRType {
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
         sb.append(getSemanticSeparator());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
-        sb.append(type.invTranslate(null));
+        sb.append(getInnerType().invTranslate(null));
         sb.append(getSemanticSeparator());
         sb.append(varName);
         return IsaToken.parenthesise(sb.toString());
@@ -46,7 +43,7 @@ public class TROptionalType extends TRType {
 
     @Override
     public String translate() {
-        return type.translate() + getSemanticSeparator() + isaToken().toString();
+        return getInnerType().translate() + getSemanticSeparator() + isaToken().toString();
     }
 
 	@Override
@@ -64,10 +61,5 @@ public class TROptionalType extends TRType {
     public static TROptionalType newOptionalType(TRType type)
     {
         return new TROptionalType(new TCOptionalType(type.getLocation(), type.getVDMType()), type.getDefinitions(), type);
-    }
-
-    @Override
-    public void checkForUnionTypes() {
-        type.checkForUnionTypes();
     }
 }

@@ -57,7 +57,7 @@ public class TRUnknownType extends TRType {
     @Override
     public void checkForUnionTypes() {
         // unknown type is not union? Well... raise it anyhow
-        report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, "", "unknown");   
+        report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, "", "unknown");   
     }
 
 }

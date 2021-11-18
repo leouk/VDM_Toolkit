@@ -115,6 +115,6 @@ public class TRUnionType extends TRType {
 
 	@Override
 	public void checkForUnionTypes() {
-        report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, "union type", "size = " + types.size());   
+        report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, "union type", "size = " + types.size());   
 	}
 }

@@ -8,18 +8,16 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TRMapType extends TRType
+public class TRMapType extends TRAbstractInnerTypedType
 {
     private static final long serialVersionUID = 1L;
-	public final TRType from;
-	public final TRType to;
+	private final TRType from;
     public final boolean injective;
 
     public TRMapType(TCType vdmType, TRDefinitionList definitions, TRType from, TRType to, boolean injective)
 	{
-        super(vdmType, definitions);
+        super(vdmType, definitions, to);
         this.from = from;
-        this.to = to;
         this.injective = injective;
     }
 
@@ -33,6 +31,16 @@ public class TRMapType extends TRType
 		this(owner, definitions, from, to, true);
 	}
 
+    public TRType getFromType()
+    {
+        return from;
+    }
+
+    public TRType getToType()
+    {
+        return getInnerType();
+    }
+
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
@@ -40,7 +48,7 @@ public class TRMapType extends TRType
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(getFormattingSeparator());
-        sb.append(to.translate());
+        sb.append(getToType().translate());
         return IsaToken.parenthesise(sb.toString());
     }
 
@@ -58,7 +66,7 @@ public class TRMapType extends TRType
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(from.invTranslate(null));
         sb.append(getFormattingSeparator());
-        sb.append(to.invTranslate(null));
+        sb.append(getToType().invTranslate(null));
         sb.append(getFormattingSeparator());
         sb.append(varName);        
         return IsaToken.parenthesise(sb.toString());
@@ -89,6 +97,7 @@ public class TRMapType extends TRType
     @Override
     public void checkForUnionTypes() {
         from.checkForUnionTypes();
-        to.checkForUnionTypes();
+        super.checkForUnionTypes();
+        //getToType().checkForUnionTypes();
     } 
 }

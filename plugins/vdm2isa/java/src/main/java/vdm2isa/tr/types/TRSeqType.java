@@ -8,10 +8,9 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TRSeqType extends TRType
+public class TRSeqType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
-    public final TRType seqof;
     public final boolean seq1;
 
     /**
@@ -22,8 +21,7 @@ public class TRSeqType extends TRType
      */
     public TRSeqType(TCType vdmType, TRDefinitionList definitions, TRType seqof, boolean seq1)
     {
-        super(vdmType, definitions);
-        this.seqof = seqof;
+        super(vdmType, definitions, seqof);
         this.seq1 = seq1;
     }
 
@@ -44,13 +42,13 @@ public class TRSeqType extends TRType
 
     @Override
     public String translate() {
-        return seqof.translate() + " " + isaToken().toString();
+        return getInnerType().translate() + " " + isaToken().toString();
     }
 
     @Override
     public String invTranslate(String varName) {
         return IsaToken.parenthesise(IsaToken.INV.toString() + isaToken().toString() + 
-            "' " + seqof.invTranslate(null) + (varName != null ? " " + varName : ""));
+            "' " + getInnerType().invTranslate(null) + (varName != null ? " " + varName : ""));
     }
 
 	@Override
@@ -58,9 +56,4 @@ public class TRSeqType extends TRType
 	{
 		return visitor.caseSeqType(this, arg);
 	}
-
-    @Override
-    public void checkForUnionTypes() {
-        seqof.checkForUnionTypes();
-    }
 }

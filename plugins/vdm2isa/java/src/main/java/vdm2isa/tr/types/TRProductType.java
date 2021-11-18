@@ -21,7 +21,7 @@ public class TRProductType extends TRType {
 
     /**
      * Isabelle only have tuples (or pairs). So, VDM n-tuples have to be projected out of pairs. 
-     * @param index which tuple index (e.g. x.#index)
+     * @param index which tuple index (e.g. x.#index) adjusted to size (i.e. x.#index, where index [0,...,size[, instead of [1,...size])
      * @param size overall tuple size
      * @param varName variable name being projected out (e.g., varName.#index)
      * @return Isabelle projection as combination of multiple fst/snd expressions over varName depending on index.

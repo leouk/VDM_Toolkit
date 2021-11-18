@@ -3,32 +3,23 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.types.TCBracketType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TRBracketType extends TRType {
+public class TRBracketType extends TRAbstractInnerTypedType {
 
-    protected final TRType type; 
-
-    public TRBracketType(TCBracketType vdmType, TRType type) {
-        super(vdmType);
-        this.type = type;
+    public TRBracketType(TCBracketType vdmType, TRDefinitionList definitions, TRType type) {
+        super(vdmType, definitions, type);
     }    
 
     @Override
     public String invTranslate(String varName) {
-        return IsaToken.parenthesise(this.type.invTranslate(varName));
+        return IsaToken.parenthesise(this.getInnerType().invTranslate(varName));
     }
 
     @Override
     public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg) {
         return visitor.caseBracketType(this, arg);
-    }
-
-    @Override
-    public String getName()
-    {
-        return type.getName();
     }
 
     @Override
@@ -38,14 +29,6 @@ public class TRBracketType extends TRType {
 
     @Override
     public String translate() {
-        return IsaToken.parenthesise(this.type.translate());
+        return IsaToken.parenthesise(this.getInnerType().translate());
     }
-
-    @Override
-    public void checkForUnionTypes() {
-        if (type instanceof TRUnionType)
-        {
-            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, "bracket type", type.getClass().getSimpleName());   
-        }
-    }    
 }
