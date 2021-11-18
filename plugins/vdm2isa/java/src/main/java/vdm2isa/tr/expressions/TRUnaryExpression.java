@@ -190,7 +190,7 @@ public class TRUnaryExpression extends TRExpression {
             case DINTER:
 				if (expType instanceof TRSetType)
 				{
-					result = ((TRSetType)expType).setof;
+					result = ((TRSetType)expType).getInnerType();
 					if (!(result instanceof TRSetType))
 						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects set type");
 				}
@@ -211,7 +211,7 @@ public class TRUnaryExpression extends TRExpression {
 			case ELEMS:
 				if (expType instanceof TRSeqType)
 				{
-					TRType elemsType = ((TRSeqType)expType).seqof;
+					TRType elemsType = ((TRSeqType)expType).getInnerType();
 					result = new TRSetType(elemsType.getVDMType(), new TRDefinitionList(), elemsType, ((TRSeqType)expType).seq1);
 				}	
 				else
@@ -229,7 +229,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSeqType)
 				{
 					TRSeqType seqt = (TRSeqType)expType;
-					result = seqt.seqof;
+					result = seqt.getInnerType();
 				}
 				else
 					result = super.getType();
@@ -240,8 +240,8 @@ public class TRUnaryExpression extends TRExpression {
 				{
 					TRSeqType seqt = (TRSeqType)expType;
 					//TODO normalise these choices between raising a more specific error or delegating to super?  
-					if (seqt.seqof instanceof TRSeqType)
-						result = seqt.seqof;
+					if (seqt.getInnerType() instanceof TRSeqType)
+						result = seqt.getInnerType();
 					else	
 						result = super.getType();
 				}
@@ -253,7 +253,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSetType)
 				{
 					TRSetType sexp = (TRSetType)expType;
-					result = sexp.setof;
+					result = sexp.getInnerType();
 					if (!(result instanceof TRMapType))
 						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects map type");
 				}
@@ -271,7 +271,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRMapType)
 				{
 					TRMapType mtyp = (TRMapType)expType;
-					result = mtyp.from;
+					result = mtyp.getFromType();
 				}
 				else
 					result = super.getType();
@@ -281,7 +281,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRMapType)
 				{
 					TRMapType mtyp = (TRMapType)expType;
-					result = mtyp.to;
+					result = mtyp.getToType();
 				}
 				else
 					result = super.getType();

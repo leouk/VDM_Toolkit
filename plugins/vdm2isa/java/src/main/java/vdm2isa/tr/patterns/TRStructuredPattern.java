@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.patterns.TCConcatenationPattern;
 import com.fujitsu.vdmj.tc.patterns.TCExpressionPattern;
@@ -23,7 +27,14 @@ public class TRStructuredPattern extends TRPattern {
     private final String pattern; 
     private final TRPatternList plist;
 
-    protected TRStructuredPattern(LexLocation location, TRPatternList plist, IsaToken token, String pattern)
+    public static final Set<IsaToken> VALID_STRUCTURED_PATTERNS = new TreeSet<IsaToken>(
+        Arrays.asList(IsaToken.SET, IsaToken.SEQ, IsaToken.CROSSPROD, IsaToken.CONCATENATE, 
+                      IsaToken.MAPLET, IsaToken.UNION, IsaToken.MUNION, IsaToken.MAP
+                      //,IsaToken.LPAREN //@NB not this one?
+                      )
+    );
+
+    private TRStructuredPattern(LexLocation location, TRPatternList plist, IsaToken token, String pattern)
     {
         super(location);
         this.token = token;

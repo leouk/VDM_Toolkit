@@ -99,7 +99,7 @@ public class TRMultipleSetBind extends TRMultipleBind
     @Override 
     public TRType getRHSType()
     {
-        return ((TRSetType)set.getType()).setof;
+        return ((TRSetType)set.getType()).getInnerType();
     }
 
     @Override

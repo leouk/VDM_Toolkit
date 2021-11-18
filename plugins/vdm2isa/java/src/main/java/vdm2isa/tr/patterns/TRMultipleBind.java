@@ -202,7 +202,7 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
         {
             LexLocation loc = p.getLocation();
             TCNameToken name = new TCNameToken(loc, loc.module, p.getPattern());
-            TRLocalDefinition localdef = new TRLocalDefinition(loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
+            TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
             result.add(localdef);
         }
         return result.asList();

@@ -39,7 +39,7 @@ public class TRBasicPattern extends TRPattern {
      * @param location
      * @param token
      */
-    public TRBasicPattern(LexLocation location, IsaToken token, String pattern)
+    private TRBasicPattern(LexLocation location, IsaToken token, String pattern)
     {
         super(location);
         this.token = token;

@@ -78,7 +78,7 @@ public class TRMultipleSeqBind extends TRMultipleBind
     @Override 
     public TRType getRHSType()
     {
-        return ((TRSeqType)seq.getType()).seqof;
+        return ((TRSeqType)seq.getType()).getInnerType();
     }
 
 	@Override

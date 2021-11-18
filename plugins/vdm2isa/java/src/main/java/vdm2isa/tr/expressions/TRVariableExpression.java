@@ -62,7 +62,7 @@ public class TRVariableExpression extends TRExpression
 		if (vardef instanceof TRLocalDefinition)
 			result = ((TRLocalDefinition)vardef).getType();
 		else if (vardef instanceof TRExplicitFunctionDefinition)
-			result = ((TRExplicitFunctionDefinition)vardef).getType().result;
+			result = ((TRExplicitFunctionDefinition)vardef).getType().getResultType();
 		else
 			result = super.getType();
 		return result;
@@ -120,7 +120,7 @@ public class TRVariableExpression extends TRExpression
 	{
 		return new TRVariableExpression(
                 location, name, original, 
-                new TRLocalDefinition(location, null, null, name, NameScope.LOCAL, true, false, exptype), 
+                new TRLocalDefinition(null, location, null, null, name, NameScope.LOCAL, true, false, exptype), 
                 exptype);
 	}
 }

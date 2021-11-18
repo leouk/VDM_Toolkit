@@ -65,7 +65,7 @@ public abstract class TRVDMTestExpression extends TRExpression {
 		else if (typedef instanceof TRLocalDefinition)
 			result = ((TRLocalDefinition)typedef).getType();
 		else if (typedef instanceof TRExplicitFunctionDefinition)
-			result = ((TRExplicitFunctionDefinition)typedef).getType().result;
+			result = ((TRExplicitFunctionDefinition)typedef).getType().getResultType();
 		else
             //TODO any more missing typedef options?
 			result = super.getType();

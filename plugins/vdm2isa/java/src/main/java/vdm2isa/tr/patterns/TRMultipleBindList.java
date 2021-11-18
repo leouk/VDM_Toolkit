@@ -205,7 +205,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		TRSetType stype = (TRSetType)rhs.getType();
 		// p in set RHS
 		return new TRBinaryExpression(
-					TRVariableExpression.newVariableExpr(p.location, p.getPattern(), stype.setof), 
+					TRVariableExpression.newVariableExpr(p.location, p.getPattern(), stype.getInnerType()), 
 					new LexKeywordToken(Token.INSET, p.location),/*op //IsaToken.INSET,*/ 
 					rhs,
 					TRBasicType.boolType(p.getLocation()));

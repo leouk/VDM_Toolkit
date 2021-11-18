@@ -43,7 +43,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Exception e)
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_2P, LexLocation.ANY, from.getClass().getSimpleName(), 
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, LexLocation.ANY, from.getClass().getSimpleName(), 
 					type.getClass().getSimpleName(),//from.toString(), 
 					e.toString());
 				// don't debug "can't convert errors"! 
