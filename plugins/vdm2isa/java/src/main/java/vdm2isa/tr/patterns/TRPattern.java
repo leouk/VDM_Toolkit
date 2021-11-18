@@ -1,6 +1,8 @@
 package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.patterns.TCIgnorePattern;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -14,12 +16,12 @@ public abstract class TRPattern extends TRNode implements TRRecordContext {
     
     private static final long serialVersionUID = 1L;
 
-    //private final TCPattern owner;
+    private final TCPattern vdmPattern;
 
-    public TRPattern(LexLocation location)
+    protected TRPattern(TCPattern p, LexLocation location)
     {
         super(location);
-        //this.owner = owner;
+        this.vdmPattern = p == null ? new TCIgnorePattern(location) : p; 
     }
 
     public TRPatternList getPatternList()
@@ -27,6 +29,11 @@ public abstract class TRPattern extends TRNode implements TRRecordContext {
         TRPatternList list = new TRPatternList();
         list.add(this);
         return list; 
+    }
+
+    public TCPattern getVDMPattern()
+    {
+        return vdmPattern;
     }
 
     @Override

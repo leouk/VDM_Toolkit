@@ -2,11 +2,14 @@ package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
+import vdm2isa.tr.types.TRFieldList;
+import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 public class TRRecordPattern extends TRPattern {
@@ -15,9 +18,9 @@ public class TRRecordPattern extends TRPattern {
     private final TRPatternList plist;
     private final TRType type;
     
-    public TRRecordPattern(LexLocation location, TCNameToken typename, TRPatternList plist, TRType type)
+    public TRRecordPattern(TCRecordPattern p, LexLocation location, TCNameToken typename, TRPatternList plist, TRType type)
     {
-        super(location);
+        super(p, location);
         this.typename = typename;
         this.plist = plist;
         this.type = type;
@@ -76,10 +79,36 @@ public class TRRecordPattern extends TRPattern {
     {
         assert index >= 0 && index < plist.size();
         StringBuilder sb = new StringBuilder();
-        // only leaf patterns have invTranslate, so this is "safe".
-        String fieldName = plist.get(index).invTranslate();
-    
-        sb.append(fieldName);
+
+        TRPattern p = plist.get(index);
+        String patternName = p.invTranslate();
+        String fieldName;
+
+        if (p instanceof TRBasicPattern)
+        {
+            TRBasicPattern bp = (TRBasicPattern)p;
+            if (bp.isIgnore())
+            {
+                TRFieldList flist = TRRecordType.fieldsOf(this.typename);
+                if (flist != null)
+                {
+                    assert index < flist.size();
+                    //TODO normalise this? Perhaps using TRField list directly?     
+                    fieldName = flist.get(index).getTagName();//getIsabelleTagName();
+                }
+                else
+                {
+                    fieldName = bp.invTranslate();//this will generate an error, but okay
+                    report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
+                }
+            }
+            else 
+                fieldName = bp.invTranslate();
+        }
+        else
+            fieldName = p.invTranslate();
+            
+        sb.append(patternName);
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(IsaToken.SPACE.toString());
