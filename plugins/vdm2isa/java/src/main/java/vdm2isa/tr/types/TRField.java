@@ -57,7 +57,7 @@ public class TRField extends TRAbstractInnerTypedType {
      * Avoid other classes getting the wrong field name. Only allowed for record field search by VDM name
      * @return
      */
-    protected String getTagName()
+    public String getTagName()
     {
         return this.tagname.toString();
     }
