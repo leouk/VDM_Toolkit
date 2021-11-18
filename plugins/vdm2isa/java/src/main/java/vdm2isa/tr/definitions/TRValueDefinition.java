@@ -4,23 +4,31 @@
 
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.in.definitions.visitors.INDefinitionExpressionFinder;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
+import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRRecordPattern;
+import vdm2isa.tr.patterns.TRStructuredPattern;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TROptionalType;
+import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 
 /**
  * VDM values are translated as Isabelle constants. 
@@ -120,46 +128,214 @@ public class TRValueDefinition extends TRLocalDefinition
 		return expStr.toString();
 	}
 
+	private TRPattern figureOutPattern(int index, TCNameToken localName)
+	{
+		assert index >= 0 && index < getDefs().size();
+		String identifier = localName.getName();//localName.toString(): no type parameters!
+		if (pattern instanceof TRBasicPattern)
+		{
+			identifier = pattern.getPattern();
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern name projection", "complex value definition");
+		}
+		else if (pattern instanceof TRRecordPattern)
+		{
+			identifier = pattern.getPattern();
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern name projection", "complex value definition");
+		}
+		else if (pattern instanceof TRStructuredPattern)
+		{
+			// use local name
+			//if ! those then warn?
+			//getVDMDef().findName(localName)
+			//pattern.getPatternList().get(index).getPattern().equals(localName.getName());
+		}
+		return TRBasicPattern.identifier(localName.getLocation(), identifier);
+	}
+
+		/**
+	 * Translate the value expression taking into account which definition index to consider. 
+	 * These will be > 0 or != null for structured/complex patterns (e.g. mk_(x,y) = v)  
+	 * @param defindex
+	 * @return
+	 */
+	private String figureOutExpression(int index, TRType localType)
+	{
+		assert index >= 0 && index < getDefs().size();
+		String result = exp.translate();
+		// if (pattern instanceof TRBasicPattern)
+		// {
+		// 	warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern expression projection", "complex value definition");
+		// }
+		// else if (pattern instanceof TRRecordPattern)
+		// {
+		// 	warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern expression projection", "complex value definition");
+		// }
+		//else 
+		if (pattern instanceof TRStructuredPattern)
+		{	
+			TRStructuredPattern spattern = (TRStructuredPattern)pattern;
+			// associated TRLocalDefinition index *must* be within the pattern's size! 
+			assert index < spattern.getPatternList().size(); 
+			switch (spattern.isaToken())
+			{
+				case CROSSPROD:
+					// translate the expression and project it's field out
+					result = TRProductType.fieldProjection(index, spattern.getPatternList().size(), result);
+					break;
+				case SET:
+					//break;
+				case SEQ:
+					//break;
+				case CONCATENATE:
+					//break;
+				case MAPLET:
+					//break;
+				case UNION:
+					//break;
+				case MUNION:
+					//break;
+				case MAP:
+					//break;
+				default:
+					report(IsaErrorMessage.PLUGIN_NYI_2P, "structured pattern expression projection", spattern.isaToken().toString());
+					break;				
+			}
+		}
+		// this could be checked to see whether the value definition is "flat"! 
+		// if (!localType.compatible(result.getType()))
+		// {
+		// 	report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, localType.getName(), result.getType().getName());
+		// }
+		return result;
+	}
+
+	private TRDefinitionList figureOutDefs()
+	{
+		TRDefinitionList result = new TRDefinitionList(defs);
+		// check defs structure: empty/null is bad
+		if (result == null || result.isEmpty())
+		{
+            report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", "definitions", "cannot be null or empty");
+		}
+		// not with locals only is bad
+		else if (!result.allAreLocalDefinition())
+		{
+            report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", "definitions", "must all be local definitions");
+		}
+		// create the value definition for every local defintion to include its adequately projected expression
+		// depending on the pattern involved, be that local or global definitions! 
+		// e.g. LOCAL : let "mk_(x,y) = v" in P =vdm2isa=> let "x = fst v, y = snd v" in P 
+		// 		GLOBAL: [A,B] = [1,2] 			=vdm2isa=> abbreviation A: VDMNat = 1, abbreviation B: VDMNat = 2 
+		//
+		// This also caters for the "normal case", where only LocalDef exits: pick it with the expression as-is 
+		else if (result.size() == 1)
+		{
+			// if it's a record pattern, it's fine: it's handled by records; 
+			// if it's a structured pattern, then something is wrong with the AST because defs.size() == 1
+			if (pattern instanceof TRStructuredPattern)
+			{
+				report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", pattern.toString(), "does not have corresponding definitions");
+			}
+			// this will cater for record patterns as well! 
+			result.clear();
+			result.add(this);
+		}
+		else if (result.size() > 1)
+		{
+			// figure out the definitions reshape based on complex pattern (if any)
+			result = new TRDefinitionList();
+			for(int i = 0; i < defs.size(); i++)
+			{
+				TRLocalDefinition ld = (TRLocalDefinition)defs.get(i);
+				TRPattern bp = figureOutPattern(i, ld.name);
+				//TRExpression e = figureOutExpression(i, ld.type);
+				//figure expression string out rather than try to "construct" new one; simpler. 
+				result.add(new TRValueDefinition(getVDMDefinition(), ld.getLocation(), comments, annotations, nameScope, used, excluded, bp, ld.getType(), exp, ld.getType(), TRDefinitionList.newDefList(ld)));
+			}
+		}
+		// figuring out doesn't loose definitions; and all are value definitions
+		assert result.size() == defs.size() && result.allAre(this/*TRValueDefinition.class*/);
+		return result;
+	}
+
 	@Override
 	public String translate()
 	{
 		// translate the "v: T = e" as an abbreviation or definition
 		StringBuilder sb = new StringBuilder();
 
-		// these are always TRLocalDefinition within the list. 
-		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
-		if (!(pattern instanceof TRRecordPattern) && this.defs.size() > 1)
-			//TODO get from the defs instead 
-			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
-
-		// translate the value expression
-		String expStr = translateExpression();
+		TRDefinitionList defList = figureOutDefs();
 		
 		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
 		if (!isLocal())
 		{
+			// these are always TRLocalDefinition within the list. 
+			// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
+			// if (!(pattern instanceof TRRecordPattern) && this.defs.size() > 1)
+			// 	//TODO get from the defs instead 
+			// 	report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
+
 			// add any annotations or comments (i.e. TRDefinition.translate(), given super.translate won't work here)
 			sb.append(translatePreamble());
 
-			sb.append(IsaTemplates.translateAbbreviation(getLocation(), getDeclaredName(), getTypeString(), 
-				/*IsaToken.parenthesise*/(expStr)));
-			sb.append(getFormattingSeparator());
+			// unpick value def apart
+			for(int i = 0; i < defList.size(); i++)
+			{
+				// presume value definitions have been properly figured out
+				TRDefinition d = defList.get(i);
+				assert d instanceof TRValueDefinition;
+				TRValueDefinition vdef = (TRValueDefinition)d;
+				// presume things have been flattened out whilst figuring defs out 
+				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
 
-			// translate inv_v as definition
-			sb.append(invTranslate());
+				// presume the vdef.getType() (as the local def inner/flattened type)
+				String expStr = figureOutExpression(i, vdef.getType());
+
+				// translate the abbreviation definition per vdef
+				sb.append(IsaTemplates.translateAbbreviation(getLocation(), vdef.getDeclaredName(), vdef.getTypeString(), 
+							/*IsaToken.parenthesise*/(expStr)));
+				sb.append(getFormattingSeparator());
+
+				// translate inv_v as the definition
+				sb.append(vdef.invTranslate());
+			}
 		}
 		// local definitions (e.g. let v: T = e1 in e2) only require the type info
 		else
 		{
-			//TODO perhaps do not need this beyond checking for bad patterns; don't want to reinvent above in TRLocalDefinition
-			//		neither have them as subclasses of each other or something like that?
-			//sb.append(defs.translate());
+			// reached bottom line 
+			if (defList.size() == 1)
+			{
+				sb.append(super.translate());
+				sb.append(IsaToken.SPACE.toString());
+				sb.append(IsaToken.EQUALS.toString());
+				sb.append(IsaToken.SPACE.toString());
+				sb.append(/*IsaToken.parenthesise*/(exp.translate()));	
+			}
+			// unpick value def apart until you reach bottom line
+			else 
+			{
+				TRDefinition d = defList.get(0);
+				// presume value definitions have been properly figured out
+				assert d instanceof TRValueDefinition;
+				TRValueDefinition vdef = (TRValueDefinition)d;
+				// presume things have been flattened out whilst figuring defs out 
+				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
 
-			sb.append(super.translate());
-			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
-			sb.append(IsaToken.EQUALS.toString());
-			sb.append(IsaToken.SPACE.toString());//getSemanticSeparator());
-			sb.append(/*IsaToken.parenthesise*/(expStr));
+				sb.append(vdef.translate());
+				for(int i = 1; i < defList.size(); i++)
+				{
+					sb.append(getSemanticSeparator());
+
+					// presume value definitions have been properly figured out
+					assert defList.get(i) instanceof TRValueDefinition;
+					vdef = (TRValueDefinition)defList.get(i);
+					// presume things have been flattened out whilst figuring defs out 
+					assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
+
+					sb.append(vdef.translate());
+				}
+			}
 		}
         return sb.toString();
 	}
