@@ -139,6 +139,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		else if (pattern instanceof TRRecordPattern)
 		{
+			//TODO stopped here. 
 			identifier = pattern.getPattern();
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern name projection", "complex value definition");
 		}

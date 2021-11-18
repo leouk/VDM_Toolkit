@@ -17,14 +17,14 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	private static final long serialVersionUID = 1L;
 	public final TRTypeList parameters;
 	public final boolean partial;
-	//public final TRType result;
+	private final TRType result;
 	
-	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType type/* result */)
+	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
 	{
 		// definitions are nonempty when the type defines an explicit function definition! 
-		super(vdmType, definitions, type);//, result);
+		super(vdmType, definitions, result);
 		this.parameters = parameters;
-		//this.result = result;
+		this.result = result;// never used! 
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
 		this.partial = partial;
@@ -59,9 +59,14 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return partial ? IsaToken.FUN : IsaToken.TFUN;
 	}
 
+	public TRType getInnerType()
+	{
+		return result;
+	}
+
 	public TRType getResultType()
 	{
-		return getInnerType();//result;//getInnerType();
+		return result;//getInnerType();//result;//getInnerType();
 	}
 
 	public String dummyVarNames(String varName)
