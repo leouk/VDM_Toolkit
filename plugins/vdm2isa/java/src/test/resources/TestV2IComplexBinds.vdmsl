@@ -1,0 +1,10 @@
+module TestV2IComplexBinds
+exports all
+definitions
+
+values
+	v0: nat = 10;
+	--v0 = mk_(1,2);
+	--v1 = let mk_(x,y) = v0 in x+y;
+	
+end TestV2IComplexBinds

@@ -169,13 +169,7 @@ values
 	v93= (cases v37: nil -> 0, v -> v+v end);
 	--v931= (cases v371: nil -> 0, v -> v+v, others -> 0 end); --generates error
 	--Isabelle is not happy with these wacky VDM binds, where A = 1 and B = 2 all with implicit types!
-	[A,B]=[1,2];
-	
+	--[A,B]=[1,2];
 	v94= { 1 |-> 2, 2 |-> 3, 4 |-> 5 }; --TCMapEnumExpression
---state MyState of
---   x : nat
---inv mk_MyState(x) == x > 10
---init s == s = mk_MyState(20)
---end
 
 end TestV2I
