@@ -12,19 +12,19 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 
-public class TRFunctionType extends TRType
+public class TRFunctionType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
 	public final TRTypeList parameters;
 	public final boolean partial;
-	public final TRType result;
+	//public final TRType result;
 	
-	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
+	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType type/* result */)
 	{
 		// definitions are nonempty when the type defines an explicit function definition! 
-		super(vdmType, definitions);//, result);
+		super(vdmType, definitions, type);//, result);
 		this.parameters = parameters;
-		this.result = result;
+		//this.result = result;
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
 		this.partial = partial;
@@ -61,7 +61,7 @@ public class TRFunctionType extends TRType
 
 	public TRType getResultType()
 	{
-		return result;//getInnerType();
+		return getInnerType();//result;//getInnerType();
 	}
 
 	public String dummyVarNames(String varName)
@@ -95,8 +95,8 @@ public class TRFunctionType extends TRType
 	@Override
 	public void checkForUnionTypes() {
 		parameters.checkForUnionTypes();//"function parameters");
-		//super.checkForUnionTypes();
-		result.checkForUnionTypes(); // equivalent to super.checkUnionTypes(); 
+		super.checkForUnionTypes();
+		//result.checkForUnionTypes(); // equivalent to super.checkUnionTypes(); 
 	}
 
 	public TRFunctionType getPreType()
