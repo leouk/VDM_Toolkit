@@ -13,7 +13,7 @@ public class VDM2IsaError extends VDM2IsaMessage {
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("Error ");
+		sb.append("Error   ");
 		sb.append(super.toString());
 
 		for (String d: details)

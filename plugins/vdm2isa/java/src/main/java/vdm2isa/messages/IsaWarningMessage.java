@@ -30,7 +30,7 @@ public enum IsaWarningMessage {
     ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     ISA_TYPDEF_MINMAX_ORD_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 2, 
-    "%1$s type definition min/max specification requires Isabelle type to instantiate `ord` class!"),
+    "Type definition for type `%1$s` min/max specification requires Isabelle type to instantiate `ord` class!"),
     ISA_CASES_PATTERN_LIMITATION(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 3,
     "Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur."),
     ISA_TYPED_NARROW_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 4, 

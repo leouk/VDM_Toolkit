@@ -9,7 +9,7 @@ public enum IsaErrorMessage {
     //Plugin messages relate to incomplete or incompatible issues
     PLUGIN_NYI_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 0, 
     "Not yet implemented %1$s for %2$s"),
-    PLUGIN_MISSING_MAPPING_ERROR_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 1,
+    PLUGIN_MISSING_MAPPING_ERROR_3P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 1,
     "Cannot yet convert %1$s = %2$s; %3$s"),
     PLUGIN_UNEXPECTED_ERROR_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 2,
     "Unexpected exception when converting %1$s = %2$s"),
@@ -40,15 +40,15 @@ public enum IsaErrorMessage {
     VDMSL_INVALID_INVTYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 11,
     "Invalid VDMSL invartiant type %1$s: %2$s."),
     VDMSL_INVALID_TYPEDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 12, 
-    "Invalid type %1$s definition for %2$s. Both pattern and expression must be present."),
+    "Invalid type %1$s definition for %2$s."),
     VDMSL_INVALID_VAREXPR_VARDEF_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 13, 
     "Invalid variable expression `%1$s` - null vardef."),
     VDMSL_INVALID_EXPROP_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 14, 
     "Invalid expression operator `%1$s`."),
-    VDMSL_INVALID_EQUALSDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 15, 
-    "Invalid VDMSL equals definition %1$s: %2$s."),
+    VDMSL_INVALID_VALUEDEF_3P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 15, 
+    "Invalid VDMSL %1$s definition %2$s: %3$s."),
     VDMSL_INVALID_CASESEXPR(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 16, 
-    "Invalid VDMSL cases expression: empty cases."),
+    "Invalid VDMSL cases expression: empty cases."),    
 
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
@@ -92,8 +92,8 @@ public enum IsaErrorMessage {
     "VDM cases other clause for option type expression `%1$s` is not allowed in Isabelle."),
     ISA_INVALID_EXPRCHAIN_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 19,
     "Booleann expression chain for `%1$s` operator must all have boolean type."),
-    ISA_INVALID_UNIONTYPE_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 20, 
-    "Union types are not allowed for %1$s `%2$s`: you *must* declare it as a named type."), 
+    ISA_INVALID_UNIONTYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 20, 
+    "Union types are not allowed for `%1$s`: you *must* declare it as a named type."), 
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
