@@ -55,8 +55,19 @@ public class TROptionalType extends TRType {
 		return visitor.caseOptionalType(this, arg);
 	}
 
+    // @Override 
+    // public String getName()
+    // {
+    //     return this.type.getName() + " option";
+    // }
+
     public static TROptionalType newOptionalType(TRType type)
     {
         return new TROptionalType(new TCOptionalType(type.getLocation(), type.getVDMType()), type.getDefinitions(), type);
+    }
+
+    @Override
+    public void checkForUnionTypes() {
+        type.checkForUnionTypes();
     }
 }

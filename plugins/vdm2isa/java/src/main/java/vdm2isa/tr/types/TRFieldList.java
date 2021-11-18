@@ -74,4 +74,12 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 
 		return sb.toString();  
     }
+
+	public void checkForUnionTypes()
+	{
+		for(TRField f : this)
+		{
+			f.checkForUnionTypes();
+		}
+	}
 }

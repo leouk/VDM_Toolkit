@@ -123,4 +123,9 @@ public class TRNamedType extends TRInvariantType
 	{
 		return visitor.caseNamedType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        // union types are allowed in named types, so okay. 
+    }
 }

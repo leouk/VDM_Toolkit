@@ -32,6 +32,12 @@ public class TRFunctionType extends TRType
 	}
 
 	@Override 
+	public String getName()
+	{
+		return result.getName();
+	}
+
+	@Override 
 	public String toString()
 	{
 		return "TRFunctionType " + 
@@ -171,4 +177,9 @@ public class TRFunctionType extends TRType
         return new TRFunctionType(vdmFcnType, new TRDefinitionList(), params, false, result);
     }
 
+	@Override
+	public void checkForUnionTypes() {
+		parameters.checkForUnionTypes();//"function parameters");
+		result.checkForUnionTypes();
+	}
 }

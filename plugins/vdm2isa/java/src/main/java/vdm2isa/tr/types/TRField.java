@@ -91,4 +91,18 @@ public class TRField extends TRType {
 	{
 		return visitor.caseField(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes()
+    {
+        checkRecordType();
+        this.checkForUnionTypes(record != null ? record.getName() : "record field");
+    }
+
+    public void checkForUnionTypes(String recordName) {
+        if (type instanceof TRUnionType)
+        {
+            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, recordName, getTagName());   
+        }
+    }
 }

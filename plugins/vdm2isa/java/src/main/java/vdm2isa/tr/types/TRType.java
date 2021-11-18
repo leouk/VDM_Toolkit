@@ -113,6 +113,14 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
     }
 
 	/**
+	 * Checks whether this type contains any union type. This is important at TLDs given union
+	 * types *must* be declared as a separate datatype (i.e. TLD union types must be a TRNamedType). 
+	 * 
+	 * Union types are, however, allowed at local-level definitions of course.     
+	 */
+	public abstract void checkForUnionTypes();
+
+	/**
 	 * Implement equality and comparison according to VDMJ's type rules. No faffing around. 
 	 */
 	@Override

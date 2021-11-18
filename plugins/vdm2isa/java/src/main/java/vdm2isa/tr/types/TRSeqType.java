@@ -58,4 +58,9 @@ public class TRSeqType extends TRType
 	{
 		return visitor.caseSeqType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        seqof.checkForUnionTypes();
+    }
 }

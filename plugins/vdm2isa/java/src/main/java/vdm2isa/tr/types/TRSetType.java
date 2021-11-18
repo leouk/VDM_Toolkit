@@ -62,4 +62,9 @@ public class TRSetType extends TRType
 	{
 		return visitor.caseSetType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        setof.checkForUnionTypes();
+    }
 }

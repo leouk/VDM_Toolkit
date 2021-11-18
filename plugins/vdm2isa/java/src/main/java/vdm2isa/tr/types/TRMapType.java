@@ -84,5 +84,11 @@ public class TRMapType extends TRType
     public TRFunctionType getFunctionType()
     {
         return TRFunctionType.getIsabelleMapType(this);
+    }
+
+    @Override
+    public void checkForUnionTypes() {
+        from.checkForUnionTypes();
+        to.checkForUnionTypes();
     } 
 }

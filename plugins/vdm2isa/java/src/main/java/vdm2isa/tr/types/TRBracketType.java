@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.types.TCBracketType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRBracketType extends TRType {
@@ -12,7 +13,7 @@ public class TRBracketType extends TRType {
     public TRBracketType(TCBracketType vdmType, TRType type) {
         super(vdmType);
         this.type = type;
-    }
+    }    
 
     @Override
     public String invTranslate(String varName) {
@@ -25,6 +26,12 @@ public class TRBracketType extends TRType {
     }
 
     @Override
+    public String getName()
+    {
+        return type.getName();
+    }
+
+    @Override
     public IsaToken isaToken() {
         return IsaToken.LPAREN;
     }
@@ -32,5 +39,13 @@ public class TRBracketType extends TRType {
     @Override
     public String translate() {
         return IsaToken.parenthesise(this.type.translate());
+    }
+
+    @Override
+    public void checkForUnionTypes() {
+        if (type instanceof TRUnionType)
+        {
+            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, "bracket type", type.getClass().getSimpleName());   
+        }
     }    
 }

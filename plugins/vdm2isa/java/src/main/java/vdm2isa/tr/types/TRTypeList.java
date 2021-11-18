@@ -50,6 +50,19 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setFormattingSeparator(" ");
 	}
 
+	/**
+	 * Check there are no union types within the type list
+	 * @param source
+	 * @param arg
+	 */
+	protected void checkForUnionTypes()
+	{
+		for(TRType t : this)
+		{
+			t.checkForUnionTypes();
+		}
+	}
+
 	public boolean isCurried()
 	{
 		return curried;//getSeparator().equals(IsaToken.FUN.toString()

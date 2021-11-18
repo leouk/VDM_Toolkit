@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCUnknownType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -52,4 +53,11 @@ public class TRUnknownType extends TRType {
 	{
 		return visitor.caseUnknownType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        // unknown type is not union? Well... raise it anyhow
+        report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_2P, "", "unknown");   
+    }
+
 }

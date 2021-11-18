@@ -57,8 +57,8 @@ public class TRRecordType extends TRInvariantType
     @Override
 	public String getName()
 	{
-		return String.valueOf(this.name);//.toString();
-	}
+		return this.name != null ? this.name.toString() : super.getName();
+    }
 
     @Override
     public String invTranslate(String varName) {
@@ -137,4 +137,9 @@ public class TRRecordType extends TRInvariantType
 	{
 		return visitor.caseRecordType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        fields.checkForUnionTypes();//"fields");
+    }
 }

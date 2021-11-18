@@ -119,4 +119,9 @@ public class TRProductType extends TRType {
 	{
 		return visitor.caseProductType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+        types.checkForUnionTypes();//"product");
+    }
 }

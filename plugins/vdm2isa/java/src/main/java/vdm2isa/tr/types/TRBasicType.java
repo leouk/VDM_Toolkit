@@ -110,6 +110,12 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
+	public void checkForUnionTypes()
+	{
+		// basic types are never unions; do nothing
+	}
+
+	@Override
 	public String translate()
 	{
 		return getName();

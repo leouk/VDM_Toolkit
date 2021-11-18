@@ -38,4 +38,9 @@ public class TRQuoteType extends TRType
 	{
 		return visitor.caseQuoteType(this, arg);
 	}
+
+    @Override
+    public void checkForUnionTypes() {
+       // do nothing
+    }
 }
