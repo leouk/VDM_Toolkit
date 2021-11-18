@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-18T12:22:11.920948Z
+(* VDM to Isabelle Translation @2021-11-18T12:52:08.681917Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
@@ -9,6 +9,38 @@ imports VDMToolkit
 begin
 
 
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 37:5\<close>
+record Time = 
+	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
+		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
+	
+
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 40:9\<close>
+definition
+	inv_Time :: "Time \<Rightarrow> \<bool>"
+where
+	"inv_Time t \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_Time specification\<close>
+		(
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e t)))
+		 ))  \<and> 
+		\<comment>\<open>User defined body of inv_Time\<close>
+		((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (t)) \<ge> (0::VDMNat))"
+
+		 
+
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 43:21\<close>
+definition
+	ord_Time :: "Time\<Rightarrow> Time \<Rightarrow> \<bool>"
+where
+	"ord_Time a b \<equiv> 
+		\<comment>\<open>User defined body of ord_Time\<close>
+		(((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<or> (((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<and> ((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b)))))"
+
+		 
+
+	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 49:5\<close>
 datatype Interval = calculated |  changing |  constantLF |  countdown |  fixed |  triggered |  tunable
 	
@@ -58,8 +90,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
@@ -152,8 +186,10 @@ where
 	"inv_Variable var \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_Variable specification\<close>
 		( (((inv_VDMNat (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))))
+		 )) \<and>
 		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)1))) \<and>
 		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)1))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and>
@@ -183,8 +219,10 @@ where
 		( (((inv_VDMNat (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and>
 		 (((inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)0)  \<and>  (inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)1))) \<and>
 		 (((inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)0)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)1)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)2)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)3)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)4)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)5)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)6))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))))
+		 )) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (dependsOn\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (equations\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Clock\<close>
@@ -223,8 +261,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -273,8 +313,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -296,16 +338,20 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   (((inv_VDMNat (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))))
+		 )) \<and>
 		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)1))) \<and>
 		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)1))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))) \<and>
@@ -405,8 +451,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -426,8 +474,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -486,10 +536,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Importer\<close>
@@ -546,8 +600,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -567,8 +623,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -597,8 +655,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -618,8 +678,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -657,8 +719,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -678,8 +742,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -708,8 +774,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -729,8 +797,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -759,8 +829,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -780,8 +852,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -810,8 +884,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -831,8 +907,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -861,16 +939,20 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) )) ))  \<and> 
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val))))
+		 )) ))  \<and> 
 		\<comment>\<open>User defined body of pre_set_m\<close>
 		(preSet fmu  ref)"
 
@@ -886,22 +968,28 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) )) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val))))
+		 )) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
@@ -930,8 +1018,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -953,8 +1043,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -966,8 +1058,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
@@ -975,8 +1069,10 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) )\<and>
 		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) )) )
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT)))))
+		 )) )
 		))"
 
 definition
@@ -1000,8 +1096,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1023,8 +1121,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1035,8 +1135,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
@@ -1071,8 +1173,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1094,8 +1198,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1107,8 +1213,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
@@ -1116,8 +1224,10 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) )\<and>
 		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) )) )
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT)))))
+		 )) )
 		))"
 
 definition
@@ -1141,8 +1251,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1164,8 +1276,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1177,8 +1291,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
@@ -1216,8 +1332,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1239,8 +1357,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1252,8 +1372,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
@@ -1300,8 +1422,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1323,8 +1447,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1361,10 +1487,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus))  \<and> 
 		\<comment>\<open>User defined body of pre_updateDiscreteState\<close>
@@ -1390,10 +1520,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -1408,10 +1542,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_updateDiscreteState\<close>
@@ -1437,8 +1575,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U )0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U )))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U )))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U )))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U ))) \<and>
@@ -1483,8 +1623,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1506,8 +1648,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1517,8 +1661,10 @@ where
 		 (((inv_VDMNat (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT))) \<and>
 		 (((inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)0)  \<and>  (inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)1))) \<and>
 		 (((inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)0)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)1)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)2)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)3)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)4)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)5)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)6))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT))))
+		 )) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (dependsOn\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (equations\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))
 		 ))"
@@ -1544,8 +1690,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1584,10 +1732,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus))  \<and> 
 		\<comment>\<open>User defined body of pre_enterEventMode\<close>
@@ -1613,10 +1765,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -1631,10 +1787,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_enterEventMode\<close>
@@ -1669,10 +1829,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus))  \<and> 
 		\<comment>\<open>User defined body of pre_enterStepMode\<close>
@@ -1698,10 +1862,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -1716,10 +1884,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_enterStepMode\<close>
@@ -1794,10 +1966,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_FMURef  clocks))  \<and> 
 		\<comment>\<open>User defined body of pre_activateClocks\<close>
@@ -1823,10 +1999,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_FMURef  clocks)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -1841,10 +2021,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -1891,18 +2075,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -1982,18 +2172,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -2023,18 +2219,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -2053,10 +2255,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2078,8 +2284,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
@@ -2087,8 +2295,10 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) )\<and>
 		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))))) )) )
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val))))))
+		 )) )
 		)) \<and> 
 	(inv_FMURef fmuref) then
 			(
@@ -2137,18 +2347,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -2217,10 +2433,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) ))  \<and> 
@@ -2247,10 +2467,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2266,10 +2490,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2320,10 +2548,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) ))  \<and> 
@@ -2350,10 +2582,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2369,10 +2605,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2394,8 +2634,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
@@ -2403,8 +2645,10 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) )\<and>
 		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))1))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))))) )) )
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val))))))
+		 )) )
 		)) \<and> 
 	(inv_FMURef connectedInput) then
 			(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) \<dagger> [(name\<^sub>F\<^sub>M\<^sub>U (fmu))\<mapsto>fmu])\<rparr>, valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<dagger> [connectedInput\<mapsto>val])\<rparr>
@@ -2435,18 +2679,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -2477,18 +2727,24 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -2508,10 +2764,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_updateEnvironmentEquation\<close>
@@ -2567,10 +2827,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) ))  \<and> 
@@ -2606,10 +2870,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2625,10 +2893,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2670,10 +2942,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) ))  \<and> 
@@ -2709,10 +2985,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) \<and>
 		 ((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f equation))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2728,10 +3008,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2773,10 +3057,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_Action  algorithm))"
 
@@ -2800,10 +3088,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_Action  algorithm)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2818,10 +3110,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -2859,10 +3155,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_initializeData\<close>
@@ -2888,10 +3188,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -2906,10 +3210,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_initializeData\<close>
@@ -2965,10 +3273,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_cosimStep\<close>
@@ -3003,10 +3315,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -3021,10 +3337,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_cosimStep\<close>
@@ -3120,8 +3440,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
@@ -3258,16 +3580,20 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>   (((inv_VDMNat (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))))
+		 )) \<and>
 		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)1))) \<and>
 		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)1))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))) \<and>
@@ -3305,10 +3631,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) intervalSet))"
 
@@ -3332,10 +3662,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) intervalSet)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -3350,10 +3684,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))"
 
@@ -3427,10 +3765,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_createSchedule\<close>
@@ -3456,10 +3798,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -3474,10 +3820,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_createSchedule\<close>
@@ -3530,10 +3880,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_initialization\<close>
@@ -3559,10 +3913,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -3577,10 +3935,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_initialization\<close>
@@ -3633,10 +3995,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))"
 
@@ -3660,10 +4026,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  
 		( (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) \<and>
@@ -3679,10 +4049,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst RESULT)))) )\<and>
 		 (inv_VDMSet' inv_FMURef  (snd RESULT))
@@ -3735,10 +4109,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) ))"
 
@@ -3762,10 +4140,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) )  \<and>  (inv_VDMReal RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_stepnegotiation\<close>
@@ -3800,10 +4182,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_cosimulationStep\<close>
@@ -3829,10 +4215,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -3847,10 +4237,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_cosimulationStep\<close>
@@ -3880,10 +4274,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick))))) )\<and>
 		 (inv_VDMSet' inv_FMURef  (snd (I1  clocksToTick)))
@@ -4054,10 +4452,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) relevantFMUs))  \<and> 
 		\<comment>\<open>User defined body of pre_eventIteration\<close>
@@ -4083,10 +4485,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) relevantFMUs)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -4101,10 +4507,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_eventIteration\<close>
@@ -4157,10 +4567,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_FMURef  clocks))  \<and> 
 		\<comment>\<open>User defined body of pre_clockedSimulationAlgorithm\<close>
@@ -4186,10 +4600,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_FMURef  clocks)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
@@ -4204,10 +4622,14 @@ where
 		 ((inv_VDMSet' inv_FMURef  (activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_VDMSet' inv_FMURef  (readyEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))))
+		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) ))  \<and> 
 		\<comment>\<open>User defined body of post_clockedSimulationAlgorithm\<close>
@@ -4274,8 +4696,10 @@ where
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
-		 ( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) )) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
 		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>

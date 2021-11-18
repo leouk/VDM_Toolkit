@@ -37,6 +37,7 @@ definitions
 	Time ::
 		r	: real
 		i	: nat
+	--@LF this will require Time to be instantiated as a linorder type class! 
 	inv t ==
 		t.r >= 0	-- Times must be positive
 	ord a < b ==
