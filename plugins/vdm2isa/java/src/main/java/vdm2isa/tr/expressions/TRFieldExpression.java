@@ -6,6 +6,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
@@ -25,6 +26,20 @@ public class TRFieldExpression extends TRExpression {
         //System.out.println(toString());
     }
 
+    public TRExpression recordExpression()
+    {
+        return object;
+    }
+
+    /**
+     * Field expression record type is its inner object type [chased for renamings?]
+     */
+    @Override
+    protected TRType doGetRecordType()
+    {
+        return getUltimateType(object.getType());
+    }
+
     @Override 
     protected TRType getBestGuessType()
     {
@@ -33,6 +48,13 @@ public class TRFieldExpression extends TRExpression {
         {
             report(IsaErrorMessage.VDMSL_FIELD_MISSING_RECORDTYPE_1P, field.toString());
             hasReportedGuessTypeIssue = true;
+        }
+        if (t instanceof TRRecordType)
+        {
+            TRRecordType rtype = (TRRecordType)t;
+            TRField rfield = rtype.findField(field.getName());
+            if (rfield != null)
+                t = rfield.getInnerType();
         }
         return t;
     }
@@ -46,7 +68,7 @@ public class TRFieldExpression extends TRExpression {
     public String translate() {
         // attempt to get underlying object record type name to change record field name according to TRRecordType TLD considerations 
         return IsaToken.parenthesise(
-                    IsaTemplates.isabelleRecordFieldName(object.getRecordTypeName(), field.getName()) + " " +
+                    IsaTemplates.isabelleRecordFieldName(object.getRecordType().getName(), field.getName()) + " " +
                     IsaToken.parenthesise(object.translate())
                 );
     }

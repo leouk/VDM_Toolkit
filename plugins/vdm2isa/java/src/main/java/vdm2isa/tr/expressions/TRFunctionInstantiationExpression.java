@@ -32,7 +32,7 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return type.result;
+        return type.getResultType();
     }
 
     @Override

@@ -13,10 +13,14 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRRecordContext;
+import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRSeqType;
+import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnknownType;
 
@@ -325,7 +329,7 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
-    private TRType getUltimateType(TRType t)
+    protected final TRType getUltimateType(TRType t)
     {
         TRType result = t;
         if (t instanceof TRNamedType)
@@ -333,40 +337,37 @@ public abstract class TRExpression extends TRNode
         return result;
     }
 
-    protected TRType/* Might not be record type? */ getRecordType()
+    public final TRType getRecordType()
     {
-        TRType result = getType(); 
-        // e.g. R :: x : nat, r.x ; 
-        if (this instanceof TRVariableExpression)
-        {
-            TRVariableExpression vexpr = (TRVariableExpression)this;
-            if (vexpr.getVarDef() instanceof TRLocalDefinition)
-            {
-                TRLocalDefinition ldef = (TRLocalDefinition)vexpr.getVarDef();
-                result = getUltimateType(ldef.getType());
-            }
-        }
-        // e.g. mk_R(v).x 
-        else if (this instanceof TRMkTypeExpression)
-        {
-            TRMkTypeExpression mexpr = (TRMkTypeExpression)this;
-            result = getUltimateType(mexpr.getType());
-        }
-        // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
-        else if (this instanceof TRApplyExpression)
-        {
-            TRApplyExpression aexpr = (TRApplyExpression)this;
-            if (aexpr.type instanceof TRFunctionType)
-            {
-                TRFunctionType ftype = (TRFunctionType)aexpr.type;
-                result = getUltimateType(ftype.result);
-            }
-        }
-        //TODO missing various cases, like iota, mu, if, etc.!!!!
+        TRType result = doGetRecordType();
         if (!(result instanceof TRRecordType))
         {
             report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), result.getClass().getSimpleName());            
         }
+        return result;
+    }
+    /**
+     * For expressions in general, chase ultimate type considering type inner structure results
+     * @return
+     */
+    protected TRType/* Might not be record type? */ doGetRecordType()
+    {
+        // get the ultimate type (i.e. chase all [re-]named types)
+        TRType result = getUltimateType(getType());
+
+        // TRFunctionType: if a function, chase its result type 
+        // TRMapType     : if a map, chase range type
+        // TROptionalType: if optional, chase inner type
+        // TRBracketType : if bracketed, chase inner type
+        // TRSetType     : if set, ignore
+        // TRSeqType     : if seq, ignore
+        if (result instanceof TRAbstractInnerTypedType)
+        {
+            TRAbstractInnerTypedType t = (TRAbstractInnerTypedType)result;
+            
+            if (!(result instanceof TRSetType || result instanceof TRSeqType))
+                result = getUltimateType(t.getInnerType());            
+        }  
         return result;      
     }
 
@@ -393,46 +394,63 @@ public abstract class TRExpression extends TRNode
      * 
      * @return record name of the underlying type associated with this expression, if possible, or empty string otherwise.
      */
-    public String getRecordTypeName()
+    public final String getRecordTypeName()
     {
         //TODO refactor getRecordType to be called from here? Problem for TRMkTypeExpression? 
-        boolean okay = false;
-        StringBuilder sb = new StringBuilder();
-        // e.g. R :: x : nat, r.x ; 
-        if (this instanceof TRVariableExpression)
-        {
-            TRVariableExpression vexpr = (TRVariableExpression)this;
-            if (vexpr.getVarDef() instanceof TRLocalDefinition)
-            {
-                TRLocalDefinition ldef = (TRLocalDefinition)vexpr.getVarDef();
-                sb.append(getUltimateType(ldef.getType()).translate());
-                okay = true;
-            }
-        }
-        // e.g. mk_R(v).x 
-        else if (this instanceof TRMkTypeExpression)
-        {
-            TRMkTypeExpression mexpr = (TRMkTypeExpression)this;
-            sb.append(mexpr.typename);//getUltimateType(mexpr.getType()).getName());?
-            okay = true;
-        }
-        // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
-        else if (this instanceof TRApplyExpression)
-        {
-            TRApplyExpression aexpr = (TRApplyExpression)this;
-            if (aexpr.type instanceof TRFunctionType)
-            {
-                TRFunctionType ftype = (TRFunctionType)aexpr.type;
-                sb.append(getUltimateType(ftype.result).getName());
-                okay = true;
-            }
-        }
-        //TODO missing various cases, like iota, mu, if, etc.!!!!
-        if (!okay)
-        {
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), "???");            
-        }
-        return sb.toString();
+//        TRType rtype = getRecordType();
+        return null;//rtype.getName();
+        // // e.g. R :: x : nat, r.x ; 
+        // if (this instanceof TRVariableExpression)
+        // {
+        //     TRVariableExpression vexpr = (TRVariableExpression)this;
+        //     if (vexpr.getVarDef() instanceof TRLocalDefinition)
+        //     {
+        //         TRLocalDefinition ldef = (TRLocalDefinition)vexpr.getVarDef();
+        //         TRType rtype = getUltimateType(ldef.getType());
+        //         sb.append(rtype.translate());
+        //         okay = true;
+        //     }
+        // }
+        // // e.g. mk_R(v).x 
+        // else if (this instanceof TRMkTypeExpression)
+        // {
+        //     TRMkTypeExpression mexpr = (TRMkTypeExpression)this;
+        //     sb.append(mexpr.typename);//getUltimateType(mexpr.getType()).getName());?
+        //     okay = true;
+        // }
+        // // e.g. mkr(v).x, for mkr: nat -> R mkr(n) == mk_R(n); 
+        // else if (this instanceof TRApplyExpression)
+        // {
+        //     TRApplyExpression aexpr = (TRApplyExpression)this;
+        //     if (aexpr.type instanceof TRFunctionType)
+        //     {
+        //         TRFunctionType ftype = (TRFunctionType)aexpr.type;
+        //         sb.append(getUltimateType(ftype.result).getName());
+        //         okay = true;
+        //     }
+        //     else 
+        //     {
+        //         TRType aexprtype = getUltimateType(aexpr.type);
+        //         if (aexprtype instanceof TRRecordType)
+        //         {
+        //             TRRecordType rtype = (TRRecordType)aexprtype;
+        //             sb.append(rtype.getName());
+        //             okay = true;
+        //         }
+        //     }
+        // }
+        // e.g. r.x, 
+        // else if (this instanceof TRFieldExpression)
+        // {
+        //     TRFieldExpression fexpr = (TRFieldExpression)this;
+        //     sb.append(fexpr.recordExpression().getRecordTypeName());
+        //     okay = true;
+        // }
+        // //TODO missing various cases, like iota, mu, if, etc.!!!!
+        // if (!okay)
+        // {
+        //     report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), "???");            
+        // }
     }
 
     /**
