@@ -26,14 +26,12 @@ public class TREqualsDefinition extends TRValueDefinition {
         super(location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);
         this.typebind = typebind;
         this.bind = bind;
-        this.local = true;
+        //setLocal(true); //leave to NameScope?
         if (pattern == null && typebind == null)
             report(IsaErrorMessage.VDMSL_INVALID_EQUALSDEF_2P, "structure", "cannot have null pattern and type bind");
         if (defs == null || defs.isEmpty())
             report(IsaErrorMessage.VDMSL_INVALID_EQUALSDEF_2P, "definitions", "cannot be null or empty");
         //System.out.println(toString());
-        //if (this.defs.size() > 1)
-        //  report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
     }
 
     @Override

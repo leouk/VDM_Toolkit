@@ -103,7 +103,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.paramDefinitionList = paramDefinitionList;
 		this.recursive = recursive;
 		this.isUndefined = isUndefined;
-		this.local = false; // LetDefExpression to set this to true if/when needed
+		//setLocal(false); //Leave to name scope? // LetDefExpression to set this to true if/when needed
 		this.implicitSpecificationKind = impliSpecificationDefinition();
 
 		assert this.type != null && this.name != null && this.parameters != null; 
@@ -120,7 +120,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				,TRSpecificationKind.MAX
 				,TRSpecificationKind.MIN
 			).contains(implicitSpecificationKind)
-			|| local
+			|| isLocal()
 			) 
 			System.out.println(toString());
     }
@@ -175,7 +175,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		return "TRExplicitFuncDef for " + 
 			" \n\tname        = " + String.valueOf(name) +
-			" \n\tlocal	      = " + local + 
+			" \n\tlocal	      = " + isLocal() + 
 			" \n\tused	      = " + used + 
 			" \n\texcluded    = " + excluded + 
 			" \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
@@ -592,7 +592,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 		String old = getFormattingSeparator();
 		
-		
+       	// make sure no union types at TLD
+		type.checkForUnionTypes();
+
 		// translate the explicit function definition taking into consideration TRSpecificationKind
 		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
 		String fcnName     = name.getName();
@@ -653,7 +655,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 		
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), local));
+		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 
 		setFormattingSeparator(old);
 

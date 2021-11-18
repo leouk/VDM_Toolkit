@@ -19,11 +19,11 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     private static final long serialVersionUID = 1L;
 
     // For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
-    protected TRLocalDefinition()
-    {
-        //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-        this(LexLocation.ANY, null, null,null, null, false, false, null);
-    }
+    // protected TRLocalDefinition()
+    // {
+    //     //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
+    //     this(LexLocation.ANY, null, null,null, null, false, false, null);
+    // }
 
     public TRLocalDefinition(LexLocation location, 
         TRIsaVDMCommentList comments, 
@@ -36,7 +36,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     {
         super(location, comments, annotations, name, nameScope, used, excluded, type);
         // TRValueDefinition have patterns hence can pass name as null; it will have to change its own locality further
-        this.local = name != null;
+        //setLocal(name != null); leave to namescope
 
         //TODO get TCLocalDefinition.valueDefinition?
     }

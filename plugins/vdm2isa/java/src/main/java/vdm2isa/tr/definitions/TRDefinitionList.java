@@ -39,22 +39,22 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
-		if (allAreLocalDefinition())
-			setLocal(true);
+		// if (allAreLocalDefinition())
+		// 	setLocal(true);
 	}
 
-	public void setLocal(boolean local)
-	{
-		for (TRDefinition def : this)
-		{
-			def.local = local;
-		}
-	}
+	// public void setLocal(boolean local)
+	// {
+	// 	for (TRDefinition def : this)
+	// 	{
+	// 		def.setLocal(local);
+	// 	}
+	// }
 
-	public  boolean allAreLocalDefinition()
-	{
-		return allAre(new TRLocalDefinition());
-	}
+	// public  boolean allAreLocalDefinition()
+	// {
+	// 	return allAre(new TRLocalDefinition());
+	// }
 
 	public <T extends TRDefinition> boolean allAre(T def)
 	{

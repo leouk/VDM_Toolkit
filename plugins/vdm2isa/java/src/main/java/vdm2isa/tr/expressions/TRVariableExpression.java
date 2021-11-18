@@ -33,11 +33,9 @@ public class TRVariableExpression extends TRExpression
 		this.original = original;
 		// the var def will be a TRLocalDefinition (e.g. var: type) or a TRExplicitFunctionDefinition (e.g. g(x))
 		this.vardef = vardef;
-		if (vardef == null)
-			report(IsaErrorMessage.VDMSL_INVALID_VAREXPR_VARDEF_1P, original);
-		else
-			// mark as local, even if TRExplicitFunctionDefinition
-			this.vardef.local = true;
+		// if (this.vardef != null)
+		// 	// mark as local, even if TRExplicitFunctionDefinition
+		// 	this.vardef.setLocal(true);
 		//System.out.println(toString());
 	}
 
@@ -56,6 +54,10 @@ public class TRVariableExpression extends TRExpression
 	@Override 
 	protected TRType getBestGuessType()
 	{
+		if (vardef == null)
+		{
+			report(IsaErrorMessage.VDMSL_INVALID_VAREXPR_VARDEF_1P, original);
+		}	
 		TRType result; 
 		if (vardef instanceof TRLocalDefinition)
 			result = ((TRLocalDefinition)vardef).getType();

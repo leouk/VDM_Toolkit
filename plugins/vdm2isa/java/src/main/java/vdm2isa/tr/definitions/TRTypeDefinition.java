@@ -80,7 +80,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         )
     {        
         super(name.getLocation(), comments, annotations, name, nameScope, used, excluded, type);
-        this.local = false; // Type definitions are never local? 
+        //setLocal(false); // NameScope // Type definitions are never local? 
         this.invPattern = invPattern;
         this.invExpression = invExpression;
         this.eqPattern1 = eqPattern1;
@@ -289,7 +289,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	{
         return "TRTypeDef for " + 
         " \n\tname        = " + String.valueOf(name) +
-        " \n\tlocal	      = " + local + 
+        " \n\tlocal	      = " + isLocal() + 
         " \n\tkind        = " + nameDefKind + 
         " \n\tused	      = " + used + 
         " \n\texcluded    = " + excluded + 
@@ -363,6 +363,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         if (t instanceof TRRecordType)
         {
             TRRecordType trtype = (TRRecordType)t;
+            // make sure no union types at TLD
+            trtype.checkForUnionTypes();
             
             // translate record definition 
             sb.append(trtype.isaToken().toString() + " "); 
@@ -402,14 +404,14 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     assert trtype.type instanceof TRNamedType && invdef != null; 
                     //trtype = (TRNamedType)trtype.type;
                     sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.translate()));
-                    break;
+                break;
                 case QUOTE:
                 case UNION:
                     //report(IsaErrorMessage.PLUGIN_NYI_2P, "type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
                     sb.append(IsaTemplates.translateDatatypeDefinition(location, name.toString(), trtype.type.translate()));
-                    break;
-                case UNKNOWN:
+                break;
                 case RECORD:
+                case UNKNOWN:
                 default:
                     report(IsaErrorMessage.PLUGIN_NYI_2P, "invalid type definition", name.toString() + ": " + t.getClass().getSimpleName() + "(" + nameDefKind.name() + ")");
                     break;                

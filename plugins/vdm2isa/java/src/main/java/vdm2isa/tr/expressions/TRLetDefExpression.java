@@ -20,7 +20,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         super(location, expression, exptype);
         this.localDefs = localDefs;
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
-        this.localDefs.setLocal(true);
+        //this.localDefs.setLocal(true);
         //TODO limit the scope of things? Or not need, because VDMJ already does that? 
         this.isDefExpression = isDefExpression;
         //System.out.println(toString());

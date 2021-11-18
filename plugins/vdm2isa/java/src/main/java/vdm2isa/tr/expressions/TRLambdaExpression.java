@@ -54,8 +54,8 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         //this.type = type; // this is redundant? Given it's the exptype already? 
         this.paramPatterns = paramPatterns; 
         this.paramDefinitions = paramDefinitions; 
-        if (paramDefinitions != null)
-            this.paramDefinitions.setLocal(true);
+        // if (paramDefinitions != null)
+        //     this.paramDefinitions.setLocal(true);
         this.def = def;
         this.lambdaKind = TRLambdaExpressionKind.NORMAL;
         System.out.println(toString());

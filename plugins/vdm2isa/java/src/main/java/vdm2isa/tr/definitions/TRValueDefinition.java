@@ -64,19 +64,15 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRType expType, 
 		TRDefinitionList defs)
 	{
-		this(pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
-		// these are always TRLocalDefinition within the list. 
-		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
-		if (!(pattern instanceof TRRecordPattern) && this.defs.size() > 1)
-			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
-		
-		//if (local) System.out.println(toString());
+		this(pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);		
+		//if (local) 
+		//	System.out.println(toString());
 	}
 
 	@Override
 	public String toString()
 	{
-		return "ValueDef [local=" + local + "] for " + 
+		return "ValueDef [local=" + isLocal() + "] for " + 
 			"\n\t patt = " + String.valueOf(pattern) + 
 			"\n\t expt = " + String.valueOf(expType) +
 			"\n\t defs = " + String.valueOf(defs) +
@@ -125,11 +121,17 @@ public class TRValueDefinition extends TRLocalDefinition
 		// translate the "v: T = e" as an abbreviation or definition
 		StringBuilder sb = new StringBuilder();
 
+		// these are always TRLocalDefinition within the list. 
+		// these allow the totally wacky VDM like "values [A,B] = [1,2];", where A binds to 1 and B to 2! 
+		if (!(pattern instanceof TRRecordPattern) && this.defs.size() > 1)
+			//TODO get from the defs instead 
+			report(IsaErrorMessage.ISA_INVALID_COMPLEX_BIND_VALUE_1P, pattern.toString());
+
 		// translate the value expression
 		String expStr = translateExpression();
 		
 		// global definitions (e.g. v: T = e) require invariant translation alongside its defining expression
-		if (!local)
+		if (!isLocal())
 		{
 			// add any annotations or comments (i.e. TRDefinition.translate(), given super.translate won't work here)
 			sb.append(translatePreamble());
@@ -161,7 +163,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	public String invTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
-		if (!local)
+		if (!isLocal())
 		{
 			// translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
 			// input type is possibly empty (null) in case of non function type

@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaWarningMessage;
@@ -40,7 +41,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	/**
 	 * Whether or not this definition is part of a local definition of someone else
 	 */
-	public boolean local;
+	//private boolean local;
 	
 	// protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments)
 	// {
@@ -57,8 +58,20 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 		this.nameScope = nameScope;
 		this.used = used;
 		this.excluded = excluded;
-		this.local = false;
+		//this.local = false;
 	}
+
+	public boolean isLocal()
+	{
+		return NameScope.LOCAL.equals(nameScope);
+	}
+
+	// public boolean setLocal(boolean l)
+	// {
+	// 	boolean result = local;
+	// 	local = l;
+	// 	return result;
+	// }
 
 	@Override 
 	protected void setup()
@@ -74,7 +87,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 			   "\n\t scope = " + String.valueOf(nameScope) +
 			   "\n\t used  = " + used +
 			   "\n\t excld = " + excluded + 
-			   "\n\t local = " + local + 
+			   "\n\t local = " + isLocal() + 
 			   "\n\t " + super.toString();
 	}
 

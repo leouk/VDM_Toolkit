@@ -70,6 +70,8 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
     {
         // type string depends on TRType class
         String typeStr;
+        // make sure no union types at TLD
+        type.checkForUnionTypes();
         if (type instanceof TRInvariantType)
             // "v : R = mk_R(...)", the type name is the actual name, rather than the type translation 
             typeStr = type.getName();
