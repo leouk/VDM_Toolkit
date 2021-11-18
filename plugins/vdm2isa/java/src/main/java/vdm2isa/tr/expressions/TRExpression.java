@@ -398,7 +398,7 @@ public abstract class TRExpression extends TRNode
     {
         //TODO refactor getRecordType to be called from here? Problem for TRMkTypeExpression? 
 //        TRType rtype = getRecordType();
-        return null;//rtype.getName();
+        throw new UnsupportedOperationException();//return rtype.getName();
         // // e.g. R :: x : nat, r.x ; 
         // if (this instanceof TRVariableExpression)
         // {

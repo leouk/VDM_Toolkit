@@ -110,7 +110,7 @@ public class TRValueDefinition extends TRLocalDefinition
         return tldIsaCommentTranslate(exp);
     }
 
-	protected String translateExpression()
+	protected String typeAware(String expr)
 	{
 		// translate the value expression
 		StringBuilder expStr = new StringBuilder();
@@ -118,12 +118,12 @@ public class TRValueDefinition extends TRLocalDefinition
 		if (getType() instanceof TROptionalType && !(exp instanceof TRNilExpression))
 		{
 			expStr.append(IsaToken.OPTIONAL_SOME.toString());
-			expStr.append(IsaToken.parenthesise(exp.translate()));
+			expStr.append(IsaToken.parenthesise(expr));
 		}
 		else
 		{
 			// as TLD, no need for record-context translation; this is for non TLD expr!
-			expStr.append(exp.translate());//exp.recordPatternTranslate(pattern));
+			expStr.append(expr);//exp.translate());//exp.recordPatternTranslate(pattern));
 		} 
 		return expStr.toString();
 	}
@@ -145,9 +145,11 @@ public class TRValueDefinition extends TRLocalDefinition
 		else if (pattern instanceof TRStructuredPattern)
 		{
 			// use local name
+			
 			//if ! those then warn?
 			//getVDMDef().findName(localName)
 			//pattern.getPatternList().get(index).getPattern().equals(localName.getName());
+			//TODO cater for @NB's weird case [-,-,a] = [1,2,3]!  
 		}
 		return TRBasicPattern.identifier(localName.getLocation(), identifier);
 	}
@@ -206,7 +208,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		// {
 		// 	report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, localType.getName(), result.getType().getName());
 		// }
-		return result;
+		return typeAware(result);
 	}
 
 	private TRDefinitionList figureOutDefs()

@@ -71,7 +71,7 @@ public class TRVariableExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return name.getName().toString();//typeAware(name.getName().toString());
+		return typeAware(name.getName().toString());
 	}
 
 	/**
