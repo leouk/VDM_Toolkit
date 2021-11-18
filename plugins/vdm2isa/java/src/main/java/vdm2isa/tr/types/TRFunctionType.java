@@ -22,19 +22,13 @@ public class TRFunctionType extends TRType
 	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
 	{
 		// definitions are nonempty when the type defines an explicit function definition! 
-		super(vdmType, definitions);
+		super(vdmType, definitions);//, result);
 		this.parameters = parameters;
+		this.result = result;
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
 		this.partial = partial;
-		this.result = result;
 		//System.out.println(toString());
-	}
-
-	@Override 
-	public String getName()
-	{
-		return result.getName();
 	}
 
 	@Override 
@@ -42,7 +36,7 @@ public class TRFunctionType extends TRType
 	{
 		return "TRFunctionType " + 
 			"\n\t\t params = " + String.valueOf(parameters) +
-			"\n\t\t result = " + String.valueOf(result) +
+			"\n\t\t result = " + String.valueOf(getResultType()) +
 			"\n\t\t defs   = " + String.valueOf(definitions.size()) +// loops?
 			"\n\t\t loc    = " + String.valueOf(getLocation());
 	}
@@ -57,12 +51,17 @@ public class TRFunctionType extends TRType
 	@Override
 	public String translate()
 	{
-		return parameters.translate() + " " + isaToken().toString() + " " + result.translate();
+		return parameters.translate() + " " + isaToken().toString() + " " + getResultType().translate();
 	}
 	
 	@Override
 	public IsaToken isaToken() {
 		return partial ? IsaToken.FUN : IsaToken.TFUN;
+	}
+
+	public TRType getResultType()
+	{
+		return result;//getInnerType();
 	}
 
 	public String dummyVarNames(String varName)
@@ -83,7 +82,7 @@ public class TRFunctionType extends TRType
 		sb.append(getFormattingSeparator());
 		sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
 		sb.append(getFormattingSeparator());
-		sb.append(result.invTranslate(rVarName)); 
+		sb.append(getResultType().invTranslate(rVarName)); 
 		return sb.toString();
 	}
 
@@ -91,6 +90,13 @@ public class TRFunctionType extends TRType
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseFunctionType(this, arg);
+	}
+
+	@Override
+	public void checkForUnionTypes() {
+		parameters.checkForUnionTypes();//"function parameters");
+		//super.checkForUnionTypes();
+		result.checkForUnionTypes(); // equivalent to super.checkUnionTypes(); 
 	}
 
 	public TRFunctionType getPreType()
@@ -101,9 +107,9 @@ public class TRFunctionType extends TRType
 
 	public TRFunctionType getCurriedPreType(boolean isCurried)
 	{
-		if (isCurried && result instanceof TRFunctionType)
+		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
-			TRFunctionType ft = (TRFunctionType)result;
+			TRFunctionType ft = (TRFunctionType)getResultType();
 			return new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, false, ft.getCurriedPreType(isCurried));
 		}
 		else
@@ -115,16 +121,16 @@ public class TRFunctionType extends TRType
 	public TRFunctionType getPostType()
 	{
 		TRTypeList inSig = parameters.copy();
-		inSig.add(result);
+		inSig.add(getResultType());
 		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
 		return new TRFunctionType((TCFunctionType)getVDMType(), definitions, inSig, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPostType(boolean isCurried)
 	{
-		if (isCurried && result instanceof TRFunctionType)
+		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
-			TRFunctionType ft = (TRFunctionType)result;
+			TRFunctionType ft = (TRFunctionType)getResultType();
 			return new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, false, ft.getCurriedPostType(isCurried));
 		}
 		else
@@ -165,7 +171,7 @@ public class TRFunctionType extends TRType
 	 */
 	public static TRFunctionType getIsabelleMapType(TRMapType mapType)
 	{
-		return TRFunctionType.newFunctionType(TROptionalType.newOptionalType(mapType.to), mapType.from);
+		return TRFunctionType.newFunctionType(TROptionalType.newOptionalType(mapType.getToType()), mapType.getFromType());
 	}
 
     public static TRFunctionType newFunctionType(TRType result, TRType... params) {
@@ -176,10 +182,4 @@ public class TRFunctionType extends TRType
 		TCFunctionType vdmFcnType = new TCFunctionType(result.getLocation(), params.getVDMTypeList(), true, result.getVDMType());
         return new TRFunctionType(vdmFcnType, new TRDefinitionList(), params, false, result);
     }
-
-	@Override
-	public void checkForUnionTypes() {
-		parameters.checkForUnionTypes();//"function parameters");
-		result.checkForUnionTypes();
-	}
 }
