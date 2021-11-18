@@ -188,6 +188,12 @@ lemma ex1_rng:"rng ex1 = {2,4,6}"
      apply (fastforce, fastforce, fastforce)
   by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
 
+lemma ex1_map: "x \<in> dom ex1 \<Longrightarrow> ex1 x = Some (2*x)"
+  unfolding ex1_defs
+  apply (simp split:if_splits, safe, force+) 
+  thm option.discI
+  by (metis option.discI)
+
 (*On the implicit (wider/presumed) type, add inv_VDMNat; these funny binds are tricky!
   v98 = { x+y |-> 10 | x in set {1,2,3}, y in set {4,5,6} } *)
 definition
@@ -246,6 +252,61 @@ lemma ex2'_rng:"rng ex2' = {10}"
   unfolding rng_defs ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
   apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
   by (safe, simp_all, force+)
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_defs (* don't expand inv_VDMNat *)
+  apply (simp split:if_splits)
+  (* complex domain patterns lead to loads of cases Jeez! no safe *)
+  apply (intro conjI impI, force) oops
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  (* complex domain patterns lead to loads of cases Jeez! no safe *)
+  apply (intro conjI impI) 
+  find_theorems intro name:the
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+  apply (simp add: inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def) (* clearly true by contradiction, but finite is struggling *)
+  oops
+
+lemma l_finite_setcomp_finite[simp]: "finite S \<Longrightarrow> finite T \<Longrightarrow> finite { P x y | x y . x \<in> S \<and> y \<in> T }"
+  by (simp add: finite_image_set2)
+
+thm finite_image_set2 finite_subset
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_defs
+  apply (insert l_finite_setcomp_finite[of _ _ "\<lambda> x y . x+y"]) (* lemma above not quite in right shape *)
+  oops
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  apply (intro conjI impI) 
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+  (*apply (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite mem_Collect_eq) *)(* horrible! *)
+  apply (elim impE)
+     apply (simp add: inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def inv_SetElems_def) 
+  apply (rule conjI) 
+  using ex2'_dom_finite apply force
+     apply fastforce 
+  oops
+
+lemma l_invVDMSet_finite[simp]: "finite S \<Longrightarrow> inv_SetElems inv_T S \<Longrightarrow> inv_VDMSet' inv_T S"
+  by (simp add: inv_VDMSet'_def)
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  apply (intro conjI impI, simp)
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+    apply (erule impE)
+  using ex2'_dom_clearer ex2'_dom_inv' apply auto[1]
+  using inv_VDMNat_def apply auto[1]
+   apply (smt (verit, del_insts) atLeastAtMost_iff ex2'_dom_clearer l_map_dom_ran)
+(*  by (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite finite.emptyI finite.insertI inv_SetElems_def inv_VDMNat_def l_invVDMSet_finite mem_Collect_eq singletonD) *)
+  apply (erule impE)
+  using ex2'_dom_clearer ex2'_dom_inv' apply force
+  using inv_VDMNat_def by auto
 
 (* more direct binds even if with range expressions it's fine. UNIV isn't finite! DUH 
    = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
@@ -308,7 +369,19 @@ lemma ex3'_rng: "rng ex3' = {8,9}"
   apply (rule_tac x=3 in exI, force)
   by (rule_tac x=4 in exI, force)
 
-(* okay: dead simple ones 
+lemma ex3'_map: "x \<in> dom ex3' \<Longrightarrow> ex3' x = Some (x+5)"
+  unfolding ex3'_defs
+  apply (simp split:if_splits, safe, force)
+          apply (linarith, force)
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def by fastforce
+
+(* okay: dead simple ones
    = { x |-> 5 | x in set {1,2,3,4} } *)
 definition
   ex4 :: "VDMNat \<rightharpoonup> VDMNat"
@@ -331,4 +404,12 @@ lemma ex4_rng: "rng ex4 = {5}"
   apply (intro equalityI subsetI, force, simp)
   by (rule_tac x=1 in exI, fastforce)
 
+lemma ex4_map: "x \<in> dom ex4  \<Longrightarrow> ex4 x = Some 5"
+  unfolding ex4_defs
+  apply (simp split:if_splits, safe, force+)
+  by (meson option.distinct(1))
+(* for simple domain binds, you get simple enough proofs *)
+
+print_commands
+print_methods
 end
