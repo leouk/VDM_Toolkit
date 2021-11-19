@@ -18,6 +18,7 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternBind;
 import vdm2isa.tr.patterns.TRRecordPattern;
 import vdm2isa.tr.patterns.TRStructuredPattern;
 import vdm2isa.tr.types.TRFunctionType;
@@ -131,26 +132,36 @@ public class TRValueDefinition extends TRLocalDefinition
 	private TRPattern figureOutPattern(int index, TCNameToken localName)
 	{
 		assert index >= 0 && index < getDefs().size();
-		String identifier = localName.getName();//localName.toString(): no type parameters!
+		String identifier;// = localName.getName();//localName.toString(): no type parameters!
 		if (pattern instanceof TRBasicPattern)
 		{
-			identifier = pattern.getPattern();
+			identifier = pattern.translate();
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern name projection", "complex value definition");
 		}
 		else if (pattern instanceof TRRecordPattern)
 		{
 			//TODO stopped here. 
-			identifier = pattern.getPattern();
+			identifier = pattern.translate();
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern name projection", "complex value definition");
 		}
 		else if (pattern instanceof TRStructuredPattern)
 		{
 			// use local name
-			
+			identifier = localName.getName();
 			//if ! those then warn?
 			//getVDMDef().findName(localName)
 			//pattern.getPatternList().get(index).getPattern().equals(localName.getName());
 			//TODO cater for @NB's weird case [-,-,a] = [1,2,3]!  
+		}
+		else if (pattern instanceof TRPatternBind)
+		{
+			identifier = pattern.translate(); 
+			warning(IsaWarningMessage.PLUGIN_NYI_2P, "pattern bind name projection", "complex value definition");
+		}
+		else 
+		{
+			identifier = IsaToken.dummyVarNames(1, location);
+			report(IsaErrorMessage.VDMSL_INVALID_PATTERN);//TODO better error please?! 
 		}
 		return TRBasicPattern.identifier(localName.getLocation(), identifier);
 	}
