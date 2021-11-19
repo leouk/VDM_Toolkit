@@ -24,7 +24,11 @@
 
 package plugins;
 
+import java.util.List;
+import java.util.Vector;
+
 import json.JSONObject;
+import workspace.lenses.CodeLens;
 import workspace.plugins.AnalysisPlugin;
 
 public abstract class ISAPlugin extends AnalysisPlugin
@@ -50,5 +54,13 @@ public abstract class ISAPlugin extends AnalysisPlugin
 	public JSONObject getExperimentalOptions()
 	{
 		return new JSONObject("isabelle", "server-option");
+	}
+	
+	@Override
+	public List<CodeLens> getCodeLenses()
+	{
+		List<CodeLens> lenses = new Vector<CodeLens>();
+		lenses.add(new EditCodeLens());
+		return lenses;
 	}
 }
