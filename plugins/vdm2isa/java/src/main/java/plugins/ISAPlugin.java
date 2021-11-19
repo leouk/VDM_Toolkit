@@ -60,7 +60,7 @@ public abstract class ISAPlugin extends AnalysisPlugin
 	public List<CodeLens> getCodeLenses()
 	{
 		List<CodeLens> lenses = new Vector<CodeLens>();
-		lenses.add(new EditCodeLens());
+		// lenses.add(new EditCodeLens());
 		return lenses;
 	}
 }
