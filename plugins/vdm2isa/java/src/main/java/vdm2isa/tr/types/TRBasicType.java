@@ -97,12 +97,6 @@ public class TRBasicType extends TRType
 		this(type, definitions, IsaToken.TOKEN);
 	}
 
-	@Override 
-	public boolean isOrdered()
-	{
-		return ORDERED_TYPES.contains(isaToken());
-	}
-
 	@Override
 	public String getName()
 	{
@@ -137,15 +131,31 @@ public class TRBasicType extends TRType
 		return token;
 	}
 
-	@Override
-	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	@Override 
+	public boolean isOrdered()
 	{
-		return visitor.caseBasicType(this, arg);
+		return ORDERED_TYPES.contains(isaToken());
+	}
+
+	/**
+	 * Basic type can be a data type but callers have to "cast" back to (nat n),
+	 * given VDMNat(1) is in fact int!!! 
+	 */
+	@Override
+	public boolean isDataType()
+	{
+		return isaToken().equals(IsaToken.NAT) || isaToken().equals(IsaToken.NAT1);
 	}
 
 	public boolean isNumericType() {
         return NUMERIC_TYPES.contains(isaToken());
     }
+
+	@Override
+	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseBasicType(this, arg);
+	}
 
 	public static TRType newBasicType(TCType vdmType, IsaToken token)  
 	{
@@ -157,6 +167,11 @@ public class TRBasicType extends TRType
 		return newBasicType(new TCBooleanType(location), IsaToken.BOOL);
 	}
 
+	/**
+	 * natType cannot be a datatype directly! Needs to (nat n)! 
+	 * @param location
+	 * @return
+	 */
 	public static TRType natType(LexLocation location) {
 		return newBasicType(new TCNaturalType(location), IsaToken.NAT);
 	}

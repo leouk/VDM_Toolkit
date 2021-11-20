@@ -11,7 +11,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TRUnionType extends TRType {
+public class TRUnionType extends TRType implements TRDataType {
     private static final long serialVersionUID = 1L;
    
     private TRTypeSet types; 
@@ -45,6 +45,11 @@ public class TRUnionType extends TRType {
 		setFormattingSeparator(" ");
 		setSemanticSeparator(" " + isaToken() + " ");
 		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+	}
+
+	public TRTypeSet getDataTypeConstructors()
+	{
+		return types;
 	}
 
     // private void expand()
@@ -95,6 +100,11 @@ public class TRUnionType extends TRType {
 			sb.append(types.invTranslate());
 		return sb.toString();		
     }
+
+	public boolean isDataType()
+	{
+		return true;
+	}
 
     @Override
     public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg) {

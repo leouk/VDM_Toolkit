@@ -87,9 +87,22 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return invTranslate(null);
 	}
 
+	public boolean isNumericType() {
+        return getVDMType().isNumeric(location)
+			   || ultimateType().isNumericType();
+    }
+
 	public boolean isOrdered()
 	{
-		return false;
+		return getVDMType().isOrdered(location) ||
+			   ultimateType().isOrdered();
+	}
+
+	public boolean isDataType()
+	{
+		return getVDMType().isUnion(location) ||
+			   false //ultimateType().isDataType()
+			   ;
 	}
 
 	public TRType ultimateType()
@@ -107,10 +120,6 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	public TCType getVDMType() {
 		return vdmType;
 	}
-
-	public boolean isNumericType() {
-        return false;
-    }
 
 	/**
 	 * Checks whether this type contains any union type. This is important at TLDs given union

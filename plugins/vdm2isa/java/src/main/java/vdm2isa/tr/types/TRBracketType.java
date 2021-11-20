@@ -31,4 +31,9 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     public String translate() {
         return IsaToken.parenthesise(this.getInnerType().translate());
     }
+
+	public TRType ultimateType()
+	{
+		return getInnerType();
+	}
 }
