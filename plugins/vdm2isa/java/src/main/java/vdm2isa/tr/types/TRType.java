@@ -101,7 +101,8 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	public boolean isDataType()
 	{
 		return getVDMType().isUnion(location) ||
-			   false //ultimateType().isDataType()
+			   //false //ultimateType().isDataType()
+			   ultimateType() instanceof TRDataType
 			   ;
 	}
 

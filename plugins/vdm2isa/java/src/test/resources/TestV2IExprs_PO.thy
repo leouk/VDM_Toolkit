@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-18T13:45:02.339946Z
+(* VDM to Isabelle Translation @2021-11-20T08:52:36.053443Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 18:25
@@ -49,7 +49,7 @@ theorem v22_INVARIANT:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 69:10\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 67:10\<close>
 theorem v44_MAP_COMPATIBLE:
 	"((\<forall> ldom1 \<in> (dom t14)  . (\<forall> rdom2 \<in> (dom t15)  . ((ldom1 = rdom2) \<longrightarrow> ((the(t14 ldom1)) = (the(t15 rdom2)))))))"
 	
@@ -57,7 +57,7 @@ theorem v44_MAP_COMPATIBLE:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 70:14\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 68:14\<close>
 theorem v45_MAP_COMPOSE:
 	"(((rng t15) \<subseteq> (dom t14)))"
 	
@@ -65,7 +65,7 @@ theorem v45_MAP_COMPOSE:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 86:10\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 84:10\<close>
 theorem v61_MAP_SEQ_OF_COMPATIBLE:
 	"((\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)], [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> ((the(m1 d3)) = (the(m2 d4)))))))))"
 	
@@ -73,7 +73,7 @@ theorem v61_MAP_SEQ_OF_COMPATIBLE:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 97:39\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 95:39\<close>
 theorem v722_SUB_TYPE:
 	"((
 		let 
@@ -90,7 +90,7 @@ theorem v722_SUB_TYPE:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 98:20\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 96:20\<close>
 theorem v723_SUB_TYPE:
 	"(not yet)"
 	
@@ -98,51 +98,9 @@ theorem v723_SUB_TYPE:
 	
 	
 	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 99:11\<close>
+\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 97:11\<close>
 theorem v73_UNIQUE_EXISTENCE:
 	"((\<exists>! var \<in> t9  . (var < (2::VDMNat1))))"
-	
-	oops
-	
-	
-	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 117:37\<close>
-theorem v93_SUB_TYPE:
-	"(((\<not> (None = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)))) \<longrightarrow> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> ((\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37))) \<longrightarrow> (
-		let 
-(v::VDMNat option) = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37))
-		in
-			(if ((inv_Option (inv_VDMNat) v)) then
-			not yet
-		 else
-			undefined
-		)
-		))))))"
-	
-	oops
-	
-	
-	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 117:39\<close>
-theorem v93_SUB_TYPE:
-	"(((\<not> (None = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)))) \<longrightarrow> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> ((\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37))) \<longrightarrow> (
-		let 
-(v::VDMNat option) = \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37))
-		in
-			(if ((inv_Option (inv_VDMNat) v)) then
-			not yet
-		 else
-			undefined
-		)
-		))))))"
-	
-	oops
-	
-	
-	
-\<comment>\<open>in 'TestV2IExprs' (./src/test/resources/TestV2IExprs.vdmsl) at line 117:11\<close>
-theorem v93_CASES_EXHAUSTIVE:
-	"(((\<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) = None) \<or> (\<exists> (v :: VDMNat option)  . ((((inv_Option (inv_VDMNat) v))) \<longrightarrow> (\<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) = \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)))))))"
 	
 	oops
 	

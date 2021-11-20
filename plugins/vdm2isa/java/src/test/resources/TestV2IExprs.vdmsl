@@ -58,8 +58,6 @@ values
 	v34= 4 < 5;						--TCLessExpression		
 	v35= 5 >= 4;					--TCGreaterEqualExpression
 	v36= 5 > 4;						--TCGreaterExpression		
-	v37: [nat] = nil;				--TCNilExpression			TCOptionalType,
-	v371: [nat] = 100;				--TCNilExpression			TCOptionalType,
 	v38= nil;						--TCNilExpression (untyped)!TCUnknownType	
 	v39= t14++t15;					--TCPlusPlusExpression	
 	v40= t9 <: t14;					--TCDomainResByExpression	
@@ -114,6 +112,5 @@ values
 	v90= if v1 > v2 then v1 else if v1 < v2 then v2 else 0; --TCElseIfListExpression
 	--v91= (let f: nat * nat -> nat f(var,var2) == var + var2 in f(10,20)); --TCFiendishLambdaExpression :-)
 	v92= (def var : nat = 10 in var+var); --TCDefExpression
-	v93= (cases v37: nil -> 0, v -> v+v end);
-
+	
 end TestV2IExprs
