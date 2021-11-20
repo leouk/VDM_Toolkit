@@ -6,12 +6,16 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-public class TROptionalType extends TRAbstractInnerTypedType {
+public class TROptionalType extends TRAbstractInnerTypedType implements TRDataType {
     private static final long serialVersionUID = 1L;
+
+    private final TRTypeSet dataTypeConstructors;
     
     public TROptionalType(TCOptionalType vdmType, TRDefinitionList definitions, TRType type)
     {
         super(vdmType, definitions, type);
+        this.dataTypeConstructors = 
+            new TRTypeSet(TRBasicType.newBasicType(vdmType, IsaToken.TOKEN), type);
     }
 
     // @Override
@@ -52,6 +56,20 @@ public class TROptionalType extends TRAbstractInnerTypedType {
 		return visitor.caseOptionalType(this, arg);
 	}
 
+    public boolean isNumericType() {
+        return false;
+    }
+
+	public boolean isOrdered()
+	{
+		return getInnerType().isOrdered();
+	}
+
+	public boolean isDataType()
+	{
+		return true;
+	}
+
     // @Override 
     // public String getName()
     // {
@@ -61,5 +79,10 @@ public class TROptionalType extends TRAbstractInnerTypedType {
     public static TROptionalType newOptionalType(TRType type)
     {
         return new TROptionalType(new TCOptionalType(type.getLocation(), type.getVDMType()), type.getDefinitions(), type);
+    }
+
+    @Override
+    public TRTypeSet getDataTypeConstructors() {
+        return dataTypeConstructors; 
     }
 }

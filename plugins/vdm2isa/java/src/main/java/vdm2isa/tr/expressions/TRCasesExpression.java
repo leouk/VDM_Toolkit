@@ -65,17 +65,24 @@ public class TRCasesExpression extends TRExpression {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
-        warning(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION);
-        sb.append(IsaToken.comment(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION.message, getFormattingSeparator()));
-
-        sb.append(isaToken().toString());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(exp.translate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(IsaToken.OF.toString());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(cases.translate());
-        
+        TRType eType = exp.getType();
+        if (eType.isDataType())
+        {
+            sb.append(getFormattingSeparator());
+            sb.append(isaToken().toString());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(exp.translate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(IsaToken.OF.toString());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(cases.translate());    
+        }
+        else
+        {
+            warning(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION);
+            sb.append(IsaToken.comment(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION.message));
+        }        
         return IsaToken.parenthesise(sb.toString());
     }
     
