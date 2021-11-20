@@ -95,28 +95,37 @@ definition
                 None
         )"
 
+value "[1::nat \<mapsto> 2::nat, 3 \<mapsto> 3] 10"
 text \<open>Set bound map comprehension can filter bound set for their elements invariants.
       This corresponds to the VDMSL expression
       %
       \begin{vdmssl}
-        { domexpr(d) |-> rngexpr(d, r) | d in set S, r in set T & P(d, r) }
+        { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) }
+        domexpr: S * T -> S
+        rngexpr: S * T -> T
+        pred   : S * T -> bool 
       \end{vdmsl}
       % 
+      If the types of domexpr or rngexpr are different from S or T then this will not work! 
+      %
       If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
       might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
-      so that @{lemma "[1::nat \<mapsto> 2, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
+      so that @{lemma "[1::nat \<mapsto> 2::nat, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
      \<close>
 definition 
   mapCompSetBound :: "'a set \<Rightarrow> 'b set \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
   where
   "mapCompSetBound S T inv_S inv_T domexpr rngexpr pred \<equiv> 
         (\<lambda> dummy::'a . 
+            \<comment> \<open>In fact you have to check the inv_Type of domexpr and rngexpr!!!\<close>
             if inv_VDMSet' inv_S S \<and> inv_VDMSet' inv_T T then
-              if (\<exists> d \<in> S . \<exists> r \<in> T . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
+              if (\<exists> r \<in> T . \<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
                 Some (THE r . r \<in> T \<and> inv_T r \<and> (\<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r)) 
               else 
+                \<comment> \<open>This is for map application outside its domain error, VDMJ 4061 \<close>
                 None
             else
+              \<comment> \<open>This is for type invariant violation errors, VDMJ ???? @NB?\<close>
               undefined
         )"
 
@@ -188,6 +197,9 @@ lemma ex1_rng:"rng ex1 = {2,4,6}"
      apply (fastforce, fastforce, fastforce)
   by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
 
+(*@TODO add invariant failure to undefined tests! *)
+
+
 lemma ex1_map: "x \<in> dom ex1 \<Longrightarrow> ex1 x = Some (2*x)"
   unfolding ex1_defs
   apply (simp split:if_splits, safe, force+) 
@@ -208,7 +220,8 @@ lemma ex2_none: "x \<notin> dom ex2  \<Longrightarrow> ex2 x = None"
 
 lemma ex2_dom: "dom ex2 = {5,6,7,8,9}"
   unfolding ex2_defs
-  apply (simp split:if_splits) oops
+  apply (simp split:if_splits)
+  oops
 
 definition
   ex2' :: "VDMNat \<rightharpoonup> VDMNat"
@@ -219,6 +232,7 @@ definition
 lemmas ex2'_defs = ex2'_def mapCompSetBound_defs inv_VDMNat_def 
 
 lemma ex2'_none: "x \<notin> dom ex2'  \<Longrightarrow> ex2' x = None"
+  unfolding ex2'_defs
   by (simp add: domIff)
 
 lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
