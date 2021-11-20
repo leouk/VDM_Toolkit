@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-20T08:55:02.280584Z
+(* VDM to Isabelle Translation @2021-11-20T09:52:25.987821Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -13,26 +13,7 @@ begin
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
-
-print_theorems
-
-(*
-instantiation R :: linorder
-begin
-
-lift_definition less_eq_int :: "int \<Rightarrow> int \<Rightarrow> bool"
-  is "\<lambda>(x, y) (u, v). x + v \<le> u + y"
-  by auto
-
-lift_definition less_int :: "int \<Rightarrow> int \<Rightarrow> bool"
-  is "\<lambda>(x, y) (u, v). x + v < u + y"
-  by auto
-
-instance
-  by standard (transfer, force)+
-
-end
-*)
+	
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 10:9\<close>
 definition
@@ -301,6 +282,7 @@ where
 	"v791 \<equiv> (
 		let 
 (dummy0::R) = v65;
+		
 (var1::VDMNat) = (10::VDMNat1)
 		in
 			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
@@ -347,8 +329,7 @@ where
 abbreviation
 	v830 :: "VDMNat VDMSeq"
 where
-	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ] 
-\<comment>\<open>Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>{v65}\<close>}  has a VDM ord_ predicate.\<close> "
+	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ] \<comment>\<open>Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>{v65}\<close>}  has a VDM ord_ predicate.\<close> "
 
 	definition
 	inv_v830 :: "\<bool>"

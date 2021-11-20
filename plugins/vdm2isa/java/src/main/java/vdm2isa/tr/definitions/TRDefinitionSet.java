@@ -15,6 +15,11 @@ public class TRDefinitionSet extends TreeSet<TRDefinition> {
         add(definition);
     }
 
+    public TRDefinitionSet(TRDefinitionList definitions)
+    {
+        addAll(definitions);
+    }
+
     @Override
     public String toString()
     {
@@ -34,5 +39,15 @@ public class TRDefinitionSet extends TreeSet<TRDefinition> {
         TRDefinitionList list = new TRDefinitionList();
         list.addAll(this);
         return list;
+    }
+
+    public  boolean allAreLocalDefinition()
+	{
+		return asList().allAreLocalDefinition();
+	}
+
+	public <T extends TRDefinition> boolean allAre(T def)
+	{
+        return asList().allAre(def);
     }
 }

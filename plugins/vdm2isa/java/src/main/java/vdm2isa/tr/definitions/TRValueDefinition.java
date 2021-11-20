@@ -132,22 +132,23 @@ public class TRValueDefinition extends TRLocalDefinition
 	private TRPattern figureOutPattern(int index, TCNameToken localName)
 	{
 		assert index >= 0 && index < getDefs().size();
-		String identifier;// = localName.getName();//localName.toString(): no type parameters!
+		TRPattern result; 
+		//String identifier;// = localName.getName();//localName.toString(): no type parameters!
 		if (pattern instanceof TRBasicPattern)
 		{
-			identifier = pattern.translate();
+			result = TRBasicPattern.identifier(localName.getLocation(), pattern.translate());
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern name projection", "complex value definition");
 		}
 		else if (pattern instanceof TRRecordPattern)
 		{
 			//TODO stopped here. 
-			identifier = pattern.translate();
-			warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern name projection", "complex value definition");
+			result = pattern;
+			//warning(IsaWarningMessage.PLUGIN_NYI_2P, "record pattern name projection", "complex value definition");
 		}
 		else if (pattern instanceof TRStructuredPattern)
 		{
 			// use local name
-			identifier = localName.getName();
+			result = TRBasicPattern.identifier(localName.getLocation(), localName.getName());
 			//if ! those then warn?
 			//getVDMDef().findName(localName)
 			//pattern.getPatternList().get(index).getPattern().equals(localName.getName());
@@ -155,15 +156,25 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		else if (pattern instanceof TRPatternBind)
 		{
-			identifier = pattern.translate(); 
+			result = TRBasicPattern.identifier(localName.getLocation(), pattern.translate());			
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "pattern bind name projection", "complex value definition");
 		}
 		else 
 		{
-			identifier = IsaToken.dummyVarNames(1, location);
+			result = TRBasicPattern.identifier(localName.getLocation(), IsaToken.dummyVarNames(1, localName.getLocation()));
 			report(IsaErrorMessage.VDMSL_INVALID_PATTERN);//TODO better error please?! 
 		}
-		return TRBasicPattern.identifier(localName.getLocation(), identifier);
+		return result;
+	}
+
+	private TRType figureOutPatternType(TRPattern p, TRType localType)
+	{
+		TRType result = localType;
+		if (p instanceof TRRecordPattern)
+		{
+			result = expType;
+		}
+		return result;
 	}
 
 		/**
@@ -225,7 +236,7 @@ public class TRValueDefinition extends TRLocalDefinition
 
 	private TRDefinitionList figureOutDefs()
 	{
-		TRDefinitionList result = new TRDefinitionList(defs);
+		TRDefinitionSet result = new TRDefinitionSet(defs);
 		// check defs structure: empty/null is bad
 		if (result == null || result.isEmpty())
 		{
@@ -257,19 +268,25 @@ public class TRValueDefinition extends TRLocalDefinition
 		else if (result.size() > 1)
 		{
 			// figure out the definitions reshape based on complex pattern (if any)
-			result = new TRDefinitionList();
+			// given certain patterns might have more locals than we want defs to, 
+			// use a set instead of list (e.g. mk_R(x,y) = r, will create one variable only
+			// and the recordPatternTranslate figures the rest out)
+			result = new TRDefinitionSet();
 			for(int i = 0; i < defs.size(); i++)
 			{
 				TRLocalDefinition ld = (TRLocalDefinition)defs.get(i);
-				TRPattern bp = figureOutPattern(i, ld.name);
+				TRPattern patt = figureOutPattern(i, ld.name);
+				TRType patternType = figureOutPatternType(patt, ld.type); 
 				//TRExpression e = figureOutExpression(i, ld.type);
 				//figure expression string out rather than try to "construct" new one; simpler. 
-				result.add(new TRValueDefinition(getVDMDefinition(), ld.getLocation(), comments, annotations, nameScope, used, excluded, bp, ld.getType(), exp, ld.getType(), TRDefinitionList.newDefList(ld)));
+				result.add(new TRValueDefinition(getVDMDefinition(), ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, patternType/*ld.getType()*/, exp, this.expType, TRDefinitionList.newDefList(ld)));
 			}
 		}
 		// figuring out doesn't loose definitions; and all are value definitions
-		assert result.size() == defs.size() && result.allAre(this/*TRValueDefinition.class*/);
-		return result;
+		// might be smaller for cases involving ignore pattern (e.g mk_(-,x) = v) 
+		// or record pattern (e.g. mk_R(x,y) = r).
+		assert result.size() <= defs.size() && result.allAre(this/*TRValueDefinition.class*/);
+		return result.asList();
 	}
 
 	@Override
