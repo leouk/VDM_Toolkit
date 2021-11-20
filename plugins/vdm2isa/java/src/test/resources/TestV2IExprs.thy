@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-18T14:45:38.359947Z
+(* VDM to Isabelle Translation @2021-11-20T07:37:00.499250Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
@@ -1302,8 +1302,14 @@ where
 abbreviation
 	v93 :: "VDMNat"
 where
-	"v93 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
+	"v93 \<equiv> (\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>
+    case 
+      \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>
+      ((v37)) of None \<Rightarrow> (0::VDMNat)
+    | 
+		Some v \<Rightarrow> 
+        (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>
+        (the(v))))"
 
 	definition
 	inv_v93 :: "\<bool>"
