@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-20T08:52:35.993465Z
+(* VDM to Isabelle Translation @2021-11-21T06:12:03.064226Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
@@ -1159,6 +1159,19 @@ where
 	
 	
 abbreviation
+	v80 :: "VDMNat1"
+where
+	"v80 \<equiv> (
+		SOME (dummy0::VDMNat1) .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > (2::VDMNat1)) \<and> (y < x)) }))"
+
+	definition
+	inv_v80 :: "\<bool>"
+where
+	"inv_v80  \<equiv> (inv_VDMNat1 v80)"
+
+	
+	
+abbreviation
 	v81 :: "VDMNat1 VDMSet"
 where
 	"v81 \<equiv> { var .   ((var \<in>t9))  \<and> (var > (1::VDMNat1)) }"
@@ -1185,7 +1198,8 @@ where
 abbreviation
 	v83 :: "VDMNat1 VDMSeq"
 where
-	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ] \<comment>\<open>Set bind `(var \<in> t9)` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>t9\<close>}  has a VDM ord_ predicate.\<close> "
+	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ]
+	\<comment>\<open>Set bind `(var \<in> t9)` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>t9\<close>}  has a VDM ord_ predicate.\<close> "
 
 	definition
 	inv_v83 :: "\<bool>"

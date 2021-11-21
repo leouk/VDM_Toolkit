@@ -100,6 +100,7 @@ values
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
 	v79= (let var : nat = 10, var2: nat1 = 20 in var + var2);	-- TCLetDefExpression
+	v80= (let x, y in set t9 be st x > 2 and y < x in x + y); --TCLetBeStExpression
 	v81= { var | var in set t9 & var > 1 }; -- TCSetCompExpression
 	v82= { var+var2 | var in set t9, var2 in seq t10 & var > var2 }; -- TCSetCompExpression
 	v83= [ var | var in set t9 & var > 1 ]; -- TCSeqCompExpression

@@ -1,4 +1,4 @@
-module TestV2IComplexExpr
+module TestV2IExprsComplex
 exports all
 definitions
 
@@ -69,4 +69,4 @@ functions
 	vc7: () -> bool
 	vc7() == (forall x:nat, y:nat1 & pre_f(x, y) => post_f(x, y, (x + y))); 
 	
-end TestV2IComplexExpr
+end TestV2IExprsComplex
