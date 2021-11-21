@@ -138,6 +138,11 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
     
                 // TRInvariantType translateTLD() takes care of the rest! 
                 this.getInvariantType().setInvariantDefinition(this.invdef);
+                // don't unset it until finished translation, hence leave it there if reached from here? 
+                // if (paramType instanceof TRNamedType)
+                // {
+                //     ((TRNamedType)paramType).setAtTopLevelDefinition(false);
+                // }        
                 needToUpdateTypeInvDef = false;
             }
     
@@ -146,19 +151,19 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 report(IsaErrorMessage.ISA_INVALID_TYPEINVARIANT_1P, name.toString());
             else if (needToUpdateTypeInvDef)
             {
-                updateExplicitDefinition(invdef);
+                updateExplicitDefinition(invdef, true);
                 this.getInvariantType().setInvariantDefinition(this.invdef);
             }
 
             //TODO update the inner parameters to call inv_T, instead of its invTranslate! 
             if (eqdef != null)
             {
-                updateExplicitDefinition(eqdef);
+                updateExplicitDefinition(eqdef, false);
                 getInvariantType().setEqualityDefinition(eqdef);
             }
             if (orddef != null)
             {
-                updateExplicitDefinition(orddef);
+                updateExplicitDefinition(orddef, false);
                 getInvariantType().setOrderingDefinition(orddef);
             }
             if (Vdm2isaPlugin.translateTypeDefMinMax)
@@ -171,12 +176,12 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 {
                     if (mindef != null)
                     {
-                        updateExplicitDefinition(mindef);
+                        updateExplicitDefinition(mindef, false);
                     //    mindef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                     if (maxdef != null)
                     {
-                        updateExplicitDefinition(maxdef);
+                        updateExplicitDefinition(maxdef, false);
                     //    maxdef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                 }
@@ -184,13 +189,17 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         }
     }
 
-    private void updateExplicitDefinition(TRExplicitFunctionDefinition def)
+    private void updateExplicitDefinition(TRExplicitFunctionDefinition def, boolean atTLD)
     {
         // adjust any renamed record invdef 
         // for renamed records we have to "fix" the XXXdef type parameters to avoid 
         // calls to the defined record invariant
         // instead of its inv_R call! 
         TRType paramType = figureOutInvariantType();
+        if (paramType instanceof TRNamedType) 
+        {
+            ((TRNamedType)paramType).setAtTopLevelDefinition(atTLD);
+        }
         int count = def.getType().parameters.size(); 
         def.getType().parameters.clear();
         for (int i = 0; i < count; i++)
@@ -200,7 +209,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         }
     }
 
-    protected TRType figureOutInvariantType()
+    private TRType figureOutInvariantType()
     {
         TRType result;
         // record types get themselves
@@ -209,12 +218,19 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         else if (type instanceof TRNamedType)
         {
             TRNamedType trtype = (TRNamedType)type;
+            trtype = trtype.copy();
             // renamed record types get themselves too
             if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMEDRECORD) ||
                 trtype.ultimateType() instanceof TRRecordType) 
             {
                 trtype.setAtTopLevelDefinition(true);
                 result = trtype;
+            }
+            else if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMED) ||
+                    trtype.type instanceof TRNamedType)
+            {
+                trtype.setAtTopLevelDefinition(true);
+                result = trtype;   
             }
             // other renamed types get original type
             else    
