@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-18T12:52:08.681917Z
+(* VDM to Isabelle Translation @2021-11-21T08:00:23.725278Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
@@ -15,7 +15,7 @@ record Time =
 		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 40:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 41:9\<close>
 definition
 	inv_Time :: "Time \<Rightarrow> \<bool>"
 where
@@ -30,22 +30,30 @@ where
 
 		 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 43:21\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 44:21\<close>
 definition
 	ord_Time :: "Time\<Rightarrow> Time \<Rightarrow> \<bool>"
 where
 	"ord_Time a b \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for ord_Time specification\<close>
+		(
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e a))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e a)))
+		 )  \<and>  
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e b))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e b)))
+		 ))  \<and> 
 		\<comment>\<open>User defined body of ord_Time\<close>
 		(((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<or> (((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<and> ((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b)))))"
 
 		 
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 49:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 datatype Interval = calculated |  changing |  constantLF |  countdown |  fixed |  triggered |  tunable
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 49:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 definition
 	inv_Interval :: "Interval \<Rightarrow> \<bool>"
 where
@@ -56,11 +64,11 @@ where
 		 
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 datatype ActionType = get |  getC |  set |  setC |  step
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 definition
 	inv_ActionType :: "ActionType \<Rightarrow> \<bool>"
 where
@@ -71,14 +79,14 @@ where
 		 
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 59:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 record Action = 
 	actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "ActionType"
 		 fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "FMU"
 		 port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "Ref"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 59:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 definition
 	inv_Action :: "Action \<Rightarrow> \<bool>"
 where
@@ -104,23 +112,23 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 68:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 69:5\<close>
 
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 73:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 78:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 79:5\<close>
 record FMURef = 
 	name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Name"
 		 ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Ref"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 78:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 79:5\<close>
 definition
 	inv_FMURef :: "FMURef \<Rightarrow> \<bool>"
 where
@@ -131,29 +139,24 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 86:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 87:5\<close>
 
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 88:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 94:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
 record Value = 
 	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueTypesLF"
 		 time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "Time"
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 102:5\<close>
-
-	
-
-	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 104:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 103:5\<close>
 
 	
 
@@ -168,7 +171,12 @@ record Value =
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 111:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 107:5\<close>
+
+	
+
+	
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 112:5\<close>
 record Variable = 
 	ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Ref"
 		 time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Time"
@@ -179,7 +187,7 @@ record Variable =
 		 contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "ContractLF"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 120:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 121:9\<close>
 definition
 	inv_Variable :: "Variable \<Rightarrow> \<bool>"
 where
@@ -200,7 +208,7 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 128:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 129:5\<close>
 record Clock = 
 	ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Ref"
 		 type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "IOLF"
@@ -210,7 +218,7 @@ record Clock =
 		 equations\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Ref VDMSet"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 135:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 136:9\<close>
 definition
 	inv_Clock :: "Clock \<Rightarrow> \<bool>"
 where
@@ -231,12 +239,12 @@ where
 		 
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 139:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 140:5\<close>
 
 	
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 147:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 148:5\<close>
 record FMU = 
 	name\<^sub>F\<^sub>M\<^sub>U :: "Name"
 		 clocks\<^sub>F\<^sub>M\<^sub>U :: "Clock VDMSet"
@@ -250,7 +258,7 @@ record FMU =
 		 activeEquations\<^sub>F\<^sub>M\<^sub>U :: "Equation VDMSet"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 158:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 159:9\<close>
 definition
 	inv_FMU :: "FMU \<Rightarrow> \<bool>"
 where
@@ -300,9 +308,9 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 189:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 190:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 192:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 193:9\<close>
 definition
 	pre_derefOutput :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -327,7 +335,7 @@ where
 		(\<exists> c \<in> (outputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 189:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 190:5\<close>
 definition
 	post_derefOutput :: "FMU\<Rightarrow> Ref\<Rightarrow> Variable \<Rightarrow> \<bool>"
 where
@@ -366,14 +374,14 @@ where
 	(THE c. (((c \<in>(outputs\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref)))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 199:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 200:5\<close>
 record Machine = 
 	fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMU)"
 		 connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
 		 clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 203:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 204:9\<close>
 definition
 	inv_Machine :: "Machine \<Rightarrow> \<bool>"
 where
@@ -438,9 +446,9 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 242:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 243:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 242:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 243:5\<close>
 definition
 	pre_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> \<bool>"
 where
@@ -463,7 +471,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMSet' (inv_VDMNat) clocks)  \<and>  (inv_VDMSet' inv_FMURef  res))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 242:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 243:5\<close>
 definition
 	post_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> \<bool>"
 where
@@ -498,7 +506,7 @@ where
 		SOME (dummy0::FMURef VDMSet) .(dummy0 \<in> { (createFMURefs fmu  (clocks - {clock})  (res \<union> {\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>})) | clock .  ((clock \<in>clocks))  }))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 256:5\<close>
 record Importer = 
 	scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "Machine"
 		 schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "(FMURef \<rightharpoonup> VDMReal)"
@@ -517,7 +525,7 @@ record Importer =
 		 valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "(FMURef \<rightharpoonup> Value)"
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 271:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 272:9\<close>
 definition
 	inv_Importer :: "Importer \<Rightarrow> \<bool>"
 where
@@ -587,9 +595,9 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 296:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 297:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 296:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 297:5\<close>
 definition
 	pre_preSet :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -612,7 +620,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat inputLF))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 296:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 297:5\<close>
 definition
 	post_preSet :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -642,9 +650,9 @@ where
 	(\<exists> v \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (v)) = inputLF) \<and> (((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (v)) = (inputLF)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) \<noteq> (DONE)))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 305:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 306:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 305:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 306:5\<close>
 definition
 	pre_preGet :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -667,7 +675,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 305:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 306:5\<close>
 definition
 	post_preGet :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -706,9 +714,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 313:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 314:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 313:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 314:5\<close>
 definition
 	pre_preStepT :: "FMU\<Rightarrow> VDMReal \<Rightarrow> \<bool>"
 where
@@ -731,7 +739,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMReal stepSize))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 313:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 314:5\<close>
 definition
 	post_preStepT :: "FMU\<Rightarrow> VDMReal\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -761,9 +769,9 @@ where
 	(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = (reactive)) \<longrightarrow> ((r\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))))) = ((r\<^sub>F\<^sub>M\<^sub>U ((time\<^sub>F\<^sub>M\<^sub>U (fmu)))) + stepSize))) \<and> ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = (delayed)) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) = (time\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((stepSize \<ge> (0.0)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (STEP))))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 320:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 321:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 320:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 321:5\<close>
 definition
 	pre_preStepE :: "FMU \<Rightarrow> \<bool>"
 where
@@ -786,7 +794,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) ))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 320:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 321:5\<close>
 definition
 	post_preStepE :: "FMU\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -816,9 +824,9 @@ where
 	((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (EVENT))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 324:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 325:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 324:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 325:5\<close>
 definition
 	pre_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -841,7 +849,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat clock)  \<and>  (inv_bool val))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 324:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 325:5\<close>
 definition
 	post_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool>\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -871,9 +879,9 @@ where
 	(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = clock) \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = (inputLF)) \<and> val)) \<longleftrightarrow> (\<not> (clock \<in> (activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu))))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 329:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 330:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 329:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 330:5\<close>
 definition
 	pre_preGetC :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -896,7 +904,7 @@ where
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat clock))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 329:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 330:5\<close>
 definition
 	post_preGetC :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -926,9 +934,9 @@ where
 	(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = clock) \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = (outputLF)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (EVENT)))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 339:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 340:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 343:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 344:9\<close>
 definition
 	pre_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value \<Rightarrow> \<bool>"
 where
@@ -957,7 +965,7 @@ where
 		(preSet fmu  ref)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 339:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 340:5\<close>
 definition
 	post_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value\<Rightarrow> FMU \<Rightarrow> \<bool>"
 where
@@ -1005,9 +1013,9 @@ where
 	(fmu)\<lparr>env\<^sub>F\<^sub>M\<^sub>U := ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) \<dagger> [ref\<mapsto>val])\<rparr>"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 345:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 346:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 349:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 350:9\<close>
 definition
 	pre_get_m :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -1032,7 +1040,7 @@ where
 		(preGet fmu  ref)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 345:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 346:5\<close>
 definition
 	post_get_m :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> \<bool>"
 where
@@ -1083,9 +1091,9 @@ where
 	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) ref))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 351:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 356:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 357:9\<close>
 definition
 	pre_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -1110,7 +1118,7 @@ where
 		(preSetC fmu  ref  val)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 357:14\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 358:14\<close>
 definition
 	post_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> \<bool>\<Rightarrow> FMU \<Rightarrow> \<bool>"
 where
@@ -1160,9 +1168,9 @@ where
 		(((activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu)) - {ref})))\<rparr>"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 359:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 360:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 362:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 363:9\<close>
 definition
 	pre_get_cm :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -1187,7 +1195,7 @@ where
 		(preGetC fmu  ref)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 359:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 360:5\<close>
 definition
 	post_get_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> \<bool>"
 where
@@ -1238,9 +1246,9 @@ where
 	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) ref))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 364:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 365:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 368:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 369:9\<close>
 definition
 	pre_step_tm :: "FMU\<Rightarrow> VDMReal \<Rightarrow> \<bool>"
 where
@@ -1265,7 +1273,7 @@ where
 		(preStepT fmu  step)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 370:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 371:9\<close>
 definition
 	post_step_tm :: "FMU\<Rightarrow> VDMReal\<Rightarrow> (FMU\<times> VDMReal\<times> \<bool>) \<Rightarrow> \<bool>"
 where
@@ -1319,9 +1327,9 @@ where
 		((fmu, step, (False::\<bool>))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 373:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 375:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 376:9\<close>
 definition
 	pre_step_e :: "FMU \<Rightarrow> \<bool>"
 where
@@ -1346,7 +1354,7 @@ where
 		(preStepE fmu)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 377:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 378:9\<close>
 definition
 	post_step_e :: "FMU\<Rightarrow> (FMU\<times> \<bool>) \<Rightarrow> \<bool>"
 where
@@ -1395,11 +1403,11 @@ where
 	undefined"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 381:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 382:5\<close>
 datatype RealNaNLF = NaN |  VDMReal
 	
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 381:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 382:5\<close>
 definition
 	inv_RealNaNLF :: "RealNaNLF \<Rightarrow> \<bool>"
 where
@@ -1409,9 +1417,9 @@ where
  
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 386:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 387:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 391:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 392:9\<close>
 definition
 	pre_next_tm :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -1436,7 +1444,7 @@ where
 		(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = ref) \<and> ((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) \<in> {(tunable), (changing), (countdown)})))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 386:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 387:5\<close>
 definition
 	post_next_tm :: "FMU\<Rightarrow> Ref\<Rightarrow> RealNaNLF \<Rightarrow> \<bool>"
 where
@@ -1466,9 +1474,9 @@ where
 	(NaN)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 397:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 398:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 409:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 410:9\<close>
 definition
 	pre_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> \<bool>"
 where
@@ -1501,7 +1509,7 @@ where
 		((\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = (EVENT)))) \<and> ((vdm_card { (time\<^sub>F\<^sub>M\<^sub>U (m')) | m' .  ((m' \<in>(rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> ((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) }) = (1::VDMNat1)))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 411:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 412:9\<close>
 definition
 	post_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -1610,9 +1618,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 415:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 416:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 418:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 419:9\<close>
 definition
 	pre_derefClock :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -1637,7 +1645,7 @@ where
 		(\<exists> c \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = ref))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 415:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 416:5\<close>
 definition
 	post_derefClock :: "FMU\<Rightarrow> Ref\<Rightarrow> Clock \<Rightarrow> \<bool>"
 where
@@ -1677,9 +1685,9 @@ where
 	(THE c. (((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = ref)))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 423:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 424:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 426:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 427:9\<close>
 definition
 	pre_derefInput :: "FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -1711,9 +1719,9 @@ where
 	(THE c. (((c \<in>(inputs\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref)))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 431:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 432:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 434:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 435:9\<close>
 definition
 	pre_enterEventMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> \<bool>"
 where
@@ -1746,7 +1754,7 @@ where
 		(\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>F\<^sub>M\<^sub>U ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = (STEP))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 435:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 436:10\<close>
 definition
 	post_enterEventMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -1808,9 +1816,9 @@ where
 	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := \<rparr>\<rparr>"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 440:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 441:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 443:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 444:9\<close>
 definition
 	pre_enterStepMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> \<bool>"
 where
@@ -1843,7 +1851,7 @@ where
 		(\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>F\<^sub>M\<^sub>U ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) \<in> {(INIT), (EVENT)})))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 445:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 446:10\<close>
 definition
 	post_enterStepMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -1905,9 +1913,9 @@ where
 	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := \<rparr>\<rparr>"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 449:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 450:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 449:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 450:5\<close>
 definition
 	pre_variablesSynchronized :: "Machine \<Rightarrow> \<bool>"
 where
@@ -1918,7 +1926,7 @@ where
 		 ((inv_Map inv_FMURef  inv_FMURef  (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e M))) ))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 449:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 450:5\<close>
 definition
 	post_variablesSynchronized :: "Machine\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -1945,9 +1953,9 @@ where
 		))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 459:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 460:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 466:16\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 467:16\<close>
 definition
 	pre_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> \<bool>"
 where
@@ -1980,7 +1988,7 @@ where
 		(clocks \<subseteq> ((readyClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<inter> (relevantInputClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 459:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 460:5\<close>
 definition
 	post_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2054,9 +2062,9 @@ where
 		) | clock .  ((clock \<in>clocks))  }))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 473:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 474:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 485:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 486:9\<close>
 definition
 	pre_updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -2151,9 +2159,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 491:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 492:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 504:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 505:9\<close>
 definition
 	pre_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -2200,7 +2208,7 @@ where
 		((\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr> \<in> (relevantOutputClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (clock \<in> { (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) | c .  ((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  \<and> ((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = (inputLF)) }))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 491:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 492:5\<close>
 definition
 	post_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2273,8 +2281,7 @@ where
 	\<comment>\<open>User defined body of queryClock\<close>
 	(
 		let 
-(fmuUpdated::FMU) = (get_cm fmu  clock);
-(val::Value) = (get_cm fmu  clock);
+((fmuUpdated  val)::(FMU\<times> Value)) = (get_cm fmu  clock);
 		
 (fmuref::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
 		in
@@ -2326,9 +2333,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 510:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 511:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 522:17\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 523:17\<close>
 definition
 	pre_setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -2412,9 +2419,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 526:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 527:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 534:14\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 535:14\<close>
 definition
 	pre_setPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> \<bool>"
 where
@@ -2448,7 +2455,7 @@ where
 		(port \<in> (dom (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 526:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 527:5\<close>
 definition
 	post_setPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2527,9 +2534,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 538:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 539:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 546:38\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 547:38\<close>
 definition
 	pre_getPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> \<bool>"
 where
@@ -2563,7 +2570,7 @@ where
 		((the((connections\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) port)) \<notin> (dom (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 538:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 539:5\<close>
 definition
 	post_getPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2623,8 +2630,7 @@ where
 	\<comment>\<open>User defined body of getPort\<close>
 	(
 		let 
-(fmu::FMU) = (get_m (the((fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
-(val::Value) = (get_m (the((fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
+((fmu  val)::(FMU\<times> Value)) = (get_m (the((fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
 		
 (connectedInput::FMURef) = (the((connections\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) port))
 		in
@@ -2658,9 +2664,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 549:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 550:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 561:18\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 562:18\<close>
 definition
 	pre_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef \<Rightarrow> \<bool>"
 where
@@ -2708,7 +2714,7 @@ where
 		(equation \<in> ((activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) - (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 562:19\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 563:19\<close>
 definition
 	post_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2806,9 +2812,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 568:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 569:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 573:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 574:9\<close>
 definition
 	pre_calculateInput :: "Importer\<Rightarrow> FMURef \<Rightarrow> \<bool>"
 where
@@ -2851,7 +2857,7 @@ where
 		)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 568:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 569:5\<close>
 definition
 	post_calculateInput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -2921,9 +2927,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 583:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 584:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 588:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 589:9\<close>
 definition
 	pre_calculateOutput :: "Importer\<Rightarrow> FMURef \<Rightarrow> \<bool>"
 where
@@ -2966,7 +2972,7 @@ where
 		)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 583:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 584:5\<close>
 definition
 	post_calculateOutput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3036,9 +3042,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 597:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 598:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 597:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 598:5\<close>
 definition
 	pre_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet \<Rightarrow> \<bool>"
 where
@@ -3069,7 +3075,7 @@ where
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' inv_Action  algorithm))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 597:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 598:5\<close>
 definition
 	post_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3134,9 +3140,9 @@ where
 		SOME (dummy0::Importer) .(dummy0 \<in> { (runAlgorithm (runAction I  action)  (algorithm - {action})) | action .  ((action \<in>{ a .   ((a \<in>algorithm))  \<and> (activatedAction I  a) }))  }))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 610:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 611:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 617:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 618:9\<close>
 definition
 	pre_initializeData :: "Importer \<Rightarrow> \<bool>"
 where
@@ -3169,7 +3175,7 @@ where
 		(\<forall> fmu \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (INIT)))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 618:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 619:10\<close>
 definition
 	post_initializeData :: "Importer\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3252,9 +3258,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 625:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 626:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 637:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 638:9\<close>
 definition
 	pre_cosimStep :: "Importer \<Rightarrow> \<bool>"
 where
@@ -3296,7 +3302,7 @@ where
 		)"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 640:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 641:9\<close>
 definition
 	post_cosimStep :: "Importer\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3409,20 +3415,16 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 646:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 647:5\<close>
 definition
 	runAction :: "Importer\<Rightarrow> Action \<Rightarrow> Importer"
 where
 	"runAction IA \<equiv> 
 	\<comment>\<open>User defined body of runAction\<close>
-	(\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case A of dummy0 \<Rightarrow> (get = (get\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(getPort I  \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = port\<rparr>))| 
-		dummy0 \<Rightarrow> (set = (set\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(setPort I  \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = port\<rparr>))| 
-		dummy0 \<Rightarrow> (step = (step\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(stepFMU I  fmu))| 
-		dummy0 \<Rightarrow> (setC = (setC\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); clock = (clock\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(setClock I  fmu  clock  (True::\<bool>)))| 
-		dummy0 \<Rightarrow> (getC = (getC\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); clock = (clock\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(queryClock I  fmu  clock)))"
+	(\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 667:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 668:5\<close>
 definition
 	stepFMU :: "Importer\<Rightarrow> FMU \<Rightarrow> Importer"
 where
@@ -3430,9 +3432,7 @@ where
 	\<comment>\<open>User defined body of stepFMU\<close>
 	(
 		let 
-(event::\<bool>) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)));
-(fmuUpdated::FMU) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)));
-(step::VDMReal) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))
+((fmuUpdated  step  event)::(FMU\<times> VDMReal\<times> \<bool>)) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))
 		in
 			(if (
 		( (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
@@ -3464,20 +3464,16 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 680:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 681:5\<close>
 definition
 	activatedAction :: "Importer\<Rightarrow> Action \<Rightarrow> \<bool>"
 where
 	"activatedAction IA \<equiv> 
 	\<comment>\<open>User defined body of activatedAction\<close>
-	(\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>case A of dummy0 \<Rightarrow> (get = (get\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(preGetI I  fmu  port))| 
-		dummy0 \<Rightarrow> (set = (set\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(preSetI I  fmu  port))| 
-		dummy0 \<Rightarrow> (step = (step\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); port = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(preStepI I  fmu))| 
-		dummy0 \<Rightarrow> (setC = (setC\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); clock = (clock\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(preSetCI I  fmu  clock))| 
-		dummy0 \<Rightarrow> (getC = (getC\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); fmu = (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0); clock = (clock\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)(preGetCI I  fmu  clock)))"
+	(\<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. tuples, datatypes, etc.). VDMSL `cases` is richer, hence som errors might occur.\<close>)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 693:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 694:5\<close>
 definition
 	preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -3495,7 +3491,7 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 701:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 702:5\<close>
 definition
 	preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -3513,7 +3509,7 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 709:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 710:5\<close>
 definition
 	preStepI :: "Importer\<Rightarrow> FMU \<Rightarrow> \<bool>"
 where
@@ -3522,7 +3518,7 @@ where
 	(preStepT fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 713:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 714:5\<close>
 definition
 	preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -3540,7 +3536,7 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 721:5\<close>
 definition
 	preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> \<bool>"
 where
@@ -3567,9 +3563,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 734:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 735:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 740:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 741:9\<close>
 definition
 	pre_feedthroughSatisfied :: "FMU\<Rightarrow> Variable \<Rightarrow> \<bool>"
 where
@@ -3610,9 +3606,9 @@ where
 	(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) \<in> (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (outputLF))) \<and> ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = (reactive)) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) \<ge> (time\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> (((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = (delayed)) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) = (time\<^sub>F\<^sub>M\<^sub>U (fmu)))))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 746:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:1\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 746:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:1\<close>
 definition
 	pre_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet \<Rightarrow> \<bool>"
 where
@@ -3643,7 +3639,7 @@ where
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) intervalSet))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 746:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:1\<close>
 definition
 	post_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3744,9 +3740,9 @@ where
 		) | name .  ((name \<in>fmus))  }))))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 762:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 763:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 766:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 767:9\<close>
 definition
 	pre_createSchedule :: "Importer \<Rightarrow> \<bool>"
 where
@@ -3779,7 +3775,7 @@ where
 		(\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = (INIT)) \<and> ((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 770:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 771:9\<close>
 definition
 	post_createSchedule :: "Importer\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3859,9 +3855,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 781:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 782:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 796:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 797:9\<close>
 definition
 	pre_initialization :: "Importer \<Rightarrow> \<bool>"
 where
@@ -3894,7 +3890,7 @@ where
 		(\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = (INIT)) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 798:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 799:10\<close>
 definition
 	post_initialization :: "Importer\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -3974,9 +3970,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 805:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 806:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 805:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 806:5\<close>
 definition
 	pre_tickingClocks :: "Importer \<Rightarrow> \<bool>"
 where
@@ -4007,7 +4003,7 @@ where
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) ))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 805:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 806:5\<close>
 definition
 	post_tickingClocks :: "Importer\<Rightarrow> (Importer\<times> FMURef VDMSet) \<Rightarrow> \<bool>"
 where
@@ -4088,9 +4084,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 818:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 819:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 818:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 819:5\<close>
 definition
 	pre_stepnegotiation :: "Importer \<Rightarrow> \<bool>"
 where
@@ -4121,7 +4117,7 @@ where
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r M))) ))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 822:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 823:9\<close>
 definition
 	post_stepnegotiation :: "Importer\<Rightarrow> VDMReal \<Rightarrow> \<bool>"
 where
@@ -4161,9 +4157,9 @@ where
 	undefined"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 827:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 828:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 851:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 852:9\<close>
 definition
 	pre_cosimulationStep :: "Importer \<Rightarrow> \<bool>"
 where
@@ -4196,7 +4192,7 @@ where
 		(\<forall> m' \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = (STEP)) \<and> ((variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 854:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 855:10\<close>
 definition
 	post_cosimulationStep :: "Importer\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -4257,8 +4253,7 @@ where
 	\<comment>\<open>User defined body of cosimulationStep\<close>
 	(
 		let 
-(I1::Importer) = (tickingClocks I);
-(clocksToTick::FMURef VDMSet) = (tickingClocks I)
+((I1  clocksToTick)::(Importer\<times> FMURef VDMSet)) = (tickingClocks I)
 		in
 			(if (
 		( (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst (I1  clocksToTick)))))) \<and>
@@ -4337,7 +4332,7 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 859:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 860:5\<close>
 definition
 	fmusSynchronized :: "Machine \<Rightarrow> \<bool>"
 where
@@ -4346,9 +4341,9 @@ where
 	((vdm_card { (time\<^sub>F\<^sub>M\<^sub>U (fmu)) | fmu .  ((fmu \<in>(rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  }) = (1::VDMNat1))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 868:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 869:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 877:48\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 878:48\<close>
 definition
 	pre_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> \<bool>"
 where
@@ -4361,7 +4356,7 @@ where
 		((relevantFMUs \<inter> notRelevantFMUs) = {})"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 879:13\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 880:13\<close>
 definition
 	post_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> Name VDMSet \<Rightarrow> \<bool>"
 where
@@ -4394,7 +4389,7 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 888:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 889:1\<close>
 definition
 	solveSystemOfEquations :: "Importer \<Rightarrow> Importer"
 where
@@ -4431,9 +4426,9 @@ where
 		)))"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 906:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 907:1\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 931:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 932:9\<close>
 definition
 	pre_eventIteration :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> \<bool>"
 where
@@ -4466,7 +4461,7 @@ where
 		((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (EVENT))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 932:10\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 933:10\<close>
 definition
 	post_eventIteration :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -4546,9 +4541,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 941:5\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 942:5\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 971:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 972:9\<close>
 definition
 	pre_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> \<bool>"
 where
@@ -4581,7 +4576,7 @@ where
 		((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = (STEP)) \<and> (((fmusWithEvent\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<noteq> {}) \<or> (clocks \<noteq> {})))))"
 
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 974:9\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 975:9\<close>
 definition
 	post_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> \<bool>"
 where
@@ -4683,9 +4678,9 @@ where
 		)"
 
 	
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 978:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 979:1\<close>
 
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 997:1\<close>
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 998:1\<close>
 definition
 	pre_calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> \<bool>"
 where

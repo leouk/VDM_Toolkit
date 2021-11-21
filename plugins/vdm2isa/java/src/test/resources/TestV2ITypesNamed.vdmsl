@@ -1,4 +1,4 @@
-module TestV2INamedTypes
+module TestV2ITypesNamed
 --avoid TRRenamedDefinition for now! 
 --imports from VDMToolkit 
 --	functions seq_prefix renamed seq_prefix;
@@ -57,4 +57,4 @@ values
 	v: TFcn = (lambda x: nat1 & (x * x) + 10)
 	;
 	*/
-end TestV2INamedTypes
+end TestV2ITypesNamed

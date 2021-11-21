@@ -1,4 +1,4 @@
-module TestV2IRecords
+module TestV2ITypesRecords
 exports all
 definitions
 
@@ -38,4 +38,4 @@ types
 	inv r == r.x > 30
 	;
 	
-end TestV2IRecords
+end TestV2ITypesRecords

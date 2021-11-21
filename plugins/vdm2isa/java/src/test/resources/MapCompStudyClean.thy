@@ -140,12 +140,6 @@ definition
   where
   "rngid \<equiv> (\<lambda> d . id)"
 
-lemma domidI[simp]: "domid d r = d"
-  by (simp add: domid_def)
-
-lemma rngidI[simp]: "rngid d r = r"
-  by (simp add: rngid_def)
-
 text \<open>Constant function to be used for the rng expression function for the case they are constants.\<close>
 definition
   rngcnst :: "'b \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'b"
@@ -156,6 +150,12 @@ definition
   truecnst :: "'a \<Rightarrow> 'b \<Rightarrow> \<bool>"
   where
   "truecnst \<equiv> (\<lambda> d . inv_True)"
+
+lemma domidI[simp]: "domid d r = d"
+  by (simp add: domid_def)
+
+lemma rngidI[simp]: "rngid d r = r"
+  by (simp add: rngid_def)
 
 lemma rngcnstI[simp]: "rngcnst v d r = v"
   by (simp add: rngcnst_def)
