@@ -28,6 +28,13 @@ public class TRNamedType extends TRInvariantType
         this.atTLD = false;
     }
 
+    public TRNamedType copy()
+    {
+        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type, getInvDef(), getEqDef(), getOrdDef());
+        result.atTLD = atTLD;
+        return result;
+    }
+
     @Override
     protected void setup()
     {
@@ -103,7 +110,8 @@ public class TRNamedType extends TRInvariantType
         StringBuilder sb = new StringBuilder();
         if (atTopLevelDefinition() || ultimateType() instanceof TRRecordType)
             sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + type.getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
-        else if (type instanceof TRNamedType) 
+        else if (//atTopLevelDefinition() || 
+                 type instanceof TRNamedType) 
             sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
         else
             sb.append(type.invTranslate(varName));
