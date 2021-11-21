@@ -47,7 +47,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			Arrays.asList(TRSpecificationKind.PRE, 
 						TRSpecificationKind.POST, 
 						TRSpecificationKind.INV, 
-						TRSpecificationKind.EQ));
+						TRSpecificationKind.EQ,
+						TRSpecificationKind.ORD,
+						TRSpecificationKind.MIN,
+						TRSpecificationKind.MAX));
 
 	//private final TCNameToken name;
 	private final TCNameList typeParams;
@@ -481,11 +484,24 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// if not curried flat list and translate
 			List<String> varNames = parameters.flatVarNameTranslate();
 
+			if (kind.equals(TRSpecificationKind.MIN) || kind.equals(TRSpecificationKind.MAX))
+			{
+				paramsStr.append(IsaToken.LPAREN.toString());
+				paramsStr.append(IsaToken.IF.toString());
+				paramsStr.append(IsaToken.SPACE.toString());
+			}
+
 			// for TRNamedType for records, we need to adjust the inner call to the inv_R of original record,
 			// rather than explicitly redefining inv_R! Fix type.parameters in TRTypeDEfinition.
 			paramsStr.append(type.parameters.invTranslate(varNames));
 
-			if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+			if (kind.equals(TRSpecificationKind.MIN) || kind.equals(TRSpecificationKind.MAX))
+			{
+				paramsStr.append(IsaToken.SPACE.toString());
+				paramsStr.append(IsaToken.THEN.toString());
+				paramsStr.append(getFormattingSeparator()+"\t");
+			}
+			else if (kind.equals(TRSpecificationKind.POST) && Vdm2isaPlugin.linientPost)
 			{
 				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
 				assert name.getName().startsWith("post_");
@@ -552,7 +568,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// 	"\n\t" + toString());
 
 			// if there is a user defined body, add the missing conjunction for it, so long as not pre of constant function! 
-			if (!isConstantFunction() && !isImplicitlyGeneratedUndeclaredSpecification())
+			if (!isConstantFunction() && !isImplicitlyGeneratedUndeclaredSpecification() &&
+				!kind.equals(TRSpecificationKind.MIN) && !kind.equals(TRSpecificationKind.MAX))
 			{
 				// " \<and>"
 				fcnBody.append(type.parameters.getFormattingSeparator());
@@ -622,6 +639,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 			case MAX:
 			case MIN:
+				fcnBody.append(translateImplicitChecks(implicitSpecificationKind));
+				break;
 			case MEASURE:
 				// no implicit checks, given these return non-boolean results!
 				break;
@@ -656,7 +675,38 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				fcnBody.append(IsaToken.RPAREN.toString());
 			}
 		}
-		
+
+		switch (implicitSpecificationKind)
+		{
+			// ready; do nothing else
+			case NONE:
+				break;
+
+			// include implicit function parameters invariant checks
+			case PRE:
+			case POST:
+			case INV:
+			case EQ:
+			case ORD:
+				break;
+
+			case MAX:
+			case MIN:
+				// add the "rest" of the implicit check
+				fcnBody.append(getFormattingSeparator()+"\t");
+				fcnBody.append(IsaToken.ELSE.toString());
+				fcnBody.append(getFormattingSeparator()+"\t");
+				fcnBody.append(IsaToken.UNDEFINED.toString());
+				fcnBody.append(IsaToken.RPAREN.toString());
+				break;
+
+			case MEASURE:
+				// no implicit checks, given these return non-boolean results!
+				break;
+			case INIT:
+				break;			
+		}
+
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 
