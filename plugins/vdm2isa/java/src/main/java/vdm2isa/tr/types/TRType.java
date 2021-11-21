@@ -88,15 +88,20 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	}
 
 	public boolean isNumericType() {
+		TRType utype = ultimateType();
         return getVDMType().isNumeric(location)
-			   || ultimateType().isNumericType();
+			   || 
+			   ((utype instanceof TRBasicType) &&
+			   	utype.isNumericType()) ;
     }
 
 	public boolean isOrdered()
 	{
+		TRType utype = ultimateType();
 		return getVDMType().isOrdered(location) ||
-			   ultimateType().isOrdered();
-	}
+				((utype instanceof TRBasicType) &&
+				utype.isNumericType()) ;
+}
 
 	public boolean isDataType()
 	{
