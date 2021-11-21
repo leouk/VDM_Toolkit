@@ -106,7 +106,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
                 getFormattingSeparator() + " This can be a problem if the target type of " + 
                 IsaToken.antiquotation(IsaToken.ISAR_TERM, bindings.getRHS().translate()) + 
                 getFormattingSeparator() + " has a VDM ord_ predicate.";
-            sb.append(getFormattingSeparator());
+            sb.append("\n\t");//getFormattingSeparator());
             sb.append(IsaToken.comment(setbindProblem, getFormattingSeparator()));
             warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, bindStr);
         }
