@@ -83,8 +83,10 @@ public class TRCasesExpression extends TRExpression {
         }
         else
         {
-            warning(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION);
-            sb.append(IsaToken.comment(IsaWarningMessage.ISA_CASES_PATTERN_LIMITATION.message));
+            String typeStr = eType.translate();
+            report(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P, typeStr);
+            sb.append(getFormattingSeparator());
+            sb.append(IsaToken.comment(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P.format(typeStr)));
         }        
         return IsaToken.parenthesise(sb.toString());
     }
