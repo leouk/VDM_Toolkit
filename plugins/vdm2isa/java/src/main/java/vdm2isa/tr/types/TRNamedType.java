@@ -71,8 +71,12 @@ public class TRNamedType extends TRInvariantType
     public TRType ultimateType()
     {
         TRType result = type;
-        if (result instanceof TRNamedType)
-            result = ((TRNamedType)result).ultimateType();
+        while (result instanceof TRNamedType)
+        {
+            result = ((TRNamedType)result).type;
+        }
+        // if (result instanceof TRNamedType)
+        //     result = ((TRNamedType)result).ultimateType();
         return result;
     }
 
