@@ -90,10 +90,12 @@ public class TRUnionType extends TRType implements TRDataType {
 		if (varName != null)
 		{
 			List<String> varNames = new Vector<String>(types.size());
-			for(int i = 0; i < types.size(); i ++)
-			{
-				varNames.add(varName + String.valueOf(i));
-			}
+			// for(int i = 0; i < types.size(); i ++)
+			// {
+			// 	varNames.add(varName + String.valueOf(i));
+			// }
+			//TODO not sure whether the above is needed; for quotes it isn't
+			varNames.add(varName);
 			sb.append(types.invTranslate(varNames));
 		}
 		else

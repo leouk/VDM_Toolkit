@@ -765,8 +765,14 @@ lemma l_inv_SeqElems_empty[simp]: "inv_SeqElems f []"
 lemma l_inv_SeqElems_Cons: "(inv_SeqElems f (a#s)) = (f a \<and> (inv_SeqElems f s))"
 unfolding inv_SeqElems_def elems_def by auto
 
+lemma l_inv_SeqElems_Cons': "f a \<Longrightarrow> inv_SeqElems f s \<Longrightarrow> inv_SeqElems f (a#s)"
+  by (simp add: l_inv_SeqElems_Cons)
+
 lemma l_inv_SeqElems_append: "(inv_SeqElems f (xs @ [x])) = (f x \<and> (inv_SeqElems f xs))"
 unfolding inv_SeqElems_def elems_def by auto
+
+lemma l_inv_SeqElems_append': "f x \<Longrightarrow> inv_SeqElems f xs \<Longrightarrow> inv_SeqElems f (xs @ [x])"
+  by (simp add: l_inv_SeqElems_append)
 
 lemma l_invSeqElems_inv_True_True[simp]: "inv_SeqElems inv_True r" 
   by (simp add: inv_SeqElems_def rev_induct)    
@@ -2032,4 +2038,5 @@ lemma l_invMap_di_absorb:
   "inv_Map di ri m \<Longrightarrow> inv_Map inv_True ri m"
   by (simp add: inv_Map_def)
 
+find_theorems "inv_SeqElems _ _"
 (*<*)end(*>*)
