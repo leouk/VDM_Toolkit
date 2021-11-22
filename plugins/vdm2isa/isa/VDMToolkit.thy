@@ -1093,144 +1093,131 @@ definition
   where
   "f \<circ>m g \<equiv> (\<lambda> x . if x \<in> dom g then f (the (g x)) else None)"
 
-subsection \<open> Set translations: enumeration, comprehension, ranges \<close>
-  
-(* { expr | var . filter }, { var \<in> type . filter }, { var . filter } *)
-value "{ x+x | x . x \<in> {(1::nat),2,3,4,5,6} }"
-value "{ x+x | x . x \<in> {(1::nat),2,3} }"
-(*value "{ x+x | x . x \<in> {(1::nat)..3} }" --"not always work"*)
+(*****************************************************************)      
+subsection \<open>Map comprehension\<close>
 
-value "{0..(2::int)}"  
-value "{0..<(3::int)}"  
-value "{0<..<(3::int)}"  
+text \<open>Isabelle maps are similar to VDMs, but with some significant differences worth observing. 
+ 
+      If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
+      might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
+      so that @{lemma "[1::nat \<mapsto> 2, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
 
-subsection \<open> Seq translations: enumeration, comprehension, ranges \<close>
-  
-value "{ [A,B,C] ! i | i . i \<in> {0,1,2} }"
-value "{ [A,B,C,D,E,F] ! i | i . i \<in> {0,2,4} }"
-(* { s(i) | i in set inds s & i mod 2 = 0 } *)
+      In various VDMToolkit definitions, we default to @{term undefined} in case where the situation is out of hand,
+      hence, proofs will fail, and users will know that @{term undefined} being reached means some earlier problem has
+      occurred.  
+    \<close>
 
-(* List application (i.e. s(x)) is available in Isabelle, but is zero based *)
-value "[A, B, C] ! 0"
-value "[A, B, C] ! 1"
-value "[A, B, C] ! 2"
-value "[A, B, C] ! 3"
-value "nth [A, B, C] 0"
+text \<open>Type bound map comprehension cannot filter for type invariants, hence won't have @{term undefined} results.
+      This corresponds to the VDMSL expression
+      %
+      \begin{vdmssl}
+        { domexpr(d) |-> rngexpr(d, r) | d:S, r: T & P(d, r) }
+      \end{vdmsl}
+      % 
+      where the maplet expression can be just variables or functions over the domain/range input(s). 
 
-value "applyList [A, B] 0" \<comment> \<open>out of range\<close>
-value "applyList [A, B] 1"
-value "applyList [A, B] 2"
-value "applyList [A, B] 3" \<comment> \<open>out of range\<close>
+      VDM also issues a proof obligation for type bound maps (i.e. avoid it please!) to ensure the resulting map is finite.
+      Concretely, the example below generates the corresponding proof obligation:
+      %
+      \begin{vdmsl}
+      	ex: () -> map nat to nat
+	      ex() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
 
-value "[A,B,C,D] $ 0"  
-lemma "[A,B,C] $ 4 = A" unfolding applyVDMSeq_defs apply simp oops
-lemma "[A,B,C] $ 1 = A" unfolding applyVDMSeq_defs apply simp done   
+        exists finmap1: map nat to (map (nat1) to (nat1)) & 
+            forall x:nat, y in set {4, 5, 6} & (x < 10) => 
+              exists findex2 in set dom finmap1 & 
+                finmap1(findex2) = {(x + y) |-> 10}
+      \end{vdmsl}
+     \<close>
+definition 
+  mapCompTypeBound :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "mapCompTypeBound inv_S inv_T domexpr rngexpr pred \<equiv> 
+        (\<lambda> dummy::'a . 
+            if (\<exists> d r . inv_S d \<and> inv_T r \<and> dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
+                Some (THE r . inv_T r \<and> (\<exists> d . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r)) 
+              else 
+                None
+        )"
 
-value "[a] $ (len [(a::nat)])"
-value "[A, B] $ 0" \<comment> \<open>out of range\<close>
-value "[A,B]$1"
-value "[A, B]$ 1"
-value "[A, B]$ 2"
-value "[A, B]$ 3" \<comment>  \<open>out of range\<close>
+value "[1::nat \<mapsto> 2::nat, 3 \<mapsto> 3] 10"
+text \<open>Set bound map comprehension can filter bound set for their elements invariants.
+      This corresponds to the VDMSL expression
+      %
+      \begin{vdmssl}
+        { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) }
+        domexpr: S * T -> S
+        rngexpr: S * T -> T
+        pred   : S * T -> bool 
+      \end{vdmsl}
+      % 
+      If the types of domexpr or rngexpr are different from S or T then this will not work! 
+      %
+      If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
+      might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
+      so that @{lemma "[1::nat \<mapsto> 2::nat, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
+     \<close>
+definition 
+  mapCompSetBound :: "'a set \<Rightarrow> 'b set \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
+  where
+  "mapCompSetBound S T inv_S inv_T domexpr rngexpr pred \<equiv> 
+        (\<lambda> dummy::'a . 
+            \<comment> \<open>In fact you have to check the inv_Type of domexpr and rngexpr!!!\<close>
+            if inv_VDMSet' inv_S S \<and> inv_VDMSet' inv_T T then
+              if (\<exists> r \<in> T . \<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
+                Some (THE r . r \<in> T \<and> inv_T r \<and> (\<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r)) 
+              else 
+                \<comment> \<open>This is for map application outside its domain error, VDMJ 4061 \<close>
+                None
+            else
+              \<comment> \<open>This is for type invariant violation errors, VDMJ ???? @NB?\<close>
+              undefined
+        )"
 
-(* List comprehension *)
-value "{ [A,B,C] ! i | i . i \<in> {0,1,2} }"
-value "[ x . x \<leftarrow> [0,1,(2::int)] ]" (*avoid if possible... *)
-value "[ x . x \<leftarrow> [0 .. 3] ]"
+text \<open>Identity functions to be used for the dom/rng expression functions for the case they are variables.\<close>
+definition 
+  domid :: "'a \<Rightarrow> 'b \<Rightarrow> 'a"
+  where
+  "domid \<equiv> (\<lambda> d . (\<lambda> r . d))"
 
-value "len [A, B, C]"
-value "elems [A, B, C, A, B]"
-value "elems [(0::nat), 1, 2]"
-value "inds [A,B,C]"
-value "inds_as_nat [A,B,C]"
-value "card (elems [10, 20, 30, 1, 2, 3, 4, (5::nat), 10])"
-value "len [10, 20, 30, 1, 2, 3, 4, (5::nat), 10]"
-  
-(* MySeq = seq of nat1
-   inv s == len s \<le> 9 and card(elem s) = len s and (forall i in set elems s . i \<le> 9)*)
-type_synonym MySeq = "VDMNat1 list"
 definition
-   inv_MySeq :: "MySeq \<Rightarrow> \<bool>"
-where
-   "inv_MySeq s \<equiv> (inv_SeqElems inv_VDMNat1 s) \<and> 
-                  len s \<le> 9 \<and> int (card (elems s)) = len s \<and>
-                  (\<forall> i \<in> elems s . i > 0 \<and> i \<le> 9)"
+  rngid :: "'a \<Rightarrow> 'b \<Rightarrow> 'b"
+  where
+  "rngid \<equiv> (\<lambda> d . id)"
 
-value "inv_MySeq [1, 2, 3]"
+text \<open>Constant function to be used for the rng expression function for the case they are constants.\<close>
+definition
+  rngcnst :: "'b \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'b"
+  where
+  "rngcnst v \<equiv> (\<lambda> d . (\<lambda> r . v))"
 
-(*
-type_synonym ('a,'b) "map" = "'a \<Rightarrow> 'b option" (infixr "~=>" 0)
-*)
-text \<open>
-   In Isabelle, VDM maps can be declared by the @{text "\<rightharpoonup>"} operator (not @{text "\<Rightarrow>"}) 
-   (i.e. type 'right' and you will see the arrow on dropdown menu).
+definition
+  truecnst :: "'a \<Rightarrow> 'b \<Rightarrow> \<bool>"
+  where
+  "truecnst \<equiv> (\<lambda> d . inv_True)"
 
-   It represents a function to an optional result as follows:
+lemma domidI[simp]: "domid d r = d"
+  by (simp add: domid_def)
 
-   VDM     : map X to Y
-   Isabelle: @{text "X \<rightharpoonup> Y"}
+lemma rngidI[simp]: "rngid d r = r"
+  by (simp add: rngid_def)
 
-   which is the same as 
+lemma rngcnstI[simp]: "rngcnst v d r = v"
+  by (simp add: rngcnst_def)
 
-   Isabelle: @{text "X \<Rightarrow> Y option"}
-   
-   where an optional type is like using nil in VDM (map X to [Y]).
-   That is, Isabele makes the map total by mapping everything outside
-   the domain to None (or nil). In Isabelle
+lemmas maplet_defs = domid_def rngid_def rngcnst_def id_def truecnst_def inv_True_def
+lemmas mapCompSetBound_defs = mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def maplet_defs rng_defs
+lemmas mapCompTypeBound_defs = mapCompTypeBound_def maplet_defs rng_defs
 
-   @{text "datatype 'a option = None | Some 'a"}
-\<close>
+(*========================================================================*)
+section \<open> Lambda types \<close>
+(*========================================================================*)
 
-text \<open> VDM maps auxiliary functions \<close>
-
-(* dom exists already *)
-thm dom_def
-find_theorems "dom _"
-
-subsection \<open> Map translations: enumeration, comprehension \<close>
-
-(* map values are given as *)
-value "[ (0::nat) \<mapsto> (7::nat), 1  \<mapsto> 5 ]"
-value "[ (0::int) \<mapsto> (1::int), 1  \<mapsto> 5 ] 0"
-value "the ([ (0::int) \<mapsto> (1::int), 1  \<mapsto> 5 ] 0)"
-
-value "the (Some b)"
-value "Map.empty(A \<mapsto> 0)"
-value "Map.empty(A := Some 0)"
-value "[A \<mapsto> 0]"
-value "[A \<mapsto> 0, B \<mapsto> 1]"
-
-(*
-value "the None"
-value "Map.empty"
-value "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] (4::int)) + (3::int)"
-value "the ([ (0::nat) \<mapsto> (0::nat), 1  \<mapsto> 5 ] (4::nat))"
-*)
-lemma "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] (4::int)) + (3::int) = A" apply simp oops
-lemma "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] 2) + 3 = 4" by simp
-
-find_theorems "the _"
-
-text \<open> Not always it's possible to see their values as  
-   maps encodings are more complex. You could use
-   Isabelle prover as a debugger
- \<close>
-
-lemma "dom [ A \<mapsto> 0, B \<mapsto> 1] = LOOK_HERE" apply simp oops
-
-value "Map.empty(A \<mapsto> 0)"
-value "Map.empty(A := Some 0)"
-value "[A \<mapsto> 0]"
-value "[A \<mapsto> 0, B \<mapsto> 1]"
-  
-lemma "dom [ A \<mapsto> 0, B \<mapsto> 1] = LOOK_HERE" apply simp oops
-lemma "ran [ A \<mapsto> (0::nat), B \<mapsto> 1] = {0,1}" apply simp oops
-
-(* rng also exists as ran *)
-thm ran_def
-find_theorems "ran _"
-
-lemma "ran [ A \<mapsto> (0::nat), B \<mapsto> 1] = {0,1}" apply simp oops
+text \<open>Lambda definitions entail an implicit satisfiability proof obligation check\<close>
+definition 
+  inv_Lambda :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> \<bool>"
+  where
+  "inv_Lambda inv_Dom inv_Ran l \<equiv> (\<forall> d . inv_Dom d \<longrightarrow> inv_Ran (l d))"
 
 (*========================================================================*)
 section \<open> Set operators lemmas \<close>
@@ -2038,5 +2025,400 @@ lemma l_invMap_di_absorb:
   "inv_Map di ri m \<Longrightarrow> inv_Map inv_True ri m"
   by (simp add: inv_Map_def)
 
-find_theorems "inv_SeqElems _ _"
+section \<open>To tidy up or remove\<close>
+
+subsection \<open> Set translations: enumeration, comprehension, ranges \<close>
+  
+(* { expr | var . filter }, { var \<in> type . filter }, { var . filter } *)
+value "{ x+x | x . x \<in> {(1::nat),2,3,4,5,6} }"
+value "{ x+x | x . x \<in> {(1::nat),2,3} }"
+(*value "{ x+x | x . x \<in> {(1::nat)..3} }" --"not always work"*)
+
+value "{0..(2::int)}"  
+value "{0..<(3::int)}"  
+value "{0<..<(3::int)}"  
+
+subsection \<open> Seq translations: enumeration, comprehension, ranges \<close>
+  
+value "{ [A,B,C] ! i | i . i \<in> {0,1,2} }"
+value "{ [A,B,C,D,E,F] ! i | i . i \<in> {0,2,4} }"
+(* { s(i) | i in set inds s & i mod 2 = 0 } *)
+
+(* List application (i.e. s(x)) is available in Isabelle, but is zero based *)
+value "[A, B, C] ! 0"
+value "[A, B, C] ! 1"
+value "[A, B, C] ! 2"
+value "[A, B, C] ! 3"
+value "nth [A, B, C] 0"
+
+value "applyList [A, B] 0" \<comment> \<open>out of range\<close>
+value "applyList [A, B] 1"
+value "applyList [A, B] 2"
+value "applyList [A, B] 3" \<comment> \<open>out of range\<close>
+
+value "[A,B,C,D] $ 0"  
+lemma "[A,B,C] $ 4 = A" unfolding applyVDMSeq_defs apply simp oops
+lemma "[A,B,C] $ 1 = A" unfolding applyVDMSeq_defs apply simp done   
+
+value "[a] $ (len [(a::nat)])"
+value "[A, B] $ 0" \<comment> \<open>out of range\<close>
+value "[A,B]$1"
+value "[A, B]$ 1"
+value "[A, B]$ 2"
+value "[A, B]$ 3" \<comment>  \<open>out of range\<close>
+
+(* List comprehension *)
+value "{ [A,B,C] ! i | i . i \<in> {0,1,2} }"
+value "[ x . x \<leftarrow> [0,1,(2::int)] ]" (*avoid if possible... *)
+value "[ x . x \<leftarrow> [0 .. 3] ]"
+
+value "len [A, B, C]"
+value "elems [A, B, C, A, B]"
+value "elems [(0::nat), 1, 2]"
+value "inds [A,B,C]"
+value "inds_as_nat [A,B,C]"
+value "card (elems [10, 20, 30, 1, 2, 3, 4, (5::nat), 10])"
+value "len [10, 20, 30, 1, 2, 3, 4, (5::nat), 10]"
+  
+(* MySeq = seq of nat1
+   inv s == len s \<le> 9 and card(elem s) = len s and (forall i in set elems s . i \<le> 9)*)
+type_synonym MySeq = "VDMNat1 list"
+definition
+   inv_MySeq :: "MySeq \<Rightarrow> \<bool>"
+where
+   "inv_MySeq s \<equiv> (inv_SeqElems inv_VDMNat1 s) \<and> 
+                  len s \<le> 9 \<and> int (card (elems s)) = len s \<and>
+                  (\<forall> i \<in> elems s . i > 0 \<and> i \<le> 9)"
+
+value "inv_MySeq [1, 2, 3]"
+
+(*
+type_synonym ('a,'b) "map" = "'a \<Rightarrow> 'b option" (infixr "~=>" 0)
+*)
+text \<open>
+   In Isabelle, VDM maps can be declared by the @{text "\<rightharpoonup>"} operator (not @{text "\<Rightarrow>"}) 
+   (i.e. type 'right' and you will see the arrow on dropdown menu).
+
+   It represents a function to an optional result as follows:
+
+   VDM     : map X to Y
+   Isabelle: @{text "X \<rightharpoonup> Y"}
+
+   which is the same as 
+
+   Isabelle: @{text "X \<Rightarrow> Y option"}
+   
+   where an optional type is like using nil in VDM (map X to [Y]).
+   That is, Isabele makes the map total by mapping everything outside
+   the domain to None (or nil). In Isabelle
+
+   @{text "datatype 'a option = None | Some 'a"}
+\<close>
+
+text \<open> VDM maps auxiliary functions \<close>
+
+(* dom exists already *)
+thm dom_def
+find_theorems "dom _"
+
+subsection \<open> Map translations: enumeration, comprehension \<close>
+
+(* map values are given as *)
+value "[ (0::nat) \<mapsto> (7::nat), 1  \<mapsto> 5 ]"
+value "[ (0::int) \<mapsto> (1::int), 1  \<mapsto> 5 ] 0"
+value "the ([ (0::int) \<mapsto> (1::int), 1  \<mapsto> 5 ] 0)"
+
+value "the (Some b)"
+value "Map.empty(A \<mapsto> 0)"
+value "Map.empty(A := Some 0)"
+value "[A \<mapsto> 0]"
+value "[A \<mapsto> 0, B \<mapsto> 1]"
+
+(*
+value "the None"
+value "Map.empty"
+value "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] (4::int)) + (3::int)"
+value "the ([ (0::nat) \<mapsto> (0::nat), 1  \<mapsto> 5 ] (4::nat))"
+*)
+lemma "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] (4::int)) + (3::int) = A" apply simp oops
+lemma "the ([ (1::int) \<mapsto> (1::int), 2  \<mapsto> 1, 3 \<mapsto> 2 ] 2) + 3 = 4" by simp
+
+find_theorems "the _"
+
+text \<open> Not always it's possible to see their values as  
+   maps encodings are more complex. You could use
+   Isabelle prover as a debugger
+ \<close>
+
+lemma "dom [ A \<mapsto> 0, B \<mapsto> 1] = LOOK_HERE" apply simp oops
+
+value "Map.empty(A \<mapsto> 0)"
+value "Map.empty(A := Some 0)"
+value "[A \<mapsto> 0]"
+value "[A \<mapsto> 0, B \<mapsto> 1]"
+  
+lemma "dom [ A \<mapsto> 0, B \<mapsto> 1] = LOOK_HERE" apply simp oops
+lemma "ran [ A \<mapsto> (0::nat), B \<mapsto> 1] = {0,1}" apply simp oops
+
+(* rng also exists as ran *)
+thm ran_def
+find_theorems "ran _"
+
+lemma "ran [ A \<mapsto> (0::nat), B \<mapsto> 1] = {0,1}" apply simp oops
+
+subsection \<open>Map comprehension examples, pitfalls and proof scenarios\<close>
+
+(*On the explicit (narrower/declared) type, add inv_VDMNat1 
+  v98: map nat to nat1 = { d \<mapsto> r | d in set {1,2,3}, r in set {2,4,6} & r = d*2 } *)
+definition
+  ex1 :: "VDMNat \<rightharpoonup> VDMNat1"
+  where
+  "ex1 \<equiv> mapCompSetBound {1,2,3::VDMNat} {2,4,6::VDMNat} inv_VDMNat inv_VDMNat1 domid rngid (\<lambda> d r . r = d*2)"
+
+lemmas ex1_defs = ex1_def mapCompSetBound_defs inv_VDMNat1_def inv_VDMNat_def 
+
+lemma ex1_none: "x \<notin> dom ex1  \<Longrightarrow> ex1 x = None"
+  by (simp add: domIff)
+
+lemma ex1_dom: "dom ex1 = {1,2,3}"
+  unfolding dom_def ex1_defs
+  by (simp split:if_splits, safe)
+
+lemma ex1_rng:"rng ex1 = {2,4,6}"
+  unfolding rng_defs ex1_defs
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all)
+  (* apply (elim exE conjE impE)*) (* this will be fiddly! *)
+  apply (elim exE conjE disjE, simp_all)
+     apply (fastforce, fastforce, fastforce)
+  by (smt (z3) semiring_norm(83) the_equality verit_eq_simplify(14) zero_le_numeral)
+
+(*@TODO add invariant failure to undefined tests! *)
+
+
+lemma ex1_map: "x \<in> dom ex1 \<Longrightarrow> ex1 x = Some (2*x)"
+  unfolding ex1_defs
+  apply (simp split:if_splits, safe, force+) 
+  thm option.discI
+  by (metis option.discI)
+
+(*On the implicit (wider/presumed) type, add inv_VDMNat; these funny binds are tricky!
+  v98 = { x+y |-> 10 | x in set {1,2,3}, y in set {4,5,6} } *)
+definition
+  ex2 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex2 \<equiv> mapCompSetBound {1,2,3::VDMNat} {4,5,6::VDMNat} inv_VDMNat inv_VDMNat (\<lambda> x . (\<lambda> y . x+y)) (rngcnst 10) truecnst"
+
+lemmas ex2_defs = ex2_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex2_none: "x \<notin> dom ex2  \<Longrightarrow> ex2 x = None"
+  by (simp add: domIff)
+
+lemma ex2_dom: "dom ex2 = {5,6,7,8,9}"
+  unfolding ex2_defs
+  apply (simp split:if_splits)
+  oops
+
+definition
+  ex2' :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex2' \<equiv> mapCompSetBound { x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} } {10::VDMNat} 
+                inv_VDMNat inv_VDMNat domid (rngcnst 10) truecnst"
+
+lemmas ex2'_defs = ex2'_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex2'_none: "x \<notin> dom ex2'  \<Longrightarrow> ex2' x = None"
+  unfolding ex2'_defs
+  by (simp add: domIff)
+
+lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
+  unfolding ex2'_defs
+  apply (simp split:if_splits, safe) oops
+
+lemma ex2'_dom_finite: "finite { x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} }"
+  by (simp add: finite_image_set2) 
+
+lemma ex2'_dom_clearer: "{ x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} } = {5..9::VDMNat}"
+  apply (safe, simp_all) 
+  by presburger
+
+lemma ex2'_dom_inv: "inv_SetElems ((\<le>) (0::VDMNat)) {5..(9::VDMNat)}" 
+  unfolding inv_SetElems_def 
+  by (safe,simp)
+
+lemma ex2'_dom_inv': "inv_SetElems inv_VDMNat {5..9}" 
+  unfolding inv_SetElems_def inv_VDMNat_def
+  by (safe,simp)
+
+lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
+  unfolding ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
+  apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
+  unfolding domid_def rngcnst_def inv_True_def inv_VDMNat_def
+  apply (safe, simp_all) 
+  thm option.distinct
+  by (smt (z3) option.distinct(1))
+
+lemma ex2'_rng:"rng ex2' = {10}"
+  unfolding rng_defs ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
+  apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
+  by (safe, simp_all, force+)
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_defs (* don't expand inv_VDMNat *)
+  apply (simp split:if_splits)
+  (* complex domain patterns lead to loads of cases Jeez! no safe *)
+  apply (intro conjI impI, force) oops
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  (* complex domain patterns lead to loads of cases Jeez! no safe *)
+  apply (intro conjI impI) 
+  find_theorems intro name:the
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+  apply (simp add: inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def) (* clearly true by contradiction, but finite is struggling *)
+  oops
+
+lemma l_finite_setcomp_finite[simp]: "finite S \<Longrightarrow> finite T \<Longrightarrow> finite { P x y | x y . x \<in> S \<and> y \<in> T }"
+  by (simp add: finite_image_set2)
+
+thm finite_image_set2 finite_subset
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_defs
+  apply (insert l_finite_setcomp_finite[of _ _ "\<lambda> x y . x+y"]) (* lemma above not quite in right shape *)
+  oops
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  apply (intro conjI impI) 
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+  (*apply (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite mem_Collect_eq) *)(* horrible! *)
+  apply (elim impE)
+     apply (simp add: inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def inv_SetElems_def) 
+  apply (rule conjI) 
+  using ex2'_dom_finite apply force
+     apply fastforce 
+  oops
+
+lemma l_invVDMSet_finite[simp]: "finite S \<Longrightarrow> inv_SetElems inv_T S \<Longrightarrow> inv_VDMSet' inv_T S"
+  by (simp add: inv_VDMSet'_def)
+
+lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
+  unfolding ex2'_def mapCompSetBound_def domid_def rngcnst_def truecnst_def inv_True_def 
+  apply (simp split:if_splits)
+  apply (intro conjI impI, simp)
+     apply (rule the_equality, simp add: inv_VDMNat_def, blast)
+    apply (erule impE)
+  using ex2'_dom_clearer ex2'_dom_inv' apply auto[1]
+  using inv_VDMNat_def apply auto[1]
+   apply (smt (verit, del_insts) atLeastAtMost_iff ex2'_dom_clearer l_map_dom_ran)
+(*  by (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite finite.emptyI finite.insertI inv_SetElems_def inv_VDMNat_def l_invVDMSet_finite mem_Collect_eq singletonD) *)
+  apply (erule impE)
+  using ex2'_dom_clearer ex2'_dom_inv' apply force
+  using inv_VDMNat_def by auto
+
+(* more direct binds even if with range expressions it's fine. UNIV isn't finite! DUH 
+   = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
+definition
+  ex3 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex3 \<equiv> mapCompSetBound {1,2,3,4::VDMNat} UNIV inv_VDMNat inv_VDMNat domid (\<lambda> x . (\<lambda> y . x + 5)) (\<lambda> x . (\<lambda> y . x > 2))"
+
+lemmas ex3_defs = ex3_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex3_none: "x \<notin> dom ex3  \<Longrightarrow> ex3 x = None"
+  by (simp add: domIff)
+
+lemma ex3_dom: "dom ex3 = {5,6,7,8,9}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe)
+  (* Nice example of how it goes "wrong" with undefined! *)
+  oops
+
+lemma ex3_dom: "dom ex3 = {1,2,3,4}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe) oops
+  (* Nice example of how it goes "wrong" with undefined! *)
+
+lemma ex3_dom: "dom ex3 = {3,4}"
+  unfolding ex3_defs
+  apply (simp split:if_splits, safe) oops
+  (* Nice example of how it goes "wrong" with undefined! *)
+
+(* more direct binds even if with range expressions it's fine. 
+   = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
+definition
+  ex3' :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex3' \<equiv> mapCompSetBound {1,2,3,4::VDMNat} { x + 5 | x . x \<in> {1,2,3,4::VDMNat} } inv_VDMNat inv_VDMNat domid (\<lambda> x . (\<lambda> y . x + 5)) (\<lambda> x . (\<lambda> y . x > 2))"
+
+lemmas ex3'_defs = ex3'_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex3'_none: "x \<notin> dom ex3'  \<Longrightarrow> ex3' x = None"
+  by (simp add: domIff)
+
+lemma ex3'_dom: "dom ex3' = {3,4}"
+  unfolding ex3'_def mapCompSetBound_defs inv_SetElems_def inv_VDMNat_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+  by fastforce+
+
+lemma ex3'_dom': "dom ex3' = {3,4}"
+  unfolding ex3'_defs
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+  using inv_SetElems_def by fastforce+
+  
+lemma ex3'_rng: "rng ex3' = {8,9}"
+  unfolding ex3'_defs inv_SetElems_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI)
+   apply (simp_all, safe, simp_all)
+       apply (rule+, force, force, force, force, force, force, force) 
+  apply (rule_tac x=3 in exI, force)
+  by (rule_tac x=4 in exI, force)
+
+lemma ex3'_map: "x \<in> dom ex3' \<Longrightarrow> ex3' x = Some (x+5)"
+  unfolding ex3'_defs
+  apply (simp split:if_splits, safe, force)
+          apply (linarith, force)
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def apply fastforce
+  using inv_SetElems_def by fastforce
+
+(* okay: dead simple ones
+   = { x |-> 5 | x in set {1,2,3,4} } *)
+definition
+  ex4 :: "VDMNat \<rightharpoonup> VDMNat"
+  where
+  "ex4 \<equiv> mapCompSetBound {1,2,3,4::VDMNat} { 5::VDMNat } inv_VDMNat inv_VDMNat domid (rngcnst 5) truecnst"
+
+lemmas ex4_defs = ex4_def mapCompSetBound_defs inv_VDMNat_def 
+
+lemma ex4_none: "x \<notin> dom ex4  \<Longrightarrow> ex4 x = None"
+  by (simp add: domIff)
+
+lemma ex4_dom: "dom ex4 = {1,2,3,4}"
+  unfolding ex4_def mapCompSetBound_defs inv_SetElems_def inv_VDMNat_def
+  apply (simp split:if_splits)
+  by (intro equalityI subsetI, simp_all add: dom_def split:if_splits)
+    
+lemma ex4_rng: "rng ex4 = {5}"
+  unfolding ex4_defs inv_SetElems_def
+  apply (simp split:if_splits)
+  apply (intro equalityI subsetI, force, simp)
+  by (rule_tac x=1 in exI, fastforce)
+
+lemma ex4_map: "x \<in> dom ex4  \<Longrightarrow> ex4 x = Some 5"
+  unfolding ex4_defs
+  apply (simp split:if_splits, safe, force+)
+  by (meson option.distinct(1))
+(* for simple domain binds, you get simple enough proofs *)
+
+
 (*<*)end(*>*)
