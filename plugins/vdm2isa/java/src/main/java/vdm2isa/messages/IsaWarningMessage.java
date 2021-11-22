@@ -39,6 +39,8 @@ public enum IsaWarningMessage {
     "Set bind `%1$s` in sequence comprehension requires its Isabelle type to instantiate class linorder."),
     ISA_POWEROP_TYPEDEP(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 6,
     "Result of the power operator is context dependenant on second argument type being nat or real."),
+    ISA_USE_BEFORE_DECL_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 7,
+    "Type `%1$s` used before being defined might generate translation errors; managed to figure out it is a `%2$s` type."),
 
     PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
     "Attempting to create proof step with definition %1$s."),

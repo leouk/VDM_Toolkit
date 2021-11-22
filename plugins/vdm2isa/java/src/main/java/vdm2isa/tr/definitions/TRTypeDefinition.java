@@ -41,7 +41,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
     private final TRPattern ordPattern1;
     private final TRPattern ordPattern2;
     private final TRExpression ordExpression;
-    private final TRNamedTypeDefinitionKind nameDefKind;
+    private /*final*/ TRNamedTypeDefinitionKind nameDefKind;
 	
     // those that might require implicit undeclared specification are not final
     private TRExplicitFunctionDefinition invdef;
@@ -377,6 +377,11 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
     public String translate()
     {
         StringBuilder sb = new StringBuilder();
+        if (nameDefKind.equals(TRNamedTypeDefinitionKind.UNKNOWN) || nameDefKind == null)
+        {
+            nameDefKind = figureOutTypeDefinitionKind();
+            warning(IsaWarningMessage.ISA_USE_BEFORE_DECL_2P, name.toString(), nameDefKind.name());
+        }
         TRType t = getType();
         sb.append(super.translate());
         // TLD for records

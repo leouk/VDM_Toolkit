@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-21T08:00:23.725278Z
+(* VDM to Isabelle Translation @2021-11-22T06:50:54.797015Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
@@ -59,7 +59,7 @@ definition
 where
 	"inv_Interval dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Interval specification\<close>
-		(((inv__True dummy00)  \<and>  (inv__True dummy01)  \<and>  (inv__True dummy02)  \<and>  (inv__True dummy03)  \<and>  (inv__True dummy04)  \<and>  (inv__True dummy05)  \<and>  (inv__True dummy06)))"
+		(((inv_True dummy0)))"
 
 		 
 
@@ -74,7 +74,7 @@ definition
 where
 	"inv_ActionType dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ActionType specification\<close>
-		(((inv__True dummy00)  \<and>  (inv__True dummy01)  \<and>  (inv__True dummy02)  \<and>  (inv__True dummy03)  \<and>  (inv__True dummy04)))"
+		(((inv_True dummy0)))"
 
 		 
 
@@ -92,12 +92,12 @@ definition
 where
 	"inv_Action dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Action specification\<close>
-		( ((((inv__True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)0)  \<and>  (inv__True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)1)  \<and>  (inv__True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)2)  \<and>  (inv__True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)3)  \<and>  (inv__True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)4))) \<and>
+		( ((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ( (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)))))
@@ -113,12 +113,12 @@ where
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 69:5\<close>
-
+type_synonym Ref = "VDMNat"
 	
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
-
+type_synonym Name = "VDMChar VDMSeq1"
 	
 
 	
@@ -140,12 +140,12 @@ where
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 87:5\<close>
-
+type_synonym Environment = "(Ref \<rightharpoonup> Value)"
 	
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
-
+datatype ValueTypesLF = \<bool> |  VDMReal
 	
 
 	
@@ -157,22 +157,22 @@ record Value =
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 103:5\<close>
-
+type_synonym Equation = "Environment \<Rightarrow> Environment"
 	
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 105:5\<close>
-
+datatype IOLF = inputLF |  outputLF
 	
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 106:5\<close>
-
+datatype DCLF = continous |  discrete
 	
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 107:5\<close>
-
+datatype ContractLF = delayed |  none |  reactive
 	
 
 	
@@ -198,11 +198,11 @@ where
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))))
 		 )) \<and>
-		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)1))) \<and>
-		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)1))) \<and>
+		 (((inv_True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) \<and>
+		 (((inv_True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and>
-		 (((inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)0)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)1)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)2))) ))  \<and> 
+		 (((inv_True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Variable\<close>
 		(((((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = (outputLF)) \<longrightarrow> ((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = (none))) \<and> ((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = (inputLF))) \<longrightarrow> ((dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = {}))"
  
@@ -225,8 +225,8 @@ where
 	"inv_Clock clock \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_Clock specification\<close>
 		( (((inv_VDMNat (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and>
-		 (((inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)0)  \<and>  (inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)1))) \<and>
-		 (((inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)0)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)1)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)2)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)3)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)4)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)5)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)6))) \<and>
+		 (((inv_True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) \<and>
+		 (((inv_True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))))
@@ -240,7 +240,7 @@ where
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 140:5\<close>
-
+datatype FMUModeLF = DONE |  EVENT |  INIT |  STEP
 	
 
 	
@@ -268,7 +268,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -320,7 +320,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -345,7 +345,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -360,11 +360,11 @@ where
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))))
 		 )) \<and>
-		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)1))) \<and>
-		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)1))) \<and>
+		 (((inv_True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) \<and>
+		 (((inv_True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT))) \<and>
-		 (((inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)0)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)1)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)2))) ))"
+		 (((inv_True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e RESULT)))) ))"
 
 definition
 	derefOutput :: "FMU\<Rightarrow> Ref \<Rightarrow> Variable"
@@ -458,7 +458,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -481,7 +481,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -607,7 +607,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -630,7 +630,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -662,7 +662,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -685,7 +685,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -726,7 +726,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -749,7 +749,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -781,7 +781,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -804,7 +804,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -836,7 +836,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -859,7 +859,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -891,7 +891,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -914,7 +914,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -946,7 +946,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -956,7 +956,7 @@ where
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
-	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)1))) \<and>
+	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val))))
@@ -975,7 +975,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -985,7 +985,7 @@ where
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
-	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)1))) \<and>
+	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>   ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e val))))
@@ -993,7 +993,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT))))
@@ -1025,7 +1025,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1050,7 +1050,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1065,7 +1065,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
@@ -1076,7 +1076,7 @@ where
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) )\<and>
-		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))1))) \<and>
+		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT)))))
@@ -1103,7 +1103,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1128,7 +1128,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1142,7 +1142,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U RESULT))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U RESULT))))
@@ -1180,7 +1180,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1205,7 +1205,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1220,7 +1220,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
@@ -1231,7 +1231,7 @@ where
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) )\<and>
-		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))1))) \<and>
+		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd RESULT)))))
@@ -1258,7 +1258,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1283,7 +1283,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1298,7 +1298,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
@@ -1339,7 +1339,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1364,7 +1364,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1379,7 +1379,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst RESULT)))))
@@ -1413,7 +1413,7 @@ definition
 where
 	"inv_RealNaNLF dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_RealNaNLF specification\<close>
-		(((inv__True dummy00)  \<and>  (inv_VDMReal dummy01)))"
+		(((inv_True dummy0)))"
  
 
 	
@@ -1429,7 +1429,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1454,7 +1454,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1464,7 +1464,7 @@ where
 		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
-	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>  ((inv__True RESULT0)  \<and>  (inv_VDMReal RESULT1)))"
+	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>  ((inv_True RESULT)))"
 
 definition
 	next_tm :: "FMU\<Rightarrow> Ref \<Rightarrow> RealNaNLF"
@@ -1582,7 +1582,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U )0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U )3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U )))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U )))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ))))
@@ -1630,7 +1630,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1655,7 +1655,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -1667,8 +1667,8 @@ where
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) )  \<and>  (inv_VDMNat ref)  \<and>  
 		 (((inv_VDMNat (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT))) \<and>
-		 (((inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)0)  \<and>  (inv__True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)1))) \<and>
-		 (((inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)0)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)1)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)2)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)3)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)4)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)5)  \<and>  (inv__True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)6))) \<and>
+		 (((inv_True (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) \<and>
+		 (((inv_True (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k RESULT))))
@@ -1697,7 +1697,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2096,7 +2096,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2193,7 +2193,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2240,7 +2240,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2290,7 +2290,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val)))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))))
@@ -2301,7 +2301,7 @@ where
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  val))))) )\<and>
-		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))1))) \<and>
+		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val)))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmuUpdated  val))))))
@@ -2367,7 +2367,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2639,7 +2639,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val)))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))))
@@ -2650,7 +2650,7 @@ where
 		 ((inv_VDMSet' 
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  null) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (fmu  val))))) )\<and>
-		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))0)  \<and>  (inv_VDMReal (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))1))) \<and>
+		  ((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val)))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (snd (fmu  val))))))
@@ -2698,7 +2698,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -2746,7 +2746,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -3439,7 +3439,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event)))))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (fmuUpdated  step  event))))))
@@ -3575,7 +3575,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
@@ -3590,11 +3590,11 @@ where
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))))
 		 )) \<and>
-		 (((inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)0)  \<and>  (inv__True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)1))) \<and>
-		 (((inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)0)  \<and>  (inv__True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)1))) \<and>
+		 (((inv_True (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) \<and>
+		 (((inv_True (type\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))) \<and>
 		 ((inv_VDMSet' (inv_VDMNat) (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF))) \<and>
-		 (((inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)0)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)1)  \<and>  (inv__True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)2))) ))  \<and> 
+		 (((inv_True (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e outputLF)))) ))  \<and> 
 		\<comment>\<open>User defined body of pre_feedthroughSatisfied\<close>
 		(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = (inputLF)))"
 
@@ -3636,7 +3636,7 @@ where
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
 		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) intervalSet))"
+		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) intervalSet))"
 
 
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:1\<close>
@@ -3667,7 +3667,7 @@ where
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))))
 		 )) \<and>
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) \<and>
-		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) \<and>  (inv__True) intervalSet)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
+		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))) )  \<and>  (inv_VDMSet' (inv_VDMSeq1' (inv_VDMChar)) fmus)  \<and>  (inv_VDMSet' calculated \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) \<and>  (inv_True) intervalSet)  \<and>   (( (((inv_Map (inv_VDMSeq1' (inv_VDMChar)) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) \<and>
 		 ((inv_Map inv_FMURef  inv_FMURef  (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT)))) )) \<and>
 		 ((inv_Map inv_FMURef  (inv_VDMReal) (schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r RESULT))) \<and>
@@ -4690,7 +4690,7 @@ where
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		 (((inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)0)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)1)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)2)  \<and>  (inv__True (mode\<^sub>F\<^sub>M\<^sub>U fmu)3))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 (
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
