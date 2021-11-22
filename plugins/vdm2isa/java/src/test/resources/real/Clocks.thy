@@ -126,8 +126,15 @@ where
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
-datatype ValueTypesLF = \<bool> |  VDMReal
+datatype ValueTypesLF = UBool \<bool> | UReal VDMReal | UInt VDMInt
 	
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
+definition
+	inv_ValueTypesLF :: "ValueTypesLF \<Rightarrow> \<bool>"
+where
+	"inv_ValueTypesLF dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ValueTypesLF specification\<close>
+		((inv_bool dummy0))"
 
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 definition
@@ -135,11 +142,12 @@ definition
 where
 	"inv_ValueTypesLF dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ValueTypesLF specification\<close>
-		(((inv_bool dummy0)))"
-
-		 
-
-	
+		case dummy0 of
+      UBool b \<Rightarrow> inv_bool b
+  |   UReal r \<Rightarrow> inv_VDMReal r
+  |   UInt i \<Rightarrow> inv_VDMInt i"
+  (*@LF how it should be*)
+  	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
 record Value = 
 	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueTypesLF"
@@ -157,8 +165,15 @@ where
 		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)))) \<and>
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))))
 		 )) ))"
+  (*@LF hum... needs more tests on records with records! The above ought to be*)
  
-
+definition
+	inv_Value :: "Value \<Rightarrow> \<bool>"
+where
+	"inv_Value dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Value specification\<close>
+    inv_ValueTypesLF (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0) \<and>
+    inv_Time (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)"
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 type_synonym Environment = "(Ref \<rightharpoonup> Value)"
@@ -187,9 +202,17 @@ where
 		(
 	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
 	(inv_Map (inv_VDMNat) inv_Value  (dummy0 dummy0)))"
+  (*@LF again looking for inner type within Environment! Neeeds rethinking of TRTypeDefinition :-( *)
 
-		 
-
+\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
+definition
+	inv_Equation :: "Equation \<Rightarrow> \<bool>"
+where
+	"inv_Equation dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Equation specification\<close>
+		(
+	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
+	   inv_Lambda inv_Environment inv_Environment dummy0)"
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
 datatype IOLF = inputLF |  outputLF
@@ -377,7 +400,54 @@ where
 			undefined
 		)
 		)"
- 
+  (*@LF percolate inv_Lambda *)
+
+definition
+	inv_FMU :: "FMU \<Rightarrow> \<bool>"
+where
+	"inv_FMU fmu \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_FMU specification\<close>
+		( (((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 (((inv_True (mode\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 (
+		 (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
+		 )) \<and>
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_Map (inv_VDMNat) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_VDMSet' (inv_VDMNat) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
+		 ((inv_VDMSet' 
+	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
+	inv_Equation (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu)) )))  \<and> 
+		\<comment>\<open>User defined body of inv_FMU\<close>
+		(
+		let 
+(vars::Variable VDMSet) = ((inputs\<^sub>F\<^sub>M\<^sub>U (fmu)) \<union> (outputs\<^sub>F\<^sub>M\<^sub>U (fmu)))
+		in
+			(if ((inv_VDMSet' inv_Variable  vars)) then
+			(
+		let 
+(crefs::Ref VDMSet) = { (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) | c .  ((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  };
+		
+(vrefs::Ref VDMSet) = { (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (v)) | v .  ((v \<in>vars))  };
+		
+(refs::Ref VDMSet) = (crefs \<union> vrefs)
+		in
+			(if ((inv_VDMSet' (inv_VDMNat) crefs)) \<and> 
+	((inv_VDMSet' (inv_VDMNat) vrefs)) \<and> 
+	((inv_VDMSet' (inv_VDMNat) refs)) then
+			(((maxStep\<^sub>F\<^sub>M\<^sub>U (fmu)) \<ge> (0.0)) \<and> (((vdm_card refs) = ((vdm_card (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))) + (vdm_card vars))) \<and> (((dom (env\<^sub>F\<^sub>M\<^sub>U (fmu))) \<subseteq> refs) \<and> (((activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu)) \<subseteq> crefs) \<and> ((((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) \<noteq> (EVENT)) \<longrightarrow> ((activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu)) = {})) \<and> ((((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) \<noteq> (EVENT)) \<longrightarrow> ((activeEquations\<^sub>F\<^sub>M\<^sub>U (fmu)) = {})) \<and> (\<forall> var \<in> vars  . ((clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) \<subseteq> crefs))))))))
+		 else
+			undefined
+		)
+		)
+		 else
+			undefined
+		)
+		)"
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
