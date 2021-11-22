@@ -54,15 +54,6 @@ definitions
 	 */
 	ActionType = <get> | <set> | <step> | <getC> | <setC> ;  
 
-	/*
-		An FMU action has a type and some infomration describe the paramters of the actions
-	*/
-	Action ::
-		actionType : ActionType
-		fmu : FMU
-		port : Ref;
-	
-
 	/**
 	 * A variable or clock reference. These are unique within an FMU.
 	 */
@@ -80,21 +71,22 @@ definitions
 		name	: Name
 		ref		: Ref;
 
-	/**
-	 * The current known FMU variable values. These are usually used by FMUs, but note that
-	 * Clocks can produce temporary environments that are not committed until a step.
-	 */
-	Environment = map Ref to Value;
-
 	ValueTypesLF = real | int | bool;
 
 	/**
 	 * The value that a clock or variable can have. 
 	 * It contains a time and a value
 	 */
+	 --@LF DBU on Environment
 	Value ::
 		value : ValueTypesLF
 		time : Time;
+		
+	/**
+	 * The current known FMU variable values. These are usually used by FMUs, but note that
+	 * Clocks can produce temporary environments that are not committed until a step.
+	 */
+	Environment = map Ref to Value;
 
 	/**
 	 * An Equation is used to modify the values of an FMU in order to compute a new
@@ -181,6 +173,18 @@ definitions
 			---		& exists c in set fmu.clocks & c.ref in set fmu.activeClocks and equation in set c.equations)
 			-- All scheduled clocks are defined
 			;
+
+	/*
+		An FMU action has a type and some infomration describe the paramters of the actions
+	*/
+	Action ::
+		actionType : ActionType
+		--@LF declaration before use (DBU) top level declaration (TLD) leads to Isabelle errors
+		--	  type checker looks for  those in -verbose for certain constructs but not type defs! 
+		-- 	  see ClocksTBDBU.vdmsl list of warnings. Will fix all those here with comment
+		--@LF DBU on FMU and REF
+		fmu : FMU
+		port : Ref;
 
 functions
 	/**
@@ -649,7 +653,8 @@ functions
 	cases A:
 		mk_Action(<get>, fmu, port) -> getPort(I, mk_FMURef(fmu.name, port)),
 		mk_Action(<set>, fmu, port) -> setPort(I, mk_FMURef(fmu.name, port)),
-		mk_Action(<step>, fmu, port) -> stepFMU(I, fmu), -- Nick can I sepcify that I don't care about the port here?
+		--@LF removed the "port" unused
+		mk_Action(<step>, fmu, -) -> stepFMU(I, fmu), -- Nick can I sepcify that I don't care about the port here?
 		mk_Action(<setC>, fmu, clock) -> setClock(I, fmu, clock, true),
 		mk_Action(<getC>, fmu, clock) -> queryClock(I, fmu, clock)
 	end;
@@ -683,7 +688,8 @@ functions
 		cases A:
 		mk_Action(<get>, fmu, port) -> preGetI(I, fmu, port),
 		mk_Action(<set>, fmu, port) -> preSetI(I, fmu, port),
-		mk_Action(<step>, fmu, port) -> preStepI(I, fmu),
+		--@LF removed port unused 
+		mk_Action(<step>, fmu, -) -> preStepI(I, fmu),
 		mk_Action(<setC>, fmu, clock) -> preSetCI(I, fmu, clock),
 		mk_Action(<getC>, fmu, clock) -> preGetCI(I, fmu, clock)
 	end;
