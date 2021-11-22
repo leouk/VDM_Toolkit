@@ -424,6 +424,15 @@ lemma ex4_map: "x \<in> dom ex4  \<Longrightarrow> ex4 x = Some 5"
   by (meson option.distinct(1))
 (* for simple domain binds, you get simple enough proofs *)
 
-print_commands
-print_methods
+lemma "inv_VDMSet' inv_S S \<Longrightarrow>
+      dom (mapCompSetBound S T inv_S inv_T domexpr rngexpr pred) 
+      =
+      { x . inv_S x \<and> x \<in> S \<and> (\<exists> r . x = domexpr d r \<and> pred d r) }"
+  unfolding mapCompSetBound_def
+  apply safe
+     apply (simp_all split:if_splits)
+        apply safe
+  nitpick
+  oops
+
 end
