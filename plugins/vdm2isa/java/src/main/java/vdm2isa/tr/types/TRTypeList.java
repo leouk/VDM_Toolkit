@@ -139,7 +139,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		TRTypeList result = new TRTypeList();
 		for(TRType t : this)
 		{
-			add(t.copy(atTLD));
+			result.add(t.copy(atTLD));
 		}
 		return result;
 	}

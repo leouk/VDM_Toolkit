@@ -117,7 +117,10 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		}
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(getResultType().invTranslate(null));
-		sb.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), parameters.size()-1));
+		if (parameters.size() > 1)
+		{
+			sb.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), parameters.size()-1));
+		}
 		sb.append(varName != null ? varName : "");
 		return IsaToken.parenthesise(sb.toString());
 		// // function type invariants are implicit? e.g. v = (lambda x: nat, y: nat & x + y)
