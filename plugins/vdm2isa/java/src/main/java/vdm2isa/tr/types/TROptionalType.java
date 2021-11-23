@@ -18,6 +18,14 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
             new TRTypeSet(TRBasicType.newBasicType(vdmType, IsaToken.TOKEN), type);
     }
 
+    @Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TROptionalType((TCOptionalType)getVDMType(), definitions, getInnerType().copy(true));
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}
+
     // @Override
     // public String setSemanticSeparator(String sep)
     // {

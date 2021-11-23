@@ -19,6 +19,14 @@ public class TRProductType extends TRType {
         this.types.setCurried(false);
     }
 
+    @Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRProductType((TCProductType)getVDMType(), definitions, types.copy(atTLD));
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}   
+
     /**
      * Isabelle only have tuples (or pairs). So, VDM n-tuples have to be projected out of pairs. 
      * @param index which tuple index (e.g. x.#index) adjusted to size (i.e. x.#index, where index [0,...,size[, instead of [1,...size])
@@ -35,7 +43,7 @@ public class TRProductType extends TRType {
         {
             fieldVarName.append(IsaToken.LPAREN.toString());
             fieldVarName.append(IsaToken.FST.toString());
-            fieldVarName.append(" ");
+            fieldVarName.append(IsaToken.SPACE.toString());
             fieldVarName.append(varName);
             fieldVarName.append(IsaToken.RPAREN.toString());
         } /*
@@ -53,7 +61,7 @@ public class TRProductType extends TRType {
             // repeat (snd x) index-times
             fieldVarName.append(IsaToken.LPAREN.toString());
             fieldVarName.append(IsaToken.SND.toString());
-            fieldVarName.append(" ");
+            fieldVarName.append(IsaToken.SPACE.toString());
             if (index > 1)
             {    
                 // repeats string f
@@ -77,7 +85,8 @@ public class TRProductType extends TRType {
 		StringBuilder sb = new StringBuilder();
 		if (!this.types.isEmpty())
 		{
-			sb.append("\n\t\t(");
+			sb.append("\n\t\t");
+            sb.append(IsaToken.LPAREN.toString());
             int size = this.types.size();
             String fieldVarName = varName == null ? "" : TRProductType.fieldProjection(0, size, varName); 
 			sb.append(this.types.get(0).invTranslate(fieldVarName));
@@ -99,7 +108,8 @@ public class TRProductType extends TRType {
                 //sb.append("This is messy, but easy: fst, fst snd, fst snd snd, snd snd snd say for 4-tuple");
                 //sb.append(IsaToken.COMMENT_CLOSE.toString()); 
 			}
-			sb.append("\n\t\t)");
+			sb.append("\n\t\t");
+            sb.append(IsaToken.RPAREN.toString());
 		}
 		return sb.toString();	
 	}

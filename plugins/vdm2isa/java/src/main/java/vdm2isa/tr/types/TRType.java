@@ -19,6 +19,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	private final TCType vdmType;
 	protected TRDefinitionList definitions; 
 
+    /**
+     * Named types are treated differently, depending on whether they are part of a top-level definition,
+     * or part of a chain of renamings (i.e. the inv_T will be different depending on that). 
+     */
+    private boolean atTLD;
+
 	protected TRType(TCType vdmType)
 	{
 	 	this(vdmType, new TRDefinitionList());
@@ -29,6 +35,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		super(vdmType.location);
 		this.vdmType = vdmType;
 		this.definitions = definitions == null ? new TRDefinitionList() : definitions;
+		setAtTopLevelDefinition(false);
 	}
 
 	@Override
@@ -38,6 +45,37 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		setSemanticSeparator(" ");
 		setFormattingSeparator(" ");
 	}
+
+	/**
+	 * Deep copy constructor for TRType tree. This is particularly important when considering renamed/structured types, 
+	 * where one wants to get the right kind of invTranslate result, depending on whether it's for top-level definition
+	 * or "local" (i.e. perhaps TLD is bad name). 
+	 * 
+	 * For example "T = RHS", "inv_T t == inv_RHS t"; namely the invariant definition for T calls the "inv_RHS t", but
+	 * wherever else T appears (e.g. set of T, R = T, etc.), we don't want to have "R = set of T" as inv_R = inv_VDMSet' inv_RHS t,
+	 * but inv_VDMSet' inv_T t). Thus, every type within teh inner/structured type tree is "top-level" by default (i.e. has already)
+	 * got previously defined inv_T for it, whereas "local" defined types don't. 
+	 * 
+	 * The way the deep-copy goes, is that any inner TRType alaways call copy(true), whereas the top of the copy tree might get a
+	 * TLD false/true, hene modulating whether the inner part is to what kind of target type. This is crucial for carrying over 
+	 * the overall type structure when propagating invariants at TRTypeDefinition type, which is where this is mostly used.
+	 * 
+	 * The deep-copying also percolates through to type lists and sets, as well as leaf types, in which case on their atTLD flag
+	 * is changed, given there is no "inner.copy(true)" to call. See the various "TestV2ITypes*.vdmsl" for various examples.      
+	 * @param atTLD
+	 * @return
+	 */
+	public abstract TRType copy(boolean atTLD);
+
+	public void setAtTopLevelDefinition(boolean b)
+    {
+        atTLD = b;
+    }
+
+    public boolean atTopLevelDefinition()
+    {
+        return atTLD;
+    }
 
 	/**
 	 * Reinventing this here from TCType to cater for TRUnionType needs. All derived classes must reimplement this

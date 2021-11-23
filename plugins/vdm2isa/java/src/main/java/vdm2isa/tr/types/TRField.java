@@ -29,6 +29,14 @@ public class TRField extends TRAbstractInnerTypedType {
         this.record = null;
     }
 
+    @Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRField(tagname, getInnerType().copy(true), equalityAbstraction);
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}
+
     private void checkRecordType()
     {
         if (record == null)

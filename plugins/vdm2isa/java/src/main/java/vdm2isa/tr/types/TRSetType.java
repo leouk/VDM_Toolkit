@@ -36,6 +36,14 @@ public class TRSetType extends TRAbstractInnerTypedType
     }
 
     @Override
+    public TRType copy(boolean atTLD)
+    {
+        TRType result = new TRSetType(getVDMType(), definitions, getInnerType().copy(true), set1);
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
+
+    @Override
     public IsaToken isaToken() {
         return set1 ? IsaToken.SET1 : IsaToken.SET;
     }

@@ -47,6 +47,14 @@ public class TRUnionType extends TRType implements TRDataType {
 		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
+	@Override
+    public TRType copy(boolean atTLD)
+    {
+        TRType result = new TRUnionType((TCUnionType)getVDMType(), definitions, types.copy(true));
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
+
 	public TRTypeSet getDataTypeConstructors()
 	{
 		return types;

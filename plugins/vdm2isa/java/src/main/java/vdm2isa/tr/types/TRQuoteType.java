@@ -17,6 +17,14 @@ public class TRQuoteType extends TRType
     }
 
     @Override
+    public TRType copy(boolean atTLD)
+    {
+        TRType result = new TRQuoteType((TCQuoteType)getVDMType(), definitions, value);
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
+    
+    @Override
     public String translate() {
         return value;
     }

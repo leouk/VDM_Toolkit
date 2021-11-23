@@ -13,6 +13,15 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     }    
 
     @Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRBracketType((TCBracketType)getVDMType(), definitions, getInnerType().copy(true));
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}
+
+
+    @Override
     public String invTranslate(String varName) {
         return IsaToken.parenthesise(this.getInnerType().invTranslate(varName));
     }

@@ -72,6 +72,14 @@ public class TRMapType extends TRAbstractInnerTypedType
         return IsaToken.parenthesise(sb.toString());
     }
 
+	@Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRMapType((TCMapType)getVDMType(), definitions, getFromType().copy(true), getToType().copy(true), injective);
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}
+    
     @Override
     public IsaToken isaToken() {
         return injective ? IsaToken.INMAP : IsaToken.MAP;

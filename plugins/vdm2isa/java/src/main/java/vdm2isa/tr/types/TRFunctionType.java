@@ -49,6 +49,14 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	@Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
+	}
+
+	@Override
 	public String translate()
 	{
 		return parameters.translate() + " " + isaToken().toString() + " " + getResultType().translate();
@@ -129,7 +137,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 
 	public TRFunctionType getPostType()
 	{
-		TRTypeList inSig = parameters.copy();
+		TRTypeList inSig = parameters.copy(atTopLevelDefinition());
 		inSig.add(getResultType());
 		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
 		return new TRFunctionType((TCFunctionType)getVDMType(), definitions, inSig, false, TRBasicType.boolType(location));
@@ -153,8 +161,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
     public TRFunctionType getComparisonType() {
-		TRTypeList params = parameters.copy();
-		params.addAll(parameters.copy());
+		TRTypeList params = parameters.copy(atTopLevelDefinition());
+		params.addAll(parameters.copy(atTopLevelDefinition()));
         return new TRFunctionType((TCFunctionType)getVDMType(), definitions, params, partial, TRBasicType.boolType(location));
     }
 

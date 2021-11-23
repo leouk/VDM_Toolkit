@@ -36,6 +36,14 @@ public class TRSeqType extends TRAbstractInnerTypedType
     }
 
     @Override
+    public TRType copy(boolean atTLD)
+    {
+        TRType result = new TRSeqType(getVDMType(), definitions, getInnerType().copy(true), seq1);
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
+
+    @Override
     public IsaToken isaToken() {
         return seq1 ? IsaToken.SEQ1 : IsaToken.SEQ;
     }

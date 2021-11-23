@@ -27,6 +27,14 @@ public class TRUnknownType extends TRType {
     }
 
     @Override
+    public TRType copy(boolean atTLD)
+    {
+        TRType result = new TRUnknownType(location, definitions);
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
+
+    @Override
     public String invTranslate(String varName) {
         // unknown type is just inv_True
         warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);

@@ -29,11 +29,10 @@ public class TRNamedType extends TRInvariantType
     }
     
     @Override
-    public TRInvariantType copy(boolean atTLD)
+    public TRType copy(boolean atTLD)
     {
         // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
-        TRType tcopy = type instanceof TRInvariantType ? ((TRInvariantType)type).copy(true) : type;
-        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, tcopy, getInvDef(), getEqDef(), getOrdDef());
+        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }
@@ -105,6 +104,10 @@ public class TRNamedType extends TRInvariantType
         //    inv t = P(t) eq t1 = t2 == Q(t1,t2)
         //inv_T t       = inv_VDMNat t /\ P(t)
         //eq_T t1 t2    = inv_T t1 /\ inv_T t1 /\ Q(t1,t2)  <--- don't call inv_VDMNat here
+        //
+        // don't forget to get the inner type @TLD flag as well, given we might get something like
+        // TSet = set of nat1  -- not TSet.atTLD  => inv_VDMNat1  
+        // TSet3 = set of TSet -- not TSet3.atTLD => TSet3.type.atTLD ? then inv_VDMSet' inv_TSet instead of inv_VDMSet' inv_VDMNat1!
         if (type instanceof TRInvariantType || atTopLevelDefinition())
         {
             sb.append(IsaToken.INV.toString());

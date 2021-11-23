@@ -66,6 +66,16 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		setInvTranslateSeparator("");
 	}
 
+	public TRTypeSet copy(boolean atTLD)
+	{
+		TRTypeSet result = new TRTypeSet();
+		for(TRType t : this)
+		{
+			add(t.copy(atTLD));
+		}
+		return result;
+	}
+
 	@Override
 	public boolean add(TRType t)
 	{

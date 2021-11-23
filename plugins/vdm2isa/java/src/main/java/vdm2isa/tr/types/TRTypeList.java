@@ -134,9 +134,14 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return sb.toString();	
 	}
 
-	public TRTypeList copy()
+	public TRTypeList copy(boolean atTLD)
 	{
-		return new TRTypeList(this); 
+		TRTypeList result = new TRTypeList();
+		for(TRType t : this)
+		{
+			add(t.copy(atTLD));
+		}
+		return result;
 	}
 
 	public TCTypeList getVDMTypeList()

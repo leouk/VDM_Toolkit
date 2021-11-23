@@ -48,7 +48,7 @@ public class TRBasicType extends TRType
 	 * @param location
 	 * @param token
 	 */
-	public TRBasicType(TCType vdmType, TRDefinitionList definitions, IsaToken token)
+	private TRBasicType(TCType vdmType, TRDefinitionList definitions, IsaToken token)
 	{
 		super(vdmType, definitions);
 		this.token = token;
@@ -95,6 +95,14 @@ public class TRBasicType extends TRType
 	public TRBasicType(TCTokenType type, TRDefinitionList definitions)
 	{
 		this(type, definitions, IsaToken.TOKEN);
+	}
+
+	@Override
+	public TRType copy(boolean atTLD)
+	{
+		TRType result = new TRBasicType(getVDMType(), definitions, token);
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
 	}
 
 	@Override
