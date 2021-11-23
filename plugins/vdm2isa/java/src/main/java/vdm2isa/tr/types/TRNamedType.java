@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCNamedType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -98,14 +99,38 @@ public class TRNamedType extends TRInvariantType
 	public String invTranslate(String varName) {
 
         StringBuilder sb = new StringBuilder();
-        if (atTopLevelDefinition() || ultimateType() instanceof TRRecordType)
-            sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + type.getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
-        else if (//atTopLevelDefinition() || 
-                 type instanceof TRNamedType) 
-            sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
-        else
+        // for named or record types, use name
+        // at TLD use the type name as well; 
+        // ex T = nat
+        //    inv t = P(t) eq t1 = t2 == Q(t1,t2)
+        //inv_T t       = inv_VDMNat t /\ P(t)
+        //eq_T t1 t2    = inv_T t1 /\ inv_T t1 /\ Q(t1,t2)  <--- don't call inv_VDMNat here
+        if (type instanceof TRInvariantType || atTopLevelDefinition())
+        {
+            sb.append(IsaToken.INV.toString());
+            // for record types on RHS, get the name as well 
+            sb.append(atTopLevelDefinition() ? getName() : type.getName());
+            sb.append(varName != null ? getSemanticSeparator() + varName : "");
+        }
+        // "ultimate" types, delegate to their invTranslate
+        else 
+        {
+            // TRType utype = ultimateType();
+            // if (utype.equals(type))
+            // {
+            //     report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, getName(), "ultimate type `" + utype.translate() + "`");
+            // }
             sb.append(type.invTranslate(varName));
-        return sb.toString();
+        }
+        return IsaToken.parenthesise(sb.toString());
+        // if (atTopLevelDefinition() || ultimateType() instanceof TRRecordType)
+        //     sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + type.getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
+        // else if (//atTopLevelDefinition() || 
+        //          type instanceof TRNamedType) 
+        //     sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
+        // else
+        //     sb.append(type.invTranslate(varName));
+        //return sb.toString();
         //TODO not all type.getName() will directly work! Needs to take into account structure types etc. Okay for now. 
         // renamed records are slightly different: you call the inv_Type of the record itself, which must have been previously defined.  
 //        TRType utype = type;//ultimateType();//type;

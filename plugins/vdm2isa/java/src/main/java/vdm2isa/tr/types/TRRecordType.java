@@ -70,27 +70,43 @@ public class TRRecordType extends TRInvariantType
 		return this.name != null ? this.name.toString() : super.getName();
     }
 
+    @Override 
+    public String invTranslate()
+    {
+        return this.name != null ? invTranslate(getName()) : super.invTranslate();
+    }
+
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
-        if (varName != null)
-        {
-            // definition of the type for "inv_R x" itself
-            sb.append(getFormattingSeparator());
-            sb.append(IsaToken.LPAREN.toString());
-            sb.append(fields.invTranslate(varName));
-            sb.append(getFormattingSeparator());
-            sb.append(IsaToken.RPAREN.toString());
-        }
-        else
+        if (varName == null)
         {
             // definition for a reference to record, i.e. variable of its type
-            sb.append(IsaToken.INV);
+            sb.append(IsaToken.INV.toString());
             sb.append(translate());
-            sb.append(" "); 
+            sb.append(IsaToken.SPACE.toString()); 
+        }
+        else //if (varName != null)
+        {
+            // at top-level, we are getting the record itself
+            if (atTopLevelDefinition())
+            {
+                sb.append(IsaToken.INV.toString());
+                sb.append(translate());
+                sb.append(getSemanticSeparator() + varName);
+            }
+            else
+            {
+                // definition of the type for "inv_R x" itself
+                sb.append(getFormattingSeparator());
+                sb.append(IsaToken.LPAREN.toString());
+                sb.append(fields.invTranslate(varName));
+                sb.append(getFormattingSeparator());
+                sb.append(IsaToken.RPAREN.toString());
+            }
         }
         return sb.toString();
-    }
+}
 
     @Override
     public IsaToken isaToken() {
