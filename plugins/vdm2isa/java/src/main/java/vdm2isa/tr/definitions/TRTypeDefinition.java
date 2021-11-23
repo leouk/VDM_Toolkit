@@ -124,7 +124,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             {
                 assert this.type != null; // wt...?!
                 // the invariant type parameter is the TRInvariantType projected: inner type if named; itself if record
-                TRType paramType = figureOutInvariantType();
+                TRType paramType = figureOutInvariantType(false);
                 
                 TRFunctionType invType = TRFunctionType.getInvariantType(paramType);
                 TRPatternListList parameters = TRPatternListList.newPatternListList(TRBasicPattern.dummyPattern(location));
@@ -146,26 +146,28 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 needToUpdateTypeInvDef = false;
             }
     
-            // must always have inv_T
+            // must always have inv_T (ie. either user given or implicitly generated above)
             if (invdef == null)
                 report(IsaErrorMessage.ISA_INVALID_TYPEINVARIANT_1P, name.toString());
+            // if user given
             else if (needToUpdateTypeInvDef)
             {
-                updateExplicitDefinition(invdef, true);
+                updateExplicitDefinition(invdef, false);
                 this.getInvariantType().setInvariantDefinition(this.invdef);
             }
 
-            //TODO update the inner parameters to call inv_T, instead of its invTranslate! 
             if (eqdef != null)
             {
-                updateExplicitDefinition(eqdef, false);
+                updateExplicitDefinition(eqdef, true);
                 getInvariantType().setEqualityDefinition(eqdef);
             }
             if (orddef != null)
             {
-                updateExplicitDefinition(orddef, false);
+                updateExplicitDefinition(orddef, true);
                 getInvariantType().setOrderingDefinition(orddef);
             }
+
+            // handle min/max
             if (Vdm2isaPlugin.translateTypeDefMinMax)
             {
                 TRType ultimate = type.ultimateType();
@@ -176,12 +178,12 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 {
                     if (mindef != null)
                     {
-                        updateExplicitDefinition(mindef, false);
+                        updateExplicitDefinition(mindef, true);
                     //    mindef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                     if (maxdef != null)
                     {
-                        updateExplicitDefinition(maxdef, false);
+                        updateExplicitDefinition(maxdef, true);
                     //    maxdef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                 }
@@ -195,11 +197,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         // for renamed records we have to "fix" the XXXdef type parameters to avoid 
         // calls to the defined record invariant
         // instead of its inv_R call! 
-        TRType paramType = figureOutInvariantType();
-        if (paramType instanceof TRNamedType) 
-        {
-            ((TRNamedType)paramType).setAtTopLevelDefinition(atTLD);
-        }
+        TRType paramType = figureOutInvariantType(atTLD);
         int count = def.getType().parameters.size(); 
         def.getType().parameters.clear();
         for (int i = 0; i < count; i++)
@@ -209,38 +207,42 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         }
     }
 
-    private TRType figureOutInvariantType()
+    private TRType figureOutInvariantType(boolean atTLD)
     {
-        TRType result;
-        // record types get themselves
-        if (type instanceof TRRecordType)
-            result = type; 
-        else if (type instanceof TRNamedType)
+        TRType result = type;
+        if (result instanceof TRInvariantType) 
         {
-            TRNamedType trtype = (TRNamedType)type;
-            trtype = trtype.copy();
-            // renamed record types get themselves too
-            if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMEDRECORD) ||
-                trtype.ultimateType() instanceof TRRecordType) 
-            {
-                trtype.setAtTopLevelDefinition(true);
-                result = trtype;
-            }
-            else if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMED) ||
-                    trtype.type instanceof TRNamedType)
-            {
-                trtype.setAtTopLevelDefinition(true);
-                result = trtype;   
-            }
-            // other renamed types get original type
-            else    
-                result = trtype;//trtype.type;
+            result = ((TRInvariantType)result).copy(atTLD);
         }
-        else 
-        {
-            result = type;
-            report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, name.toString(), type.getClass().getSimpleName());
-        }
+        // // record types get themselves
+        // if (type instanceof TRRecordType)
+        //     result = type; 
+        // else if (type instanceof TRNamedType)
+        // {
+        //     TRNamedType trtype = (TRNamedType)type;
+        //     trtype = trtype.copy();
+        //     // renamed record types get themselves too
+        //     if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMEDRECORD) ||
+        //         trtype.ultimateType() instanceof TRRecordType) 
+        //     {
+        //         trtype.setAtTopLevelDefinition(true);
+        //         result = trtype;
+        //     }
+        //     else if (nameDefKind.equals(TRNamedTypeDefinitionKind.RENAMED) ||
+        //             trtype.type instanceof TRNamedType)
+        //     {
+        //         trtype.setAtTopLevelDefinition(true);
+        //         result = trtype;   
+        //     }
+        //     // other renamed types get original type
+        //     else    
+        //         result = trtype;//trtype.type;
+        // }
+        // else 
+        // {
+        //     result = type;
+        //     report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, name.toString(), type.getClass().getSimpleName());
+        // }
         return result;
     }
 
