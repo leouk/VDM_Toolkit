@@ -30,7 +30,7 @@ public class TRQuoteType extends TRType
 	public String invTranslate(String varName) {
 		// there is no "inv_True" in the translation for completeness. 
 		String typeStr = IsaToken.INV.toString() + IsaToken.TRUE.toString();
-        return IsaToken.parenthesise(typeStr + (varName == null ? "" : " " + varName));
+        return IsaToken.parenthesise(typeStr + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
 	}
 
 	@Override

@@ -51,7 +51,8 @@ public class TRRecordType extends TRInvariantType
     public void setup()
     {
         super.setup();
-        setFormattingSeparator("\n\t\t ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
+        setFormattingSeparator("\n\t\t");
     }
 
     @Override
@@ -89,7 +90,7 @@ public class TRRecordType extends TRInvariantType
 
     @Override
     public String translate() {
-        return name.toString(); 
+        return getName(); 
     }
 
     public TRFieldList getFields()

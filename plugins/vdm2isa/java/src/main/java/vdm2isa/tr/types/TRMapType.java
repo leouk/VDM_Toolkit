@@ -73,12 +73,6 @@ public class TRMapType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public String invTranslate()
-	{
-		return invTranslate(null);
-	}
-
-    @Override
     public IsaToken isaToken() {
         return injective ? IsaToken.INMAP : IsaToken.MAP;
     }    

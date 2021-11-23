@@ -49,11 +49,9 @@ public class TRSetType extends TRAbstractInnerTypedType
     @Override
     public String invTranslate(String varName) {
         return IsaToken.parenthesise( 
-            IsaToken.INV.toString() + isaToken().toString() + "' " + 
-            getInnerType().invTranslate(null) + (varName != null ? " " + varName : ""));
+            IsaToken.INV.toString() + isaToken().toString() + IsaToken.DASH.toString() + IsaToken.SPACE.toString() + 
+            getInnerType().invTranslate(null) + (varName != null ? IsaToken.SPACE.toString() + varName : ""));
     }
-
-    
 
 	@Override
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)

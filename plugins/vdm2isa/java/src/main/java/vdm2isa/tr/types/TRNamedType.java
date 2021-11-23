@@ -61,7 +61,8 @@ public class TRNamedType extends TRInvariantType
     @Override
 	public String getName()
 	{
-		return typename.toString();
+        //TODO @NB typename should never be null?
+		return typename != null ? typename.toString() : super.getName();
 	}
 
     /**

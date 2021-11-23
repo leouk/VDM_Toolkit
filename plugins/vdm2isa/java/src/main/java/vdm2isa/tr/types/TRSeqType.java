@@ -48,7 +48,8 @@ public class TRSeqType extends TRAbstractInnerTypedType
     @Override
     public String invTranslate(String varName) {
         return IsaToken.parenthesise(IsaToken.INV.toString() + isaToken().toString() + 
-            "' " + getInnerType().invTranslate(null) + (varName != null ? " " + varName : ""));
+            IsaToken.DASH.toString() + IsaToken.SPACE.toString() +
+            getInnerType().invTranslate(null) + (varName != null ? IsaToken.SPACE.toString() + varName : ""));
     }
 
 	@Override

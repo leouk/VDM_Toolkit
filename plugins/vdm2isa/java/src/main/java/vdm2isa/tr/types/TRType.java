@@ -87,6 +87,9 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return invTranslate(null);
 	}
 
+	@Override
+	public abstract String translate();
+
 	public boolean isNumericType() {
 		TRType utype = ultimateType();
         return getVDMType().isNumeric(location)
