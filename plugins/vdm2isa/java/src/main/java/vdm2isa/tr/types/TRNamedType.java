@@ -14,32 +14,18 @@ public class TRNamedType extends TRInvariantType
     public final TCNameToken typename;
     public final TRType type;
 
-    /**
-     * Named types are treated differently, depending on whether they are part of a top-level definition,
-     * or part of a chain of renamings (i.e. the inv_T will be different depending on that). 
-     */
-    private boolean atTLD;
-    
     public TRNamedType(TCNamedType vdmType, TCNameToken typename, TRDefinitionList definitions, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
         super(vdmType, definitions, invdef, eqdef, orddef);
         this.typename = typename;
         this.type = type;
-        this.atTLD = false;
     }
     @Override
     protected void setup()
     {
         super.setup();
-        setSemanticSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
     }
-
-    public boolean atTopLevelDefinition()
-    {
-        return atTLD;
-    }
-
-    public void setAtTopLevelDefinition(boolean b)
     
     @Override
     public TRInvariantType copy(boolean atTLD)

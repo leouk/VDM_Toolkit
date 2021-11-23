@@ -15,19 +15,31 @@ public abstract class TRInvariantType extends TRType
     private TRExplicitFunctionDefinition eqdef;
     private TRExplicitFunctionDefinition orddef;
 
+    /**
+     * Named types are treated differently, depending on whether they are part of a top-level definition,
+     * or part of a chain of renamings (i.e. the inv_T will be different depending on that). 
+     */
+    private boolean atTLD;
+    
     public TRInvariantType(TCType  vdmType, TRDefinitionList definitions, 
         TRExplicitFunctionDefinition invdef, 
         TRExplicitFunctionDefinition eqdef, 
         TRExplicitFunctionDefinition orddef)
     {
         super(vdmType, definitions);
-
+        setAtTopLevelDefinition(false);
         setInvariantDefinition(invdef);
         setEqualityDefinition(eqdef);
         setOrderingDefinition(orddef);
     }
 
     public abstract TRInvariantType copy(boolean atTLD);
+
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        atTLD = b;
+    }
+
     public void setInvariantDefinition(TRExplicitFunctionDefinition invdef)
     {
         this.invdef = invdef;
@@ -41,6 +53,11 @@ public abstract class TRInvariantType extends TRType
     public void setOrderingDefinition(TRExplicitFunctionDefinition orddef)
     {
         this.orddef = orddef;
+    }
+
+    public boolean atTopLevelDefinition()
+    {
+        return atTLD;
     }
 
     protected TRExplicitFunctionDefinition getInvDef()
