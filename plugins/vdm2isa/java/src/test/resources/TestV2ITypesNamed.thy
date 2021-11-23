@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-21T07:53:49.877748Z
+(* VDM to Isabelle Translation @2021-11-23T14:21:19.821183Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesNamed.vdmsl' at line 1:8
@@ -19,7 +19,7 @@ definition
 where
 	"inv_TBasic1 dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TBasic1 specification\<close>
-		((inv_VDMNat1 dummy0))"
+		(((inv_VDMNat1 dummy0)))"
  
 
 	
@@ -100,5 +100,36 @@ where
 			undefined)"
 
 	
+
+	
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 20:5\<close>
+type_synonym TBasic3 = "TBasic2"
+	
+
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 20:5\<close>
+definition
+	inv_TBasic3 :: "TBasic3 \<Rightarrow> \<bool>"
+where
+	"inv_TBasic3 dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TBasic3 specification\<close>
+		((inv_TBasic2 dummy0))"
+ 
+
+	
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 22:5\<close>
+type_synonym TBasic4 = "TBasic3"
+	
+
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 23:9\<close>
+definition
+	inv_TBasic4 :: "TBasic4 \<Rightarrow> \<bool>"
+where
+	"inv_TBasic4 t \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_TBasic4 specification\<close>
+		((inv_TBasic3 t))  \<and> 
+		\<comment>\<open>User defined body of inv_TBasic4\<close>
+		(t < (20::VDMNat1))"
+
+		 
 
 end

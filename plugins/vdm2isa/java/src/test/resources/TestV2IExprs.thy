@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-21T06:12:03.064226Z
+(* VDM to Isabelle Translation @2021-11-23T14:08:50.298659Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
@@ -1093,8 +1093,8 @@ where
 	inv_v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
 	"inv_v74 dummy0 dummy1 \<equiv> 
-	\<comment>\<open>function type invariant depends on its lambda definition dummy names used being equal.\<close>
-	(inv_VDMNat (v74 dummy0 dummy1))"
+	
+	(inv_\<lambda> (inv_VDMNat) (inv_VDMNat) (v74 dummy0 dummy1))"
 
 	
 	
