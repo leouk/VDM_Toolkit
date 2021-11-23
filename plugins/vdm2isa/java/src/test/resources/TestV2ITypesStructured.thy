@@ -1,19 +1,19 @@
-(* VDM to Isabelle Translation @2021-11-23T14:24:33.520Z
+(* VDM to Isabelle Translation @2021-11-23T15:08:13.211654Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl]
+in './src/test/resources/TestV2ITypesStructured.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2ITypesStructured.vdmsl]
 *)
 theory TestV2ITypesStructured
 imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 10:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 10:5\<close>
 type_synonym TSet = "VDMNat1 VDMSet"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 11:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 11:9\<close>
 definition
 	inv_TSet :: "TSet \<Rightarrow> \<bool>"
 where
@@ -24,7 +24,7 @@ where
 		(s \<noteq> {})"
  
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 12:23\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 12:23\<close>
 definition
 	eq_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
@@ -35,7 +35,7 @@ where
 		(s1 \<subseteq> s2)"
  
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
 definition
 	ord_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
@@ -46,7 +46,7 @@ where
 		((vdm_card s1) < (vdm_card s2))"
  
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
 definition
 	min_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
@@ -65,7 +65,7 @@ where
 
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 13:28\<close>
 definition
 	max_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
@@ -85,11 +85,11 @@ where
 	
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 16:5\<close>
 type_synonym TSet2 = "TSet"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 17:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 17:9\<close>
 definition
 	inv_TSet2 :: "TSet2 \<Rightarrow> \<bool>"
 where
@@ -102,43 +102,43 @@ where
 		 
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:5\<close>
 type_synonym TSet3 = "TSet VDMSet"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:5\<close>
 definition
 	inv_TSet3 :: "TSet3 \<Rightarrow> \<bool>"
 where
 	"inv_TSet3 dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TSet3 specification\<close>
-		(((inv_VDMSet' ((inv_VDMSet' (inv_VDMNat1))) dummy0)))"
+		(((inv_VDMSet' (inv_TSet) dummy0)))"
 
 		 
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 21:5\<close>
 type_synonym TSet4 = "TSet3 VDMSet"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 22:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 22:9\<close>
 definition
 	inv_TSet4 :: "TSet4 \<Rightarrow> \<bool>"
 where
 	"inv_TSet4 s \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TSet4 specification\<close>
-		(((inv_VDMSet' ((inv_VDMSet' ((inv_VDMSet' (inv_VDMNat1))))) s)))  \<and> 
+		(((inv_VDMSet' (inv_TSet3) s)))  \<and> 
 		\<comment>\<open>User defined body of inv_TSet4\<close>
 		((vdm_card s) > (20::VDMNat1))"
 
 		 
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 24:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 24:5\<close>
 type_synonym TSeq = "VDMNat1 VDMSeq1"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 25:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 25:9\<close>
 definition
 	inv_TSeq :: "TSeq \<Rightarrow> \<bool>"
 where
@@ -150,7 +150,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 26:29\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 26:29\<close>
 definition
 	eq_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
@@ -162,7 +162,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
 definition
 	ord_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
@@ -174,7 +174,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
 definition
 	min_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
@@ -193,7 +193,7 @@ where
 
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 27:27\<close>
 definition
 	max_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
@@ -213,23 +213,23 @@ where
 	
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 30:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 30:5\<close>
 type_synonym TSeq2 = "TSet VDMSeq1"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 31:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 31:9\<close>
 definition
 	inv_TSeq2 :: "TSeq2 \<Rightarrow> \<bool>"
 where
 	"inv_TSeq2 s \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TSeq2 specification\<close>
-		(((inv_VDMSeq1' ((inv_VDMSet' (inv_VDMNat1))) s)))  \<and> 
+		(((inv_VDMSeq1' (inv_TSet) s)))  \<and> 
 		\<comment>\<open>User defined body of inv_TSeq2\<close>
 		((vdm_card (elems s)) = (len s))"
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 32:29\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 32:29\<close>
 definition
 	eq_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> \<bool>"
 where
@@ -241,7 +241,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
 definition
 	ord_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> \<bool>"
 where
@@ -253,7 +253,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
 definition
 	min_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
@@ -272,7 +272,7 @@ where
 
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:27\<close>
 definition
 	max_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
@@ -292,11 +292,11 @@ where
 	
 
 	
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 36:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 36:5\<close>
 type_synonym TMap = "(VDMNat1 \<rightharpoonup> VDMNat1)"
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 37:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 37:9\<close>
 definition
 	inv_TMap :: "TMap \<Rightarrow> \<bool>"
 where
@@ -308,7 +308,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 38:35\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 38:35\<close>
 definition
 	eq_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
@@ -320,7 +320,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
 definition
 	ord_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
@@ -332,7 +332,7 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
 definition
 	min_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where
@@ -351,7 +351,7 @@ where
 
 	
 
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 41:9\<close>
 definition
 	max_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where
@@ -369,5 +369,35 @@ where
 			undefined)"
 
 	
+
+	
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 45:5\<close>
+type_synonym TMap2 = "(TSet4 \<rightharpoonup> TSeq2)"
+	
+
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 45:5\<close>
+definition
+	inv_TMap2 :: "TMap2 \<Rightarrow> \<bool>"
+where
+	"inv_TMap2 dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TMap2 specification\<close>
+		(((inv_Map (inv_TSet4) (inv_TSeq2) dummy0)))"
+
+		 
+
+	
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 47:5\<close>
+type_synonym TMap3 = "(TMap2 \<rightharpoonup> TMap)"
+	
+
+\<comment>\<open>in 'TestV2ITypesStructured' (./src/test/resources/TestV2ITypesStructured.vdmsl) at line 47:5\<close>
+definition
+	inv_TMap3 :: "TMap3 \<Rightarrow> \<bool>"
+where
+	"inv_TMap3 dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TMap3 specification\<close>
+		(((inv_Map (inv_TMap2) (inv_TMap) dummy0)))"
+
+		 
 
 end

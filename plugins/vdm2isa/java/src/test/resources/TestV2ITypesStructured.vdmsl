@@ -41,6 +41,10 @@ types
 		or
 		(dom m1 = dom m2 and (forall x in set dom m1 & m1(x) < m2(x)))
 	;
+	
+	TMap2 = map TSet4 to TSeq2;
+	
+	TMap3 = map TMap2 to TMap;
 /*
 	
 	TOptional = [nat1]

@@ -95,7 +95,7 @@ values
 	v722=let r: real = 4.0 in narrow_(r, nat1);
 	v723=narrow_(6 / 2, nat1);
 	v73= (iota var in set t9 & var < 2); --TCIotaExpression
-	v74= (lambda var : nat, var2: nat & var + var2); --TCLambdaExpression + TCMultipleTypeBind
+	v74= (lambda var : nat, var2: nat1 & var + var2); --TCLambdaExpression + TCMultipleTypeBind
 	v75= (exists1 var in set t9 & var < 2); -- TCExists1Expression
 	v76= (exists var in set t9 & var < 2); -- TCExistsExpression
 	v78= (forall var in set t9 & var <= 3); -- TCForallExpression
