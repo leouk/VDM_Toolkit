@@ -27,6 +27,7 @@ public abstract class TRInvariantType extends TRType
         setOrderingDefinition(orddef);
     }
 
+    public abstract TRInvariantType copy(boolean atTLD);
     public void setInvariantDefinition(TRExplicitFunctionDefinition invdef)
     {
         this.invdef = invdef;

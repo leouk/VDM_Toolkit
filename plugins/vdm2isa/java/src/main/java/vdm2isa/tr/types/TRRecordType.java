@@ -23,7 +23,7 @@ public class TRRecordType extends TRInvariantType
 
     private final static Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
 
-    public TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    private TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef, boolean copying)
     {
         super(vdmType, definitions, invdef, eqdef, orddef);
         this.name = name;
@@ -34,13 +34,22 @@ public class TRRecordType extends TRInvariantType
 
         this.fields.setRecordType(this);
         this.fields.setFormattingSeparator(getFormattingSeparator());
-        recordMap.put(name, this); 
+        if (!copying)
+            recordMap.put(name, this); 
     }
 
-    // public TRType copy()
-    // {
-    //     return new TRRecordType(name, definitions, fields, composed, invdef, eqdef, orddef);
-    // }
+    public TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
+    {
+        this(vdmType, name, definitions, fields, composed, invdef, eqdef, orddef, false);
+    }
+
+    @Override
+    public TRInvariantType copy(boolean atTLD)
+    {
+        TRRecordType result = new TRRecordType((TCRecordType)getVDMType(), name, definitions, fields, composed, getInvDef(), getEqDef(), getOrdDef(), true);
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
+    }
 
     public static void reset()
     {

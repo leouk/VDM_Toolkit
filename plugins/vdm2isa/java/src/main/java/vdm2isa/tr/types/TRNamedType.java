@@ -27,14 +27,6 @@ public class TRNamedType extends TRInvariantType
         this.type = type;
         this.atTLD = false;
     }
-
-    public TRNamedType copy()
-    {
-        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type, getInvDef(), getEqDef(), getOrdDef());
-        result.atTLD = atTLD;
-        return result;
-    }
-
     @Override
     protected void setup()
     {
@@ -48,8 +40,15 @@ public class TRNamedType extends TRInvariantType
     }
 
     public void setAtTopLevelDefinition(boolean b)
+    
+    @Override
+    public TRInvariantType copy(boolean atTLD)
     {
-        atTLD = b;
+        // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
+        TRType tcopy = type instanceof TRInvariantType ? ((TRInvariantType)type).copy(true) : type;
+        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, tcopy, getInvDef(), getEqDef(), getOrdDef());
+        result.setAtTopLevelDefinition(atTLD);
+        return result;
     }
 
     @Override
