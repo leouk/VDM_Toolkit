@@ -85,9 +85,13 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		String rVarName = varName != null ? dummyVarNames(varName) : varName;
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
+		//sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
 		sb.append(getFormattingSeparator());
-		sb.append(getResultType().invTranslate(rVarName)); 
+		sb.append(IsaToken.parenthesise(
+			IsaToken.INV.toString() + IsaToken.LAMBDA.toString() + IsaToken.SPACE.toString() +
+			getInnerType().invTranslate(null) + IsaToken.SPACE.toString() + getResultType().invTranslate(null) +
+			(rVarName == null ? "" : IsaToken.SPACE.toString() + rVarName))
+		);
 		return sb.toString();
 	}
 
