@@ -4,7 +4,9 @@
 
 package vdm2isa.tr.types;
 
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -17,6 +19,10 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	private static final long serialVersionUID = 1L;
 	public final TRTypeList parameters;
 	public final boolean partial;
+	/**
+	 * This field is never used, but is necessary for the ClassMapper to work 
+	 * (i.e. ClassMapper requires the same field name, even though we percolate it through the AbstractInnerType hierarchy)
+	 */
 	private final TRType result;
 	
 	public TRFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType result)
@@ -28,6 +34,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		// presume that all function types will be curried
 		this.parameters.setCurried(true);
 		this.partial = partial;
+		if (parameters != null && parameters.isEmpty())
+			report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "empty", "function type", "0", result.toString());
 		//System.out.println(toString());
 	}
 
@@ -83,24 +91,52 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size(), location));
 	}
 
+	protected String paramInvTranslate(int index)
+	{
+		assert index >= 0 && index < parameters.size();
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.INV.toString());
+        // transform "lambda" => "Lambda" for inv_Lambda call
+        int i = sb.length();
+        sb.append(IsaToken.LAMBDA.vdmToken().toString());
+        sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+        sb.append(IsaToken.SPACE.toString());
+		sb.append(parameters.get(index).invTranslate(null));
+		return sb.toString();
+	}
+
 	@Override
 	public String invTranslate(String varName) {
-		// function type invariants are implicit? e.g. v = (lambda x: nat, y: nat & x + y)
-		// we can't really check inv_VDMNat1 of x or y; that's the LambdaExpression's job
-		// we must, however, check the type invariant of the result!
-		// that also means, the declaring party must take that into account in the inv_XXX def!
-		// e.g. inv_v x y == "inv_VDMNat (v x y)"
-		String rVarName = varName != null ? dummyVarNames(varName) : varName;
-		StringBuilder sb = new StringBuilder();
-		sb.append(getFormattingSeparator());
-		//sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
-		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.parenthesise(
-			IsaToken.INV.toString() + IsaToken.LAMBDA.toString() + IsaToken.SPACE.toString() +
-			getInnerType().invTranslate(null) + IsaToken.SPACE.toString() + getResultType().invTranslate(null) +
-			(rVarName == null ? "" : IsaToken.SPACE.toString() + rVarName))
-		);
-		return sb.toString();
+        StringBuilder sb = new StringBuilder();
+		sb.append(paramInvTranslate(0));
+		for(int i = 1; i < parameters.size(); i++)
+		{
+			sb.append(IsaToken.SPACE.toString());
+			sb.append(IsaToken.LPAREN.toString());
+			sb.append(paramInvTranslate(i));
+		}
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(getResultType().invTranslate(null));
+		sb.append(IsaTemplates.replicate(IsaToken.RPAREN.toString(), parameters.size()-1));
+		sb.append(varName != null ? varName : "");
+		return IsaToken.parenthesise(sb.toString());
+		// // function type invariants are implicit? e.g. v = (lambda x: nat, y: nat & x + y)
+		// // we can't really check inv_VDMNat1 of x or y; that's the LambdaExpression's job
+		// // we must, however, check the type invariant of the result!
+		// // that also means, the declaring party must take that into account in the inv_XXX def!
+		// // e.g. inv_v x y == "inv_VDMNat (v x y)"
+		// String rVarName = varName != null ? dummyVarNames(varName) : varName;
+		// StringBuilder sb = new StringBuilder();
+		// sb.append(getFormattingSeparator());
+
+		// //sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
+		// sb.append(getFormattingSeparator());
+		// sb.append(IsaToken.parenthesise(
+		// 	IsaToken.INV.toString() + IsaToken.LAMBDA.toString() + IsaToken.SPACE.toString() +
+		// 	getInnerType().invTranslate(null) + IsaToken.SPACE.toString() + getResultType().invTranslate(null) +
+		// 	(rVarName == null ? "" : IsaToken.SPACE.toString() + rVarName))
+		// );
+		// return sb.toString();
 	}
 
 	@Override

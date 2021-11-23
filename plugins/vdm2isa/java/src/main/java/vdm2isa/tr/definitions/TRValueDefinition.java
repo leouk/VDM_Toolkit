@@ -377,21 +377,25 @@ public class TRValueDefinition extends TRLocalDefinition
 		StringBuilder sb = new StringBuilder();
 		if (!isLocal())
 		{
-			// translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
-			// input type is possibly empty (null) in case of non function type
-			String inType = null;
-			if (type instanceof TRFunctionType)
-			{
-				inType = ((TRFunctionType)type).parameters.translate();
-			}
-			
-			//type instanceof TRFunctionType => inType != null
-			assert !(type instanceof TRFunctionType) || inType != null; 
-
-			String varName = getDeclaredName();//.toLowerCase();
-			// assemble the template
-			sb.append(IsaTemplates.translateInvariantAbbreviation(getLocation(), varName, inType, dummyVarNames(), getInvariantString(varName), false));
+			String varName = getDeclaredName();
+			String dummyNames = (type instanceof TRFunctionType ? "" : dummyVarNames());
+			sb.append(IsaTemplates.translateInvariantAbbreviation(getLocation(), varName, null, dummyNames, getInvariantString(varName), false));
 			sb.append(getFormattingSeparator());
+			// // translate the type invariant definition as inv_v definition, possibly with dummy names for lambdas
+			// // input type is possibly empty (null) in case of non function type
+			// String inType = null;
+			// if (type instanceof TRFunctionType)
+			// {
+			// 	inType = ((TRFunctionType)type).parameters.translate();
+			// }
+			
+			// //type instanceof TRFunctionType => inType != null
+			// assert !(type instanceof TRFunctionType) || inType != null; 
+
+			// String varName = getDeclaredName();//.toLowerCase();
+			// // assemble the template
+			// sb.append(IsaTemplates.translateInvariantAbbreviation(getLocation(), varName, inType, dummyVarNames(), getInvariantString(varName), false));
+			// sb.append(getFormattingSeparator());
 		}
 		else
 		{

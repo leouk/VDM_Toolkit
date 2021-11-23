@@ -62,12 +62,12 @@ public class TRMapType extends TRAbstractInnerTypedType
         int i = sb.length();
         sb.append(isaToken().vdmToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-        sb.append(getFormattingSeparator());
+        sb.append(IsaToken.SPACE.toString());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(from.invTranslate(null));
-        sb.append(getFormattingSeparator());
+        sb.append(IsaToken.SPACE.toString());
         sb.append(getToType().invTranslate(null));
-        sb.append(getFormattingSeparator());
+        sb.append(IsaToken.SPACE.toString());
         sb.append(varName);        
         return IsaToken.parenthesise(sb.toString());
     }
