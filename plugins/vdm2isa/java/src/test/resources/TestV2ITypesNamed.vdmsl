@@ -17,44 +17,9 @@ types
 	ord t1 < t2 == t1 < t2
 	;
 	
-/*
+	TBasic3 = TBasic2;
 	
-	TSet = set of TBasic2
-	inv s       == s <> {}
-	eq  s1 = s2 == s1 subset s2
-	ord s1 < s2 == card s1 < card s2
-	;
+	TBasic4 = TBasic3
+	inv t == t < 20;
 
-	
-
-
-	TSeq = seq of TBasic1
-	inv s       == card elems s = len s
-	eq  s1 = s2 == elems s1 = elems s2
-	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
-	; 
-
-	TSeq2 = seq1 of TSet
-	inv s       == card elems s = len s
-	eq  s1 = s2 == elems s1 = elems s2
-	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
-	; 
-	
-	
-
-
- 
-	TOptional = [nat1]
-	inv o1 == o1 <> nil => o1 > 10
-	;
-
-	
-	TFcn = (nat1 -> nat1)
-	inv f == (forall x in set {1,2,3} & x > 1 => f(x) > 10)
-	;
-	
-values
-	v: TFcn = (lambda x: nat1 & (x * x) + 10)
-	;
-	*/
 end TestV2ITypesNamed

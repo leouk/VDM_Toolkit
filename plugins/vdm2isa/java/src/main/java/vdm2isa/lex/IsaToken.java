@@ -39,6 +39,7 @@ public enum IsaToken {
 	FALSE(Token.FALSE, "False"),
 	NIL(Token.NIL, "None"),
 	UNKNOWN(null, "'UNKNOWN"),
+	DASH(null, "'"),
 	TYPEOF(null, "::"),
 	PLACEHOLDER(null, "_"),
 	//TUPLE(null/*mk_*/, ""),
