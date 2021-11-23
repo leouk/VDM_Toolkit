@@ -136,7 +136,7 @@ public final class IsaTemplates {
         StringBuilder sb = new StringBuilder();
         // null input types leads to just the resulting type as the signature, 
         // e.g. basic type abbreviation invariants or function constants
-        String signature = inType != null ? inType + " " + IsaToken.FUN.toString() + " " + outType : outType;
+        String signature = inType != null ? inType + IsaToken.SPACE.toString() + IsaToken.FUN.toString() + IsaToken.SPACE.toString() + outType : outType;
         sb.append(String.format(DEFINITION, name, signature, inVars, exp));
         // do not consider for the mapping of "known" translation local definitions, as they might
         // appear multiple times, due to the type checker having created them and sprinkled around 
@@ -147,23 +147,23 @@ public final class IsaTemplates {
         return sb.toString();
     }
     
-    public static String translateInvariantAbbreviation(LexLocation module, String name, String inType, String dummyNames, String invStr, boolean local)
+    public static String translateInvariantAbbreviation(LexLocation moduleLocation, String name, String inType, String dummyNames, String invStr, boolean local)
     {
-        return translateInvariantDefinition(module, name, inType, dummyNames, invStr, local);
+        return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, invStr, local);
     }
 
-    public static String translateInvariantTypeSynonym(LexLocation module, String name, String inType, String dummyNames, String inv)
+    public static String translateInvariantTypeSynonym(LexLocation moduleLocation, String name, String inType, String dummyNames, String inv)
     {
         assert name != null && inType != null && dummyNames != null;// && inv != null;
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
         inv = IsaToken.INV.toString() + name + " " + dummyNames + " " + IsaToken.AND.toString() + " " + ((inv == null) ? IsaToken.TRUE.toString() : inv);
-        return translateInvariantDefinition(module, name, inType, dummyNames, inv, false);
+        return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, inv, false);
     }
 
-    public static String translateInvariantDefinition(LexLocation module, String name, String inType, String inVars, String exp, boolean local)
+    public static String translateInvariantDefinition(LexLocation moduleLocation, String name, String inType, String inVars, String exp, boolean local)
     {
-        assert name != null && inType != null && inVars != null && exp != null;
-        return translateDefinition(module, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        assert name != null && /*inType != null && */ inVars != null && exp != null;
+        return translateDefinition(moduleLocation, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static String isabelleIdentifier(String vdmIdentifier)
