@@ -1213,7 +1213,17 @@ lemmas mapCompTypeBound_defs = mapCompTypeBound_def maplet_defs rng_defs
 section \<open> Lambda types \<close>
 (*========================================================================*)
 
-text \<open>Lambda definitions entail an implicit satisfiability proof obligation check\<close>
+text \<open>Lambda definitions entail an implicit satisfiability proof obligation check
+      as part of its type invariant checks. 
+
+      Because Isabelle lambdas are always curried, we need to also take this into
+      account. For example, "lambda x: nat, y: nat1 & x+y" will effectively become
+      @{term "(\<lambda> x . \<lambda> y . x + y)"}. Thus callers to this invariant check must 
+      account for such currying when using more than one parameter in lambdas. 
+      (i.e. call this as @{term "inv_Lambda inv_Dom (inv_Lambda inv_Dom' inv_Ran) l"} 
+       assuming the right invariant checks for the type of x and y and the result 
+       are used.
+     \<close>
 definition 
   inv_Lambda :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> \<bool>"
   where

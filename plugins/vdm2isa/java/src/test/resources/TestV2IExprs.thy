@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T14:08:50.298659Z
+(* VDM to Isabelle Translation @2021-11-23T15:55:48.252013Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
@@ -1078,11 +1078,11 @@ where
 	
 	
 abbreviation
-	v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> VDMNat"
+	v74 :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"v74 \<equiv> (
-	\<lambda> (var :: VDMNat)  (var2 :: VDMNat) .
-		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat var2))) \<and> (inv_VDMNat (var + var2)) then
+	\<lambda> (var :: VDMNat)  (var2 :: VDMNat1) .
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat1 var2))) \<and> (inv_VDMNat1 (var + var2)) then
 		(var + var2)
 	 else
 		undefined
@@ -1090,11 +1090,28 @@ where
 	)"
 
 	definition
-	inv_v74 :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+	inv_v74 :: "\<bool>"
 where
-	"inv_v74 dummy0 dummy1 \<equiv> 
+	"inv_v74  \<equiv> (inv_Lambda (inv_VDMNat) (inv_Lambda (inv_VDMNat1) (inv_VDMNat1))v74)"
+
 	
-	(inv_\<lambda> (inv_VDMNat) (inv_VDMNat) (v74 dummy0 dummy1))"
+	
+abbreviation
+	v741 :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMReal \<Rightarrow> VDMReal"
+where
+	"v741 \<equiv> (
+	\<lambda> (var :: VDMNat)  (var2 :: VDMNat1)  (var3 :: VDMReal) .
+		(if (((inv_VDMNat var))) \<and>  (((inv_VDMNat1 var2))) \<and>  (((inv_VDMReal var3))) \<and> (inv_VDMReal ((var + var2) + var3)) then
+		((var + var2) + var3)
+	 else
+		undefined
+	)
+	)"
+
+	definition
+	inv_v741 :: "\<bool>"
+where
+	"inv_v741  \<equiv> (inv_Lambda (inv_VDMNat) (inv_Lambda (inv_VDMNat1) (inv_Lambda (inv_VDMReal) (inv_VDMReal)))v741)"
 
 	
 	
