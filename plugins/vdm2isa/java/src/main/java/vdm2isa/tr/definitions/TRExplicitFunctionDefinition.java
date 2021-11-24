@@ -30,6 +30,7 @@ import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRExplicitFunctionDefinition extends TRDefinition
 {
@@ -433,6 +434,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private String paramsInvTranslate(TRSpecificationKind kind)
 	{
 		StringBuilder paramsStr = new StringBuilder();
+
+		// will this alone sort out renamed typesm but has to be copied
+		//type.parameters.setAtTopLevelDefinition(!kind.equals(TRSpecificationKind.INV));
+		TRTypeList parameterscp = type.parameters.copy(!kind.equals(TRSpecificationKind.INV)); 
 		if (isCurried)
 		{
 			// if curried there are more names than parameters on the first entry
@@ -446,7 +451,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 				// translate the outmost parameters first
 				List<String> varNames = iter.next();
-				paramsStr.append(type.parameters.invTranslate(varNames));
+				paramsStr.append(parameterscp.invTranslate(varNames));
 				// get the innermost parameters next
 				TRType next = type.getResultType();
 				while (next instanceof TRFunctionType && iter.hasNext())
@@ -462,8 +467,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 							warning(IsaWarningMessage.VDMSL_MISSING_RESULT_IN_POST_1P, resultName);
 						}
 					}
-					paramsStr.append(type.parameters.getFormattingSeparator());
-					paramsStr.append(type.parameters.getInvTranslateSeparator());
+					paramsStr.append(parameterscp.getFormattingSeparator());
+					paramsStr.append(parameterscp.getInvTranslateSeparator());
 					paramsStr.append(((TRFunctionType)next).parameters.invTranslate(varNames));
 					next = ((TRFunctionType)next).getResultType();
 				}
@@ -492,8 +497,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			}
 
 			// for TRNamedType for records, we need to adjust the inner call to the inv_R of original record,
-			// rather than explicitly redefining inv_R! Fix type.parameters in TRTypeDEfinition.
-			paramsStr.append(type.parameters.invTranslate(varNames));
+			// rather than explicitly redefining inv_R! Fix parameterscp in TRTypeDEfinition.
+			paramsStr.append(parameterscp.invTranslate(varNames));
 
 			if (kind.equals(TRSpecificationKind.MIN) || kind.equals(TRSpecificationKind.MAX))
 			{
@@ -556,14 +561,14 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			fcnBody.append(IsaToken.comment(implicitComment, getFormattingSeparator()));
 			
 			// translate the parameters taking currying into account!
-			//String old = type.parameters.setFormattingSeparator(getFormattingSeparator()); //uncomment if want to see differently "shaped" output
+			//String old = parameterscp.setFormattingSeparator(getFormattingSeparator()); //uncomment if want to see differently "shaped" output
 			String paramsStr = paramsInvTranslate(kind);
-			//type.parameters.setFormattingSeparator(old);
+			//parameterscp.setFormattingSeparator(old);
 			fcnBody.append(paramsStr);
 
 			// System.out.println("Implicit translation with: " + 
 			// 	"\n\t params = " + parameters.getFlatPatternList().size() + 
-			// 	"\n\t types  = " + type.parameters.size() +
+			// 	"\n\t types  = " + parameterscp.size() +
 			// 	"\n\t vars   = " + varNames.toString() +
 			// 	"\n\t" + toString());
 
