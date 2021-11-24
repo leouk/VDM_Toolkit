@@ -120,7 +120,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 * for general TRNode invTranslate method
 	 */
 	@Override
-	public String invTranslate()
+	public /*final*/ String invTranslate()
 	{
 		return invTranslate(null);
 	}

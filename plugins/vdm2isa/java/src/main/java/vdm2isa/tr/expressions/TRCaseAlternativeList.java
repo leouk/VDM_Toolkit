@@ -45,7 +45,7 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
     protected void setup()
     {
         super.setup();
-        setFormattingSeparator("\n\t\t");
+        setFormattingSeparator("\n\t\t\t ");
         setSemanticSeparator(IsaToken.BAR.toString() + " ");
     }
 

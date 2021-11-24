@@ -41,6 +41,13 @@ public class TRCasesExpression extends TRExpression {
     }
 
     @Override
+    protected void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t ");
+    }
+
+    @Override
     protected TRType getBestGuessType()
     {
         TRTypeSet typeSet = cases.getTypes();
