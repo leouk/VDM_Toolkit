@@ -9,6 +9,12 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.modules.TCModule;
+import com.fujitsu.vdmj.tc.patterns.TCBind;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
+import com.fujitsu.vdmj.tc.types.TCType;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaSeparator;
@@ -43,8 +49,11 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Exception e)
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, LexLocation.ANY, from.getClass().getSimpleName(), 
-					type.getClass().getSimpleName(),//from.toString(), 
+				
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, 
+					figureOutLocation(type), 
+					from.getClass().getSimpleName(), 
+					type.getClass().getSimpleName(),
 					e.toString());
 				// don't debug "can't convert errors"! 
 				//e.printStackTrace();
@@ -257,6 +266,22 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	public void warning(int number, String warning)
 	{
 		GeneralisaPlugin.warning(number, warning, getLocation());
+	}
+
+	public static <T extends Mappable/*Node!*/>  LexLocation figureOutLocation(T t)
+	{
+		return t instanceof TCExpression ? 
+			((TCExpression)t).location : 
+				t instanceof TCType ? 
+					((TCType)t).location : 
+						t instanceof TCDefinition ? 
+							((TCDefinition)t).location : 
+								t instanceof TCModule ? 
+									((TCModule)t).name.getLocation() :
+										t instanceof TCPattern ? 
+											((TCPattern)t).location :
+												t instanceof TCBind ? 
+													((TCBind)t).location : LexLocation.ANY;
 	}
 	
 }

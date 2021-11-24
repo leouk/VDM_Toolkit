@@ -10,7 +10,7 @@ public enum IsaErrorMessage {
     PLUGIN_NYI_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 0, 
     "Not yet implemented %1$s for %2$s"),
     PLUGIN_MISSING_MAPPING_ERROR_3P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 1,
-    "Cannot yet convert %1$s = %2$s; %3$s"),
+    "Cannot yet convert %1$s into %2$s; %3$s"),
     PLUGIN_UNEXPECTED_ERROR_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 2,
     "Unexpected exception when converting %1$s = %2$s"),
     
