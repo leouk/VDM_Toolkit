@@ -63,9 +63,9 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 
 	protected void setup()
 	{
-		setSemanticSeparator("");
 		setFormattingSeparator("");
-		setInvTranslateSeparator("");
+		setSemanticSeparator(IsaToken.BAR.toString());
+		setInvTranslateSeparator(IsaToken.BAR.toString());
 	}
 
 	protected void setPrefixed(boolean b)
@@ -259,11 +259,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
 	}
 
-	protected String typeTranslate(TRType t)
+	protected String prefixTranslate(TRType t)
 	{
 		assert this.contains(t);
 		StringBuilder sb = new StringBuilder();
-		String typeStr = t.translate();
+		String typeStr = t.translate().trim();
 		if (prefixed)
 		{
 			// create the constant constructors for the Isabelle data type as
@@ -278,11 +278,32 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			sb.append(typeStr.replace(' ', '_'));
 			sb.append(IsaToken.SPACE.toString());
 		}
-		// add inner syntax tokens even if spurious to cope with structured union types
-		// e.g. U = set of nat | real | seq of int => "VDMNat VDMSet" | "VDMReal" | "VDMInt VDMSeq"
-		sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, typeStr, IsaToken.ISAQUOTE));
 		return sb.toString();
 	}
+
+	protected String typeTranslate(TRType t)
+	{
+		assert this.contains(t);
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefixTranslate(t));
+		// add inner syntax tokens even if spurious to cope with structured union types
+		// e.g. U = set of nat | real | seq of int => "VDMNat VDMSet" | "VDMReal" | "VDMInt VDMSeq"
+		sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, t.translate(), IsaToken.ISAQUOTE));
+		return sb.toString();
+	}
+
+	protected String typeInvTranslate(TRType t, String varName)
+	{
+		assert this.contains(t) && varName != null && !varName.isEmpty();
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefixTranslate(t));
+		sb.append(varName);
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(IsaToken.FUN.toString());
+		sb.append(IsaToken.parenthesise(t.invTranslate(varName)));
+		return sb.toString();
+	}
+
 	@Override
 	public String translate()
 	{
@@ -291,13 +312,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			typeTranslate(t);
-			sb.append(t.translate());
+			sb.append(typeTranslate(t));
 			while (it.hasNext())
 			{
 				sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
 				t = it.next();
+				sb.append(typeTranslate(t));
 			}
 		}
 		return sb.toString();
@@ -306,21 +327,27 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	@Override
 	public String invTranslate()
 	{
+		return invTranslate(IsaToken.dummyVarNames(1, getLocation()));
+	}
+
+	public String invTranslate(String varName)
+	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			sb.append(t.translate());
+			sb.append(typeInvTranslate(t, varName));
 			while (it.hasNext())
 			{
-				sb.append(getInvTranslateSeparator());
                 sb.append(getFormattingSeparator());
+				sb.append(getInvTranslateSeparator());
 				t = it.next();
-				sb.append(t.invTranslate());
+				sb.append(typeInvTranslate(t, varName));
 			}
+			sb.append(getFormattingSeparator());
 		}
-		return sb.toString();
+		return IsaToken.parenthesise(sb.toString());
 	}
 
 	public TRTypeList asList()
@@ -330,11 +357,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
         return list;
     }
 
-	public String invTranslate(List<String> varNames)
-	{
-		//TODO this is dangerous?! 
-		return asList().invTranslate(varNames);
-	}
+	// public String invTranslate(List<String> varNames)
+	// {
+	// 	//TODO this is dangerous?! 
+	// 	return asList().invTranslate(varNames);
+	// }
 
 	@Override
 	public String tldIsaComment() {

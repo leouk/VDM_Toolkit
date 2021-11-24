@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.tc.types.TCUnionType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -44,7 +45,7 @@ public class TRUnionType extends TRType implements TRDataType {
 	protected void setup()
 	{
 		super.setup();
-		setFormattingSeparator(" ");
+		setFormattingSeparator("\n\t\t ");
 		setSemanticSeparator(" " + isaToken() + " ");
 		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
@@ -108,18 +109,22 @@ public class TRUnionType extends TRType implements TRDataType {
         StringBuilder sb = new StringBuilder();
 		if (varName != null)
 		{
-			List<String> varNames = new Vector<String>(types.size());
-			// for(int i = 0; i < types.size(); i ++)
-			// {
-			// 	varNames.add(varName + String.valueOf(i));
-			// }
-			//TODO not sure whether the above is needed; for quotes it isn't
-			varNames.add(varName);
-			sb.append(types.invTranslate(varNames));
+			//TODO construct a TRCasesExpression? Nah...
+			sb.append(IsaToken.CASE.toString());
+			sb.append(IsaToken.SPACE.toString());
+			sb.append(varName);
+			sb.append(IsaToken.SPACE.toString());
+			sb.append(IsaToken.OF.toString());
+			sb.append(getFormattingSeparator());
+			sb.append(types.invTranslate(varName));
 		}
 		else
-			sb.append(types.invTranslate());
-		return sb.toString();		
+		{
+			TRNode n = (TRNode)this;
+			// will this call the error case? 
+			sb.append(n.invTranslate());
+		}
+		return IsaToken.parenthesise(sb.toString());		
     }
 
 	public boolean isDataType()
