@@ -82,4 +82,12 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 			f.checkForUnionTypes();
 		}
 	}
+
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        for(TRField f : this)
+		{
+			f.setAtTopLevelDefinition(b);
+		}
+    }	
 }

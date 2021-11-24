@@ -49,6 +49,14 @@ public class TRUnionType extends TRType implements TRDataType {
 	}
 
 	@Override
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        // inner type at super = to type set
+        super.setAtTopLevelDefinition(b);
+		this.types.setAtTopLevelDefinition(b);
+    }	
+
+	@Override
     public TRType copy(boolean atTLD)
     {
 		TRType result = this;

@@ -44,6 +44,14 @@ public class TRRecordType extends TRInvariantType
     }
 
     @Override
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        // inner type at super = to type set
+        super.setAtTopLevelDefinition(b);
+		this.fields.setAtTopLevelDefinition(b);
+    }	
+
+    @Override
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRRecordType((TCRecordType)getVDMType(), name, definitions, fields/*//TODO ?fields.copy(atTLD)*/, composed, getInvDef(), getEqDef(), getOrdDef(), true);

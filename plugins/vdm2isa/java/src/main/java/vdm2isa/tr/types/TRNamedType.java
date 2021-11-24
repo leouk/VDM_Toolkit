@@ -27,7 +27,15 @@ public class TRNamedType extends TRInvariantType
         super.setup();
         setSemanticSeparator(IsaToken.SPACE.toString());
     }
-    
+
+    @Override
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        // inner type at super = to type set
+        super.setAtTopLevelDefinition(b);
+		this.type.setAtTopLevelDefinition(b);
+    }	
+
     @Override
     public TRType copy(boolean atTLD)
     {

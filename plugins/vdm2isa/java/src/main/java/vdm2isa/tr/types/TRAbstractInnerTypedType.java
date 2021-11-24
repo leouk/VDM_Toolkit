@@ -37,6 +37,13 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     }
 
     @Override
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        super.setAtTopLevelDefinition(b);
+        getInnerType().setAtTopLevelDefinition(b);
+    }
+
+    @Override
     public void checkForUnionTypes() {
         if (getInnerType() instanceof TRUnionType)
         {

@@ -56,6 +56,13 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		setFormattingSeparator("\n\t");
 	}
 
+    @Override
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        super.setAtTopLevelDefinition(b);
+		this.parameters.setAtTopLevelDefinition(b);
+    }	
+
 	@Override
 	public TRType copy(boolean atTLD)
 	{

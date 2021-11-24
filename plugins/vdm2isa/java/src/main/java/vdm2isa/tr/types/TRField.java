@@ -46,6 +46,16 @@ public class TRField extends TRAbstractInnerTypedType {
         return result;
 	}
 
+    // @Override
+    // public void setAtTopLevelDefinition(boolean b)
+    // {
+    //     super.setAtTopLevelDefinition(b);
+    //     // checkRecordType();
+    //     // if (record != null)
+    //     //     record.setAtTopLevelDefinition(b);
+    // }
+
+
     private void checkRecordType()
     {
         if (record == null)

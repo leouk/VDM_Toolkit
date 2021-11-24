@@ -93,6 +93,14 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return separator;
 	}
 
+	public void setAtTopLevelDefinition(boolean b)
+	{
+		for(TRType t : this)
+		{
+			t.setAtTopLevelDefinition(b);
+		}
+	}
+
 	private boolean isValidInvTranslateCall(List<String> varNames)
 	{
 		return varNames.size() <= size();

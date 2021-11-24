@@ -35,7 +35,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		super(vdmType.location);
 		this.vdmType = vdmType;
 		this.definitions = definitions == null ? new TRDefinitionList() : definitions;
-		setAtTopLevelDefinition(false);
+		this.atTLD = false; //setAtTopLevelDefinition(false);
 	}
 
 	@Override

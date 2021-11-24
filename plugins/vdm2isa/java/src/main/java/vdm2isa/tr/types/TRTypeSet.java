@@ -73,6 +73,14 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		prefixed = b;
 	}
 
+    public void setAtTopLevelDefinition(boolean b)
+    {
+        for(TRType t : this)
+		{
+			t.setAtTopLevelDefinition(b);
+		}
+    }	
+
 	public TRTypeSet copy(boolean atTLD)
 	{
 		TRTypeSet result = new TRTypeSet();
