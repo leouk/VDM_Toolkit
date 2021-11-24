@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -38,8 +39,17 @@ public class TRSeqType extends TRAbstractInnerTypedType
     @Override
     public TRType copy(boolean atTLD)
     {
-        TRType result = new TRSeqType(getVDMType(), definitions, getInnerType().copy(true), seq1);
-        result.setAtTopLevelDefinition(atTLD);
+        TRType result = this;
+        if (getInnerType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "seq type", "null type?");
+        }
+        else
+        {
+            result = new TRSeqType(getVDMType(), definitions, getInnerType().copy(true), seq1);
+            result.setAtTopLevelDefinition(atTLD);
+        }
         return result;
     }
 

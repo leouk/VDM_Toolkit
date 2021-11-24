@@ -47,7 +47,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 					type.getClass().getSimpleName(),//from.toString(), 
 					e.toString());
 				// don't debug "can't convert errors"! 
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			catch (Throwable t)
 			{

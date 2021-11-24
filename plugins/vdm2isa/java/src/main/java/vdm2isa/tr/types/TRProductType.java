@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.tc.types.TCProductType;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -22,8 +23,17 @@ public class TRProductType extends TRType {
     @Override
 	public TRType copy(boolean atTLD)
 	{
-		TRType result = new TRProductType((TCProductType)getVDMType(), definitions, types.copy(atTLD));
-		result.setAtTopLevelDefinition(atTLD);
+        TRType result = this;
+        if (types == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "product type", "null types list?");
+        }
+        else
+        {
+            result = new TRProductType((TCProductType)getVDMType(), definitions, types.copy(atTLD));
+		    result.setAtTopLevelDefinition(atTLD);
+        }
 		return result;
 	}   
 

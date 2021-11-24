@@ -59,8 +59,22 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	@Override
 	public TRType copy(boolean atTLD)
 	{
-		TRType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
-		result.setAtTopLevelDefinition(atTLD);
+		TRType result = this;
+        if (getInnerType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "function type", "null result type?");
+        }
+		else if (parameters == null)
+		{
+			// this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "function type", "null parameter types?");
+		}
+		else
+        {
+			result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
+			result.setAtTopLevelDefinition(atTLD);
+		}
 		return result;
 	}
 

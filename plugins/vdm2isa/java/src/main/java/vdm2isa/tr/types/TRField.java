@@ -32,9 +32,18 @@ public class TRField extends TRAbstractInnerTypedType {
     @Override
 	public TRType copy(boolean atTLD)
 	{
-		TRType result = new TRField(tagname, getInnerType().copy(true), equalityAbstraction);
-		result.setAtTopLevelDefinition(atTLD);
-		return result;
+        TRType result = this;
+        if (getInnerType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, getTagName(), "null type?");
+        }
+        else
+        {
+            result = new TRField(tagname, getInnerType().copy(true), equalityAbstraction);
+            result.setAtTopLevelDefinition(atTLD);
+        }
+        return result;
 	}
 
     private void checkRecordType()

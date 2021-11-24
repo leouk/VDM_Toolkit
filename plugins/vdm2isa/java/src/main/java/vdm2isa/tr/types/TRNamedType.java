@@ -31,9 +31,18 @@ public class TRNamedType extends TRInvariantType
     @Override
     public TRType copy(boolean atTLD)
     {
-        // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
-        TRNamedType result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
-        result.setAtTopLevelDefinition(atTLD);
+        TRType result = this;
+        if (type == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, getName(), "null type?");
+        }
+        else
+        {
+            // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
+            result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
+            result.setAtTopLevelDefinition(atTLD);
+        }
         return result;
     }
 

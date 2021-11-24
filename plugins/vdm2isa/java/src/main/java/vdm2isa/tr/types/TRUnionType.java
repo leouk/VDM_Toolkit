@@ -50,8 +50,17 @@ public class TRUnionType extends TRType implements TRDataType {
 	@Override
     public TRType copy(boolean atTLD)
     {
-        TRType result = new TRUnionType((TCUnionType)getVDMType(), definitions, types.copy(true));
-        result.setAtTopLevelDefinition(atTLD);
+		TRType result = this;
+        if (types == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "union type", "null types set?");
+        }
+        else
+        {
+            result = new TRUnionType((TCUnionType)getVDMType(), definitions, types.copy(true));
+            result.setAtTopLevelDefinition(atTLD);
+        }
         return result;
     }
 

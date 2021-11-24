@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCMapType;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -75,9 +76,23 @@ public class TRMapType extends TRAbstractInnerTypedType
 	@Override
 	public TRType copy(boolean atTLD)
 	{
-		TRType result = new TRMapType((TCMapType)getVDMType(), definitions, getFromType().copy(true), getToType().copy(true), injective);
-		result.setAtTopLevelDefinition(atTLD);
-		return result;
+        TRType result = this;
+        if (getFromType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "map type", "null domain type?");
+        }
+        else if (getToType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "map type", "null range type?");
+        }
+        else
+        {
+            result = new TRMapType((TCMapType)getVDMType(), definitions, getFromType().copy(true), getToType().copy(true), injective);
+		    result.setAtTopLevelDefinition(atTLD);
+        }
+        return result;
 	}
     
     @Override

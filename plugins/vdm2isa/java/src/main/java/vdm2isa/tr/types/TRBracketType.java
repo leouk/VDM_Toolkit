@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.types.TCBracketType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -15,8 +16,17 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     @Override
 	public TRType copy(boolean atTLD)
 	{
-		TRType result = new TRBracketType((TCBracketType)getVDMType(), definitions, getInnerType().copy(true));
-		result.setAtTopLevelDefinition(atTLD);
+        TRType result = this;
+        if (getInnerType() == null)
+        {
+            // this can happen if -verbose WARNINGS are not heeded? Percolate through the TRType tree.
+            report(IsaErrorMessage.VDMSL_INVALID_TYPEDEF_2P, "bracket type", "null type?");
+        }
+        else
+        {
+            result = new TRBracketType((TCBracketType)getVDMType(), definitions, getInnerType().copy(true));
+            result.setAtTopLevelDefinition(atTLD);
+        }
 		return result;
 	}
 

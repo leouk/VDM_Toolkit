@@ -40,7 +40,7 @@ public enum IsaErrorMessage {
     VDMSL_INVALID_INVTYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 11,
     "Invalid VDMSL invartiant type %1$s: %2$s."),
     VDMSL_INVALID_TYPEDEF_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 12, 
-    "Invalid type %1$s definition for %2$s."),
+    "Invalid type `%1$s` definition for `%2$s`."),
     VDMSL_INVALID_VAREXPR_VARDEF_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 13, 
     "Invalid variable expression `%1$s` - null vardef."),
     VDMSL_INVALID_EXPROP_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 14, 
