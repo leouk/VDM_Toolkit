@@ -61,6 +61,7 @@ exports
 		averages_r: set of real -> real           ;
 		nearest_precision: real * Precision * nat -> nat;
 		approximate: real * Precision -> nat;
+		ceil: real -> nat;
 	  	ordered: set of set1 of int * set of set1 of int -> bool         ;
 	  	well_ordered[@elem]: set of (@elem * set of set1 of int) -> bool ;
 		unique_seq_inv[@T,@R]: seq of @T * (@T -> @R) -> bool    ;       
@@ -329,6 +330,10 @@ functions
 		
 	approximate: real * Precision -> nat
 	approximate(r, precision) == nearest_precision(r, precision, precision div 2);
+
+    --@doc ceil is a real ceiling function
+    ceil: real -> nat
+    ceil(n) == - floor (- n); 
 	
 ---------------------------------------------------------------
 -- Generic functions for VDM data types
