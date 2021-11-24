@@ -4,6 +4,7 @@
 package vdm2isa.tr;
 
 import java.util.List;
+import java.util.Stack;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
@@ -48,15 +49,15 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 				add((TO)mapper.convert(type));
 			}
 			catch (Exception e)
-			{
-				
+			{				
 				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, 
 					figureOutLocation(type), 
 					from.getClass().getSimpleName(), 
 					type.getClass().getSimpleName(),
 					e.toString());
 				// don't debug "can't convert errors"! 
-				//e.printStackTrace();
+				if (e instanceof NullPointerException || e.getCause() instanceof StackOverflowError)
+					e.printStackTrace();
 			}
 			catch (Throwable t)
 			{
