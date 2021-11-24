@@ -60,7 +60,10 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Throwable t)
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, LexLocation.ANY, from.getClass().getSimpleName(), t.toString());
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, 
+					figureOutLocation(from), 
+					from.getClass().getSimpleName(), 
+					t.toString());
 				t.printStackTrace();
 			}
 		}
@@ -266,6 +269,17 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	public void warning(int number, String warning)
 	{
 		GeneralisaPlugin.warning(number, warning, getLocation());
+	}
+
+	public static <T extends Mappable/*Node!*/>  LexLocation figureOutLocation(List<T> list)
+	{
+		LexLocation result = LexLocation.ANY;
+		// figure out the first possile location or ANY otherwise.
+		for(int i = 0; i < list.size() && result.equals(LexLocation.ANY); i++)
+		{
+			result = figureOutLocation(list.get(i));
+		}
+		return result;
 	}
 
 	public static <T extends Mappable/*Node!*/>  LexLocation figureOutLocation(T t)
