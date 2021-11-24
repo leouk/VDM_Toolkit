@@ -18,12 +18,16 @@ types
 	
 	TUnion3 = TBasic2 | TUnion2;	
 	
+	-- this will be tricky: entails implicit union deconstruction for both cases :-(
+	-- user defined union type invariants are better avoided! 
 	TUnion4 = int | real
 	inv u == u > 0;
 	
 	TUnion5 = int | nat
 	inv u == u < 0;
 
+	-- this will be tricky: entails is_ expr deconstruction over the union. Oh man. s
+	--@NB this is not handled properly in VDMJ? 
 	TUnion6 = int | nat
 	inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
 
@@ -37,21 +41,5 @@ functions
 	f6': TUnion6' -> int
 	f6'(u) == u;
 
-state S of
-  x: nat
-  y: nat
-inv mk_S(x,y) == x < y
-init s == s = mk_S(0, 1)
-end
-
-
-operations
-
-   op1(v: nat) r: nat== 
-   	(y := y + v;
-   	 x := x + v;
-   	 return x + y;
-   	);
-   		
 end TestV2ITypesUnion
 

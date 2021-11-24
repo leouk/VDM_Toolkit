@@ -64,8 +64,8 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	protected void setup()
 	{
 		setFormattingSeparator("");
-		setSemanticSeparator(IsaToken.BAR.toString());
-		setInvTranslateSeparator(IsaToken.BAR.toString());
+		setSemanticSeparator(" " + IsaToken.BAR.toString() + " ");
+		setInvTranslateSeparator(" " + IsaToken.BAR.toString() + " ");
 	}
 
 	protected void setPrefixed(boolean b)
@@ -300,7 +300,8 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		sb.append(varName);
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(IsaToken.FUN.toString());
-		sb.append(IsaToken.parenthesise(t.invTranslate(varName)));
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(t.invTranslate(varName));
 		return sb.toString();
 	}
 
@@ -337,17 +338,20 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			sb.append(typeInvTranslate(t, varName));
+			int i = 1;
+			// change the inner dummy name! 
+			sb.append(typeInvTranslate(t, varName + Integer.valueOf(i)));
 			while (it.hasNext())
 			{
                 sb.append(getFormattingSeparator());
 				sb.append(getInvTranslateSeparator());
 				t = it.next();
-				sb.append(typeInvTranslate(t, varName));
+				i++;
+				sb.append(typeInvTranslate(t, varName + Integer.valueOf(i)));
 			}
 			sb.append(getFormattingSeparator());
 		}
-		return IsaToken.parenthesise(sb.toString());
+		return sb.toString();
 	}
 
 	public TRTypeList asList()

@@ -27,10 +27,8 @@ public class TRUnionType extends TRType implements TRDataType {
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
 		//expand();
-		this.types.setSemanticSeparator(getSemanticSeparator());
-		this.types.setFormattingSeparator(getFormattingSeparator());
-		this.types.setInvTranslateSeparator(getInvTranslateSeparator());
-		System.out.println(toString());
+		types.setFormattingSeparator(getFormattingSeparator());
+		//System.out.println(toString());
 	}
 
 	@Override 
