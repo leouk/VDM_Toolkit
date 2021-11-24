@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T16:02:48.198638Z
+(* VDM to Isabelle Translation @2021-11-24T07:34:50.597748Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
@@ -122,8 +122,11 @@ where
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
-datatype ValueTypesLF = UBool \<bool> |  UReal VDMReal
-	
+datatype ValueTypesLF = U_\<bool> \<bool> | U_real VDMReal | U_VDMNat_VDMSet "VDMNat VDMSet"
+
+datatype OtherType = U\<bool> \<bool> | Uint VDMInt
+
+datatype NowWhat = UOtherType OtherType | UValueTypesLF ValueTypesLF
 
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 definition
@@ -131,7 +134,7 @@ definition
 where
 	"inv_ValueTypesLF dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ValueTypesLF specification\<close>
-		((((inv_bool dummy0))))"
+	True"
 
 		 
 
@@ -146,7 +149,15 @@ record Value =
 definition
 	inv_Value :: "Value \<Rightarrow> \<bool>"
 where
-	"inv_Value dummy0 \<equiv> True" 
+	"inv_Value dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Value specification\<close>
+		(
+		(((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))))) \<and>
+		(
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)))) \<and>
+		((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))))
+		))
+		))"
  
 
 	
@@ -326,7 +337,7 @@ definition
 where
 	"inv_FMU fmu \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_FMU specification\<close>
-		(
+		
 		((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
 		((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
 		((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
@@ -337,10 +348,10 @@ where
 		((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U fmu))))
 		)) \<and>
 		((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		(((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
-		((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and>
-		((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu)))
-		))  \<and> 
+		(((inv_Map ((inv_VDMNat)) inv_True  (env\<^sub>F\<^sub>M\<^sub>U fmu)))) \<and>
+		((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) 
+		
+)  \<and> 
 		\<comment>\<open>User defined body of inv_FMU\<close>
 		(
 		let 

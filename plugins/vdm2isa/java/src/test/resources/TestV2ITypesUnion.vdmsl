@@ -1,0 +1,57 @@
+module TestV2ITypesUnion
+exports all
+definitions
+
+types
+	--@NB VDM merges these two? i.e. widens to largest possible types?
+	TUnion = nat | int;
+	TUnion'= nat | real;
+	
+	--@NB but then not within structures
+	TUnion2 = seq of nat | set of real;
+	TUnion2'= seq of nat | seq of real;
+	
+	TBasic = nat;
+	
+	TBasic2 = TBasic
+	inv t == t > 10;
+	
+	TUnion3 = TBasic2 | TUnion2;	
+	
+	TUnion4 = int | real
+	inv u == u > 0;
+	
+	TUnion5 = int | nat
+	inv u == u < 0;
+
+	TUnion6 = int | nat
+	inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
+
+	TUnion6' = int | nat
+	inv u == (is_int(u) => u < 0) and (is_nat(u) => u > 0);
+	
+functions
+	f6: TUnion6 -> int
+	f6(u) == u;
+
+	f6': TUnion6' -> int
+	f6'(u) == u;
+
+state S of
+  x: nat
+  y: nat
+inv mk_S(x,y) == x < y
+init s == s = mk_S(0, 1)
+end
+
+
+operations
+
+   op1(v: nat) r: nat== 
+   	(y := y + v;
+   	 x := x + v;
+   	 return x + y;
+   	);
+   		
+end TestV2ITypesUnion
+
