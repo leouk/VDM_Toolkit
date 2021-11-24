@@ -21,6 +21,7 @@ public class TRUnionType extends TRType implements TRDataType {
 	{
 		super(vdmType, definitions);
 		this.types = types;
+		this.types.setPrefixed(true);
         //TODO not sure whether this is needed, given the TRTypeSet passed will already have been 
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
@@ -28,6 +29,7 @@ public class TRUnionType extends TRType implements TRDataType {
 		this.types.setSemanticSeparator(getSemanticSeparator());
 		this.types.setFormattingSeparator(getFormattingSeparator());
 		this.types.setInvTranslateSeparator(getInvTranslateSeparator());
+		System.out.println(toString());
 	}
 
 	@Override 

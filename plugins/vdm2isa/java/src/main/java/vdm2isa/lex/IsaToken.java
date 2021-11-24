@@ -27,6 +27,7 @@ public enum IsaToken {
   	TOKEN(Token.TOKEN, "VDMToken"),
 	CROSSPROD(Token.TIMES, "\\<times>"),
 	VDMQUOTE(Token.QUOTE, ""), // i.e. "<X>" => X (empty string for Token.QUOTE)
+	VDMUNION(null, "U"),
 	ISAQUOTE(null, "\""),
 	SET(Token.SET, "VDMSet"),
 	SET1(Token.SET1, "VDMSet1"),

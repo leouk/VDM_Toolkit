@@ -35,11 +35,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	private String separator;
 	private String formattingSeparator;
 	private String invTranslateSeparator;
+	private boolean prefixed;
 
 	public TRTypeSet()
 	{
 		super();
 		setup();
+		prefixed = false;
 	}
 
     public TRTypeSet(TCTypeSet from) throws Exception
@@ -64,6 +66,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		setSemanticSeparator("");
 		setFormattingSeparator("");
 		setInvTranslateSeparator("");
+	}
+
+	protected void setPrefixed(boolean b)
+	{
+		prefixed = b;
 	}
 
 	public TRTypeSet copy(boolean atTLD)
@@ -252,6 +259,30 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
 	}
 
+	protected String typeTranslate(TRType t)
+	{
+		assert this.contains(t);
+		StringBuilder sb = new StringBuilder();
+		String typeStr = t.translate();
+		if (prefixed)
+		{
+			// create the constant constructors for the Isabelle data type as
+			// U_T for every type T in the union, where spaces are replaced by underscores in T
+			// ex.  Union = nat | set of int | seq of real 
+			//		=isa> 
+			//		datatype Union = U_nat "VDMNat" | U_set_of_int "VDMInt VDMSet" | U_seq_of_real "VDMReal VDMSeq" 
+			//
+			// Constructor names won't be unique across union types, but will within fully qualified union types, so fine for now.
+			sb.append(IsaToken.VDMUNION.toString());
+			sb.append(IsaToken.UNDERSCORE.toString());
+			sb.append(typeStr.replace(' ', '_'));
+			sb.append(IsaToken.SPACE.toString());
+		}
+		// add inner syntax tokens even if spurious to cope with structured union types
+		// e.g. U = set of nat | real | seq of int => "VDMNat VDMSet" | "VDMReal" | "VDMInt VDMSeq"
+		sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, typeStr, IsaToken.ISAQUOTE));
+		return sb.toString();
+	}
 	@Override
 	public String translate()
 	{
@@ -260,13 +291,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
+			typeTranslate(t);
 			sb.append(t.translate());
 			while (it.hasNext())
 			{
 				sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
 				t = it.next();
-				sb.append(t.translate());
 			}
 		}
 		return sb.toString();

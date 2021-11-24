@@ -19,6 +19,12 @@ public abstract class TRAbstractInnerTypedType extends TRType {
         this.type = type;
     }
 
+    @Override
+	public String toString()
+	{
+		return super.toString() + " of " + String.valueOf(getInnerType()); 
+    }
+
     public TRType getInnerType()
     {
         return type;
