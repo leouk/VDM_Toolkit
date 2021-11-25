@@ -653,6 +653,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;			
 		}
 		
+		// user defined specification body translation, take record / union into account
 		// implicitly generated undeclared specifications have no body
 		if (!isImplicitlyGeneratedUndeclaredSpecification())
 		{
@@ -661,19 +662,35 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
 			//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
 			boolean hasRecPattern = parameters.hasRecordPatterns();
+			String fmtsep;
 			if (hasRecPattern)
 			{
 				fcnBody.append(getFormattingSeparator());
 				fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
-				setFormattingSeparator("\n\t\t\t");
+				fmtsep = parameters.setFormattingSeparator("\n\t\t\t");
 				fcnBody.append(IsaToken.LPAREN.toString());
 				fcnBody.append(parameters.recordPatternTranslate());
+				parameters.setFormattingSeparator(fmtsep);
 			}
 			// include the user declared body after including implicit considerations
 			fcnBody.append(getFormattingSeparator());
 			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
 			fcnBody.append(tldIsaComment());
-			fcnBody.append(body.translate());
+
+			boolean hasUnionTypes = parameters.hasUnionTypes();
+			if (hasUnionTypes)
+			{
+				fcnBody.append(getFormattingSeparator());
+				fcnBody.append(IsaToken.comment("Implicit union type parameters projection conversion", getFormattingSeparator()));
+				fmtsep = parameters.setFormattingSeparator("\n\t\t\t");
+				fcnBody.append(parameters.unionTypesTranslate(body));
+				parameters.setFormattingSeparator(fmtsep);
+			}
+			else
+			{
+				fcnBody.append(body.translate());
+			}
+			
 			if (hasRecPattern)
 			{
 				// let expression requires parenthesis 
@@ -685,9 +702,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			// ready; do nothing else
 			case NONE:
-				break;
-
-			// include implicit function parameters invariant checks
 			case PRE:
 			case POST:
 			case INV:
@@ -695,6 +709,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			case ORD:
 				break;
 
+			// these are not boolean typed, hence need an else for undefined in case type test fails
 			case MAX:
 			case MIN:
 				// add the "rest" of the implicit check
