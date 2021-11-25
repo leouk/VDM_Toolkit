@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-24T14:03:14.321365Z
+(* VDM to Isabelle Translation @2021-11-25T10:00:38.075057Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesUnion.vdmsl' at line 1:8
@@ -44,8 +44,8 @@ where
 
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
-datatype TUnion2 = U_VDMNat_VDMSeq "VDMNat VDMSeq" | 
-		 U_VDMReal_VDMSet "VDMReal VDMSet"
+datatype TUnion2 = TUnion2_VDMNat_VDMSeq "VDMNat VDMSeq" | 
+		 TUnion2_VDMReal_VDMSet "VDMReal VDMSet"
 	
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
@@ -55,31 +55,28 @@ where
 	"inv_TUnion2 dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TUnion2 specification\<close>
 		(((case dummy0 of
-		 U_VDMNat_VDMSeq dummy01 \<Rightarrow> (inv_VDMSeq' (inv_VDMNat) dummy01)
-		  | U_VDMReal_VDMSet dummy02 \<Rightarrow> (inv_VDMSet' (inv_VDMReal) dummy02)
+		 TUnion2_VDMNat_VDMSeq dummy01 \<Rightarrow> (inv_VDMSeq' (inv_VDMNat) dummy01)
+		  | TUnion2_VDMReal_VDMSet dummy02 \<Rightarrow> (inv_VDMSet' (inv_VDMReal) dummy02)
 		 )))"
 
-		 
-
-	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 12:5\<close>
-datatype TUnion2' = U_VDMNat_VDMSeq "VDMNat VDMSeq" | 
-		 U_VDMReal_VDMSeq "VDMReal VDMSeq"
+		 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
+datatype TUnion2' = TUnion2'_VDMNat_VDMSeq "VDMNat VDMSeq" | 
+		 TUnion2'_VDMReal_VDMSeq "VDMReal VDMSeq"
 	
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
 definition
 	inv_TUnion2' :: "TUnion2' \<Rightarrow> \<bool>"
 where
 	"inv_TUnion2' dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TUnion2' specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TUnion2 specification\<close>
 		(((case dummy0 of
-		 U_VDMNat_VDMSeq dummy01 \<Rightarrow> (inv_VDMSeq' (inv_VDMNat) dummy01)
-		  | U_VDMReal_VDMSeq dummy02 \<Rightarrow> (inv_VDMSeq' (inv_VDMReal) dummy02)
+		 TUnion2'_VDMNat_VDMSeq dummy01 \<Rightarrow> (inv_VDMSeq' (inv_VDMNat) dummy01)
+		  | TUnion2'_VDMReal_VDMSeq dummy02 \<Rightarrow> (inv_VDMSeq' (inv_VDMReal) dummy02)
 		 )))"
 
-		 
-
+	
+		
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 14:5\<close>
 type_synonym TBasic = "VDMNat"
@@ -183,10 +180,58 @@ where
 		 U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
 		 )))  \<and> 
 		\<comment>\<open>User defined body of inv_TUnion6\<close>
-		((not yet \<longrightarrow> (u > (0::VDMNat))) \<and> (not yet \<longrightarrow> (u < (0::VDMNat))))"
- 
+    (case u of 
+      U_VDMInt u1 \<Rightarrow>
+		((isTest (u1) inv_VDMInt \<longrightarrow> (u1 < (0::VDMNat))) \<and> (isTest (u1) inv_TBasic \<longrightarrow> (u1 > (0::VDMNat)))))"
 
-	
+definition
+  f2 :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
+  where
+  "f2 u6 u2 \<equiv> 
+    (case u6 of 
+      U_VDMInt u61 \<Rightarrow>
+        (case u2 of
+           TUnion2_VDMNat_VDMSeq u21 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u21)
+                  \<and>
+                  (isTest u21 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> u21)
+         | TUnion2_VDMReal_VDMSet u22 \<Rightarrow> 
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u22 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u22)
+                  \<and>
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> u22)
+           )
+    )"
+
+definition
+  f2 :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
+  where
+  "f2 u6 u2 \<equiv> 
+    (case u6 of 
+      U_VDMInt u61 \<Rightarrow>
+        (case u2 of
+           TUnion2_VDMNat_VDMSeq u21 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u21)
+         | TUnion2_VDMReal_VDMSet u22 \<Rightarrow> 
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> u22)
+           )
+    )"
+
+definition
+  f2' :: "TUnion6 \<Rightarrow> TUnion2' \<Rightarrow> \<bool>"
+  where
+  "f2' u6 u2 \<equiv> 
+    (case u6 of 
+      U_VDMInt u61 \<Rightarrow>
+        (case u2 of
+           TUnion2'_VDMNat_VDMSeq u21 \<Rightarrow> u61 \<in> elems u21
+         | TUnion2'_VDMReal_VDMSeq u22 \<Rightarrow> u61 \<in> elems u22
+           ) 
+    )"
+
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 34:5\<close>
 datatype TUnion6' = U_VDMInt "VDMInt"
 	
@@ -201,9 +246,9 @@ where
 		 U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
 		 )))  \<and> 
 		\<comment>\<open>User defined body of inv_TUnion6'\<close>
-		((not yet \<longrightarrow> (u < (0::VDMNat))) \<and> (not yet \<longrightarrow> (u > (0::VDMNat))))"
- 
-
+    (case u of 
+      U_VDMInt u1 \<Rightarrow>
+		((isTest (u1) inv_VDMInt \<longrightarrow> (u1 < (0::VDMNat))) \<and> (isTest (u1) inv_TBasic \<longrightarrow> (u1 > (0::VDMNat)))))"
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 38:5\<close>
 
@@ -213,8 +258,7 @@ definition
 where
 	"pre_f6 u \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f6 specification\<close>
-		(((case u of U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
-		 )))"
+		((inv_TUnion6 u))"
 
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 38:5\<close>
@@ -223,9 +267,7 @@ definition
 where
 	"post_f6 u  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f6 specification\<close>
-		(((case u of
-		 U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
-		 ))  \<and>  (inv_VDMInt RESULT))"
+		((inv_TUnion6 u)  \<and>  (inv_VDMInt RESULT))"
 
 definition
 	f6 :: "TUnion6 \<Rightarrow> VDMInt"
@@ -243,8 +285,7 @@ definition
 where
 	"pre_f6' u \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f6' specification\<close>
-		(((case u of U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
-		 )))"
+		((inv_TUnion6' u))"
 
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 41:5\<close>
@@ -253,9 +294,7 @@ definition
 where
 	"post_f6' u  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f6' specification\<close>
-		(((case u of
-		 U_VDMInt u1 \<Rightarrow> (inv_VDMInt u1)
-		 ))  \<and>  (inv_VDMInt RESULT))"
+		((inv_TUnion6' u)  \<and>  (inv_VDMInt RESULT))"
 
 definition
 	f6' :: "TUnion6' \<Rightarrow> VDMInt"

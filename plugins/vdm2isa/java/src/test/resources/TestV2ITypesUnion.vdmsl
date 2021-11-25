@@ -31,11 +31,37 @@ types
 	TUnion6 = int | nat
 	inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
 
+	-- try one with named type is test as well
 	TUnion6' = int | nat
-	inv u == (is_int(u) => u < 0) and (is_nat(u) => u > 0);
+	inv u == (is_(u, int) => u < 0) and (is_(u, TBasic) => u > 0);
 	
 functions
-	f6: TUnion6 -> int
+
+	-- union selection across multiple unions becomes quite messy/confusing; obfuscated even?!
+	f2: TUnion6 * TUnion2 -> bool
+	f2(u6, u2) ==
+		(is_int(u6) => 
+			((is_(u2, seq of nat) => u6 in set elems u2)
+			 and
+			 (is_(u2, set of real) => u6 in set u2)
+			)
+		)
+		and
+		(is_nat(u6) => 
+			((is_(u2, seq of nat) => not u6 in set elems u2)
+			 and
+			 (is_(u2, set of real) => not u6 in set u2)
+			)
+		)
+		;
+
+	-- this one because every type in u2 is a seq, then don't need to faff around (in VDM)!
+	-- translation will always be "complete"/"explicit" given the constructive approach of sum types 
+	f2': TUnion6 * TUnion2' -> bool
+	f2'(u6, u2) ==
+		u6 in set elems u2;
+			 
+ 	f6: TUnion6 -> int
 	f6(u) == u;
 
 	f6': TUnion6' -> int
