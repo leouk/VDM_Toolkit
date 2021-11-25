@@ -77,7 +77,7 @@ public enum IsaErrorMessage {
     ISA_TYPELIST_INVTR_SIZE_3P(VDM2IsaError.ISABELLE_E_ISA_BASE + 11,
     "Inconsistent invariant translation call in type list: %1$s %2$s for %3$s." ),
     ISA_TYPE_HAS_NO_NAME_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 12,
-    "VDMSL type (isaToken = %1$s) does not have an explicitly given name."),
+    "VDMSL type with (isaToken = `%1$s`) does not have an explicitly given name."),
     ISA_INVALID_IDENTIFIER_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 13, 
     "Invalid Isabelle identifier in pattern `%1$s`."),
     ISA_INVALID_RECORDNAME_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 14, 

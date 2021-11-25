@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.types;
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeComparator;
 
@@ -18,6 +19,8 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 
 	private final TCType vdmType;
 	protected TRDefinitionList definitions; 
+
+	private TCNameToken inferredNameForType;
 
     /**
      * Named types are treated differently, depending on whether they are part of a top-level definition,
@@ -36,6 +39,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		this.vdmType = vdmType;
 		this.definitions = definitions == null ? new TRDefinitionList() : definitions;
 		this.atTLD = false; //setAtTopLevelDefinition(false);
+		this.inferredNameForType = null;
 	}
 
 	@Override
@@ -66,6 +70,11 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 * @return
 	 */
 	public abstract TRType copy(boolean atTLD);
+
+	protected void setInferredNamedForType(TCNameToken tn)
+	{
+		inferredNameForType = tn;
+	}
 
 	public void setAtTopLevelDefinition(boolean b)
     {
@@ -103,8 +112,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 
 	public String getName()
 	{
-		report(IsaErrorMessage.ISA_TYPE_HAS_NO_NAME_1P, isaToken().toString());
-		return "";
+		String result = inferredNameForType == null ? "" : inferredNameForType.toString();
+		if (result.isEmpty())
+		{
+			report(IsaErrorMessage.ISA_TYPE_HAS_NO_NAME_1P, isaToken().toString());
+		}
+		return result;
 	}
 
 	/**

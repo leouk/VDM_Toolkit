@@ -49,6 +49,7 @@ public class TRNamedType extends TRInvariantType
         {
             // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
             result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
+            ((TRNamedType)result).type.setInferredNamedForType(typename);
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;
@@ -59,11 +60,9 @@ public class TRNamedType extends TRInvariantType
         return IsaToken.IDENTIFIER;
     }
 
-
     @Override
 	public String getName()
 	{
-        //TODO @NB typename should never be null?
 		return typename != null ? typename.toString() : super.getName();
 	}
 
@@ -89,6 +88,7 @@ public class TRNamedType extends TRInvariantType
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
+        type.setInferredNamedForType(typename);
         // Hide LHS
         // sb.append(getName());
         // sb.append(getSemanticSeparator());

@@ -86,7 +86,7 @@ public class TRField extends TRAbstractInnerTypedType {
      */
     public String getTagName()
     {
-        return this.tagname.toString();
+        return this.tagname != null ? this.tagname.toString() : super.toString();
     }
 
     /**
