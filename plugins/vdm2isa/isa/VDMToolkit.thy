@@ -26,6 +26,14 @@ type_synonym VDMRat  = \<rat>
 type_synonym VDMReal = \<real>
 type_synonym VDMChar = char
 
+definition 
+  isTest :: "'a \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> \<bool>"
+  where
+  [intro!]: "isTest x inv_X \<equiv> inv_X x"
+
+lemma l_isTestI[simp]: "isTest x inv_X = inv_X x" 
+  by (simp add: isTest_def)
+
 definition
   inv_VDMNat :: "\<int> \<Rightarrow> \<bool>"
 where
