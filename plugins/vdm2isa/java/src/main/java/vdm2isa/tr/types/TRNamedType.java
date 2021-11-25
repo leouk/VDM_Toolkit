@@ -33,7 +33,7 @@ public class TRNamedType extends TRInvariantType
     {
         // inner type at super = to type set
         super.setAtTopLevelDefinition(b);
-		this.type.setAtTopLevelDefinition(b);
+		//this.type.setAtTopLevelDefinition(b);
     }	
 
     @Override

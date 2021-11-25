@@ -47,7 +47,7 @@ public class TRMapType extends TRAbstractInnerTypedType
     {
         // inner type at super = to type set
         super.setAtTopLevelDefinition(b);
-		this.getFromType().setAtTopLevelDefinition(b);
+		//this.getFromType().setAtTopLevelDefinition(b);
     }	
 
     @Override

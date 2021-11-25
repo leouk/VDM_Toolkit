@@ -60,7 +60,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
     public void setAtTopLevelDefinition(boolean b)
     {
         super.setAtTopLevelDefinition(b);
-		this.parameters.setAtTopLevelDefinition(b);
+		//this.parameters.setAtTopLevelDefinition(b);
     }	
 
 	@Override

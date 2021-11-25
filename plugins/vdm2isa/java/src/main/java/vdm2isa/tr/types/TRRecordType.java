@@ -48,7 +48,7 @@ public class TRRecordType extends TRInvariantType
     {
         // inner type at super = to type set
         super.setAtTopLevelDefinition(b);
-		this.fields.setAtTopLevelDefinition(b);
+		//this.fields.setAtTopLevelDefinition(b);
     }	
 
     @Override

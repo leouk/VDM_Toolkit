@@ -53,7 +53,7 @@ public class TRUnionType extends TRType implements TRDataType {
     {
         // inner type at super = to type set
         super.setAtTopLevelDefinition(b);
-		this.types.setAtTopLevelDefinition(b);
+		//this.types.setAtTopLevelDefinition(b);
     }	
 
 	@Override

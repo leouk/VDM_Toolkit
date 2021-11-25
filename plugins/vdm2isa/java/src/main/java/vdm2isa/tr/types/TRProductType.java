@@ -25,7 +25,7 @@ public class TRProductType extends TRType {
     {
         // inner type at super = to type set
         super.setAtTopLevelDefinition(b);
-		this.types.setAtTopLevelDefinition(b);
+		//this.types.setAtTopLevelDefinition(b);
     }	
 
     @Override
