@@ -85,12 +85,31 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 
 	@Override
 	public boolean hasUnionTypes() {
-		throw new UnsupportedOperationException("//TODO");
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).hasUnionTypes();
+		}
+		return result;
 	}
 
 	@Override
 	public String unionTypesTranslate(TRExpression body) {
-		throw new UnsupportedOperationException("//TODO");
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			String unionTranslate = get(0).unionTypesTranslate(body);
+			sb.append(unionTranslate);	
+			for(int i = 1; i < size(); i++)	
+			{
+				if (!unionTranslate.isEmpty())
+				{
+					sb.append(getSemanticSeparator());
+				}
+				sb.append(get(i).unionTypesTranslate(body));	
+			}
+		}
+		return sb.toString();
 	}
 
 	@Override

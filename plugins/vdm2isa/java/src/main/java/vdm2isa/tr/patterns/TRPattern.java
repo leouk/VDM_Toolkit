@@ -7,12 +7,13 @@ import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 /**
  * All patterns are record-context aware, but only TRRecordPattern properly implements it of course. 
  */
-public abstract class TRPattern extends TRNode implements TRRecordContext {
+public abstract class TRPattern extends TRNode implements TRRecordContext, TRUnionContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -94,5 +95,15 @@ public abstract class TRPattern extends TRNode implements TRRecordContext {
     public String recordPatternTranslate()
     {
         return translate();
+    }
+
+    @Override
+    public boolean hasUnionTypes() {
+        throw new UnsupportedOperationException("//TODO");
+    }
+
+    @Override
+    public String unionTypesTranslate(TRExpression body) {
+        throw new UnsupportedOperationException("//TODO");
     }
 }
