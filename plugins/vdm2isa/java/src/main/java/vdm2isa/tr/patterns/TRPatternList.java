@@ -10,8 +10,9 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.expressions.TRExpression;
 
-public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRRecordContext {
+public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRRecordContext, TRUnionContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -80,6 +81,16 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	public boolean hasRecordPatterns()
 	{
 		return !getRecordPatternIndeces().isEmpty();
+	}
+
+	@Override
+	public boolean hasUnionTypes() {
+		throw new UnsupportedOperationException("//TODO");
+	}
+
+	@Override
+	public String unionTypesTranslate(TRExpression body) {
+		throw new UnsupportedOperationException("//TODO");
 	}
 
 	@Override
