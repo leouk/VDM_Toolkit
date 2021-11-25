@@ -130,7 +130,7 @@ public enum IsaToken {
 	COLON(Token.COLON, ":"),
 	VDMINT_NARROW(null, "vdm_narrow_real"),
 	NARROW(null/*Token.NARROW doesn't exist?*/, "vdm_narrow"),
-	ISEXPR(Token.IS, "is"),
+	ISEXPR(Token.IS, "isTest"),
 	SOME(Token.LET, "SOME"),
 
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
