@@ -1,7 +1,6 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
@@ -20,7 +19,6 @@ import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeList;
 
 /**
  * VDM Lambda expressions are complex to translate because of the need for local invariant checks and the need

@@ -89,7 +89,6 @@ public class TRLiteralExpression extends TRExpression
 
 	public TRLiteralExpression(TCQuoteLiteralExpression exp, TRType exptype)
 	{
-		// remove the <XXX> -> XXX
 		this(exp.location, IsaToken.VDMQUOTE, exp != null ? exp.type != null ? exp.type.value : "null" : "null", exptype);
 	}
 

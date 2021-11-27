@@ -448,9 +448,10 @@ public enum IsaToken {
 			//case EXISTS1		: return IsaToken.EXISTS1;
 			//case IOTA			: return IsaToken.IOTA;
 			//case LAMBDA			: return IsaToken.LAMBDA;
-			
+			default:
+				// report the error
+				GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
+				return IsaToken.ERROR;
 		}
-		GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
-		return IsaToken.ERROR;
 	}
 }

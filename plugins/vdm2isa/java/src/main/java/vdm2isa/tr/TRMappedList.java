@@ -4,7 +4,6 @@
 package vdm2isa.tr;
 
 import java.util.List;
-import java.util.Stack;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;

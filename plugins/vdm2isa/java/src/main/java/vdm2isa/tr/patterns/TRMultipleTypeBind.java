@@ -1,13 +1,8 @@
 package vdm2isa.tr.patterns;
 
-import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
-import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.TRType;
 

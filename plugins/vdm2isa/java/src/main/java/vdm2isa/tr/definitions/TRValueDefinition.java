@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.definitions;
 
-import com.fujitsu.vdmj.in.definitions.visitors.INDefinitionExpressionFinder;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;

@@ -3,7 +3,6 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCSetType;
 
 import vdm2isa.lex.IsaToken;

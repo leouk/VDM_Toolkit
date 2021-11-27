@@ -9,10 +9,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
-import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.messages.InternalException;
-import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
@@ -25,12 +23,9 @@ import vdm2isa.tr.definitions.TRDefinitionSet;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRLiteralExpression;
-import vdm2isa.tr.expressions.TRNotYetSpecifiedExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
 import vdm2isa.tr.types.TRBasicType;
-import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
-import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnknownType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
@@ -234,7 +229,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		{
 			TRMultipleSetBind bset = (TRMultipleSetBind)b;
 			rhs = (TRExpression)bset.getRHS();
-			TRSetType stype = (TRSetType)rhs.getType();
+			//TRSetType stype = (TRSetType)rhs.getType();
 			//btype = stype.setof;
 			assert !bset.plist.isEmpty();
 			plist = bset.plist;
@@ -243,7 +238,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		{
 			TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
 			rhs = (TRExpression)bseq.getRHS();
-			TRSeqType stype = (TRSeqType)rhs.getType();
+			//TRSeqType stype = (TRSeqType)rhs.getType();
 			//btype = stype.seqof;
 			assert !bseq.plist.isEmpty();
 			plist = bseq.plist;

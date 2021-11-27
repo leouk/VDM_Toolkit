@@ -9,7 +9,6 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
-import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;

@@ -3,11 +3,9 @@ package vdm2isa.tr.types;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.Iterator;
-import java.util.List;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
-import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.tc.types.TCOptionalType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
@@ -21,7 +19,6 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.MappableNode;
-import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 
 /**

@@ -1,11 +1,8 @@
 package vdm2isa.tr.types;
 
-import java.util.List;
-import java.util.Vector;
 
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -16,12 +13,13 @@ public class TRUnionType extends TRType implements TRDataType {
     private static final long serialVersionUID = 1L;
    
     private TRTypeSet types; 
-    private boolean expanded = false;
+    private boolean expanded;
     
     public TRUnionType(TCUnionType vdmType, TRDefinitionList definitions, TRTypeSet types)
 	{
 		super(vdmType, definitions);
 		this.types = types;
+		this.expanded = false;
 		//System.out.println(toString());
 	}
 
