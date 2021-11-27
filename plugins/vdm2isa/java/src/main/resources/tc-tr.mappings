@@ -16,6 +16,7 @@ map TCValueDefinition{comments, annotations, nameScope, used, excluded, pattern,
 map TCEqualsDefinition{location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs} to TREqualsDefinition(this, location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs);
 map TCMultiBindListDefinition{location, comments, annotations, name, nameScope, used, excluded, bindings, defs} to TRMultiBindListDefinition(this, location, comments, annotations, name, nameScope, used, excluded, bindings, defs);
 
+map TCQualifiedDefinition{location, comments, annotations, name, nameScope, used, excluded, def, type} to TRQualifiedDefinition(this, location, comments, annotations, name, nameScope, used, excluded, def, type);
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
 #############################################################################
