@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-25T10:00:38.054689Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.299781Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypes.vdmsl' at line 1:8
@@ -44,7 +44,7 @@ where
 definition
 	eq_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
-	"eq_TBasic2 t1 t2 \<equiv> 
+	"eq_TBasic2 t1  t2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TBasic2 specification\<close>
 		((inv_TBasic2 t1)  \<and>  (inv_TBasic2 t2))  \<and> 
 		\<comment>\<open>User defined body of eq_TBasic2\<close>
@@ -56,7 +56,7 @@ where
 definition
 	ord_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
-	"ord_TBasic2 t1 t2 \<equiv> 
+	"ord_TBasic2 t1  t2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TBasic2 specification\<close>
 		((inv_TBasic2 t1)  \<and>  (inv_TBasic2 t2))  \<and> 
 		\<comment>\<open>User defined body of ord_TBasic2\<close>
@@ -68,7 +68,7 @@ where
 definition
 	min_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
-	"min_TBasic2 a b \<equiv> 
+	"min_TBasic2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TBasic2 specification\<close>
 		(if ((inv_TBasic2 a)  \<and>  (inv_TBasic2 b)) then
 			
@@ -87,7 +87,7 @@ where
 definition
 	max_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
-	"max_TBasic2 a b \<equiv> 
+	"max_TBasic2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TBasic2 specification\<close>
 		(if ((inv_TBasic2 a)  \<and>  (inv_TBasic2 b)) then
 			

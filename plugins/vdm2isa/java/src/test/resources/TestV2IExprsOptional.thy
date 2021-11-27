@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T14:08:50.317817Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.289132Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsOptional.vdmsl' at line 1:8
@@ -36,8 +36,10 @@ where
 abbreviation
 	v93 :: "VDMNat"
 where
-	"v93 \<equiv> (case \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) of None \<Rightarrow> (0::VDMNat)| 
-		v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
+	"v93 \<equiv> (
+		 case \<comment>\<open>Optional type variable `v37` might not need extra @{term the} operator!\<close>(the(v37)) of 
+		 None \<Rightarrow> (0::VDMNat)| 
+			 v \<Rightarrow> (\<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v)) + \<comment>\<open>Optional type variable `v` might not need extra @{term the} operator!\<close>(the(v))))"
 
 	definition
 	inv_v93 :: "\<bool>"

@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-11-27T13:38:50.431Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.281331Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl]
+in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IExprs.vdmsl]
 *)
 theory TestV2IExprs
 imports VDMToolkit
@@ -264,7 +264,7 @@ where
 abbreviation
 	v7 :: "VDMNat1 VDMSet VDMSet"
 where
-	"v7 \<equiv> (Fpow {(1::VDMNat1)(2::VDMNat1)})"
+	"v7 \<equiv> (Fpow {(1::VDMNat1), (2::VDMNat1)})"
 
 	definition
 	inv_v7 :: "\<bool>"
@@ -408,7 +408,7 @@ where
 abbreviation
 	v19 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"v19 \<equiv> (vdm_merge {t14t15})"
+	"v19 \<equiv> (vdm_merge {t14, t15})"
 
 	definition
 	inv_v19 :: "\<bool>"
@@ -1078,7 +1078,7 @@ where
 	
 	
 abbreviation
-	v74 :: "VDMNat\<times> VDMNat1 \<Rightarrow> VDMNat1"
+	v74 :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"v74 \<equiv> (
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat1) .
@@ -1097,7 +1097,7 @@ where
 	
 	
 abbreviation
-	v741 :: "VDMNat\<times> VDMNat1\<times> VDMReal \<Rightarrow> VDMReal"
+	v741 :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMReal \<Rightarrow> VDMReal"
 where
 	"v741 \<equiv> (
 	\<lambda> (var :: VDMNat)  (var2 :: VDMNat1)  (var3 :: VDMReal) .

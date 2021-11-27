@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-25T10:00:38.056762Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.301607Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesNamed.vdmsl' at line 1:8
@@ -23,11 +23,11 @@ where
  
 
 	
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 15:5\<close>
 type_synonym TBasic2 = "TBasic1"
 	
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 15:9\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 17:9\<close>
 definition
 	inv_TBasic2 :: "TBasic2 \<Rightarrow> \<bool>"
 where
@@ -39,11 +39,11 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 16:23\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 18:23\<close>
 definition
 	eq_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
-	"eq_TBasic2 t1 t2 \<equiv> 
+	"eq_TBasic2 t1  t2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TBasic2 specification\<close>
 		((inv_TBasic2 t1)  \<and>  (inv_TBasic2 t2))  \<and> 
 		\<comment>\<open>User defined body of eq_TBasic2\<close>
@@ -51,11 +51,11 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 17:23\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 19:23\<close>
 definition
 	ord_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> \<bool>"
 where
-	"ord_TBasic2 t1 t2 \<equiv> 
+	"ord_TBasic2 t1  t2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TBasic2 specification\<close>
 		((inv_TBasic2 t1)  \<and>  (inv_TBasic2 t2))  \<and> 
 		\<comment>\<open>User defined body of ord_TBasic2\<close>
@@ -63,11 +63,11 @@ where
 
 		 
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 17:23\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 19:23\<close>
 definition
 	min_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
-	"min_TBasic2 a b \<equiv> 
+	"min_TBasic2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TBasic2 specification\<close>
 		(if ((inv_TBasic2 a)  \<and>  (inv_TBasic2 b)) then
 			
@@ -82,11 +82,11 @@ where
 
 	
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 17:23\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 19:23\<close>
 definition
 	max_TBasic2 :: "TBasic2\<Rightarrow> TBasic2 \<Rightarrow> TBasic2"
 where
-	"max_TBasic2 a b \<equiv> 
+	"max_TBasic2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TBasic2 specification\<close>
 		(if ((inv_TBasic2 a)  \<and>  (inv_TBasic2 b)) then
 			
@@ -102,11 +102,11 @@ where
 	
 
 	
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 20:5\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 22:5\<close>
 type_synonym TBasic3 = "TBasic2"
 	
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 20:5\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 22:5\<close>
 definition
 	inv_TBasic3 :: "TBasic3 \<Rightarrow> \<bool>"
 where
@@ -116,11 +116,11 @@ where
  
 
 	
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 25:5\<close>
 type_synonym TBasic4 = "TBasic3"
 	
 
-\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 23:9\<close>
+\<comment>\<open>in 'TestV2ITypesNamed' (./src/test/resources/TestV2ITypesNamed.vdmsl) at line 27:9\<close>
 definition
 	inv_TBasic4 :: "TBasic4 \<Rightarrow> \<bool>"
 where

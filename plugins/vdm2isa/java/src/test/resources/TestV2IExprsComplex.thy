@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T14:08:50.312606Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.286308Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsComplex.vdmsl' at line 1:8
@@ -322,7 +322,7 @@ where
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
-	"pre_f x y \<equiv> 
+	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_f specification\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))  \<and> 
 		\<comment>\<open>User defined body of pre_f\<close>
@@ -333,7 +333,7 @@ where
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
-	"post_f x y RESULT \<equiv> 
+	"post_f x  y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_f specification\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_f\<close>
@@ -342,7 +342,7 @@ where
 definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat"
 where
-	"f x y \<equiv> 
+	"f x  y \<equiv> 
 	\<comment>\<open>User defined body of f\<close>
 	(x + y)"
 

@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T14:08:50.323776Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.294992Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 7:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
-		y\<^sub>R :: "VDMNat"
+		 y\<^sub>R :: "VDMNat"
 	
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 10:9\<close>
@@ -21,10 +21,8 @@ definition
 where
 	"inv_R r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
-		(
-		(((inv_VDMNat (x\<^sub>R r))) \<and>
-		((inv_VDMNat (y\<^sub>R r)))
-		))  \<and> 
+		( (((inv_VDMNat (x\<^sub>R r))) \<and>
+		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_R\<close>
 		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
  
@@ -47,15 +45,14 @@ definition
 where
 	"post_mkr n  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_mkr specification\<close>
-		((inv_VDMNat n)  \<and>   (((inv_VDMNat (x\<^sub>R RESULT))) \<and>
-		((inv_VDMNat (y\<^sub>R RESULT))) ))"
+		((inv_VDMNat n)  \<and>  inv_R RESULT)"
 
 definition
 	mkr :: "VDMNat \<Rightarrow> R"
 where
 	"mkr n \<equiv> 
 	\<comment>\<open>User defined body of mkr\<close>
-	\<lparr>x\<^sub>R = n, y\<^sub>R = (n+(1::VDMNat1))\<rparr>"
+	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
 
 	
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 21:5\<close>
@@ -66,8 +63,7 @@ definition
 where
 	"pre_recbind dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_recbind specification\<close>
-		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) ))"
+		(inv_R dummy0)"
 
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 21:5\<close>
@@ -76,8 +72,7 @@ definition
 where
 	"post_recbind dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_recbind specification\<close>
-		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) )  \<and>  (inv_VDMNat RESULT))"
+		(inv_R dummy0  \<and>  (inv_VDMNat RESULT))"
 
 definition
 	recbind :: "R \<Rightarrow> VDMNat"
@@ -85,8 +80,8 @@ where
 	"recbind dummy0 \<equiv> 
 	\<comment>\<open>Implicit record pattern projection conversion\<close>
 	(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-			\<comment>\<open>User defined body of recbind\<close>
-			(x + y))"
+	\<comment>\<open>User defined body of recbind\<close>
+	(x + y))"
 
 	
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 25:5\<close>
@@ -97,26 +92,24 @@ definition
 where
 	"pre_recbindSpec dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_recbindSpec specification\<close>
-		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) ))  \<and> 
+		(inv_R dummy0)  \<and> 
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-			\<comment>\<open>User defined body of pre_recbindSpec\<close>
-			(x < y))"
+		\<comment>\<open>User defined body of pre_recbindSpec\<close>
+		(x < y))"
 
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:21\<close>
 definition
 	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
-	"post_recbindSpec dummy0 RESULT \<equiv> 
+	"post_recbindSpec dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_recbindSpec specification\<close>
-		( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) )  \<and>  (inv_VDMNat RESULT))  \<and> 
+		(inv_R dummy0  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-			\<comment>\<open>User defined body of post_recbindSpec\<close>
-			((x < RESULT) \<and> (y < RESULT)))"
+		\<comment>\<open>User defined body of post_recbindSpec\<close>
+		((x < RESULT) \<and> (y < RESULT)))"
 
 definition
 	recbindSpec :: "R \<Rightarrow> VDMNat"
@@ -124,8 +117,8 @@ where
 	"recbindSpec dummy0 \<equiv> 
 	\<comment>\<open>Implicit record pattern projection conversion\<close>
 	(let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-			\<comment>\<open>User defined body of recbindSpec\<close>
-			(x + y))"
+	\<comment>\<open>User defined body of recbindSpec\<close>
+	(x + y))"
 
 	
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 32:5\<close>
@@ -152,7 +145,7 @@ where
 	\<comment>\<open>User defined body of letbest\<close>
 	(
 		SOME (dummy0::VDMNat) .(dummy0 \<in> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | (dummy0 :: R) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)) }))"
+		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)) }))"
 
 	
 abbreviation
@@ -250,7 +243,7 @@ where
 	"v741 \<equiv> (
 	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
-		((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
+		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
 		(x + y)
 	 else
 		undefined
@@ -258,11 +251,9 @@ where
 	)"
 
 	definition
-	inv_v741 :: "R \<Rightarrow> \<bool>"
+	inv_v741 :: "\<bool>"
 where
-	"inv_v741 dummy0 \<equiv> 
-	
-	(inv_\<lambda> (inv_VDMNat) (inv_VDMNat) (v741 dummy0))"
+	"inv_v741  \<equiv> (inv_Lambda inv_R  (inv_VDMNat)v741)"
 
 	
 	

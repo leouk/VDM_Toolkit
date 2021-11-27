@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-25T10:00:38.059774Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.304711Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesRecords.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 \<comment>\<open>in 'TestV2ITypesRecords' (./src/test/resources/TestV2ITypesRecords.vdmsl) at line 7:5\<close>
 record TRecord = 
 	x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "VDMNat"
-		y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "VDMNat"
+		 y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "VDMNat"
 	
 
 \<comment>\<open>in 'TestV2ITypesRecords' (./src/test/resources/TestV2ITypesRecords.vdmsl) at line 10:9\<close>
@@ -21,10 +21,8 @@ definition
 where
 	"inv_TRecord r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TRecord specification\<close>
-		(
-		(((inv_VDMNat (x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d r))) \<and>
-		((inv_VDMNat (y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d r)))
-		))  \<and> 
+		( (((inv_VDMNat (x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d r))) \<and>
+		 ((inv_VDMNat (y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d r))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_TRecord\<close>
 		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) < (y\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)))"
  
@@ -33,7 +31,7 @@ where
 definition
 	eq_TRecord :: "TRecord\<Rightarrow> TRecord \<Rightarrow> \<bool>"
 where
-	"eq_TRecord r1 r2 \<equiv> 
+	"eq_TRecord r1  r2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TRecord specification\<close>
 		(inv_TRecord r1  \<and>  inv_TRecord r2)  \<and> 
 		\<comment>\<open>User defined body of eq_TRecord\<close>
@@ -44,7 +42,7 @@ where
 definition
 	ord_TRecord :: "TRecord\<Rightarrow> TRecord \<Rightarrow> \<bool>"
 where
-	"ord_TRecord r1 r2 \<equiv> 
+	"ord_TRecord r1  r2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TRecord specification\<close>
 		(inv_TRecord r1  \<and>  inv_TRecord r2)  \<and> 
 		\<comment>\<open>User defined body of ord_TRecord\<close>

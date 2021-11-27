@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-23T14:08:50.316467Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.288278Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
-		y\<^sub>R :: "VDMNat"
+		 y\<^sub>R :: "VDMNat"
 	
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 10:9\<close>
@@ -21,10 +21,8 @@ definition
 where
 	"inv_R r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
-		(
-		(((inv_VDMNat (x\<^sub>R r))) \<and>
-		((inv_VDMNat (y\<^sub>R r)))
-		))  \<and> 
+		( (((inv_VDMNat (x\<^sub>R r))) \<and>
+		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_R\<close>
 		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
 

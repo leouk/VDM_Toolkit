@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-25T10:00:38.070710Z
+(* VDM to Isabelle Translation @2021-11-27T16:30:27.309220Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesStructured.vdmsl' at line 1:8
@@ -28,7 +28,7 @@ where
 definition
 	eq_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
-	"eq_TSet s1 s2 \<equiv> 
+	"eq_TSet s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TSet specification\<close>
 		((inv_TSet s1)  \<and>  (inv_TSet s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSet\<close>
@@ -39,7 +39,7 @@ where
 definition
 	ord_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> \<bool>"
 where
-	"ord_TSet s1 s2 \<equiv> 
+	"ord_TSet s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TSet specification\<close>
 		((inv_TSet s1)  \<and>  (inv_TSet s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSet\<close>
@@ -50,7 +50,7 @@ where
 definition
 	min_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
-	"min_TSet a b \<equiv> 
+	"min_TSet a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TSet specification\<close>
 		(if ((inv_TSet a)  \<and>  (inv_TSet b)) then
 			
@@ -69,7 +69,7 @@ where
 definition
 	max_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
 where
-	"max_TSet a b \<equiv> 
+	"max_TSet a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TSet specification\<close>
 		(if ((inv_TSet a)  \<and>  (inv_TSet b)) then
 			
@@ -154,7 +154,7 @@ where
 definition
 	eq_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
-	"eq_TSeq s1 s2 \<equiv> 
+	"eq_TSeq s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TSeq specification\<close>
 		((inv_TSeq s1)  \<and>  (inv_TSeq s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSeq\<close>
@@ -166,7 +166,7 @@ where
 definition
 	ord_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> \<bool>"
 where
-	"ord_TSeq s1 s2 \<equiv> 
+	"ord_TSeq s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TSeq specification\<close>
 		((inv_TSeq s1)  \<and>  (inv_TSeq s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSeq\<close>
@@ -178,7 +178,7 @@ where
 definition
 	min_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
-	"min_TSeq a b \<equiv> 
+	"min_TSeq a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TSeq specification\<close>
 		(if ((inv_TSeq a)  \<and>  (inv_TSeq b)) then
 			
@@ -197,7 +197,7 @@ where
 definition
 	max_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
-	"max_TSeq a b \<equiv> 
+	"max_TSeq a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TSeq specification\<close>
 		(if ((inv_TSeq a)  \<and>  (inv_TSeq b)) then
 			
@@ -233,7 +233,7 @@ where
 definition
 	eq_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> \<bool>"
 where
-	"eq_TSeq2 s1 s2 \<equiv> 
+	"eq_TSeq2 s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TSeq2 specification\<close>
 		((inv_TSeq2 s1)  \<and>  (inv_TSeq2 s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSeq2\<close>
@@ -245,7 +245,7 @@ where
 definition
 	ord_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> \<bool>"
 where
-	"ord_TSeq2 s1 s2 \<equiv> 
+	"ord_TSeq2 s1  s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TSeq2 specification\<close>
 		((inv_TSeq2 s1)  \<and>  (inv_TSeq2 s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSeq2\<close>
@@ -257,7 +257,7 @@ where
 definition
 	min_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
-	"min_TSeq2 a b \<equiv> 
+	"min_TSeq2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TSeq2 specification\<close>
 		(if ((inv_TSeq2 a)  \<and>  (inv_TSeq2 b)) then
 			
@@ -276,7 +276,7 @@ where
 definition
 	max_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
-	"max_TSeq2 a b \<equiv> 
+	"max_TSeq2 a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TSeq2 specification\<close>
 		(if ((inv_TSeq2 a)  \<and>  (inv_TSeq2 b)) then
 			
@@ -312,7 +312,7 @@ where
 definition
 	eq_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
-	"eq_TMap m1 m2 \<equiv> 
+	"eq_TMap m1  m2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for eq_TMap specification\<close>
 		((inv_TMap m1)  \<and>  (inv_TMap m2))  \<and> 
 		\<comment>\<open>User defined body of eq_TMap\<close>
@@ -324,7 +324,7 @@ where
 definition
 	ord_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> \<bool>"
 where
-	"ord_TMap m1 m2 \<equiv> 
+	"ord_TMap m1  m2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for ord_TMap specification\<close>
 		((inv_TMap m1)  \<and>  (inv_TMap m2))  \<and> 
 		\<comment>\<open>User defined body of ord_TMap\<close>
@@ -336,7 +336,7 @@ where
 definition
 	min_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where
-	"min_TMap a b \<equiv> 
+	"min_TMap a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for min_TMap specification\<close>
 		(if ((inv_TMap a)  \<and>  (inv_TMap b)) then
 			
@@ -355,7 +355,7 @@ where
 definition
 	max_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
 where
-	"max_TMap a b \<equiv> 
+	"max_TMap a  b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for max_TMap specification\<close>
 		(if ((inv_TMap a)  \<and>  (inv_TMap b)) then
 			
