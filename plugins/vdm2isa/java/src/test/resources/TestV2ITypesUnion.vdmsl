@@ -39,8 +39,8 @@ types
 	
 functions
 
-	f3: TUnion6 * TUnion2 -> bool
-	f3(u6, u2) ==
+	f3: TUnion6 -> bool
+	f3(u6) ==
 		cases true:
 			(is_nat(u6)) -> u6 > 10,
 			(is_int(u6)) -> u6 < 10
