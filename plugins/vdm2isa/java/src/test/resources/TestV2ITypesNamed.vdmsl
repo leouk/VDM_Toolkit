@@ -9,17 +9,21 @@ types
 
 	-- basic (re-)named types with basic patterns with undeclared implicit specification for inv
 	TBasic1 = nat1;
+	-- inv_nat1(x) and ...
 
 	-- basic (re-)named types with basic patterns with explicitly declared specifications and type rename
 	TBasic2 = TBasic1
+	-- inv_TBasic1 x and 
 	inv t       == t > 10
 	eq  t1 = t2 == t1 = t2
 	ord t1 < t2 == t1 < t2
 	;
 	
 	TBasic3 = TBasic2;
+	-- inv_TBasic2 x
 	
 	TBasic4 = TBasic3
+	-- inv_TBasic3(x) xxxxx
 	inv t == t < 20;
 
 end TestV2ITypesNamed

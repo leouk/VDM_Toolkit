@@ -11,6 +11,8 @@ types
 	TUnion2 = seq of nat | set of real;
 	TUnion2'= seq of nat | seq of real;
 	
+	TUnion2''' = set of (nat | real);
+	
 	TBasic = nat;
 	
 	TBasic2 = TBasic
@@ -37,6 +39,13 @@ types
 	
 functions
 
+	f3: TUnion6 * TUnion2 -> bool
+	f3(u6, u2) ==
+		cases true:
+			(is_nat(u6)) -> u6 > 10,
+			(is_int(u6)) -> u6 < 10
+		end;
+		
 	-- union selection across multiple unions becomes quite messy/confusing; obfuscated even?!
 	f2: TUnion6 * TUnion2 -> bool
 	f2(u6, u2) ==

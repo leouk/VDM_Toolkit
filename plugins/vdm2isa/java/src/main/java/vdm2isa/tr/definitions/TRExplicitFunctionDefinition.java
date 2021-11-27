@@ -127,6 +127,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				,TRSpecificationKind.MIN
 			).contains(implicitSpecificationKind)
 			|| isLocal()
+			//|| true
 			) 
 			System.out.println(toString());
     }

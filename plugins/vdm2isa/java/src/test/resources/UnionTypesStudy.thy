@@ -99,7 +99,49 @@ definition
                   (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u21)
                   \<and>
                   (isTest u21 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> u21)
+                  \<and>
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u21)
+                  \<and>
+                  (isTest u21 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> u21)
          | TUnion2_VDMReal_VDMSet u22 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u22 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u22)
+                  \<and>
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> u22)
+                  \<and>
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u22 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u22)
+                  \<and>
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> u22)
+           )
+    )"
+
+find_theorems "_::int \<Rightarrow> real"
+
+definition
+  f2 :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
+  where
+  "f2 u6 u2 \<equiv> 
+    (case u6 of 
+      U_VDMInt u61 \<Rightarrow>
+        (case u2 of
+           TUnion2_VDMNat_VDMSeq u21 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u21)
+                  \<and>
+                  (isTest { real_of_int x | x . x \<in> (elems u21) } (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> elems u21)
+                  \<and>
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u21)
+                  \<and>
+                  (isTest { real_of_int x | x . x \<in> (elems u21) } (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> elems u21)
+         | TUnion2_VDMReal_VDMSet u22 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u22 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u22)
+                  \<and>
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> u22)
+                  \<and>
               isTest u61 inv_VDMNat \<longrightarrow> 
                   (isTest u22 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u22)
                   \<and>
@@ -111,6 +153,28 @@ definition
   f2 :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
   where
   "f2 u6 u2 \<equiv> 
+    (case u6 of 
+      U_VDMInt u61 \<Rightarrow>
+        (case u2 of
+           TUnion2_VDMNat_VDMSeq u21 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<in> elems u21)
+                  \<and>
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u21 (inv_VDMSeq' inv_VDMNat) \<longrightarrow> u61 \<notin> elems u21)
+         | TUnion2_VDMReal_VDMSet u22 \<Rightarrow> 
+              isTest u61 inv_VDMInt \<longrightarrow> 
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<in> u22)
+                  \<and>
+              isTest u61 inv_VDMNat \<longrightarrow> 
+                  (isTest u22 (inv_VDMSet' inv_VDMReal) \<longrightarrow> u61 \<notin> u22)
+           )
+    )"
+
+definition
+  f2_wrong :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
+  where
+  "f2_wrong u6 u2 \<equiv> 
     (case u6 of 
       U_VDMInt u61 \<Rightarrow>
         (case u2 of

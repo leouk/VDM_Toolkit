@@ -23,7 +23,7 @@ public class TRField extends TRAbstractInnerTypedType {
     
     public TRField(TCNameToken tagname, TRType type, boolean equalityAbstraction)
     {
-        super(type.getVDMType(), null, type);
+        super(type != null ? type.getVDMType() : null, null, type);
         this.tagname = tagname;
         this.equalityAbstraction = equalityAbstraction;
         this.record = null;

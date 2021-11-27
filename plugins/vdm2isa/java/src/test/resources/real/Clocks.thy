@@ -14,7 +14,8 @@ record Time =
 	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
 		i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
 	
-
+lemma "inv_VDMNat1 10"
+  apply simp 
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 41:9\<close>
 definition
 	inv_Time :: "Time \<Rightarrow> \<bool>"
@@ -152,12 +153,11 @@ where
 	"inv_Value dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Value specification\<close>
 		(
-		(((((inv_bool (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))))) \<and>
 		(
 		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)))) \<and>
 		((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))))
 		))
-		))"
+		)"
  
 
 	
@@ -185,7 +185,7 @@ definition
 where
 	"inv_Equation dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Equation specification\<close>
-		(((inv_Lambda (inv_Environment) (inv_Environment)dummy0)))"
+		(((inv_Lambda (inv_Environment) (inv_Environment) dummy0)))"
 
 		 
 

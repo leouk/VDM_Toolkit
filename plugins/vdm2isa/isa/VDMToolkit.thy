@@ -1237,6 +1237,11 @@ definition
   where
   "inv_Lambda inv_Dom inv_Ran l \<equiv> (\<forall> d . inv_Dom d \<longrightarrow> inv_Ran (l d))"
 
+definition 
+  inv_Lambda' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> 'a  \<Rightarrow> \<bool>"
+  where
+  "inv_Lambda' inv_Dom inv_Ran l d \<equiv> inv_Dom d \<longrightarrow> inv_Ran (l d)"
+
 (*========================================================================*)
 section \<open> Set operators lemmas \<close>
 (*========================================================================*)
@@ -2243,7 +2248,7 @@ definition
   "ex2' \<equiv> mapCompSetBound { x + y | x y . x \<in> {1,2,3::VDMNat} \<and> y \<in> {4,5,6::VDMNat} } {10::VDMNat} 
                 inv_VDMNat inv_VDMNat domid (rngcnst 10) truecnst"
 
-lemmas ex2'_defs = ex2'_def mapCompSetBound_defs inv_VDMNat_def 
+lemmas ex2'_defs = ex2'_def mapCompSetBound_defs inv_VDMNat_def truecnst_def domid_def 
 
 lemma ex2'_none: "x \<notin> dom ex2'  \<Longrightarrow> ex2' x = None"
   unfolding ex2'_defs
