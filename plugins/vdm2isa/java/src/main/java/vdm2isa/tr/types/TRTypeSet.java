@@ -58,12 +58,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	{
 		this();
 		if (typs != null)
+		{
 			for(TRType t : typs)
 			{
 				if (t != null)
 					add(t);
 			}
-		//addAll(Arrays.asList(typs));
+		}
 	}
 
 	@Override
