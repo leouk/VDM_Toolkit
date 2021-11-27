@@ -1,14 +1,18 @@
 package vdm2isa.tr.patterns;
 
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.patterns.TCIgnorePattern;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRDefinitionSet;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
+import vdm2isa.tr.types.TRType;
 
 /**
  * All patterns are record-context aware, but only TRRecordPattern properly implements it of course. 
@@ -96,5 +100,20 @@ public abstract class TRPattern extends TRNode implements TRRecordContext {
     public String recordPatternTranslate()
     {
         return translate();
+    }
+
+    public TRDefinitionList getDefinitions(TRType type, NameScope scope) 
+    {
+        TRDefinitionSet result = new TRDefinitionSet();
+        try
+        {
+            result.addAll(new TRDefinitionList(this.getVDMPattern().getDefinitions(type.getVDMType(), scope)));
+        }
+        catch (Exception e)
+        {
+            report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, getVDMPattern().toString(), e.toString());
+        }
+        result.setup();
+        return result.asList();
     }
 }

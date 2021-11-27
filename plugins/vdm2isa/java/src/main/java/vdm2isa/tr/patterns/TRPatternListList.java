@@ -14,7 +14,6 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.expressions.TRExpression;
 
 /**
  * Pattern lists lists are mostly singleton (e.g. f(x,y) = TRPatternListList[TRPatternList[x,y]]),
