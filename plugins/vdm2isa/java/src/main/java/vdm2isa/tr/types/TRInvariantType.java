@@ -101,12 +101,28 @@ public abstract class TRInvariantType extends TRType
     public void checkTypeDefinitionConsistency(TRExplicitFunctionDefinition invdef2,
             TRExplicitFunctionDefinition eqdef2, TRExplicitFunctionDefinition orddef2) 
     {
+        TRExplicitFunctionDefinition ef; 
         // check stuff is consistent to expectations
 		if ((invdef != null && invdef2 == null) || (invdef == null && invdef2 != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "invariant");
+        {
+            ef = invdef != null ? invdef : invdef2; assert ef != null;
+            // if implicitly generated then don't warn of course
+            if (!ef.isImplicitlyGeneratedUndeclaredSpecification())
+                report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, getClass().getSimpleName(), "invariant");
+        }
         if ((eqdef != null && eqdef2 == null) || (eqdef == null && eqdef2 != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "equality");
+        {
+            ef = eqdef != null ? eqdef : eqdef2; assert ef != null;
+            // if implicitly generated then don't warn of course
+            if (!ef.isImplicitlyGeneratedUndeclaredSpecification())
+                report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, getClass().getSimpleName(), "equality");
+        }
         if ((orddef != null && orddef2 == null) || (orddef == null && orddef2 != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "ordering");
+        {
+            ef = orddef != null ? orddef : orddef2; assert ef != null;
+            // if implicitly generated then don't warn of course
+            if (!ef.isImplicitlyGeneratedUndeclaredSpecification())
+                report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, getClass().getSimpleName(), "ordering");
+        }
     }
 }

@@ -286,15 +286,15 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 
         // check stuff is consistent to expectations
 		if ((invExpression != null && invdef == null) || (invExpression == null && invdef != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "invariant");
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Type definition", "invariant");
         if ((eqExpression != null && eqdef == null) || (eqExpression == null && eqdef != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "equality");
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Type definition", "equality");
         if ((ordExpression != null && orddef == null) || (ordExpression == null && orddef != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "ordering");
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Type definition", "ordering");
         if ((ordExpression != null && mindef == null) || (ordExpression == null && mindef != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "minimum");
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Type definition", "minimum");
         if ((ordExpression != null && maxdef == null) || (ordExpression == null && maxdef != null))
-            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "maximum");
+            report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Type definition", "maximum");
     
         if (type != null)
             getInvariantType().checkTypeDefinitionConsistency(invdef, eqdef, orddef);

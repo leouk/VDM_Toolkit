@@ -140,9 +140,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 		// check stuff is consistent to expectations
 		if ((precondition != null && predef == null) || (precondition == null && predef != null))
-			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "precondition");
+			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Explicit function", "precondition");
 		if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
-			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "postcondition");
+			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Explicit function", "postcondition");
 		
 		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
 		// which *must* be of a specific specification kind.
@@ -416,7 +416,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	 *  
 	 * @return true when pre/post are being implicitly generated
 	 */
-	protected boolean isImplicitlyGeneratedUndeclaredSpecification()
+	public boolean isImplicitlyGeneratedUndeclaredSpecification()
 	{
 		return body == null;//&& getVDMDefinition() == null;
 	}
