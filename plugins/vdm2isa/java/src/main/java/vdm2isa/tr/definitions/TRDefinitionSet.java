@@ -2,12 +2,6 @@ package vdm2isa.tr.definitions;
 
 import java.util.TreeSet;
 
-import com.fujitsu.vdmj.lex.LexLocation;
-
-import vdm2isa.lex.IsaToken;
-import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarningMessage;
-import vdm2isa.tr.MappableNode;
 import vdm2isa.tr.TRNode;
 
 //@SuppressWarnings("serial")
