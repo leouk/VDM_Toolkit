@@ -9,7 +9,6 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
-import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRDataType;
@@ -108,7 +107,18 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 	@Override
 	public String unionTypesTranslate(TRExpression body)
 	{
-		report(IsaErrorMessage.PLUGIN_NYI_2P, "union types translate", getClass().getSimpleName());
-		return "TODO!";
+		StringBuilder sb = new StringBuilder();
+        if (hasUnionTypes())
+        {
+            TRDataType dtype = (TRDataType)type;
+			sb.append(IsaToken.CASE.toString());
+			sb.append(IsaToken.SPACE.toString());
+			sb.append(this.name.toString());
+			sb.append(IsaToken.SPACE.toString());
+			sb.append(IsaToken.OF.toString());
+			sb.append(getFormattingSeparator());
+			sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body));
+        }
+        return sb.toString();
 	}
 }

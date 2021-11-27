@@ -19,21 +19,21 @@
 *TCTypeDefinition
 *TCExplicitFunctionDefinition
 *TCDefinitionListList
+*TCDefinitionSet
+*TCQualifiedDefinition
 
 TCUntypedDefinition
 TCAssignmentDefinition
-TCDefinitionSet
 TCExplicitOperationDefinition
 TCExternalDefinition
 TCImplicitFunctionDefinition
 TCImplicitOperationDefinition
 TCImportedDefinition
 TCNamedTraceDefinition
-TCQualifiedDefinition
 TCRenamedDefinition
 TCStateDefinition
 
-(21 of 33) = 63%
+(23 of 33) = 63%
 
 21 33 defs
 37 37 binds

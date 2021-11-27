@@ -1,6 +1,5 @@
 package vdm2isa.tr.types;
 
-import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.Iterator;
 
@@ -20,6 +19,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.MappableNode;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRExpression;
 
 /**
  * This is an adjusted copy of TCTypeSet. Not sure if this is right.
@@ -401,6 +401,43 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
         return result;
     }
 
+	protected String unionTypeTranslate(TRType t, String varName, String body)
+	{
+		assert this.contains(t) && varName != null && !varName.isEmpty();
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefixTranslate(t));
+		sb.append(varName);
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(IsaToken.FUN.toString());
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(body);
+		return sb.toString();
+	}
+
+	public String unionTypesTranslate(String varName, TRExpression body)
+	{
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			String bodyStr = body.translate();
+			Iterator<TRType> it = iterator();
+			TRType t = it.next();
+			int i = 1;
+			//TODO needs to change var names and consider var names within body! 
+			sb.append(unionTypeTranslate(t, varName + Integer.valueOf(i), bodyStr));
+			while (it.hasNext())
+			{
+                sb.append(getFormattingSeparator());
+				sb.append(getInvTranslateSeparator());
+				t = it.next();
+				i++;
+				sb.append(unionTypeTranslate(t, varName + Integer.valueOf(i), bodyStr));
+			}
+			sb.append(getFormattingSeparator());
+		}
+		return sb.toString();
+	}
+ 
 	// public String invTranslate(List<String> varNames)
 	// {
 	// 	//TODO this is dangerous?! 
