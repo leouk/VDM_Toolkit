@@ -25,6 +25,7 @@ public class TRBracketType extends TRAbstractInnerTypedType {
         else
         {
             result = new TRBracketType((TCBracketType)getVDMType(), definitions, getInnerType().copy(true));
+            result.setup();
             result.setAtTopLevelDefinition(atTLD);
         }
 		return result;

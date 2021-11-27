@@ -19,7 +19,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
     }
 
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
         // set format separator as \n given it's called even with one element

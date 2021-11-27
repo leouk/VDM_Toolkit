@@ -20,7 +20,7 @@ public class TRProofScriptStepDefinition extends TRDefinition {
     }
 
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setSemanticSeparator(" ");

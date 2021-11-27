@@ -28,6 +28,14 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
         super(from);
     }
 
+    @Override
+    public void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t\t ");
+        setSemanticSeparator(IsaToken.BAR.toString() + " ");
+    }
+
     /**
 	 * Choose the first element type (could have been any); this is to attempt to solve the "(the (pattern))" problem
 	 */
@@ -40,14 +48,6 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
         }
 		return result;
 	}
-
-    @Override
-    protected void setup()
-    {
-        super.setup();
-        setFormattingSeparator("\n\t\t\t ");
-        setSemanticSeparator(IsaToken.BAR.toString() + " ");
-    }
 
 	public static String translate(TRCaseAlternative... args)
 	{

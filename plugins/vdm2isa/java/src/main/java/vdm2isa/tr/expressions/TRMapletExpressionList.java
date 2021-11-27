@@ -35,7 +35,7 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setSemanticSeparator(IsaToken.COMMA.toString());

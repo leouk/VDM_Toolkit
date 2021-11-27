@@ -52,8 +52,6 @@ public class TRBasicType extends TRType
 	{
 		super(vdmType, definitions);
 		this.token = token;
-		if (!VALID_TOKENS.contains(this.token))
-			report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
 		//System.out.println(toString());	
 	}
 
@@ -101,8 +99,17 @@ public class TRBasicType extends TRType
 	public TRType copy(boolean atTLD)
 	{
 		TRType result = new TRBasicType(getVDMType(), definitions, token);
+		result.setup();
 		result.setAtTopLevelDefinition(atTLD);
 		return result;
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		if (!VALID_TOKENS.contains(this.token))
+			report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
 	}
 
 	@Override

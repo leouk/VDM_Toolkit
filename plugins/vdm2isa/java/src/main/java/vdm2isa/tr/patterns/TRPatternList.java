@@ -33,7 +33,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		// pattern lists are space separated in Isabelle, not commas please. 

@@ -7,6 +7,7 @@ package vdm2isa.tr.types;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -30,12 +31,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		// definitions are nonempty when the type defines an explicit function definition! 
 		super(vdmType, definitions, result);
 		this.parameters = parameters;
-		this.result = result;// never used! 
-		// presume that all function types will be curried
-		this.parameters.setCurried(true);
+		this.result = result;// never used! Needs to be here because of class mapping naming conventions! 
 		this.partial = partial;
-		if (parameters != null && parameters.isEmpty())
-			report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "empty", "function type", "0", result.toString());
 		//System.out.println(toString());
 	}
 
@@ -50,10 +47,18 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
+		if (parameters != null)
+		{
+			// presume that all function types will be curried
+			parameters.setCurried(true);
+			if (parameters.isEmpty())
+				report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "empty", "function type", "0", String.valueOf(result));
+		}
+		TRNode.setup(parameters);//, result); 
 	}
 
     @Override
@@ -80,6 +85,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		else
         {
 			result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
+			result.setup();
 			result.setAtTopLevelDefinition(atTLD);
 		}
 		return result;

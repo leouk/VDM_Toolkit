@@ -4,7 +4,10 @@
 
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRSeqType;
@@ -19,13 +22,20 @@ public class TRApplyExpression extends TRExpression
 	
 	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args, TRType exptype)
 	{
-		super(root.location, exptype);
+		super(root != null ? root.location : LexLocation.ANY, exptype);
 		this.type = type;
 		this.root = root;
 		this.args = args;
+		//System.out.println(toString());
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		TRNode.setup(type, root, args); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
-		//System.out.println(toString());
 	}
 
 	@Override

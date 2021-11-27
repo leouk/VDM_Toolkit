@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public class TRProofScriptDefinition extends TRDefinition {
@@ -18,6 +19,13 @@ public class TRProofScriptDefinition extends TRDefinition {
     {
         super(null, location, comments, null, null, NameScope.GLOBAL, true, false);
         this.poScript = poScript;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(poScript);
     }
 
     @Override

@@ -2,12 +2,14 @@ package vdm2isa.tr.definitions;
 
 import java.util.Arrays;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
@@ -43,24 +45,28 @@ public class TRProofObligationDefinition extends TRDefinition {
      public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
-        super(null, po.location, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
+        super(null, po != null ? po.location : LexLocation.ANY, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
         this.po = po;
         this.poExpr = poExpr;
         this.poType = poType;//always null for now, given avoiding calls to typeCheck(poExpr);
         this.poScripts = poScripts;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t");
         if (poExpr == null)
         {
             report(IsaErrorMessage.PO_INVALID_POEXPR_2P, po.name, po.value);
         }
-        setup();
-    }
 
-    @Override 
-    protected void setup()
-    {
-        super.setup();
-        setFormattingSeparator("\n\t");
-        if (poScripts != null) poScripts.setFormattingSeparator("\n\t");
+        TRNode.setup(poExpr, poType, poScripts);
+        if (poScripts != null) 
+        {
+            poScripts.setFormattingSeparator("\n\t");
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
@@ -24,16 +25,17 @@ public class TRRecordPattern extends TRPattern {
         this.typename = typename;
         this.plist = plist;
         this.type = type;
-        if (this.plist.size() == 0)
-            report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, typename.toString());
         //System.out.println(toString());
     }
 
     @Override 
-    protected void setup()
+    public void setup()
     {
         super.setup();
+        if (plist == null || plist.size() == 0)
+            report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, String.valueOf(typename));
         setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
+        TRNode.setup(plist, type);
     }
 
     @Override 

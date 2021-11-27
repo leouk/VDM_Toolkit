@@ -31,7 +31,7 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setSemanticSeparator(" ");

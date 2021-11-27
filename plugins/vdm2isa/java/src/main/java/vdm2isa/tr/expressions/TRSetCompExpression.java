@@ -23,7 +23,7 @@ import vdm2isa.tr.types.TRType;
 public class TRSetCompExpression extends TRAbstractCompExpression {
     private static final long serialVersionUID = 1L;
 
-    private final boolean existential;
+    private boolean existential;
 
     public TRSetCompExpression(LexLocation location, 
         TRExpression first, TRMultipleBindList bindings, 
@@ -31,8 +31,15 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     {
         super(location, first, bindings, predicate, def, exptype);
         // if anything other than variable expression is used, we need to convert to the existential comprehension form
-        this.existential = !(first instanceof TRVariableExpression);
+        this.existential = first != null && !(first instanceof TRVariableExpression);
         //System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        this.existential = first != null && !(first instanceof TRVariableExpression);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRMapType;
@@ -16,12 +18,17 @@ public class TRMapletExpression extends TRExpression
 
     public TRMapletExpression(TRExpression left, TRExpression right)
     {
-        super(left.location, 
-            new TRMapType(
-                new TCMapType(left.location, left.getType().getVDMType(), right.getType().getVDMType()), 
-                new TRDefinitionList(), left.getType(), right.getType(), false));
+        super(left != null ? left.location : LexLocation.ANY, TRMapletExpression.getMapType(left, right));
         this.left = left;
         this.right = right;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        assert getType() instanceof TRMapType;
+        TRNode.setup(left, right);
     }
 
     @Override
@@ -46,4 +53,16 @@ public class TRMapletExpression extends TRExpression
 	{
 		return visitor.caseMapletExpression(this, arg);
 	}
+
+    public static TRType getMapType(TRExpression left, TRExpression right) {
+        TRType result = TRExpression.unknownType(LexLocation.ANY);
+        if (left != null && left.getType() != null && left.getType().getVDMType() != null &&
+            right != null && right.getType() != null && right.getType().getVDMType() != null)
+        {
+            result = new TRMapType(
+              new TCMapType(left.location, left.getType().getVDMType(), right.getType().getVDMType()), 
+                  new TRDefinitionList(), left.getType(), right.getType(), false);
+        }
+        return result; 
+    }
 }

@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -31,6 +32,13 @@ public class TRMapType extends TRAbstractInnerTypedType
 	{
 		this(owner, definitions, from, to, true);
 	}
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(from);
+    }
 
     public TRType getFromType()
     {
@@ -98,6 +106,7 @@ public class TRMapType extends TRAbstractInnerTypedType
         else
         {
             result = new TRMapType((TCMapType)getVDMType(), definitions, getFromType().copy(true), getToType().copy(true), injective);
+            result.setup();
 		    result.setAtTopLevelDefinition(atTLD);
         }
         return result;

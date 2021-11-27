@@ -1,9 +1,11 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
+import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRType;
@@ -21,14 +23,21 @@ public class TRFieldNumberExpression extends TRExpression {
 
     public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type, TRType exptype)
     {
-        super(tuple.location, exptype);
+        super(tuple != null ? tuple.location : LexLocation.ANY, exptype);
         this.tuple = tuple;
         this.field = field;
         this.type = type;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
         if (!(type instanceof TRProductType))
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_TYPE_3P, tuple.translate(), field.toString(), type.getClass().getSimpleName());
         else if (this.field.value <= 0 || this.field.value > getProductType().types.size())
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_PROJECTION_3P, field.value, getProductType().types.size());
+        TRNode.setup(tuple, type);
     }
 
     /**

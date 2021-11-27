@@ -16,19 +16,25 @@ public class TRMultipleSeqBind extends TRMultipleBind
 
     public TRMultipleSeqBind(TRPattern pattern, TRExpression seq)
     {
-        this(pattern.getPatternList(), seq);
+        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), seq);
     }
 
     public TRMultipleSeqBind(TRPatternList plist, TRExpression seq)
     {
         super(plist);
         this.seq = seq;
-        if (this.seq == null || !(this.seq.getType() instanceof TRSeqType))
-        report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
-            "seq bind",
-            (this.seq == null ? "null" : this.seq.getType().getClass().getSimpleName()),
-            "1", "expected seq type");
+    }
 
+    @Override
+    public void setup()
+    {
+        super.setup();
+        if (this.seq == null || !(this.seq.getType() instanceof TRSeqType))
+            report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
+                "seq bind",
+                (this.seq == null ? "null" : this.seq.getType().getClass().getSimpleName()),
+                "1", "expected seq type");
+        TRNode.setup(seq);
     }
 
     @Override

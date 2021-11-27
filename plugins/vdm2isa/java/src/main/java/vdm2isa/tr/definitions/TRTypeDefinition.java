@@ -1,5 +1,6 @@
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
@@ -7,6 +8,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.Vdm2isaPlugin;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -83,8 +85,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         TRDefinitionList composeDefinitions
         )
     {        
-        super(definition, name.getLocation(), comments, annotations, name, nameScope, used, excluded, type);
-        //setLocal(false); // NameScope // Type definitions are never local? 
+        super(definition, name != null ? name.getLocation() : LexLocation.ANY, comments, annotations, name, nameScope, used, excluded, type);
         this.invPattern = invPattern;
         this.invExpression = invExpression;
         this.eqPattern1 = eqPattern1;
@@ -100,16 +101,15 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         this.maxdef = maxdef;
         this.infinite = infinite;
         this.composeDefinitions = composeDefinitions;
-        this.nameDefKind = figureOutTypeDefinitionKind();
-
-        setup();
+        this.nameDefKind = TRNamedTypeDefinitionKind.UNKNOWN;
         //System.out.println(toString());
     }
 
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
+        this.nameDefKind = figureOutTypeDefinitionKind();
         setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
         // only after fully class mapped
 		if (this.type != null && this.nameDefKind != null)
@@ -189,6 +189,9 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 }
             }
         }
+
+        TRNode.setup(invPattern, invExpression, eqPattern1, eqPattern2, eqExpression, ordPattern1, ordPattern2, ordExpression,
+            invdef, eqdef, orddef, mindef, maxdef, composeDefinitions);
     }
 
     private void updateExplicitDefinition(TRExplicitFunctionDefinition def, boolean atTLD)

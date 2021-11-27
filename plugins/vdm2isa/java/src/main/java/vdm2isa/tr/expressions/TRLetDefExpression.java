@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.expressions.TCDefExpression;
 import com.fujitsu.vdmj.tc.expressions.TCLetDefExpression;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -19,8 +20,6 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     {
         super(location, expression, exptype);
         this.localDefs = localDefs;
-        this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
-        //this.localDefs.setLocal(true);
         //TODO limit the scope of things? Or not need, because VDMJ already does that? 
         this.isDefExpression = isDefExpression;
         //System.out.println(toString());
@@ -37,11 +36,13 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     @Override
-    protected void setup()
+    public void setup()
 	{
         super.setup();
+        TRNode.setup(localDefs);
         setFormattingSeparator("\n\t\t");
 	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
 	}
 
     @Override

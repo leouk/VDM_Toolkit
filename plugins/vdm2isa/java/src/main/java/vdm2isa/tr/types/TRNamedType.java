@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCNamedType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -22,10 +23,11 @@ public class TRNamedType extends TRInvariantType
         this.type = type;
     }
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setSemanticSeparator(IsaToken.SPACE.toString());
+        TRNode.setup(type);
     }
 
     @Override
@@ -49,6 +51,7 @@ public class TRNamedType extends TRInvariantType
         {
             // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
             result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
+            result.setup();
             ((TRNamedType)result).type.setInferredNamedForType(typename);
             result.setAtTopLevelDefinition(atTLD);
         }

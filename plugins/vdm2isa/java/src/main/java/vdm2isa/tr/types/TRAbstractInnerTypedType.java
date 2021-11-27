@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
 /**
@@ -17,6 +18,13 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     protected TRAbstractInnerTypedType(TCType vdmType, TRDefinitionList defs, TRType type) {
         super(vdmType, defs);
         this.type = type;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(type);
     }
 
     @Override

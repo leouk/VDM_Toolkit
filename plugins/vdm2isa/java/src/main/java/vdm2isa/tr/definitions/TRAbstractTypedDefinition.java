@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRType;
@@ -49,10 +50,11 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
 	}
 
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setSemanticSeparator(" ");
+        TRNode.setup(type);
     }
 
     protected String getDeclaredName()

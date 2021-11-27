@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
@@ -18,6 +19,13 @@ public class TRPreExpression extends TRExpression {
         super(location, exptype);
         this.function = function;
         this.args = args;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(function, args);
     }
 
     @Override

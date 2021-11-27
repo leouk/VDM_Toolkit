@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.types.TRType;
@@ -24,10 +25,11 @@ public abstract class TRAbstractCompExpression extends TRExpression {
     }
 
     @Override 
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setFormattingSeparator(" ");
+        TRNode.setup(first, bindings, predicate, def);
     }
 
     //TODO?!

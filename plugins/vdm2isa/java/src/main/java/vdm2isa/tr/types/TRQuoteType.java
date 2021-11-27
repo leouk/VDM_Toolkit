@@ -15,11 +15,12 @@ public class TRQuoteType extends TRType
         super(vdmType, definitions);
         this.value = value;
     }
-
+    
     @Override
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRQuoteType((TCQuoteType)getVDMType(), definitions, value);
+        result.setup();
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }

@@ -48,6 +48,7 @@ public class TRSetType extends TRAbstractInnerTypedType
         else
         {
             result = new TRSetType(getVDMType(), definitions, getInnerType().copy(true), set1);
+            result.setup();
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;

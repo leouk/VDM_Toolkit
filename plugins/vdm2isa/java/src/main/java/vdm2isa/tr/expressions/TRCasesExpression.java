@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.types.TCUnionType;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -20,11 +21,21 @@ public class TRCasesExpression extends TRExpression {
 	private static final long serialVersionUID = 1L;
     private final TRExpression exp;
     private final TRCaseAlternativeList cases;
+    private final TRExpression others;
 
     public TRCasesExpression(LexLocation location, TRExpression exp, TRCaseAlternativeList cases, TRExpression others, TRType exptype) {
         super(location, exptype);
         this.exp = exp;
         this.cases = cases;
+        this.others = others;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t ");
+        assert exp != null;
         // add others as a case alternative
         if (others != null)
         {
@@ -38,13 +49,7 @@ public class TRCasesExpression extends TRExpression {
         {
             report(IsaErrorMessage.VDMSL_INVALID_CASESEXPR);
         }
-    }
-
-    @Override
-    protected void setup()
-    {
-        super.setup();
-        setFormattingSeparator("\n\t\t ");
+        TRNode.setup(exp, cases);
     }
 
     @Override

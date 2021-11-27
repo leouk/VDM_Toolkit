@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.types.TRType;
@@ -19,18 +20,19 @@ public class TRIotaExpression extends TRExpression {
         this.predicate = predicate;
     }
 
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(bind, predicate);
+        setFormattingSeparator(" ");
+        setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+    }
+
 	@Override
 	protected TRType getBestGuessType()
 	{
 		return predicate.getType();
-	}
-
-    @Override
-    protected void setup()
-	{
-        super.setup();
-	 	setFormattingSeparator(" ");
-        setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
     @Override

@@ -1,14 +1,16 @@
 /*******************************************************************************
- *	Copyright (c) 2020 Leo Freitas.
+ *	Copyright (c) 2021 Leo Freitas.
  ******************************************************************************/
 
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
+import com.fujitsu.vdmj.lex.LexLocation;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRMapType;
@@ -26,16 +28,27 @@ public class TRBinaryExpression extends TRExpression
 	
 	public TRBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
-		super(op.location, exptype);
+		super(op != null ? op.location : LexLocation.ANY, exptype);
 		this.left = left;
 		//@todo equals expression has to be specialised because of record and other equality tests ? 
 		this.op = op;
 		this.right = right;
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		// binary operator are spaced given Isabelle currying
+		setSemanticSeparator(" ");
+
 		if (!VALID_BINARY_OPS.contains(isaToken()))
 			report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, isaToken().toString());
 		if (isaToken().equals(IsaToken.STARSTAR) || isaToken().equals(IsaToken.STARSTARNAT))
 			// add because of comment on potential problem? 
 			setFormattingSeparator("\n\t");
+
+		TRNode.setup(left, right);
 	}
 
 	/**
@@ -136,14 +149,6 @@ public class TRBinaryExpression extends TRExpression
 		}
 		return result;
 	}
-
-    @Override 
-    protected void setup()
-    {
-        super.setup();
-		// binary operator are spaced given Isabelle currying
-        setSemanticSeparator(" ");
-    }
 
 	@Override
 	public IsaToken isaToken()

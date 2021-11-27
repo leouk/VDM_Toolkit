@@ -1,10 +1,12 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRRecordType;
@@ -19,11 +21,18 @@ public class TRFieldExpression extends TRExpression {
 
     public TRFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)
     {
-        super(object.location, exptype);
+        super(object != null ? object.location : LexLocation.ANY, exptype);
         this.object = object;
         this.field = field;
         this.hasReportedGuessTypeIssue = false;
         //System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(object);
     }
 
     public TRExpression recordExpression()

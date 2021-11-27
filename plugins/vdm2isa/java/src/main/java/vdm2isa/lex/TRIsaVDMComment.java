@@ -13,8 +13,14 @@ public class TRIsaVDMComment extends TRNode {
 
     public TRIsaVDMComment(LexComment comment)
     {
-        super(comment.location);
+        super(comment != null ? comment.location : LexLocation.ANY);
         this.comment = comment;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
         setSemanticSeparator(" ");
         setFormattingSeparator("\n");
     }

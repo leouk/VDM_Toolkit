@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
@@ -32,7 +33,7 @@ public class TRBoundedExpression extends TRExpression {
     
     public TRBoundedExpression(TCExists1Expression owner, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
-        this(owner.location, IsaToken.EXISTS1, bind.getMultipleBindList(), predicate, exptype);
+        this(owner.location, IsaToken.EXISTS1, bind != null ? bind.getMultipleBindList() : null, predicate, exptype);
     }
 
     public TRBoundedExpression(TCExistsExpression owner, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
@@ -46,13 +47,15 @@ public class TRBoundedExpression extends TRExpression {
     }
 
     @Override
-    protected void setup()
+    public void setup()
 	{
         super.setup();
         rParenCount = 0;
 	// 	setSemanticSeparator("");
 	 	setFormattingSeparator(" ");
 	 	setInvTranslateSeparator(getFormattingSeparator() + IsaToken.IMPLIES.toString() + getFormattingSeparator());
+        assert bindList != null;
+        TRNode.setup(bindList, predicate); 
 	}
 
     /**

@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRSetType;
@@ -20,6 +21,13 @@ public class TRSetRangeExpression extends TRExpression {
         super(start, exptype);
         this.first = first;
         this.last = last;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(first, last);
     }
 
     @Override

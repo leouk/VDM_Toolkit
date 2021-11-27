@@ -35,7 +35,7 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
 	}
 
     @Override
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setFormattingSeparator("\n\t\t");

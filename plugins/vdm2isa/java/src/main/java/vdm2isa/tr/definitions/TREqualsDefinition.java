@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
@@ -28,10 +29,16 @@ public class TREqualsDefinition extends TRValueDefinition {
         super(definition, location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);
         this.typebind = typebind;
         this.bind = bind;
-        //setLocal(true); //leave to NameScope?
-        if (pattern == null && typebind == null)
-            report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "equals", "structure", "cannot have null pattern and type bind");
         //System.out.println(toString());
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        if (getPattern() == null && typebind == null)
+           report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "equals", "structure", "cannot have null pattern and type bind");
+        TRNode.setup(typebind, bind);
     }
 
     @Override

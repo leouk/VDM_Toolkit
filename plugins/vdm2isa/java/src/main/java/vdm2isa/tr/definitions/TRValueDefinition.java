@@ -61,7 +61,6 @@ public class TRValueDefinition extends TRLocalDefinition
 		this.pattern = pattern;
 		this.exp = exp;
 		this.expType = expType;
-		//NB will this ever be null during class mapping? 
 		this.defs = defs;//figureOutDefs(defs);
 		//if (local) 
 		//	System.out.println(toString());
@@ -80,7 +79,18 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRType expType, 
 		TRDefinitionList defs)
 	{
-		this(definition, pattern.location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);		
+		this(definition, pattern != null ? pattern.location : LexLocation.ANY, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);		
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		pattern.setup();
+		exp.setup();
+		defs.setup();
+		expType.setup();
+		//this.defs = figureOutDefs(defs);?
 	}
 
 	@Override

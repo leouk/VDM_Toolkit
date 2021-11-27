@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import java.io.File;
 import java.util.Arrays;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.FileList;
 
 import vdm2isa.lex.IsaTemplates;
@@ -27,13 +28,19 @@ public class TRModule extends TRNode
 
 	public TRModule(TCIdentifierToken name, TRDefinitionList definitions, FileList files)
 	{
-		super(name.getLocation());
+		super(name != null ? name.getLocation() : LexLocation.ANY);
 		this.name = name;
 		this.definitions = definitions;
 		this.files = files;
+	}
 
+	@Override 
+	public void setup()
+	{
+		super.setup();
 		if (files == null || files.isEmpty())
 			warning(IsaWarningMessage.VDMSL_EMPTY_MODULE_FILES_1P, name.toString());
+		TRNode.setup(definitions);
 	}
 
 	@Override

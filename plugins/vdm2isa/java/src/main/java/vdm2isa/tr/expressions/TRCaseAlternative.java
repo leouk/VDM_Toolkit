@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRType;
@@ -14,10 +15,17 @@ public class TRCaseAlternative extends TRExpression {
     private final TRExpression result;
 
     public TRCaseAlternative(LexLocation location, TRPattern pattern, TRExpression result) {
-        super(location, result.getType());
+        super(location, result != null ? result.getType() : TRExpression.unknownType(location));
         this.pattern = pattern;
         this.result = result;
     }    
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(pattern, result);
+    }
 
     @Override
     protected TRType getBestGuessType()

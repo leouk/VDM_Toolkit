@@ -19,7 +19,7 @@ public class TRProofObligationModule extends TRModule
      */
     public TRProofObligationModule(String poModuleOwner, TCIdentifierToken poModuleName, TRDefinitionList definitions)
     {
-        super(poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation().file));
+        super(poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation() != null ? poModuleName.getLocation().file : null));
         this.poModuleOwner = poModuleOwner;
     }
 

@@ -61,7 +61,7 @@ public abstract class TRExpression extends TRNode
                     IsaToken.INDS, IsaToken.ELEMS, IsaToken.DISTCONC, IsaToken.REVERSE, IsaToken.MERGE, 
                     IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
 
-    protected final TRType exptype;
+    protected TRType exptype;
     private boolean hasWarnedAboutUnknownType;
     private boolean hasWarnedAboutNullType;
 
@@ -71,12 +71,19 @@ public abstract class TRExpression extends TRNode
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         this.hasWarnedAboutNullType = false;
-        // if (exptype == null)
-        // {
-        //     warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
-        //     exptype = TRExpression.unknownType(location);
-        // }
 	}
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        if (exptype == null)
+        {
+            warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
+            exptype = TRExpression.unknownType(location);
+        }
+        TRNode.setup(exptype);
+    }
 
 	/**
 	 * General debug string for all TRExpression classes

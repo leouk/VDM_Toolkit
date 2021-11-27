@@ -43,7 +43,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setCurried(false);

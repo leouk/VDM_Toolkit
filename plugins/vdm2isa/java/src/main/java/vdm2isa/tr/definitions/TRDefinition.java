@@ -54,7 +54,6 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 		this.nameScope = nameScope;
 		this.used = used;
 		this.excluded = excluded;
-		//this.local = false;
 	}
 
 	public final TCDefinition getVDMDefinition()
@@ -67,18 +66,12 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 		return NameScope.LOCAL.equals(nameScope);
 	}
 
-	// public boolean setLocal(boolean l)
-	// {
-	// 	boolean result = local;
-	// 	local = l;
-	// 	return result;
-	// }
-
 	@Override 
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
+		TRNode.setup(comments);
 	}
 
 	@Override

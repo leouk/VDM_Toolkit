@@ -27,7 +27,7 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setFormattingSeparator("\n\t\t ");

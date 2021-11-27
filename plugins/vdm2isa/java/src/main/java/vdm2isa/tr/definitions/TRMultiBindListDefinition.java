@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
@@ -23,6 +24,13 @@ public class TRMultiBindListDefinition extends TRDefinition {
         super(definition, location, comments, annotations, name, nameScope, used, excluded);
         this.bindings = bindings;
         this.defs = defs;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(bindings, defs);
     }
 
     @Override

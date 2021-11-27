@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -57,10 +58,11 @@ public abstract class TRInvariantType extends TRType
     }
 
     @Override 
-    protected void setup()
+    public void setup()
     {
         super.setup();
         setFormattingSeparator("\n\t\t ");
+        TRNode.setup(invdef, eqdef, orddef);
     }
 
 	@Override

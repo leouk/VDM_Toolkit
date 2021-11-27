@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCSetType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRMultiBindListDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
@@ -34,13 +35,23 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
     private final TRMultipleBind bind;
     private final TRExpression suchThat;
     private final TRMultiBindListDefinition def;
-    private final TRBinaryExpression vInSetS;
+    private TRBinaryExpression vInSetS;
 
 	public TRLetBeStExpression(LexLocation location, TRMultipleBind bind, TRExpression suchThat, TRExpression value, TRMultiBindListDefinition def, TRType exptype) {
         super(location, value, exptype);
         this.bind = bind;
         this.suchThat = suchThat;
         this.def = def; 
+        this.vInSetS = null;
+       // System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+	{
+        super.setup();
+        setFormattingSeparator("\n\t\t");
+	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
         // LetBeSt is represented through in set of a set comprehension constructed on the fly, with necessary adjustments to exptype for the set comp.
         String original = IsaToken.dummyVarNames(1, location);
         //TCNameToken name = new TCNameToken(location, location.module, original);
@@ -50,19 +61,11 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
             TRVariableExpression.newVariableExpr(location, /*name,*/ original, exptype),
             new LexKeywordToken(Token.INSET, location), 
             new TRSetCompExpression(
-                location, value, bindings, suchThat, 
+                location, expression, bindings, suchThat, 
                 this.def, //new TRMultipleBindListDefinition(location, null, null, null, null, false, false, bindings, defs),
                 new TRSetType(new TCSetType(location, exptype.getVDMType()), exptype.getDefinitions(), exptype, false)), 
             exptype);    
-       // System.out.println(toString());
-    }
-
-    @Override
-    protected void setup()
-	{
-        super.setup();
-        setFormattingSeparator("\n\t\t");
-	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        TRNode.setup(vInSetS);
 	}
 
     @Override

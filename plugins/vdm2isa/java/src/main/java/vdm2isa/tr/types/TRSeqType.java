@@ -48,6 +48,7 @@ public class TRSeqType extends TRAbstractInnerTypedType
         else
         {
             result = new TRSeqType(getVDMType(), definitions, getInnerType().copy(true), seq1);
+            result.setup();
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;

@@ -9,6 +9,7 @@ import com.fujitsu.vdmj.tc.types.TCRecordType;
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
@@ -29,18 +30,30 @@ public class TRRecordType extends TRInvariantType
         this.name = name;
         this.fields = fields;
         this.composed = composed;
-        if (this.fields.size() == 0)
-            report(10002, "Isabelle does not allow empty records for VDM record type " + name.toString());
-
-        this.fields.setRecordType(this);
-        this.fields.setFormattingSeparator(getFormattingSeparator());
-        if (!copying)
+        // should this be in setup? 
+        if (!copying && name != null)
             recordMap.put(name, this); 
     }
 
     public TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
         this(vdmType, name, definitions, fields, composed, invdef, eqdef, orddef, false);
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        assert fields != null;
+        if (fields.size() == 0)
+            report(10002, "Isabelle does not allow empty records for VDM record type " + String.valueOf(name));
+
+        fields.setRecordType(this);
+        TRNode.setup(fields);
+        fields.setFormattingSeparator(getFormattingSeparator());
+
+        setSemanticSeparator(IsaToken.SPACE.toString());
+        setFormattingSeparator("\n\t\t");
     }
 
     @Override
@@ -55,6 +68,7 @@ public class TRRecordType extends TRInvariantType
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRRecordType((TCRecordType)getVDMType(), name, definitions, fields/*//TODO ?fields.copy(atTLD)*/, composed, getInvDef(), getEqDef(), getOrdDef(), true);
+        result.setup();
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }
@@ -62,14 +76,6 @@ public class TRRecordType extends TRInvariantType
     public static void reset()
     {
         recordMap.clear();
-    }
-
-    @Override 
-    public void setup()
-    {
-        super.setup();
-        setSemanticSeparator(IsaToken.SPACE.toString());
-        setFormattingSeparator("\n\t\t");
     }
 
     @Override

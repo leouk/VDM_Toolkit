@@ -21,6 +21,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.MappableNode;
+import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 
 /**
@@ -36,12 +37,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	private String formattingSeparator;
 	private String invTranslateSeparator;
 	private boolean prefixed;
+	private boolean alreadySetup;
 
 	public TRTypeSet()
 	{
 		super();
-		setup();
 		prefixed = false;
+		alreadySetup = false;
 	}
 
     public TRTypeSet(TCTypeSet from) throws Exception
@@ -61,11 +63,30 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		addAll(Arrays.asList(typs));
 	}
 
-	protected void setup()
+	@Override
+	public void setup()
 	{
 		setFormattingSeparator("");
 		setSemanticSeparator(" " + IsaToken.BAR.toString() + " ");
 		setInvTranslateSeparator(" " + IsaToken.BAR.toString() + " ");
+		for(TRType t : this)
+		{
+			if (t != null && !t.setupDone())
+				t.setup();
+		}
+		alreadySetup = true;
+	}
+
+	@Override
+	public final boolean setupDone()
+	{
+		return this.alreadySetup;
+	}
+
+	@Override
+	public IsaToken isaToken()
+	{
+		return IsaToken.EOF;
 	}
 
 	protected void setPrefixed(boolean b)

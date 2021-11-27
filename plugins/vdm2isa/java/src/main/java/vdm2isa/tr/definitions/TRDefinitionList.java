@@ -37,21 +37,11 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
-		// if (allAreLocalDefinition())
-		// 	setLocal(true);
 	}
-
-	// public void setLocal(boolean local)
-	// {
-	// 	for (TRDefinition def : this)
-	// 	{
-	// 		def.setLocal(local);
-	// 	}
-	// }
 
 	public  boolean allAreLocalDefinition()
 	{

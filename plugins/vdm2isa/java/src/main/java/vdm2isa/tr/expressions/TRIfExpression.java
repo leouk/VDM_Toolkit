@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -27,14 +28,21 @@ public class TRIfExpression extends TRExpression
 		TRElseIfExpressionList elseList, TRExpression elseExp, TRType exptype)
 	{
 		super(location, exptype);
-		assert ifExp != null && thenExp != null && elseExp != null && elseList != null;
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;
 		this.elseList = elseList;
+		//System.out.println(toString());
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		assert ifExp != null && thenExp != null && elseExp != null && elseList != null;
+		TRNode.setup(ifExp, thenExp, elseExp, elseList);
 		this.setFormattingSeparator("\n\t\t");
 		this.elseList.setFormattingSeparator(getFormattingSeparator());		
-		//System.out.println(toString());
 	}
 
 	/**

@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.Vector;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
@@ -24,6 +25,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -65,7 +67,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private final boolean isCurried;
 	private final boolean recursive;
 	private final boolean isUndefined;
-	private final TRSpecificationKind implicitSpecificationKind;
+	private TRSpecificationKind implicitSpecificationKind;
 	private TRExplicitFunctionDefinition predef;
 	private TRExplicitFunctionDefinition postdef;
 	private final TRDefinitionListList paramDefinitionList;
@@ -93,7 +95,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			boolean isUndefined)
 	{	
 		// get the name location, given definition might be null for synthetic cases. 
-		super(definition, name.getLocation(), comments, annotations, name, nameScope, used, excluded);
+		super(definition, name != null ? name.getLocation() : LexLocation.ANY, comments, annotations, name, nameScope, used, excluded);
 		this.typeParams = typeParams;
 		this.type = type;
 		this.parameters = parameters;
@@ -109,12 +111,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.paramDefinitionList = paramDefinitionList;
 		this.recursive = recursive;
 		this.isUndefined = isUndefined;
+		this.implicitSpecificationKind = TRSpecificationKind.NONE;
 		//setLocal(false); //Leave to name scope? // LetDefExpression to set this to true if/when needed
-		this.implicitSpecificationKind = impliSpecificationDefinition();
 
-		assert this.type != null && this.name != null && this.parameters != null; 
-
-		setup();
 		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
 		if (!Arrays.asList(
 				TRSpecificationKind.PRE 
@@ -133,48 +132,49 @@ public class TRExplicitFunctionDefinition extends TRDefinition
     }
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
-		if (this.type == null)
-			// not fully class mapped do nothing
-			super.setup();
-		else
-		{
-			// don't call super.setup(); as we won't have the various input params yet then!
-			setFormattingSeparator("\n\t\t");
-			// parameters and type parameters are curried not "," separated
-			//this.typeParams.setSemanticSeparator(" ");
-			this.parameters.setSemanticSeparator(" ");
-			
-			// check stuff is consistent to expectations
-			if ((precondition != null && predef == null) || (precondition == null && predef != null))
-				report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "precondition");
-			if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
-				report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "postcondition");
-			
-			// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
-			// which *must* be of a specific specification kind.
-			if (isImplicitlyGeneratedUndeclaredSpecification() && 
-				!VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
-			{
-				report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.toString(),
-					VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
-			}
+		super.setup();
+		assert this.type != null && this.name != null && this.parameters != null; 
+		this.implicitSpecificationKind = impliSpecificationDefinition();
 
-			// only create undeclared specification for those who need it: when precondition/predef are null but
-			// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
-			// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
-			if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
-			{
-				// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
-				if (this.precondition == null && this.predef == null)
-					this.predef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
-						type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.PRE); 
-				if (postcondition == null && postcondition == null)
-					this.postdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
-					type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.POST); 
-			}
+		// check stuff is consistent to expectations
+		if ((precondition != null && predef == null) || (precondition == null && predef != null))
+			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "precondition");
+		if ((postcondition != null && postdef == null) || (postcondition == null && postdef != null))
+			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_1P, "postcondition");
+		
+		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
+		// which *must* be of a specific specification kind.
+		if (isImplicitlyGeneratedUndeclaredSpecification() && 
+			!VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
+		{
+			report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.toString(),
+				VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
 		}
+
+		// only create undeclared specification for those who need it: when precondition/predef are null but
+		// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
+		// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
+		if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
+		{
+			// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
+			if (this.precondition == null && this.predef == null)
+				this.predef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
+					type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.PRE); 
+			if (postcondition == null && postcondition == null)
+				this.postdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
+				type, isCurried, parameters, paramDefinitionList, TRSpecificationKind.POST); 
+		}
+
+		// setup various bits later, as some might get created above.
+		TRNode.setup(type, parameters, body, precondition, postcondition, measureExp, predef, postdef);
+
+		// don't call super.setup(); as we won't have the various input params yet then!
+		setFormattingSeparator("\n\t\t");
+		// parameters and type parameters are curried not "," separated
+		//this.typeParams.setSemanticSeparator(" ");
+		this.parameters.setSemanticSeparator(" ");
 	} 
 
 	@Override
@@ -691,7 +691,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			{
 				fcnBody.append(body.translate());
 			}
-			
+
 			if (hasRecPattern)
 			{
 				// let expression requires parenthesis 

@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -20,6 +21,13 @@ public class TRElseIfExpression extends TRExpression {
         super(location, exptype);
         this.elseIfExp = elseIfExp;
         this.thenExp = thenExp;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(elseIfExp, thenExp);
     }
 
     /**

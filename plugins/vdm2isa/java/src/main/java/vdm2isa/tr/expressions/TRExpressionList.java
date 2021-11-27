@@ -40,7 +40,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
     }
 
 	@Override 
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		//setSemanticSeparator(IsaToken.COMMA.toString());

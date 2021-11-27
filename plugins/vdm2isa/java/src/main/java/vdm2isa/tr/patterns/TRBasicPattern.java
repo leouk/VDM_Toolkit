@@ -41,34 +41,33 @@ public class TRBasicPattern extends TRPattern {
      * @param location
      * @param token
      */
-    private TRBasicPattern(TCPattern p, LexLocation location, IsaToken token, String pattern)
+    private TRBasicPattern(TCPattern p, IsaToken token, String pattern)
     {
-        super(p, location);
+        super(p, p != null ? p.location : LexLocation.ANY);
         this.token = token;
         this.pattern = pattern;
-        if (!VALID_TOKENS.contains(this.token))
-            report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
-        checkValidIsaIdentifier();
     }
     
     public TRBasicPattern(TCIdentifierPattern owner)
     {
-        this(owner, owner.location, IsaToken.IDENTIFIER, owner.toString());
+        this(owner, IsaToken.IDENTIFIER, String.valueOf(owner));
     }
 
     public TRBasicPattern(TCBooleanPattern owner)
     {
-        this(owner, owner.location, IsaToken.BOOL, owner.toString());
+        this(owner, IsaToken.BOOL, String.valueOf(owner));
     }
 
     public TRBasicPattern(TCCharacterPattern owner)
     {
-        this(owner, owner.location, IsaToken.CHAR, 
+        this(owner, IsaToken.CHAR, 
             IsaToken.ISACHAR + " " + 
                 IsaToken.bracketit(IsaToken.ISASTR, 
-                    Character.isISOControl(owner.value.unicode) ?
-                    Integer.toString(owner.value.unicode) : 
-                    Character.toString(owner.value.unicode),//owner.toString(),
+                    owner != null ? owner.value != null ?
+                        Character.isISOControl(owner.value.unicode) ?
+                            Integer.toString(owner.value.unicode) : 
+                            Character.toString(owner.value.unicode)
+                        : "null" : "null",
                     IsaToken.ISASTR
                 )
             );
@@ -76,19 +75,20 @@ public class TRBasicPattern extends TRPattern {
 
     public TRBasicPattern(TCIntegerPattern owner)
     {
-        this(owner, owner.location, (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT), owner.toString());
+        this(owner, owner != null ? owner.value != null ? 
+            (owner.value.value >= 0 ? (owner.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT) : IsaToken.INT : IsaToken.INT, String.valueOf(owner));
     }
 
     public TRBasicPattern(TCRealPattern owner)
     {
-        this(owner, owner.location, owner.value.type.equals(Token.RAT) ? IsaToken.RAT : IsaToken.REAL, owner.toString());
+        this(owner, owner != null ? owner.value != null ? Token.RAT.equals(owner.value.type) ? IsaToken.RAT : IsaToken.REAL : IsaToken.REAL : IsaToken.REAL, String.valueOf(owner));
     }
 
     public TRBasicPattern(TCStringPattern owner)
     {
         // you don't want the "X" just the X 
-        this(owner, owner.location, IsaToken.STRING, 
-            IsaToken.bracketit(IsaToken.ISASTR, owner.value.value,//owner.toString(),
+        this(owner, IsaToken.STRING, 
+            IsaToken.bracketit(IsaToken.ISASTR, owner != null ? owner.value != null ? owner.value.value : "null" : "null",
                IsaToken.ISASTR)
             );
     }   
@@ -96,17 +96,26 @@ public class TRBasicPattern extends TRPattern {
     public TRBasicPattern(TCQuotePattern owner)
     {
         // you don't want the <X> just the X 
-        this(owner, owner.location, IsaToken.VDMQUOTE, owner.value.value);//owner.toString());
+        this(owner, IsaToken.VDMQUOTE, owner != null ? owner.value != null ? owner.value.value : "null" : "null");
     }
 
     public TRBasicPattern(TCNilPattern owner)
     {
-        this(owner, owner.location, IsaToken.NIL, IsaToken.NIL.toString());
+        this(owner, IsaToken.NIL, IsaToken.NIL.toString());
     }
 
     public TRBasicPattern(TCIgnorePattern owner)
     {
-        this(owner, owner.location, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
+        this(owner, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        if (!VALID_TOKENS.contains(this.token))
+            report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
+        checkValidIsaIdentifier();
     }
 
     public boolean isIgnore()

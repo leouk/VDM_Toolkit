@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
@@ -33,10 +34,14 @@ public class TRVariableExpression extends TRExpression
 		this.original = original;
 		// the var def will be a TRLocalDefinition (e.g. var: type) or a TRExplicitFunctionDefinition (e.g. g(x))
 		this.vardef = vardef;
-		// if (this.vardef != null)
-		// 	// mark as local, even if TRExplicitFunctionDefinition
-		// 	this.vardef.setLocal(true);
 		//System.out.println(toString());
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		TRNode.setup(vardef);
 	}
 
 	@Override

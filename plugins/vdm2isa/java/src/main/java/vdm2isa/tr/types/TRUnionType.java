@@ -22,13 +22,25 @@ public class TRUnionType extends TRType implements TRDataType {
 	{
 		super(vdmType, definitions);
 		this.types = types;
+		//System.out.println(toString());
+	}
+
+	@Override
+	public void setup()
+	{
+		super.setup();
+		setFormattingSeparator("\n\t\t ");
+		setSemanticSeparator(" " + isaToken() + " ");
+		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+		assert types != null;
+		TRNode.setup(types);
 		this.types.setPrefixed(true);
         //TODO not sure whether this is needed, given the TRTypeSet passed will already have been 
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
 		//expand();
 		types.setFormattingSeparator(getFormattingSeparator());
-		//System.out.println(toString());
+
 	}
 
 	@Override 
@@ -37,15 +49,6 @@ public class TRUnionType extends TRType implements TRDataType {
 		return "Union " + 
 			"\n\t tset = " + String.valueOf(types) + 
 			"\n\t loc  = " + String.valueOf(getLocation());
-	}
-
-	@Override
-	protected void setup()
-	{
-		super.setup();
-		setFormattingSeparator("\n\t\t ");
-		setSemanticSeparator(" " + isaToken() + " ");
-		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
 	@Override
@@ -68,6 +71,7 @@ public class TRUnionType extends TRType implements TRDataType {
         else
         {
             result = new TRUnionType((TCUnionType)getVDMType(), definitions, types.copy(true));
+			result.setup();
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;

@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
@@ -22,9 +23,17 @@ public class TRMuExpression extends TRExpression {
         this.record = record;
         this.modifiers = modifiers;
         this.hasReportedGuessedType = false;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        assert record != null;
         TRType t = record.getRecordType();
         if (t instanceof TRRecordType)
             this.modifiers.setRecordType((TRRecordType)t);
+        TRNode.setup(record, modifiers); 
     }
 
     @Override

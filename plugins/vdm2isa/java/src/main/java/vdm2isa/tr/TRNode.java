@@ -9,6 +9,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;
@@ -24,19 +25,28 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	private String separator;
 	private String formattingSeparator;
 	private String invTranslateSeparator;
+	private boolean alreadySetup;
 
 	protected TRNode(LexLocation location)
 	{
 		super();
 		this.location = location; 
-		setup();
+		this.alreadySetup = false;
 	}
 
-	protected void setup()
+	@Override
+	public void setup()
 	{
 		setSemanticSeparator("");
 		setFormattingSeparator("");
 		setInvTranslateSeparator("");
+		alreadySetup = true;
+	}
+
+	@Override 
+	public final boolean setupDone()
+	{
+		return this.alreadySetup;
 	}
 
 	/**
@@ -184,4 +194,24 @@ abstract public class TRNode extends MappedObject implements MappableNode
         report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), toString());
 		return "";
     }
+
+	/**
+	 * Derived classes can call this method to setup their inner parts taking into account when/if they are null. 
+	 * @param nodes
+	 */
+	public static void setup(MappableNode... nodes)
+	{
+		if (nodes != null)
+		{
+			for(MappableNode n : nodes)
+			{
+				// allow for null as some internal parts are allowed to be null 
+				// testing for non-null is the responsability of each class.
+				//
+				// avoid loooping for when setting up inner definitions of certain TRNodes, like TRType.definitions etc. 
+				if (n != null && !n.setupDone())
+					n.setup();
+			}
+		}
+	}
 }

@@ -7,6 +7,7 @@ import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRMultiBindListDefinition;
@@ -62,11 +63,12 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     @Override
-    protected void setup()
+    public void setup()
 	{
         super.setup();
 	 	setFormattingSeparator("\n\t");
         setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        TRNode.setup(bindList, paramPatterns, paramDefinitions, def);
 	}
 
     @Override 

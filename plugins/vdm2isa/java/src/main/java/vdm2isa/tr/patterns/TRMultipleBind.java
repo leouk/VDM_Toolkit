@@ -31,19 +31,20 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
     {
         super(plist.get(0).location);
         this.plist = plist;
-        this.plist.setInvTranslateSeparator(getInvTranslateSeparator());
         this.poBind = false;
         this.parenthesise = true;
     }
 
     @Override 
-    protected void setup()
+    public void setup()
     {
         super.setup();
         // multiple type binds are space (not comma) separated
         setSemanticSeparator(" ");
         setFormattingSeparator(" ");
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+        TRNode.setup(plist);
+        this.plist.setInvTranslateSeparator(getInvTranslateSeparator());
     }
 
     public boolean getParenthesise()

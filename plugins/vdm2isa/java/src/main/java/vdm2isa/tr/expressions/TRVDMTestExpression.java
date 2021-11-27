@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
@@ -30,10 +31,17 @@ public abstract class TRVDMTestExpression extends TRExpression {
         this.basictype = basictype;
         this.test = test;
         this.typedef = typedef;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
         if (basictype != null && typename != null)
             report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getSimpleName(), typename.toString(), basictype.getClass().getSimpleName());
         if (basictype != null && !(basictype instanceof TRBasicType))
             warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), basictype.getClass().getSimpleName()); 
+        TRNode.setup(basictype, test, typedef);
     }
 
     @Override

@@ -25,13 +25,19 @@ public class TRMultipleSetBind extends TRMultipleBind
 
     public TRMultipleSetBind(TRPattern pattern, TRExpression set)
     {
-        this(pattern.getPatternList(), set);
+        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), set);
     }
 
     public TRMultipleSetBind(TRPatternList plist, TRExpression set)
     {
         super(plist);
         this.set = set;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
         // If this set bind is part of a sequence bind or not; to be set by the TRSeqCompExpression
         this.seqBind = false;
         if (this.set == null || !(this.set.getType() instanceof TRSetType))
@@ -39,6 +45,7 @@ public class TRMultipleSetBind extends TRMultipleBind
                 "set bind",
                 (this.set == null ? "null" : this.set.getType().getClass().getSimpleName()),
                 "1", "expected set type");
+        TRNode.setup(set);
     }
 
     @Override

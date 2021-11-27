@@ -19,13 +19,19 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 
     public TRMultipleTypeBind(TRPattern pattern, TRType type)
     {
-        this(pattern.getPatternList(), type);
+        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), type);
     }
 
     public TRMultipleTypeBind(TRPatternList plist, TRType type)
     {
         super(plist);
         this.type = type;
+    }
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(type);
     }
 
     @Override

@@ -25,10 +25,17 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         TRExpression first, TRMultipleBind bind, 
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
-        super(location, first, bind.getMultipleBindList(), predicate, def, exptype);
-        // Tell set bind it's for a sequence
-        this.bindings.setSetSeqForMultiBindList();
+        super(location, first, bind != null ? bind.getMultipleBindList() : null, predicate, def, exptype);
         //System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        assert bindings != null;
+        // Tell set bind it's for a sequence
+        bindings.setSetSeqForMultiBindList();
     }
 
     @Override

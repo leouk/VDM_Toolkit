@@ -43,11 +43,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setSemanticSeparator(" ");
 		setFormattingSeparator(" ");
+		TRNode.setup(definitions);
 	}
 
 	/**

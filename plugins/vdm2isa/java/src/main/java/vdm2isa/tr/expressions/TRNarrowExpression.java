@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -26,6 +27,13 @@ public class TRNarrowExpression extends TRVDMTestExpression {
         super(location, typename, basictype, test, typedef, exptype);
         this.testtype = testtype;
         //System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(testtype);
     }
 
     @Override

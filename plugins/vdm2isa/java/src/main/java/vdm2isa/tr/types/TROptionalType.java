@@ -4,19 +4,27 @@ import com.fujitsu.vdmj.tc.types.TCOptionalType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TROptionalType extends TRAbstractInnerTypedType implements TRDataType {
     private static final long serialVersionUID = 1L;
 
-    private final TRTypeSet dataTypeConstructors;
+    private TRTypeSet dataTypeConstructors;
     
     public TROptionalType(TCOptionalType vdmType, TRDefinitionList definitions, TRType type)
     {
         super(vdmType, definitions, type);
-        this.dataTypeConstructors = 
-            new TRTypeSet(TRBasicType.newBasicType(vdmType, IsaToken.TOKEN), type);
+        dataTypeConstructors = null;
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        this.dataTypeConstructors = new TRTypeSet(TRBasicType.newBasicType(getVDMType(), IsaToken.TOKEN), getInnerType());
+        TRNode.setup(dataTypeConstructors);
     }
 
     @Override
@@ -31,6 +39,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
         else
         {
             result = new TROptionalType((TCOptionalType)getVDMType(), definitions, getInnerType().copy(true));
+            result.setup();
             result.setAtTopLevelDefinition(atTLD);    
         }
 		return result;

@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.tc.patterns.TCTuplePattern;
 import com.fujitsu.vdmj.tc.patterns.TCUnionPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
@@ -25,8 +26,9 @@ public class TRStructuredPattern extends TRPattern {
     private static final long serialVersionUID = 1L;
 
     private final IsaToken token;
-    private final String pattern; 
+    private String pattern; 
     private final TRPatternList plist;
+    private TRExpression exp;
 
     public static final Set<IsaToken> VALID_STRUCTURED_PATTERNS = new TreeSet<IsaToken>(
         Arrays.asList(IsaToken.SET, IsaToken.SEQ, IsaToken.CROSSPROD, IsaToken.CONCATENATE, 
@@ -35,74 +37,123 @@ public class TRStructuredPattern extends TRPattern {
                       )
     );
 
-    private TRStructuredPattern(TCPattern p, LexLocation location, TRPatternList plist, IsaToken token, String pattern)
+    private TRStructuredPattern(TCPattern p, TRPatternList plist, IsaToken token)
     {
-        super(p, location);
+        super(p, p != null ? p.location : LexLocation.ANY);
         this.token = token;
         this.plist = plist;
-        this.pattern = pattern;        
+        this.pattern = null;        
+        this.exp = null;
     }
 
     public TRStructuredPattern(TCSetPattern owner, TRPatternList set)
     {  
-        this(owner, owner.location, set, IsaToken.SET, IsaToken.bracketit(IsaToken.SET_OPEN, set.translate(), IsaToken.SET_CLOSE));
+        this(owner, set, IsaToken.SET);
     }
 
     public TRStructuredPattern(TCSeqPattern  owner, TRPatternList seq)
     {
-        this(owner, owner.location, seq, IsaToken.SEQ, IsaToken.bracketit(IsaToken.SEQ_OPEN, seq.translate(), IsaToken.SEQ_CLOSE));
+        this(owner, seq, IsaToken.SEQ);
     }
 
     public TRStructuredPattern(TCTuplePattern owner, TRPatternList list)
     {
-        this(owner, owner.location, list, IsaToken.CROSSPROD, IsaToken.parenthesise(list.translate()));
+        this(owner, list, IsaToken.CROSSPROD);
     }
 
     public TRStructuredPattern(TCConcatenationPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner, owner.location, 
-            TRPatternList.newPatternList(left, right),
-            IsaToken.CONCATENATE, 
-            IsaToken.parenthesise(
-                IsaToken.parenthesise(left.translate()) + 
-                IsaToken.CONCATENATE.toString() + 
-                IsaToken.parenthesise(right.translate())));
+        //@NB what if any of left/right is null? 
+        this(owner, TRPatternList.newPatternList(left, right), IsaToken.CONCATENATE);
     }
 
     public TRStructuredPattern(TCMapletPattern owner, TRPattern from, TRPattern to)
     {
-        this(owner.from, owner.from.location,//owner is not TCPattern!!! Will be a problem?
+        this(owner.from,//owner is not TCPattern!!! Will be a problem?
             TRPatternList.newPatternList(from, to),
-            IsaToken.MAPLET, 
-            IsaToken.parenthesise( 
-                from.translate() + " " + IsaToken.MAPLET.toString() + " " + to.translate()));
+            IsaToken.MAPLET);
     }
 
     public TRStructuredPattern(TCUnionPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner, owner.location, 
+        this(owner, 
             TRPatternList.newPatternList(left, right),
-            IsaToken.UNION, 
-            IsaToken.parenthesise(left.translate() + " " + IsaToken.UNION.toString() + " " + right.translate()));
+            IsaToken.UNION);
     }
 
     public TRStructuredPattern(TCMapUnionPattern owner, TRPattern left, TRPattern right)
     {
-        this(owner, owner.location, 
+        this(owner, 
             TRPatternList.newPatternList(left, right),
-            IsaToken.MUNION, 
-            IsaToken.parenthesise(left.translate() + " " + IsaToken.MUNION.toString() + " " + right.translate()));
+            IsaToken.MUNION);
     }
 
     public TRStructuredPattern(TCMapPattern owner, TRPatternList maplets)
     {
-        this(owner, owner.location, maplets, IsaToken.MAP, IsaToken.bracketit(IsaToken.MAP_OPEN, maplets.translate(), IsaToken.MAP_CLOSE));
+        this(owner, maplets, IsaToken.MAP);
     }
 
     public TRStructuredPattern(TCExpressionPattern owner, TRExpression exp)
     {
         //TODO? percolate these through TRExpression? 
-        this(owner, owner.location, new TRPatternList()/*exp.getPatternListList().getFlatPatternList()*/, IsaToken.LPAREN, IsaToken.parenthesise(exp.translate()));
+        this(owner, new TRPatternList()/*exp.getPatternListList().getFlatPatternList()*/, IsaToken.LPAREN);
+        this.exp = exp;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(plist);
+        switch (isaToken())
+        {
+            case SET:
+                pattern = IsaToken.bracketit(IsaToken.SET_OPEN, plist.translate(), IsaToken.SET_CLOSE);
+                break;
+            case SEQ: 
+                pattern = IsaToken.bracketit(IsaToken.SEQ_OPEN, plist.translate(), IsaToken.SEQ_CLOSE);
+                break;
+            case CROSSPROD: 
+                pattern = IsaToken.parenthesise(plist.translate());
+                break;
+            case CONCATENATE: 
+                assert plist.size() == 2; //left+right
+                pattern = IsaToken.parenthesise(
+                    IsaToken.parenthesise(plist.get(0).translate()) + 
+                    IsaToken.CONCATENATE.toString() + 
+                    IsaToken.parenthesise(plist.get(1).translate()));
+                break;
+            case MAPLET:
+                assert plist.size() == 2; //from+to
+                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                    IsaToken.SPACE.toString() + IsaToken.MAPLET.toString() +
+                    IsaToken.SPACE.toString() + plist.get(1).translate()); 
+                break;
+            case UNION:
+                assert plist.size() == 2; //left+right
+                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                    IsaToken.SPACE.toString() + IsaToken.UNION.toString() + 
+                    IsaToken.SPACE.toString() + plist.get(1).translate());
+                break;
+            case MUNION: 
+                assert plist.size() == 2; //left+right
+                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                    IsaToken.SPACE.toString() + IsaToken.MUNION.toString() + 
+                    IsaToken.SPACE.toString() + plist.get(1).translate());
+                break;
+            case MAP:
+                pattern = IsaToken.bracketit(IsaToken.MAP_OPEN, plist.translate(), IsaToken.MAP_CLOSE);
+                break;
+            case LPAREN: 
+                assert exp != null;
+                TRNode.setup(exp);
+                pattern = IsaToken.parenthesise(exp.translate());
+                break;
+            default:
+                pattern = "null";
+                break;
+        }
+        assert pattern != null;
     }
 
     @Override

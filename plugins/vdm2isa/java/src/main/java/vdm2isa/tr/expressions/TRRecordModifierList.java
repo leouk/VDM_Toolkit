@@ -33,7 +33,7 @@ public class TRRecordModifierList extends TRMappedList<TCRecordModifier, TRRecor
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setSemanticSeparator(IsaToken.COMMA.toString() + " ");

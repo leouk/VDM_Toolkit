@@ -30,6 +30,7 @@ public class TRUnknownType extends TRType {
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRUnknownType(location, definitions);
+        result.setup();
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }

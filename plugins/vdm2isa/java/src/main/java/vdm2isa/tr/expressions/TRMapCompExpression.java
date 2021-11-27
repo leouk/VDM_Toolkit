@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
@@ -60,8 +61,15 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression predicate, TRDefinition def, TRType exptype) {
         super(location, first, bindings, predicate, def, exptype);
 
-        this.mapComp = TRLambdaExpression.newMapCompExpression(first, bindings, predicate, getMapType());
+        this.mapComp = null;//TRLambdaExpression.newMapCompExpression(first, bindings, predicate, exptype != null ? getMapType() : TRExpression.unknownType(location);
         System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(mapComp);
     }
 
     @Override

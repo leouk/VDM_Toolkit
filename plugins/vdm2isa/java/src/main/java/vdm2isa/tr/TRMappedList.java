@@ -20,6 +20,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 
@@ -33,12 +34,14 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	private String separator;
 	private String formattingSeparator;
 	private String invTranslateSeparator; 
+	private boolean alreadySetup;
 	
 	@SuppressWarnings("unchecked")
 	public TRMappedList(List<FROM> from) throws Exception
 	{
 		//super(TRNode.MAPPINGS, from);
-		super();
+		this();
+		
 		// to enable debugging
 		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);	
 		
@@ -68,7 +71,6 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 				t.printStackTrace();
 			}
 		}
-		setup();
 	}
 	
 	/**
@@ -79,17 +81,32 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	protected TRMappedList()
 	{
 		super();
-		setup();
+		alreadySetup = false;
 	}
 
 	/**
 	 * Set up of basic parameters (separators etc) for the list. This cannot rely on fields being set on super calls!
 	 */
-	protected void setup()
+	@Override
+	public void setup()
 	{
 		setSemanticSeparator("");
 		setFormattingSeparator("");
 		setInvTranslateSeparator("");
+		TRMappedList.setupElements(this);
+		alreadySetup = true;
+	}
+
+	@Override 
+	public final boolean setupDone()
+	{
+		return this.alreadySetup;
+	}
+
+	@Override
+	public IsaToken isaToken()
+	{
+		return IsaToken.EOF;
 	}
 
 	@Override
@@ -299,4 +316,12 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 													((TCBind)t).location : LexLocation.ANY;
 	}
 	
+	public static <FROM extends Mappable, TO extends MappableNode> void setupElements(TRMappedList<FROM, TO> list)
+	{
+		for(TO t : list)
+		{
+			if (t != null && !t.setupDone()) 
+				t.setup();
+		}
+	}
 }

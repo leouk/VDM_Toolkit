@@ -52,8 +52,8 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	}
 
     public TRMultipleBindList(TCMultipleBind bind) throws Exception
-    {
-        this(bind.getMultipleBindList()); 
+    {			
+		this(bind != null ? bind.getMultipleBindList() : new TCMultipleBindList()); 
     }
 
     public TRMultipleBindList(TCMultipleBindList from) throws Exception
@@ -62,7 +62,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	}
 
 	@Override
-	protected void setup()
+	public void setup()
 	{
 		super.setup();
 		setParenthesise(true);

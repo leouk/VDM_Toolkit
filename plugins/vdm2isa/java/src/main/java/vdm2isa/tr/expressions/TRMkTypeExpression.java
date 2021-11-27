@@ -1,9 +1,11 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
@@ -13,15 +15,21 @@ public class TRMkTypeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
     protected final TCNameToken typename;
-    private final TRFieldList fields; 
+    private TRFieldList fields; 
     private final TRExpressionList args;
 
     public TRMkTypeExpression(TCNameToken typename, TRExpressionList args, TRType exptype)
     {
-        super(typename.getLocation(), exptype);
-        //this.typename = typename;
-        this.args = args;
+        super(typename != null ? typename.getLocation() : LexLocation.ANY, exptype);
         this.typename = typename;
+        this.args = args;
+        this.fields = null;
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
         this.fields = TRRecordType.fieldsOf(typename);
         if (this.fields == null)
             report(IsaErrorMessage.ISA_RECORD_EARLYUSE_1P, typename.toString());
@@ -29,6 +37,7 @@ public class TRMkTypeExpression extends TRExpression {
             report(IsaErrorMessage.VDMSL_INVALID_MKARGS_3P, typename.toString(), args.size(), fields.size()); 
         else if (this.args.size() == 0)
             report(IsaErrorMessage.ISA_NO_EMPTYRECORD_1P, typename.toString());
+        TRNode.setup(fields, args);
     }
 
     @Override 

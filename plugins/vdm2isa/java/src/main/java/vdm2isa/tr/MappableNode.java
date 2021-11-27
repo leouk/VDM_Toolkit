@@ -3,6 +3,7 @@ package vdm2isa.tr;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 
@@ -11,8 +12,19 @@ import vdm2isa.messages.IsaWarningMessage;
  */
 public interface MappableNode extends Mappable {
     
-	//public IsaToken isaToken();
+	/**
+	 * Not to be part of the interface because lists don't need it? 
+	 */
+	public IsaToken isaToken();
 	
+	/**
+	 * Sets up all nodes (and its parts) checking for consistency, constructing internal structures, etc.
+	 * This *must* not be called within ClassMapping process as it runs the risk of various exceptions. 
+	 */
+	public void setup();
+
+	public boolean setupDone();
+
 	/**
 	 * Top-level translation associated with this TRNode. 
 	 * @return Isabelle YXML string.

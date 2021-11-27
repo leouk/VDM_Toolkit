@@ -105,14 +105,16 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 					}
 				} 
 
+				// class map TC -> TR trees + set them up
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist_filtered);//tclist);
+				translatedModules.setup();
 
 				// be strict on translation output
 				// strict => GeneralisaPlugin.getErrorCount() == 0
 				if (!GeneralisaPlugin.strict || GeneralisaPlugin.getErrorCount() == 0)
 				{
 					int mcount = 0;
-					for (TRModule module: translatedModules)
+					for (TRModule module : translatedModules)
 					{
 						outputModule(module.getLocation(), module.name.toString(), module.translate());  
 						mcount++;

@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternBind;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRPatternBind extends TRPattern {
@@ -18,11 +19,18 @@ public class TRPatternBind extends TRPattern {
         this.pattern = pattern;
         this.bind = bind;
 
+        System.out.println(toString());
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
         if (pattern == null && bind == null)
         {
             report(IsaErrorMessage.VDMSL_INVALID_PATTERN_BIND);
         }
-        System.out.println(toString());
+        TRNode.setup(pattern, bind);
     }
 
     @Override

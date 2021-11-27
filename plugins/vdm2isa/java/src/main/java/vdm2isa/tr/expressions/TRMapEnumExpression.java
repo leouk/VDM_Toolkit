@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -16,6 +17,13 @@ public class TRMapEnumExpression extends TRExpression
 		super(location, exptype);
         this.members = members;
 	}
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(members);
+    }
 
     @Override
     protected TRType getBestGuessType()

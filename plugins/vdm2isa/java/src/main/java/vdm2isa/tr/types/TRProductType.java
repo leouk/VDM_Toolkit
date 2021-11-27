@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCProductType;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -17,7 +18,15 @@ public class TRProductType extends TRType {
     {
         super(vdmType, definitions);
         this.types = types;
-        this.types.setCurried(false);
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        TRNode.setup(types);
+        assert types != null;
+        types.setCurried(false);
     }
 
     @Override
@@ -40,6 +49,7 @@ public class TRProductType extends TRType {
         else
         {
             result = new TRProductType((TCProductType)getVDMType(), definitions, types.copy(atTLD));
+            result.setup();
 		    result.setAtTopLevelDefinition(atTLD);
         }
 		return result;
