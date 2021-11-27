@@ -51,7 +51,7 @@ public class TRNamedType extends TRInvariantType
         {
             // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
             result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
-            result.setup();
+            TRNode.setup(result);
             ((TRNamedType)result).type.setInferredNamedForType(typename);
             result.setAtTopLevelDefinition(atTLD);
         }

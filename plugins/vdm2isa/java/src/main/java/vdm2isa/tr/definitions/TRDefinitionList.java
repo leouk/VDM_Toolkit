@@ -11,9 +11,12 @@ import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.patterns.TRUnionContext;
 
-public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
+public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> implements TRUnionContext
 {
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +63,9 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 
 	public TRDefinitionList copy()
 	{
-		return new TRDefinitionList(this); 
+		TRDefinitionList result = new TRDefinitionList(this); 
+		TRNode.setup(result);
+		return result;
 	}
 
 	protected String recordPatternTranslate(int i)
@@ -125,10 +130,40 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition>
 		return sb.toString();
 	}
 
+	@Override
+	public boolean hasUnionTypes() {
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).hasUnionTypes();
+		}
+		return result;
+	}
+
+	@Override
+	public String unionTypesTranslate(TRExpression body) {
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			String unionTranslate = get(0).unionTypesTranslate(body);
+			sb.append(unionTranslate);	
+			for(int i = 1; i < size(); i++)	
+			{
+				if (!unionTranslate.isEmpty())
+				{
+					sb.append(getSemanticSeparator());
+				}
+				sb.append(get(i).unionTypesTranslate(body));	
+			}
+		}
+		return sb.toString();
+	}
+
 	public static TRDefinitionList newDefList(TRDefinition... args)
 	{
 		TRDefinitionList result = new TRDefinitionList();
 		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
 		return result; 
 	}
 }

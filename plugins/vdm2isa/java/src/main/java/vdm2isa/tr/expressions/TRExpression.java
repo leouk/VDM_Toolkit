@@ -100,21 +100,24 @@ public abstract class TRExpression extends TRNode
         TRType result = exptype;
         if (result == null)
         {
-            result = TRExpression.unknownType(location);
+            result = getBestGuessType();
             if (!hasWarnedAboutNullType)
             {
                 warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
                 hasWarnedAboutNullType = true;
             }
         }
-        assert result != null; 
+        if (result == null)
+        {
+            result = TRExpression.unknownType(location);
+        }
         if (result instanceof TRUnknownType && !hasWarnedAboutUnknownType)
         {
             // don't inundate user with warnings; just once per expression. 
             warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
             hasWarnedAboutUnknownType = true;
         }
-        return result instanceof TRUnknownType ? getBestGuessType() : result;
+        return result;
     }
 
     protected TRType getBestGuessType()

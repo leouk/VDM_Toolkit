@@ -113,22 +113,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.isUndefined = isUndefined;
 		this.implicitSpecificationKind = TRSpecificationKind.NONE;
 		//setLocal(false); //Leave to name scope? // LetDefExpression to set this to true if/when needed
-
-		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
-		if (!Arrays.asList(
-				TRSpecificationKind.PRE 
-				,TRSpecificationKind.POST
-				,TRSpecificationKind.NONE
-				,TRSpecificationKind.INV
-				,TRSpecificationKind.EQ
-				,TRSpecificationKind.ORD
-				,TRSpecificationKind.MAX
-				,TRSpecificationKind.MIN
-			).contains(implicitSpecificationKind)
-			|| isLocal()
-			//|| true
-			) 
-			System.out.println(toString());
     }
 
 	@Override
@@ -170,11 +154,26 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// setup various bits later, as some might get created above.
 		TRNode.setup(type, parameters, body, precondition, postcondition, measureExp, predef, postdef);
 
-		// don't call super.setup(); as we won't have the various input params yet then!
 		setFormattingSeparator("\n\t\t");
 		// parameters and type parameters are curried not "," separated
 		//this.typeParams.setSemanticSeparator(" ");
 		this.parameters.setSemanticSeparator(" ");
+
+		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
+		if (!Arrays.asList(
+				TRSpecificationKind.PRE 
+				,TRSpecificationKind.POST
+				,TRSpecificationKind.NONE
+				,TRSpecificationKind.INV
+				,TRSpecificationKind.EQ
+				,TRSpecificationKind.ORD
+				,TRSpecificationKind.MAX
+				,TRSpecificationKind.MIN
+			).contains(implicitSpecificationKind)
+			|| isLocal()
+			|| true
+			) 
+			System.out.println(toString());
 	} 
 
 	@Override

@@ -28,7 +28,6 @@ public class TREqualsDefinition extends TRValueDefinition {
         super(definition, location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);
         this.typebind = typebind;
         this.bind = bind;
-        //System.out.println(toString());
     }
 
     @Override 

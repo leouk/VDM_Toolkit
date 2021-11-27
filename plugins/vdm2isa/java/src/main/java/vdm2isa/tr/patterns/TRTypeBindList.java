@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.patterns.TCTypeBindList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
 
@@ -51,8 +52,9 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 
 	public static String translate(TRMultipleTypeBind... args)
 	{
-		TRTypeBindList list = new TRTypeBindList();
-		list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRTypeBindList result = new TRTypeBindList();
+		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result.translate();	
 	}
 }

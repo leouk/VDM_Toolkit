@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 /**
@@ -47,7 +48,7 @@ public class TRField extends TRAbstractInnerTypedType {
         else
         {
             result = new TRField(tagname, getInnerType().copy(true), equalityAbstraction);
-            result.setup();
+            TRNode.setup(result);
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;

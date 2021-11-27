@@ -26,7 +26,6 @@ public class TRApplyExpression extends TRExpression
 		this.type = type;
 		this.root = root;
 		this.args = args;
-		//System.out.println(toString());
 	}
 
 	@Override
@@ -36,6 +35,7 @@ public class TRApplyExpression extends TRExpression
 		TRNode.setup(type, root, args); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
+		//System.out.println(toString());
 	}
 
 	@Override

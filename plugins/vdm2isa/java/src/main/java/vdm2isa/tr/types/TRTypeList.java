@@ -16,6 +16,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRExpressionList;
 
@@ -149,6 +150,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		{
 			result.add(t.copy(atTLD));
 		}
+		TRNode.setup(result);
 		return result;
 	}
 
@@ -164,17 +166,19 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 
 	public static String translate(TRType... args)
 	{
-		TRTypeList list = new TRTypeList();
-		list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRTypeList result = new TRTypeList();
+		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result.translate();	
 	}
 
 	public static String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)
 	{
-		TRTypeList list = new TRTypeList();
-		list.setFormattingSeparator(formattingSeparator);
-		list.addAll(Arrays.asList(args));
-		return list.invTranslate(varNames);	
+		TRTypeList result = new TRTypeList();
+		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		result.setFormattingSeparator(formattingSeparator);
+		return result.invTranslate(varNames);	
 	}
 
 	public static TRTypeList newTypeList(TRExpressionList members) {
@@ -183,6 +187,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		{
 			result.add(e.getType());
 		}
+		TRNode.setup(result);
 		return result;
 	}
 
@@ -190,6 +195,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		TRTypeList result = new TRTypeList();
 		if (members != null) 	
 			result.addAll(Arrays.asList(members));
+		TRNode.setup(result);
 		return result;
 	}
 }

@@ -19,9 +19,8 @@ public class TRPatternBind extends TRPattern {
         this.pattern = pattern;
         this.bind = bind;
 
-        System.out.println(toString());
     }
-
+    
     @Override
     public void setup()
     {
@@ -31,6 +30,7 @@ public class TRPatternBind extends TRPattern {
             report(IsaErrorMessage.VDMSL_INVALID_PATTERN_BIND);
         }
         TRNode.setup(pattern, bind);
+        System.out.println(toString());
     }
 
     @Override

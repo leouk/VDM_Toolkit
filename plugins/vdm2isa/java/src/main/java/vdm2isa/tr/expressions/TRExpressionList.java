@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRTypeList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
@@ -49,10 +50,11 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 
 	public static String translate(TRExpression... args)
 	{
-		TRExpressionList list = new TRExpressionList();
+		TRExpressionList result = new TRExpressionList();
 		if (args != null)
-			list.addAll(Arrays.asList(args));
-		return list.translate();	
+			result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result.translate();	
 	}
 
 }

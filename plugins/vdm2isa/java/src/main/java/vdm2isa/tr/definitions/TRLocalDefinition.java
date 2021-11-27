@@ -81,7 +81,6 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         // add any annotations or comments
 		sb.append(translatePreamble());
 		sb.append(IsaToken.parenthesise(getDeclaredName() + IsaToken.TYPEOF.toString() + getTypeString()));
-		//System.out.println(toString());
         return sb.toString();
     }
     

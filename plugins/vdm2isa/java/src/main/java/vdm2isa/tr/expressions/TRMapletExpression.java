@@ -63,6 +63,7 @@ public class TRMapletExpression extends TRExpression
               new TCMapType(left.location, left.getType().getVDMType(), right.getType().getVDMType()), 
                   new TRDefinitionList(), left.getType(), right.getType(), false);
         }
+        TRNode.setup(result);
         return result; 
     }
 }

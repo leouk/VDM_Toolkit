@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.ast.lex.LexCommentList;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 
 public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMComment>{
     
@@ -45,6 +46,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
     {
         TRIsaVDMCommentList result = new TRIsaVDMCommentList();
         result.add(location, comment, block);
+        TRNode.setup(result);
         return result;
     }
 }

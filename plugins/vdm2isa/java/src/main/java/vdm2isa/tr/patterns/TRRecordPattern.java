@@ -25,17 +25,17 @@ public class TRRecordPattern extends TRPattern {
         this.typename = typename;
         this.plist = plist;
         this.type = type;
-        //System.out.println(toString());
     }
-
+    
     @Override 
     public void setup()
     {
         super.setup();
         if (plist == null || plist.size() == 0)
-            report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, String.valueOf(typename));
+        report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, String.valueOf(typename));
         setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
         TRNode.setup(plist, type);
+        //System.out.println(toString());
     }
 
     @Override 

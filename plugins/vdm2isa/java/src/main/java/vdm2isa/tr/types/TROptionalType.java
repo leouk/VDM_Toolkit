@@ -39,7 +39,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
         else
         {
             result = new TROptionalType((TCOptionalType)getVDMType(), definitions, getInnerType().copy(true));
-            result.setup();
+            TRNode.setup(result);
             result.setAtTopLevelDefinition(atTLD);    
         }
 		return result;

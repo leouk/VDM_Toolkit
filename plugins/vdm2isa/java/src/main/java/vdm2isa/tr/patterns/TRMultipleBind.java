@@ -61,9 +61,10 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
 
     public TRMultipleBindList getMultipleBindList()
     {
-        TRMultipleBindList list = new TRMultipleBindList();
-        list.add(this);
-        return list;
+        TRMultipleBindList result = new TRMultipleBindList();
+        result.add(this);
+        TRNode.setup(result);
+        return result;
     }
 
     /**
@@ -193,6 +194,7 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
         {
             result.add(new TRMultipleTypeBind(p, getRHSType()));
         }
+        TRNode.setup(result);
         return result;
     }
 
@@ -206,6 +208,7 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
             TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
             result.add(localdef);
         }
+        result.setup();
         return result.asList();
     }
 }

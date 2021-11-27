@@ -208,6 +208,7 @@ public class TRBinaryExpression extends TRExpression
 				GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_EXPRCHAIN_TYPE_1P, op.location, IsaToken.from(op).toString());
 			}
 		}
+		TRNode.setup(result);
 		return result;
 	}
 }

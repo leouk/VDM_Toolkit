@@ -20,7 +20,13 @@ public class TRIsExpression extends TRVDMTestExpression {
     public TRIsExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {
         super(location, typename, basictype, test, typedef, exptype);
-        System.out.println(toString());
+    }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        //System.out.println(toString());
     }
 
     @Override

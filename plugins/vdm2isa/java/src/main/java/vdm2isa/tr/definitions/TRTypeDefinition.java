@@ -101,7 +101,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         this.infinite = infinite;
         this.composeDefinitions = composeDefinitions;
         this.nameDefKind = TRNamedTypeDefinitionKind.UNKNOWN;
-        //System.out.println(toString());
     }
 
     @Override
@@ -191,6 +190,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 
         TRNode.setup(invPattern, invExpression, eqPattern1, eqPattern2, eqExpression, ordPattern1, ordPattern2, ordExpression,
             invdef, eqdef, orddef, mindef, maxdef, composeDefinitions);
+
+        //System.out.println(toString());
     }
 
     private void updateExplicitDefinition(TRExplicitFunctionDefinition def, boolean atTLD)

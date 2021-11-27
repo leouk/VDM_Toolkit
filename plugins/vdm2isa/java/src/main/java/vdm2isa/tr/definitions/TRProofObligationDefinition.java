@@ -124,6 +124,7 @@ public class TRProofObligationDefinition extends TRDefinition {
 		TRDefinitionList result = new TRDefinitionList();
 		if (args != null)
             result.addAll(Arrays.asList(args));
+        TRNode.setup(result);
 		return result;
 	}
 

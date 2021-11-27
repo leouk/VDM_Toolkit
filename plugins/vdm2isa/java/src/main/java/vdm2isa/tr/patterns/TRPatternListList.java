@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 
 /**
@@ -20,7 +21,7 @@ import vdm2isa.tr.expressions.TRExpression;
  * yet it can have multiple list entries for curried calls (e.g., f(x,y)(z) = TRPatternListList[TRPatternList[x,y],TRPatternList[z]]).
  * Isabelle is mostly always curried, hence flattening of such lists is the norm, yet when needed might keep the structure.  
  */
-public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList> implements TRRecordContext, TRUnionContext
+public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList> implements TRRecordContext/*, TRUnionContext*/
 {
 	private static final long serialVersionUID = 1L;
 
@@ -58,16 +59,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	}
 
 	@Override
-	public boolean hasUnionTypes() {
-        boolean result = false;
-		for(int i = 0; i < size() && !result; i++)
-		{
-			result = get(i).hasUnionTypes();
-		}
-		return result;		
-    }
-
-	@Override
 	public String recordPatternTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -92,28 +83,6 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return sb.toString();
 	}
 
-	@Override
-	public String unionTypesTranslate(TRExpression body)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (!isEmpty())
-		{
-			// set the case projection
-			String unionTranslate = get(0).unionTypesTranslate(body); 
-			sb.append(unionTranslate);
-			for (int i = 1; i < size(); i++)
-			{
-				if (!unionTranslate.isEmpty())
-				{
-					sb.append(getFormattingSeparator());
-				}
-				unionTranslate = get(i).unionTypesTranslate(body);
-				sb.append(unionTranslate);
-			}
-		}
-		return sb.toString();
-	}
-
 	//TODO maybe make this a field called once given the structure never changes?
 	public TRPatternList getFlatPatternList()
 	{
@@ -130,6 +99,7 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 			}
 		}
 		assert result.size() == concSize;	
+		TRNode.setup(result);
 		return result; 
 	}
 
@@ -161,15 +131,17 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		{
 			result.add(p.copy());
 		}
+		TRNode.setup(result);
 		return result; 
 	}
 
 	public static TRPatternListList newPatternListList(TRPatternList... args)
 	{
-		TRPatternListList list = new TRPatternListList();
+		TRPatternListList result = new TRPatternListList();
 		if (args != null)
-			list.addAll(Arrays.asList(args));
-		return list;	
+			result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result;	
 	}
 
 	public static TRPatternListList newPatternListList(TRPattern... args)

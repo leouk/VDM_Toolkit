@@ -57,16 +57,16 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         //     this.paramDefinitions.setLocal(true);
         this.def = def;
         this.lambdaKind = TRLambdaExpressionKind.NORMAL;
-        System.out.println(toString());
     }
-
+    
     @Override
     public void setup()
 	{
         super.setup();
-	 	setFormattingSeparator("\n\t");
+        setFormattingSeparator("\n\t");
         setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
         TRNode.setup(bindList, paramPatterns, paramDefinitions, def);
+        System.out.println(toString());
 	}
 
     @Override 
@@ -195,8 +195,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             expression = TRLiteralExpression.newBooleanLiteralExpression(LexLocation.ANY, false);    
         }
         TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
-        return new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
+        TRLambdaExpression result = new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
             paramPatterns, paramDefinitions, TRMultiBindListDefinition.newBindListDef(expression.getLocation(), mbinds));
+        TRNode.setup(result);
+        return result;
     }
 
     /**

@@ -42,20 +42,18 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         this.suchThat = suchThat;
         this.def = def; 
         this.vInSetS = null;
-       // System.out.println(toString());
     }
-
+    
     @Override
     public void setup()
 	{
         super.setup();
         setFormattingSeparator("\n\t\t");
-	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
         // LetBeSt is represented through in set of a set comprehension constructed on the fly, with necessary adjustments to exptype for the set comp.
         String original = IsaToken.dummyVarNames(1, location);
         //TCNameToken name = new TCNameToken(location, location.module, original);
         TRMultipleBindList bindings = bind.getMultipleBindList();
-        //TRDefinitionList defs = new TRDefinitionList();
         this.vInSetS = new TRBinaryExpression(
             TRVariableExpression.newVariableExpr(location, /*name,*/ original, exptype),
             new LexKeywordToken(Token.INSET, location), 
@@ -63,18 +61,19 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
                 location, expression, bindings, suchThat, 
                 this.def, //new TRMultipleBindListDefinition(location, null, null, null, null, false, false, bindings, defs),
                 new TRSetType(new TCSetType(location, exptype.getVDMType()), exptype.getDefinitions(), exptype, false)), 
-            exptype);    
+                exptype);    
         TRNode.setup(vInSetS);
-	}
-
+        // System.out.println(toString());
+    }
+        
     @Override
     public String toString()
-    {
-        return "LetBeStDef " + String.valueOf(bind) + " be st " + 
-            "\n\t suchThat = " + String.valueOf(suchThat) + 
-            "\n\t expr     = " + String.valueOf(expression) +
-            "\n\t loc      = " + String.valueOf(getLocation());
-        }
+        {
+            return "LetBeStDef " + String.valueOf(bind) + " be st " + 
+        "\n\t suchThat = " + String.valueOf(suchThat) + 
+        "\n\t expr     = " + String.valueOf(expression) +
+        "\n\t loc      = " + String.valueOf(getLocation());
+    }
 
     @Override
     public IsaToken isaToken() {

@@ -57,7 +57,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	public TRTypeSet(TRType... typs)
 	{
 		this();
-		addAll(Arrays.asList(typs));
+		if (typs != null)
+			for(TRType t : typs)
+			{
+				if (t != null)
+					add(t);
+			}
+		//addAll(Arrays.asList(typs));
 	}
 
 	@Override
@@ -106,6 +112,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			result.add(t.copy(atTLD));
 		}
+		TRNode.setup(result);
 		return result;
 	}
 
@@ -119,7 +126,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			
 			TRSeqType s1t = (TRSeqType)t;
 			TRSeqType st = new TRSeqType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.seq1);
-			
+			TRNode.setup(st);
 			if (contains(st))
 			{
 				return false;	// Was already there
@@ -132,7 +139,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			
 			TRSetType s1t = (TRSetType)t;
 			TRSetType st = new TRSetType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.set1);
-			
+			TRNode.setup(st);
 			if (contains(st))
 			{
 				return false;	// Was already there
@@ -191,8 +198,14 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 				typeSet.add(t.getVDMType());
 			}
 			result = new TRUnionType(new TCUnionType(location, typeSet), result.definitions, this);
+			TRNode.setup(result);
 		}
-		return (optional ? new TROptionalType(new TCOptionalType(location, result.getVDMType()), result.definitions, result) : result);
+		if (optional)
+		{
+			result = new TROptionalType(new TCOptionalType(location, result.getVDMType()), result.definitions, result);
+			TRNode.setup(result);
+		}
+		return result;
 	}
 
 	public TCTypeSet getVDMTypeSet()
@@ -207,13 +220,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 
 	public TRTypeList getComposeTypes()
 	{
-		TRTypeList list = new TRTypeList();
-		
+		TRTypeList result = new TRTypeList();
 		for (TRType type: this)
 		{
-			list.addAll(type.getComposeTypes());
+			result.addAll(type.getComposeTypes());
 		}
-		return list;
+		TRNode.setup(result);
+		return result;
 	}
 
 	@Override
@@ -382,9 +395,10 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 
 	public TRTypeList asList()
     {
-        TRTypeList list = new TRTypeList();
-        list.addAll(this);
-        return list;
+        TRTypeList result = new TRTypeList();
+        result.addAll(this);
+		TRNode.setup(result);
+        return result;
     }
 
 	// public String invTranslate(List<String> varNames)

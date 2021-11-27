@@ -106,7 +106,7 @@ public class TRMapType extends TRAbstractInnerTypedType
         else
         {
             result = new TRMapType((TCMapType)getVDMType(), definitions, getFromType().copy(true), getToType().copy(true), injective);
-            result.setup();
+            TRNode.setup(result);
 		    result.setAtTopLevelDefinition(atTLD);
         }
         return result;

@@ -34,14 +34,14 @@ public class TRVariableExpression extends TRExpression
 		this.original = original;
 		// the var def will be a TRLocalDefinition (e.g. var: type) or a TRExplicitFunctionDefinition (e.g. g(x))
 		this.vardef = vardef;
-		//System.out.println(toString());
 	}
-
+	
 	@Override
 	public void setup()
 	{
 		super.setup();
 		TRNode.setup(vardef);
+		//System.out.println(toString());
 	}
 
 	@Override

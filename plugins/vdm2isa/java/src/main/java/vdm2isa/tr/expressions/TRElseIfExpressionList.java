@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.expressions.TCElseIfExpression;
 import com.fujitsu.vdmj.tc.expressions.TCElseIfExpressionList;
 
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRType;
 
 public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRElseIfExpression>{
@@ -43,8 +44,9 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
 
 	public static String translate(TRElseIfExpression... args)
 	{
-		TRElseIfExpressionList list = new TRElseIfExpressionList();
-		list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRElseIfExpressionList result = new TRElseIfExpressionList();
+		result.addAll(Arrays.asList(args));
+        TRNode.setup(result);
+		return result.translate();	
 	}
 }

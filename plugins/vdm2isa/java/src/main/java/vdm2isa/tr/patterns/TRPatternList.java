@@ -10,9 +10,10 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 
-public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRRecordContext, TRUnionContext {
+public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRRecordContext/*, TRUnionContext*/ {
     
     private static final long serialVersionUID = 1L;
 
@@ -84,35 +85,6 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	}
 
 	@Override
-	public boolean hasUnionTypes() {
-		boolean result = false;
-		for(int i = 0; i < size() && !result; i++)
-		{
-			result = get(i).hasUnionTypes();
-		}
-		return result;
-	}
-
-	@Override
-	public String unionTypesTranslate(TRExpression body) {
-		StringBuilder sb = new StringBuilder();
-		if (!isEmpty())
-		{
-			String unionTranslate = get(0).unionTypesTranslate(body);
-			sb.append(unionTranslate);	
-			for(int i = 1; i < size(); i++)	
-			{
-				if (!unionTranslate.isEmpty())
-				{
-					sb.append(getSemanticSeparator());
-				}
-				sb.append(get(i).unionTypesTranslate(body));	
-			}
-		}
-		return sb.toString();
-	}
-
-	@Override
 	public String recordPatternTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -167,9 +139,10 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 
 	public static String translate(TRPattern... args)
 	{
-		TRPatternList list = new TRPatternList();
-		list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRPatternList result = new TRPatternList();
+		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result.translate();	
 	}
 
 	/**
@@ -179,9 +152,10 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	 */
 	public static TRPatternList newPatternList(TRPattern... args)
 	{
-		TRPatternList list = new TRPatternList();
+		TRPatternList result = new TRPatternList();
 		if (args != null)
-			list.addAll(Arrays.asList(args));
-		return list;	
+			result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result;	
 	}
 }

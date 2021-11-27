@@ -291,6 +291,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			//result = new TRNotYetSpecifiedExpression(getLocation(), TRExpression.unknownType(getLocation()));
 			// Perhaps just say "true"? 
 		}
+		TRNode.setup(result);
 		return result;
 	}
 	
@@ -327,6 +328,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         {
             result.addAll(b.getTypeBindList());
         }
+		TRNode.setup(result);
         return result;
     }
 
@@ -337,6 +339,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		{
 			result.add(b.plist);
 		}
+		TRNode.setup(result);
 		return result;
 	}
 
@@ -347,13 +350,15 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         {
 			result.addAll(b.getDefinitions());
         }
+		result.setup();
         return result.asList();
     }
 
 	public static String translate(TRMultipleBind... args)
 	{
-		TRMultipleBindList list = new TRMultipleBindList();
-		list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRMultipleBindList result = new TRMultipleBindList();
+		result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result.translate();	
 	}
 }

@@ -32,9 +32,8 @@ public class TRIfExpression extends TRExpression
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;
 		this.elseList = elseList;
-		//System.out.println(toString());
 	}
-
+	
 	@Override
 	public void setup()
 	{
@@ -43,6 +42,7 @@ public class TRIfExpression extends TRExpression
 		TRNode.setup(ifExp, thenExp, elseExp, elseList);
 		this.setFormattingSeparator("\n\t\t");
 		this.elseList.setFormattingSeparator(getFormattingSeparator());		
+		//System.out.println(toString());
 	}
 
 	/**
@@ -52,7 +52,9 @@ public class TRIfExpression extends TRExpression
 	protected TRType getBestGuessType()
 	{
 		TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType());
-		return new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), new TRDefinitionList(), typeSet);
+		TRUnionType result = new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), new TRDefinitionList(), typeSet);
+		TRNode.setup(result);
+		return result;
 	}
 
 	@Override 

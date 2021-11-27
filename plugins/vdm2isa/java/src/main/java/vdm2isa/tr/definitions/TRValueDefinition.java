@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
@@ -61,8 +62,6 @@ public class TRValueDefinition extends TRLocalDefinition
 		this.exp = exp;
 		this.expType = expType;
 		this.defs = defs;//figureOutDefs(defs);
-		//if (local) 
-		//	System.out.println(toString());
 	}
 		
 	public TRValueDefinition(
@@ -85,11 +84,10 @@ public class TRValueDefinition extends TRLocalDefinition
 	public void setup()
 	{
 		super.setup();
-		pattern.setup();
-		exp.setup();
-		defs.setup();
-		expType.setup();
+		TRNode.setup(pattern, exp, defs, expType);
 		//this.defs = figureOutDefs(defs);?
+		//if (local) 
+		//	System.out.println(toString());
 	}
 
 	@Override
@@ -295,6 +293,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		// might be smaller for cases involving ignore pattern (e.g mk_(-,x) = v) 
 		// or record pattern (e.g. mk_R(x,y) = r).
 		assert result.size() <= defs.size() && result.allAre(this/*TRValueDefinition.class*/);
+		result.setup();
 		return result.asList();
 	}
 

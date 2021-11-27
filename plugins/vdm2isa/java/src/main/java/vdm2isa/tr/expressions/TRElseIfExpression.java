@@ -38,9 +38,11 @@ public class TRElseIfExpression extends TRExpression {
 	{
         //NB what is the right VDM type for the elseif union?
         TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseIfExp.getType());
-		return new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), 
+		TRUnionType result = new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), 
             new TRDefinitionList(), 
 			new TRTypeSet(thenExp.getType(), elseIfExp.getType()));
+        TRNode.setup(result);
+        return result;
 	}
 
     @Override

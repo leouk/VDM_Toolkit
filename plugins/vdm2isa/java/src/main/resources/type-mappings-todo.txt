@@ -31,15 +31,15 @@
 -TCInstantiate
 -TCUnresolvedType
 *TCUnionType
+*TCTypeSet
 
 TCOperationType
 TCParameterType
 TCPatternListTypePair
 TCPatternListTypePairList
 TCPatternTypePair
-TCTypeSet
 TCUndefinedType
 TCVoidReturnType
 TCVoidType
 
-(33 out 42) = 79%
+(34 out 42) = 79%

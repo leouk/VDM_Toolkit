@@ -25,7 +25,6 @@ public class TRFieldExpression extends TRExpression {
         this.object = object;
         this.field = field;
         this.hasReportedGuessTypeIssue = false;
-        //System.out.println(toString());
     }
 
     @Override
@@ -33,6 +32,7 @@ public class TRFieldExpression extends TRExpression {
     {
         super.setup();
         TRNode.setup(object);
+        //System.out.println(toString());
     }
 
     public TRExpression recordExpression()

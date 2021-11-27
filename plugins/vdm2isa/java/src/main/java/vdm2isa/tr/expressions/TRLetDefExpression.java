@@ -22,7 +22,6 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         this.localDefs = localDefs;
         //TODO limit the scope of things? Or not need, because VDMJ already does that? 
         this.isDefExpression = isDefExpression;
-        //System.out.println(toString());
     }
 
     public TRLetDefExpression(TCLetDefExpression letdef, LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
@@ -43,6 +42,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         setFormattingSeparator("\n\t\t");
 	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
+        //System.out.println(toString());
 	}
 
     @Override

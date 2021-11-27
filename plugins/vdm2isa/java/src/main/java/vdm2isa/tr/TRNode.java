@@ -30,6 +30,9 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	{
 		super();
 		this.location = location; 
+		this.separator = "";
+		this.formattingSeparator = "";
+		this.invTranslateSeparator = "";
 		this.alreadySetup = false;
 	}
 

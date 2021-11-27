@@ -80,7 +80,10 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	protected TRMappedList()
 	{
 		super();
-		alreadySetup = false;
+		this.separator = "";
+		this.formattingSeparator = "";
+		this.invTranslateSeparator = ""; 
+		this.alreadySetup = false;
 	}
 
 	/**

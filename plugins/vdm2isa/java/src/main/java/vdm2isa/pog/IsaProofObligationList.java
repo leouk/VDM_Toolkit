@@ -11,6 +11,7 @@ import plugins.IsapogPlugin;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
@@ -37,17 +38,18 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
      */
     protected TRDefinitionList getModulePOList(String module)
     {
-        TRDefinitionList modulePOS;
+        TRDefinitionList result;
         if (!poModuleMap.containsKey(module))
         {
-            modulePOS = new TRDefinitionList();   
-            poModuleMap.put(module, modulePOS);  
+            result = new TRDefinitionList();   
+            poModuleMap.put(module, result);  
         }
         else
         {
-            modulePOS = poModuleMap.get(module);
+            result = poModuleMap.get(module);
         }
-        return modulePOS;
+        TRNode.setup(result);
+        return result;
     }
 
     /**
@@ -78,7 +80,7 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
                         new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(module), false), pos));
             }
         }
-
+        TRNode.setup(result);
         return result;
     }
 

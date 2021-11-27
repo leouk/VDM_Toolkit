@@ -56,6 +56,7 @@ public class TRProofScriptDefinition extends TRDefinition {
                 TRBasicProofScriptStepDefinition.isaTry0(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
+        TRNode.setup(result);
         return result;
     }
 
@@ -72,6 +73,7 @@ public class TRProofScriptDefinition extends TRDefinition {
                 TRBasicProofScriptStepDefinition.sledgehammer(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
+        TRNode.setup(result);
         return result;
     }
 
@@ -88,6 +90,7 @@ public class TRProofScriptDefinition extends TRDefinition {
                 TRBasicProofScriptStepDefinition.nitpick(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
+        TRNode.setup(result);
         return result;
     }
 
@@ -104,6 +107,7 @@ public class TRProofScriptDefinition extends TRDefinition {
                 TRBasicProofScriptStepDefinition.isaTry(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
+        TRNode.setup(result);
         return result;
     }
 
@@ -119,6 +123,7 @@ public class TRProofScriptDefinition extends TRDefinition {
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.oops(location))
             );
+        TRNode.setup(result);
         return result;
     }
 

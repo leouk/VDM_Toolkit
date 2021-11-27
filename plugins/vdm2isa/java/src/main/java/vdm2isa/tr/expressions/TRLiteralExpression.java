@@ -140,6 +140,7 @@ public class TRLiteralExpression extends TRExpression
 		// 		result = super.getType();
 		// 		break;
 		// }
+		//TRNode.setup(result);
 		return super.getType();
 	}
 

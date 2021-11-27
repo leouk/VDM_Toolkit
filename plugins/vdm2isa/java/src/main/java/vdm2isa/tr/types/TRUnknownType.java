@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.types.TCUnknownType;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -30,7 +31,7 @@ public class TRUnknownType extends TRType {
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRUnknownType(location, definitions);
-        result.setup();
+        TRNode.setup(result);
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }

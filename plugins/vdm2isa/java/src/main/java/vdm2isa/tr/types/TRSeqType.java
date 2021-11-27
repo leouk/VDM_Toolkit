@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -48,7 +49,7 @@ public class TRSeqType extends TRAbstractInnerTypedType
         else
         {
             result = new TRSeqType(getVDMType(), definitions, getInnerType().copy(true), seq1);
-            result.setup();
+            TRNode.setup(result);
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;

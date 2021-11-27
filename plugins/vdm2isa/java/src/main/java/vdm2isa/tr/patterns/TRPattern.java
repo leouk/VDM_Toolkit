@@ -27,9 +27,10 @@ public abstract class TRPattern extends TRNode implements TRRecordContext, TRUni
 
     public TRPatternList getPatternList()
     {
-        TRPatternList list = new TRPatternList();
-        list.add(this);
-        return list; 
+        TRPatternList result = new TRPatternList();
+        result.add(this);
+        TRNode.setup(result);
+        return result; 
     }
 
     public TCPattern getVDMPattern()

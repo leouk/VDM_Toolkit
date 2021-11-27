@@ -62,7 +62,6 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         super(location, first, bindings, predicate, def, exptype);
 
         this.mapComp = null;//TRLambdaExpression.newMapCompExpression(first, bindings, predicate, exptype != null ? getMapType() : TRExpression.unknownType(location);
-        System.out.println(toString());
     }
 
     @Override
@@ -70,6 +69,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     {
         super.setup();
         TRNode.setup(mapComp);
+        System.out.println(toString());
     }
 
     @Override

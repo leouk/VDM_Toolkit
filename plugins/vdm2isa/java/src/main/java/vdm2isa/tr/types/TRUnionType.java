@@ -20,7 +20,6 @@ public class TRUnionType extends TRType implements TRDataType {
 		super(vdmType, definitions);
 		this.types = types;
 		this.expanded = false;
-		//System.out.println(toString());
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public class TRUnionType extends TRType implements TRDataType {
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
 		//expand();
 		types.setFormattingSeparator(getFormattingSeparator());
-
+		//System.out.println(toString());
 	}
 
 	@Override 
@@ -69,7 +68,7 @@ public class TRUnionType extends TRType implements TRDataType {
         else
         {
             result = new TRUnionType((TCUnionType)getVDMType(), definitions, types.copy(true));
-			result.setup();
+			TRNode.setup(result);
             result.setAtTopLevelDefinition(atTLD);
         }
         return result;
@@ -110,6 +109,7 @@ public class TRUnionType extends TRType implements TRDataType {
 	// 			definitions.addAll(t.definitions);
 	// 		}
 	// 	}
+	//  TRNode.setup(definitions);
 	// }
 
     @Override

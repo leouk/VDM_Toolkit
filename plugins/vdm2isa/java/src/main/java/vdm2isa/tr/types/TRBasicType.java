@@ -21,6 +21,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -52,7 +53,6 @@ public class TRBasicType extends TRType
 	{
 		super(vdmType, definitions);
 		this.token = token;
-		//System.out.println(toString());	
 	}
 
 	public TRBasicType(TCNaturalType type, TRDefinitionList definitions)
@@ -99,7 +99,7 @@ public class TRBasicType extends TRType
 	public TRType copy(boolean atTLD)
 	{
 		TRType result = new TRBasicType(getVDMType(), definitions, token);
-		result.setup();
+		TRNode.setup(result);
 		result.setAtTopLevelDefinition(atTLD);
 		return result;
 	}
@@ -110,6 +110,7 @@ public class TRBasicType extends TRType
 		super.setup();
 		if (!VALID_TOKENS.contains(this.token))
 			report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
+		//System.out.println(toString());	
 	}
 
 	@Override

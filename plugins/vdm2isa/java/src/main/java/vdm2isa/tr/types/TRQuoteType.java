@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 import com.fujitsu.vdmj.tc.types.TCQuoteType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
@@ -20,7 +21,7 @@ public class TRQuoteType extends TRType
     public TRType copy(boolean atTLD)
     {
         TRType result = new TRQuoteType((TCQuoteType)getVDMType(), definitions, value);
-        result.setup();
+        TRNode.setup(result);
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }

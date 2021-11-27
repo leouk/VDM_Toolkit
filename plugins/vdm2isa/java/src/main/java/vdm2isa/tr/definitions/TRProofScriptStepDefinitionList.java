@@ -5,6 +5,7 @@ import java.util.List;
 
 import plugins.IsapogPlugin;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 
 public class TRProofScriptStepDefinitionList extends TRDefinitionList {
 
@@ -31,6 +32,7 @@ public class TRProofScriptStepDefinitionList extends TRDefinitionList {
                     IsapogPlugin.warning(IsaWarningMessage.PO_UNEXPECTED_PROOFSTEP_1P, d.location, d.getClass().getSimpleName());
             }
         }
+        TRNode.setup(result);
         return result;
     }
 }

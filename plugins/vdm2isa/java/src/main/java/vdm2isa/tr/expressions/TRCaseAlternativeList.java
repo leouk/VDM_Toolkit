@@ -7,6 +7,7 @@ import com.fujitsu.vdmj.tc.expressions.TCCaseAlternativeList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRTypeSet;
 
 public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCaseAlternative> {
@@ -46,13 +47,15 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
         {
             result.add(c.getType());
         }
+        TRNode.setup(result);
 		return result;
 	}
 
 	public static String translate(TRCaseAlternative... args)
 	{
-		TRCaseAlternativeList list = new TRCaseAlternativeList();
-        list.addAll(Arrays.asList(args));
-		return list.translate();	
+		TRCaseAlternativeList result = new TRCaseAlternativeList();
+        result.addAll(Arrays.asList(args));
+        TRNode.setup(result);
+		return result.translate();	
 	}
 }
