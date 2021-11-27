@@ -185,16 +185,19 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	 * variable name to be used for invariant translation). See TRType#invTranslate(String). 
 	 * @return Isabelle YXML string.
 	 */
-	//@Override
-	//public abstract String invTranslate();
+	protected String nodeInvTranslate()
+	{
+		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), toString());
+		return "";
+	}
+	
 	/**
      * Expressions do not support invariant translation in general. Some type-bound/local expressions do and can extend this behaviour.
      */
     @Override
     public String invTranslate()
     {
-        report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), toString());
-		return "";
+		return nodeInvTranslate();
     }
 
 	/**

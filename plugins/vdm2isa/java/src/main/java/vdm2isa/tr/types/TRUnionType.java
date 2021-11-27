@@ -128,9 +128,8 @@ public class TRUnionType extends TRType implements TRDataType {
 		}
 		else
 		{
-			TRNode n = (TRNode)this;
 			// will this call the error case? 
-			sb.append(n.invTranslate());
+			sb.append(this.nodeInvTranslate());
 		}
 		return IsaToken.parenthesise(sb.toString());		
     }
