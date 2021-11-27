@@ -9,7 +9,10 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.types.TRDataType;
 import vdm2isa.tr.types.TRType;
 
 /**
@@ -94,5 +97,18 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseLocalDefinition(this, arg);
+	}
+
+    @Override 
+	public boolean hasUnionTypes()
+	{
+        return this.type instanceof TRDataType;
+	}
+
+	@Override
+	public String unionTypesTranslate(TRExpression body)
+	{
+		report(IsaErrorMessage.PLUGIN_NYI_2P, "union types translate", getClass().getSimpleName());
+		return "TODO!";
 	}
 }

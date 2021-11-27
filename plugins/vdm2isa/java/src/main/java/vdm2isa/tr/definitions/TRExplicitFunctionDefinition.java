@@ -677,14 +677,15 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
 			fcnBody.append(tldIsaComment());
 
-			boolean hasUnionTypes = parameters.hasUnionTypes();
+			
+			boolean hasUnionTypes = paramDefinitionList.hasUnionTypes();
 			if (hasUnionTypes)
 			{
 				fcnBody.append(getFormattingSeparator());
 				fcnBody.append(IsaToken.comment("Implicit union type parameters projection conversion", getFormattingSeparator()));
-				fmtsep = parameters.setFormattingSeparator("\n\t\t\t");
-				fcnBody.append(parameters.unionTypesTranslate(body));
-				parameters.setFormattingSeparator(fmtsep);
+				fmtsep = paramDefinitionList.setFormattingSeparator("\n\t\t\t");
+				fcnBody.append(paramDefinitionList.unionTypesTranslate(body));
+				paramDefinitionList.setFormattingSeparator(fmtsep);
 			}
 			else
 			{

@@ -15,16 +15,18 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRUnionContext;
 
 /**
  * Base class for TRNode definitions. In relation to TCDefinition, we use the same
  * comparable mechanisms in order to allow the proper construction of defiintion lists 
  */
-public abstract class TRDefinition extends TRNode implements Comparable<TRDefinition>
+public abstract class TRDefinition extends TRNode implements Comparable<TRDefinition>, TRUnionContext
 {
 	private static final long serialVersionUID = 1L;
 	protected final TRIsaVDMCommentList comments;
@@ -155,4 +157,17 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	}
 
 	public abstract <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg);
+
+	@Override 
+	public boolean hasUnionTypes()
+	{
+		return false;
+	}
+
+	@Override
+	public String unionTypesTranslate(TRExpression body)
+	{
+		report(IsaErrorMessage.PLUGIN_NYI_2P, "union types translate", getClass().getSimpleName());
+		return "";
+	}
 }

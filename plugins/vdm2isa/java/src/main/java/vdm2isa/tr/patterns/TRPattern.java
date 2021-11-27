@@ -13,7 +13,7 @@ import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 /**
  * All patterns are record-context aware, but only TRRecordPattern properly implements it of course. 
  */
-public abstract class TRPattern extends TRNode implements TRRecordContext, TRUnionContext {
+public abstract class TRPattern extends TRNode implements TRRecordContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -96,15 +96,5 @@ public abstract class TRPattern extends TRNode implements TRRecordContext, TRUni
     public String recordPatternTranslate()
     {
         return translate();
-    }
-
-    @Override
-    public boolean hasUnionTypes() {
-        throw new UnsupportedOperationException("//TODO");
-    }
-
-    @Override
-    public String unionTypesTranslate(TRExpression body) {
-        throw new UnsupportedOperationException("//TODO");
     }
 }
