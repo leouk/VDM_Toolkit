@@ -40,14 +40,9 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
-		if (parameters != null)
-		{
-			// presume that all function types will be curried
-			parameters.setCurried(true);
-			if (parameters.isEmpty())
-				report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "empty", "function type", "0", String.valueOf(result));
-		}
+		// presume that all function types will be curried
 		TRNode.setup(parameters);//, result); 
+		parameters.setCurried(true);
 		//System.out.println(toString());
 	}
 

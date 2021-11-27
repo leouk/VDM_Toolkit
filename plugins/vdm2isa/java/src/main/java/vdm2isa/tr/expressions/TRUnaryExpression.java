@@ -156,6 +156,7 @@ public class TRUnaryExpression extends TRExpression {
         setSemanticSeparator(" ");
 		if (!VALID_UNARY_OPS.contains(isaToken()))
 			report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, isaToken().toString());
+		TRNode.setup(exp);
     }
 
 	/**

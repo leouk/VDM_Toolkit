@@ -47,8 +47,9 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	public void setup()
 	{
 		super.setup();
-		setCurried(false);
+		setCurried(true);
 		setFormattingSeparator(" ");
+		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
 	/**
@@ -73,7 +74,6 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		this.curried = curried;
 		setSemanticSeparator(this.curried ? IsaToken.FUN.toString() : IsaToken.CROSSPROD.toString());
-		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
 	}
 
 	@Override
