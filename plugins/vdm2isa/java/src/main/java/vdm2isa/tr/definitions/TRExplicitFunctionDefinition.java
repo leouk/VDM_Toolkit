@@ -686,6 +686,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		String fcnName     = name.getName();
 		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
 		String fcnOutType  = type.getResultType().translate();
+		// even for union pattern translate, we can "abosrb" the parameter name within the union case selection
+		// i.e. parameter name can be the same as the selected union parameter name without capturing it. 
 		String fcnParams   = paramPatternList.translate();
 		StringBuilder fcnBody = new StringBuilder();
 		switch (implicitSpecificationKind)

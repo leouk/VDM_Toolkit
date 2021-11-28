@@ -87,6 +87,23 @@ where
       U_VDMInt u1 \<Rightarrow>
 		((isTest (u1) inv_VDMInt \<longrightarrow> (u1 < (0::VDMNat))) \<and> (isTest (u1) inv_VDMNat \<longrightarrow> (u1 > (0::VDMNat)))))"
 
+(* f3(u6) == u6 > 10 *)
+definition 
+  f3 :: "TUnion6 \<Rightarrow> \<bool>"
+  where
+  "f3 u6 \<equiv> 
+    (case u6 of U_VDMInt u6 \<Rightarrow> u6 > 10)"
+
+value "f3 (U_VDMInt 20)"
+
+definition 
+  f3' :: "TUnion2 \<Rightarrow> \<bool>"
+  where
+  "f3' u2 \<equiv> 
+    (case u2 of 
+        TUnion2_VDMNat_VDMSeq u2 \<Rightarrow> vdm_card (elems u2) = len u2 
+      | TUnion2_VDMReal_VDMSet u2 \<Rightarrow> vdm_card u2 > 0)"
+
 definition
   f2 :: "TUnion6 \<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
   where

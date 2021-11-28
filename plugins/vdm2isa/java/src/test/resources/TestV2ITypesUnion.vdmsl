@@ -39,6 +39,9 @@ types
 	
 functions
 
+	f1: TUnion6 -> bool
+	f1(u6) == u6 > 10;
+
 	f3: TUnion6 -> bool
 	f3(u6) ==
 		cases true:

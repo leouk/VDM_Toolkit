@@ -380,14 +380,14 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			TRType t = it.next();
 			int i = 1;
 			// change the inner dummy name! 
-			sb.append(typeInvTranslate(t, varName + Integer.valueOf(i)));
+			sb.append(typeInvTranslate(t, varName));// + Integer.valueOf(i)));
 			while (it.hasNext())
 			{
                 sb.append(getFormattingSeparator());
 				sb.append(getInvTranslateSeparator());
 				t = it.next();
 				i++;
-				sb.append(typeInvTranslate(t, varName + Integer.valueOf(i)));
+				sb.append(typeInvTranslate(t, varName));// + Integer.valueOf(i)));
 			}
 			sb.append(getFormattingSeparator());
 		}
@@ -423,16 +423,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			String bodyStr = body.translate();
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			int i = 1;
-			//TODO needs to change var names and consider var names within body! 
-			sb.append(unionTypeTranslate(t, varName + Integer.valueOf(i), bodyStr));
+			sb.append(unionTypeTranslate(t, varName, bodyStr));
 			while (it.hasNext())
 			{
                 sb.append(getFormattingSeparator());
 				sb.append(getInvTranslateSeparator());
 				t = it.next();
-				i++;
-				sb.append(unionTypeTranslate(t, varName + Integer.valueOf(i), bodyStr));
+				sb.append(unionTypeTranslate(t, varName, bodyStr));
 			}
 			sb.append(getFormattingSeparator());
 		}
