@@ -113,7 +113,7 @@ map TCFieldNumberExpression{tuple, field, type, exptype} to TRFieldNumberExpress
 map TCFieldExpression{object, field, exptype} to TRFieldExpression(object, field, exptype);
 
 map TCNotYetSpecifiedExpression{location, exptype} to TRNotYetSpecifiedExpression(location, exptype);
-map TCNarrowExpression{location, typename, basictype, test, typedef, exptype, exptype} to TRNarrowExpression(location, typename, basictype, test, typedef, exptype, exptype);
+map TCNarrowExpression{location, typename, basictype, test, typedef, testtype, exptype} to TRNarrowExpression(location, typename, basictype, test, typedef, testtype, exptype);
 map TCIsExpression{location, typename, basictype, test, typedef, exptype} to TRIsExpression(location, typename, basictype, test, typedef, exptype);
 
 map TCIotaExpression{location, bind, predicate, exptype} to TRIotaExpression(location, bind, predicate, exptype);
