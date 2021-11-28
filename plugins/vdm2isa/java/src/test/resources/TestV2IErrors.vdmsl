@@ -1,0 +1,40 @@
+module TestV2IErrors
+exports all
+definitions
+
+types
+	--Isabelle does not allow empty records
+	--Error   [ISA   ] 10208: Isabelle does not allow zero-fields records for VDM mk_S expression.
+	S :: ;
+
+	R :: 
+		x: nat 
+		y: nat	
+	inv r == r.x < r.y;
+	
+	--this one will give an ISA error 10205: you have to define the inner type as a union!
+	--Error   [ISA   ] 10220: Union types are not allowed for `TUnion`: you *must* declare its parts as a named type.
+	TUnion = set of (nat | real);
+	
+	--this is how to do TUnion without error (and with the same outcome)
+	TInnerUnion = nat | real;
+	TInnerUnion' = set of TInnerUnion;
+	
+functions
+	-- multiple type binds in seq comp
+	--Error   [ISA   ] 10210: Type bound sequence compression is not supported in Isabelle.
+	vc33: () -> seq of nat
+	vc33() == [ x | x : nat & x > 10];
+
+values
+	v65: R = mk_R(1, 2);				
+	
+	-- can only bind one variable for seqcomp, hence "-" for y! 
+	-- v65 might not be "orderable"; user has to convince isabelle that v65.x is orderable, hence the warning by plugin; but error in Isabelle.  
+	--Warning [ISA   ] 11205: Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder. 
+	v830=[ x | mk_R(x,-) in set {v65} & 0 < x ]; 
+		
+
+
+end TestV2IErrors
+

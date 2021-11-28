@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-27T16:30:27.255041Z
+(* VDM to Isabelle Translation @2021-11-28T06:52:58.787891Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IBindsComplex.vdmsl' at line 1:8
@@ -21,7 +21,7 @@ definition
 where
 	"inv_R dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
-		( (((inv_VDMNat (a\<^sub>R dummy0))) \<and>
+		( (((inv_VDMNat (a\<^sub>R dummy0))) \<and> 
 		 ((inv_VDMNat (b\<^sub>R dummy0))) ))  \<and> 
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let a = (a\<^sub>R dummy0); b = (b\<^sub>R dummy0) in 

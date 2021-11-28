@@ -1,0 +1,15 @@
+module TestV2IWarnings
+exports all
+definitions
+
+values
+	--unknown type warning for additional type variables 	
+	--Warning [ISA   ] 11200: Unknown VDM types will generate Isabelle additional type variable `a warning.	
+	v38= nil;						--TCNilExpression (untyped)!TCUnknownType	
+	
+	
+functions
+
+
+end TestV2IWarnings
+

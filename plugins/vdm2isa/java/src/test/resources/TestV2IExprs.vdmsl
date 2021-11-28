@@ -58,7 +58,6 @@ values
 	v34= 4 < 5;						--TCLessExpression		
 	v35= 5 >= 4;					--TCGreaterEqualExpression
 	v36= 5 > 4;						--TCGreaterExpression		
-	v38= nil;						--TCNilExpression (untyped)!TCUnknownType	
 	v39= t14++t15;					--TCPlusPlusExpression	
 	v40= t9 <: t14;					--TCDomainResByExpression	
 	v41= t9 <-: t14;					--TCDomainResToExpression	

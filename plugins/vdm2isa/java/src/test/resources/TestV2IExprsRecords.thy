@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-27T16:30:27.294992Z
+(* VDM to Isabelle Translation @2021-11-28T06:52:58.799486Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -21,16 +21,16 @@ definition
 where
 	"inv_R r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
-		( (((inv_VDMNat (x\<^sub>R r))) \<and>
+		( (((inv_VDMNat (x\<^sub>R r))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_R\<close>
 		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
  
 
 	
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 definition
 	pre_mkr :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -39,7 +39,7 @@ where
 		((inv_VDMNat n))"
 
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 definition
 	post_mkr :: "VDMNat\<Rightarrow> R \<Rightarrow> \<bool>"
 where
@@ -55,9 +55,9 @@ where
 	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
 
 	
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 definition
 	pre_recbind :: "R \<Rightarrow> \<bool>"
 where
@@ -66,7 +66,7 @@ where
 		(inv_R dummy0)"
 
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 definition
 	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -84,9 +84,9 @@ where
 	(x + y))"
 
 	
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 22:5\<close>
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 28:11\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 25:11\<close>
 definition
 	pre_recbindSpec :: "R \<Rightarrow> \<bool>"
 where
@@ -99,7 +99,7 @@ where
 		(x < y))"
 
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:21\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 26:21\<close>
 definition
 	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -121,16 +121,16 @@ where
 	(x + y))"
 
 	
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 32:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 32:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
 definition
 	pre_letbest :: "\<bool>"
 where
 	"pre_letbest  \<equiv> True"
 
 
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 32:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
 definition
 	post_letbest :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -144,7 +144,7 @@ where
 	"letbest  \<equiv> 
 	\<comment>\<open>User defined body of letbest\<close>
 	(
-		SOME (dummy0::VDMNat) .(dummy0 \<in> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | (dummy0 :: R) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		SOME (dummy0::VDMNat) .(dummy0 \<in> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x + y)) | (dummy0 :: R) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)) }))"
 
 	
@@ -242,7 +242,7 @@ abbreviation
 where
 	"v741 \<equiv> (
 	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and>
+		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
 		(x + y)
 	 else
@@ -316,19 +316,6 @@ where
 	inv_v810 :: "\<bool>"
 where
 	"inv_v810  \<equiv> (inv_VDMSet' (inv_VDMNat) v810)"
-
-	
-	
-abbreviation
-	v830 :: "VDMNat VDMSeq"
-where
-	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ]
-	\<comment>\<open>Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>{v65}\<close>}  has a VDM ord_ predicate.\<close> "
-
-	definition
-	inv_v830 :: "\<bool>"
-where
-	"inv_v830  \<equiv> (inv_VDMSeq' (inv_VDMNat) v830)"
 
 	
 	

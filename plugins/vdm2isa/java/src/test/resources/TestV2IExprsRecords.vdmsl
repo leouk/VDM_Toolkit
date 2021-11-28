@@ -9,9 +9,6 @@ types
 		y: nat	
 	inv r == r.x < r.y;
 	
-	--Isabelle does not allow empty records
-	--S :: ;
-	
 functions
 	-- Auxiliary to allow for TCApplicationExpression of TCRecordType result for mkr(1).x
 	mkr: nat -> R
@@ -52,7 +49,6 @@ values
 	--v801=(let mk_R(x,y) in set {v65}, var: nat = 10 be st x < y in var+x+y);
 	v801=(let mk_R(x,y) in set {v65} be st x < y in x+y);
 	v810={ x+y | mk_R(x,y) in set {v65} & y < x };
-	v830=[ x | mk_R(x,-) in set {v65} & 0 < x ]; -- can only bind one variable for seqcomp, hence "-" for y! 
 	--v921= (def mk_R(x,y) = v65, var1: nat = 10 in var1+x+y); --TCDefExpression
 	v921= (def mk_R(x,y) = v65 in x+y); --TCDefExpression
 	--v922= (def mk_R(x,y): R in x+y); --TCDefExpression

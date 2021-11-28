@@ -23,10 +23,6 @@ functions
 	vc32: () -> set of nat
 	vc32() == { x + y | x : nat, y: nat & x > y };
 
-	-- multiple type binds in seq comp
-	vc33: () -> seq of nat
-	vc33() == [ x | x : nat & x > 10];
-	
 	-- multiple type + set binds in predicates
 	vc4: () -> bool
 	vc4() == (forall var1:nat, var2:nat, var3, var4 in set t9 & var1 + var3 < var2 + var4);
