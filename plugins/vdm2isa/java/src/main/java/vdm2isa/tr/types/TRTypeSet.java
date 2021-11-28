@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCOptionalType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
@@ -35,11 +36,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	private String invTranslateSeparator;
 	private boolean prefixed;
 	private boolean alreadySetup;
+	private TCNameToken typename;
 
 	public TRTypeSet()
 	{
 		super();
 		prefixed = false;
+		typename = null;
 		alreadySetup = false;
 	}
 
@@ -257,10 +260,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
 		{
 			separator = sep;
-			for (TRType n : this)
-			{
-				n.setSemanticSeparator(sep);
-			}
+			// for type sets, this doesn't quite work because the inner parts have to be different (e.g. "|" versus " ")! 
+			// for (TRType n : this)
+			// {
+			// 	n.setSemanticSeparator(sep);
+			// }
 		}
 		return result;
 	}
@@ -299,10 +303,10 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
 		{
 			invTranslateSeparator = sep;
-			for (TRType n : this)
-			{
-				n.setInvTranslateSeparator(sep);
-			}
+			// for (TRType n : this)
+			// {
+			// 	n.setInvTranslateSeparator(sep);
+			// }
 		}	
 		return old;
 	}
@@ -327,6 +331,24 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			//		datatype Union = U_nat "VDMNat" | U_set_of_int "VDMInt VDMSet" | U_seq_of_real "VDMReal VDMSeq" 
 			//
 			// Constructor names won't be unique across union types, but will within fully qualified union types, so fine for now.
+			//
+			// Because certain VDM unions are absorbed (E.g. U1 = nat | int will only have int; U2 = int | nat | nat1 will only have int)
+			// we also need the fully qualified type nname, as ince U1.U_VDMInt versus U2.U_VDMInt!
+			String tname = getName();
+			if (tname == null)
+			{
+				// do nothing; this is a type declaration/translate time.
+			}
+			else if (tname.isEmpty())
+			{
+				//TODO ignore, this will be reported elsewhere? yes
+				//report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, t.getName());
+			}
+			else
+			{
+				sb.append(tname);
+				sb.append(IsaToken.POINT.toString());
+			}
 			sb.append(IsaToken.VDMUNION.toString());
 			sb.append(IsaToken.UNDERSCORE.toString());
 			sb.append(typeStr.replace(' ', '_'));
@@ -392,15 +414,12 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			int i = 1;
-			// change the inner dummy name! 
 			sb.append(typeInvTranslate(t, varName));// + Integer.valueOf(i)));
 			while (it.hasNext())
 			{
                 sb.append(getFormattingSeparator());
 				sb.append(getInvTranslateSeparator());
 				t = it.next();
-				i++;
 				sb.append(typeInvTranslate(t, varName));// + Integer.valueOf(i)));
 			}
 			sb.append(getFormattingSeparator());
