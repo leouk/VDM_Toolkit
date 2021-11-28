@@ -5,6 +5,7 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeComparator;
 
@@ -165,6 +166,14 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 			   //false //ultimateType().isDataType()
 			   ultimateType() instanceof TRDataType
 			   ;
+	}
+
+	public boolean isBooleanType()
+	{
+		TRType utype = ultimateType();
+		return getVDMType() instanceof TCBooleanType ||
+				((utype instanceof TRBasicType) &&
+				 utype.isBooleanType()); 
 	}
 
 	public TRType ultimateType()

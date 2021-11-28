@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T11:50:20.825116Z
+(* VDM to Isabelle Translation @2021-11-28T12:27:09.118891Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesUnion.vdmsl' at line 1:8
@@ -178,7 +178,8 @@ where
 		(
 		\<comment>\<open>Implicit union type parameters projection conversion\<close>
 		(case u of
-			U_VDMReal u \<Rightarrow> (u > 0)
+			U_VDMReal u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (u > 0)
 		 ))"
 
 		 
@@ -201,7 +202,8 @@ where
 		(
 		\<comment>\<open>Implicit union type parameters projection conversion\<close>
 		(case u of
-			U_VDMInt u \<Rightarrow> (u < 0)
+			U_VDMInt u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (u < 0)
 		 ))"
 
 		 
@@ -224,7 +226,8 @@ where
 		(
 		\<comment>\<open>Implicit union type parameters projection conversion\<close>
 		(case u of
-			U_VDMInt u \<Rightarrow> ((isTest (u) (inv_VDMNat) \<longrightarrow> (u > 0)) \<and> (isTest (u) (inv_VDMInt) \<longrightarrow> (u < 0)))
+			U_VDMInt u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 ((isTest (u) (inv_VDMNat) \<longrightarrow> (u > 0)) \<and> (isTest (u) (inv_VDMInt) \<longrightarrow> (u < 0)))
 		 ))"
  
 
@@ -246,7 +249,8 @@ where
 		(
 		\<comment>\<open>Implicit union type parameters projection conversion\<close>
 		(case u of
-			U_VDMInt u \<Rightarrow> ((isTest (u) (inv_VDMInt) \<longrightarrow> (u < 0)) \<and> (isTest (u) inv_TBasic \<longrightarrow> (u > 0)))
+			U_VDMInt u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 ((isTest (u) (inv_VDMInt) \<longrightarrow> (u < 0)) \<and> (isTest (u) inv_TBasic \<longrightarrow> (u > 0)))
 		 ))"
  
 
@@ -278,7 +282,8 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> (u6 > 10)
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (u6 > 10)
 		 ))"
 
 	
@@ -309,8 +314,10 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u2 of
-			TUnion2.U_VDMNat_VDMSeq u2 \<Rightarrow> (isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> ((vdm_card (elems u2)) = (len u2)))
-		  | TUnion2.U_VDMReal_VDMSet u2 \<Rightarrow> (isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> ((vdm_card (elems u2)) = (len u2)))
+			TUnion2.U_VDMNat_VDMSeq u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> ((vdm_card (elems u2)) = (len u2)))
+		  | TUnion2.U_VDMReal_VDMSet u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> ((vdm_card (elems u2)) = (len u2)))
 		 ))"
 
 	
@@ -341,14 +348,20 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> (
-		 \<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `\<bool>` VDM type.\<close>)
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (
+		 \<comment>\<open>`cases true` expressions are translated as an and-chain of implications or others\<close>
+		 ((isTest (u6) (inv_VDMNat)) \<longrightarrow> (u6 > 10)) \<and> 
+			 ((isTest (u6) (inv_VDMInt)) \<longrightarrow> (u6 < 10))
+		  \<or> (u6>100))
 		 ))"
+declare [[show_brackets]]
+thm f3_def
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 58:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 59:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 58:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 59:5\<close>
 definition
 	pre_f4 :: "TUnion6\<Rightarrow> TUnion2 \<Rightarrow> \<bool>"
 where
@@ -357,7 +370,7 @@ where
 		((inv_TUnion6 u6)  \<and>  (inv_TUnion2 u2))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 58:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 59:5\<close>
 definition
 	post_f4 :: "TUnion6\<Rightarrow> TUnion2\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -373,18 +386,24 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u2 of
-			TUnion2.U_VDMNat_VDMSeq u2 \<Rightarrow> (case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> ((isTest (u6) (inv_VDMInt) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (u6 \<in> (elems u2))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (u6 \<in> u2)))) \<and> (isTest (u6) (inv_VDMNat) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (\<not> (u6 \<in> (elems u2)))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (\<not> (u6 \<in> u2))))))
+			TUnion2.U_VDMNat_VDMSeq u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 
+		 (case u6 of
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 ((isTest (u6) (inv_VDMInt) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (u6 \<in> (elems u2))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (u6 \<in> u2)))) \<and> (isTest (u6) (inv_VDMNat) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (\<not> (u6 \<in> (elems u2)))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (\<not> (u6 \<in> u2))))))
 		 )
-		  | TUnion2.U_VDMReal_VDMSet u2 \<Rightarrow> (case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> ((isTest (u6) (inv_VDMInt) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (u6 \<in> (elems u2))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (u6 \<in> u2)))) \<and> (isTest (u6) (inv_VDMNat) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (\<not> (u6 \<in> (elems u2)))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (\<not> (u6 \<in> u2))))))
+		  | TUnion2.U_VDMReal_VDMSet u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 
+		 (case u6 of
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 ((isTest (u6) (inv_VDMInt) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (u6 \<in> (elems u2))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (u6 \<in> u2)))) \<and> (isTest (u6) (inv_VDMNat) \<longrightarrow> ((isTest (u2) (inv_VDMSeq' (inv_VDMNat)) \<longrightarrow> (\<not> (u6 \<in> (elems u2)))) \<and> (isTest (u2) (inv_VDMSet' (inv_VDMReal)) \<longrightarrow> (\<not> (u6 \<in> u2))))))
 		 )
 		 ))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 91:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 92:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 91:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 92:5\<close>
 definition
 	pre_f4' :: "TUnion6\<Rightarrow> TUnion2' \<Rightarrow> \<bool>"
 where
@@ -393,7 +412,7 @@ where
 		((inv_TUnion6 u6)  \<and>  (inv_TUnion2' u2))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 91:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 92:5\<close>
 definition
 	post_f4' :: "TUnion6\<Rightarrow> TUnion2'\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
 where
@@ -409,18 +428,24 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u2 of
-			TUnion2'.U_VDMNat_VDMSeq u2 \<Rightarrow> (case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> (u6 \<in> (elems u2))
+			TUnion2'.U_VDMNat_VDMSeq u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 
+		 (case u6 of
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (u6 \<in> (elems u2))
 		 )
-		  | TUnion2'.U_VDMReal_VDMSeq u2 \<Rightarrow> (case u6 of
-			TUnion6.U_VDMInt u6 \<Rightarrow> (u6 \<in> (elems u2))
+		  | TUnion2'.U_VDMReal_VDMSeq u2 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 
+		 (case u6 of
+			TUnion6.U_VDMInt u6 \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (u6 \<in> (elems u2))
 		 )
 		 ))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 95:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 96:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 95:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 96:5\<close>
 definition
 	pre_f6 :: "TUnion6 \<Rightarrow> \<bool>"
 where
@@ -429,7 +454,7 @@ where
 		((inv_TUnion6 u))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 95:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 96:5\<close>
 definition
 	post_f6 :: "TUnion6\<Rightarrow> VDMInt \<Rightarrow> \<bool>"
 where
@@ -445,13 +470,14 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u of
-			TUnion6.U_VDMInt u \<Rightarrow> u
+			TUnion6.U_VDMInt u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 u
 		 ))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 99:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 99:5\<close>
 definition
 	pre_f6' :: "TUnion6' \<Rightarrow> \<bool>"
 where
@@ -460,7 +486,7 @@ where
 		((inv_TUnion6' u))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 99:5\<close>
 definition
 	post_f6' :: "TUnion6'\<Rightarrow> VDMInt \<Rightarrow> \<bool>"
 where
@@ -476,7 +502,8 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case u of
-			TUnion6'.U_VDMInt u \<Rightarrow> u
+			TUnion6'.U_VDMInt u \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 u
 		 ))"
 
 end

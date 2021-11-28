@@ -163,9 +163,16 @@ public class TRBasicType extends TRType
 		return isaToken().equals(IsaToken.NAT) || isaToken().equals(IsaToken.NAT1);
 	}
 
+	@Override
 	public boolean isNumericType() {
         return NUMERIC_TYPES.contains(isaToken());
     }
+
+	@Override
+	public boolean isBooleanType()
+	{
+		return isaToken().equals(IsaToken.BOOL);
+	}
 
 	@Override
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)

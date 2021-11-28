@@ -51,7 +51,8 @@ functions
 	f3(u6) ==
 		cases true:
 			(is_nat(u6)) -> u6 > 10,
-			(is_int(u6)) -> u6 < 10
+			(is_int(u6)) -> u6 < 10,
+			others		 -> u6 > 100
 		end;
 		
 	-- union selection across multiple unions becomes quite messy/confusing; obfuscated even?!

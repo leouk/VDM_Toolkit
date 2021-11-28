@@ -13,9 +13,12 @@ import vdm2isa.tr.types.TRTypeSet;
 public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCaseAlternative> {
 	private static final long serialVersionUID = 1L;
     
+    private boolean casesTrueAlternative;
+
     protected TRCaseAlternativeList()
     {
         super();
+        casesTrueAlternative = false;
     }
 
     public TRCaseAlternativeList(TRCaseAlternativeList from)
@@ -27,6 +30,7 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
     public TRCaseAlternativeList(TCCaseAlternativeList from) throws Exception
     {
         super(from);
+        casesTrueAlternative = false;
     }
 
     @Override
@@ -34,7 +38,19 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
     {
         super.setup();
         setFormattingSeparator("\n\t\t\t ");
-        setSemanticSeparator(IsaToken.BAR.toString() + " ");
+        setSemanticSeparator(IsaToken.SPACE.toString() + IsaToken.BAR.toString() + IsaToken.SPACE.toString());
+    }
+
+    protected boolean setCasesTrueAlternative(boolean b)
+    {
+        boolean result = casesTrueAlternative; 
+        casesTrueAlternative = b;
+        for(TRCaseAlternative c : this)
+        {
+            c.setCasesTrueAlternative(b);
+        }
+        setSemanticSeparator(IsaToken.SPACE.toString() + (b ? IsaToken.AND.toString() : IsaToken.BAR.toString()) + IsaToken.SPACE.toString());
+        return result;
     }
 
     /**

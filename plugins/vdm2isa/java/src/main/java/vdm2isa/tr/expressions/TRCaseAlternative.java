@@ -13,11 +13,13 @@ public class TRCaseAlternative extends TRExpression {
     private static final long serialVersionUID = 1L;
     private final TRPattern pattern;
     private final TRExpression result;
+    private boolean casesTrueAlternative;
 
     public TRCaseAlternative(LexLocation location, TRPattern pattern, TRExpression result) {
         super(location, result != null ? result.getType() : TRExpression.unknownType(location));
         this.pattern = pattern;
         this.result = result;
+        this.casesTrueAlternative = false;
     }    
 
     @Override 
@@ -46,7 +48,12 @@ public class TRCaseAlternative extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        return IsaToken.FUN;
+        return casesTrueAlternative ? IsaToken.IMPLIES : IsaToken.FUN;
+    }
+
+    protected void setCasesTrueAlternative(boolean b)
+    {
+        this.casesTrueAlternative = b;
     }
 
     @Override
@@ -58,6 +65,6 @@ public class TRCaseAlternative extends TRExpression {
         sb.append(IsaToken.SPACE.toString());
         sb.append(result.recordPatternTranslate(pattern));
         // no parenthesising per case, but on the overal case expression
-        return sb.toString();
+        return casesTrueAlternative ? IsaToken.parenthesise(sb.toString()) : sb.toString();
     }
 }

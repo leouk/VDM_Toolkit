@@ -9,6 +9,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
+import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRDataType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
@@ -35,8 +36,8 @@ public class TRCasesExpression extends TRExpression {
         super.setup();
         setFormattingSeparator("\n\t\t ");
         assert exp != null;
-        // add others as a case alternative
-        if (others != null)
+        // add others as a case alternative if exp is not boolean, given cases true is treated differently
+        if (others != null && !exp.getType().isBooleanType())
         {
             if (exp.getType() instanceof TROptionalType)
             {
@@ -78,11 +79,25 @@ public class TRCasesExpression extends TRExpression {
     public String translate() {
         StringBuilder sb = new StringBuilder();
         TRType eType = exp.getType();
-        if (eType.isDataType())
+        sb.append(getFormattingSeparator());
+        if (eType.isBooleanType())
+        {
+            // for boolean cases, every case *must* be is_expr, so create a chain of conjoined implications, ignoring exp
+            sb.append(IsaToken.comment("`cases true` expressions are translated as an and-chain of implications or others", getFormattingSeparator()));
+            boolean old = cases.setCasesTrueAlternative(true);
+            sb.append(cases.translate());
+            cases.setCasesTrueAlternative(old);
+            if (others != null)
+            {
+                sb.append (getFormattingSeparator());
+                sb.append(IsaToken.SPACE.toString() + IsaToken.OR.toString() + IsaToken.SPACE.toString());
+                sb.append(others.translate());
+            }
+        }
+        else if (eType.isDataType())
         {
             TRDataType dt = (TRDataType)eType;
             //dt.getDataTypeConstructors().size() == cases.size() 
-            sb.append(getFormattingSeparator());
             sb.append(isaToken().toString());
             sb.append(IsaToken.SPACE.toString());
             sb.append(exp.translate());
@@ -96,7 +111,6 @@ public class TRCasesExpression extends TRExpression {
         {
             String typeStr = eType.translate();
             report(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P, typeStr);
-            sb.append(getFormattingSeparator());
             sb.append(IsaToken.comment(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P.format(typeStr)));
         }        
         return IsaToken.parenthesise(sb.toString());
