@@ -25,7 +25,7 @@ public class TRIotaExpression extends TRExpression {
     {
         super.setup();
         TRNode.setup(bind, predicate);
-        setFormattingSeparator(" ");
+        setFormattingSeparator(IsaToken.SPACE.toString());
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
     }
 

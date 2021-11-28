@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeComparator;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -46,8 +47,8 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	public void setup()
 	{
 		super.setup();
-		setSemanticSeparator(" ");
-		setFormattingSeparator(" ");
+		setSemanticSeparator(IsaToken.SPACE.toString());
+		setFormattingSeparator(IsaToken.SPACE.toString());
 		TRNode.setup(definitions);
 	}
 

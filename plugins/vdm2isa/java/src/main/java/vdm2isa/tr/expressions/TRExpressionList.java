@@ -9,6 +9,7 @@ import java.util.Arrays;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.types.TRTypeList;
@@ -45,7 +46,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 	{
 		super.setup();
 		//setSemanticSeparator(IsaToken.COMMA.toString());
-		setFormattingSeparator(" ");
+		setFormattingSeparator(IsaToken.SPACE.toString());
 	}
 
 	public static String translate(TRExpression... args)

@@ -174,8 +174,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 		setFormattingSeparator("\n\t\t");
 		// parameters and type parameters are curried not "," separated
-		//this.typeParams.setSemanticSeparator(" ");
-		this.paramPatternList.setSemanticSeparator(" ");
+		//this.typeParams.setSemanticSeparator(IsaToken.SPACE.toString());
+		this.paramPatternList.setSemanticSeparator(IsaToken.SPACE.toString());
 		
 		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
 		if (!Arrays.asList(
@@ -498,7 +498,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 		// will this alone sort out renamed typesm but has to be copied
 		//type.parameters.setAtTopLevelDefinition(!kind.equals(TRSpecificationKind.INV));
-		TRTypeList parameterscp = type.parameters.copy(!kind.equals(TRSpecificationKind.INV)); 
+		TRTypeList parameterscp = type.parameters.copy(!kind.equals(TRSpecificationKind.INV));
+		 
 		if (isCurried)
 		{
 			// if curried there are more names than parameters on the first entry

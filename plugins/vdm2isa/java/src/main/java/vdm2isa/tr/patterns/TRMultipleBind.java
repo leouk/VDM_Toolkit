@@ -40,8 +40,8 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
     {
         super.setup();
         // multiple type binds are space (not comma) separated
-        setSemanticSeparator(" ");
-        setFormattingSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
+        setFormattingSeparator(IsaToken.SPACE.toString());
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
         TRNode.setup(plist);
         this.plist.setInvTranslateSeparator(getInvTranslateSeparator());

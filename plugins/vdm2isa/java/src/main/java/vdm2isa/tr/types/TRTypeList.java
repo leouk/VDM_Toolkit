@@ -48,8 +48,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		super.setup();
 		setCurried(true);
-		setFormattingSeparator(" ");
-		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+		setFormattingSeparator(IsaToken.SPACE.toString());
+		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
 	}
 
 	/**

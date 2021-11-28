@@ -37,8 +37,8 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	{
 		super.setup();
 		// pattern lists are space separated in Isabelle, not commas please. 
-		setSemanticSeparator(" ");//IsaToken.COMMA.toString());
-		setFormattingSeparator(" ");
+		setSemanticSeparator(IsaToken.SPACE.toString());//IsaToken.COMMA.toString());
+		setFormattingSeparator(IsaToken.SPACE.toString());
 		setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 

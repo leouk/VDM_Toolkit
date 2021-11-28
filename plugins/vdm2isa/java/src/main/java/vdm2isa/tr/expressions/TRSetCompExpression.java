@@ -66,7 +66,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         sb.append(getFormattingSeparator());
         sb.append(existential ? IsaToken.BAR.toString() : IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
-        String old = bindings.setSemanticSeparator(" ");
+        String old = bindings.setSemanticSeparator(IsaToken.SPACE.toString());
         sb.append(existential ? bindings.compTranslate(true) + getFormattingSeparator() + IsaToken.POINT.toString() : "");
         sb.append(getFormattingSeparator());
         // The bindings translation as the type (binding) restriction has to be part of the Isabelle predicate filter 

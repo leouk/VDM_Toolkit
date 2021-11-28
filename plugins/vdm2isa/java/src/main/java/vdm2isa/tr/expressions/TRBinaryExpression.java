@@ -40,7 +40,7 @@ public class TRBinaryExpression extends TRExpression
 	{
 		super.setup();
 		// binary operator are spaced given Isabelle currying
-		setSemanticSeparator(" ");
+		setSemanticSeparator(IsaToken.SPACE.toString());
 
 		if (!VALID_BINARY_OPS.contains(isaToken()))
 			report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, isaToken().toString());

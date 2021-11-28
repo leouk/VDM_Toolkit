@@ -153,7 +153,7 @@ public class TRUnaryExpression extends TRExpression {
     {
         super.setup();
 		// unary operator are spaced given Isabelle currying
-        setSemanticSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
 		if (!VALID_UNARY_OPS.contains(isaToken()))
 			report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, isaToken().toString());
 		TRNode.setup(exp);

@@ -35,8 +35,8 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 	public void setup()
 	{
 		super.setup();
-		setSemanticSeparator(" ");
-		setFormattingSeparator(" ");
+		setSemanticSeparator(IsaToken.SPACE.toString());
+		setFormattingSeparator(IsaToken.SPACE.toString());
 		setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 

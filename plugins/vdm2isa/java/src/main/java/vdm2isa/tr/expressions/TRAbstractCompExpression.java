@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.patterns.TRMultipleBindList;
@@ -28,7 +29,7 @@ public abstract class TRAbstractCompExpression extends TRExpression {
     public void setup()
     {
         super.setup();
-        setFormattingSeparator(" ");
+        setFormattingSeparator(IsaToken.SPACE.toString());
         TRNode.setup(first, bindings, predicate, def);
     }
 

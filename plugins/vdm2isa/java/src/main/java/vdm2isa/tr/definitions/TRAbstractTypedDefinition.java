@@ -53,7 +53,7 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
     public void setup()
     {
         super.setup();
-        setSemanticSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
         TRNode.setup(type);
     }
 

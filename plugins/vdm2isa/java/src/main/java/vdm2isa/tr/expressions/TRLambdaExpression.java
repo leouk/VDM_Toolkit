@@ -64,7 +64,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 	{
         super.setup();
         setFormattingSeparator("\n\t");
-        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
         TRNode.setup(bindList, paramPatterns, paramDefinitions, def);
         System.out.println(toString());
 	}

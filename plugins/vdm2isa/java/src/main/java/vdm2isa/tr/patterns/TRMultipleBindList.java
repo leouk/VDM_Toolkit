@@ -62,8 +62,8 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		super.setup();
 		setParenthesise(true);
 		// multiple type binds are space (not comma) separated
-        setSemanticSeparator(" ");
-        setFormattingSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
+        setFormattingSeparator(IsaToken.SPACE.toString());
 		//Multiple bind list translation must take into consideration the kind of bind within it; for type binds that involves adding inv_T dummy; others just empty
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}

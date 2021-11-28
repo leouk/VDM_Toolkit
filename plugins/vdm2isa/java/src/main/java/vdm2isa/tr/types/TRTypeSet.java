@@ -71,8 +71,8 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	public void setup()
 	{
 		setFormattingSeparator("");
-		setSemanticSeparator(" " + IsaToken.BAR.toString() + " ");
-		setInvTranslateSeparator(" " + IsaToken.BAR.toString() + " ");
+		setSemanticSeparator(IsaToken.SPACE.toString() + IsaToken.BAR.toString() + IsaToken.SPACE.toString());
+		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.BAR.toString() + IsaToken.SPACE.toString());
 		for(TRType t : this)
 		{
 			if (t != null && !t.setupDone())

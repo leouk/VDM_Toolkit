@@ -40,7 +40,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         super.setup();
         TRNode.setup(localDefs);
         setFormattingSeparator("\n\t\t");
-	 	setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+	 	setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
         this.localDefs.setSemanticSeparator(IsaToken.SEMICOLON.toString());
         //System.out.println(toString());
 	}

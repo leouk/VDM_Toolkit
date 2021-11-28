@@ -27,8 +27,8 @@ public class TRUnionType extends TRType implements TRDataType {
 	{
 		super.setup();
 		setFormattingSeparator("\n\t\t ");
-		setSemanticSeparator(" " + isaToken() + " ");
-		setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+		setSemanticSeparator(IsaToken.SPACE.toString() + isaToken().toString() + IsaToken.SPACE.toString());
+		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
 		assert types != null;
 		TRNode.setup(types);
 		this.types.setPrefixed(true);

@@ -49,7 +49,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
 	{
         super.setup();
         setFormattingSeparator("\n\t\t");
-        setInvTranslateSeparator(" " + IsaToken.AND.toString() + " ");
+        setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
         // LetBeSt is represented through in set of a set comprehension constructed on the fly, with necessary adjustments to exptype for the set comp.
         String original = IsaToken.dummyVarNames(1, location);
         //TCNameToken name = new TCNameToken(location, location.module, original);

@@ -52,7 +52,7 @@ public class TRBoundedExpression extends TRExpression {
         super.setup();
         rParenCount = 0;
 	// 	setSemanticSeparator("");
-	 	setFormattingSeparator(" ");
+	 	setFormattingSeparator(IsaToken.SPACE.toString());
 	 	setInvTranslateSeparator(getFormattingSeparator() + IsaToken.IMPLIES.toString() + getFormattingSeparator());
         assert bindList != null;
         TRNode.setup(bindList, predicate); 

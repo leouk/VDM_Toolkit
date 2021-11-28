@@ -31,7 +31,7 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	{
 		super.setup();
 		setFormattingSeparator("\n\t\t ");
-		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString());
+		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
 	}
 
 	public void setRecordType(TRRecordType rtype)

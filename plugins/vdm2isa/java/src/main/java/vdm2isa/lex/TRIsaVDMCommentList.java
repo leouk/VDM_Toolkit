@@ -24,7 +24,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
     {
         super.setup();
         // set format separator as \n given it's called even with one element
-        setSemanticSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
         setFormattingSeparator("\n");
     }
 

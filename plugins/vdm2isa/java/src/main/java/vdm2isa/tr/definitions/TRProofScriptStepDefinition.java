@@ -23,7 +23,7 @@ public class TRProofScriptStepDefinition extends TRDefinition {
     public void setup()
     {
         super.setup();
-        setSemanticSeparator(" ");
+        setSemanticSeparator(IsaToken.SPACE.toString());
         setFormattingSeparator("\n\t");
     }
 
