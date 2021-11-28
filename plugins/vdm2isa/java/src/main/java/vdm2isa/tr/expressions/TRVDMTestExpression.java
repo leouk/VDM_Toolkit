@@ -9,6 +9,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
+import vdm2isa.tr.definitions.TRTypeDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
@@ -62,7 +63,19 @@ public abstract class TRVDMTestExpression extends TRExpression {
 
     public boolean isNameTyped()
     {
-        return basictype == null && typename != null;
+        return basictype == null && typename != null && typedef != null;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    protected TRType getTestType()
+    {
+        return isBasicTyped() ? basictype : 
+            //TODO @NB this might not always be a TRTypeDefinition? If so, how to get the "type" of typename? 
+            typedef != null && typedef instanceof TRTypeDefinition ? 
+                ((TRTypeDefinition)typedef).type : TRExpression.unknownType(location);
     }
 
     @Override 

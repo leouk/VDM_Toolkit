@@ -41,19 +41,26 @@ public class TRIsExpression extends TRVDMTestExpression {
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.parenthesise(test.translate()));
         sb.append(IsaToken.SPACE.toString());
-        // is_T(s)              => inv_T s      (for any named type)
-        // is_nat(s)            => inv_VDMNat s (for any basic type)
-        // is_(s, set of nat)   => basictype.invTranslate! (for other basic type invTranslte; or just basicType.invTranslate!)
-        //String invStr = isNameTyped() ? typename.toString() : isBasicTyped() ? basictype.getName() : IsaToken.TRUE.toString();
-        //sb.append(IsaToken.INV.toString() + invStr);
-        if (isNameTyped())
+        if (getTestType().compatible(test.getType()))
         {
-            sb.append(IsaToken.INV.toString());
-            sb.append(typename.toString());
+            // is_T(s)              => inv_T s      (for any named type)
+            // is_nat(s)            => inv_VDMNat s (for any basic type)
+            // is_(s, set of nat)   => basictype.invTranslate! (for other basic type invTranslte; or just basicType.invTranslate!)
+            //String invStr = isNameTyped() ? typename.toString() : isBasicTyped() ? basictype.getName() : IsaToken.TRUE.toString();
+            //sb.append(IsaToken.INV.toString() + invStr);
+            if (isNameTyped())
+            {
+                sb.append(IsaToken.INV.toString());
+                sb.append(typename.toString());
+            }
+            else 
+            {
+                sb.append(basictype.invTranslate());
+            }
         }
-        else 
+        else
         {
-            sb.append(basictype.invTranslate());
+            warning(11111, "incompatible types?!");
         }
         return sb.toString();
     }
