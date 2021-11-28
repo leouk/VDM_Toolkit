@@ -39,8 +39,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
         super.setup();
         if (basictype != null && typename != null)
             report(IsaErrorMessage.VDMSL_INVALID_TESTEXPR_3P, getClass().getSimpleName(), typename.toString(), basictype.getClass().getSimpleName());
-        if (basictype != null && !(basictype instanceof TRBasicType))
-            warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), basictype.getClass().getSimpleName()); 
+        // this is allowed! e.g., is_(s, seq of nat)! As opposed to is_T(s) for T = seq of nat for the type name
+        //if (basictype != null && !(basictype instanceof TRBasicType))
+        //    warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), basictype.getClass().getSimpleName()); 
         TRNode.setup(basictype, test, typedef);
     }
 

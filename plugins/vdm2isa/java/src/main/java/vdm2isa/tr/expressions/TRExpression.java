@@ -74,10 +74,11 @@ public abstract class TRExpression extends TRNode
     public void setup()
     {
         super.setup();
-        if (exptype == null)
+        if (exptype == null && !hasWarnedAboutNullType)
         {
             warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, getClass().getSimpleName(), "null");
             exptype = TRExpression.unknownType(location);
+            hasWarnedAboutNullType = true;
         }
         TRNode.setup(exptype);
     }
