@@ -860,6 +860,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		String fmtsep = paramDefinitionList.setFormattingSeparator("\n\t\t\t");
 		sb.append(paramDefinitionList.unionTypesTranslate(body));
 		paramDefinitionList.setFormattingSeparator(fmtsep);
-		return sb.toString();
+		return IsaToken.parenthesise(sb.toString());
 	}
 }

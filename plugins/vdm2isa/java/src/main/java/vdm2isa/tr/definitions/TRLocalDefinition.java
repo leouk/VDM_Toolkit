@@ -98,19 +98,26 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 		return visitor.caseLocalDefinition(this, arg);
 	}
 
+    /**
+     * If the local definition (ultimate) type (i.e. chase renamed types) is a union, then needs union context
+     */
     @Override 
 	public boolean hasUnionTypes()
 	{
-        return this.type instanceof TRDataType;
+        return this.type.ultimateType() instanceof TRDataType;
 	}
 
+    /**
+     * Strategy for union types context is to use the inner param definition lists within explicit function definitions,
+     * which ultimately leads to here.  
+     */
 	@Override
 	public String unionTypesTranslate(TRExpression body)
 	{
 		StringBuilder sb = new StringBuilder();
         if (hasUnionTypes())
         {
-            TRDataType dtype = (TRDataType)type;
+            TRDataType dtype = (TRDataType)type.ultimateType();
 			sb.append(IsaToken.CASE.toString());
 			sb.append(IsaToken.SPACE.toString());
 			sb.append(this.name.toString());
