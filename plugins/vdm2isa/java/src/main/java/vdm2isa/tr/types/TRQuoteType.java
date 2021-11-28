@@ -25,6 +25,12 @@ public class TRQuoteType extends TRType
         result.setAtTopLevelDefinition(atTLD);
         return result;
     }
+
+    @Override 
+    public String getName()
+    {
+        return value;
+    }
     
     @Override
     public String translate() {

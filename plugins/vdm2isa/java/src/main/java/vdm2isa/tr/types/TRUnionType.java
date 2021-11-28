@@ -1,6 +1,7 @@
 package vdm2isa.tr.types;
 
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
@@ -46,6 +47,13 @@ public class TRUnionType extends TRType implements TRDataType {
 		return "Union " + 
 			"\n\t tset = " + String.valueOf(types) + 
 			"\n\t loc  = " + String.valueOf(getLocation());
+	}
+
+	@Override
+    protected void setInferredNamedForType(TCNameToken tn)
+	{
+        super.setInferredNamedForType(tn);
+		types.setInferredNamedForType(tn);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.messages.IsaErrorMessage;
@@ -37,6 +38,13 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     {
         return type;
     }
+
+    @Override
+    protected void setInferredNamedForType(TCNameToken tn)
+	{
+		super.setInferredNamedForType(tn);
+        getInnerType().setInferredNamedForType(tn);
+	}
 
     @Override
     public String getName()

@@ -130,7 +130,7 @@ public class TRField extends TRAbstractInnerTypedType {
     public void checkForUnionTypes(String recordName) {
         if (getInnerType() instanceof TRUnionType)
         {
-            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, recordName, getTagName());   
+            report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, recordName + "." + getTagName());   
         }
     }
 }
