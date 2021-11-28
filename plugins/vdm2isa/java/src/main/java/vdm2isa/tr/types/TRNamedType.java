@@ -13,13 +13,11 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRNamedType extends TRInvariantType
 {
 	private static final long serialVersionUID = 1L;
-    public final TCNameToken typename;
     public final TRType type;
 
     public TRNamedType(TCNamedType vdmType, TCNameToken typename, TRDefinitionList definitions, TRType type, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
     {
-        super(vdmType, definitions, invdef, eqdef, orddef);
-        this.typename = typename;
+        super(vdmType, typename, definitions, invdef, eqdef, orddef);
         this.type = type;
     }
     @Override
@@ -29,6 +27,17 @@ public class TRNamedType extends TRInvariantType
         setSemanticSeparator(IsaToken.SPACE.toString());
         TRNode.setup(type);
     }
+
+    @Override
+    protected void setInferredNamedForType(TCNameToken tn)
+	{
+        // this already has a named type!
+        super.setInferredNamedForType(tn);
+        if (getName().equals(String.valueOf(tn)))
+        {
+            type.setInferredNamedForType(tn);
+        }
+	}
 
     @Override
     public void setAtTopLevelDefinition(boolean b)
@@ -52,6 +61,7 @@ public class TRNamedType extends TRInvariantType
             // inner type of structured or multiply renamed named type is always "top-level" (i.e. always use it's invariant name rather than its parts!)
             result = new TRNamedType((TCNamedType)getVDMType(), typename, definitions, type.copy(true), getInvDef(), getEqDef(), getOrdDef());
             TRNode.setup(result);
+            // only named types set inferred named types! 
             ((TRNamedType)result).type.setInferredNamedForType(typename);
             result.setAtTopLevelDefinition(atTLD);
         }
@@ -62,12 +72,6 @@ public class TRNamedType extends TRInvariantType
     public IsaToken isaToken() {
         return IsaToken.IDENTIFIER;
     }
-
-    @Override
-	public String getName()
-	{
-		return typename != null ? typename.toString() : super.getName();
-	}
 
     /**
      * Chase the type renaming chain

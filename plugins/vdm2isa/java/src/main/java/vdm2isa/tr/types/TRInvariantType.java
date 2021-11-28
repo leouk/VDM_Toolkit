@@ -6,22 +6,27 @@ import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 
 public abstract class TRInvariantType extends TRType 
 {
 	private static final long serialVersionUID = 1L;
+    
+    protected final TCNameToken typename;
+
     // those that might require implicit undeclared specification are not final
     private TRExplicitFunctionDefinition invdef;
     private TRExplicitFunctionDefinition eqdef;
     private TRExplicitFunctionDefinition orddef;
     
-    public TRInvariantType(TCType  vdmType, TRDefinitionList definitions, 
+    public TRInvariantType(TCType  vdmType, TCNameToken typename, TRDefinitionList definitions, 
         TRExplicitFunctionDefinition invdef, 
         TRExplicitFunctionDefinition eqdef, 
         TRExplicitFunctionDefinition orddef)
     {
         super(vdmType, definitions);
+        this.typename = typename;
         setInvariantDefinition(invdef);
         setEqualityDefinition(eqdef);
         setOrderingDefinition(orddef);
@@ -64,6 +69,32 @@ public abstract class TRInvariantType extends TRType
         setFormattingSeparator("\n\t\t ");
         TRNode.setup(invdef, eqdef, orddef);
     }
+
+    @Override
+	public String getName()
+	{
+		return typename != null ? typename.toString() : super.getName();
+	}
+
+    @Override
+    protected void setInferredNamedForType(TCNameToken tn)
+	{
+        // Only typename is null?
+        // if (!typename.equals(tn))
+        // {
+        //     report(IsaErrorMessage.ISA_INVALID_NAMEDTYPE_RENAME_2P, typename, tn);
+        // }
+        // else
+        // {
+        //     // this already has a named type!
+        //     super.setInferredNamedForType(typename);
+        // }
+        if (typename == null)
+        {
+            report(IsaErrorMessage.ISA_INVALID_NAMEDTYPE_RENAME_2P, "null", tn);
+            super.setInferredNamedForType(tn);    
+        }
+	}
 
 	@Override
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)

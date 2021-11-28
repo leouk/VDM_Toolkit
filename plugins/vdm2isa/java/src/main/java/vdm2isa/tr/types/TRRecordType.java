@@ -18,7 +18,7 @@ public class TRRecordType extends TRInvariantType
 {
 	private final static long serialVersionUID = 1L;
 
-    private final TCNameToken name;
+   // private final TCNameToken name;
     private final TRFieldList fields;
     private final boolean composed; 
 
@@ -26,8 +26,8 @@ public class TRRecordType extends TRInvariantType
 
     private TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef, boolean copying)
     {
-        super(vdmType, definitions, invdef, eqdef, orddef);
-        this.name = name;
+        super(vdmType, name, definitions, invdef, eqdef, orddef);
+        //this.name = name;
         this.fields = fields;
         this.composed = composed;
         // should this be in setup? 
@@ -45,8 +45,10 @@ public class TRRecordType extends TRInvariantType
     {
         super.setup();
         assert fields != null;
-        if (fields.size() == 0)
-            report(10002, "Isabelle does not allow empty records for VDM record type " + String.valueOf(name));
+        if (fields.isEmpty())
+        {
+            report(IsaErrorMessage.ISA_NO_EMPTYRECORD_1P, String.valueOf(typename));
+        }
 
         fields.setRecordType(this);
         TRNode.setup(fields);
@@ -56,18 +58,18 @@ public class TRRecordType extends TRInvariantType
         setFormattingSeparator("\n\t\t");
     }
 
-    @Override
-    public void setAtTopLevelDefinition(boolean b)
-    {
-        // inner type at super = to type set
-        super.setAtTopLevelDefinition(b);
-		//this.fields.setAtTopLevelDefinition(b);
-    }	
+    // @Override
+    // public void setAtTopLevelDefinition(boolean b)
+    // {
+    //     // inner type at super = to type set
+    //     super.setAtTopLevelDefinition(b);
+	// 	//this.fields.setAtTopLevelDefinition(b);
+    // }	
 
     @Override
     public TRType copy(boolean atTLD)
     {
-        TRType result = new TRRecordType((TCRecordType)getVDMType(), name, definitions, fields/*//TODO ?fields.copy(atTLD)*/, composed, getInvDef(), getEqDef(), getOrdDef(), true);
+        TRType result = new TRRecordType((TCRecordType)getVDMType(), typename, definitions, fields/*//TODO ?fields.copy(atTLD)*/, composed, getInvDef(), getEqDef(), getOrdDef(), true);
         TRNode.setup(result);
         result.setAtTopLevelDefinition(atTLD);
         return result;
@@ -78,16 +80,10 @@ public class TRRecordType extends TRInvariantType
         recordMap.clear();
     }
 
-    @Override
-	public String getName()
-	{
-		return this.name != null ? this.name.toString() : super.getName();
-    }
-
     @Override 
     public String invTranslate()
     {
-        return this.name != null ? invTranslate(getName()) : super.invTranslate();
+        return this.typename != null ? invTranslate(getName()) : super.invTranslate();
     }
 
     @Override
