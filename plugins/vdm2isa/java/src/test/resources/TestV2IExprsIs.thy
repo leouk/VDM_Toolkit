@@ -1,19 +1,19 @@
-(* VDM to Isabelle Translation @2021-11-28T08:30:01.184Z
+(* VDM to Isabelle Translation @2021-11-28T08:40:47.415595Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl]
+in './src/test/resources/TestV2IExprsIs.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IExprsIs.vdmsl]
 *)
 theory TestV2IExprsIs
 imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2IExprsIs' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl) at line 6:5\<close>
+\<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 6:5\<close>
 type_synonym T = "VDMReal"
 	
 
-\<comment>\<open>in 'TestV2IExprsIs' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl) at line 7:9\<close>
+\<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 7:9\<close>
 definition
 	inv_T :: "T \<Rightarrow> \<bool>"
 where
@@ -21,16 +21,16 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_T specification\<close>
 		(((inv_VDMReal t)))  \<and> 
 		\<comment>\<open>User defined body of inv_T\<close>
-		(t > (0::VDMNat))"
+		(t > (0))"
 
 		 
 
 	
-\<comment>\<open>in 'TestV2IExprsIs' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 9:5\<close>
 type_synonym TS = "T VDMSet"
 	
 
-\<comment>\<open>in 'TestV2IExprsIs' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 9:5\<close>
 definition
 	inv_TS :: "TS \<Rightarrow> \<bool>"
 where
@@ -44,17 +44,19 @@ where
 abbreviation
 	s1 :: "VDMReal VDMSet"
 where
-	"s1 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
+	"s1 \<equiv> {(1), (2), (3)}"
 
 	definition
 	inv_s1 :: "\<bool>"
 where
 	"inv_s1  \<equiv> (inv_VDMSet' (inv_VDMReal) s1)"
+
+	
 	
 abbreviation
 	s2 :: "VDMReal VDMSet"
 where
-	"s2 \<equiv> {(0.5), (1::VDMNat1), (2::VDMNat1)}"
+	"s2 \<equiv> {(0.5), (1), (2)}"
 
 	definition
 	inv_s2 :: "\<bool>"

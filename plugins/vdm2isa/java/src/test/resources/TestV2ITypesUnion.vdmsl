@@ -3,6 +3,38 @@ exports all
 definitions
 
 types
+	TUnion2 = seq of nat | set of real;
+	TUnion2'= seq of nat | seq of real;
+	TUnion6 = int | nat
+	inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
+
+functions
+	-- union selection across multiple unions becomes quite messy/confusing; obfuscated even?!
+	f4: TUnion6 * TUnion2 -> bool
+	f4(u6, u2) ==
+		(is_int(u6) => 
+			((is_(u2, seq of nat) => u6 in set elems u2)
+			 and
+			 (is_(u2, set of real) => u6 in set u2)
+			)
+		)
+		and
+		(is_nat(u6) => 
+			((is_(u2, seq of nat) => not u6 in set elems u2)
+			 and
+			 (is_(u2, set of real) => not u6 in set u2)
+			)
+		)
+		;
+
+	-- this one because every type in u2 is a seq, then don't need to faff around (in VDM)!
+	-- translation will always be "complete"/"explicit" given the constructive approach of sum types 
+	f4': TUnion6 * TUnion2' -> bool
+	f4'(u6, u2) ==
+		u6 in set elems u2;
+/*
+types
+
 	--@NB VDM merges these two? i.e. widens to largest possible types?
 	TUnion = nat | int;
 	TUnion'= nat | real;
@@ -82,6 +114,6 @@ functions
 
 	f6': TUnion6' -> int
 	f6'(u) == u;
-
+*/
 end TestV2ITypesUnion
 
