@@ -21,6 +21,7 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.MappableNode;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRUnionContext;
 
 /**
  * This is an adjusted copy of TCTypeSet. Not sure if this is right.
@@ -73,7 +74,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	@Override
 	public void setup()
 	{
-		setFormattingSeparator("");
+		setFormattingSeparator("\n\t");
 		setSemanticSeparator(IsaToken.SPACE.toString() + IsaToken.BAR.toString() + IsaToken.SPACE.toString());
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.BAR.toString() + IsaToken.SPACE.toString());
 		for(TRType t : this)
@@ -435,7 +436,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
         return result;
     }
 
-	protected String unionTypeTranslate(TRType t, String varName, String body)
+	protected String unionTypeTranslate(TRType t, String varName, TRExpression body, TRUnionContext innerContext)
 	{
 		assert this.contains(t) && varName != null && !varName.isEmpty();
 		StringBuilder sb = new StringBuilder();
@@ -444,25 +445,28 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(IsaToken.FUN.toString());
 		sb.append(IsaToken.SPACE.toString());
-		sb.append(body);
+		sb.append(IsaToken.comment("Type coercions might needed at body or union selection deletion might be needed", getFormattingSeparator()));
+		// if there is a context, follow it; otherwise, ready to translate the body
+		String bodyStr = innerContext == null ? body.translate() : 
+			getFormattingSeparator() + innerContext.unionTypesTranslate(body, innerContext.getNextUnionContext());
+		sb.append(bodyStr);
 		return sb.toString();
 	}
 
-	public String unionTypesTranslate(String varName, TRExpression body)
+	public String unionTypesTranslate(String varName, TRExpression body, TRUnionContext innerContext)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			String bodyStr = body.translate();
 			Iterator<TRType> it = iterator();
 			TRType t = it.next();
-			sb.append(unionTypeTranslate(t, varName, bodyStr));
+			sb.append(unionTypeTranslate(t, varName, body, innerContext));
 			while (it.hasNext())
 			{
                 sb.append(getFormattingSeparator());
 				sb.append(getInvTranslateSeparator());
 				t = it.next();
-				sb.append(unionTypeTranslate(t, varName, bodyStr));
+				sb.append(unionTypeTranslate(t, varName, body, innerContext));
 			}
 			sb.append(getFormattingSeparator());
 		}

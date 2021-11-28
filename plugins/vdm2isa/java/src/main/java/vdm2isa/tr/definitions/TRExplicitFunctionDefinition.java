@@ -33,6 +33,7 @@ import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRPatternListList;
+import vdm2isa.tr.patterns.TRUnionContext;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
@@ -743,7 +744,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 			if (hasUnionTypes())
 			{
-				fcnBody.append(unionTypesTranslate(body));
+				fcnBody.append(unionTypesTranslate(body, null));
 			}
 			else
 			{
@@ -847,18 +848,20 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		return null;	// TODO!!
 	}
 
+	@Override
 	public boolean hasUnionTypes()
 	{
 		return paramDefinitionList.hasUnionTypes();
 	}
 
-	public String unionTypesTranslate(TRExpression unionBody)
+	@Override
+	public String unionTypesTranslate(TRExpression unionBody, TRUnionContext innerContext)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattingSeparator());
 		sb.append(IsaToken.comment("Implicit union type parameters projection conversion", getFormattingSeparator()));
 		String fmtsep = paramDefinitionList.setFormattingSeparator("\n\t\t\t");
-		sb.append(paramDefinitionList.unionTypesTranslate(body));
+		sb.append(paramDefinitionList.unionTypesTranslate(body, innerContext));
 		paramDefinitionList.setFormattingSeparator(fmtsep);
 		return IsaToken.parenthesise(sb.toString());
 	}

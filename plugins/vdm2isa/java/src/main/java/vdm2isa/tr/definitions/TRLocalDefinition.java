@@ -11,6 +11,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRUnionContext;
 import vdm2isa.tr.types.TRDataType;
 import vdm2isa.tr.types.TRType;
 
@@ -112,7 +113,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
      * which ultimately leads to here.  
      */
 	@Override
-	public String unionTypesTranslate(TRExpression body)
+	public String unionTypesTranslate(TRExpression body, TRUnionContext innerContext)
 	{
 		StringBuilder sb = new StringBuilder();
         if (hasUnionTypes())
@@ -124,8 +125,8 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 			sb.append(IsaToken.SPACE.toString());
 			sb.append(IsaToken.OF.toString());
 			sb.append(getFormattingSeparator());
-			sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body));
+			sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body, innerContext));
         }
-        return sb.toString();
+        return IsaToken.parenthesise(sb.toString());
 	}
 }

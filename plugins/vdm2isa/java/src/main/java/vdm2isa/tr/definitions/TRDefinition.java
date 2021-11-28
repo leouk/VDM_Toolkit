@@ -165,9 +165,15 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	}
 
 	@Override
-	public String unionTypesTranslate(TRExpression body)
+	public String unionTypesTranslate(TRExpression body, TRUnionContext innerContext)
 	{
 		report(IsaErrorMessage.PLUGIN_NYI_2P, "union types translate", getClass().getSimpleName());
 		return "";
+	}
+
+	@Override 
+	public TRUnionContext getNextUnionContext()
+	{
+		return null;
 	}
 }

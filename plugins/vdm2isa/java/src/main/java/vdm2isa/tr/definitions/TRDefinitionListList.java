@@ -12,10 +12,13 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 {
 	private static final long serialVersionUID = 1L;
 	
+	private int currentUnionContext;
+
 	// no extended setup() for definition list list
 	protected TRDefinitionListList() 
 	{
 		super();
+		currentUnionContext = 0;
 	}  
 
 	public TRDefinitionListList(TRDefinitionListList from)
@@ -81,28 +84,29 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 		return result;		
     }
 
+	@Override 
+	public TRUnionContext getNextUnionContext()
+	{
+		assert currentUnionContext >= 0 && currentUnionContext < size();
+		TRUnionContext result = null; 
+		if (currentUnionContext < size()-1)
+		{
+			currentUnionContext++;
+			result = get(currentUnionContext);
+		}	
+		return result;
+	}
+
 	@Override
-	public String unionTypesTranslate(TRExpression body)
+	public String unionTypesTranslate(TRExpression body, TRUnionContext innerContext)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			// set the case projection
-			String unionTranslate = get(0).unionTypesTranslate(body); 
-			sb.append(unionTranslate);
-			for (int i = 1; i < size(); i++)
-			{
-				if (!unionTranslate.isEmpty())
-				{
-					sb.append(getFormattingSeparator());
-				}
-				unionTranslate = get(i).unionTypesTranslate(body);
-				sb.append(unionTranslate);
-			}
+			currentUnionContext = 0;
+			//TODO should this ever be with innerContext != null? 
+			sb.append(get(0).unionTypesTranslate(body, innerContext == null ? getNextUnionContext() : innerContext));
 		}
 		return sb.toString();
 	}
-
-
-
 }

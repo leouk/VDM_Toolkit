@@ -20,12 +20,15 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 {
 	private static final long serialVersionUID = 1L;
 
+	private int currentUnionContext;
+
 	/**
 	 * Allow this top-level list to be defined empty
 	 */
 	public TRDefinitionList()
 	{
 		super();
+		currentUnionContext = 0;
 	} 
 
 	public TRDefinitionList(TRDefinitionList from)
@@ -141,22 +144,29 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 	}
 
 	@Override
-	public String unionTypesTranslate(TRExpression body) {
+	public String unionTypesTranslate(TRExpression body, TRUnionContext innerContext) {
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			String unionTranslate = get(0).unionTypesTranslate(body);
-			sb.append(unionTranslate);	
-			for(int i = 1; i < size(); i++)	
-			{
-				if (!unionTranslate.isEmpty())
-				{
-					sb.append(getSemanticSeparator());
-				}
-				sb.append(get(i).unionTypesTranslate(body));	
-			}
+			currentUnionContext = 0;
+			// when inner context is null, we are ready for the body. 
+			//TODO innerContext might not be null in case of curried union contexts. Perhaps flatten the defListList in that case? 
+			sb.append(get(0).unionTypesTranslate(body, innerContext == null ? getNextUnionContext() : innerContext));	
 		}
 		return sb.toString();
+	}
+
+	@Override 
+	public TRUnionContext getNextUnionContext()
+	{
+		assert currentUnionContext >= 0 && currentUnionContext < size();
+		TRUnionContext result = null; 
+		if (currentUnionContext < size()-1)
+		{
+			currentUnionContext++;
+			result = get(currentUnionContext);
+		}	
+		return result;
 	}
 
 	public static TRDefinitionList newDefList(TRDefinition... args)

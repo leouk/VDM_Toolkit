@@ -10,5 +10,13 @@ import vdm2isa.tr.expressions.TRExpression;
  */
 public interface TRUnionContext extends MappableNode {
     public boolean hasUnionTypes();
-    public String unionTypesTranslate(TRExpression body);
+
+    /**
+     * consider the body only when inner context is null
+     * @param body
+     * @return
+     */
+    public String unionTypesTranslate(TRExpression body, TRUnionContext innerContext);
+
+    public TRUnionContext getNextUnionContext();
 }
