@@ -26,14 +26,6 @@ type_synonym VDMRat  = \<rat>
 type_synonym VDMReal = \<real>
 type_synonym VDMChar = char
 
-definition 
-  isTest :: "'a \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> \<bool>"
-  where
-  [intro!]: "isTest x inv_X \<equiv> inv_X x"
-
-lemma l_isTestI[simp]: "isTest x inv_X = inv_X x" 
-  by (simp add: isTest_def)
-
 definition
   inv_VDMNat :: "\<int> \<Rightarrow> \<bool>"
 where
@@ -114,6 +106,9 @@ definition
   vdm_narrow_real :: "('a::floor_ceiling) \<Rightarrow> VDMInt"
   where
   "vdm_narrow_real r \<equiv> \<lfloor>r\<rfloor>"
+
+value "vdm_narrow_real (4.5::VDMRat)"
+value "vdm_narrow_real (4.5::VDMReal)"
 
 definition
   vdm_div :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" (infixl "vdmdiv" 70)
@@ -1241,6 +1236,102 @@ definition
   inv_Lambda' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> 'a  \<Rightarrow> \<bool>"
   where
   "inv_Lambda' inv_Dom inv_Ran l d \<equiv> inv_Dom d \<longrightarrow> inv_Ran (l d)"
+
+(*========================================================================*)
+section \<open> Is test and type coercions \<close>
+(*========================================================================*)
+
+subsection \<open> Basic type coercions \<close>
+
+definition
+  is_VDMRealWhole :: "VDMReal \<Rightarrow> \<bool>"
+  where
+ "is_VDMRealWhole r \<equiv> r \<ge> 1 \<and> (r - real_of_int (vdm_narrow_real r)) = 0"
+
+definition
+  vdmint_of_real :: "VDMReal \<rightharpoonup> VDMInt"
+  where
+ "vdmint_of_real r \<equiv> if is_VDMRealWhole r then Some (vdm_narrow_real r) else None"
+
+definition
+  is_VDMRatWhole :: "VDMRat \<Rightarrow> \<bool>"
+  where
+ "is_VDMRatWhole r \<equiv> r \<ge> 1 \<and> (r - rat_of_int (vdm_narrow_real r)) = 0"
+
+definition
+  vdmint_of_rat :: "VDMRat \<rightharpoonup> VDMInt"
+  where
+ "vdmint_of_rat r \<equiv> if is_VDMRatWhole r then Some (vdm_narrow_real r) else None"
+
+subsection \<open> Structured type coercions \<close>
+
+type_synonym ('a, 'b) VDMTypeCoercion = "'a \<rightharpoonup> 'b"
+
+text \<open>A total VDM type coercion is one where every element in the type space of
+      interest is convertible under the given type coercion 
+      (e.g., set of real = {1,2,3} into set of nat is total; whereas 
+             set of real = {0.5,2,3} into set of nat is not total given 0.5 is not nat).  
+     \<close>
+definition 
+  total_coercion :: "'a VDMSet \<Rightarrow> ('a, 'b) VDMTypeCoercion \<Rightarrow> \<bool>"
+  where
+  "total_coercion space conv \<equiv> (\<forall> i \<in> space . conv i \<noteq> None)"
+
+text \<open>To convert a VDM set s of type 'a into type 'b (e.g., set of real into set of nat),
+      it must be possible to convert every element of s under given type coercion
+     \<close>
+definition 
+  vdmset_of_t :: "('a, 'b) VDMTypeCoercion \<Rightarrow> ('a VDMSet, 'b VDMSet) VDMTypeCoercion" 
+  where
+  "vdmset_of_t conv \<equiv> 
+      (\<lambda> x . if total_coercion x conv then
+                Some { the(conv i) | i . i \<in> x \<and> conv i \<noteq> None }
+             else
+                None)"
+
+text \<open>To convert a VDM seq s of type 'a into type 'b (e.g., seq of real into seq of nat),
+      it must be possible to convert every element of s under given type coercion
+     \<close>
+definition 
+  vdmseq_of_t :: "('a, 'b) VDMTypeCoercion \<Rightarrow> ('a VDMSeq, 'b VDMSeq) VDMTypeCoercion" 
+  where
+  "vdmseq_of_t conv \<equiv> 
+      (\<lambda> x . if total_coercion (elems x) conv then
+                Some [ the(conv i) . i \<leftarrow> x, conv i \<noteq> None ]
+             else
+                None)"
+
+(* map coercion will be tricky because result d2 depends on dconv call, which needs x's d1!
+definition 
+  vdmmap_of_dr :: "('d1, 'd2) VDMTypeCoercion \<Rightarrow> ('r1, 'r2) VDMTypeCoercion \<Rightarrow> ('d1 \<rightharpoonup> 'r1, 'd2 \<rightharpoonup> 'r2) VDMTypeCoercion" 
+  where
+  "vdmmap_of_dr dconv rconv \<equiv> 
+      \<comment> \<open>x is a 'd1 \<rightharpoonup> 'r1, d is a 'd2 \<Rightarrow> 'r2; where dconv/rconv is applied throughout and succeeded\<close>
+      (\<lambda> x . if total_coercion (dom x) dconv \<and> total_coercion (rng x) rconv then 
+                Some (\<lambda> d . if (\<exists> xd . d = dconv xd) then None else None)
+             else
+                None)"
+*)
+
+subsection \<open> Is tests \<close>
+
+text \<open>"Successful" is expr test is simply a call to the test expression invariant\<close>
+definition 
+  isTest :: "'a \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> \<bool>"
+  where
+  [intro!]: "isTest x inv_X \<equiv> inv_X x"
+
+lemma l_isTestI[simp]: "isTest x inv_X = inv_X x" 
+  by (simp add: isTest_def)
+
+text \<open>Possibly failing is expr tests up to given type coercion \<close>
+definition 
+  isTest' :: "'a \<Rightarrow> ('a, 'b) VDMTypeCoercion \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> \<bool>"
+  where
+  [intro!]: "isTest' x conv inv_X \<equiv> 
+    (case conv x of
+        None \<Rightarrow> False 
+      | Some x \<Rightarrow> inv_X x)"
 
 (*========================================================================*)
 section \<open> Set operators lemmas \<close>
@@ -2443,5 +2534,42 @@ lemma ex4_map: "x \<in> dom ex4  \<Longrightarrow> ex4 x = Some 5"
   by (meson option.distinct(1))
 (* for simple domain binds, you get simple enough proofs *)
 
+(* s1: set of real = {1,2,3}, is_(s1, set of int)? *)
+lemma "isTest' {1,2,3::VDMReal} 
+        (vdmset_of_t vdmint_of_real)
+        (inv_VDMSet' inv_VDMInt)"
+  unfolding isTest'_def vdmset_of_t_def total_coercion_def 
+  apply simp
+  unfolding inv_VDMSet'_def inv_VDMSet_def inv_VDMInt_def inv_SetElems_def
+  apply (simp, safe)
+  unfolding vdmint_of_real_def is_VDMRealWhole_def
+  by (simp_all add: vdm_narrow_real_def)
+
+(* s1: set of real = {1,2,3}, is_(s1, set of nat)? *)
+lemma "isTest' {1,2,3::VDMReal} 
+        (vdmset_of_t vdmint_of_real)
+        (inv_VDMSet' inv_VDMNat)"
+  unfolding isTest'_def vdmset_of_t_def total_coercion_def 
+  apply simp
+  unfolding inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def inv_SetElems_def
+  apply (simp, safe)
+  unfolding vdmint_of_real_def is_VDMRealWhole_def
+  by (simp_all add: vdm_narrow_real_def)
+
+lemma "\<not> isTest' (-10)
+        (\<lambda> x . if inv_VDMNat x then Some x else None) 
+        inv_VDMNat"
+  unfolding isTest'_def inv_VDMNat_def by simp
+
+lemma "isTest' [1,2,3::VDMNat] 
+        (\<lambda> x . Some { x$i | i . i \<in> inds x }) 
+        (inv_VDMSet' inv_VDMNat)"
+  unfolding isTest'_def
+  apply simp
+  unfolding inv_VDMSet'_def inv_VDMSet_def inv_VDMNat_def inv_SetElems_def
+  apply (simp, safe)
+  unfolding applyVDMSeq_def inv_VDMNat1_def len_def
+  apply simp
+  by (simp add: nth_Cons')
 
 (*<*)end(*>*)
