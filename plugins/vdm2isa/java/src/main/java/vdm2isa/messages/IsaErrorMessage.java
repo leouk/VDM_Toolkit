@@ -93,10 +93,12 @@ public enum IsaErrorMessage {
     ISA_INVALID_EXPRCHAIN_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 19,
     "Booleann expression chain for `%1$s` operator must all have boolean type."),
     ISA_INVALID_UNIONTYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 20, 
-    "Union types are not allowed for `%1$s`: you *must* declare it as a named type."), 
+    "Union types are not allowed for `%1$s`: you *must* declare its parts as a named type."), 
     ISA_CASES_PATTERN_LIMITATION_1P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 21,
     "Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `%1$s` VDM type."),
-    
+    ISA_INVALID_NAMEDTYPE_RENAME_2P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 22, 
+    "Cannot rename `%1$s` into `%2$s`; it is already a named typed"),
+
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
     "VDM PO (%1$s) %2$s %3$s error `%4$s`; should never happen."),
