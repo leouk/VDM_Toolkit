@@ -7,6 +7,7 @@ package vdm2isa.tr.types;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
@@ -26,6 +27,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	
 	private boolean curried;
 	private String separator;
+	private TCNameToken typename;
 
 	protected TRTypeList()
 	{
@@ -36,11 +38,13 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	{
 		this();
 		addAll(from);
+		typename = null;
 	}
 
 	public TRTypeList(TCTypeList from) throws Exception
 	{
 		super(from);
+		typename = null;
 	}
 
 	@Override
@@ -50,6 +54,20 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setCurried(true);
 		setFormattingSeparator(IsaToken.SPACE.toString());
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
+	}
+
+	/**
+	 * The outer type name this type list belongs to
+	 * @param tn
+	 */
+	protected void setInferredNamedForType(TCNameToken tn)
+	{
+		typename = tn;
+	}
+
+	public String getName()
+	{
+		return typename != null ? typename.toString() : IsaToken.UNKNOWN.toString();
 	}
 
 	/**

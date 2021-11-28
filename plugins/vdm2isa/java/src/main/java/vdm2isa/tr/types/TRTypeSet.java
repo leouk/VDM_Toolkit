@@ -117,6 +117,20 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return result;
 	}
 
+	/**
+	 * The outer type name this type list belongs to
+	 * @param tn
+	 */
+	protected void setInferredNamedForType(TCNameToken tn)
+	{
+		typename = tn;
+	}
+
+	public String getName()
+	{
+		return typename != null ? typename.toString() : null;
+	}
+
 	@Override
 	public boolean add(TRType t)
 	{
