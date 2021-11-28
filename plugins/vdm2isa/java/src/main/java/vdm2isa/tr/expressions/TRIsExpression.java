@@ -22,12 +22,12 @@ public class TRIsExpression extends TRVDMTestExpression {
         super(location, typename, basictype, test, typedef, exptype);
     }
 
-    @Override 
-    public void setup()
-    {
-        super.setup();
-        //System.out.println(toString());
-    }
+    // @Override 
+    // public void setup()
+    // {
+    //     super.setup();
+    //     //System.out.println(toString());
+    // }
 
     @Override
     public IsaToken isaToken() {
@@ -41,8 +41,20 @@ public class TRIsExpression extends TRVDMTestExpression {
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.parenthesise(test.translate()));
         sb.append(IsaToken.SPACE.toString());
-        String invStr = isBasicTyped() ? basictype.getName() : isNameTyped() ? typename.toString() : IsaToken.TRUE.toString();
-        sb.append(IsaToken.INV.toString() + invStr);
+        // is_T(s)              => inv_T s      (for any named type)
+        // is_nat(s)            => inv_VDMNat s (for any basic type)
+        // is_(s, set of nat)   => basictype.invTranslate! (for other basic type invTranslte; or just basicType.invTranslate!)
+        //String invStr = isNameTyped() ? typename.toString() : isBasicTyped() ? basictype.getName() : IsaToken.TRUE.toString();
+        //sb.append(IsaToken.INV.toString() + invStr);
+        if (isNameTyped())
+        {
+            sb.append(IsaToken.INV.toString());
+            sb.append(typename.toString());
+        }
+        else 
+        {
+            sb.append(basictype.invTranslate());
+        }
         return sb.toString();
     }
 
