@@ -18,7 +18,7 @@ public class TRMultipleSetBind extends TRMultipleBind
 {
     private static final long serialVersionUID = 1L;
 
-    private final TRExpression set;
+    public final TRExpression set;
 
     // TRSeqComp sets this to true for the case [ x | x in set S ], where S is ordered
     protected boolean seqBind;

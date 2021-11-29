@@ -35,7 +35,7 @@ import vdm2isa.tr.types.TRType;
  */
 public class TRMapCompExpression extends TRAbstractCompExpression {
 
-    private final TRLambdaExpression mapComp;
+    public final TRLambdaExpression mapComp;
 
     /**
      * TCMapCompExpression has the structure:

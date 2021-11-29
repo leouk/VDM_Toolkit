@@ -29,12 +29,12 @@ import vdm2isa.tr.types.TRType;
  */
 public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
 
-    private final TRTypeBindList bindList;
+    public final TRTypeBindList bindList;
 
-    //private final TRFunctionType type; // same as exptype? yes!
-	private final TRPatternList paramPatterns;
-	private final TRDefinitionList paramDefinitions;
-	private final TRDefinition def;
+    //public final TRFunctionType type; // same as exptype? yes!
+	public final TRPatternList paramPatterns;
+	public final TRDefinitionList paramDefinitions;
+	public final TRDefinition def;
     private TRLambdaExpressionKind lambdaKind;
 
     /**

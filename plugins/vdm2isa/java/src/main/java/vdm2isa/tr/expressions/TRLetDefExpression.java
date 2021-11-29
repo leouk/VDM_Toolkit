@@ -13,7 +13,7 @@ import vdm2isa.tr.types.TRType;
 public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
-    private final TRDefinitionList localDefs;
+    public final TRDefinitionList localDefs;
     public final boolean isDefExpression;
 
     public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype, boolean isDefExpression)

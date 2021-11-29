@@ -17,8 +17,8 @@ public class TRApplyExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
 	public final TRType type;
-	private final TRExpression root;
-	private final TRExpressionList args;
+	public final TRExpression root;
+	public final TRExpressionList args;
 	
 	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args, TRType exptype)
 	{

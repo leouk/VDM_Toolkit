@@ -10,9 +10,9 @@ import vdm2isa.tr.types.TRType;
 public class TRSubseqExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
-    private final TRExpression seq;
-    private final TRExpression from;
-    private final TRExpression to;
+    public final TRExpression seq;
+    public final TRExpression from;
+    public final TRExpression to;
 
     public TRSubseqExpression(TRExpression seq, TRExpression from, TRExpression to, TRType exptype)
     {

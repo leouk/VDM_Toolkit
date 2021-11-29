@@ -20,7 +20,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
 
 	private static final long serialVersionUID = 1L;
 
-    private final TRType testtype;
+    public final TRType testtype;
 
     public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType testtype, TRType exptype)
     {

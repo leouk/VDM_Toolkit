@@ -17,9 +17,9 @@ import vdm2isa.tr.types.TRType;
 public class TRFieldNumberExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
-    private final TRExpression tuple;
-    private final LexIntegerToken field; 
-    private final TRType type;
+    public final TRExpression tuple;
+    public final LexIntegerToken field; 
+    public final TRType type;
 
     public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type, TRType exptype)
     {

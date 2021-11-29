@@ -12,7 +12,7 @@ public class TRMultipleSeqBind extends TRMultipleBind
 {
     private static final long serialVersionUID = 1L;
 
-    private TRExpression seq;
+    public TRExpression seq;
 
     public TRMultipleSeqBind(TRPattern pattern, TRExpression seq)
     {

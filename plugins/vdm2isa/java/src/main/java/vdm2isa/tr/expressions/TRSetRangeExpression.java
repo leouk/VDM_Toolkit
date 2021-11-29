@@ -13,8 +13,8 @@ import vdm2isa.tr.types.TRUnknownType;
 public class TRSetRangeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
-    private final TRExpression first;
-    private final TRExpression last;
+    public final TRExpression first;
+    public final TRExpression last;
 
     public TRSetRangeExpression(LexLocation start, TRExpression first, TRExpression last, TRType exptype)
     {

@@ -18,10 +18,10 @@ import com.fujitsu.vdmj.tc.types.TCUnionType;
 public class TRIfExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	private final TRExpression ifExp;
-	private final TRExpression thenExp;
-	private final TRElseIfExpressionList elseList;
-	private final TRExpression elseExp;
+	public final TRExpression ifExp;
+	public final TRExpression thenExp;
+	public final TRElseIfExpressionList elseList;
+	public final TRExpression elseExp;
 	
 	//@todo TCElseIfExpressionList! 
 	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, 

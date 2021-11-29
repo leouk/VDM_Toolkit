@@ -13,13 +13,13 @@ import vdm2isa.tr.types.TRTypeList;
 public class TRFunctionInstantiationExpression extends TRExpression {
 
 	private static final long serialVersionUID = 1L;
-    private final TRExpression function;
-    private final TRTypeList unresolved;
-    private final TRTypeList actualTypes;
-    private final TRFunctionType type;
+    public final TRExpression function;
+    public final TRTypeList unresolved;
+    public final TRTypeList actualTypes;
+    public final TRFunctionType type;
 
-    private final TRExplicitFunctionDefinition expdef;
-    private final TRExplicitFunctionDefinition impdef; //TODO! should be implicit def
+    public final TRExplicitFunctionDefinition expdef;
+    public final TRExplicitFunctionDefinition impdef; //TODO! should be implicit def
 
     public TRFunctionInstantiationExpression(TRExpression function, TRFunctionType type, 
         TRTypeList unresolved, TRTypeList actualTypes, TRExplicitFunctionDefinition expdef, TRType exptype)
@@ -54,7 +54,7 @@ public class TRFunctionInstantiationExpression extends TRExpression {
 
     @Override
     public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) {
-        throw new UnsupportedOperationException();
+        return visitor.caseFunctionInstantiationExpression(this, arg);
     }
 
     @Override

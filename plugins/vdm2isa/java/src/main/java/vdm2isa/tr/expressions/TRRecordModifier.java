@@ -13,8 +13,8 @@ import vdm2isa.tr.types.TRType;
 public class TRRecordModifier extends TRExpression 
 {
     private static final long serialVersionUID = 1L;
-    private final TCIdentifierToken tag;
-    private final TRExpression value; 
+    public final TCIdentifierToken tag;
+    public final TRExpression value; 
 
     protected TRRecordType recordType;
 

@@ -17,9 +17,9 @@ import vdm2isa.tr.types.TRType;
 public class TRBoundedExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
-	private final TRMultipleBindList bindList;
-	private final TRExpression predicate;
-    private final IsaToken quantifier;
+	public final TRMultipleBindList bindList;
+	public final TRExpression predicate;
+    public final IsaToken quantifier;
     private int rParenCount;
 
     protected TRBoundedExpression(LexLocation location, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)

@@ -28,8 +28,8 @@ import vdm2isa.tr.types.TRType;
 public class TRLiteralExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	private final IsaToken token;
-	private final String exp;
+	public final IsaToken token;
+	public final String exp;
 
 	public static final Set<IsaToken> VALID_LITERAL_TOKENS = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.BOOL, IsaToken.CHAR, IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 

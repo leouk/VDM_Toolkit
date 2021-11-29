@@ -21,10 +21,10 @@ import vdm2isa.tr.types.TRType;
 public class TRVariableExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	private final TCNameToken name;
-	private final String original;
+	public final TCNameToken name;
+	public final String original;
 
-	private final TRDefinition vardef;
+	public final TRDefinition vardef;
 	
 	public TRVariableExpression(LexLocation location, TCNameToken name, String original, TRDefinition vardef, TRType exptype)
 	{

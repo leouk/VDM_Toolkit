@@ -31,9 +31,9 @@ import vdm2isa.tr.types.TRType;
 public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
     
     private static final long serialVersionUID = 1L;
-    private final TRMultipleBind bind;
-    private final TRExpression suchThat;
-    private final TRMultiBindListDefinition def;
+    public final TRMultipleBind bind;
+    public final TRExpression suchThat;
+    public final TRMultiBindListDefinition def;
     private TRBinaryExpression vInSetS;
 
 	public TRLetBeStExpression(LexLocation location, TRMultipleBind bind, TRExpression suchThat, TRExpression value, TRMultiBindListDefinition def, TRType exptype) {

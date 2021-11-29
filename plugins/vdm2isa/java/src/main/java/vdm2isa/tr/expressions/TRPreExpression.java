@@ -11,8 +11,8 @@ import vdm2isa.tr.types.TRType;
 
 public class TRPreExpression extends TRExpression {
     
-    private TRExpression function;
-    private TRExpressionList args;
+    public final TRExpression function;
+    public final TRExpressionList args;
 
     public TRPreExpression(LexLocation location, TRExpression function, TRExpressionList args, TRType exptype)
     {

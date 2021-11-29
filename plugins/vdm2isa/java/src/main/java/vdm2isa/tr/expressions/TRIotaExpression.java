@@ -10,8 +10,8 @@ import vdm2isa.tr.types.TRType;
 
 public class TRIotaExpression extends TRExpression {
 
-    private TRMultipleBind bind;
-    private TRExpression predicate;
+    public final TRMultipleBind bind;
+    public final TRExpression predicate;
     
     public TRIotaExpression(LexLocation location, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
@@ -32,7 +32,7 @@ public class TRIotaExpression extends TRExpression {
 	@Override
 	protected TRType getBestGuessType()
 	{
-		return predicate.getType();
+		return predicate != null ? predicate.getType() : super.getBestGuessType();
 	}
 
     @Override

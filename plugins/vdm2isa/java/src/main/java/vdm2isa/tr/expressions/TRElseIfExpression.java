@@ -13,8 +13,8 @@ import vdm2isa.tr.types.TRUnionType;
 
 public class TRElseIfExpression extends TRExpression {
     
-    private final TRExpression elseIfExp;
-    private final TRExpression thenExp;
+    public final TRExpression elseIfExp;
+    public final TRExpression thenExp;
 
     public TRElseIfExpression(LexLocation location, TRExpression elseIfExp, TRExpression thenExp, TRType exptype)
     {

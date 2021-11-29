@@ -37,10 +37,10 @@ import vdm2isa.messages.IsaWarningMessage;
 public class TRValueDefinition extends TRLocalDefinition
 {
 	private static final long serialVersionUID = 1L;
-	private final TRPattern pattern;
-	private final TRExpression exp;
-	private final TRDefinitionList defs;
-	private final TRType expType;
+	public final TRPattern pattern;
+	public final TRExpression exp;
+	public final TRDefinitionList defs;
+	public final TRType expType;
 
 	protected TRValueDefinition(
 		TCDefinition definition, 

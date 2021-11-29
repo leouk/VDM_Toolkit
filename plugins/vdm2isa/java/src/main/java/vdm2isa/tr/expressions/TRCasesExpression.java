@@ -19,9 +19,9 @@ import vdm2isa.tr.types.TRUnionType;
 public class TRCasesExpression extends TRExpression {
 
 	private static final long serialVersionUID = 1L;
-    private final TRExpression exp;
-    private final TRCaseAlternativeList cases;
-    private final TRExpression others;
+    public final TRExpression exp;
+    public final TRCaseAlternativeList cases;
+    public final TRExpression others;
 
     public TRCasesExpression(LexLocation location, TRExpression exp, TRCaseAlternativeList cases, TRExpression others, TRType exptype) {
         super(location, exptype);
@@ -67,7 +67,7 @@ public class TRCasesExpression extends TRExpression {
 
     @Override
     public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) {
-        return visitor.caseCaseExpression(this, arg);
+        return visitor.caseCasesExpression(this, arg);
     }
 
     @Override

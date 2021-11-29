@@ -11,8 +11,8 @@ import vdm2isa.tr.types.TRType;
 public class TRCaseAlternative extends TRExpression {
 	
     private static final long serialVersionUID = 1L;
-    private final TRPattern pattern;
-    private final TRExpression result;
+    public final TRPattern pattern;
+    public final TRExpression result;
     private boolean casesTrueAlternative;
 
     public TRCaseAlternative(LexLocation location, TRPattern pattern, TRExpression result) {

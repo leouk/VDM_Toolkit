@@ -13,8 +13,8 @@ public class TRMuExpression extends TRExpression {
 
 	private static final long serialVersionUID = 1L;
 
-    private final TRExpression record;
-    private final TRRecordModifierList modifiers;
+    public final TRExpression record;
+    public final TRRecordModifierList modifiers;
     private boolean hasReportedGuessedType;
 
     public TRMuExpression(LexLocation location, TRExpression record, TRRecordModifierList modifiers, TRType exptype)

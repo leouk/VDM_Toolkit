@@ -15,8 +15,8 @@ import vdm2isa.tr.types.TRType;
 public class TRFieldExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
-    private final TRExpression object;
-    private final TCIdentifierToken field;
+    public final TRExpression object;
+    public final TCIdentifierToken field;
     private boolean hasReportedGuessTypeIssue;
 
     public TRFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)

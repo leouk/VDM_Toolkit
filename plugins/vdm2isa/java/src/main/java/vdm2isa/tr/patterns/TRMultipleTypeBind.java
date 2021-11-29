@@ -10,7 +10,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     
     private static final long serialVersionUID = 1L;
 
-    private final TRType type;
+    public final TRType type;
 
     public TRMultipleTypeBind(TRPattern pattern, TRType type)
     {
