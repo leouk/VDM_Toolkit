@@ -10,11 +10,14 @@ import vdm2isa.tr.TRVisitorSet;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRValueDefinition;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.expressions.TRAbstractCompExpression;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
+import vdm2isa.tr.expressions.TRBoundedExpression;
 import vdm2isa.tr.expressions.TRCaseAlternative;
 import vdm2isa.tr.expressions.TRCasesExpression;
 import vdm2isa.tr.expressions.TRElseIfExpression;
+import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRFieldExpression;
 import vdm2isa.tr.expressions.TRFieldNumberExpression;
@@ -41,9 +44,15 @@ import vdm2isa.tr.expressions.TRSetRangeExpression;
 import vdm2isa.tr.expressions.TRSubseqExpression;
 import vdm2isa.tr.expressions.TRTupleExpression;
 import vdm2isa.tr.expressions.TRUnaryExpression;
+import vdm2isa.tr.expressions.TRVDMLocalDefinitionListExpression;
+import vdm2isa.tr.expressions.TRVDMTestExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRMultipleSeqBind;
 import vdm2isa.tr.patterns.TRMultipleSetBind;
+import vdm2isa.tr.patterns.TRMultipleTypeBind;
+import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 
@@ -54,7 +63,23 @@ import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> extends TRExpressionVisitor<C, S>
 {
 	protected TRVisitorSet<E, C, S> visitorSet;
-	
+
+	@Override
+	public C caseCompExpression(TRAbstractCompExpression node, S arg)
+	{
+		C all = newCollection();
+		all.addAll(node.first.apply(this, arg));
+		
+		all.addAll(caseMultupleBindList(node.bindings, arg));
+		
+		if (node.predicate != null)
+		{
+			all.addAll(node.predicate.apply(this, arg));
+		}
+		
+		return all;
+	}
+
  	@Override
 	public C caseApplyExpression(TRApplyExpression node, S arg)
 	{
@@ -75,6 +100,21 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		C all = newCollection();
 		all.addAll(node.left.apply(this, arg));
 		all.addAll(node.right.apply(this, arg));
+		return all;
+	}
+
+	@Override
+	public C caseBoundedExpression(TRBoundedExpression node, S arg)
+	{
+		C all = newCollection();
+		
+		all.addAll(caseMultupleBindList(node.bindList, arg));
+		
+		if (node.predicate != null)
+		{
+			all.addAll(node.predicate.apply(this, arg));
+		}
+		
 		return all;
 	}
 
@@ -104,12 +144,6 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 	}
 
  	@Override
-	public C caseElementsExpression(TRElementsExpression node, S arg)
-	{
-		return node.exp.apply(this, arg);
-	}
-
- 	@Override
 	public C caseElseIfExpression(TRElseIfExpression node, S arg)
 	{
 		C all = newCollection();
@@ -118,33 +152,14 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		return all;
 	}
 
- 	@Override
-	public C caseExists1Expression(TRExists1Expression node, S arg)
-	{
-		C all = newCollection();
-		all.addAll(caseBind(node.bind, arg));
-		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
-		}
-		
-		return all;
-	}
-
- 	@Override
-	public C caseExistsExpression(TRExistsExpression node, S arg)
+	@Override
+	public C caseEnumeratedExpression(TREnumeratedExpression node, S arg)
 	{
 		C all = newCollection();
 		
-		for (TRMultipleBind bind: node.bindList)
+		for (TRExpression m: node.members)
 		{
-			all.addAll(caseMultipleBind(bind, arg));
-		}
-		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
+			all.addAll(m.apply(this, arg));
 		}
 		
 		return all;
@@ -163,25 +178,7 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 	}
 
  	@Override
-	public C caseForAllExpression(TRForAllExpression node, S arg)
-	{
-		C all = newCollection();
-		
-		for (TRMultipleBind bind: node.bindList)
-		{
-			all.addAll(caseMultipleBind(bind, arg));
-		}
-		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
-		}
-		
-		return all;
-	}
-
- 	@Override
-	public C caseFuncInstantiationExpression(TRFunctionInstantiationExpression node, S arg)
+	public C caseFunctionInstantiationExpression(TRFunctionInstantiationExpression node, S arg)
 	{
 		return node.function.apply(this, arg);
 	}
@@ -206,7 +203,7 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 	public C caseIotaExpression(TRIotaExpression node, S arg)
 	{
 		C all = newCollection();
-		all.addAll(caseBind(node.bind, arg));
+		all.addAll(caseMultipleBind(node.bind, arg));
 		
 		if (node.predicate != null)
 		{
@@ -217,31 +214,39 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 	}
 
  	@Override
-	public C caseIsExpression(TRIsExpression node, S arg)
-	{
- 		TRDefinitionVisitor<C, S> defVisitor = visitorSet.getDefinitionVisitor();
- 		C all = newCollection();
- 		
- 		if (defVisitor != null && node.typedef != null)
- 		{
- 			all.addAll(node.typedef.apply(defVisitor, arg));
- 		}
- 		
-		all.addAll(node.test.apply(this, arg));
-		return all;
-	}
-
- 	@Override
 	public C caseLambdaExpression(TRLambdaExpression node, S arg)
 	{
 		C all = newCollection();
 		
-		for (TRTypeBind bind: node.bindList)
+		for (TRMultipleTypeBind bind: node.bindList)
 		{
-			all.addAll(caseBind(bind, arg));
+			all.addAll(caseMultipleBind(bind, arg));
 		}
-		
-		all.addAll(node.expression.apply(this, arg));
+
+		//@NB is this right? Is it needed? Same for param patterns
+		TRDefinitionVisitor<C, S> defVisitor = visitorSet.getDefinitionVisitor();	
+		if (defVisitor != null && node.paramDefinitions != null)
+		{
+			for(TRDefinition d : node.paramDefinitions)
+			{
+				all.addAll(d.apply(defVisitor, arg));
+			}
+			if (node.def != null)
+			{
+				all.addAll(node.def.apply(defVisitor, arg));
+			}
+		}
+
+		TRPatternVisitor<C, S> patternVisitor = visitorSet.getPatternVisitor();
+		if (patternVisitor != null && node.paramPatterns != null)
+		{
+			for(TRPattern p : node.paramPatterns)
+			{
+				all.addAll(p.apply(patternVisitor, arg));
+			}
+		}
+
+		all.addAll(caseVDMLocalDefinitionListExpression(node, arg));
 		return all;
 	}
 
@@ -249,14 +254,22 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 	public C caseLetBeStExpression(TRLetBeStExpression node, S arg)
 	{
 		C all = newCollection();
+	
 		all.addAll(caseMultipleBind(node.bind, arg));
 		
 		if (node.suchThat != null)
 		{
 			all.addAll(node.suchThat.apply(this, arg));
 		}
+
+		//@NB is this right? Is it needed? Same for param patterns
+		TRDefinitionVisitor<C, S> defVisitor = visitorSet.getDefinitionVisitor();	
+		if (defVisitor != null && node.def != null)
+		{
+			all.addAll(node.def.apply(defVisitor, arg));
+		}
 		
-		all.addAll(node.value.apply(this, arg));
+		all.addAll(caseVDMLocalDefinitionListExpression(node, arg));
 		return all;
 	}
 
@@ -274,29 +287,30 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
  			}
  		}
  		
-		all.addAll(node.expression.apply(this, arg));
+		all.addAll(caseVDMLocalDefinitionListExpression(node, arg));
 		return all;
 	}
 
- 	@Override
-	public C caseMapCompExpression(TRMapCompExpression node, S arg)
-	{
-		C all = newCollection();
-		all.addAll(node.first.left.apply(this, arg));
-		all.addAll(node.first.right.apply(this, arg));
+	//@NB all this is covered by caseCompExpression anyhow? The node.first will reach caseMapletExpression?
+ 	// @Override
+	// public C caseMapCompExpression(TRMapCompExpression node, S arg)
+	// {
+	// 	C all = newCollection();
+	// 	all.addAll(node.first.left.apply(this, arg));
+	// 	all.addAll(node.first.right.apply(this, arg));
 		
-		for (TRMultipleBind mbind: node.bindings)
-		{
-			all.addAll(caseMultipleBind(mbind, arg));
-		}
+	// 	for (TRMultipleBind mbind: node.bindings)
+	// 	{
+	// 		all.addAll(caseMultipleBind(mbind, arg));
+	// 	}
 		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
-		}
+	// 	if (node.predicate != null)
+	// 	{
+	// 		all.addAll(node.predicate.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
  	@Override
 	public C caseMapEnumExpression(TRMapEnumExpression node, S arg)
@@ -305,8 +319,10 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		
 		for (TRMapletExpression maplet: node.members)
 		{
-			all.addAll(maplet.left.apply(this, arg));
-			all.addAll(maplet.right.apply(this, arg));
+			//@NB this is right, right?
+			//all.addAll(maplet.left.apply(this, arg));
+			//all.addAll(maplet.right.apply(this, arg));
+			all.addAll(maplet.apply(this, arg));
 		}
 		
 		return all;
@@ -339,24 +355,26 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		return all;
 	}
 
- 	@Override
-	public C caseNarrowExpression(TRNarrowExpression node, S arg)
-	{
-		return node.test.apply(this, arg);
-	}
+	//@NB this falls back to caseVDMTestExpression
+ 	// @Override
+	// public C caseNarrowExpression(TRNarrowExpression node, S arg)
+	// {
+	// 	return node.test.apply(this, arg);
+	// }
 
- 	@Override
-	public C caseNewExpression(TRNewExpression node, S arg)
-	{
-		C all = newCollection();
+	//@NB this I don't need given I don't have "new" ?(VDMPP only)?
+ 	// @Override
+	// public C caseNewExpression(TRNewExpression node, S arg)
+	// {
+	// 	C all = newCollection();
 		
-		for (TRExpression a: node.args)
-		{
-			all.addAll(a.apply(this, arg));
-		}
+	// 	for (TRExpression a: node.args)
+	// 	{
+	// 		all.addAll(a.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
  	
  	@Override
  	public C casePreExpression(TRPreExpression node, S arg)
@@ -372,65 +390,66 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		return all;
  	}
 
- 	@Override
-	public C caseSeqCompExpression(TRSeqCompExpression node, S arg)
-	{
-		C all = newCollection();
-		all.addAll(node.first.apply(this, arg));
-		all.addAll(caseBind(node.bind, arg));
+	 //@NB all these I don't need because they will be caught by caseCompExpression and caseEnumeratedExpression?
+ 	// @Override
+	// public C caseSeqCompExpression(TRSeqCompExpression node, S arg)
+	// {
+	// 	C all = newCollection();
+	// 	all.addAll(node.first.apply(this, arg));
+	// 	all.addAll(caseBind(node.bind, arg));
 		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
-		}
+	// 	if (node.predicate != null)
+	// 	{
+	// 		all.addAll(node.predicate.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
- 	@Override
-	public C caseSeqEnumExpression(TRSeqEnumExpression node, S arg)
-	{
-		C all = newCollection();
+ 	// @Override
+	// public C caseSeqEnumExpression(TRSeqEnumExpression node, S arg)
+	// {
+	// 	C all = newCollection();
 		
-		for (TRExpression m: node.members)
-		{
-			all.addAll(m.apply(this, arg));
-		}
+	// 	for (TRExpression m: node.members)
+	// 	{
+	// 		all.addAll(m.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
- 	@Override
-	public C caseSetCompExpression(TRSetCompExpression node, S arg)
-	{
-		C all = newCollection();
-		all.addAll(node.first.apply(this, arg));
+ 	// @Override
+	// public C caseSetCompExpression(TRSetCompExpression node, S arg)
+	// {
+	// 	C all = newCollection();
+	// 	all.addAll(node.first.apply(this, arg));
 		
-		for (TRMultipleBind mbind: node.bindings)
-		{
-			all.addAll(caseMultipleBind(mbind, arg));
-		}
+	// 	for (TRMultipleBind mbind: node.bindings)
+	// 	{
+	// 		all.addAll(caseMultipleBind(mbind, arg));
+	// 	}
 		
-		if (node.predicate != null)
-		{
-			all.addAll(node.predicate.apply(this, arg));
-		}
+	// 	if (node.predicate != null)
+	// 	{
+	// 		all.addAll(node.predicate.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
- 	@Override
-	public C caseSetEnumExpression(TRSetEnumExpression node, S arg)
-	{
-		C all = newCollection();
+ 	// @Override
+	// public C caseSetEnumExpression(TRSetEnumExpression node, S arg)
+	// {
+	// 	C all = newCollection();
 		
-		for (TRExpression m: node.members)
-		{
-			all.addAll(m.apply(this, arg));
-		}
+	// 	for (TRExpression m: node.members)
+	// 	{
+	// 		all.addAll(m.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
  	@Override
 	public C caseSetRangeExpression(TRSetRangeExpression node, S arg)
@@ -444,25 +463,33 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
  	@Override
 	public C caseSubseqExpression(TRSubseqExpression node, S arg)
 	{
-		C all = node.seq.apply(this, arg);
+		C all = newCollection();
+		all.addAll(node.seq.apply(this, arg));
 		all.addAll(node.from.apply(this, arg));
 		all.addAll(node.to.apply(this, arg));
+
+		//@NB is the above better? Or the same? 
+		// C all = node.seq.apply(this, arg);
+		// all.addAll(node.from.apply(this, arg));
+		// all.addAll(node.to.apply(this, arg));
 		return all;
 	}
 
- 	@Override
-	public C caseTupleExpression(TRTupleExpression node, S arg)
-	{
-		C all = newCollection();
+	//@NB caught by caseEnumeratedExpression
+ 	// @Override
+	// public C caseTupleExpression(TRTupleExpression node, S arg)
+	// {
+	// 	C all = newCollection();
 		
-		for (TRExpression m: node.args)
-		{
-			all.addAll(m.apply(this, arg));
-		}
+	// 	for (TRExpression m: node.args)
+	// 	{
+	// 		all.addAll(m.apply(this, arg));
+	// 	}
 		
-		return all;
-	}
+	// 	return all;
+	// }
 
+	//@NB this catches a whole raft of them, like TRBinaryExpr
  	@Override
 	public C caseUnaryExpression(TRUnaryExpression node, S arg)
 	{
@@ -471,33 +498,56 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		return all;
 	}
 
+	@Override
+	public C caseVDMLocalDefinitionListExpression(TRVDMLocalDefinitionListExpression node, S arg)
+	{
+		return node.expression.apply(this, arg);
+	}
+
+	@Override
+	public C caseVDMTestExpression(TRVDMTestExpression node, S arg)
+	{
+		TRDefinitionVisitor<C, S> defVisitor = visitorSet.getDefinitionVisitor();
+		C all = newCollection();
+		
+		if (defVisitor != null && node.typedef != null)
+		{
+			all.addAll(node.typedef.apply(defVisitor, arg));
+		}
+		
+	   all.addAll(node.test.apply(this, arg));
+	   return all;
+	}
+
  	/**
  	 * These bind and multiple bind cases cover the common expression visitor
  	 * cases, but they can be overridden, perhaps to use the (m)bind visitorSet
  	 * entry if required. 
  	 */
-	protected C caseBind(TRBind bind, S arg)
+	protected C caseMultupleBindList(TRMultipleBindList bindList, S arg)
 	{
 		C all = newCollection();
-		
-		if (bind instanceof TRSetBind)
+		for(TRMultipleBind b : bindList)
 		{
-			TRSetBind sbind = (TRSetBind)bind;
-			all.addAll(sbind.set.apply(this, arg));
+			all.addAll(caseMultipleBind(b, arg));
 		}
-		else if (bind instanceof TRSeqBind)
-		{
-			TRSeqBind sbind = (TRSeqBind)bind;
-			all.addAll(sbind.sequence.apply(this, arg));
-		}
-		
-		return all;
+		return all;		
 	}
 
  	protected C caseMultipleBind(TRMultipleBind bind, S arg)
 	{
 		C all = newCollection();
 		
+		//@NB shouldn't we also look into the bind's patterns? 
+		TRPatternVisitor<C, S> patternVisitor = visitorSet.getPatternVisitor();
+		if (patternVisitor != null && bind.plist != null)
+		{
+			for(TRPattern p : bind.plist)
+			{
+				all.addAll(p.apply(patternVisitor, arg));
+			}
+		}
+
 		if (bind instanceof TRMultipleSetBind)
 		{
 			TRMultipleSetBind sbind = (TRMultipleSetBind)bind;
@@ -506,7 +556,7 @@ abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> ext
 		else if (bind instanceof TRMultipleSeqBind)
 		{
 			TRMultipleSeqBind sbind = (TRMultipleSeqBind)bind;
-			all.addAll(sbind.sequence.apply(this, arg));
+			all.addAll(sbind.seq.apply(this, arg));
 		}
 		
 		return all;

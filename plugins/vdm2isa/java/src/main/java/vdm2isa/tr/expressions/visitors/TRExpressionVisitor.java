@@ -15,6 +15,7 @@ import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRFieldExpression;
 import vdm2isa.tr.expressions.TRFieldNumberExpression;
+import vdm2isa.tr.expressions.TRFunctionInstantiationExpression;
 import vdm2isa.tr.expressions.TRIfExpression;
 import vdm2isa.tr.expressions.TRIotaExpression;
 import vdm2isa.tr.expressions.TRIsExpression;
@@ -227,7 +228,7 @@ public abstract class TRExpressionVisitor<R, S>
         return caseVDMLocalDefinitionListExpression(node, arg);
     }
 
-	public R caseCaseExpression(TRCasesExpression node, S arg) {
+	public R caseCasesExpression(TRCasesExpression node, S arg) {
 		return caseExpression(node, arg);
 	}
 
@@ -238,4 +239,8 @@ public abstract class TRExpressionVisitor<R, S>
     public R caseMapCompExpression(TRMapCompExpression node, S arg) {
         return caseCompExpression(node, arg);
     }
+
+	public R caseFunctionInstantiationExpression(TRFunctionInstantiationExpression node, S arg) {
+		return caseExpression(node, arg);
+	}
 }
