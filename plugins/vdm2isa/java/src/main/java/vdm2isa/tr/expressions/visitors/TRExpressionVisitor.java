@@ -69,6 +69,14 @@ public abstract class TRExpressionVisitor<R, S>
 		return caseExpression(node, arg);
 	}
 
+	public R caseCasesExpression(TRCasesExpression node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+    public R caseCaseAlternative(TRCaseAlternative node, S arg) {
+        return caseExpression(node, arg);
+    }
+
  	public R caseEnumeratedExpression(TREnumeratedExpression node, S arg)
 	{
 		return caseExpression(node, arg);
@@ -226,14 +234,6 @@ public abstract class TRExpressionVisitor<R, S>
 
     public R caseLetBeStExpression(TRLetBeStExpression node, S arg) {
         return caseVDMLocalDefinitionListExpression(node, arg);
-    }
-
-	public R caseCasesExpression(TRCasesExpression node, S arg) {
-		return caseExpression(node, arg);
-	}
-
-    public R caseCaseAlternative(TRCaseAlternative node, S arg) {
-        return caseExpression(node, arg);
     }
 
     public R caseMapCompExpression(TRMapCompExpression node, S arg) {
