@@ -4,7 +4,6 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;

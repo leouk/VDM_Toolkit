@@ -9,8 +9,6 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
-import vdm2isa.tr.types.TRBasicType;
-import vdm2isa.tr.types.TRDataType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeSet;
@@ -96,8 +94,8 @@ public class TRCasesExpression extends TRExpression {
         }
         else if (eType.isDataType())
         {
-            TRDataType dt = (TRDataType)eType;
-            //dt.getDataTypeConstructors().size() == cases.size() 
+            //TRDataType dt = (TRDataType)eType;
+            //assert dt.getDataTypeConstructors().size() == cases.size(); 
             sb.append(isaToken().toString());
             sb.append(IsaToken.SPACE.toString());
             sb.append(exp.translate());
