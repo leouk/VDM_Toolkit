@@ -13,7 +13,7 @@ public abstract class TRInvariantType extends TRType
 {
 	private static final long serialVersionUID = 1L;
     
-    protected final TCNameToken typename;
+    public final TCNameToken typename;
 
     // those that might require implicit undeclared specification are not final
     private TRExplicitFunctionDefinition invdef;

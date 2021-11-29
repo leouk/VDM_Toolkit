@@ -14,7 +14,7 @@ import vdm2isa.tr.types.TRType;
 public class TRMkTypeExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
 
-    protected final TCNameToken typename;
+    public final TCNameToken typename;
     private TRFieldList fields; 
     private final TRExpressionList args;
 

@@ -14,7 +14,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     private static final long serialVersionUID = 1L;
     private final TRDefinitionList localDefs;
-    protected final boolean isDefExpression;
+    public final boolean isDefExpression;
 
     public TRLetDefExpression(LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype, boolean isDefExpression)
     {

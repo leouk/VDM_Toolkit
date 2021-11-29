@@ -10,7 +10,7 @@ import vdm2isa.tr.types.TRType;
 public class TRMapEnumExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
-    protected final TRMapletExpressionList members;
+    public final TRMapletExpressionList members;
 
 	public TRMapEnumExpression(LexLocation location, TRMapletExpressionList members, TRType exptype)
 	{

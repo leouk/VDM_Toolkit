@@ -15,7 +15,7 @@ import vdm2isa.tr.types.TRType;
 public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     
     private static final long serialVersionUID = 1L;
-    protected final TRExpression expression;
+    public final TRExpression expression;
 
     public TRVDMLocalDefinitionListExpression(LexLocation location, TRExpression expression, TRType exptype)
     {

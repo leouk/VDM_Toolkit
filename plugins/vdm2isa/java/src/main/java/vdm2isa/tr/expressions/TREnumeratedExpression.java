@@ -10,7 +10,7 @@ import vdm2isa.tr.types.TRType;
 public abstract class TREnumeratedExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
-	protected final TRExpressionList members;
+	public final TRExpressionList members;
 
 	public TREnumeratedExpression(LexLocation location, TRExpressionList members, TRType exptype)
 	{

@@ -29,8 +29,8 @@ import vdm2isa.tr.patterns.TRUnionContext;
 public abstract class TRDefinition extends TRNode implements Comparable<TRDefinition>, TRUnionContext
 {
 	private static final long serialVersionUID = 1L;
-	protected final TRIsaVDMCommentList comments;
-	protected final TCAnnotationList annotations;
+	public final TRIsaVDMCommentList comments;
+	public final TCAnnotationList annotations;
 	private final TCDefinition vdmDefinition;
 
 	// /** The name of the object being defined. */

@@ -38,8 +38,8 @@ public class TRUnaryExpression extends TRExpression {
 
     private static final long serialVersionUID = 1L;
 
-    protected final IsaToken owner;
-	protected final TRExpression exp;
+    public final IsaToken owner;
+	public final TRExpression exp;
 
 	protected TRUnaryExpression(LexLocation location, IsaToken token, TRExpression exp, TRType exptype)
 	{

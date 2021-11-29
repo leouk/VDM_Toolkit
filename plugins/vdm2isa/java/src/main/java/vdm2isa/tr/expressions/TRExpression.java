@@ -337,7 +337,7 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
-    protected final TRType getUltimateType(TRType t)
+    public final TRType getUltimateType(TRType t)
     {
         TRType result = t;
         if (t instanceof TRNamedType)

@@ -20,10 +20,10 @@ import vdm2isa.tr.types.TRType;
 public abstract class TRVDMTestExpression extends TRExpression {
     
 	private static final long serialVersionUID = 1L;
-    protected final TCNameToken typename;
-    protected final TRType basictype;
-    protected final TRExpression test;
-    protected final TRDefinition typedef;
+    public final TCNameToken typename;
+    public final TRType basictype;
+    public final TRExpression test;
+    public final TRDefinition typedef;
 
     public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {

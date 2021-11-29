@@ -11,10 +11,10 @@ import vdm2isa.tr.types.TRType;
 
 public abstract class TRAbstractCompExpression extends TRExpression {
 
-    protected final TRExpression first;
-    protected final TRMultipleBindList bindings;
-    protected final TRExpression predicate;
-    protected final TRDefinition def;
+    public final TRExpression first;
+    public final TRMultipleBindList bindings;
+    public final TRExpression predicate;
+    public final TRDefinition def;
 
     public TRAbstractCompExpression(LexLocation location, 
         TRExpression first, TRMultipleBindList bindings, 

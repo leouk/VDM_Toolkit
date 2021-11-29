@@ -16,7 +16,7 @@ public class TRField extends TRAbstractInnerTypedType {
     
 	private static final long serialVersionUID = 1L;
     private final TCNameToken tagname;
-    protected final boolean equalityAbstraction; 
+    public final boolean equalityAbstraction; 
 
     // the record this field belongs to; set by TRFieldList
     protected TRRecordType record;    

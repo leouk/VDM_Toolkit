@@ -22,9 +22,9 @@ import vdm2isa.tr.types.TRUnknownType;
 public class TRBinaryExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	protected final TRExpression left;
-	protected final TRExpression right;
-	protected final LexToken op;
+	public final TRExpression left;
+	public final TRExpression right;
+	public final LexToken op;
 	
 	public TRBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
