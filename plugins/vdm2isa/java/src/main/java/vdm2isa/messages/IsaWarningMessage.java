@@ -24,6 +24,9 @@ public enum IsaWarningMessage {
     "%1$s expression invalid type (`%2$s`)? VDMJ might still figure it out."),      
     VDMSL_INVALID_EXPR_4P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 6,
     "Invalid %1$s arguments for `%2$s` length(%3$s) = %4$s."),
+
+    VDMSL_EXU_MISSING_SPECCALL_3P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 50,
+    "Definition of `%1$s` %2$s depends on `%3$s` yet does not call `pre_%3$s`."),
     
     ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
     "Unknown VDM types will generate Isabelle additional type variable `a warning."),
