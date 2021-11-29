@@ -4,10 +4,14 @@
 
 package vdm2isa.tr.definitions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnknownType;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -175,5 +179,10 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	public TRUnionContext getNextUnionContext()
 	{
 		return null;
+	}
+
+	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	{
+		return new HashMap<TRSpecificationKind, TCNameSet>();
 	}
 }

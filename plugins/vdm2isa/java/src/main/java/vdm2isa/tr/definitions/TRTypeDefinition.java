@@ -1,8 +1,11 @@
 package vdm2isa.tr.definitions;
 
+import java.util.Map;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -10,6 +13,7 @@ import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
@@ -499,5 +503,40 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	public TRExpression getOrdExpression()
 	{
 		return ordExpression;
+	}
+
+    @Override
+	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	{
+		TRFunctionCallFinder finder = new TRFunctionCallFinder();
+		Map<TRSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
+
+		if (invdef != null && !invdef.isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			assert invdef.getBody() != null;
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(invdef.getBody().apply(finder, null));
+			found.put(TRSpecificationKind.INV, foundPerKind);
+		}
+
+        if (eqdef != null && !eqdef.isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			assert eqdef.getBody() != null;
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(eqdef.getBody().apply(finder, null));
+			found.put(TRSpecificationKind.EQ, foundPerKind);
+
+		}
+
+		if (orddef != null && !orddef.isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			assert orddef.getBody() != null;
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(orddef.getBody().apply(finder, null));
+			found.put(TRSpecificationKind.ORD, foundPerKind);
+
+		}
+
+		return found;
 	}
 }

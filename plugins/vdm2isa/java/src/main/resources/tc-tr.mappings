@@ -161,6 +161,7 @@ package com.fujitsu.vdmj.tc.lex to vdm2isa.tr.lex;
 
 unmapped com.fujitsu.vdmj.tc.lex.TCNameToken;
 unmapped com.fujitsu.vdmj.tc.lex.TCNameList;
+unmapped com.fujitsu.vdmj.tc.lex.TCNameSet;
 unmapped com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;

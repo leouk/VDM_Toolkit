@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -16,6 +17,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -29,6 +31,7 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternList;
@@ -864,5 +867,45 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		sb.append(paramDefinitionList.unionTypesTranslate(body, innerContext));
 		paramDefinitionList.setFormattingSeparator(fmtsep);
 		return IsaToken.parenthesise(sb.toString());
+	}
+
+	@Override
+	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	{
+		TRFunctionCallFinder finder = new TRFunctionCallFinder();
+		Map<TRSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
+
+		if (body != null)
+		{
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(body.apply(finder, null));
+			found.put(TRSpecificationKind.NONE, foundPerKind);
+		}
+		
+		if (predef != null && !predef.isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			assert predef.body != null;
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(predef.body.apply(finder, null));
+			found.put(TRSpecificationKind.PRE, foundPerKind);
+		}
+		
+		if (postdef != null && !postdef.isImplicitlyGeneratedUndeclaredSpecification())
+		{
+			assert postdef.body != null;
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(postdef.body.apply(finder, null));
+			found.put(TRSpecificationKind.POST, foundPerKind);
+
+		}
+
+		if (measureExp != null)
+		{
+			TCNameSet foundPerKind = new TCNameSet();
+			foundPerKind.addAll(measureExp.apply(finder, null));
+			found.put(TRSpecificationKind.MEASURE, foundPerKind);
+		}
+
+		return found;
 	}
 }
