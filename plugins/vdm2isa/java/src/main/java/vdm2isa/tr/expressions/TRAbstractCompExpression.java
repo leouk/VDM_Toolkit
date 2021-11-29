@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.types.TRType;
 
@@ -53,5 +54,12 @@ public abstract class TRAbstractCompExpression extends TRExpression {
             "\n\t pred  = " + String.valueOf(predicate) +
             "\n\t def   = " + String.valueOf(def) +
             "\n\t loc   = " + String.valueOf(getLocation());
-    }    
+    }   
+    
+    @Override
+	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
+	{
+		return visitor.caseCompExpression(this, arg);
+	}
+
 }

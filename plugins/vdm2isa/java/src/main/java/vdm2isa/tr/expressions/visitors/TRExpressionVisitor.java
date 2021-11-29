@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.expressions.visitors;
 
+import vdm2isa.tr.expressions.TRAbstractCompExpression;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRBoundedExpression;
@@ -169,7 +170,7 @@ public abstract class TRExpressionVisitor<R, S>
 
  	public R caseSetCompExpression(TRSetCompExpression node, S arg)
 	{
-		return caseExpression(node, arg);
+		return caseCompExpression(node, arg);
 	}
 
  	public R caseSetEnumExpression(TRSetEnumExpression node, S arg)
@@ -202,6 +203,12 @@ public abstract class TRExpressionVisitor<R, S>
 		return caseExpression(node, arg);
 	}
 
+	public R caseCompExpression(TRAbstractCompExpression node, S arg)
+	{
+		return caseExpression(node, arg);
+	}
+
+
  	public R caseVDMLocalDefinitionListExpression(TRVDMLocalDefinitionListExpression node, S arg)
 	{
 		return caseExpression(node, arg);
@@ -229,6 +236,6 @@ public abstract class TRExpressionVisitor<R, S>
     }
 
     public R caseMapCompExpression(TRMapCompExpression node, S arg) {
-        return caseExpression(node, arg);
+        return caseCompExpression(node, arg);
     }
 }
