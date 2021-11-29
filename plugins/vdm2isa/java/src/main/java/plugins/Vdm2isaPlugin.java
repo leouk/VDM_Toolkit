@@ -93,20 +93,8 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 
 			try
 			{
-				TCModuleList tclist_filtered = new TCModuleList(); 
-				tclist_filtered.addAll(tclist);
-				Iterator<TCModule> mi = tclist_filtered.iterator();
-				while (mi.hasNext())
-				{
-					if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
-					{
-						mi.remove();
-						break;
-					}
-				} 
-
 				// class map TC -> TR trees + set them up
-				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist_filtered);//tclist);
+				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 				translatedModules.setup();
 
 				// be strict on translation output

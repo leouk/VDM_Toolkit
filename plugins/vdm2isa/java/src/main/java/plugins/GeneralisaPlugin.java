@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.Iterator;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.Settings;
@@ -20,9 +21,11 @@ import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.messages.VDM2IsaError;
@@ -157,9 +160,21 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
 
+            TCModuleList tclist_filtered = new TCModuleList(); 
+            tclist_filtered.addAll(tclist);
+            Iterator<TCModule> mi = tclist_filtered.iterator();
+            while (mi.hasNext())
+            {
+                if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
+                {
+                    mi.remove();
+                    break;
+                }
+            } 
+
             //if (argv != null && argv.length > 0)
             //    Console.out.println("Params = " + Arrays.asList(argv).toString());
-            result = isaRun(tclist, argv);
+            result = isaRun(tclist_filtered, argv);
 
             long after = System.currentTimeMillis();
 			//addLocalErrors(Vdm2isaPlugin.getErrorCount());
