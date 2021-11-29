@@ -793,6 +793,30 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 
+		// add lemmas statement!
+		Map<TRSpecificationKind, TCNameSet> callMap = this.getCallMap();
+		List<String> lemmaNames = new Vector<String>(3);//NONE+PRE+POST vs INV+EQ+ORD?
+		for(Map.Entry<TRSpecificationKind, TCNameSet> entry : callMap.entrySet())
+		{
+			switch (entry.getKey())
+			{
+				// ready; do nothing else
+				case NONE:
+				case PRE:
+				case POST:
+				case INV:
+				case EQ:
+				case ORD:
+					break;
+
+				// do nothing cases
+				//case MEASURE:
+				//case INIT:
+				default:
+					break;
+			}
+		}
+
 		setFormattingSeparator(old);
 
 		return sb.toString();
@@ -879,7 +903,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(body.apply(finder, null));
-			found.put(TRSpecificationKind.NONE, foundPerKind);
+			if (!foundPerKind.isEmpty())
+				found.put(TRSpecificationKind.NONE, foundPerKind);
 		}
 		
 		if (predef != null && !predef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -887,7 +912,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			assert predef.body != null;
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(predef.body.apply(finder, null));
-			found.put(TRSpecificationKind.PRE, foundPerKind);
+			if (!foundPerKind.isEmpty())
+				found.put(TRSpecificationKind.PRE, foundPerKind);
 		}
 		
 		if (postdef != null && !postdef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -895,7 +921,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			assert postdef.body != null;
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(postdef.body.apply(finder, null));
-			found.put(TRSpecificationKind.POST, foundPerKind);
+			if (!foundPerKind.isEmpty())
+				found.put(TRSpecificationKind.POST, foundPerKind);
 
 		}
 
@@ -903,7 +930,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(measureExp.apply(finder, null));
-			found.put(TRSpecificationKind.MEASURE, foundPerKind);
+			if (!foundPerKind.isEmpty())
+				found.put(TRSpecificationKind.MEASURE, foundPerKind);
 		}
 
 		return found;

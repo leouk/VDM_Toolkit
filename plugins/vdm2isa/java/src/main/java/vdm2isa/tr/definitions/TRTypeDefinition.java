@@ -516,7 +516,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			assert invdef.getBody() != null;
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(invdef.getBody().apply(finder, null));
-			found.put(TRSpecificationKind.INV, foundPerKind);
+            if (!foundPerKind.isEmpty())
+                found.put(TRSpecificationKind.INV, foundPerKind);
 		}
 
         if (eqdef != null && !eqdef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -524,8 +525,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			assert eqdef.getBody() != null;
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(eqdef.getBody().apply(finder, null));
-			found.put(TRSpecificationKind.EQ, foundPerKind);
-
+            if (!foundPerKind.isEmpty())
+                found.put(TRSpecificationKind.EQ, foundPerKind);
 		}
 
 		if (orddef != null && !orddef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -533,8 +534,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			assert orddef.getBody() != null;
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(orddef.getBody().apply(finder, null));
-			found.put(TRSpecificationKind.ORD, foundPerKind);
-
+            if (!foundPerKind.isEmpty())
+                found.put(TRSpecificationKind.ORD, foundPerKind);
 		}
 
 		return found;
