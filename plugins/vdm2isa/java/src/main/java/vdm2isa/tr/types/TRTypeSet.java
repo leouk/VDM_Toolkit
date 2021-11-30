@@ -318,13 +318,12 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
 	}
 
-	protected String prefixTranslate(TRType t)
+	public static String prefixTranslate(TRType t, boolean prefixed, String namePrefix)
 	{
-		assert this.contains(t);
 		StringBuilder sb = new StringBuilder();
-		String typeStr = t.translate().trim();
 		if (prefixed)
 		{
+			String typeStr = t.translate().trim();
 			// create the constant constructors for the Isabelle data type as
 			// U_T for every type T in the union, where spaces are replaced by underscores in T
 			// ex.  Union = nat | set of int | seq of real 
@@ -335,19 +334,18 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			//
 			// Because certain VDM unions are absorbed (E.g. U1 = nat | int will only have int; U2 = int | nat | nat1 will only have int)
 			// we also need the fully qualified type nname, as ince U1.U_VDMInt versus U2.U_VDMInt!
-			String tname = getName();
-			if (tname == null)
+			if (namePrefix == null)
 			{
 				// do nothing; this is a type declaration/translate time.
 			}
-			else if (tname.isEmpty())
+			else if (namePrefix.isEmpty())
 			{
 				//TODO ignore, this will be reported elsewhere? yes
 				//report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, t.getName());
 			}
 			else
 			{
-				sb.append(tname);
+				sb.append(namePrefix);
 				sb.append(IsaToken.POINT.toString());
 			}
 			sb.append(IsaToken.VDMUNION.toString());
@@ -356,6 +354,12 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			sb.append(IsaToken.SPACE.toString());
 		}
 		return sb.toString();
+	}
+
+	protected String prefixTranslate(TRType t)
+	{
+		assert this.contains(t);
+		return TRTypeSet.prefixTranslate(t, prefixed, getName());
 	}
 
 	protected String typeTranslate(TRType t)
