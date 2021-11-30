@@ -35,6 +35,12 @@ functions
 	pre x < 20
 	post x > 20;
 
+	-- "normal" function with declared specification without pre/post references
+	h'': nat -> nat
+	h''(x) == g(x, x)
+	pre x < 20
+	post pre_g(x,RESULT) and x > 20;
+
 	-- curried function with undeclared specification	
 	curried: nat -> nat -> nat
 	curried(x)(y) == x + y;

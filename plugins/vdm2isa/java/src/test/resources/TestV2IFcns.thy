@@ -1,24 +1,24 @@
-(* VDM to Isabelle Translation @2021-11-29T16:45:19.203Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.473622Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl]
+in './src/test/resources/TestV2IFcns.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns
 imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
 	pre_const :: "\<bool>"
 where
 	"pre_const  \<equiv> True"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
 	post_const :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -34,9 +34,9 @@ where
 	10"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 11:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 13:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 13:12\<close>
 definition
 	pre_constS :: "\<bool>"
 where
@@ -47,7 +47,7 @@ where
 		(10 > 5)"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 14:17\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 14:17\<close>
 definition
 	post_constS :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -65,9 +65,9 @@ where
 	10"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -76,7 +76,7 @@ where
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -92,9 +92,9 @@ where
 	(x + y)"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 21:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 23:16\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 23:16\<close>
 definition
 	pre_g :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -105,7 +105,7 @@ where
 		((x > 10) \<and> (y > 20))"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 24:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 24:12\<close>
 definition
 	post_g :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
 where
@@ -123,9 +123,9 @@ where
 	(x + y)"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 27:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 27:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 29:21\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:21\<close>
 definition
 	pre_h :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -136,7 +136,7 @@ where
 		((pre_g x  x) \<and> (x < 20))"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 30:31\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:31\<close>
 definition
 	post_h :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -154,9 +154,9 @@ where
 	(g x  x)"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 33:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 33:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 35:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 35:11\<close>
 definition
 	pre_h' :: "VDMNat \<Rightarrow> \<bool>"
 where
@@ -167,7 +167,7 @@ where
 		(x < 20)"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 36:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 36:12\<close>
 definition
 	post_h' :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -185,9 +185,9 @@ where
 	(g x  x)"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
 definition
 	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -196,7 +196,7 @@ where
 		((inv_VDMNat x))  \<and> ((inv_VDMNat y))"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
 definition
 	post_curried :: "VDMNat \<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -212,9 +212,9 @@ where
 	(x + y)"
 
 	
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 43:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 43:5\<close>
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 45:11\<close>
 definition
 	pre_curriedS :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
@@ -225,7 +225,7 @@ where
 		(x > y)"
 
 
-\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 46:21\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 46:21\<close>
 definition
 	post_curriedS :: "VDMNat \<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
