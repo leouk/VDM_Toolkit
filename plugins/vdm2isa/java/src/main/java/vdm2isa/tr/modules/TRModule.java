@@ -39,7 +39,31 @@ public class TRModule extends TRNode
 	{
 		super.setup();
 		if (files == null || files.isEmpty())
+		{
+			// will take the module name anyhow
 			warning(IsaWarningMessage.VDMSL_EMPTY_MODULE_FILES_1P, name.toString());
+		}
+		else 
+		{
+			boolean found = false;
+			String fileName;
+			for(int i = 0; i < files.size() && !found; i++)
+			{
+				File f = files.get(i);
+				fileName = f.getName();
+				int pos = fileName.lastIndexOf(".");
+				if (pos > 0 && pos < (fileName.length() - 1)) 
+				{   // If '.' is not the first or last character.
+					fileName = fileName.substring(0, pos);
+				}
+				found = fileName.equals(name.toString());
+			}
+			if (!found)
+			{
+				report(IsaErrorMessage.ISA_INVALID_MODULE_NAME_2P, name.toString(), files.toString());
+			}
+		}
+		
 		TRNode.setup(definitions);
 	}
 

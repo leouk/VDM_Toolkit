@@ -98,6 +98,8 @@ public enum IsaErrorMessage {
     "Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `%1$s` VDM type."),
     ISA_INVALID_NAMEDTYPE_RENAME_2P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 22, 
     "Cannot rename `%1$s` into `%2$s`; it is already a named typed"),
+    ISA_INVALID_MODULE_NAME_2P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 23, 
+    "Module `%1$s` must be saved in a file with the same name. \n\tFiles = %2$s"),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
