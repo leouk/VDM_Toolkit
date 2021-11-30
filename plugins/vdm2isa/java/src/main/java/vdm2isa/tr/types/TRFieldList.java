@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.types.TCField;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
+import vdm2isa.tr.TRNode;
 
 public class TRFieldList extends TRMappedList<TCField, TRField>
 {
@@ -32,6 +33,19 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 		super.setup();
 		setFormattingSeparator("\n\t\t ");
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
+	}
+
+	public TRFieldList copy(boolean atTLD)
+	{
+		TRFieldList result = new TRFieldList();
+		for(TRField f : this)
+		{
+			TRField newf = (TRField)f.copy(true);
+			result.add(newf);
+		}
+		TRNode.setup(result);
+		result.setAtTopLevelDefinition(atTLD);
+		return result;
 	}
 
 	public void setRecordType(TRRecordType rtype)
