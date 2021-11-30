@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.805300Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.480428Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesStructured.vdmsl' at line 1:8
@@ -97,7 +97,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TSet2 specification\<close>
 		((inv_TSet s))  \<and> 
 		\<comment>\<open>User defined body of inv_TSet2\<close>
-		((vdm_card s) > (10::VDMNat1))"
+		((vdm_card s) > 10)"
 
 		 
 
@@ -129,7 +129,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TSet4 specification\<close>
 		(((inv_VDMSet' (inv_TSet3) s)))  \<and> 
 		\<comment>\<open>User defined body of inv_TSet4\<close>
-		((vdm_card s) > (20::VDMNat1))"
+		((vdm_card s) > 20)"
 
 		 
 

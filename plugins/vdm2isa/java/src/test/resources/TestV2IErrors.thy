@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:54:35.710309Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.463286Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IErrors.vdmsl' at line 1:8
@@ -9,12 +9,12 @@ imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 8:5\<close>
 record S = 
 	
 	
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 8:5\<close>
 definition
 	inv_S :: "S \<Rightarrow> \<bool>"
 where
@@ -25,13 +25,13 @@ where
 		
 
 	
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 10:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
 	
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 12:9\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 13:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> \<bool>"
 where
@@ -45,11 +45,11 @@ where
 		
 
 	
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 15:5\<close>
-type_synonym TUnion = "U_VDMReal "VDMReal" VDMSet"
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 17:5\<close>
+type_synonym TUnion = ""VDMReal" VDMSet"
 	
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 15:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 17:5\<close>
 definition
 	inv_TUnion :: "TUnion \<Rightarrow> \<bool>"
 where
@@ -60,28 +60,28 @@ where
 		 
 
 	
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 17:5\<close>
-datatype TInnerUnion = U_VDMReal "VDMReal"
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 20:5\<close>
+datatype TInnerUnion = "VDMReal"
 	
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 20:5\<close>
 definition
 	inv_TInnerUnion :: "TInnerUnion \<Rightarrow> \<bool>"
 where
 	"inv_TInnerUnion dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TInnerUnion specification\<close>
 		(((case dummy0 of
-		 TInnerUnion.U_VDMReal dummy0 \<Rightarrow> (inv_VDMReal dummy0)
+		 dummy0 \<Rightarrow> (inv_VDMReal dummy0)
 		 )))"
 
 		 
 
 	
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
 type_synonym TInnerUnion' = "TInnerUnion VDMSet"
 	
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
 definition
 	inv_TInnerUnion' :: "TInnerUnion' \<Rightarrow> \<bool>"
 where
@@ -92,16 +92,16 @@ where
 		 
 
 	
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 26:5\<close>
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 26:5\<close>
 definition
 	pre_vc33 :: "\<bool>"
 where
 	"pre_vc33  \<equiv> True"
 
 
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 26:5\<close>
 definition
 	post_vc33 :: "VDMNat VDMSeq \<Rightarrow> \<bool>"
 where
@@ -114,13 +114,13 @@ definition
 where
 	"vc33  \<equiv> 
 	\<comment>\<open>User defined body of vc33\<close>
-	[ x . \<comment>\<open>Type bound sequence compression is not supported in Isabelle.\<close>  (((inv_VDMNat x))) , (x > (10::VDMNat1)) ]"
+	[ x . \<comment>\<open>Type bound sequence compression is not supported in Isabelle.\<close>  (((inv_VDMNat x))) , (x > 10) ]"
 
 	
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
+	"v65 \<equiv> \<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>"
 
 	definition
 	inv_v65 :: "\<bool>"
@@ -132,7 +132,7 @@ where
 abbreviation
 	v830 :: "VDMNat VDMSeq"
 where
-	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ]
+	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in (0 < x)) ]
 	\<comment>\<open>Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>{v65}\<close>}  has a VDM ord_ predicate.\<close> "
 
 	definition

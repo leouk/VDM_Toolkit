@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.795542Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.468491Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsComplex.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
-	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
+	"t9 \<equiv> {1, 2, 3}"
 
 	definition
 	inv_t9 :: "\<bool>"
@@ -24,7 +24,7 @@ where
 abbreviation
 	t10 :: "VDMInt VDMSeq1"
 where
-	"t10 \<equiv> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)]"
+	"t10 \<equiv> [1, 2, 3]"
 
 	definition
 	inv_t10 :: "\<bool>"
@@ -105,7 +105,7 @@ definition
 where
 	"vc31  \<equiv> 
 	\<comment>\<open>User defined body of vc31\<close>
-	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
+	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > 10) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
@@ -181,7 +181,7 @@ definition
 where
 	"vc41  \<equiv> 
 	\<comment>\<open>User defined body of vc41\<close>
-	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
+	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > 10) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
@@ -206,7 +206,7 @@ definition
 where
 	"vc42  \<equiv> 
 	\<comment>\<open>User defined body of vc42\<close>
-	{ (x + y) | (x :: VDMNat)  y .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  y .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{1, 2, 3}))  \<and> (x > y) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
@@ -231,7 +231,7 @@ definition
 where
 	"vc5  \<equiv> 
 	\<comment>\<open>User defined body of vc5\<close>
-	(THE var. ((((inv_VDMNat var))) \<and> (var < (1::VDMNat1))))"
+	(THE var. ((((inv_VDMNat var))) \<and> (var < 1)))"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
@@ -256,7 +256,7 @@ definition
 where
 	"vc51  \<equiv> 
 	\<comment>\<open>User defined body of vc51\<close>
-	(THE var. (((var \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and> (var < (1::VDMNat1))))"
+	(THE var. (((var \<in>{1, 2, 3})) \<and> (var < 1)))"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
@@ -288,7 +288,7 @@ where
 	 else
 		undefined
 	)
-	) (10::VDMNat1)  (20::VDMNat1))"
+	) 10  20)"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 59:5\<close>
@@ -312,7 +312,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for post_f specification\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_f\<close>
-		(RESULT > (0::VDMNat))"
+		(RESULT > 0)"
 
 definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat"

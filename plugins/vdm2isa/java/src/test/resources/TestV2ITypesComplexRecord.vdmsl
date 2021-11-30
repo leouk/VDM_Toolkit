@@ -3,11 +3,16 @@ exports all
 definitions
 
 types
-	A :: a: int;
+	-- record pattern with different pattern name to field name
+	A :: a: int
+	inv mk_A(v) == v > 0;
+	
+	-- layered field expressions projection without pattern 
 	B :: b: A;
 	C :: c: B
 	inv x == x.c.b.a > 10; 
 	
+	-- layered record patterns without field expression projection 
 	D :: d: C
 	inv mk_D(mk_C(mk_B(mk_A(a)))) == a > 10;
 	

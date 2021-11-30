@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.803162Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.478676Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesRecords.vdmsl' at line 1:8
@@ -76,7 +76,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TRecord3 specification\<close>
 		((inv_TRecord r))  \<and> 
 		\<comment>\<open>User defined body of inv_TRecord3\<close>
-		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > (10::VDMNat1))"
+		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > 10)"
 
 		 
 
@@ -108,7 +108,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TRecord5 specification\<close>
 		((inv_TRecord2 r))  \<and> 
 		\<comment>\<open>User defined body of inv_TRecord5\<close>
-		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > (20::VDMNat1))"
+		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > 20)"
  
 
 	
@@ -139,7 +139,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TRecord7 specification\<close>
 		((inv_TRecord5 r))  \<and> 
 		\<comment>\<open>User defined body of inv_TRecord7\<close>
-		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > (30::VDMNat1))"
+		((x\<^sub>T\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d (r)) > 30)"
 
 		 
 

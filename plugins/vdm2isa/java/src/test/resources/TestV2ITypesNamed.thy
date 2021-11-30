@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.801803Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.477484Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesNamed.vdmsl' at line 1:8
@@ -35,7 +35,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TBasic2 specification\<close>
 		((inv_TBasic1 t))  \<and> 
 		\<comment>\<open>User defined body of inv_TBasic2\<close>
-		(t > (10::VDMNat1))"
+		(t > 10)"
 
 		 
 
@@ -128,7 +128,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_TBasic4 specification\<close>
 		((inv_TBasic3 t))  \<and> 
 		\<comment>\<open>User defined body of inv_TBasic4\<close>
-		(t < (20::VDMNat1))"
+		(t < 20)"
 
 		 
 

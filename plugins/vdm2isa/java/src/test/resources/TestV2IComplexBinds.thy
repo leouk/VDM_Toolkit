@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.787891Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.462091Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IBindsComplex.vdmsl' at line 1:8
@@ -34,7 +34,7 @@ where
 abbreviation
 	v0 :: "VDMNat"
 where
-	"v0 \<equiv> (10::VDMNat1)"
+	"v0 \<equiv> 10"
 
 	definition
 	inv_v0 :: "\<bool>"
@@ -46,7 +46,7 @@ where
 abbreviation
 	v1 :: "(VDMNat1\<times> VDMNat1)"
 where
-	"v1 \<equiv> ((1::VDMNat1), (2::VDMNat1))"
+	"v1 \<equiv> (1, 2)"
 
 	definition
 	inv_v1 :: "\<bool>"
@@ -61,7 +61,7 @@ where
 abbreviation
 	v11 :: "R"
 where
-	"v11 \<equiv> \<lparr>a\<^sub>R = (1::VDMNat1), b\<^sub>R = (2::VDMNat1)\<rparr>"
+	"v11 \<equiv> \<lparr>a\<^sub>R = 1, b\<^sub>R = 2\<rparr>"
 
 	definition
 	inv_v11 :: "\<bool>"
@@ -75,7 +75,7 @@ abbreviation
 where
 	"v2 \<equiv> (
 		let 
-((x  y)::(VDMNat1\<times> VDMNat1)) = ((1::VDMNat1), (2::VDMNat1))
+((x  y)::(VDMNat1\<times> VDMNat1)) = (1, 2)
 		in
 			(if (
 		((inv_VDMNat1 (fst (x  y)))\<and>
@@ -121,7 +121,7 @@ where
 abbreviation
 	v3 :: "VDMNat1"
 where
-	"v3 \<equiv> ((fst (((1::VDMNat1), (2::VDMNat1)))) + (snd (((1::VDMNat1), (2::VDMNat1)))))"
+	"v3 \<equiv> ((fst ((1, 2))) + (snd ((1, 2))))"
 
 	definition
 	inv_v3 :: "\<bool>"
@@ -148,7 +148,7 @@ where
 abbreviation
 	v5 :: "VDMNat1"
 where
-	"v5 \<equiv> [(1::VDMNat1), (2::VDMNat1)]"
+	"v5 \<equiv> [1, 2]"
 
 	definition
 	inv_v5 :: "\<bool>"

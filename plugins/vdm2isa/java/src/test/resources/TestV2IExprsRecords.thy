@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.799486Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.472354Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -52,7 +52,7 @@ definition
 where
 	"mkr n \<equiv> 
 	\<comment>\<open>User defined body of mkr\<close>
-	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
+	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + 1)\<rparr>"
 
 	
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
@@ -151,7 +151,7 @@ where
 abbreviation
 	v64 :: "(VDMNat1\<times> VDMNat1\<times> VDMNat1\<times> VDMNat1)"
 where
-	"v64 \<equiv> ((1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1))"
+	"v64 \<equiv> (1, 2, 3, 4)"
 
 	definition
 	inv_v64 :: "\<bool>"
@@ -168,7 +168,7 @@ where
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
+	"v65 \<equiv> \<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>"
 
 	definition
 	inv_v65 :: "\<bool>"
@@ -180,7 +180,7 @@ where
 abbreviation
 	v651 :: "VDMNat"
 where
-	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>))"
+	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>))"
 
 	definition
 	inv_v651 :: "\<bool>"
@@ -204,7 +204,7 @@ where
 abbreviation
 	v653 :: "VDMNat"
 where
-	"v653 \<equiv> (x\<^sub>R ((mkr (1::VDMNat1))))"
+	"v653 \<equiv> (x\<^sub>R ((mkr 1)))"
 
 	definition
 	inv_v653 :: "\<bool>"
@@ -216,7 +216,7 @@ where
 abbreviation
 	v67 :: "R"
 where
-	"v67 \<equiv> (v65)\<lparr>x\<^sub>R := (10::VDMNat1), y\<^sub>R := (20::VDMNat1)\<rparr>"
+	"v67 \<equiv> (v65)\<lparr>x\<^sub>R := 10, y\<^sub>R := 20\<rparr>"
 
 	definition
 	inv_v67 :: "\<bool>"
@@ -276,7 +276,7 @@ where
 		let 
 (dummy0::R) = v65;
 		
-(var1::VDMNat) = (10::VDMNat1)
+(var1::VDMNat) = 10
 		in
 			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (inv_R dummy0) \<and> 

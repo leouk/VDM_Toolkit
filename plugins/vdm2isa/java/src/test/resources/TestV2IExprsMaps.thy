@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-28T06:52:58.796505Z
+(* VDM to Isabelle Translation @2021-11-30T10:20:27.469906Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -32,7 +32,7 @@ where
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
-	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
+	"t9 \<equiv> {1, 2, 3}"
 
 	definition
 	inv_t9 :: "\<bool>"
@@ -44,7 +44,7 @@ where
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
+	"v65 \<equiv> \<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>"
 
 	definition
 	inv_v65 :: "\<bool>"
