@@ -16,6 +16,7 @@ import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRType;
 
 public class TRVariableExpression extends TRExpression
@@ -76,7 +77,19 @@ public class TRVariableExpression extends TRExpression
 	@Override
 	public String translate()
 	{
-		return typeAware(name.getName().toString());
+		StringBuilder sb = new StringBuilder();
+		// for quote literals, don't get the VDM name but the prefixed Isabelle one! 
+		TRType t = getType();
+		if (t instanceof TRQuoteType)
+		{
+			TRQuoteType qt = (TRQuoteType)t;
+			sb.append(qt.translate());
+		}
+		else
+		{
+			sb.append(name.getName().toString());
+		}
+		return typeAware(sb.toString());
 	}
 
 	/**
