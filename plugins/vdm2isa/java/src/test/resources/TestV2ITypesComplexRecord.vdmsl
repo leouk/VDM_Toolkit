@@ -7,6 +7,11 @@ types
 	B :: b: A;
 	C :: c: B
 	inv x == x.c.b.a > 10; 
+	
+	D :: d: C
+	inv mk_D(mk_C(mk_B(mk_A(a)))) == a > 10;
+	
+/*
 
 	R :: 
 		r : real
@@ -33,13 +38,13 @@ types
 		r: R
 		t: R
 	inv mk_S2(r,t) == r.r > t.r; 
-/*
+
 	-- layered + multiple record contexts 
 	S3 :: 
 		r: R
 		t: R
 	inv mk_S3(mk_R(rs, i),mk_R(ts, j)) == rs > ts and i > j; 
-	
+
 	-- layered + multiple record contexts with dummys 
 	S4 :: 
 		r: R
