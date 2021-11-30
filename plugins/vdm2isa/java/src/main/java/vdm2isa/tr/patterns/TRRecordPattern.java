@@ -83,37 +83,58 @@ public class TRRecordPattern extends TRPattern {
         StringBuilder sb = new StringBuilder();
 
         TRPattern p = plist.get(index);
-        String patternName = p.invTranslate();
+        String patternName;
         String fieldName;
-
         if (p instanceof TRBasicPattern)
         {
-            TRBasicPattern bp = (TRBasicPattern)p;
-            if (bp.isIgnore())
-            {
-                TRFieldList flist = TRRecordType.fieldsOf(this.typename);
-                if (flist != null)
-                {
-                    assert index < flist.size();
-                    //TODO normalise this? Perhaps using TRField list directly?     
-                    fieldName = flist.get(index).getTagName();//getIsabelleTagName();
-                }
-                else
-                {
-                    fieldName = bp.invTranslate();//this will generate an error, but okay
-                    report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
-                }
-            }
-            else 
-                fieldName = bp.invTranslate();
+            // for basic pattern, use pattern = (field_RECORD dummyName)
+            patternName = p.invTranslate();
         }
-        else
-            fieldName = p.invTranslate();
-            
+        // for record pattern within another, use inner dummies
+        else if (p instanceof TRRecordPattern)
+        {
+            // for record pattern, use inner dummy name to project the other record parts in the field name
+            patternName = dummyName + Integer.valueOf(index);
+        }
+        //else if (p instanceof TRStructuredPattern)
+        else //if (p instanceof TRPatternBind)        = error
+        {
+            patternName = p.invTranslate();
+        }
         sb.append(patternName);
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(IsaToken.SPACE.toString());
+
+        if (p instanceof TRBasicPattern)
+        {
+            // for basic pattern, use p = (field_RECORD dummyName)
+            TRBasicPattern bp = (TRBasicPattern)p;
+            TRFieldList flist = TRRecordType.fieldsOf(this.typename);
+            if (flist != null)
+            {
+                assert index < flist.size();
+                fieldName = flist.get(index).getTagName();
+            }
+            else
+            {
+                // this can generate an error when the pattern and field names differ
+                // A :: a: int inv mk_A(v) == v > 10; fieldName = v_A! instead of a_A!
+                fieldName = bp.invTranslate();
+                report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
+            }
+        }
+        // for record pattern within another, use inner dummies
+        else if (p instanceof TRRecordPattern)
+        {
+            TRRecordPattern rp = (TRRecordPattern)p;
+            fieldName = rp.recordPatternTranslate();
+        }
+        //else if (p instanceof TRStructuredPattern)
+        else //if (p instanceof TRPatternBind)        = error
+        {
+            fieldName = p.invTranslate();
+        }
         sb.append(IsaToken.parenthesise(IsaTemplates.isabelleRecordFieldName(typename.toString(), fieldName) + " " + dummyName));
         return sb.toString();
     }
