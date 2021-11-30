@@ -79,6 +79,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		}
 		else
         {
+			//TODO should the call be parameters.copy(true)?
 			result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
 			TRNode.setup(result);
 			result.setAtTopLevelDefinition(atTLD);

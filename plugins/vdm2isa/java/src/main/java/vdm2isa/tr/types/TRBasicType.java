@@ -128,7 +128,8 @@ public class TRBasicType extends TRType
 	@Override
 	public String translate()
 	{
-		return getName();
+		// \<bool> isn't allowed in some contexts as a name, so use bool instead. 
+		return isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : getName();
 	}
 
 	@Override

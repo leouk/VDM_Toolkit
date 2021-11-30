@@ -1,6 +1,8 @@
 package vdm2isa.tr.types;
 
 
+import java.util.Iterator;
+
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
@@ -15,12 +17,14 @@ public class TRUnionType extends TRType implements TRDataType {
    
     private TRTypeSet types; 
     private boolean expanded;
+	private boolean enumerated; 
     
     public TRUnionType(TCUnionType vdmType, TRDefinitionList definitions, TRTypeSet types)
 	{
 		super(vdmType, definitions);
 		this.types = types;
 		this.expanded = false;
+		this.enumerated = false;
 	}
 
 	@Override
@@ -31,14 +35,27 @@ public class TRUnionType extends TRType implements TRDataType {
 		setSemanticSeparator(IsaToken.SPACE.toString() + isaToken().toString() + IsaToken.SPACE.toString());
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
 		assert types != null;
-		TRNode.setup(types);
-		this.types.setPrefixed(true);
         //TODO not sure whether this is needed, given the TRTypeSet passed will already have been 
         //      expanded within its TCUnionType owner? This also highlights that I will indeed need
         //      the TRDefinitionList wihtin all types, which caused trouble earlier!!!! 
-		//expand();
+		expand();
+		TRNode.setup(types);
+		this.types.setPrefixed(true);
 		types.setFormattingSeparator(getFormattingSeparator());
+		this.enumerated = figureOutEnumeratedUnion();
 		//System.out.println(toString());
+	}
+
+	private boolean figureOutEnumeratedUnion()
+	{
+		boolean result = true;
+		Iterator<TRType> titer = types.iterator();
+		while (titer.hasNext() && result)
+		{
+			TRType t = titer.next();
+			result = t instanceof TRQuoteType;
+		}
+		return result;
 	}
 
 	@Override 
@@ -87,38 +104,38 @@ public class TRUnionType extends TRType implements TRDataType {
 		return types;
 	}
 
-    // private void expand()
-	// {
-	// 	if (expanded) return;
-	// 	TRTypeSet exptypes = new TRTypeSet();
+    private void expand()
+	{
+		if (expanded) return;
+		TRTypeSet exptypes = new TRTypeSet();
 
-	// 	for (TRType t: types)
-	// 	{
-    // 		if (t instanceof TRUnionType)
-    // 		{
-    // 			TRUnionType ut = (TRUnionType)t;
-  	// 			ut.expand();
-   	// 			exptypes.addAll(ut.types);
-    // 		}
-    // 		else
-    // 		{
-    // 			exptypes.add(t);
-    // 		}
-	// 	}
+		for (TRType t: types)
+		{
+    		if (t instanceof TRUnionType)
+    		{
+    			TRUnionType ut = (TRUnionType)t;
+  				ut.expand();
+   				exptypes.addAll(ut.types);
+    		}
+    		else
+    		{
+    			exptypes.add(t);
+    		}
+		}
 
-	// 	types = exptypes;
-	// 	expanded = true;
-	// 	definitions = new TRDefinitionList();
+		types = exptypes;
+		expanded = true;
+		definitions = new TRDefinitionList();
 
-	// 	for (TRType t: types)
-	// 	{
-	// 		if (t.definitions != null)
-	// 		{
-	// 			definitions.addAll(t.definitions);
-	// 		}
-	// 	}
-	//  TRNode.setup(definitions);
-	// }
+		for (TRType t: types)
+		{
+			if (t.definitions != null)
+			{
+				definitions.addAll(t.definitions);
+			}
+		}
+		TRNode.setup(types, definitions);
+	}
 
     @Override
     public String invTranslate(String varName) {
@@ -128,14 +145,23 @@ public class TRUnionType extends TRType implements TRDataType {
 		String tname = getName();
 		if (varName != null)
 		{
-			//TODO construct a TRCasesExpression? Nah...
-			sb.append(IsaToken.CASE.toString());
-			sb.append(IsaToken.SPACE.toString());
-			sb.append(varName);
-			sb.append(IsaToken.SPACE.toString());
-			sb.append(IsaToken.OF.toString());
-			sb.append(getFormattingSeparator());
-			sb.append(types.invTranslate(varName));
+			if (enumerated)
+			{
+				assert !types.isEmpty();
+				TRType t = types.iterator().next();
+				sb.append(t.invTranslate(varName));
+			}
+			else
+			{
+				//TODO construct a TRCasesExpression? Nah...
+				sb.append(IsaToken.CASE.toString());
+				sb.append(IsaToken.SPACE.toString());
+				sb.append(varName);
+				sb.append(IsaToken.SPACE.toString());
+				sb.append(IsaToken.OF.toString());
+				sb.append(getFormattingSeparator());
+				sb.append(types.invTranslate(varName));
+			}
 		}
 		else
 		{
