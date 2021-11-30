@@ -3,12 +3,11 @@ exports all
 definitions
 
 types
-	A :: v: int;
+	A :: a: int;
 	B :: b: A;
 	C :: c: B
-	inv x == x.c.b.v > 10; 
+	inv x == x.c.b.a > 10; 
 
-/*	
 	R :: 
 		r : real
 		i : nat
@@ -34,7 +33,7 @@ types
 		r: R
 		t: R
 	inv mk_S2(r,t) == r.r > t.r; 
-
+/*
 	-- layered + multiple record contexts 
 	S3 :: 
 		r: R

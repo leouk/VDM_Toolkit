@@ -75,9 +75,20 @@ public class TRFieldExpression extends TRExpression {
 
     @Override
     public String translate() {
+        // inner fields must have record type!
+        //object instanceof TRFieldExpression => object.exptype instanceof TRRecordType!
+        assert !(object instanceof TRFieldExpression) || (object.exptype instanceof TRRecordType);
+
         // attempt to get underlying object record type name to change record field name according to TRRecordType TLD considerations 
         return IsaToken.parenthesise(
-                    IsaTemplates.isabelleRecordFieldName(object.getRecordType().getName(), field.getName()) + " " +
+                    IsaTemplates.isabelleRecordFieldName(
+                        // for nested fields, be careful: the type name of the outer fields is already 
+                        // known: must be a record type of course, so get that name. 
+                        // A::a:int; B::b:A; C::c:B inv x == x.c.b.a > 10 =isa> (a_A (b_B (c_C x))),
+                        // i.e. only chase the record type for when handling the "final" field in the chain 
+                        (object instanceof TRFieldExpression ? 
+                            object.getType().getName() : 
+                            object.getRecordType().getName()), field.getName()) + " " +
                     IsaToken.parenthesise(object.translate())
                 );
     }
