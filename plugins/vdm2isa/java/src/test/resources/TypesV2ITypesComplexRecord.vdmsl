@@ -1,0 +1,18 @@
+module TestV2ITypesComplexRecord
+exports all
+definitions
+
+types
+	R :: 
+		r : real
+		i : nat;
+	--use record pattern with dummy
+	inv mk_R(r,-) == r > 0
+	ord a < b == (a.r < b.r) or (a.r = b.r and a.i < b.i);	
+	
+	S :: 
+		r: R
+		t: R
+	inv s == s.r.r > s.t.r; 
+	
+end TestV2ITypesComplexRecord
