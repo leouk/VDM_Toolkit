@@ -16,13 +16,13 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRRecordType extends TRInvariantType
 {
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
    // private final TCNameToken name;
     private final TRFieldList fields;
     private final boolean composed; 
 
-    private final static Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
+    private static final Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
 
     private TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef, boolean copying)
     {
@@ -75,7 +75,7 @@ public class TRRecordType extends TRInvariantType
         return result;
     }
 
-    public static void reset()
+    public static final void reset()
     {
         recordMap.clear();
     }

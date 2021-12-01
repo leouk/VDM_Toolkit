@@ -33,11 +33,11 @@ import vdm2isa.messages.VDM2IsaWarning;
 
 public abstract class GeneralisaPlugin extends CommandPlugin {
 
-    private final static List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
-    private final static List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
+    private static final List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
+    private static final List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
 
     // list of VDM warning numbers to raise as errors
-    private final static List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
+    private static final List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
             5012, 5013, 5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
 
 	// target isabelle version (i.e. result of "isabelle version" call)

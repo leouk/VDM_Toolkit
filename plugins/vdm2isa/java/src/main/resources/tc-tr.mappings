@@ -269,4 +269,5 @@ unmapped com.fujitsu.vdmj.mapper.FileList;
 #############################################################################
 init vdm2isa.lex.IsaTemplates.reset();
 init vdm2isa.tr.types.TRRecordType.reset();
+init vdm2isa.tr.types.TRQuoteType.reset();
 

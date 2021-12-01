@@ -3,13 +3,9 @@ package vdm2isa.tr.types;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.fujitsu.vdmj.tc.expressions.TCQuoteLiteralExpression;
-import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCQuoteType;
 
@@ -29,6 +25,11 @@ public class TRQuoteType extends TRType
     public TRQuoteType(TCQuoteType vdmType, TRDefinitionList definitions, String value) {
         super(vdmType, definitions);
         this.value = value;
+    }
+
+    public static final void reset()
+    {
+        quoteTypeNames.clear();
     }
 
     @Override
