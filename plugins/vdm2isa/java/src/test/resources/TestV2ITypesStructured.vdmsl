@@ -6,10 +6,15 @@ exports all
 definitions
 
 types	
-	--plain structured context
+	--plain structured context with product type
 	G2 = int * int
 	inv mk_(l,r) == l < r;
 	
+	--field number projection over product type 
+	G2' = int * int
+	inv g == g.#1 < g.#2;
+	
+	/*
 	TSet = set of nat1
 	inv s       == s <> {}
 	eq  s1 = s2 == s1 subset s2
@@ -48,19 +53,5 @@ types
 	TMap2 = map TSet4 to TSeq2;
 	
 	TMap3 = map TMap2 to TMap;
-/*
-	
-	TOptional = [nat1]
-	inv o1 == o1 <> nil => o1 > 10
-	;
-
-	
-	TFcn = (nat1 -> nat1)
-	inv f == (forall x in set {1,2,3} & x > 1 => f(x) > 10)
-	;
-	
-values
-	v: TFcn = (lambda x: nat1 & (x * x) + 10)
-	;
-	*/
+*/
 end TestV2ITypesStructured

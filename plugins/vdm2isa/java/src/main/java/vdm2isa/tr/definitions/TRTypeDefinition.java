@@ -23,6 +23,7 @@ import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
+import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
@@ -59,7 +60,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	private TRDefinitionList composeDefinitions;
 
     public enum TRNamedTypeDefinitionKind {
-        UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, QUOTE, SEQ, SET, UNION, RENAMED, RENAMEDRECORD
+        UNKNOWN, RECORD, BASIC, FUNCTION, MAP, OPTIONAL, PRODUCT, QUOTE, SEQ, SET, UNION, RENAMED, RENAMEDRECORD
     }
 
     public TRTypeDefinition(
@@ -360,6 +361,8 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 result = TRNamedTypeDefinitionKind.MAP;
             else if (tnt.type instanceof TROptionalType)
                 result = TRNamedTypeDefinitionKind.OPTIONAL;
+            else if (tnt.type instanceof TRProductType)
+                result = TRNamedTypeDefinitionKind.PRODUCT;
             else if (tnt.type instanceof TRQuoteType)
                 result = TRNamedTypeDefinitionKind.QUOTE;
             else if (tnt.type instanceof TRSeqType)
@@ -422,6 +425,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 case BASIC:
                 case FUNCTION:
                 case OPTIONAL:
+                case PRODUCT: 
                 case SEQ:
                 case SET:
                 case MAP:
