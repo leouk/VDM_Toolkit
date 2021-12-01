@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.481459Z
+(* VDM to Isabelle Translation @2021-12-01T11:45:54.127823Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesUnion.vdmsl' at line 1:8
@@ -9,111 +9,99 @@ imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 7:5\<close>
-datatype TQuoteUnion =  | 
-		  | 
-		 
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 8:5\<close>
+datatype TQuoteUnion = U_A | 
+		 U_B | 
+		 U_C
 	
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 8:5\<close>
 definition
-	inv_TQuoteUnion :: "TQuoteUnion \<Rightarrow> \<bool>"
+	inv_TQuoteUnion :: "TQuoteUnion \<Rightarrow> bool"
 where
 	"inv_TQuoteUnion dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TQuoteUnion specification\<close>
-		(((case dummy0 of
-		 dummy0 \<Rightarrow> (inv_True dummy0)
-		  | dummy0 \<Rightarrow> (inv_True dummy0)
-		  | dummy0 \<Rightarrow> (inv_True dummy0)
-		 )))"
+		((((inv_True dummy0))))"
  
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 10:5\<close>
-datatype TBasicUnion = "VDMInt"
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
+datatype TBasicUnion = U_VDMInt "VDMInt"
 	
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 10:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 11:5\<close>
 definition
-	inv_TBasicUnion :: "TBasicUnion \<Rightarrow> \<bool>"
+	inv_TBasicUnion :: "TBasicUnion \<Rightarrow> bool"
 where
 	"inv_TBasicUnion dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TBasicUnion specification\<close>
 		(((case dummy0 of
-		 dummy0 \<Rightarrow> (inv_VDMInt dummy0)
+		 TBasicUnion.U_VDMInt dummy0 \<Rightarrow> (inv_VDMInt dummy0)
 		 )))"
  
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 12:5\<close>
-datatype TBasicQuoteUnion = "TBasicUnion" | 
-		 "TQuoteUnion"
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 14:5\<close>
+datatype TBasicQuoteUnion = U_TBasicUnion "TBasicUnion" | 
+		 U_TQuoteUnion "TQuoteUnion"
 	
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 14:5\<close>
 definition
-	inv_TBasicQuoteUnion :: "TBasicQuoteUnion \<Rightarrow> \<bool>"
+	inv_TBasicQuoteUnion :: "TBasicQuoteUnion \<Rightarrow> bool"
 where
 	"inv_TBasicQuoteUnion dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TBasicQuoteUnion specification\<close>
 		(((case dummy0 of
-		 dummy0 \<Rightarrow> (inv_TBasicUnion dummy0)
-		  | dummy0 \<Rightarrow> (inv_TQuoteUnion dummy0)
+		 TBasicQuoteUnion.U_TBasicUnion dummy0 \<Rightarrow> (inv_TBasicUnion dummy0)
+		  | TBasicQuoteUnion.U_TQuoteUnion dummy0 \<Rightarrow> (inv_TQuoteUnion dummy0)
 		 )))"
-
-		 
+ 
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
 definition
-	pre_f1 :: "TQuoteUnion \<Rightarrow> \<bool>"
+	pre_f1 :: "TQuoteUnion \<Rightarrow> bool"
 where
 	"pre_f1 qu \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f1 specification\<close>
 		((inv_TQuoteUnion qu))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
 definition
-	post_f1 :: "TQuoteUnion\<Rightarrow> \<bool> \<Rightarrow> \<bool>"
+	post_f1 :: "TQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_f1 qu  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f1 specification\<close>
 		((inv_TQuoteUnion qu)  \<and>  (inv_bool RESULT))"
 
 definition
-	f1 :: "TQuoteUnion \<Rightarrow> \<bool>"
+	f1 :: "TQuoteUnion \<Rightarrow> bool"
 where
 	"f1 qu \<equiv> 
 	\<comment>\<open>User defined body of f1\<close>
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
-	(case qu of
-			qu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (qu \<noteq> A)
-		  | qu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (qu \<noteq> A)
-		  | qu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (qu \<noteq> A)
-		 ))"
+	((qu \<noteq> TQuoteUnion.U_A )))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
 definition
-	pre_f2 :: "TBasicUnion \<Rightarrow> \<bool>"
+	pre_f2 :: "TBasicUnion \<Rightarrow> bool"
 where
 	"pre_f2 bu \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f2 specification\<close>
 		((inv_TBasicUnion bu))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
 definition
-	post_f2 :: "TBasicUnion\<Rightarrow> VDMInt \<Rightarrow> \<bool>"
+	post_f2 :: "TBasicUnion\<Rightarrow> VDMInt \<Rightarrow> bool"
 where
 	"post_f2 bu  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f2 specification\<close>
@@ -127,44 +115,90 @@ where
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
 	(case bu of
-			bu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+			TBasicUnion.U_VDMInt bu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
 		 bu
 		 ))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
 definition
-	pre_f2' :: "TBasicUnion \<Rightarrow> \<bool>"
+	pre_f3 :: "TBasicQuoteUnion \<Rightarrow> bool"
 where
-	"pre_f2' bu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f2' specification\<close>
-		((inv_TBasicUnion bu))"
+	"pre_f3 bqu \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f3 specification\<close>
+		((inv_TBasicQuoteUnion bqu))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
 definition
-	post_f2' :: "TBasicUnion\<Rightarrow> VDMNat option \<Rightarrow> \<bool>"
+	post_f3 :: "TBasicQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
 where
-	"post_f2' bu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f2' specification\<close>
-		((inv_TBasicUnion bu)  \<and>  (inv_Option (inv_VDMNat) RESULT))"
+	"post_f3 bqu  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f3 specification\<close>
+		((inv_TBasicQuoteUnion bqu)  \<and>  (inv_bool RESULT))"
 
 definition
-	f2' :: "TBasicUnion \<Rightarrow> VDMNat option"
+	f3 :: "TBasicQuoteUnion \<Rightarrow> bool"
 where
-	"f2' bu \<equiv> 
-	\<comment>\<open>User defined body of f2'\<close>
+	"f3 bqu \<equiv> 
+	\<comment>\<open>User defined body of f3\<close>
 	(
 	\<comment>\<open>Implicit union type parameters projection conversion\<close>
-	(case bu of
-			bu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+	(case bqu of
+			TBasicQuoteUnion.U_TBasicUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
 		 (
-		if (isTest (bu) (inv_VDMNat)) then
-		(bu)
+		if (isTest (bqu) inv_TBasicUnion) then
+		(((f2 bqu) > 10))
 		else
-		(None))
+		((f1 bqu)))
+		  | TBasicQuoteUnion.U_TQuoteUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (
+		if (isTest (bqu) inv_TBasicUnion) then
+		(((f2 bqu) > 10))
+		else
+		((f1 bqu)))
+		 ))"
+
+	
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
+definition
+	pre_f3' :: "TBasicQuoteUnion \<Rightarrow> bool"
+where
+	"pre_f3' bqu \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f3' specification\<close>
+		((inv_TBasicQuoteUnion bqu))"
+
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
+definition
+	post_f3' :: "TBasicQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
+where
+	"post_f3' bqu  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f3' specification\<close>
+		((inv_TBasicQuoteUnion bqu)  \<and>  (inv_bool RESULT))"
+
+definition
+	f3' :: "TBasicQuoteUnion \<Rightarrow> bool"
+where
+	"f3' bqu \<equiv> 
+	\<comment>\<open>User defined body of f3'\<close>
+	(
+	\<comment>\<open>Implicit union type parameters projection conversion\<close>
+	(case bqu of
+			TBasicQuoteUnion.U_TBasicUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (
+		 \<comment>\<open>`cases true` expressions are translated as an and-chain of implications or others\<close>
+		 ((isTest (bqu) inv_TBasicUnion) \<longrightarrow> ((f2 bqu) > 10)) \<and> 
+			 ((isTest (bqu) inv_TQuoteUnion) \<longrightarrow> (f1 bqu)))
+		  | TBasicQuoteUnion.U_TQuoteUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
+		 (
+		 \<comment>\<open>`cases true` expressions are translated as an and-chain of implications or others\<close>
+		 ((isTest (bqu) inv_TBasicUnion) \<longrightarrow> ((f2 bqu) > 10)) \<and> 
+			 ((isTest (bqu) inv_TQuoteUnion) \<longrightarrow> (f1 bqu)))
 		 ))"
 
 end

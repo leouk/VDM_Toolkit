@@ -11,4 +11,5 @@ import vdm2isa.tr.MappableNode;
  */
 public interface TRDataType extends MappableNode {
     public TRTypeSet getDataTypeConstructors();
+    public boolean isEnumerated();
 }

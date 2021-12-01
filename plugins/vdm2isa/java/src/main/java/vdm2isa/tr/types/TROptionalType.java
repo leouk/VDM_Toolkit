@@ -112,4 +112,10 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     public TRTypeSet getDataTypeConstructors() {
         return dataTypeConstructors; 
     }
+
+    @Override
+    public boolean isEnumerated()
+    {
+        return false;//dataTypeConstructors.isEnumerated();
+    }
 }

@@ -99,9 +99,16 @@ public class TRUnionType extends TRType implements TRDataType {
         return result;
     }
 
+	@Override
 	public TRTypeSet getDataTypeConstructors()
 	{
 		return types;
+	}
+
+	@Override
+	public boolean isEnumerated()
+	{
+		return this.enumerated;
 	}
 
     private void expand()
@@ -137,7 +144,29 @@ public class TRUnionType extends TRType implements TRDataType {
 		TRNode.setup(types, definitions);
 	}
 
+	public boolean isDataType()
+	{
+		return true;
+	}
+
     @Override
+    public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg) {
+        return visitor.caseUnionType(this, arg);
+    }
+
+    @Override
+    public IsaToken isaToken() {
+        return IsaToken.BAR; 
+    }
+
+    @Override
+    public String translate() {
+        StringBuilder sb = new StringBuilder();
+		sb.append(types.translate());
+		return sb.toString();
+    }
+
+	@Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
 		// at this stage, the type union name must be known, given it's already been declared. 
@@ -145,6 +174,7 @@ public class TRUnionType extends TRType implements TRDataType {
 		String tname = getName();
 		if (varName != null)
 		{
+			// enum types it's just inv_True
 			if (enumerated)
 			{
 				assert !types.isEmpty();
@@ -170,28 +200,6 @@ public class TRUnionType extends TRType implements TRDataType {
 			report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, tname.isEmpty() ? "inner types" : tname);
 		}
 		return IsaToken.parenthesise(sb.toString());		
-    }
-
-	public boolean isDataType()
-	{
-		return true;
-	}
-
-    @Override
-    public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg) {
-        return visitor.caseUnionType(this, arg);
-    }
-
-    @Override
-    public IsaToken isaToken() {
-        return IsaToken.BAR; 
-    }
-
-    @Override
-    public String translate() {
-        StringBuilder sb = new StringBuilder();
-		sb.append(types.translate());
-		return sb.toString();
     }
 
 	@Override

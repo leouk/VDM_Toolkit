@@ -119,13 +119,20 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         if (hasUnionTypes())
         {
             TRDataType dtype = (TRDataType)type.ultimateType();
-			sb.append(IsaToken.CASE.toString());
-			sb.append(IsaToken.SPACE.toString());
-			sb.append(this.name.toString());
-			sb.append(IsaToken.SPACE.toString());
-			sb.append(IsaToken.OF.toString());
-			sb.append(getFormattingSeparator());
-			sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body, innerContext));
+            if (dtype.isEnumerated())
+            {
+                sb.append(body.translate());
+            }
+            else
+            {
+                sb.append(IsaToken.CASE.toString());
+                sb.append(IsaToken.SPACE.toString());
+                sb.append(this.name.toString());
+                sb.append(IsaToken.SPACE.toString());
+                sb.append(IsaToken.OF.toString());
+                sb.append(getFormattingSeparator());
+                sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body, innerContext));
+            }
         }
         return IsaToken.parenthesise(sb.toString());
 	}

@@ -4,11 +4,13 @@ definitions
 
 types
 
+	--quotes *must* be part of a union (and not dangling) we need their unique names on literals
 	TQuoteUnion = <A> | <B> | <C>;
 	
-	--@NB VDM merges these two? i.e. widens to largest possible types?
+	--other unions are okay
 	TBasicUnion = nat | int;
-
+	
+	--you can mix unions
 	TBasicQuoteUnion = TBasicUnion | TQuoteUnion; 
 	
 functions
@@ -18,10 +20,6 @@ functions
 
 	f2: TBasicUnion -> int
 	f2(bu) == bu;
-	
-	f2': TBasicUnion -> [nat]
-	f2'(bu) == if is_nat(bu) then bu else nil;
-	
-
+		
 end TestV2ITypesUnion
 

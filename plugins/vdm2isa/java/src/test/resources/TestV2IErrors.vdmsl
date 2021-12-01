@@ -20,11 +20,16 @@ types
 	TInnerUnion = nat | real;
 	TInnerUnion' = set of TInnerUnion;
 	
+	
 functions
 	-- multiple type binds in seq comp
 	--Error   [ISA   ] 10210: Type bound sequence compression is not supported in Isabelle.
 	vc33: () -> seq of nat
 	vc33() == [ x | x : nat & x > 10];
+	
+	--same is true of quote unions
+	f1: int -> bool | <ERROR> 
+	f1(x) == if x > 10 then <ERROR> else false;	
 
 values
 	v65: R = mk_R(1, 2);				
@@ -33,7 +38,7 @@ values
 	-- v65 might not be "orderable"; user has to convince isabelle that v65.x is orderable, hence the warning by plugin; but error in Isabelle.  
 	--Warning [ISA   ] 11205: Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder. 
 	v830=[ x | mk_R(x,-) in set {v65} & 0 < x ]; 
-		
+	
 
 
 end TestV2IErrors
