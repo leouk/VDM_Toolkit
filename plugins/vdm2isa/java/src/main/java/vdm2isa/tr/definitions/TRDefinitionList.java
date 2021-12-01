@@ -14,9 +14,10 @@ import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
+import vdm2isa.tr.patterns.TRRecordContext;
 import vdm2isa.tr.patterns.TRUnionContext;
 
-public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> implements TRUnionContext
+public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> implements TRRecordContext, TRUnionContext
 {
 	private static final long serialVersionUID = 1L;
 
@@ -71,17 +72,15 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		return result;
 	}
 
-	protected String recordPatternTranslate(int i)
+	protected static String recordPatternTranslate(TRDefinition def)
 	{
-		assert i >= 0 && i < size();
-		TRDefinition def = get(i);
 		StringBuilder sb = new StringBuilder();
 		if (def instanceof TRValueDefinition)
 		{
 			TRValueDefinition vdef = (TRValueDefinition)def;
 			if (vdef.getPattern() != null)
 			{
-				sb.append(vdef.getPattern().getPatternList().recordPatternTranslate());
+				sb.append(vdef.getPattern().getPatternList().recordPatternTranslate(null));
 			}
 		}
 		else if (def instanceof TREqualsDefinition)
@@ -89,7 +88,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			TREqualsDefinition eqdef = (TREqualsDefinition)def;
 			if (eqdef.getPattern() != null)
 			{
-				sb.append(eqdef.getPattern().getPatternList().recordPatternTranslate());
+				sb.append(eqdef.getPattern().getPatternList().recordPatternTranslate(null));
 			}
 		}
 		else if (def instanceof TRMultiBindListDefinition)
@@ -99,19 +98,47 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			{
 				for(TRMultipleBind b : bdef.getBindings())
 				{
-					sb.append(b.plist.recordPatternTranslate());
+					sb.append(b.plist.recordPatternTranslate(null));
 				}
+			}
+		}
+		else if (def instanceof TRQualifiedDefinition)
+		{
+			TRQualifiedDefinition qdef = (TRQualifiedDefinition)def;
+			if (qdef.def != null)
+			{
+				sb.append(recordPatternTranslate(def));
 			}
 		}
 		//TODO add anyone else with patterns to this
 		return sb.toString();
 	}
 
+	protected String recordPatternTranslate(int i)
+	{
+		assert i >= 0 && i < size();
+		return TRDefinitionList.recordPatternTranslate(get(i));
+	}
+
+	@Override 
+	public boolean hasRecordPattern()
+	{
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			// if found some... 
+			//TODO perhaps refactor his a bit .
+			result = !TRDefinitionList.recordPatternTranslate(get(i)).isEmpty();
+		}
+		return result;
+	}
+
 	/**
 	 * Introduce any local context for record patterns in any involved binds/patterns. 
 	 * @return
 	 */
-	public String recordPatternTranslate()
+	@Override
+	public String recordPatternTranslate(String varName)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
