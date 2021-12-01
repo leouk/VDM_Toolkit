@@ -20,7 +20,7 @@ import vdm2isa.tr.TRNode;
  * yet it can have multiple list entries for curried calls (e.g., f(x,y)(z) = TRPatternListList[TRPatternList[x,y],TRPatternList[z]]).
  * Isabelle is mostly always curried, hence flattening of such lists is the norm, yet when needed might keep the structure.  
  */
-public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList> implements TRRecordContext, TRStructuredContext/*, TRUnionContext*/
+public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList> implements TRPatternContext, TRStructuredContext/*, TRUnionContext*/
 {
 	private static final long serialVersionUID = 1L;
 
@@ -47,25 +47,25 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	}
 
 	@Override
-	public boolean hasRecordPattern()
+	public boolean needsPatternContext()
 	{
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
 		{
-			result = get(i).hasRecordPattern();
+			result = get(i).needsPatternContext();
 		}
 		return result;
 	}
 
 	@Override
-	public String recordPatternTranslate(String varName)
+	public String patternContextTranslate(String varName)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
 			// set the let separator
 			String old = setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
-			String recTranslate = get(0).recordPatternTranslate(varName); 
+			String recTranslate = get(0).patternContextTranslate(varName); 
 			sb.append(recTranslate);
 			for (int i = 1; i < size(); i++)
 			{
@@ -74,7 +74,7 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 					sb.append(getSemanticSeparator());
 					sb.append(getFormattingSeparator());
 				}
-				recTranslate = get(i).recordPatternTranslate(varName);
+				recTranslate = get(i).patternContextTranslate(varName);
 				sb.append(recTranslate);
 			}
 			setSemanticSeparator(old);

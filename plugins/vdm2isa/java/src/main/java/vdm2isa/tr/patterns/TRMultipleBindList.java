@@ -28,7 +28,7 @@ import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRUnknownType;
 
-public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext, TRStructuredContext
+public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRPatternContext, TRStructuredContext
 {
     private static final long serialVersionUID = 1L;
 
@@ -160,21 +160,21 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
     }
 
 	@Override
-	public boolean hasRecordPattern() {
+	public boolean needsPatternContext() {
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
 		{
-			result = get(i).hasRecordPattern();
+			result = get(i).needsPatternContext();
 		}
 		return result;
 	}
 
 	@Override
-    public String recordPatternTranslate(String varName) {
+    public String patternContextTranslate(String varName) {
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			String recTranslate = get(0).recordPatternTranslate(varName);
+			String recTranslate = get(0).patternContextTranslate(varName);
 			sb.append(recTranslate);
 			for(int i = 1; i < size(); i++)
 			{
@@ -184,7 +184,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 					//sb.append(getSemanticSeparator());
 					sb.append(getFormattingSeparator());					
 				}
-				recTranslate = get(i).recordPatternTranslate(varName);
+				recTranslate = get(i).patternContextTranslate(varName);
 				sb.append(recTranslate);
 			}
 		}

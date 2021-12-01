@@ -126,7 +126,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         String old = paramPatterns.setFormattingSeparator(getFormattingSeparator());
         String old2 = paramPatterns.setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());        
         //TODO don't these recordPattern context needs parenthesis? 
-        sb.append(paramPatterns.recordPatternTranslate(null));
+        sb.append(paramPatterns.patternContextTranslate(null));
         sb.append(getFormattingSeparator() + "\t");
         sb.append(invTranslate());
         paramPatterns.setFormattingSeparator(old);

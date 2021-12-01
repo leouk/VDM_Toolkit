@@ -31,11 +31,11 @@ public abstract class TRAbstractContextualPattern extends TRPattern {
         }
         else
         {
-            if (hasRecordPattern() || hasStructuredPattern())
+            if (needsPatternContext() || hasStructuredPattern())
             {
                 setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
             }
-            if (plist.hasRecordPattern() || plist.hasStructuredPattern())
+            if (plist.needsPatternContext() || plist.hasStructuredPattern())
             {
                 plist.setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
             }
@@ -99,7 +99,7 @@ public abstract class TRAbstractContextualPattern extends TRPattern {
             // for record pattern "recurse" on the outer patternName just created as the new dummy, taking into account semantic separator!
             TRRecordPattern rp = (TRRecordPattern)p;
             sb.append(rp.getSemanticSeparator());
-            sb.append(rp.recordPatternTranslate(patternName));
+            sb.append(rp.patternContextTranslate(patternName));
             //sb.append(rp.indexedPatternTranslate(index, patternName));
         }
         else if (TRStructuredPattern.validStructuredContext(p))

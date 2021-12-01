@@ -7,7 +7,7 @@ import vdm2isa.tr.MappableNode;
  * have this within their implemented interface to enable TRExpression to have a single record-context aware
  * method with whichever implementer of this interface as a parameter for the context.  
  */
-public interface TRRecordContext extends MappableNode {
-    public boolean hasRecordPattern();
-    public String recordPatternTranslate(String varName);
+public interface TRPatternContext extends MappableNode {
+    public boolean needsPatternContext();
+    public String patternContextTranslate(String varName);
 }

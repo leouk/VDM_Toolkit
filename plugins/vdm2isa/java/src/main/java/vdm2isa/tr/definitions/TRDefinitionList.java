@@ -14,10 +14,10 @@ import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
-import vdm2isa.tr.patterns.TRRecordContext;
+import vdm2isa.tr.patterns.TRPatternContext;
 import vdm2isa.tr.patterns.TRUnionContext;
 
-public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> implements TRRecordContext, TRUnionContext
+public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> implements TRPatternContext, TRUnionContext
 {
 	private static final long serialVersionUID = 1L;
 
@@ -80,7 +80,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			TRValueDefinition vdef = (TRValueDefinition)def;
 			if (vdef.getPattern() != null)
 			{
-				sb.append(vdef.getPattern().getPatternList().recordPatternTranslate(null));
+				sb.append(vdef.getPattern().getPatternList().patternContextTranslate(null));
 			}
 		}
 		else if (def instanceof TREqualsDefinition)
@@ -88,7 +88,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			TREqualsDefinition eqdef = (TREqualsDefinition)def;
 			if (eqdef.getPattern() != null)
 			{
-				sb.append(eqdef.getPattern().getPatternList().recordPatternTranslate(null));
+				sb.append(eqdef.getPattern().getPatternList().patternContextTranslate(null));
 			}
 		}
 		else if (def instanceof TRMultiBindListDefinition)
@@ -98,7 +98,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			{
 				for(TRMultipleBind b : bdef.getBindings())
 				{
-					sb.append(b.plist.recordPatternTranslate(null));
+					sb.append(b.plist.patternContextTranslate(null));
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 	}
 
 	@Override 
-	public boolean hasRecordPattern()
+	public boolean needsPatternContext()
 	{
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
@@ -138,7 +138,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 	 * @return
 	 */
 	@Override
-	public String recordPatternTranslate(String varName)
+	public String patternContextTranslate(String varName)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())

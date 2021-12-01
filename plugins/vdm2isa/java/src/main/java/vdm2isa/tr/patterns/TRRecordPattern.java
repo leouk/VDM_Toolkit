@@ -101,7 +101,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
     }
  
     @Override 
-    public boolean hasRecordPattern()
+    public boolean needsPatternContext()
     {
         return true;
     }
@@ -113,7 +113,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
      * @return
      */
     @Override
-    public String recordPatternTranslate(String varName)
+    public String patternContextTranslate(String varName)
     {
         StringBuilder sb = new StringBuilder();
         String dummyName = varName == null ? translate() : varName;
