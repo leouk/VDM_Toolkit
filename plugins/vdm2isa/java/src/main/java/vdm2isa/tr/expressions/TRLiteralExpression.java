@@ -23,6 +23,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TROptionalType;
+import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRType;
 
 public class TRLiteralExpression extends TRExpression
@@ -104,12 +105,14 @@ public class TRLiteralExpression extends TRExpression
 	@Override
 	public String translate()
 	{
+		TRType t = getType();
 		// no casting needed for real, string, quote literals
 		// avoid casting altogether to avoid confusion like s: set of real = {1,2,3} getting {1::VDMInt,...} but then have isabelle convert between int=>real!
 		String typeStr = TYPED_LITERALS.contains(token) ? IsaToken.TYPEOF.toString() + isaToken().toString() : "";
 		// actually will never be optional for the literal, but variables? 
-		return getType() instanceof TROptionalType ?
+		return t instanceof TROptionalType ?
 			IsaToken.parenthesise(IsaToken.OPTIONAL_SOME.toString() + IsaToken.parenthesise(exp + typeStr)) : 
+			t instanceof TRQuoteType ? TRQuoteType.quoteLiteral(exp, (TRQuoteType)t) : 
 			exp;//IsaToken.parenthesise(exp + typeStr);
 	}
 

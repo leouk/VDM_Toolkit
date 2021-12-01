@@ -31,6 +31,10 @@ functions
 	f1: int -> bool | <ERROR> 
 	f1(x) == if x > 10 then <ERROR> else false;	
 
+	--even for single value quote! 
+	f1': int -> <ERROR>
+	f1'(x) == <ERROR>;
+
 values
 	v65: R = mk_R(1, 2);				
 	
@@ -38,6 +42,7 @@ values
 	-- v65 might not be "orderable"; user has to convince isabelle that v65.x is orderable, hence the warning by plugin; but error in Isabelle.  
 	--Warning [ISA   ] 11205: Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder. 
 	v830=[ x | mk_R(x,-) in set {v65} & 0 < x ]; 
+	
 	
 
 

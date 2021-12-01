@@ -325,12 +325,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
 	}
 
-	public static String prefixTranslate(TRType t, boolean prefixed, String namePrefix)
+	public static String prefixTranslate(String typeStr, boolean prefixed, String namePrefix)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (prefixed)
 		{
-			String typeStr = t.translate().trim();
 			// create the constant constructors for the Isabelle data type as
 			// U_T for every type T in the union, where spaces are replaced by underscores in T
 			// ex.  Union = nat | set of int | seq of real 
@@ -366,7 +365,9 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	protected String prefixTranslate(TRType t)
 	{
 		assert this.contains(t);
-		return TRTypeSet.prefixTranslate(t, prefixed, getName());
+		return t instanceof TRQuoteType ? 
+			t.translate().trim() : 
+			TRTypeSet.prefixTranslate(t.translate().trim(), prefixed, getName());
 	}
 
 	protected String typeTranslate(TRType t)
