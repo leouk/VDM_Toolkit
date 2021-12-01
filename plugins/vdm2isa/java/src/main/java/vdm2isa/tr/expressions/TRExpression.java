@@ -180,11 +180,11 @@ public abstract class TRExpression extends TRNode
     public String recordPatternTranslate(TRRecordContext context)
     {
         StringBuilder sb = new StringBuilder();
-        boolean hasRecPattern = context != null && context.hasRecordPatterns();
+        boolean hasRecPattern = context != null && context.hasRecordPattern();
         if (hasRecPattern)
         {
             sb.append(IsaToken.LPAREN.toString());
-            sb.append(context.recordPatternTranslate());
+            sb.append(context.recordPatternTranslate(null));
         }
         // could have a "context.hasRecordPatterns() ? IsaToken.parenthesise(context.recordPatternTranslate() + expr.translate()) : expr.translate()"
         // but kept it explicitly for clarity. 
