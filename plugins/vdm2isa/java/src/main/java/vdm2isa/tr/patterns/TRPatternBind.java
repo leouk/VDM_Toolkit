@@ -37,14 +37,14 @@ public class TRPatternBind extends TRPattern {
     public String toString()
     {
         return super.toString() + 
-            "\n\t pattern = " + getPattern() + //(pattern != null ? pattern.translate() : "null") +
+            "\n\t pattern = " + patternTranslate() + //(pattern != null ? pattern.translate() : "null") +
             "\n\t bind    = " + String.valueOf(bind); // (bind != null ? bind.translate() : "null");
     }
 
     @Override
-    public String getPattern()
+    public String patternTranslate()
     {
-        return pattern.getPattern();
+        return pattern.patternTranslate();
     }
 
     @Override

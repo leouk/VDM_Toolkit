@@ -124,7 +124,7 @@ public class TRBasicPattern extends TRPattern {
     }
 
     @Override
-    public String getPattern()
+    public String patternTranslate()
     {
         return String.valueOf(pattern);
     }

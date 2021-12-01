@@ -204,7 +204,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         for(TRPattern p : this.plist)
         {
             LexLocation loc = p.getLocation();
-            TCNameToken name = new TCNameToken(loc, loc.module, p.getPattern());
+            TCNameToken name = new TCNameToken(loc, loc.module, p.patternTranslate());
             TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
             result.add(localdef);
         }

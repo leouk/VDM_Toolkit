@@ -35,7 +35,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
     }
 
     @Override 
-    public String getPattern()
+    public String patternTranslate()
     {
         return typeAware(IsaToken.bracketit(IsaToken.LRECORD, String.valueOf(plist), IsaToken.RRECORD));
     }

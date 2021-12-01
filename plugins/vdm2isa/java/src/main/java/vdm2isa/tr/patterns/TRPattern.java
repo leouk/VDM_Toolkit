@@ -45,7 +45,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
     @Override
     public String toString()
     {
-        return super.toString() + " = " + getPattern(); // + translate();
+        return super.toString() + " = " + patternTranslate(); // + translate();
     }
 
     /**
@@ -76,23 +76,23 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
      */
     protected void checkValidIsaIdentifier()
     {
-        if (isaToken().equals(IsaToken.IDENTIFIER) && !IsaToken.validIsaIdentifier(getPattern()))
-            report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, getPattern());   
+        if (isaToken().equals(IsaToken.IDENTIFIER) && !IsaToken.validIsaIdentifier(patternTranslate()))
+            report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, patternTranslate());   
     }
 
-    public abstract String getPattern();
+    public abstract String patternTranslate();
 
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
 
     @Override
     public String translate()
     {
-        return typeAware(getPattern());
+        return typeAware(patternTranslate());
     }
 
     protected String indexedPatternTranslate(int index, String dummyName)
     {
-        report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_3P, getPattern(), index, getClass().getSimpleName());
+        report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_3P, patternTranslate(), index, getClass().getSimpleName());
         return "";
     }
 

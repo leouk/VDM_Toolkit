@@ -103,6 +103,8 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
     public void setup()
     {
         super.setup();
+        String old = plist.getSemanticSeparator();
+        plist.setSemanticSeparator(IsaToken.COMMA.toString() + IsaToken.SPACE.toString());
         switch (isaToken())
         {
             case SET:
@@ -151,6 +153,7 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
                 pattern = "null";
                 break;
         }
+        plist.setSemanticSeparator(old);
         assert pattern != null;
     }
 
@@ -166,9 +169,28 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
     }
 
     @Override
-    public String getPattern()
+    public String patternTranslate()
     {
-        return String.valueOf(pattern);
+        String result; 
+        switch (isaToken())
+        {
+            case SET:
+            case SEQ: 
+            case CONCATENATE: 
+            case MAPLET:
+            case UNION:
+            case MUNION: 
+            case MAP:
+            case LPAREN: 
+                result = pattern;
+                break;
+            case CROSSPROD: 
+                result = IsaToken.dummyVarNames(1, location);
+                break;
+            default:
+                result = null;
+        }
+        return result;
     }
 
     //TODO 
