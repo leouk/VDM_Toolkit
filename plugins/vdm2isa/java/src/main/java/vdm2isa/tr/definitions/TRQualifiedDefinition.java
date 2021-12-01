@@ -16,7 +16,7 @@ public class TRQualifiedDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
 
     private final TRType type;
-    private final TRDefinition def;
+    protected final TRDefinition def;
 
     public TRQualifiedDefinition(TCQualifiedDefinition definition, LexLocation location, TRIsaVDMCommentList comments,
         TCAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, 

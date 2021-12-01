@@ -729,7 +729,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// but only if there is user body, given the implicit checks rely on TRecordType's own structuring. 
 			// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
 			//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
-			boolean hasRecPattern = paramPatternList.hasRecordPatterns();
+			boolean hasRecPattern = paramPatternList.hasRecordPattern();
 			String fmtsep;
 			if (hasRecPattern)
 			{
@@ -737,7 +737,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
 				fmtsep = paramPatternList.setFormattingSeparator("\n\t\t\t");
 				fcnBody.append(IsaToken.LPAREN.toString());
-				fcnBody.append(paramPatternList.recordPatternTranslate());
+				fcnBody.append(paramPatternList.recordPatternTranslate(null));
 				paramPatternList.setFormattingSeparator(fmtsep);
 			}
 			// include the user declared body after including implicit considerations

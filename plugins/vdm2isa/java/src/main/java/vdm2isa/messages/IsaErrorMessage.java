@@ -60,8 +60,8 @@ public enum IsaErrorMessage {
     "Unsupported VDM SL token %1$s"),
     ISA_DUMMYNAME_ERROR_1P  (VDM2IsaError.ISABELLE_E_ISA_BASE + 3,
     "Dummy var names call must be strictly positive; count = %1$s"),
-    ISA_VDM_EMPTYRECORD_PATTERN_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 4,    
-    "Isabelle does not allow empty patterns for VDM record pattern for record type %1$s"),
+    ISA_VDM_DISALLOWED_PATTERN_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 4,    
+    "Isabelle does not allow empty patterns for %1$s"),
     ISA_INVALID_INVTR_2P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 5, 
     "Node %1$s `%2$s` does not support VDM invariant translation to Isabelle."),
     ISA_INVALID_IMPLSPEC_2P (VDM2IsaError.ISABELLE_E_ISA_BASE + 6, 
@@ -100,6 +100,8 @@ public enum IsaErrorMessage {
     "Cannot rename `%1$s` into `%2$s`; it is already a named typed"),
     ISA_INVALID_MODULE_NAME_2P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 23, 
     "Module `%1$s` must be saved in a file with the same name. \n\tFiles = %2$s"),
+    ISA_INVALID_PATTERN_TRANSLATE_3P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 24,
+    "Cannot contextully translate pattern %1$s (index=%2$s) for %3$s."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

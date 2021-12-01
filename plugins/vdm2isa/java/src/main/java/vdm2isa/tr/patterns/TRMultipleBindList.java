@@ -28,7 +28,7 @@ import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRUnknownType;
 
-public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext
+public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRRecordContext, TRStructuredContext
 {
     private static final long serialVersionUID = 1L;
 
@@ -160,21 +160,21 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
     }
 
 	@Override
-	public boolean hasRecordPatterns() {
+	public boolean hasRecordPattern() {
 		boolean result = false;
 		for(int i = 0; i < size() && !result; i++)
 		{
-			result = get(i).hasRecordPatterns();
+			result = get(i).hasRecordPattern();
 		}
 		return result;
 	}
 
 	@Override
-    public String recordPatternTranslate() {
+    public String recordPatternTranslate(String varName) {
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			String recTranslate = get(0).recordPatternTranslate();
+			String recTranslate = get(0).recordPatternTranslate(varName);
 			sb.append(recTranslate);
 			for(int i = 1; i < size(); i++)
 			{
@@ -184,8 +184,40 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 					//sb.append(getSemanticSeparator());
 					sb.append(getFormattingSeparator());					
 				}
-				recTranslate = get(i).recordPatternTranslate();
+				recTranslate = get(i).recordPatternTranslate(varName);
 				sb.append(recTranslate);
+			}
+		}
+		return sb.toString();
+    }
+
+	@Override
+	public boolean hasStructuredPattern() {
+		boolean result = false;
+		for(int i = 0; i < size() && !result; i++)
+		{
+			result = get(i).hasStructuredPattern();
+		}
+		return result;
+	}
+
+	@Override
+    public String structuredPatternTranslate(String varName) {
+		StringBuilder sb = new StringBuilder();
+		if (!isEmpty())
+		{
+			String structuredTranslate = get(0).structuredPatternTranslate(varName);
+			sb.append(structuredTranslate);
+			for(int i = 1; i < size(); i++)
+			{
+				if (!structuredTranslate.isEmpty())
+				{
+					// no need for semantic separator since the PatternList keeps all the context in control up to "in" part
+					//sb.append(getSemanticSeparator());
+					sb.append(getFormattingSeparator());					
+				}
+				structuredTranslate = get(i).structuredPatternTranslate(varName);
+				sb.append(structuredTranslate);
 			}
 		}
 		return sb.toString();

@@ -13,7 +13,7 @@ import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.TRType;
 
-public abstract class TRMultipleBind extends TRNode implements TRRecordContext
+public abstract class TRMultipleBind extends TRNode implements TRRecordContext, TRStructuredContext
 {
     private static final long serialVersionUID = 1L;
 
@@ -176,14 +176,25 @@ public abstract class TRMultipleBind extends TRNode implements TRRecordContext
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 
     @Override
-    public boolean hasRecordPatterns() {
-        return plist.hasRecordPatterns();
+    public boolean hasRecordPattern() {
+        return plist.hasRecordPattern();
     }
 
     @Override
-    public String recordPatternTranslate()
+    public String recordPatternTranslate(String varName)
     {
-        return plist.recordPatternTranslate();
+        return plist.recordPatternTranslate(varName);
+    }
+
+    @Override
+    public boolean hasStructuredPattern() {
+        return plist.hasStructuredPattern();
+    }
+
+    @Override
+    public String structuredPatternTranslate(String varName)
+    {
+        return plist.structuredPatternTranslate(varName);
     }
 
     public TRTypeBindList getTypeBindList()

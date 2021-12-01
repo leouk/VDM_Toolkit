@@ -73,7 +73,7 @@ public class TRFieldNumberExpression extends TRExpression {
     @Override
     public String translate() {
         assert field.value > 0 && field.value <= getProductType().types.size();
-        // field value is adjiusted to the tuple 0-based index (i.e. f.#n = n'th - 1 index within types)
+        // field value is adjusted to the tuple 0-based index (i.e. f.#n = n'th - 1 index within types)
         return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
             IsaToken.parenthesise(tuple.translate()));
     }
