@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T14:51:56.664341Z
+(* VDM to Isabelle Translation @2021-12-01T12:15:39.233940Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesComplexRecord.vdmsl' at line 1:8
@@ -76,12 +76,32 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_D specification\<close>
 		( ((inv_C (d\<^sub>D dummy0)) ))  \<and> 
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
-		(let dummy00 = d\<^sub>D dummy0; 
-         dummy01 = c\<^sub>C dummy00; 
-         dummy02 = b\<^sub>B dummy01;
-         a       = a\<^sub>A dummy02 in 
+		(let dummy00 = (dummy00 = (dummy00 = (a = (a\<^sub>A dummy0)\<^sub>B dummy0)\<^sub>C dummy0)\<^sub>D dummy0) in 
 		\<comment>\<open>User defined body of inv_D\<close>
 		(a > 10))"
+
+		
+
+	
+\<comment>\<open>in 'TestV2ITypesComplexRecord' (./src/test/resources/TestV2ITypesComplexRecord.vdmsl) at line 21:5\<close>
+record G = 
+	g\<^sub>G :: "(VDMInt\<times> VDMInt)"
+	
+
+\<comment>\<open>in 'TestV2ITypesComplexRecord' (./src/test/resources/TestV2ITypesComplexRecord.vdmsl) at line 22:9\<close>
+definition
+	inv_G :: "G \<Rightarrow> bool"
+where
+	"inv_G dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_G specification\<close>
+		( ((
+		((inv_VDMInt (fst (g\<^sub>G dummy0)))\<and>
+		 (inv_VDMInt (snd (g\<^sub>G dummy0)))
+		)) ))  \<and> 
+		\<comment>\<open>Implicit record pattern projection conversion\<close>
+		(let dummy00 = (g\<^sub>G dummy0); l = (fst dummy00); r = (snd dummy00)  in 
+		\<comment>\<open>User defined body of inv_G\<close>
+		(l < r))"
 
 		
 

@@ -20,7 +20,13 @@ types
 	TInnerUnion = nat | real;
 	TInnerUnion' = set of TInnerUnion;
 	
-	
+	-- only tuple or concatenation allowed within structured patterns within record patterns 
+	E :: e: set of int
+	inv mk_E({i,j,k}) == i < j and j < k;
+
+	F :: f: seq of int
+	inv mk_F(s^t) == len s < len t;
+
 functions
 	-- multiple type binds in seq comp
 	--Error   [ISA   ] 10210: Type bound sequence compression is not supported in Isabelle.
@@ -33,7 +39,7 @@ functions
 
 	--even for single value quote! 
 	f1': int -> <ERROR>
-	f1'(x) == <ERROR>;
+	f1'(-) == <ERROR>;
 
 values
 	v65: R = mk_R(1, 2);				

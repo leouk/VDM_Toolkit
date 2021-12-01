@@ -15,6 +15,11 @@ types
 	-- layered record patterns without field expression projection 
 	D :: d: C
 	inv mk_D(mk_C(mk_B(mk_A(a)))) == a > 10;
+
+	--E = set pattern; F = seq concat pattern etc.
+		
+	G :: g: int * int
+	inv mk_G(mk_(l,r)) == l < r;
 	
 /*
 
