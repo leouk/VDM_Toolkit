@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.469906Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.242596Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -17,7 +17,7 @@ record R =
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 10:9\<close>
 definition
-	inv_R :: "R \<Rightarrow> \<bool>"
+	inv_R :: "R \<Rightarrow> bool"
 where
 	"inv_R r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
@@ -32,7 +32,7 @@ where
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
-	"t9 \<equiv> {1, 2, 3}"
+	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
 
 	definition
 	inv_t9 :: "\<bool>"
@@ -44,7 +44,7 @@ where
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>"
+	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
 
 	definition
 	inv_v65 :: "\<bool>"
@@ -129,14 +129,14 @@ where
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
 definition
-	pre_v96 :: "\<bool>"
+	pre_v96 :: "bool"
 where
 	"pre_v96  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
 definition
-	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> bool"
 where
 	"post_v96 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v96 specification\<close>
@@ -154,14 +154,14 @@ where
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 27:5\<close>
 definition
-	pre_v961 :: "\<bool>"
+	pre_v961 :: "bool"
 where
 	"pre_v961  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 27:5\<close>
 definition
-	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>"
+	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> bool"
 where
 	"post_v961 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v961 specification\<close>

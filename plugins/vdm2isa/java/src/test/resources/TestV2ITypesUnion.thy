@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-01T11:45:54.127823Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.274454Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesUnion.vdmsl' at line 1:8
@@ -56,7 +56,8 @@ where
 		 TBasicQuoteUnion.U_TBasicUnion dummy0 \<Rightarrow> (inv_TBasicUnion dummy0)
 		  | TBasicQuoteUnion.U_TQuoteUnion dummy0 \<Rightarrow> (inv_TQuoteUnion dummy0)
 		 )))"
- 
+
+		 
 
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
@@ -117,88 +118,6 @@ where
 	(case bu of
 			TBasicUnion.U_VDMInt bu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
 		 bu
-		 ))"
-
-	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
-
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
-definition
-	pre_f3 :: "TBasicQuoteUnion \<Rightarrow> bool"
-where
-	"pre_f3 bqu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f3 specification\<close>
-		((inv_TBasicQuoteUnion bqu))"
-
-
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 27:5\<close>
-definition
-	post_f3 :: "TBasicQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
-where
-	"post_f3 bqu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f3 specification\<close>
-		((inv_TBasicQuoteUnion bqu)  \<and>  (inv_bool RESULT))"
-
-definition
-	f3 :: "TBasicQuoteUnion \<Rightarrow> bool"
-where
-	"f3 bqu \<equiv> 
-	\<comment>\<open>User defined body of f3\<close>
-	(
-	\<comment>\<open>Implicit union type parameters projection conversion\<close>
-	(case bqu of
-			TBasicQuoteUnion.U_TBasicUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (
-		if (isTest (bqu) inv_TBasicUnion) then
-		(((f2 bqu) > 10))
-		else
-		((f1 bqu)))
-		  | TBasicQuoteUnion.U_TQuoteUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (
-		if (isTest (bqu) inv_TBasicUnion) then
-		(((f2 bqu) > 10))
-		else
-		((f1 bqu)))
-		 ))"
-
-	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
-
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
-definition
-	pre_f3' :: "TBasicQuoteUnion \<Rightarrow> bool"
-where
-	"pre_f3' bqu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_f3' specification\<close>
-		((inv_TBasicQuoteUnion bqu))"
-
-
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 30:5\<close>
-definition
-	post_f3' :: "TBasicQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
-where
-	"post_f3' bqu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f3' specification\<close>
-		((inv_TBasicQuoteUnion bqu)  \<and>  (inv_bool RESULT))"
-
-definition
-	f3' :: "TBasicQuoteUnion \<Rightarrow> bool"
-where
-	"f3' bqu \<equiv> 
-	\<comment>\<open>User defined body of f3'\<close>
-	(
-	\<comment>\<open>Implicit union type parameters projection conversion\<close>
-	(case bqu of
-			TBasicQuoteUnion.U_TBasicUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (
-		 \<comment>\<open>`cases true` expressions are translated as an and-chain of implications or others\<close>
-		 ((isTest (bqu) inv_TBasicUnion) \<longrightarrow> ((f2 bqu) > 10)) \<and> 
-			 ((isTest (bqu) inv_TQuoteUnion) \<longrightarrow> (f1 bqu)))
-		  | TBasicQuoteUnion.U_TQuoteUnion bqu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
-		 (
-		 \<comment>\<open>`cases true` expressions are translated as an and-chain of implications or others\<close>
-		 ((isTest (bqu) inv_TBasicUnion) \<longrightarrow> ((f2 bqu) > 10)) \<and> 
-			 ((isTest (bqu) inv_TQuoteUnion) \<longrightarrow> (f1 bqu)))
 		 ))"
 
 end

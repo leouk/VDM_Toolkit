@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.469119Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.241556Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsIs.vdmsl' at line 1:8
@@ -15,13 +15,13 @@ type_synonym T = "VDMReal"
 
 \<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 7:9\<close>
 definition
-	inv_T :: "T \<Rightarrow> \<bool>"
+	inv_T :: "T \<Rightarrow> bool"
 where
 	"inv_T t \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_T specification\<close>
 		(((inv_VDMReal t)))  \<and> 
 		\<comment>\<open>User defined body of inv_T\<close>
-		(t > 0)"
+		(t > (0::VDMNat))"
 
 		 
 
@@ -32,7 +32,7 @@ type_synonym TS = "T VDMSet"
 
 \<comment>\<open>in 'TestV2IExprsIs' (./src/test/resources/TestV2IExprsIs.vdmsl) at line 9:5\<close>
 definition
-	inv_TS :: "TS \<Rightarrow> \<bool>"
+	inv_TS :: "TS \<Rightarrow> bool"
 where
 	"inv_TS dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TS specification\<close>
@@ -44,7 +44,7 @@ where
 abbreviation
 	s1 :: "VDMReal VDMSet"
 where
-	"s1 \<equiv> {1, 2, 3}"
+	"s1 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
 
 	definition
 	inv_s1 :: "\<bool>"
@@ -56,7 +56,7 @@ where
 abbreviation
 	s2 :: "VDMReal VDMSet"
 where
-	"s2 \<equiv> {0.5, 1, 2}"
+	"s2 \<equiv> {(0.5), (1::VDMNat1), (2::VDMNat1)}"
 
 	definition
 	inv_s2 :: "\<bool>"
@@ -66,7 +66,7 @@ where
 	
 	
 abbreviation
-	v1 :: "\<bool>"
+	v1 :: "bool"
 where
 	"v1 \<equiv> isTest (s1) (inv_VDMSet' (inv_VDMNat))"
 
@@ -78,7 +78,7 @@ where
 	
 	
 abbreviation
-	v2 :: "\<bool>"
+	v2 :: "bool"
 where
 	"v2 \<equiv> isTest (s2) (inv_VDMSet' (inv_VDMNat))"
 
@@ -90,7 +90,7 @@ where
 	
 	
 abbreviation
-	v3 :: "\<bool>"
+	v3 :: "bool"
 where
 	"v3 \<equiv> isTest (s1) (inv_VDMSet' ((inv_VDMReal)))"
 
@@ -102,7 +102,7 @@ where
 	
 	
 abbreviation
-	v4 :: "\<bool>"
+	v4 :: "bool"
 where
 	"v4 \<equiv> isTest (s1) inv_TS"
 

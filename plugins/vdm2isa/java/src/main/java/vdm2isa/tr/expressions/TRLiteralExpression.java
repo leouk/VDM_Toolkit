@@ -108,12 +108,13 @@ public class TRLiteralExpression extends TRExpression
 		TRType t = getType();
 		// no casting needed for real, string, quote literals
 		// avoid casting altogether to avoid confusion like s: set of real = {1,2,3} getting {1::VDMInt,...} but then have isabelle convert between int=>real!
+		// nah, needs it for numeric expressions :-*
 		String typeStr = TYPED_LITERALS.contains(token) ? IsaToken.TYPEOF.toString() + isaToken().toString() : "";
 		// actually will never be optional for the literal, but variables? 
 		return t instanceof TROptionalType ?
 			IsaToken.parenthesise(IsaToken.OPTIONAL_SOME.toString() + IsaToken.parenthesise(exp + typeStr)) : 
 			t instanceof TRQuoteType ? TRQuoteType.quoteLiteral(exp, (TRQuoteType)t) : 
-			exp;//IsaToken.parenthesise(exp + typeStr);
+			IsaToken.parenthesise(exp + typeStr);//exp
 	}
 
 	@Override 

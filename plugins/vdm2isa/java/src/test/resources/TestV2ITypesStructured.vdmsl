@@ -14,7 +14,6 @@ types
 	G2' = int * int
 	inv g == g.#1 < g.#2;
 	
-	/*
 	TSet = set of nat1
 	inv s       == s <> {}
 	eq  s1 = s2 == s1 subset s2
@@ -53,5 +52,5 @@ types
 	TMap2 = map TSet4 to TSeq2;
 	
 	TMap3 = map TMap2 to TMap;
-*/
+
 end TestV2ITypesStructured

@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.468491Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.240764Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsComplex.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
-	"t9 \<equiv> {1, 2, 3}"
+	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
 
 	definition
 	inv_t9 :: "\<bool>"
@@ -24,7 +24,7 @@ where
 abbreviation
 	t10 :: "VDMInt VDMSeq1"
 where
-	"t10 \<equiv> [1, 2, 3]"
+	"t10 \<equiv> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)]"
 
 	definition
 	inv_t10 :: "\<bool>"
@@ -34,7 +34,7 @@ where
 	
 	
 abbreviation
-	vc1 :: "\<bool>"
+	vc1 :: "bool"
 where
 	"vc1 \<equiv> (\<forall> var1 \<in> t9  . (\<forall> var2 \<in> t9  . (var1 \<le> var2)))"
 
@@ -46,7 +46,7 @@ where
 	
 	
 abbreviation
-	vc2 :: "\<bool>"
+	vc2 :: "bool"
 where
 	"vc2 \<equiv> (\<forall> var1 \<in> (elems t10)  . (\<forall> var2 \<in> (elems t10)  . (var1 \<le> var2)))"
 
@@ -61,21 +61,21 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
 definition
-	pre_vc3 :: "\<bool>"
+	pre_vc3 :: "bool"
 where
 	"pre_vc3  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
 definition
-	post_vc3 :: "\<bool> \<Rightarrow> \<bool>"
+	post_vc3 :: "bool \<Rightarrow> bool"
 where
 	"post_vc3 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc3 specification\<close>
 		((inv_bool RESULT))"
 
 definition
-	vc3 :: "\<bool>"
+	vc3 :: "bool"
 where
 	"vc3  \<equiv> 
 	\<comment>\<open>User defined body of vc3\<close>
@@ -87,14 +87,14 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
 definition
-	pre_vc31 :: "\<bool>"
+	pre_vc31 :: "bool"
 where
 	"pre_vc31  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
 definition
-	post_vc31 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+	post_vc31 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
 	"post_vc31 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc31 specification\<close>
@@ -105,21 +105,21 @@ definition
 where
 	"vc31  \<equiv> 
 	\<comment>\<open>User defined body of vc31\<close>
-	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > 10) }"
+	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 definition
-	pre_vc32 :: "\<bool>"
+	pre_vc32 :: "bool"
 where
 	"pre_vc32  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 definition
-	post_vc32 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+	post_vc32 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
 	"post_vc32 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc32 specification\<close>
@@ -137,21 +137,21 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
 definition
-	pre_vc4 :: "\<bool>"
+	pre_vc4 :: "bool"
 where
 	"pre_vc4  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
 definition
-	post_vc4 :: "\<bool> \<Rightarrow> \<bool>"
+	post_vc4 :: "bool \<Rightarrow> bool"
 where
 	"post_vc4 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc4 specification\<close>
 		((inv_bool RESULT))"
 
 definition
-	vc4 :: "\<bool>"
+	vc4 :: "bool"
 where
 	"vc4  \<equiv> 
 	\<comment>\<open>User defined body of vc4\<close>
@@ -163,14 +163,14 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
 definition
-	pre_vc41 :: "\<bool>"
+	pre_vc41 :: "bool"
 where
 	"pre_vc41  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
 definition
-	post_vc41 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+	post_vc41 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
 	"post_vc41 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc41 specification\<close>
@@ -181,21 +181,21 @@ definition
 where
 	"vc41  \<equiv> 
 	\<comment>\<open>User defined body of vc41\<close>
-	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > 10) }"
+	{ x .   \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x)))  \<and> (x > (10::VDMNat1)) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 definition
-	pre_vc42 :: "\<bool>"
+	pre_vc42 :: "bool"
 where
 	"pre_vc42  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 definition
-	post_vc42 :: "VDMNat VDMSet \<Rightarrow> \<bool>"
+	post_vc42 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
 	"post_vc42 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc42 specification\<close>
@@ -206,21 +206,21 @@ definition
 where
 	"vc42  \<equiv> 
 	\<comment>\<open>User defined body of vc42\<close>
-	{ (x + y) | (x :: VDMNat)  y .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{1, 2, 3}))  \<and> (x > y) }"
+	{ (x + y) | (x :: VDMNat)  y .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (((inv_VDMNat x))) \<and>  ((y \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > y) }"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 definition
-	pre_vc5 :: "\<bool>"
+	pre_vc5 :: "bool"
 where
 	"pre_vc5  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 definition
-	post_vc5 :: "VDMNat \<Rightarrow> \<bool>"
+	post_vc5 :: "VDMNat \<Rightarrow> bool"
 where
 	"post_vc5 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc5 specification\<close>
@@ -231,21 +231,21 @@ definition
 where
 	"vc5  \<equiv> 
 	\<comment>\<open>User defined body of vc5\<close>
-	(THE var. ((((inv_VDMNat var))) \<and> (var < 1)))"
+	(THE var. ((((inv_VDMNat var))) \<and> (var < (1::VDMNat1))))"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 definition
-	pre_vc51 :: "\<bool>"
+	pre_vc51 :: "bool"
 where
 	"pre_vc51  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 definition
-	post_vc51 :: "VDMNat \<Rightarrow> \<bool>"
+	post_vc51 :: "VDMNat \<Rightarrow> bool"
 where
 	"post_vc51 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc51 specification\<close>
@@ -256,21 +256,21 @@ definition
 where
 	"vc51  \<equiv> 
 	\<comment>\<open>User defined body of vc51\<close>
-	(THE var. (((var \<in>{1, 2, 3})) \<and> (var < 1)))"
+	(THE var. (((var \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and> (var < (1::VDMNat1))))"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 definition
-	pre_vc6 :: "\<bool>"
+	pre_vc6 :: "bool"
 where
 	"pre_vc6  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 definition
-	post_vc6 :: "VDMNat1 \<Rightarrow> \<bool>"
+	post_vc6 :: "VDMNat1 \<Rightarrow> bool"
 where
 	"post_vc6 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc6 specification\<close>
@@ -288,14 +288,14 @@ where
 	 else
 		undefined
 	)
-	) 10  20)"
+	) (10::VDMNat1)  (20::VDMNat1))"
 
 	
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 59:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 61:11\<close>
 definition
-	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
+	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> bool"
 where
 	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_f specification\<close>
@@ -306,13 +306,13 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 62:17\<close>
 definition
-	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"post_f x  y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_f specification\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_f\<close>
-		(RESULT > 0)"
+		(RESULT > (0::VDMNat))"
 
 definition
 	f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat"
@@ -326,21 +326,21 @@ where
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
 definition
-	pre_vc7 :: "\<bool>"
+	pre_vc7 :: "bool"
 where
 	"pre_vc7  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
 definition
-	post_vc7 :: "\<bool> \<Rightarrow> \<bool>"
+	post_vc7 :: "bool \<Rightarrow> bool"
 where
 	"post_vc7 RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_vc7 specification\<close>
 		((inv_bool RESULT))"
 
 definition
-	vc7 :: "\<bool>"
+	vc7 :: "bool"
 where
 	"vc7  \<equiv> 
 	\<comment>\<open>User defined body of vc7\<close>

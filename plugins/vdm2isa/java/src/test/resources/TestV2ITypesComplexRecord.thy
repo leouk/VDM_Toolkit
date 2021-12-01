@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-01T14:47:56.358312Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.252103Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesComplexRecord.vdmsl' at line 1:8
@@ -24,7 +24,7 @@ where
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let v = (a\<^sub>A dummy0) in 
 		\<comment>\<open>User defined body of inv_A\<close>
-		(v > 0))"
+		(v > (0::VDMNat)))"
 
 		
 
@@ -58,7 +58,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_C specification\<close>
 		( ((inv_B (c\<^sub>C x)) ))  \<and> 
 		\<comment>\<open>User defined body of inv_C\<close>
-		((a\<^sub>A ((b\<^sub>B ((c\<^sub>C (x)))))) > 10)"
+		((a\<^sub>A ((b\<^sub>B ((c\<^sub>C (x)))))) > (10::VDMNat1))"
 
 		
 
@@ -78,7 +78,7 @@ where
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let dummy00 = (d\<^sub>D dummy0); dummy000 = (c\<^sub>C dummy00); dummy0000 = (b\<^sub>B dummy000); a = (a\<^sub>A dummy0000) in 
 		\<comment>\<open>User defined body of inv_D\<close>
-		(a > 10))"
+		(a > (10::VDMNat1)))"
 
 		
 
@@ -145,7 +145,7 @@ where
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
 		(let r = (r\<^sub>R dummy0); _ = (i\<^sub>R dummy0) in 
 		\<comment>\<open>User defined body of inv_R\<close>
-		(r > 0))"
+		(r > (0::VDMNat)))"
 
 		
 

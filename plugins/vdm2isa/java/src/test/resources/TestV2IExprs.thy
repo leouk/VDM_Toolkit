@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.466838Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.238982Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprs.vdmsl' at line 1:8
@@ -10,9 +10,9 @@ begin
 
 
 abbreviation
-	t1 :: "\<bool>"
+	t1 :: "bool"
 where
-	"t1 \<equiv> True"
+	"t1 \<equiv> (True::\<bool>)"
 
 	definition
 	inv_t1 :: "\<bool>"
@@ -24,7 +24,7 @@ where
 abbreviation
 	t2 :: "VDMChar"
 where
-	"t2 \<equiv> CHR ''a''"
+	"t2 \<equiv> (CHR ''a''::VDMChar)"
 
 	definition
 	inv_t2 :: "\<bool>"
@@ -36,7 +36,7 @@ where
 abbreviation
 	t3 :: "VDMChar VDMSeq"
 where
-	"t3 \<equiv> ''just text''"
+	"t3 \<equiv> (''just text'')"
 
 	definition
 	inv_t3 :: "\<bool>"
@@ -48,7 +48,7 @@ where
 abbreviation
 	t4 :: "VDMInt"
 where
-	"t4 \<equiv> 10"
+	"t4 \<equiv> (10::VDMNat1)"
 
 	definition
 	inv_t4 :: "\<bool>"
@@ -60,7 +60,7 @@ where
 abbreviation
 	t5 :: "VDMNat"
 where
-	"t5 \<equiv> 10"
+	"t5 \<equiv> (10::VDMNat1)"
 
 	definition
 	inv_t5 :: "\<bool>"
@@ -72,7 +72,7 @@ where
 abbreviation
 	t6 :: "VDMNat1"
 where
-	"t6 \<equiv> 20"
+	"t6 \<equiv> (20::VDMNat1)"
 
 	definition
 	inv_t6 :: "\<bool>"
@@ -84,7 +84,7 @@ where
 abbreviation
 	t7 :: "VDMReal"
 where
-	"t7 \<equiv> 4.5"
+	"t7 \<equiv> (4.5)"
 
 	definition
 	inv_t7 :: "\<bool>"
@@ -96,7 +96,7 @@ where
 abbreviation
 	t8 :: "VDMRat"
 where
-	"t8 \<equiv> 4.5"
+	"t8 \<equiv> (4.5)"
 
 	definition
 	inv_t8 :: "\<bool>"
@@ -108,7 +108,7 @@ where
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
-	"t9 \<equiv> {1, 2, 3}"
+	"t9 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}"
 
 	definition
 	inv_t9 :: "\<bool>"
@@ -120,7 +120,7 @@ where
 abbreviation
 	t10 :: "VDMNat1 VDMSeq1"
 where
-	"t10 \<equiv> [1, 2, 3]"
+	"t10 \<equiv> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)]"
 
 	definition
 	inv_t10 :: "\<bool>"
@@ -132,7 +132,7 @@ where
 abbreviation
 	t11 :: "VDMNat1 VDMSet1"
 where
-	"t11 \<equiv> {1..5}"
+	"t11 \<equiv> {(1::VDMNat1)..(5::VDMNat1)}"
 
 	definition
 	inv_t11 :: "\<bool>"
@@ -144,7 +144,7 @@ where
 abbreviation
 	t12 :: "VDMNat1 VDMSet VDMSet"
 where
-	"t12 \<equiv> {{1, 2}, {2, 4}}"
+	"t12 \<equiv> {{(1::VDMNat1), (2::VDMNat1)}, {(2::VDMNat1), (4::VDMNat1)}}"
 
 	definition
 	inv_t12 :: "\<bool>"
@@ -156,7 +156,7 @@ where
 abbreviation
 	t13 :: "VDMNat1 VDMSeq VDMSeq"
 where
-	"t13 \<equiv> [[1, 2], [3, 4]]"
+	"t13 \<equiv> [[(1::VDMNat1), (2::VDMNat1)], [(3::VDMNat1), (4::VDMNat1)]]"
 
 	definition
 	inv_t13 :: "\<bool>"
@@ -168,7 +168,7 @@ where
 abbreviation
 	t14 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"t14 \<equiv> [1\<mapsto>1,2\<mapsto>3]"
+	"t14 \<equiv> [(1::VDMNat1)\<mapsto>(1::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
 	definition
 	inv_t14 :: "\<bool>"
@@ -180,7 +180,7 @@ where
 abbreviation
 	t15 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"t15 \<equiv> [3\<mapsto>1]"
+	"t15 \<equiv> [(3::VDMNat1)\<mapsto>(1::VDMNat1)]"
 
 	definition
 	inv_t15 :: "\<bool>"
@@ -192,7 +192,7 @@ where
 abbreviation
 	v1 :: "VDMNat1"
 where
-	"v1 \<equiv> (vdm_abs 10)"
+	"v1 \<equiv> (vdm_abs (10::VDMNat1))"
 
 	definition
 	inv_v1 :: "\<bool>"
@@ -204,7 +204,7 @@ where
 abbreviation
 	v2 :: "VDMInt"
 where
-	"v2 \<equiv> (vdm_floor 5)"
+	"v2 \<equiv> (vdm_floor (5::VDMNat1))"
 
 	definition
 	inv_v2 :: "\<bool>"
@@ -216,7 +216,7 @@ where
 abbreviation
 	v3 :: "VDMInt"
 where
-	"v3 \<equiv> (vdm_floor 4.5)"
+	"v3 \<equiv> (vdm_floor (4.5))"
 
 	definition
 	inv_v3 :: "\<bool>"
@@ -228,7 +228,7 @@ where
 abbreviation
 	v4 :: "VDMInt"
 where
-	"v4 \<equiv> (- 4)"
+	"v4 \<equiv> (- (4::VDMNat1))"
 
 	definition
 	inv_v4 :: "\<bool>"
@@ -240,7 +240,7 @@ where
 abbreviation
 	v5 :: "VDMNat1"
 where
-	"v5 \<equiv> 5"
+	"v5 \<equiv> (5::VDMNat1)"
 
 	definition
 	inv_v5 :: "\<bool>"
@@ -264,7 +264,7 @@ where
 abbreviation
 	v7 :: "VDMNat1 VDMSet VDMSet"
 where
-	"v7 \<equiv> (Fpow {1, 2})"
+	"v7 \<equiv> (Fpow {(1::VDMNat1), (2::VDMNat1)})"
 
 	definition
 	inv_v7 :: "\<bool>"
@@ -396,7 +396,7 @@ where
 abbreviation
 	v18 :: "VDMNat1 VDMSeq"
 where
-	"v18 \<equiv> (t10 {2$$3})"
+	"v18 \<equiv> (t10 {(2::VDMNat1)$$(3::VDMNat1)})"
 
 	definition
 	inv_v18 :: "\<bool>"
@@ -456,7 +456,7 @@ where
 abbreviation
 	v23 :: "VDMNat1"
 where
-	"v23 \<equiv> (4 + 3)"
+	"v23 \<equiv> ((4::VDMNat1) + (3::VDMNat1))"
 
 	definition
 	inv_v23 :: "\<bool>"
@@ -468,7 +468,7 @@ where
 abbreviation
 	v24 :: "VDMInt"
 where
-	"v24 \<equiv> (4 - 2)"
+	"v24 \<equiv> ((4::VDMNat1) - (2::VDMNat1))"
 
 	definition
 	inv_v24 :: "\<bool>"
@@ -480,7 +480,7 @@ where
 abbreviation
 	v25 :: "VDMNat1"
 where
-	"v25 \<equiv> (4 * 2)"
+	"v25 \<equiv> ((4::VDMNat1) * (2::VDMNat1))"
 
 	definition
 	inv_v25 :: "\<bool>"
@@ -492,7 +492,7 @@ where
 abbreviation
 	v26 :: "VDMInt"
 where
-	"v26 \<equiv> (4 vdmdiv 2)"
+	"v26 \<equiv> ((4::VDMNat1) vdmdiv (2::VDMNat1))"
 
 	definition
 	inv_v26 :: "\<bool>"
@@ -504,7 +504,7 @@ where
 abbreviation
 	v27 :: "VDMReal"
 where
-	"v27 \<equiv> (4 / 2)"
+	"v27 \<equiv> ((4::VDMNat1) / (2::VDMNat1))"
 
 	definition
 	inv_v27 :: "\<bool>"
@@ -516,7 +516,7 @@ where
 abbreviation
 	v28 :: "VDMInt"
 where
-	"v28 \<equiv> (4 vdmmod 3)"
+	"v28 \<equiv> ((4::VDMNat1) vdmmod (3::VDMNat1))"
 
 	definition
 	inv_v28 :: "\<bool>"
@@ -528,7 +528,7 @@ where
 abbreviation
 	v29 :: "VDMInt"
 where
-	"v29 \<equiv> (4 vdmrem 3)"
+	"v29 \<equiv> ((4::VDMNat1) vdmrem (3::VDMNat1))"
 
 	definition
 	inv_v29 :: "\<bool>"
@@ -540,7 +540,7 @@ where
 abbreviation
 	v30 :: "VDMNat1"
 where
-	"v30 \<equiv> (2 ^ nat 3)
+	"v30 \<equiv> ((2::VDMNat1) ^ nat (3::VDMNat1))
 	\<comment>\<open>Result of the power operator is context dependenant on second argument type being nat or real.\<close>
 	"
 
@@ -552,9 +552,9 @@ where
 	
 	
 abbreviation
-	v31 :: "\<bool>"
+	v31 :: "bool"
 where
-	"v31 \<equiv> (3 = 3)"
+	"v31 \<equiv> ((3::VDMNat1) = (3::VDMNat1))"
 
 	definition
 	inv_v31 :: "\<bool>"
@@ -564,9 +564,9 @@ where
 	
 	
 abbreviation
-	v32 :: "\<bool>"
+	v32 :: "bool"
 where
-	"v32 \<equiv> (3 \<noteq> 4)"
+	"v32 \<equiv> ((3::VDMNat1) \<noteq> (4::VDMNat1))"
 
 	definition
 	inv_v32 :: "\<bool>"
@@ -576,9 +576,9 @@ where
 	
 	
 abbreviation
-	v33 :: "\<bool>"
+	v33 :: "bool"
 where
-	"v33 \<equiv> (4 \<le> 5)"
+	"v33 \<equiv> ((4::VDMNat1) \<le> (5::VDMNat1))"
 
 	definition
 	inv_v33 :: "\<bool>"
@@ -588,9 +588,9 @@ where
 	
 	
 abbreviation
-	v34 :: "\<bool>"
+	v34 :: "bool"
 where
-	"v34 \<equiv> (4 < 5)"
+	"v34 \<equiv> ((4::VDMNat1) < (5::VDMNat1))"
 
 	definition
 	inv_v34 :: "\<bool>"
@@ -600,9 +600,9 @@ where
 	
 	
 abbreviation
-	v35 :: "\<bool>"
+	v35 :: "bool"
 where
-	"v35 \<equiv> (5 \<ge> 4)"
+	"v35 \<equiv> ((5::VDMNat1) \<ge> (4::VDMNat1))"
 
 	definition
 	inv_v35 :: "\<bool>"
@@ -612,9 +612,9 @@ where
 	
 	
 abbreviation
-	v36 :: "\<bool>"
+	v36 :: "bool"
 where
-	"v36 \<equiv> (5 > 4)"
+	"v36 \<equiv> ((5::VDMNat1) > (4::VDMNat1))"
 
 	definition
 	inv_v36 :: "\<bool>"
@@ -708,7 +708,7 @@ where
 	
 	
 abbreviation
-	v46 :: "\<bool>"
+	v46 :: "bool"
 where
 	"v46 \<equiv> (\<not> t1)"
 
@@ -720,7 +720,7 @@ where
 	
 	
 abbreviation
-	v47 :: "\<bool>"
+	v47 :: "bool"
 where
 	"v47 \<equiv> (t1 \<and> t1)"
 
@@ -732,7 +732,7 @@ where
 	
 	
 abbreviation
-	v48 :: "\<bool>"
+	v48 :: "bool"
 where
 	"v48 \<equiv> (t1 \<or> t1)"
 
@@ -744,7 +744,7 @@ where
 	
 	
 abbreviation
-	v49 :: "\<bool>"
+	v49 :: "bool"
 where
 	"v49 \<equiv> (t1 \<longrightarrow> t1)"
 
@@ -756,7 +756,7 @@ where
 	
 	
 abbreviation
-	v50 :: "\<bool>"
+	v50 :: "bool"
 where
 	"v50 \<equiv> (t1 \<longleftrightarrow> t1)"
 
@@ -768,9 +768,9 @@ where
 	
 	
 abbreviation
-	v51 :: "\<bool>"
+	v51 :: "bool"
 where
-	"v51 \<equiv> (1 \<in> t9)"
+	"v51 \<equiv> ((1::VDMNat1) \<in> t9)"
 
 	definition
 	inv_v51 :: "\<bool>"
@@ -780,9 +780,9 @@ where
 	
 	
 abbreviation
-	v52 :: "\<bool>"
+	v52 :: "bool"
 where
-	"v52 \<equiv> (5 \<notin> t9)"
+	"v52 \<equiv> ((5::VDMNat1) \<notin> t9)"
 
 	definition
 	inv_v52 :: "\<bool>"
@@ -828,7 +828,7 @@ where
 	
 	
 abbreviation
-	v56 :: "\<bool>"
+	v56 :: "bool"
 where
 	"v56 \<equiv> (t9 \<subseteq> t11)"
 
@@ -840,7 +840,7 @@ where
 	
 	
 abbreviation
-	v57 :: "\<bool>"
+	v57 :: "bool"
 where
 	"v57 \<equiv> (t9 \<subset> t11)"
 
@@ -854,7 +854,7 @@ where
 abbreviation
 	v58 :: "VDMNat1 VDMSet"
 where
-	"v58 \<equiv> {1..3}"
+	"v58 \<equiv> {(1::VDMNat1)..(3::VDMNat1)}"
 
 	definition
 	inv_v58 :: "\<bool>"
@@ -866,7 +866,7 @@ where
 abbreviation
 	v59 :: "VDMNat1 VDMSet1"
 where
-	"v59 \<equiv> {1, 2, 3, 4}"
+	"v59 \<equiv> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}"
 
 	definition
 	inv_v59 :: "\<bool>"
@@ -878,7 +878,7 @@ where
 abbreviation
 	v60 :: "VDMNat1 VDMSeq1"
 where
-	"v60 \<equiv> [1, 3, 4]"
+	"v60 \<equiv> [(1::VDMNat1), (3::VDMNat1), (4::VDMNat1)]"
 
 	definition
 	inv_v60 :: "\<bool>"
@@ -890,7 +890,7 @@ where
 abbreviation
 	v61 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"v61 \<equiv> [1\<mapsto>2,2\<mapsto>3]"
+	"v61 \<equiv> [(1::VDMNat1)\<mapsto>(2::VDMNat1),(2::VDMNat1)\<mapsto>(3::VDMNat1)]"
 
 	definition
 	inv_v61 :: "\<bool>"
@@ -902,7 +902,7 @@ where
 abbreviation
 	v62 :: "(VDMNat1\<times> VDMNat1)"
 where
-	"v62 \<equiv> (1, 2)"
+	"v62 \<equiv> ((1::VDMNat1), (2::VDMNat1))"
 
 	definition
 	inv_v62 :: "\<bool>"
@@ -917,7 +917,7 @@ where
 abbreviation
 	v63 :: "(VDMNat1\<times> VDMNat1\<times> VDMNat1)"
 where
-	"v63 \<equiv> (1, 2, 3)"
+	"v63 \<equiv> ((1::VDMNat1), (2::VDMNat1), (3::VDMNat1))"
 
 	definition
 	inv_v63 :: "\<bool>"
@@ -933,7 +933,7 @@ where
 abbreviation
 	v64 :: "(VDMNat1\<times> VDMNat1\<times> VDMNat1\<times> VDMNat1)"
 where
-	"v64 \<equiv> (1, 2, 3, 4)"
+	"v64 \<equiv> ((1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1))"
 
 	definition
 	inv_v64 :: "\<bool>"
@@ -998,7 +998,7 @@ where
 abbreviation
 	v72 :: "VDMNat1"
 where
-	"v72 \<equiv> vdm_narrow_real ((4.0)::VDMReal)"
+	"v72 \<equiv> vdm_narrow_real (((4.0))::VDMReal)"
 
 	definition
 	inv_v72 :: "\<bool>"
@@ -1010,7 +1010,7 @@ where
 abbreviation
 	v721 :: "VDMInt"
 where
-	"v721 \<equiv> vdm_narrow_real ((4.0)::VDMReal)"
+	"v721 \<equiv> vdm_narrow_real (((4.0))::VDMReal)"
 
 	definition
 	inv_v721 :: "\<bool>"
@@ -1024,7 +1024,7 @@ abbreviation
 where
 	"v722 \<equiv> (
 		let 
-(r::VDMReal) = 4.0
+(r::VDMReal) = (4.0)
 		in
 			(if ((inv_VDMReal r)) then
 			vdm_narrow_real ((r)::VDMReal)
@@ -1043,7 +1043,7 @@ where
 abbreviation
 	v723 :: "VDMNat1"
 where
-	"v723 \<equiv> vdm_narrow_real (((6 / 2))::VDMReal)"
+	"v723 \<equiv> vdm_narrow_real ((((6::VDMNat1) / (2::VDMNat1)))::VDMReal)"
 
 	definition
 	inv_v723 :: "\<bool>"
@@ -1055,7 +1055,7 @@ where
 abbreviation
 	v73 :: "VDMNat1"
 where
-	"v73 \<equiv> (THE var. (((var \<in>t9)) \<and> (var < 2)))"
+	"v73 \<equiv> (THE var. (((var \<in>t9)) \<and> (var < (2::VDMNat1))))"
 
 	definition
 	inv_v73 :: "\<bool>"
@@ -1103,9 +1103,9 @@ where
 	
 	
 abbreviation
-	v75 :: "\<bool>"
+	v75 :: "bool"
 where
-	"v75 \<equiv> (\<exists>! var \<in> t9  . (var < 2))"
+	"v75 \<equiv> (\<exists>! var \<in> t9  . (var < (2::VDMNat1)))"
 
 	definition
 	inv_v75 :: "\<bool>"
@@ -1115,9 +1115,9 @@ where
 	
 	
 abbreviation
-	v76 :: "\<bool>"
+	v76 :: "bool"
 where
-	"v76 \<equiv> (\<exists> var \<in> t9  . (var < 2))"
+	"v76 \<equiv> (\<exists> var \<in> t9  . (var < (2::VDMNat1)))"
 
 	definition
 	inv_v76 :: "\<bool>"
@@ -1127,9 +1127,9 @@ where
 	
 	
 abbreviation
-	v78 :: "\<bool>"
+	v78 :: "bool"
 where
-	"v78 \<equiv> (\<forall> var \<in> t9  . (var \<le> 3))"
+	"v78 \<equiv> (\<forall> var \<in> t9  . (var \<le> (3::VDMNat1)))"
 
 	definition
 	inv_v78 :: "\<bool>"
@@ -1143,9 +1143,9 @@ abbreviation
 where
 	"v79 \<equiv> (
 		let 
-(var::VDMNat) = 10;
+(var::VDMNat) = (10::VDMNat1);
 		
-(var2::VDMNat1) = 20
+(var2::VDMNat1) = (20::VDMNat1)
 		in
 			(if ((inv_VDMNat var)) \<and> 
 	((inv_VDMNat1 var2)) then
@@ -1166,7 +1166,7 @@ abbreviation
 	v80 :: "VDMNat1"
 where
 	"v80 \<equiv> (
-		SOME (dummy0::VDMNat1) .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > 2) \<and> (y < x)) }))"
+		SOME (dummy0::VDMNat1) .(dummy0 \<in> { (x + y) | x  y .  ((x \<in>t9)) \<and>  ((y \<in>t9))  \<and> ((x > (2::VDMNat1)) \<and> (y < x)) }))"
 
 	definition
 	inv_v80 :: "\<bool>"
@@ -1178,7 +1178,7 @@ where
 abbreviation
 	v81 :: "VDMNat1 VDMSet"
 where
-	"v81 \<equiv> { var .   ((var \<in>t9))  \<and> (var > 1) }"
+	"v81 \<equiv> { var .   ((var \<in>t9))  \<and> (var > (1::VDMNat1)) }"
 
 	definition
 	inv_v81 :: "\<bool>"
@@ -1202,7 +1202,7 @@ where
 abbreviation
 	v83 :: "VDMNat1 VDMSeq"
 where
-	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > 1) ]
+	"v83 \<equiv> [ var . var \<leftarrow> sorted_list_of_set (t9) , ((var \<in>t9)) , (var > (1::VDMNat1)) ]
 	\<comment>\<open>Set bind `(var \<in> t9)` in sequence comprehension requires its Isabelle type to instantiate class linorder.  This can be a problem if the target type of @{term \<open>t9\<close>}  has a VDM ord_ predicate.\<close> "
 
 	definition
@@ -1215,7 +1215,7 @@ where
 abbreviation
 	v84 :: "VDMNat1 VDMSeq"
 where
-	"v84 \<equiv> [ var . var \<leftarrow> t10 , ((var \<in>(elems t10))) , (var > 1) ]"
+	"v84 \<equiv> [ var . var \<leftarrow> t10 , ((var \<in>(elems t10))) , (var > (1::VDMNat1)) ]"
 
 	definition
 	inv_v84 :: "\<bool>"
@@ -1227,7 +1227,7 @@ where
 abbreviation
 	v88 :: "VDMNat1 VDMSeq"
 where
-	"v88 \<equiv> [ var . var \<leftarrow> [1, 2, 3, 7, 8, 9] , ((var \<in>(elems [1, 2, 3, 7, 8, 9]))) , (var > 4) ]"
+	"v88 \<equiv> [ var . var \<leftarrow> [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)] , ((var \<in>(elems [(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (7::VDMNat1), (8::VDMNat1), (9::VDMNat1)]))) , (var > (4::VDMNat1)) ]"
 
 	definition
 	inv_v88 :: "\<bool>"
@@ -1263,7 +1263,7 @@ where
 		if ((v1 < v2)) then
 		(v2)
 		else
-		(0))))"
+		((0::VDMNat)))))"
 
 	definition
 	inv_v90 :: "\<bool>"
@@ -1277,7 +1277,7 @@ abbreviation
 where
 	"v92 \<equiv> (
 		let 
-(var::VDMNat) = 10
+(var::VDMNat) = (10::VDMNat1)
 		in
 			(if ((inv_VDMNat var)) then
 			(var + var)

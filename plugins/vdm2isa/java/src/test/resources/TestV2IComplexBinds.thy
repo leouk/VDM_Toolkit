@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.462091Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.233550Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IBindsComplex.vdmsl' at line 1:8
@@ -17,7 +17,7 @@ record R =
 
 \<comment>\<open>in 'TestV2IComplexBinds' (./src/test/resources/TestV2IBindsComplex.vdmsl) at line 7:9\<close>
 definition
-	inv_R :: "R \<Rightarrow> \<bool>"
+	inv_R :: "R \<Rightarrow> bool"
 where
 	"inv_R dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
@@ -34,7 +34,7 @@ where
 abbreviation
 	v0 :: "VDMNat"
 where
-	"v0 \<equiv> 10"
+	"v0 \<equiv> (10::VDMNat1)"
 
 	definition
 	inv_v0 :: "\<bool>"
@@ -46,7 +46,7 @@ where
 abbreviation
 	v1 :: "(VDMNat1\<times> VDMNat1)"
 where
-	"v1 \<equiv> (1, 2)"
+	"v1 \<equiv> ((1::VDMNat1), (2::VDMNat1))"
 
 	definition
 	inv_v1 :: "\<bool>"
@@ -61,7 +61,7 @@ where
 abbreviation
 	v11 :: "R"
 where
-	"v11 \<equiv> \<lparr>a\<^sub>R = 1, b\<^sub>R = 2\<rparr>"
+	"v11 \<equiv> \<lparr>a\<^sub>R = (1::VDMNat1), b\<^sub>R = (2::VDMNat1)\<rparr>"
 
 	definition
 	inv_v11 :: "\<bool>"
@@ -75,11 +75,11 @@ abbreviation
 where
 	"v2 \<equiv> (
 		let 
-((x  y)::(VDMNat1\<times> VDMNat1)) = (1, 2)
+(dummy0::(VDMNat1\<times> VDMNat1)) = ((1::VDMNat1), (2::VDMNat1))
 		in
 			(if (
-		((inv_VDMNat1 (fst (x  y)))\<and>
-		 (inv_VDMNat1 (snd (x  y)))
+		((inv_VDMNat1 (fst dummy0))\<and>
+		 (inv_VDMNat1 (snd dummy0))
 		)) then
 			(x + y)
 		 else
@@ -99,11 +99,11 @@ abbreviation
 where
 	"v21 \<equiv> (
 		let 
-((x  y)::(VDMNat1\<times> VDMNat1)) = v1
+(dummy0::(VDMNat1\<times> VDMNat1)) = v1
 		in
 			(if (
-		((inv_VDMNat1 (fst (x  y)))\<and>
-		 (inv_VDMNat1 (snd (x  y)))
+		((inv_VDMNat1 (fst dummy0))\<and>
+		 (inv_VDMNat1 (snd dummy0))
 		)) then
 			(x + y)
 		 else
@@ -121,7 +121,7 @@ where
 abbreviation
 	v3 :: "VDMNat1"
 where
-	"v3 \<equiv> ((fst ((1, 2))) + (snd ((1, 2))))"
+	"v3 \<equiv> ((fst (((1::VDMNat1), (2::VDMNat1)))) + (snd (((1::VDMNat1), (2::VDMNat1)))))"
 
 	definition
 	inv_v3 :: "\<bool>"
@@ -148,7 +148,7 @@ where
 abbreviation
 	v5 :: "VDMNat1"
 where
-	"v5 \<equiv> [1, 2]"
+	"v5 \<equiv> [(1::VDMNat1), (2::VDMNat1)]"
 
 	definition
 	inv_v5 :: "\<bool>"

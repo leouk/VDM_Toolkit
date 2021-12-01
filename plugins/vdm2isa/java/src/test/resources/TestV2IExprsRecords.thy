@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-11-30T10:20:27.472354Z
+(* VDM to Isabelle Translation @2021-12-01T15:26:51.245659Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -17,7 +17,7 @@ record R =
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 10:9\<close>
 definition
-	inv_R :: "R \<Rightarrow> \<bool>"
+	inv_R :: "R \<Rightarrow> bool"
 where
 	"inv_R r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
@@ -32,7 +32,7 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 definition
-	pre_mkr :: "VDMNat \<Rightarrow> \<bool>"
+	pre_mkr :: "VDMNat \<Rightarrow> bool"
 where
 	"pre_mkr n \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_mkr specification\<close>
@@ -41,7 +41,7 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 definition
-	post_mkr :: "VDMNat\<Rightarrow> R \<Rightarrow> \<bool>"
+	post_mkr :: "VDMNat\<Rightarrow> R \<Rightarrow> bool"
 where
 	"post_mkr n  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_mkr specification\<close>
@@ -52,14 +52,14 @@ definition
 where
 	"mkr n \<equiv> 
 	\<comment>\<open>User defined body of mkr\<close>
-	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + 1)\<rparr>"
+	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
 
 	
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 definition
-	pre_recbind :: "R \<Rightarrow> \<bool>"
+	pre_recbind :: "R \<Rightarrow> bool"
 where
 	"pre_recbind dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_recbind specification\<close>
@@ -68,7 +68,7 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 definition
-	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"post_recbind dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_recbind specification\<close>
@@ -88,7 +88,7 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 25:11\<close>
 definition
-	pre_recbindSpec :: "R \<Rightarrow> \<bool>"
+	pre_recbindSpec :: "R \<Rightarrow> bool"
 where
 	"pre_recbindSpec dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for pre_recbindSpec specification\<close>
@@ -101,7 +101,7 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 26:21\<close>
 definition
-	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"post_recbindSpec dummy0  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for post_recbindSpec specification\<close>
@@ -125,14 +125,14 @@ where
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
 definition
-	pre_letbest :: "\<bool>"
+	pre_letbest :: "bool"
 where
 	"pre_letbest  \<equiv> True"
 
 
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
 definition
-	post_letbest :: "VDMNat \<Rightarrow> \<bool>"
+	post_letbest :: "VDMNat \<Rightarrow> bool"
 where
 	"post_letbest RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_letbest specification\<close>
@@ -151,7 +151,7 @@ where
 abbreviation
 	v64 :: "(VDMNat1\<times> VDMNat1\<times> VDMNat1\<times> VDMNat1)"
 where
-	"v64 \<equiv> (1, 2, 3, 4)"
+	"v64 \<equiv> ((1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1))"
 
 	definition
 	inv_v64 :: "\<bool>"
@@ -168,7 +168,7 @@ where
 abbreviation
 	v65 :: "R"
 where
-	"v65 \<equiv> \<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>"
+	"v65 \<equiv> \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>"
 
 	definition
 	inv_v65 :: "\<bool>"
@@ -180,7 +180,7 @@ where
 abbreviation
 	v651 :: "VDMNat"
 where
-	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = 1, y\<^sub>R = 2\<rparr>))"
+	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>))"
 
 	definition
 	inv_v651 :: "\<bool>"
@@ -204,7 +204,7 @@ where
 abbreviation
 	v653 :: "VDMNat"
 where
-	"v653 \<equiv> (x\<^sub>R ((mkr 1)))"
+	"v653 \<equiv> (x\<^sub>R ((mkr (1::VDMNat1))))"
 
 	definition
 	inv_v653 :: "\<bool>"
@@ -216,7 +216,7 @@ where
 abbreviation
 	v67 :: "R"
 where
-	"v67 \<equiv> (v65)\<lparr>x\<^sub>R := 10, y\<^sub>R := 20\<rparr>"
+	"v67 \<equiv> (v65)\<lparr>x\<^sub>R := (10::VDMNat1), y\<^sub>R := (20::VDMNat1)\<rparr>"
 
 	definition
 	inv_v67 :: "\<bool>"
@@ -258,7 +258,7 @@ where
 	
 	
 abbreviation
-	v781 :: "\<bool>"
+	v781 :: "bool"
 where
 	"v781 \<equiv> (\<forall> dummy0 \<in> {v65}  . (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (y < x)))"
 
@@ -276,7 +276,7 @@ where
 		let 
 (dummy0::R) = v65;
 		
-(var1::VDMNat) = 10
+(var1::VDMNat) = (10::VDMNat1)
 		in
 			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (inv_R dummy0) \<and> 
