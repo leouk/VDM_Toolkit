@@ -27,7 +27,9 @@ public enum IsaWarningMessage {
 
     VDMSL_EXU_MISSING_SPECCALL_3P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 50,
     "Definition of `%1$s` %2$s depends on `%3$s` yet does not call `pre_%3$s`."),
-    
+    VDMSL_EXU_MISSING_INVCALL_3P(VDM2IsaError.ISABELLE_W_VDMSL_BASE + 51,
+    "Definition of `%1$s` %2$s depends on `%3$s` yet `%1$s` does not check input type invariants for `%3$s`."),
+
     ISA_UNKNOWN_VDM_TYPE(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 0, 
     "Unknown VDM types will generate Isabelle additional type variable `a warning."),
     ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
