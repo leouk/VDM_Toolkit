@@ -76,7 +76,10 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for inv_D specification\<close>
 		( ((inv_C (d\<^sub>D dummy0)) ))  \<and> 
 		\<comment>\<open>Implicit record pattern projection conversion\<close>
-		(let dummy00 = (dummy00 = (dummy00 = (a = (a\<^sub>A dummy0)\<^sub>B dummy0)\<^sub>C dummy0)\<^sub>D dummy0) in 
+		(let dummy00 = d\<^sub>D dummy0; 
+         dummy01 = c\<^sub>C dummy00; 
+         dummy02 = b\<^sub>B dummy01;
+         a       = a\<^sub>A dummy02 in 
 		\<comment>\<open>User defined body of inv_D\<close>
 		(a > 10))"
 
