@@ -6,6 +6,9 @@ exports all
 definitions
 
 types	
+	--plain structured context
+	G2 = int * int
+	inv mk_(l,r) == l < r;
 	
 	TSet = set of nat1
 	inv s       == s <> {}

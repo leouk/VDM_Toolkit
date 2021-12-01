@@ -15,14 +15,18 @@ types
 	-- layered record patterns without field expression projection 
 	D :: d: C
 	inv mk_D(mk_C(mk_B(mk_A(a)))) == a > 10;
-
+	
+	-- mixed projection + record pattern see if works in the context! 
+	E :: d: C
+		 e: D
+	inv mk_E(mk_C(x), e) == e.d.c = x;
+	
 	--E = set pattern; F = seq concat pattern etc.
 		
+	--mix layered contexts
 	G :: g: int * int
 	inv mk_G(mk_(l,r)) == l < r;
 	
-/*
-
 	R :: 
 		r : real
 		i : nat
@@ -60,6 +64,5 @@ types
 		r: R
 		t: R
 	inv mk_S4(mk_R(rs, -),mk_R(ts, -)) == rs > ts; 
-*/
 	
 end TestV2ITypesComplexRecord
