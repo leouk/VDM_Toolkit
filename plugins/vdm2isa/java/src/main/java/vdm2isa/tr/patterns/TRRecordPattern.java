@@ -1,5 +1,7 @@
 package vdm2isa.tr.patterns;
 
+import java.util.Arrays;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
@@ -13,17 +15,15 @@ import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
-public class TRRecordPattern extends TRPattern {
+public class TRRecordPattern extends TRAbstractContextualPattern {
     
     private final TCNameToken typename;
-    private final TRPatternList plist;
     private final TRType type;
     
     public TRRecordPattern(TCRecordPattern p, LexLocation location, TCNameToken typename, TRPatternList plist, TRType type)
     {
-        super(p, location);
+        super(p, location, plist);
         this.typename = typename;
-        this.plist = plist;
         this.type = type;
     }
     
@@ -31,10 +31,8 @@ public class TRRecordPattern extends TRPattern {
     public void setup()
     {
         super.setup();
-        if (plist == null || plist.size() == 0)
-        report(IsaErrorMessage.ISA_VDM_EMPTYRECORD_PATTERN_1P, String.valueOf(typename));
-        setSemanticSeparator(IsaToken.SEMICOLON.toString() + " ");
-        TRNode.setup(plist, type);
+        setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
+        TRNode.setup(type);
         //System.out.println(toString());
     }
 
@@ -76,71 +74,34 @@ public class TRRecordPattern extends TRPattern {
     public String translate() {
          return IsaToken.dummyVarNames(1, location);
     }
- 
-    protected String fieldNameTranslate(int index, String dummyName)
+
+    @Override
+    protected  String indexedPatternExpression(int index, String dummyName)
     {
         assert index >= 0 && index < plist.size();
-        StringBuilder sb = new StringBuilder();
-
-        TRPattern p = plist.get(index);
-        String patternName;
         String fieldName;
-        if (p instanceof TRBasicPattern)
+        // getting the field name from the record type
+        // this is important given pattern names might not be the same as field name    
+        // A :: a: int inv mk_A(v) == v > 10; fieldName = v_A! instead of a_A!
+        TRFieldList flist = TRRecordType.fieldsOf(this.typename);
+        if (flist != null)
         {
-            // for basic pattern, use pattern = (field_RECORD dummyName)
-            patternName = p.invTranslate();
+            assert index >= 0 && index < flist.size();
+            fieldName = flist.get(index).getTagName();
         }
-        // for record pattern within another, use inner dummies
-        else if (p instanceof TRRecordPattern)
+        else
         {
-            // for record pattern, use inner dummy name to project the other record parts in the field name
-            patternName = dummyName + Integer.valueOf(index);
+            // if can't find the fields, then fall back and report error
+            fieldName = plist.get(index).invTranslate();
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
         }
-        //else if (p instanceof TRStructuredPattern)
-        else //if (p instanceof TRPatternBind)        = error
-        {
-            patternName = p.invTranslate();
-        }
-        sb.append(patternName);
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(IsaToken.EQUALS.toString());
-        sb.append(IsaToken.SPACE.toString());
 
-        if (p instanceof TRBasicPattern)
-        {
-            // for basic pattern, use p = (field_RECORD dummyName)
-            TRBasicPattern bp = (TRBasicPattern)p;
-            TRFieldList flist = TRRecordType.fieldsOf(this.typename);
-            if (flist != null)
-            {
-                assert index < flist.size();
-                fieldName = flist.get(index).getTagName();
-            }
-            else
-            {
-                // this can generate an error when the pattern and field names differ
-                // A :: a: int inv mk_A(v) == v > 10; fieldName = v_A! instead of a_A!
-                fieldName = bp.invTranslate();
-                report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
-            }
-        }
-        // for record pattern within another, use inner dummies
-        else if (p instanceof TRRecordPattern)
-        {
-            TRRecordPattern rp = (TRRecordPattern)p;
-            fieldName = rp.recordPatternTranslate();
-        }
-        //else if (p instanceof TRStructuredPattern)
-        else //if (p instanceof TRPatternBind)        = error
-        {
-            fieldName = p.invTranslate();
-        }
-        sb.append(IsaToken.parenthesise(IsaTemplates.isabelleRecordFieldName(typename.toString(), fieldName) + " " + dummyName));
-        return sb.toString();
+        // project the field out so it's available
+        return IsaToken.parenthesise(IsaTemplates.isabelleRecordFieldName(typename.toString(), fieldName) + IsaToken.SPACE.toString() + dummyName);
     }
-
+ 
     @Override 
-    public boolean hasRecordPatterns()
+    public boolean hasRecordPattern()
     {
         return true;
     }
@@ -152,17 +113,17 @@ public class TRRecordPattern extends TRPattern {
      * @return
      */
     @Override
-    public String recordPatternTranslate()
+    public String recordPatternTranslate(String varName)
     {
         StringBuilder sb = new StringBuilder();
-        String dummyName = translate();
+        String dummyName = varName == null ? translate() : varName;
 		if (!plist.isEmpty())
 		{
-            sb.append(fieldNameTranslate(0, dummyName));
+            sb.append(indexedPatternTranslate(0, dummyName));
             for (int i=1; i < plist.size(); i++)
 			{
                 sb.append(getSemanticSeparator());
-                sb.append(fieldNameTranslate(i, dummyName));
+                sb.append(indexedPatternTranslate(i, dummyName));
 			}
 		}
 		return sb.toString();
@@ -171,5 +132,10 @@ public class TRRecordPattern extends TRPattern {
     @Override
     public <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg) {
         return visitor.caseRecordPattern(this, arg);
+    }
+
+    @Override
+    protected String getInvalidPatternMessage() {
+        return "VDM record pattern for record type " + typename.toString();
     }
 }

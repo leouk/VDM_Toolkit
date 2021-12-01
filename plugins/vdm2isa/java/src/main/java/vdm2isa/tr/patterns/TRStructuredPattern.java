@@ -20,14 +20,14 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
+import vdm2isa.tr.types.TRProductType;
 
-public class TRStructuredPattern extends TRPattern {
+public class TRStructuredPattern extends TRAbstractContextualPattern {
     
     private static final long serialVersionUID = 1L;
 
     private final IsaToken token;
     private String pattern; 
-    private final TRPatternList plist;
     private TRExpression exp;
 
     public static final Set<IsaToken> VALID_STRUCTURED_PATTERNS = new TreeSet<IsaToken>(
@@ -39,9 +39,8 @@ public class TRStructuredPattern extends TRPattern {
 
     private TRStructuredPattern(TCPattern p, TRPatternList plist, IsaToken token)
     {
-        super(p, p != null ? p.location : LexLocation.ANY);
+        super(p, p != null ? p.location : LexLocation.ANY, plist);
         this.token = token;
-        this.plist = plist;
         this.pattern = null;        
         this.exp = null;
     }
@@ -104,7 +103,6 @@ public class TRStructuredPattern extends TRPattern {
     public void setup()
     {
         super.setup();
-        TRNode.setup(plist);
         switch (isaToken())
         {
             case SET:
@@ -189,4 +187,49 @@ public class TRStructuredPattern extends TRPattern {
 	{
 		return visitor.caseStructuredPattern(this, arg);
 	}
+
+    @Override 
+    public boolean hasStructuredPattern()
+    {
+        return TRStructuredPattern.validStructuredContext(this);
+    }
+
+    /**
+     * On the actual structured pattern, invTranslate its TRPatternList with SEMICOLONS. This sets up the 
+     * local declaration context to unpick projected fields. The TRPatternList.structuredPatternTranslate()
+     * call will handle let-in and parenthesis.   
+     * @return
+     */
+    @Override
+    public String structuredPatternTranslate(String varName)
+    {
+        StringBuilder sb = new StringBuilder();
+        String dummyName = varName == null ? translate() : varName;
+		if (!plist.isEmpty())
+		{
+            sb.append(indexedPatternTranslate(0, dummyName));
+            for (int i=1; i < plist.size(); i++)
+			{
+                sb.append(getSemanticSeparator());
+                sb.append(indexedPatternTranslate(i, dummyName));
+			}
+		}
+		return sb.toString();
+    }
+
+    public static boolean validStructuredContext(TRPattern p) {
+        return p instanceof TRStructuredPattern && Arrays.asList(IsaToken.CROSSPROD/*, IsaToken.CONCATENATE*/).contains(p.isaToken());
+    }
+
+    @Override
+    protected String getInvalidPatternMessage() {
+        return "VDM structured pattern for cross product size = " + plist.size();
+    }
+
+    @Override
+    protected String indexedPatternExpression(int index, String dummyName) 
+    {
+        assert TRStructuredPattern.validStructuredContext(this) && index >= 0 && index < plist.size();
+        return TRProductType.fieldProjection(index, getPatternList().size(), dummyName);
+    }
 }
