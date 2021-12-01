@@ -17,7 +17,7 @@ import vdm2isa.tr.types.TRType;
 /**
  * All patterns are record-context aware, but only TRRecordPattern properly implements it of course. 
  */
-public abstract class TRPattern extends TRNode implements TRRecordContext {
+public abstract class TRPattern extends TRNode implements TRRecordContext, TRStructuredContext {
     
     private static final long serialVersionUID = 1L;
 
@@ -90,17 +90,36 @@ public abstract class TRPattern extends TRNode implements TRRecordContext {
         return typeAware(getPattern());
     }
 
+    protected String indexedPatternTranslate(int index, String dummyName)
+    {
+        report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_3P, getPattern(), index, getClass().getSimpleName());
+        return "";
+    }
+
     @Override
-    public boolean hasRecordPatterns()
+    public boolean hasRecordPattern()
     {
         return false;
     }
 
     @Override 
-    public String recordPatternTranslate()
+    public String recordPatternTranslate(String varName)
     {
         return translate();
     }
+
+    @Override
+    public boolean hasStructuredPattern()
+    {
+        return false;
+    }
+
+    @Override 
+    public String structuredPatternTranslate(String varName)
+    {
+        return translate();
+    }
+
 
     public TRDefinitionList getDefinitions(TRType type, NameScope scope) 
     {

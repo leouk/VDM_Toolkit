@@ -8,6 +8,6 @@ import vdm2isa.tr.MappableNode;
  * method with whichever implementer of this interface as a parameter for the context.  
  */
 public interface TRRecordContext extends MappableNode {
-    public boolean hasRecordPatterns();
-    public String recordPatternTranslate();
+    public boolean hasRecordPattern();
+    public String recordPatternTranslate(String varName);
 }
