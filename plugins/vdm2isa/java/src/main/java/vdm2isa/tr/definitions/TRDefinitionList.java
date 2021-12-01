@@ -72,7 +72,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		return result;
 	}
 
-	protected static String recordPatternTranslate(TRDefinition def)
+	protected static String patternContextTranslate(TRDefinition def)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (def instanceof TRValueDefinition)
@@ -107,17 +107,17 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			TRQualifiedDefinition qdef = (TRQualifiedDefinition)def;
 			if (qdef.def != null)
 			{
-				sb.append(recordPatternTranslate(def));
+				sb.append(patternContextTranslate(def));
 			}
 		}
 		//TODO add anyone else with patterns to this
 		return sb.toString();
 	}
 
-	protected String recordPatternTranslate(int i)
+	protected String patternContextTranslate(int i)
 	{
 		assert i >= 0 && i < size();
-		return TRDefinitionList.recordPatternTranslate(get(i));
+		return TRDefinitionList.patternContextTranslate(get(i));
 	}
 
 	@Override 
@@ -128,7 +128,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		{
 			// if found some... 
 			//TODO perhaps refactor his a bit .
-			result = !TRDefinitionList.recordPatternTranslate(get(i)).isEmpty();
+			result = !TRDefinitionList.patternContextTranslate(get(i)).isEmpty();
 		}
 		return result;
 	}
@@ -143,7 +143,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			String recTranslate = recordPatternTranslate(0);
+			String recTranslate = patternContextTranslate(0);
 			sb.append(recTranslate);	
 			for (int i = 1; i < size(); i++)
 			{
@@ -153,7 +153,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 					//sb.append(getSemanticSeparator());
 					sb.append(getFormattingSeparator());					
 				}
-				recTranslate = recordPatternTranslate(i);
+				recTranslate = patternContextTranslate(i);
 				sb.append(recTranslate);	
 			}
 		}

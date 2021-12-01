@@ -165,7 +165,7 @@ public class TRBoundedExpression extends TRExpression {
             sb.append(getInvTranslateSeparator());
         }
         // add the bounded predicate
-        sb.append(predicate.recordPatternTranslate(bindList));
+        sb.append(predicate.patternContextTranslate(bindList));
 
         // otherwise we would have empty binds, which will be caught within TRMultipleBindList. Avoid reissuing the error
         if (this.rParenCount > 0)

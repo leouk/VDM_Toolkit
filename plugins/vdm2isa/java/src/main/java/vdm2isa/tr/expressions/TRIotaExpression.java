@@ -55,7 +55,7 @@ public class TRIotaExpression extends TRExpression {
         {
             predStr.append(getInvTranslateSeparator());
         }
-        predStr.append(predicate.recordPatternTranslate(bind.getMultipleBindList()));
+        predStr.append(predicate.patternContextTranslate(bind.getMultipleBindList()));
         sb.append(IsaToken.parenthesise(predStr.toString()));
         return IsaToken.parenthesise(sb.toString()); 
     }

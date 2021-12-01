@@ -31,11 +31,11 @@ public abstract class TRAbstractContextualPattern extends TRPattern {
         }
         else
         {
-            if (needsPatternContext() || hasStructuredPattern())
+            if (needsPatternContext())
             {
                 setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
             }
-            if (plist.needsPatternContext() || plist.hasStructuredPattern())
+            if (plist.needsPatternContext())
             {
                 plist.setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
             }
@@ -94,23 +94,36 @@ public abstract class TRAbstractContextualPattern extends TRPattern {
         sb.append(indexedPatternExpression(index, varName));
 
         // if more patterns are needed (i.e. structured + record), then carry on within the inner patterns of the field
-        if (p instanceof TRRecordPattern)
+        // record patternss have them; structured patterns might. Pass the adequate (new) context pattern name, not given one!  
+        if (p.needsPatternContext())
         {
-            // for record pattern "recurse" on the outer patternName just created as the new dummy, taking into account semantic separator!
-            TRRecordPattern rp = (TRRecordPattern)p;
-            sb.append(rp.getSemanticSeparator());
-            sb.append(rp.patternContextTranslate(patternName));
-            //sb.append(rp.indexedPatternTranslate(index, patternName));
+            sb.append(p.getSemanticSeparator());
+            sb.append(p.patternContextTranslate(patternName));
+            //sb.append(p.indexedPatternTranslate(index, patternName));
         }
-        else if (TRStructuredPattern.validStructuredContext(p))
-        {
-            TRStructuredPattern sp = (TRStructuredPattern)p;
-            if (sp.hasStructuredPattern())
-            {
-                sb.append(sp.getSemanticSeparator());
-                sb.append(sp.structuredPatternTranslate(patternName));
-            }
-        } 
         return sb.toString();
+    }
+
+    /**
+     * On the actual record pattern, invTranslate its TRPatternList with SEMICOLONS. This sets up the 
+     * local declaration context to unpick projected fields. The TRPatternList.patternContextTranslate(null)
+     * call will handle let-in and parenthesis.   
+     * @return
+     */
+    @Override
+    public String patternContextTranslate(String varName)
+    {
+        StringBuilder sb = new StringBuilder();
+        String dummyName = varName == null ? translate() : varName;
+		if (!plist.isEmpty())
+		{
+            sb.append(indexedPatternTranslate(0, dummyName));
+            for (int i=1; i < plist.size(); i++)
+			{
+                sb.append(getSemanticSeparator());
+                sb.append(indexedPatternTranslate(i, dummyName));
+			}
+		}
+		return sb.toString();
     }
 }

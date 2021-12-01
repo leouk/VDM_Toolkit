@@ -189,32 +189,9 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
 	}
 
     @Override 
-    public boolean hasStructuredPattern()
+    public boolean needsPatternContext()
     {
         return TRStructuredPattern.validStructuredContext(this);
-    }
-
-    /**
-     * On the actual structured pattern, invTranslate its TRPatternList with SEMICOLONS. This sets up the 
-     * local declaration context to unpick projected fields. The TRPatternList.structuredPatternTranslate()
-     * call will handle let-in and parenthesis.   
-     * @return
-     */
-    @Override
-    public String structuredPatternTranslate(String varName)
-    {
-        StringBuilder sb = new StringBuilder();
-        String dummyName = varName == null ? translate() : varName;
-		if (!plist.isEmpty())
-		{
-            sb.append(indexedPatternTranslate(0, dummyName));
-            for (int i=1; i < plist.size(); i++)
-			{
-                sb.append(getSemanticSeparator());
-                sb.append(indexedPatternTranslate(i, dummyName));
-			}
-		}
-		return sb.toString();
     }
 
     public static boolean validStructuredContext(TRPattern p) {

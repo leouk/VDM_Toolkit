@@ -12,7 +12,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 
-public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRPatternContext, TRStructuredContext/*, TRUnionContext*/ {
+public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRPatternContext/*, TRUnionContext*/ {
     
     private static final long serialVersionUID = 1L;
 
@@ -48,24 +48,16 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		return super.toString() + " [PL=" + size() + "]";
 	}
 
-	protected List<Integer> getRecordPatternIndeces()
+	protected List<Integer> getPatternContextIndeces()
 	{
 		List<Integer> result = new Vector<Integer>(size());
 		for(int i = 0; i < size(); i++)
 		{
-			if (get(i) instanceof TRRecordPattern)
+			TRPattern p = get(i);
+			if (p.needsPatternContext())
+			{
 				result.add(i);
-		}
-		return result;
-	}
-
-	protected List<Integer> getStructuredPatternIndeces()
-	{
-		List<Integer> result = new Vector<Integer>(size());
-		for(int i = 0; i < size(); i++)
-		{
-			if (TRStructuredPattern.validStructuredContext(get(i)))
-				result.add(i);
+			}
 		}
 		return result;
 	}
@@ -92,7 +84,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	@Override
 	public boolean needsPatternContext()
 	{
-		return !getRecordPatternIndeces().isEmpty();
+		return !getPatternContextIndeces().isEmpty();
 	}
 
 	@Override
@@ -104,42 +96,13 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 			String old = getSemanticSeparator();
 			setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
 			sb.append(patternOpenContext());
-			List<Integer> recordPatternIndices = getRecordPatternIndeces();
-			sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).patternContextTranslate(varName));
-			for (int i = 1; i < recordPatternIndices.size(); i++)
+			List<Integer> patternContextIndices = getPatternContextIndeces();
+			sb.append(get(patternContextIndices.get(0)).patternContextTranslate(varName));
+			for (int i = 1; i < patternContextIndices.size(); i++)
 			{
 				sb.append(getSemanticSeparator());
 				sb.append(getFormattingSeparator());
-				sb.append(((TRRecordPattern)get(recordPatternIndices.get(0))).patternContextTranslate(varName));
-			}
-			sb.append(patternCloseContext());
-			setSemanticSeparator(old);
-		}
-		return sb.toString();
-	}
-
-	@Override
-	public boolean hasStructuredPattern()
-	{
-		return !getStructuredPatternIndeces().isEmpty();
-	}
-
-	@Override
-	public String structuredPatternTranslate(String varName)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (hasStructuredPattern())
-		{
-			String old = getSemanticSeparator();
-			setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
-			sb.append(patternOpenContext());
-			List<Integer> structuredPatternIndices = getStructuredPatternIndeces();
-			sb.append(((TRStructuredPattern)get(structuredPatternIndices.get(0))).structuredPatternTranslate(varName));
-			for (int i = 1; i < structuredPatternIndices.size(); i++)
-			{
-				sb.append(getSemanticSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(((TRStructuredPattern)get(structuredPatternIndices.get(0))).structuredPatternTranslate(varName));
+				sb.append(get(patternContextIndices.get(0)).patternContextTranslate(varName));
 			}
 			sb.append(patternCloseContext());
 			setSemanticSeparator(old);

@@ -1,7 +1,5 @@
 package vdm2isa.tr.patterns;
 
-import java.util.Arrays;
-
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
@@ -63,7 +61,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
      */
     // @Override
     // public String translate() {
-    //     return getPatternList().recordPatternTranslate();
+    //     return getPatternList().patternContextTranslate(null);
     // }
      /**
       * Record patterns translate taking a let into context to allow for user names to be available
@@ -104,29 +102,6 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
     public boolean needsPatternContext()
     {
         return true;
-    }
-
-    /**
-     * On the actual record pattern, invTranslate its TRPatternList with SEMICOLONS. This sets up the 
-     * local declaration context to unpick projected fields. The TRPatternList.recordPatternTranslate()
-     * call will handle let-in and parenthesis.   
-     * @return
-     */
-    @Override
-    public String patternContextTranslate(String varName)
-    {
-        StringBuilder sb = new StringBuilder();
-        String dummyName = varName == null ? translate() : varName;
-		if (!plist.isEmpty())
-		{
-            sb.append(indexedPatternTranslate(0, dummyName));
-            for (int i=1; i < plist.size(); i++)
-			{
-                sb.append(getSemanticSeparator());
-                sb.append(indexedPatternTranslate(i, dummyName));
-			}
-		}
-		return sb.toString();
     }
 
     @Override

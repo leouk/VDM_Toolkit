@@ -64,7 +64,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         sb.append(IsaToken.SEQ_OPEN.toString());
         sb.append(getFormattingSeparator());
 
-        sb.append(first.recordPatternTranslate(bindings));
+        sb.append(first.patternContextTranslate(bindings));
 
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.POINT.toString());
@@ -101,7 +101,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
             sb.append(IsaToken.COMMA.toString());
             sb.append(getFormattingSeparator());
 
-            sb.append(predicate.recordPatternTranslate(bindings));            
+            sb.append(predicate.patternContextTranslate(bindings));            
         }
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.SEQ_CLOSE.toString());

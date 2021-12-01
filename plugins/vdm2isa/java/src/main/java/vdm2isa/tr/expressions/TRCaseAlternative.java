@@ -63,7 +63,7 @@ public class TRCaseAlternative extends TRExpression {
         sb.append(IsaToken.SPACE.toString());
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());
-        sb.append(result.recordPatternTranslate(pattern));
+        sb.append(result.patternContextTranslate(pattern));
         // no parenthesising per case, but on the overal case expression
         return casesTrueAlternative ? IsaToken.parenthesise(sb.toString()) : sb.toString();
     }

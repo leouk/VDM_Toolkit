@@ -177,19 +177,19 @@ public abstract class TRExpression extends TRNode
      * @param context if null, normally translate; otherwise take recordpatterns into account. 
      * @return record-context (or normal) translation 
      */
-    public String recordPatternTranslate(TRPatternContext context)
+    public String patternContextTranslate(TRPatternContext context)
     {
         StringBuilder sb = new StringBuilder();
-        boolean hasRecPattern = context != null && context.needsPatternContext();
-        if (hasRecPattern)
+        boolean hasPatternContext = context != null && context.needsPatternContext();
+        if (hasPatternContext)
         {
             sb.append(IsaToken.LPAREN.toString());
             sb.append(context.patternContextTranslate(null));
         }
-        // could have a "context.hasRecordPatterns() ? IsaToken.parenthesise(context.recordPatternTranslate() + expr.translate()) : expr.translate()"
+        // could have a "context.needsPatternContext() ? IsaToken.parenthesise(context.patternContextTranslate(null) + expr.translate()) : expr.translate()"
         // but kept it explicitly for clarity. 
         sb.append(translate());
-        if (hasRecPattern)
+        if (hasPatternContext)
         {
             sb.append(IsaToken.RPAREN.toString());
         }

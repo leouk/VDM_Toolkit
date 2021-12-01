@@ -131,7 +131,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		else
 		{
 			// as TLD, no need for record-context translation; this is for non TLD expr!
-			expStr.append(expr);//exp.translate());//exp.recordPatternTranslate(pattern));
+			expStr.append(expr);//exp.translate());//exp.patternContextTranslate(pattern));
 		} 
 		return expStr.toString();
 	}
@@ -277,7 +277,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			// figure out the definitions reshape based on complex pattern (if any)
 			// given certain patterns might have more locals than we want defs to, 
 			// use a set instead of list (e.g. mk_R(x,y) = r, will create one variable only
-			// and the recordPatternTranslate figures the rest out)
+			// and the patternContextTranslate() figures the rest out)
 			result = new TRDefinitionSet();
 			for(int i = 0; i < defs.size(); i++)
 			{
