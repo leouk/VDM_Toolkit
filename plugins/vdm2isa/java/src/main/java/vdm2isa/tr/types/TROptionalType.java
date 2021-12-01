@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCOptionalType;
 
 import vdm2isa.lex.IsaToken;
@@ -45,6 +46,13 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
 		return result;
 	}
 
+    @Override 
+    protected void setInferredNamedForType(TCNameToken tn)
+    {
+        super.setInferredNamedForType(tn);
+        this.dataTypeConstructors.setInferredNamedForType(tn);
+    }
+
     // @Override
     // public String setSemanticSeparator(String sep)
     // {
@@ -83,15 +91,18 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
 		return visitor.caseOptionalType(this, arg);
 	}
 
+    @Override
     public boolean isNumericType() {
         return false;
     }
 
+    @Override
 	public boolean isOrdered()
 	{
 		return getInnerType().isOrdered();
 	}
 
+    @Override
 	public boolean isDataType()
 	{
 		return true;

@@ -128,6 +128,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	protected void setInferredNamedForType(TCNameToken tn)
 	{
 		typename = tn;
+		for (TRType t : this)
+		{
+			if (t instanceof TRQuoteType)
+			{
+				t.setInferredNamedForType(tn);
+			}
+		}
 	}
 
 	public String getName()
