@@ -39,6 +39,15 @@ types
 	TUnion6' = int | nat
 	inv u == (is_(u, int) => u < 0) and (is_(u, TBasic) => u > 0);
 	
+	--quotes *must* be part of a union (and not dangling) we need their unique names on literals
+	TQuoteUnion = <A> | <B> | <C>;
+	
+	--other unions are okay
+	TBasicUnion = nat | int;
+	
+	--you can mix unions
+	TBasicQuoteUnion = TBasicUnion | TQuoteUnion; 
+	
 functions
 
 	f1: TUnion6 -> bool
@@ -98,6 +107,26 @@ functions
 
 	f6': TUnion6' -> int
 	f6'(u) == u;
+	
+	
+	f7: TQuoteUnion -> bool
+	f7(qu) == qu <> <A>;
+
+	f8: TBasicUnion -> int
+	f8(bu) == bu;
+	
+	--f8': TBasicUnion -> [nat]
+	--f8'(bu) == if is_nat(bu) then bu else nil;
+	
+	f9: TBasicQuoteUnion -> bool
+	f9(bqu) == if is_TBasicUnion(bqu) then f8(bqu) > 10 else f7(bqu);
+
+	f9': TBasicQuoteUnion -> bool
+	f9'(bqu) == 
+		cases true:
+			(is_TBasicUnion(bqu)) -> f8(bqu) > 10,
+			(is_TQuoteUnion(bqu)) -> f7(bqu)
+		end;
 
 end TestV2ITypesComplexUnion
 
