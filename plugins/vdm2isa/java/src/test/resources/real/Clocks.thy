@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-02T07:30:27.570652Z
+(* VDM to Isabelle Translation @2021-12-02T15:21:39.501536Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
@@ -1093,7 +1093,96 @@ where
 			(if (inv_Machine M) then
 			(
 		let 
-(res::(Name \<rightharpoonup> (FMU\<times> bool))) = 
+(res::(Name \<rightharpoonup> (FMU\<times> bool))) = (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ fmu .   ((fmu \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  \<and> (fmu \<in> fmus) } 
+		{ (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))) | fmu .  ((fmu \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  \<and> (fmu \<in> fmus) } 
+		((inv_VDMSeq1' (inv_VDMChar))) 
+		
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U )))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U ))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U )))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U )))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U ))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ))) )\<and>
+		 (inv_bool )
+		) 
+		(
+	\<lambda> (fmu :: Name)  (dummy0Rng :: (FMU\<times> bool)) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) )\<and>
+		 (inv_bool (snd dummy0Rng))
+		))) \<and> ((inv_VDMSeq1' (inv_VDMChar) fmu)) then
+		fmu
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (fmu :: Name) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and> 
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) )\<and>
+		 (inv_bool (snd (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))
+		) then
+		(step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (fmu :: Name)  (dummy0Rng :: (FMU\<times> bool)) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) )\<and>
+		 (inv_bool (snd dummy0Rng))
+		))) \<and> (inv_bool (fmu \<in> fmus)) then
+		(fmu \<in> fmus)
+	 else
+		undefined
+	)
+	))
 		in
 			(if ((inv_Map ((inv_VDMSeq1' (inv_VDMChar))) 
 		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U )))) \<and> 
@@ -1113,7 +1202,84 @@ where
 		) res)) then
 			(
 		let 
-(fmuMap::(Name \<rightharpoonup> FMU)) = ;
+(fmuMap::(Name \<rightharpoonup> FMU)) = (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ fmu .   ((fmu \<in>(dom res)))  } 
+		{ (fst ((the(res fmu)))) | fmu .  ((fmu \<in>(dom res)))  } 
+		((inv_VDMSeq1' (inv_VDMChar))) 
+		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U FMU))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(
+	\<lambda> (fmu :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) fmu)) then
+		fmu
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (fmu :: Name) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) ) then
+		(fst ((the(res fmu))))
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (fmu :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (True::\<bool>)) then
+		(True::\<bool>)
+	 else
+		undefined
+	)
+	));
 		
 (eventFMUs::Name VDMSet) = { fmu .   ((fmu \<in>(dom res)))  \<and> ((snd ((the(res fmu)))) = (True::\<bool>)) }
 		in
@@ -1191,7 +1357,84 @@ definition
 where
 	"enterEventMode I  fmus \<equiv> 
 	\<comment>\<open>User defined body of enterEventMode\<close>
-	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := \<rparr>\<rparr>"
+	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ name .   ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | name .  ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		((inv_VDMSeq1' (inv_VDMChar))) 
+		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U FMU))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(
+	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) name)) then
+		name
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (name :: Name) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) ) then
+		((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (name \<in> fmus)) then
+		(name \<in> fmus)
+	 else
+		undefined
+	)
+	))\<rparr>\<rparr>"
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 445:5\<close>
@@ -1222,7 +1465,84 @@ definition
 where
 	"enterStepMode I  fmus \<equiv> 
 	\<comment>\<open>User defined body of enterStepMode\<close>
-	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := \<rparr>\<rparr>"
+	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ name .   ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | name .  ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		((inv_VDMSeq1' (inv_VDMChar))) 
+		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U FMU))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U FMU))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(
+	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) name)) then
+		name
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (name :: Name) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) ) then
+		((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (name \<in> fmus)) then
+		(name \<in> fmus)
+	 else
+		undefined
+	)
+	))\<rparr>\<rparr>"
 
 	
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
