@@ -193,11 +193,17 @@ public class TRUnionType extends TRType implements TRDataType {
 				sb.append(types.invTranslate(varName));
 			}
 		}
+		else if (tname != null && !tname.isEmpty())
+		{
+			sb.append(IsaToken.INV.toString());
+			sb.append(tname);
+			sb.append(IsaToken.SPACE.toString());
+		}
 		else
 		{
 			// this will generate an error that the type needs a name! take the hint :-)
 			// this will happen for all ill-formed unions, e.g. set of (nat | int), which should be set of U for U = nat | int
-			report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, tname.isEmpty() ? "inner types" : tname);
+			report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, "inner types");
 		}
 		return IsaToken.parenthesise(sb.toString());		
     }

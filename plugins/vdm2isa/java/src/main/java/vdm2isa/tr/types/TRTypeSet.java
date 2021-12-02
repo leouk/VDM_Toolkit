@@ -366,7 +366,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	{
 		assert this.contains(t);
 		return t instanceof TRQuoteType ? 
-			t.translate().trim() : 
+			t.translate() : 
 			TRTypeSet.prefixTranslate(t.translate().trim(), prefixed, getName());
 	}
 
@@ -391,10 +391,15 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		assert this.contains(t) && varName != null && !varName.isEmpty();
 		StringBuilder sb = new StringBuilder();
 		sb.append(prefixTranslate(t));
-		sb.append(varName);
+		// quote types do not have inner structure
+		if (!(t instanceof TRQuoteType))
+		{
+			sb.append(varName);
+		}
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(IsaToken.FUN.toString());
 		sb.append(IsaToken.SPACE.toString());
+		// the var name for quotes is the outer case varname, which is the same, so this will work 
 		sb.append(t.invTranslate(varName));
 		return sb.toString();
 	}
