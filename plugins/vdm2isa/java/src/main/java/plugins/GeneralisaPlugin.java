@@ -60,6 +60,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", 
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/VDMToolkit.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"
+            
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
 
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl"
@@ -77,11 +79,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesNamed.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesRecords.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesOptional.vdmsl"
-                 ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
+            //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexUnion.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexRecord.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
+           //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
 });
     }
 
@@ -155,8 +157,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 			long before = System.currentTimeMillis();
             
             GeneralisaPlugin.setupProperties();
-			GeneralisaPlugin.reset();
-            localReset();
+			GeneralisaPlugin.fullReset(this);
             GeneralisaPlugin.checkVDMSettings();
 
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
@@ -335,12 +336,19 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return n + " " + (n != 1 ? s + pl : s);
     }
 
+    protected static void fullReset(GeneralisaPlugin g)
+    {
+        GeneralisaPlugin.reset();
+        g.localReset();
+    }
+
     protected static void reset() {
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
 		// These are now a tc-tr.mappings init actions
         //IsaTemplates.reset();
 		//TRRecordType.reset();
+        //TRQuoteType.reset();
     }
 
     public static void setupProperties() {

@@ -10,7 +10,6 @@ import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCFunctionCallFinder;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -19,7 +18,6 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRSpecificationKind;
-import vdm2isa.tr.expressions.TRExpression;
 
 public class ExuPlugin extends GeneralisaPlugin {
 
@@ -41,29 +39,6 @@ public class ExuPlugin extends GeneralisaPlugin {
         }
         return result;
     }
-
-    // protected void checkSpecificationCallsConsistency(TRSpecificationKind kind, TCDefinition/*TCExplicitFunctionDefinition*/ specDef)
-    // {
-    //     //TODO this is not quite complete: if you get pre_g in the post_h' it would not fail! Oh well
-    //     if (specDef != null)
-    //     {
-    //         TCNameSet calledNames = specDef.getCallMap();
-    //         for(TCNameToken n : calledNames)
-    //         {
-    //             // for non-spec name calls, insist that at least their pres are called! 
-    //             if (!isSpecificationName(n))
-    //             {
-    //                 if (!calledNames.contains(n.getPreName(n.getLocation())))
-    //                 {
-    //                     warning(IsaWarningMessage.VDMSL_EXU_MISSING_SPECCALL_3P, 
-    //                         n.getLocation(), specDef.name.toString(), 
-    //                             kind.equals(TRSpecificationKind.NONE) ? "body" : 
-    //                             kind.name().toLowerCase(), n);    
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     protected void checkSpecificationCallsConsistency(TCModuleList tclist, TRSpecificationKind kind, TCExplicitFunctionDefinition spec)
     {
@@ -88,13 +63,15 @@ public class ExuPlugin extends GeneralisaPlugin {
                         stack.clear();
                         stack.push(pren);
                         TCDefinitionList predef = tclist.findDefinitions(stack);
-                        if (predef != null && predef.isEmpty())
+                        // there isn't a pre defined? Okay what about the type invariants?
+                        if (predef == null || predef.isEmpty())
                         {
                             warning(IsaWarningMessage.VDMSL_EXU_MISSING_INVCALL_3P,
                                 n.getLocation(), spec.name.toString(), 
-                                kind.equals(TRSpecificationKind.NONE) ? "body" : 
-                                kind.name().toLowerCase(), n);
+                                    kind.equals(TRSpecificationKind.NONE) ? "body" : 
+                                    kind.name().toLowerCase(), n);
                         }
+                        // there is a pre defined, then why haven't you called it? 
                         else 
                         {
                             warning(IsaWarningMessage.VDMSL_EXU_MISSING_SPECCALL_3P, 
@@ -115,6 +92,7 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     protected void checkSpecificationDependencies(TCModuleList tclist) 
     {
+        int mcount = 0;
         for(TCModule m : tclist)
         {
             for(TCDefinition d : m.defs)
@@ -143,7 +121,9 @@ public class ExuPlugin extends GeneralisaPlugin {
                     checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, idef.measureDef);
                 }
             }
+            mcount++;
         }
+        addLocalModules(mcount);
     }
 
     @Override
