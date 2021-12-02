@@ -36,6 +36,7 @@ public final class IsaTemplates {
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
 
+    // Has to be here and not in IsaToken, because cannot be in Enum initialiser + constructor
     protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
 
     public static final void reset()

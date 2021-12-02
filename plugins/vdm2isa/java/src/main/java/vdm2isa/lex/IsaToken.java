@@ -145,6 +145,8 @@ public enum IsaToken {
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),
 	IOTA(Token.IOTA, "THE"),
 	LAMBDA(Token.LAMBDA, "\\<lambda>"),
+	MAPCOMPSET(null, "mapCompSetBound"),
+	MAPCOMPTYP(null, "mapCompTypeBound"),
 	
 	SET_OPEN(Token.SET_OPEN, "{"),
 	SET_CLOSE(Token.SET_CLOSE, "}"),
@@ -203,6 +205,10 @@ public enum IsaToken {
 
 	private final Token  vdm;
 	private final String isa;
+
+	    protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
+
+
 
 	private static final Set<String> INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
         Arrays.asList(
@@ -275,7 +281,9 @@ public enum IsaToken {
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
 		this.isa = isa;
-		IsaTemplates.ALL_ISA_TOKENS.add(isa);//this);
+		// all but underscore, for dummy pattern in identifiers as valid 
+		if (!isa.equals("_"))
+			IsaTemplates.ALL_ISA_TOKENS.add(isa);//this);
 	}
 
 	//@todo add infixlr notation here to know where/when to "pad" the string! 
