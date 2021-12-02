@@ -50,6 +50,8 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		super.setup();
 		setSemanticSeparator(IsaToken.SPACE.toString());
 		setFormattingSeparator(IsaToken.SPACE.toString());
+		// setuping these calculated fields, will entail duplicated setup (i.e. many of the type-level duplications are also in the module list)
+		// that's okay, given we need to use the definitions sometimes, hence the double calculation 
 		TRNode.setup(definitions);
 	}
 
