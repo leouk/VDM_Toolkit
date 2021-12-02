@@ -9,7 +9,14 @@ values
 	
 	
 functions
+	--Warning appears twice because of the type bound set for both domain and range
+	--Warning [VDM   ] 11102: Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet')
+	--difficult set finiteness proof!!! 
+	v96: () -> map nat to nat
+	v96() == { x |-> 10 | x: nat & x < 10 };
 
+	--v961: () -> map nat to nat
+	--v961() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
 
 end TestV2IWarnings
 

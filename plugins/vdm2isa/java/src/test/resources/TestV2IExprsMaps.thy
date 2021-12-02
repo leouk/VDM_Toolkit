@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-01T15:26:51.242596Z
+(* VDM to Isabelle Translation @2021-12-02T14:39:23.641244Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -56,7 +56,36 @@ where
 abbreviation
 	v95 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"v95 \<equiv> "
+	"v95 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ x .   ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  } 
+		{ (10::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (x :: VDMNat1)  (dummy0EitherDom :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 dummy0EitherDom))) \<and> (inv_VDMNat1 x) then
+		x
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (dummy0EitherDom :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 dummy0EitherDom))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
+		(10::VDMNat1)
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (dummy0EitherDom :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 dummy0EitherDom))) \<and> (inv_bool (True::\<bool>)) then
+		(True::\<bool>)
+	 else
+		undefined
+	)
+	))"
 
 	definition
 	inv_v95 :: "\<bool>"
@@ -68,7 +97,36 @@ where
 abbreviation
 	v952 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"v952 \<equiv> "
+	"v952 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (x + y) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (x + y)) then
+		(x + y)
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
+		(10::VDMNat1)
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (True::\<bool>)) then
+		(True::\<bool>)
+	 else
+		undefined
+	)
+	))"
 
 	definition
 	inv_v952 :: "\<bool>"
@@ -80,7 +138,42 @@ where
 abbreviation
 	v953 :: "(R \<rightharpoonup> VDMNat1)"
 where
-	"v953 \<equiv> "
+	"v953 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		
+    (\<lambda> R .
+		(((inv_VDMNat (x\<^sub>R R))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R R)))
+		) )
+		(inv_VDMNat1) 
+		(
+	\<lambda> (dummy::R) (dummy2::VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 
+		 then 
+    let x = (x\<^sub>R dummy); y = (y\<^sub>R dummy) in
+  		\<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_VDMNat1 (10::VDMNat1)) then
+		(10::VDMNat1)
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_bool (True::\<bool>)) then
+		(True::\<bool>)
+	 else
+		undefined
+	)
+	))"
 
 	definition
 	inv_v953 :: "\<bool>"
@@ -90,21 +183,38 @@ where
 	
 	
 abbreviation
-	v954 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
-where
-	"v954 \<equiv> "
-
-	definition
-	inv_v954 :: "\<bool>"
-where
-	"inv_v954  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v954)"
-
-	
-	
-abbreviation
 	v97 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
-	"v97 \<equiv> "
+	"v97 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ x .   ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 x) then
+		x
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
+		(10::VDMNat1)
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (True::\<bool>)) then
+		(True::\<bool>)
+	 else
+		undefined
+	)
+	))"
 
 	definition
 	inv_v97 :: "\<bool>"
@@ -116,7 +226,36 @@ where
 abbreviation
 	v98 :: "(VDMNat \<rightharpoonup> VDMNat1)"
 where
-	"v98 \<equiv> "
+	"v98 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ d .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		{ r .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
+		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_VDMNat1 d) then
+		d
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
+		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_VDMNat1 r) then
+		r
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
+		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_bool (r = (d * (2::VDMNat1)))) then
+		(r = (d * (2::VDMNat1)))
+	 else
+		undefined
+	)
+	))"
 
 	definition
 	inv_v98 :: "\<bool>"
@@ -124,54 +263,4 @@ where
 	"inv_v98  \<equiv> (inv_Map (inv_VDMNat) (inv_VDMNat1) v98)"
 
 	
-	
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
-
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
-definition
-	pre_v96 :: "bool"
-where
-	"pre_v96  \<equiv> True"
-
-
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
-definition
-	post_v96 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> bool"
-where
-	"post_v96 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v96 specification\<close>
-		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
-
-definition
-	v96 :: "(VDMNat \<rightharpoonup> VDMNat)"
-where
-	"v96  \<equiv> 
-	\<comment>\<open>User defined body of v96\<close>
-	"
-
-	
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 27:5\<close>
-
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 27:5\<close>
-definition
-	pre_v961 :: "bool"
-where
-	"pre_v961  \<equiv> True"
-
-
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 27:5\<close>
-definition
-	post_v961 :: "(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> bool"
-where
-	"post_v961 RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_v961 specification\<close>
-		((inv_Map (inv_VDMNat) (inv_VDMNat) RESULT))"
-
-definition
-	v961 :: "(VDMNat \<rightharpoonup> VDMNat)"
-where
-	"v961  \<equiv> 
-	\<comment>\<open>User defined body of v961\<close>
-	"
-
 end

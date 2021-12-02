@@ -82,7 +82,11 @@ where
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
 datatype TMixedQuoteUnion = U_TMixedUnion "TMixedUnion" | 
 		 U_TQuoteUnion "TQuoteUnion"
-	
+
+value "TMixedQuoteUnion.U_TMixedUnion TMixedUnion.U_A"
+value "TMixedQuoteUnion.U_TQuoteUnion TQuoteUnion.U_A"
+
+value "TMixedQuoteUnion.U_TMixedUnion TMixedUnion.U_A = TMixedQuoteUnion.U_TQuoteUnion TQuoteUnion.U_A"
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
 definition
@@ -181,8 +185,9 @@ definition
 where
 	"f3  \<equiv> 
 	\<comment>\<open>User defined body of f3\<close>
-	TQuoteUnion.U_A "
+	TMixedUnion.U_A "
 
+value "{ 10::nat | x . x\<in>{1::nat,2,3} } = {10}"
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 31:5\<close>
 
@@ -206,6 +211,7 @@ definition
 where
 	"f4  \<equiv> 
 	\<comment>\<open>User defined body of f4\<close>
-	TQuoteUnion.U_A "
+
+	TMixedQuoteUnion TQuoteUnion.U_A "
 
 end

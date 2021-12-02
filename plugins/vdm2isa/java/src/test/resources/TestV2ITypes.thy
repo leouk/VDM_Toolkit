@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-01T15:26:51.248824Z
+(* VDM to Isabelle Translation @2021-12-02T09:13:48.225861Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypes.vdmsl' at line 1:8
@@ -101,5 +101,22 @@ where
 			undefined)"
 
 	
+
+	
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 20:5\<close>
+type_synonym T = "VDMNat VDMSet"
+	
+
+\<comment>\<open>in 'TestV2ITypes' (./src/test/resources/TestV2ITypes.vdmsl) at line 21:9\<close>
+definition
+	inv_T :: "T \<Rightarrow> bool"
+where
+	"inv_T {a,  b,  c} \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for inv_T specification\<close>
+		(((inv_VDMSet' (inv_VDMNat) {a,  b,  c})))  \<and> 
+		\<comment>\<open>User defined body of inv_T\<close>
+		((a < b) \<and> (b < c))"
+
+		 
 
 end
