@@ -11,11 +11,13 @@ import java.util.TreeSet;
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -334,6 +336,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 
 	public TRPatternListList getPatternListList()
 	{
+		// these names must be unique for a TC binding list (e.g. no "x,y in set S, x,z in seq T" within same list)
 		TRPatternListList result = new TRPatternListList();
 		for(TRMultipleBind b : this)
 		{
@@ -341,6 +344,27 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		}
 		TRNode.setup(result);
 		return result;
+	}
+
+	/**
+	 * Look through the multiple binding list patterns to see which ones matches it *first*. Assume unique names. No warn. 
+	 */
+	public TRMultipleBind findBinding(TCNameToken name)
+	{
+		TRMultipleBind result = null; 
+		for(TRMultipleBind b : this)
+		{
+			if (b.plist.getNamesInPatternList().contains(name))
+			{
+				result = b;
+			}
+		}
+		// if a result is found, then dwell on whether to warn or not
+		if (result != null && !getPatternListList().uniqueNames())
+		{
+			warning(IsaWarningMessage.VDMSL_FIND_BINDING_OF_DUPLICATE_PATTERN_NAME_2P, result.translate(), name.toString());
+		}
+		return result; 
 	}
 
 	public TRDefinitionList getDefinitions()

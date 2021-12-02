@@ -2,6 +2,8 @@ package vdm2isa.tr.patterns;
 
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.patterns.TCIgnorePattern;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -22,6 +24,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
     private static final long serialVersionUID = 1L;
 
     private final TCPattern vdmPattern;
+    private Boolean uniqueNames = null;
 
     protected TRPattern(TCPattern p, LexLocation location)
     {
@@ -35,6 +38,24 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
         result.add(this);
         TRNode.setup(result);
         return result; 
+    }
+
+    public TCNameList getNamesInPattern()
+    {
+        return this.getVDMPattern().getVariableNames();
+    }
+
+    public boolean uniqueNames()
+    {
+        if (uniqueNames == null)
+        {
+            TCNameList names = getNamesInPattern();
+            TCNameSet nset = new TCNameSet();
+            nset.addAll(names);
+            uniqueNames = names.size() == nset.size();
+        }
+        assert uniqueNames != null;
+        return uniqueNames;
     }
 
     public TCPattern getVDMPattern()
@@ -92,7 +113,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
 
     protected String indexedPatternTranslate(int index, String dummyName)
     {
-        report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_3P, patternTranslate(), index, getClass().getSimpleName());
+        report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_4P, patternTranslate(), "index", index, getClass().getSimpleName());
         return "";
     }
 

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
@@ -15,6 +17,9 @@ import vdm2isa.tr.TRNode;
 public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements TRPatternContext/*, TRUnionContext*/ {
     
     private static final long serialVersionUID = 1L;
+
+	//Patterns might be changed/massaged, so recreated every time
+	//private TCNameList namesInPattern = null;
 
 	protected TRPatternList() 
 	{
@@ -46,6 +51,24 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	public String toString()
 	{
 		return super.toString() + " [PL=" + size() + "]";
+	}
+
+	public TCNameList getNamesInPatternList()
+    {
+		TCNameList nlist = new TCNameList();
+		for(TRPattern p : this)
+		{
+			nlist.addAll(p.getNamesInPattern());
+		}
+        return nlist;
+    }
+
+	public boolean uniqueNames()
+	{
+		TCNameList names = getNamesInPatternList();
+		TCNameSet nset = new TCNameSet();
+		nset.addAll(names);
+		return names.size() == nset.size();		
 	}
 
 	protected List<Integer> getPatternContextIndeces()

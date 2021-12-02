@@ -5,9 +5,11 @@
 package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
 
@@ -24,6 +26,8 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 {
 	private static final long serialVersionUID = 1L;
 
+	private TRPatternList flatPatternList = null;
+
 	protected TRPatternListList()
 	{
 		super();
@@ -38,6 +42,16 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public TRPatternListList(TCPatternListList from) throws Exception
 	{
 		super(from);
+	}
+
+	public boolean uniqueNames()
+	{
+		return this.getFlatPatternList().uniqueNames();
+	}
+
+	public TCNameList getNamesInPatternListList()
+    {
+		return this.getFlatPatternList().getNamesInPatternList();
 	}
 
 	@Override
@@ -82,24 +96,26 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return sb.toString();
 	}
 
-	//TODO maybe make this a field called once given the structure never changes?
 	public TRPatternList getFlatPatternList()
 	{
-		TRPatternList result = new TRPatternList();
-		int concSize = 0;
-		if (!isEmpty())
+		if (flatPatternList == null)
 		{
-			result.setSemanticSeparator(get(0).getSemanticSeparator());
-			result.setFormattingSeparator(get(0).getFormattingSeparator());
-			for (TRPatternList plist : this)
+			flatPatternList = new TRPatternList();
+			int concSize = 0;
+			if (!isEmpty())
 			{
-				result.addAll(plist);
-				concSize += plist.size();
-			}
+				flatPatternList.setSemanticSeparator(get(0).getSemanticSeparator());
+				flatPatternList.setFormattingSeparator(get(0).getFormattingSeparator());
+				for (TRPatternList plist : this)
+				{
+					flatPatternList.addAll(plist);
+					concSize += plist.size();
+				}
+			}	
+			assert flatPatternList.size() == concSize;	
+			TRNode.setup(flatPatternList);	
 		}
-		assert result.size() == concSize;	
-		TRNode.setup(result);
-		return result; 
+		return flatPatternList;//Collections.unmodifiableList(flatPatternList); 
 	}
 
 	/**
