@@ -441,7 +441,9 @@ lemmas ex1_defs = ex1_def mapCompSetBind_defs inv_VDMNat1_def inv_VDMNat_def
 definition
   ex2 :: "VDMNat \<rightharpoonup> VDMNat"
   where
-  "ex2 \<equiv> mapCompSetBind {1,2,3::VDMNat} {2,4,6::VDMNat} inv_VDMNat inv_VDMNat (\<lambda> d . (\<lambda> r . d+r)) (rngcnst 10) (\<lambda> d r . r = d*2)"
+  "ex2 \<equiv> mapCompSetBind {1,2,3::VDMNat} {2,4,6::VDMNat} inv_VDMNat inv_VDMNat (\<lambda> d . (\<lambda> r . d+r)) (rngcnst 10) (\<lambda> d .(\<lambda>r . r = d*2))"
+
+lemma "(rngcnst (10::nat)) x y = 10" by (simp add: rngcnst_def) 
 
 lemmas ex2_defs = ex2_def mapCompSetBind_defs inv_VDMNat1_def inv_VDMNat_def 
 
