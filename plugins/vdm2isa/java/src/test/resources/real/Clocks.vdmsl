@@ -188,6 +188,14 @@ definitions
 
 functions
 	/**
+	 * Dereference an input in a given FMU.
+	 */
+	derefInput: FMU * Ref -> Variable
+	derefInput(fmu, ref) ==
+		iota c in set fmu.inputs & c.ref = ref
+	pre exists c in set fmu.inputs & c.ref = ref;
+
+	/**
 	 * Dereference an output in a given FMU.
 	 */
 	 --@LF -verbose
@@ -421,14 +429,6 @@ functions
 	derefClock(fmu, ref) ==
 		iota c in set fmu.clocks & c.ref = ref
 	pre exists c in set fmu.clocks & c.ref = ref;
-
-	/**
-	 * Dereference an input in a given FMU.
-	 */
-	derefInput: FMU * Ref -> Variable
-	derefInput(fmu, ref) ==
-		iota c in set fmu.inputs & c.ref = ref
-	pre exists c in set fmu.inputs & c.ref = ref;
 
 	/**
 	 * Move all relevant FMUs into event mode.
