@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.tc.patterns.TCTuplePattern;
 import com.fujitsu.vdmj.tc.patterns.TCUnionPattern;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
@@ -181,6 +182,9 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
             case UNION:
             case MUNION: 
             case MAP:
+                result = pattern;
+                report(IsaErrorMessage.ISA_INVALID_PATTERN_TRANSLATE_4P, pattern, "structured", isaToken().toString(), getClass().getSimpleName());
+                break;
             case LPAREN: 
                 result = pattern;
                 break;
