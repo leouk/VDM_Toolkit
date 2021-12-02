@@ -30,15 +30,15 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
         super(location, first, bindings, predicate, def, exptype);
-        // if anything other than variable expression is used, we need to convert to the existential comprehension form
-        this.existential = first != null && !(first instanceof TRVariableExpression);
+        this.existential = false;
     }
     
     @Override
     public void setup()
     {
         super.setup();
-        this.existential = first != null && !(first instanceof TRVariableExpression);
+        // if anything other than variable expression is used, we need to convert to the existential comprehension form
+        this.existential = TRSetCompExpression.existentialComprehension(first);
         //System.out.println(toString());
     }
 
@@ -106,4 +106,10 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
 	{
 		return visitor.caseSetCompExpression(this, arg);
 	}
+
+    public static boolean existentialComprehension(TRExpression first)
+    {
+        // x, 5 is not existential; anything else is
+        return first != null && !(first instanceof TRVariableExpression);// && !(first instanceof TRLiteralExpression);
+    }
 }

@@ -32,6 +32,12 @@ public abstract class TRAbstractCompExpression extends TRExpression {
         super.setup();
         setFormattingSeparator(IsaToken.SPACE.toString());
         TRNode.setup(first, bindings, predicate, def);
+        System.out.println(toString());
+    }
+
+    protected boolean isSynthethic()
+    {
+        return def == null;
     }
 
     //TODO?!
