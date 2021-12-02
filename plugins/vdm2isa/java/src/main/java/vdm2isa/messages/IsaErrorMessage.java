@@ -102,6 +102,8 @@ public enum IsaErrorMessage {
     "Module `%1$s` must be saved in a file with the same name. \n\tFiles = %2$s"),
     ISA_INVALID_PATTERN_TRANSLATE_3P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 24,
     "Cannot contextully translate pattern %1$s (index=%2$s) for %3$s."),
+    ISA_INVALID_QUOTETYPE_3P(VDM2IsaWarning.ISABELLE_E_ISA_BASE + 24,
+    "Invalid quote literal declaration `%1$s` in type `%2$s`: it has already been defined for type `%3$s`. Isabelle requires unique quote enumerations."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
