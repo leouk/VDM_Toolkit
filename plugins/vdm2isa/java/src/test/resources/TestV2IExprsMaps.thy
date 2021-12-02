@@ -143,32 +143,29 @@ where
 		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		
-		(((inv_VDMNat (x\<^sub>R R))) \<and> 
-		 ((inv_VDMNat (y\<^sub>R R)))
-		) 
+		inv_R 
 		(inv_VDMNat1) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> 
-		(((inv_VDMNat (x\<^sub>R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>))) \<and> 
-		 ((inv_VDMNat (y\<^sub>R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>)))
-		) then
-		\<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
+	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<comment> \<open>Can't quite check inv_R of record here! \<close>
+		 then
+		let x = (x\<^sub>R dummy); y = (y\<^sub>R dummy) in
+    \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
+	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_VDMNat1 (10::VDMNat1)) then
 		(10::VDMNat1)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (True::\<bool>)) then
+	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
+		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_bool (True::\<bool>)) then
 		(True::\<bool>)
 	 else
 		undefined
@@ -187,7 +184,8 @@ abbreviation
 where
 	"v97 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ x .   ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+    \<comment> \<open>have to existentially bind the domain? kind of silly: again, will need free variables search \<close>
+		{ x | x y .   ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
