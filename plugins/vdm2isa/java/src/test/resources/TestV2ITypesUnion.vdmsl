@@ -10,8 +10,12 @@ types
 	--other unions are okay
 	TBasicUnion = nat | int;
 	
+	TMixedUnion = nat | <D>;
+	
 	--you can mix unions
 	TBasicQuoteUnion = TBasicUnion | TQuoteUnion; 
+	
+	TMixedQuoteUnion = TQuoteUnion | TMixedUnion;
 	
 functions
 
@@ -20,6 +24,19 @@ functions
 
 	f2: TBasicUnion -> int
 	f2(bu) == bu;
-		
+	
+	f3: () -> TMixedUnion 
+	f3() == <D>;
+	
+	f3': () -> bool
+	f3'() == let -: TMixedUnion = f3() in true
+	--pre post_f3(f3())
+	;
+
+	f4: () -> TMixedQuoteUnion
+	f4() == <A>;
+	
+	
+	
 end TestV2ITypesUnion
 

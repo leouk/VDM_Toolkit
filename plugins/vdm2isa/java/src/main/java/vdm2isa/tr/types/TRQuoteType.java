@@ -20,6 +20,9 @@ public class TRQuoteType extends TRType
 	private static final long serialVersionUID = 1L;
     protected final String value;
 
+    // allQuoteValues = dunion quoteTypeNames.values()
+    // keep the set to avoid multiple recalculations
+    private static final Set<String> allQuoteValues = new TreeSet<String>();
     private static final Map<String, Set<String>> quoteTypeNames = new TreeMap<String, Set<String>>();
 
     public TRQuoteType(TCQuoteType vdmType, TRDefinitionList definitions, String value) {
@@ -30,6 +33,7 @@ public class TRQuoteType extends TRType
     public static final void reset()
     {
         quoteTypeNames.clear();
+        allQuoteValues.clear();
     }
 
     @Override
@@ -37,14 +41,51 @@ public class TRQuoteType extends TRType
     {
         super.setInferredNamedForType(tn);
         String key = String.valueOf(tn);
+        // this is called a couple of times: 
+        //      * one at TRTypeDefinition figuring it out 
+        //       * one at calculated definitions within TRType.definitions = TRModule.definitions!  
+        // no duplicate quotes across type keys, as this generates non-comparable enumerations
+        // T1 = <A> | <B>; T2 = int | <A>; in VDM <A>:T1 = <A>:T2; in Isabelle they can't/aren't! 
         if (quoteTypeNames.keySet().contains(key))
         {
-            quoteTypeNames.get(key).add(value);
+            // if (allQuoteValues.contains(value)) // quoteTypeNames.get(key).contains(value))
+            // {
+            //      report(IsaErrorMessage.ISA_INVALID_QUOTETYPE_2P, value, key);
+            // }
+            // else
+            {
+                quoteTypeNames.get(key).add(value);
+            }
         }
         else
         {
-            quoteTypeNames.put(key, new TreeSet<String>(Arrays.asList(value)));
+            if (allQuoteValues.contains(value)) // quoteTypeNames.get(key).contains(value))
+            {
+                report(IsaErrorMessage.ISA_INVALID_QUOTETYPE_3P, value, key, TRQuoteType.findPreviouslyDeclaredTypeFor(value, key));
+            }
+            else   
+            {
+                quoteTypeNames.put(key, new TreeSet<String>(Arrays.asList(value)));
+            }
         }
+        allQuoteValues.add(value);
+    }
+
+    private static String findPreviouslyDeclaredTypeFor(String v, String ignoreThisKey) 
+    {
+        assert allQuoteValues.contains(v) && !quoteTypeNames.keySet().contains(ignoreThisKey);
+        String result = null;
+        for (Map.Entry<String, Set<String>> entry : quoteTypeNames.entrySet())
+        {
+            //if (!entry.getKey().equals(ignoreThisKey))
+            //{
+                if (entry.getValue().contains(v))
+                {
+                    result = entry.getKey();
+                }
+            //}
+        }
+        return result;
     }
 
     private void figureOutTypeName()

@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-01T15:26:51.274454Z
+(* VDM to Isabelle Translation @2021-12-02T05:47:12.700929Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesUnion.vdmsl' at line 1:8
@@ -10,9 +10,9 @@ begin
 
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 8:5\<close>
-datatype TQuoteUnion = U_A | 
-		 U_B | 
-		 U_C
+datatype TQuoteUnion = U_A  | 
+		 U_B  | 
+		 U_C 
 	
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 8:5\<close>
@@ -41,12 +41,31 @@ where
  
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 13:5\<close>
+datatype TMixedUnion = U_A  | 
+		 U_VDMNat "VDMNat"
+	
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 13:5\<close>
+definition
+	inv_TMixedUnion :: "TMixedUnion \<Rightarrow> bool"
+where
+	"inv_TMixedUnion dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TMixedUnion specification\<close>
+		(((case dummy0 of
+		 TMixedUnion.U_A  \<Rightarrow> (inv_True dummy0)
+		  | TMixedUnion.U_VDMNat dummy0 \<Rightarrow> (inv_VDMNat dummy0)
+		 )))"
+
+		 
+
+	
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 16:5\<close>
 datatype TBasicQuoteUnion = U_TBasicUnion "TBasicUnion" | 
 		 U_TQuoteUnion "TQuoteUnion"
 	
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 16:5\<close>
 definition
 	inv_TBasicQuoteUnion :: "TBasicQuoteUnion \<Rightarrow> bool"
 where
@@ -61,8 +80,27 @@ where
 
 	
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
+datatype TMixedQuoteUnion = U_TMixedUnion "TMixedUnion" | 
+		 U_TQuoteUnion "TQuoteUnion"
+	
 
 \<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
+definition
+	inv_TMixedQuoteUnion :: "TMixedQuoteUnion \<Rightarrow> bool"
+where
+	"inv_TMixedQuoteUnion dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_TMixedQuoteUnion specification\<close>
+		(((case dummy0 of
+		 TMixedQuoteUnion.U_TMixedUnion dummy0 \<Rightarrow> (inv_TMixedUnion dummy0)
+		  | TMixedQuoteUnion.U_TQuoteUnion dummy0 \<Rightarrow> (inv_TQuoteUnion dummy0)
+		 )))"
+
+		 
+
+	
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
 definition
 	pre_f1 :: "TQuoteUnion \<Rightarrow> bool"
 where
@@ -71,7 +109,7 @@ where
 		((inv_TQuoteUnion qu))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 22:5\<close>
 definition
 	post_f1 :: "TQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -89,9 +127,9 @@ where
 	((qu \<noteq> TQuoteUnion.U_A )))"
 
 	
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 25:5\<close>
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 25:5\<close>
 definition
 	pre_f2 :: "TBasicUnion \<Rightarrow> bool"
 where
@@ -100,7 +138,7 @@ where
 		((inv_TBasicUnion bu))"
 
 
-\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 25:5\<close>
 definition
 	post_f2 :: "TBasicUnion\<Rightarrow> VDMInt \<Rightarrow> bool"
 where
@@ -119,5 +157,55 @@ where
 			TBasicUnion.U_VDMInt bu \<Rightarrow> \<comment>\<open>Type coercions might needed at body or union selection deletion might be needed\<close>
 		 bu
 		 ))"
+
+	
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 28:5\<close>
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 28:5\<close>
+definition
+	pre_f3 :: "bool"
+where
+	"pre_f3  \<equiv> True"
+
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 28:5\<close>
+definition
+	post_f3 :: "TMixedUnion \<Rightarrow> bool"
+where
+	"post_f3 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f3 specification\<close>
+		((inv_TMixedUnion RESULT))"
+
+definition
+	f3 :: "TMixedUnion"
+where
+	"f3  \<equiv> 
+	\<comment>\<open>User defined body of f3\<close>
+	TQuoteUnion.U_A "
+
+	
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 31:5\<close>
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 31:5\<close>
+definition
+	pre_f4 :: "bool"
+where
+	"pre_f4  \<equiv> True"
+
+
+\<comment>\<open>in 'TestV2ITypesUnion' (./src/test/resources/TestV2ITypesUnion.vdmsl) at line 31:5\<close>
+definition
+	post_f4 :: "TMixedQuoteUnion \<Rightarrow> bool"
+where
+	"post_f4 RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_f4 specification\<close>
+		((inv_TMixedQuoteUnion RESULT))"
+
+definition
+	f4 :: "TMixedQuoteUnion"
+where
+	"f4  \<equiv> 
+	\<comment>\<open>User defined body of f4\<close>
+	TQuoteUnion.U_A "
 
 end
