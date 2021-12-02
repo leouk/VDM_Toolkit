@@ -177,8 +177,31 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         this.domLambda   = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(domBindings, domainExpr, rangeExpr), domainExpr);
         this.rangeLambda = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(rngBindings, rangeExpr, rangeExpr), rangeExpr);
         this.predLambda  = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(bindings, domainExpr, rangeExpr), predExpr);
+        //TRMultipleBindList lambdaBindings = figureOutLambdaBindings(bindings, domainExpr, rangeExpr);
+        // this.domLambda   = TRLambdaExpression.newLambdaExpression(lambdaBindings, domainExpr);
+        // this.rangeLambda = TRLambdaExpression.newLambdaExpression(lambdaBindings, rangeExpr);
+        // this.predLambda  = TRLambdaExpression.newLambdaExpression(lambdaBindings, predExpr);
 
         TRNode.setup(mapComp, domainSet, rangeSet, domLambda, rangeLambda, predLambda);
+    }
+
+    private TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TRExpression domainExpr, TRExpression rangeExpr)
+    {
+        TRMultipleBindList result = new TRMultipleBindList();
+        TRMultipleBind b = new TRMultipleTypeBind(
+            TRBasicPattern.identifier(domainExpr.location, 
+                IsaToken.dummyVarNames(1, domainExpr.location) + "Dom"
+            ), 
+            domainExpr.getType());
+        result.add(b);
+        b = new TRMultipleTypeBind(
+            TRBasicPattern.identifier(rangeExpr.location, 
+                IsaToken.dummyVarNames(1, rangeExpr.location) + "Rng"
+            ), 
+            rangeExpr.getType());
+        result.add(b);
+        assert result.size() == 2;
+        return result;
     }
     
     /**

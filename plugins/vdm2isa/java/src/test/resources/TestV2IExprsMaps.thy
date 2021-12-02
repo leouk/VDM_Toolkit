@@ -1,21 +1,21 @@
-(* VDM to Isabelle Translation @2021-12-02T14:39:23.641244Z
+(* VDM to Isabelle Translation @2021-12-02T15:10:20.632Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IExprsMaps.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl]
 *)
 theory TestV2IExprsMaps
 imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
 	
 
-\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 10:9\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 10:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> bool"
 where
@@ -143,32 +143,32 @@ where
 		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
 		
-    (\<lambda> R .
 		(((inv_VDMNat (x\<^sub>R R))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R R)))
-		) )
+		) 
 		(inv_VDMNat1) 
 		(
-	\<lambda> (dummy::R) (dummy2::VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 
-		 then 
-    let x = (x\<^sub>R dummy); y = (y\<^sub>R dummy) in
-  		\<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> 
+		(((inv_VDMNat (x\<^sub>R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>)))
+		) then
+		\<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_VDMNat1 (10::VDMNat1)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
 		(10::VDMNat1)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_bool (True::\<bool>)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (True::\<bool>)) then
 		(True::\<bool>)
 	 else
 		undefined
