@@ -118,6 +118,14 @@ public class TRLiteralExpression extends TRExpression
 	}
 
 	@Override 
+	public String invTranslate()
+	{
+		TRType t = getType();
+		String varName = translate();
+		return t.invTranslate(varName);
+	}
+
+	@Override 
 	protected TRType getBestGuessType()
 	{
 		// TRType result;
