@@ -4,11 +4,17 @@
 
 package vdm2isa.tr.definitions;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
@@ -87,7 +93,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRNode.setup(pattern, exp, defs, expType);
 		//this.defs = figureOutDefs(defs);?
 		//if (local) 
-		//	System.out.println(toString());
+			System.out.println(toString());
 	}
 
 	@Override
@@ -97,7 +103,24 @@ public class TRValueDefinition extends TRLocalDefinition
 			"\n\t patt = " + String.valueOf(pattern) + 
 			"\n\t expt = " + String.valueOf(expType) +
 			"\n\t defs = " + String.valueOf(defs) +
-			"\n\t loc  = " + String.valueOf(getLocation());
+			"\n\t loc  = " + String.valueOf(getLocation()) +
+			"\n\n\t FV = " + getFVS() +
+			"\n\t VN = " + getVNS();
+	}
+
+	private String getFVS()
+	{
+		TCNameSet r = this.getVDMDefinition().getFreeVariables(
+			new FlatEnvironment(new TCDefinitionList()), 
+			new FlatEnvironment(new TCDefinitionList()), 
+			new AtomicBoolean(false));
+		return r.toString();
+	}
+
+	private String getVNS()
+	{
+		TCNameList r = this.getVDMDefinition().getVariableNames();
+		return r.toString();
 	}
 
 	@Override

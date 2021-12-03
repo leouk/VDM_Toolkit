@@ -9,6 +9,7 @@ imports VDMToolkit
 begin
 
 
+(* v95= { x |-> 10 | x in set {1,2,3} } *)
 abbreviation
 	v95 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where

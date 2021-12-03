@@ -1,6 +1,10 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
+import com.fujitsu.vdmj.tc.expressions.TCMapletExpression;
+import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
@@ -16,9 +20,21 @@ public class TRMapletExpression extends TRExpression
     public final TRExpression left;
     public final TRExpression right; 
 
-    public TRMapletExpression(TRExpression left, TRExpression right)
+    //@NB why isn't maplet expression in TCExpression?
+    private static TCTupleExpression figureOutMapletExpression(TCMapletExpression exp)
     {
-        super(left != null ? left.location : LexLocation.ANY, TRMapletExpression.getMapType(left, right));
+        TCExpressionList args = new TCExpressionList();
+        args.add(exp.left);
+        args.add(exp.right);
+        TCTupleExpression result = new TCTupleExpression(exp.location, args);
+        return result; 
+    }
+
+    public TRMapletExpression(TCMapletExpression exp, TRExpression left, TRExpression right)
+    {
+        super(left != null ? left.location : LexLocation.ANY, 
+            figureOutMapletExpression(exp), 
+            TRMapletExpression.getMapType(left, right));
         this.left = left;
         this.right = right;
     }

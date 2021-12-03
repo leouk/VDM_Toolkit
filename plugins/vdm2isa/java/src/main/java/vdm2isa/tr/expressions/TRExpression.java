@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 
 //@nb how to add this? 
 //@todo add comments and/or location? 
@@ -59,15 +60,23 @@ public abstract class TRExpression extends TRNode
                     IsaToken.DOM, IsaToken.RNG, IsaToken.INVERSE, IsaToken.FPOWERSET, IsaToken.UPLUS));
 
     protected TRType exptype;
+    private final TCExpression exp;
     private boolean hasWarnedAboutUnknownType;
     private boolean hasWarnedAboutNullType;
 
-	public TRExpression(LexLocation location, TRType exptype)
+    //TODO if this works, percolate through whole TRExpression tree
+	public TRExpression(LexLocation location, TCExpression exp, TRType exptype)
 	{
 		super(location);
+        this.exp = exp;
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         this.hasWarnedAboutNullType = false;
+	}
+
+    public TRExpression(LexLocation location, TRType exptype)
+	{
+		this(location, null, exptype);
 	}
 
     @Override 
@@ -90,6 +99,11 @@ public abstract class TRExpression extends TRNode
     public String toString()
     {
         return super.toString() + ": " + String.valueOf(getType());
+    }
+
+    public final TCExpression getVDMExpr()
+    {
+        return exp;
     }
 
     /**

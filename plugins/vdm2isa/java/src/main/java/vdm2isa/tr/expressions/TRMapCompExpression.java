@@ -1,12 +1,18 @@
 package vdm2isa.tr.expressions;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.TCVisitorSet;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.expressions.EnvTriple;
+import com.fujitsu.vdmj.tc.expressions.TCMapCompExpression;
+import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCExpressionVisitor;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -99,10 +105,10 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
      * @param def
      * @param exptype
      */
-    public TRMapCompExpression(LexLocation location, 
+    public TRMapCompExpression(LexLocation location, TCMapCompExpression exp,  
         TRMapletExpression first, TRMultipleBindList bindings,
         TRExpression predicate, TRDefinition def, TRType exptype) {
-        super(location, first, bindings, predicate, def, exptype);
+        super(location, exp, first, bindings, predicate, def, exptype);
         this.mapComp = null;//TRLambdaExpression.newMapCompExpression(first, bindings, predicate, exptype != null ? getMapType() : TRExpression.unknownType(location);
         this.existentialDomain = false;
         this.existentialRange = false;
@@ -145,6 +151,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
         //com.fujitsu.vdmj.tc.definitions.visitors.TCGetFreeVariablesVisitor defFVV = new com.fujitsu.vdmj.tc.definitions.visitors.TCGetFreeVariablesVisitor();
         //defFVV.visitorSet ; //protected :-(
+            // { let x = f(y) in x + y |-> 10 | .... }
         TCGetFreeVariablesVisitor exprFVV = new TCGetFreeVariablesVisitor(
                 new TCVisitorSet<TCNameToken, TCNameSet, EnvTriple>() 
                 {
@@ -153,7 +160,10 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                         return new com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor(this);
                     }                                       
                 });
-        EnvTriple arg = null; //new EnvTriple(?, ?, ?); 
+        EnvTriple arg = new EnvTriple(
+            new FlatEnvironment(new TCDefinitionList()), 
+            new FlatEnvironment(new TCDefinitionList()), 
+            new AtomicBoolean(false)); 
         
         // this might have dangling bindings (i.e. if range expression is 10, get {10 | x . x : {1,2,3} } = {10,10,10} = {10} ! )
         // project out three expressions: { domExpr |-> rngExpr | .... & predExpr } 
@@ -162,8 +172,13 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
 
         // figure out the dom/rng bindings based on the discovered variables used in domain/rangeExpr
-        TCNameSet domResult = new TCNameSet();//getMapletExpr().left.apply(exprFVV, arg);
-        TCNameSet rngResult = new TCNameSet();
+        
+        //TCMapletExpression is not TCExpression! Had to improvise. 
+        // TCNameSet domResult = getMapletExpr().left.getVDMExpr().apply(exprFVV, arg);
+        // TCNameSet rngResult = getMapletExpr().right.getVDMExpr().apply(exprFVV, arg);
+        TCTupleExpression tp = (TCTupleExpression)getMapletExpr().getVDMExpr();
+        TCNameSet domResult = tp.args.get(0).apply(exprFVV, arg);
+        TCNameSet rngResult = tp.args.get(1).apply(exprFVV, arg);
         domResult.addAll(bindings.getPatternListList().getNamesInPatternListList());
         rngResult.addAll(domResult);
         TRMultipleBindList domBindings = figureOutBindingsSubList(domResult);

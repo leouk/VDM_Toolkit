@@ -103,7 +103,7 @@ map TCSetRangeExpression{location, first, last, exptype} to TRSetRangeExpression
 map TCSetEnumExpression{location, members, exptype} to TRSetEnumExpression(location, members, exptype);
 map TCSeqEnumExpression{location, members, exptype} to TRSeqEnumExpression(location, members, exptype);
 map TCMapEnumExpression{location, members, exptype} to TRMapEnumExpression(location, members, exptype);
-map TCMapletExpression{left, right} to TRMapletExpression(left, right);
+map TCMapletExpression{left, right} to TRMapletExpression(this, left, right);
 map TCTupleExpression{location, args, exptype} to TRTupleExpression(location, args, exptype); 
 
 map TCRecordModifier{tag, value} to TRRecordModifier(tag, value);
@@ -135,7 +135,7 @@ map TCCaseAlternative{location, pattern, result} to TRCaseAlternative(location, 
 
 map TCSetCompExpression{location, first, bindings, predicate, def, exptype} to TRSetCompExpression(location, first, bindings, predicate, def, exptype);
 map TCSeqCompExpression{location, first, bind, predicate, def, exptype} to TRSeqCompExpression(location, first, bind, predicate, def, exptype);
-map TCMapCompExpression{location, first, bindings, predicate, def, exptype} to TRMapCompExpression(location, first, bindings, predicate, def, exptype);
+map TCMapCompExpression{location, first, bindings, predicate, def, exptype} to TRMapCompExpression(location, this, first, bindings, predicate, def, exptype);
 
 map TCNilExpression{location, exptype, exptype} to TRNilExpression(location, exptype);
 map TCApplyExpression{type, root, args, exptype} to TRApplyExpression(type, root, args, exptype);

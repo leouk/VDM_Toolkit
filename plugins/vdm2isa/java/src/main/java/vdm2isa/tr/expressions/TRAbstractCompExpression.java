@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -16,14 +17,21 @@ public abstract class TRAbstractCompExpression extends TRExpression {
     public final TRExpression predicate;
     public final TRDefinition def;
 
-    public TRAbstractCompExpression(LexLocation location, 
+    public TRAbstractCompExpression(LexLocation location, TCExpression exp,
         TRExpression first, TRMultipleBindList bindings, 
         TRExpression predicate, TRDefinition def, TRType exptype) {
-        super(location, exptype);
+        super(location, exp, exptype);
         this.first = first;
         this.bindings = bindings;
         this.predicate = predicate; 
         this.def = def;
+    }
+
+    public TRAbstractCompExpression(LexLocation location, 
+        TRExpression first, TRMultipleBindList bindings, 
+        TRExpression predicate, TRDefinition def, TRType exptype) 
+    {
+        this(location, null, first, bindings, predicate, def, exptype);
     }
 
     @Override 
