@@ -271,6 +271,10 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return TRFunctionType.newFunctionType(TROptionalType.newOptionalType(mapType.getToType()), mapType.getFromType());
 	}
 
+	public static TRFunctionType newConstantFunctionType(TRType result) {
+        return TRFunctionType.newFunctionType(result, new TRTypeList()); 
+    }
+
     public static TRFunctionType newFunctionType(TRType result, TRType... params) {
         return TRFunctionType.newFunctionType(result, TRTypeList.newTypeList(params)); 
     }
