@@ -16,10 +16,13 @@ import vdm2isa.tr.types.TRType;
 public class TRApplyExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
+	//TODO bring in argTypes + recursiveCycles? 
 	public final TRType type;
 	public final TRExpression root;
 	public final TRExpressionList args;
 	
+	//TODO SERIOUS: have constructors for the "structural" parameters 
+	//				and for "default" for the VDMJ "calculated" (then class mapped) parameters
 	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args, TRType exptype)
 	{
 		super(root != null ? root.location : LexLocation.ANY, exptype);
@@ -35,19 +38,40 @@ public class TRApplyExpression extends TRExpression
 		TRNode.setup(type, root, args); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
-		//System.out.println(toString());
+		System.out.println(toString());
 	}
 
+	/**
+	 * The best guess of the apply expression type, is the type of its root; 
+	 * wait! No, that can be union type. Oh dear. Can't quite figure out
+	 */
 	@Override
 	protected TRType getBestGuessType()
 	{
-		return type;
+		return root != null ? root.getBestGuessType() : type;
+	}
+
+	//TODO push this all the way to TRNode and TRExpression etc ! 
+	public static String toSimpleString(TRNode e)
+	{
+		if (e instanceof TRVariableExpression)
+		{
+			TRVariableExpression ev = (TRVariableExpression)e;
+			return String.valueOf(ev.name) + ": " + String.valueOf(ev.exptype);
+		}
+		else
+			return String.valueOf(e);
 	}
 
 	@Override
     public String toString()
     {
-        return super.toString() + " type = " + String.valueOf(type);
+        return "ApplyExpr " + 
+			"\n\t root = " + TRApplyExpression.toSimpleString(root) +
+			"\n\t args = " + String.valueOf(args) + 
+			"\n\t type = " + String.valueOf(type) +
+			"\n\t exptp= " + String.valueOf(exptype) +
+			"\n\t loc  = " + String.valueOf(location);
     }
 
 	@Override
@@ -81,5 +105,13 @@ public class TRApplyExpression extends TRExpression
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseApplyExpression(this, arg);
+	}
+
+	public static TRApplyExpression newApplyExpression(
+			TRExpression root, TRExpressionList args, TRType resultType)
+	{
+		TRApplyExpression result = new TRApplyExpression(root.getType(), root, args, resultType);
+		TRNode.setup(result);
+		return result;
 	}
 }
