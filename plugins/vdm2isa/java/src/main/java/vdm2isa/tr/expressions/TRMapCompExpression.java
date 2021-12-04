@@ -1,14 +1,13 @@
 package vdm2isa.tr.expressions;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.TCVisitorSet;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.expressions.EnvTriple;
 import com.fujitsu.vdmj.tc.expressions.TCMapCompExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
-import com.fujitsu.vdmj.tc.expressions.visitors.TCExpressionVisitor;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -18,12 +17,15 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.expressions.visitors.TCGetFreeVariablesVisitorSet;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRMultipleTypeBind;
+import vdm2isa.tr.types.TRBasicType;
+import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
 
@@ -52,10 +54,8 @@ import vdm2isa.tr.types.TRType;
  */
 public class TRMapCompExpression extends TRAbstractCompExpression {
 
+    private static final int MAX_BINDINGS_ALLOWED = 2;
     private TRLambdaExpression mapComp;
-    private boolean existentialDomain;
-    private boolean existentialRange;
-    private boolean hasRangeBinding;
     private TRExpression domainSet;
     private TRExpression rangeSet;
     private TRExpression domLambda;
@@ -110,9 +110,9 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression predicate, TRDefinition def, TRType exptype) {
         super(location, exp, first, bindings, predicate, def, exptype);
         this.mapComp = null;//TRLambdaExpression.newMapCompExpression(first, bindings, predicate, exptype != null ? getMapType() : TRExpression.unknownType(location);
-        this.existentialDomain = false;
-        this.existentialRange = false;
-        this.hasRangeBinding = false;
+        // this.existentialDomain = false;
+        // this.existentialRange = false;
+        // this.hasRangeBinding = false;
         this.domainSet   = null;
         this.rangeSet    = null;
         this.domLambda   = null;
@@ -120,22 +120,24 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         this.predLambda  = null;
     }
 
+    protected static enum TRMapCompExprKind { DOMAIN, RANGE, PRED }
+
     @Override
     public void setup()
     {
         super.setup();
         setFormattingSeparator("\n\t\t");
-        boolean bindingsSizeConstraint = bindings.size() > 0 && bindings.size() <= 2;
-        this.existentialDomain = TRSetCompExpression.existentialComprehension(getMapletExpr().left);
-        this.existentialRange = TRSetCompExpression.existentialComprehension(getMapletExpr().right);
-        this.hasRangeBinding = bindingsSizeConstraint && bindings.size() == 2;
+        boolean bindingsSizeConstraint = bindings.size() > 0 && bindings.size() <= MAX_BINDINGS_ALLOWED;
+        // this.existentialDomain = TRSetCompExpression.existentialComprehension(getMapletExpr().left);
+        // this.existentialRange = TRSetCompExpression.existentialComprehension(getMapletExpr().right);
+        // this.hasRangeBinding = bindingsSizeConstraint && bindings.size() == MAX_BINDINGS_ALLOWED;
 
         // type bindings are okay, so long as they are uniform and 1 or 2
         if (bindings.foundBinds(TRMultipleBindKind.TYPE))
         {
             if (bindings.areBindsUniform(TRMultipleBindKind.TYPE) && bindingsSizeConstraint)
             {
-
+                // 1 o 2 type bindings is okay; but will lead to hard PO on finiteness warn
             }
             else 
             {
