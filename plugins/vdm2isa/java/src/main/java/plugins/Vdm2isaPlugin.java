@@ -99,6 +99,9 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
 				translatedModules.setup();
 
+		        //TODO issue "lemma finiteness" of involved dom/rng set for map comp at TLD! As a search through!
+				//TODO issue "lemmas XYZ"
+
 				// be strict on translation output
 				// strict => GeneralisaPlugin.getErrorCount() == 0
 				if (!GeneralisaPlugin.strict || GeneralisaPlugin.getErrorCount() == 0)

@@ -4,6 +4,8 @@
 
 package vdm2isa.tr.expressions;
 
+import java.util.List;
+
 import com.fujitsu.vdmj.tc.expressions.TCMapletExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapletExpressionList;
 import com.fujitsu.vdmj.tc.types.TCMapType;
@@ -23,7 +25,7 @@ public class TRMapletExpressionList extends TRMappedList<TCMapletExpression, TRM
 		super();
 	}
 
-	public TRMapletExpressionList(TRMapletExpressionList from)
+	public TRMapletExpressionList(/*TRMapletExpressionList*/List<TRMapletExpression> from)
 	{
 		this();
 		addAll(from);

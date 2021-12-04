@@ -154,7 +154,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression rangeExpr = getMapletExpr().right;
         TRType rangeType = rangeExpr.getType();
 
-        if (TRMapCompExpression.isTrivial(domainExpr, rangeExpr))
+        if (TRMapCompExpression.isTrivial(domainExpr, rangeExpr, predicate))
         {
             this.mapComp = new TRMapEnumExpression(location, 
                 new TRMapletExpressionList(Arrays.asList(getMapletExpr())), getType());
@@ -199,7 +199,8 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             // declared bindings and FV ones (remainder are true free variables).
             boolean hasEasyDom = TRMapCompExpression.hasEasyLambda(domainExpr);
             boolean hasEasyRng = TRMapCompExpression.hasEasyLambda(rangeExpr);
-            boolean hasEasyPrd = TRMapCompExpression.hasEasyLambda(predicate, prdFV);
+                // even with fv in the pred, needs to evaluate it anyhow, e.g. 3 > 5? 
+            boolean hasEasyPrd = TRMapCompExpression.isTrivialPred(predicate);//hasEasyLambda(predicate, prdFV);
             TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
 
             // figureout lambda bindings if necessary (i.e. any hard lambdas needed)
@@ -241,15 +242,108 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRNode.setup(mapComp, domainSet, rangeSet, domLambda, rangeLambda, predLambda);
     }
 
-    /**
+    @Override
+    public String toString()
+    {
+        return super.toString() +  
+            "\n\t lambda = " + String.valueOf(mapComp) +
+            "\n\t dom-set= " + String.valueOf(domainSet) +
+            "\n\t rng-set= " + String.valueOf(rangeSet) + 
+            "\n\t dom-lda= " + String.valueOf(domLambda) +
+            "\n\t rng-lda= " + String.valueOf(rangeLambda) +
+            "\n\t prd-lda= " + String.valueOf(predLambda)
+            ;
+    }    
+
+    public TRMapType getMapType()
+    {
+        return (TRMapType)exptype;
+    }
+
+    public TRMapletExpression getMapletExpr()
+    {
+        return (TRMapletExpression)first;
+    }
+
+    @Override
+    public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) {
+        return visitor.caseMapCompExpression(this, arg);
+    }
+
+    @Override
+    public IsaToken isaToken() {
+        return bindings.foundBinds(TRMultipleBindKind.TYPE) ? IsaToken.MAPCOMP_TYPBOUND : IsaToken.MAPCOMP_SETBOUND;
+    }
+
+    @Override
+    protected TRType getBestGuessType()
+    {
+        return getMapletExpr().getType();
+    }
+
+    protected boolean isTrivial()
+    {
+        return mapComp != null;
+    }
+
+    @Override
+    public String translate() 
+    {
+        StringBuilder sb = new StringBuilder();
+        if (isTrivial())
+        {
+            assert mapComp != null;
+            sb.append(mapComp.translate());
+        }
+        else
+        {
+            assert mapComp == null;
+            // make the call to mapCompXXXBound with the synthethically constructed parameters!
+            sb.append(IsaToken.comment("VDM Map comprehension is translated as a lambda-term through " + isaToken().toString(), getFormattingSeparator()));
+            sb.append(isaToken().toString());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(domainSet.translate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(rangeSet.translate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(getMapletExpr().left.getType().invTranslate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(getMapletExpr().right.getType().invTranslate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(domLambda.translate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(rangeLambda.translate());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(getFormattingSeparator());
+            sb.append(predLambda.translate());
+        }
+        return IsaToken.parenthesise(sb.toString());
+    }
+    
+        /**
      * Trivial map comp { 1 |-> 10 | x in S, y in T & P } = { 1 |-> 10 }
      * @param domainExpr
      * @param rangeExpr
      * @return
      */
-    private static boolean isTrivial(TRExpression domainExpr, TRExpression rangeExpr)
+    private static boolean isTrivial(TRExpression domainExpr, TRExpression rangeExpr, TRExpression pred)
     {
-        return domainExpr instanceof TRLiteralExpression && rangeExpr  instanceof TRLiteralExpression;
+        return domainExpr instanceof TRLiteralExpression && 
+                rangeExpr instanceof TRLiteralExpression && 
+                isTrivialPred(pred);
+    }
+
+    private static boolean isTrivialPred(TRExpression pred)
+    {
+        return pred == null || 
+              (pred instanceof TRLiteralExpression && 
+                ((TRLiteralExpression)pred).exp.equals(IsaToken.TRUE.toString()));
     }
 
     private static TCNameSet figureOutUnboundFV(TRMultipleBindList given, TCNameSet... args)
@@ -288,17 +382,9 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     private static boolean hasEasyLambda(TRExpression easyExpr)
     {
-        return easyExpr != null && (easyExpr instanceof TRLiteralExpression || easyExpr instanceof TRVariableExpression);
-    }
-
-    private static boolean hasEasyLambda(TRExpression easyPred, TCNameSet prdFV)
-    {
-        return easyPred == null || 
-            prdFV.isEmpty() || 
-            (easyPred != null && 
-            (easyPred instanceof TRLiteralExpression && 
-                easyPred.getType() instanceof TRBasicType && 
-                ((TRBasicType)easyPred.getType()).isBooleanType()));
+        return (easyExpr != null && 
+                    (easyExpr instanceof TRLiteralExpression || 
+                        easyExpr instanceof TRVariableExpression));
     }
 
     private static TRApplyExpression figureOutEasyLambdas(TRExpression easyExpr, TRMapCompExprKind kind)
@@ -431,77 +517,4 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         assert result.size() <= given.size();
         return result;
     }
-
-
-
-    @Override
-    public String toString()
-    {
-        return super.toString() +  
-            "\n\t lambda = " + String.valueOf(mapComp) +
-            "\n\t dom-set= " + String.valueOf(domainSet) +
-            "\n\t rng-set= " + String.valueOf(rangeSet) + 
-            "\n\t dom-lda= " + String.valueOf(domLambda) +
-            "\n\t rng-lda= " + String.valueOf(rangeLambda) +
-            "\n\t prd-lda= " + String.valueOf(predLambda)
-            ;
-    }    
-
-    public TRMapType getMapType()
-    {
-        return (TRMapType)exptype;
-    }
-
-    public TRMapletExpression getMapletExpr()
-    {
-        return (TRMapletExpression)first;
-    }
-
-    @Override
-    public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) {
-        return visitor.caseMapCompExpression(this, arg);
-    }
-
-    @Override
-    public IsaToken isaToken() {
-        return bindings.foundBinds(TRMultipleBindKind.TYPE) ? IsaToken.MAPCOMP_TYPBOUND : IsaToken.MAPCOMP_SETBOUND;
-    }
-
-    @Override
-    protected TRType getBestGuessType()
-    {
-        return getMapletExpr().getType();
-    }
-
-    @Override
-    public String translate() 
-    {
-        StringBuilder sb = new StringBuilder();
-        // make the call to mapCompXXXBound with the synthethically constructed parameters!
-        sb.append(IsaToken.comment("VDM Map comprehension is translated as a lambda-term through " + isaToken().toString(), getFormattingSeparator()));
-        sb.append(isaToken().toString());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(domainSet.translate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(rangeSet.translate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(getMapletExpr().left.getType().invTranslate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(getMapletExpr().right.getType().invTranslate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(domLambda.translate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(rangeLambda.translate());
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(getFormattingSeparator());
-        sb.append(predLambda.translate());
-        return IsaToken.parenthesise(sb.toString());
-    }
-    
 }
