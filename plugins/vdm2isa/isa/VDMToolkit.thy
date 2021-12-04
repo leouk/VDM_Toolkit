@@ -1188,6 +1188,12 @@ definition
   where
   "rngid \<equiv> (\<lambda> d . id)"
 
+text \<open>Constant function to be used for the dom expression function for the case they are constants.\<close>
+definition
+  domcnst :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a"
+  where
+  "domcnst v \<equiv> (\<lambda> d . (\<lambda> r . v))"
+
 text \<open>Constant function to be used for the rng expression function for the case they are constants.\<close>
 definition
   rngcnst :: "'b \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'b"
@@ -1199,14 +1205,28 @@ definition
   where
   "truecnst \<equiv> (\<lambda> d . inv_True)"
 
+definition
+  predcnst :: "\<bool> \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> \<bool>"
+  where
+  "predcnst p \<equiv> (\<lambda> d . (\<lambda> r . p))"
+
 lemma domidI[simp]: "domid d r = d"
   by (simp add: domid_def)
 
 lemma rngidI[simp]: "rngid d r = r"
   by (simp add: rngid_def)
 
+lemma domcnstI[simp]: "domcnst v d r = v" 
+  by (simp add: domcnst_def)
+
 lemma rngcnstI[simp]: "rngcnst v d r = v"
   by (simp add: rngcnst_def)
+
+lemma predcnstI[simp]: "predcnst v d r = v"
+  by (simp add: predcnst_def)
+
+lemma truecnstI[simp]: "truecnst d r"
+  by (simp add: truecnst_def)
 
 lemmas maplet_defs = domid_def rngid_def rngcnst_def id_def truecnst_def inv_True_def
 lemmas mapCompSetBound_defs = mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def maplet_defs rng_defs

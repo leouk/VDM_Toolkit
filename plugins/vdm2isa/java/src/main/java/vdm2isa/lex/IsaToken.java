@@ -145,8 +145,15 @@ public enum IsaToken {
 	EXISTS1(Token.EXISTS1, "\\<exists>!"),
 	IOTA(Token.IOTA, "THE"),
 	LAMBDA(Token.LAMBDA, "\\<lambda>"),
-	MAPCOMPSET(null, "mapCompSetBound"),
-	MAPCOMPTYP(null, "mapCompTypeBound"),
+	
+	MAPCOMP_SETBOUND(null, "mapCompSetBound"),
+	MAPCOMP_TYPBOUND(null, "mapCompTypeBound"),
+	MAPCOMP_DOMID(null, "domid"),
+	MAPCOMP_RNGID(null, "rngid"),
+	MAPCOMP_DOMCNST(null, "domcnst"),
+	MAPCOMP_RNGCNST(null, "rngcnst"),
+	MAPCOMP_PREDCNST(null, "predcnst"),
+	MAPCOMP_TRUECNST(null, "truecnst"),
 	
 	SET_OPEN(Token.SET_OPEN, "{"),
 	SET_CLOSE(Token.SET_CLOSE, "}"),
