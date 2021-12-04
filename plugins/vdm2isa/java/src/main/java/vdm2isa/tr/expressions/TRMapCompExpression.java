@@ -148,79 +148,270 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         // 1 or 2 bindings set/seq bindings is okay
         else if (bindingsSizeConstraint) 
         {
-
+            // okay, no trouble
         }
 
-        //com.fujitsu.vdmj.tc.definitions.visitors.TCGetFreeVariablesVisitor defFVV = new com.fujitsu.vdmj.tc.definitions.visitors.TCGetFreeVariablesVisitor();
-        //defFVV.visitorSet ; //protected :-(
-            // { let x = f(y) in x + y |-> 10 | .... }
-        TCGetFreeVariablesVisitor exprFVV = new TCGetFreeVariablesVisitor(
-                new TCVisitorSet<TCNameToken, TCNameSet, EnvTriple>() 
-                {
-                    public TCExpressionVisitor<TCNameSet, EnvTriple> getExpressionVisitor()
-                    {
-                        return new com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor(this);
-                    }                                       
-                });
-        EnvTriple arg = new EnvTriple(
-            new FlatEnvironment(new TCDefinitionList()), 
-            new FlatEnvironment(new TCDefinitionList()), 
-            new AtomicBoolean(false)); 
-        
-        // this might have dangling bindings (i.e. if range expression is 10, get {10 | x . x : {1,2,3} } = {10,10,10} = {10} ! )
-        // project out three expressions: { domExpr |-> rngExpr | .... & predExpr } 
-        TRExpression domainExpr = getMapletExpr().left;
-        TRExpression rangeExpr = getMapletExpr().right;
-        TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
+        // setup a free variables visitor
+        // { let x = f(y) in x + y |-> 10 | .... }
+        TCGetFreeVariablesVisitor exprFVV = new TCGetFreeVariablesVisitor(new TCGetFreeVariablesVisitorSet());
+        EnvTriple env = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
 
         // figure out the dom/rng bindings based on the discovered variables used in domain/rangeExpr
-        
-        //TCMapletExpression is not TCExpression! Had to improvise. 
-        // TCNameSet domResult = getMapletExpr().left.getVDMExpr().apply(exprFVV, arg);
-        // TCNameSet rngResult = getMapletExpr().right.getVDMExpr().apply(exprFVV, arg);
+        // this presumes the "TCExpression" patch up as a tuple done by TRMapletExpression 
+        // if the predicate has more FV than dom/rng, then it will compromise the set creation
+        // { x+y |-> 10 | x in set S, y in set T & x > y and (x+y) < z }
+        // { x + y | x in set S, y in set T & x > y and (x+y) < z } for domain!
         TCTupleExpression tp = (TCTupleExpression)getMapletExpr().getVDMExpr();
-        TCNameSet domResult = tp.args.get(0).apply(exprFVV, arg);
-        TCNameSet rngResult = tp.args.get(1).apply(exprFVV, arg);
-        domResult.addAll(bindings.getPatternListList().getNamesInPatternListList());
-        rngResult.addAll(domResult);
-        TRMultipleBindList domBindings = figureOutBindingsSubList(domResult);
-        TRMultipleBindList rngBindings = figureOutBindingsSubList(rngResult);
+        TCNameSet domFV = tp.args.get(0).apply(exprFVV, env);
+        TCNameSet rngFV = tp.args.get(1).apply(exprFVV, env);
+        TCNameSet prdFV = predicate.getVDMExpr().apply(exprFVV, env);
+        TCNameSet unboundFV = TRMapCompExpression.figureOutUnboundFV(bindings, domFV, rngFV);//, prdFV);
+        if (!unboundFV.isEmpty())
+        {
+            // warn about unbound FV possibly leading to issues? 
+            //warning(IsaWarningMessage.);
+        }
+        // prdFV / (domFV union rngFV) <> {} means issues; but unboundFV will catch that
+        //prdFV.removeAll(domFV);
+        //prdFV.removeAll(rngFV);
+        //if (prdFV.retainAll(domFV))
+        //{
+        //}
+        
+        // project out three expressions: { domExpr |-> rngExpr | .... & predExpr } 
+        TRExpression domainExpr = getMapletExpr().left;
+        TRType domainType = domainExpr.getType();
+        TRExpression rangeExpr = getMapletExpr().right;
+        TRType rangeType = rangeExpr.getType();
 
-        // create set comprehensions for dom/range sets
-        this.domainSet   = new TRSetCompExpression(domainExpr.location, domainExpr, domBindings, predicate, null, domainExpr.exptype);
-        this.rangeSet    = new TRSetCompExpression(rangeExpr.location, rangeExpr, rngBindings, predicate, null, rangeExpr.exptype);
+        // create set enum.comprehensions for dom/range sets
+        this.domainSet = TRMapCompExpression.figureOutSet(bindings, domFV, domainExpr, predicate, TRMapCompExprKind.DOMAIN);
+        this.rangeSet  = TRMapCompExpression.figureOutSet(bindings, rngFV, rangeExpr, predicate, TRMapCompExprKind.RANGE);
 
-        // create the lambda for each part 
-        this.domLambda   = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(domBindings, domainExpr, rangeExpr), domainExpr);
-        this.rangeLambda = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(rngBindings, rangeExpr, rangeExpr), rangeExpr);
-        this.predLambda  = TRLambdaExpression.newLambdaExpression(figureOutMissingBindings(bindings, domainExpr, rangeExpr), predExpr);
-        //TRMultipleBindList lambdaBindings = figureOutLambdaBindings(bindings, domainExpr, rangeExpr);
-        // this.domLambda   = TRLambdaExpression.newLambdaExpression(lambdaBindings, domainExpr);
-        // this.rangeLambda = TRLambdaExpression.newLambdaExpression(lambdaBindings, rangeExpr);
-        // this.predLambda  = TRLambdaExpression.newLambdaExpression(lambdaBindings, predExpr);
+        // have to figure out lambda bindings based on the intersection between 
+        // declared bindings and FV ones (remainder are true free variables).
+        boolean hasEasyDom = TRMapCompExpression.hasEasyLambda(domainExpr);
+        boolean hasEasyRng = TRMapCompExpression.hasEasyLambda(rangeExpr);
+        boolean hasEasyPrd = TRMapCompExpression.hasEasyLambda(predicate, prdFV);
+        TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
+
+        // figureout lambda bindings if necessary (i.e. any hard lambdas needed)
+        TRMultipleBindList lambdaBindings = !hasEasyDom || !hasEasyRng || !hasEasyPrd ?
+            TRMapCompExpression.figureOutLambdaBindings(bindings, domFV, domainType, rngFV, rangeType) : null;
+        
+        // create the lambda for each part, where set/seq bindings are transformed into corresponding type binds 
+        // i.e. we can "reuse" map comp bindings even if set/seq, as lambda will figure out right type bind list
+        if (hasEasyDom)
+        {
+            this.domLambda = TRMapCompExpression.figureOutEasyLambdas(domainExpr, TRMapCompExprKind.DOMAIN);
+        }
+        else 
+        {
+            //figureOutMissingBindings(lambdaBindings, domainExpr, rangeExpr)?
+            this.domLambda   = TRLambdaExpression.newLambdaExpression(lambdaBindings, domainExpr);
+        }
+
+        if (hasEasyRng)
+        {
+            this.rangeLambda = TRMapCompExpression.figureOutEasyLambdas(rangeExpr, TRMapCompExprKind.RANGE);
+        }
+        else
+        {
+            this.rangeLambda = TRLambdaExpression.newLambdaExpression(lambdaBindings, rangeExpr);
+        }
+
+        if (hasEasyPrd)
+        {
+            this.predLambda = TRMapCompExpression.figureOutEasyLambdas(predExpr, TRMapCompExprKind.PRED);
+        }
+        else 
+        {
+            this.predLambda  = TRLambdaExpression.newLambdaExpression(lambdaBindings, predExpr);
+        }
 
         TRNode.setup(mapComp, domainSet, rangeSet, domLambda, rangeLambda, predLambda);
     }
 
-    private TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TRExpression domainExpr, TRExpression rangeExpr)
+    private static TCNameSet figureOutUnboundFV(TRMultipleBindList given, TCNameSet... args)
     {
-        TRMultipleBindList result = new TRMultipleBindList();
-        TRMultipleBind b = new TRMultipleTypeBind(
-            TRBasicPattern.identifier(domainExpr.location, 
-                IsaToken.dummyVarNames(1, domainExpr.location) + "Dom"
-            ), 
-            domainExpr.getType());
-        result.add(b);
-        b = new TRMultipleTypeBind(
-            TRBasicPattern.identifier(rangeExpr.location, 
-                IsaToken.dummyVarNames(1, rangeExpr.location) + "Rng"
-            ), 
-            rangeExpr.getType());
-        result.add(b);
-        assert result.size() == 2;
+        TCNameSet result = new TCNameSet();
+        for(TCNameSet ns : args)
+        {
+            for(TCNameToken n : ns)
+            {
+                // of all FV names, those not bound are truly free 
+                if (given.findBinding(n) == null)
+                {
+                    result.add(n);
+                }
+            }
+        }
         return result;
     }
+
+    private static TRExpression figureOutSet(TRMultipleBindList given, TCNameSet fv, TRExpression expr, TRExpression pred, TRMapCompExprKind kind)
+    {
+        assert expr != null && given != null && fv != null;
+        TRExpression result;
+        // for literals, it's just an singleton enumeration
+        if (expr instanceof TRLiteralExpression)
+        {
+            result = new TRSetEnumExpression(expr.location, new TRExpressionList(Arrays.asList(expr)), expr.getType());
+        }
+        else 
+        {
+            TRMultipleBindList setbindings = TRMapCompExpression.figureOutBindPart(given, fv, expr.getType(), kind);
+            result = new TRSetCompExpression(expr.location, expr, setbindings, pred, null, expr.getType());
+        }
+        return result;
+    }
+
+    private static boolean hasEasyLambda(TRExpression easyExpr)
+    {
+        return easyExpr != null && (easyExpr instanceof TRLiteralExpression || easyExpr instanceof TRVariableExpression);
+    }
+
+    private static boolean hasEasyLambda(TRExpression easyPred, TCNameSet prdFV)
+    {
+        return easyPred == null || 
+            prdFV.isEmpty() || 
+            (easyPred != null && 
+            (easyPred instanceof TRLiteralExpression && 
+                easyPred.getType() instanceof TRBasicType && 
+                ((TRBasicType)easyPred.getType()).isBooleanType()));
+    }
+
+    private static TRApplyExpression figureOutEasyLambdas(TRExpression easyExpr, TRMapCompExprKind kind)
+    {
+        assert easyExpr instanceof TRLiteralExpression || easyExpr instanceof TRVariableExpression;
+        String original = null; 
+        TRFunctionType fcnType = null;
+        TRType t = easyExpr.getType();
+        TRExpressionList args = new TRExpressionList();
+        if (kind.equals(TRMapCompExprKind.PRED))
+        {
+            assert (t instanceof TRBasicType) && ((TRBasicType)t).isBooleanType();
+            if (easyExpr instanceof TRLiteralExpression)
+            {
+                // truecnst: 'a => 'b => bool
+                // for us, just () -> bool
+                original = IsaToken.MAPCOMP_TRUECNST.toString(); 
+                fcnType = TRFunctionType.newConstantFunctionType(t);
+            }
+            else
+            {
+                original = IsaToken.MAPCOMP_PREDCNST.toString();
+                fcnType = TRFunctionType.newConstantFunctionType(t);
+                args.add(easyExpr);
+                // // maybe better error msg later; pred can't be a variable and easy? 
+                // GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
+                //     easyExpr.location, "map comp", "predicate", "0", original);
+            }
+        }
+        else
+        {
+            if (easyExpr instanceof TRLiteralExpression)
+            {
+                switch (kind)
+                {
+                    case DOMAIN: 
+                        // domcnst: 'a => 'a => 'b => 'a
+                        // for our purposes, it's just 'a -> 'a    
+                        original = IsaToken.MAPCOMP_DOMCNST.toString(); 
+                        fcnType = TRFunctionType.newFunctionType(t, t);
+                        args.add(easyExpr);
+                        break; 
+                    case RANGE : 
+                        original = IsaToken.MAPCOMP_RNGCNST.toString(); 
+                        fcnType = TRFunctionType.newFunctionType(t, t);
+                        args.add(easyExpr);
+                        break;
+                    case PRED :
+                        throw new InternalError("impoosible");
+                }    
+            }
+            else if (easyExpr instanceof TRVariableExpression)
+            {
+                switch (kind)
+                {
+                    case DOMAIN: 
+                        // domid: 'a => 'b => 'a (or 'a * 'b -> 'a); 
+                        // but for our purposes inside vdm2isa, it's just () -> 'a
+                        original = IsaToken.MAPCOMP_DOMID.toString(); 
+                        fcnType = TRFunctionType.newConstantFunctionType(t);
+                        break; 
+                    case RANGE : 
+                        original = IsaToken.MAPCOMP_RNGID.toString(); 
+                        fcnType = TRFunctionType.newConstantFunctionType(t);
+                        break;
+                    case PRED :
+                        throw new InternalError("impoosible");
+                }    
+            }
+        }
+        assert original != null && fcnType != null; 
+        TRVariableExpression root = TRVariableExpression.newVariableExpr(easyExpr.location, original, fcnType);
+        TRApplyExpression result = TRApplyExpression.newApplyExpression(root, args, t);
+        return result;
+    }
+
+    private static TRMultipleBind newDummyTypeBind(TRMapCompExprKind kind, TRType exprType)
+    {
+        return new TRMultipleTypeBind(
+                        TRBasicPattern.identifier(exprType.location, 
+                            IsaToken.dummyVarNames(1, exprType.location) + kind.name()
+                            ), 
+                        exprType);
+    }
     
+    private static TRMultipleBind figureOutDummyBind(TRMultipleBind found, TRType exprType, TRMapCompExprKind kind)
+    {
+        TRMultipleBind result = found;
+        // if bind is found, use that as the bind          
+        if (result != null)
+        {
+            // if type compatible (by set or type bind) is found; that's the one
+            // otherwise, issue a dummy name on the expr type as the bind 
+            // (e.g. for the case { mk_R(x,y) |-> 10 | x in S, y in T }, where neither x nor y are dom type)!
+            if (!result.getRHSType().compatible(exprType))
+            {
+                result = TRMapCompExpression.newDummyTypeBind(kind, exprType);
+            }
+        }
+        // otherwise carry on trying to find; patch up later in  case none is found (i.e. truly free variables in expr!)
+        return result;
+    }
+
+    private static TRMultipleBindList figureOutBindPart(TRMultipleBindList given, TCNameSet varsToBind, TRType exprType, TRMapCompExprKind kind)
+    {
+        TRMultipleBindList result = new TRMultipleBindList();
+        for(TCNameToken v : varsToBind)
+        {
+            TRMultipleBind b = TRMapCompExpression.figureOutDummyBind(given.findBinding(v), exprType, kind);
+            if (b != null)
+                result.add(b);
+        }
+        assert result.size() <= given.size();
+        return result;
+    }
+
+    /**
+     * From the given bindings, see which of the free variables in the dom/rng/pred expressions need binding.
+     * This will be the basis of the lambda expressions to be created. 
+     * @param given
+     * @param varsToBind
+     * @param exprType
+     * @return
+     */
+    private static TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TCNameSet domVarsToBind, TRType domType, TCNameSet rngVarsToBind, TRType rngType)
+    {
+        TRMultipleBindList result = new TRMultipleBindList();
+        result.addAll(TRMapCompExpression.figureOutBindPart(given, domVarsToBind, domType, TRMapCompExprKind.DOMAIN));
+        result.addAll(TRMapCompExpression.figureOutBindPart(given, rngVarsToBind, rngType, TRMapCompExprKind.RANGE));
+        assert result.size() <= given.size();
+        return result;
+    }
+
     /**
      * mapCompSetBound lambdas *must* have two bindings! So figure out missing ones as "_::exp.type"
      * @param found
@@ -298,7 +489,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                             );
                 if (missingBind == null)
                 {
-                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "map comprehension", "bindings", "2", result.translate());
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, "map comprehension", "bindings", MAX_BINDINGS_ALLOWED, result.translate());
                 }
                 else
                 {
@@ -367,7 +558,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     @Override
     public IsaToken isaToken() {
-        return bindings.foundBinds(TRMultipleBindKind.TYPE) ? IsaToken.MAPCOMPTYP : IsaToken.MAPCOMPSET;
+        return bindings.foundBinds(TRMultipleBindKind.TYPE) ? IsaToken.MAPCOMP_TYPBOUND : IsaToken.MAPCOMP_SETBOUND;
     }
 
     @Override
