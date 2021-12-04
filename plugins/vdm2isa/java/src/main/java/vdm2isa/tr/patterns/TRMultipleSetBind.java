@@ -110,6 +110,12 @@ public class TRMultipleSetBind extends TRMultipleBind
     }
 
     @Override
+    public TRMultipleBindKind getMultipleBindKind()
+    {
+        return TRMultipleBindKind.SET;
+    }
+
+    @Override
 	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseMultipleSetBind(this, arg);

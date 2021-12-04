@@ -87,6 +87,12 @@ public class TRMultipleSeqBind extends TRMultipleBind
         return ((TRSeqType)seq.getType()).getInnerType();
     }
 
+    @Override
+    public TRMultipleBindKind getMultipleBindKind()
+    {
+        return TRMultipleBindKind.SEQ;
+    }
+
 	@Override
 	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
 	{

@@ -166,12 +166,24 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
     protected abstract String boundExpressionTranslate(int index, boolean invTr);
 
     /**
-     * RHS can be a TRExpression of TRType
+     * RHS can be a TRExpression (for set/seq) of TRType (for type) binds
      * @return
      */
     public abstract TRNode getRHS();
 
+    /**
+     * RHS type is either the binding declared type (for type binds), or the
+     * inner set/seq type for set/seq binds  
+     * @return
+     */
     public abstract TRType getRHSType();
+
+    /**
+     * This is akin to an "instanceof" test, but would be neater in switch statements. Derived classes know what kind they are.
+     * This will also be useful for #TMultipleBindList.figureBindsOut()
+     * @return
+     */
+    public abstract TRMultipleBindKind getMultipleBindKind();
 
 	public abstract <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg);
 
@@ -186,6 +198,12 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         return plist.patternContextTranslate(varName);
     }
 
+    /**
+     * For every pattern in the multiple bind, build a TRTypeBindList, which is 
+     * used in lambda expression bindings. That is, for set/seq bindings, use the
+     * inner type, whereas for type bindings, use the type directly. See getRHSType(). 
+     * @return
+     */
     public TRTypeBindList getTypeBindList()
     {
         // there can't be duplication in the named binds, so a list is fine.

@@ -118,14 +118,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			for(int i = 0; i < size(); i++)
 			{
 				TRMultipleBind b = get(i);
-				if (b instanceof TRMultipleSetBind)
-					bindSpread.get(TRMultipleBindKind.SET).add(i);
-				else if (b instanceof TRMultipleSeqBind)
-					bindSpread.get(TRMultipleBindKind.SEQ).add(i);
-				else if (b instanceof TRMultipleTypeBind)
-					bindSpread.get(TRMultipleBindKind.TYPE).add(i);
-				else 
-					throw new InternalException(IsaErrorMessage.PLUGIN_NYI_2P.number, "Invalid type bind kind " + b.getClass().getSimpleName());
+				bindSpread.get(b.getMultipleBindKind()).add(i);
 			}
 			assert size() == bindSpread.get(TRMultipleBindKind.SET).size() + 
 							 bindSpread.get(TRMultipleBindKind.SEQ).size() + 

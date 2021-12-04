@@ -75,6 +75,12 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         return type;
     }
 
+    @Override
+    public TRMultipleBindKind getMultipleBindKind()
+    {
+        return TRMultipleBindKind.TYPE;
+    }
+
 	@Override
 	public <R, S> R apply(TRMultipleBindVisitor<R, S> visitor, S arg)
 	{
