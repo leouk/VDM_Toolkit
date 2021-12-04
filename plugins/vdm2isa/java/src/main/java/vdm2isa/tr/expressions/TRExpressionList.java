@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
@@ -23,7 +24,8 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		super();
 	}  
 
-	public TRExpressionList(TRExpressionList from)
+	//TODO change this kind of constructor everywhere? 
+	public TRExpressionList(/*TRExpressionList*/List<TRExpression> from)
 	{
 		this();
 		addAll(from);
