@@ -24,6 +24,7 @@ import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRMultipleTypeBind;
+import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
@@ -154,6 +155,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         TRExpression rangeExpr = getMapletExpr().right;
         TRType rangeType = rangeExpr.getType();
 
+        // predicate might be null at this point; use it
         if (TRMapCompExpression.isTrivial(domainExpr, rangeExpr, predicate))
         {
             this.mapComp = new TRMapEnumExpression(location, 
@@ -202,10 +204,9 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                 // even with fv in the pred, needs to evaluate it anyhow, e.g. 3 > 5? 
             boolean hasEasyPrd = TRMapCompExpression.isTrivialPred(predicate);//hasEasyLambda(predicate, prdFV);
             TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
-
             // figureout lambda bindings if necessary (i.e. any hard lambdas needed)
             TRMultipleBindList lambdaBindings = !hasEasyDom || !hasEasyRng || !hasEasyPrd ?
-                TRMapCompExpression.figureOutLambdaBindings(bindings, domFV, domainType, rngFV, rangeType) : null;
+                TRMapCompExpression.figureOutLambdaBindings(bindings, domFV, domainType, rngFV, rangeType, prdFV) : null;
             
             // create the lambda for each part, where set/seq bindings are transformed into corresponding type binds 
             // i.e. we can "reuse" map comp bindings even if set/seq, as lambda will figure out right type bind list
@@ -479,10 +480,11 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             // if type compatible (by set or type bind) is found; that's the one
             // otherwise, issue a dummy name on the expr type as the bind 
             // (e.g. for the case { mk_R(x,y) |-> 10 | x in S, y in T }, where neither x nor y are dom type)!
-            if (!result.getRHSType().compatible(exprType))
+            if (exprType != null && !result.getRHSType().compatible(exprType))
             {
                 result = TRMapCompExpression.newDummyTypeBind(kind, exprType);
             }
+            // exprType = null for predExpr, given it's about it's inner bind
         }
         // otherwise carry on trying to find; patch up later in  case none is found (i.e. truly free variables in expr!)
         return result;
@@ -501,6 +503,16 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         return result;
     }
 
+    private static TRMultipleBindList figureOutMissingBinding(TRMultipleBindList result, TRType type, TRMapCompExprKind kind)
+    {
+        if (result.isEmpty())
+        {
+            result.add(TRMapCompExpression.newDummyTypeBind(kind, type));
+        }
+        assert !result.isEmpty();
+        return result;
+    }
+
     /**
      * From the given bindings, see which of the free variables in the dom/rng/pred expressions need binding.
      * This will be the basis of the lambda expressions to be created. 
@@ -509,12 +521,61 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
      * @param exprType
      * @return
      */
-    private static TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TCNameSet domVarsToBind, TRType domType, TCNameSet rngVarsToBind, TRType rngType)
+    private static TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TCNameSet domVarsToBind, TRType domType, TCNameSet rngVarsToBind, TRType rngType, TCNameSet prdVarsToBind)
     {
+        assert !domVarsToBind.isEmpty() || !rngVarsToBind.isEmpty() || !prdVarsToBind.isEmpty();
         TRMultipleBindList result = new TRMultipleBindList();
-        result.addAll(TRMapCompExpression.figureOutBindPart(given, domVarsToBind, domType, TRMapCompExprKind.DOMAIN));
-        result.addAll(TRMapCompExpression.figureOutBindPart(given, rngVarsToBind, rngType, TRMapCompExprKind.RANGE));
-        assert result.size() <= given.size();
+        
+        TRPatternListList allBoundPatterns = given.getPatternListList();
+        if (!allBoundPatterns.uniqueNames())
+        {
+            // non unique names
+            given.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_1P, given.translate()); 
+        } 
+
+        TRMultipleBindList domBindings = TRMapCompExpression.figureOutBindPart(given, domVarsToBind, domType, TRMapCompExprKind.DOMAIN);
+        domBindings = TRMapCompExpression.figureOutMissingBinding(domBindings, domType, TRMapCompExprKind.DOMAIN);
+        //assert domBindings.size() == 1;
+
+        TRMultipleBindList rngBindings = TRMapCompExpression.figureOutBindPart(given, rngVarsToBind, rngType, TRMapCompExprKind.RANGE);
+        rngBindings = TRMapCompExpression.figureOutMissingBinding(rngBindings, rngType, TRMapCompExprKind.RANGE);
+        //assert rngBindings.size() == 1;
+
+        result.addAll(domBindings);
+        result.addAll(rngBindings);
+        if (result.size() < TRMapCompExpression.MAX_BINDINGS_ALLOWED)
+        {
+            // figure out predicate, if not all bindings allowed were found 
+            // (i.e. { 1 |-> 5 | x in set {1,2,3} & x > 5 } example )
+
+            TRMultipleBindList prdBindings;
+    
+            // remove the already bound variables from the predicate variables to bind
+            prdVarsToBind.removeAll(domVarsToBind);
+            prdVarsToBind.removeAll(rngVarsToBind);
+            if (!prdVarsToBind.isEmpty())
+            {
+                // warn: only predicate binds variable?! Which type? *must* find on the given bind!
+                prdBindings = TRMapCompExpression.figureOutBindPart(given, prdVarsToBind, null, TRMapCompExprKind.PRED); 
+                if (prdBindings.size() != prdVarsToBind.size())
+                {
+                    // couldn't find prd binding to bind with; free var?
+                    //TODO change error message
+                    given.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_1P, prdBindings.translate()); 
+                }
+                else 
+                    result.addAll(prdBindings);
+            }
+        }
+
+        // whatever happens, make sure it's properly figured out (i.e. nor smaller, nor bigger)
+        if (result.size() != TRMapCompExpression.MAX_BINDINGS_ALLOWED)
+        {
+            // couldn't find prd binding to bind with; free var?
+            //TODO change error message
+            given.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_1P, result.translate()); 
+        }
+
         return result;
     }
 }

@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-05T09:06:01.101544Z
+(* VDM to Isabelle Translation @2021-12-05T09:59:35.802041Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -57,9 +57,9 @@ where
 		(domcnst (1::VDMNat1)) 
 		(rngcnst (5::VDMNat1)) 
 		(
-	\<lambda>  dummy dummy2.
-		(if inv_VDMNat1 dummy \<and> inv_VDMNat1 dummy2  \<and> (inv_bool (False::\<bool>)) then
-		(False::\<bool>)
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (x > (5::VDMNat1))) then
+		(x > (5::VDMNat1))
 	 else
 		undefined
 	)
@@ -104,8 +104,8 @@ where
 		(domid ) 
 		(rngcnst (10::VDMNat1)) 
 		(
-	\<lambda> (x :: VDMNat1) dummy .
-		(if (((inv_VDMNat1 x))) \<and> inv_VDMNat1 dummy \<and> (inv_bool (x > (2::VDMNat1))) then
+	\<lambda> (x :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (x > (2::VDMNat1))) then
 		(x > (2::VDMNat1))
 	 else
 		undefined
@@ -131,8 +131,8 @@ where
 		(domcnst (1::VDMNat1)) 
 		(rngid ) 
 		(
-	\<lambda> (x :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and> (inv_bool (x > (2::VDMNat1))) then
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (x :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 x))) \<and> (inv_bool (x > (2::VDMNat1))) then
 		(x > (2::VDMNat1))
 	 else
 		undefined
@@ -210,24 +210,24 @@ where
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (x + y)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 (x + y)) then
 		(x + y)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 ((10::VDMNat1) + fv)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 ((10::VDMNat1) + fv)) then
 		((10::VDMNat1) + fv)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (x < y)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (x < y)) then
 		(x < y)
 	 else
 		undefined
@@ -251,24 +251,24 @@ where
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (x + y)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 (x + y)) then
 		(x + y)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 ((10::VDMNat1) + fv)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 ((10::VDMNat1) + fv)) then
 		((10::VDMNat1) + fv)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool ((x + fv) < y)) then
+	\<lambda> (x :: VDMNat1)  (y :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool ((x + fv) < y)) then
 		((x + fv) < y)
 	 else
 		undefined
@@ -334,16 +334,16 @@ where
 		(inv_VDMNat1) 
 		(domcnst (1::VDMNat1)) 
 		(
-	\<lambda> (x :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and> (inv_VDMNat1 (x + x)) then
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (x :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 x))) \<and> (inv_VDMNat1 (x + x)) then
 		(x + x)
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and> (inv_bool ((x + fv) > (5::VDMNat1))) then
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (x :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 x))) \<and> (inv_bool ((x + fv) > (5::VDMNat1))) then
 		((x + fv) > (5::VDMNat1))
 	 else
 		undefined
