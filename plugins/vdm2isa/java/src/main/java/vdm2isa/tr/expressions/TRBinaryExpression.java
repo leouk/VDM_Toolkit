@@ -6,6 +6,41 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCAndExpression;
+import com.fujitsu.vdmj.tc.expressions.TCBinaryExpression;
+import com.fujitsu.vdmj.tc.expressions.TCCompExpression;
+import com.fujitsu.vdmj.tc.expressions.TCDivExpression;
+import com.fujitsu.vdmj.tc.expressions.TCDivideExpression;
+import com.fujitsu.vdmj.tc.expressions.TCDomainResByExpression;
+import com.fujitsu.vdmj.tc.expressions.TCDomainResToExpression;
+import com.fujitsu.vdmj.tc.expressions.TCEqualsExpression;
+import com.fujitsu.vdmj.tc.expressions.TCEquivalentExpression;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.expressions.TCGreaterEqualExpression;
+import com.fujitsu.vdmj.tc.expressions.TCGreaterExpression;
+import com.fujitsu.vdmj.tc.expressions.TCImpliesExpression;
+import com.fujitsu.vdmj.tc.expressions.TCInSetExpression;
+import com.fujitsu.vdmj.tc.expressions.TCLessEqualExpression;
+import com.fujitsu.vdmj.tc.expressions.TCLessExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapUnionExpression;
+import com.fujitsu.vdmj.tc.expressions.TCModExpression;
+import com.fujitsu.vdmj.tc.expressions.TCNotEqualExpression;
+import com.fujitsu.vdmj.tc.expressions.TCNotInSetExpression;
+import com.fujitsu.vdmj.tc.expressions.TCOrExpression;
+import com.fujitsu.vdmj.tc.expressions.TCPlusExpression;
+import com.fujitsu.vdmj.tc.expressions.TCPlusPlusExpression;
+import com.fujitsu.vdmj.tc.expressions.TCProperSubsetExpression;
+import com.fujitsu.vdmj.tc.expressions.TCRangeResByExpression;
+import com.fujitsu.vdmj.tc.expressions.TCRangeResToExpression;
+import com.fujitsu.vdmj.tc.expressions.TCRemExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSeqConcatExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSetDifferenceExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSetIntersectExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSetUnionExpression;
+import com.fujitsu.vdmj.tc.expressions.TCStarStarExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSubsetExpression;
+import com.fujitsu.vdmj.tc.expressions.TCSubtractExpression;
+import com.fujitsu.vdmj.tc.expressions.TCTimesExpression;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
@@ -26,13 +61,184 @@ public class TRBinaryExpression extends TRExpression
 	public final TRExpression right;
 	public final LexToken op;
 	
-	public TRBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	public TRBinaryExpression(TCBinaryExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
-		super(op != null ? op.location : LexLocation.ANY, exptype);
+		super(op != null ? op.location : LexLocation.ANY, tc, exptype);
 		this.left = left;
 		//@todo equals expression has to be specialised because of record and other equality tests ? 
 		this.op = op;
 		this.right = right;
+	}
+
+	// Class mapper really insists on type-specific constructors, so can't rely on inheritance for TCBinaryExpression :-()
+	private TRBinaryExpression(TCBinaryExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype, boolean dummy)
+	{
+		this(tc, left, op, right, exptype);
+	}
+
+	public TRBinaryExpression(TCMapUnionExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCModExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCAndExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCCompExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSetUnionExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSetIntersectExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCImpliesExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCEquivalentExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCLessExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCLessEqualExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCGreaterExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCGreaterEqualExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSeqConcatExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCDivideExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCDomainResToExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCDomainResByExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCRangeResToExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCRangeResByExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCStarStarExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSubtractExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCPlusExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCProperSubsetExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSubsetExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCNotInSetExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCInSetExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCRemExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCDivExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCPlusPlusExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCOrExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCNotEqualExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCEqualsExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCTimesExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
+	}
+
+	public TRBinaryExpression(TCSetDifferenceExpression tc, TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		this(tc, left, op, right, exptype, false);
 	}
 
 	@Override
@@ -168,6 +374,133 @@ public class TRBinaryExpression extends TRExpression
 		return visitor.caseBinaryExpression(this, arg);
 	}
 
+	public static TRBinaryExpression newBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	{
+		IsaToken token = IsaToken.from(op);
+		assert VALID_BINARY_OPS.contains(token);
+		TRBinaryExpression result = 
+			new TRBinaryExpression(
+				TRBinaryExpression.newTCBinaryExpression(left, op, right), 
+				left, op, right, exptype);
+		return result;
+	} 
+
+	protected static TCBinaryExpression newTCBinaryExpression(TRExpression left, LexToken op, TRExpression right)
+	{
+		IsaToken token = IsaToken.from(op);
+		assert VALID_BINARY_OPS.contains(token);
+		TCExpression l = left.getVDMExpr();
+		TCExpression r = right.getVDMExpr();
+		TCBinaryExpression result;
+		switch (token)
+		{
+			case AND:
+				result = new TCAndExpression(l, op, r);
+				break;
+			case  OR:
+				result = new TCOrExpression(l, op, r);
+				break;
+			case  IMPLIES:
+				result = new TCImpliesExpression(l, op, r);
+				break;
+			case  EQUIVALENT:
+				result = new TCEquivalentExpression(l, op, r);
+				break;
+			case  NE:
+				result = new TCNotEqualExpression(l, op, r);
+				break;
+			case  LT:
+				result = new TCLessExpression(l, op, r);
+				break;
+			case  LE:
+				result = new TCLessEqualExpression(l, op, r);
+				break;
+			case  GT:
+				result = new TCGreaterExpression(l, op, r);
+				break;
+			case  GE:
+				result = new TCGreaterEqualExpression(l, op, r);
+				break;
+			case  PLUS:
+				result = new TCPlusExpression(l, op, r);
+				break;
+			case  MINUS:
+				result = new TCSubtractExpression(l, op, r);
+				break;
+			case  TIMES:
+				result = new TCTimesExpression(l, op, r);
+				break;
+			case  DIV:
+				result = new TCDivExpression(l, op, r);
+				break;
+			case  DIVIDE:
+				result = new TCDivideExpression(l, op, r);
+				break;
+			case  MOD:
+				result = new TCModExpression(l, op, r);
+				break;
+			case  REM:
+				result = new TCRemExpression(l, op, r);
+				break;
+			case  INSET:
+				result = new TCInSetExpression(l, op, r);
+				break;
+			case  NOTINSET:
+				result = new TCNotInSetExpression(l, op, r);
+				break;
+			case  UNION:
+				result = new TCSetUnionExpression(l, op, r);
+				break;
+			case  INTER:
+				result = new TCSetIntersectExpression(l, op, r);
+				break;
+			case  SETDIFF:
+				result = new TCSetDifferenceExpression(l, op, r);
+				break;
+			case  SUBSET:
+				result = new TCSubsetExpression(l, op, r);
+				break;
+			case  PSUBSET:
+				result = new TCProperSubsetExpression(l, op, r);
+				break;
+			case  CONCATENATE:
+				result = new TCSeqConcatExpression(l, op, r);
+				break;
+			case  PLUSPLUS:
+				result = new TCPlusPlusExpression(l, op, r);
+				break;
+			case  DOMRESTO:
+				result = new TCDomainResToExpression(l, op, r);
+				break;
+			case  DOMRESBY:
+				result = new TCDomainResByExpression(l, op, r);
+				break;
+			case  RANGERESTO:
+				result = new TCRangeResToExpression(l, op, r);
+				break;
+			case  RANGERESBY:
+				result = new TCRangeResByExpression(l, op, r);
+				break;
+			case  MUNION:
+				result = new TCMapUnionExpression(l, op, r);
+				break;
+			case  COMP:
+				result = new TCCompExpression(l, op, r);
+				break;
+			case  EQUALS:
+				result = new TCEqualsExpression(l, op, r);
+				break;
+			case  STARSTAR:
+			case  STARSTARNAT:
+				result = new TCStarStarExpression(l, op, r);
+				break;
+			default:
+				result = null;
+				break;
+		}
+		return result;
+	}
+
 	public static boolean uniformlyTyped(TRType type, TRExpression... args)
 	{
 		boolean result = args == null || args.length == 0;
@@ -200,7 +533,7 @@ public class TRBinaryExpression extends TRExpression
 				result = args[0];
 				for(int i = 1; i < args.length; i++)
 				{
-					result = new TRBinaryExpression(result, op, args[i], result.getType());
+					result = TRBinaryExpression.newBinaryExpression(result, op, args[i], result.getType());
 				}
 			}
 			else 
