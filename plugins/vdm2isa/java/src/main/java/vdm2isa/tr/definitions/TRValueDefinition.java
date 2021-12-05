@@ -93,7 +93,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRNode.setup(pattern, exp, defs, expType);
 		//this.defs = figureOutDefs(defs);?
 		//if (local) 
-			System.out.println(toString());
+		//	System.out.println(toString());
 	}
 
 	@Override
