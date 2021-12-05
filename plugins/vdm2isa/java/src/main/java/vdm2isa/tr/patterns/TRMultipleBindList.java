@@ -70,6 +70,16 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
+	public TCMultipleBindList getTCMultipleBindList()
+	{
+		TCMultipleBindList result = new TCMultipleBindList();
+		for(TRMultipleBind b : this)
+		{
+			result.add(b.getVDMBind());	
+		}
+		return result;
+	}
+
 	public boolean getParenthesise()
 	{
 		return parenthesise;
@@ -194,11 +204,11 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 				rhs.getType() instanceof TRSetType;
 		TRSetType stype = (TRSetType)rhs.getType();
 		// p in set RHS
-		return new TRBinaryExpression(
-					TRVariableExpression.newVariableExpr(p.location, p.patternTranslate(), stype.getInnerType()), 
-					new LexKeywordToken(Token.INSET, p.location),/*op //IsaToken.INSET,*/ 
-					rhs,
-					TRBasicType.boolType(p.getLocation()));
+		return TRBinaryExpression.newBinaryExpression(
+			TRVariableExpression.newVariableExpr(p.location, p.patternTranslate(), stype.getInnerType()),
+			new LexKeywordToken(Token.INSET, p.location),/*op //IsaToken.INSET,*/ 
+			rhs, 
+			TRBasicType.boolType(p.getLocation()));
 	}
 
 	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)

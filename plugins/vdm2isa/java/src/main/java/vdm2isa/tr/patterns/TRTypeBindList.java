@@ -40,6 +40,19 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
+	public TCTypeBindList getTCTypeBindList()
+	{
+		TCTypeBindList result = new TCTypeBindList();
+		for(TRMultipleTypeBind t : this)
+		{
+			if (t != null)
+			{
+				result.addAll(t.getTCTypeBindList());
+			}
+		}
+		return result;
+	}
+
 	public TRTypeList getTypeList()
 	{
 		TRTypeList result = TRTypeList.newTypeList((TRType[])null);

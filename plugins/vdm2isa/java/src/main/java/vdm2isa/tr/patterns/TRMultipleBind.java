@@ -2,6 +2,8 @@ package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
+import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
@@ -27,12 +29,20 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
      */
     public boolean poBind;
 
-    public TRMultipleBind(TRPatternList plist)
+    private final TCMultipleBind vdmBind;
+
+    public TRMultipleBind(TCMultipleBind b, TRPatternList plist)
     {
-        super(plist.get(0).location);
+        super(plist != null && !plist.isEmpty() ? plist.get(0).location : LexLocation.ANY);
+        this.vdmBind = b;
         this.plist = plist;
         this.poBind = false;
         this.parenthesise = true;
+    }
+
+    public TCMultipleBind getVDMBind()
+    {
+        return vdmBind; 
     }
 
     @Override 
@@ -210,7 +220,10 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         TRTypeBindList result = new TRTypeBindList();
         for(TRPattern p : this.plist)
         {
-            result.add(new TRMultipleTypeBind(p, getRHSType()));
+            result.add(
+                new TRMultipleTypeBind(
+                    new TCTypeBind(p.getVDMPattern(), getRHSType().getVDMType()), 
+                    p, getRHSType()));
         }
         TRNode.setup(result);
         return result;

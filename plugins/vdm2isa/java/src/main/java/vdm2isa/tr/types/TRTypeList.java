@@ -47,6 +47,17 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		typename = null;
 	}
 
+	public TCTypeList getTCTypeList()
+	{
+		TCTypeList result = new TCTypeList();
+		for(TRType t : this)
+		{
+			if (t != null)
+				result.add(t.getVDMType());
+		}
+		return result;
+	}
+
 	@Override
 	public void setup()
 	{

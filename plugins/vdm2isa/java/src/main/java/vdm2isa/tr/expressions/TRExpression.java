@@ -64,7 +64,6 @@ public abstract class TRExpression extends TRNode
     private boolean hasWarnedAboutUnknownType;
     private boolean hasWarnedAboutNullType;
 
-    //TODO if this works, percolate through whole TRExpression tree
 	public TRExpression(LexLocation location, TCExpression exp, TRType exptype)
 	{
 		super(location);
@@ -72,11 +71,6 @@ public abstract class TRExpression extends TRNode
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         this.hasWarnedAboutNullType = false;
-	}
-
-    public TRExpression(LexLocation location, TRType exptype)
-	{
-		this(location, null, exptype);
 	}
 
     @Override 

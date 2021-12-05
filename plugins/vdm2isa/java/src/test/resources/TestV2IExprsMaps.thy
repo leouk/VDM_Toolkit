@@ -151,8 +151,8 @@ abbreviation
 where
 	"v23 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ d .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
-		{ r .   ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		{ d | d r .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		{ r | d r .   ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(domid ) 
@@ -178,8 +178,8 @@ abbreviation
 where
 	"v24 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ d .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
-		{ r .   ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
+		{ d | d r .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
+		{ r | d r .   ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(domid ) 
@@ -206,7 +206,7 @@ where
 	"v3 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
 		{ (x + y) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x < y) } 
-		{ ((10::VDMNat1) + fv) |  .  \<and> (x < y) } 
+		{ ((10::VDMNat1) + fv) | x y  .  (x < y) } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(

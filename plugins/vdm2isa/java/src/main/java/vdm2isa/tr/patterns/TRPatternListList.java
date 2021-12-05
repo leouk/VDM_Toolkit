@@ -60,6 +60,16 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return super.toString() + " [PLL=" + size() + "]";
 	}
 
+	public TCPatternListList getTCPatternListList()
+	{
+		TCPatternListList result = new TCPatternListList();
+		for(TRPatternList plist : this)
+		{
+			result.add(plist.getTCPatternList());
+		}
+		return result;
+	}
+
 	@Override
 	public boolean needsPatternContext()
 	{

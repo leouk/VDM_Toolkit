@@ -1,6 +1,11 @@
 package vdm2isa.tr.patterns;
 
 
+import com.fujitsu.vdmj.tc.patterns.TCMultipleTypeBind;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
+import com.fujitsu.vdmj.tc.patterns.TCTypeBindList;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
@@ -12,16 +17,30 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 
     public final TRType type;
 
-    public TRMultipleTypeBind(TRPattern pattern, TRType type)
+    private static TCMultipleTypeBind figureOutMultipleBind(TCTypeBind tc)
     {
-        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), type);
+        TCMultipleTypeBind result = null;
+        if (tc != null)
+        {
+            TCPatternList plist = new TCPatternList();
+            plist.add(tc.pattern);
+            result = new TCMultipleTypeBind(plist, tc.type);
+        }
+        return result;
     }
 
-    public TRMultipleTypeBind(TRPatternList plist, TRType type)
+    public TRMultipleTypeBind(TCTypeBind tc, TRPattern pattern, TRType type)
     {
-        super(plist);
+        this(figureOutMultipleBind(tc), 
+            pattern != null ? pattern.getPatternList() : new TRPatternList(), type);
+    }
+
+    public TRMultipleTypeBind(TCMultipleTypeBind tc, TRPatternList plist, TRType type)
+    {
+        super(tc, plist);
         this.type = type;
     }
+
     @Override 
     public void setup()
     {
@@ -33,6 +52,20 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     public String toString()
     {
         return super.toString() + " " + String.valueOf(plist) + ": " + String.valueOf(type); 
+    }
+
+    /**
+     * TRMultipleTypeBind coalesces TCTypeBind and TCMultipleTypeBind
+     * @return
+     */
+    public TCTypeBindList getTCTypeBindList()
+    {
+        TCTypeBindList result = new TCTypeBindList();
+        for(TRPattern p : plist)
+        {
+            result.add(new TCTypeBind(p.getVDMPattern(), type.getVDMType()));            
+        }
+        return result;
     }
 
     @Override
@@ -86,4 +119,15 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 	{
 		return visitor.caseMultipleTypeBind(this, arg);
 	}
+
+    public static TRMultipleTypeBind newMultipleTypeBind(TRPattern p, TRType t)
+    {   
+        return new TRMultipleTypeBind(new TCTypeBind(p.getVDMPattern(), t.getVDMType()), p, t);
+    }
+
+    public static TRMultipleTypeBind newMultipleTypeBind(TRPatternList plist, TRType t)
+    {   
+        return new TRMultipleTypeBind(new TCMultipleTypeBind(plist.getTCPatternList(), t.getVDMType()), plist, t);
+    }
+
 }

@@ -5,6 +5,7 @@
 package vdm2isa.tr.modules;
 
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 
 import java.io.File;
 import java.util.Arrays;
@@ -25,10 +26,12 @@ public class TRModule extends TRNode
 	public final TCIdentifierToken name;
 	public final TRDefinitionList definitions;
 	public final FileList files;
+	public final TCModule module; 
 
-	public TRModule(TCIdentifierToken name, TRDefinitionList definitions, FileList files)
+	public TRModule(TCModule m, TCIdentifierToken name, TRDefinitionList definitions, FileList files)
 	{
 		super(name != null ? name.getLocation() : LexLocation.ANY);
+		this.module = m;
 		this.name = name;
 		this.definitions = definitions;
 		this.files = files;
