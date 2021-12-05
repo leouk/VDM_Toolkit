@@ -176,7 +176,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             TCTupleExpression tp = (TCTupleExpression)getMapletExpr().getVDMExpr();
             TCNameSet domFV = tp.args.get(0).apply(exprFVV, env);
             TCNameSet rngFV = tp.args.get(1).apply(exprFVV, env);
-            TCNameSet prdFV = predicate.getVDMExpr().apply(exprFVV, env);
+            TCNameSet prdFV = new TCNameSet(); //predicate != null ? predicate.getVDMExpr().apply(exprFVV, env) : new TCNameSet();
             TCNameSet unboundFV = TRMapCompExpression.figureOutUnboundFV(bindings, domFV, rngFV);//, prdFV);
             if (!unboundFV.isEmpty())
             {
