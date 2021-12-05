@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCLambdaExpression;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
@@ -19,6 +20,7 @@ import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 /**
  * VDM Lambda expressions are complex to translate because of the need for local invariant checks and the need
@@ -45,10 +47,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      */
     protected enum TRLambdaExpressionKind { NORMAL, MAPCOMP, EXISTENTIAL_MAPCOMP }
 
-    public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
+    public TRLambdaExpression(LexLocation location, TCLambdaExpression tc, TRTypeBindList bindList, TRExpression expression,
         TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def)
     {
-        super(location, expression, type);
+        super(location, tc, expression, type);
         this.bindList = bindList;
         //this.type = type; // this is redundant? Given it's the exptype already? 
         this.paramPatterns = paramPatterns; 
@@ -195,7 +197,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             expression = TRLiteralExpression.newBooleanLiteralExpression(LexLocation.ANY, false);    
         }
         TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
-        TRLambdaExpression result = new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
+        TRLambdaExpression result = new TRLambdaExpression(
+            expression.getLocation(), 
+            new TCLambdaExpression(expression.getLocation(), bindList.getTCTypeBindList(), expression.getVDMExpr()),
+            bindList, expression, fcnType, 
             paramPatterns, paramDefinitions, TRMultiBindListDefinition.newBindListDef(expression.getLocation(), mbinds));
         TRNode.setup(result);
         return result;

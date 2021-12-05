@@ -7,6 +7,8 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.expressions.EnvTriple;
 import com.fujitsu.vdmj.tc.expressions.TCMapCompExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapEnumExpression;
+import com.fujitsu.vdmj.tc.expressions.TCMapletExpressionList;
 import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
@@ -158,7 +160,10 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         // predicate might be null at this point; use it
         if (TRMapCompExpression.isTrivial(domainExpr, rangeExpr, predicate))
         {
+            TCMapletExpressionList tcMapletList = new TCMapletExpressionList();
+            tcMapletList.add(getMapletExpr().maplet);
             this.mapComp = new TRMapEnumExpression(location, 
+                new TCMapEnumExpression(location, tcMapletList),
                 new TRMapletExpressionList(Arrays.asList(getMapletExpr())), getType());
         }
         else 
@@ -175,9 +180,9 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             // if the predicate has more FV than dom/rng, then it will compromise the set creation
             // { x+y |-> 10 | x in set S, y in set T & x > y and (x+y) < z }
             // { x + y | x in set S, y in set T & x > y and (x+y) < z } for domain!
-            TCTupleExpression tp = (TCTupleExpression)getMapletExpr().getVDMExpr();
-            TCNameSet domFV = tp.args.get(0).apply(exprFVV, env);
-            TCNameSet rngFV = tp.args.get(1).apply(exprFVV, env);
+            //TCTupleExpression tp = (TCTupleExpression)getMapletExpr().getVDMExpr();
+            TCNameSet domFV = getMapletExpr().maplet.left.apply(exprFVV, env);
+            TCNameSet rngFV = getMapletExpr().maplet.right.apply(exprFVV, env);
             TCNameSet prdFV = new TCNameSet(); //predicate != null ? predicate.getVDMExpr().apply(exprFVV, env) : new TCNameSet();
             TCNameSet unboundFV = TRMapCompExpression.figureOutUnboundFV(bindings, domFV, rngFV);//, prdFV);
             if (!unboundFV.isEmpty())
@@ -371,12 +376,13 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         // for literals, it's just an singleton enumeration
         if (expr instanceof TRLiteralExpression)
         {
-            result = new TRSetEnumExpression(expr.location, new TRExpressionList(Arrays.asList(expr)), expr.getType());
+            result = TRSetEnumExpression.newSetEnumExpression(expr.location, 
+                new TRExpressionList(Arrays.asList(expr)), expr.getType());
         }
         else 
         {
             TRMultipleBindList setbindings = TRMapCompExpression.figureOutBindPart(given, fv, expr.getType(), kind);
-            result = new TRSetCompExpression(expr.location, expr, setbindings, pred, null, expr.getType());
+            result = TRSetCompExpression.newSetCompExpression(expr.location, expr, setbindings, pred, null, expr.getType());
         }
         return result;
     }
@@ -464,7 +470,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
     private static TRMultipleBind newDummyTypeBind(TRMapCompExprKind kind, TRType exprType)
     {
-        return new TRMultipleTypeBind(
+        return TRMultipleTypeBind.newMultipleTypeBind(
                         TRBasicPattern.identifier(exprType.location, 
                             IsaToken.dummyVarNames(1, exprType.location) + kind.name()
                             ), 

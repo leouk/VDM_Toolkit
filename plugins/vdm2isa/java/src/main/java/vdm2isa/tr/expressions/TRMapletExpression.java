@@ -17,6 +17,7 @@ import vdm2isa.tr.types.TRType;
 public class TRMapletExpression extends TRExpression 
 {
 	private static final long serialVersionUID = 1L;
+    public final TCMapletExpression maplet;
     public final TRExpression left;
     public final TRExpression right; 
 
@@ -35,6 +36,7 @@ public class TRMapletExpression extends TRExpression
         super(left != null ? left.location : LexLocation.ANY, 
             figureOutMapletExpression(exp), 
             TRMapletExpression.getMapType(left, right));
+        this.maplet = exp;
         this.left = left;
         this.right = right;
     }

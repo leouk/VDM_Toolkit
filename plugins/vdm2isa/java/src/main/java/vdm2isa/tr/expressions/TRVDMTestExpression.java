@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.messages.IsaErrorMessage;
@@ -24,9 +25,9 @@ public abstract class TRVDMTestExpression extends TRExpression {
     public final TRExpression test;
     public final TRDefinition typedef;
 
-    public TRVDMTestExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
+    public TRVDMTestExpression(LexLocation location, TCExpression tc, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
         this.typename = typename;
         this.basictype = basictype;
         this.test = test;

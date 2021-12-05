@@ -43,6 +43,17 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		return TRTypeList.newTypeList(this);
     }
 
+	public TCExpressionList getTCExpressionList()
+	{
+		TCExpressionList result = new TCExpressionList();
+		for(TRExpression e : this)
+		{
+			if (e.getVDMExpr() != null)
+				result.add(e.getVDMExpr());
+		}
+		return result;
+	}
+
 	@Override 
 	public void setup()
 	{

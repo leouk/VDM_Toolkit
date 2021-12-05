@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCharLiteralExpression;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIntegerLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCQuoteLiteralExpression;
 import com.fujitsu.vdmj.tc.expressions.TCRealLiteralExpression;
@@ -40,16 +41,16 @@ public class TRLiteralExpression extends TRExpression
         Arrays.asList(IsaToken.BOOL, IsaToken.CHAR, IsaToken.NAT, IsaToken.NAT1, 
 					  IsaToken.INT));
 
-	protected TRLiteralExpression(LexLocation location, IsaToken token, String exp, TRType exptype)
+	protected TRLiteralExpression(LexLocation location, TCExpression tc, IsaToken token, String exp, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
 		this.token = token;
 		this.exp = exp; 
 	}
 
 	public TRLiteralExpression(TCBooleanLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, IsaToken.BOOL, 
+		this(exp != null ? exp.location : null, exp, IsaToken.BOOL, 
 			exp != null ? 
 				exp.value != null ? 
 					exp.value.value ? IsaToken.TRUE.toString() : 
@@ -60,27 +61,27 @@ public class TRLiteralExpression extends TRExpression
 
 	public TRLiteralExpression(TCCharLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, IsaToken.CHAR, 
+		this(exp != null ? exp.location : null, exp, IsaToken.CHAR, 
 			IsaToken.ISACHAR.toString() + IsaToken.SPACE.toString() + 
 			IsaToken.bracketit(IsaToken.ISASTR, String.valueOf(exp), IsaToken.ISASTR), exptype);
 	}
 
 	public TRLiteralExpression(TCIntegerLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, exp != null ? exp.value != null ? 
+		this(exp != null ? exp.location : null, exp, exp != null ? exp.value != null ? 
 			exp.value.value >= 0 ? (exp.value.value > 0 ? IsaToken.NAT1 : IsaToken.NAT) : IsaToken.INT : IsaToken.INT : IsaToken.INT, 
 			String.valueOf(exp), exptype);
 	}
 	
 	public TRLiteralExpression(TCRealLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, exp != null ? exp.value != null ? exp.value.type.equals(Token.RAT) ? 
+		this(exp != null ? exp.location : null, exp, exp != null ? exp.value != null ? exp.value.type.equals(Token.RAT) ? 
 			IsaToken.RAT : IsaToken.REAL : IsaToken.REAL : IsaToken.REAL, String.valueOf(exp), exptype);		
 	}
 
 	public TRLiteralExpression(TCStringLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, IsaToken.STRING, 
+		this(exp != null ? exp.location : null, exp, IsaToken.STRING, 
 																// remove the quotes from "xxx" -> xxxx; 		assert exp.toString().length() > 1;
 			IsaToken.bracketit(IsaToken.ISASTR, 
 				exp != null ? exp.value != null ? exp.value.value : 
@@ -90,7 +91,7 @@ public class TRLiteralExpression extends TRExpression
 
 	public TRLiteralExpression(TCQuoteLiteralExpression exp, TRType exptype)
 	{
-		this(exp.location, IsaToken.VDMQUOTE, exp != null ? exp.type != null ? exp.type.value : "null" : "null", exptype);
+		this(exp != null ? exp.location : null, exp, IsaToken.VDMQUOTE, exp != null ? exp.type != null ? exp.type.value : "null" : "null", exptype);
 	}
 
 	@Override 

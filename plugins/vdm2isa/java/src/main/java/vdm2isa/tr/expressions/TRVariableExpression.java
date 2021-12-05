@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -27,9 +28,9 @@ public class TRVariableExpression extends TRExpression
 
 	public final TRDefinition vardef;
 	
-	public TRVariableExpression(LexLocation location, TCNameToken name, String original, TRDefinition vardef, TRType exptype)
+	public TRVariableExpression(LexLocation location, TCVariableExpression tc, TCNameToken name, String original, TRDefinition vardef, TRType exptype)
 	{
-		super(name.getLocation(), exptype);
+		super(location, tc, exptype);
 		this.name = name;
 		//name different from original when with complex patterns?
 		this.original = original;
@@ -137,7 +138,9 @@ public class TRVariableExpression extends TRExpression
 	public static TRVariableExpression newVariableExpr(LexLocation location, TCNameToken name, String original, TRType exptype)
 	{
 		return new TRVariableExpression(
-                location, name, original, 
+                location, 
+				new TCVariableExpression(location, name, original),
+				name, original, 
                 new TRLocalDefinition(null, location, null, null, name, NameScope.LOCAL, true, false, exptype), 
                 exptype);
 	}

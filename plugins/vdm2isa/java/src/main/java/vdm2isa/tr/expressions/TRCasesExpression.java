@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCCasesExpression;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
@@ -21,8 +22,8 @@ public class TRCasesExpression extends TRExpression {
     public final TRCaseAlternativeList cases;
     public final TRExpression others;
 
-    public TRCasesExpression(LexLocation location, TRExpression exp, TRCaseAlternativeList cases, TRExpression others, TRType exptype) {
-        super(location, exptype);
+    public TRCasesExpression(LexLocation location, TCCasesExpression tc, TRExpression exp, TRCaseAlternativeList cases, TRExpression others, TRType exptype) {
+        super(location, tc, exptype);
         this.exp = exp;
         this.cases = cases;
         this.others = others;
@@ -41,7 +42,8 @@ public class TRCasesExpression extends TRExpression {
             {
                 report(IsaErrorMessage.ISA_INVALID_OPTION_CASE_1P, exp.getClass().getSimpleName());
             }
-            this.cases.add(new TRCaseAlternative(location, TRBasicPattern.underscore(location), others));
+            //TODO: will this "null" be a problem? 
+            this.cases.add(new TRCaseAlternative(location, null, TRBasicPattern.underscore(location), others));
         }
         if (this.cases.isEmpty())
         {

@@ -5,6 +5,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -23,9 +24,9 @@ public class TRApplyExpression extends TRExpression
 	
 	//TODO SERIOUS: have constructors for the "structural" parameters 
 	//				and for "default" for the VDMJ "calculated" (then class mapped) parameters
-	public TRApplyExpression(TRType type, TRExpression root, TRExpressionList args, TRType exptype)
+	public TRApplyExpression(TCApplyExpression tc, TRType type, TRExpression root, TRExpressionList args, TRType exptype)
 	{
-		super(root != null ? root.location : LexLocation.ANY, exptype);
+		super(root != null ? root.location : LexLocation.ANY, tc, exptype);
 		this.type = type;
 		this.root = root;
 		this.args = args;
@@ -110,7 +111,8 @@ public class TRApplyExpression extends TRExpression
 	public static TRApplyExpression newApplyExpression(
 			TRExpression root, TRExpressionList args, TRType resultType)
 	{
-		TRApplyExpression result = new TRApplyExpression(root.getType(), root, args, resultType);
+		TRApplyExpression result = new TRApplyExpression(
+				new TCApplyExpression(root.getVDMExpr(), args.getTCExpressionList()), root.getType(), root, args, resultType);
 		TRNode.setup(result);
 		return result;
 	}

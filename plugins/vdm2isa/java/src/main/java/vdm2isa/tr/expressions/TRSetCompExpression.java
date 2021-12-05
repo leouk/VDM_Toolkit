@@ -1,6 +1,8 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCSetCompExpression;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
@@ -26,10 +28,11 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     private boolean existential;
 
     public TRSetCompExpression(LexLocation location, 
+        TCSetCompExpression tc,
         TRExpression first, TRMultipleBindList bindings, 
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
-        super(location, first, bindings, predicate, def, exptype);
+        super(location, tc, first, bindings, predicate, def, exptype);
         this.existential = false;
     }
     
@@ -112,4 +115,25 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         // x, 5 is not existential; anything else is
         return first != null && !(first instanceof TRVariableExpression);// && !(first instanceof TRLiteralExpression);
     }
+
+    public static TRSetCompExpression newSetCompExpression(
+        LexLocation location, TRExpression first, 
+        TRMultipleBindList bindings, 
+        TRExpression predicate, TRType exptype)
+    {
+        return TRSetCompExpression.newSetCompExpression(location, first, bindings, predicate, null, exptype);
+    }
+
+    public static TRSetCompExpression newSetCompExpression(
+        LexLocation location, TRExpression first, 
+        TRMultipleBindList bindings, 
+        TRExpression predicate, TRDefinition def, TRType exptype)
+    {
+        return new TRSetCompExpression(location, 
+            new TCSetCompExpression(location, first.getVDMExpr(), 
+                bindings.getTCMultipleBindList(), 
+                predicate != null ? predicate.getVDMExpr() : null),
+            first, bindings, predicate, def, exptype);
+    }
+
 }

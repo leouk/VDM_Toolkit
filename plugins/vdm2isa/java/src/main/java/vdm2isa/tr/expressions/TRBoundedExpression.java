@@ -3,6 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCExists1Expression;
 import com.fujitsu.vdmj.tc.expressions.TCExistsExpression;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
 
 import vdm2isa.lex.IsaTemplates;
@@ -22,9 +23,9 @@ public class TRBoundedExpression extends TRExpression {
     public final IsaToken quantifier;
     private int rParenCount;
 
-    protected TRBoundedExpression(LexLocation location, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
+    protected TRBoundedExpression(LexLocation location, TCExpression tc, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
         this.bindList = bindList;
         this.predicate = predicate;
         this.quantifier = quantifier;
@@ -33,17 +34,17 @@ public class TRBoundedExpression extends TRExpression {
     
     public TRBoundedExpression(TCExists1Expression owner, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
-        this(owner.location, IsaToken.EXISTS1, bind != null ? bind.getMultipleBindList() : null, predicate, exptype);
+        this(owner.location, owner, IsaToken.EXISTS1, bind != null ? bind.getMultipleBindList() : null, predicate, exptype);
     }
 
     public TRBoundedExpression(TCExistsExpression owner, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
     {
-        this(owner.location, IsaToken.EXISTS, bindList, predicate, exptype);
+        this(owner.location, owner, IsaToken.EXISTS, bindList, predicate, exptype);
     }
 
     public TRBoundedExpression(TCForAllExpression owner, TRMultipleBindList bindList, TRExpression predicate, TRType exptype)
     {
-        this(owner.location, IsaToken.FORALL, bindList, predicate, exptype);
+        this(owner.location, owner, IsaToken.FORALL, bindList, predicate, exptype);
     }
 
     @Override

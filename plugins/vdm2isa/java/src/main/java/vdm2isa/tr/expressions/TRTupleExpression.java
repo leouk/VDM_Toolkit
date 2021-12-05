@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
 import com.fujitsu.vdmj.tc.types.TCProductType;
 
 import vdm2isa.lex.IsaToken;
@@ -14,9 +15,9 @@ public class TRTupleExpression extends TREnumeratedExpression {
     
 	private static final long serialVersionUID = 1L;
 
-    public TRTupleExpression(LexLocation location, TRExpressionList args, TRType exptype)
+    public TRTupleExpression(LexLocation location, TCTupleExpression tc, TRExpressionList args, TRType exptype)
     {
-        super(location, args, exptype);
+        super(location, tc, args, exptype);
     }
 
     @Override

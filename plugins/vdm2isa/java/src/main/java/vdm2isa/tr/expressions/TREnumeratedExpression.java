@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -12,9 +13,9 @@ public abstract class TREnumeratedExpression extends TRExpression
 	private static final long serialVersionUID = 1L;
 	public final TRExpressionList members;
 
-	public TREnumeratedExpression(LexLocation location, TRExpressionList members, TRType exptype)
+	public TREnumeratedExpression(LexLocation location, TCExpression tc, TRExpressionList members, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
 		this.members = members;
 	}
 

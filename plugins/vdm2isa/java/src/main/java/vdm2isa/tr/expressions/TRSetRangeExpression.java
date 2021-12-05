@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCSetRangeExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -16,9 +17,9 @@ public class TRSetRangeExpression extends TRExpression {
     public final TRExpression first;
     public final TRExpression last;
 
-    public TRSetRangeExpression(LexLocation start, TRExpression first, TRExpression last, TRType exptype)
+    public TRSetRangeExpression(LexLocation start, TCSetRangeExpression tc, TRExpression first, TRExpression last, TRType exptype)
     {
-        super(start, exptype);
+        super(start, tc, exptype);
         this.first = first;
         this.last = last;
     }

@@ -13,6 +13,7 @@ import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRTypeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCIfExpression;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 public class TRIfExpression extends TRExpression
@@ -24,10 +25,10 @@ public class TRIfExpression extends TRExpression
 	public final TRExpression elseExp;
 	
 	//@todo TCElseIfExpressionList! 
-	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, 
+	public TRIfExpression(LexLocation location, TCIfExpression tc, TRExpression ifExp, TRExpression thenExp, 
 		TRElseIfExpressionList elseList, TRExpression elseExp, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;

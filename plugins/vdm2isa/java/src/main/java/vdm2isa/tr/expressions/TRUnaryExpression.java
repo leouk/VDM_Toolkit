@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.expressions.TCAbsoluteExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCardinalityExpression;
 import com.fujitsu.vdmj.tc.expressions.TCIndicesExpression;
 import com.fujitsu.vdmj.tc.expressions.TCElementsExpression;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistConcatExpression;
 import com.fujitsu.vdmj.tc.expressions.TCDistIntersectExpression;
 import com.fujitsu.vdmj.tc.expressions.TCMapInverseExpression;
@@ -41,111 +42,111 @@ public class TRUnaryExpression extends TRExpression {
     public final IsaToken owner;
 	public final TRExpression exp;
 
-	protected TRUnaryExpression(LexLocation location, IsaToken token, TRExpression exp, TRType exptype)
+	protected TRUnaryExpression(LexLocation location, TCExpression tc, IsaToken token, TRExpression exp, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
 		this.owner = token;
 		this.exp = exp;
 	}
 
 	public TRUnaryExpression(TCAbsoluteExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.ABS, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.ABS, exp, exptype);
 	}
 
     public TRUnaryExpression(TCFloorExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.FLOOR, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.FLOOR, exp, exptype);
 	}
 
     public TRUnaryExpression(TCUnaryMinusExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.UMINUS, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.UMINUS, exp, exptype);
 	}
 
     public TRUnaryExpression(TCUnaryPlusExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.UPLUS, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.UPLUS, exp, exptype);
 	}
 
     public TRUnaryExpression(TCCardinalityExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.CARD, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.CARD, exp, exptype);
 	}
 
     public TRUnaryExpression(TCPowerSetExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.FPOWERSET, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.FPOWERSET, exp, exptype);
 	}
 
     public TRUnaryExpression(TCLenExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.LEN, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.LEN, exp, exptype);
 	}
 
     public TRUnaryExpression(TCHeadExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.HEAD, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.HEAD, exp, exptype);
 	}
 
     public TRUnaryExpression(TCTailExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.TAIL, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.TAIL, exp, exptype);
 	}
 
     public TRUnaryExpression(TCIndicesExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.INDS, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.INDS, exp, exptype);
 	}
 
     public TRUnaryExpression(TCElementsExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.ELEMS, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.ELEMS, exp, exptype);
 	}
 
     public TRUnaryExpression(TCDistConcatExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.DISTCONC, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.DISTCONC, exp, exptype);
 	}
 
     public TRUnaryExpression(TCDistIntersectExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.DINTER, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.DINTER, exp, exptype);
 	}
 
     public TRUnaryExpression(TCDistUnionExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.DUNION, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.DUNION, exp, exptype);
 	}
 
     public TRUnaryExpression(TCDistMergeExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.MERGE, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.MERGE, exp, exptype);
 	}
 
     public TRUnaryExpression(TCMapDomainExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.DOM, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.DOM, exp, exptype);
 	}
 
     public TRUnaryExpression(TCMapRangeExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.RNG, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.RNG, exp, exptype);
 	}
 
     public TRUnaryExpression(TCMapInverseExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.INVERSE, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.INVERSE, exp, exptype);
 	}
 
     public TRUnaryExpression(TCNotExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.NOT, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.NOT, exp, exptype);
 	}
 
     public TRUnaryExpression(TCReverseExpression owner, TRExpression exp, TRType exptype)
 	{
-		this(owner != null ? owner.location : LexLocation.ANY, IsaToken.REVERSE, exp, exptype);
+		this(owner != null ? owner.location : LexLocation.ANY, owner, IsaToken.REVERSE, exp, exptype);
 	}
 
 	@Override 

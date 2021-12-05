@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCNarrowExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
@@ -22,9 +23,9 @@ public class TRNarrowExpression extends TRVDMTestExpression {
 
     public final TRType testtype;
 
-    public TRNarrowExpression(LexLocation location, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType testtype, TRType exptype)
+    public TRNarrowExpression(LexLocation location, TCNarrowExpression tc, TCNameToken typename, TRType basictype, TRExpression test, TRDefinition typedef, TRType testtype, TRType exptype)
     {
-        super(location, typename, basictype, test, typedef, exptype);
+        super(location, tc, typename, basictype, test, typedef, exptype);
         this.testtype = testtype;
     }
 

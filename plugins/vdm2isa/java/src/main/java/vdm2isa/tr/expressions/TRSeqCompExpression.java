@@ -1,6 +1,8 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCSeqCompExpression;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
@@ -22,10 +24,11 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
     private static final long serialVersionUID = 1L;
 
     public TRSeqCompExpression(LexLocation location, 
+        TCSeqCompExpression tc,
         TRExpression first, TRMultipleBind bind, 
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
-        super(location, first, bind != null ? bind.getMultipleBindList() : null, predicate, def, exptype);
+        super(location, tc, first, bind != null ? bind.getMultipleBindList() : null, predicate, def, exptype);
     }
 
     @Override

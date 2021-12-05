@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCSubseqExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -14,9 +15,9 @@ public class TRSubseqExpression extends TRExpression {
     public final TRExpression from;
     public final TRExpression to;
 
-    public TRSubseqExpression(TRExpression seq, TRExpression from, TRExpression to, TRType exptype)
+    public TRSubseqExpression(TCSubseqExpression tc, TRExpression seq, TRExpression from, TRExpression to, TRType exptype)
     {
-        super(seq != null ? seq.location : LexLocation.ANY, exptype);
+        super(seq != null ? seq.location : LexLocation.ANY, tc, exptype);
         this.seq = seq;
         this.from = from;
         this.to = to;
