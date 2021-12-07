@@ -35,6 +35,9 @@ values
 	-- existential map comp range with trivial dom; only works because of filter  
 	v33={ 1 |-> x+x | x in set {1,2,3} & x+fv > 5 };
 
---	--vWarning? = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning1 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning11= { 1 |-> 5 | x in set {4,5,6}, x in set {1,2,3,4} & x > 3 };
+	vWarning2 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning3 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6}, x in set {7,8,9} & x > 6 };
 
 end TestV2IExprsMaps
