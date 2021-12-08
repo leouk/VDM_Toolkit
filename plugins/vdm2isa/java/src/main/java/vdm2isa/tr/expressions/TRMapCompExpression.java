@@ -127,6 +127,35 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     {
         super.setup();
         setFormattingSeparator("\n\t\t");
+        //checkBindingsOut(bindings);
+        // project out three expressions: { domExpr |-> rngExpr | .... & predExpr } 
+        TRExpression domainExpr = getMapletExpr().left;
+        TRType domainType = domainExpr.getType();
+        TRExpression rangeExpr = getMapletExpr().right;
+        TRType rangeType = rangeExpr.getType();
+
+        // predicate might be null at this point; use it
+        if (TRMapCompExpression.isTrivial(domainExpr, rangeExpr, predicate))
+        {
+            TCMapletExpressionList tcMapletList = new TCMapletExpressionList();
+            tcMapletList.add(getMapletExpr().maplet);
+            this.mapComp = new TRMapEnumExpression(location, 
+                new TCMapEnumExpression(location, tcMapletList),
+                new TRMapletExpressionList(Arrays.asList(getMapletExpr())), getType());
+        }
+        else 
+        {
+            this.mapComp = null; 
+
+        }
+        
+        
+    }
+
+    private void oldSetup()
+    {
+        super.setup();
+        setFormattingSeparator("\n\t\t");
         boolean bindingsSizeConstraint = bindings.size() > 0 && bindings.size() <= MAX_BINDINGS_ALLOWED;
         // this.existentialDomain = TRSetCompExpression.existentialComprehension(getMapletExpr().left);
         // this.existentialRange = TRSetCompExpression.existentialComprehension(getMapletExpr().right);
