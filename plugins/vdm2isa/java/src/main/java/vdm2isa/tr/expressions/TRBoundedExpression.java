@@ -13,6 +13,7 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
+import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRType;
 
 public class TRBoundedExpression extends TRExpression {
@@ -184,4 +185,35 @@ public class TRBoundedExpression extends TRExpression {
 	{
 		return visitor.caseBoundedExpression(this, arg);
 	}
+
+    private static final TCExpression figureOutTCBoundedExpression(LexLocation location, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate)
+    {
+        TCExpression result;
+        switch (quantifier)
+        {
+            case EXISTS1:
+                assert bindList.size() == 1;
+                result = new TCExists1Expression(location, bindList.get(0).getVDMBind(), predicate.getVDMExpr());
+                break;
+            case EXISTS:
+                result = new TCExistsExpression(location, bindList.getTCMultipleBindList(), predicate.getVDMExpr());
+                break;
+            case FORALL:
+                result = new TCForAllExpression(location, bindList.getTCMultipleBindList(), predicate.getVDMExpr());
+                break;
+            default :
+                result = null;
+        }
+        return result;
+    }
+
+    public static final TRBoundedExpression newBoundedExpression(LexLocation location, IsaToken quantifier, TRMultipleBindList bindList, TRExpression predicate)
+    {
+        assert quantifier.equals(IsaToken.EXISTS1) || quantifier.equals(IsaToken.EXISTS) || quantifier.equals(IsaToken.FORALL);
+        TRBoundedExpression result = new TRBoundedExpression(location, 
+            TRBoundedExpression.figureOutTCBoundedExpression(location, quantifier, bindList, predicate), 
+            quantifier, bindList, predicate, predicate.getType());//TRBasicType.boolType(location));
+        TRNode.setup(result);
+        return result;
+    }
 }
