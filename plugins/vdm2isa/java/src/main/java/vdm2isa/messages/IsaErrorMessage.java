@@ -102,11 +102,13 @@ public enum IsaErrorMessage {
     "Module `%1$s` must be saved in a file with the same name. \n\tFiles = %2$s"),
     ISA_INVALID_PATTERN_TRANSLATE_4P(VDM2IsaError.ISABELLE_E_ISA_BASE + 24,
     "Cannot contextully translate pattern %1$s (%2$s=%3$s) for %4$s."),
-    ISA_INVALID_QUOTETYPE_3P(VDM2IsaError.ISABELLE_E_ISA_BASE + 24,
+    ISA_INVALID_QUOTETYPE_3P(VDM2IsaError.ISABELLE_E_ISA_BASE + 25,
     "Invalid quote literal declaration `%1$s` in type `%2$s`: it has already been defined for type `%3$s`. Isabelle requires unique quote enumerations."),
-    ISA_INVALID_MAP_COMP_BINDING_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 24,
-    "Could not find binding `%1$s` for map comprehension translation."),
-
+    ISA_INVALID_MAP_COMP_BINDINGS_DUPLUCATE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 26,
+    "Duplicate binding map binding `%1$s` for map comprehension translation is not allowed."),
+    ISA_INVALID_MAP_COMP_MIXED_BINDINGS(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
+    "Map comprehension with mixed (type and/or set/seq) bindings are not allowed."),
+    
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
     "VDM PO (%1$s) %2$s %3$s error `%4$s`; should never happen."),
@@ -119,8 +121,6 @@ public enum IsaErrorMessage {
 
     TEST(VDM2IsaError.ISABELLE_E_PO_BASE, " ");
     
-    //private static final Set<Integer> numbers = new TreeSet<Integer>(); 
-                             
     public final int number;
     public final String message; 
 

@@ -334,7 +334,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    public static String plural(int n, String s, String pl) {
+    public static final String plural(int n, String s, String pl) {
         return n + " " + (n != 1 ? s + pl : s);
     }
 

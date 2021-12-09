@@ -213,9 +213,7 @@ public enum IsaToken {
 	private final Token  vdm;
 	private final String isa;
 
-	    protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
-
-
+	protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
 
 	private static final Set<String> INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
         Arrays.asList(
@@ -304,17 +302,17 @@ public enum IsaToken {
 		return vdm;
 	}
 
-	public static String parenthesise(String s)
+	public static final String parenthesise(String s)
 	{
 		return bracketit(IsaToken.LPAREN, s, IsaToken.RPAREN);
 	}
 
-	public static String comment(String s)
+	public static final String comment(String s)
 	{
 		return comment(s, "");
 	}
 
-	public static String comment(String s, String formattingSeparator)
+	public static final String comment(String s, String formattingSeparator)
 	{
 		if (Vdm2isaPlugin.printIsaComments)
 			return IsaToken.COMMENT.toString() + 
@@ -323,7 +321,7 @@ public enum IsaToken {
 			return "";
 	}
 
-	public static String antiquotation(IsaToken kind, String yxml)
+	public static final String antiquotation(IsaToken kind, String yxml)
 	{
 		return IsaToken.AT.toString() +
 					IsaToken.bracketit(IsaToken.SET_OPEN, 
@@ -332,12 +330,12 @@ public enum IsaToken {
 					IsaToken.SET_CLOSE);
 	}
 
-	public static String bracketit(IsaToken left, String s, IsaToken right)
+	public static final String bracketit(IsaToken left, String s, IsaToken right)
 	{
 		return left.toString() + s + right.toString();
 	}
 
-	public static String innerSyntaxIt(String s) {
+	public static final String innerSyntaxIt(String s) {
 		return IsaToken.bracketit(IsaToken.ISAQUOTE, s, IsaToken.ISAQUOTE);
 	}
 
@@ -358,7 +356,7 @@ public enum IsaToken {
 
 	protected static long dummyCount = 0;
 
-	public static String dummyVarNames(int count, LexLocation location)
+	public static final String dummyVarNames(int count, LexLocation location)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
