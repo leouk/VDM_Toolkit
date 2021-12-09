@@ -309,14 +309,14 @@ public class TRValueDefinition extends TRLocalDefinition
 				TRType patternType = figureOutPatternType(patt, ld.type); 
 				//TRExpression e = figureOutExpression(i, ld.type);
 				//figure expression string out rather than try to "construct" new one; simpler. 
-				result.add(new TRValueDefinition(getVDMDefinition(), ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, patternType/*ld.getType()*/, exp, this.expType, TRDefinitionList.newDefList(ld)));
+				result.add(TRValueDefinition.newValueDefinition(getVDMValueDefinition()/*getVDMDefinition()*/, ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, patternType/*ld.getType()*/, exp, this.expType, TRDefinitionList.newDefList(ld)));
 			}
 		}
 		// figuring out doesn't loose definitions; and all are value definitions
 		// might be smaller for cases involving ignore pattern (e.g mk_(-,x) = v) 
 		// or record pattern (e.g. mk_R(x,y) = r).
 		assert result.size() <= defs.size() && result.allAre(this/*TRValueDefinition.class*/);
-		result.setup();
+		TRDefinitionSet.setup(result);
 		return result.asList();
 	}
 
@@ -441,6 +441,11 @@ public class TRValueDefinition extends TRLocalDefinition
 		return visitor.caseValueDefinition(this, arg);
 	}
 
+	public TCValueDefinition getVDMValueDefinition()
+	{
+		return (TCValueDefinition)getVDMDefinition();
+	}
+
 	public TRPattern getPattern()
 	{
 		return pattern;
@@ -459,5 +464,24 @@ public class TRValueDefinition extends TRLocalDefinition
 	public TRType getExpType()
 	{
 		return expType;
+	}
+
+	//TODO create one where the user doesn't need to pass TCValueDefinition? 
+	public static final TRValueDefinition newValueDefinition(TCValueDefinition definition, 
+		LexLocation location, 
+		TRIsaVDMCommentList comments, 
+		TCAnnotationList annotations, 
+		NameScope nameScope,
+		boolean used,
+		boolean excluded, 
+		TRPattern pattern, 
+		TRType type, 
+		TRExpression exp,
+		TRType expType, 
+		TRDefinitionList defs)
+	{
+		TRValueDefinition result = new TRValueDefinition(definition, location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
+		TRNode.setup(result);
+		return result;
 	}
 }

@@ -119,7 +119,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         return visitor.caseProofObligationDefinition(this, arg);
     }
 
-    public static TRDefinitionList asProofScriptDefinitionList(TRProofScriptDefinition args)
+    public static final TRDefinitionList asProofScriptDefinitionList(TRProofScriptDefinition... args)
 	{
 		TRDefinitionList result = new TRDefinitionList();
 		if (args != null)
@@ -127,5 +127,22 @@ public class TRProofObligationDefinition extends TRDefinition {
         TRNode.setup(result);
 		return result;
 	}
+
+    public static final TRProofObligationDefinition newProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
+    TRExpression poExpr, TRType poType, TRProofScriptDefinition... poScripts)
+    {
+        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, 
+            TRProofObligationDefinition.asProofScriptDefinitionList(poScripts));
+        TRNode.setup(result);
+        return result;
+    }
+
+    public static final TRProofObligationDefinition newProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
+        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
+    {
+        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, poScripts);
+        TRNode.setup(result);
+        return result;
+    }
 
 }

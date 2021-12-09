@@ -76,4 +76,11 @@ public class TRUnknownType extends TRType {
         report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, IsaToken.UNKNOWN.toString());   
     }
 
+    public static final TRUnknownType newUnkownType(LexLocation location)
+    {
+        TRUnknownType result = new TRUnknownType(location);
+        TRNode.setup(result);
+        return result;
+    }
+
 }

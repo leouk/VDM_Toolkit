@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public class TRBasicProofScriptStepDefinition extends TRDefinition {
@@ -35,34 +36,41 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
         return isaToken().toString() + getFormattingSeparator();
     }
 
+    protected static final TRBasicProofScriptStepDefinition newBasicProofScriptStepDefinition(LexLocation location, IsaToken token)
+    {
+        TRBasicProofScriptStepDefinition result = new TRBasicProofScriptStepDefinition(location, null, token);
+        TRNode.setup(result);
+        return result;
+    }
+
     protected static final TRBasicProofScriptStepDefinition sledgehammer(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_SLEDGEHAMMER);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_SLEDGEHAMMER);
     }
     
     protected static final TRBasicProofScriptStepDefinition nitpick(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_NITPICK);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_NITPICK);
     }
     
     protected static final TRBasicProofScriptStepDefinition isaTry0(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_TRY0);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_TRY0);
     }
 
     protected static final TRBasicProofScriptStepDefinition isaTry(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_TRY);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_TRY);
     }
 
     protected static final TRBasicProofScriptStepDefinition done(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_DONE);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_DONE);
     }
     
     protected static final TRBasicProofScriptStepDefinition oops(LexLocation location)
     {
-        return new TRBasicProofScriptStepDefinition(location, null, IsaToken.ISAR_OOPS);
+        return TRBasicProofScriptStepDefinition.newBasicProofScriptStepDefinition(location, IsaToken.ISAR_OOPS);
     }    
 
 }

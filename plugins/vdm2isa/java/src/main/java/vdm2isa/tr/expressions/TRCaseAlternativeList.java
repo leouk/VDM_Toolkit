@@ -67,7 +67,7 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
 		return result;
 	}
 
-	public static String translate(TRCaseAlternative... args)
+	public static final String translate(TRCaseAlternative... args)
 	{
 		TRCaseAlternativeList result = new TRCaseAlternativeList();
         result.addAll(Arrays.asList(args));

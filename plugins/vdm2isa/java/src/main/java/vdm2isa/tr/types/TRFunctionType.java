@@ -252,7 +252,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return result;
     }
 
-	public static TRFunctionType getInvariantType(TRType paramType)
+	public static final TRFunctionType getInvariantType(TRType paramType)
 	{
 		TRTypeList typeList = TRTypeList.newTypeList(paramType);
 		TCFunctionType vdmFcnType = new TCFunctionType(paramType.getLocation(), typeList.getVDMTypeList(), false, new TCBooleanType(paramType.location));
@@ -266,20 +266,20 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	 * @param mapType
 	 * @return
 	 */
-	public static TRFunctionType getIsabelleMapType(TRMapType mapType)
+	public static final TRFunctionType getIsabelleMapType(TRMapType mapType)
 	{
 		return TRFunctionType.newFunctionType(TROptionalType.newOptionalType(mapType.getToType()), mapType.getFromType());
 	}
 
-	public static TRFunctionType newConstantFunctionType(TRType result) {
+	public static final TRFunctionType newConstantFunctionType(TRType result) {
         return TRFunctionType.newFunctionType(result, new TRTypeList()); 
     }
 
-    public static TRFunctionType newFunctionType(TRType result, TRType... params) {
+    public static final TRFunctionType newFunctionType(TRType result, TRType... params) {
         return TRFunctionType.newFunctionType(result, TRTypeList.newTypeList(params)); 
     }
 
-    public static TRFunctionType newFunctionType(TRType fcnResultType, TRTypeList params) {
+    public static final TRFunctionType newFunctionType(TRType fcnResultType, TRTypeList params) {
 		TCFunctionType vdmFcnType = new TCFunctionType(fcnResultType.getLocation(), params.getVDMTypeList(), true, fcnResultType.getVDMType());
         TRFunctionType result = new TRFunctionType(vdmFcnType, new TRDefinitionList(), params, false, fcnResultType);
 		TRNode.setup(result);

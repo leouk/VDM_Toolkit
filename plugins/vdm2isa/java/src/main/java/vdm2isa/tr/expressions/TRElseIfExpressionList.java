@@ -42,11 +42,27 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
         setFormattingSeparator("\n\t\t");
     }
 
-	public static String translate(TRElseIfExpression... args)
+    public TCElseIfExpressionList getVDMElseIfExpressionList()
+    {
+        TCElseIfExpressionList result = new TCElseIfExpressionList();
+        for(TRElseIfExpression eif : this)
+        {
+            result.add(eif.getVDMElseIfExpression());
+        }
+        return result;
+    }
+
+	public static final String translate(TRElseIfExpression... args)
 	{
-		TRElseIfExpressionList result = new TRElseIfExpressionList();
-		result.addAll(Arrays.asList(args));
-        TRNode.setup(result);
-		return result.translate();	
+		return TRElseIfExpressionList.newElseIfExpressionList(args).translate();	
 	}
+
+    public static final TRElseIfExpressionList newElseIfExpressionList(TRElseIfExpression... args)
+    {
+        TRElseIfExpressionList result = new TRElseIfExpressionList();
+        if (args != null)
+    		result.addAll(Arrays.asList(args));
+        TRNode.setup(result);
+        return result;
+    }
 }

@@ -16,7 +16,7 @@ public class TRProofScriptStepDefinitionList extends TRDefinitionList {
         super();
     }
 
-    public static TRProofScriptStepDefinitionList proofScript(TRDefinition... args)
+    public static final TRProofScriptStepDefinitionList proofScript(TRDefinition... args)
     {
         TRProofScriptStepDefinitionList result = new TRProofScriptStepDefinitionList();
         if (args != null)

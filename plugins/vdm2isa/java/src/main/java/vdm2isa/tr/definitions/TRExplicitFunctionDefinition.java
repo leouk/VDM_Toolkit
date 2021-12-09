@@ -280,7 +280,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 					ftype = (TRFunctionType)ftype.getResultType();
 				}
 			}
-			result.setup();
+			TRNode.setup(result);
 		}
 		return result;
 	}
@@ -400,7 +400,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// Now create the undeclared specification as an explicit function without body (i.e. no user defined stuff).
 		// The translator will then take this into account as the "missing" (now found) specification definition, and
 		// treat it as if the user has given it (e.g. equivalent to as if the user had typed "pre true", "post true");  
-		TRExplicitFunctionDefinition result = new TRExplicitFunctionDefinition(
+		TRExplicitFunctionDefinition result = TRExplicitFunctionDefinition.newExplicitFunctionDefinition(
 					null,
 					comments,										//  LexCommentList comments,								
 					null,											// 	TCAnnotationList annotations,
@@ -935,5 +935,34 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 
 		return found;
+	}
+
+	public static final TRExplicitFunctionDefinition newExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
+		TRIsaVDMCommentList comments,
+		TCAnnotationList annotations,
+		TCNameToken name,
+		NameScope nameScope, 
+		boolean used, 
+		boolean excluded,
+		TCNameList typeParams, 
+		TRFunctionType type,
+		TRPatternListList paramPatternList, 
+		TRExpression body,
+		TRExpression precondition,
+		TRExpression postcondition, 
+		boolean typeInvariant, 
+		TRExpression measureExp,
+		boolean isCurried, 
+		TRExplicitFunctionDefinition predef,
+		TRExplicitFunctionDefinition postdef,
+		TRDefinitionListList paramDefinitionList,
+		boolean recursive,
+		boolean isUndefined,
+		TRType actualResult,
+		TRType expectedResult)
+	{
+		TRExplicitFunctionDefinition result = new TRExplicitFunctionDefinition(definition, comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body, precondition, postcondition, typeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined, actualResult, expectedResult);
+		TRNode.setup(result);
+		return result;
 	}
 }

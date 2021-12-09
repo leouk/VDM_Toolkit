@@ -5,7 +5,6 @@ import com.fujitsu.vdmj.tc.expressions.TCSetRangeExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
@@ -37,7 +36,7 @@ public class TRSetRangeExpression extends TRExpression {
         TRType t = first.getType();
         if (t instanceof TRUnknownType)
             t = last.getType();
-        return new TRSetType(exptype.getVDMType(), new TRDefinitionList(), t, false);
+        return TRSetType.newSetType(location, t, false);
     }
 
     @Override

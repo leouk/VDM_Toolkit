@@ -42,22 +42,27 @@ public class TRProofScriptDefinition extends TRDefinition {
     public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg) {
         return visitor.caseProofScriptDefinition(this, arg);
     }
+
+    public static final TRProofScriptDefinition newProofScriptDefinition(LexLocation location, TRIsaVDMCommentList comments, TRProofScriptStepDefinitionList poScript)
+    {
+        TRProofScriptDefinition result = new TRProofScriptDefinition(location, comments, poScript);
+        TRNode.setup(result);
+        return result;
+    }
     
     /**
      * Creates an optimistic proof script delegating the proof to the try0 method then oopsing (done?) it
      * @param location
      * @return
      */
-    public static TRProofScriptDefinition optimistic(LexLocation location)
+    public static final TRProofScriptDefinition optimistic(LexLocation location)
     {
-        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+        return TRProofScriptDefinition.newProofScriptDefinition(location, 
             TRIsaVDMCommentList.newComment(location, "Expect the goal is trivial", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.isaTry0(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
-        TRNode.setup(result);
-        return result;
     }
 
     /**
@@ -65,16 +70,14 @@ public class TRProofScriptDefinition extends TRDefinition {
      * @param location
      * @return
      */
-    public static TRProofScriptDefinition hopeful(LexLocation location)
+    public static final TRProofScriptDefinition hopeful(LexLocation location)
     {
-        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+        return TRProofScriptDefinition.newProofScriptDefinition(location, 
             TRIsaVDMCommentList.newComment(location, "Expect sldegehammer can find the proof", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.sledgehammer(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
-        TRNode.setup(result);
-        return result;
     }
 
     /**
@@ -82,16 +85,14 @@ public class TRProofScriptDefinition extends TRDefinition {
      * @param location
      * @return
      */
-    public static TRProofScriptDefinition pessimistic(LexLocation location)
+    public static final TRProofScriptDefinition pessimistic(LexLocation location)
     {
-        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+        return TRProofScriptDefinition.newProofScriptDefinition(location, 
             TRIsaVDMCommentList.newComment(location, "Expect Nitpick can find a counter example", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.nitpick(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
-        TRNode.setup(result);
-        return result;
     }
 
     /**
@@ -99,16 +100,14 @@ public class TRProofScriptDefinition extends TRDefinition {
      * @param location
      * @return
      */
-    public static TRProofScriptDefinition realistic(LexLocation location)
+    public static final TRProofScriptDefinition realistic(LexLocation location)
     {
-        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+        return TRProofScriptDefinition.newProofScriptDefinition(location, 
             TRIsaVDMCommentList.newComment(location, "Try to be optimisstic, hopeful, then pessimistic", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.isaTry(location),
                 TRBasicProofScriptStepDefinition.oops(location))
             );
-        TRNode.setup(result);
-        return result;
     }
 
     /**
@@ -116,15 +115,12 @@ public class TRProofScriptDefinition extends TRDefinition {
      * @param location
      * @return
      */
-    public static TRProofScriptDefinition surrender(LexLocation location)
+    public static final TRProofScriptDefinition surrender(LexLocation location)
     {
-        TRProofScriptDefinition result = new TRProofScriptDefinition(location, 
+        return TRProofScriptDefinition.newProofScriptDefinition(location, 
             TRIsaVDMCommentList.newComment(location, "Surrender", false), 
             TRProofScriptStepDefinitionList.proofScript(
                 TRBasicProofScriptStepDefinition.oops(location))
             );
-        TRNode.setup(result);
-        return result;
     }
-
 }

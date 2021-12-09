@@ -158,7 +158,7 @@ public class TRQuoteType extends TRType
      * @param exptype
      * @return
      */
-    public static String quoteLiteral(String exp, TRQuoteType qtype) 
+    public static final String quoteLiteral(String exp, TRQuoteType qtype) 
     {
         assert qtype.value.equals(String.valueOf(exp));  
         qtype.figureOutTypeName();

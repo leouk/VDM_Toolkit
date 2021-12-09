@@ -120,14 +120,18 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 		return visitor.caseMultipleTypeBind(this, arg);
 	}
 
-    public static TRMultipleTypeBind newMultipleTypeBind(TRPattern p, TRType t)
+    public static final TRMultipleTypeBind newMultipleTypeBind(TRPattern p, TRType t)
     {   
-        return new TRMultipleTypeBind(new TCTypeBind(p.getVDMPattern(), t.getVDMType()), p, t);
+        TRMultipleTypeBind result = new TRMultipleTypeBind(new TCTypeBind(p.getVDMPattern(), t.getVDMType()), p, t);
+        TRNode.setup(result);
+        return result;
     }
 
-    public static TRMultipleTypeBind newMultipleTypeBind(TRPatternList plist, TRType t)
+    public static final TRMultipleTypeBind newMultipleTypeBind(TRPatternList plist, TRType t)
     {   
-        return new TRMultipleTypeBind(new TCMultipleTypeBind(plist.getTCPatternList(), t.getVDMType()), plist, t);
+        TRMultipleTypeBind result = new TRMultipleTypeBind(new TCMultipleTypeBind(plist.getTCPatternList(), t.getVDMType()), plist, t);
+        TRNode.setup(result);
+        return result;
     }
 
 }

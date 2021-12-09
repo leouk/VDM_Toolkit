@@ -193,7 +193,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result;
 	}
 
-	public static String translate(TRType... args)
+	public static final String translate(TRType... args)
 	{
 		TRTypeList result = new TRTypeList();
 		result.addAll(Arrays.asList(args));
@@ -201,7 +201,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result.translate();	
 	}
 
-	public static String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)
+	public static final String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)
 	{
 		TRTypeList result = new TRTypeList();
 		result.addAll(Arrays.asList(args));
@@ -210,7 +210,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result.invTranslate(varNames);	
 	}
 
-	public static TRTypeList newTypeList(TRExpressionList members) {
+	public static final TRTypeList newTypeList(TRExpressionList members) {
 		TRTypeList result = new TRTypeList();
 		for(TRExpression e : members)
 		{
@@ -220,7 +220,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result;
 	}
 
-	public static TRTypeList newTypeList(TRType... members) {
+	public static final TRTypeList newTypeList(TRType... members) {
 		TRTypeList result = new TRTypeList();
 		if (members != null) 	
 			result.addAll(Arrays.asList(members));

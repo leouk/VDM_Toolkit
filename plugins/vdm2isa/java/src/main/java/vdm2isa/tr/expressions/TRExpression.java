@@ -139,9 +139,9 @@ public abstract class TRExpression extends TRNode
      * @param location
      * @return
      */
-    public static TRType unknownType(LexLocation location)
+    public static final TRType unknownType(LexLocation location)
     {
-        return new TRUnknownType(location);
+        return TRUnknownType.newUnkownType(location);
     }
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);

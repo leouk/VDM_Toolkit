@@ -173,7 +173,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		return new TRPatternList(this); 
 	}
 
-	public static String translate(TRPattern... args)
+	public static final String translate(TRPattern... args)
 	{
 		TRPatternList result = new TRPatternList();
 		result.addAll(Arrays.asList(args));
@@ -186,7 +186,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	 * @param args
 	 * @return
 	 */
-	public static TRPatternList newPatternList(TRPattern... args)
+	public static final TRPatternList newPatternList(TRPattern... args)
 	{
 		TRPatternList result = new TRPatternList();
 		if (args != null)

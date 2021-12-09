@@ -2,11 +2,9 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCElseIfExpression;
-import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeSet;
@@ -24,6 +22,11 @@ public class TRElseIfExpression extends TRExpression {
         this.thenExp = thenExp;
     }
 
+    public TCElseIfExpression getVDMElseIfExpression()
+    {
+        return (TCElseIfExpression)getVDMExpr();
+    }
+
     @Override 
     public void setup()
     {
@@ -38,12 +41,7 @@ public class TRElseIfExpression extends TRExpression {
 	protected TRType getBestGuessType()
 	{
         //NB what is the right VDM type for the elseif union?
-        TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseIfExp.getType());
-		TRUnionType result = new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), 
-            new TRDefinitionList(), 
-			new TRTypeSet(thenExp.getType(), elseIfExp.getType()));
-        TRNode.setup(result);
-        return result;
+        return TRUnionType.newUnionType(location, new TRTypeSet(thenExp.getType(), elseIfExp.getType()));
 	}
 
     @Override

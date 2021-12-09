@@ -1,15 +1,12 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 import com.fujitsu.vdmj.tc.expressions.TCMapletExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
-import com.fujitsu.vdmj.tc.types.TCMapType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
@@ -52,7 +49,7 @@ public class TRMapletExpression extends TRExpression
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRMapType(exptype.getVDMType(), new TRDefinitionList(), left.getType(), right.getType(), false);
+        return TRMapType.newMapType(left.getType(), right.getType(), false);
     }
 
     @Override
@@ -72,14 +69,12 @@ public class TRMapletExpression extends TRExpression
 		return visitor.caseMapletExpression(this, arg);
 	}
 
-    public static TRType getMapType(TRExpression left, TRExpression right) {
+    public static final TRType getMapType(TRExpression left, TRExpression right) {
         TRType result = TRExpression.unknownType(LexLocation.ANY);
         if (left != null && left.getType() != null && left.getType().getVDMType() != null &&
             right != null && right.getType() != null && right.getType().getVDMType() != null)
         {
-            result = new TRMapType(
-              new TCMapType(left.location, left.getType().getVDMType(), right.getType().getVDMType()), 
-                  new TRDefinitionList(), left.getType(), right.getType(), false);
+            result = TRMapType.newMapType(left.getType(), right.getType(), false);
         }
         TRNode.setup(result);
         return result; 

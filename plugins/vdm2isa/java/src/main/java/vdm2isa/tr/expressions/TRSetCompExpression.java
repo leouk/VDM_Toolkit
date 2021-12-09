@@ -5,8 +5,8 @@ import com.fujitsu.vdmj.tc.expressions.TCSetCompExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
 import vdm2isa.tr.patterns.TRMultipleBindList;
@@ -48,7 +48,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSetType(exptype.getVDMType(), new TRDefinitionList(), first.getType(), false);
+        return TRSetType.newSetType(location, first.getType(), false);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         return first != null && !(first instanceof TRVariableExpression);// && !(first instanceof TRLiteralExpression);
     }
 
-    public static TRSetCompExpression newSetCompExpression(
+    public static final TRSetCompExpression newSetCompExpression(
         LexLocation location, TRExpression first, 
         TRMultipleBindList bindings, 
         TRExpression predicate, TRType exptype)
@@ -124,16 +124,18 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
         return TRSetCompExpression.newSetCompExpression(location, first, bindings, predicate, null, exptype);
     }
 
-    public static TRSetCompExpression newSetCompExpression(
+    public static final TRSetCompExpression newSetCompExpression(
         LexLocation location, TRExpression first, 
         TRMultipleBindList bindings, 
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
-        return new TRSetCompExpression(location, 
+        TRSetCompExpression result = new TRSetCompExpression(location, 
             new TCSetCompExpression(location, first.getVDMExpr(), 
                 bindings.getTCMultipleBindList(), 
                 predicate != null ? predicate.getVDMExpr() : null),
             first, bindings, predicate, def, exptype);
+        TRNode.setup(result);
+        return result;
     }
 
 }

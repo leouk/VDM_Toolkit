@@ -220,10 +220,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         TRTypeBindList result = new TRTypeBindList();
         for(TRPattern p : this.plist)
         {
-            result.add(
-                new TRMultipleTypeBind(
-                    new TCTypeBind(p.getVDMPattern(), getRHSType().getVDMType()), 
-                    p, getRHSType()));
+            result.add(TRMultipleTypeBind.newMultipleTypeBind(p, getRHSType()));
         }
         TRNode.setup(result);
         return result;
@@ -239,7 +236,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
             TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
             result.add(localdef);
         }
-        result.setup();
+        TRDefinitionSet.setup(result);
         return result.asList();
     }
 }

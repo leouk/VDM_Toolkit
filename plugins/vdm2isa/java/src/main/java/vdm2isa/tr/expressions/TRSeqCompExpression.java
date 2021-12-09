@@ -7,7 +7,6 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
@@ -44,7 +43,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSeqType(exptype.getVDMType(), new TRDefinitionList(), first.getType(), false);
+        return TRSeqType.newSeqType(location, first.getType(), false);
     }
 
     @Override

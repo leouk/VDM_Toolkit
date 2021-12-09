@@ -26,7 +26,6 @@ import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRMapType;
@@ -205,7 +204,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSeqType)
 				{
 					TRType indsType = TRBasicType.nat1Type(location);
-					result = new TRSetType(indsType.getVDMType(), new TRDefinitionList(), indsType, ((TRSeqType)expType).seq1);
+					result = TRSetType.newSetType(location, indsType, ((TRSeqType)expType).seq1);
 				}	
 				else
 					result = super.getType();
@@ -215,7 +214,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSeqType)
 				{
 					TRType elemsType = ((TRSeqType)expType).getInnerType();
-					result = new TRSetType(elemsType.getVDMType(), new TRDefinitionList(), elemsType, ((TRSeqType)expType).seq1);
+					result = TRSetType.newSetType(location, elemsType, ((TRSeqType)expType).seq1);
 				}	
 				else
 					result = super.getType();
@@ -294,7 +293,7 @@ public class TRUnaryExpression extends TRExpression {
 				if (expType instanceof TRSetType)
 				{
 					TRSetType sexp = (TRSetType)expType;
-					result = new TRSetType(sexp.getVDMType(), new TRDefinitionList(), sexp, true);
+					result = TRSetType.newSetType(location, sexp, false);
 				}
 				else
 					result = super.getType();

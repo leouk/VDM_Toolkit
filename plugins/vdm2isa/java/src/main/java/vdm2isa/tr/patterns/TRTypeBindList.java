@@ -63,7 +63,7 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		return result;
 	}
 
-	public static String translate(TRMultipleTypeBind... args)
+	public static final String translate(TRMultipleTypeBind... args)
 	{
 		TRTypeBindList result = new TRTypeBindList();
 		result.addAll(Arrays.asList(args));

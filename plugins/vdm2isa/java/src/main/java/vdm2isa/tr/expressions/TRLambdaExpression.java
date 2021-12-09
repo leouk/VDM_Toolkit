@@ -20,7 +20,6 @@ import vdm2isa.tr.patterns.TRTypeBindList;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeList;
 
 /**
  * VDM Lambda expressions are complex to translate because of the need for local invariant checks and the need
@@ -179,7 +178,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param def
      * @return
      */
-    public static TRLambdaExpression newLambdaExpression(TRTypeBindList bindList, TRExpression expression)
+    public static final TRLambdaExpression newLambdaExpression(TRTypeBindList bindList, TRExpression expression)
     {
         TRMultipleBindList mbinds = new TRMultipleBindList();
         TRPatternList paramPatterns = TRPatternList.newPatternList((TRPattern[])null); 
@@ -212,7 +211,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param expression
      * @return
      */
-    public static TRLambdaExpression newLambdaExpression(TRMultipleBindList bindings, TRExpression expression)
+    public static final TRLambdaExpression newLambdaExpression(TRMultipleBindList bindings, TRExpression expression)
     {
         return TRLambdaExpression.newLambdaExpression(bindings.getTypeBindList(), expression);
     }
@@ -226,7 +225,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param mapType
      * @return
      */
-    public static TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
+    public static final TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
             TRExpression predicate, TRMapType mapType) {
                 // predicate can be null for when { x |-> y | x in set S }! 
         TRPatternList patterns = bindings.getPatternListList().getFlatPatternList();

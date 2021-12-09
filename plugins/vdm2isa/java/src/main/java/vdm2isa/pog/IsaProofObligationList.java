@@ -76,8 +76,7 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
             for(String module : poModuleMap.keySet())
             {
                 TRDefinitionList pos = poModuleMap.get(module);
-                result.add(new TRProofObligationModule(module,
-                        new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(module), false), pos));
+                result.add(TRProofObligationModule.newProofObligationModule(module, pos));
             }
         }
         TRNode.setup(result);

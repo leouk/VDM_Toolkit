@@ -21,6 +21,7 @@ import com.fujitsu.vdmj.tc.patterns.TCStringPattern;
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
 
 public class TRBasicPattern extends TRPattern {
@@ -145,21 +146,25 @@ public class TRBasicPattern extends TRPattern {
 		return visitor.caseBasicPattern(this, arg);
 	}
 
-    public static TRPattern identifier(LexLocation location, String name) {
+    public static final TRPattern identifier(LexLocation location, String name) {
         if (!IsaToken.validIsaIdentifier(name))
             GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
-        return new TRBasicPattern(new TCIdentifierPattern(new TCNameToken(location, location.module, name)));
+        TRBasicPattern result = new TRBasicPattern(new TCIdentifierPattern(new TCNameToken(location, location.module, name)));
+        TRNode.setup(result);
+        return result;
     }
 
-    public static TRPattern ignore(LexLocation location) {
-        return new TRBasicPattern(new TCIgnorePattern(location));
+    public static final TRPattern ignore(LexLocation location) {
+        TRBasicPattern result = new TRBasicPattern(new TCIgnorePattern(location));
+        TRNode.setup(result);
+        return result;
     }
 
-    public static TRPattern dummyPattern(LexLocation location) {
+    public static final TRPattern dummyPattern(LexLocation location) {
         return TRBasicPattern.identifier(location, IsaToken.dummyVarNames(1, location));
     }
 
-    public static TRPattern underscore(LexLocation location) {
+    public static final TRPattern underscore(LexLocation location) {
         return TRBasicPattern.identifier(location, IsaToken.UNDERSCORE.toString());
     }
 }

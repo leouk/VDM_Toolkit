@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCAndExpression;
@@ -374,7 +375,7 @@ public class TRBinaryExpression extends TRExpression
 		return visitor.caseBinaryExpression(this, arg);
 	}
 
-	public static TRBinaryExpression newBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
+	public static final TRBinaryExpression newBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
 		IsaToken token = IsaToken.from(op);
 		assert VALID_BINARY_OPS.contains(token);
@@ -514,12 +515,18 @@ public class TRBinaryExpression extends TRExpression
 		}
 		return result;
 	}
+
+	public static final TRExpression newBooleanChain(LexLocation location, IsaToken token, TRExpression... args)
+	{
+		return TRBinaryExpression.newBooleanChain(new LexKeywordToken(token.vdmToken(), location), args);
+	}
+
 	/**
 	 * Creates a boolean chain of expressions (e.g., args[0] and ... and args[i]).
 	 * This presumes op is valid boolean chain operator (e.g. and, or, etc.), and that
 	 * all elements within args have boolean type. Simply "true" is returned otherwise. 
 	 */
-	public static TRExpression newBooleanChain(LexToken op, TRExpression... args)
+	public static final TRExpression newBooleanChain(LexToken op, TRExpression... args)
 	{
 		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(op.location, true);
 		if (!VALID_BOOLEAN_CHAIN_OPS.contains(IsaToken.from(op)))

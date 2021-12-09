@@ -55,4 +55,13 @@ public class TRMapEnumExpression extends TRExpression
 	{
 		return visitor.caseMapEnumExpression(this, arg);
 	}
+
+    public static final TRMapEnumExpression newMapEnumExpression(LexLocation location, TRMapletExpressionList members, TRType exptype)
+    {
+        TRMapEnumExpression result = new TRMapEnumExpression(location, 
+            new TCMapEnumExpression(location, members.getVDMMapletExpressionList()), 
+            members, exptype);
+        TRNode.setup(result);
+        return result;
+    }
 }

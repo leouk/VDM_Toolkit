@@ -100,10 +100,12 @@ public class TRFieldExpression extends TRExpression {
 		return visitor.caseFieldExpression(this, arg);
 	}
 
-    public static TRFieldExpression newFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)
+    public static final TRFieldExpression newFieldExpression(TRExpression object, TCIdentifierToken field, TRType exptype)
     {
-        return new TRFieldExpression(
+        TRFieldExpression result = new TRFieldExpression(
                 new TCFieldExpression(object.getVDMExpr(), field, null),
                 object, field, exptype);        
+        TRNode.setup(result);
+        return result;
     }
 }

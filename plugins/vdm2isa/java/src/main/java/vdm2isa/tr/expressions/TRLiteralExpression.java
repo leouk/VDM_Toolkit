@@ -143,11 +143,11 @@ public class TRLiteralExpression extends TRExpression
 		// 		break;
 			
 		// 	case STRING:
-		// 		result = new TRSeqType(location, new TRDefinitionList(), TRBasicType.charType(location), !exp.isEmpty());
+		// 		result = TRSeqType.newSeqType(location, TRBasicType.charType(location), !exp.isEmpty());
 		// 		break;
 
 		// 	case VDMQUOTE:	
-		// 		result = new TRQuoteType(location, new TRDefinitionList(), exp);
+		// 		result = TRQuoteType.newQuoteType(location, exp);
 		// 		break;
 			
 		// 	default:

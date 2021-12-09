@@ -2,17 +2,14 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCCasesExpression;
-import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeSet;
 import vdm2isa.tr.types.TRUnionType;
 
 public class TRCasesExpression extends TRExpression {
@@ -42,8 +39,7 @@ public class TRCasesExpression extends TRExpression {
             {
                 report(IsaErrorMessage.ISA_INVALID_OPTION_CASE_1P, exp.getClass().getSimpleName());
             }
-            //TODO: will this "null" be a problem? 
-            this.cases.add(new TRCaseAlternative(location, null, TRBasicPattern.underscore(location), others));
+            this.cases.add(TRCaseAlternative.newCaseAlternative(location, TRBasicPattern.underscore(location), others));
         }
         if (this.cases.isEmpty())
         {
@@ -55,8 +51,7 @@ public class TRCasesExpression extends TRExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        TRTypeSet typeSet = cases.getTypes();
-        return new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), new TRDefinitionList(), typeSet);
+        return TRUnionType.newUnionType(location, cases.getTypes());
     }
     
     @Override 

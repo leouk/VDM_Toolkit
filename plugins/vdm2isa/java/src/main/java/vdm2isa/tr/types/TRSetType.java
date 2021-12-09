@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSetType;
 import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
 import vdm2isa.lex.IsaToken;
@@ -78,4 +79,17 @@ public class TRSetType extends TRAbstractInnerTypedType
 	{
 		return visitor.caseSetType(this, arg);
 	}
+
+    public static final TRSetType newSetType(LexLocation location, TRType setof, boolean set1)
+    {
+        return TRSetType.newSetType(location, setof.getDefinitions(), setof, set1);
+    }
+
+    public static final TRSetType newSetType(LexLocation location, TRDefinitionList definitions, TRType setof, boolean set1)
+    {
+        TCType vdmType = set1 ? new TCSet1Type(location, setof.getVDMType()) : new TCSetType(location, setof.getVDMType());
+        TRSetType result = new TRSetType(vdmType, definitions, setof, set1);
+        TRNode.setup(result);
+        return result;
+    }
 }

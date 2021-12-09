@@ -2,10 +2,9 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCSetEnumExpression;
-import com.fujitsu.vdmj.tc.types.TCSetType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
@@ -22,7 +21,7 @@ public class TRSetEnumExpression extends TREnumeratedExpression
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSetType(new TCSetType(location, exptype.getVDMType()), new TRDefinitionList(), exptype, !members.isEmpty());
+        return TRSetType.newSetType(location, exptype, !members.isEmpty());
     }
 
     @Override
@@ -46,10 +45,12 @@ public class TRSetEnumExpression extends TREnumeratedExpression
 		return visitor.caseSetEnumExpression(this, arg);
 	}
 
-    public static TRSetEnumExpression newSetEnumExpression(LexLocation location, TRExpressionList members, TRType exptype)
+    public static final TRSetEnumExpression newSetEnumExpression(LexLocation location, TRExpressionList members, TRType exptype)
     {
-        return new TRSetEnumExpression(location, 
+        TRSetEnumExpression result = new TRSetEnumExpression(location, 
             new TCSetEnumExpression(location, members.getTCExpressionList()), 
             members, exptype);
+        TRNode.setup(result);
+        return result;
     }
 }
