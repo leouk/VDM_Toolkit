@@ -108,7 +108,7 @@ public class TRIfExpression extends TRExpression
 		TRIfExpression result = new TRIfExpression(location, 
 			new TCIfExpression(location, ifExp.getVDMExpr(), thenExp.getVDMExpr(), 
 				elseList != null ? elseList.getVDMElseIfExpressionList() : new TCElseIfExpressionList(), elseExp.getVDMExpr()),
-			ifExp, thenExp, elseList, elseExp, exptype);
+			ifExp, thenExp, elseList != null ? elseList : new TRElseIfExpressionList(), elseExp, exptype);
 		TRNode.setup(result);
 		return result;
 	}

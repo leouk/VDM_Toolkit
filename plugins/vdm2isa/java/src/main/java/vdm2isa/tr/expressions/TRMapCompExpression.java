@@ -168,7 +168,6 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
             TCNameSet domVarsToBind = TRMapCompExpression.variablesToBind(boundV, domFV, prdFV);
             TCNameSet rngVarsToBind = TRMapCompExpression.variablesToBind(boundV, rngFV, prdFV);
-            TCNameSet prdVarsToBind = TRMapCompExpression.variablesToBind(boundV, prdFV);
                                     
             // create set enum.comprehensions for dom/range sets
             // Vars(Set) = Vars(Expr) union Vars(Pred) inter Vars(bindings)  
@@ -187,7 +186,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                 TRMapCompExpression.figureOutLambdaBindings(bindings, 
                     TRMapCompExpression.variablesToBind(boundV, domFV), domainType, 
                     TRMapCompExpression.variablesToBind(boundV, rngFV), rangeType, 
-                    TRMapCompExpression.variablesToBind(boundV,prdFV)) : null;
+                    TRMapCompExpression.variablesToBind(boundV, prdFV)) : null;
            
             // lambdaBindings != null => !hasEasyDom || !hasEasyRng || !hasEasyPrd = hasEasyDom && hasEasyRng && hasEasyPrd => lambdaBindings = null
             assert !(hasEasyDom && hasEasyRng && hasEasyPrd) || lambdaBindings == null;
@@ -335,23 +334,6 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                 ((TRLiteralExpression)pred).exp.equals(IsaToken.TRUE.toString()));
     }
 
-    private static TCNameSet figureOutUnboundFV(TRMultipleBindList given, TCNameSet... args)
-    {
-        TCNameSet result = new TCNameSet();
-        for(TCNameSet ns : args)
-        {
-            for(TCNameToken n : ns)
-            {
-                // of all FV names, those not bound are truly free 
-                if (given.findBinding(n) == null)
-                {
-                    result.add(n);
-                }
-            }
-        }
-        return result;
-    }
-
     private static TRExpression figureOutSet(TRMultipleBindList given, TCNameSet varsToBind, TRExpression expr, TRExpression pred, TRMapCompExprKind kind)
     {
         assert expr != null && given != null && varsToBind != null;
@@ -492,6 +474,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     
     private static TRMultipleBind figureOutDummyBind(TRMultipleBind found, TRType exprType, TRMapCompExprKind kind)
     {
+        // found will be null for complex expressions like f(x), even when x has the same type of f(x)
         TRMultipleBind result = found;
         // if bind is found, use that as the bind          
         if (result != null)

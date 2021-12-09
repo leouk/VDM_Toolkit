@@ -7,7 +7,15 @@ types
 		x: nat 
 		y: nat	
 	inv r == r.x < r.y;
-	
+
+functions
+	-- change the type of inputs for map binding
+	f: nat * nat -> real
+	f(x,y) == if y = 0 then 0 else x / y;
+
+	g: nat * nat -> nat
+	g(x,y) == x+y;
+		
 values	
 	-- "existential" map comp with unused binding; unused warning is useful 
 	v4 = { x+x |-> 10 | x in set {1,2,3}, y in set {4,5,6} };
@@ -17,5 +25,14 @@ values
 
 	-- "existential" map comp with (structured) pattern context 
 	v6 = { mk_(x,y) |-> mk_R(x,y) | x in set {1,2,3}, y in set {4,5,6} };
+	
+	v7 = { f(x,y) |-> g(x,y) | x in set {1,2,3}, y in set {4,5,6} };
 		
+	vWarning1 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning11= { 1 |-> 5 | x in set {4,5,6}, x in set {1,2,3,4} & x > 3 };
+	vWarning2 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning3 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6}, x in set {7,8,9} & x > 6 };
+	vWarning4= { 1 | fv in set {3,4,5}, x in set {1,2,3} & x >= fv };
+	vWarning5 = { 1|-> 5 | x in set {<A>,<B>,<C>}, x in set {1,2,3} & x = <A> };
+	
 end TestV2IExprsComplexMaps
