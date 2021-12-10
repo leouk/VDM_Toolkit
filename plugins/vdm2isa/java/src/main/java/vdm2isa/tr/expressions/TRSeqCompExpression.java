@@ -1,11 +1,12 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCSeqCompExpression;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
 import vdm2isa.tr.patterns.TRMultipleBindKind;
@@ -22,10 +23,11 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
     private static final long serialVersionUID = 1L;
 
     public TRSeqCompExpression(LexLocation location, 
+        TCSeqCompExpression tc,
         TRExpression first, TRMultipleBind bind, 
         TRExpression predicate, TRDefinition def, TRType exptype)
     {
-        super(location, first, bind != null ? bind.getMultipleBindList() : null, predicate, def, exptype);
+        super(location, tc, first, bind != null ? bind.getMultipleBindList() : null, predicate, def, exptype);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSeqType(exptype.getVDMType(), new TRDefinitionList(), first.getType(), false);
+        return TRSeqType.newSeqType(location, first.getType(), false);
     }
 
     @Override

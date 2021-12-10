@@ -140,7 +140,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
         {
             report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, getVDMPattern().toString(), e.toString());
         }
-        result.setup();
+        TRDefinitionSet.setup(result);
         return result.asList();
     }
 }

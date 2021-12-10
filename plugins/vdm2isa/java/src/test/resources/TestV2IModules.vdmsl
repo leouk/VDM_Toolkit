@@ -1,0 +1,25 @@
+module A
+-- no exports yet
+--exports functions f: nat -> nat
+definitions
+functions
+	f: nat -> nat
+	f(a) ==
+		-- @Printf("Hello = %s\n", a)
+		a + 1;
+
+end A
+
+module B
+-- no imports yet
+--imports from A functions f: nat -> nat renamed F
+exports all
+definitions
+functions
+	F: nat -> nat
+	F(a) == a;
+	
+	g: nat -> nat
+	g(a) == F(a) - 1;
+
+end B

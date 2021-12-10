@@ -196,7 +196,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		return result;
 	}
 
-	public static TRDefinitionList newDefList(TRDefinition... args)
+	public static final TRDefinitionList newDefList(TRDefinition... args)
 	{
 		TRDefinitionList result = new TRDefinitionList();
 		result.addAll(Arrays.asList(args));

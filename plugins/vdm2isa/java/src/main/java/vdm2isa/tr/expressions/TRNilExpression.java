@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCNilExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -10,9 +11,9 @@ public class TRNilExpression extends TRExpression {
 
 	private static final long serialVersionUID = 1L;
     
-    public TRNilExpression(LexLocation location, TRType exptype)
+    public TRNilExpression(LexLocation location, TCNilExpression tc, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
     }
 
     @Override

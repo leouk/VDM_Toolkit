@@ -10,7 +10,6 @@ import java.util.TreeSet;
 
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
 import com.fujitsu.vdmj.tc.patterns.TCMultipleBindList;
@@ -22,12 +21,15 @@ import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRDefinitionSet;
+import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnknownType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRPatternContext
@@ -68,6 +70,16 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setFormattingSeparator(IsaToken.SPACE.toString());
 		//Multiple bind list translation must take into consideration the kind of bind within it; for type binds that involves adding inv_T dummy; others just empty
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+	}
+
+	public TCMultipleBindList getTCMultipleBindList()
+	{
+		TCMultipleBindList result = new TCMultipleBindList();
+		for(TRMultipleBind b : this)
+		{
+			result.add(b.getVDMMultipleBind());	
+		}
+		return result;
 	}
 
 	public boolean getParenthesise()
@@ -186,21 +198,33 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		return sb.toString();
     }
 
-	private TRExpression patternExpression(TRPattern p, /*LexToken op,*/ TRExpression rhs)
+	/**
+	 * Creates for the given pattern the expression "p : RHS"
+	 * @param p
+	 * @param rhs
+	 * @return
+	 */
+	private TRExpression patternExpression(TRPattern p, TRExpression rhs)
 	{
-		assert 
-		//TRExpression.VALID_BINARY_OPS.contains(IsaToken.from(op)) && 
-//				IsaToken.from(op).equals(IsaToken.INSET) &&
-				rhs.getType() instanceof TRSetType;
+		assert rhs != null && rhs.getType() instanceof TRSetType;
 		TRSetType stype = (TRSetType)rhs.getType();
-		// p in set RHS
-		return new TRBinaryExpression(
-					TRVariableExpression.newVariableExpr(p.location, p.patternTranslate(), stype.getInnerType()), 
+//		String patternStr = p.patternTranslate();
+		// p in set RHS /\ inv_RHSType p
+		return 
+//			TRBinaryExpression.newBooleanChain(IsaToken.AND,  not an inv_RHSType p? 
+				TRBinaryExpression.newBinaryExpression(
+					TRVariableExpression.newVariableExpr(p.location, p.patternTranslate(), stype.getInnerType()),
 					new LexKeywordToken(Token.INSET, p.location),/*op //IsaToken.INSET,*/ 
-					rhs,
+					rhs, 
 					TRBasicType.boolType(p.getLocation()));
 	}
 
+	/**
+	 * Creates for the given pattern list the corresponding chained expression "p_i : RHS /\ .... p_n : RHS" for every p_i in the list
+	 * @param plist
+	 * @param rhs
+	 * @return
+	 */
 	private TRExpression patternListExpression(TRPatternList plist, TRExpression rhs)
 	{
 		assert plist != null && plist.size() > 0;
@@ -215,46 +239,46 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 
 	private TRExpression bindingExpression(int index)
 	{
-		assert index >= 0 && index < size() && !(get(index) instanceof TRMultipleTypeBind);
+		assert index >= 0 && index < size(); //&& !(get(index) instanceof TRMultipleTypeBind);
 		TRMultipleBind b = get(index);
+		assert !b.plist.isEmpty();
 		TRExpression rhs;
-		//TRType btype;
-		TRPatternList plist;
-		if (b instanceof TRMultipleSetBind)
+		TRType btype = b.getRHSType();
+		TRExpression result = null;
+		switch (b.getMultipleBindKind())
 		{
-			TRMultipleSetBind bset = (TRMultipleSetBind)b;
-			rhs = (TRExpression)bset.getRHS();
-			//TRSetType stype = (TRSetType)rhs.getType();
-			//btype = stype.setof;
-			assert !bset.plist.isEmpty();
-			plist = bset.plist;
+			case SET:
+				TRMultipleSetBind bset = (TRMultipleSetBind)b;
+				rhs = (TRExpression)bset.getRHS();
+				result = patternListExpression(b.plist, rhs);
+				break;
+			case SEQ: 
+				TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
+				rhs = TRApplyExpression.newApplyExpression(
+						IsaToken.ELEMS.toString(), 
+						TRExpressionList.newExpressionList((TRExpression)bseq.getRHS()), 
+						TRSetType.newSetType(bseq.location, bseq.getRHSType(), false));
+				result = patternListExpression(b.plist, rhs);
+				break;
+			case TYPE:
+				//result = TRApplyExpression.newApplyExpression();
+				//break;
+			default:
+				result = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), false);
+				break;
+
 		}
-		else if (b instanceof TRMultipleSeqBind)
-		{
-			TRMultipleSeqBind bseq = (TRMultipleSeqBind)b;
-			rhs = (TRExpression)bseq.getRHS();
-			//TRSeqType stype = (TRSeqType)rhs.getType();
-			//btype = stype.seqof;
-			assert !bseq.plist.isEmpty();
-			plist = bseq.plist;
-		}
-		else
-		{
-			// error? imposible to reach?
-			plist = TRPatternList.newPatternList((TRPattern[])null);
-			rhs = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), false);
-			//btype = TRBasicType.boolType(getLocation());
-			//TODO report VDMSL error?
-		}
-		// should never allow empty pattern?
-		TRExpression result;
-		if (plist != null && plist.size() > 0)
-			result = patternListExpression(plist, rhs);
-		else 
-			result = rhs;
+		assert result != null;
 		return result;				
 	}
 
+	/**
+	 * For a given bindind list, produce its characteristic predicate alongside the user defined one (if any).
+	 * The result is a boolean and-chain containing all the necessary binding definitions constrains. 
+	 * e.g. Bindings = [x in set S, y in set T, z : R] + pred = P(x,y,z) results in "x : S /\ inv_ElemType(S) x /\ y : T /\ inv_ElemtType(T) y /\ inv_R z /\ P(x,y,z)".
+	 * @param predicate user defined predicate
+	 * @return boolean chain of and-expressions for every set/seq bind. For type binds, type constraints are sufficient   
+	 */
 	public TRExpression getBindingsExpression(TRExpression predicate)
 	{
 		TRExpression result = predicate == null ? TRLiteralExpression.newBooleanLiteralExpression(getLocation(), true) : predicate;
@@ -277,14 +301,14 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 				// add the predicate if it exists as the final ping in the chain
 				if (predicate != null)
 					exprs[i] = result;
-				result = TRBinaryExpression.newBooleanChain(new LexKeywordToken(Token.AND, getLocation()), exprs);
+				result = TRBinaryExpression.newBooleanChain(getLocation(), IsaToken.AND, exprs);
 			}
 		}
 		else
 		{
-			// if called on empty, then give up! 
-			//result = new TRNotYetSpecifiedExpression(getLocation(), TRExpression.unknownType(getLocation()));
-			// Perhaps just say "true"? 
+			// empty binds = false
+			result = TRLiteralExpression.newBooleanLiteralExpression(getLocation(), false);
+			report(IsaErrorMessage.VDMSL_INVALID_PATTERN);
 		}
 		TRNode.setup(result);
 		return result;
@@ -312,7 +336,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 	 */
 	public TRNode getRHS()
 	{
-		return isEmpty() ? new TRUnknownType(getLocation()) : get(0).getRHS();
+		return isEmpty() ? TRUnknownType.newUnkownType(getLocation()) : get(0).getRHS();
 	}
 
 	public TRTypeBindList getTypeBindList()
@@ -371,7 +395,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         return result.asList();
     }
 
-	public static String translate(TRMultipleBind... args)
+	public static final String translate(TRMultipleBind... args)
 	{
 		TRMultipleBindList result = new TRMultipleBindList();
 		result.addAll(Arrays.asList(args));

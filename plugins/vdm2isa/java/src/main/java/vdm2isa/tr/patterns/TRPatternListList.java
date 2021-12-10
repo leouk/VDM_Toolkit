@@ -5,7 +5,6 @@
 package vdm2isa.tr.patterns;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -58,6 +57,16 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 	public String toString()
 	{
 		return super.toString() + " [PLL=" + size() + "]";
+	}
+
+	public TCPatternListList getTCPatternListList()
+	{
+		TCPatternListList result = new TCPatternListList();
+		for(TRPatternList plist : this)
+		{
+			result.add(plist.getTCPatternList());
+		}
+		return result;
 	}
 
 	@Override
@@ -150,7 +159,7 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return result; 
 	}
 
-	public static TRPatternListList newPatternListList(TRPatternList... args)
+	public static final TRPatternListList newPatternListList(TRPatternList... args)
 	{
 		TRPatternListList result = new TRPatternListList();
 		if (args != null)
@@ -159,7 +168,7 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return result;	
 	}
 
-	public static TRPatternListList newPatternListList(TRPattern... args)
+	public static final TRPatternListList newPatternListList(TRPattern... args)
 	{
 		return TRPatternListList.newPatternListList(TRPatternList.newPatternList(args));	
 	}

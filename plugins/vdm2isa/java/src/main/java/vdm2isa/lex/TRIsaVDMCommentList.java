@@ -30,7 +30,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
 
     public void add(LexLocation location, String comment, boolean block)
     {
-        this.add(new TRIsaVDMComment(new LexComment(location, comment, block)));
+        this.add(TRIsaVDMComment.newIsaVDMComment(new LexComment(location, comment, block)));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
         return sb.toString();
     }
     
-    public static TRIsaVDMCommentList newComment(LexLocation location, String comment, boolean block)
+    public static final TRIsaVDMCommentList newComment(LexLocation location, String comment, boolean block)
     {
         TRIsaVDMCommentList result = new TRIsaVDMCommentList();
         result.add(location, comment, block);

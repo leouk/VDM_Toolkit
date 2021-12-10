@@ -6,14 +6,14 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRTypeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.types.TCUnionType;
+import com.fujitsu.vdmj.tc.expressions.TCElseIfExpressionList;
+import com.fujitsu.vdmj.tc.expressions.TCIfExpression;
 
 public class TRIfExpression extends TRExpression
 {
@@ -24,10 +24,10 @@ public class TRIfExpression extends TRExpression
 	public final TRExpression elseExp;
 	
 	//@todo TCElseIfExpressionList! 
-	public TRIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, 
+	public TRIfExpression(LexLocation location, TCIfExpression tc, TRExpression ifExp, TRExpression thenExp, 
 		TRElseIfExpressionList elseList, TRExpression elseExp, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
 		this.ifExp = ifExp;
 		this.thenExp = thenExp;
 		this.elseExp = elseExp;
@@ -51,10 +51,7 @@ public class TRIfExpression extends TRExpression
 	@Override
 	protected TRType getBestGuessType()
 	{
-		TRTypeSet typeSet = new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType());
-		TRUnionType result = new TRUnionType(new TCUnionType(location, typeSet.getVDMTypeSet()), new TRDefinitionList(), typeSet);
-		TRNode.setup(result);
-		return result;
+		return TRUnionType.newUnionType(location, new TRTypeSet(thenExp.getType(), elseExp.getType(), elseList.getType()));
 	}
 
 	@Override 
@@ -98,5 +95,21 @@ public class TRIfExpression extends TRExpression
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseIfExpression(this, arg);
+	}
+
+	public static final TRIfExpression newIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, TRExpression elseExp, TRType exptype)
+	{
+		return TRIfExpression.newIfExpression(location, ifExp, thenExp, null, elseExp, exptype);
+	}
+
+	public static final TRIfExpression newIfExpression(LexLocation location, TRExpression ifExp, TRExpression thenExp, 
+		TRElseIfExpressionList elseList, TRExpression elseExp, TRType exptype)
+	{
+		TRIfExpression result = new TRIfExpression(location, 
+			new TCIfExpression(location, ifExp.getVDMExpr(), thenExp.getVDMExpr(), 
+				elseList != null ? elseList.getVDMElseIfExpressionList() : new TCElseIfExpressionList(), elseExp.getVDMExpr()),
+			ifExp, thenExp, elseList != null ? elseList : new TRElseIfExpressionList(), elseExp, exptype);
+		TRNode.setup(result);
+		return result;
 	}
 }

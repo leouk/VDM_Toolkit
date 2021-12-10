@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCPreExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -14,9 +15,9 @@ public class TRPreExpression extends TRExpression {
     public final TRExpression function;
     public final TRExpressionList args;
 
-    public TRPreExpression(LexLocation location, TRExpression function, TRExpressionList args, TRType exptype)
+    public TRPreExpression(LexLocation location, TCPreExpression tc, TRExpression function, TRExpressionList args, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
         this.function = function;
         this.args = args;
     }

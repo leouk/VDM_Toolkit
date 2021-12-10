@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCMapEnumExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -12,9 +13,9 @@ public class TRMapEnumExpression extends TRExpression
 	private static final long serialVersionUID = 1L;
     public final TRMapletExpressionList members;
 
-	public TRMapEnumExpression(LexLocation location, TRMapletExpressionList members, TRType exptype)
+	public TRMapEnumExpression(LexLocation location, TCMapEnumExpression tc, TRMapletExpressionList members, TRType exptype)
 	{
-		super(location, exptype);
+		super(location, tc, exptype);
         this.members = members;
 	}
 
@@ -54,4 +55,13 @@ public class TRMapEnumExpression extends TRExpression
 	{
 		return visitor.caseMapEnumExpression(this, arg);
 	}
+
+    public static final TRMapEnumExpression newMapEnumExpression(LexLocation location, TRMapletExpressionList members, TRType exptype)
+    {
+        TRMapEnumExpression result = new TRMapEnumExpression(location, 
+            new TCMapEnumExpression(location, members.getVDMMapletExpressionList()), 
+            members, exptype);
+        TRNode.setup(result);
+        return result;
+    }
 }

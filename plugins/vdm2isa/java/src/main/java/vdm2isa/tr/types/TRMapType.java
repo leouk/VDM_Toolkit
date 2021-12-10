@@ -134,4 +134,11 @@ public class TRMapType extends TRAbstractInnerTypedType
         super.checkForUnionTypes();
         //getToType().checkForUnionTypes();
     } 
+
+    public static final TRMapType newMapType(TRType left, TRType right, boolean injective)
+    {
+        TRMapType result = new TRMapType(new TCMapType(left.location, left.getVDMType(), right.getVDMType()), new TRDefinitionList(), left, right, injective);
+        TRNode.setup(result);
+        return result;
+    }
 }

@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCMkTypeExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
@@ -18,9 +19,9 @@ public class TRMkTypeExpression extends TRExpression {
     private TRFieldList fields; 
     public final TRExpressionList args;
 
-    public TRMkTypeExpression(TCNameToken typename, TRExpressionList args, TRType exptype)
+    public TRMkTypeExpression(TCMkTypeExpression tc, TCNameToken typename, TRExpressionList args, TRType exptype)
     {
-        super(typename != null ? typename.getLocation() : LexLocation.ANY, exptype);
+        super(typename != null ? typename.getLocation() : LexLocation.ANY, tc, exptype);
         this.typename = typename;
         this.args = args;
         this.fields = null;

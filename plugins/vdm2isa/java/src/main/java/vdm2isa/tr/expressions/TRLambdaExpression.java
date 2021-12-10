@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCLambdaExpression;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
@@ -45,10 +46,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      */
     protected enum TRLambdaExpressionKind { NORMAL, MAPCOMP, EXISTENTIAL_MAPCOMP }
 
-    public TRLambdaExpression(LexLocation location, TRTypeBindList bindList, TRExpression expression,
+    public TRLambdaExpression(LexLocation location, TCLambdaExpression tc, TRTypeBindList bindList, TRExpression expression,
         TRFunctionType type, TRPatternList paramPatterns, TRDefinitionList paramDefinitions, TRDefinition def)
     {
-        super(location, expression, type);
+        super(location, tc, expression, type);
         this.bindList = bindList;
         //this.type = type; // this is redundant? Given it's the exptype already? 
         this.paramPatterns = paramPatterns; 
@@ -177,7 +178,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param def
      * @return
      */
-    public static TRLambdaExpression newLambdaExpression(TRTypeBindList bindList, TRExpression expression)
+    public static final TRLambdaExpression newLambdaExpression(TRTypeBindList bindList, TRExpression expression)
     {
         TRMultipleBindList mbinds = new TRMultipleBindList();
         TRPatternList paramPatterns = TRPatternList.newPatternList((TRPattern[])null); 
@@ -195,7 +196,10 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             expression = TRLiteralExpression.newBooleanLiteralExpression(LexLocation.ANY, false);    
         }
         TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
-        TRLambdaExpression result = new TRLambdaExpression(expression.getLocation(), bindList, expression, fcnType, 
+        TRLambdaExpression result = new TRLambdaExpression(
+            expression.getLocation(), 
+            new TCLambdaExpression(expression.getLocation(), bindList.getTCTypeBindList(), expression.getVDMExpr()),
+            bindList, expression, fcnType, 
             paramPatterns, paramDefinitions, TRMultiBindListDefinition.newBindListDef(expression.getLocation(), mbinds));
         TRNode.setup(result);
         return result;
@@ -207,7 +211,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param expression
      * @return
      */
-    public static TRLambdaExpression newLambdaExpression(TRMultipleBindList bindings, TRExpression expression)
+    public static final TRLambdaExpression newLambdaExpression(TRMultipleBindList bindings, TRExpression expression)
     {
         return TRLambdaExpression.newLambdaExpression(bindings.getTypeBindList(), expression);
     }
@@ -221,7 +225,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
      * @param mapType
      * @return
      */
-    public static TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
+    public static final TRLambdaExpression newMapCompExpression(TRMapletExpression first, TRMultipleBindList bindings,
             TRExpression predicate, TRMapType mapType) {
                 // predicate can be null for when { x |-> y | x in set S }! 
         TRPatternList patterns = bindings.getPatternListList().getFlatPatternList();

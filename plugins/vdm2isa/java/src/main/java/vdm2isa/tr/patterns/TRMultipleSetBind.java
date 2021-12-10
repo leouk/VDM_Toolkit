@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.tc.patterns.TCMultipleSetBind;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+import com.fujitsu.vdmj.tc.patterns.TCSetBind;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
@@ -23,14 +27,27 @@ public class TRMultipleSetBind extends TRMultipleBind
     // TRSeqComp sets this to true for the case [ x | x in set S ], where S is ordered
     protected boolean seqBind;
 
-    public TRMultipleSetBind(TRPattern pattern, TRExpression set)
+    private static TCMultipleSetBind figureOutMultipleBind(TCSetBind tc)
     {
-        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), set);
+        TCMultipleSetBind result = null;
+        if (tc != null)
+        {
+            TCPatternList plist = new TCPatternList();
+            plist.add(tc.pattern);
+            result = new TCMultipleSetBind(plist, tc.set);
+        }
+        return result;
     }
 
-    public TRMultipleSetBind(TRPatternList plist, TRExpression set)
+    public TRMultipleSetBind(TCSetBind tc, TRPattern pattern, TRExpression set)
     {
-        super(plist);
+        this(figureOutMultipleBind(tc),
+            pattern != null ? pattern.getPatternList() : new TRPatternList(), set);
+    }
+
+    public TRMultipleSetBind(TCMultipleSetBind tc, TRPatternList plist, TRExpression set)
+    {
+        super(tc, plist);
         this.set = set;
     }
 

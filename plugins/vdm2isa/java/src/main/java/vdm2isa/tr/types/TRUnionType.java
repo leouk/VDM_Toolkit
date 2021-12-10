@@ -3,6 +3,7 @@ package vdm2isa.tr.types;
 
 import java.util.Iterator;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
@@ -211,5 +212,17 @@ public class TRUnionType extends TRType implements TRDataType {
 	@Override
 	public void checkForUnionTypes() {
         report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, "union type");   
+	}
+
+	public static final TRUnionType newUnionType(LexLocation location, TRTypeSet types)
+	{
+		return TRUnionType.newUnionType(location, new TRDefinitionList(), types);
+	}
+
+	public static final TRUnionType newUnionType(LexLocation location, TRDefinitionList definitions, TRTypeSet types)
+	{
+		TRUnionType result = new TRUnionType(new TCUnionType(location, types.getVDMTypeSet()), definitions, types);
+		TRNode.setup(result);
+		return result;
 	}
 }

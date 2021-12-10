@@ -181,14 +181,16 @@ public class TRBasicType extends TRType
 		return visitor.caseBasicType(this, arg);
 	}
 
-	public static TRType newBasicType(TCType vdmType, IsaToken token)  
+	public static final TRType newBasicType(TCType vdmType, IsaToken token)  
 	{
-		return new TRBasicType(vdmType, new TRDefinitionList(), token);
+		TRBasicType result = new TRBasicType(vdmType, new TRDefinitionList(), token);
+		TRNode.setup(result);
+		return result;
 	}
 
-	public static TRType boolType(LexLocation location)  
+	public static final TRType boolType(LexLocation location)  
 	{
-		return newBasicType(new TCBooleanType(location), IsaToken.BOOL);
+		return TRBasicType.newBasicType(new TCBooleanType(location), IsaToken.BOOL);
 	}
 
 	/**
@@ -196,15 +198,15 @@ public class TRBasicType extends TRType
 	 * @param location
 	 * @return
 	 */
-	public static TRType natType(LexLocation location) {
-		return newBasicType(new TCNaturalType(location), IsaToken.NAT);
+	public static final TRType natType(LexLocation location) {
+		return TRBasicType.newBasicType(new TCNaturalType(location), IsaToken.NAT);
 	}
 
-	public static TRType charType(LexLocation location) {
-		return newBasicType(new TCCharacterType(location), IsaToken.CHAR);
+	public static final TRType charType(LexLocation location) {
+		return TRBasicType.newBasicType(new TCCharacterType(location), IsaToken.CHAR);
 	}
 
-	public static TRType nat1Type(LexLocation location) {
-		return newBasicType(new TCNaturalOneType(location), IsaToken.NAT1);
+	public static final TRType nat1Type(LexLocation location) {
+		return TRBasicType.newBasicType(new TCNaturalOneType(location), IsaToken.NAT1);
 	}
 }

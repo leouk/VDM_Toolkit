@@ -3,7 +3,7 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.tc.types.TCSetType;
+import com.fujitsu.vdmj.tc.expressions.TCLetBeStExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -36,8 +36,8 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
     public final TRMultiBindListDefinition def;
     private TRBinaryExpression vInSetS;
 
-	public TRLetBeStExpression(LexLocation location, TRMultipleBind bind, TRExpression suchThat, TRExpression value, TRMultiBindListDefinition def, TRType exptype) {
-        super(location, value, exptype);
+	public TRLetBeStExpression(LexLocation location, TCLetBeStExpression tc, TRMultipleBind bind, TRExpression suchThat, TRExpression value, TRMultiBindListDefinition def, TRType exptype) {
+        super(location, tc, value, exptype);
         this.bind = bind;
         this.suchThat = suchThat;
         this.def = def; 
@@ -54,15 +54,16 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         String original = IsaToken.dummyVarNames(1, location);
         //TCNameToken name = new TCNameToken(location, location.module, original);
         TRMultipleBindList bindings = bind.getMultipleBindList();
-        this.vInSetS = new TRBinaryExpression(
+        this.vInSetS = TRBinaryExpression.newBinaryExpression(
             TRVariableExpression.newVariableExpr(location, /*name,*/ original, exptype),
-            new LexKeywordToken(Token.INSET, location), 
-            new TRSetCompExpression(
+            new LexKeywordToken(Token.INSET, location),
+            TRSetCompExpression.newSetCompExpression(
                 location, expression, bindings, suchThat, 
                 this.def, //new TRMultipleBindListDefinition(location, null, null, null, null, false, false, bindings, defs),
-                new TRSetType(new TCSetType(location, exptype.getVDMType()), exptype.getDefinitions(), exptype, false)), 
+                TRSetType.newSetType(location, exptype, false)),
                 exptype);    
         TRNode.setup(vInSetS);
+
         // System.out.println(toString());
     }
         

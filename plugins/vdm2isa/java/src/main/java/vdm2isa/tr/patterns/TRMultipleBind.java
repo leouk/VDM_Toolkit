@@ -2,6 +2,12 @@ package vdm2isa.tr.patterns;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.patterns.TCBind;
+import com.fujitsu.vdmj.tc.patterns.TCMultipleBind;
+import com.fujitsu.vdmj.tc.patterns.TCPattern;
+import com.fujitsu.vdmj.tc.patterns.TCSeqBind;
+import com.fujitsu.vdmj.tc.patterns.TCSetBind;
+import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
@@ -10,6 +16,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRDefinitionSet;
 import vdm2isa.tr.definitions.TRLocalDefinition;
+import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -27,12 +34,45 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
      */
     public boolean poBind;
 
-    public TRMultipleBind(TRPatternList plist)
+    private final TCMultipleBind vdmBind;
+
+    public TRMultipleBind(TCMultipleBind b, TRPatternList plist)
     {
-        super(plist.get(0).location);
+        super(plist != null && !plist.isEmpty() ? plist.get(0).location : LexLocation.ANY);
+        this.vdmBind = b;
         this.plist = plist;
         this.poBind = false;
         this.parenthesise = true;
+    }
+
+    public TCMultipleBind getVDMMultipleBind()
+    {
+        return vdmBind; 
+    }
+
+    public TCBind getVDMBind()
+    {
+        TCBind result = null;
+        if (plist.size() == 1)
+        {
+            TCPattern p = plist.get(0).getVDMPattern();
+            switch (getMultipleBindKind())
+            {
+                case SET:
+                    TRExpression set = (TRExpression)getRHS();
+                    result = new TCSetBind(p, set.getVDMExpr());
+                    break;
+                case SEQ:
+                    TRExpression seq = (TRExpression)getRHS();
+                    result = new TCSeqBind(p, seq.getVDMExpr());
+                    break;
+                case TYPE: 
+                    TRType type = (TRType)getRHS();
+                    result = new TCTypeBind(p, type.getVDMType());
+                    break;
+            }
+        }
+        return result;
     }
 
     @Override 
@@ -210,7 +250,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         TRTypeBindList result = new TRTypeBindList();
         for(TRPattern p : this.plist)
         {
-            result.add(new TRMultipleTypeBind(p, getRHSType()));
+            result.add(TRMultipleTypeBind.newMultipleTypeBind(p, getRHSType()));
         }
         TRNode.setup(result);
         return result;
@@ -226,7 +266,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
             TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
             result.add(localdef);
         }
-        result.setup();
+        TRDefinitionSet.setup(result);
         return result.asList();
     }
 }

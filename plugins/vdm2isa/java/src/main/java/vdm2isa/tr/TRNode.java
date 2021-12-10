@@ -29,7 +29,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	protected TRNode(LexLocation location)
 	{
 		super();
-		this.location = location; 
+		this.location = location != null ? location : LexLocation.ANY; 
 		this.separator = "";
 		this.formattingSeparator = "";
 		this.invTranslateSeparator = "";
@@ -204,7 +204,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	 * Derived classes can call this method to setup their inner parts taking into account when/if they are null. 
 	 * @param nodes
 	 */
-	public static void setup(MappableNode... nodes)
+	public static final void setup(MappableNode... nodes)
 	{
 		if (nodes != null)
 		{

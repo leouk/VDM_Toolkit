@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -17,9 +18,9 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
     private static final long serialVersionUID = 1L;
     public final TRExpression expression;
 
-    public TRVDMLocalDefinitionListExpression(LexLocation location, TRExpression expression, TRType exptype)
+    public TRVDMLocalDefinitionListExpression(LexLocation location, TCExpression tc, TRExpression expression, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
         this.expression = expression;
     }
 

@@ -9,6 +9,7 @@ values
 	-- trivial map comp becomes map enum
 	-- trivial map comp as no bound variable in maplet
 	v1 = { 1 |-> 5 | x in set {1,2,3} };
+	
 	-- trivial map comp as no bound variable in maplet with "true"; unused warning is not useful
 	v11= { 1 |-> 5 | x in set {1,2,3} & true };
 	-- not trivial because of predicate, despite the trivial binding 

@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCMuExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -17,9 +18,9 @@ public class TRMuExpression extends TRExpression {
     public final TRRecordModifierList modifiers;
     private boolean hasReportedGuessedType;
 
-    public TRMuExpression(LexLocation location, TRExpression record, TRRecordModifierList modifiers, TRType exptype)
+    public TRMuExpression(LexLocation location, TCMuExpression tc, TRExpression record, TRRecordModifierList modifiers, TRType exptype)
     {
-        super(location, exptype);    
+        super(location, tc, exptype);    
         this.record = record;
         this.modifiers = modifiers;
         this.hasReportedGuessedType = false;

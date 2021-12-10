@@ -67,4 +67,11 @@ public class TRIsaVDMComment extends TRNode {
     public String invTranslate() {
         return translate();
     }
+
+    public static final TRIsaVDMComment newIsaVDMComment(LexComment comment)
+    {
+        TRIsaVDMComment result = new TRIsaVDMComment(comment);
+        TRNode.setup(result);
+        return result;
+    }
 }

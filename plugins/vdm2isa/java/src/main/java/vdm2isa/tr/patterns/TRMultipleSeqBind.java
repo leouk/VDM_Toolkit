@@ -1,5 +1,9 @@
 package vdm2isa.tr.patterns;
 
+import com.fujitsu.vdmj.tc.patterns.TCMultipleSeqBind;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+import com.fujitsu.vdmj.tc.patterns.TCSeqBind;
+
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -14,14 +18,28 @@ public class TRMultipleSeqBind extends TRMultipleBind
 
     public TRExpression seq;
 
-    public TRMultipleSeqBind(TRPattern pattern, TRExpression seq)
+    private static TCMultipleSeqBind figureOutMultipleBind(TCSeqBind tc)
     {
-        this(pattern != null ? pattern.getPatternList() : new TRPatternList(), seq);
+        TCMultipleSeqBind result = null;
+        if (tc != null)
+        {
+            TCPatternList plist = new TCPatternList();
+            plist.add(tc.pattern);
+            result = new TCMultipleSeqBind(plist, tc.sequence);
+        }
+        return result;
     }
 
-    public TRMultipleSeqBind(TRPatternList plist, TRExpression seq)
+    public TRMultipleSeqBind(TCSeqBind tc, TRPattern pattern, TRExpression seq)
     {
-        super(plist);
+        this(figureOutMultipleBind(tc),
+            pattern != null ? pattern.getPatternList() : new TRPatternList(), 
+            seq);
+    }
+
+    public TRMultipleSeqBind(TCMultipleSeqBind tc, TRPatternList plist, TRExpression seq)
+    {
+        super(tc, plist);
         this.seq = seq;
     }
 

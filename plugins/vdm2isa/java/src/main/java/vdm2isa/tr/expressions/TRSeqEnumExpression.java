@@ -1,10 +1,9 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.types.TCSeqType;
+import com.fujitsu.vdmj.tc.expressions.TCSeqEnumExpression;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
@@ -13,15 +12,15 @@ public class TRSeqEnumExpression extends TREnumeratedExpression
 {
 	private static final long serialVersionUID = 1L;
 
-    public TRSeqEnumExpression(LexLocation location, TRExpressionList members, TRType exptype)
+    public TRSeqEnumExpression(LexLocation location, TCSeqEnumExpression tc, TRExpressionList members, TRType exptype)
 	{
-		super(location, members, exptype);
+		super(location, tc, members, exptype);
 	}
 
     @Override
     protected TRType getBestGuessType()
     {
-        return new TRSeqType(new TCSeqType(location, exptype.getVDMType()), new TRDefinitionList(), exptype, !members.isEmpty());
+        return TRSeqType.newSeqType(location, exptype, !members.isEmpty());
     }
 
     @Override

@@ -121,7 +121,7 @@ public final class IsaTemplates {
         return result;
     } 
 
-    public static String translateAbbreviation(LexLocation module, String name, String typeStr, String exp)
+    public static final String translateAbbreviation(LexLocation module, String name, String typeStr, String exp)
     {
         assert name != null && typeStr != null && exp != null;
         StringBuilder sb = new StringBuilder();
@@ -131,7 +131,7 @@ public final class IsaTemplates {
     }
 
     //TODO perhaps have multiple inType and inVars params? 
-    public static String translateDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    public static final String translateDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
     {
         assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
@@ -148,12 +148,12 @@ public final class IsaTemplates {
         return sb.toString();
     }
     
-    public static String translateInvariantAbbreviation(LexLocation moduleLocation, String name, String inType, String dummyNames, String invStr, boolean local)
+    public static final String translateInvariantAbbreviation(LexLocation moduleLocation, String name, String inType, String dummyNames, String invStr, boolean local)
     {
         return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, invStr, local);
     }
 
-    public static String translateInvariantTypeSynonym(LexLocation moduleLocation, String name, String inType, String dummyNames, String inv)
+    public static final String translateInvariantTypeSynonym(LexLocation moduleLocation, String name, String inType, String dummyNames, String inv)
     {
         assert name != null && inType != null && dummyNames != null;// && inv != null;
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
@@ -161,13 +161,13 @@ public final class IsaTemplates {
         return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, inv, false);
     }
 
-    public static String translateInvariantDefinition(LexLocation moduleLocation, String name, String inType, String inVars, String exp, boolean local)
+    public static final String translateInvariantDefinition(LexLocation moduleLocation, String name, String inType, String inVars, String exp, boolean local)
     {
         assert name != null && /*inType != null && */ inVars != null && exp != null;
         return translateDefinition(moduleLocation, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
-    //public static String isabelleIdentifier(String vdmIdentifier)
+    //public static final String isabelleIdentifier(String vdmIdentifier)
     //{
         //TODO Look at LexTokenReader.startOfName for what would be useful to use.  
     //    return "reserved_" + vdmIdentifier;
@@ -179,7 +179,7 @@ public final class IsaTemplates {
      * @param vdmFieldName as in "x" for "R :: x : nat"
      * @return Isabelle field name subscripted with record name as in "x\\<^sub>R".
      */
-    public static String isabelleRecordFieldName(String recordName, String vdmFieldName)
+    public static final String isabelleRecordFieldName(String recordName, String vdmFieldName)
     {
         assert recordName != null && vdmFieldName != null && vdmFieldName.length() > 0;
         // if recordName has multiple caracters, get the whole name with SUB! 
@@ -206,7 +206,7 @@ public final class IsaTemplates {
      * @param inv explicit type invariant expression
      * @return Isabelle YXML string
      */
-    public static String translateTypeSynonymDefinition(LexLocation module, String name, String exp)
+    public static final String translateTypeSynonymDefinition(LexLocation module, String name, String exp)
     {
         // TRNamedType will handle this, but the name is useful for IsaItem logging
         assert name != null && exp != null;
@@ -216,7 +216,7 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String translateDatatypeDefinition(LexLocation module, String name, String exp)
+    public static final String translateDatatypeDefinition(LexLocation module, String name, String exp)
     {
         // TRNamedType will handle this, but the name is useful for IsaItem logging
         assert name != null && exp != null;
@@ -226,7 +226,7 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static String translateModule(String comment, String loc, String name, String imports, String defs) 
+    public static final String translateModule(String comment, String loc, String name, String imports, String defs) 
     {
         assert comment != null && loc != null && name != null && defs != null;
         StringBuilder sb = new StringBuilder();
@@ -235,11 +235,11 @@ public final class IsaTemplates {
 		return sb.toString();
     }
 
-    public static String getPOModuleName(String module) {
+    public static final String getPOModuleName(String module) {
         return module + "_PO";
     }
 
-    public static String replicate(String s, long count)
+    public static final String replicate(String s, long count)
     {
         assert count > 0;
         return String.format("%0" + (count) + "d", 0).replace("0", s);

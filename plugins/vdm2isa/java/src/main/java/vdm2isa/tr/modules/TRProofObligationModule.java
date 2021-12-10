@@ -2,6 +2,8 @@ package vdm2isa.tr.modules;
 
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
+import vdm2isa.lex.IsaTemplates;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 
 public class TRProofObligationModule extends TRModule
@@ -19,7 +21,7 @@ public class TRProofObligationModule extends TRModule
      */
     public TRProofObligationModule(String poModuleOwner, TCIdentifierToken poModuleName, TRDefinitionList definitions)
     {
-        super(poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation() != null ? poModuleName.getLocation().file : null));
+        super(null, poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation() != null ? poModuleName.getLocation().file : null));
         this.poModuleOwner = poModuleOwner;
     }
 
@@ -30,4 +32,10 @@ public class TRProofObligationModule extends TRModule
 	{
 		return poModuleOwner;
 	}
+
+    public static final TRModule newProofObligationModule(String module, TRDefinitionList pos) {
+        TRModule result = new TRProofObligationModule(module, new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(module), false), pos);
+        TRNode.setup(result);
+        return result;
+    }
 }

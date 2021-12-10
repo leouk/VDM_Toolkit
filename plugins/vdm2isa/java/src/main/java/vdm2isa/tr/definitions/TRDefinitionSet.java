@@ -7,18 +7,23 @@ import vdm2isa.tr.TRNode;
 //@SuppressWarnings("serial")
 public class TRDefinitionSet extends TreeSet<TRDefinition> {
     
+    private boolean alreadySetup;
+
     public TRDefinitionSet()
     {
         super();
+        alreadySetup = false;
     }
 
     public TRDefinitionSet(TRDefinition definition)
     {
+        this();
         add(definition);
     }
 
     public TRDefinitionSet(TRDefinitionList definitions)
     {
+        this();
         addAll(definitions);
     }
 
@@ -29,6 +34,7 @@ public class TRDefinitionSet extends TreeSet<TRDefinition> {
             if (!d.setupDone())
                 d.setup();
         }
+        alreadySetup = true;
     }
 
     @Override
@@ -61,5 +67,15 @@ public class TRDefinitionSet extends TreeSet<TRDefinition> {
 	public <T extends TRDefinition> boolean allAre(T def)
 	{
         return asList().allAre(def);
+    }
+
+    public static final void setup(TRDefinitionSet n) 
+    {
+        if (n != null && !n.setupDone())
+			n.setup();
+    }
+
+    private boolean setupDone() {
+        return alreadySetup;
     }
 }

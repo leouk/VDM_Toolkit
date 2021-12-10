@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSeqType;
 import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSeq1Type;
 
 import vdm2isa.lex.IsaToken;
@@ -77,4 +78,17 @@ public class TRSeqType extends TRAbstractInnerTypedType
 	{
 		return visitor.caseSeqType(this, arg);
 	}
+
+    public static final TRSeqType newSeqType(LexLocation location, TRType seqof, boolean seq1)
+    {  
+        return TRSeqType.newSeqType(location, seqof.getDefinitions(), seqof, seq1);
+    }
+
+    public static final TRSeqType newSeqType(LexLocation location, TRDefinitionList definitions, TRType seqof, boolean seq1)
+    {
+        TCType vdmType = seq1 ? new TCSeq1Type(location, seqof.getVDMType()) : new TCSeqType(location, seqof.getVDMType());
+        TRSeqType result = new TRSeqType(vdmType, definitions, seqof, seq1);
+        TRNode.setup(result);
+        return result;
+    }
 }

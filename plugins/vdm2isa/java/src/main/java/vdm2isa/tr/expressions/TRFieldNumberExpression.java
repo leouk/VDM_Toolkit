@@ -2,6 +2,7 @@ package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCFieldNumberExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -21,9 +22,9 @@ public class TRFieldNumberExpression extends TRExpression {
     public final LexIntegerToken field; 
     public final TRType type;
 
-    public TRFieldNumberExpression(TRExpression tuple, LexIntegerToken field, TRType type, TRType exptype)
+    public TRFieldNumberExpression(TCFieldNumberExpression tc, TRExpression tuple, LexIntegerToken field, TRType type, TRType exptype)
     {
-        super(tuple != null ? tuple.location : LexLocation.ANY, exptype);
+        super(tuple != null ? tuple.location : LexLocation.ANY, tc, exptype);
         this.tuple = tuple;
         this.field = field;
         this.type = type;

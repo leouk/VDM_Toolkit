@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCFuncInstantiationExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -21,10 +22,10 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     public final TRExplicitFunctionDefinition expdef;
     public final TRExplicitFunctionDefinition impdef; //TODO! should be implicit def
 
-    public TRFunctionInstantiationExpression(TRExpression function, TRFunctionType type, 
+    public TRFunctionInstantiationExpression(TCFuncInstantiationExpression tc, TRExpression function, TRFunctionType type, 
         TRTypeList unresolved, TRTypeList actualTypes, TRExplicitFunctionDefinition expdef, TRType exptype)
     {
-        super(function != null ? function.location : LexLocation.ANY, exptype);
+        super(function != null ? function.location : LexLocation.ANY, tc, exptype);
         this.function = function;
         this.type = type;
         this.actualTypes = actualTypes;

@@ -29,6 +29,7 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 import vdm2isa.tr.modules.TRProofObligationModule;
+import vdm2isa.tr.types.TRType;
 
 /**
  * VDM POs to Isabelle. Cannot be called "pog2isa" as "pog" is already a command! 
@@ -120,7 +121,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
                         TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
                         TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
-                        TRProofObligationDefinition poe = new TRProofObligationDefinition(comments, po, potrExpr, null/* TRType for potrExpr!*/, poScript);
+                        TRType poType = null;
+                        TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poScript);
                         isapogl.add(poe);
                         poNumber++;
                     }

@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCProductType;
 
 import vdm2isa.lex.IsaTemplates;
@@ -62,7 +63,7 @@ public class TRProductType extends TRType {
      * @param varName variable name being projected out (e.g., varName.#index)
      * @return Isabelle projection as combination of multiple fst/snd expressions over varName depending on index.
      */
-    public static String fieldProjection(long index, long size, String varName)
+    public static final String fieldProjection(long index, long size, String varName)
     {
         // using long because index in field num expression is a long :-()
         assert index >= 0 && index < size && varName != null;
@@ -161,5 +162,17 @@ public class TRProductType extends TRType {
     @Override
     public void checkForUnionTypes() {
         types.checkForUnionTypes();//"product");
+    }
+
+    public static final TRProductType newProductType(LexLocation location, TRTypeList types)
+    {
+        return TRProductType.newProductType(location, new TRDefinitionList(), types);
+    }
+
+    public static final TRProductType newProductType(LexLocation location, TRDefinitionList definitions, TRTypeList types)
+    {
+        TRProductType result = new TRProductType(new TCProductType(location, types.getVDMTypeList()), definitions, types);
+        TRNode.setup(result);
+        return result;
     }
 }

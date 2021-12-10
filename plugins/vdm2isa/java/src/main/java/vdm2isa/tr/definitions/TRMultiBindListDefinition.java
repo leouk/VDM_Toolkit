@@ -57,10 +57,12 @@ public class TRMultiBindListDefinition extends TRDefinition {
         return bindings;
     }
 
-    public static TRMultiBindListDefinition newBindListDef(LexLocation location, 
+    public static final TRMultiBindListDefinition newBindListDef(LexLocation location, 
         TRMultipleBindList bindings)
     {
-        return new TRMultiBindListDefinition(null, location, null, null, null, null, true, false, 
+        TRMultiBindListDefinition result = new TRMultiBindListDefinition(null, location, null, null, null, null, true, false, 
             bindings, bindings.getDefinitions());
+        TRNode.setup(result);
+        return result;
     }
 }

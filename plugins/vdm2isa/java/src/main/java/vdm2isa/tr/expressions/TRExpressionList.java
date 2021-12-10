@@ -43,6 +43,17 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		return TRTypeList.newTypeList(this);
     }
 
+	public TCExpressionList getTCExpressionList()
+	{
+		TCExpressionList result = new TCExpressionList();
+		for(TRExpression e : this)
+		{
+			if (e.getVDMExpr() != null)
+				result.add(e.getVDMExpr());
+		}
+		return result;
+	}
+
 	@Override 
 	public void setup()
 	{
@@ -51,13 +62,17 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		setFormattingSeparator(IsaToken.SPACE.toString());
 	}
 
-	public static String translate(TRExpression... args)
+	public static final String translate(TRExpression... args)
+	{
+		return TRExpressionList.newExpressionList(args).translate();	
+	}
+
+	public static final TRExpressionList newExpressionList(TRExpression... args)
 	{
 		TRExpressionList result = new TRExpressionList();
 		if (args != null)
 			result.addAll(Arrays.asList(args));
 		TRNode.setup(result);
-		return result.translate();	
+		return result;
 	}
-
 }

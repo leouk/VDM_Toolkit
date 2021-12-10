@@ -151,7 +151,7 @@ public class TRRecordType extends TRInvariantType
 	}
 
 
-    public static TRRecordType recordTypeFor(TCNameToken recordName)
+    public static final TRRecordType recordTypeFor(TCNameToken recordName)
     {
         TRRecordType result = recordMap.get(recordName); 
         if (result == null)
@@ -159,7 +159,7 @@ public class TRRecordType extends TRInvariantType
         return result;
     }
 
-    public static TRFieldList fieldsOf(TCNameToken recordName)
+    public static final TRFieldList fieldsOf(TCNameToken recordName)
     {
         TRRecordType t = recordTypeFor(recordName); 
         TRFieldList result = null;

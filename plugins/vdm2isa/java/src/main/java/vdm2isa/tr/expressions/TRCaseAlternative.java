@@ -1,6 +1,9 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCCaseAlternative;
+import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
+import com.fujitsu.vdmj.tc.expressions.TCTupleExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -15,8 +18,20 @@ public class TRCaseAlternative extends TRExpression {
     public final TRExpression result;
     private boolean casesTrueAlternative;
 
-    public TRCaseAlternative(LexLocation location, TRPattern pattern, TRExpression result) {
-        super(location, result != null ? result.getType() : TRExpression.unknownType(location));
+    private static TCTupleExpression figureOutCaseAlternative(TCCaseAlternative tc)
+    {
+        TCExpressionList args = new TCExpressionList();
+        if (tc.cexp != null)
+            args.add(tc.cexp);
+        assert tc.result != null;
+        args.add(tc.result);
+        // ignore pattern for now. 
+        TCTupleExpression result = new TCTupleExpression(tc.location, args);
+        return result;
+    }
+
+    public TRCaseAlternative(LexLocation location, TCCaseAlternative tc, TRPattern pattern, TRExpression result) {
+        super(location, figureOutCaseAlternative(tc), result != null ? result.getType() : TRExpression.unknownType(location));
         this.pattern = pattern;
         this.result = result;
         this.casesTrueAlternative = false;
@@ -66,5 +81,14 @@ public class TRCaseAlternative extends TRExpression {
         sb.append(result.patternContextTranslate(pattern));
         // no parenthesising per case, but on the overal case expression
         return casesTrueAlternative ? IsaToken.parenthesise(sb.toString()) : sb.toString();
+    }
+
+    public static final TRCaseAlternative newCaseAlternative(LexLocation location, TRPattern pattern, TRExpression resultExpr)
+    {
+        //TODO check with @NB whether this being null is okay, given it's never used anywhere. 
+        TCCaseAlternative tc = new TCCaseAlternative(null, pattern.getVDMPattern(), resultExpr.getVDMExpr());
+        TRCaseAlternative result = new TRCaseAlternative(location, tc, pattern, resultExpr);
+        TRNode.setup(result);
+        return result;
     }
 }

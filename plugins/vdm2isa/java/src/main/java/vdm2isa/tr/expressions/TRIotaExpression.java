@@ -1,6 +1,7 @@
 package vdm2isa.tr.expressions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.expressions.TCIotaExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -13,9 +14,9 @@ public class TRIotaExpression extends TRExpression {
     public final TRMultipleBind bind;
     public final TRExpression predicate;
     
-    public TRIotaExpression(LexLocation location, TRMultipleBind bind, TRExpression predicate, TRType exptype)
+    public TRIotaExpression(LexLocation location, TCIotaExpression tc, TRMultipleBind bind, TRExpression predicate, TRType exptype)
     {
-        super(location, exptype);
+        super(location, tc, exptype);
         this.bind = bind;
         this.predicate = predicate;
     }

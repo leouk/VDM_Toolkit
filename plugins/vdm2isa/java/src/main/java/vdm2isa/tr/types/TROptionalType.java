@@ -114,9 +114,11 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     //     return this.type.getName() + " option";
     // }
 
-    public static TROptionalType newOptionalType(TRType type)
+    public static final TROptionalType newOptionalType(TRType type)
     {
-        return new TROptionalType(new TCOptionalType(type.getLocation(), type.getVDMType()), type.getDefinitions(), type);
+        TROptionalType result = new TROptionalType(new TCOptionalType(type.getLocation(), type.getVDMType()), type.getDefinitions(), type);
+        TRNode.setup(result);
+        return result;
     }
 
     @Override

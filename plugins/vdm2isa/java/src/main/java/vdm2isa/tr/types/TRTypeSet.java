@@ -6,10 +6,8 @@ import java.util.Iterator;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.tc.types.TCOptionalType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
-import com.fujitsu.vdmj.tc.types.TCUnionType;
 import com.fujitsu.vdmj.util.Utils;
 
 import plugins.GeneralisaPlugin;
@@ -151,8 +149,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			// we ignore the TRSeq1Type.
 			
 			TRSeqType s1t = (TRSeqType)t;
-			TRSeqType st = new TRSeqType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.seq1);
-			TRNode.setup(st);
+			TRSeqType st = TRSeqType.newSeqType(s1t.getLocation(), s1t.getInnerType(), s1t.seq1);
 			if (contains(st))
 			{
 				return false;	// Was already there
@@ -164,8 +161,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			// we ignore the TRSet1Type.
 			
 			TRSetType s1t = (TRSetType)t;
-			TRSetType st = new TRSetType(s1t.getVDMType(), s1t.definitions, s1t.getInnerType(), s1t.set1);
-			TRNode.setup(st);
+			TRSetType st = TRSetType.newSetType(s1t.getLocation(), s1t.getInnerType(), s1t.set1);
 			if (contains(st))
 			{
 				return false;	// Was already there
@@ -223,13 +219,11 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			{
 				typeSet.add(t.getVDMType());
 			}
-			result = new TRUnionType(new TCUnionType(location, typeSet), result.definitions, this);
-			TRNode.setup(result);
+			result = TRUnionType.newUnionType(location, result.definitions, this);
 		}
 		if (optional)
 		{
-			result = new TROptionalType(new TCOptionalType(location, result.getVDMType()), result.definitions, result);
-			TRNode.setup(result);
+			result = TROptionalType.newOptionalType(result);
 		}
 		return result;
 	}
@@ -325,7 +319,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return isEmpty() ? LexLocation.ANY : iterator().next().getLocation();
 	}
 
-	public static String prefixTranslate(String typeStr, boolean prefixed, String namePrefix)
+	public static final String prefixTranslate(String typeStr, boolean prefixed, String namePrefix)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (prefixed)
