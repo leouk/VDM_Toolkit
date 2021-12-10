@@ -1,5 +1,8 @@
 package vdm2isa.tr.expressions;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -12,6 +15,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 
+import plugins.Pair;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
@@ -182,28 +186,29 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             boolean hasEasyPrd = TRMapCompExpression.isTrivialPred(predicate);//hasEasyLambda(predicate, prdFV);
             TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
             // figureout lambda bindings if necessary (i.e. any hard lambdas needed)
-            TRMultipleBindList lambdaBindings = !hasEasyDom || !hasEasyRng || !hasEasyPrd ?
+            Pair<TRMultipleBindList, Map<TRMapCompExprKind, TRMultipleBindList>> lambdaBindings = 
+                !hasEasyDom || !hasEasyRng || !hasEasyPrd ?
                 TRMapCompExpression.figureOutLambdaBindings(bindings, 
                     TRMapCompExpression.variablesToBind(boundV, domFV), domainType, 
                     TRMapCompExpression.variablesToBind(boundV, rngFV), rangeType, 
                     TRMapCompExpression.variablesToBind(boundV, prdFV)) : null;
-           
+
             // lambdaBindings != null => !hasEasyDom || !hasEasyRng || !hasEasyPrd = hasEasyDom && hasEasyRng && hasEasyPrd => lambdaBindings = null
             assert !(hasEasyDom && hasEasyRng && hasEasyPrd) || lambdaBindings == null;
             // lambdaBindings != null => lambdaBindings.size() == 2
-            assert lambdaBindings == null || lambdaBindings.size() == MAX_BINDINGS_ALLOWED;
+            assert lambdaBindings == null || lambdaBindings.key.size() == MAX_BINDINGS_ALLOWED;
 
             // create the lambda for each part, where set/seq bindings are transformed into corresponding type binds 
             // i.e. we can "reuse" map comp bindings even if set/seq, as lambda will figure out right type bind list
             this.domLambda = hasEasyDom ? 
                 TRMapCompExpression.figureOutEasyLambda(domainExpr, TRMapCompExprKind.DOMAIN) :
-                TRMapCompExpression.figureOutLambda(lambdaBindings, domainExpr, predExpr);
+                TRMapCompExpression.figureOutLambda(TRMapCompExprKind.DOMAIN, lambdaBindings, domainExpr, predExpr);
             this.rangeLambda = hasEasyRng ?
                 TRMapCompExpression.figureOutEasyLambda(rangeExpr, TRMapCompExprKind.RANGE) :
-                TRMapCompExpression.figureOutLambda(lambdaBindings, rangeExpr, predExpr);
+                TRMapCompExpression.figureOutLambda(TRMapCompExprKind.RANGE, lambdaBindings, rangeExpr, predExpr);
             this.predLambda = hasEasyPrd ?
                 TRMapCompExpression.figureOutEasyLambda(rangeExpr, TRMapCompExprKind.PRED) :
-                TRMapCompExpression.figureOutLambda(lambdaBindings, predExpr, null);
+                TRMapCompExpression.figureOutLambda(TRMapCompExprKind.PRED, lambdaBindings, predExpr, null);
         }
         TRNode.setup(mapComp, domainSet, rangeSet, domLambda, rangeLambda, predLambda);        
     }
@@ -449,10 +454,98 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         return result;
     }
 
-    private static TRLambdaExpression figureOutLambda(TRMultipleBindList lambdaBindings, TRExpression expression, TRExpression predicate)
+    /**
+     * This creates a lambda expression with given lambda bindgins bound to the expected existential lambda bindings:
+     * that is, in the case of { x+y |-> mk_(x,y) | x in set {1,2,3}, y in set {0,1,2} & x > y }, we would get for domain:
+     *      lambdaBindings   : dummyD: VDMNat, dummyR: VDMNat1 * VDMNat
+     *      lambdaExistential: x in set {1,2,3}, y in set {0,1,2}
+     *      lambdaIfTest     : (exists x in set {1,2,3}, y in set {0,1,2} & dummyD = x+y)
+     *      lambdaIfExpr     : if lambdaIfTest then dummyD else undefined 
+     *      lambdaExpression : lambda lambdaBindings & lambdaIfExpr
+     * 
+     *      and resulting VDM lambda as:
+     * 
+     *      lambda dummyD: VDMNat, dummyR: VDMNat1 * VDMNat &  
+     *           if (exists x in set {1,2,3}, y in set {0,1,2} & dummyD = x+y) then
+     *              dummyD
+     *           else 
+     *              undefined
+     * 
+     *      which translates to Isabelle as: 
+     * 
+     *      % dummyD :: VDMNat dummyR :: (VDMNat1 * VDMNat) . 
+     *          if inv_VDMNat dummyD /\ inv_VDMNat1 (fst dummyR) /\ inv_VDMNat (snd dummyR) 
+     *             inv_VDMNat lambdaIfExpr 
+     *          then
+     *              if (exists x in set {1,2,3}, y in set {0,1,2} & dummyD = x+y) then
+     *                 dummyD
+     *              else 
+     *                 undefined
+     *          else 
+     *              undefined
+     * 
+     *      Note that we check the input and result type invariants as part of the lambda overall translation.
+     *      This will necessarily complicate things in proofs, but ce's la vie for now. 
+     * @param lambdaBindings
+     * @param lambdaExistentialBindings
+     * @param expression
+     * @param predicate
+     * @return
+     */
+    private static TRLambdaExpression figureOutLambda(TRMapCompExprKind kind, Pair<TRMultipleBindList, Map<TRMapCompExprKind, TRMultipleBindList>> lambdaBindingsPair, TRExpression expression, TRExpression predicate)
     {
-        TRExpression lambdaTest = lambdaBindings.getBindingsExpression(predicate);
+        //assert lambdaExistentialBindings != null && !lambdaExistentialBindings.isEmpty();
+        TRMultipleBindList lambdaBindings = lambdaBindingsPair.key;
+        TRExpression lambdaBindingsEqualLambdaExistential = null;
+        if (!kind.equals(TRMapCompExprKind.PRED))
+        {
+            //TODO the case where you get (lambda x: VDMNat, dummyR: T & P) arghhhh. 
+            assert lambdaBindings.size() == MAX_BINDINGS_ALLOWED;
+            // domain is the first, range is the second; pred doesn't have a lambda binding 
+            TRMultipleBind lambdaBinding = lambdaBindings.get(kind.equals(TRMapCompExprKind.DOMAIN) ? 0 : 1);
+            assert lambdaBinding.plist.size() == 1 && lambdaBinding.getRHSType().compatible(expression.getType());
+            // dummyD = x+y  
+            lambdaBindingsEqualLambdaExistential = 
+                TRBinaryExpression.newBinaryExpression(
+                    TRVariableExpression.newVariableExpr(expression.location, lambdaBinding.plist.translate(), lambdaBinding.getRHSType()), 
+                    IsaToken.EQUALS, 
+                    expression, 
+                    TRBasicType.boolType(expression.location));    
+        }
+
+        TRExpression lambdaPredicate;
+        if (predicate != null)
+        {
+            if (lambdaBindingsEqualLambdaExistential != null)
+            {
+                // dummyD = x+y /\ predicate
+                lambdaPredicate = TRBinaryExpression.newBooleanChain(expression.location, IsaToken.AND, 
+                    lambdaBindingsEqualLambdaExistential, predicate);
+            }
+            else
+            {
+                // predicate
+                lambdaPredicate = predicate;
+            }    
+        }
+        else if (lambdaBindingsEqualLambdaExistential != null)
+        {
+            // dummyD = x+y
+            lambdaPredicate = lambdaBindingsEqualLambdaExistential;
+        }
+        else
+        {
+            lambdaPredicate = null; 
+        } 
+
+        TRMultipleBindList lambdaExistentialBindings = lambdaBindingsPair.value.get(kind);
+        // null lambdaPredicate means not adding it to the bindings expression chain 
+        TRExpression lambdaTest = 
+            !lambdaExistentialBindings.isEmpty() ? 
+                lambdaExistentialBindings.getBindingsExpression(lambdaPredicate)
+            : lambdaPredicate != null ? lambdaPredicate : TRLiteralExpression.newBooleanLiteralExpression(expression.location, true);
         TRBoundedExpression ifTest = TRBoundedExpression.newBoundedExpression(expression.location, IsaToken.EXISTS, lambdaBindings, lambdaTest);
+
         // if test and predicate then expression else undefined
         TRIfExpression ifExpr = TRIfExpression.newIfExpression(
                 expression.location, 
@@ -460,6 +553,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                 expression, 
                 TRVariableExpression.newVariableExpr(expression.location, IsaToken.UNDEFINED.toString(), expression.getType()), 
                 expression.getType());
+
         return TRLambdaExpression.newLambdaExpression(lambdaBindings, ifExpr);
     }
 
@@ -535,28 +629,27 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
      * @param exprType
      * @return
      */
-    private static TRMultipleBindList figureOutLambdaBindings(TRMultipleBindList given, TCNameSet domVarsToBind, TRType domType, TCNameSet rngVarsToBind, TRType rngType, TCNameSet prdVarsToBind)
+    private static Pair<TRMultipleBindList, Map<TRMapCompExprKind, TRMultipleBindList>> figureOutLambdaBindings(TRMultipleBindList given, TCNameSet domVarsToBind, TRType domType, TCNameSet rngVarsToBind, TRType rngType, TCNameSet prdVarsToBind)
     {
         assert !domVarsToBind.isEmpty() || !rngVarsToBind.isEmpty() || !prdVarsToBind.isEmpty();
-        TRMultipleBindList result = new TRMultipleBindList();
+        TRMultipleBindList lambdaBindings = new TRMultipleBindList();
+        Map<TRMapCompExprKind, TRMultipleBindList> existentialBindings = new HashMap<TRMapCompExprKind, TRMultipleBindList>();
         
         TRMultipleBindList domBindings = TRMapCompExpression.figureOutBindPart(given, domVarsToBind, domType, TRMapCompExprKind.DOMAIN);
-        domBindings = TRMapCompExpression.figureOutMissingBinding(domBindings, domType, TRMapCompExprKind.DOMAIN);
-        //assert domBindings.size() == 1;
+        existentialBindings.put(TRMapCompExprKind.DOMAIN, domBindings); //if (domBindings.isEmpty())
 
         TRMultipleBindList rngBindings = TRMapCompExpression.figureOutBindPart(given, rngVarsToBind, rngType, TRMapCompExprKind.RANGE);
-        rngBindings = TRMapCompExpression.figureOutMissingBinding(rngBindings, rngType, TRMapCompExprKind.RANGE);
-        //assert rngBindings.size() == 1;
+        existentialBindings.put(TRMapCompExprKind.RANGE, rngBindings);
 
-        result.addAll(domBindings);
-        result.addAll(rngBindings);
-        if (result.size() < TRMapCompExpression.MAX_BINDINGS_ALLOWED)
+        TRMultipleBindList prdBindings = null;
+    
+        lambdaBindings.addAll(TRMapCompExpression.figureOutMissingBinding(domBindings, domType, TRMapCompExprKind.DOMAIN));
+        lambdaBindings.addAll(TRMapCompExpression.figureOutMissingBinding(rngBindings, rngType, TRMapCompExprKind.RANGE));
+        if (lambdaBindings.size() < TRMapCompExpression.MAX_BINDINGS_ALLOWED)
         {
             // figure out predicate, if not all bindings allowed were found 
             // (i.e. { 1 |-> 5 | x in set {1,2,3} & x > 5 } example )
 
-            TRMultipleBindList prdBindings;
-    
             // remove the already bound variables from the predicate variables to bind
             prdVarsToBind.removeAll(domVarsToBind);
             prdVarsToBind.removeAll(rngVarsToBind);
@@ -564,6 +657,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             {
                 // warn: only predicate binds variable?! Which type? *must* find on the given bind!
                 prdBindings = TRMapCompExpression.figureOutBindPart(given, prdVarsToBind, null, TRMapCompExprKind.PRED); 
+                existentialBindings.put(TRMapCompExprKind.PRED, prdBindings);
                 if (prdBindings.size() != prdVarsToBind.size())
                 {
                     // couldn't find prd binding to bind with; free var?
@@ -571,19 +665,22 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                     //given.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_1P, prdBindings.translate()); 
                 }
                 else 
-                    result.addAll(prdBindings);
+                    lambdaBindings.addAll(prdBindings);
             }
+            else
+                existentialBindings.put(TRMapCompExprKind.PRED, new TRMultipleBindList());
         }
 
         // whatever happens, make sure it's properly figured out (i.e. nor smaller, nor bigger)
-        if (result.size() != TRMapCompExpression.MAX_BINDINGS_ALLOWED)
+        if (lambdaBindings.size() != TRMapCompExpression.MAX_BINDINGS_ALLOWED)
         {
             // couldn't find prd binding to bind with; free var?
             //TODO change error message
             //given.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_1P, result.translate()); 
         }
 
-        TRNode.setup(result);
-        return result;
+        TRNode.setup(lambdaBindings, domBindings, rngBindings, prdBindings);
+        assert existentialBindings.keySet().containsAll(Arrays.asList(TRMapCompExprKind.DOMAIN, TRMapCompExprKind.RANGE, TRMapCompExprKind.PRED));
+        return new Pair<TRMultipleBindList, Map<TRMapCompExprKind, TRMultipleBindList>>(lambdaBindings, existentialBindings);
     }
 }

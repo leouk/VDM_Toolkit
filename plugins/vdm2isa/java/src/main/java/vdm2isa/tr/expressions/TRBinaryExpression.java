@@ -375,6 +375,11 @@ public class TRBinaryExpression extends TRExpression
 		return visitor.caseBinaryExpression(this, arg);
 	}
 
+	public static final TRBinaryExpression newBinaryExpression(TRExpression left, IsaToken token, TRExpression right, TRType exptype)
+	{
+		return TRBinaryExpression.newBinaryExpression(left, new LexKeywordToken(token.vdmToken(), left.location), right, exptype);
+	}
+
 	public static final TRBinaryExpression newBinaryExpression(TRExpression left, LexToken op, TRExpression right, TRType exptype)
 	{
 		IsaToken token = IsaToken.from(op);
@@ -507,10 +512,10 @@ public class TRBinaryExpression extends TRExpression
 		boolean result = args == null || args.length == 0;
 		if (!result)
 		{
-			result = args[0].getType().compatible(type);
+			result = args[0] != null && args[0].getType().compatible(type);
 			for(int i = 1; i < args.length && result; i++)
 			{
-				result = result && args[i].getType().compatible(type);				
+				result = result && args[i] != null && args[i].getType().compatible(type);				
 			}
 		}
 		return result;

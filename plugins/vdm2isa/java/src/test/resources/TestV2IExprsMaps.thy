@@ -18,8 +18,6 @@ where
 	inv_fv :: "\<bool>"
 where
 	"inv_fv  \<equiv> (inv_VDMNat1 fv)"
-
-	
 	
 abbreviation
 	v1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
@@ -30,8 +28,6 @@ where
 	inv_v1 :: "\<bool>"
 where
 	"inv_v1  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v1)"
-
-	
 	
 abbreviation
 	v11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
@@ -42,16 +38,14 @@ where
 	inv_v11 :: "\<bool>"
 where
 	"inv_v11  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v11)"
-
-	
 	
 abbreviation
 	v12 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"v12 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ (1::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > (5::VDMNat1)) } 
-		{ (5::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > (5::VDMNat1)) } 
+		{ (1::VDMNat1) | x . ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > (5::VDMNat1)) } 
+		{ (5::VDMNat1) | x . ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x > (5::VDMNat1)) } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(domcnst (1::VDMNat1)) 
