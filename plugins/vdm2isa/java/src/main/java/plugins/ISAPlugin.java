@@ -57,7 +57,7 @@ public abstract class ISAPlugin extends AnalysisPlugin
 	}
 	
 	@Override
-	public List<CodeLens> getCodeLenses()
+	public List<CodeLens> getCodeLenses(boolean dirty)
 	{
 		List<CodeLens> lenses = new Vector<CodeLens>();
 		// lenses.add(new EditCodeLens());
