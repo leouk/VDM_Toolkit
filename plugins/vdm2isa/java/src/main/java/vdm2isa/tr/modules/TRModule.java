@@ -68,6 +68,15 @@ public class TRModule extends TRNode
 		}
 		
 		TRNode.setup(definitions);
+		System.out.println(toString());
+	}
+
+	@Override 
+	public String toString()
+	{
+		return  "Module " + name.toString() + 
+		 	"\n\t imports = " + (module != null ? module.imports != null ? module.imports.toString() : "" : "") +
+		 	"\n\t impdefs = " + (module != null ? module.importdefs != null ? module.importdefs.toString() : "" : "");
 	}
 
 	@Override
