@@ -1,46 +1,56 @@
-(* VDM to Isabelle Translation @2021-12-02T15:21:39.501536Z
+(* VDM to Isabelle Translation @2021-12-11T13:37:56.159446Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/real/Clocks.vdmsl' at line 1:8
 files = [./src/test/resources/real/Clocks.vdmsl]
 *)
 theory Clocks
-imports VDMToolkit
+imports "VDMToolkit" 
 begin
 
 
+\<comment>\<open>VDM source: Time = compose Time of r:real, i:nat end
+	inv t == ((t.r) >= 0)
+	ord a < b == (((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 37:5\<close>
 record Time = 
 	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
 		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
 	
 
+\<comment>\<open>VDM source: inv_Time: (Time +> bool)
+	inv_Time(t) ==
+((t.r) >= 0)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 41:9\<close>
 definition
 	inv_Time :: "Time \<Rightarrow> bool"
 where
 	"inv_Time t \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_Time specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Time` specification.\<close>
 		( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e t))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_Time\<close>
+		\<comment>\<open>User defined body of inv_Time.\<close>
 		((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (t)) \<ge> (0::VDMNat))"
 
 		
 
+\<comment>\<open>VDM source: ord_Time: (Time * Time +> bool)
+	ord_Time(a, b) ==
+(((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 44:21\<close>
 definition
 	ord_Time :: "Time\<Rightarrow> Time \<Rightarrow> bool"
 where
 	"ord_Time a  b \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for ord_Time specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `ord_Time` specification.\<close>
 		(inv_Time a  \<and>  inv_Time b)  \<and> 
-		\<comment>\<open>User defined body of ord_Time\<close>
+		\<comment>\<open>User defined body of ord_Time.\<close>
 		(((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<or> (((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b))) \<and> ((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (a)) < (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (b)))))"
 
 		
 
 	
+\<comment>\<open>VDM source: Interval = (<calculated> | <changing> | <constantLF> | <countdown> | <fixed> | <triggered> | <tunable>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 datatype Interval = U_calculated  | 
 		 U_changing  | 
@@ -51,17 +61,19 @@ datatype Interval = U_calculated  |
 		 U_tunable 
 	
 
+\<comment>\<open>VDM source: inv_Interval = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 definition
 	inv_Interval :: "Interval \<Rightarrow> bool"
 where
 	"inv_Interval dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Interval specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Interval` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: ActionType = (<get> | <getC> | <set> | <setC> | <step>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 datatype ActionType = U_get  | 
 		 U_getC  | 
@@ -70,75 +82,84 @@ datatype ActionType = U_get  |
 		 U_step 
 	
 
+\<comment>\<open>VDM source: inv_ActionType = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 definition
 	inv_ActionType :: "ActionType \<Rightarrow> bool"
 where
 	"inv_ActionType dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ActionType specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_ActionType` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: Ref = nat\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 type_synonym Ref = "VDMNat"
 	
 
+\<comment>\<open>VDM source: inv_Ref = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 definition
 	inv_Ref :: "Ref \<Rightarrow> bool"
 where
 	"inv_Ref dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Ref specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Ref` specification.\<close>
 		(((inv_VDMNat dummy0)))"
  
 
 	
+\<comment>\<open>VDM source: Name = seq1 of (char)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
 type_synonym Name = "VDMChar VDMSeq1"
 	
 
+\<comment>\<open>VDM source: inv_Name = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
 definition
 	inv_Name :: "Name \<Rightarrow> bool"
 where
 	"inv_Name dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Name specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Name` specification.\<close>
 		(((inv_VDMSeq1' (inv_VDMChar) dummy0)))"
 
 		 
 
 	
+\<comment>\<open>VDM source: FMURef = compose FMURef of name:Name, ref:Ref end\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
 record FMURef = 
 	name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Name"
 		 ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Ref"
 	
 
+\<comment>\<open>VDM source: inv_FMURef = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
 definition
 	inv_FMURef :: "FMURef \<Rightarrow> bool"
 where
 	"inv_FMURef dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_FMURef specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_FMURef` specification.\<close>
 		( (((inv_Name (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f dummy0))) \<and> 
 		 ((inv_Ref (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f dummy0))) ))"
 
 		 
 
 	
+\<comment>\<open>VDM source: ValueTypesLF = (bool | real)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 datatype ValueTypesLF = U_bool "bool" | 
 		 U_VDMReal "VDMReal"
 	
 
+\<comment>\<open>VDM source: inv_ValueTypesLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 definition
 	inv_ValueTypesLF :: "ValueTypesLF \<Rightarrow> bool"
 where
 	"inv_ValueTypesLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ValueTypesLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_ValueTypesLF` specification.\<close>
 		(((case dummy0 of
 		 ValueTypesLF.U_bool dummy0 \<Rightarrow> (inv_bool dummy0)
 		  | ValueTypesLF.U_VDMReal dummy0 \<Rightarrow> (inv_VDMReal dummy0)
@@ -147,101 +168,115 @@ where
 		 
 
 	
+\<comment>\<open>VDM source: Value = compose Value of value:ValueTypesLF, time:Time end\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
 record Value = 
 	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueTypesLF"
 		 time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "Time"
 	
 
+\<comment>\<open>VDM source: inv_Value = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
 definition
 	inv_Value :: "Value \<Rightarrow> bool"
 where
 	"inv_Value dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Value specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Value` specification.\<close>
 		( (((inv_ValueTypesLF (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))) \<and> 
 		 (inv_Time (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)) ))"
  
 
 	
+\<comment>\<open>VDM source: Environment = map (Ref) to (Value)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 type_synonym Environment = "(Ref \<rightharpoonup> Value)"
 	
 
+\<comment>\<open>VDM source: inv_Environment = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 definition
 	inv_Environment :: "Environment \<Rightarrow> bool"
 where
 	"inv_Environment dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Environment specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Environment` specification.\<close>
 		(((inv_Map (inv_Ref) inv_Value  dummy0)))"
  
 
 	
+\<comment>\<open>VDM source: Equation = (Environment -> Environment)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
 type_synonym Equation = "Environment \<Rightarrow> Environment"
 	
 
+\<comment>\<open>VDM source: inv_Equation = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
 definition
 	inv_Equation :: "Equation \<Rightarrow> bool"
 where
 	"inv_Equation dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Equation specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Equation` specification.\<close>
 		(((inv_Lambda (inv_Environment) (inv_Environment)dummy0)))"
 
 		 
 
 	
+\<comment>\<open>VDM source: IOLF = (<inputLF> | <outputLF>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
 datatype IOLF = U_inputLF  | 
 		 U_outputLF 
 	
 
+\<comment>\<open>VDM source: inv_IOLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
 definition
 	inv_IOLF :: "IOLF \<Rightarrow> bool"
 where
 	"inv_IOLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_IOLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_IOLF` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: DCLF = (<continous> | <discrete>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
 datatype DCLF = U_continous  | 
 		 U_discrete 
 	
 
+\<comment>\<open>VDM source: inv_DCLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
 definition
 	inv_DCLF :: "DCLF \<Rightarrow> bool"
 where
 	"inv_DCLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_DCLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_DCLF` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: ContractLF = (<delayed> | <none> | <reactive>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
 datatype ContractLF = U_delayed  | 
 		 U_none  | 
 		 U_reactive 
 	
 
+\<comment>\<open>VDM source: inv_ContractLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
 definition
 	inv_ContractLF :: "ContractLF \<Rightarrow> bool"
 where
 	"inv_ContractLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_ContractLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_ContractLF` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: Variable = compose Variable of ref:Ref, time:Time, causality:IOLF, type:DCLF, clocks:set of (Ref), dependsOn:set of (Ref), contract:ContractLF end
+	inv var == (((((var.causality) = <outputLF>) => ((var.contract) = <none>)) and ((var.causality) = <inputLF>)) => ((var.dependsOn) = {}))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 104:5\<close>
 record Variable = 
 	ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Ref"
@@ -253,12 +288,15 @@ record Variable =
 		 contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "ContractLF"
 	
 
+\<comment>\<open>VDM source: inv_Variable: (Variable +> bool)
+	inv_Variable(var) ==
+(((((var.causality) = <outputLF>) => ((var.contract) = <none>)) and ((var.causality) = <inputLF>)) => ((var.dependsOn) = {}))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 113:9\<close>
 definition
 	inv_Variable :: "Variable \<Rightarrow> bool"
 where
 	"inv_Variable var \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_Variable specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Variable` specification.\<close>
 		( (((inv_Ref (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and> 
 		 (inv_Time (time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var)) \<and> 
 		 ((inv_IOLF (causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and> 
@@ -266,11 +304,13 @@ where
 		 ((inv_VDMSet' (inv_Ref) (clocks\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and> 
 		 ((inv_VDMSet' (inv_Ref) (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) \<and> 
 		 ((inv_ContractLF (contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e var))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_Variable\<close>
+		\<comment>\<open>User defined body of inv_Variable.\<close>
 		(((((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = IOLF.U_outputLF ) \<longrightarrow> ((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = ContractLF.U_none )) \<and> ((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = IOLF.U_inputLF )) \<longrightarrow> ((dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (var)) = {}))"
  
 
 	
+\<comment>\<open>VDM source: Clock = compose Clock of ref:Ref, type:IOLF, interval:Interval, timeToTick:Time, dependsOn:set of (Ref), equations:set of (Ref) end
+	inv clock == ((((clock.type) = <outputLF>) => ((clock.interval) = <triggered>)) and (((clock.type) = <inputLF>) => ((clock.dependsOn) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 121:5\<close>
 record Clock = 
 	ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Ref"
@@ -281,24 +321,28 @@ record Clock =
 		 equations\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Ref VDMSet"
 	
 
+\<comment>\<open>VDM source: inv_Clock: (Clock +> bool)
+	inv_Clock(clock) ==
+((((clock.type) = <outputLF>) => ((clock.interval) = <triggered>)) and (((clock.type) = <inputLF>) => ((clock.dependsOn) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 128:9\<close>
 definition
 	inv_Clock :: "Clock \<Rightarrow> bool"
 where
 	"inv_Clock clock \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_Clock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Clock` specification.\<close>
 		( (((inv_Ref (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and> 
 		 ((inv_IOLF (type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and> 
 		 ((inv_Interval (interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and> 
 		 (inv_Time (timeToTick\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock)) \<and> 
 		 ((inv_VDMSet' (inv_Ref) (dependsOn\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) \<and> 
 		 ((inv_VDMSet' (inv_Ref) (equations\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_Clock\<close>
+		\<comment>\<open>User defined body of inv_Clock.\<close>
 		((((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) = IOLF.U_outputLF ) \<longrightarrow> ((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) = Interval.U_triggered )) \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) = IOLF.U_inputLF ) \<longrightarrow> ((dependsOn\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) = {})))"
 
 		
 
 	
+\<comment>\<open>VDM source: FMUModeLF = (<DONE> | <EVENT> | <INIT> | <STEP>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
 datatype FMUModeLF = U_DONE  | 
 		 U_EVENT  | 
@@ -306,17 +350,20 @@ datatype FMUModeLF = U_DONE  |
 		 U_STEP 
 	
 
+\<comment>\<open>VDM source: inv_FMUModeLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
 definition
 	inv_FMUModeLF :: "FMUModeLF \<Rightarrow> bool"
 where
 	"inv_FMUModeLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_FMUModeLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_FMUModeLF` specification.\<close>
 		((((inv_True dummy0))))"
 
 		 
 
 	
+\<comment>\<open>VDM source: FMU = compose FMU of name:Name, clocks:set of (Clock), inputs:set of (Variable), outputs:set of (Variable), mode:FMUModeLF, time:Time, maxStep:real, env:Environment, activeClocks:set of (Ref), activeEquations:set of (Equation) end
+	inv fmu == let vars:set of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and (forall var in set vars & ((var.clocks) subset crefs))))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 140:5\<close>
 record FMU = 
 	name\<^sub>F\<^sub>M\<^sub>U :: "Name"
@@ -331,12 +378,15 @@ record FMU =
 		 activeEquations\<^sub>F\<^sub>M\<^sub>U :: "Equation VDMSet"
 	
 
+\<comment>\<open>VDM source: inv_FMU: (FMU +> bool)
+	inv_FMU(fmu) ==
+let vars:set of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and (forall var in set vars & ((var.clocks) subset crefs))))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 151:9\<close>
 definition
 	inv_FMU :: "FMU \<Rightarrow> bool"
 where
 	"inv_FMU fmu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_FMU specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_FMU` specification.\<close>
 		( (((inv_Name (name\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> 
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> 
 		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> 
@@ -347,7 +397,7 @@ where
 		 ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> 
 		 ((inv_VDMSet' (inv_Ref) (activeClocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> 
 		 ((inv_VDMSet' (inv_Equation) (activeEquations\<^sub>F\<^sub>M\<^sub>U fmu))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_FMU\<close>
+		\<comment>\<open>User defined body of inv_FMU.\<close>
 		(
 		let 
 (vars::Variable VDMSet) = ((inputs\<^sub>F\<^sub>M\<^sub>U (fmu)) \<union> (outputs\<^sub>F\<^sub>M\<^sub>U (fmu)))
@@ -376,6 +426,7 @@ where
  
 
 	
+\<comment>\<open>VDM source: Action = compose Action of actionType:ActionType, fmu:FMU, port:Ref end\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
 record Action = 
 	actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "ActionType"
@@ -383,76 +434,95 @@ record Action =
 		 port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "Ref"
 	
 
+\<comment>\<open>VDM source: inv_Action = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
 definition
 	inv_Action :: "Action \<Rightarrow> bool"
 where
 	"inv_Action dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_Action specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Action` specification.\<close>
 		( (((inv_ActionType (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))) \<and> 
 		 (inv_FMU (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0)) \<and> 
 		 ((inv_Ref (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n dummy0))) ))"
  
 
 	
+\<comment>\<open>VDM source: derefInput: (FMU * Ref -> Variable)
+	derefInput(fmu, ref) ==
+(iota c in set (fmu.inputs) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
 
+\<comment>\<open>VDM source: pre_derefInput: (FMU * Ref +> bool)
+	pre_derefInput(fmu, ref) ==
+(exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 196:9\<close>
 definition
 	pre_derefInput :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_derefInput fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_derefInput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefInput` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefInput\<close>
+		\<comment>\<open>User defined body of pre_derefInput.\<close>
 		(\<exists> c \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref))"
 
 
+\<comment>\<open>VDM source: post_derefInput = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
 definition
 	post_derefInput :: "FMU\<Rightarrow> Ref\<Rightarrow> Variable \<Rightarrow> bool"
 where
 	"post_derefInput fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_derefInput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefInput` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
 
 definition
 	derefInput :: "FMU\<Rightarrow> Ref \<Rightarrow> Variable"
 where
 	"derefInput fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of derefInput\<close>
+	\<comment>\<open>User defined body of derefInput.\<close>
 	(THE c. (((c \<in>(inputs\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref)))"
 
 	
+\<comment>\<open>VDM source: derefOutput: (FMU * Ref -> Variable)
+	derefOutput(fmu, ref) ==
+(iota c in set (fmu.outputs) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
 
+\<comment>\<open>VDM source: pre_derefOutput: (FMU * Ref +> bool)
+	pre_derefOutput(fmu, ref) ==
+(exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 205:9\<close>
 definition
 	pre_derefOutput :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_derefOutput fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_derefOutput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefOutput` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefOutput\<close>
+		\<comment>\<open>User defined body of pre_derefOutput.\<close>
 		(\<exists> c \<in> (outputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref))"
 
 
+\<comment>\<open>VDM source: post_derefOutput = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
 definition
 	post_derefOutput :: "FMU\<Rightarrow> Ref\<Rightarrow> Variable \<Rightarrow> bool"
 where
 	"post_derefOutput fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_derefOutput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefOutput` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
 
 definition
 	derefOutput :: "FMU\<Rightarrow> Ref \<Rightarrow> Variable"
 where
 	"derefOutput fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of derefOutput\<close>
+	\<comment>\<open>User defined body of derefOutput.\<close>
 	(THE c. (((c \<in>(outputs\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (c)) = ref)))"
 
 	
+\<comment>\<open>VDM source: Machine = compose Machine of fmus:map (Name) to (FMU), connections:map (FMURef) to (FMURef), clockConnections:map (FMURef) to (FMURef) end
+	inv m == ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let outputLF:Variable = derefOutput(srcFMU, (srcRef.ref)), inputLF:Variable = derefInput(trgFMU, (trgRef.ref)) in ((outputLF.type) = (inputLF.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <outputLF>))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <inputLF>))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and (((rng (m.clockConnections)) inter (rng (m.connections))) = {})))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 212:5\<close>
 record Machine = 
 	fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMU)"
@@ -460,16 +530,19 @@ record Machine =
 		 clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
 	
 
+\<comment>\<open>VDM source: inv_Machine: (Machine +> bool)
+	inv_Machine(m) ==
+((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let outputLF:Variable = derefOutput(srcFMU, (srcRef.ref)), inputLF:Variable = derefInput(trgFMU, (trgRef.ref)) in ((outputLF.type) = (inputLF.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <outputLF>))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <inputLF>))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and (((rng (m.clockConnections)) inter (rng (m.connections))) = {})))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 216:9\<close>
 definition
 	inv_Machine :: "Machine \<Rightarrow> bool"
 where
 	"inv_Machine m \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_Machine specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Machine` specification.\<close>
 		( (((inv_Map (inv_Name) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_Machine\<close>
+		\<comment>\<open>User defined body of inv_Machine.\<close>
 		((\<forall> srcRef \<in> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (m)))  . (((name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (srcRef)) \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (m)))) \<and> (
 		let 
 (srcFMU::FMU) = (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (m)) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (srcRef))));
@@ -525,30 +598,38 @@ where
  
 
 	
+\<comment>\<open>VDM source: createFMURefs: (FMU * set of (Ref) * set of (FMURef) -> set of (FMURef))
+	createFMURefs(fmu, clocks, res) ==
+(if (clocks = {})
+then res
+else let clock in set clocks in createFMURefs(fmu, (clocks \ {clock}), (res union {mk_FMURef((fmu.name), clock)})))
+	measure (card clocks)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 
+\<comment>\<open>VDM source: pre_createFMURefs = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 definition
 	pre_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
 	"pre_createFMURefs fmu  clocks  res \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_createFMURefs specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_createFMURefs` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMSet' (inv_Ref) clocks)  \<and>  (inv_VDMSet' inv_FMURef  res))"
 
 
+\<comment>\<open>VDM source: post_createFMURefs = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 definition
 	post_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
 	"post_createFMURefs fmu  clocks  res  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_createFMURefs specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_createFMURefs` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMSet' (inv_Ref) clocks)  \<and>  (inv_VDMSet' inv_FMURef  res)  \<and>  (inv_VDMSet' inv_FMURef  RESULT))"
 
 definition
 	createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> FMURef VDMSet"
 where
 	"createFMURefs fmu  clocks  res \<equiv> 
-	\<comment>\<open>User defined body of createFMURefs\<close>
+	\<comment>\<open>User defined body of createFMURefs.\<close>
 	(
 		if ((clocks = {})) then
 		(res)
@@ -557,6 +638,8 @@ where
 		SOME (dummy0::FMURef VDMSet) .(dummy0 \<in> { (createFMURefs fmu  (clocks - {clock})  (res \<union> {\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>})) | clock .  ((clock \<in>clocks))  }))))"
 
 	
+\<comment>\<open>VDM source: Importer = compose Importer of scenario:Machine, schedule:map (FMURef) to (real), activeClocks:set of (FMURef), readyClocks:set of (FMURef), inactiveClocks:set of (FMURef), fmusWithEvent:set of (Name), relevantOutputClocks:set of (FMURef), relevantInputClocks:set of (FMURef), activeEquations:set of (FMURef), calculatedEquations:set of (FMURef), readyEquations:set of (FMURef), time:Time, endtime:Time, stepSize:real, valueMap:map (FMURef) to (Value) end
+	inv imp == let fmus:map (Name) to (FMU) = ((imp.scenario).fmus) in let inputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <inputLF>)}, {}) | fmu in set (rng fmus)}) in let outputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <outputLF>)}, {}) | fmu in set (rng fmus)}) in let clocks:set of (FMURef) = (inputclocks union outputclocks) in ((((imp.activeClocks) union (imp.inactiveClocks)) = clocks) and ((((imp.activeClocks) inter (imp.inactiveClocks)) = {}) and ((((imp.activeClocks) inter (imp.readyClocks)) = {}) and (((imp.activeClocks) = (dunion {createFMURefs(fmu, (fmu.activeClocks), {}) | fmu in set (rng fmus)})) and (((imp.fmusWithEvent) subset (dom fmus)) and (((imp.relevantInputClocks) subset inputclocks) and (((imp.relevantOutputClocks) subset outputclocks) and ((((imp.relevantInputClocks) inter (imp.relevantOutputClocks)) = {}) and (((dom (imp.schedule)) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng fmus)})) and (((imp.endtime) >= (imp.time)) and ((((imp.activeEquations) inter (imp.readyEquations)) = {}) and (((imp.readyEquations) inter (imp.calculatedEquations)) = {}))))))))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 268:5\<close>
 record Importer = 
 	scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "Machine"
@@ -576,12 +659,15 @@ record Importer =
 		 valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "(FMURef \<rightharpoonup> Value)"
 	
 
+\<comment>\<open>VDM source: inv_Importer: (Importer +> bool)
+	inv_Importer(imp) ==
+let fmus:map (Name) to (FMU) = ((imp.scenario).fmus) in let inputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <inputLF>)}, {}) | fmu in set (rng fmus)}) in let outputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <outputLF>)}, {}) | fmu in set (rng fmus)}) in let clocks:set of (FMURef) = (inputclocks union outputclocks) in ((((imp.activeClocks) union (imp.inactiveClocks)) = clocks) and ((((imp.activeClocks) inter (imp.inactiveClocks)) = {}) and ((((imp.activeClocks) inter (imp.readyClocks)) = {}) and (((imp.activeClocks) = (dunion {createFMURefs(fmu, (fmu.activeClocks), {}) | fmu in set (rng fmus)})) and (((imp.fmusWithEvent) subset (dom fmus)) and (((imp.relevantInputClocks) subset inputclocks) and (((imp.relevantOutputClocks) subset outputclocks) and ((((imp.relevantInputClocks) inter (imp.relevantOutputClocks)) = {}) and (((dom (imp.schedule)) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng fmus)})) and (((imp.endtime) >= (imp.time)) and ((((imp.activeEquations) inter (imp.readyEquations)) = {}) and (((imp.readyEquations) inter (imp.calculatedEquations)) = {}))))))))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 284:9\<close>
 definition
 	inv_Importer :: "Importer \<Rightarrow> bool"
 where
 	"inv_Importer imp \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_Importer specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Importer` specification.\<close>
 		( ((inv_Machine (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)) \<and> 
 		 ((inv_Map inv_FMURef  (inv_VDMReal) (schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and> 
 		 ((inv_VDMSet' inv_FMURef  (activeClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and> 
@@ -597,7 +683,7 @@ where
 		 (inv_Time (endtime\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp)) \<and> 
 		 ((inv_VDMReal (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) \<and> 
 		 ((inv_Map inv_FMURef  inv_Value  (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r imp))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_Importer\<close>
+		\<comment>\<open>User defined body of inv_Importer.\<close>
 		(
 		let 
 (fmus::(Name \<rightharpoonup> FMU)) = (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (imp))))
@@ -638,57 +724,67 @@ where
  
 
 	
+\<comment>\<open>VDM source: preSet: (FMU * Ref -> bool)
+	preSet(fmu, inputLF) ==
+(exists [v in set (fmu.inputs)] & (((v.ref) = inputLF) and (((v.causality) = <inputLF>) and ((fmu.mode) <> <DONE>))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 
+\<comment>\<open>VDM source: pre_preSet = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 definition
 	pre_preSet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preSet fmu  inputLF \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preSet specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preSet` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref inputLF))"
 
 
+\<comment>\<open>VDM source: post_preSet = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 definition
 	post_preSet :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preSet fmu  inputLF  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preSet specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preSet` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref inputLF)  \<and>  (inv_bool RESULT))"
 
 definition
 	preSet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preSet fmu  inputLF \<equiv> 
-	\<comment>\<open>User defined body of preSet\<close>
+	\<comment>\<open>User defined body of preSet.\<close>
 	(\<exists> v \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (v)) = inputLF) \<and> (((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (v)) = IOLF.U_inputLF ) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) \<noteq> FMUModeLF.U_DONE ))))"
 
 	
+\<comment>\<open>VDM source: preGet: (FMU * Ref -> bool)
+	preGet(fmu, ref) ==
+let outputLF:Variable = derefOutput(fmu, ref) in (exists [v in set (fmu.outputs)] & (((v.ref) = ref) and (((v.causality) = <outputLF>) and (((fmu.mode) <> <DONE>) and feedthroughSatisfied(fmu, outputLF)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 
+\<comment>\<open>VDM source: pre_preGet = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 definition
 	pre_preGet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preGet fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preGet specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preGet` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))"
 
 
+\<comment>\<open>VDM source: post_preGet = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 definition
 	post_preGet :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preGet fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preGet specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preGet` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  (inv_bool RESULT))"
 
 definition
 	preGet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preGet fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of preGet\<close>
+	\<comment>\<open>User defined body of preGet.\<close>
 	(
 		let 
 (outputLF::Variable) = (derefOutput fmu  ref)
@@ -701,162 +797,198 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: preStepT: (FMU * real -> bool)
+	preStepT(fmu, stepSize) ==
+(forall i in set (fmu.inputs) & ((((i.contract) = <reactive>) => ((((fmu.env)((i.ref)).time).r) = (((fmu.time).r) + stepSize))) and ((((i.contract) = <delayed>) => (((fmu.env)((i.ref)).time) = (fmu.time))) and ((stepSize >= 0.0) and ((fmu.mode) = <STEP>)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 
+\<comment>\<open>VDM source: pre_preStepT = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 definition
 	pre_preStepT :: "FMU\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
 	"pre_preStepT fmu  stepSize \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preStepT specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preStepT` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMReal stepSize))"
 
 
+\<comment>\<open>VDM source: post_preStepT = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 definition
 	post_preStepT :: "FMU\<Rightarrow> VDMReal\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preStepT fmu  stepSize  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preStepT specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preStepT` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMReal stepSize)  \<and>  (inv_bool RESULT))"
 
 definition
 	preStepT :: "FMU\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
 	"preStepT fmu  stepSize \<equiv> 
-	\<comment>\<open>User defined body of preStepT\<close>
+	\<comment>\<open>User defined body of preStepT.\<close>
 	(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = ContractLF.U_reactive ) \<longrightarrow> ((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))))) = ((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (fmu)))) + stepSize))) \<and> ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = ContractLF.U_delayed ) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) = (time\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((stepSize \<ge> (0.0)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_STEP )))))"
 
 	
+\<comment>\<open>VDM source: preStepE: (FMU -> bool)
+	preStepE(fmu) ==
+((fmu.mode) = <EVENT>)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 
+\<comment>\<open>VDM source: pre_preStepE = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 definition
 	pre_preStepE :: "FMU \<Rightarrow> bool"
 where
 	"pre_preStepE fmu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preStepE specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preStepE` specification.\<close>
 		(inv_FMU fmu)"
 
 
+\<comment>\<open>VDM source: post_preStepE = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 definition
 	post_preStepE :: "FMU\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preStepE fmu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preStepE specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preStepE` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_bool RESULT))"
 
 definition
 	preStepE :: "FMU \<Rightarrow> bool"
 where
 	"preStepE fmu \<equiv> 
-	\<comment>\<open>User defined body of preStepE\<close>
+	\<comment>\<open>User defined body of preStepE.\<close>
 	((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_EVENT )"
 
 	
+\<comment>\<open>VDM source: preSetC: (FMU * Ref * bool -> bool)
+	preSetC(fmu, clock, val) ==
+(exists [v in set (fmu.clocks)] & ((((v.ref) = clock) and (((v.type) = <inputLF>) and val)) <=> (not (clock in set (fmu.activeClocks)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 
+\<comment>\<open>VDM source: pre_preSetC = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 definition
 	pre_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"pre_preSetC fmu  clock  val \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preSetC specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preSetC` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val))"
 
 
+\<comment>\<open>VDM source: post_preSetC = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 definition
 	post_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preSetC fmu  clock  val  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preSetC specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preSetC` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val)  \<and>  (inv_bool RESULT))"
 
 definition
 	preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"preSetC fmu  clock  val \<equiv> 
-	\<comment>\<open>User defined body of preSetC\<close>
+	\<comment>\<open>User defined body of preSetC.\<close>
 	(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = clock) \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = IOLF.U_inputLF ) \<and> val)) \<longleftrightarrow> (\<not> (clock \<in> (activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu))))))"
 
 	
+\<comment>\<open>VDM source: preGetC: (FMU * Ref -> bool)
+	preGetC(fmu, clock) ==
+(exists [v in set (fmu.clocks)] & (((v.ref) = clock) and (((v.type) = <outputLF>) and ((fmu.mode) = <EVENT>))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 
+\<comment>\<open>VDM source: pre_preGetC = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 definition
 	pre_preGetC :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preGetC fmu  clock \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preGetC specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preGetC` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref clock))"
 
 
+\<comment>\<open>VDM source: post_preGetC = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 definition
 	post_preGetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preGetC fmu  clock  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preGetC specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preGetC` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool RESULT))"
 
 definition
 	preGetC :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preGetC fmu  clock \<equiv> 
-	\<comment>\<open>User defined body of preGetC\<close>
+	\<comment>\<open>User defined body of preGetC.\<close>
 	(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = clock) \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = IOLF.U_outputLF ) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_EVENT ))))"
 
 	
+\<comment>\<open>VDM source: set_m: (FMU * Ref * Value +> FMU)
+	set_m(fmu, ref, val) ==
+mu(fmu, env |-> ((fmu.env) ++ {ref |-> val}))
+	pre preSet(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
 
+\<comment>\<open>VDM source: pre_set_m: (FMU * Ref * Value +> bool)
+	pre_set_m(fmu, ref, val) ==
+preSet(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 356:9\<close>
 definition
 	pre_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value \<Rightarrow> bool"
 where
 	"pre_set_m fmu  ref  val \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_set_m specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_set_m` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Value val)  \<and> 
-		\<comment>\<open>User defined body of pre_set_m\<close>
+		\<comment>\<open>User defined body of pre_set_m.\<close>
 		(preSet fmu  ref)"
 
 
+\<comment>\<open>VDM source: post_set_m = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
 definition
 	post_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value\<Rightarrow> FMU \<Rightarrow> bool"
 where
 	"post_set_m fmu  ref  val  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_set_m specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_set_m` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Value val  \<and>  inv_FMU RESULT)"
 
 definition
 	set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value \<Rightarrow> FMU"
 where
 	"set_m fmu  ref  val \<equiv> 
-	\<comment>\<open>User defined body of set_m\<close>
+	\<comment>\<open>User defined body of set_m.\<close>
 	(fmu)\<lparr>env\<^sub>F\<^sub>M\<^sub>U := ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) \<dagger> [ref\<mapsto>val])\<rparr>"
 
 	
+\<comment>\<open>VDM source: get_m: (FMU * Ref +> (FMU * Value))
+	get_m(fmu, ref) ==
+mk_(fmu, (fmu.env)(ref))
+	pre preGet(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
 
+\<comment>\<open>VDM source: pre_get_m: (FMU * Ref +> bool)
+	pre_get_m(fmu, ref) ==
+preGet(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 362:9\<close>
 definition
 	pre_get_m :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_get_m fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_get_m specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_get_m` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_get_m\<close>
+		\<comment>\<open>User defined body of pre_get_m.\<close>
 		(preGet fmu  ref)"
 
 
+\<comment>\<open>VDM source: post_get_m = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
 definition
 	post_get_m :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> bool"
 where
 	"post_get_m fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_get_m specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_get_m` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  
 		(inv_FMU (fst RESULT)\<and>
 		 inv_Value (snd RESULT)
@@ -866,38 +998,51 @@ definition
 	get_m :: "FMU\<Rightarrow> Ref \<Rightarrow> (FMU\<times> Value)"
 where
 	"get_m fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of get_m\<close>
+	\<comment>\<open>User defined body of get_m.\<close>
 	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) ref))"
 
 	
+\<comment>\<open>VDM source: set_cm: (FMU * Ref * bool +> FMU)
+	set_cm(fmu, ref, val) ==
+mu(fmu, env |-> ((fmu.env) ++ {ref |-> mk_Value(val, (fmu.time))}), activeClocks |-> (if val
+then ((fmu.activeClocks) union {ref})
+else ((fmu.activeClocks) \ {ref})))
+	pre preSetC(fmu, ref, val)
+	post (val <=> (ref in set (fmu.activeClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 364:5\<close>
 
+\<comment>\<open>VDM source: pre_set_cm: (FMU * Ref * bool +> bool)
+	pre_set_cm(fmu, ref, val) ==
+preSetC(fmu, ref, val)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 369:9\<close>
 definition
 	pre_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"pre_set_cm fmu  ref  val \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_set_cm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_set_cm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  (inv_bool val))  \<and> 
-		\<comment>\<open>User defined body of pre_set_cm\<close>
+		\<comment>\<open>User defined body of pre_set_cm.\<close>
 		(preSetC fmu  ref  val)"
 
 
+\<comment>\<open>VDM source: post_set_cm: (FMU * Ref * bool * FMU +> bool)
+	post_set_cm(fmu, ref, val, RESULT) ==
+(val <=> (ref in set (fmu.activeClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 370:14\<close>
 definition
 	post_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> FMU \<Rightarrow> bool"
 where
 	"post_set_cm fmu  ref  val  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_set_cm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_set_cm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  (inv_bool val)  \<and>  inv_FMU RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_set_cm\<close>
+		\<comment>\<open>User defined body of post_set_cm.\<close>
 		(val \<longleftrightarrow> (ref \<in> (activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu))))"
 
 definition
 	set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> FMU"
 where
 	"set_cm fmu  ref  val \<equiv> 
-	\<comment>\<open>User defined body of set_cm\<close>
+	\<comment>\<open>User defined body of set_cm.\<close>
 	(fmu)\<lparr>env\<^sub>F\<^sub>M\<^sub>U := ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) \<dagger> [ref\<mapsto>\<lparr>value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = val, time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = (time\<^sub>F\<^sub>M\<^sub>U (fmu))\<rparr>]), activeClocks\<^sub>F\<^sub>M\<^sub>U := (
 		if (val) then
 		(((activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu)) \<union> {ref}))
@@ -905,25 +1050,33 @@ where
 		(((activeClocks\<^sub>F\<^sub>M\<^sub>U (fmu)) - {ref})))\<rparr>"
 
 	
+\<comment>\<open>VDM source: get_cm: (FMU * Ref +> (FMU * Value))
+	get_cm(fmu, ref) ==
+mk_(fmu, (fmu.env)(ref))
+	pre preGetC(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
 
+\<comment>\<open>VDM source: pre_get_cm: (FMU * Ref +> bool)
+	pre_get_cm(fmu, ref) ==
+preGetC(fmu, ref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 375:9\<close>
 definition
 	pre_get_cm :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_get_cm fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_get_cm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_get_cm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_get_cm\<close>
+		\<comment>\<open>User defined body of pre_get_cm.\<close>
 		(preGetC fmu  ref)"
 
 
+\<comment>\<open>VDM source: post_get_cm = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
 definition
 	post_get_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> bool"
 where
 	"post_get_cm fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_get_cm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_get_cm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  
 		(inv_FMU (fst RESULT)\<and>
 		 inv_Value (snd RESULT)
@@ -933,42 +1086,55 @@ definition
 	get_cm :: "FMU\<Rightarrow> Ref \<Rightarrow> (FMU\<times> Value)"
 where
 	"get_cm fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of get_cm\<close>
+	\<comment>\<open>User defined body of get_cm.\<close>
 	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U (fmu)) ref))"
 
 	
+\<comment>\<open>VDM source: step_tm: (FMU * real +> (FMU * real * bool))
+	step_tm(fmu, step) ==
+(if (step >= (fmu.maxStep))
+then mk_(fmu, (fmu.maxStep), true)
+else mk_(fmu, step, false))
+	pre preStepT(fmu, step)
+	post (((RESULT.#2) <= step) and ((RESULT.#2) <= (fmu.maxStep)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 377:5\<close>
 
+\<comment>\<open>VDM source: pre_step_tm: (FMU * real +> bool)
+	pre_step_tm(fmu, step) ==
+preStepT(fmu, step)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 381:9\<close>
 definition
 	pre_step_tm :: "FMU\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
 	"pre_step_tm fmu  step \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_step_tm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_step_tm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMReal step))  \<and> 
-		\<comment>\<open>User defined body of pre_step_tm\<close>
+		\<comment>\<open>User defined body of pre_step_tm.\<close>
 		(preStepT fmu  step)"
 
 
+\<comment>\<open>VDM source: post_step_tm: (FMU * real * (FMU * real * bool) +> bool)
+	post_step_tm(fmu, step, RESULT) ==
+(((RESULT.#2) <= step) and ((RESULT.#2) <= (fmu.maxStep)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 383:9\<close>
 definition
 	post_step_tm :: "FMU\<Rightarrow> VDMReal\<Rightarrow> (FMU\<times> VDMReal\<times> bool) \<Rightarrow> bool"
 where
 	"post_step_tm fmu  step  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_step_tm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_step_tm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMReal step)  \<and>  
 		(inv_FMU (fst RESULT)\<and>
 		 (inv_VDMReal (fst (snd RESULT)))\<and>
 		 (inv_bool (snd (snd RESULT)))
 		))  \<and> 
-		\<comment>\<open>User defined body of post_step_tm\<close>
+		\<comment>\<open>User defined body of post_step_tm.\<close>
 		(((fst (snd (RESULT))) \<le> step) \<and> ((fst (snd (RESULT))) \<le> (maxStep\<^sub>F\<^sub>M\<^sub>U (fmu))))"
 
 definition
 	step_tm :: "FMU\<Rightarrow> VDMReal \<Rightarrow> (FMU\<times> VDMReal\<times> bool)"
 where
 	"step_tm fmu  step \<equiv> 
-	\<comment>\<open>User defined body of step_tm\<close>
+	\<comment>\<open>User defined body of step_tm.\<close>
 	(
 		if ((step \<ge> (maxStep\<^sub>F\<^sub>M\<^sub>U (fmu)))) then
 		((fmu, (maxStep\<^sub>F\<^sub>M\<^sub>U (fmu)), (True::\<bool>)))
@@ -976,51 +1142,64 @@ where
 		((fmu, step, (False::\<bool>))))"
 
 	
+\<comment>\<open>VDM source: step_e: (FMU +> (FMU * bool))
+	step_e(fmu) ==
+not yet specified
+	pre preStepE(fmu)
+	post ((((RESULT.#1).mode) = <EVENT>) and (((((RESULT.#1).time).i) = (((fmu.time).i) + 1)) and (((RESULT.#1).activeClocks) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 385:5\<close>
 
+\<comment>\<open>VDM source: pre_step_e: (FMU +> bool)
+	pre_step_e(fmu) ==
+preStepE(fmu)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 388:9\<close>
 definition
 	pre_step_e :: "FMU \<Rightarrow> bool"
 where
 	"pre_step_e fmu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_step_e specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_step_e` specification.\<close>
 		(inv_FMU fmu)  \<and> 
-		\<comment>\<open>User defined body of pre_step_e\<close>
+		\<comment>\<open>User defined body of pre_step_e.\<close>
 		(preStepE fmu)"
 
 
+\<comment>\<open>VDM source: post_step_e: (FMU * (FMU * bool) +> bool)
+	post_step_e(fmu, RESULT) ==
+((((RESULT.#1).mode) = <EVENT>) and (((((RESULT.#1).time).i) = (((fmu.time).i) + 1)) and (((RESULT.#1).activeClocks) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 390:9\<close>
 definition
 	post_step_e :: "FMU\<Rightarrow> (FMU\<times> bool) \<Rightarrow> bool"
 where
 	"post_step_e fmu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_step_e specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_step_e` specification.\<close>
 		(inv_FMU fmu  \<and>  
 		(inv_FMU (fst RESULT)\<and>
 		 (inv_bool (snd RESULT))
 		))  \<and> 
-		\<comment>\<open>User defined body of post_step_e\<close>
+		\<comment>\<open>User defined body of post_step_e.\<close>
 		(((mode\<^sub>F\<^sub>M\<^sub>U ((fst (RESULT)))) = FMUModeLF.U_EVENT ) \<and> (((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U ((fst (RESULT)))))) = ((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (fmu)))) + (1::VDMNat1))) \<and> ((activeClocks\<^sub>F\<^sub>M\<^sub>U ((fst (RESULT)))) = {})))"
 
 definition
 	step_e :: "FMU \<Rightarrow> (FMU\<times> bool)"
 where
 	"step_e fmu \<equiv> 
-	\<comment>\<open>User defined body of step_e\<close>
+	\<comment>\<open>User defined body of step_e.\<close>
 	undefined"
 
 	
+\<comment>\<open>VDM source: RealNaNLF = (<NaN> | real)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
 datatype RealNaNLF = U_NaN  | 
 		 U_VDMReal "VDMReal"
 	
 
+\<comment>\<open>VDM source: inv_RealNaNLF = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
 definition
 	inv_RealNaNLF :: "RealNaNLF \<Rightarrow> bool"
 where
 	"inv_RealNaNLF dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared inv_RealNaNLF specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_RealNaNLF` specification.\<close>
 		(((case dummy0 of
 		 RealNaNLF.U_NaN  \<Rightarrow> (inv_True dummy0)
 		  | RealNaNLF.U_VDMReal dummy0 \<Rightarrow> (inv_VDMReal dummy0)
@@ -1029,63 +1208,82 @@ where
 		 
 
 	
+\<comment>\<open>VDM source: next_tm: (FMU * Ref +> RealNaNLF)
+	next_tm(fmu, ref) ==
+<NaN>
+	pre (exists [v in set (fmu.clocks)] & (((v.ref) = ref) and ((v.interval) in set {<tunable>, <changing>, <countdown>})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
 
+\<comment>\<open>VDM source: pre_next_tm: (FMU * Ref +> bool)
+	pre_next_tm(fmu, ref) ==
+(exists [v in set (fmu.clocks)] & (((v.ref) = ref) and ((v.interval) in set {<tunable>, <changing>, <countdown>})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 404:9\<close>
 definition
 	pre_next_tm :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_next_tm fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_next_tm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_next_tm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_next_tm\<close>
+		\<comment>\<open>User defined body of pre_next_tm.\<close>
 		(\<exists> v \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) = ref) \<and> ((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (v)) \<in> {Interval.U_tunable , Interval.U_changing , Interval.U_countdown })))"
 
 
+\<comment>\<open>VDM source: post_next_tm = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
 definition
 	post_next_tm :: "FMU\<Rightarrow> Ref\<Rightarrow> RealNaNLF \<Rightarrow> bool"
 where
 	"post_next_tm fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_next_tm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_next_tm` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  (inv_RealNaNLF RESULT))"
 
 definition
 	next_tm :: "FMU\<Rightarrow> Ref \<Rightarrow> RealNaNLF"
 where
 	"next_tm fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of next_tm\<close>
+	\<comment>\<open>User defined body of next_tm.\<close>
 	RealNaNLF.U_NaN "
 
 	
+\<comment>\<open>VDM source: updateDiscreteState: (Importer * set of (Name) -> Importer)
+	updateDiscreteState(I, fmus) ==
+let M:Machine = (I.scenario) in let res:map (Name) to ((FMU * bool)) = {fmu |-> step_e((M.fmus)(fmu)) | fmu in set (dom (M.fmus)) & (fmu in set fmus)} in let fmuMap:map (Name) to (FMU) = {fmu |-> (res(fmu).#1) | fmu in set (dom res)}, eventFMUs:set of (Name) = {fmu | fmu in set (dom res) & ((res(fmu).#2) = true)} in mu(I, scenario |-> mu((I.scenario), fmus |-> fmuMap), fmusWithEvent |-> eventFMUs)
+	pre ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))
+	post ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 410:5\<close>
 
+\<comment>\<open>VDM source: pre_updateDiscreteState: (Importer * set of (Name) +> bool)
+	pre_updateDiscreteState(I, fmus) ==
+((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 422:9\<close>
 definition
 	pre_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
 	"pre_updateDiscreteState I  fmus \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_updateDiscreteState specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_updateDiscreteState` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus))  \<and> 
-		\<comment>\<open>User defined body of pre_updateDiscreteState\<close>
+		\<comment>\<open>User defined body of pre_updateDiscreteState.\<close>
 		((\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_EVENT ))) \<and> ((vdm_card { (time\<^sub>F\<^sub>M\<^sub>U (m')) | m' .  ((m' \<in>(rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> ((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) }) = (1::VDMNat1)))"
 
 
+\<comment>\<open>VDM source: post_updateDiscreteState: (Importer * set of (Name) * Importer +> bool)
+	post_updateDiscreteState(I, fmus, RESULT) ==
+((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 424:9\<close>
 definition
 	post_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_updateDiscreteState I  fmus  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_updateDiscreteState specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_updateDiscreteState` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus)  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_updateDiscreteState\<close>
+		\<comment>\<open>User defined body of post_updateDiscreteState.\<close>
 		((\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_EVENT ))) \<and> ((vdm_card { (time\<^sub>F\<^sub>M\<^sub>U (m')) | m' .  ((m' \<in>(rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> ((name\<^sub>F\<^sub>M\<^sub>U (m')) \<in> fmus) }) = (1::VDMNat1)))"
 
 definition
 	updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> Importer"
 where
 	"updateDiscreteState I  fmus \<equiv> 
-	\<comment>\<open>User defined body of updateDiscreteState\<close>
+	\<comment>\<open>User defined body of updateDiscreteState.\<close>
 	(
 		let 
 (M::Machine) = (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))
@@ -1096,7 +1294,22 @@ where
 (res::(Name \<rightharpoonup> (FMU\<times> bool))) = (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
 		{ fmu .   ((fmu \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  \<and> (fmu \<in> fmus) } 
-		{ (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))) | fmu .  ((fmu \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  \<and> (fmu \<in> fmus) } 
+		{ (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))) | (dummy0RANGE :: (FMU\<times> bool)) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  ((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		)))  \<and> (fmu \<in> fmus) } 
 		((inv_VDMSeq1' (inv_VDMChar))) 
 		
 		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U )))) \<and> 
@@ -1114,71 +1327,319 @@ where
 		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ))) )\<and>
 		 (inv_bool )
 		) 
+		(domid ) 
 		(
-	\<lambda> (fmu :: Name)  (dummy0Rng :: (FMU\<times> bool)) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((
-		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: (FMU\<times> bool)) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  ((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) )\<and>
-		 (inv_bool (snd dummy0Rng))
-		))) \<and> ((inv_VDMSeq1' (inv_VDMChar) fmu)) then
-		fmu
-	 else
-		undefined
-	)
-	) 
-		(
-	\<lambda> (fmu :: Name) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and> 
-		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))))) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<and> 
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu))))))) )\<and>
-		 (inv_bool (snd (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))))
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) )\<and>
+		 (inv_bool (snd (
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))
 		) then
-		(step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))
+		(
+		if ((\<exists> (dummy0RANGE :: (FMU\<times> bool))  . (((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<longrightarrow> ((dummy0RANGE = (step_e (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) fmu)))) \<and> (fmu \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (fmu :: Name)  (dummy0Rng :: (FMU\<times> bool)) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((
-		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: (FMU\<times> bool)) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  ((
+		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng))))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0Rng)))) )\<and>
-		 (inv_bool (snd dummy0Rng))
-		))) \<and> (inv_bool (fmu \<in> fmus)) then
-		(fmu \<in> fmus)
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst dummy0RANGE)))) )\<and>
+		 (inv_bool (snd dummy0RANGE))
+		))) \<and> (inv_bool (
+		if ((\<exists> fmu \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))  . ((fmu \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))) \<and> (fmu \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> fmu \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))  . ((fmu \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))) \<and> (fmu \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))
 	 else
 		undefined
 	)
@@ -1205,7 +1666,7 @@ where
 (fmuMap::(Name \<rightharpoonup> FMU)) = (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
 		{ fmu .   ((fmu \<in>(dom res)))  } 
-		{ (fst ((the(res fmu)))) | fmu .  ((fmu \<in>(dom res)))  } 
+		{(fst ((the(res fmu))))} 
 		((inv_VDMSeq1' (inv_VDMChar))) 
 		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
@@ -1220,66 +1681,232 @@ where
 		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
 		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(domid ) 
 		(
-	\<lambda> (fmu :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) fmu)) then
-		fmu
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) ) then
+		(
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = (fst ((the(res fmu))))) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
-		(
-	\<lambda> (fmu :: Name) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))))) \<and> 
-		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))))
-		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu)))))))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (fst ((the(res fmu))))))) ) then
-		(fst ((the(res fmu))))
-	 else
-		undefined
-	)
-	) 
-		(
-	\<lambda> (fmu :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) fmu)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
-		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
-		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (True::\<bool>)) then
-		(True::\<bool>)
-	 else
-		undefined
-	)
-	));
+		(truecnst ));
 		
 (eventFMUs::Name VDMSet) = { fmu .   ((fmu \<in>(dom res)))  \<and> ((snd ((the(res fmu)))) = (True::\<bool>)) }
 		in
@@ -1300,67 +1927,98 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: derefClock: (FMU * Ref -> Clock)
+	derefClock(fmu, ref) ==
+(iota c in set (fmu.clocks) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
 
+\<comment>\<open>VDM source: pre_derefClock: (FMU * Ref +> bool)
+	pre_derefClock(fmu, ref) ==
+(exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 431:9\<close>
 definition
 	pre_derefClock :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_derefClock fmu  ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_derefClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefClock` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefClock\<close>
+		\<comment>\<open>User defined body of pre_derefClock.\<close>
 		(\<exists> c \<in> (clocks\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = ref))"
 
 
+\<comment>\<open>VDM source: post_derefClock = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
 definition
 	post_derefClock :: "FMU\<Rightarrow> Ref\<Rightarrow> Clock \<Rightarrow> bool"
 where
 	"post_derefClock fmu  ref  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_derefClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefClock` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Clock RESULT)"
 
 definition
 	derefClock :: "FMU\<Rightarrow> Ref \<Rightarrow> Clock"
 where
 	"derefClock fmu  ref \<equiv> 
-	\<comment>\<open>User defined body of derefClock\<close>
+	\<comment>\<open>User defined body of derefClock.\<close>
 	(THE c. (((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = ref)))"
 
 	
+\<comment>\<open>VDM source: enterEventMode: (Importer * set of (Name) -> Importer)
+	enterEventMode(I, fmus) ==
+mu(I, scenario |-> mu((I.scenario), fmus |-> {name |-> mu(((I.scenario).fmus)(name), mode |-> <EVENT>) | name in set (dom ((I.scenario).fmus)) & (name in set fmus)}))
+	pre (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))
+	post (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 436:5\<close>
 
+\<comment>\<open>VDM source: pre_enterEventMode: (Importer * set of (Name) +> bool)
+	pre_enterEventMode(I, fmus) ==
+(forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 439:9\<close>
 definition
 	pre_enterEventMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
 	"pre_enterEventMode I  fmus \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_enterEventMode specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_enterEventMode` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus))  \<and> 
-		\<comment>\<open>User defined body of pre_enterEventMode\<close>
+		\<comment>\<open>User defined body of pre_enterEventMode.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP )))"
 
 
+\<comment>\<open>VDM source: post_enterEventMode: (Importer * set of (Name) * Importer +> bool)
+	post_enterEventMode(I, fmus, RESULT) ==
+(forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 440:10\<close>
 definition
 	post_enterEventMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_enterEventMode I  fmus  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_enterEventMode specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_enterEventMode` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus)  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_enterEventMode\<close>
+		\<comment>\<open>User defined body of post_enterEventMode.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP )))"
 
 definition
 	enterEventMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> Importer"
 where
 	"enterEventMode I  fmus \<equiv> 
-	\<comment>\<open>User defined body of enterEventMode\<close>
+	\<comment>\<open>User defined body of enterEventMode.\<close>
 	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
 		{ name .   ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
-		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | name .  ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | (dummy0RANGE :: FMU) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) )))  \<and> (name \<in> fmus) } 
 		((inv_VDMSeq1' (inv_VDMChar))) 
 		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
@@ -1375,100 +2033,316 @@ where
 		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
 		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(domid ) 
 		(
-	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) name)) then
-		name
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) ) then
+		(
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (name :: Name) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) ) then
-		((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>
-	 else
-		undefined
-	)
-	) 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<and> (inv_bool (
+		if ((\<exists> name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))) \<and> (name \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
 		(
-	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
-		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
-		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (name \<in> fmus)) then
-		(name \<in> fmus)
+		if ((\<exists> name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))) \<and> (name \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	))\<rparr>\<rparr>"
 
 	
+\<comment>\<open>VDM source: enterStepMode: (Importer * set of (Name) -> Importer)
+	enterStepMode(I, fmus) ==
+mu(I, scenario |-> mu((I.scenario), fmus |-> {name |-> mu(((I.scenario).fmus)(name), mode |-> <EVENT>) | name in set (dom ((I.scenario).fmus)) & (name in set fmus)}))
+	pre (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) in set {<INIT>, <EVENT>})))
+	post (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 445:5\<close>
 
+\<comment>\<open>VDM source: pre_enterStepMode: (Importer * set of (Name) +> bool)
+	pre_enterStepMode(I, fmus) ==
+(forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) in set {<INIT>, <EVENT>})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 448:9\<close>
 definition
 	pre_enterStepMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
 	"pre_enterStepMode I  fmus \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_enterStepMode specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_enterStepMode` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus))  \<and> 
-		\<comment>\<open>User defined body of pre_enterStepMode\<close>
+		\<comment>\<open>User defined body of pre_enterStepMode.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) \<in> {FMUModeLF.U_INIT , FMUModeLF.U_EVENT })))"
 
 
+\<comment>\<open>VDM source: post_enterStepMode: (Importer * set of (Name) * Importer +> bool)
+	post_enterStepMode(I, fmus, RESULT) ==
+(forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 450:10\<close>
 definition
 	post_enterStepMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_enterStepMode I  fmus  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_enterStepMode specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_enterStepMode` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus)  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_enterStepMode\<close>
+		\<comment>\<open>User defined body of post_enterStepMode.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((i\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>F\<^sub>M\<^sub>U (m')))) = (0::VDMNat)) \<and> ((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP )))"
 
 definition
 	enterStepMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> Importer"
 where
 	"enterStepMode I  fmus \<equiv> 
-	\<comment>\<open>User defined body of enterStepMode\<close>
+	\<comment>\<open>User defined body of enterStepMode.\<close>
 	(I)\<lparr>scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))\<lparr>fmus\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r := (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
 		{ name .   ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
-		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | name .  ((name \<in>(dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  \<and> (name \<in> fmus) } 
+		{ ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr> | (dummy0RANGE :: FMU) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) )))  \<and> (name \<in> fmus) } 
 		((inv_VDMSeq1' (inv_VDMChar))) 
 		 ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
@@ -1483,92 +2357,290 @@ where
 		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U FMU)))) \<and> 
 		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U FMU))) \<and> 
 		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U FMU))) ) 
+		(domid ) 
 		(
-	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> ((inv_VDMSeq1' (inv_VDMChar) name)) then
-		name
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U (
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) ) then
+		(
+		if ((\<exists> (dummy0RANGE :: FMU)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
+		 (
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
+		)) \<and> 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<longrightarrow> ((dummy0RANGE = ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>) \<and> (name \<in> fmus))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (name :: Name) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))) \<and> 
+	\<lambda> (dummy0DOMAIN :: Name)  (dummy0RANGE :: FMU) .
+		(if ((((inv_VDMSeq1' (inv_VDMChar) dummy0DOMAIN)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))) \<and> 
 		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))))
+		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))))
 		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U ((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>))) ) then
-		((the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) name)))\<lparr>mode\<^sub>F\<^sub>M\<^sub>U := FMUModeLF.U_EVENT \<rparr>
-	 else
-		undefined
-	)
-	) 
+		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0RANGE)))) \<and> 
+		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) \<and> 
+		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0RANGE))) ))) \<and> (inv_bool (
+		if ((\<exists> name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))) \<and> (name \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
 		(
-	\<lambda> (name :: Name)  (dummy0Rng :: FMU) .
-		(if ((((inv_VDMSeq1' (inv_VDMChar) name)))) \<and>  (( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (inputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' inv_Variable  (outputs\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((((inv_True (mode\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))) \<and> 
-		 (
-		(((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>U dummy0Rng))))
-		)) \<and> 
-		 ((inv_VDMReal (maxStep\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 (((inv_Map ((inv_VDMNat)) inv_Value  (env\<^sub>F\<^sub>M\<^sub>U dummy0Rng)))) \<and> 
-		 ((inv_VDMSet' ((inv_VDMNat)) (activeClocks\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) \<and> 
-		 ((inv_VDMSet' ((inv_Lambda ((inv_Map ((inv_VDMNat)) inv_Value  null)) ((inv_Map ((inv_VDMNat)) inv_Value  null)))) (activeEquations\<^sub>F\<^sub>M\<^sub>U dummy0Rng))) ))) \<and> (inv_bool (name \<in> fmus)) then
-		(name \<in> fmus)
+		if ((\<exists> name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((name \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))) \<and> (name \<in> fmus)))) then
+		((True::\<bool>))
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	))\<rparr>\<rparr>"
 
 	
+\<comment>\<open>VDM source: variablesSynchronized: (Machine -> bool)
+	variablesSynchronized(M) ==
+(forall srcPort in set (dom (M.connections)) & let trgPort:FMURef = (M.connections)(srcPort) in (((M.fmus)((srcPort.name)).env)((srcPort.ref)) = ((M.fmus)((trgPort.name)).env)((trgPort.ref))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 
+\<comment>\<open>VDM source: pre_variablesSynchronized = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 definition
 	pre_variablesSynchronized :: "Machine \<Rightarrow> bool"
 where
 	"pre_variablesSynchronized M \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_variablesSynchronized specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_variablesSynchronized` specification.\<close>
 		(inv_Machine M)"
 
 
+\<comment>\<open>VDM source: post_variablesSynchronized = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 definition
 	post_variablesSynchronized :: "Machine\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_variablesSynchronized M  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_variablesSynchronized specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_variablesSynchronized` specification.\<close>
 		(inv_Machine M  \<and>  (inv_bool RESULT))"
 
 definition
 	variablesSynchronized :: "Machine \<Rightarrow> bool"
 where
 	"variablesSynchronized M \<equiv> 
-	\<comment>\<open>User defined body of variablesSynchronized\<close>
+	\<comment>\<open>User defined body of variablesSynchronized.\<close>
 	(\<forall> srcPort \<in> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))  . (
 		let 
 (trgPort::FMURef) = (the((connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) srcPort))
@@ -1581,32 +2653,43 @@ where
 		))"
 
 	
+\<comment>\<open>VDM source: activateClocks: (Importer * set of (FMURef) -> Importer)
+	activateClocks(I, clocks) ==
+(if (clocks = {})
+then I
+else let clock in set clocks in let I1:Importer = setClock(I, ((I.scenario).fmus)((clock.name)), (clock.ref), true) in activateClocks(I1, (clocks \ {clock})))
+	pre (clocks subset ((I.readyClocks) inter (I.relevantInputClocks)))
+	measure (card clocks)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
 
+\<comment>\<open>VDM source: pre_activateClocks: (Importer * set of (FMURef) +> bool)
+	pre_activateClocks(I, clocks) ==
+(clocks subset ((I.readyClocks) inter (I.relevantInputClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 471:16\<close>
 definition
 	pre_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
 	"pre_activateClocks I  clocks \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_activateClocks specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_activateClocks` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_FMURef  clocks))  \<and> 
-		\<comment>\<open>User defined body of pre_activateClocks\<close>
+		\<comment>\<open>User defined body of pre_activateClocks.\<close>
 		(clocks \<subseteq> ((readyClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<inter> (relevantInputClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
+\<comment>\<open>VDM source: post_activateClocks = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
 definition
 	post_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_activateClocks I  clocks  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_activateClocks specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_activateClocks` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_FMURef  clocks)  \<and>  inv_Importer RESULT)"
 
 definition
 	activateClocks :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> Importer"
 where
 	"activateClocks I  clocks \<equiv> 
-	\<comment>\<open>User defined body of activateClocks\<close>
+	\<comment>\<open>User defined body of activateClocks.\<close>
 	(
 		if ((clocks = {})) then
 		(I)
@@ -1624,16 +2707,33 @@ where
 		) | clock .  ((clock \<in>clocks))  }))))"
 
 	
+\<comment>\<open>VDM source: updateEnvironmentClock: (Importer * FMU * Ref * bool -> Importer)
+	updateEnvironmentClock(I, fmu, clock, val) ==
+let fmuref:FMURef = mk_FMURef((fmu.name), clock), activatedVariables:set of (FMURef) = createFMURefs(fmu, (dunion {(c.equations) | c in set (fmu.clocks) & (clock = (c.ref))}), {}) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), activeClocks |-> (if val
+then ((I.activeClocks) union {fmuref})
+else ((I.activeClocks) \ {fmuref})), readyClocks |-> (if val
+then ((I.readyClocks) \ {fmuref})
+else (I.readyClocks)), inactiveClocks |-> (if val
+then ((I.inactiveClocks) \ {fmuref})
+else ((I.inactiveClocks) union {fmuref})), activeEquations |-> (if val
+then ((I.activeEquations) union activatedVariables)
+else ((I.activeEquations) \ activatedVariables)), readyEquations |-> (if val
+then ((I.readyEquations) \ activatedVariables)
+else (I.readyEquations)))
+	pre let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((fmuRef in set (I.relevantInputClocks)) or (fmuRef in set (I.relevantOutputClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
 
+\<comment>\<open>VDM source: pre_updateEnvironmentClock: (Importer * FMU * Ref * bool +> bool)
+	pre_updateEnvironmentClock(I, fmu, clock, val) ==
+let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((fmuRef in set (I.relevantInputClocks)) or (fmuRef in set (I.relevantOutputClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 490:9\<close>
 definition
 	pre_updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"pre_updateEnvironmentClock I  fmu  clock  val \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_updateEnvironmentClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_updateEnvironmentClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val))  \<and> 
-		\<comment>\<open>User defined body of pre_updateEnvironmentClock\<close>
+		\<comment>\<open>User defined body of pre_updateEnvironmentClock.\<close>
 		(
 		let 
 (fmuRef::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
@@ -1646,19 +2746,20 @@ where
 		)"
 
 
+\<comment>\<open>VDM source: post_updateEnvironmentClock = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
 definition
 	post_updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_updateEnvironmentClock I  fmu  clock  val  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_updateEnvironmentClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_updateEnvironmentClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val)  \<and>  inv_Importer RESULT)"
 
 definition
 	updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> Importer"
 where
 	"updateEnvironmentClock I  fmu  clock  val \<equiv> 
-	\<comment>\<open>User defined body of updateEnvironmentClock\<close>
+	\<comment>\<open>User defined body of updateEnvironmentClock.\<close>
 	(
 		let 
 (fmuref::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>;
@@ -1694,32 +2795,40 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: queryClock: (Importer * FMU * Ref -> Importer)
+	queryClock(I, fmu, clock) ==
+let mk_(fmuUpdated, val):(FMU * Value) = get_cm(fmu, clock), fmuref:FMURef = mk_FMURef((fmu.name), clock) in let connectedClock:FMURef = ((I.scenario).clockConnections)(fmuref) in let I1:Importer = mu(I, valueMap |-> ((I.valueMap) ++ {connectedClock |-> val}), relevantOutputClocks |-> ((I.relevantOutputClocks) \ {fmuref}), relevantInputClocks |-> ((I.relevantInputClocks) union {connectedClock})) in updateEnvironmentClock(I1, fmuUpdated, clock, (val.value))
+	pre ((mk_FMURef((fmu.name), clock) in set (I.relevantOutputClocks)) and (clock in set {(c.ref) | c in set (fmu.clocks) & ((c.type) = <inputLF>)}))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
 
+\<comment>\<open>VDM source: pre_queryClock: (Importer * FMU * Ref +> bool)
+	pre_queryClock(I, fmu, clock) ==
+((mk_FMURef((fmu.name), clock) in set (I.relevantOutputClocks)) and (clock in set {(c.ref) | c in set (fmu.clocks) & ((c.type) = <inputLF>)}))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 509:9\<close>
 definition
 	pre_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_queryClock I  fmu  clock \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_queryClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_queryClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock))  \<and> 
-		\<comment>\<open>User defined body of pre_queryClock\<close>
+		\<comment>\<open>User defined body of pre_queryClock.\<close>
 		((\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr> \<in> (relevantOutputClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (clock \<in> { (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) | c .  ((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  \<and> ((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = IOLF.U_inputLF ) }))"
 
 
+\<comment>\<open>VDM source: post_queryClock = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
 definition
 	post_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_queryClock I  fmu  clock  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_queryClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_queryClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  inv_Importer RESULT)"
 
 definition
 	queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> Importer"
 where
 	"queryClock I  fmu  clock \<equiv> 
-	\<comment>\<open>User defined body of queryClock\<close>
+	\<comment>\<open>User defined body of queryClock.\<close>
 	(
 		let 
 (dummy0::(FMU\<times> Value)) = (get_cm fmu  clock);
@@ -1775,32 +2884,40 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: setClock: (Importer * FMU * Ref * bool -> Importer)
+	setClock(I, fmu, clock, val) ==
+let fmuUpdated:FMU = set_cm(fmu, clock, val), fmuref:FMURef = mk_FMURef((fmu.name), clock) in let feedthroughClocks:set of (FMURef) = {mk_FMURef((fmu.name), (c.ref)) | c in set (fmu.clocks) & (clock in set (c.dependsOn))} in let I1:Importer = mu(I, valueMap |-> ({fmuref} <-: (I.valueMap)), relevantInputClocks |-> ((I.relevantInputClocks) \ {fmuref}), relevantOutputClocks |-> ((I.relevantOutputClocks) union feedthroughClocks)) in updateEnvironmentClock(I1, fmuUpdated, clock, val)
+	pre (((mk_FMURef((fmu.name), clock) in set (I.relevantInputClocks)) and val) <=> (mk_FMURef((fmu.name), clock) in set ((I.inactiveClocks) inter (I.readyClocks))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
 
+\<comment>\<open>VDM source: pre_setClock: (Importer * FMU * Ref * bool +> bool)
+	pre_setClock(I, fmu, clock, val) ==
+(((mk_FMURef((fmu.name), clock) in set (I.relevantInputClocks)) and val) <=> (mk_FMURef((fmu.name), clock) in set ((I.inactiveClocks) inter (I.readyClocks))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 527:17\<close>
 definition
 	pre_setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"pre_setClock I  fmu  clock  val \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_setClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_setClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val))  \<and> 
-		\<comment>\<open>User defined body of pre_setClock\<close>
+		\<comment>\<open>User defined body of pre_setClock.\<close>
 		(((\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr> \<in> (relevantInputClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> val) \<longleftrightarrow> (\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr> \<in> ((inactiveClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<inter> (readyClocks\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))"
 
 
+\<comment>\<open>VDM source: post_setClock = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
 definition
 	post_setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_setClock I  fmu  clock  val  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_setClock specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_setClock` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool val)  \<and>  inv_Importer RESULT)"
 
 definition
 	setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> Importer"
 where
 	"setClock I  fmu  clock  val \<equiv> 
-	\<comment>\<open>User defined body of setClock\<close>
+	\<comment>\<open>User defined body of setClock.\<close>
 	(
 		let 
 (fmuUpdated::FMU) = (set_cm fmu  clock  val);
@@ -1834,32 +2951,40 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: setPort: (Importer * FMURef -> Importer)
+	setPort(I, port) ==
+let valueLF:Value = (I.valueMap)(port) in let fmu:FMU = set_m(((I.scenario).fmus)((port.name)), (port.ref), valueLF) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), valueMap |-> ({port} <-: (I.valueMap)))
+	pre (port in set (dom (I.valueMap)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
 
+\<comment>\<open>VDM source: pre_setPort: (Importer * FMURef +> bool)
+	pre_setPort(I, port) ==
+(port in set (dom (I.valueMap)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 539:14\<close>
 definition
 	pre_setPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
 	"pre_setPort I  port \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_setPort specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_setPort` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef port)  \<and> 
-		\<comment>\<open>User defined body of pre_setPort\<close>
+		\<comment>\<open>User defined body of pre_setPort.\<close>
 		(port \<in> (dom (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
+\<comment>\<open>VDM source: post_setPort = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
 definition
 	post_setPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_setPort I  port  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_setPort specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_setPort` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef port  \<and>  inv_Importer RESULT)"
 
 definition
 	setPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> Importer"
 where
 	"setPort I  port \<equiv> 
-	\<comment>\<open>User defined body of setPort\<close>
+	\<comment>\<open>User defined body of setPort.\<close>
 	(
 		let 
 (valueLF::Value) = (the((valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) port))
@@ -1881,32 +3006,40 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: getPort: (Importer * FMURef -> Importer)
+	getPort(I, port) ==
+let mk_(fmu, val):(FMU * Value) = get_m(((I.scenario).fmus)((port.name)), (port.ref)), connectedInput:FMURef = ((I.scenario).connections)(port) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), valueMap |-> ((I.valueMap) ++ {connectedInput |-> val}))
+	pre (((I.scenario).connections)(port) not in set (dom (I.valueMap)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
 
+\<comment>\<open>VDM source: pre_getPort: (Importer * FMURef +> bool)
+	pre_getPort(I, port) ==
+(((I.scenario).connections)(port) not in set (dom (I.valueMap)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 551:38\<close>
 definition
 	pre_getPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
 	"pre_getPort I  port \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_getPort specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_getPort` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef port)  \<and> 
-		\<comment>\<open>User defined body of pre_getPort\<close>
+		\<comment>\<open>User defined body of pre_getPort.\<close>
 		((the((connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) port)) \<notin> (dom (valueMap\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
+\<comment>\<open>VDM source: post_getPort = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
 definition
 	post_getPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_getPort I  port  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_getPort specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_getPort` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef port  \<and>  inv_Importer RESULT)"
 
 definition
 	getPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> Importer"
 where
 	"getPort I  port \<equiv> 
-	\<comment>\<open>User defined body of getPort\<close>
+	\<comment>\<open>User defined body of getPort.\<close>
 	(
 		let 
 (dummy0::(FMU\<times> Value)) = (get_m (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
@@ -1944,34 +3077,45 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: updateEnvironmentEquation: (Importer * FMU * FMURef -> Importer)
+	updateEnvironmentEquation(I, fmu, equation) ==
+let triggeredClocks:set of (Clock) = {clock | clock in set (fmu.clocks) & ((equation.ref) in set (clock.dependsOn))} in let triggeredInputs:set of (FMURef) = {mk_FMURef((equation.name), (inputClock.ref)) | inputClock in set triggeredClocks & ((inputClock.type) <> <inputLF>)}, triggeredOutputs:set of (FMURef) = {mk_FMURef((equation.name), (outputClock.ref)) | outputClock in set triggeredClocks & ((outputClock.type) <> <outputLF>)} in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), calculatedEquations |-> ((I.calculatedEquations) union {equation}), relevantInputClocks |-> ((I.relevantInputClocks) union triggeredInputs), relevantOutputClocks |-> ((I.relevantOutputClocks) union triggeredOutputs))
+	pre (equation in set ((I.activeEquations) \ (I.calculatedEquations)))
+	post (equation in set (RESULT.calculatedEquations))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 554:5\<close>
 
+\<comment>\<open>VDM source: pre_updateEnvironmentEquation: (Importer * FMU * FMURef +> bool)
+	pre_updateEnvironmentEquation(I, fmu, equation) ==
+(equation in set ((I.activeEquations) \ (I.calculatedEquations)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 566:18\<close>
 definition
 	pre_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef \<Rightarrow> bool"
 where
 	"pre_updateEnvironmentEquation I  fmu  equation \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_updateEnvironmentEquation specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_updateEnvironmentEquation` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  inv_FMURef equation)  \<and> 
-		\<comment>\<open>User defined body of pre_updateEnvironmentEquation\<close>
+		\<comment>\<open>User defined body of pre_updateEnvironmentEquation.\<close>
 		(equation \<in> ((activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) - (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))"
 
 
+\<comment>\<open>VDM source: post_updateEnvironmentEquation: (Importer * FMU * FMURef * Importer +> bool)
+	post_updateEnvironmentEquation(I, fmu, equation, RESULT) ==
+(equation in set (RESULT.calculatedEquations))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 567:19\<close>
 definition
 	post_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_updateEnvironmentEquation I  fmu  equation  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_updateEnvironmentEquation specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_updateEnvironmentEquation` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  inv_FMURef equation  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_updateEnvironmentEquation\<close>
+		\<comment>\<open>User defined body of post_updateEnvironmentEquation.\<close>
 		(equation \<in> (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT)))"
 
 definition
 	updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef \<Rightarrow> Importer"
 where
 	"updateEnvironmentEquation I  fmu  equation \<equiv> 
-	\<comment>\<open>User defined body of updateEnvironmentEquation\<close>
+	\<comment>\<open>User defined body of updateEnvironmentEquation.\<close>
 	(
 		let 
 (triggeredClocks::Clock VDMSet) = { clock .   ((clock \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  \<and> ((ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (equation)) \<in> (dependsOn\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock))) }
@@ -1996,16 +3140,23 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: calculateInput: (Importer * FMURef -> Importer)
+	calculateInput(I, equation) ==
+let I1:Importer = setPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
+	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((equation in set (dom (I.valueMap))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.inputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
 
+\<comment>\<open>VDM source: pre_calculateInput: (Importer * FMURef +> bool)
+	pre_calculateInput(I, equation) ==
+let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((equation in set (dom (I.valueMap))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.inputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 578:9\<close>
 definition
 	pre_calculateInput :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
 	"pre_calculateInput I  equation \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_calculateInput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculateInput` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef equation)  \<and> 
-		\<comment>\<open>User defined body of pre_calculateInput\<close>
+		\<comment>\<open>User defined body of pre_calculateInput.\<close>
 		(
 		let 
 (fmu::FMU) = (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (equation))))
@@ -2018,19 +3169,20 @@ where
 		)"
 
 
+\<comment>\<open>VDM source: post_calculateInput = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
 definition
 	post_calculateInput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_calculateInput I  equation  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_calculateInput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_calculateInput` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef equation  \<and>  inv_Importer RESULT)"
 
 definition
 	calculateInput :: "Importer\<Rightarrow> FMURef \<Rightarrow> Importer"
 where
 	"calculateInput I  equation \<equiv> 
-	\<comment>\<open>User defined body of calculateInput\<close>
+	\<comment>\<open>User defined body of calculateInput.\<close>
 	(
 		let 
 (I1::Importer) = (setPort I  equation)
@@ -2043,16 +3195,23 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: calculateOutput: (Importer * FMURef -> Importer)
+	calculateOutput(I, equation) ==
+let I1:Importer = getPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
+	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.outputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
 
+\<comment>\<open>VDM source: pre_calculateOutput: (Importer * FMURef +> bool)
+	pre_calculateOutput(I, equation) ==
+let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.outputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 593:9\<close>
 definition
 	pre_calculateOutput :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
 	"pre_calculateOutput I  equation \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_calculateOutput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculateOutput` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef equation)  \<and> 
-		\<comment>\<open>User defined body of pre_calculateOutput\<close>
+		\<comment>\<open>User defined body of pre_calculateOutput.\<close>
 		(
 		let 
 (fmu::FMU) = (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (equation))))
@@ -2065,19 +3224,20 @@ where
 		)"
 
 
+\<comment>\<open>VDM source: post_calculateOutput = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
 definition
 	post_calculateOutput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_calculateOutput I  equation  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_calculateOutput specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_calculateOutput` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMURef equation  \<and>  inv_Importer RESULT)"
 
 definition
 	calculateOutput :: "Importer\<Rightarrow> FMURef \<Rightarrow> Importer"
 where
 	"calculateOutput I  equation \<equiv> 
-	\<comment>\<open>User defined body of calculateOutput\<close>
+	\<comment>\<open>User defined body of calculateOutput.\<close>
 	(
 		let 
 (I1::Importer) = (getPort I  equation)
@@ -2090,30 +3250,38 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: runAlgorithm: (Importer * set of (Action) -> Importer)
+	runAlgorithm(I, algorithm) ==
+(if (algorithm = {})
+then I
+else let action in set {a | a in set algorithm & activatedAction(I, a)} in runAlgorithm(runAction(I, action), (algorithm \ {action})))
+	measure (card algorithm)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 
+\<comment>\<open>VDM source: pre_runAlgorithm = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 definition
 	pre_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet \<Rightarrow> bool"
 where
 	"pre_runAlgorithm I  algorithm \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_runAlgorithm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_runAlgorithm` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_Action  algorithm))"
 
 
+\<comment>\<open>VDM source: post_runAlgorithm = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 definition
 	post_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_runAlgorithm I  algorithm  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_runAlgorithm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_runAlgorithm` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_Action  algorithm)  \<and>  inv_Importer RESULT)"
 
 definition
 	runAlgorithm :: "Importer\<Rightarrow> Action VDMSet \<Rightarrow> Importer"
 where
 	"runAlgorithm I  algorithm \<equiv> 
-	\<comment>\<open>User defined body of runAlgorithm\<close>
+	\<comment>\<open>User defined body of runAlgorithm.\<close>
 	(
 		if ((algorithm = {})) then
 		(I)
@@ -2122,34 +3290,45 @@ where
 		SOME (dummy0::Importer) .(dummy0 \<in> { (runAlgorithm (runAction I  action)  (algorithm - {action})) | action .  ((action \<in>{ a .   ((a \<in>algorithm))  \<and> (activatedAction I  a) }))  }))))"
 
 	
+\<comment>\<open>VDM source: initializeData: (Importer -> Importer)
+	initializeData(I) ==
+let connections:map (FMURef) to (FMURef) = ((I.scenario).connections) in let outputs:set of (Action) = {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set (dom connections)}, inputs:set of (Action) = {mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set (rng connections)} in runAlgorithm(I, (outputs union inputs))
+	pre (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <INIT>))
+	post variablesSynchronized((RESULT.scenario))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 615:5\<close>
 
+\<comment>\<open>VDM source: pre_initializeData: (Importer +> bool)
+	pre_initializeData(I) ==
+(forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <INIT>))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 622:9\<close>
 definition
 	pre_initializeData :: "Importer \<Rightarrow> bool"
 where
 	"pre_initializeData I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_initializeData specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_initializeData` specification.\<close>
 		(inv_Importer I)  \<and> 
-		\<comment>\<open>User defined body of pre_initializeData\<close>
+		\<comment>\<open>User defined body of pre_initializeData.\<close>
 		(\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_INIT ))"
 
 
+\<comment>\<open>VDM source: post_initializeData: (Importer * Importer +> bool)
+	post_initializeData(I, RESULT) ==
+variablesSynchronized((RESULT.scenario))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 623:10\<close>
 definition
 	post_initializeData :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_initializeData I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_initializeData specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_initializeData` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_initializeData\<close>
+		\<comment>\<open>User defined body of post_initializeData.\<close>
 		(variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT)))"
 
 definition
 	initializeData :: "Importer \<Rightarrow> Importer"
 where
 	"initializeData I \<equiv> 
-	\<comment>\<open>User defined body of initializeData\<close>
+	\<comment>\<open>User defined body of initializeData.\<close>
 	(
 		let 
 (connections::(FMURef \<rightharpoonup> FMURef)) = (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))
@@ -2174,16 +3353,24 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: cosimStep: (Importer -> Importer)
+	cosimStep(I) ==
+let connections:map (FMURef) to (FMURef) = ((I.scenario).connections) in let fmus:set of (FMU) = (rng ((I.scenario).fmus)) in let outputs:set of (Action) = {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set (dom connections) & ((derefOutput(((I.scenario).fmus)((outputLF.name)), (outputLF.ref)).type) = <continous>)}, inputs:set of (Action) = {mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set (rng connections) & ((derefInput(((I.scenario).fmus)((inputLF.name)), (inputLF.ref)).type) = <continous>)}, steps:set of (Action) = {mk_Action(<step>, fmu, 1) | fmu in set fmus} in let actions:set of (Action) = ((outputs union inputs) union steps) in runAlgorithm(I, actions)
+	pre let scenario:Machine = (I.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))
+	post let scenario:Machine = (RESULT.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 630:5\<close>
 
+\<comment>\<open>VDM source: pre_cosimStep: (Importer +> bool)
+	pre_cosimStep(I) ==
+let scenario:Machine = (I.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 642:9\<close>
 definition
 	pre_cosimStep :: "Importer \<Rightarrow> bool"
 where
 	"pre_cosimStep I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_cosimStep specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_cosimStep` specification.\<close>
 		(inv_Importer I)  \<and> 
-		\<comment>\<open>User defined body of pre_cosimStep\<close>
+		\<comment>\<open>User defined body of pre_cosimStep.\<close>
 		(
 		let 
 (scenario::Machine) = (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))
@@ -2196,14 +3383,17 @@ where
 		)"
 
 
+\<comment>\<open>VDM source: post_cosimStep: (Importer * Importer +> bool)
+	post_cosimStep(I, RESULT) ==
+let scenario:Machine = (RESULT.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 645:9\<close>
 definition
 	post_cosimStep :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_cosimStep I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_cosimStep specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_cosimStep` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_cosimStep\<close>
+		\<comment>\<open>User defined body of post_cosimStep.\<close>
 		(
 		let 
 (scenario::Machine) = (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT))
@@ -2219,7 +3409,7 @@ definition
 	cosimStep :: "Importer \<Rightarrow> Importer"
 where
 	"cosimStep I \<equiv> 
-	\<comment>\<open>User defined body of cosimStep\<close>
+	\<comment>\<open>User defined body of cosimStep.\<close>
 	(
 		let 
 (connections::(FMURef \<rightharpoonup> FMURef)) = (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))
@@ -2265,58 +3455,76 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: runAction: (Importer * Action -> Importer)
+	runAction(I, A) ==
+(cases A :
+mk_Action(<get>, fmu, port) -> getPort(I, mk_FMURef((fmu.name), port)),
+mk_Action(<set>, fmu, port) -> setPort(I, mk_FMURef((fmu.name), port)),
+mk_Action(<step>, fmu, -) -> stepFMU(I, fmu),
+mk_Action(<setC>, fmu, clock) -> setClock(I, fmu, clock, true),
+mk_Action(<getC>, fmu, clock) -> queryClock(I, fmu, clock)
+end)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 
+\<comment>\<open>VDM source: pre_runAction = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 definition
 	pre_runAction :: "Importer\<Rightarrow> Action \<Rightarrow> bool"
 where
 	"pre_runAction I  A \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_runAction specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_runAction` specification.\<close>
 		(inv_Importer I  \<and>  inv_Action A)"
 
 
+\<comment>\<open>VDM source: post_runAction = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 definition
 	post_runAction :: "Importer\<Rightarrow> Action\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_runAction I  A  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_runAction specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_runAction` specification.\<close>
 		(inv_Importer I  \<and>  inv_Action A  \<and>  inv_Importer RESULT)"
 
 definition
 	runAction :: "Importer\<Rightarrow> Action \<Rightarrow> Importer"
 where
 	"runAction I  A \<equiv> 
-	\<comment>\<open>User defined body of runAction\<close>
+	\<comment>\<open>User defined body of runAction.\<close>
 	(
 		 \<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `Action` VDM type.\<close>)"
 
 	
+\<comment>\<open>VDM source: stepFMU: (Importer * FMU -> Importer)
+	stepFMU(I, fmu) ==
+let mk_(fmuUpdated, step, event):(FMU * real * bool) = step_tm(fmu, (I.stepSize)) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmuUpdated.name) |-> fmuUpdated})), fmusWithEvent |-> (if event
+then ((I.fmusWithEvent) union {(fmu.name)})
+else (I.fmusWithEvent)), stepSize |-> step)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 
+\<comment>\<open>VDM source: pre_stepFMU = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 definition
 	pre_stepFMU :: "Importer\<Rightarrow> FMU \<Rightarrow> bool"
 where
 	"pre_stepFMU I  fmu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_stepFMU specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_stepFMU` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu)"
 
 
+\<comment>\<open>VDM source: post_stepFMU = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 definition
 	post_stepFMU :: "Importer\<Rightarrow> FMU\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_stepFMU I  fmu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_stepFMU specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_stepFMU` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  inv_Importer RESULT)"
 
 definition
 	stepFMU :: "Importer\<Rightarrow> FMU \<Rightarrow> Importer"
 where
 	"stepFMU I  fmu \<equiv> 
-	\<comment>\<open>User defined body of stepFMU\<close>
+	\<comment>\<open>User defined body of stepFMU.\<close>
 	(
 		let 
 (dummy0::(FMU\<times> VDMReal\<times> bool)) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))
@@ -2349,58 +3557,74 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: activatedAction: (Importer * Action -> bool)
+	activatedAction(I, A) ==
+(cases A :
+mk_Action(<get>, fmu, port) -> preGetI(I, fmu, port),
+mk_Action(<set>, fmu, port) -> preSetI(I, fmu, port),
+mk_Action(<step>, fmu, -) -> preStepI(I, fmu),
+mk_Action(<setC>, fmu, clock) -> preSetCI(I, fmu, clock),
+mk_Action(<getC>, fmu, clock) -> preGetCI(I, fmu, clock)
+end)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 
+\<comment>\<open>VDM source: pre_activatedAction = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 definition
 	pre_activatedAction :: "Importer\<Rightarrow> Action \<Rightarrow> bool"
 where
 	"pre_activatedAction I  A \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_activatedAction specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_activatedAction` specification.\<close>
 		(inv_Importer I  \<and>  inv_Action A)"
 
 
+\<comment>\<open>VDM source: post_activatedAction = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 definition
 	post_activatedAction :: "Importer\<Rightarrow> Action\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_activatedAction I  A  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_activatedAction specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_activatedAction` specification.\<close>
 		(inv_Importer I  \<and>  inv_Action A  \<and>  (inv_bool RESULT))"
 
 definition
 	activatedAction :: "Importer\<Rightarrow> Action \<Rightarrow> bool"
 where
 	"activatedAction I  A \<equiv> 
-	\<comment>\<open>User defined body of activatedAction\<close>
+	\<comment>\<open>User defined body of activatedAction.\<close>
 	(
 		 \<comment>\<open>Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `Action` VDM type.\<close>)"
 
 	
+\<comment>\<open>VDM source: preSetI: (Importer * FMU * Ref -> bool)
+	preSetI(I, fmu, port) ==
+let inputLF:Variable = derefInput(fmu, port) in ((((fmu.mode) = <EVENT>) <=> ((mk_FMURef((fmu.name), port) in set ((I.activeEquations) \ (I.calculatedEquations))) and ((inputLF.type) = <discrete>))) and ((((fmu.mode) = <STEP>) <=> ((inputLF.type) = <continous>)) and preSet(fmu, port)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 
+\<comment>\<open>VDM source: pre_preSetI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 definition
 	pre_preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preSetI I  fmu  port \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preSetI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preSetI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref port))"
 
 
+\<comment>\<open>VDM source: post_preSetI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 definition
 	post_preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preSetI I  fmu  port  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preSetI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preSetI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref port)  \<and>  (inv_bool RESULT))"
 
 definition
 	preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preSetI I  fmu  port \<equiv> 
-	\<comment>\<open>User defined body of preSetI\<close>
+	\<comment>\<open>User defined body of preSetI.\<close>
 	(
 		let 
 (inputLF::Variable) = (derefInput fmu  port)
@@ -2413,30 +3637,35 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: preGetI: (Importer * FMU * Ref -> bool)
+	preGetI(I, fmu, port) ==
+let outputLF:Variable = derefOutput(fmu, port) in ((((fmu.mode) = <EVENT>) <=> ((mk_FMURef((fmu.name), port) in set ((I.activeEquations) \ (I.calculatedEquations))) and ((outputLF.type) = <discrete>))) and ((((fmu.mode) = <STEP>) <=> ((outputLF.type) = <continous>)) and preGet(fmu, port)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 
+\<comment>\<open>VDM source: pre_preGetI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 definition
 	pre_preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preGetI I  fmu  port \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preGetI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preGetI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref port))"
 
 
+\<comment>\<open>VDM source: post_preGetI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 definition
 	post_preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preGetI I  fmu  port  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preGetI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preGetI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref port)  \<and>  (inv_bool RESULT))"
 
 definition
 	preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preGetI I  fmu  port \<equiv> 
-	\<comment>\<open>User defined body of preGetI\<close>
+	\<comment>\<open>User defined body of preGetI.\<close>
 	(
 		let 
 (outputLF::Variable) = (derefOutput fmu  port)
@@ -2449,57 +3678,67 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: preStepI: (Importer * FMU -> bool)
+	preStepI(I, fmu) ==
+preStepT(fmu, (I.stepSize))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 
+\<comment>\<open>VDM source: pre_preStepI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 definition
 	pre_preStepI :: "Importer\<Rightarrow> FMU \<Rightarrow> bool"
 where
 	"pre_preStepI I  fmu \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preStepI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preStepI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu)"
 
 
+\<comment>\<open>VDM source: post_preStepI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 definition
 	post_preStepI :: "Importer\<Rightarrow> FMU\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preStepI I  fmu  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preStepI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preStepI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_bool RESULT))"
 
 definition
 	preStepI :: "Importer\<Rightarrow> FMU \<Rightarrow> bool"
 where
 	"preStepI I  fmu \<equiv> 
-	\<comment>\<open>User defined body of preStepI\<close>
+	\<comment>\<open>User defined body of preStepI.\<close>
 	(preStepT fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))"
 
 	
+\<comment>\<open>VDM source: preGetCI: (Importer * FMU * Ref -> bool)
+	preGetCI(I, fmu, clock) ==
+let outputLF:FMURef = mk_FMURef((fmu.name), clock) in ((outputLF in set (I.relevantOutputClocks)) and preGetC(fmu, clock))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 
+\<comment>\<open>VDM source: pre_preGetCI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 definition
 	pre_preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preGetCI I  fmu  clock \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preGetCI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preGetCI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock))"
 
 
+\<comment>\<open>VDM source: post_preGetCI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 definition
 	post_preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preGetCI I  fmu  clock  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preGetCI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preGetCI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool RESULT))"
 
 definition
 	preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preGetCI I  fmu  clock \<equiv> 
-	\<comment>\<open>User defined body of preGetCI\<close>
+	\<comment>\<open>User defined body of preGetCI.\<close>
 	(
 		let 
 (outputLF::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
@@ -2512,30 +3751,35 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: preSetCI: (Importer * FMU * Ref -> bool)
+	preSetCI(I, fmu, clock) ==
+let inputLF:FMURef = mk_FMURef((fmu.name), clock) in let val:Value = (I.valueMap)(inputLF) in (preSetC(fmu, clock, (val.value)) and (inputLF in set (I.relevantInputClocks)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 
+\<comment>\<open>VDM source: pre_preSetCI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 definition
 	pre_preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"pre_preSetCI I  fmu  clock \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_preSetCI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_preSetCI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock))"
 
 
+\<comment>\<open>VDM source: post_preSetCI = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 definition
 	post_preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_preSetCI I  fmu  clock  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_preSetCI specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_preSetCI` specification.\<close>
 		(inv_Importer I  \<and>  inv_FMU fmu  \<and>  (inv_Ref clock)  \<and>  (inv_bool RESULT))"
 
 definition
 	preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
 	"preSetCI I  fmu  clock \<equiv> 
-	\<comment>\<open>User defined body of preSetCI\<close>
+	\<comment>\<open>User defined body of preSetCI.\<close>
 	(
 		let 
 (inputLF::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
@@ -2557,59 +3801,75 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: feedthroughSatisfied: (FMU * Variable -> bool)
+	feedthroughSatisfied(fmu, outputLF) ==
+(forall i in set (fmu.inputs) & (((i.ref) in set (outputLF.dependsOn)) and ((((i.contract) = <reactive>) => (((fmu.env)((i.ref)).time) >= (fmu.time))) and (((i.contract) = <delayed>) => (((fmu.env)((i.ref)).time) = (fmu.time))))))
+	pre (forall i in set (fmu.inputs) & ((i.causality) = <inputLF>))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
 
+\<comment>\<open>VDM source: pre_feedthroughSatisfied: (FMU * Variable +> bool)
+	pre_feedthroughSatisfied(fmu, outputLF) ==
+(forall i in set (fmu.inputs) & ((i.causality) = <inputLF>))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:9\<close>
 definition
 	pre_feedthroughSatisfied :: "FMU\<Rightarrow> Variable \<Rightarrow> bool"
 where
 	"pre_feedthroughSatisfied fmu  outputLF \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_feedthroughSatisfied specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_feedthroughSatisfied` specification.\<close>
 		(inv_FMU fmu  \<and>  inv_Variable outputLF)  \<and> 
-		\<comment>\<open>User defined body of pre_feedthroughSatisfied\<close>
+		\<comment>\<open>User defined body of pre_feedthroughSatisfied.\<close>
 		(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . ((causality\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = IOLF.U_inputLF ))"
 
 
+\<comment>\<open>VDM source: post_feedthroughSatisfied = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
 definition
 	post_feedthroughSatisfied :: "FMU\<Rightarrow> Variable\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_feedthroughSatisfied fmu  outputLF  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_feedthroughSatisfied specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_feedthroughSatisfied` specification.\<close>
 		(inv_FMU fmu  \<and>  inv_Variable outputLF  \<and>  (inv_bool RESULT))"
 
 definition
 	feedthroughSatisfied :: "FMU\<Rightarrow> Variable \<Rightarrow> bool"
 where
 	"feedthroughSatisfied fmu  outputLF \<equiv> 
-	\<comment>\<open>User defined body of feedthroughSatisfied\<close>
+	\<comment>\<open>User defined body of feedthroughSatisfied.\<close>
 	(\<forall> i \<in> (inputs\<^sub>F\<^sub>M\<^sub>U (fmu))  . (((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) \<in> (dependsOn\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (outputLF))) \<and> ((((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = ContractLF.U_reactive ) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) \<ge> (time\<^sub>F\<^sub>M\<^sub>U (fmu)))) \<and> (((contract\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i)) = ContractLF.U_delayed ) \<longrightarrow> ((time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (((env\<^sub>F\<^sub>M\<^sub>U (fmu)) (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e (i))))) = (time\<^sub>F\<^sub>M\<^sub>U (fmu)))))))"
 
 	
+\<comment>\<open>VDM source: updateSchedule: (Importer * set of (Name) * set of (Interval) -> Importer)
+	updateSchedule(I, fmus, intervalSet) ==
+(if (fmus = {})
+then I
+else let name in set fmus in let fmu:FMU = ((I.scenario).fmus)(name) in let relevantClocks:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & ((c.interval) in set intervalSet)} in let scheduleEntries:map (FMURef) to (real) = calculateSchedule(fmu, relevantClocks, {|->}) in let I1:Importer = mu(I, schedule |-> ((I.schedule) ++ scheduleEntries)) in updateSchedule(I1, (fmus \ {name}), intervalSet))
+	measure (card fmus)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 
+\<comment>\<open>VDM source: pre_updateSchedule = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 definition
 	pre_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet \<Rightarrow> bool"
 where
 	"pre_updateSchedule I  fmus  intervalSet \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_updateSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_updateSchedule` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus)  \<and>  (inv_VDMSet' (inv_Interval) intervalSet))"
 
 
+\<comment>\<open>VDM source: post_updateSchedule = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 definition
 	post_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_updateSchedule I  fmus  intervalSet  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_updateSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_updateSchedule` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) fmus)  \<and>  (inv_VDMSet' (inv_Interval) intervalSet)  \<and>  inv_Importer RESULT)"
 
 definition
 	updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet \<Rightarrow> Importer"
 where
 	"updateSchedule I  fmus  intervalSet \<equiv> 
-	\<comment>\<open>User defined body of updateSchedule\<close>
+	\<comment>\<open>User defined body of updateSchedule.\<close>
 	(
 		if ((fmus = {})) then
 		(I)
@@ -2654,27 +3914,38 @@ where
 		) | name .  ((name \<in>fmus))  }))))"
 
 	
+\<comment>\<open>VDM source: createSchedule: (Importer -> Importer)
+	createSchedule(I) ==
+let fmus:set of (Name) = (dom ((I.scenario).fmus)) in updateSchedule(I, fmus, {<constantLF>, <fixed>, <calculated>, <tunable>, <changing>, <countdown>})
+	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))
+	post let timeBasedClocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng ((I.scenario).fmus))}) in (((dom (RESULT.schedule)) = timeBasedClocks) and ((forall m' in set (rng ((I.scenario).fmus)) & ((m'.mode) = <INIT>)) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 769:5\<close>
 
+\<comment>\<open>VDM source: pre_createSchedule: (Importer +> bool)
+	pre_createSchedule(I) ==
+(forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 773:9\<close>
 definition
 	pre_createSchedule :: "Importer \<Rightarrow> bool"
 where
 	"pre_createSchedule I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_createSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_createSchedule` specification.\<close>
 		(inv_Importer I)  \<and> 
-		\<comment>\<open>User defined body of pre_createSchedule\<close>
+		\<comment>\<open>User defined body of pre_createSchedule.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_INIT ) \<and> ((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))))"
 
 
+\<comment>\<open>VDM source: post_createSchedule: (Importer * Importer +> bool)
+	post_createSchedule(I, RESULT) ==
+let timeBasedClocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng ((I.scenario).fmus))}) in (((dom (RESULT.schedule)) = timeBasedClocks) and ((forall m' in set (rng ((I.scenario).fmus)) & ((m'.mode) = <INIT>)) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 777:9\<close>
 definition
 	post_createSchedule :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_createSchedule I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_createSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_createSchedule` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_createSchedule\<close>
+		\<comment>\<open>User defined body of post_createSchedule.\<close>
 		(
 		let 
 (timeBasedClocks::FMURef VDMSet) = (\<Union> { (createFMURefs fmu  { (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) | clock .  ((clock \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) = IOLF.U_inputLF ) \<and> ((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (clock)) \<noteq> Interval.U_triggered )) }  {}) | fmu .  ((fmu \<in>(rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))))  })
@@ -2690,7 +3961,7 @@ definition
 	createSchedule :: "Importer \<Rightarrow> Importer"
 where
 	"createSchedule I \<equiv> 
-	\<comment>\<open>User defined body of createSchedule\<close>
+	\<comment>\<open>User defined body of createSchedule.\<close>
 	(
 		let 
 (fmus::Name VDMSet) = (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))
@@ -2703,34 +3974,45 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: initialization: (Importer -> Importer)
+	initialization(I) ==
+let I1:Importer = initializeData(I) in let I2:Importer = createSchedule(I1) in enterStepMode(I2, (dom ((I2.scenario).fmus)))
+	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and fmusSynchronized((I.scenario))))
+	post (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 788:5\<close>
 
+\<comment>\<open>VDM source: pre_initialization: (Importer +> bool)
+	pre_initialization(I) ==
+(forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and fmusSynchronized((I.scenario))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 803:9\<close>
 definition
 	pre_initialization :: "Importer \<Rightarrow> bool"
 where
 	"pre_initialization I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_initialization specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_initialization` specification.\<close>
 		(inv_Importer I)  \<and> 
-		\<comment>\<open>User defined body of pre_initialization\<close>
+		\<comment>\<open>User defined body of pre_initialization.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_INIT ) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))"
 
 
+\<comment>\<open>VDM source: post_initialization: (Importer * Importer +> bool)
+	post_initialization(I, RESULT) ==
+(forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 805:10\<close>
 definition
 	post_initialization :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_initialization I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_initialization specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_initialization` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_initialization\<close>
+		\<comment>\<open>User defined body of post_initialization.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP ) \<and> ((variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT))) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT))))))"
 
 definition
 	initialization :: "Importer \<Rightarrow> Importer"
 where
 	"initialization I \<equiv> 
-	\<comment>\<open>User defined body of initialization\<close>
+	\<comment>\<open>User defined body of initialization.\<close>
 	(
 		let 
 (I1::Importer) = (initializeData I)
@@ -2752,23 +4034,28 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: tickingClocks: (Importer -> (Importer * set of (FMURef)))
+	tickingClocks(I) ==
+let clocks:set of (FMURef) = (dom ((I.schedule) :> {((I.time).r)})) in let I1:Importer = mu(I, relevantInputClocks |-> clocks) in mk_(I1, clocks)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 
+\<comment>\<open>VDM source: pre_tickingClocks = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 definition
 	pre_tickingClocks :: "Importer \<Rightarrow> bool"
 where
 	"pre_tickingClocks I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_tickingClocks specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_tickingClocks` specification.\<close>
 		(inv_Importer I)"
 
 
+\<comment>\<open>VDM source: post_tickingClocks = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 definition
 	post_tickingClocks :: "Importer\<Rightarrow> (Importer\<times> FMURef VDMSet) \<Rightarrow> bool"
 where
 	"post_tickingClocks I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_tickingClocks specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_tickingClocks` specification.\<close>
 		(inv_Importer I  \<and>  
 		(inv_Importer (fst RESULT)\<and>
 		 (inv_VDMSet' inv_FMURef  (snd RESULT))
@@ -2778,7 +4065,7 @@ definition
 	tickingClocks :: "Importer \<Rightarrow> (Importer\<times> FMURef VDMSet)"
 where
 	"tickingClocks I \<equiv> 
-	\<comment>\<open>User defined body of tickingClocks\<close>
+	\<comment>\<open>User defined body of tickingClocks.\<close>
 	(
 		let 
 (clocks::FMURef VDMSet) = (dom ((schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<triangleright> {(r\<^sub>T\<^sub>i\<^sub>m\<^sub>e ((time\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))}))
@@ -2800,63 +4087,87 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: stepnegotiation: (Importer -> real)
+	stepnegotiation(M) ==
+not yet specified
+	post ((RESULT >= 0) and (forall fmu in set (rng ((M.scenario).fmus)) & ((fmu.maxStep) >= RESULT)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
 
+\<comment>\<open>VDM source: pre_stepnegotiation = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
 definition
 	pre_stepnegotiation :: "Importer \<Rightarrow> bool"
 where
 	"pre_stepnegotiation M \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_stepnegotiation specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_stepnegotiation` specification.\<close>
 		(inv_Importer M)"
 
 
+\<comment>\<open>VDM source: post_stepnegotiation: (Importer * real +> bool)
+	post_stepnegotiation(M, RESULT) ==
+((RESULT >= 0) and (forall fmu in set (rng ((M.scenario).fmus)) & ((fmu.maxStep) >= RESULT)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 829:9\<close>
 definition
 	post_stepnegotiation :: "Importer\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
 	"post_stepnegotiation M  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_stepnegotiation specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_stepnegotiation` specification.\<close>
 		(inv_Importer M  \<and>  (inv_VDMReal RESULT))  \<and> 
-		\<comment>\<open>User defined body of post_stepnegotiation\<close>
+		\<comment>\<open>User defined body of post_stepnegotiation.\<close>
 		((RESULT \<ge> (0::VDMNat)) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (M)))))  . ((maxStep\<^sub>F\<^sub>M\<^sub>U (fmu)) \<ge> RESULT)))"
 
 definition
 	stepnegotiation :: "Importer \<Rightarrow> VDMReal"
 where
 	"stepnegotiation M \<equiv> 
-	\<comment>\<open>User defined body of stepnegotiation\<close>
+	\<comment>\<open>User defined body of stepnegotiation.\<close>
 	undefined"
 
 	
+\<comment>\<open>VDM source: cosimulationStep: (Importer -> Importer)
+	cosimulationStep(I) ==
+let mk_(I1, clocksToTick):(Importer * set of (FMURef)) = tickingClocks(I) in let eventDetected:bool = ((clocksToTick <> {}) or ((I1.fmusWithEvent) <> {})) in let I2:Importer = (if eventDetected
+then clockedSimulationAlgorithm(I1, clocksToTick)
+else I) in let I3:Importer = mu(I, stepSize |-> stepnegotiation(I2)) in let I4:Importer = cosimStep(I3) in (if ((I4.endtime) >= (I4.time))
+then cosimulationStep(I4)
+else I4)
+	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((I.scenario)) and fmusSynchronized((I.scenario)))))
+	post (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))
+	measure (((I.endtime).r) - ((I.time).r))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 834:5\<close>
 
+\<comment>\<open>VDM source: pre_cosimulationStep: (Importer +> bool)
+	pre_cosimulationStep(I) ==
+(forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((I.scenario)) and fmusSynchronized((I.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 858:9\<close>
 definition
 	pre_cosimulationStep :: "Importer \<Rightarrow> bool"
 where
 	"pre_cosimulationStep I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_cosimulationStep specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_cosimulationStep` specification.\<close>
 		(inv_Importer I)  \<and> 
-		\<comment>\<open>User defined body of pre_cosimulationStep\<close>
+		\<comment>\<open>User defined body of pre_cosimulationStep.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP ) \<and> ((variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))))"
 
 
+\<comment>\<open>VDM source: post_cosimulationStep: (Importer * Importer +> bool)
+	post_cosimulationStep(I, RESULT) ==
+(forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 861:10\<close>
 definition
 	post_cosimulationStep :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_cosimulationStep I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_cosimulationStep specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_cosimulationStep` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_cosimulationStep\<close>
+		\<comment>\<open>User defined body of post_cosimulationStep.\<close>
 		(\<forall> m' \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (m')) = FMUModeLF.U_STEP ) \<and> ((variablesSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT))) \<and> (fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (RESULT))))))"
 
 definition
 	cosimulationStep :: "Importer \<Rightarrow> Importer"
 where
 	"cosimulationStep I \<equiv> 
-	\<comment>\<open>User defined body of cosimulationStep\<close>
+	\<comment>\<open>User defined body of cosimulationStep.\<close>
 	(
 		let 
 (dummy0::(Importer\<times> FMURef VDMSet)) = (tickingClocks I)
@@ -2938,61 +4249,80 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: fmusSynchronized: (Machine -> bool)
+	fmusSynchronized(M) ==
+((card {(fmu.time) | fmu in set (rng (M.fmus))}) = 1)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 
+\<comment>\<open>VDM source: pre_fmusSynchronized = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 definition
 	pre_fmusSynchronized :: "Machine \<Rightarrow> bool"
 where
 	"pre_fmusSynchronized M \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_fmusSynchronized specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_fmusSynchronized` specification.\<close>
 		(inv_Machine M)"
 
 
+\<comment>\<open>VDM source: post_fmusSynchronized = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 definition
 	post_fmusSynchronized :: "Machine\<Rightarrow> bool \<Rightarrow> bool"
 where
 	"post_fmusSynchronized M  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_fmusSynchronized specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_fmusSynchronized` specification.\<close>
 		(inv_Machine M  \<and>  (inv_bool RESULT))"
 
 definition
 	fmusSynchronized :: "Machine \<Rightarrow> bool"
 where
 	"fmusSynchronized M \<equiv> 
-	\<comment>\<open>User defined body of fmusSynchronized\<close>
+	\<comment>\<open>User defined body of fmusSynchronized.\<close>
 	((vdm_card { (time\<^sub>F\<^sub>M\<^sub>U (fmu)) | fmu .  ((fmu \<in>(rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  }) = (1::VDMNat1))"
 
 	
+\<comment>\<open>VDM source: calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (FMURef) -> set of (Name))
+	calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, clocks) ==
+let addedFMUs:set of (Name) = ({(clock.name) | clock in set clocks} union {((M.clockConnections)(con).name) | con in set (dom (M.clockConnections)) & (((con.name) in set relevantFMUs) and (((M.clockConnections)(con).name) in set notRelevantFMUs))}) in (if (addedFMUs = {})
+then relevantFMUs
+else calculateRelevantFMUs(M, (relevantFMUs union addedFMUs), (notRelevantFMUs \ addedFMUs), clocks))
+	pre ((relevantFMUs inter notRelevantFMUs) = {})
+	post (({(clock.name) | clock in set clocks} subset RESULT) and (RESULT subset (dom (M.fmus))))
+	measure (card notRelevantFMUs)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 875:5\<close>
 
+\<comment>\<open>VDM source: pre_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (FMURef) +> bool)
+	pre_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, clocks) ==
+((relevantFMUs inter notRelevantFMUs) = {})\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 884:48\<close>
 definition
 	pre_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
 	"pre_calculateRelevantFMUs M  relevantFMUs  notRelevantFMUs  clocks \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_calculateRelevantFMUs specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculateRelevantFMUs` specification.\<close>
 		(inv_Machine M  \<and>  (inv_VDMSet' (inv_Name) relevantFMUs)  \<and>  (inv_VDMSet' (inv_Name) notRelevantFMUs)  \<and>  (inv_VDMSet' inv_FMURef  clocks))  \<and> 
-		\<comment>\<open>User defined body of pre_calculateRelevantFMUs\<close>
+		\<comment>\<open>User defined body of pre_calculateRelevantFMUs.\<close>
 		((relevantFMUs \<inter> notRelevantFMUs) = {})"
 
 
+\<comment>\<open>VDM source: post_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (FMURef) * set of (Name) +> bool)
+	post_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, clocks, RESULT) ==
+(({(clock.name) | clock in set clocks} subset RESULT) and (RESULT subset (dom (M.fmus))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 886:13\<close>
 definition
 	post_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
 	"post_calculateRelevantFMUs M  relevantFMUs  notRelevantFMUs  clocks  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_calculateRelevantFMUs specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_calculateRelevantFMUs` specification.\<close>
 		(inv_Machine M  \<and>  (inv_VDMSet' (inv_Name) relevantFMUs)  \<and>  (inv_VDMSet' (inv_Name) notRelevantFMUs)  \<and>  (inv_VDMSet' inv_FMURef  clocks)  \<and>  (inv_VDMSet' (inv_Name) RESULT))  \<and> 
-		\<comment>\<open>User defined body of post_calculateRelevantFMUs\<close>
+		\<comment>\<open>User defined body of post_calculateRelevantFMUs.\<close>
 		(({ (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (clock)) | clock .  ((clock \<in>clocks))  } \<subseteq> RESULT) \<and> (RESULT \<subseteq> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))"
 
 definition
 	calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> Name VDMSet"
 where
 	"calculateRelevantFMUs M  relevantFMUs  notRelevantFMUs  clocks \<equiv> 
-	\<comment>\<open>User defined body of calculateRelevantFMUs\<close>
+	\<comment>\<open>User defined body of calculateRelevantFMUs.\<close>
 	(
 		let 
 (addedFMUs::Name VDMSet) = ({ (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (clock)) | clock .  ((clock \<in>clocks))  } \<union> { (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f ((the((clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) con)))) | con .  ((con \<in>(dom (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)))))  \<and> (((name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (con)) \<in> relevantFMUs) \<and> ((name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f ((the((clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (M)) con)))) \<in> notRelevantFMUs)) })
@@ -3009,30 +4339,40 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: solveSystemOfEquations: (Importer -> Importer)
+	solveSystemOfEquations(I) ==
+(if (((I.activeEquations) \ (I.calculatedEquations)) = {})
+then I
+else let clockActions:set of (Action) = ({mk_Action(<setC>, ((I.scenario).fmus)((clock.name)), (clock.ref)) | clock in set (I.relevantInputClocks)} union {mk_Action(<getC>, ((I.scenario).fmus)((clock.name)), (clock.ref)) | clock in set (I.relevantOutputClocks)}) in (if ((clockActions <> {}) and ({a | a in set clockActions & activatedAction(I, a)} <> {}))
+then let clockAction in set {a | a in set clockActions & activatedAction(I, a)} in solveSystemOfEquations(runAction(I, clockAction))
+else let portActions:set of (Action) = ({mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set ((I.activeEquations) \ (I.calculatedEquations))} union {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set ((I.activeEquations) \ (I.calculatedEquations))}) in let portAction in set {a | a in set portActions & activatedAction(I, a)} in solveSystemOfEquations(runAction(I, portAction))))
+	measure ((card (I.readyEquations)) + (card ((I.activeEquations) \ (I.calculatedEquations))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 
+\<comment>\<open>VDM source: pre_solveSystemOfEquations = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 definition
 	pre_solveSystemOfEquations :: "Importer \<Rightarrow> bool"
 where
 	"pre_solveSystemOfEquations I \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared pre_solveSystemOfEquations specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_solveSystemOfEquations` specification.\<close>
 		(inv_Importer I)"
 
 
+\<comment>\<open>VDM source: post_solveSystemOfEquations = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 definition
 	post_solveSystemOfEquations :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_solveSystemOfEquations I  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_solveSystemOfEquations specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_solveSystemOfEquations` specification.\<close>
 		(inv_Importer I  \<and>  inv_Importer RESULT)"
 
 definition
 	solveSystemOfEquations :: "Importer \<Rightarrow> Importer"
 where
 	"solveSystemOfEquations I \<equiv> 
-	\<comment>\<open>User defined body of solveSystemOfEquations\<close>
+	\<comment>\<open>User defined body of solveSystemOfEquations.\<close>
 	(
 		if ((((activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) - (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) = {})) then
 		(I)
@@ -3064,34 +4404,45 @@ where
 		)))"
 
 	
+\<comment>\<open>VDM source: eventIteration: (Importer * set of (Name) -> Importer)
+	eventIteration(I, relevantFMUs) ==
+let I1:Importer = solveSystemOfEquations(I) in let I2:Importer = updateDiscreteState(I1, relevantFMUs) in updateSchedule(I2, relevantFMUs, {<tunable>, <changing>, <countdown>})
+	pre (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <EVENT>)))
+	post (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <EVENT>) and (((I.activeEquations) \ (I.calculatedEquations)) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 913:1\<close>
 
+\<comment>\<open>VDM source: pre_eventIteration: (Importer * set of (Name) +> bool)
+	pre_eventIteration(I, relevantFMUs) ==
+(fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <EVENT>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 938:9\<close>
 definition
 	pre_eventIteration :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
 	"pre_eventIteration I  relevantFMUs \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_eventIteration specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_eventIteration` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) relevantFMUs))  \<and> 
-		\<comment>\<open>User defined body of pre_eventIteration\<close>
+		\<comment>\<open>User defined body of pre_eventIteration.\<close>
 		((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_EVENT )))"
 
 
+\<comment>\<open>VDM source: post_eventIteration: (Importer * set of (Name) * Importer +> bool)
+	post_eventIteration(I, relevantFMUs, RESULT) ==
+(forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <EVENT>) and (((I.activeEquations) \ (I.calculatedEquations)) = {})))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 939:10\<close>
 definition
 	post_eventIteration :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_eventIteration I  relevantFMUs  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_eventIteration specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_eventIteration` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' (inv_Name) relevantFMUs)  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_eventIteration\<close>
+		\<comment>\<open>User defined body of post_eventIteration.\<close>
 		(\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_EVENT ) \<and> (((activeEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) - (calculatedEquations\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) = {})))"
 
 definition
 	eventIteration :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> Importer"
 where
 	"eventIteration I  relevantFMUs \<equiv> 
-	\<comment>\<open>User defined body of eventIteration\<close>
+	\<comment>\<open>User defined body of eventIteration.\<close>
 	(
 		let 
 (I1::Importer) = (solveSystemOfEquations I)
@@ -3113,34 +4464,48 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: clockedSimulationAlgorithm: (Importer * set of (FMURef) -> Importer)
+	clockedSimulationAlgorithm(I, clocks) ==
+let relevantFMUs:set of (Name) = calculateRelevantFMUs((I.scenario), (I.fmusWithEvent), ((dom ((I.scenario).fmus)) \ (I.fmusWithEvent)), clocks) in let I1:Importer = enterEventMode(I, relevantFMUs) in let I2:Importer = activateClocks(I1, clocks) in let I3:Importer = eventIteration(I2, relevantFMUs) in (if ((I3.fmusWithEvent) <> {})
+then enterStepMode(I3, relevantFMUs)
+else clockedSimulationAlgorithm(I, clocks))
+	pre (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <STEP>) and (((I.fmusWithEvent) <> {}) or (clocks <> {})))))
+	post (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <STEP>)))
+	measure not yet specified\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 948:5\<close>
 
+\<comment>\<open>VDM source: pre_clockedSimulationAlgorithm: (Importer * set of (FMURef) +> bool)
+	pre_clockedSimulationAlgorithm(I, clocks) ==
+(fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <STEP>) and (((I.fmusWithEvent) <> {}) or (clocks <> {})))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 978:9\<close>
 definition
 	pre_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
 	"pre_clockedSimulationAlgorithm I  clocks \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_clockedSimulationAlgorithm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_clockedSimulationAlgorithm` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_FMURef  clocks))  \<and> 
-		\<comment>\<open>User defined body of pre_clockedSimulationAlgorithm\<close>
+		\<comment>\<open>User defined body of pre_clockedSimulationAlgorithm.\<close>
 		((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . (((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_STEP ) \<and> (((fmusWithEvent\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)) \<noteq> {}) \<or> (clocks \<noteq> {})))))"
 
 
+\<comment>\<open>VDM source: post_clockedSimulationAlgorithm: (Importer * set of (FMURef) * Importer +> bool)
+	post_clockedSimulationAlgorithm(I, clocks, RESULT) ==
+(fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <STEP>)))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 981:9\<close>
 definition
 	post_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
 	"post_clockedSimulationAlgorithm I  clocks  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for post_clockedSimulationAlgorithm specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_clockedSimulationAlgorithm` specification.\<close>
 		(inv_Importer I  \<and>  (inv_VDMSet' inv_FMURef  clocks)  \<and>  inv_Importer RESULT)  \<and> 
-		\<comment>\<open>User defined body of post_clockedSimulationAlgorithm\<close>
+		\<comment>\<open>User defined body of post_clockedSimulationAlgorithm.\<close>
 		((fmusSynchronized (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))) \<and> (\<forall> fmu \<in> (rng (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))))  . ((mode\<^sub>F\<^sub>M\<^sub>U (fmu)) = FMUModeLF.U_STEP )))"
 
 definition
 	clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> Importer"
 where
 	"clockedSimulationAlgorithm I  clocks \<equiv> 
-	\<comment>\<open>User defined body of clockedSimulationAlgorithm\<close>
+	\<comment>\<open>User defined body of clockedSimulationAlgorithm.\<close>
 	(
 		let 
 (relevantFMUs::Name VDMSet) = (calculateRelevantFMUs (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))  (fmusWithEvent\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))  ((dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I))))) - (fmusWithEvent\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))  clocks)
@@ -3184,16 +4549,28 @@ where
 		)"
 
 	
+\<comment>\<open>VDM source: calculateSchedule: (FMU * set of (Ref) * map (FMURef) to (real) -> map (FMURef) to (real))
+	calculateSchedule(fmu, clocks, schedule) ==
+(if (clocks = {})
+then schedule
+else let clock in set clocks in let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in let n:RealNaNLF = next_tm(fmu, clock), S1:map (FMURef) to (real) = (schedule ++ (if is_(n, real)
+then {fmuRef |-> next_tm(fmu, clock)}
+else {|->})) in calculateSchedule(fmu, (clocks \ {clock}), S1))
+	pre let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <inputLF>) and ((c.interval) <> <triggered>))} in (clocks subset cref)
+	measure (card clocks)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
 
+\<comment>\<open>VDM source: pre_calculateSchedule: (FMU * set of (Ref) * map (FMURef) to (real) +> bool)
+	pre_calculateSchedule(fmu, clocks, schedule) ==
+let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <inputLF>) and ((c.interval) <> <triggered>))} in (clocks subset cref)\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 1004:1\<close>
 definition
 	pre_calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> bool"
 where
 	"pre_calculateSchedule fmu  clocks  schedule \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for pre_calculateSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculateSchedule` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMSet' (inv_Ref) clocks)  \<and>  (inv_Map inv_FMURef  (inv_VDMReal) schedule))  \<and> 
-		\<comment>\<open>User defined body of pre_calculateSchedule\<close>
+		\<comment>\<open>User defined body of pre_calculateSchedule.\<close>
 		(
 		let 
 (cref::Ref VDMSet) = { (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) | c .  ((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U (fmu))))  \<and> (((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) = IOLF.U_inputLF ) \<and> ((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k (c)) \<noteq> Interval.U_triggered )) }
@@ -3206,19 +4583,20 @@ where
 		)"
 
 
+\<comment>\<open>VDM source: post_calculateSchedule = ?\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
 definition
 	post_calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal)\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> bool"
 where
 	"post_calculateSchedule fmu  clocks  schedule  RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared post_calculateSchedule specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_calculateSchedule` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMSet' (inv_Ref) clocks)  \<and>  (inv_Map inv_FMURef  (inv_VDMReal) schedule)  \<and>  (inv_Map inv_FMURef  (inv_VDMReal) RESULT))"
 
 definition
 	calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> (FMURef \<rightharpoonup> VDMReal)"
 where
 	"calculateSchedule fmu  clocks  schedule \<equiv> 
-	\<comment>\<open>User defined body of calculateSchedule\<close>
+	\<comment>\<open>User defined body of calculateSchedule.\<close>
 	(
 		if ((clocks = {})) then
 		(schedule)
