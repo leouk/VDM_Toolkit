@@ -178,8 +178,8 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             assert predicate != null || prdFV.isEmpty();
 
             // domFV union prdFV inter boundV (i.e. all pred+dom variables taking away any free variables)
-            TCNameSet domAndPrdVarsToBind = TRMapCompExpression.variablesToBind(boundV, domFV, prdFV);
-            TCNameSet rngAndPrdVarsToBind = TRMapCompExpression.variablesToBind(boundV, rngFV, prdFV);
+            TCNameSet domAndPrdVarsToBind = TRExpression.variablesToBind(boundV, domFV, prdFV);
+            TCNameSet rngAndPrdVarsToBind = TRExpression.variablesToBind(boundV, rngFV, prdFV);
                                     
             // create set enum.comprehensions for dom/range sets
             // Vars(Set) = Vars(Expr) union Vars(Pred) inter Vars(bindings)  
@@ -189,14 +189,14 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             // have to figure out lambda bindings based on the intersection between 
             // declared bindings and FV ones (remainder are true free variables).
             // boundV will exclude mcompFV, but in some cases, this might come to bite (e.g. x |-> 10+fv)
-            TCNameSet domVarsToBind = TRMapCompExpression.variablesToBind(boundV, domFV);
-            TCNameSet rngVarsToBind = TRMapCompExpression.variablesToBind(boundV, rngFV);
-            TCNameSet prdVarsToBind = TRMapCompExpression.variablesToBind(boundV, prdFV);
+            TCNameSet domVarsToBind = TRExpression.variablesToBind(boundV, domFV);
+            TCNameSet rngVarsToBind = TRExpression.variablesToBind(boundV, rngFV);
+            TCNameSet prdVarsToBind = TRExpression.variablesToBind(boundV, prdFV);
 
-            boolean hasEasyDom = TRMapCompExpression.hasEasyLambda(domainExpr) || domVarsToBind.isEmpty();
-            boolean hasEasyRng = TRMapCompExpression.hasEasyLambda(rangeExpr) || rngVarsToBind.isEmpty();
+            boolean hasEasyDom = TRMapCompExpression.hasEasyLambda(domVarsToBind, domainExpr);
+            boolean hasEasyRng = TRMapCompExpression.hasEasyLambda(rngVarsToBind, rangeExpr); 
             // even with fv in the pred, needs to evaluate it anyhow, e.g. 3 > 5, or 3+fv > 5?  
-            boolean hasEasyPrd = TRMapCompExpression.isTrivialPred(predicate);//|| prdVarsToBind.isEmpty();
+            boolean hasEasyPrd = TRExpression.isTrivialPred(predicate);//|| prdVarsToBind.isEmpty();
 
             TRExpression predExpr = predicate != null ? predicate : TRLiteralExpression.newBooleanLiteralExpression(location, true);
             // figureout lambda bindings if necessary (i.e. any hard lambdas needed)
@@ -347,22 +347,15 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     {
         return domainExpr instanceof TRLiteralExpression && 
                 rangeExpr instanceof TRLiteralExpression && 
-                isTrivialPred(pred);
-    }
-
-    private static boolean isTrivialPred(TRExpression pred)
-    {
-        return pred == null || 
-              (pred instanceof TRLiteralExpression && 
-                ((TRLiteralExpression)pred).exp.equals(IsaToken.TRUE.toString()));
+                TRExpression.isTrivialPred(pred);
     }
 
     private static TRExpression figureOutSet(TRMultipleBindList given, TCNameSet varsToBind, TRExpression expr, TRExpression pred, TRMapCompExprKind kind)
     {
         assert expr != null && given != null && varsToBind != null;
         TRExpression result;
-        // for literals, it's just an singleton enumeration
-        if (expr instanceof TRLiteralExpression && isTrivialPred(pred))
+        // for literals, or easy-lambda expressions (e.g. 1+fv) with a trivial predicate it's just an singleton enumeration, {1+fv} or {10} or {fv}
+        if (hasEasyLambda(varsToBind, expr) && varsToBind.isEmpty() && TRExpression.isTrivialPred(pred))
         {
             result = TRSetEnumExpression.newSetEnumExpression(expr.location, TRExpressionList.newExpressionList(expr), expr.getType());
         }
@@ -375,35 +368,23 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     }
 
     /**
-     * Variables to bind as the union of all possibly free variables intersected with all bound variables  
-     * 
-     * @param bound
-     * @param possiblyFree
-     * @return dunion possiblyFree inter bound
+     * An easy expression is one that is either a literal, a variable, or has no variables to bind (e.g. 1+fv)
+     * @param varsToBind
+     * @param easyExpr
+     * @return
      */
-    private static TCNameSet variablesToBind(TCNameList bound, TCNameSet... possiblyFree)
-    {
-        TCNameSet result = new TCNameSet();
-        for(TCNameSet vs : possiblyFree)
-        {
-            result.addAll(vs);
-        }
-        result.retainAll(bound);
-        return result;
-    }
-
-    private static boolean hasEasyLambda(TRExpression easyExpr)
+    private static boolean hasEasyLambda(TCNameSet varsToBind, TRExpression easyExpr)
     {
         return (easyExpr != null && 
                     (easyExpr instanceof TRLiteralExpression || 
-                        easyExpr instanceof TRVariableExpression));
+                        easyExpr instanceof TRVariableExpression)) 
+                || 
+                varsToBind.isEmpty();
     }
 
     private static TRApplyExpression figureOutEasyLambda(TCNameSet varsToBind, TRExpression easyExpr, TRMapCompExprKind kind)
     {
-        //can be "1+fv" or something like it! Proper assertion here would involve FVV! Oh man... 
-        //assert easyExpr instanceof TRLiteralExpression || easyExpr instanceof TRVariableExpression;
-        assert hasEasyLambda(easyExpr) || (varsToBind != null && varsToBind.isEmpty());//easyExpr.getVDMExpr().apply(FVV, env) = varsToBind
+        assert hasEasyLambda(varsToBind, easyExpr);
         String original = null; 
         TRFunctionType fcnType = null;
         TRType t = easyExpr.getType();
