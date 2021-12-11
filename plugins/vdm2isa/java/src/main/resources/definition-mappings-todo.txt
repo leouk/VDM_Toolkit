@@ -21,14 +21,14 @@
 *TCDefinitionListList
 *TCDefinitionSet
 *TCQualifiedDefinition
+-TCUntypedDefinition (this is used in TCValueDefinition for calculating things then gets resolved)
+*TCImportedDefinition
 
-TCUntypedDefinition
 TCAssignmentDefinition
 TCExplicitOperationDefinition
 TCExternalDefinition
 TCImplicitFunctionDefinition
 TCImplicitOperationDefinition
-TCImportedDefinition
 TCNamedTraceDefinition
 TCRenamedDefinition
 TCStateDefinition
