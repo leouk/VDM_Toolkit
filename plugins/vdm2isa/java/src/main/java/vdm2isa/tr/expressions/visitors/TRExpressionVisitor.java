@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.expressions.visitors;
 
+import vdm2isa.tr.annotations.TRAnnotatedExpression;
 import vdm2isa.tr.expressions.TRAbstractCompExpression;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRBinaryExpression;
@@ -243,4 +244,8 @@ public abstract class TRExpressionVisitor<R, S>
 	public R caseFunctionInstantiationExpression(TRFunctionInstantiationExpression node, S arg) {
 		return caseExpression(node, arg);
 	}
+
+    public R caseAnnotatedExpression(TRAnnotatedExpression node, S arg) {
+        return caseExpression(node, arg);
+    }
 }

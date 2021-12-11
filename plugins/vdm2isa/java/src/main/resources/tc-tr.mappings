@@ -170,7 +170,6 @@ unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;
 unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 unmapped com.fujitsu.vdmj.lex.LexLocation;
-unmapped com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 unmapped com.fujitsu.vdmj.typechecker.NameScope;
 
 
@@ -180,6 +179,20 @@ package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;
 
 map TCModuleList{} to TRModuleList(this);
 map TCModule{comments, annotations, name, importdefs, exportdefs, defs, files} to TRModule(this, comments, annotations, name, importdefs, exportdefs, defs, files);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.annotations to vdm2isa.tr.annotations;
+#############################################################################
+
+map TCAnnotationList{} to TRAnnotationList(this);
+map TCAnnotation{} to TRAnnotation();
+
+map TCAnnotatedExpression{location, annotation, expression, exptype} to TRAnnotatedExpression(location, this, annotation, expression, exptype);
+
+#############################################################################
+#package annotations.tc to vdm2isa.tr.annotations;
+#############################################################################
+
 
 #############################################################################
 package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;
