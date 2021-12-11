@@ -104,23 +104,18 @@ public class TRValueDefinition extends TRLocalDefinition
 			"\n\t expt = " + String.valueOf(expType) +
 			"\n\t defs = " + String.valueOf(defs) +
 			"\n\t loc  = " + String.valueOf(getLocation()) +
-			"\n\n\t FV = " + getFVS() +
-			"\n\t VN = " + getVNS();
+			"\n\n\t FV = " + getFVS().toString() +
+			"\n\t VN = " + getVNS().toString();
 	}
 
-	private String getFVS()
+	private TCNameSet getFVS()
 	{
-		TCNameSet r = this.getVDMDefinition().getFreeVariables(
-			new FlatEnvironment(new TCDefinitionList()), 
-			new FlatEnvironment(new TCDefinitionList()), 
-			new AtomicBoolean(false));
-		return r.toString();
+		return this.getVDMDefinition().getFreeVariables();
 	}
 
-	private String getVNS()
+	private TCNameList getVNS()
 	{
-		TCNameList r = this.getVDMDefinition().getVariableNames();
-		return r.toString();
+		return this.getVDMDefinition().getVariableNames();
 	}
 
 	@Override

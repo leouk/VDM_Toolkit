@@ -1,13 +1,16 @@
 package vdm2isa.tr.expressions.visitors;
 
 import com.fujitsu.vdmj.tc.TCVisitorSet;
-import com.fujitsu.vdmj.tc.expressions.EnvTriple;
+import com.fujitsu.vdmj.tc.expressions.visitors.TCFreeVariableExpressionVisitor;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.tc.patterns.visitors.TCGetFreeVariablesBindVisitor;
-import com.fujitsu.vdmj.tc.patterns.visitors.TCGetFreeVariablesMultipleBindVisitor;
+import com.fujitsu.vdmj.tc.patterns.visitors.TCFreeVariableBindVisitor;
+import com.fujitsu.vdmj.tc.patterns.visitors.TCFreeVariableMultipleBindVisitor;
+import com.fujitsu.vdmj.tc.types.visitors.TCFreeVariableTypeVisitor;
+import com.fujitsu.vdmj.typechecker.Environment;
+import com.fujitsu.vdmj.tc.definitions.visitors.TCFreeVariableDefinitionVisitor;
 
-public class TCGetFreeVariablesVisitorSet extends TCVisitorSet<TCNameToken, TCNameSet, EnvTriple>
+public class TCGetFreeVariablesVisitorSet extends TCVisitorSet<TCNameToken, TCNameSet, Environment>
 {
     public TCGetFreeVariablesVisitorSet()
     {
@@ -24,14 +27,13 @@ public class TCGetFreeVariablesVisitorSet extends TCVisitorSet<TCNameToken, TCNa
         // BindVisitor
         // DefVisitor
         // PatternVisitor
-        this.definitionVisitor = new com.fujitsu.vdmj.tc.definitions.visitors.TCGetFreeVariablesVisitor();
-        //this.definitionVisitor.visitorSet = this;
-        this.expressionVisitor = new com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor(this);
-        this.statementVisitor = null;//new com.fujitsu.vdmj.tc.statements.visitors.TCGetFreeVariablesVisitor(this);
-        this.patternVisitor = null;//new com.fujitsu.vdmj.tc.patterns.visitors.TCGetFreeVariablesVisitor(this);
-        this.typeVisitor = new com.fujitsu.vdmj.tc.types.visitors.TCGetFreeVariablesVisitor(this);
-        this.bindVisitor = new TCGetFreeVariablesBindVisitor(this);
-        this.multiBindVisitor = new TCGetFreeVariablesMultipleBindVisitor(this); 
+        this.definitionVisitor = new TCFreeVariableDefinitionVisitor(this);
+        this.expressionVisitor = new TCFreeVariableExpressionVisitor(this);
+        this.statementVisitor = null;//new TCFreeVariableStatementVisitor(this);
+        this.patternVisitor = null;//new TCFreeVariablePatternVisitor(this);
+        this.typeVisitor = new TCFreeVariableTypeVisitor(this);
+        this.bindVisitor = new TCFreeVariableBindVisitor(this);
+        this.multiBindVisitor = new TCFreeVariableMultipleBindVisitor(this); 
     }
 
     @Override

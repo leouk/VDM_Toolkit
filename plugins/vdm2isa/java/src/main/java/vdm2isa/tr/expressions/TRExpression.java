@@ -32,9 +32,10 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.expressions.EnvTriple;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
-import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
+import com.fujitsu.vdmj.tc.expressions.visitors.TCFreeVariableExpressionVisitor;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
+import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 
 //@nb how to add this? 
@@ -74,8 +75,8 @@ public abstract class TRExpression extends TRNode
     private boolean hasWarnedAboutNullType;
 
     // setup a free variables visitor
-    private final TCGetFreeVariablesVisitor exprFVV;
-    private final EnvTriple fvvENV; 
+    private final TCFreeVariableExpressionVisitor exprFVV;
+    private final Environment fvvENV;//EnvTriple fvvENV; 
     
 	public TRExpression(LexLocation location, TCExpression exp, TRType exptype)
 	{
@@ -84,8 +85,9 @@ public abstract class TRExpression extends TRNode
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         this.hasWarnedAboutNullType = false;
-        this.exprFVV = new TCGetFreeVariablesVisitor(new TCGetFreeVariablesVisitorSet());
-        this.fvvENV = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
+        this.exprFVV = new TCFreeVariableExpressionVisitor(null);
+        //this.fvvENV = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
+        this.fvvENV = new FlatEnvironment(new TCDefinitionList());
 	}
 
     @Override 
