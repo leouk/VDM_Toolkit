@@ -179,7 +179,7 @@ package com.fujitsu.vdmj.tc.modules to vdm2isa.tr.modules;
 #############################################################################
 
 map TCModuleList{} to TRModuleList(this);
-map TCModule{name, defs, files} to TRModule(this, name, defs, files);
+map TCModule{comments, annotations, name, importdefs, exportdefs, defs, files} to TRModule(this, comments, annotations, name, importdefs, exportdefs, defs, files);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.patterns to vdm2isa.tr.patterns;

@@ -1,16 +1,16 @@
-(* VDM to Isabelle Translation @2021-12-11T11:47:52.283Z
+(* VDM to Isabelle Translation @2021-12-11T13:29:54.840960Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl]
+in './src/test/resources/TestV2IModules.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IModules.vdmsl]
 *)
 theory A
-imports VDMToolkit
+imports "VDMToolkit" 
 begin
 
 
 \<comment>\<open>VDM source: v:nat = 10\<close>
-\<comment>\<open>in 'A' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'A' (./src/test/resources/TestV2IModules.vdmsl) at line 8:5\<close>
 abbreviation
 	v :: "VDMNat"
 where
@@ -26,10 +26,10 @@ where
 \<comment>\<open>VDM source: f: (nat -> nat)
 	f(a) ==
 (a + 1)\<close>
-\<comment>\<open>in 'A' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'A' (./src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
 
 \<comment>\<open>VDM source: pre_f = ?\<close>
-\<comment>\<open>in 'A' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'A' (./src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
 definition
 	pre_f :: "VDMNat \<Rightarrow> bool"
 where
@@ -39,9 +39,9 @@ where
 
 
 \<comment>\<open>VDM source: post_f = ?\<close>
-\<comment>\<open>in 'A' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'A' (./src/test/resources/TestV2IModules.vdmsl) at line 11:5\<close>
 definition
-	post_f :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool"
+	post_f :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"post_f a  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_f` specification.\<close>
