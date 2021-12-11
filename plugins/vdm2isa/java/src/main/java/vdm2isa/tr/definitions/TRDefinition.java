@@ -20,6 +20,7 @@ import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -138,8 +139,11 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	 */
 	public String tldLocationTranslate()
 	{
-		return Vdm2isaPlugin.printLocations ? 
-			(getLocation() != null && !LexLocation.ANY.equals(getLocation()) ? IsaToken.comment(String.valueOf(getLocation()), "\n") : "") : "";
+		StringBuilder sb = new StringBuilder();
+		sb.append(Vdm2isaPlugin.printVDMSource ? IsaToken.comment(IsaInfoMessage.VDM_SOURCE_1P.format(getVDMDefinition().toString()), "\n") : "");
+		sb.append(Vdm2isaPlugin.printLocations ? 
+			(getLocation() != null && !LexLocation.ANY.equals(getLocation()) ? IsaToken.comment(String.valueOf(getLocation()), "\n") : "") : "");
+		return sb.toString();
 	}
 
     public String tldIsaCommentTranslate(TRExpression exp)
