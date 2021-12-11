@@ -108,7 +108,9 @@ public enum IsaErrorMessage {
     "Duplicate binding map binding `%1$s` for map comprehension translation is not allowed."),
     ISA_INVALID_MAP_COMP_MIXED_BINDINGS(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
     "Map comprehension with mixed (type and/or set/seq) bindings are not allowed."),
-    
+    ISA_INVALID_MAP_COMP_BINDING_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 28,
+    "Invalid map comp binding: expected `%1$s` but created `%2$s`."),
+
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
     "VDM PO (%1$s) %2$s %3$s error `%4$s`; should never happen."),

@@ -72,7 +72,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
         setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
 	}
 
-	public TCMultipleBindList getTCMultipleBindList()
+	public TCMultipleBindList getVDMMultipleBindList()
 	{
 		TCMultipleBindList result = new TCMultipleBindList();
 		for(TRMultipleBind b : this)
