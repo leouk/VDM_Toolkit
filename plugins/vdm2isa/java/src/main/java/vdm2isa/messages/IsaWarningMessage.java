@@ -46,7 +46,7 @@ public enum IsaWarningMessage {
     "Result of the power operator is context dependenant on second argument type being nat or real."),
     ISA_USE_BEFORE_DECL_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 7,
     "Type `%1$s` used before being defined might generate translation errors; managed to figure out it is a `%2$s` type."),
-    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_E_ISA_BASE + 8,
+    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_W_ISA_BASE + 8,
     "Map comprehension with type bindings will generate difficult map finiteness proof."),
     
     PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
