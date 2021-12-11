@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
@@ -276,8 +277,6 @@ public enum IsaToken {
 				"write"
 		)        
     );
-
-	
 	
 	private IsaToken(Token vdm, String isa)
 	{
@@ -339,12 +338,18 @@ public enum IsaToken {
 		return IsaToken.bracketit(IsaToken.ISAQUOTE, s, IsaToken.ISAQUOTE);
 	}
 
+	//TODO perhaps this means we ought to have a TRNameToken? Ohhhh nooo...
+	public static final String isabelleName(TCNameToken name)
+	{
+		return name.getLex().explicit ? name.getLex().toString().replace('`', '.') : name.getLex().toString();
+	}
+
 	/**
 	 * Valid Isabelle identifiers are non-empty/non-null, cannot start with "_", neither be any of Isabelle's keywords.
 	 * @param identifier
 	 * @return
 	 */
-    public static boolean validIsaIdentifier(String identifier)
+    public static final boolean validIsaIdentifier(String identifier)
     {
         return identifier != null && identifier.length() > 0 && 
 			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 

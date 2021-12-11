@@ -125,13 +125,14 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
             }
             else
             {
+                String isaName = IsaToken.isabelleName(this.name);
                 sb.append(IsaToken.CASE.toString());
                 sb.append(IsaToken.SPACE.toString());
-                sb.append(this.name.toString());
+                sb.append(isaName);
                 sb.append(IsaToken.SPACE.toString());
                 sb.append(IsaToken.OF.toString());
                 sb.append(getFormattingSeparator());
-                sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(this.name.toString(), body, innerContext));
+                sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(isaName, body, innerContext));
             }
         }
         return IsaToken.parenthesise(sb.toString());

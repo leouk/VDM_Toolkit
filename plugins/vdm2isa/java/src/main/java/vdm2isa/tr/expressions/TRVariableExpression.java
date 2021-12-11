@@ -32,7 +32,8 @@ public class TRVariableExpression extends TRExpression
 	{
 		super(location, tc, exptype);
 		this.name = name;
-		//name different from original when with complex patterns?
+		//name different from original when with complex patterns? 
+		//name different from original when importing; but ultimately, "name" is the answer 
 		this.original = original;
 		// the var def will be a TRLocalDefinition (e.g. var: type) or a TRExplicitFunctionDefinition (e.g. g(x))
 		this.vardef = vardef;
@@ -63,7 +64,7 @@ public class TRVariableExpression extends TRExpression
 	{
 		if (vardef == null)
 		{
-			report(IsaErrorMessage.VDMSL_INVALID_VAREXPR_VARDEF_1P, original);
+			report(IsaErrorMessage.VDMSL_INVALID_VAREXPR_VARDEF_1P, name.toString());
 		}	
 		TRType result; 
 		if (vardef instanceof TRLocalDefinition)
@@ -88,7 +89,7 @@ public class TRVariableExpression extends TRExpression
 		}
 		else
 		{
-			sb.append(name.getName().toString());
+			sb.append(IsaToken.isabelleName(name));
 		}
 		return typeAware(sb.toString());
 	}
