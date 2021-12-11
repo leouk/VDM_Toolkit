@@ -9,6 +9,8 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
@@ -37,6 +39,7 @@ public class TRImportedDefinition extends TRDefinition
     public void setup()
     {
         super.setup();
+        setFormattingSeparator("\n");
         TRNode.setup(def);
     }
 
@@ -49,4 +52,10 @@ public class TRImportedDefinition extends TRDefinition
     public IsaToken isaToken() {
         return IsaToken.EOF;
     }        
+
+    @Override
+    public String translate()
+    {
+        return IsaToken.comment(IsaInfoMessage.VDM_NORMAL_NOT_TRANSLATED_2P.format(IsaToken.isabelleName(name), IsaToken.isabelleName(def.name)), getFormattingSeparator());
+    }
 }
