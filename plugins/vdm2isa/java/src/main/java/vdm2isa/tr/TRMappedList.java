@@ -117,19 +117,27 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return separator;
 	}
 
-	@Override
-	public String setSemanticSeparator(String sep)
+	public String setSemanticSeparator(String sep, boolean deep)
 	{
 		String result = getSemanticSeparator();
 		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
 		{
 			separator = sep;
-			for (MappableNode n : this)
+			if (deep)
 			{
-				n.setSemanticSeparator(sep);
+				for (MappableNode n : this)
+				{
+					n.setSemanticSeparator(sep);
+				}
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public String setSemanticSeparator(String sep)
+	{
+		return setSemanticSeparator(sep, true);
 	}
 
 	@Override
@@ -138,19 +146,27 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return formattingSeparator;
 	}
 
-	@Override
-	public String setFormattingSeparator(String sep)
+	public String setFormattingSeparator(String sep, boolean deep)
 	{
 		String old = getFormattingSeparator();
 		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.FORMATING))
 		{
 			formattingSeparator = sep;
-			for (MappableNode n : this)
+			if (deep)
 			{
-				n.setFormattingSeparator(sep);
+				for (MappableNode n : this)
+				{
+					n.setFormattingSeparator(sep);
+				}	
 			}
 		}
 		return old;
+	}
+
+	@Override
+	public String setFormattingSeparator(String sep)
+	{
+		return setFormattingSeparator(sep, true);
 	}
 
 	@Override
@@ -159,19 +175,27 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return invTranslateSeparator;
 	}
 
-	@Override
-	public String setInvTranslateSeparator(String sep)
+	public String setInvTranslateSeparator(String sep, boolean deep)
 	{
 		String old = getInvTranslateSeparator();
 		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
 		{
 			invTranslateSeparator = sep;
-			for (MappableNode n : this)
+			if (deep)
 			{
-				n.setInvTranslateSeparator(sep);
+				for (MappableNode n : this)
+				{
+					n.setInvTranslateSeparator(sep);
+				}	
 			}
 		}	
 		return old;
+	}
+
+	@Override
+	public String setInvTranslateSeparator(String sep)
+	{
+		return setInvTranslateSeparator(sep, true);
 	}
 
 	/**

@@ -24,7 +24,7 @@ public abstract class TREnumeratedExpression extends TRExpression
 	{
 		super.setup();
 		TRNode.setup(members);
-        this.members.setSemanticSeparator(IsaToken.COMMA.toString());
+        this.members.setSemanticSeparator(IsaToken.COMMA.toString(), false);
         this.members.setFormattingSeparator(IsaToken.SPACE.toString());
 	}
 
