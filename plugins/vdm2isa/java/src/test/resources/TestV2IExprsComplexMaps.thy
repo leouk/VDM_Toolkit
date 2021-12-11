@@ -1,11 +1,11 @@
-(* VDM to Isabelle Translation @2021-12-11T09:52:04.511913Z
+(* VDM to Isabelle Translation @2021-12-11T13:31:51.644625Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsComplexMaps.vdmsl' at line 1:8
 files = [./src/test/resources/TestV2IExprsComplexMaps.vdmsl]
 *)
 theory TestV2IExprsComplexMaps
-imports VDMToolkit
+imports "VDMToolkit" 
 begin
 
 
@@ -44,7 +44,7 @@ else ((x / y) + x))\<close>
 \<comment>\<open>VDM source: pre_f = ?\<close>
 \<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
 definition
-	pre_f :: "VDMNatnull VDMNat \<Rightarrow> bool"
+	pre_f :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f` specification.\<close>
@@ -54,14 +54,14 @@ where
 \<comment>\<open>VDM source: post_f = ?\<close>
 \<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
 definition
-	post_f :: "VDMNatnull VDMNatnull VDMReal \<Rightarrow> bool"
+	post_f :: "VDMNat\<Rightarrow> VDMNat\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
 	"post_f x  y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_f` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMReal RESULT))"
 
 definition
-	f :: "VDMNatnull VDMNat \<Rightarrow> VDMReal"
+	f :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> VDMReal"
 where
 	"f x  y \<equiv> 
 	\<comment>\<open>User defined body of f.\<close>
@@ -80,7 +80,7 @@ where
 \<comment>\<open>VDM source: pre_g = ?\<close>
 \<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
 definition
-	pre_g :: "VDMNatnull VDMNat \<Rightarrow> bool"
+	pre_g :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"pre_g x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_g` specification.\<close>
@@ -90,20 +90,22 @@ where
 \<comment>\<open>VDM source: post_g = ?\<close>
 \<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
 definition
-	post_g :: "VDMNatnull VDMNatnull VDMNat \<Rightarrow> bool"
+	post_g :: "VDMNat\<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"post_g x  y  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_g` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMNat RESULT))"
 
 definition
-	g :: "VDMNatnull VDMNat \<Rightarrow> VDMNat"
+	g :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> VDMNat"
 where
 	"g x  y \<equiv> 
 	\<comment>\<open>User defined body of g.\<close>
 	(x + y)"
 
 	
+\<comment>\<open>VDM source: v4:map (nat1) to (nat1) = {(x + x) |-> 10 | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 21:5\<close>
 abbreviation
 	v4 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -139,6 +141,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v5:map (R) to (nat1) = {mk_R(x, y) |-> 10 | x in set {1, 2, 3}, y in set {4, 5, 6} & (x < y)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 24:5\<close>
 abbreviation
 	v5 :: "(R \<rightharpoonup> VDMNat1)"
 where
@@ -229,8 +233,10 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v6:map ((nat1 * nat1)) to (R) = {mk_(x, y) |-> mk_R(x, y) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 27:5\<close>
 abbreviation
-	v6 :: "((VDMNat1null VDMNat1) \<rightharpoonup> R)"
+	v6 :: "((VDMNat1\<times> VDMNat1) \<rightharpoonup> R)"
 where
 	"v6 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
@@ -245,7 +251,7 @@ where
 		 ((inv_VDMNat (y\<^sub>R R)))
 		) 
 		(
-	\<lambda> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0RANGE :: R) .
+	\<lambda> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0RANGE :: R) .
 		(if ((
 		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
 		 (inv_VDMNat1 (snd dummy0DOMAIN))
@@ -254,7 +260,7 @@ where
 		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
 		))) \<and> 
 		((inv_VDMNat1 (fst (
-		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
 		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
 		 (inv_VDMNat1 (snd dummy0DOMAIN))
 		))) \<and>  ((
@@ -265,7 +271,7 @@ where
 		else
 		(undefined))))\<and>
 		 (inv_VDMNat1 (snd (
-		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
 		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
 		 (inv_VDMNat1 (snd dummy0DOMAIN))
 		))) \<and>  ((
@@ -277,7 +283,7 @@ where
 		(undefined))))
 		) then
 		(
-		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
 		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
 		 (inv_VDMNat1 (snd dummy0DOMAIN))
 		))) \<and>  ((
@@ -292,7 +298,7 @@ where
 	)
 	) 
 		(
-	\<lambda> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0RANGE :: R) .
+	\<lambda> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0RANGE :: R) .
 		(if ((
 		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
 		 (inv_VDMNat1 (snd dummy0DOMAIN))
@@ -350,6 +356,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v7:map (real) to (nat) = {f(x, y) |-> g(x, y) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 29:5\<close>
 abbreviation
 	v7 :: "(VDMReal \<rightharpoonup> VDMNat)"
 where
@@ -400,6 +408,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning1:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6} & (x > 3)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 31:5\<close>
 abbreviation
 	vWarning1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -435,6 +445,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning11:map (nat1) to (nat1) = {1 |-> 5 | x in set {4, 5, 6}, x in set {1, 2, 3, 4} & (x > 3)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 32:5\<close>
 abbreviation
 	vWarning11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -470,6 +482,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning2:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6} & (x > 3)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 33:5\<close>
 abbreviation
 	vWarning2 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -505,6 +519,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning3:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6}, x in set {7, 8, 9} & (x > 6)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 34:5\<close>
 abbreviation
 	vWarning3 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -540,6 +556,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning4:set of (nat1) = {1 | fv in set {3, 4, 5}, x in set {1, 2, 3} & (x >= fv)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 35:5\<close>
 abbreviation
 	vWarning4 :: "VDMNat1 VDMSet"
 where
@@ -552,13 +570,15 @@ where
 
 	
 	
+\<comment>\<open>VDM source: vWarning5:map (nat1) to (nat1) = {1 |-> 5 | x in set {<A>, <B>, <C>}, x in set {1, 2, 3} & (x = <A>)}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 36:5\<close>
 abbreviation
 	vWarning5 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
 	"vWarning5 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ (1::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = U_A ) } 
-		{ (5::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = U_A ) } 
+		{ (1::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = TQuoteUnion.U_A ) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = TQuoteUnion.U_A ) } 
 		(inv_VDMNat1) 
 		(inv_VDMNat1) 
 		(domcnst (1::VDMNat1)) 
@@ -566,12 +586,12 @@ where
 		(
 	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
 		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
-		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = U_A )))) then
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = TQuoteUnion.U_A )))) then
 		((True::\<bool>))
 		else
 		(undefined))) then
 		(
-		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = U_A )))) then
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = TQuoteUnion.U_A )))) then
 		((True::\<bool>))
 		else
 		(undefined))

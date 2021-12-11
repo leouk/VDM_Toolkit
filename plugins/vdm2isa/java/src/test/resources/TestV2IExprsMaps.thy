@@ -1,11 +1,11 @@
-(* VDM to Isabelle Translation @2021-12-11T09:58:02.572896Z
+(* VDM to Isabelle Translation @2021-12-11T13:31:51.653458Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
 files = [./src/test/resources/TestV2IExprsMaps.vdmsl]
 *)
 theory TestV2IExprsMaps
-imports VDMToolkit
+imports "VDMToolkit" 
 begin
 
 
@@ -516,6 +516,5 @@ where
 where
 	"inv_v33  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v33)"
 
-hide_const 
 	
 end
