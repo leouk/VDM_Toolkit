@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-11T08:25:57.374081Z
+(* VDM to Isabelle Translation @2021-12-11T09:58:02.572896Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
@@ -9,6 +9,8 @@ imports VDMToolkit
 begin
 
 
+\<comment>\<open>VDM source: fv:nat1 = 1\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
 abbreviation
 	fv :: "VDMNat1"
 where
@@ -21,6 +23,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v1:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 11:5\<close>
 abbreviation
 	v1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -33,6 +37,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v11:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3} & true}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 14:5\<close>
 abbreviation
 	v11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -45,6 +51,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v12:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3} & (x > 5)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 16:5\<close>
 abbreviation
 	v12 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -80,6 +88,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v2:map (nat1) to (nat1) = {x |-> 10 | x in set {1, 2, 3}}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 21:5\<close>
 abbreviation
 	v2 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -100,6 +110,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v21:map (nat1) to (nat1) = {x |-> 10 | x in set {1, 2, 3} & (x > 2)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
 abbreviation
 	v21 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -135,6 +147,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v22:map (nat1) to (nat1) = {1 |-> x | x in set {1, 2, 3} & (x > 2)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 28:5\<close>
 abbreviation
 	v22 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -170,6 +184,82 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v23:map (nat1) to (nat1) = {d |-> r | d in set {1, 2, 3}, r in set {2, 4, 6} & (r = (d * 2))}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 31:5\<close>
+abbreviation
+	v23 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v23 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ d | d  r .  ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		{ r | d  r .  ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domid ) 
+		(rngid ) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}  . (((d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)})) \<and> (r = (d * (2::VDMNat1))))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}  . (((d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)})) \<and> (r = (d * (2::VDMNat1))))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_v23 :: "\<bool>"
+where
+	"inv_v23  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v23)"
+
+	
+	
+\<comment>\<open>VDM source: v24:map (nat1) to (nat1) = {d |-> r | d in set {1, 2, 3}, r in set {2, 4, 6} & (r = ((d * 2) + fv))}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 34:5\<close>
+abbreviation
+	v24 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v24 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ d | d  r .  ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
+		{ r | d  r .  ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = ((d * (2::VDMNat1)) + fv)) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domid ) 
+		(rngid ) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}  . (((d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)})) \<and> (r = ((d * (2::VDMNat1)) + fv)))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}  . (((d \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (r \<in> {(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)})) \<and> (r = ((d * (2::VDMNat1)) + fv)))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_v24 :: "\<bool>"
+where
+	"inv_v24  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v24)"
+
+	
+	
+\<comment>\<open>VDM source: v3:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & (x < y)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 37:5\<close>
 abbreviation
 	v3 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -220,6 +310,45 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v30:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 38:5\<close>
+abbreviation
+	v30 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v30 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (x + y) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{((10::VDMNat1) + fv)} 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0DOMAIN = (x + y)) \<and> (True::\<bool>)))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0DOMAIN = (x + y)) \<and> (True::\<bool>)))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	) 
+		(rngcnst ((10::VDMNat1) + fv)) 
+		(truecnst ))"
+
+	definition
+	inv_v30 :: "\<bool>"
+where
+	"inv_v30  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v30)"
+
+	
+	
+\<comment>\<open>VDM source: v31:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & ((x + fv) < y)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 39:5\<close>
 abbreviation
 	v31 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -270,6 +399,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v32:map (nat1) to (nat1) = {(x + y) |-> (((x + y) * 2) + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & ((2 * (x + fv)) > y)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 40:5\<close>
 abbreviation
 	v32 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -335,6 +466,8 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v33:map (nat1) to (nat1) = {1 |-> (x + x) | x in set {1, 2, 3} & ((x + fv) > 5)}\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 43:5\<close>
 abbreviation
 	v33 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where

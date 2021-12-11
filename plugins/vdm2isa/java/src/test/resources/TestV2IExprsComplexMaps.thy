@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-02T15:20:28.961108Z
+(* VDM to Isabelle Translation @2021-12-11T09:52:04.511913Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsComplexMaps.vdmsl' at line 1:8
@@ -9,150 +9,581 @@ imports VDMToolkit
 begin
 
 
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 7:5\<close>
+\<comment>\<open>VDM source: R = compose R of x:nat, y:nat end
+	inv r == ((r.x) < (r.y))\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 6:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
 	
 
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 10:9\<close>
+\<comment>\<open>VDM source: inv_R: (R +> bool)
+	inv_R(r) ==
+((r.x) < (r.y))\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 9:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> bool"
 where
 	"inv_R r \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for inv_R specification\<close>
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_R` specification.\<close>
 		( (((inv_VDMNat (x\<^sub>R r))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
-		\<comment>\<open>User defined body of inv_R\<close>
+		\<comment>\<open>User defined body of inv_R.\<close>
 		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
 
 		
 
 	
-abbreviation
-	v953 :: "(R \<rightharpoonup> VDMNat1)"
+\<comment>\<open>VDM source: f: (nat * nat -> real)
+	f(x, y) ==
+(if (y = 0)
+then 0
+else ((x / y) + x))\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+
+\<comment>\<open>VDM source: pre_f = ?\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+definition
+	pre_f :: "VDMNatnull VDMNat \<Rightarrow> bool"
 where
-	"v953 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+	"pre_f x  y \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y))"
+
+
+\<comment>\<open>VDM source: post_f = ?\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+definition
+	post_f :: "VDMNatnull VDMNatnull VDMReal \<Rightarrow> bool"
+where
+	"post_f x  y  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_f` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMReal RESULT))"
+
+definition
+	f :: "VDMNatnull VDMNat \<Rightarrow> VDMReal"
+where
+	"f x  y \<equiv> 
+	\<comment>\<open>User defined body of f.\<close>
+	(
+		if ((y = (0::VDMNat))) then
+		((0::VDMNat))
+		else
+		(((x / y) + x)))"
+
+	
+\<comment>\<open>VDM source: g: (nat * nat -> nat)
+	g(x, y) ==
+(x + y)\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+
+\<comment>\<open>VDM source: pre_g = ?\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+definition
+	pre_g :: "VDMNatnull VDMNat \<Rightarrow> bool"
+where
+	"pre_g x  y \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_g` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y))"
+
+
+\<comment>\<open>VDM source: post_g = ?\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+definition
+	post_g :: "VDMNatnull VDMNatnull VDMNat \<Rightarrow> bool"
+where
+	"post_g x  y  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_g` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMNat RESULT))"
+
+definition
+	g :: "VDMNatnull VDMNat \<Rightarrow> VDMNat"
+where
+	"g x  y \<equiv> 
+	\<comment>\<open>User defined body of g.\<close>
+	(x + y)"
+
+	
+abbreviation
+	v4 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"v4 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
-		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{ (x + x) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  } 
+		{(10::VDMNat1)} 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_VDMNat1 (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> ((dummy0DOMAIN = (x + x)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> ((dummy0DOMAIN = (x + x)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	) 
+		(rngcnst (10::VDMNat1)) 
+		(truecnst ))"
+
+	definition
+	inv_v4 :: "\<bool>"
+where
+	"inv_v4  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v4)"
+
+	
+	
+abbreviation
+	v5 :: "(R \<rightharpoonup> VDMNat1)"
+where
+	"v5 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | (dummy0DOMAIN :: R)  (dummy0DOMAIN :: R) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and> (x < y) } 
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x < y) } 
 		
-		inv_R 
+		(((inv_VDMNat (x\<^sub>R R))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R R)))
+		) 
 		(inv_VDMNat1) 
 		(
-	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<comment> \<open>Can't quite check inv_R of record here! \<close>
-		 then
-		let x = (x\<^sub>R dummy); y = (y\<^sub>R dummy) in
-    \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>
+	\<lambda> (dummy0DOMAIN :: R)  (dummy0RANGE :: VDMNat1) .
+		(if ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> 
+		(((inv_VDMNat (x\<^sub>R (
+		if ((\<exists> (dummy0DOMAIN :: R)  (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R (
+		if ((\<exists> (dummy0DOMAIN :: R)  (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined)))))
+		) then
+		(
+		if ((\<exists> (dummy0DOMAIN :: R)  (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
+		(rngcnst (10::VDMNat1)) 
 		(
-	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_VDMNat1 (10::VDMNat1)) then
-		(10::VDMNat1)
-	 else
-		undefined
-	)
-	) 
+	\<lambda> (dummy0DOMAIN :: R)  (dummy0RANGE :: VDMNat1) .
+		(if ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> (x < y))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
 		(
-	\<lambda> (dummy :: R)  (dummy2 :: VDMNat1) .
-		(if inv_R dummy \<and> inv_VDMNat1 dummy2 \<and> (inv_bool (True::\<bool>)) then
-		(True::\<bool>)
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> (x < y))))) then
+		((True::\<bool>))
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	))"
 
 	definition
-	inv_v953 :: "\<bool>"
+	inv_v5 :: "\<bool>"
 where
-	"inv_v953  \<equiv> (inv_Map inv_R  (inv_VDMNat1) v953)"
+	"inv_v5  \<equiv> (inv_Map inv_R  (inv_VDMNat1) v5)"
 
 	
 	
 abbreviation
-	v97 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+	v6 :: "((VDMNat1null VDMNat1) \<rightharpoonup> R)"
 where
-	"v97 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+	"v6 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-    \<comment> \<open>have to existentially bind the domain? kind of silly: again, will need free variables search \<close>
-		{ x | x y .   ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
-		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
-		(inv_VDMNat1) 
-		(inv_VDMNat1) 
+		{(x, y)} 
+		{\<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>} 
+		
+		((inv_VDMNat1 )\<and>
+		 (inv_VDMNat1 )
+		) 
+		
+		(((inv_VDMNat (x\<^sub>R R))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R R)))
+		) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 x) then
-		x
+	\<lambda> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0RANGE :: R) .
+		(if ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<and> 
+		((inv_VDMNat1 (fst (
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))\<and>
+		 (inv_VDMNat1 (snd (
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))
+		) then
+		(
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0DOMAIN :: (VDMNat1null VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_VDMNat1 (10::VDMNat1)) then
-		(10::VDMNat1)
+	\<lambda> (dummy0DOMAIN :: (VDMNat1null VDMNat1))  (dummy0RANGE :: R) .
+		(if ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<and> 
+		(((inv_VDMNat (x\<^sub>R (
+		if ((\<exists> (dummy0RANGE :: R)  (dummy0RANGE :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<longrightarrow> ((dummy0RANGE = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R (
+		if ((\<exists> (dummy0RANGE :: R)  (dummy0RANGE :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<longrightarrow> ((dummy0RANGE = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined)))))
+		) then
+		(
+		if ((\<exists> (dummy0RANGE :: R)  (dummy0RANGE :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0RANGE))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0RANGE)))
+		))) \<longrightarrow> ((dummy0RANGE = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
-		(
-	\<lambda> (x :: VDMNat1)  (y :: VDMNat1) .
-		(if (((inv_VDMNat1 x))) \<and>  (((inv_VDMNat1 y))) \<and> (inv_bool (True::\<bool>)) then
-		(True::\<bool>)
-	 else
-		undefined
-	)
-	))"
+		(truecnst ))"
 
 	definition
-	inv_v97 :: "\<bool>"
+	inv_v6 :: "\<bool>"
 where
-	"inv_v97  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v97)"
+	"inv_v6  \<equiv> (inv_Map 
+		((inv_VDMNat1 )\<and>
+		 (inv_VDMNat1 )
+		) inv_R  v6)"
 
 	
 	
 abbreviation
-	v98 :: "(VDMNat \<rightharpoonup> VDMNat1)"
+	v7 :: "(VDMReal \<rightharpoonup> VDMNat)"
 where
-	"v98 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+	"v7 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ d .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
-		{ r .   ((d \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((r \<in>{(2::VDMNat1), (4::VDMNat1), (6::VDMNat1)}))  \<and> (r = (d * (2::VDMNat1))) } 
-		(inv_VDMNat1) 
-		(inv_VDMNat1) 
+		{ (f x  y) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		{ (g x  y) | x  y .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)})) \<and>  ((y \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  } 
+		(inv_VDMReal) 
+		(inv_VDMNat) 
 		(
-	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
-		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_VDMNat1 d) then
-		d
+	\<lambda> (dummy0DOMAIN :: VDMReal)  (dummy0RANGE :: VDMNat) .
+		(if (((inv_VDMReal dummy0DOMAIN))) \<and>  (((inv_VDMNat dummy0RANGE))) \<and> (inv_VDMReal (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0DOMAIN = (f x  y)) \<and> (True::\<bool>)))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0DOMAIN = (f x  y)) \<and> (True::\<bool>)))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
 		(
-	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
-		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_VDMNat1 r) then
-		r
+	\<lambda> (dummy0DOMAIN :: VDMReal)  (dummy0RANGE :: VDMNat) .
+		(if (((inv_VDMReal dummy0DOMAIN))) \<and>  (((inv_VDMNat dummy0RANGE))) \<and> (inv_VDMNat (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0RANGE = (g x  y)) \<and> (True::\<bool>)))))) then
+		(dummy0RANGE)
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)})) \<and> ((dummy0RANGE = (g x  y)) \<and> (True::\<bool>)))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	) 
+		(truecnst ))"
+
+	definition
+	inv_v7 :: "\<bool>"
+where
+	"inv_v7  \<equiv> (inv_Map (inv_VDMReal) (inv_VDMNat) v7)"
+
+	
+	
+abbreviation
+	vWarning1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"vWarning1 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (1::VDMNat1) | x .  ((x \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domcnst (1::VDMNat1)) 
+		(rngcnst (5::VDMNat1)) 
 		(
-	\<lambda> (d :: VDMNat1)  (r :: VDMNat1) .
-		(if (((inv_VDMNat1 d))) \<and>  (((inv_VDMNat1 r))) \<and> (inv_bool (r = (d * (2::VDMNat1)))) then
-		(r = (d * (2::VDMNat1)))
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . ((x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . ((x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))
 	 else
 		undefined
 	)
 	))"
 
 	definition
-	inv_v98 :: "\<bool>"
+	inv_vWarning1 :: "\<bool>"
 where
-	"inv_v98  \<equiv> (inv_Map (inv_VDMNat) (inv_VDMNat1) v98)"
+	"inv_vWarning1  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) vWarning1)"
+
+	
+	
+abbreviation
+	vWarning11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"vWarning11 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (1::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domcnst (1::VDMNat1)) 
+		(rngcnst (5::VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_vWarning11 :: "\<bool>"
+where
+	"inv_vWarning11  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) vWarning11)"
+
+	
+	
+abbreviation
+	vWarning2 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"vWarning2 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (1::VDMNat1) | x .  ((x \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}))  \<and> (x > (3::VDMNat1)) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domcnst (1::VDMNat1)) 
+		(rngcnst (5::VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . ((x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}  . ((x \<in> {(4::VDMNat1), (5::VDMNat1), (6::VDMNat1)}) \<and> (x > (3::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_vWarning2 :: "\<bool>"
+where
+	"inv_vWarning2  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) vWarning2)"
+
+	
+	
+abbreviation
+	vWarning3 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"vWarning3 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (1::VDMNat1) | x .  ((x \<in>{(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}))  \<and> (x > (6::VDMNat1)) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}))  \<and> (x > (6::VDMNat1)) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domcnst (1::VDMNat1)) 
+		(rngcnst (5::VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}  . ((x \<in> {(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}) \<and> (x > (6::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}  . ((x \<in> {(7::VDMNat1), (8::VDMNat1), (9::VDMNat1)}) \<and> (x > (6::VDMNat1))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_vWarning3 :: "\<bool>"
+where
+	"inv_vWarning3  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) vWarning3)"
+
+	
+	
+abbreviation
+	vWarning4 :: "VDMNat1 VDMSet"
+where
+	"vWarning4 \<equiv> { (1::VDMNat1) | fv  x .  ((fv \<in>{(3::VDMNat1), (4::VDMNat1), (5::VDMNat1)})) \<and>  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x \<ge> fv) }"
+
+	definition
+	inv_vWarning4 :: "\<bool>"
+where
+	"inv_vWarning4  \<equiv> (inv_VDMSet' (inv_VDMNat1) vWarning4)"
+
+	
+	
+abbreviation
+	vWarning5 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
+where
+	"vWarning5 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{ (1::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = U_A ) } 
+		{ (5::VDMNat1) | x .  ((x \<in>{(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}))  \<and> (x = U_A ) } 
+		(inv_VDMNat1) 
+		(inv_VDMNat1) 
+		(domcnst (1::VDMNat1)) 
+		(rngcnst (5::VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: VDMNat1)  (dummy0RANGE :: VDMNat1) .
+		(if (((inv_VDMNat1 dummy0DOMAIN))) \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = U_A )))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+		(
+		if ((\<exists> x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}  . ((x \<in> {(1::VDMNat1), (2::VDMNat1), (3::VDMNat1)}) \<and> (x = U_A )))) then
+		((True::\<bool>))
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	))"
+
+	definition
+	inv_vWarning5 :: "\<bool>"
+where
+	"inv_vWarning5  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) vWarning5)"
 
 	
 end

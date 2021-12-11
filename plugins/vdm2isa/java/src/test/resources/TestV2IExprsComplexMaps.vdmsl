@@ -11,7 +11,7 @@ types
 functions
 	-- change the type of inputs for map binding
 	f: nat * nat -> real
-	f(x,y) == if y = 0 then 0 else x / y;
+	f(x,y) == if y = 0 then 0 else (x / y) + x;
 
 	g: nat * nat -> nat
 	g(x,y) == x+y;
