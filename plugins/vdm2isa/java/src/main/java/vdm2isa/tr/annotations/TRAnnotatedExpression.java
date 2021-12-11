@@ -2,6 +2,7 @@ package vdm2isa.tr.annotations;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotatedExpression;
+import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
@@ -18,6 +19,13 @@ public class TRAnnotatedExpression extends TRExpression {
         TRAnnotation annotation, TRExpression expression, TRType exptype) {
         super(location, exp, exptype);
         this.annotation = annotation;
+        this.expression = expression;
+    }
+
+    public TRAnnotatedExpression(LexLocation location, TCAnnotatedExpression exp, 
+        TCAnnotation annotation, TRExpression expression, TRType exptype) {
+        super(location, exp, exptype);
+        this.annotation = null;//TODO! 
         this.expression = expression;
     }
 
