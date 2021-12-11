@@ -69,7 +69,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
 	public String tldLocationTranslate()
     {
         // don't add local definitions locations!
-        return ""; 
+        return isLocal() ? "" : super.tldLocationTranslate(); 
     }
 
     /**
