@@ -48,7 +48,7 @@ public class TRSetEnumExpression extends TREnumeratedExpression
     public static final TRSetEnumExpression newSetEnumExpression(LexLocation location, TRExpressionList members, TRType exptype)
     {
         TRSetEnumExpression result = new TRSetEnumExpression(location, 
-            new TCSetEnumExpression(location, members.getTCExpressionList()), 
+            new TCSetEnumExpression(location, members.getVDMExpressionList()), 
             members, exptype);
         TRNode.setup(result);
         return result;

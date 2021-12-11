@@ -1,11 +1,19 @@
 package vdm2isa.tr.expressions;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
+import com.fujitsu.vdmj.tc.expressions.EnvTriple;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
+import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
+import vdm2isa.tr.expressions.visitors.TCGetFreeVariablesVisitorSet;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.types.TRType;
@@ -40,7 +48,7 @@ public abstract class TRAbstractCompExpression extends TRExpression {
         super.setup();
         setFormattingSeparator(IsaToken.SPACE.toString());
         TRNode.setup(first, bindings, predicate, def);
-        System.out.println(toString());
+        //System.out.println(toString());
     }
 
     protected boolean isSynthethic()

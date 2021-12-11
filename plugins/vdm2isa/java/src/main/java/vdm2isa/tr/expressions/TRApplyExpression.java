@@ -40,7 +40,7 @@ public class TRApplyExpression extends TRExpression
 		TRNode.setup(type, root, args); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
-		System.out.println(toString());
+		//System.out.println(toString());
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class TRApplyExpression extends TRExpression
 			TRExpression root, TRExpressionList args, TRType resultType)
 	{
 		TRApplyExpression result = new TRApplyExpression(
-				new TCApplyExpression(root.getVDMExpr(), args.getTCExpressionList()), root.getType(), root, args, resultType);
+				new TCApplyExpression(root.getVDMExpr(), args.getVDMExpressionList()), root.getType(), root, args, resultType);
 		TRNode.setup(result);
 		return result;
 	}
