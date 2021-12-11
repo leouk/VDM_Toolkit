@@ -48,6 +48,8 @@ public enum IsaWarningMessage {
     "Type `%1$s` used before being defined might generate translation errors; managed to figure out it is a `%2$s` type."),
     ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_W_ISA_BASE + 8,
     "Map comprehension with type bindings will generate difficult map finiteness proof."),
+    ISA_INVALID_MODULE_NAME_2P(VDM2IsaError.ISABELLE_W_ISA_BASE + 9, 
+    "Module `%1$s` translation will be saved in a file with the same name instead of the one in \n\tFiles = %2$s"),
     
     PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
     "Attempting to create proof step with definition %1$s."),

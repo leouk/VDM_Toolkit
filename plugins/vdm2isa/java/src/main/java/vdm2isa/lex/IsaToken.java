@@ -70,6 +70,9 @@ public enum IsaToken {
 	RNG(Token.RNG, "rng"),
 	FPOWERSET(Token.POWER, "Fpow"),
 
+	ABBREVIATION(null, "abbreviation"),
+	DEFINITION(null, "definition"),
+	
 	// Binary Operators
 	AND(Token.AND, "\\<and>"),
 	OR(Token.OR, "\\<or>"),

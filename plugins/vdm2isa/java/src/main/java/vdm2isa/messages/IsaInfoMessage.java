@@ -10,6 +10,8 @@ public enum IsaInfoMessage {
     VDM_MAP_COMP_LAMBDA_CONVERSION_1P("VDM Map comprehension is translated as a lambda-term through %1$s"),
     VDM_SEQCOMP_BIND_PROBLEM_3P("`%1$s` %2$s This can be a problem if the target type of %3$s %2$s has a VDM ord_ predicate."),
     VDM_LAMBDA_INVARIANT("VDM function type invariant depends on its lambda definition dummy names used being equal."),
+    VDM_RENAMED_IMPORT_3P("VDM import from %1$s: %2$s renamed %3$s."),
+    VDM_NORMAL_NOT_TRANSLATED_2P("unqualified VDM import from %1$s: %2$s; use Isabelle qualified naming directly."),
 
     ISA_PATTERN_CONTEXT("Implicit pattern context conversion"),
     ISA_UNION_TYPE_PROJECTION("Implicit union type parameters projection"),
