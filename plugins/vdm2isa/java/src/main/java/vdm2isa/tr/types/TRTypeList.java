@@ -108,13 +108,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	@Override
 	public String setSemanticSeparator(String sep)
 	{
-		String result = getSemanticSeparator();
-		if (IsaTemplates.checkSeparator(getLocation(), sep, IsaSeparator.SEMANTIC))
-		{
-			this.separator = sep;
-			// do not change the inner separator list elements separator? 
-		}
-		return result;
+		// do not change the inner separator list elements separator? 
+		return setSemanticSeparator(sep, false);
 	}
 
 	@Override
