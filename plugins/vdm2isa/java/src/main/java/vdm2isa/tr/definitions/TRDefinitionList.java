@@ -196,6 +196,16 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		return result;
 	}
 
+	public TCDefinitionList getVDMDefinitionList()
+	{
+		TCDefinitionList result = new TCDefinitionList();
+		for(TRDefinition d : this)
+		{
+			result.add(d.getVDMDefinition());
+		}
+		return result;
+	}
+
 	public static final TRDefinitionList newDefList(TRDefinition... args)
 	{
 		TRDefinitionList result = new TRDefinitionList();

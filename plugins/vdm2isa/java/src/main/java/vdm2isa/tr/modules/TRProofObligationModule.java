@@ -1,6 +1,8 @@
 package vdm2isa.tr.modules;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRNode;
@@ -19,10 +21,11 @@ public class TRProofObligationModule extends TRModule
      * @param poModuleName
      * @param definitions
      */
-    public TRProofObligationModule(String poModuleOwner, TCIdentifierToken poModuleName, TRDefinitionList definitions)
+    public TRProofObligationModule(TCModule owner, TCIdentifierToken poModuleName, TRDefinitionList definitions)
     {
-        super(null, poModuleName, definitions, TRModule.asFileList(poModuleName.getLocation() != null ? poModuleName.getLocation().file : null));
-        this.poModuleOwner = poModuleOwner;
+        super(owner, null, null, 
+            poModuleName, null, null, definitions, TRModule.asFileList(poModuleName != null ? poModuleName.getLocation() != null ? poModuleName.getLocation().file : null : null));
+        this.poModuleOwner = owner.name.toString();
     }
 
     /**
@@ -33,8 +36,18 @@ public class TRProofObligationModule extends TRModule
 		return poModuleOwner;
 	}
 
-    public static final TRModule newProofObligationModule(String module, TRDefinitionList pos) {
-        TRModule result = new TRProofObligationModule(module, new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(module), false), pos);
+    public static final TRModule newProofObligationModule(String owner, TRDefinitionList pos) {
+        TCIdentifierToken name = new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(owner), false);
+        TRModule result = new TRProofObligationModule(
+                new TCModule(
+                    null, //annotations 
+                    name, 
+                    null, //imports
+                    null, //exports 
+                    pos.getVDMDefinitionList(), //defs
+                    TRModule.asFileList(pos.getLocation().file), //file
+                    false), //flat
+                name, pos);
         TRNode.setup(result);
         return result;
     }
