@@ -239,19 +239,4 @@ public class IsapogPlugin extends GeneralisaPlugin {
     public String help() {
         return "isapog - translate VDM pog results for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ")";
     }
-
-    public static void report(int number, String problem, LexLocation location)
-	{
-		GeneralisaPlugin.report(number, problem, location);
-	}
-
-	public static void reportAsError(VDMWarning w)
-	{
-		GeneralisaPlugin.reportAsError(w);
-	}
-
-	public static void warning(int number, String problem, LexLocation location)
-	{
-		GeneralisaPlugin.warning(number, problem, location);
-	}
 }

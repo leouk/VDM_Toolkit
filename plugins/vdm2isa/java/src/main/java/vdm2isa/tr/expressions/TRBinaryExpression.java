@@ -507,7 +507,7 @@ public class TRBinaryExpression extends TRExpression
 		return result;
 	}
 
-	public static boolean uniformlyTyped(TRType type, TRExpression... args)
+	public static final boolean uniformlyTyped(TRType type, TRExpression... args)
 	{
 		boolean result = args == null || args.length == 0;
 		if (!result)

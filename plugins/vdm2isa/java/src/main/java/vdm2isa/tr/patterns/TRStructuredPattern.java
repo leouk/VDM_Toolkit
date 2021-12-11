@@ -220,7 +220,7 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
         return TRStructuredPattern.validStructuredContext(this);
     }
 
-    public static boolean validStructuredContext(TRPattern p) {
+    public static final boolean validStructuredContext(TRPattern p) {
         return p instanceof TRStructuredPattern && Arrays.asList(IsaToken.CROSSPROD/*, IsaToken.CONCATENATE*/).contains(p.isaToken());
     }
 

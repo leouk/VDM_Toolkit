@@ -17,7 +17,8 @@ import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRType;
 
 public class TREqualsDefinition extends TRValueDefinition {
-
+    private static final long serialVersionUID = 1L;
+    
     private final TRMultipleTypeBind typebind;
     private final TRMultipleBind bind;
 

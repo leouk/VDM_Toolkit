@@ -55,37 +55,32 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private int localWarnings;
     private int localModules;
 
-    public static void main(String args[])
+    public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", 
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/VDMToolkit.vdmsl"
+            //      ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IBindsComplex.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl"
-            //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"
-            
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
-
+            //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"            
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSets.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsRecords.vdmsl"
-                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl"
-
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl"
-
-            //      ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IBindsComplex.vdmsl"
-
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl"
+            //,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsRecords.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSets.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"
-
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
+            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexRecord.vdmsl"
+            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexUnion.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesNamed.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesRecords.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesOptional.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesRecords.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
-            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexUnion.vdmsl"
-            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexRecord.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
            //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
 });
     }
@@ -216,7 +211,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		out.close();
 	}
 
-    public static void checkVDMSettings()
+    public static final void checkVDMSettings()
     {
         if (Settings.dialect != Dialect.VDM_SL)
         {
@@ -231,17 +226,17 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-	public static void report(IsaErrorMessage message, LexLocation location)
+	public static final void report(IsaErrorMessage message, LexLocation location)
 	{
 		report(message, location, (Object[])null);
 	}
 
-	public static void report(IsaErrorMessage message, LexLocation location, Object... args)
+	public static final void report(IsaErrorMessage message, LexLocation location, Object... args)
 	{
 		report(message.number, message.format(args), location);
 	}
 
-    public static void report(int number, String problem, LexLocation location) {
+    public static final void report(int number, String problem, LexLocation location) {
         VDM2IsaError error = new VDM2IsaError(number, problem, location);
         if (!errors.contains(error)) {
             errors.add(error);
@@ -255,13 +250,13 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    public static void reportAsError(VDMWarning w) {
+    public static final void reportAsError(VDMWarning w) {
         if (GeneralisaPlugin.vdmWarningOfInterest.contains(w.number)) {
             report(/*VDM2IsaWarning.ISABELLE_WARNING_BASE +*/ w.number, w.message, w.location);
         }
     }
 
-    public static void processVDMWarnings()
+    public static final void processVDMWarnings()
 	{
 		List<VDMWarning> vdmWarnings = TypeChecker.getWarnings();
 		int warnings2raiseCount = 0;
@@ -281,17 +276,17 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		}
 	}
 
-	public static void warning(IsaWarningMessage message, LexLocation location)
+	public static final void warning(IsaWarningMessage message, LexLocation location)
 	{
 		warning(message, location, (Object[])null);
 	}
 
-	public static void warning(IsaWarningMessage message, LexLocation location, Object... args)
+	public static final void warning(IsaWarningMessage message, LexLocation location, Object... args)
 	{
 		warning(message.number, message.format(args), location);
 	}
 
-    public static void warning(int number, String problem, LexLocation location) {
+    public static final void warning(int number, String problem, LexLocation location) {
         VDM2IsaWarning warning = new VDM2IsaWarning(number, problem, location);
 
         if (!warnings.contains(warning)) {
@@ -299,36 +294,36 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    public static void clearErrors() {
+    public static final void clearErrors() {
         GeneralisaPlugin.errs = 0;
         GeneralisaPlugin.errors.clear();
         GeneralisaPlugin.warnings.clear();
     }
 
-    public static int getErrorCount() {
+    public static final int getErrorCount() {
         return GeneralisaPlugin.errors.size();
     }
 
-    public static int getWarningCount() {
+    public static final int getWarningCount() {
         return GeneralisaPlugin.warnings.size();
     }
 
-    public static List<VDM2IsaError> getErrors() {
+    public static final List<VDM2IsaError> getErrors() {
         return GeneralisaPlugin.errors;
     }
 
-    public static List<VDM2IsaWarning> getWarnings() {
+    public static final List<VDM2IsaWarning> getWarnings() {
         return GeneralisaPlugin.warnings;
     }
 
-    public static void printErrors(ConsoleWriter out) {
+    public static final void printErrors(ConsoleWriter out) {
         //if (Vdm2isaPlugin.getErrorCount() > 0) Vdm2isaPlugin.printErrors(out);
         for (VDM2IsaError e : GeneralisaPlugin.errors) {
             out.println(e.toString());
         }
     }
 
-    public static void printWarnings(ConsoleWriter out) {
+    public static final void printWarnings(ConsoleWriter out) {
         //if (Vdm2isaPlugin.getWarningCount() > 0) Vdm2isaPlugin.printWarnings(out);
         for (VDM2IsaWarning w : GeneralisaPlugin.warnings) {
             out.println(w.toString());

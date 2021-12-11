@@ -67,7 +67,7 @@ public final class IsaTemplates {
         }
     }
 
-    public static boolean matches(String pattern, String value)
+    public static final boolean matches(String pattern, String value)
     {
         return Pattern.matches(pattern, value);
     }
@@ -77,12 +77,12 @@ public final class IsaTemplates {
      * @param sep
      * @return
      */
-    public static boolean isValidFormatingSeparator(String sep)
+    public static final boolean isValidFormatingSeparator(String sep)
     {
         return Pattern.matches("\\s*", sep);
     }
 
-    public static boolean isValidSemanticSeparator(String sep)
+    public static final boolean isValidSemanticSeparator(String sep)
     {
         //TODO add here a check against certain IsaToken characters only? 
         return isValidFormatingSeparator(sep) || true;
@@ -96,7 +96,7 @@ public final class IsaTemplates {
      * @param kind
      * @return
      */
-    public static boolean checkSeparator(LexLocation location, String sep, IsaSeparator kind)
+    public static final boolean checkSeparator(LexLocation location, String sep, IsaSeparator kind)
     {
         // assume it's not okay
         boolean result = false;

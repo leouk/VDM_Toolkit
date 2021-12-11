@@ -112,7 +112,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public String getSemanticSeparator()
+	public final String getSemanticSeparator()
 	{
 		return separator;
 	}
@@ -141,7 +141,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public String getFormattingSeparator()
+	public final String getFormattingSeparator()
 	{
 		return formattingSeparator;
 	}
@@ -170,7 +170,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	}
 
 	@Override
-	public String getInvTranslateSeparator()
+	public final String getInvTranslateSeparator()
 	{
 		return invTranslateSeparator;
 	}
