@@ -5,11 +5,9 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
 import plugins.IsapogPlugin;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
-import vdm2isa.lex.IsaTemplates;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;

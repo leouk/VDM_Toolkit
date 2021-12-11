@@ -29,7 +29,6 @@ import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
-import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnknownType;
 
 public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleBind> implements TRPatternContext
@@ -243,7 +242,6 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		TRMultipleBind b = get(index);
 		assert !b.plist.isEmpty();
 		TRExpression rhs;
-		TRType btype = b.getRHSType();
 		TRExpression result = null;
 		switch (b.getMultipleBindKind())
 		{
