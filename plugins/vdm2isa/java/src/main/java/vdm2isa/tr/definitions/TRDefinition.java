@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
@@ -23,6 +22,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRUnionContext;
@@ -35,7 +35,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 {
 	private static final long serialVersionUID = 1L;
 	public final TRIsaVDMCommentList comments;
-	public final TCAnnotationList annotations;
+	public final TRAnnotationList annotations;
 	private final TCDefinition vdmDefinition;
 
 	// /** The name of the object being defined. */
@@ -49,7 +49,7 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 	/** True if the definition should be excluded from name lookups */
 	public final boolean excluded;	
 	
-	protected TRDefinition(TCDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+	protected TRDefinition(TCDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TRAnnotationList annotations,
 		TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
 	{
 		super(location); 

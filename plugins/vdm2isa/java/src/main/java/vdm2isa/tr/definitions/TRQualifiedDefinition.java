@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCQualifiedDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -9,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.types.TRType;
 
@@ -19,7 +19,7 @@ public class TRQualifiedDefinition extends TRDefinition {
     protected final TRDefinition def;
 
     public TRQualifiedDefinition(TCQualifiedDefinition definition, LexLocation location, TRIsaVDMCommentList comments,
-        TCAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, 
+        TRAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, 
         TRDefinition def, TRType type) 
     {
         super(definition, location, comments, annotations, name, nameScope, used, excluded);

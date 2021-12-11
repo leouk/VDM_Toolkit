@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.modules;
 
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCImportFromModule;
 import com.fujitsu.vdmj.tc.modules.TCModule;
@@ -23,6 +22,7 @@ import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRRenamedDefinition;
@@ -35,14 +35,14 @@ public class TRModule extends TRNode
 	public final TRDefinitionList importdefs;
 	public final TRDefinitionList exportdefs;
 	public final TRIsaVDMCommentList comments;
-	public final TCAnnotationList annotations; 
+	public final TRAnnotationList annotations; 
 	public final FileList files;
 	public final TCModule module;
 
 	private final Set<String> imports; 
 	private final TRDefinitionList allDefs;
 
-	public TRModule(TCModule m, TRIsaVDMCommentList comments, TCAnnotationList annotations, TCIdentifierToken name, 
+	public TRModule(TCModule m, TRIsaVDMCommentList comments, TRAnnotationList annotations, TCIdentifierToken name, 
 		TRDefinitionList importdefs, TRDefinitionList exportdefs, TRDefinitionList definitions, FileList files)
 	{
 		super(name != null ? name.getLocation() : LexLocation.ANY);

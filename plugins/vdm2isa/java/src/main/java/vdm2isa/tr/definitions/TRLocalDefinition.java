@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -9,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRUnionContext;
@@ -34,7 +34,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         TCDefinition definition, 
         LexLocation location, 
         TRIsaVDMCommentList comments, 
-        TCAnnotationList annotations, 
+        TRAnnotationList annotations, 
         TCNameToken name, 
         NameScope nameScope, 
         boolean used, 
@@ -48,7 +48,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     public TRLocalDefinition(TCLocalDefinition definition,
         LexLocation location, 
         TRIsaVDMCommentList comments, 
-        TCAnnotationList annotations, 
+        TRAnnotationList annotations, 
         TCNameToken name, 
         NameScope nameScope, 
         boolean used, 

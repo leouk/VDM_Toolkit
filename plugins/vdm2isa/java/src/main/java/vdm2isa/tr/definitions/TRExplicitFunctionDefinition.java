@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
@@ -30,6 +29,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
@@ -91,7 +91,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	public TRExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
 			TRIsaVDMCommentList comments,
-			TCAnnotationList annotations,
+			TRAnnotationList annotations,
 			TCNameToken name,
 			NameScope nameScope, 
 			boolean used, 
@@ -936,7 +936,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	public static final TRExplicitFunctionDefinition newExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
 		TRIsaVDMCommentList comments,
-		TCAnnotationList annotations,
+		TRAnnotationList annotations,
 		TCNameToken name,
 		NameScope nameScope, 
 		boolean used, 

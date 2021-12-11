@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCEqualsDefinition;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -9,6 +8,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRMultipleBind;
@@ -23,7 +23,7 @@ public class TREqualsDefinition extends TRValueDefinition {
     private final TRMultipleBind bind;
 
     public TREqualsDefinition(TCEqualsDefinition definition, LexLocation location, TRIsaVDMCommentList comments, 
-            TCAnnotationList annotations, NameScope nameScope, boolean used, boolean excluded,
+            TRAnnotationList annotations, NameScope nameScope, boolean used, boolean excluded,
             TRPattern pattern, TRMultipleTypeBind typebind, TRMultipleBind bind, TRExpression test,
             TRType expType, TRType defType, TRDefinitionList defs) {
         super(definition, location, comments, annotations, nameScope, used, excluded, pattern, defType, test, expType, defs);

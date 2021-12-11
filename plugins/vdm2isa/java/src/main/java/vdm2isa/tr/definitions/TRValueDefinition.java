@@ -4,21 +4,18 @@
 
 package vdm2isa.tr.definitions;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
@@ -52,7 +49,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		TCDefinition definition, 
 		LexLocation location,
 		TRIsaVDMCommentList comments, 
-		TCAnnotationList annotations, 
+		TRAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
 		boolean excluded, 
@@ -73,7 +70,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	public TRValueDefinition(
 		TCValueDefinition definition, 
 		TRIsaVDMCommentList comments, 
-		TCAnnotationList annotations, 
+		TRAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
 		boolean excluded, 
@@ -465,7 +462,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	public static final TRValueDefinition newValueDefinition(TCValueDefinition definition, 
 		LexLocation location, 
 		TRIsaVDMCommentList comments, 
-		TCAnnotationList annotations, 
+		TRAnnotationList annotations, 
 		NameScope nameScope,
 		boolean used,
 		boolean excluded, 

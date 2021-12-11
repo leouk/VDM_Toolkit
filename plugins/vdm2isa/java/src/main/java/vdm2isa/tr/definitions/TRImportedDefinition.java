@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImportedDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -9,9 +8,9 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
-import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 
 public class TRImportedDefinition extends TRDefinition 
@@ -20,13 +19,13 @@ public class TRImportedDefinition extends TRDefinition
     public final TRDefinition def;
 
     protected TRImportedDefinition(TCDefinition definition, LexLocation location, TRIsaVDMCommentList comments,
-        TCAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRDefinition def, boolean diff) {
+        TRAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRDefinition def, boolean diff) {
         super(definition, location, comments, annotations, name, nameScope, used, excluded);
         this.def = def;
     }
 
     public TRImportedDefinition(TCImportedDefinition definition, LexLocation location, TRIsaVDMCommentList comments,
-            TCAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRDefinition def) {
+            TRAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRDefinition def) {
         this(definition, location, comments, annotations, name, nameScope, used, excluded, def, false);
     }
 

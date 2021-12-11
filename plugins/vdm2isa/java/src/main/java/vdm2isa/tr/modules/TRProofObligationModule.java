@@ -1,6 +1,5 @@
 package vdm2isa.tr.modules;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 

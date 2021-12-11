@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCMultiBindListDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -9,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
 
@@ -17,7 +17,7 @@ public class TRMultiBindListDefinition extends TRDefinition {
     private final TRMultipleBindList bindings;
     private final TRDefinitionList defs;
 
-    public TRMultiBindListDefinition(TCMultiBindListDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
+    public TRMultiBindListDefinition(TCMultiBindListDefinition definition, LexLocation location, TRIsaVDMCommentList comments, TRAnnotationList annotations,
         TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TRMultipleBindList bindings, TRDefinitionList defs)
     {
         super(definition, location, comments, annotations, name, nameScope, used, excluded);
