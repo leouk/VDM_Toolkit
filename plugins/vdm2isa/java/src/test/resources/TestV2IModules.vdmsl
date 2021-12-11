@@ -1,7 +1,12 @@
 module A
 -- no exports yet
---exports functions f: nat -> nat
+exports 
+	values v: nat;
+	functions f: nat -> nat;
 definitions
+values 
+	v: nat = 10;
+	
 functions
 	f: nat -> nat
 	f(a) ==
@@ -12,14 +17,16 @@ end A
 
 module B
 -- no imports yet
---imports from A functions f: nat -> nat renamed F
+imports from A 
+	functions f: nat -> nat renamed F;
+	values v;
 exports all
 definitions
 functions
-	F: nat -> nat
-	F(a) == a;
+	--F: nat -> nat
+	--F(a) == a;
 	
 	g: nat -> nat
-	g(a) == F(a) - 1;
+	g(a) == F(a) - 1 + A`v;
 
 end B
