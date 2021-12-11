@@ -132,10 +132,6 @@ public class TRProductType extends TRType {
 				sb.append("\n\t\t ");
                 fieldVarName = varName == null ? "" : TRProductType.fieldProjection(i, size, varName); 
                 sb.append(this.types.get(i).invTranslate(fieldVarName));
-                //sb.append(IsaToken.COMMENT.toString());
-                //sb.append(IsaToken.COMMENT_OPEN.toString());
-                //sb.append("This is messy, but easy: fst, fst snd, fst snd snd, snd snd snd say for 4-tuple");
-                //sb.append(IsaToken.COMMENT_CLOSE.toString()); 
 			}
 			sb.append("\n\t\t");
             sb.append(IsaToken.RPAREN.toString());

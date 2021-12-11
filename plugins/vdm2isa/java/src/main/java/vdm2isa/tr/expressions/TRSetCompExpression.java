@@ -131,7 +131,7 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     {
         TRSetCompExpression result = new TRSetCompExpression(location, 
             new TCSetCompExpression(location, first.getVDMExpr(), 
-                bindings.getTCMultipleBindList(), 
+                bindings.getVDMMultipleBindList(), 
                 predicate != null ? predicate.getVDMExpr() : null),
             first, bindings, predicate, def, exptype);
         TRNode.setup(result);

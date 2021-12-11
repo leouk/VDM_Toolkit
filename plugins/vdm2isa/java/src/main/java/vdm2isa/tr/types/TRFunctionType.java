@@ -155,7 +155,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		// StringBuilder sb = new StringBuilder();
 		// sb.append(getFormattingSeparator());
 
-		// //sb.append(IsaToken.comment("function type invariant depends on its lambda definition dummy names used being equal."));
+		// //sb.append(IsaToken.comment(IsaInfoMessage.VDM_LAMBDA_INVARIANT.toString()));		
 		// sb.append(getFormattingSeparator());
 		// sb.append(IsaToken.parenthesise(
 		// 	IsaToken.INV.toString() + IsaToken.LAMBDA.toString() + IsaToken.SPACE.toString() +

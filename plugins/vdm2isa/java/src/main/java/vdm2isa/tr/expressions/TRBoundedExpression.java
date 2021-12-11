@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.tc.expressions.TCForAllExpression;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBind;
@@ -78,7 +79,7 @@ public class TRBoundedExpression extends TRExpression {
     public String tldIsaComment()
     {
         if (requiresImplicitTypeInvariantChecks())
-            return IsaToken.comment("Implicitly defined type invariant checks for quantified type binds", getFormattingSeparator());
+            return IsaToken.comment(IsaInfoMessage.VDM_IMPLICITLY_DEFINED_QUANTIFIED_INV.toString(), getFormattingSeparator());
         else
            return super.tldIsaComment();
     }
@@ -196,10 +197,10 @@ public class TRBoundedExpression extends TRExpression {
                 result = new TCExists1Expression(location, bindList.get(0).getVDMBind(), predicate.getVDMExpr());
                 break;
             case EXISTS:
-                result = new TCExistsExpression(location, bindList.getTCMultipleBindList(), predicate.getVDMExpr());
+                result = new TCExistsExpression(location, bindList.getVDMMultipleBindList(), predicate.getVDMExpr());
                 break;
             case FORALL:
-                result = new TCForAllExpression(location, bindList.getTCMultipleBindList(), predicate.getVDMExpr());
+                result = new TCForAllExpression(location, bindList.getVDMMultipleBindList(), predicate.getVDMExpr());
                 break;
             default :
                 result = null;

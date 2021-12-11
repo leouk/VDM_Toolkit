@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.expressions.TCSeqCompExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
@@ -110,13 +111,11 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         if (isSetSeqBind())
         {
             assert !bindings.isEmpty();
-            bindStr = bindings.translate();
-            String setbindProblem = IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindStr) + 
-                getFormattingSeparator() + " This can be a problem if the target type of " + 
-                IsaToken.antiquotation(IsaToken.ISAR_TERM, bindings.getRHS().translate()) + 
-                getFormattingSeparator() + " has a VDM ord_ predicate.";
             sb.append("\n\t");//getFormattingSeparator());
-            sb.append(IsaToken.comment(setbindProblem, getFormattingSeparator()));
+            sb.append(IsaToken.comment(IsaInfoMessage.VDM_SEQCOMP_BIND_PROBLEM_3P.format(
+                IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindings.translate()),
+                getFormattingSeparator(),
+                IsaToken.antiquotation(IsaToken.ISAR_TERM, bindings.getRHS().translate())), getFormattingSeparator()));
             //warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, bindStr);
         }
         return sb.toString();

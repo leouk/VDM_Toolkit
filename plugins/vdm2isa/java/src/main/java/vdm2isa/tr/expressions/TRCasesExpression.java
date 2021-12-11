@@ -5,6 +5,7 @@ import com.fujitsu.vdmj.tc.expressions.TCCasesExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRBasicPattern;
@@ -78,7 +79,7 @@ public class TRCasesExpression extends TRExpression {
         if (eType.isBooleanType())
         {
             // for boolean cases, every case *must* be is_expr, so create a chain of conjoined implications, ignoring exp
-            sb.append(IsaToken.comment("`cases true` expressions are translated as an and-chain of implications or others", getFormattingSeparator()));
+            sb.append(IsaToken.comment(IsaInfoMessage.VDM_CASES_TRUE_CONVERSION.toString(), getFormattingSeparator()));
             boolean old = cases.setCasesTrueAlternative(true);
             sb.append(cases.translate());
             cases.setCasesTrueAlternative(old);

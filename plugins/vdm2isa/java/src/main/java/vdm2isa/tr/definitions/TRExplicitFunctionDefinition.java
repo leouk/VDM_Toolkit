@@ -27,6 +27,7 @@ import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -616,15 +617,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}	
 		else if (VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(kind))
 		{
-			String implicitComment = "Implicitly defined type invariant checks for " +
-				(isImplicitlyGeneratedUndeclaredSpecification() ? "undeclared " : "")+ 
-				// No need to append the kind, given it will be as part of its own definition?
-				/*kind.toString().toLowerCase() + */ name.toString() + " specification";
-
 			// pre/post checks on input (including RESULT for post) types
 			// there is no need to check type.result type because for PRE/POST defs that's always bool! 
 			fcnBody.append(getFormattingSeparator());
-			fcnBody.append(IsaToken.comment(implicitComment, getFormattingSeparator()));
+			fcnBody.append(IsaToken.comment(IsaInfoMessage.VDM_IMPLICITLY_DEFINED_INV_2P.format(
+				isImplicitlyGeneratedUndeclaredSpecification() ? "undeclared" : "", name.toString()), getFormattingSeparator()));
 			
 			// translate the parameters taking currying into account!
 			//String old = parameterscp.setFormattingSeparator(getFormattingSeparator()); //uncomment if want to see differently "shaped" output
@@ -729,12 +726,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			// but only if there is user body, given the implicit checks rely on TRecordType's own structuring. 
 			// e.g. f(mk_R(x,y), mk_R(z,w)) == e becomes 
 			//		let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0); z = (x\<^sub>R dummy1); w = (y\<^sub>R dummy1) in e  
-			boolean hasRecPattern = paramPatternList.needsPatternContext();
+			boolean hasPatternContext = paramPatternList.needsPatternContext();
 			String fmtsep;
-			if (hasRecPattern)
+			if (hasPatternContext)
 			{
 				fcnBody.append(getFormattingSeparator());
-				fcnBody.append(IsaToken.comment("Implicit record pattern projection conversion", getFormattingSeparator()));
+				fcnBody.append(IsaToken.comment(IsaInfoMessage.ISA_PATTERN_CONTEXT.toString(), getFormattingSeparator()));
 				fmtsep = paramPatternList.setFormattingSeparator("\n\t\t\t");
 				fcnBody.append(IsaToken.LPAREN.toString());
 				fcnBody.append(paramPatternList.patternContextTranslate(null));
@@ -742,7 +739,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			}
 			// include the user declared body after including implicit considerations
 			fcnBody.append(getFormattingSeparator());
-			fcnBody.append(IsaToken.comment("User defined body of " + name.toString(), getFormattingSeparator()));
+			fcnBody.append(IsaToken.comment(IsaInfoMessage.VDM_EXPLICIT_FUNCTION_USER_DEFINED_BODY_1P.format(name.toString()), getFormattingSeparator()));
 			fcnBody.append(tldIsaComment());
 
 			if (hasUnionTypes())
@@ -754,7 +751,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				fcnBody.append(body.translate());
 			}
 
-			if (hasRecPattern)
+			if (hasPatternContext)
 			{
 				// let expression requires parenthesis 
 				fcnBody.append(IsaToken.RPAREN.toString());
@@ -886,7 +883,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.comment("Implicit union type parameters projection conversion", getFormattingSeparator()));
+		sb.append(IsaToken.comment(IsaInfoMessage.ISA_UNION_TYPE_PROJECTION.toString(), getFormattingSeparator()));
 		String fmtsep = paramDefinitionList.setFormattingSeparator("\n\t\t\t");
 		sb.append(paramDefinitionList.unionTypesTranslate(body, innerContext));
 		paramDefinitionList.setFormattingSeparator(fmtsep);
