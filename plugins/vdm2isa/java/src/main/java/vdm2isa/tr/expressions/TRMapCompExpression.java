@@ -151,18 +151,21 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
 
             // setup a free variables visitor
             // { let x = f(y) in x + y |-> 10 | .... }
-            TCGetFreeVariablesVisitor exprFVV = new TCGetFreeVariablesVisitor(new TCGetFreeVariablesVisitorSet());
-            EnvTriple env = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
+            //TCGetFreeVariablesVisitor exprFVV = new TCGetFreeVariablesVisitor(new TCGetFreeVariablesVisitorSet());
+            //EnvTriple env = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
 
             // figure out the dom/rng bindings based on the discovered variables used in domain/rangeExpr
             // this presumes the "TCExpression" patch up as a tuple done by TRMapletExpression 
             // if the predicate has more FV than dom/rng, then it will compromise the set creation
             // { x+y |-> 10 | x in set S, y in set T & x > y and (x+y) < z }
             // { x + y | x in set S, y in set T & x > y and (x+y) < z } for domain!
-            TCNameSet mcompFV = getVDMExpr().apply(exprFVV, env);
-            TCNameSet domFV = getMapletExpr().maplet.left.apply(exprFVV, env);
-            TCNameSet rngFV = getMapletExpr().maplet.right.apply(exprFVV, env);
-            TCNameSet prdFV = predicate != null ? predicate.getVDMExpr().apply(exprFVV, env) : new TCNameSet();
+            //@NB this doesn't work? Doesn't get me the "fv" in v3 example { x |-> 10+fv | x in set {1,2,3} }
+            //TCNameSet mcompFV = getVDMExpr().apply(exprFVV, env);
+            TCNameSet domFV = getMapletExpr().left.findFV();//getMapletExpr().maplet.left.apply(exprFVV, env);
+            TCNameSet rngFV = getMapletExpr().right.findFV();//getMapletExpr().maplet.right.apply(exprFVV, env);
+            TCNameSet prdFV = predicate != null ? 
+                predicate.findFV()//predicate.getVDMExpr().apply(exprFVV, env) 
+                : new TCNameSet();
             TRPatternListList allBoundPatterns = bindings.getPatternListList();
             if (!allBoundPatterns.uniqueNames())
             {

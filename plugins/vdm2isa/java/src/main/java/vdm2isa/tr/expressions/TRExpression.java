@@ -8,7 +8,9 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.expressions.visitors.TCGetFreeVariablesVisitorSet;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRMultipleBindList;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRPatternContext;
@@ -24,9 +26,16 @@ import vdm2isa.tr.types.TRUnknownType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
+import com.fujitsu.vdmj.tc.expressions.EnvTriple;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.expressions.visitors.TCGetFreeVariablesVisitor;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
+import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 
 //@nb how to add this? 
 //@todo add comments and/or location? 
@@ -64,6 +73,10 @@ public abstract class TRExpression extends TRNode
     private boolean hasWarnedAboutUnknownType;
     private boolean hasWarnedAboutNullType;
 
+    // setup a free variables visitor
+    private final TCGetFreeVariablesVisitor exprFVV;
+    private final EnvTriple fvvENV; 
+    
 	public TRExpression(LexLocation location, TCExpression exp, TRType exptype)
 	{
 		super(location);
@@ -71,6 +84,8 @@ public abstract class TRExpression extends TRNode
         this.exptype = exptype;
         this.hasWarnedAboutUnknownType = false;
         this.hasWarnedAboutNullType = false;
+        this.exprFVV = new TCGetFreeVariablesVisitor(new TCGetFreeVariablesVisitorSet());
+        this.fvvENV = new EnvTriple(new FlatEnvironment(new TCDefinitionList()), new FlatEnvironment(new TCDefinitionList()), new AtomicBoolean(false)); 
 	}
 
     @Override 
@@ -98,6 +113,11 @@ public abstract class TRExpression extends TRNode
     public final TCExpression getVDMExpr()
     {
         return exp;
+    }
+
+    public TCNameSet findFV()
+    {
+        return this.getVDMExpr().apply(this.exprFVV, this.fvvENV);
     }
 
     /**
@@ -485,5 +505,35 @@ public abstract class TRExpression extends TRNode
      */
     public TRPatternListList getPatternListList() {
         return TRPatternListList.newPatternListList((TRPattern[])null);
+    }
+
+    /**
+     * Variables to bind as the union of all possibly free variables intersected with all bound variables  
+     * This is usually called with the associated multiple bind list where the bound variables come from.
+     * @param bound
+     * @param possiblyFree
+     * @return dunion possiblyFree inter bound
+     */
+    public static final TCNameSet variablesToBind(TCNameList bound, TCNameSet... possiblyFree)
+    {
+        TCNameSet result = new TCNameSet();
+        for(TCNameSet vs : possiblyFree)
+        {
+            result.addAll(vs);
+        }
+        result.retainAll(bound);
+        return result;
+    }
+
+    public static final TCNameSet variablesToBind(TRMultipleBindList bindings, TCNameSet... possiblyFree)
+    {
+        return TRExpression.variablesToBind(bindings.getPatternListList().getNamesInPatternListList(), possiblyFree);
+    }
+
+    public static final boolean isTrivialPred(TRExpression pred)
+    {
+        return pred == null || 
+              (pred instanceof TRLiteralExpression && 
+                ((TRLiteralExpression)pred).exp.equals(IsaToken.TRUE.toString()));
     }
 }
