@@ -284,6 +284,16 @@ Chose to use datatypes instead. \<close>
 
 datatype 'a VDMToken = Token 'a
 
+definition 
+  inv_VDMToken :: "'a VDMToken \<Rightarrow> \<bool>"
+  where
+  "inv_VDMToken t \<equiv> inv_True t"
+
+definition 
+  inv_VDMToken' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMToken \<Rightarrow> \<bool>"
+  where
+  "inv_VDMToken' inv_T t \<equiv> case t of Token a \<Rightarrow> inv_T a"
+
 (*****************************************************************)
 section \<open> Sets \<close>
   

@@ -25,7 +25,8 @@ public enum IsaToken {
 	REAL(Token.REAL, "VDMReal"),
 	CHAR(Token.CHAR, "VDMChar"),
 	STRING(Token.STRING, "VDMChar VDMSeq"),
-  	TOKEN(Token.TOKEN, "VDMToken"),
+  	TOKEN_TYPE(Token.TOKEN, "VDMToken"),
+	TOKEN(Token.TOKEN, "Token"), // datatype 'a VDMToken = Token 'a 
 	CROSSPROD(Token.TIMES, "\\<times>"),
 	VDMQUOTE(Token.QUOTE, ""), // i.e. "<X>" => X (empty string for Token.QUOTE)
 	VDMUNION(null, "U"),

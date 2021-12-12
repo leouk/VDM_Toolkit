@@ -13,6 +13,9 @@ public enum IsaErrorMessage {
     "Cannot yet convert %1$s into %2$s; %3$s"),
     PLUGIN_UNEXPECTED_ERROR_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 2,
     "Unexpected exception when converting %1$s = %2$s"),
+    PLUGIN_INVALID_INNER_TOKEN_TYPE(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 3,
+    "Token type inner type must be set before translation"),
+
     
     //VDM messages relate to ill formed ASTs; properly (VDMJ) typechecked ASts should never raise those
     VDMSL_VDM10_ONLY        (VDM2IsaError.ISABELLE_E_VDMSL_BASE + 0, 
@@ -111,6 +114,9 @@ public enum IsaErrorMessage {
     "Map comprehension with mixed (type and/or set/seq) bindings are not allowed."),
     ISA_INVALID_MAP_COMP_BINDING_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
     "Invalid map comp binding: expected `%1$s` but created `%2$s`."),
+    ISA_INVALID_TOKENEXPR_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
+    "Invalid token typed expression `%1$s`; this *must* be created with mk_token"),
+
     
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
