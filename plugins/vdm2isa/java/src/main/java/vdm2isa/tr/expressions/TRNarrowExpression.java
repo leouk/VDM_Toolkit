@@ -70,7 +70,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
                     break;
                 case BOOL:
                 case CHAR:
-                case TOKEN:
+                case TOKEN_TYPE:
                 default:
                     warning(IsaWarningMessage.ISA_TYPED_NARROW_1P, basictype.isaToken().toString());
                     sb.append(IsaToken.comment(IsaWarningMessage.ISA_TYPED_NARROW_1P.format(basictype.isaToken().toString()), getFormattingSeparator()));

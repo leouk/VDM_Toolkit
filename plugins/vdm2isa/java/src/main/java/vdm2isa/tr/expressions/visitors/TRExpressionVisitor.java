@@ -27,6 +27,7 @@ import vdm2isa.tr.expressions.TRLiteralExpression;
 import vdm2isa.tr.expressions.TRMapCompExpression;
 import vdm2isa.tr.expressions.TRMapEnumExpression;
 import vdm2isa.tr.expressions.TRMapletExpression;
+import vdm2isa.tr.expressions.TRMkBasicExpression;
 import vdm2isa.tr.expressions.TRMkTypeExpression;
 import vdm2isa.tr.expressions.TRMuExpression;
 import vdm2isa.tr.expressions.TRNarrowExpression;
@@ -246,6 +247,10 @@ public abstract class TRExpressionVisitor<R, S>
 	}
 
     public R caseAnnotatedExpression(TRAnnotatedExpression node, S arg) {
+        return caseExpression(node, arg);
+    }
+
+    public R caseMkBasicExpression(TRMkBasicExpression node, S arg) {
         return caseExpression(node, arg);
     }
 }
