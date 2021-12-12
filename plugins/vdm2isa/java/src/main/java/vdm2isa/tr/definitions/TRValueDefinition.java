@@ -18,6 +18,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRMkBasicExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
@@ -27,6 +28,7 @@ import vdm2isa.tr.patterns.TRStructuredPattern;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRProductType;
+import vdm2isa.tr.types.TRTokenType;
 import vdm2isa.tr.types.TRType;
 
 import vdm2isa.lex.IsaToken;
@@ -426,6 +428,38 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		return sb.toString();
 	}
+
+	private void checkForInnerTokenType()
+	{
+		// if VDMToken, has to prefix the type string with its generic type instantiation 
+		if (type instanceof TRTokenType)
+		{
+			TRTokenType tt = (TRTokenType)type;
+			if (this.exp instanceof TRMkBasicExpression)
+			{
+				TRMkBasicExpression mbe = (TRMkBasicExpression)exp;
+				tt.setInnerTokenType(mbe.arg.getType());
+			}
+			else 
+			{
+				report(IsaErrorMessage.ISA_INVALID_TOKENEXPR_1P, exp.translate());
+			}
+		}
+	}
+
+	@Override
+	protected String getTypeString()
+    {
+		checkForInnerTokenType();
+		return super.getTypeString();
+    }
+
+	@Override
+	protected String getInvariantString(String varName)
+    {
+		checkForInnerTokenType();
+		return super.getInvariantString(varName);
+    }
 
 	@Override
 	public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg)
