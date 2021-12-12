@@ -20,7 +20,6 @@ import com.fujitsu.vdmj.tc.modules.TCExport;
 import com.fujitsu.vdmj.tc.modules.TCExportAll;
 import com.fujitsu.vdmj.tc.modules.TCImportFromModule;
 import com.fujitsu.vdmj.tc.modules.TCModule;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 import java.io.File;
 import java.util.Arrays;
@@ -257,7 +256,9 @@ public class TRModule extends TRNode
 		//ds.addAll(module.defs);
 
 		// figure out all definitions, including implicit specification etc. 
-		defsToHide.addAll(figureOutFlatDefinitions(module.defs));
+		//defsToHide.addAll(figureOutFlatDefinitions(module.defs));
+		//@NB's suggestion which does what I ended up coding! Duhh...
+		defsToHide.addAll(module.defs.singleDefinitions());
 		if (module.exports != null && module.exports.exports != null)
 		{
 			for(TCExport e : module.exports.exports)
