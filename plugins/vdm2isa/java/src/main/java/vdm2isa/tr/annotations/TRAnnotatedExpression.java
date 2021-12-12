@@ -22,13 +22,6 @@ public class TRAnnotatedExpression extends TRExpression {
         this.expression = expression;
     }
 
-    public TRAnnotatedExpression(LexLocation location, TCAnnotatedExpression exp, 
-        TCAnnotation annotation, TRExpression expression, TRType exptype) {
-        super(location, exp, exptype);
-        this.annotation = null;//TODO! 
-        this.expression = expression;
-    }
-
     @Override 
     public void setup()
     {

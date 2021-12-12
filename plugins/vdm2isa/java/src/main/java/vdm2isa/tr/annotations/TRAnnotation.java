@@ -8,7 +8,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpressionList;
 
-public class TRAnnotation extends TRNode {
+public abstract class TRAnnotation extends TRNode {
 
     public final TCIdentifierToken name;
     public final TRExpressionList args;

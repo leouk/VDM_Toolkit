@@ -185,8 +185,9 @@ package com.fujitsu.vdmj.tc.annotations to vdm2isa.tr.annotations;
 #############################################################################
 
 map TCAnnotationList{} to TRAnnotationList(this);
-#map TCAnnotation{} to TRAnnotation();
+map TCAnnotation{} to TRAnnotation();
 
+map TCNoAnnotation{name, args} to TRNoAnnotation(this, name, args); 
 map TCAnnotatedExpression{location, annotation, expression, exptype} to TRAnnotatedExpression(location, this, annotation, expression, exptype);
 
 #############################################################################
