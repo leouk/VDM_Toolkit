@@ -375,7 +375,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			// add inner syntax tokens even if spurious to cope with structured union types
 			// e.g. U = set of nat | real | seq of int => "VDMNat VDMSet" | "VDMReal" | "VDMInt VDMSeq"
-			sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, t.translate(), IsaToken.ISAQUOTE));
+			sb.append(IsaToken.innerSyntaxIt(t.translate()));
 		}
 
 		return sb.toString();

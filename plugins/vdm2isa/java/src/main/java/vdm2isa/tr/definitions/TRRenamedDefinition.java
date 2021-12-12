@@ -53,7 +53,7 @@ public class TRRenamedDefinition extends TRImportedDefinition {
         sb.append(IsaToken.comment(IsaInfoMessage.VDM_RENAMED_IMPORT_3P.format(def.name.getModule(), oldName, newName), getFormattingSeparator()));
         sb.append(isaToken());
         sb.append(IsaToken.SPACE.toString());
-        sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, importStr, IsaToken.ISAQUOTE));
+        sb.append(IsaToken.innerSyntaxIt(importStr));
         sb.append(getFormattingSeparator());
         return sb.toString();
     }

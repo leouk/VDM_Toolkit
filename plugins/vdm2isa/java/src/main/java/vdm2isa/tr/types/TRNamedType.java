@@ -105,13 +105,13 @@ public class TRNamedType extends TRInvariantType
         // {
         //     TRNamedType tnt = (TRNamedType)type;
         //     // for VDM named type synonyms (e.g. T = nat; T2 = T;); ISAQUOTE is to be done externally, given context where RHS is used! 
-        //     //sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, tnt.getName(), IsaToken.ISAQUOTE));
+        //     //sb.append(IsaToken.innerSyntaxIt(tnt.getName()));
         //     sb.append(tnt.getName());
         // }
         // else
         // {
         //     // for new types (e.g. T = nat, T = set of X, etc.)
-        //     //sb.append(IsaToken.bracketit(IsaToken.ISAQUOTE, type.translate(), IsaToken.ISAQUOTE));
+        //     //sb.append(IsaToken.innerSyntaxIt(type.translate());
         //     sb.append(type.translate());
         // }
         sb.append(getName());//type.translate());

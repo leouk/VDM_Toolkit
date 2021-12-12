@@ -72,6 +72,8 @@ public enum IsaToken {
 
 	ABBREVIATION(null, "abbreviation"),
 	DEFINITION(null, "definition"),
+	HIDE_CONST(null, "hide_const"),
+	HIDE_TYPE(null, "hide_type"),
 	
 	// Binary Operators
 	AND(Token.AND, "\\<and>"),
