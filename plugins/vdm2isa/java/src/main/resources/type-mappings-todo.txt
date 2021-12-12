@@ -42,4 +42,4 @@ TCUndefinedType
 TCVoidReturnType
 TCVoidType
 
-(34 out 42) = 79%
+(34 out 42) = 81%

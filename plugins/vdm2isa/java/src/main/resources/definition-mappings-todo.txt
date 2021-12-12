@@ -33,11 +33,12 @@ TCImplicitOperationDefinition
 TCNamedTraceDefinition
 TCStateDefinition
 
-(26 of 33) = 63%
+(26 of 33) = 79%
 
-21 33 defs
-37 37 binds
-33 42 types
-101 110 exp
+ 26  33 defs  ( 79%)
+ 37  37 binds (100%)
+ 34  42 types ( 81%)
+107 110 exp   ( 97%)
+ 20  20 mods  (100%)
 
-192 222 total = 87%
+224 242 total = 93%

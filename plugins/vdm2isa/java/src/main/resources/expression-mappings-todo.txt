@@ -103,15 +103,11 @@
 *TCCaseAlternative
 *TCCaseAlternativeList
 *TCCasesExpression
+*TCMapCompExpression
+*TCMkBasicExpression
 
 TCPreOpExpression
 TCPostOpExpression
-TCMapCompExpression
-
-
-
-TCMkBasicExpression
-
 TCStateInitExpression
 
-(102 of 110) = 92
+(107 of 110) = 97
