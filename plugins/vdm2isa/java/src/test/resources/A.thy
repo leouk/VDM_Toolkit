@@ -54,4 +54,9 @@ where
 	\<comment>\<open>User defined body of f.\<close>
 	(a + (1::VDMNat1))"
 
+type_synonym T = VDMNat
+
+lemma l: "True" by (rule TrueI)
+hide_type T
+hide_fact l
 end

@@ -2,30 +2,34 @@ module A
 -- no exports yet
 exports 
 	values v: nat;
+	types T; struct S;
 	functions f: nat -> nat;
 definitions
 values 
-	v: nat = 10;
-	
+	v: nat = 10; --value export
+	p: nat = 10; --value not exported
+types
+	T = nat inv t == t > v; --opaque export	
+	S = nat inv s == s < v; --struct export
+	Q = nat inv q == q > 0; --not exported
 functions
-	f: nat -> nat
+	f: nat -> nat --function export
 	f(a) ==
 		-- @Printf("Hello = %s\n", a)
 		a + 1;
+		
+	h: nat -> nat --function not exported
+	h(a) == a;
 
 end A
 
 module B
--- no imports yet
 imports from A 
-	functions f: nat -> nat renamed F;
-	values v;
+	functions f: nat -> nat renamed F; --renamed import
+	values v; -- inlined import
 exports all
 definitions
-functions
-	--F: nat -> nat
-	--F(a) == a;
-	
+functions	
 	g: nat -> nat
 	g(a) == F(a) - 1 + A`v;
 
@@ -33,7 +37,7 @@ end B
 
 module C
 imports 
-	from A values v,
+	from A values v,	--inlined import across modules
 	from B functions g
 exports all
 definitions
