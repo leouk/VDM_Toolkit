@@ -24,7 +24,7 @@ public enum IsaWarningMessage {
     "%1$s expression invalid type (`%2$s`)? VDMJ might still figure it out."),      
     VDMSL_INVALID_EXPR_4P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 6,
     "Invalid %1$s arguments for `%2$s` length(%3$s) = %4$s."),
-    VDMSL_FIND_BINDING_OF_DUPLICATE_PATTERN_NAME_2P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 6,
+    VDMSL_FIND_BINDING_OF_DUPLICATE_PATTERN_NAME_2P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 7,
     "Found binding `%1$s` named `%2$s` in binding list where there are duplicate names."),
 
     VDMSL_EXU_MISSING_SPECCALL_3P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 50,
@@ -38,24 +38,21 @@ public enum IsaWarningMessage {
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     ISA_TYPDEF_MINMAX_ORD_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 2, 
     "Type definition for type `%1$s` min/max specification requires Isabelle type to instantiate `ord` class!"),
-    ISA_TYPED_NARROW_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 4, 
+    ISA_TYPED_NARROW_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 3, 
     "VDM narrow expressions of type %1$s might create Isabelle type errors!"),
-    ISA_SEQCOMP_LINEAR_TYPEBIND_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 5, 
+    ISA_SEQCOMP_LINEAR_TYPEBIND_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 4, 
     "Set bind `%1$s` in sequence comprehension requires its Isabelle type to instantiate class linorder."),
-    ISA_POWEROP_TYPEDEP(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 6,
+    ISA_POWEROP_TYPEDEP(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 5,
     "Result of the power operator is context dependenant on second argument type being nat or real."),
-    ISA_USE_BEFORE_DECL_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 7,
+    ISA_USE_BEFORE_DECL_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 6,
     "Type `%1$s` used before being defined might generate translation errors; managed to figure out it is a `%2$s` type."),
-    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_W_ISA_BASE + 8,
+    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_W_ISA_BASE + 7,
     "Map comprehension with type bindings will generate difficult map finiteness proof."),
-    ISA_INVALID_MODULE_NAME_2P(VDM2IsaError.ISABELLE_W_ISA_BASE + 9, 
+    ISA_INVALID_MODULE_NAME_2P(VDM2IsaError.ISABELLE_W_ISA_BASE + 8, 
     "Module `%1$s` translation will be saved in a file with the same name instead of the one in \n\tFiles = %2$s"),
     
     PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
-    "Attempting to create proof step with definition %1$s."),
-
-    
-    TEST(VDM2IsaWarning.ISABELLE_W_PO_BASE, " ");
+    "Attempting to create proof step with definition %1$s.");
 
     public final int number;
     public final String message; 

@@ -16,6 +16,7 @@ public enum IsaInfoMessage {
     ISA_PATTERN_CONTEXT("Implicit pattern context conversion"),
     ISA_UNION_TYPE_PROJECTION("Implicit union type parameters projection"),
     ISA_UNION_TYPE_COERCIONS("Type coercions might needed at body or union selection deletion might be needed"),
+    ISA_PROCESS_VDM_EXPORTS("Processing VDM exports as Isabelle hidden declarations"),
 
     TEST("test");
 

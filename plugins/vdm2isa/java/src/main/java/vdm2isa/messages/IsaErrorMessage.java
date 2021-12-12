@@ -49,6 +49,9 @@ public enum IsaErrorMessage {
     "Invalid VDMSL %1$s definition %2$s: %3$s."),
     VDMSL_INVALID_CASESEXPR(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 16, 
     "Invalid VDMSL cases expression: empty cases."),    
+    VDMSL_INVALID_TLD_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 17, 
+    "Invalid VDMSL top-level definition to process exports for: %1$s"),
+
 
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
@@ -117,9 +120,7 @@ public enum IsaErrorMessage {
     PO_INVALID_DEF_ERROR    (VDM2IsaError.ISABELLE_E_PO_BASE + 2, 
     "Invalid module PO list: only PO expressions or proofs scripts are allowed"),
     PO_INVALID_POEXPR_2P(VDM2IsaError.ISABELLE_E_PO_BASE + 3, 
-    "Invalid proof obligation expression: %1$s = %2$s."),
-
-    TEST(VDM2IsaError.ISABELLE_E_PO_BASE, " ");
+    "Invalid proof obligation expression: %1$s = %2$s.");
     
     public final int number;
     public final String message; 
