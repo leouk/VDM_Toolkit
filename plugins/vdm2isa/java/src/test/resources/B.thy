@@ -1,7 +1,7 @@
-(* VDM to Isabelle Translation @2021-12-11T13:29:54.848659Z
+(* VDM to Isabelle Translation @2021-12-12T11:08:39.413451Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IModules.vdmsl' at line 18:8
+in './src/test/resources/TestV2IModules.vdmsl' at line 26:8
 files = [./src/test/resources/TestV2IModules.vdmsl]
 *)
 theory B
@@ -16,10 +16,10 @@ begin
 \<comment>\<open>VDM source: g: (nat -> nat)
 	g(a) ==
 ((F(a) - 1) + v)\<close>
-\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 34:5\<close>
 
 \<comment>\<open>VDM source: pre_g = ?\<close>
-\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 34:5\<close>
 definition
 	pre_g :: "VDMNat \<Rightarrow> bool"
 where
@@ -29,7 +29,7 @@ where
 
 
 \<comment>\<open>VDM source: post_g = ?\<close>
-\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'B' (./src/test/resources/TestV2IModules.vdmsl) at line 34:5\<close>
 definition
 	post_g :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where

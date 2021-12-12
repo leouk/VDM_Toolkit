@@ -27,7 +27,8 @@ module B
 imports from A 
 	functions f: nat -> nat renamed F; --renamed import
 	values v; -- inlined import
-exports all
+exports 
+	functions g: nat -> nat;
 definitions
 functions	
 	g: nat -> nat
@@ -39,7 +40,6 @@ module C
 imports 
 	from A values v,	--inlined import across modules
 	from B functions g
-exports all
 definitions
 functions
 	h: nat -> nat
