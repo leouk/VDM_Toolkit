@@ -33,12 +33,12 @@ public class TRBasicType extends TRType
 	public static final Set<IsaToken> VALID_TOKENS = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 					  IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
-					  IsaToken.CHAR, IsaToken.TOKEN)); 
+					  IsaToken.CHAR, IsaToken.TOKEN_TYPE)); 
 
 	public static final Set<IsaToken> ORDERED_TYPES = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 						IsaToken.RAT, IsaToken.REAL, IsaToken.BOOL, 
-						IsaToken.CHAR, IsaToken.TOKEN)); 
+						IsaToken.CHAR)); 
 
 	public static final Set<IsaToken> NUMERIC_TYPES = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
@@ -49,7 +49,7 @@ public class TRBasicType extends TRType
 	 * @param location
 	 * @param token
 	 */
-	private TRBasicType(TCType vdmType, TRDefinitionList definitions, IsaToken token)
+	protected TRBasicType(TCType vdmType, TRDefinitionList definitions, IsaToken token)
 	{
 		super(vdmType, definitions);
 		this.token = token;
@@ -88,11 +88,6 @@ public class TRBasicType extends TRType
 	public TRBasicType(TCCharacterType type, TRDefinitionList definitions)
 	{
 		this(type, definitions, IsaToken.CHAR);
-	}
-
-	public TRBasicType(TCTokenType type, TRDefinitionList definitions)
-	{
-		this(type, definitions, IsaToken.TOKEN);
 	}
 
 	@Override
@@ -139,7 +134,7 @@ public class TRBasicType extends TRType
 		String typeStr = isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : translate();
 		return IsaToken.parenthesise(
 			IsaToken.INV.toString() + 
-			typeStr + (varName == null ? "" : " " + varName));
+			typeStr + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
 	}
 
 	@Override
@@ -175,14 +170,21 @@ public class TRBasicType extends TRType
 		return isaToken().equals(IsaToken.BOOL);
 	}
 
+	@Override 
+	public boolean isVDMToken()
+	{
+		return isaToken().equals(IsaToken.TOKEN_TYPE);
+	}
+
 	@Override
 	public <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseBasicType(this, arg);
 	}
 
-	public static final TRType newBasicType(TCType vdmType, IsaToken token)  
+	private static final TRType newBasicType(TCType vdmType, IsaToken token)  
 	{
+		assert !token.equals(IsaToken.TOKEN_TYPE);
 		TRBasicType result = new TRBasicType(vdmType, new TRDefinitionList(), token);
 		TRNode.setup(result);
 		return result;

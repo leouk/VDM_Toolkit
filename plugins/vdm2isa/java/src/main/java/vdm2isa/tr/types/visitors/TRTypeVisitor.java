@@ -17,6 +17,7 @@ import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
+import vdm2isa.tr.types.TRTokenType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRUnknownType;
@@ -101,5 +102,9 @@ public abstract class TRTypeVisitor<R, S>
 
     public R caseBracketType(TRBracketType node, S arg) {
         return caseType(node, arg);
+    }
+
+    public R caseTokenType(TRTokenType node, S arg) {
+        return caseBasicType(node, arg);
     }
 }

@@ -112,6 +112,7 @@ map TCTupleExpression{location, args, exptype} to TRTupleExpression(location, th
 map TCRecordModifier{tag, value} to TRRecordModifier(this, tag, value);
 map TCMuExpression{location, record, modifiers, exptype} to TRMuExpression(location, this, record, modifiers, exptype);
 map TCMkTypeExpression{typename, args, exptype} to TRMkTypeExpression(this, typename, args, exptype);
+map TCMkBasicExpression{location, type, arg, exptype} to TRMkBasicExpression(location, this, type, arg, exptype);
 map TCFieldNumberExpression{tuple, field, type, exptype} to TRFieldNumberExpression(this, tuple, field, type, exptype);
 map TCFieldExpression{object, field, exptype} to TRFieldExpression(this, object, field, exptype);
 
@@ -254,7 +255,7 @@ map TCRationalType{definitions} to TRBasicType(this, definitions);
 map TCRealType{definitions} to TRBasicType(this, definitions);
 map TCBooleanType{definitions} to TRBasicType(this, definitions);
 map TCCharacterType{definitions} to TRBasicType(this, definitions);
-map TCTokenType{definitions} to TRBasicType(this, definitions);
+map TCTokenType{definitions} to TRTokenType(this, definitions);
 
 map TCQuoteType{definitions, value} to TRQuoteType(this, definitions, value);
 map TCProductType{definitions, types} to TRProductType(this, definitions, types);

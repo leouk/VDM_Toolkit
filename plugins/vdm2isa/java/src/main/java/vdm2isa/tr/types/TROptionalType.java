@@ -24,7 +24,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     public void setup()
     {
         super.setup();
-        this.dataTypeConstructors = new TRTypeSet(TRBasicType.newBasicType(getVDMType(), IsaToken.TOKEN), getInnerType());
+        this.dataTypeConstructors = new TRTypeSet(TRTokenType.newTokenType(location), getInnerType());
         TRNode.setup(dataTypeConstructors);
     }
 
