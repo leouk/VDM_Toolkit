@@ -122,7 +122,9 @@ It is not possible to pass parameters to the static initialisers.
 
 Abstract class mapping is needed if it is a type target of mapping (not otherwise). For example `TRTypeDefinition` expects a `TRInvariantType` parameter, which is an abstract class that will be instantiated to either `TRRecordType` or `TRNamedType`. 
 
-Therefore, a class mapping for the abstract type is needed, even though it might just be a stub class giving access to the target hierarchy for concrete instances.    
+Therefore, a class mapping for the abstract type is needed, even though it might just be a stub class giving access to the target hierarchy for concrete instances.  
+
+Of course, the target class must also be abstract, even if it implements all that is needed.   
 
 ### `map` `set` clause
 
