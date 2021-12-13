@@ -262,9 +262,27 @@ public class TRValueDefinition extends TRLocalDefinition
 	{
 		TRDefinitionSet result = new TRDefinitionSet(defs);
 		// check defs structure: empty/null is bad
-		if (result == null || result.isEmpty())
+		// if (result == null || result.isEmpty())
+		// {
+        //     report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", "definitions", "cannot be null or empty");
+		// }
+		// catering for the ignore pattern case like "- : nat = 10;"
+		if (result.isEmpty())
 		{
-            report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", "definitions", "cannot be null or empty");
+			if (!pattern.isIgnore()) 
+			{
+				report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", "definitions", "empty definitions must have `ignore` (-) pattern");
+			}
+			// local dummy ignores (e.g. let -: T = v in P) is okay, but global ones will cause trouble (e.g. -: nat = 10); 
+			else if (!isLocal())
+			{
+				report(IsaErrorMessage.ISA_INVALID_IGNORE_VALUEDEF);
+			}
+			// add to the result regardless; also add to defs, so that it won't break in other places! 
+			assert defs.isEmpty();
+			// or should I not translate ignore stuff? 
+			defs.add(this);
+			result.add(this);
 		}
 		// not with locals only is bad
 		else if (!result.allAreLocalDefinition())
