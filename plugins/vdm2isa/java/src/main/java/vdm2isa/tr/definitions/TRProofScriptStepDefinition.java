@@ -15,7 +15,7 @@ public class TRProofScriptStepDefinition extends TRDefinition {
 
     public TRProofScriptStepDefinition(LexLocation location, TRIsaVDMCommentList comments, String proofStep)
     {
-        super(null, location, comments, null, null, NameScope.GLOBAL, true, false);
+        super(null, location, comments, null, IsaToken.newNameToken(location, location.module, "PO_Step_" + String.valueOf(proofStep)), NameScope.GLOBAL, true, false);
         this.proofStep = proofStep;
     }
 

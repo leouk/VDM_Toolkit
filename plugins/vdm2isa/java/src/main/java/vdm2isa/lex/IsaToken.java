@@ -478,4 +478,9 @@ public enum IsaToken {
 				return IsaToken.ERROR;
 		}
 	}
+
+	public static final TCNameToken newNameToken(LexLocation location, String module, String name)
+	{
+		return new TCNameToken(location, module, name);
+	}
 }

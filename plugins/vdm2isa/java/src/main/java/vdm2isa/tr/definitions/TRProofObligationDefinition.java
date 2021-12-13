@@ -22,6 +22,11 @@ public class TRProofObligationDefinition extends TRDefinition {
     public final TRType poType;
     private TRDefinitionList poScripts;
 
+    private static final LexLocation figureOutLocation(ProofObligation po)
+    {
+        return po != null ? po.location : LexLocation.ANY;
+    }
+
     /**
      * Creates a proof obligation for the given ProofObligation. It corresponds to the transformation of 
      * the type checked PO string mapped and type checked to a TRExpression and its resulting TRType. 
@@ -45,7 +50,7 @@ public class TRProofObligationDefinition extends TRDefinition {
      public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
     {
-        super(null, po != null ? po.location : LexLocation.ANY, comments, null, null/* po.name as TCIdentifierToken */, NameScope.GLOBAL, true, false);
+        super(null, figureOutLocation(po), comments, null, IsaToken.newNameToken(figureOutLocation(po), figureOutLocation(po).module, "PO_" + po != null ? String.valueOf(po.name) : "null"), NameScope.GLOBAL, true, false);
         this.po = po;
         this.poExpr = poExpr;
         this.poType = poType;//always null for now, given avoiding calls to typeCheck(poExpr);

@@ -23,10 +23,12 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     
     private static final long serialVersionUID = 1L;
 
+    public static final TRLocalDefinition DEFAULT = new TRLocalDefinition();
+    
     //For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
-    protected TRLocalDefinition()
+    private TRLocalDefinition()
     {
-        //this(LexLocation.ANY, new TCNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
+        //this(LexLocation.ANY, IsaToken.newNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
         this(null, LexLocation.ANY, null, null, null, null, false, false, null);
     }
 

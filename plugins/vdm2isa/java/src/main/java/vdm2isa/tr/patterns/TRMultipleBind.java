@@ -8,7 +8,6 @@ import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCSeqBind;
 import com.fujitsu.vdmj.tc.patterns.TCSetBind;
 import com.fujitsu.vdmj.tc.patterns.TCTypeBind;
-import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -262,8 +261,8 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         for(TRPattern p : this.plist)
         {
             LexLocation loc = p.getLocation();
-            TCNameToken name = new TCNameToken(loc, loc.module, p.patternTranslate());
-            TRLocalDefinition localdef = new TRLocalDefinition(null, loc, null, null, name, NameScope.LOCAL, true, false, getRHSType());
+            TCNameToken name = IsaToken.newNameToken(loc, loc.module, p.patternTranslate());
+            TRLocalDefinition localdef = TRLocalDefinition.newLocalDefinition(location, name, getRHSType());
             result.add(localdef);
         }
         TRDefinitionSet.setup(result);

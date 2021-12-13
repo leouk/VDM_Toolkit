@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCBooleanPattern;
 import com.fujitsu.vdmj.tc.patterns.TCCharacterPattern;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
@@ -145,7 +144,7 @@ public class TRBasicPattern extends TRPattern {
     public static final TRPattern identifier(LexLocation location, String name) {
         if (!IsaToken.validIsaIdentifier(name))
             GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
-        TRBasicPattern result = new TRBasicPattern(new TCIdentifierPattern(new TCNameToken(location, location.module, name)));
+        TRBasicPattern result = new TRBasicPattern(new TCIdentifierPattern(IsaToken.newNameToken(location, location.module, name)));
         TRNode.setup(result);
         return result;
     }

@@ -26,7 +26,7 @@ public class TRRecordModifier extends TRExpression
     private static TCTupleExpression figureOutRecordModifier(TCRecordModifier tc)
     {
         TCExpressionList args = new TCExpressionList();
-        TCNameToken name = new TCNameToken(tc.tag.getLocation(), tc.tag.getLocation().module, tc.tag.getName());
+        TCNameToken name = IsaToken.newNameToken(tc.tag.getLocation(), tc.tag.getLocation().module, tc.tag.getName());
         args.add(new TCVariableExpression(tc.tag.getLocation(), name, tc.tag.getName()));
         args.add(tc.value);
         TCTupleExpression result = new TCTupleExpression(tc.tag.getLocation(), args);

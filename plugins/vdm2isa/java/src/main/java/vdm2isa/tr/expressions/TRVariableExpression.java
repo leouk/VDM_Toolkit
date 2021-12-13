@@ -133,7 +133,7 @@ public class TRVariableExpression extends TRExpression
 
 	public static final TRVariableExpression newVariableExpr(LexLocation location, String original, TRType exptype)
 	{
-		return TRVariableExpression.newVariableExpr(location, new TCNameToken(location, location.module, original), original, exptype);
+		return TRVariableExpression.newVariableExpr(location, IsaToken.newNameToken(location, location.module, original), original, exptype);
 	}
 
 	public static final TRVariableExpression newVariableExpr(LexLocation location, TCNameToken name, String original, TRType exptype)
