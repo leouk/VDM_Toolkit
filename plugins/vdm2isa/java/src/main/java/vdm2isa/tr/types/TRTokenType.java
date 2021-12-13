@@ -12,17 +12,19 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 public class TRTokenType extends TRBasicType {
 
     private TRType innerTokenType; 
+    private TRTypeSet argtypes;
 
-    public TRTokenType(TCTokenType vdmType, TRDefinitionList definitions) {
+    public TRTokenType(TCTokenType vdmType, TRDefinitionList definitions, TRTypeSet argtypes) {
         super(vdmType, definitions, IsaToken.TOKEN_TYPE);
         this.innerTokenType = null;
+        this.argtypes = argtypes;
     }
 
     @Override 
     public void setup()
     {
         super.setup();
-        TRNode.setup(innerTokenType);
+        TRNode.setup(innerTokenType, argtypes);
     }
 
     /**
@@ -38,10 +40,16 @@ public class TRTokenType extends TRBasicType {
         }
     }
 
+    protected void figureOutInnerTokenType()
+    {
+        // if the token types collapse to a singleton, we are game. 
+        setInnerTokenType(argtypes.colapses());
+    }
+
 	@Override
 	public TRType copy(boolean atTLD)
 	{
-		TRTokenType result = new TRTokenType((TCTokenType)getVDMType(), definitions);
+		TRTokenType result = new TRTokenType((TCTokenType)getVDMType(), definitions, argtypes.copy(true));
 		TRNode.setup(result);
         result.setInnerTokenType(innerTokenType);
 		result.setAtTopLevelDefinition(atTLD);
@@ -54,6 +62,7 @@ public class TRTokenType extends TRBasicType {
         sb.append(IsaToken.INV.toString());
         sb.append(isaToken().toString());
         sb.append(IsaToken.DASH.toString());
+        figureOutInnerTokenType();
         if (innerTokenType != null)
         {
             sb.append(IsaToken.SPACE.toString());
@@ -71,6 +80,7 @@ public class TRTokenType extends TRBasicType {
     @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
+        figureOutInnerTokenType();
         if (innerTokenType != null)
         {
             sb.append(innerTokenType.translate());
@@ -90,9 +100,9 @@ public class TRTokenType extends TRBasicType {
         return visitor.caseTokenType(this, arg);
     }
 
-    public static final TRType newTokenType(LexLocation location)  
+    public static final TRType newTokenType(LexLocation location, TRTypeSet argtypes)  
 	{
-		TRTokenType result = new TRTokenType(new TCTokenType(location), new TRDefinitionList());
+		TRTokenType result = new TRTokenType(new TCTokenType(location), new TRDefinitionList(), argtypes);
 		TRNode.setup(result);
 		return result;
 	}

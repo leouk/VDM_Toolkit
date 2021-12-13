@@ -96,6 +96,21 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return IsaToken.EOF;
 	}
 
+	/**
+	 * Return the type of this type set if it collapses to a single type (i.e. singleton union). Null otherwise 
+	 * @return
+	 */
+	public TRType colapses()
+	{
+		TRType result = null; 
+		if (this.size() == 1)
+		{
+			assert this.iterator().hasNext();
+			result = this.iterator().next();
+		}
+		return result;
+	}
+
 	protected void setPrefixed(boolean b)
 	{
 		prefixed = b;
