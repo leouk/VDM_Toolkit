@@ -129,7 +129,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
 
     public static final TRMultipleTypeBind newMultipleTypeBind(TRPatternList plist, TRType t)
     {   
-        TRMultipleTypeBind result = new TRMultipleTypeBind(new TCMultipleTypeBind(plist.getTCPatternList(), t.getVDMType()), plist, t);
+        TRMultipleTypeBind result = new TRMultipleTypeBind(new TCMultipleTypeBind(plist.getVDMPatternList(), t.getVDMType()), plist, t);
         TRNode.setup(result);
         return result;
     }

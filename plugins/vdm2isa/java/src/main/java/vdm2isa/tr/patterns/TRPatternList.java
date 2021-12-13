@@ -53,7 +53,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		return super.toString() + " [PL=" + size() + "]";
 	}
 
-	public TCPatternList getTCPatternList()
+	public TCPatternList getVDMPatternList()
 	{
 		TCPatternList result = new TCPatternList();
 		for(TRPattern p : this)

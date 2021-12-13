@@ -59,12 +59,12 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		return super.toString() + " [PLL=" + size() + "]";
 	}
 
-	public TCPatternListList getTCPatternListList()
+	public TCPatternListList getVDMPatternListList()
 	{
 		TCPatternListList result = new TCPatternListList();
 		for(TRPatternList plist : this)
 		{
-			result.add(plist.getTCPatternList());
+			result.add(plist.getVDMPatternList());
 		}
 		return result;
 	}
