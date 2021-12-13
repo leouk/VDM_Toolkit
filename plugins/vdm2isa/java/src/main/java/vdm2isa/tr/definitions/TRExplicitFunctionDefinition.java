@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.definitions.TCAccessSpecifier;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
@@ -402,7 +403,6 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		// The translator will then take this into account as the "missing" (now found) specification definition, and
 		// treat it as if the user has given it (e.g. equivalent to as if the user had typed "pre true", "post true");  
 		TRExplicitFunctionDefinition result = TRExplicitFunctionDefinition.newExplicitFunctionDefinition(
-					null,
 					comments,										//  LexCommentList comments,								
 					null,											// 	TCAnnotationList annotations,
 					undeclaredName,									// 	TCNameToken name,
@@ -932,6 +932,49 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 
 		return found;
+	}
+
+	public static final TRExplicitFunctionDefinition newExplicitFunctionDefinition(
+		TRIsaVDMCommentList comments,
+		TRAnnotationList annotations,
+		TCNameToken name,
+		NameScope nameScope, 
+		boolean used, 
+		boolean excluded,
+		TCNameList typeParams, 
+		TRFunctionType type,
+		TRPatternListList paramPatternList, 
+		TRExpression body,
+		TRExpression precondition,
+		TRExpression postcondition, 
+		boolean typeInvariant, 
+		TRExpression measureExp,
+		boolean isCurried, 
+		TRExplicitFunctionDefinition predef,
+		TRExplicitFunctionDefinition postdef,
+		TRDefinitionListList paramDefinitionList,
+		boolean recursive,
+		boolean isUndefined,
+		TRType actualResult,
+		TRType expectedResult)
+	{
+		return TRExplicitFunctionDefinition.newExplicitFunctionDefinition(
+			new TCExplicitFunctionDefinition(
+				annotations != null ? annotations.getVDMAnnotationList() : null, 
+				TCAccessSpecifier.DEFAULT, 
+				name, 
+				typeParams, 
+				type != null ? type.getVDMFunctionType() : null, 
+				paramPatternList != null ? paramPatternList.getVDMPatternListList() : null, 
+				body != null ? body.getVDMExpr() : null, 
+				precondition != null ? precondition.getVDMExpr() : null, 
+				postcondition != null ? postcondition.getVDMExpr() : null, 
+				typeInvariant, 
+				measureExp != null ? measureExp.getVDMExpr() : null), 
+			comments, annotations, name, nameScope, used, excluded, typeParams, type, 
+			paramPatternList, body, precondition, postcondition, typeInvariant, measureExp, 
+			isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined, 
+			actualResult, expectedResult);
 	}
 
 	public static final TRExplicitFunctionDefinition newExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
