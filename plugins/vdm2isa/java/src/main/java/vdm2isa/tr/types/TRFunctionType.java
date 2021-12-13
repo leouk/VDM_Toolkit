@@ -80,11 +80,16 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		else
         {
 			//TODO should the call be parameters.copy(true)?
-			result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
+			result = new TRFunctionType(getVDMFunctionType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true));
 			TRNode.setup(result);
 			result.setAtTopLevelDefinition(atTLD);
 		}
 		return result;
+	}
+
+	public TCFunctionType getVDMFunctionType()
+	{
+		return (TCFunctionType)getVDMType();
 	}
 
 	@Override
@@ -272,17 +277,21 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	public static final TRFunctionType newConstantFunctionType(TRType result) {
-        return TRFunctionType.newFunctionType(result, new TRTypeList()); 
+        return TRFunctionType.newFunctionType(result, new TRTypeList(), true); 
     }
 
     public static final TRFunctionType newFunctionType(TRType result, TRType... params) {
-        return TRFunctionType.newFunctionType(result, TRTypeList.newTypeList(params)); 
+        return TRFunctionType.newFunctionType(result, TRTypeList.newTypeList(params), true); 
     }
 
-    public static final TRFunctionType newFunctionType(TRType fcnResultType, TRTypeList params) {
-		TCFunctionType vdmFcnType = new TCFunctionType(fcnResultType.getLocation(), params.getVDMTypeList(), true, fcnResultType.getVDMType());
-        TRFunctionType result = new TRFunctionType(vdmFcnType, new TRDefinitionList(), params, false, fcnResultType);
+    public static final TRFunctionType newFunctionType(TRType fcnResultType, TRTypeList params, boolean partial) {
+		return TRFunctionType.newFunctionType(new TCFunctionType(fcnResultType.getLocation(), params.getVDMTypeList(), partial, fcnResultType.getVDMType()), new TRDefinitionList(), params, partial, fcnResultType);
+    }
+
+	public static  final TRFunctionType newFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType fcnResultType)
+	{
+		TRFunctionType result = new TRFunctionType(vdmType, definitions, parameters, partial, fcnResultType);
 		TRNode.setup(result);
 		return result;
-    }
+	}
 }

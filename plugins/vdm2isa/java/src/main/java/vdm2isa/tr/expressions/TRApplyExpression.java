@@ -112,7 +112,7 @@ public class TRApplyExpression extends TRExpression
 	public static final TRApplyExpression newApplyExpression(
 		String functionName, TRExpressionList args, TRType resultType)
 	{
-		TRFunctionType ftype = TRFunctionType.newFunctionType(resultType, args.getTypeList());
+		TRFunctionType ftype = TRFunctionType.newFunctionType(resultType, args.getTypeList(), true);
 		return TRApplyExpression.newApplyExpression(
 			TRVariableExpression.newVariableExpr(resultType.location, functionName, ftype), args, resultType);
 	}

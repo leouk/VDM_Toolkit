@@ -195,7 +195,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, LexLocation.ANY, "bindings or expression", "synthetic lambda", mbinds.size(), String.valueOf(expression));
             expression = TRLiteralExpression.newBooleanLiteralExpression(LexLocation.ANY, false);    
         }
-        TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList());
+        TRFunctionType fcnType = TRFunctionType.newFunctionType(expression.getType(), bindList.getTypeList(), true);
         TRLambdaExpression result = new TRLambdaExpression(
             expression.getLocation(), 
             new TCLambdaExpression(expression.getLocation(), bindList.getTCTypeBindList(), expression.getVDMExpr()),
