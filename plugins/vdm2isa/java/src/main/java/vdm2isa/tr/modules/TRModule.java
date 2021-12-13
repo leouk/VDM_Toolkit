@@ -5,16 +5,16 @@
 package vdm2isa.tr.modules;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
-import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCQualifiedDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCRenamedDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
+// import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCQualifiedDefinition;
+// import com.fujitsu.vdmj.tc.definitions.TCRenamedDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
+//import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCExport;
 import com.fujitsu.vdmj.tc.modules.TCExportAll;
@@ -146,104 +146,104 @@ public class TRModule extends TRNode
 		}
 	}
 
-	private Set<TCDefinition> figureOutFlatDefinitions(TCDefinitionList defsOfInterest)
-	{
-		Set<TCDefinition> result = new HashSet<TCDefinition>();
-		for(TCDefinition d : defsOfInterest)
-		{
-			// value definitions potentially have inner definitions (e.g. [A,B] = [1,2] has two definitions)
-			if (d instanceof TCValueDefinition)
-			{
-				TCValueDefinition vd = (TCValueDefinition)d;
-				result.addAll(figureOutFlatDefinitions(vd.getDefinitions()));
-			}
-			// type definitions need to consider any declared specification (e.g. inv/eq/ord)
-			else if (d instanceof TCTypeDefinition)
-			{
-				TCTypeDefinition td = (TCTypeDefinition)d;
-				result.add(td);
+	// private Set<TCDefinition> figureOutFlatDefinitions(TCDefinitionList defsOfInterest)
+	// {
+	// 	Set<TCDefinition> result = new HashSet<TCDefinition>();
+	// 	for(TCDefinition d : defsOfInterest)
+	// 	{
+	// 		// value definitions potentially have inner definitions (e.g. [A,B] = [1,2] has two definitions)
+	// 		if (d instanceof TCValueDefinition)
+	// 		{
+	// 			TCValueDefinition vd = (TCValueDefinition)d;
+	// 			result.addAll(figureOutFlatDefinitions(vd.getDefinitions()));
+	// 		}
+	// 		// type definitions need to consider any declared specification (e.g. inv/eq/ord)
+	// 		else if (d instanceof TCTypeDefinition)
+	// 		{
+	// 			TCTypeDefinition td = (TCTypeDefinition)d;
+	// 			result.add(td);
 
-				TCDefinitionList tdl = new TCDefinitionList();
-				if (td.invdef != null) 
-					tdl.add(td.invdef);
-				if (td.eqdef != null)
-					tdl.add(td.eqdef);
-				if (td.orddef != null)
-					tdl.add(td.orddef);
-				if (!tdl.isEmpty())
-					result.addAll(figureOutFlatDefinitions(tdl));
-			}
-			// function definitions need to consider any declared specification (e.g. pre/post/measure)
-			else if (d instanceof TCExplicitFunctionDefinition)
-			{
-				TCExplicitFunctionDefinition efd = (TCExplicitFunctionDefinition)d;
-				result.add(efd);
+	// 			TCDefinitionList tdl = new TCDefinitionList();
+	// 			if (td.invdef != null) 
+	// 				tdl.add(td.invdef);
+	// 			if (td.eqdef != null)
+	// 				tdl.add(td.eqdef);
+	// 			if (td.orddef != null)
+	// 				tdl.add(td.orddef);
+	// 			if (!tdl.isEmpty())
+	// 				result.addAll(figureOutFlatDefinitions(tdl));
+	// 		}
+	// 		// function definitions need to consider any declared specification (e.g. pre/post/measure)
+	// 		else if (d instanceof TCExplicitFunctionDefinition)
+	// 		{
+	// 			TCExplicitFunctionDefinition efd = (TCExplicitFunctionDefinition)d;
+	// 			result.add(efd);
 
-				TCDefinitionList efdl = new TCDefinitionList();
-				if (efd.predef != null)
-					efdl.add(efd.predef);
-				if (efd.postdef != null)
-					efdl.add(efd.postdef);
-				//Measures are never translated?
-				//if (efd.measureDef != null)
-				//	efdl.add(efd.measureDef);
-				if (!efdl.isEmpty())
-					result.addAll(figureOutFlatDefinitions(efdl));
-			}
-			else if (d instanceof TCImplicitFunctionDefinition)
-			{
-				TCImplicitFunctionDefinition ifd = (TCImplicitFunctionDefinition)d;
-				result.add(ifd);
+	// 			TCDefinitionList efdl = new TCDefinitionList();
+	// 			if (efd.predef != null)
+	// 				efdl.add(efd.predef);
+	// 			if (efd.postdef != null)
+	// 				efdl.add(efd.postdef);
+	// 			//Measures are never translated?
+	// 			//if (efd.measureDef != null)
+	// 			//	efdl.add(efd.measureDef);
+	// 			if (!efdl.isEmpty())
+	// 				result.addAll(figureOutFlatDefinitions(efdl));
+	// 		}
+	// 		else if (d instanceof TCImplicitFunctionDefinition)
+	// 		{
+	// 			TCImplicitFunctionDefinition ifd = (TCImplicitFunctionDefinition)d;
+	// 			result.add(ifd);
 
-				TCDefinitionList ifdl = new TCDefinitionList();
-				if (ifd.predef != null)
-					ifdl.add(ifd.predef);
-				if (ifd.postdef != null)
-					ifdl.add(ifd.postdef);
-				//if (ifd.measureDef != null)
-				//	ifdl.add(ifd.measureDef);
-				if (!ifdl.isEmpty())
-					result.addAll(figureOutFlatDefinitions(ifdl));
-			}
-			else if (d instanceof TCExplicitOperationDefinition)
-			{
-				TCExplicitOperationDefinition eod = (TCExplicitOperationDefinition)d;
-				result.add(eod);
+	// 			TCDefinitionList ifdl = new TCDefinitionList();
+	// 			if (ifd.predef != null)
+	// 				ifdl.add(ifd.predef);
+	// 			if (ifd.postdef != null)
+	// 				ifdl.add(ifd.postdef);
+	// 			//if (ifd.measureDef != null)
+	// 			//	ifdl.add(ifd.measureDef);
+	// 			if (!ifdl.isEmpty())
+	// 				result.addAll(figureOutFlatDefinitions(ifdl));
+	// 		}
+	// 		else if (d instanceof TCExplicitOperationDefinition)
+	// 		{
+	// 			TCExplicitOperationDefinition eod = (TCExplicitOperationDefinition)d;
+	// 			result.add(eod);
 
-				TCDefinitionList eodl = new TCDefinitionList();
-				if (eod.predef != null)
-					eodl.add(eod.predef);
-				if (eod.postdef != null)
-					eodl.add(eod.postdef);
-				if (!eodl.isEmpty())
-					result.addAll(figureOutFlatDefinitions(eodl));
-			}
-			else if (d instanceof TCImplicitOperationDefinition)
-			{
-				TCImplicitOperationDefinition eid = (TCImplicitOperationDefinition)d;
-				result.add(eid);
+	// 			TCDefinitionList eodl = new TCDefinitionList();
+	// 			if (eod.predef != null)
+	// 				eodl.add(eod.predef);
+	// 			if (eod.postdef != null)
+	// 				eodl.add(eod.postdef);
+	// 			if (!eodl.isEmpty())
+	// 				result.addAll(figureOutFlatDefinitions(eodl));
+	// 		}
+	// 		else if (d instanceof TCImplicitOperationDefinition)
+	// 		{
+	// 			TCImplicitOperationDefinition eid = (TCImplicitOperationDefinition)d;
+	// 			result.add(eid);
 
-				TCDefinitionList eidl = new TCDefinitionList();
-				if (eid.predef != null)
-					eidl.add(eid.predef);
-				if (eid.postdef != null)
-					eidl.add(eid.postdef);
-				if (!eidl.isEmpty())
-					result.addAll(figureOutFlatDefinitions(eidl));
-			}
-			// renamed, qualified, local definitions are leafs
-			else if (d instanceof TCRenamedDefinition || d instanceof TCQualifiedDefinition || d instanceof TCLocalDefinition)
-			{
-				result.add(d);
-			}
-			// invalid TLD otherwise 
-			else 
-			{
-				report(IsaErrorMessage.VDMSL_INVALID_TLD_1P, d.toString());
-			}
-		}
-		return result;
-	}
+	// 			TCDefinitionList eidl = new TCDefinitionList();
+	// 			if (eid.predef != null)
+	// 				eidl.add(eid.predef);
+	// 			if (eid.postdef != null)
+	// 				eidl.add(eid.postdef);
+	// 			if (!eidl.isEmpty())
+	// 				result.addAll(figureOutFlatDefinitions(eidl));
+	// 		}
+	// 		// renamed, qualified, local definitions are leafs
+	// 		else if (d instanceof TCRenamedDefinition || d instanceof TCQualifiedDefinition || d instanceof TCLocalDefinition)
+	// 		{
+	// 			result.add(d);
+	// 		}
+	// 		// invalid TLD otherwise 
+	// 		else 
+	// 		{
+	// 			report(IsaErrorMessage.VDMSL_INVALID_TLD_1P, d.toString());
+	// 		}
+	// 	}
+	// 	return result;
+	// }
 
 	/**
 	 * VDM module exports are processed by "hiding" in Isabelle what is not exported
