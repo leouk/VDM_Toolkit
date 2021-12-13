@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-13T14:33:13.174Z
+(* VDM to Isabelle Translation @2021-12-13T15:11:23.652Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl' at line 1:8
@@ -14,7 +14,9 @@ begin
 10\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 
-\<comment>\<open>VDM source: pre_const = ?\<close>
+\<comment>\<open>VDM source: pre_const: (() -> nat)
+	pre_const() ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
 	pre_const :: "bool"
@@ -22,7 +24,9 @@ where
 	"pre_const  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_const = ?\<close>
+\<comment>\<open>VDM source: post_const: (() -> nat)
+	post_const(RESULT) ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
 	post_const :: "VDMNat \<Rightarrow> bool"
@@ -86,7 +90,9 @@ where
 (x + y)\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 
-\<comment>\<open>VDM source: pre_f = ?\<close>
+\<comment>\<open>VDM source: pre_f: (nat * nat1 -> nat1)
+	pre_f(x, y) ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> bool"
@@ -96,7 +102,9 @@ where
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))"
 
 
-\<comment>\<open>VDM source: post_f = ?\<close>
+\<comment>\<open>VDM source: post_f: (nat * nat1 -> nat1)
+	post_f(x, y, RESULT) ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat1 \<Rightarrow> bool"
@@ -286,7 +294,9 @@ where
 (x + y)\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 
-\<comment>\<open>VDM source: pre_curried = ?\<close>
+\<comment>\<open>VDM source: pre_curried: (nat -> (nat -> nat))
+	pre_curried(x)(y) ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 definition
 	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool"
@@ -296,7 +306,9 @@ where
 		((inv_VDMNat x))  \<and> ((inv_VDMNat y))"
 
 
-\<comment>\<open>VDM source: post_curried = ?\<close>
+\<comment>\<open>VDM source: post_curried: (nat -> (nat -> nat))
+	post_curried(x)(y, RESULT) ==
+null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 definition
 	post_curried :: "VDMNat \<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"

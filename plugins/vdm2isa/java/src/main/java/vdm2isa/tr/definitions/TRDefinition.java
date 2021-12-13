@@ -54,6 +54,7 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 	{
 		super(location); 
 		// create a default one in case of synthetic creation (with null), to avoid NPE on getVDMDefinition. 
+		assert (definition == null && name != null) || definition != null;
 		this.vdmDefinition = definition == null ? new TCLocalDefinition(location, name, new TCUnknownType(location), nameScope) : definition;
 		this.comments = comments == null ? new TRIsaVDMCommentList() : comments;
 		this.annotations = annotations;
