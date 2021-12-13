@@ -1,4 +1,4 @@
-module TestV2IComplexBinds
+module TestV2IBindsComplex
 exports all
 definitions
 
@@ -19,4 +19,4 @@ values
 	
 	[v5,v6] = [1,2];
 	
-end TestV2IComplexBinds
+end TestV2IBindsComplex
