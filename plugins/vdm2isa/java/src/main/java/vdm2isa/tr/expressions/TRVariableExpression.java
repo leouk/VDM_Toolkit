@@ -142,7 +142,7 @@ public class TRVariableExpression extends TRExpression
                 location, 
 				new TCVariableExpression(location, name, original),
 				name, original, 
-                new TRLocalDefinition(null, location, null, null, name, NameScope.LOCAL, true, false, exptype), 
+				TRLocalDefinition.newLocalDefinition(location, null, null, name, NameScope.LOCAL, true, false, exptype),
                 exptype);
 		TRNode.setup(result);
 		return result;

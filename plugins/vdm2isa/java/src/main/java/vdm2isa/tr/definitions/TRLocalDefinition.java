@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
@@ -139,4 +140,42 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         }
         return IsaToken.parenthesise(sb.toString());
 	}
+
+    public static final TRLocalDefinition newLocalDefinition(
+        LexLocation location, 
+        TCNameToken name, 
+        TRType type)
+    {
+        return TRLocalDefinition.newLocalDefinition(location, null, null, name, NameScope.LOCAL, true, false, type);  
+    }
+
+    public static final TRLocalDefinition newLocalDefinition(
+        LexLocation location, 
+        TRIsaVDMCommentList comments, 
+        TRAnnotationList annotations, 
+        TCNameToken name, 
+        NameScope nameScope, 
+        boolean used, 
+        boolean excluded,
+        TRType type)
+    {
+        return TRLocalDefinition.newLocalDefinition(
+            new TCLocalDefinition(location, name, type.getVDMType(), nameScope), 
+            location, comments, annotations, name, nameScope, used, excluded, type);
+    }
+
+    public static final TRLocalDefinition newLocalDefinition(TCLocalDefinition definition,
+        LexLocation location, 
+        TRIsaVDMCommentList comments, 
+        TRAnnotationList annotations, 
+        TCNameToken name, 
+        NameScope nameScope, 
+        boolean used, 
+        boolean excluded,
+        TRType type)
+    {
+        TRLocalDefinition result = new TRLocalDefinition(definition, location, comments, annotations, name, nameScope, used, excluded, type);
+        TRNode.setup(result);
+        return result;
+    }
 }
