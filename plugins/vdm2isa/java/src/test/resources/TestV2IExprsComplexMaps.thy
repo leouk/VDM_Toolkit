@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T09:52:48.289091Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.230Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IExprsComplexMaps.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IExprsComplexMaps.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl]
 *)
 theory TestV2IExprsComplexMaps
 imports "VDMToolkit" 
@@ -11,7 +11,7 @@ begin
 
 \<comment>\<open>VDM source: R = compose R of x:nat, y:nat end
 	inv r == ((r.x) < (r.y))\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 6:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 6:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
@@ -20,7 +20,7 @@ record R =
 \<comment>\<open>VDM source: inv_R: (R +> bool)
 	inv_R(r) ==
 ((r.x) < (r.y))\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 9:9\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 9:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> bool"
 where
@@ -39,10 +39,10 @@ where
 (if (y = 0)
 then 0
 else ((x / y) + x))\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
 
 \<comment>\<open>VDM source: pre_f = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -52,7 +52,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 13:5\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -75,10 +75,10 @@ where
 \<comment>\<open>VDM source: g: (nat * nat -> nat)
 	g(x, y) ==
 (x + y)\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
 
 \<comment>\<open>VDM source: pre_g = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
 definition
 	pre_g :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -88,7 +88,7 @@ where
 
 
 \<comment>\<open>VDM source: post_g = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 16:5\<close>
 definition
 	post_g :: "VDMNat\<Rightarrow> VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -105,7 +105,7 @@ where
 
 	
 \<comment>\<open>VDM source: v4:map (nat1) to (nat1) = {(x + x) |-> 10 | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 21:5\<close>
 abbreviation
 	v4 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -142,7 +142,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v5:map (R) to (nat1) = {mk_R(x, y) |-> 10 | x in set {1, 2, 3}, y in set {4, 5, 6} & (x < y)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 24:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 24:5\<close>
 abbreviation
 	v5 :: "(R \<rightharpoonup> VDMNat1)"
 where
@@ -234,7 +234,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v6:map ((nat1 * nat1)) to (R) = {mk_(x, y) |-> mk_R(x, y) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 27:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 27:5\<close>
 abbreviation
 	v6 :: "((VDMNat1\<times> VDMNat1) \<rightharpoonup> R)"
 where
@@ -357,7 +357,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v7:map (real) to (nat) = {f(x, y) |-> g(x, y) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 29:5\<close>
 abbreviation
 	v7 :: "(VDMReal \<rightharpoonup> VDMNat)"
 where
@@ -408,8 +408,97 @@ where
 
 	
 	
+\<comment>\<open>VDM source: v8:map ((nat1 * nat1)) to (seq1 of (nat1)) = {mk_(x, y) |-> [x, y] | x, y in set {1, 2}}\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 31:5\<close>
+abbreviation
+	v8 :: "((VDMNat1\<times> VDMNat1) \<rightharpoonup> VDMNat1 VDMSeq1)"
+where
+	"v8 \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+		{(x, y)} 
+		{[x, y]} 
+		
+		((inv_VDMNat1 )\<and>
+		 (inv_VDMNat1 )
+		) 
+		(inv_VDMSeq1' (inv_VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0RANGE :: VDMNat1 VDMSeq1) .
+		(if ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  (((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<and> 
+		((inv_VDMNat1 (fst (
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))\<and>
+		 (inv_VDMNat1 (snd (
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))
+		) then
+		(
+		if ((\<exists> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  . (((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<longrightarrow> ((dummy0DOMAIN = (x, y)) \<and> (True::\<bool>))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	) 
+		(
+	\<lambda> (dummy0DOMAIN :: (VDMNat1\<times> VDMNat1))  (dummy0RANGE :: VDMNat1 VDMSeq1) .
+		(if ((
+		((inv_VDMNat1 (fst dummy0DOMAIN))\<and>
+		 (inv_VDMNat1 (snd dummy0DOMAIN))
+		))) \<and>  (((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<and> (inv_VDMSeq1' (inv_VDMNat1) (
+		if ((\<exists> (dummy0RANGE :: VDMNat1 VDMSeq1)  (dummy0RANGE :: VDMNat1 VDMSeq1)  . ((((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<and>  (((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<longrightarrow> ((dummy0RANGE = [x, y]) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))) then
+		(
+		if ((\<exists> (dummy0RANGE :: VDMNat1 VDMSeq1)  (dummy0RANGE :: VDMNat1 VDMSeq1)  . ((((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<and>  (((inv_VDMSeq1' (inv_VDMNat1) dummy0RANGE))) \<longrightarrow> ((dummy0RANGE = [x, y]) \<and> (True::\<bool>))))) then
+		(dummy0RANGE)
+		else
+		(undefined))
+	 else
+		undefined
+	)
+	) 
+		(truecnst ))"
+
+	definition
+	inv_v8 :: "\<bool>"
+where
+	"inv_v8  \<equiv> (inv_Map 
+		((inv_VDMNat1 )\<and>
+		 (inv_VDMNat1 )
+		) (inv_VDMSeq1' (inv_VDMNat1)) v8)"
+
+	
+	
 \<comment>\<open>VDM source: vWarning1:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6} & (x > 3)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 31:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 33:5\<close>
 abbreviation
 	vWarning1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -446,7 +535,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vWarning11:map (nat1) to (nat1) = {1 |-> 5 | x in set {4, 5, 6}, x in set {1, 2, 3, 4} & (x > 3)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 32:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 34:5\<close>
 abbreviation
 	vWarning11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -483,7 +572,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vWarning2:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6} & (x > 3)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 33:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 35:5\<close>
 abbreviation
 	vWarning2 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -520,7 +609,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vWarning3:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}, x in set {4, 5, 6}, x in set {7, 8, 9} & (x > 6)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 36:5\<close>
 abbreviation
 	vWarning3 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -557,7 +646,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vWarning4:set of (nat1) = {1 | fv in set {3, 4, 5}, x in set {1, 2, 3} & (x >= fv)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 35:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 37:5\<close>
 abbreviation
 	vWarning4 :: "VDMNat1 VDMSet"
 where
@@ -571,7 +660,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vWarning5:map (nat1) to (nat1) = {1 |-> 5 | x in set {<A>, <B>, <C>}, x in set {1, 2, 3} & (x = <A>)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 36:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplexMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 38:5\<close>
 abbreviation
 	vWarning5 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where

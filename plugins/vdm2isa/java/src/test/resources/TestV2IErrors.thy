@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T09:52:48.222529Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.184Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IErrors.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IErrors.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl]
 *)
 theory TestV2IErrors
 imports "VDMToolkit" 
@@ -10,13 +10,13 @@ begin
 
 
 \<comment>\<open>VDM source: S = compose S of  end\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 9:5\<close>
 record S = 
 	
 	
 
 \<comment>\<open>VDM source: inv_S = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 9:5\<close>
 definition
 	inv_S :: "S \<Rightarrow> bool"
 where
@@ -29,7 +29,7 @@ where
 	
 \<comment>\<open>VDM source: R = compose R of x:nat, y:nat end
 	inv r == ((r.x) < (r.y))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 11:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
 		 y\<^sub>R :: "VDMNat"
@@ -38,7 +38,7 @@ record R =
 \<comment>\<open>VDM source: inv_R: (R +> bool)
 	inv_R(r) ==
 ((r.x) < (r.y))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 14:9\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 14:9\<close>
 definition
 	inv_R :: "R \<Rightarrow> bool"
 where
@@ -53,12 +53,12 @@ where
 
 	
 \<comment>\<open>VDM source: TUnion = set of (real)\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
 type_synonym TUnion = "U_VDMReal "VDMReal" VDMSet"
 	
 
 \<comment>\<open>VDM source: inv_TUnion = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 18:5\<close>
 definition
 	inv_TUnion :: "TUnion \<Rightarrow> bool"
 where
@@ -70,12 +70,12 @@ where
 
 	
 \<comment>\<open>VDM source: TInnerUnion = real\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
 datatype TInnerUnion = U_VDMReal "VDMReal"
 	
 
 \<comment>\<open>VDM source: inv_TInnerUnion = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 21:5\<close>
 definition
 	inv_TInnerUnion :: "TInnerUnion \<Rightarrow> bool"
 where
@@ -89,12 +89,12 @@ where
 
 	
 \<comment>\<open>VDM source: TInnerUnion' = set of (TInnerUnion)\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
 type_synonym TInnerUnion' = "TInnerUnion VDMSet"
 	
 
 \<comment>\<open>VDM source: inv_TInnerUnion' = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 22:5\<close>
 definition
 	inv_TInnerUnion' :: "TInnerUnion' \<Rightarrow> bool"
 where
@@ -107,7 +107,7 @@ where
 	
 \<comment>\<open>VDM source: E = compose E of e:set of (int) end
 	inv mk_E({i, j, k}) == ((i < j) and (j < k))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 25:5\<close>
 record E = 
 	e\<^sub>E :: "VDMInt VDMSet"
 	
@@ -115,7 +115,7 @@ record E =
 \<comment>\<open>VDM source: inv_E: (E +> bool)
 	inv_E(mk_E({i, j, k})) ==
 ((i < j) and (j < k))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 26:9\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 26:9\<close>
 definition
 	inv_E :: "E \<Rightarrow> bool"
 where
@@ -132,7 +132,7 @@ where
 	
 \<comment>\<open>VDM source: F = compose F of f:seq of (int) end
 	inv mk_F(s ^ t) == ((len s) < (len t))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 29:5\<close>
 record F = 
 	f\<^sub>F :: "VDMInt VDMSeq"
 	
@@ -140,7 +140,7 @@ record F =
 \<comment>\<open>VDM source: inv_F: (F +> bool)
 	inv_F(mk_F(s ^ t)) ==
 ((len s) < (len t))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 30:9\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 30:9\<close>
 definition
 	inv_F :: "F \<Rightarrow> bool"
 where
@@ -157,14 +157,14 @@ where
 	
 \<comment>\<open>VDM source: T = set of (nat)
 	inv {a, b, c} == ((a < b) and (b < c))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 33:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 33:5\<close>
 type_synonym T = "VDMNat VDMSet"
 	
 
 \<comment>\<open>VDM source: inv_T: (set of (nat) +> bool)
 	inv_T({a, b, c}) ==
 ((a < b) and (b < c))\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 34:9\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 34:9\<close>
 definition
 	inv_T :: "T \<Rightarrow> bool"
 where
@@ -180,10 +180,10 @@ where
 \<comment>\<open>VDM source: vc33: (() -> seq of (nat))
 	vc33() ==
 [x | x:nat & (x > 10)]\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
 
 \<comment>\<open>VDM source: pre_vc33 = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
 definition
 	pre_vc33 :: "bool"
 where
@@ -191,7 +191,7 @@ where
 
 
 \<comment>\<open>VDM source: post_vc33 = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 44:5\<close>
 definition
 	post_vc33 :: "VDMNat VDMSeq \<Rightarrow> bool"
 where
@@ -212,10 +212,10 @@ where
 (if (x > 10)
 then <ERROR>
 else false)\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
 
 \<comment>\<open>VDM source: pre_f1 = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
 definition
 	pre_f1 :: "VDMInt \<Rightarrow> bool"
 where
@@ -225,7 +225,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f1 = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 48:5\<close>
 definition
 	post_f1 :: "VDMInt\<Rightarrow> U_ERROR  | 
 		 U_bool "bool" \<Rightarrow> bool"
@@ -252,37 +252,37 @@ where
 \<comment>\<open>VDM source: f1': (int -> <ERROR>)
 	f1'(-) ==
 <ERROR>\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
 
 \<comment>\<open>VDM source: pre_f1' = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
 definition
 	pre_f1' :: "VDMInt \<Rightarrow> bool"
 where
-	"pre_f1' _ \<equiv> 
+	"pre_f1' dummy0_ignore \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f1'` specification.\<close>
-		((inv_VDMInt _))"
+		((inv_VDMInt dummy0_ignore))"
 
 
 \<comment>\<open>VDM source: post_f1' = ?\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 52:5\<close>
 definition
 	post_f1' :: "VDMInt\<Rightarrow> U_ERROR  \<Rightarrow> bool"
 where
-	"post_f1' _  RESULT \<equiv> 
+	"post_f1' dummy0_ignore  RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_f1'` specification.\<close>
-		((inv_VDMInt _)  \<and>  (inv_True RESULT))"
+		((inv_VDMInt dummy0_ignore)  \<and>  (inv_True RESULT))"
 
 definition
 	f1' :: "VDMInt \<Rightarrow> U_ERROR "
 where
-	"f1' _ \<equiv> 
+	"f1' dummy0_ignore \<equiv> 
 	\<comment>\<open>User defined body of f1'.\<close>
 	U_ERROR "
 
 	
 \<comment>\<open>VDM source: v65:R = mk_R(1, 2)\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 56:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 56:5\<close>
 abbreviation
 	v65 :: "R"
 where
@@ -296,11 +296,11 @@ where
 	
 	
 \<comment>\<open>VDM source: v830:seq of (nat) = [x | mk_R(x, -) in set {v65} & (0 < x)]\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 61:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 61:5\<close>
 abbreviation
 	v830 :: "VDMNat VDMSeq"
 where
-	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); _ = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ]
+	"v830 \<equiv> [ (let x = (x\<^sub>R dummy0); dummy0_ignore = (y\<^sub>R dummy0) in x) . dummy0 \<leftarrow> sorted_list_of_set ({v65}) , ((dummy0 \<in>{v65})) , (let x = (x\<^sub>R dummy0); dummy0_ignore = (y\<^sub>R dummy0) in ((0::VDMNat) < x)) ]
 	\<comment>\<open>`Set bind `(dummy0 \<in> {v65})` in sequence comprehension requires its Isabelle type to instantiate class linorder.`   This can be a problem if the target type of @{term \<open>{v65}\<close>}   has a VDM ord_ predicate.\<close> "
 
 	definition
@@ -311,7 +311,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v954:map (nat1) to (nat1) = {(x + y) |-> 10 | [x, y] in set {[1, 2], [3, 4], [4, 5]}}\<close>
-\<comment>\<open>in 'TestV2IErrors' (./src/test/resources/TestV2IErrors.vdmsl) at line 65:5\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 65:5\<close>
 abbreviation
 	v954 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -344,6 +344,20 @@ where
 	inv_v954 :: "\<bool>"
 where
 	"inv_v954  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v954)"
+
+	
+	
+\<comment>\<open>VDM source: -:nat = 10\<close>
+\<comment>\<open>in 'TestV2IErrors' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl) at line 68:5\<close>
+abbreviation
+	dummy0_ignore :: "VDMNat"
+where
+	"dummy0_ignore \<equiv> (10::VDMNat1)"
+
+	definition
+	inv_dummy0_ignore :: "\<bool>"
+where
+	"inv_dummy0_ignore  \<equiv> (inv_VDMNat dummy0_ignore)"
 
 	
 end

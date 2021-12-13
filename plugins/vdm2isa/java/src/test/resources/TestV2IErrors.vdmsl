@@ -63,6 +63,9 @@ values
 	--Error   [ISA   ] 10224: Cannot contextully translate pattern [x,  y] (structured=VDMSeq) for TRStructuredPattern. 
 	--Error   [VDM   ] 10106: Invalid map comprehension arguments for `bindings` length(2) = ([x,  y] \<in> {[(1::VDMNat1), (2::VDMNat1)], [(3::VDMNat1), (4::VDMNat1)], [(4::VDMNat1), (5::VDMNat1)]}).
 	v954= { x + y |-> 10 | [x,y] in set {[1,2], [3,4], [4,5]} }; -- this is getting silly now
+ 
+	--Error   [ISA   ] 10229: Translating VDM ignore (-) patterns as top-level definitions will cause unexpected outcomes.
+	-:nat = 10;	
 
 end TestV2IErrors
 

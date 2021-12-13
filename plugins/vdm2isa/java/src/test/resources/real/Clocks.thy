@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-11T13:37:56.159446Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.765Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/real/Clocks.vdmsl' at line 1:8
-files = [./src/test/resources/real/Clocks.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl]
 *)
 theory Clocks
 imports "VDMToolkit" 
@@ -12,7 +12,7 @@ begin
 \<comment>\<open>VDM source: Time = compose Time of r:real, i:nat end
 	inv t == ((t.r) >= 0)
 	ord a < b == (((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 37:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 37:5\<close>
 record Time = 
 	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
 		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
@@ -21,7 +21,7 @@ record Time =
 \<comment>\<open>VDM source: inv_Time: (Time +> bool)
 	inv_Time(t) ==
 ((t.r) >= 0)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 41:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 41:9\<close>
 definition
 	inv_Time :: "Time \<Rightarrow> bool"
 where
@@ -37,7 +37,7 @@ where
 \<comment>\<open>VDM source: ord_Time: (Time * Time +> bool)
 	ord_Time(a, b) ==
 (((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 44:21\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 44:21\<close>
 definition
 	ord_Time :: "Time\<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -51,7 +51,7 @@ where
 
 	
 \<comment>\<open>VDM source: Interval = (<calculated> | <changing> | <constantLF> | <countdown> | <fixed> | <triggered> | <tunable>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 datatype Interval = U_calculated  | 
 		 U_changing  | 
 		 U_constantLF  | 
@@ -62,7 +62,7 @@ datatype Interval = U_calculated  |
 	
 
 \<comment>\<open>VDM source: inv_Interval = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 50:5\<close>
 definition
 	inv_Interval :: "Interval \<Rightarrow> bool"
 where
@@ -74,7 +74,7 @@ where
 
 	
 \<comment>\<open>VDM source: ActionType = (<get> | <getC> | <set> | <setC> | <step>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 datatype ActionType = U_get  | 
 		 U_getC  | 
 		 U_set  | 
@@ -83,7 +83,7 @@ datatype ActionType = U_get  |
 	
 
 \<comment>\<open>VDM source: inv_ActionType = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 55:5\<close>
 definition
 	inv_ActionType :: "ActionType \<Rightarrow> bool"
 where
@@ -95,12 +95,12 @@ where
 
 	
 \<comment>\<open>VDM source: Ref = nat\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 type_synonym Ref = "VDMNat"
 	
 
 \<comment>\<open>VDM source: inv_Ref = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 60:5\<close>
 definition
 	inv_Ref :: "Ref \<Rightarrow> bool"
 where
@@ -111,12 +111,12 @@ where
 
 	
 \<comment>\<open>VDM source: Name = seq1 of (char)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
 type_synonym Name = "VDMChar VDMSeq1"
 	
 
 \<comment>\<open>VDM source: inv_Name = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 65:5\<close>
 definition
 	inv_Name :: "Name \<Rightarrow> bool"
 where
@@ -128,14 +128,14 @@ where
 
 	
 \<comment>\<open>VDM source: FMURef = compose FMURef of name:Name, ref:Ref end\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
 record FMURef = 
 	name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Name"
 		 ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Ref"
 	
 
 \<comment>\<open>VDM source: inv_FMURef = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 70:5\<close>
 definition
 	inv_FMURef :: "FMURef \<Rightarrow> bool"
 where
@@ -148,13 +148,13 @@ where
 
 	
 \<comment>\<open>VDM source: ValueTypesLF = (bool | real)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 datatype ValueTypesLF = U_bool "bool" | 
 		 U_VDMReal "VDMReal"
 	
 
 \<comment>\<open>VDM source: inv_ValueTypesLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 74:5\<close>
 definition
 	inv_ValueTypesLF :: "ValueTypesLF \<Rightarrow> bool"
 where
@@ -169,14 +169,14 @@ where
 
 	
 \<comment>\<open>VDM source: Value = compose Value of value:ValueTypesLF, time:Time end\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
 record Value = 
 	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueTypesLF"
 		 time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "Time"
 	
 
 \<comment>\<open>VDM source: inv_Value = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 81:5\<close>
 definition
 	inv_Value :: "Value \<Rightarrow> bool"
 where
@@ -188,12 +188,12 @@ where
 
 	
 \<comment>\<open>VDM source: Environment = map (Ref) to (Value)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 type_synonym Environment = "(Ref \<rightharpoonup> Value)"
 	
 
 \<comment>\<open>VDM source: inv_Environment = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 89:5\<close>
 definition
 	inv_Environment :: "Environment \<Rightarrow> bool"
 where
@@ -204,12 +204,12 @@ where
 
 	
 \<comment>\<open>VDM source: Equation = (Environment -> Environment)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
 type_synonym Equation = "Environment \<Rightarrow> Environment"
 	
 
 \<comment>\<open>VDM source: inv_Equation = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 95:5\<close>
 definition
 	inv_Equation :: "Equation \<Rightarrow> bool"
 where
@@ -221,13 +221,13 @@ where
 
 	
 \<comment>\<open>VDM source: IOLF = (<inputLF> | <outputLF>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
 datatype IOLF = U_inputLF  | 
 		 U_outputLF 
 	
 
 \<comment>\<open>VDM source: inv_IOLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 97:5\<close>
 definition
 	inv_IOLF :: "IOLF \<Rightarrow> bool"
 where
@@ -239,13 +239,13 @@ where
 
 	
 \<comment>\<open>VDM source: DCLF = (<continous> | <discrete>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
 datatype DCLF = U_continous  | 
 		 U_discrete 
 	
 
 \<comment>\<open>VDM source: inv_DCLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 98:5\<close>
 definition
 	inv_DCLF :: "DCLF \<Rightarrow> bool"
 where
@@ -257,14 +257,14 @@ where
 
 	
 \<comment>\<open>VDM source: ContractLF = (<delayed> | <none> | <reactive>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
 datatype ContractLF = U_delayed  | 
 		 U_none  | 
 		 U_reactive 
 	
 
 \<comment>\<open>VDM source: inv_ContractLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 99:5\<close>
 definition
 	inv_ContractLF :: "ContractLF \<Rightarrow> bool"
 where
@@ -277,7 +277,7 @@ where
 	
 \<comment>\<open>VDM source: Variable = compose Variable of ref:Ref, time:Time, causality:IOLF, type:DCLF, clocks:set of (Ref), dependsOn:set of (Ref), contract:ContractLF end
 	inv var == (((((var.causality) = <outputLF>) => ((var.contract) = <none>)) and ((var.causality) = <inputLF>)) => ((var.dependsOn) = {}))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 104:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 104:5\<close>
 record Variable = 
 	ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Ref"
 		 time\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Time"
@@ -291,7 +291,7 @@ record Variable =
 \<comment>\<open>VDM source: inv_Variable: (Variable +> bool)
 	inv_Variable(var) ==
 (((((var.causality) = <outputLF>) => ((var.contract) = <none>)) and ((var.causality) = <inputLF>)) => ((var.dependsOn) = {}))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 113:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 113:9\<close>
 definition
 	inv_Variable :: "Variable \<Rightarrow> bool"
 where
@@ -311,7 +311,7 @@ where
 	
 \<comment>\<open>VDM source: Clock = compose Clock of ref:Ref, type:IOLF, interval:Interval, timeToTick:Time, dependsOn:set of (Ref), equations:set of (Ref) end
 	inv clock == ((((clock.type) = <outputLF>) => ((clock.interval) = <triggered>)) and (((clock.type) = <inputLF>) => ((clock.dependsOn) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 121:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 121:5\<close>
 record Clock = 
 	ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Ref"
 		 type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "IOLF"
@@ -324,7 +324,7 @@ record Clock =
 \<comment>\<open>VDM source: inv_Clock: (Clock +> bool)
 	inv_Clock(clock) ==
 ((((clock.type) = <outputLF>) => ((clock.interval) = <triggered>)) and (((clock.type) = <inputLF>) => ((clock.dependsOn) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 128:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 128:9\<close>
 definition
 	inv_Clock :: "Clock \<Rightarrow> bool"
 where
@@ -343,7 +343,7 @@ where
 
 	
 \<comment>\<open>VDM source: FMUModeLF = (<DONE> | <EVENT> | <INIT> | <STEP>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
 datatype FMUModeLF = U_DONE  | 
 		 U_EVENT  | 
 		 U_INIT  | 
@@ -351,7 +351,7 @@ datatype FMUModeLF = U_DONE  |
 	
 
 \<comment>\<open>VDM source: inv_FMUModeLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 132:5\<close>
 definition
 	inv_FMUModeLF :: "FMUModeLF \<Rightarrow> bool"
 where
@@ -364,7 +364,7 @@ where
 	
 \<comment>\<open>VDM source: FMU = compose FMU of name:Name, clocks:set of (Clock), inputs:set of (Variable), outputs:set of (Variable), mode:FMUModeLF, time:Time, maxStep:real, env:Environment, activeClocks:set of (Ref), activeEquations:set of (Equation) end
 	inv fmu == let vars:set of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and (forall var in set vars & ((var.clocks) subset crefs))))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 140:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 140:5\<close>
 record FMU = 
 	name\<^sub>F\<^sub>M\<^sub>U :: "Name"
 		 clocks\<^sub>F\<^sub>M\<^sub>U :: "Clock VDMSet"
@@ -381,7 +381,7 @@ record FMU =
 \<comment>\<open>VDM source: inv_FMU: (FMU +> bool)
 	inv_FMU(fmu) ==
 let vars:set of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and (forall var in set vars & ((var.clocks) subset crefs))))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 151:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 151:9\<close>
 definition
 	inv_FMU :: "FMU \<Rightarrow> bool"
 where
@@ -427,7 +427,7 @@ where
 
 	
 \<comment>\<open>VDM source: Action = compose Action of actionType:ActionType, fmu:FMU, port:Ref end\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
 record Action = 
 	actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "ActionType"
 		 fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "FMU"
@@ -435,7 +435,7 @@ record Action =
 	
 
 \<comment>\<open>VDM source: inv_Action = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 180:5\<close>
 definition
 	inv_Action :: "Action \<Rightarrow> bool"
 where
@@ -451,12 +451,12 @@ where
 	derefInput(fmu, ref) ==
 (iota c in set (fmu.inputs) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
 
 \<comment>\<open>VDM source: pre_derefInput: (FMU * Ref +> bool)
 	pre_derefInput(fmu, ref) ==
 (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 196:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 196:9\<close>
 definition
 	pre_derefInput :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -468,7 +468,7 @@ where
 
 
 \<comment>\<open>VDM source: post_derefInput = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 193:5\<close>
 definition
 	post_derefInput :: "FMU\<Rightarrow> Ref\<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -488,12 +488,12 @@ where
 	derefOutput(fmu, ref) ==
 (iota c in set (fmu.outputs) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
 
 \<comment>\<open>VDM source: pre_derefOutput: (FMU * Ref +> bool)
 	pre_derefOutput(fmu, ref) ==
 (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 205:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 205:9\<close>
 definition
 	pre_derefOutput :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -505,7 +505,7 @@ where
 
 
 \<comment>\<open>VDM source: post_derefOutput = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 202:5\<close>
 definition
 	post_derefOutput :: "FMU\<Rightarrow> Ref\<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -523,7 +523,7 @@ where
 	
 \<comment>\<open>VDM source: Machine = compose Machine of fmus:map (Name) to (FMU), connections:map (FMURef) to (FMURef), clockConnections:map (FMURef) to (FMURef) end
 	inv m == ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let outputLF:Variable = derefOutput(srcFMU, (srcRef.ref)), inputLF:Variable = derefInput(trgFMU, (trgRef.ref)) in ((outputLF.type) = (inputLF.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <outputLF>))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <inputLF>))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and (((rng (m.clockConnections)) inter (rng (m.connections))) = {})))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 212:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 212:5\<close>
 record Machine = 
 	fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMU)"
 		 connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
@@ -533,7 +533,7 @@ record Machine =
 \<comment>\<open>VDM source: inv_Machine: (Machine +> bool)
 	inv_Machine(m) ==
 ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let outputLF:Variable = derefOutput(srcFMU, (srcRef.ref)), inputLF:Variable = derefInput(trgFMU, (trgRef.ref)) in ((outputLF.type) = (inputLF.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <outputLF>))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and ((v.type) = <inputLF>))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and (((rng (m.clockConnections)) inter (rng (m.connections))) = {})))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 216:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 216:9\<close>
 definition
 	inv_Machine :: "Machine \<Rightarrow> bool"
 where
@@ -604,10 +604,10 @@ where
 then res
 else let clock in set clocks in createFMURefs(fmu, (clocks \ {clock}), (res union {mk_FMURef((fmu.name), clock)})))
 	measure (card clocks)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 
 \<comment>\<open>VDM source: pre_createFMURefs = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 definition
 	pre_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -617,7 +617,7 @@ where
 
 
 \<comment>\<open>VDM source: post_createFMURefs = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 255:5\<close>
 definition
 	post_createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -640,7 +640,7 @@ where
 	
 \<comment>\<open>VDM source: Importer = compose Importer of scenario:Machine, schedule:map (FMURef) to (real), activeClocks:set of (FMURef), readyClocks:set of (FMURef), inactiveClocks:set of (FMURef), fmusWithEvent:set of (Name), relevantOutputClocks:set of (FMURef), relevantInputClocks:set of (FMURef), activeEquations:set of (FMURef), calculatedEquations:set of (FMURef), readyEquations:set of (FMURef), time:Time, endtime:Time, stepSize:real, valueMap:map (FMURef) to (Value) end
 	inv imp == let fmus:map (Name) to (FMU) = ((imp.scenario).fmus) in let inputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <inputLF>)}, {}) | fmu in set (rng fmus)}) in let outputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <outputLF>)}, {}) | fmu in set (rng fmus)}) in let clocks:set of (FMURef) = (inputclocks union outputclocks) in ((((imp.activeClocks) union (imp.inactiveClocks)) = clocks) and ((((imp.activeClocks) inter (imp.inactiveClocks)) = {}) and ((((imp.activeClocks) inter (imp.readyClocks)) = {}) and (((imp.activeClocks) = (dunion {createFMURefs(fmu, (fmu.activeClocks), {}) | fmu in set (rng fmus)})) and (((imp.fmusWithEvent) subset (dom fmus)) and (((imp.relevantInputClocks) subset inputclocks) and (((imp.relevantOutputClocks) subset outputclocks) and ((((imp.relevantInputClocks) inter (imp.relevantOutputClocks)) = {}) and (((dom (imp.schedule)) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng fmus)})) and (((imp.endtime) >= (imp.time)) and ((((imp.activeEquations) inter (imp.readyEquations)) = {}) and (((imp.readyEquations) inter (imp.calculatedEquations)) = {}))))))))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 268:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 268:5\<close>
 record Importer = 
 	scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "Machine"
 		 schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "(FMURef \<rightharpoonup> VDMReal)"
@@ -662,7 +662,7 @@ record Importer =
 \<comment>\<open>VDM source: inv_Importer: (Importer +> bool)
 	inv_Importer(imp) ==
 let fmus:map (Name) to (FMU) = ((imp.scenario).fmus) in let inputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <inputLF>)}, {}) | fmu in set (rng fmus)}) in let outputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <outputLF>)}, {}) | fmu in set (rng fmus)}) in let clocks:set of (FMURef) = (inputclocks union outputclocks) in ((((imp.activeClocks) union (imp.inactiveClocks)) = clocks) and ((((imp.activeClocks) inter (imp.inactiveClocks)) = {}) and ((((imp.activeClocks) inter (imp.readyClocks)) = {}) and (((imp.activeClocks) = (dunion {createFMURefs(fmu, (fmu.activeClocks), {}) | fmu in set (rng fmus)})) and (((imp.fmusWithEvent) subset (dom fmus)) and (((imp.relevantInputClocks) subset inputclocks) and (((imp.relevantOutputClocks) subset outputclocks) and ((((imp.relevantInputClocks) inter (imp.relevantOutputClocks)) = {}) and (((dom (imp.schedule)) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng fmus)})) and (((imp.endtime) >= (imp.time)) and ((((imp.activeEquations) inter (imp.readyEquations)) = {}) and (((imp.readyEquations) inter (imp.calculatedEquations)) = {}))))))))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 284:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 284:9\<close>
 definition
 	inv_Importer :: "Importer \<Rightarrow> bool"
 where
@@ -727,10 +727,10 @@ where
 \<comment>\<open>VDM source: preSet: (FMU * Ref -> bool)
 	preSet(fmu, inputLF) ==
 (exists [v in set (fmu.inputs)] & (((v.ref) = inputLF) and (((v.causality) = <inputLF>) and ((fmu.mode) <> <DONE>))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 
 \<comment>\<open>VDM source: pre_preSet = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 definition
 	pre_preSet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -740,7 +740,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preSet = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 309:5\<close>
 definition
 	post_preSet :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -759,10 +759,10 @@ where
 \<comment>\<open>VDM source: preGet: (FMU * Ref -> bool)
 	preGet(fmu, ref) ==
 let outputLF:Variable = derefOutput(fmu, ref) in (exists [v in set (fmu.outputs)] & (((v.ref) = ref) and (((v.causality) = <outputLF>) and (((fmu.mode) <> <DONE>) and feedthroughSatisfied(fmu, outputLF)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 
 \<comment>\<open>VDM source: pre_preGet = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 definition
 	pre_preGet :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -772,7 +772,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preGet = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 318:5\<close>
 definition
 	post_preGet :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -800,10 +800,10 @@ where
 \<comment>\<open>VDM source: preStepT: (FMU * real -> bool)
 	preStepT(fmu, stepSize) ==
 (forall i in set (fmu.inputs) & ((((i.contract) = <reactive>) => ((((fmu.env)((i.ref)).time).r) = (((fmu.time).r) + stepSize))) and ((((i.contract) = <delayed>) => (((fmu.env)((i.ref)).time) = (fmu.time))) and ((stepSize >= 0.0) and ((fmu.mode) = <STEP>)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 
 \<comment>\<open>VDM source: pre_preStepT = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 definition
 	pre_preStepT :: "FMU\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -813,7 +813,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preStepT = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 326:5\<close>
 definition
 	post_preStepT :: "FMU\<Rightarrow> VDMReal\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -832,10 +832,10 @@ where
 \<comment>\<open>VDM source: preStepE: (FMU -> bool)
 	preStepE(fmu) ==
 ((fmu.mode) = <EVENT>)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 
 \<comment>\<open>VDM source: pre_preStepE = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 definition
 	pre_preStepE :: "FMU \<Rightarrow> bool"
 where
@@ -845,7 +845,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preStepE = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 333:5\<close>
 definition
 	post_preStepE :: "FMU\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -864,10 +864,10 @@ where
 \<comment>\<open>VDM source: preSetC: (FMU * Ref * bool -> bool)
 	preSetC(fmu, clock, val) ==
 (exists [v in set (fmu.clocks)] & ((((v.ref) = clock) and (((v.type) = <inputLF>) and val)) <=> (not (clock in set (fmu.activeClocks)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 
 \<comment>\<open>VDM source: pre_preSetC = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 definition
 	pre_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -877,7 +877,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preSetC = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 337:5\<close>
 definition
 	post_preSetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -896,10 +896,10 @@ where
 \<comment>\<open>VDM source: preGetC: (FMU * Ref -> bool)
 	preGetC(fmu, clock) ==
 (exists [v in set (fmu.clocks)] & (((v.ref) = clock) and (((v.type) = <outputLF>) and ((fmu.mode) = <EVENT>))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 
 \<comment>\<open>VDM source: pre_preGetC = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 definition
 	pre_preGetC :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -909,7 +909,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preGetC = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 342:5\<close>
 definition
 	post_preGetC :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -929,12 +929,12 @@ where
 	set_m(fmu, ref, val) ==
 mu(fmu, env |-> ((fmu.env) ++ {ref |-> val}))
 	pre preSet(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
 
 \<comment>\<open>VDM source: pre_set_m: (FMU * Ref * Value +> bool)
 	pre_set_m(fmu, ref, val) ==
 preSet(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 356:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 356:9\<close>
 definition
 	pre_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value \<Rightarrow> bool"
 where
@@ -946,7 +946,7 @@ where
 
 
 \<comment>\<open>VDM source: post_set_m = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 352:5\<close>
 definition
 	post_set_m :: "FMU\<Rightarrow> Ref\<Rightarrow> Value\<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -966,12 +966,12 @@ where
 	get_m(fmu, ref) ==
 mk_(fmu, (fmu.env)(ref))
 	pre preGet(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
 
 \<comment>\<open>VDM source: pre_get_m: (FMU * Ref +> bool)
 	pre_get_m(fmu, ref) ==
 preGet(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 362:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 362:9\<close>
 definition
 	pre_get_m :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -983,7 +983,7 @@ where
 
 
 \<comment>\<open>VDM source: post_get_m = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 358:5\<close>
 definition
 	post_get_m :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> bool"
 where
@@ -1009,12 +1009,12 @@ then ((fmu.activeClocks) union {ref})
 else ((fmu.activeClocks) \ {ref})))
 	pre preSetC(fmu, ref, val)
 	post (val <=> (ref in set (fmu.activeClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 364:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 364:5\<close>
 
 \<comment>\<open>VDM source: pre_set_cm: (FMU * Ref * bool +> bool)
 	pre_set_cm(fmu, ref, val) ==
 preSetC(fmu, ref, val)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 369:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 369:9\<close>
 definition
 	pre_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -1028,7 +1028,7 @@ where
 \<comment>\<open>VDM source: post_set_cm: (FMU * Ref * bool * FMU +> bool)
 	post_set_cm(fmu, ref, val, RESULT) ==
 (val <=> (ref in set (fmu.activeClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 370:14\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 370:14\<close>
 definition
 	post_set_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -1054,12 +1054,12 @@ where
 	get_cm(fmu, ref) ==
 mk_(fmu, (fmu.env)(ref))
 	pre preGetC(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
 
 \<comment>\<open>VDM source: pre_get_cm: (FMU * Ref +> bool)
 	pre_get_cm(fmu, ref) ==
 preGetC(fmu, ref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 375:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 375:9\<close>
 definition
 	pre_get_cm :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1071,7 +1071,7 @@ where
 
 
 \<comment>\<open>VDM source: post_get_cm = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 372:5\<close>
 definition
 	post_get_cm :: "FMU\<Rightarrow> Ref\<Rightarrow> (FMU\<times> Value) \<Rightarrow> bool"
 where
@@ -1097,12 +1097,12 @@ then mk_(fmu, (fmu.maxStep), true)
 else mk_(fmu, step, false))
 	pre preStepT(fmu, step)
 	post (((RESULT.#2) <= step) and ((RESULT.#2) <= (fmu.maxStep)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 377:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 377:5\<close>
 
 \<comment>\<open>VDM source: pre_step_tm: (FMU * real +> bool)
 	pre_step_tm(fmu, step) ==
 preStepT(fmu, step)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 381:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 381:9\<close>
 definition
 	pre_step_tm :: "FMU\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -1116,7 +1116,7 @@ where
 \<comment>\<open>VDM source: post_step_tm: (FMU * real * (FMU * real * bool) +> bool)
 	post_step_tm(fmu, step, RESULT) ==
 (((RESULT.#2) <= step) and ((RESULT.#2) <= (fmu.maxStep)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 383:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 383:9\<close>
 definition
 	post_step_tm :: "FMU\<Rightarrow> VDMReal\<Rightarrow> (FMU\<times> VDMReal\<times> bool) \<Rightarrow> bool"
 where
@@ -1147,12 +1147,12 @@ where
 not yet specified
 	pre preStepE(fmu)
 	post ((((RESULT.#1).mode) = <EVENT>) and (((((RESULT.#1).time).i) = (((fmu.time).i) + 1)) and (((RESULT.#1).activeClocks) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 385:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 385:5\<close>
 
 \<comment>\<open>VDM source: pre_step_e: (FMU +> bool)
 	pre_step_e(fmu) ==
 preStepE(fmu)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 388:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 388:9\<close>
 definition
 	pre_step_e :: "FMU \<Rightarrow> bool"
 where
@@ -1166,7 +1166,7 @@ where
 \<comment>\<open>VDM source: post_step_e: (FMU * (FMU * bool) +> bool)
 	post_step_e(fmu, RESULT) ==
 ((((RESULT.#1).mode) = <EVENT>) and (((((RESULT.#1).time).i) = (((fmu.time).i) + 1)) and (((RESULT.#1).activeClocks) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 390:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 390:9\<close>
 definition
 	post_step_e :: "FMU\<Rightarrow> (FMU\<times> bool) \<Rightarrow> bool"
 where
@@ -1188,13 +1188,13 @@ where
 
 	
 \<comment>\<open>VDM source: RealNaNLF = (<NaN> | real)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
 datatype RealNaNLF = U_NaN  | 
 		 U_VDMReal "VDMReal"
 	
 
 \<comment>\<open>VDM source: inv_RealNaNLF = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 394:5\<close>
 definition
 	inv_RealNaNLF :: "RealNaNLF \<Rightarrow> bool"
 where
@@ -1212,12 +1212,12 @@ where
 	next_tm(fmu, ref) ==
 <NaN>
 	pre (exists [v in set (fmu.clocks)] & (((v.ref) = ref) and ((v.interval) in set {<tunable>, <changing>, <countdown>})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
 
 \<comment>\<open>VDM source: pre_next_tm: (FMU * Ref +> bool)
 	pre_next_tm(fmu, ref) ==
 (exists [v in set (fmu.clocks)] & (((v.ref) = ref) and ((v.interval) in set {<tunable>, <changing>, <countdown>})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 404:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 404:9\<close>
 definition
 	pre_next_tm :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1229,7 +1229,7 @@ where
 
 
 \<comment>\<open>VDM source: post_next_tm = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 399:5\<close>
 definition
 	post_next_tm :: "FMU\<Rightarrow> Ref\<Rightarrow> RealNaNLF \<Rightarrow> bool"
 where
@@ -1250,12 +1250,12 @@ where
 let M:Machine = (I.scenario) in let res:map (Name) to ((FMU * bool)) = {fmu |-> step_e((M.fmus)(fmu)) | fmu in set (dom (M.fmus)) & (fmu in set fmus)} in let fmuMap:map (Name) to (FMU) = {fmu |-> (res(fmu).#1) | fmu in set (dom res)}, eventFMUs:set of (Name) = {fmu | fmu in set (dom res) & ((res(fmu).#2) = true)} in mu(I, scenario |-> mu((I.scenario), fmus |-> fmuMap), fmusWithEvent |-> eventFMUs)
 	pre ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))
 	post ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 410:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 410:5\<close>
 
 \<comment>\<open>VDM source: pre_updateDiscreteState: (Importer * set of (Name) +> bool)
 	pre_updateDiscreteState(I, fmus) ==
 ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 422:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 422:9\<close>
 definition
 	pre_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -1269,7 +1269,7 @@ where
 \<comment>\<open>VDM source: post_updateDiscreteState: (Importer * set of (Name) * Importer +> bool)
 	post_updateDiscreteState(I, fmus, RESULT) ==
 ((forall m' in set (rng ((I.scenario).fmus)) & (((m'.name) in set fmus) and ((m'.mode) = <EVENT>))) and ((card {(m'.time) | m' in set (rng ((I.scenario).fmus)) & ((m'.name) in set fmus)}) = 1))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 424:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 424:9\<close>
 definition
 	post_updateDiscreteState :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1931,12 +1931,12 @@ where
 	derefClock(fmu, ref) ==
 (iota c in set (fmu.clocks) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
 
 \<comment>\<open>VDM source: pre_derefClock: (FMU * Ref +> bool)
 	pre_derefClock(fmu, ref) ==
 (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 431:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 431:9\<close>
 definition
 	pre_derefClock :: "FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1948,7 +1948,7 @@ where
 
 
 \<comment>\<open>VDM source: post_derefClock = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 428:5\<close>
 definition
 	post_derefClock :: "FMU\<Rightarrow> Ref\<Rightarrow> Clock \<Rightarrow> bool"
 where
@@ -1969,12 +1969,12 @@ where
 mu(I, scenario |-> mu((I.scenario), fmus |-> {name |-> mu(((I.scenario).fmus)(name), mode |-> <EVENT>) | name in set (dom ((I.scenario).fmus)) & (name in set fmus)}))
 	pre (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))
 	post (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 436:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 436:5\<close>
 
 \<comment>\<open>VDM source: pre_enterEventMode: (Importer * set of (Name) +> bool)
 	pre_enterEventMode(I, fmus) ==
 (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 439:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 439:9\<close>
 definition
 	pre_enterEventMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -1988,7 +1988,7 @@ where
 \<comment>\<open>VDM source: post_enterEventMode: (Importer * set of (Name) * Importer +> bool)
 	post_enterEventMode(I, fmus, RESULT) ==
 (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 440:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 440:10\<close>
 definition
 	post_enterEventMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2293,12 +2293,12 @@ where
 mu(I, scenario |-> mu((I.scenario), fmus |-> {name |-> mu(((I.scenario).fmus)(name), mode |-> <EVENT>) | name in set (dom ((I.scenario).fmus)) & (name in set fmus)}))
 	pre (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) in set {<INIT>, <EVENT>})))
 	post (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 445:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 445:5\<close>
 
 \<comment>\<open>VDM source: pre_enterStepMode: (Importer * set of (Name) +> bool)
 	pre_enterStepMode(I, fmus) ==
 (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) in set {<INIT>, <EVENT>})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 448:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 448:9\<close>
 definition
 	pre_enterStepMode :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -2312,7 +2312,7 @@ where
 \<comment>\<open>VDM source: post_enterStepMode: (Importer * set of (Name) * Importer +> bool)
 	post_enterStepMode(I, fmus, RESULT) ==
 (forall m' in set (rng ((I.scenario).fmus)) & ((((m'.time).i) = 0) and ((m'.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 450:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 450:10\<close>
 definition
 	post_enterStepMode :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2615,10 +2615,10 @@ where
 \<comment>\<open>VDM source: variablesSynchronized: (Machine -> bool)
 	variablesSynchronized(M) ==
 (forall srcPort in set (dom (M.connections)) & let trgPort:FMURef = (M.connections)(srcPort) in (((M.fmus)((srcPort.name)).env)((srcPort.ref)) = ((M.fmus)((trgPort.name)).env)((trgPort.ref))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 
 \<comment>\<open>VDM source: pre_variablesSynchronized = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 definition
 	pre_variablesSynchronized :: "Machine \<Rightarrow> bool"
 where
@@ -2628,7 +2628,7 @@ where
 
 
 \<comment>\<open>VDM source: post_variablesSynchronized = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 454:5\<close>
 definition
 	post_variablesSynchronized :: "Machine\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -2660,12 +2660,12 @@ then I
 else let clock in set clocks in let I1:Importer = setClock(I, ((I.scenario).fmus)((clock.name)), (clock.ref), true) in activateClocks(I1, (clocks \ {clock})))
 	pre (clocks subset ((I.readyClocks) inter (I.relevantInputClocks)))
 	measure (card clocks)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
 
 \<comment>\<open>VDM source: pre_activateClocks: (Importer * set of (FMURef) +> bool)
 	pre_activateClocks(I, clocks) ==
 (clocks subset ((I.readyClocks) inter (I.relevantInputClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 471:16\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 471:16\<close>
 definition
 	pre_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -2677,7 +2677,7 @@ where
 
 
 \<comment>\<open>VDM source: post_activateClocks = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 464:5\<close>
 definition
 	post_activateClocks :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2721,12 +2721,12 @@ else ((I.activeEquations) \ activatedVariables)), readyEquations |-> (if val
 then ((I.readyEquations) \ activatedVariables)
 else (I.readyEquations)))
 	pre let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((fmuRef in set (I.relevantInputClocks)) or (fmuRef in set (I.relevantOutputClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
 
 \<comment>\<open>VDM source: pre_updateEnvironmentClock: (Importer * FMU * Ref * bool +> bool)
 	pre_updateEnvironmentClock(I, fmu, clock, val) ==
 let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((fmuRef in set (I.relevantInputClocks)) or (fmuRef in set (I.relevantOutputClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 490:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 490:9\<close>
 definition
 	pre_updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -2747,7 +2747,7 @@ where
 
 
 \<comment>\<open>VDM source: post_updateEnvironmentClock = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 478:5\<close>
 definition
 	post_updateEnvironmentClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2799,12 +2799,12 @@ where
 	queryClock(I, fmu, clock) ==
 let mk_(fmuUpdated, val):(FMU * Value) = get_cm(fmu, clock), fmuref:FMURef = mk_FMURef((fmu.name), clock) in let connectedClock:FMURef = ((I.scenario).clockConnections)(fmuref) in let I1:Importer = mu(I, valueMap |-> ((I.valueMap) ++ {connectedClock |-> val}), relevantOutputClocks |-> ((I.relevantOutputClocks) \ {fmuref}), relevantInputClocks |-> ((I.relevantInputClocks) union {connectedClock})) in updateEnvironmentClock(I1, fmuUpdated, clock, (val.value))
 	pre ((mk_FMURef((fmu.name), clock) in set (I.relevantOutputClocks)) and (clock in set {(c.ref) | c in set (fmu.clocks) & ((c.type) = <inputLF>)}))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
 
 \<comment>\<open>VDM source: pre_queryClock: (Importer * FMU * Ref +> bool)
 	pre_queryClock(I, fmu, clock) ==
 ((mk_FMURef((fmu.name), clock) in set (I.relevantOutputClocks)) and (clock in set {(c.ref) | c in set (fmu.clocks) & ((c.type) = <inputLF>)}))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 509:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 509:9\<close>
 definition
 	pre_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -2816,7 +2816,7 @@ where
 
 
 \<comment>\<open>VDM source: post_queryClock = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 496:5\<close>
 definition
 	post_queryClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2831,7 +2831,8 @@ where
 	\<comment>\<open>User defined body of queryClock.\<close>
 	(
 		let 
-(dummy0::(FMU\<times> Value)) = (get_cm fmu  clock);
+(fmuUpdated::FMU) = (get_cm fmu  clock);
+(val::Value) = (get_cm fmu  clock);
 		
 (fmuref::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
 		in
@@ -2888,12 +2889,12 @@ where
 	setClock(I, fmu, clock, val) ==
 let fmuUpdated:FMU = set_cm(fmu, clock, val), fmuref:FMURef = mk_FMURef((fmu.name), clock) in let feedthroughClocks:set of (FMURef) = {mk_FMURef((fmu.name), (c.ref)) | c in set (fmu.clocks) & (clock in set (c.dependsOn))} in let I1:Importer = mu(I, valueMap |-> ({fmuref} <-: (I.valueMap)), relevantInputClocks |-> ((I.relevantInputClocks) \ {fmuref}), relevantOutputClocks |-> ((I.relevantOutputClocks) union feedthroughClocks)) in updateEnvironmentClock(I1, fmuUpdated, clock, val)
 	pre (((mk_FMURef((fmu.name), clock) in set (I.relevantInputClocks)) and val) <=> (mk_FMURef((fmu.name), clock) in set ((I.inactiveClocks) inter (I.readyClocks))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
 
 \<comment>\<open>VDM source: pre_setClock: (Importer * FMU * Ref * bool +> bool)
 	pre_setClock(I, fmu, clock, val) ==
 (((mk_FMURef((fmu.name), clock) in set (I.relevantInputClocks)) and val) <=> (mk_FMURef((fmu.name), clock) in set ((I.inactiveClocks) inter (I.readyClocks))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 527:17\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 527:17\<close>
 definition
 	pre_setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -2905,7 +2906,7 @@ where
 
 
 \<comment>\<open>VDM source: post_setClock = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 515:5\<close>
 definition
 	post_setClock :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2955,12 +2956,12 @@ where
 	setPort(I, port) ==
 let valueLF:Value = (I.valueMap)(port) in let fmu:FMU = set_m(((I.scenario).fmus)((port.name)), (port.ref), valueLF) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), valueMap |-> ({port} <-: (I.valueMap)))
 	pre (port in set (dom (I.valueMap)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
 
 \<comment>\<open>VDM source: pre_setPort: (Importer * FMURef +> bool)
 	pre_setPort(I, port) ==
 (port in set (dom (I.valueMap)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 539:14\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 539:14\<close>
 definition
 	pre_setPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -2972,7 +2973,7 @@ where
 
 
 \<comment>\<open>VDM source: post_setPort = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 531:5\<close>
 definition
 	post_setPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3010,12 +3011,12 @@ where
 	getPort(I, port) ==
 let mk_(fmu, val):(FMU * Value) = get_m(((I.scenario).fmus)((port.name)), (port.ref)), connectedInput:FMURef = ((I.scenario).connections)(port) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), valueMap |-> ((I.valueMap) ++ {connectedInput |-> val}))
 	pre (((I.scenario).connections)(port) not in set (dom (I.valueMap)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
 
 \<comment>\<open>VDM source: pre_getPort: (Importer * FMURef +> bool)
 	pre_getPort(I, port) ==
 (((I.scenario).connections)(port) not in set (dom (I.valueMap)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 551:38\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 551:38\<close>
 definition
 	pre_getPort :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -3027,7 +3028,7 @@ where
 
 
 \<comment>\<open>VDM source: post_getPort = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 543:5\<close>
 definition
 	post_getPort :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3042,7 +3043,8 @@ where
 	\<comment>\<open>User defined body of getPort.\<close>
 	(
 		let 
-(dummy0::(FMU\<times> Value)) = (get_m (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
+(fmu::FMU) = (get_m (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
+(val::Value) = (get_m (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port))))  (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f (port)));
 		
 (connectedInput::FMURef) = (the((connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e ((scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))) port))
 		in
@@ -3082,12 +3084,12 @@ where
 let triggeredClocks:set of (Clock) = {clock | clock in set (fmu.clocks) & ((equation.ref) in set (clock.dependsOn))} in let triggeredInputs:set of (FMURef) = {mk_FMURef((equation.name), (inputClock.ref)) | inputClock in set triggeredClocks & ((inputClock.type) <> <inputLF>)}, triggeredOutputs:set of (FMURef) = {mk_FMURef((equation.name), (outputClock.ref)) | outputClock in set triggeredClocks & ((outputClock.type) <> <outputLF>)} in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), calculatedEquations |-> ((I.calculatedEquations) union {equation}), relevantInputClocks |-> ((I.relevantInputClocks) union triggeredInputs), relevantOutputClocks |-> ((I.relevantOutputClocks) union triggeredOutputs))
 	pre (equation in set ((I.activeEquations) \ (I.calculatedEquations)))
 	post (equation in set (RESULT.calculatedEquations))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 554:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 554:5\<close>
 
 \<comment>\<open>VDM source: pre_updateEnvironmentEquation: (Importer * FMU * FMURef +> bool)
 	pre_updateEnvironmentEquation(I, fmu, equation) ==
 (equation in set ((I.activeEquations) \ (I.calculatedEquations)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 566:18\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 566:18\<close>
 definition
 	pre_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -3101,7 +3103,7 @@ where
 \<comment>\<open>VDM source: post_updateEnvironmentEquation: (Importer * FMU * FMURef * Importer +> bool)
 	post_updateEnvironmentEquation(I, fmu, equation, RESULT) ==
 (equation in set (RESULT.calculatedEquations))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 567:19\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 567:19\<close>
 definition
 	post_updateEnvironmentEquation :: "Importer\<Rightarrow> FMU\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3144,12 +3146,12 @@ where
 	calculateInput(I, equation) ==
 let I1:Importer = setPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
 	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((equation in set (dom (I.valueMap))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.inputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateInput: (Importer * FMURef +> bool)
 	pre_calculateInput(I, equation) ==
 let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((equation in set (dom (I.valueMap))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.inputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>))))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 578:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 578:9\<close>
 definition
 	pre_calculateInput :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -3170,7 +3172,7 @@ where
 
 
 \<comment>\<open>VDM source: post_calculateInput = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 573:5\<close>
 definition
 	post_calculateInput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3199,12 +3201,12 @@ where
 	calculateOutput(I, equation) ==
 let I1:Importer = getPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
 	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.outputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateOutput: (Importer * FMURef +> bool)
 	pre_calculateOutput(I, equation) ==
 let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and (exists [v in set (fmu.outputs)] & (((v.ref) = (equation.ref)) and ((v.type) = <discrete>)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 593:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 593:9\<close>
 definition
 	pre_calculateOutput :: "Importer\<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -3225,7 +3227,7 @@ where
 
 
 \<comment>\<open>VDM source: post_calculateOutput = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 588:5\<close>
 definition
 	post_calculateOutput :: "Importer\<Rightarrow> FMURef\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3256,10 +3258,10 @@ where
 then I
 else let action in set {a | a in set algorithm & activatedAction(I, a)} in runAlgorithm(runAction(I, action), (algorithm \ {action})))
 	measure (card algorithm)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 
 \<comment>\<open>VDM source: pre_runAlgorithm = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 definition
 	pre_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet \<Rightarrow> bool"
 where
@@ -3269,7 +3271,7 @@ where
 
 
 \<comment>\<open>VDM source: post_runAlgorithm = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 602:5\<close>
 definition
 	post_runAlgorithm :: "Importer\<Rightarrow> Action VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3295,12 +3297,12 @@ where
 let connections:map (FMURef) to (FMURef) = ((I.scenario).connections) in let outputs:set of (Action) = {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set (dom connections)}, inputs:set of (Action) = {mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set (rng connections)} in runAlgorithm(I, (outputs union inputs))
 	pre (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <INIT>))
 	post variablesSynchronized((RESULT.scenario))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 615:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 615:5\<close>
 
 \<comment>\<open>VDM source: pre_initializeData: (Importer +> bool)
 	pre_initializeData(I) ==
 (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <INIT>))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 622:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 622:9\<close>
 definition
 	pre_initializeData :: "Importer \<Rightarrow> bool"
 where
@@ -3314,7 +3316,7 @@ where
 \<comment>\<open>VDM source: post_initializeData: (Importer * Importer +> bool)
 	post_initializeData(I, RESULT) ==
 variablesSynchronized((RESULT.scenario))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 623:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 623:10\<close>
 definition
 	post_initializeData :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3358,12 +3360,12 @@ where
 let connections:map (FMURef) to (FMURef) = ((I.scenario).connections) in let fmus:set of (FMU) = (rng ((I.scenario).fmus)) in let outputs:set of (Action) = {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set (dom connections) & ((derefOutput(((I.scenario).fmus)((outputLF.name)), (outputLF.ref)).type) = <continous>)}, inputs:set of (Action) = {mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set (rng connections) & ((derefInput(((I.scenario).fmus)((inputLF.name)), (inputLF.ref)).type) = <continous>)}, steps:set of (Action) = {mk_Action(<step>, fmu, 1) | fmu in set fmus} in let actions:set of (Action) = ((outputs union inputs) union steps) in runAlgorithm(I, actions)
 	pre let scenario:Machine = (I.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))
 	post let scenario:Machine = (RESULT.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 630:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 630:5\<close>
 
 \<comment>\<open>VDM source: pre_cosimStep: (Importer +> bool)
 	pre_cosimStep(I) ==
 let scenario:Machine = (I.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 642:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 642:9\<close>
 definition
 	pre_cosimStep :: "Importer \<Rightarrow> bool"
 where
@@ -3386,7 +3388,7 @@ where
 \<comment>\<open>VDM source: post_cosimStep: (Importer * Importer +> bool)
 	post_cosimStep(I, RESULT) ==
 let scenario:Machine = (RESULT.scenario) in ((forall fmu in set (rng (scenario.fmus)) & ((fmu.mode) = <STEP>)) and (variablesSynchronized(scenario) and fmusSynchronized(scenario)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 645:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 645:9\<close>
 definition
 	post_cosimStep :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3464,10 +3466,10 @@ mk_Action(<step>, fmu, -) -> stepFMU(I, fmu),
 mk_Action(<setC>, fmu, clock) -> setClock(I, fmu, clock, true),
 mk_Action(<getC>, fmu, clock) -> queryClock(I, fmu, clock)
 end)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 
 \<comment>\<open>VDM source: pre_runAction = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 definition
 	pre_runAction :: "Importer\<Rightarrow> Action \<Rightarrow> bool"
 where
@@ -3477,7 +3479,7 @@ where
 
 
 \<comment>\<open>VDM source: post_runAction = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 651:5\<close>
 definition
 	post_runAction :: "Importer\<Rightarrow> Action\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3499,10 +3501,10 @@ where
 let mk_(fmuUpdated, step, event):(FMU * real * bool) = step_tm(fmu, (I.stepSize)) in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmuUpdated.name) |-> fmuUpdated})), fmusWithEvent |-> (if event
 then ((I.fmusWithEvent) union {(fmu.name)})
 else (I.fmusWithEvent)), stepSize |-> step)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 
 \<comment>\<open>VDM source: pre_stepFMU = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 definition
 	pre_stepFMU :: "Importer\<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -3512,7 +3514,7 @@ where
 
 
 \<comment>\<open>VDM source: post_stepFMU = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 673:5\<close>
 definition
 	post_stepFMU :: "Importer\<Rightarrow> FMU\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3527,7 +3529,9 @@ where
 	\<comment>\<open>User defined body of stepFMU.\<close>
 	(
 		let 
-(dummy0::(FMU\<times> VDMReal\<times> bool)) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))
+(fmuUpdated::FMU) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)));
+(step::VDMReal) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)));
+(event::bool) = (step_tm fmu  (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (I)))
 		in
 			(if (
 		( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U (fst dummy0))))) \<and> 
@@ -3566,10 +3570,10 @@ mk_Action(<step>, fmu, -) -> preStepI(I, fmu),
 mk_Action(<setC>, fmu, clock) -> preSetCI(I, fmu, clock),
 mk_Action(<getC>, fmu, clock) -> preGetCI(I, fmu, clock)
 end)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 
 \<comment>\<open>VDM source: pre_activatedAction = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 definition
 	pre_activatedAction :: "Importer\<Rightarrow> Action \<Rightarrow> bool"
 where
@@ -3579,7 +3583,7 @@ where
 
 
 \<comment>\<open>VDM source: post_activatedAction = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 686:5\<close>
 definition
 	post_activatedAction :: "Importer\<Rightarrow> Action\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3599,10 +3603,10 @@ where
 \<comment>\<open>VDM source: preSetI: (Importer * FMU * Ref -> bool)
 	preSetI(I, fmu, port) ==
 let inputLF:Variable = derefInput(fmu, port) in ((((fmu.mode) = <EVENT>) <=> ((mk_FMURef((fmu.name), port) in set ((I.activeEquations) \ (I.calculatedEquations))) and ((inputLF.type) = <discrete>))) and ((((fmu.mode) = <STEP>) <=> ((inputLF.type) = <continous>)) and preSet(fmu, port)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 
 \<comment>\<open>VDM source: pre_preSetI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 definition
 	pre_preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -3612,7 +3616,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preSetI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 700:5\<close>
 definition
 	post_preSetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3640,10 +3644,10 @@ where
 \<comment>\<open>VDM source: preGetI: (Importer * FMU * Ref -> bool)
 	preGetI(I, fmu, port) ==
 let outputLF:Variable = derefOutput(fmu, port) in ((((fmu.mode) = <EVENT>) <=> ((mk_FMURef((fmu.name), port) in set ((I.activeEquations) \ (I.calculatedEquations))) and ((outputLF.type) = <discrete>))) and ((((fmu.mode) = <STEP>) <=> ((outputLF.type) = <continous>)) and preGet(fmu, port)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 
 \<comment>\<open>VDM source: pre_preGetI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 definition
 	pre_preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -3653,7 +3657,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preGetI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 708:5\<close>
 definition
 	post_preGetI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3681,10 +3685,10 @@ where
 \<comment>\<open>VDM source: preStepI: (Importer * FMU -> bool)
 	preStepI(I, fmu) ==
 preStepT(fmu, (I.stepSize))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 
 \<comment>\<open>VDM source: pre_preStepI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 definition
 	pre_preStepI :: "Importer\<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -3694,7 +3698,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preStepI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 716:5\<close>
 definition
 	post_preStepI :: "Importer\<Rightarrow> FMU\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3713,10 +3717,10 @@ where
 \<comment>\<open>VDM source: preGetCI: (Importer * FMU * Ref -> bool)
 	preGetCI(I, fmu, clock) ==
 let outputLF:FMURef = mk_FMURef((fmu.name), clock) in ((outputLF in set (I.relevantOutputClocks)) and preGetC(fmu, clock))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 
 \<comment>\<open>VDM source: pre_preGetCI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 definition
 	pre_preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -3726,7 +3730,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preGetCI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 720:5\<close>
 definition
 	post_preGetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3754,10 +3758,10 @@ where
 \<comment>\<open>VDM source: preSetCI: (Importer * FMU * Ref -> bool)
 	preSetCI(I, fmu, clock) ==
 let inputLF:FMURef = mk_FMURef((fmu.name), clock) in let val:Value = (I.valueMap)(inputLF) in (preSetC(fmu, clock, (val.value)) and (inputLF in set (I.relevantInputClocks)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 
 \<comment>\<open>VDM source: pre_preSetCI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 definition
 	pre_preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -3767,7 +3771,7 @@ where
 
 
 \<comment>\<open>VDM source: post_preSetCI = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 727:5\<close>
 definition
 	post_preSetCI :: "Importer\<Rightarrow> FMU\<Rightarrow> Ref\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3805,12 +3809,12 @@ where
 	feedthroughSatisfied(fmu, outputLF) ==
 (forall i in set (fmu.inputs) & (((i.ref) in set (outputLF.dependsOn)) and ((((i.contract) = <reactive>) => (((fmu.env)((i.ref)).time) >= (fmu.time))) and (((i.contract) = <delayed>) => (((fmu.env)((i.ref)).time) = (fmu.time))))))
 	pre (forall i in set (fmu.inputs) & ((i.causality) = <inputLF>))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
 
 \<comment>\<open>VDM source: pre_feedthroughSatisfied: (FMU * Variable +> bool)
 	pre_feedthroughSatisfied(fmu, outputLF) ==
 (forall i in set (fmu.inputs) & ((i.causality) = <inputLF>))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 747:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 747:9\<close>
 definition
 	pre_feedthroughSatisfied :: "FMU\<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -3822,7 +3826,7 @@ where
 
 
 \<comment>\<open>VDM source: post_feedthroughSatisfied = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 741:5\<close>
 definition
 	post_feedthroughSatisfied :: "FMU\<Rightarrow> Variable\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -3844,10 +3848,10 @@ where
 then I
 else let name in set fmus in let fmu:FMU = ((I.scenario).fmus)(name) in let relevantClocks:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & ((c.interval) in set intervalSet)} in let scheduleEntries:map (FMURef) to (real) = calculateSchedule(fmu, relevantClocks, {|->}) in let I1:Importer = mu(I, schedule |-> ((I.schedule) ++ scheduleEntries)) in updateSchedule(I1, (fmus \ {name}), intervalSet))
 	measure (card fmus)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 
 \<comment>\<open>VDM source: pre_updateSchedule = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 definition
 	pre_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet \<Rightarrow> bool"
 where
@@ -3857,7 +3861,7 @@ where
 
 
 \<comment>\<open>VDM source: post_updateSchedule = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 753:1\<close>
 definition
 	post_updateSchedule :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Interval VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3919,12 +3923,12 @@ where
 let fmus:set of (Name) = (dom ((I.scenario).fmus)) in updateSchedule(I, fmus, {<constantLF>, <fixed>, <calculated>, <tunable>, <changing>, <countdown>})
 	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))
 	post let timeBasedClocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng ((I.scenario).fmus))}) in (((dom (RESULT.schedule)) = timeBasedClocks) and ((forall m' in set (rng ((I.scenario).fmus)) & ((m'.mode) = <INIT>)) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 769:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 769:5\<close>
 
 \<comment>\<open>VDM source: pre_createSchedule: (Importer +> bool)
 	pre_createSchedule(I) ==
 (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 773:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 773:9\<close>
 definition
 	pre_createSchedule :: "Importer \<Rightarrow> bool"
 where
@@ -3938,7 +3942,7 @@ where
 \<comment>\<open>VDM source: post_createSchedule: (Importer * Importer +> bool)
 	post_createSchedule(I, RESULT) ==
 let timeBasedClocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng ((I.scenario).fmus))}) in (((dom (RESULT.schedule)) = timeBasedClocks) and ((forall m' in set (rng ((I.scenario).fmus)) & ((m'.mode) = <INIT>)) and (fmusSynchronized((I.scenario)) and variablesSynchronized((I.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 777:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 777:9\<close>
 definition
 	post_createSchedule :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -3979,12 +3983,12 @@ where
 let I1:Importer = initializeData(I) in let I2:Importer = createSchedule(I1) in enterStepMode(I2, (dom ((I2.scenario).fmus)))
 	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and fmusSynchronized((I.scenario))))
 	post (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 788:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 788:5\<close>
 
 \<comment>\<open>VDM source: pre_initialization: (Importer +> bool)
 	pre_initialization(I) ==
 (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <INIT>) and fmusSynchronized((I.scenario))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 803:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 803:9\<close>
 definition
 	pre_initialization :: "Importer \<Rightarrow> bool"
 where
@@ -3998,7 +4002,7 @@ where
 \<comment>\<open>VDM source: post_initialization: (Importer * Importer +> bool)
 	post_initialization(I, RESULT) ==
 (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 805:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 805:10\<close>
 definition
 	post_initialization :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -4037,10 +4041,10 @@ where
 \<comment>\<open>VDM source: tickingClocks: (Importer -> (Importer * set of (FMURef)))
 	tickingClocks(I) ==
 let clocks:set of (FMURef) = (dom ((I.schedule) :> {((I.time).r)})) in let I1:Importer = mu(I, relevantInputClocks |-> clocks) in mk_(I1, clocks)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 
 \<comment>\<open>VDM source: pre_tickingClocks = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 definition
 	pre_tickingClocks :: "Importer \<Rightarrow> bool"
 where
@@ -4050,7 +4054,7 @@ where
 
 
 \<comment>\<open>VDM source: post_tickingClocks = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 812:5\<close>
 definition
 	post_tickingClocks :: "Importer\<Rightarrow> (Importer\<times> FMURef VDMSet) \<Rightarrow> bool"
 where
@@ -4091,10 +4095,10 @@ where
 	stepnegotiation(M) ==
 not yet specified
 	post ((RESULT >= 0) and (forall fmu in set (rng ((M.scenario).fmus)) & ((fmu.maxStep) >= RESULT)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
 
 \<comment>\<open>VDM source: pre_stepnegotiation = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 825:5\<close>
 definition
 	pre_stepnegotiation :: "Importer \<Rightarrow> bool"
 where
@@ -4106,7 +4110,7 @@ where
 \<comment>\<open>VDM source: post_stepnegotiation: (Importer * real +> bool)
 	post_stepnegotiation(M, RESULT) ==
 ((RESULT >= 0) and (forall fmu in set (rng ((M.scenario).fmus)) & ((fmu.maxStep) >= RESULT)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 829:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 829:9\<close>
 definition
 	post_stepnegotiation :: "Importer\<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -4134,12 +4138,12 @@ else I4)
 	pre (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((I.scenario)) and fmusSynchronized((I.scenario)))))
 	post (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))
 	measure (((I.endtime).r) - ((I.time).r))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 834:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 834:5\<close>
 
 \<comment>\<open>VDM source: pre_cosimulationStep: (Importer +> bool)
 	pre_cosimulationStep(I) ==
 (forall m' in set (rng ((I.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((I.scenario)) and fmusSynchronized((I.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 858:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 858:9\<close>
 definition
 	pre_cosimulationStep :: "Importer \<Rightarrow> bool"
 where
@@ -4153,7 +4157,7 @@ where
 \<comment>\<open>VDM source: post_cosimulationStep: (Importer * Importer +> bool)
 	post_cosimulationStep(I, RESULT) ==
 (forall m' in set (rng ((RESULT.scenario).fmus)) & (((m'.mode) = <STEP>) and (variablesSynchronized((RESULT.scenario)) and fmusSynchronized((RESULT.scenario)))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 861:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 861:10\<close>
 definition
 	post_cosimulationStep :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -4170,7 +4174,8 @@ where
 	\<comment>\<open>User defined body of cosimulationStep.\<close>
 	(
 		let 
-(dummy0::(Importer\<times> FMURef VDMSet)) = (tickingClocks I)
+(clocksToTick::FMURef VDMSet) = (tickingClocks I);
+(I1::Importer) = (tickingClocks I)
 		in
 			(if (
 		( (( (((inv_Map ((inv_VDMSeq1' (inv_VDMChar))) inv_FMU  (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r (fst dummy0))))) \<and> 
@@ -4252,10 +4257,10 @@ where
 \<comment>\<open>VDM source: fmusSynchronized: (Machine -> bool)
 	fmusSynchronized(M) ==
 ((card {(fmu.time) | fmu in set (rng (M.fmus))}) = 1)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 
 \<comment>\<open>VDM source: pre_fmusSynchronized = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 definition
 	pre_fmusSynchronized :: "Machine \<Rightarrow> bool"
 where
@@ -4265,7 +4270,7 @@ where
 
 
 \<comment>\<open>VDM source: post_fmusSynchronized = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 866:5\<close>
 definition
 	post_fmusSynchronized :: "Machine\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -4289,12 +4294,12 @@ else calculateRelevantFMUs(M, (relevantFMUs union addedFMUs), (notRelevantFMUs \
 	pre ((relevantFMUs inter notRelevantFMUs) = {})
 	post (({(clock.name) | clock in set clocks} subset RESULT) and (RESULT subset (dom (M.fmus))))
 	measure (card notRelevantFMUs)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 875:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 875:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (FMURef) +> bool)
 	pre_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, clocks) ==
 ((relevantFMUs inter notRelevantFMUs) = {})\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 884:48\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 884:48\<close>
 definition
 	pre_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -4308,7 +4313,7 @@ where
 \<comment>\<open>VDM source: post_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (FMURef) * set of (Name) +> bool)
 	post_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, clocks, RESULT) ==
 (({(clock.name) | clock in set clocks} subset RESULT) and (RESULT subset (dom (M.fmus))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 886:13\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 886:13\<close>
 definition
 	post_calculateRelevantFMUs :: "Machine\<Rightarrow> Name VDMSet\<Rightarrow> Name VDMSet\<Rightarrow> FMURef VDMSet\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -4347,10 +4352,10 @@ else let clockActions:set of (Action) = ({mk_Action(<setC>, ((I.scenario).fmus)(
 then let clockAction in set {a | a in set clockActions & activatedAction(I, a)} in solveSystemOfEquations(runAction(I, clockAction))
 else let portActions:set of (Action) = ({mk_Action(<set>, ((I.scenario).fmus)((inputLF.name)), (inputLF.ref)) | inputLF in set ((I.activeEquations) \ (I.calculatedEquations))} union {mk_Action(<get>, ((I.scenario).fmus)((outputLF.name)), (outputLF.ref)) | outputLF in set ((I.activeEquations) \ (I.calculatedEquations))}) in let portAction in set {a | a in set portActions & activatedAction(I, a)} in solveSystemOfEquations(runAction(I, portAction))))
 	measure ((card (I.readyEquations)) + (card ((I.activeEquations) \ (I.calculatedEquations))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 
 \<comment>\<open>VDM source: pre_solveSystemOfEquations = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 definition
 	pre_solveSystemOfEquations :: "Importer \<Rightarrow> bool"
 where
@@ -4360,7 +4365,7 @@ where
 
 
 \<comment>\<open>VDM source: post_solveSystemOfEquations = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 895:1\<close>
 definition
 	post_solveSystemOfEquations :: "Importer\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -4409,12 +4414,12 @@ where
 let I1:Importer = solveSystemOfEquations(I) in let I2:Importer = updateDiscreteState(I1, relevantFMUs) in updateSchedule(I2, relevantFMUs, {<tunable>, <changing>, <countdown>})
 	pre (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <EVENT>)))
 	post (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <EVENT>) and (((I.activeEquations) \ (I.calculatedEquations)) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 913:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 913:1\<close>
 
 \<comment>\<open>VDM source: pre_eventIteration: (Importer * set of (Name) +> bool)
 	pre_eventIteration(I, relevantFMUs) ==
 (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <EVENT>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 938:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 938:9\<close>
 definition
 	pre_eventIteration :: "Importer\<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -4428,7 +4433,7 @@ where
 \<comment>\<open>VDM source: post_eventIteration: (Importer * set of (Name) * Importer +> bool)
 	post_eventIteration(I, relevantFMUs, RESULT) ==
 (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <EVENT>) and (((I.activeEquations) \ (I.calculatedEquations)) = {})))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 939:10\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 939:10\<close>
 definition
 	post_eventIteration :: "Importer\<Rightarrow> Name VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -4472,12 +4477,12 @@ else clockedSimulationAlgorithm(I, clocks))
 	pre (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <STEP>) and (((I.fmusWithEvent) <> {}) or (clocks <> {})))))
 	post (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <STEP>)))
 	measure not yet specified\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 948:5\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 948:5\<close>
 
 \<comment>\<open>VDM source: pre_clockedSimulationAlgorithm: (Importer * set of (FMURef) +> bool)
 	pre_clockedSimulationAlgorithm(I, clocks) ==
 (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & (((fmu.mode) = <STEP>) and (((I.fmusWithEvent) <> {}) or (clocks <> {})))))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 978:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 978:9\<close>
 definition
 	pre_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -4491,7 +4496,7 @@ where
 \<comment>\<open>VDM source: post_clockedSimulationAlgorithm: (Importer * set of (FMURef) * Importer +> bool)
 	post_clockedSimulationAlgorithm(I, clocks, RESULT) ==
 (fmusSynchronized((I.scenario)) and (forall fmu in set (rng ((I.scenario).fmus)) & ((fmu.mode) = <STEP>)))\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 981:9\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 981:9\<close>
 definition
 	post_clockedSimulationAlgorithm :: "Importer\<Rightarrow> FMURef VDMSet\<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -4558,12 +4563,12 @@ then {fmuRef |-> next_tm(fmu, clock)}
 else {|->})) in calculateSchedule(fmu, (clocks \ {clock}), S1))
 	pre let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <inputLF>) and ((c.interval) <> <triggered>))} in (clocks subset cref)
 	measure (card clocks)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
 
 \<comment>\<open>VDM source: pre_calculateSchedule: (FMU * set of (Ref) * map (FMURef) to (real) +> bool)
 	pre_calculateSchedule(fmu, clocks, schedule) ==
 let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <inputLF>) and ((c.interval) <> <triggered>))} in (clocks subset cref)\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 1004:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 1004:1\<close>
 definition
 	pre_calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> bool"
 where
@@ -4584,7 +4589,7 @@ where
 
 
 \<comment>\<open>VDM source: post_calculateSchedule = ?\<close>
-\<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
+\<comment>\<open>in 'Clocks' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl) at line 985:1\<close>
 definition
 	post_calculateSchedule :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> (FMURef \<rightharpoonup> VDMReal)\<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> bool"
 where

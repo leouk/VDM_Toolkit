@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T09:52:48.329691Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.236Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IExprsOptional.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IExprsOptional.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl]
 *)
 theory TestV2IExprsOptional
 imports "VDMToolkit" 
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: v37:[nat] = nil\<close>
-\<comment>\<open>in 'TestV2IExprsOptional' (./src/test/resources/TestV2IExprsOptional.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IExprsOptional' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl) at line 5:5\<close>
 abbreviation
 	v37 :: "VDMNat option"
 where
@@ -24,7 +24,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v371:[nat] = 100\<close>
-\<comment>\<open>in 'TestV2IExprsOptional' (./src/test/resources/TestV2IExprsOptional.vdmsl) at line 6:5\<close>
+\<comment>\<open>in 'TestV2IExprsOptional' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl) at line 6:5\<close>
 abbreviation
 	v371 :: "VDMNat option"
 where
@@ -41,7 +41,7 @@ where
 nil -> 0,
 v -> (v + v)
 end)\<close>
-\<comment>\<open>in 'TestV2IExprsOptional' (./src/test/resources/TestV2IExprsOptional.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IExprsOptional' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl) at line 7:5\<close>
 abbreviation
 	v93 :: "VDMNat"
 where

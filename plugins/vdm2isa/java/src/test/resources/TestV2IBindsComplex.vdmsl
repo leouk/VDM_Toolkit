@@ -15,8 +15,6 @@ values
 	v21= let mk_(x,y) = v1 in x+y;	-- needs to fix the local def? 
 	v3 = mk_(1,2).#1 + mk_(1,2).#2; --this surprised me it worked at first! nice
 	
-	v4 = { mk_(x,y) |-> [x,y] | x, y in set {1,2} }; -- whaaaa.... 
-	
 	[v5,v6] = [1,2];
 	
 end TestV2IBindsComplex

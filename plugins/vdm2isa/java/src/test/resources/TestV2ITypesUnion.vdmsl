@@ -35,8 +35,6 @@ functions
 
 	f4: () -> TMixedQuoteUnion
 	f4() == <A>;
-	
-	
-	
+		
 end TestV2ITypesUnion
 

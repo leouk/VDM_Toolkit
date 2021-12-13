@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T09:52:48.226176Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.187Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IErrorsToken.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IErrorsToken.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl]
 *)
 theory TestV2IErrorsToken
 imports "VDMToolkit" 
@@ -12,10 +12,10 @@ begin
 \<comment>\<open>VDM source: f: (set of (nat) -> token)
 	f(x) ==
 mk_token(x)\<close>
-\<comment>\<open>in 'TestV2IErrorsToken' (./src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IErrorsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
 
 \<comment>\<open>VDM source: pre_f = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsToken' (./src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IErrorsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
 definition
 	pre_f :: "VDMNat VDMSet \<Rightarrow> bool"
 where
@@ -25,7 +25,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsToken' (./src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IErrorsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl) at line 5:5\<close>
 definition
 	post_f :: "VDMNat VDMSet\<Rightarrow> VDMToken \<Rightarrow> bool"
 where
@@ -42,7 +42,7 @@ where
 
 	
 \<comment>\<open>VDM source: v:token = f({1, 2, 3})\<close>
-\<comment>\<open>in 'TestV2IErrorsToken' (./src/test/resources/TestV2IErrorsToken.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IErrorsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl) at line 8:5\<close>
 abbreviation
 	v :: "VDMToken"
 where

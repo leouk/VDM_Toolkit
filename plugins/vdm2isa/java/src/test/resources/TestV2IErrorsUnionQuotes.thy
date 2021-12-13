@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T09:52:48.235018Z
+(* VDM to Isabelle Translation @2021-12-13T14:24:18.194Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/TestV2IErrorsUnionQuotes.vdmsl' at line 1:8
-files = [./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl]
 *)
 theory TestV2IErrorsUnionQuotes
 imports "VDMToolkit" 
@@ -10,14 +10,14 @@ begin
 
 
 \<comment>\<open>VDM source: TQuoteUnion = (<A> | <B> | <C>)\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 8:5\<close>
 datatype TQuoteUnion = U_A  | 
 		 U_B  | 
 		 U_C 
 	
 
 \<comment>\<open>VDM source: inv_TQuoteUnion = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 8:5\<close>
 definition
 	inv_TQuoteUnion :: "TQuoteUnion \<Rightarrow> bool"
 where
@@ -28,13 +28,13 @@ where
 
 	
 \<comment>\<open>VDM source: TMixedUnion = (<A> | nat)\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 11:5\<close>
 datatype TMixedUnion = U_A  | 
 		 U_VDMNat "VDMNat"
 	
 
 \<comment>\<open>VDM source: inv_TMixedUnion = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 11:5\<close>
 definition
 	inv_TMixedUnion :: "TMixedUnion \<Rightarrow> bool"
 where
@@ -49,13 +49,13 @@ where
 
 	
 \<comment>\<open>VDM source: TMixedQuoteUnion = (TMixedUnion | TQuoteUnion)\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 13:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 13:5\<close>
 datatype TMixedQuoteUnion = U_TMixedUnion "TMixedUnion" | 
 		 U_TQuoteUnion "TQuoteUnion"
 	
 
 \<comment>\<open>VDM source: inv_TMixedQuoteUnion = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 13:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 13:5\<close>
 definition
 	inv_TMixedQuoteUnion :: "TMixedQuoteUnion \<Rightarrow> bool"
 where
@@ -72,10 +72,10 @@ where
 \<comment>\<open>VDM source: f1: (TQuoteUnion -> bool)
 	f1(qu) ==
 (qu <> <A>)\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
 
 \<comment>\<open>VDM source: pre_f1 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
 definition
 	pre_f1 :: "TQuoteUnion \<Rightarrow> bool"
 where
@@ -85,7 +85,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f1 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 17:5\<close>
 definition
 	post_f1 :: "TQuoteUnion\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -106,10 +106,10 @@ where
 \<comment>\<open>VDM source: f3: (() -> TMixedUnion)
 	f3() ==
 <A>\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
 
 \<comment>\<open>VDM source: pre_f3 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
 definition
 	pre_f3 :: "bool"
 where
@@ -117,7 +117,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f3 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 20:5\<close>
 definition
 	post_f3 :: "TMixedUnion \<Rightarrow> bool"
 where
@@ -136,10 +136,10 @@ where
 \<comment>\<open>VDM source: f4: (() -> TMixedQuoteUnion)
 	f4() ==
 <A>\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
 
 \<comment>\<open>VDM source: pre_f4 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
 definition
 	pre_f4 :: "bool"
 where
@@ -147,7 +147,7 @@ where
 
 
 \<comment>\<open>VDM source: post_f4 = ?\<close>
-\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (./src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
+\<comment>\<open>in 'TestV2IErrorsUnionQuotes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl) at line 23:5\<close>
 definition
 	post_f4 :: "TMixedQuoteUnion \<Rightarrow> bool"
 where
