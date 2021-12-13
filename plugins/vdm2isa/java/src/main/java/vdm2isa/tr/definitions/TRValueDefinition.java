@@ -303,7 +303,7 @@ public class TRValueDefinition extends TRLocalDefinition
 				TRType patternType = figureOutPatternType(patt, ld.type); 
 				//TRExpression e = figureOutExpression(i, ld.type);
 				//figure expression string out rather than try to "construct" new one; simpler. 
-				result.add(TRValueDefinition.newValueDefinition(getVDMValueDefinition()/*getVDMDefinition()*/, ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, patternType/*ld.getType()*/, exp, this.expType, TRDefinitionList.newDefList(ld)));
+				result.add(newValueDefinition(ld, patt, patternType/*ld.getType()*/));
 			}
 		}
 		// figuring out doesn't loose definitions; and all are value definitions
@@ -312,6 +312,14 @@ public class TRValueDefinition extends TRLocalDefinition
 		assert result.size() <= defs.size() && result.allAre(this/*TRValueDefinition.class*/);
 		TRDefinitionSet.setup(result);
 		return result.asList();
+	}
+
+	protected TRValueDefinition newValueDefinition(TRLocalDefinition ld, TRPattern patt, TRType patternType)
+	{
+		assert (getVDMDefinition() instanceof TCValueDefinition);
+		return TRValueDefinition.newValueDefinition(getVDMValueDefinition(), 
+			ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, patternType/*ld.getType()*/, 
+			exp, this.expType, TRDefinitionList.newDefList(ld));
 	}
 
 	@Override
