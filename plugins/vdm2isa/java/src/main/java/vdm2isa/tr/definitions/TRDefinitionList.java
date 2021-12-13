@@ -52,7 +52,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 
 	public  boolean allAreLocalDefinition()
 	{
-		return allAre(new TRLocalDefinition());
+		return allAre(TRLocalDefinition.DEFAULT);
 	}
 
 	public <T extends TRDefinition> boolean allAre(T def)

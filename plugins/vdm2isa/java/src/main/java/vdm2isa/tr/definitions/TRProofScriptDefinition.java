@@ -13,11 +13,12 @@ public class TRProofScriptDefinition extends TRDefinition {
 	private static final long serialVersionUID = 1L;
 
     private TRProofScriptStepDefinitionList poScript;
+    private static int poScriptName = 0;
 
     public TRProofScriptDefinition(LexLocation location, TRIsaVDMCommentList comments,
         TRProofScriptStepDefinitionList poScript)
     {
-        super(null, location, comments, null, null, NameScope.GLOBAL, true, false);
+        super(null, location, comments, null, IsaToken.newNameToken(location, location.module, "PO_Script" + poScriptName++), NameScope.GLOBAL, true, false);
         this.poScript = poScript;
     }
 
