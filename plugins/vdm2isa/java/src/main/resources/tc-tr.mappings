@@ -255,7 +255,7 @@ map TCRationalType{definitions} to TRBasicType(this, definitions);
 map TCRealType{definitions} to TRBasicType(this, definitions);
 map TCBooleanType{definitions} to TRBasicType(this, definitions);
 map TCCharacterType{definitions} to TRBasicType(this, definitions);
-map TCTokenType{definitions} to TRTokenType(this, definitions);
+map TCTokenType{definitions, argtypes} to TRTokenType(this, definitions, argtypes);
 
 map TCQuoteType{definitions, value} to TRQuoteType(this, definitions, value);
 map TCProductType{definitions, types} to TRProductType(this, definitions, types);

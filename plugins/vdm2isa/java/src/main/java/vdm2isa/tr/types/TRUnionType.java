@@ -214,14 +214,21 @@ public class TRUnionType extends TRType implements TRDataType {
         report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, "union type");   
 	}
 
-	public static final TRUnionType newUnionType(LexLocation location, TRTypeSet types)
+	/**
+	 * Singleton typeset returns that as the type
+	 * @param location
+	 * @param types
+	 * @return
+	 */
+	public static final TRType newUnionType(LexLocation location, TRTypeSet types)
 	{
 		return TRUnionType.newUnionType(location, new TRDefinitionList(), types);
 	}
 
-	public static final TRUnionType newUnionType(LexLocation location, TRDefinitionList definitions, TRTypeSet types)
+	public static final TRType newUnionType(LexLocation location, TRDefinitionList definitions, TRTypeSet types)
 	{
-		TRUnionType result = new TRUnionType(new TCUnionType(location, types.getVDMTypeSet()), definitions, types);
+		TRType union = types.colapses();
+		TRType result = union != null ? union.copy(union.atTopLevelDefinition()) : new TRUnionType(new TCUnionType(location, types.getVDMTypeSet()), definitions, types);
 		TRNode.setup(result);
 		return result;
 	}
