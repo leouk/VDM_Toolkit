@@ -57,31 +57,31 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-i", 
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/VDMToolkit.vdmsl"
-            //      ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IBindsComplex.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl"
-            //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl"            
-            //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"            
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl"
-                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl"
-            // ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsRecords.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSets.vdmsl"
-            // ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
-            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexRecord.vdmsl"
-            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexUnion.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesNamed.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesOptional.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesRecords.vdmsl"
-            //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
-            //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
-            //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
+                 ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IBindsComplex.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrors.vdmsl"
+              ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsToken.vdmsl"            
+              ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"            
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl"
+            ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsRecords.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSets.vdmsl"
+            ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
+               , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexRecord.vdmsl"
+               , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesComplexUnion.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesNamed.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesOptional.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesRecords.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
+               , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
+               ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
 });
     }
 
@@ -104,8 +104,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return "Translated ";
     }
 
-    public void summarise(long execTimeMs) {
-        Console.out.println(getSummaryPrefix() + plural(getLocalModuleCount(), "module", "s") +
+    public void summarise(long execTimeMs, int modSize) {
+        Console.out.println(getSummaryPrefix() + 
+            plural(getLocalModuleCount(), "module", "s") +
+            " (of " + modSize + ")" +
             " in " + (double)(execTimeMs/1000) + " secs. ");
         Console.out.print(getLocalErrorCount() == 0 ? "No issues" :
             "Found " + plural(getLocalErrorCount(), "issues", "s"));
@@ -194,7 +196,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 			{
 				GeneralisaPlugin.printWarnings(Console.out);
 			}
-            summarise(after-before);
+            summarise(after-before, tclist_filtered.size());
         }
         return result;
     }

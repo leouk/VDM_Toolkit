@@ -4,6 +4,7 @@ package vdm2isa.messages;
  * Plugin error messages by category. "_XP" on the name hints at the number of parameters expect.
  * Do not add \"v\" within messages, but `v` instead; this is in case message is also issued as an Isabelle comment. 
  */
+//TODO split these into PLUGIN/VDMSL/ISA/PO? 
 public enum IsaErrorMessage {
     
     //Plugin messages relate to incomplete or incompatible issues
@@ -114,9 +115,10 @@ public enum IsaErrorMessage {
     "Map comprehension with mixed (type and/or set/seq) bindings are not allowed."),
     ISA_INVALID_MAP_COMP_BINDING_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
     "Invalid map comp binding: expected `%1$s` but created `%2$s`."),
-    ISA_INVALID_TOKENEXPR_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 27,
+    ISA_INVALID_TOKENEXPR_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 28,
     "Invalid token typed expression `%1$s`; this *must* be created with mk_token"),
-
+    ISA_INVALID_IGNORE_VALUEDEF(VDM2IsaError.ISABELLE_E_ISA_BASE + 29, 
+    "Translating VDM ignore (-) patterns as top-level definitions can cause unexpected outcomes (e.g. multiple definitions with the same dummy name)"),
     
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
