@@ -25,13 +25,13 @@
 *TCImportedDefinition
 *TCRenamedDefinition
 
-TCAssignmentDefinition
-TCExplicitOperationDefinition
-TCExternalDefinition
 TCImplicitFunctionDefinition
+TCStateDefinition
+TCExplicitOperationDefinition
 TCImplicitOperationDefinition
 TCNamedTraceDefinition
-TCStateDefinition
+TCAssignmentDefinition
+TCExternalDefinition
 
 (26 of 33) = 79%
 
