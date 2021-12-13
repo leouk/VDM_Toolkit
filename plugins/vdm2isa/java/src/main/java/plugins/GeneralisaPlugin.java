@@ -49,8 +49,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     // whether to report or hide warnings
 	public static boolean reportWarnings;
 
-
-    protected static int errs;
     private int localErrors;
     private int localWarnings;
     private int localModules;
@@ -65,13 +63,13 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IErrorsUnionQuotes.vdmsl"            
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprs.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl"
-            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplexMaps.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsIs.vdmsl"
-            //,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
+            // ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsOptional.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsRecords.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSets.vdmsl"
-            ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl"
+            // ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IModules.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl"
@@ -83,7 +81,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
-           //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
+            //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
 });
     }
 
@@ -200,6 +198,14 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
         return result;
     }
+
+    public final void processException(Throwable t, String workingAt, boolean printStackTrace)
+    {
+        Console.out.println("Uncaught exception whilst working at `" + workingAt + "`: " + t.toString());
+        if (printStackTrace)
+            t.printStackTrace();
+        addLocalErrors(1);
+    }
     
     protected /* static */ void outputModule(LexLocation location, String module, String result) throws FileNotFoundException
 	{
@@ -218,7 +224,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         if (Settings.dialect != Dialect.VDM_SL)
         {
             GeneralisaPlugin.report(IsaErrorMessage.VDMSL_VDM10_ONLY, LexLocation.ANY);
-            errs++;
         }
         if (Settings.release != Release.VDM_10)
         {
@@ -297,7 +302,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     }
 
     public static final void clearErrors() {
-        GeneralisaPlugin.errs = 0;
         GeneralisaPlugin.errors.clear();
         GeneralisaPlugin.warnings.clear();
     }
@@ -352,7 +356,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     }
 
     public static void setupProperties() {
-        GeneralisaPlugin.errs = 0;
         GeneralisaPlugin.strict = false;
         GeneralisaPlugin.maxErrors = 2 * Properties.tc_max_errors;
         GeneralisaPlugin.isaVersion = "Isabelle2021: February 2021";

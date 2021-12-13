@@ -95,10 +95,13 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
 			//Vdm2isaPlugin.processVDMWarnings();
 
+			String workingAt = "";
 			try
 			{
 				// class map TC -> TR trees + set them up
+				workingAt = "TC nodes class mapping";
 				translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+				workingAt = "TR nodes setup";
 				translatedModules.setup();
 
 		        //TODO issue "lemma finiteness" of involved dom/rng set for map comp at TLD! As a search through!
@@ -109,9 +112,12 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				if (!GeneralisaPlugin.strict || GeneralisaPlugin.getErrorCount() == 0)
 				{
 					int mcount = 0;
+					String moduleName;
 					for (TRModule module : translatedModules)
 					{
-						outputModule(module.getLocation(), module.name.toString(), module.translate());  
+						moduleName = module.name.toString();
+						workingAt = "translating module " + moduleName;
+						outputModule(module.getLocation(), moduleName, module.translate());  
 						mcount++;
 					}
 					// only successful output calls
@@ -120,13 +126,11 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 			}
 			catch (InternalException e)
 			{
-				Console.out.println(e.toString());
+				processException(e, workingAt, false);
 			}
 			catch (Throwable t)
 			{
-				Console.out.println("Uncaught exception: " + t.toString());
-				t.printStackTrace();
-				addLocalErrors(1);
+				processException(t, workingAt, true);
 			}
 		}
 		return result;

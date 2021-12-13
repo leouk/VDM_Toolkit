@@ -89,13 +89,17 @@ public class IsapogPlugin extends GeneralisaPlugin {
             result = vdm2isa.run(argv);  
             if (result)
                 Console.out.println("Starting Isabelle VDM Proof Obligation generation.");
+            
+            String workingAt = "";
             try
 			{
                 // create an isabelle module interpreter 
+                workingAt = "creating isa interpreter";
                 ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
                 IsaInterpreter isaInterpreter = new IsaInterpreter(minterpreter);
 
                 // get the POG and create a corresponding TRModuleList with its PO definitions 
+                workingAt = "getting isa interpreter PO list";
                 ProofObligationList pogl = isaInterpreter.getProofObligations();
                 IsaProofObligationList isapogl = new IsaProofObligationList();
                 int poNumber = 1;
@@ -104,7 +108,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 {
                     // do not process VDMToolkit.vdmsl POs
                     if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())) continue;
-
+                    workingAt = "processing PO " + poNumber + " for " + po.location.module;
                     try 
                     {
                         // type check PO as an TC AST
@@ -116,8 +120,10 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
                         // translate the PO back to TR world
                         //Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
+                        workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
                         TRExpression potrExpr = isaInterpreter.map2isa(potcExpr);
 
+                        workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
                         TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
                         TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
                         TRType poType = null;
@@ -170,17 +176,21 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 if (!GeneralisaPlugin.strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
                 {
                     // output POs per module
+                    workingAt = "creating POs Isabelle file";
                     TRModuleList modules = isapogl.getModulePOs();
                     addLocalModules(modules.size());
+                    String moduleName;
                     for (TRModule module : modules)
                     {
                         if (module instanceof TRProofObligationModule) 
                         {
+                            moduleName = module.name.toString();
+                            workingAt = "processing POs Isabelle file for " + moduleName;
                             addLocalPOS(module.definitions.size());
                             StringBuilder sb = new StringBuilder();
                             sb.append(module.translate());
                             sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, (TRProofObligationModule)module));
-                            outputModule(module.getLocation(), module.name.toString(), sb.toString());    
+                            outputModule(module.getLocation(), moduleName, sb.toString());    
                         }
                         else
                         {
@@ -191,14 +201,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
 			}
 			catch (InternalException e)
 			{
-				Console.out.println(e.toString());
-                GeneralisaPlugin.errs++;
+				processException(e, workingAt, false);
 			}
 			catch (Throwable t)
 			{
-				Console.out.println("Uncaught exception: " + t.toString());
-				t.printStackTrace();
-				GeneralisaPlugin.errs++;
+				processException(t, workingAt, true);
 			}
         }
         return result;
