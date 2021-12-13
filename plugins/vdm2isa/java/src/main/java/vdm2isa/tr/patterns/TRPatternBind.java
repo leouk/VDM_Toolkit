@@ -44,6 +44,7 @@ public class TRPatternBind extends TRPattern {
     @Override
     public String patternTranslate()
     {
+        assert pattern != null;
         return pattern.patternTranslate();
     }
 

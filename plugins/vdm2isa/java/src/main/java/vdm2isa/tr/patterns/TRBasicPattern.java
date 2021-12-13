@@ -107,7 +107,8 @@ public class TRBasicPattern extends TRPattern {
 
     public TRBasicPattern(TCIgnorePattern owner)
     {
-        this(owner, IsaToken.PLACEHOLDER, IsaToken.PLACEHOLDER.toString());
+        this(owner, IsaToken.PLACEHOLDER, IsaToken.dummyVarNames(1, owner.location) + "_ignore");//IsaToken.PLACEHOLDER.toString());
+
     }
 
     @Override
@@ -117,11 +118,6 @@ public class TRBasicPattern extends TRPattern {
         if (!VALID_TOKENS.contains(this.token))
             report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, token.toString());
         checkValidIsaIdentifier();
-    }
-
-    public boolean isIgnore()
-    {
-        return isaToken().equals(IsaToken.PLACEHOLDER);
     }
 
     @Override

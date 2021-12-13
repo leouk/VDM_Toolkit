@@ -120,7 +120,8 @@ public class TRValueDefinition extends TRLocalDefinition
 	@Override
     protected String getDeclaredName()
     {
-		return pattern.translate();
+		assert getPattern() != null; 
+		return getPattern().translate();
     }
 
 	@Override
@@ -327,7 +328,16 @@ public class TRValueDefinition extends TRLocalDefinition
 		// figuring out doesn't loose definitions; and all are value definitions
 		// might be smaller for cases involving ignore pattern (e.g mk_(-,x) = v) 
 		// or record pattern (e.g. mk_R(x,y) = r).
-		assert result.size() <= defs.size() && result.allAre(this/*TRValueDefinition.class*/);
+		// forgot to cater for empty defs (e.g., -: nat = 10)!?! Adding this to that case too. 
+		
+		// defs is empty or results within defs
+		assert 
+			//(defs.isEmpty() && result.size() == 1) 
+			//|| 
+			(!defs.isEmpty() && result.size() <= defs.size()); 
+
+		// overall result cannot be empty and must be uniform
+		assert !result.isEmpty() && result.allAre(this/*TRValueDefinition.class; TREqualsDefinition.class*/);
 		TRDefinitionSet.setup(result);
 		return result.asList();
 	}
@@ -367,8 +377,14 @@ public class TRValueDefinition extends TRLocalDefinition
 				TRDefinition d = defList.get(i);
 				assert d instanceof TRValueDefinition;
 				TRValueDefinition vdef = (TRValueDefinition)d;
-				// presume things have been flattened out whilst figuring defs out 
-				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
+
+				// presume things have been flattened out whilst figuring defs out
+				// must also take into account ignore pattern case, which will have an empty getDefs()! 
+				// this is sorted out whilst figuring patterns out. 
+				assert
+					//(vdef.getDefs().isEmpty() && vdef.getPattern().isIgnore())
+					//|| 
+					(vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern);
 
 				// presume the vdef.getType() (as the local def inner/flattened type)
 				String expStr = figureOutExpression(i, vdef.getType());
@@ -402,7 +418,7 @@ public class TRValueDefinition extends TRLocalDefinition
 				assert d instanceof TRValueDefinition;
 				TRValueDefinition vdef = (TRValueDefinition)d;
 				// presume things have been flattened out whilst figuring defs out 
-				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
+				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() ;//&& vdef.getPattern() instanceof TRBasicPattern;
 
 				sb.append(vdef.translate());
 				for(int i = 1; i < defList.size(); i++)
@@ -413,7 +429,7 @@ public class TRValueDefinition extends TRLocalDefinition
 					assert defList.get(i) instanceof TRValueDefinition;
 					vdef = (TRValueDefinition)defList.get(i);
 					// presume things have been flattened out whilst figuring defs out 
-					assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() && vdef.getPattern() instanceof TRBasicPattern;
+					assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition();// && vdef.getPattern() instanceof TRBasicPattern;
 
 					sb.append(vdef.translate());
 				}
@@ -518,7 +534,6 @@ public class TRValueDefinition extends TRLocalDefinition
 		return expType;
 	}
 
-	//TODO create one where the user doesn't need to pass TCValueDefinition? 
 	public static final TRValueDefinition newValueDefinition(TCValueDefinition definition, 
 		LexLocation location, 
 		TRIsaVDMCommentList comments, 
@@ -532,7 +547,9 @@ public class TRValueDefinition extends TRLocalDefinition
 		TRType expType, 
 		TRDefinitionList defs)
 	{
-		TRValueDefinition result = new TRValueDefinition(definition, location, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
+		TRValueDefinition result = 
+				new TRValueDefinition(definition, location, comments, annotations, nameScope, used, 
+									  excluded, pattern, type, exp, expType, defs);
 		TRNode.setup(result);
 		return result;
 	}

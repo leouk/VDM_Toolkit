@@ -63,6 +63,11 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
         return vdmPattern;
     }
 
+    public boolean isIgnore()
+    {
+        return getVDMPattern() instanceof TCIgnorePattern;
+    }
+
     @Override
     public String toString()
     {

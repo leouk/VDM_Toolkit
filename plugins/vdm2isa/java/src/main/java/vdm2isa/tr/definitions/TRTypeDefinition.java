@@ -439,7 +439,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     break;
                 // re-named record (e.g. TRecord' = TRecord inv r == ...; for TRecord :: ...;) requires some thinking
                 case RENAMEDRECORD:
-                    assert trtype.type instanceof TRNamedType && invdef != null; 
+                    assert trtype.type instanceof TRRecordType;// && invdef != null; 
                     //trtype = (TRNamedType)trtype.type;
                     sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.translate()));
                 break;
