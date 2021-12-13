@@ -71,7 +71,43 @@ public class TREqualsDefinition extends TRValueDefinition {
     @Override
     public String getDeclaredName()
     {
-        assert typebind.plist.size() == 1;
-        return getPattern() != null ? getPattern().translate() : typebind.plist.translate();    
+        String result;
+        if (getPattern() != null)
+        {
+            result = super.getDeclaredName();
+        }
+        else 
+        {
+            assert typebind != null && typebind.plist.size() == 1;
+            result = typebind.plist.translate();
+        }
+        return result;
+    }
+
+    public TCEqualsDefinition getVDMEqualsDefinition()
+    {
+        return (TCEqualsDefinition)getVDMDefinition();
+    }
+
+    @Override
+    protected TRValueDefinition newValueDefinition(TRLocalDefinition ld, TRPattern patt, TRType patternType)
+	{
+		assert (getVDMDefinition() instanceof TCEqualsDefinition);
+		return TREqualsDefinition.newEqualsDefinition(getVDMEqualsDefinition(), 
+			ld.getLocation(), comments, annotations, nameScope, used, excluded, patt, typebind, bind,  
+			exp, this.expType, patternType/*ld.getType()*/, TRDefinitionList.newDefList(ld));
+	}
+
+
+    public static final TREqualsDefinition newEqualsDefinition(TCEqualsDefinition definition, 
+        LexLocation location, TRIsaVDMCommentList comments, 
+        TRAnnotationList annotations, NameScope nameScope, boolean used, boolean excluded,
+        TRPattern pattern, TRMultipleTypeBind typebind, TRMultipleBind bind, TRExpression test,
+        TRType expType, TRType defType, TRDefinitionList defs)
+    {
+        TREqualsDefinition result = new TREqualsDefinition(definition, location, comments, annotations, nameScope, 
+            used, excluded, pattern, typebind, bind, test, expType, defType, defs);
+        TRNode.setup(result);
+        return result;
     }
 }
