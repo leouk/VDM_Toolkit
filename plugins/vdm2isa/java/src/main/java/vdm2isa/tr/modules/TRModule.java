@@ -258,6 +258,7 @@ public class TRModule extends TRNode
 		// figure out all definitions, including implicit specification etc. 
 		//defsToHide.addAll(figureOutFlatDefinitions(module.defs));
 		//@NB's suggestion which does what I ended up coding! Duhh...
+		defsToHide.clear();
 		defsToHide.addAll(module.defs.singleDefinitions());
 		if (module.exports != null && module.exports.exports != null)
 		{

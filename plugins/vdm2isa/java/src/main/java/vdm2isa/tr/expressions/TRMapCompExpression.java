@@ -602,7 +602,8 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             if (b != null)
                 result.add(b);
         }
-        assert result.size() <= given.size();
+        //TODO case of complex bind results, like { mk_(x,y) |-> [x,y] | x, y in set {1,2} }; -- whaaaa.... !
+        //assert result.size() <= given.size();
         TRNode.setup(result);
         return result;
     }
