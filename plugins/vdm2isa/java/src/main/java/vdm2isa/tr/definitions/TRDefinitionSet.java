@@ -1,11 +1,11 @@
 package vdm2isa.tr.definitions;
 
-import java.util.TreeSet;
-
+import java.util.HashSet;
 import vdm2isa.tr.TRNode;
 
 //@SuppressWarnings("serial")
-public class TRDefinitionSet extends TreeSet<TRDefinition> {
+public class TRDefinitionSet extends HashSet<TRDefinition>//TreeSet<TRDefinition> 
+{
     
     private boolean alreadySetup;
 

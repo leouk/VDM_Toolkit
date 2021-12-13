@@ -31,7 +31,7 @@ import vdm2isa.tr.patterns.TRUnionContext;
  * Base class for TRNode definitions. In relation to TCDefinition, we use the same
  * comparable mechanisms in order to allow the proper construction of defiintion lists 
  */
-public abstract class TRDefinition extends TRNode implements Comparable<TRDefinition>, TRUnionContext
+public abstract class TRDefinition extends TRNode implements TRUnionContext//, Comparable<TRDefinition>
 {
 	private static final long serialVersionUID = 1L;
 	public final TRIsaVDMCommentList comments;
@@ -92,11 +92,12 @@ public abstract class TRDefinition extends TRNode implements Comparable<TRDefini
 			   "\n\t " + super.toString();
 	}
 
-	@Override
-	public int compareTo(TRDefinition o)
-	{
-		return name == null ? 0 : name.compareTo(o.name); 
-	};
+	// avoid the issue associated with value definitions having null name that appeared in TCDefinitionSet as well! Have HashSet instead.  
+	// @Override
+	// public int compareTo(TRDefinition o)
+	// {
+	// 	return name == null ? 0 : o == null ? 0 : o.name == null ? -1 : name.compareTo(o.name); 
+	// };
 
 	@Override
 	public int hashCode()
