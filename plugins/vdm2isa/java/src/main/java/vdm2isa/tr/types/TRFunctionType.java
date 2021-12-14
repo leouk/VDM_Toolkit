@@ -31,7 +31,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		// definitions are nonempty when the type defines an explicit function definition! 
 		super(vdmType, definitions, result);
 		this.parameters = parameters;
-		this.result = result;// never used! Needs to be here because of class mapping naming conventions! 
+		this.result = result;// never used! Needs to be here because of class mapping naming conventions!
+		this.result.definitions = definitions; 
 		this.partial = partial;
 	}
 
@@ -40,8 +41,9 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		super.setup();
 		setFormattingSeparator("\n\t");
+		this.getInnerType().definitions = definitions;
 		// presume that all function types will be curried
-		TRNode.setup(parameters);//, result); 
+		TRNode.setup(parameters, result); 
 		parameters.setCurried(true);
 		//System.out.println(toString());
 	}
@@ -186,9 +188,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	public TRFunctionType getPreType()
 	{
 		//NB technically, this can be partial (i.e. run-time error failing pre)?
-		TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, false, TRBasicType.boolType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, getInnerType());
 	}
 
 	public TRFunctionType getCurriedPreType(boolean isCurried)
@@ -196,9 +196,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)getResultType();
-			TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, false, ft.getCurriedPreType(isCurried));
-			TRNode.setup(result);
-			return result;
+			return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, false, ft.getCurriedPreType(isCurried));
 		}
 		else
 		{
@@ -210,10 +208,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		TRTypeList inSig = parameters.copy(atTopLevelDefinition());
 		inSig.add(getResultType());
-		//NB following the choice from TCFunctionType, but perhaps this should be partial=true!
-		TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, inSig, false, TRBasicType.boolType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, inSig, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPostType(boolean isCurried)
@@ -221,9 +216,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)getResultType();
-			TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, false, ft.getCurriedPostType(isCurried));
-			TRNode.setup(result);
-			return result;
+			return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, false, ft.getCurriedPostType(isCurried));
 		}
 		else
 		{
@@ -232,38 +225,26 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	public TRFunctionType getInvariantType() {
-		TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, partial, TRBasicType.boolType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRBasicType.boolType(location));
 	}
 
     public TRFunctionType getComparisonType() {
 		TRTypeList params = parameters.copy(atTopLevelDefinition());
 		params.addAll(parameters.copy(atTopLevelDefinition()));
-        TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, params, partial, TRBasicType.boolType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, params, partial, TRBasicType.boolType(location));
     }
 
     public TRFunctionType getMeasureType() {
-        TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, partial, TRBasicType.natType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRBasicType.natType(location));
     }
 
     public TRFunctionType getUnknownType() {
-        TRFunctionType result = new TRFunctionType((TCFunctionType)getVDMType(), definitions, parameters, partial, TRExpression.unknownType(location));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRExpression.unknownType(location));
     }
 
 	public static final TRFunctionType getInvariantType(TRType paramType)
 	{
-		TRTypeList typeList = TRTypeList.newTypeList(paramType);
-		TCFunctionType vdmFcnType = new TCFunctionType(paramType.getLocation(), typeList.getVDMTypeList(), false, new TCBooleanType(paramType.location));
-		TRFunctionType result = new TRFunctionType(vdmFcnType, new TRDefinitionList()/*paramType.getDefinitions()*/, typeList, false, TRBasicType.boolType(paramType.getLocation()));
-		TRNode.setup(result);
-		return result;
+		return TRFunctionType.newFunctionType(TRBasicType.boolType(paramType.getLocation()), TRTypeList.newTypeList(paramType), false);
 	}
 
 	/**
@@ -285,7 +266,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
     }
 
     public static final TRFunctionType newFunctionType(TRType fcnResultType, TRTypeList params, boolean partial) {
-		return TRFunctionType.newFunctionType(new TCFunctionType(fcnResultType.getLocation(), params.getVDMTypeList(), partial, fcnResultType.getVDMType()), new TRDefinitionList(), params, partial, fcnResultType);
+		return TRFunctionType.newFunctionType(new TCFunctionType(fcnResultType.getLocation(), params.getVDMTypeList(), partial, fcnResultType.getVDMType()), 
+			new TRDefinitionList(), params, partial, fcnResultType);
     }
 
 	public static  final TRFunctionType newFunctionType(TCFunctionType vdmType, TRDefinitionList definitions, TRTypeList parameters, boolean partial, TRType fcnResultType)
