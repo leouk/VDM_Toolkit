@@ -1,5 +1,6 @@
 package vdm2isa.tr.definitions;
 
+import com.fujitsu.vdmj.ast.modules.ASTModule;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
@@ -29,8 +30,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     //For exclusive use of TRDefinitionList test for all being LocalDefinition. OVerkill?
     private TRLocalDefinition()
     {
-        //this(LexLocation.ANY, IsaToken.newNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, "default"), null);
-        this(null, LexLocation.ANY, null, null, null, null, false, false, null);
+        this(null, LexLocation.ANY, null, null, IsaToken.newNameToken("local_def_default"), null, false, false, null);
     }
 
     protected TRLocalDefinition(

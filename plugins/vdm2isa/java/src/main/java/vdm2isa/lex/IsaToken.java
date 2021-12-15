@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.fujitsu.vdmj.ast.lex.LexToken;
+import com.fujitsu.vdmj.ast.modules.ASTModule;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
@@ -477,6 +478,11 @@ public enum IsaToken {
 				GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, operator.location, operator.toString());
 				return IsaToken.ERROR;
 		}
+	}
+
+	public static final TCNameToken newNameToken(String name)
+	{
+		return IsaToken.newNameToken(LexLocation.ANY, ASTModule.defaultName(LexLocation.ANY).name, name);
 	}
 
 	public static final TCNameToken newNameToken(LexLocation location, String module, String name)

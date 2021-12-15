@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-13T15:11:23.652Z
+(* VDM to Isabelle Translation @2021-12-14T10:27:00.403Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl' at line 1:8
@@ -19,7 +19,7 @@ begin
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
-	pre_const :: "bool"
+	pre_const :: "VDMNat"
 where
 	"pre_const  \<equiv> True"
 
@@ -95,7 +95,7 @@ where
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
-	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> bool"
+	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
 where
 	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f` specification.\<close>
@@ -299,7 +299,7 @@ where
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 definition
-	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool"
+	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat"
 where
 	"pre_curried x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_curried` specification.\<close>
