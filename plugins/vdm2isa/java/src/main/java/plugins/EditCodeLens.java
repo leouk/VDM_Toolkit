@@ -12,7 +12,7 @@ public class EditCodeLens extends CodeLens
 	private static final String EDIT_LAUNCH_COMMAND = "workbench.action.debug.configure";
 	
 	@Override
-	public <DEF> JSONArray getDefinitionLenses(DEF definition)
+	public <DEF, CLS> JSONArray getDefinitionLenses(DEF definition, CLS classdef)
 	{
 		TRDefinition def = (TRDefinition)definition;
 		return new JSONArray(makeLens(def.location, "Edit", EDIT_LAUNCH_COMMAND));
