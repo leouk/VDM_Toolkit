@@ -76,6 +76,11 @@ public class TRModule extends TRNode
 		this.allDefs = new TRDefinitionList();
 	}
 
+	protected boolean moduleMatches(String fileName)
+	{
+		return name.toString().equals(fileName);
+	}
+
 	@Override 
 	public void setup()
 	{
@@ -99,7 +104,7 @@ public class TRModule extends TRNode
 				{   // If '.' is not the first or last character.
 					fileName = fileName.substring(0, pos);
 				}
-				found = fileName.equals(name.toString());
+				found = moduleMatches(fileName);
 			}
 			if (!found)
 			{
@@ -327,6 +332,7 @@ public class TRModule extends TRNode
 		StringBuilder sb = new StringBuilder();
 		if (!defsToHide.isEmpty())
 		{
+			//setFormattingSeparator("\n");
 			sb.append(getFormattingSeparator());
 			sb.append(IsaToken.comment(IsaInfoMessage.ISA_PROCESS_VDM_EXPORTS.message, getFormattingSeparator()));
 			for(TCDefinition d : defsToHide)

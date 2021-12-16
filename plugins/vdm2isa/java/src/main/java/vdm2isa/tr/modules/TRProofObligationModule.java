@@ -30,23 +30,31 @@ public class TRProofObligationModule extends TRModule
     /**
      * Isabelle POs file imports the PO module owner's Isabelle file of the same name. 
      */
+    @Override
     public String getImports()
 	{
 		return poModuleOwner;
 	}
 
+    @Override
+    protected boolean moduleMatches(String fileName)
+    {
+        return poModuleOwner.equals(fileName);
+        //return poModuleOwner.startsWith(fileName) && poModuleOwner.equals(IsaTemplates.getPOModuleName(fileName));
+    }
+
     public static final TRModule newProofObligationModule(String owner, TRDefinitionList pos) {
-        TCIdentifierToken name = new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(owner), false);
         TRModule result = new TRProofObligationModule(
                 new TCModule(
                     null, //annotations 
-                    name, 
+                    new TCIdentifierToken(pos.getLocation(), owner, false), 
                     null, //imports
                     null, //exports 
                     pos.getVDMDefinitionList(), //defs
                     TRModule.asFileList(pos.getLocation().file), //file
                     false), //flat
-                name, pos);
+                new TCIdentifierToken(pos.getLocation(), IsaTemplates.getPOModuleName(owner), false), 
+                    pos);
         TRNode.setup(result);
         return result;
     }
