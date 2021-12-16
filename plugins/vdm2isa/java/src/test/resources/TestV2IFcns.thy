@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-16T10:45:57.213Z
+(* VDM to Isabelle Translation @2021-12-16T11:00:39.022Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl' at line 1:8
