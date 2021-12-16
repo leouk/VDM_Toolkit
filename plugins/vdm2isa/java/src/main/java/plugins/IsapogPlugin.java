@@ -36,6 +36,7 @@ import vdm2isa.tr.types.TRType;
 public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
+    private int localPOCountMissed;
     private IsaProofStrategy strategy;
 
     public IsapogPlugin(Interpreter interpreter) {
@@ -47,6 +48,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     {
         super.localReset();
         localPOCount = 0;
+        localPOCountMissed = 0;
         strategy = IsaProofStrategy.SURRENDER;//IsaProofStrategy.REALISTIC;
     }
 
@@ -55,10 +57,16 @@ public class IsapogPlugin extends GeneralisaPlugin {
         return localPOCount;
     }
 
-    protected void addLocalPOS(int toadd)
+    public int getLocalPONotTranslatedCount()
+    {
+        return localPOCountMissed;
+    }
+
+    protected void addLocalPOS(int toadd, int notTranslated)
     {
         assert toadd >= 0;
         localPOCount += toadd;
+        localPOCountMissed += notTranslated;
     }
 
     protected TRProofScriptDefinition chooseProofScript(ProofObligation po, TRExpression poExpr)
@@ -76,7 +84,9 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     protected String getSummaryPrefix()
     {
-        return "Translated " + plural(getLocalPOCount(), "PO", "s") + 
+        return "Translated " + 
+            plural(getLocalPOCount(), "PO", "s") + 
+            " (of " + (getLocalPOCount()+getLocalPONotTranslatedCount()) + ")" +
             " with " + this.strategy.name().toLowerCase() + " proof strategy for ";
     }
 
@@ -184,18 +194,24 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     {
                         if (module instanceof TRProofObligationModule) 
                         {
+                            TRProofObligationModule pmodule = (TRProofObligationModule)module;
                             moduleName = module.name.toString();
                             workingAt = "processing POs Isabelle file for " + moduleName;
-                            addLocalPOS(module.definitions.size());
+                            addLocalPOS(module.definitions.size(), getUntranslatedPOSFor(notTranslatedPOS, pmodule).size());
                             StringBuilder sb = new StringBuilder();
                             sb.append(module.translate());
-                            sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, (TRProofObligationModule)module));
+                            sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
                             outputModule(module.getLocation(), moduleName, sb.toString());    
                         }
                         else
                         {
                             report(IsaErrorMessage.PO_INVALID_PO_MODULE_1P, module.name.getLocation(), module.name.toString());
                         }
+                    }
+                    // all not translated POs were accounted for in as comments! 
+                    if (!notTranslatedPOS.isEmpty())
+                    {
+                        report(IsaErrorMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
                     }
                 }
 			}
@@ -225,7 +241,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
         while (it.hasNext())
         {
             Pair<ProofObligation, Exception> pair = it.next();
-            if (pair.key.location.module.equals(module.poModuleOwner))
+            // module null for processing not translated, neither found modules for POS!
+            if (module == null || pair.key.location.module.equals(module.poModuleOwner))
             {
                 it.remove();
                 sb.append("\n");
@@ -239,6 +256,21 @@ public class IsapogPlugin extends GeneralisaPlugin {
             } 
         }
         return sb.toString();
+    }
+
+    private List<Pair<ProofObligation, Exception>> getUntranslatedPOSFor(
+        List<Pair<ProofObligation, Exception>> listOfnotTranslatedPOS, 
+        TRProofObligationModule module) 
+    {
+        List<Pair<ProofObligation, Exception>> result = new Vector<Pair<ProofObligation, Exception>>();
+        for(Pair<ProofObligation, Exception> pair : listOfnotTranslatedPOS)
+        {
+            if (pair.key.location.module.equals(module.poModuleOwner))
+            {
+                result.add(pair);
+            }
+        }
+        return result;
     }
 
     @Override
