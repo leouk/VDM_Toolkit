@@ -112,7 +112,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 
 	public TRType getResultType()
 	{
-		return result;//getInnerType();//result;//getInnerType();
+		return getInnerType();//result;//getInnerType();
 	}
 
 	public String dummyVarNames(String varName)
@@ -188,7 +188,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	public TRFunctionType getPreType()
 	{
 		//NB technically, this can be partial (i.e. run-time error failing pre)?
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, getInnerType());
+		return TRFunctionType.newFunctionType(getVDMFunctionType().getPreType(), definitions, parameters, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPreType(boolean isCurried)
@@ -196,7 +196,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)getResultType();
-			return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, false, ft.getCurriedPreType(isCurried));
+			return TRFunctionType.newFunctionType(getVDMFunctionType().getCurriedPreType(isCurried), 
+				definitions, parameters, false, ft.getCurriedPreType(isCurried));
 		}
 		else
 		{
@@ -208,7 +209,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		TRTypeList inSig = parameters.copy(atTopLevelDefinition());
 		inSig.add(getResultType());
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, inSig, false, TRBasicType.boolType(location));
+		return TRFunctionType.newFunctionType(getVDMFunctionType().getPostType(), definitions, inSig, false, TRBasicType.boolType(location));
 	}
 
 	public TRFunctionType getCurriedPostType(boolean isCurried)
@@ -216,7 +217,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		if (isCurried && getResultType() instanceof TRFunctionType)
 		{
 			TRFunctionType ft = (TRFunctionType)getResultType();
-			return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, false, ft.getCurriedPostType(isCurried));
+			return TRFunctionType.newFunctionType(getVDMFunctionType().getCurriedPostType(isCurried), 
+				definitions, parameters, false, ft.getCurriedPostType(isCurried));
 		}
 		else
 		{
@@ -225,21 +227,48 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	public TRFunctionType getInvariantType() {
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRBasicType.boolType(location));
+		return getPreType();//TRFunctionType.newFunctionType(getVDMFunctionType().getPreType(), definitions, parameters, partial, TRBasicType.boolType(location));
 	}
 
     public TRFunctionType getComparisonType() {
 		TRTypeList params = parameters.copy(atTopLevelDefinition());
 		params.addAll(parameters.copy(atTopLevelDefinition()));
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, params, partial, TRBasicType.boolType(location));
+		return TRFunctionType.newFunctionType(TRBasicType.boolType(location), params, partial);
     }
 
-    public TRFunctionType getMeasureType() {
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRBasicType.natType(location));
+    public TRFunctionType getMeasureType(boolean isCurried, TRType actual) {
+		assert actual.isNumericType() || actual.isProductType();
+		TRTypeList params = parameters.copy(atTopLevelDefinition());
+		if (isCurried)
+		{
+			TRFunctionType ft = this;
+			while (ft.result instanceof TRFunctionType)
+			{
+				ft = (TRFunctionType)getResultType();
+				params.addAll(ft.parameters.copy(false));
+			}
+		}
+		if (actual.isNumericType())
+		{
+			actual = TRBasicType.natType(location);
+		}
+		//NB or should this be ClassMapped? see TRUnionType.getProduct()
+		else if (actual.isProductType())
+		{
+			TRProductType p = actual.getProduct();
+			TRTypeList nats = new TRTypeList();
+			for (int i = 0; i < p.types.size(); i++)
+			{
+				nats.add(TRBasicType.natType(location));
+			}
+			actual = TRProductType.newProductType(location, nats);
+		}
+		return TRFunctionType.newFunctionType(getVDMFunctionType().getMeasureType(isCurried, actual.getVDMType()), 
+			definitions, params, false, actual);
     }
 
     public TRFunctionType getUnknownType() {
-		return TRFunctionType.newFunctionType(getVDMFunctionType(), definitions, parameters, partial, TRExpression.unknownType(location));
+		return TRFunctionType.newFunctionType(TRExpression.unknownType(location), parameters, partial);
     }
 
 	public static final TRFunctionType getInvariantType(TRType paramType)

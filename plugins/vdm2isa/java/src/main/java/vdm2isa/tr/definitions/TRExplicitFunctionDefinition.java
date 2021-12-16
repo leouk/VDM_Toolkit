@@ -294,13 +294,17 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		{
 			case PRE:
 				result = type.getCurriedPreType(isCurried);
+				assert result.getVDMType().equals(type.getVDMFunctionType().getCurriedPreType(true));
 				break;
 			case POST:
 				result = type.getCurriedPostType(isCurried);
+				assert result.getVDMType().equals(type.getVDMFunctionType().getCurriedPostType(true));
 				break;
 
 			case INV:
+			case INIT:
 				result = type.getInvariantType();
+				assert result.getVDMType().equals(type.getVDMFunctionType().getPreType());
 				break;
 
 			case ORD:
@@ -311,10 +315,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				break;
 
 			case MEASURE:
-				result = type.getMeasureType();
+				result = type.getMeasureType(isCurried, type.getResultType());
+				assert result.getVDMType().equals(type.getVDMFunctionType().getMeasureType(isCurried, type.getResultType().getVDMType()));
 				break;
 
-			case INIT:
 			case NONE:
 			default:
 				type.report(IsaErrorMessage.PLUGIN_NYI_2P, "undeclared specification function type", kind);
