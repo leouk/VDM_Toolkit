@@ -39,9 +39,9 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	@Override
 	public void setup()
 	{
-		setSemanticSeparator("");
-		setFormattingSeparator("");
-		setInvTranslateSeparator("");
+		//setSemanticSeparator("");
+		//setFormattingSeparator("");
+		//setInvTranslateSeparator("");
 		alreadySetup = true;
 	}
 

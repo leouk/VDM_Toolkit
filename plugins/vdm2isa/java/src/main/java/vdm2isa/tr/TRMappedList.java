@@ -38,12 +38,9 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	@SuppressWarnings("unchecked")
 	public TRMappedList(List<FROM> from) throws Exception
 	{
-		//super(TRNode.MAPPINGS, from);
-		this();
-		
-		// to enable debugging
-		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);	
-		
+		// to enable debugging + setting up properly
+		this();		
+		ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);			
 		for (FROM type: from)
 		{
 			try
@@ -80,6 +77,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	protected TRMappedList()
 	{
 		super();
+		// set this up at list level only, given setupElements will do the rest for the inner elements. 
 		this.separator = "";
 		this.formattingSeparator = "";
 		this.invTranslateSeparator = ""; 
@@ -92,9 +90,6 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	@Override
 	public void setup()
 	{
-		setSemanticSeparator("");
-		setFormattingSeparator("");
-		setInvTranslateSeparator("");
 		TRMappedList.setupElements(this);
 		alreadySetup = true;
 	}
