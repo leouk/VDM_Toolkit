@@ -192,6 +192,27 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 				 utype.isVDMToken());
 	}
 
+	public boolean isProductType()
+	{
+		TRType utype = ultimateType();
+		return getVDMType().isProduct(location) || ((utype instanceof TRProductType) && utype.isProductType());
+	}
+
+	public TRProductType getProduct()
+	{
+		TRProductType result = null;
+		if (isProductType())
+		{
+			TRType utype = ultimateType();
+			if (utype instanceof TRProductType)
+			{
+				result = (TRProductType)utype;
+			}
+		}	
+		assert result != null;
+		return result;
+	}
+
 	public TRType ultimateType()
 	{
 		return this;

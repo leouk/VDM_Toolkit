@@ -4,7 +4,9 @@ package vdm2isa.tr.types;
 import java.util.Iterator;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCProductType;
 import com.fujitsu.vdmj.tc.types.TCUnionType;
 
 import vdm2isa.lex.IsaToken;
@@ -148,6 +150,37 @@ public class TRUnionType extends TRType implements TRDataType {
 	public boolean isDataType()
 	{
 		return true;
+	}
+
+	@Override
+	public boolean isProductType()
+	{
+		assert getVDMType() instanceof TCUnionType;
+		return getVDMType().isProduct(location);
+	}
+
+	@Override 
+	public TRProductType getProduct()
+	{
+		TRProductType result = null;
+		if (isProductType())
+		{
+			TCProductType p = getVDMType().getProduct();
+			ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);
+			try 
+			{
+				result = (TRProductType)mapper.convert(p);
+			}
+			catch (Exception e)
+			{
+				result = null;
+				report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, location, 
+					p.getClass().getSimpleName(), 
+					this.getClass().getSimpleName(),
+					e.toString());
+			}
+		}
+		return result;
 	}
 
     @Override
