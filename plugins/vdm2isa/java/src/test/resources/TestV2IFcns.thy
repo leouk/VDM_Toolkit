@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-14T10:27:00.403Z
+(* VDM to Isabelle Translation @2021-12-16T10:45:57.213Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl' at line 1:8
@@ -14,17 +14,17 @@ begin
 10\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 
-\<comment>\<open>VDM source: pre_const: (() -> nat)
+\<comment>\<open>VDM source: pre_const: (() +> bool)
 	pre_const() ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
 definition
-	pre_const :: "VDMNat"
+	pre_const :: "bool"
 where
 	"pre_const  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_const: (() -> nat)
+\<comment>\<open>VDM source: post_const: (nat +> bool)
 	post_const(RESULT) ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 7:5\<close>
@@ -90,19 +90,19 @@ where
 (x + y)\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 
-\<comment>\<open>VDM source: pre_f: (nat * nat1 -> nat1)
+\<comment>\<open>VDM source: pre_f: (nat * nat1 +> bool)
 	pre_f(x, y) ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
 definition
-	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1"
+	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> bool"
 where
 	"pre_f x  y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))"
 
 
-\<comment>\<open>VDM source: post_f: (nat * nat1 -> nat1)
+\<comment>\<open>VDM source: post_f: (nat * nat1 * nat1 +> bool)
 	post_f(x, y, RESULT) ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 17:5\<close>
@@ -294,19 +294,19 @@ where
 (x + y)\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 
-\<comment>\<open>VDM source: pre_curried: (nat -> (nat -> nat))
+\<comment>\<open>VDM source: pre_curried: (nat +> (nat +> bool))
 	pre_curried(x)(y) ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>
 definition
-	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat"
+	pre_curried :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
 	"pre_curried x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_curried` specification.\<close>
 		((inv_VDMNat x))  \<and> ((inv_VDMNat y))"
 
 
-\<comment>\<open>VDM source: post_curried: (nat -> (nat -> nat))
+\<comment>\<open>VDM source: post_curried: (nat +> (nat * nat +> bool))
 	post_curried(x)(y, RESULT) ==
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 45:5\<close>

@@ -1,11 +1,11 @@
-(* VDM to Isabelle Translation @2021-12-14T10:11:54.973Z
+(* VDM to Isabelle Translation @2021-12-16T10:45:57.299Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 11:5
 files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns_PO
-imports TestV2IFcns_PO
+imports TestV2IFcns
 begin
 
 
@@ -193,5 +193,13 @@ theorem curriedS_FUNC_POST_CONDITION:
 	
 	oops
 	
-	\<comment>\<open>Processing VDM exports as Isabelle hidden declarations\<close>hide_const "curriedS"hide_const "h'"hide_const "constS"hide_const "h''"hide_const "g"hide_const "h"
+	
+\<comment>\<open>Processing VDM exports as Isabelle hidden declarations\<close>
+hide_const "curriedS"
+hide_const "h'"
+hide_const "constS"
+hide_const "h''"
+hide_const "g"
+hide_const "h"
+
 end
