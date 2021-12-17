@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T14:25:22.319Z
+(* VDM to Isabelle Translation @2021-12-17T14:01:51.038193Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl]
+in './src/test/resources/TestV2IExprsToken.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IExprsToken.vdmsl]
 *)
 theory TestV2IExprsToken
 imports "VDMToolkit" 
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: t1:token = mk_token(1)\<close>
-\<comment>\<open>in 'TestV2IExprsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IExprsToken' (./src/test/resources/TestV2IExprsToken.vdmsl) at line 7:5\<close>
 abbreviation
 	t1 :: "VDMNat1 VDMToken"
 where
@@ -24,7 +24,7 @@ where
 	
 	
 \<comment>\<open>VDM source: t2:token = mk_token("S")\<close>
-\<comment>\<open>in 'TestV2IExprsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IExprsToken' (./src/test/resources/TestV2IExprsToken.vdmsl) at line 8:5\<close>
 abbreviation
 	t2 :: "VDMChar VDMSeq1 VDMToken"
 where
@@ -38,7 +38,7 @@ where
 	
 	
 \<comment>\<open>VDM source: t3:token = mk_token({x | x in set {1, 2, 3} & (x > 1)})\<close>
-\<comment>\<open>in 'TestV2IExprsToken' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsToken.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IExprsToken' (./src/test/resources/TestV2IExprsToken.vdmsl) at line 9:5\<close>
 abbreviation
 	t3 :: "VDMNat1 VDMSet VDMToken"
 where

@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T14:25:22.303Z
+(* VDM to Isabelle Translation @2021-12-17T14:01:51.031663Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl]
+in './src/test/resources/TestV2IExprsMaps.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IExprsMaps.vdmsl]
 *)
 theory TestV2IExprsMaps
 imports "VDMToolkit" 
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: fv:nat1 = 1\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 7:5\<close>
 abbreviation
 	fv :: "VDMNat1"
 where
@@ -24,7 +24,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v1:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3}}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 11:5\<close>
 abbreviation
 	v1 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -38,7 +38,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v11:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3} & true}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 14:5\<close>
 abbreviation
 	v11 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -52,7 +52,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v12:map (nat1) to (nat1) = {1 |-> 5 | x in set {1, 2, 3} & (x > 5)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 16:5\<close>
 abbreviation
 	v12 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -89,7 +89,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v2:map (nat1) to (nat1) = {x |-> 10 | x in set {1, 2, 3}}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 21:5\<close>
 abbreviation
 	v2 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -111,7 +111,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v21:map (nat1) to (nat1) = {x |-> 10 | x in set {1, 2, 3} & (x > 2)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 24:5\<close>
 abbreviation
 	v21 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -148,7 +148,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v22:map (nat1) to (nat1) = {1 |-> x | x in set {1, 2, 3} & (x > 2)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 28:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 28:5\<close>
 abbreviation
 	v22 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -185,7 +185,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v23:map (nat1) to (nat1) = {d |-> r | d in set {1, 2, 3}, r in set {2, 4, 6} & (r = (d * 2))}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 31:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 31:5\<close>
 abbreviation
 	v23 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -222,7 +222,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v24:map (nat1) to (nat1) = {d |-> r | d in set {1, 2, 3}, r in set {2, 4, 6} & (r = ((d * 2) + fv))}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 34:5\<close>
 abbreviation
 	v24 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -259,7 +259,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v3:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & (x < y)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 37:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 37:5\<close>
 abbreviation
 	v3 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -311,7 +311,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v30:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6}}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 38:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 38:5\<close>
 abbreviation
 	v30 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -348,7 +348,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v31:map (nat1) to (nat1) = {(x + y) |-> (10 + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & ((x + fv) < y)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 39:5\<close>
 abbreviation
 	v31 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -400,7 +400,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v32:map (nat1) to (nat1) = {(x + y) |-> (((x + y) * 2) + fv) | x in set {1, 2, 3}, y in set {4, 5, 6} & ((2 * (x + fv)) > y)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 40:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 40:5\<close>
 abbreviation
 	v32 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where
@@ -467,7 +467,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v33:map (nat1) to (nat1) = {1 |-> (x + x) | x in set {1, 2, 3} & ((x + fv) > 5)}\<close>
-\<comment>\<open>in 'TestV2IExprsMaps' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsMaps.vdmsl) at line 43:5\<close>
+\<comment>\<open>in 'TestV2IExprsMaps' (./src/test/resources/TestV2IExprsMaps.vdmsl) at line 43:5\<close>
 abbreviation
 	v33 :: "(VDMNat1 \<rightharpoonup> VDMNat1)"
 where

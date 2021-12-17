@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2021-12-13T14:25:22.291Z
+(* VDM to Isabelle Translation @2021-12-17T14:01:51.020551Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl' at line 1:8
-files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl]
+in './src/test/resources/TestV2IExprsComplex.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IExprsComplex.vdmsl]
 *)
 theory TestV2IExprsComplex
 imports "VDMToolkit" 
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: t9:set1 of (nat1) = {1, 2, 3}\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 6:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 6:5\<close>
 abbreviation
 	t9 :: "VDMNat1 VDMSet1"
 where
@@ -24,7 +24,7 @@ where
 	
 	
 \<comment>\<open>VDM source: t10:seq1 of (int) = [1, 2, 3]\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 7:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 7:5\<close>
 abbreviation
 	t10 :: "VDMInt VDMSeq1"
 where
@@ -38,7 +38,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vc1:bool = (forall var1, var2 in set t9 & (var1 <= var2))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 8:5\<close>
 abbreviation
 	vc1 :: "bool"
 where
@@ -52,7 +52,7 @@ where
 	
 	
 \<comment>\<open>VDM source: vc2:bool = (forall var1, var2 in seq t10 & (var1 <= var2))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 9:5\<close>
 abbreviation
 	vc2 :: "bool"
 where
@@ -68,18 +68,22 @@ where
 \<comment>\<open>VDM source: vc3: (() -> bool)
 	vc3() ==
 (forall var1:nat, var2:nat & (var1 < var2))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
 
-\<comment>\<open>VDM source: pre_vc3 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
+\<comment>\<open>VDM source: pre_vc3: (() +> bool)
+	pre_vc3() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
 definition
 	pre_vc3 :: "bool"
 where
 	"pre_vc3  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc3 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
+\<comment>\<open>VDM source: post_vc3: (bool +> bool)
+	post_vc3(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 15:5\<close>
 definition
 	post_vc3 :: "bool \<Rightarrow> bool"
 where
@@ -99,18 +103,22 @@ where
 \<comment>\<open>VDM source: vc31: (() -> set of (nat))
 	vc31() ==
 {x | x:nat & (x > 10)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
 
-\<comment>\<open>VDM source: pre_vc31 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
+\<comment>\<open>VDM source: pre_vc31: (() +> bool)
+	pre_vc31() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
 definition
 	pre_vc31 :: "bool"
 where
 	"pre_vc31  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc31 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
+\<comment>\<open>VDM source: post_vc31: (set of (nat) +> bool)
+	post_vc31(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 19:5\<close>
 definition
 	post_vc31 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
@@ -129,18 +137,22 @@ where
 \<comment>\<open>VDM source: vc32: (() -> set of (nat))
 	vc32() ==
 {(x + y) | x:nat, y:nat & (x > y)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 
-\<comment>\<open>VDM source: pre_vc32 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
+\<comment>\<open>VDM source: pre_vc32: (() +> bool)
+	pre_vc32() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 definition
 	pre_vc32 :: "bool"
 where
 	"pre_vc32  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc32 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
+\<comment>\<open>VDM source: post_vc32: (set of (nat) +> bool)
+	post_vc32(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 23:5\<close>
 definition
 	post_vc32 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
@@ -159,18 +171,22 @@ where
 \<comment>\<open>VDM source: vc4: (() -> bool)
 	vc4() ==
 (forall var1:nat, var2:nat, var3, var4 in set t9 & ((var1 + var3) < (var2 + var4)))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
 
-\<comment>\<open>VDM source: pre_vc4 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
+\<comment>\<open>VDM source: pre_vc4: (() +> bool)
+	pre_vc4() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
 definition
 	pre_vc4 :: "bool"
 where
 	"pre_vc4  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc4 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
+\<comment>\<open>VDM source: post_vc4: (bool +> bool)
+	post_vc4(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 27:5\<close>
 definition
 	post_vc4 :: "bool \<Rightarrow> bool"
 where
@@ -190,18 +206,22 @@ where
 \<comment>\<open>VDM source: vc41: (() -> set of (nat))
 	vc41() ==
 {x | x:nat & (x > 10)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
 
-\<comment>\<open>VDM source: pre_vc41 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
+\<comment>\<open>VDM source: pre_vc41: (() +> bool)
+	pre_vc41() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
 definition
 	pre_vc41 :: "bool"
 where
 	"pre_vc41  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc41 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
+\<comment>\<open>VDM source: post_vc41: (set of (nat) +> bool)
+	post_vc41(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 31:5\<close>
 definition
 	post_vc41 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
@@ -220,18 +240,22 @@ where
 \<comment>\<open>VDM source: vc42: (() -> set of (nat))
 	vc42() ==
 {(x + y) | x:nat, y in set {1, 2, 3} & (x > y)}\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 
-\<comment>\<open>VDM source: pre_vc42 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
+\<comment>\<open>VDM source: pre_vc42: (() +> bool)
+	pre_vc42() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 definition
 	pre_vc42 :: "bool"
 where
 	"pre_vc42  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc42 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
+\<comment>\<open>VDM source: post_vc42: (set of (nat) +> bool)
+	post_vc42(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 35:5\<close>
 definition
 	post_vc42 :: "VDMNat VDMSet \<Rightarrow> bool"
 where
@@ -250,18 +274,22 @@ where
 \<comment>\<open>VDM source: vc5: (() -> nat)
 	vc5() ==
 (iota var:nat & (var < 1))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 
-\<comment>\<open>VDM source: pre_vc5 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
+\<comment>\<open>VDM source: pre_vc5: (() +> bool)
+	pre_vc5() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 definition
 	pre_vc5 :: "bool"
 where
 	"pre_vc5  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc5 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
+\<comment>\<open>VDM source: post_vc5: (nat +> bool)
+	post_vc5(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 43:5\<close>
 definition
 	post_vc5 :: "VDMNat \<Rightarrow> bool"
 where
@@ -280,18 +308,22 @@ where
 \<comment>\<open>VDM source: vc51: (() -> nat)
 	vc51() ==
 (iota var in set {1, 2, 3} & (var < 1))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 
-\<comment>\<open>VDM source: pre_vc51 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
+\<comment>\<open>VDM source: pre_vc51: (() +> bool)
+	pre_vc51() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 definition
 	pre_vc51 :: "bool"
 where
 	"pre_vc51  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc51 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
+\<comment>\<open>VDM source: post_vc51: (nat +> bool)
+	post_vc51(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 47:5\<close>
 definition
 	post_vc51 :: "VDMNat \<Rightarrow> bool"
 where
@@ -310,18 +342,22 @@ where
 \<comment>\<open>VDM source: vc6: (() -> nat1)
 	vc6() ==
 (lambda var:nat, var2:nat & (var + var2))(10, 20)\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 
-\<comment>\<open>VDM source: pre_vc6 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
+\<comment>\<open>VDM source: pre_vc6: (() +> bool)
+	pre_vc6() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 definition
 	pre_vc6 :: "bool"
 where
 	"pre_vc6  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc6 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
+\<comment>\<open>VDM source: post_vc6: (nat1 +> bool)
+	post_vc6(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 51:5\<close>
 definition
 	post_vc6 :: "VDMNat1 \<Rightarrow> bool"
 where
@@ -349,12 +385,12 @@ where
 (x + y)
 	pre (x < y)
 	post (RESULT > 0)\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 59:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 59:5\<close>
 
 \<comment>\<open>VDM source: pre_f: (nat * nat1 +> bool)
 	pre_f(x, y) ==
 (x < y)\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 61:11\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 61:11\<close>
 definition
 	pre_f :: "VDMNat\<Rightarrow> VDMNat1 \<Rightarrow> bool"
 where
@@ -368,7 +404,7 @@ where
 \<comment>\<open>VDM source: post_f: (nat * nat1 * nat +> bool)
 	post_f(x, y, RESULT) ==
 (RESULT > 0)\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 62:17\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 62:17\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat1\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -389,18 +425,22 @@ where
 \<comment>\<open>VDM source: vc7: (() -> bool)
 	vc7() ==
 (forall x:nat, y:nat1 & (pre_f(x, y) => post_f(x, y, (x + y))))\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
 
-\<comment>\<open>VDM source: pre_vc7 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
+\<comment>\<open>VDM source: pre_vc7: (() +> bool)
+	pre_vc7() ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
 definition
 	pre_vc7 :: "bool"
 where
 	"pre_vc7  \<equiv> True"
 
 
-\<comment>\<open>VDM source: post_vc7 = ?\<close>
-\<comment>\<open>in 'TestV2IExprsComplex' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
+\<comment>\<open>VDM source: post_vc7: (bool +> bool)
+	post_vc7(RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsComplex' (./src/test/resources/TestV2IExprsComplex.vdmsl) at line 65:5\<close>
 definition
 	post_vc7 :: "bool \<Rightarrow> bool"
 where
