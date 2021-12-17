@@ -661,10 +661,10 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_createFMURefs` specification.\<close>
 		(inv_FMU fmu  \<and>  (inv_VDMSet' (inv_Ref) clocks)  \<and>  (inv_VDMSet' inv_FMURef  res)  \<and>  (inv_VDMSet' inv_FMURef  RESULT))"
 
-definition
+function
 	createFMURefs :: "FMU\<Rightarrow> Ref VDMSet\<Rightarrow> FMURef VDMSet \<Rightarrow> FMURef VDMSet"
 where
-	"createFMURefs fmu  clocks  res \<equiv> 
+	"createFMURefs fmu  clocks  res = 
 	\<comment>\<open>User defined body of createFMURefs.\<close>
 	(
 		if ((clocks = {})) then
@@ -672,11 +672,22 @@ where
 		else
 		((
 		SOME (dummy0::FMURef VDMSet) .(dummy0 \<in> { (createFMURefs fmu  (clocks - {clock})  (res \<union> {\<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U (fmu)), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>})) | clock .  ((clock \<in>clocks))  }))))"
-
+	using prod_cases3 apply blast
+	by force
+termination
+  apply (relation "measure (\<lambda> (fmu, clocks, res) . card (clocks ))")
+   apply (meson wf_measure)
+  apply simp
+  apply safe
+  apply simp
+  nitpick
+  oops
 	
 \<comment>\<open>VDM source: Importer = compose Importer of scenario:Machine, schedule:map (FMURef) to (real), activeClocks:set of (FMURef), readyClocks:set of (FMURef), inactiveClocks:set of (FMURef), fmusWithEvent:set of (Name), relevantOutputClocks:set of (FMURef), relevantInputClocks:set of (FMURef), activeEquations:set of (FMURef), calculatedEquations:set of (FMURef), readyEquations:set of (FMURef), time:Time, endtime:Time, stepSize:real, valueMap:map (FMURef) to (Value) end
 	inv imp == let fmus:map (Name) to (FMU) = ((imp.scenario).fmus) in let inputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <inputLF>)}, {}) | fmu in set (rng fmus)}) in let outputclocks:set of (FMURef) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & ((clock.type) = <outputLF>)}, {}) | fmu in set (rng fmus)}) in let clocks:set of (FMURef) = (inputclocks union outputclocks) in ((((imp.activeClocks) union (imp.inactiveClocks)) = clocks) and ((((imp.activeClocks) inter (imp.inactiveClocks)) = {}) and ((((imp.activeClocks) inter (imp.readyClocks)) = {}) and (((imp.activeClocks) = (dunion {createFMURefs(fmu, (fmu.activeClocks), {}) | fmu in set (rng fmus)})) and (((imp.fmusWithEvent) subset (dom fmus)) and (((imp.relevantInputClocks) subset inputclocks) and (((imp.relevantOutputClocks) subset outputclocks) and ((((imp.relevantInputClocks) inter (imp.relevantOutputClocks)) = {}) and (((dom (imp.schedule)) = (dunion {createFMURefs(fmu, {(clock.ref) | clock in set (fmu.clocks) & (((clock.type) = <inputLF>) and ((clock.interval) <> <triggered>))}, {}) | fmu in set (rng fmus)})) and (((imp.endtime) >= (imp.time)) and ((((imp.activeEquations) inter (imp.readyEquations)) = {}) and (((imp.readyEquations) inter (imp.calculatedEquations)) = {}))))))))))))\<close>
 \<comment>\<open>in 'Clocks' (./src/test/resources/real/Clocks.vdmsl) at line 268:5\<close>
+ 
+  
 record Importer = 
 	scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "Machine"
 		 schedule\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r :: "(FMURef \<rightharpoonup> VDMReal)"
