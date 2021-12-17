@@ -298,6 +298,7 @@ types
 		--and imp.activeEquations = dunion {fmu.activeEquations | fmu in set rng fmus} -- Equations are actived by the clocks
 		and dom imp.schedule = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <inputLF> and clock.interval <> <triggered>}, {}) | fmu in set rng fmus }-- We only have time based clocks in the schedule
 		---and imp.activeEquations = {c.equations | c in set clocks & c.ref in set imp.activeClocks} -- Invariant for the paper TYPE MISMATCH
+		--@LF this will demand ":: ord" instantiation over type Time. 
 		and imp.endtime >= imp.time -- The simulation cannot not proceed once the endtime is reached
 		and imp.activeEquations inter imp.readyEquations = {}
 		and imp.readyEquations inter imp.calculatedEquations = {}
