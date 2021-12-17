@@ -12,7 +12,6 @@ import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
-import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 
 public class TRFunctionType extends TRAbstractInnerTypedType
@@ -32,7 +31,6 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		super(vdmType, definitions, result);
 		this.parameters = parameters;
 		this.result = result;// never used! Needs to be here because of class mapping naming conventions!
-		this.result.definitions = definitions; 
 		this.partial = partial;
 	}
 

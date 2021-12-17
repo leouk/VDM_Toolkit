@@ -60,7 +60,9 @@ public class TRMultiBindListDefinition extends TRDefinition {
     public static final TRMultiBindListDefinition newBindListDef(LexLocation location, 
         TRMultipleBindList bindings)
     {
-        TRMultiBindListDefinition result = new TRMultiBindListDefinition(null, location, null, null, null, null, true, false, 
+        TRMultiBindListDefinition result = new TRMultiBindListDefinition(
+                new TCMultiBindListDefinition(location, bindings.getVDMMultipleBindList()), 
+                location, null, null, null, null, true, false, 
             bindings, bindings.getDefinitions());
         TRNode.setup(result);
         return result;
