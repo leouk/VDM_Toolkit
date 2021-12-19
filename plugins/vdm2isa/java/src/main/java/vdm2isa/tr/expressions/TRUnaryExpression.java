@@ -1,5 +1,7 @@
 package vdm2isa.tr.expressions;
 
+import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
+import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCAbsoluteExpression;
 import com.fujitsu.vdmj.tc.expressions.TCCardinalityExpression;
@@ -20,6 +22,7 @@ import com.fujitsu.vdmj.tc.expressions.TCFloorExpression;
 import com.fujitsu.vdmj.tc.expressions.TCHeadExpression;
 import com.fujitsu.vdmj.tc.expressions.TCLenExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTailExpression;
+import com.fujitsu.vdmj.tc.expressions.TCUnaryExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryMinusExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 
@@ -323,5 +326,91 @@ public class TRUnaryExpression extends TRExpression {
 	public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg)
 	{
 		return visitor.caseUnaryExpression(this, arg);
+	}
+
+	protected static TCExpression newTCUnaryExpression(LexToken op, TRExpression expr)
+	{
+		IsaToken token = IsaToken.from(op);
+		assert VALID_UNARY_OPS.contains(token);
+		TCExpression exp = expr.getVDMExpr();
+		TCExpression result;//TCUnaryExpression result;
+		switch (token)
+		{
+			case NOT:
+				result = new TCNotExpression(expr.location, exp);
+				break;
+			case ABS:
+				result = new TCAbsoluteExpression(expr.location, exp);
+				break;
+			case FLOOR:
+				result = new TCFloorExpression(expr.location, exp);
+				break;
+			case UMINUS:
+				result = new TCUnaryMinusExpression(expr.location, exp);
+				break;
+			case CARD:
+				result = new TCCardinalityExpression(expr.location, exp);
+				break;
+			case DUNION:
+				result = new TCDistUnionExpression(expr.location, exp);
+				break;
+			case DINTER:
+				result = new TCDistIntersectExpression(expr.location, exp);
+				break;
+			case LEN:
+				result = new TCLenExpression(expr.location, exp);
+				break;
+			case HEAD:
+				result = new TCHeadExpression(expr.location, exp);
+				break;
+			case TAIL:  
+				result = new TCTailExpression(expr.location, exp);
+				break;
+			case INDS:
+				result = new TCIndicesExpression(expr.location, exp);
+				break;
+			case ELEMS:
+				result = new TCElementsExpression(expr.location, exp);
+				break;
+			case DISTCONC:
+				result = new TCDistConcatExpression(expr.location, exp);
+				break;
+			case REVERSE:
+				result = new TCReverseExpression(expr.location, exp);
+				break;
+			case MERGE:
+				result = new TCDistMergeExpression(expr.location, exp);
+				break;
+			case DOM:
+				result = new TCMapDomainExpression(expr.location, exp);
+				break;
+			case RNG:
+				result = new TCMapRangeExpression(expr.location, exp);
+				break;
+			case INVERSE:
+				result = new TCMapInverseExpression(expr.location, exp);
+				break;
+			case FPOWERSET:
+				result = new TCPowerSetExpression(expr.location, exp);
+				break;
+			case UPLUS:
+				result = new TCUnaryPlusExpression(expr.location, exp);
+				break;
+			default:
+				result = null;
+				break;
+		}
+		return result;
+	}
+
+	public static final TRUnaryExpression newUnaryExpression(IsaToken token, TRExpression expr)
+	{
+		assert VALID_UNARY_OPS.contains(token) && token.vdmToken() != null;
+		TRUnaryExpression result = new TRUnaryExpression(expr.location, 
+			TRUnaryExpression.newTCUnaryExpression(
+				new LexKeywordToken(token.vdmToken(), expr.location), expr), 
+			token, expr, expr.getType());
+		TRNode.setup(result);
+		return result; 
 	}
 }
