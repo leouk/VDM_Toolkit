@@ -62,6 +62,18 @@ public abstract class TRInvariantType extends TRType
         return orddef;
     }
 
+    @Override
+    public boolean hasOrderingSpecification()
+    {
+        return getOrdDef() != null && getEqDef() != null;
+    }
+
+    @Override
+    public boolean hasSpecification()
+    {
+        return getOrdDef() != null || getEqDef() != null || getInvDef() != null;
+    }
+
     @Override 
     public void setup()
     {
@@ -112,6 +124,11 @@ public abstract class TRInvariantType extends TRType
             sb.append("\n");
         }
 
+        if (eqdef == null && orddef != null || eqdef != null && orddef == null)
+        {
+            report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, getName(), "must define both eq and ord specificaition");
+        }
+
         if (eqdef != null)
         {
             sb.append(eqdef.translate());
@@ -155,5 +172,37 @@ public abstract class TRInvariantType extends TRType
             if (!ef.isImplicitlyGeneratedUndeclaredSpecification())
                 report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, getClass().getSimpleName(), "ordering");
         }
+    }
+
+    public static final TRExplicitFunctionDefinition getOrdDef(TRInvariantType... args)
+    {
+        TRExplicitFunctionDefinition result = null;
+        if (args != null)
+        {
+            for(int i = 0; i < args.length && result == null; i++)
+            {
+                if (args[i] != null)
+                {
+                    result = args[i].getOrdDef();
+                }
+            }
+        }
+        return result;
+    }
+
+    public static final TRExplicitFunctionDefinition getEqDef(TRInvariantType... args)
+    {
+        TRExplicitFunctionDefinition result = null;
+        if (args != null)
+        {
+            for(int i = 0; i < args.length && result == null; i++)
+            {
+                if (args[i] != null)
+                {
+                    result = args[i].getEqDef();
+                }
+            }
+        }
+        return result;
     }
 }

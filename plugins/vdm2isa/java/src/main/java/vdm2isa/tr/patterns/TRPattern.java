@@ -29,6 +29,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
     protected TRPattern(TCPattern p, LexLocation location)
     {
         super(location);
+        this.uniqueNames = null;
         this.vdmPattern = p == null ? new TCIgnorePattern(location) : p; 
     }
 

@@ -77,6 +77,7 @@ public class TRNamedType extends TRInvariantType
      * Chase the type renaming chain
      * @return
      */
+    @Override
     public TRType ultimateType()
     {
         TRType result = type;
@@ -86,6 +87,15 @@ public class TRNamedType extends TRInvariantType
         }
         // if (result instanceof TRNamedType)
         //     result = ((TRNamedType)result).ultimateType();
+        return result;
+    }
+
+    @Override
+    public TRInvariantType ultimateInvariantType()
+    {
+        TRInvariantType result = super.ultimateInvariantType();
+        if (result == null)
+            result = type.ultimateInvariantType();
         return result;
     }
 

@@ -60,6 +60,12 @@ public class TRBracketType extends TRAbstractInnerTypedType {
 	}
 
     @Override
+	public TRInvariantType ultimateInvariantType()
+	{
+		return getInnerType().ultimateInvariantType();
+	}
+
+    @Override
     public String getName()
     {
         return getInnerType().getName();

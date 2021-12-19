@@ -218,6 +218,30 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return this;
 	}
 
+	public boolean hasSpecification()
+	{
+		return false;
+	}
+
+	public boolean hasOrderingSpecification()
+	{
+		return false;
+	}
+
+	public TRInvariantType ultimateInvariantType()
+	{
+		TRInvariantType result = null;
+		if (this instanceof TRInvariantType)
+		{
+			TRInvariantType itype = (TRInvariantType)this;
+			if (itype.hasSpecification())
+			{
+				result = itype;
+			}
+		}
+		return result;
+	}
+
 	public abstract <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg);
 
     public boolean compatible(TRType type) {
