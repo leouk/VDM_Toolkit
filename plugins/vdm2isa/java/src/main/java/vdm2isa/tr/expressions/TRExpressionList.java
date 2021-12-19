@@ -13,6 +13,8 @@ import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.types.TRTypeList;
 
 public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
@@ -72,6 +74,26 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 		TRExpressionList result = new TRExpressionList();
 		if (args != null)
 			result.addAll(Arrays.asList(args));
+		TRNode.setup(result);
+		return result;
+	}
+
+	public static final TRExpressionList newExpressionList(TRPatternList args, TRTypeList types)
+	{
+		TRExpressionList result = new TRExpressionList();
+		if (args != null && types != null)
+		{
+			assert args.size() == types.size();
+			for(int i = 0; i < args.size(); i++)
+			{
+				//TODO this won't cope with something like
+				// eq mk_(x,y) < mk_(w, z) == x < w and y < z; 
+				assert args.get(i).getNamesInPattern().size() == 1;
+				result.add(TRVariableExpression.newVariableExpr(
+					args.get(i).location, 
+					args.get(i).patternTranslate(), types.get(i)));
+			}
+		}
 		TRNode.setup(result);
 		return result;
 	}

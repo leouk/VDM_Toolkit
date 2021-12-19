@@ -176,18 +176,16 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 TRType ultimate = type.ultimateType();
                  if ((mindef != null || maxdef != null) && 
                       ultimate instanceof TRRecordType)
-                     warning(IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P, name.toString());
+                     warning(IsaWarningMessage.ISA_TYPDEF_ORD_1P, name.toString());
                 if (!(ultimate instanceof TRRecordType))
                 {
                     if (mindef != null)
                     {
                         updateExplicitDefinition(mindef, true);
-                    //    mindef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                     if (maxdef != null)
                     {
                         updateExplicitDefinition(maxdef, true);
-                    //    maxdef.comments.add(location, IsaWarningMessage.ISA_TYPDEF_MINMAX_ORD_1P.format(name.toString()), false);
                     }
                 }
             }
