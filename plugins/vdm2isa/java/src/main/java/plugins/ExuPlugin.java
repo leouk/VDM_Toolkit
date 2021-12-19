@@ -33,11 +33,23 @@ public class ExuPlugin extends GeneralisaPlugin {
 		{
             Console.out.println("Calling Exu VDM analyser...");
 
-            checkSpecificationDependencies(tclist);
+            checkModules(tclist);
             
             result = true;
         }
         return result;
+    }
+
+    protected void checkInvariantTypeSpecificationConsistency(TCTypeDefinition d, TCModuleList tclist)
+    {
+        // if have ord and not eq or vice versa
+        if (d.eqdef == null && d.orddef != null || d.eqdef != null && d.orddef == null)
+        {
+            if (!d.type.isNumeric(d.type.location))//(d.type instanceof TCRecordType)
+            {
+                warning(IsaWarningMessage.VDMSL_EXU_MISSING_TYPEDEF_SPEC_1P, d.location, d.name.toString());
+            }
+        }
     }
 
     protected void checkSpecificationCallsConsistency(TCModuleList tclist, TRSpecificationKind kind, TCExplicitFunctionDefinition spec)
@@ -90,36 +102,42 @@ public class ExuPlugin extends GeneralisaPlugin {
         return n.isReserved(); 
     }
 
-    protected void checkSpecificationDependencies(TCModuleList tclist) 
+    protected void checkSpecificationDependencies(TCDefinition d, TCModuleList tclist)
+    {
+        if (d instanceof TCTypeDefinition)
+        {
+            TCTypeDefinition tdef = (TCTypeDefinition)d;
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.INV, tdef.invdef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.EQ, tdef.eqdef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.ORD, tdef.eqdef);
+            checkInvariantTypeSpecificationConsistency(tdef, tclist);
+        }
+        else if (d instanceof TCExplicitFunctionDefinition)
+        {
+            TCExplicitFunctionDefinition fdef = (TCExplicitFunctionDefinition)d;
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.NONE, fdef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, fdef.predef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, fdef.postdef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, fdef.measureDef);
+        }
+        else if (d instanceof TCImplicitFunctionDefinition)
+        {
+            TCImplicitFunctionDefinition idef = (TCImplicitFunctionDefinition)d;
+            //checkSpecificationCallsConsistency(tclist, TRSpecificationKind.NONE, idef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, idef.predef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, idef.postdef);
+            checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, idef.measureDef);
+        }
+    }
+
+    protected void checkModules(TCModuleList tclist) 
     {
         int mcount = 0;
         for(TCModule m : tclist)
         {
             for(TCDefinition d : m.defs)
             {
-                if (d instanceof TCTypeDefinition)
-                {
-                    TCTypeDefinition tdef = (TCTypeDefinition)d;
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.INV, tdef.invdef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.EQ, tdef.eqdef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.ORD, tdef.eqdef);
-                }
-                else if (d instanceof TCExplicitFunctionDefinition)
-                {
-                    TCExplicitFunctionDefinition fdef = (TCExplicitFunctionDefinition)d;
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.NONE, fdef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, fdef.predef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, fdef.postdef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, fdef.measureDef);
-                }
-                else if (d instanceof TCImplicitFunctionDefinition)
-                {
-                    TCImplicitFunctionDefinition idef = (TCImplicitFunctionDefinition)d;
-                    //checkSpecificationCallsConsistency(tclist, TRSpecificationKind.NONE, idef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, idef.predef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, idef.postdef);
-                    checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, idef.measureDef);
-                }
+                checkSpecificationDependencies(d, tclist);
             }
             mcount++;
         }
