@@ -32,7 +32,9 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRExpressionList;
 import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
@@ -851,6 +853,11 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		return paramPatternList;
 	}
 
+	public TRExpressionList getParametersExpressionList()
+	{
+		return TRExpressionList.newExpressionList(getParameters().getFlatPatternList(), getType().parameters);
+	}
+
 	public TRFunctionType getType()
 	{
 		return type;
@@ -1009,4 +1016,21 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		TRNode.setup(result);
 		return result;
 	}
+
+	public static final TRApplyExpression newExplicitFunctionDefinitionCall(
+		TRExplicitFunctionDefinition edef)
+	{
+		return TRExplicitFunctionDefinition.newExplicitFunctionDefinitionCall(
+			edef, edef.getParametersExpressionList());
+	} 
+
+	public static final TRApplyExpression newExplicitFunctionDefinitionCall(
+		TRExplicitFunctionDefinition edef, TRExpressionList args)
+	{
+		assert !edef.isCurried;
+		return TRApplyExpression.newApplyExpression(
+			edef.name.toString(), args, 
+			edef.type.getResultType());
+	} 
+
 }
