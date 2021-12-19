@@ -8,6 +8,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
 import vdm2isa.tr.expressions.visitors.TCGetFreeVariablesVisitorSet;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.patterns.TRMultipleBindList;
@@ -15,6 +16,7 @@ import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRPatternContext;
 import vdm2isa.tr.types.TRAbstractInnerTypedType;
+import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
@@ -224,6 +226,80 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
+    private String processBinaryOrdExpression(TRExpression left, IsaToken op, TRExpression right, boolean lt)
+    {
+        TRExplicitFunctionDefinition orddef = 
+            TRInvariantType.getOrdDef(
+                left.getType().ultimateInvariantType(), 
+                right.getType().ultimateInvariantType());
+        if (orddef != null)
+        {
+            assert orddef.getParameters().getFlatPatternList().size() == 2;
+            TRApplyExpression aexpr = TRExplicitFunctionDefinition.newExplicitFunctionDefinitionCall(
+                orddef, 
+                // orddef is always "<"; if ">", then flip arguments
+                lt ? TRExpressionList.newExpressionList(left, right) :
+                     TRExpressionList.newExpressionList(right, left));
+            return aexpr.translate();
+        }
+        else
+        {
+            return processBinaryExpression(left, op, right);
+        }
+    }
+
+    private String processBinaryEqExpression(TRExpression left, IsaToken op, TRExpression right, boolean eq)
+    {
+        TRExplicitFunctionDefinition eqdef = 
+            TRInvariantType.getEqDef(
+                left.getType().ultimateInvariantType(), 
+                right.getType().ultimateInvariantType());
+        if (eqdef != null)
+        {
+            assert eqdef.getParameters().getFlatPatternList().size() == 2;
+            TRApplyExpression aexpr = TRExplicitFunctionDefinition.newExplicitFunctionDefinitionCall(eqdef, TRExpressionList.newExpressionList(left, right));
+            return eq ? 
+                aexpr.translate() : 
+                TRUnaryExpression.newUnaryExpression(IsaToken.NOT, aexpr).translate();
+        }
+        else
+        {
+            return processBinaryExpression(left, op, right);
+        }
+    }
+
+    private String processBinaryOrdEqExpression(TRExpression left, IsaToken op, TRExpression right, boolean lt)
+    {
+        if (left.getType().hasOrderingSpecification() ||
+        right.getType().hasOrderingSpecification())
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(processBinaryOrdExpression(left, op, right, lt));
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(IsaToken.OR.toString());
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(processBinaryEqExpression(left, op, right, true));
+            return sb.toString();
+        }
+        else
+        {
+            return processBinaryExpression(left, op, right);
+        }
+    }
+
+    private String processBinaryExpression(TRExpression left, IsaToken op, TRExpression right)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.LPAREN.toString());
+        sb.append(left.translate());
+        sb.append(getSemanticSeparator());
+        sb.append(op.toString());
+        sb.append(getSemanticSeparator());
+        sb.append(right.translate());
+        sb.append(IsaToken.RPAREN.toString());
+        return sb.toString();
+    } 
+
     /**
      * General tokenisation of operator-based expressions. The underlying caller's semantic separator is used
      * @param token
@@ -283,11 +359,7 @@ public abstract class TRExpression extends TRNode
             case NOTINSET:
             case SUBSET:
             case PSUBSET:
-            case LT:
-            case LE:
-            case GT:
-            case GE:
-			
+            
             case PLUS:
             case MINUS:
             case TIMES:
@@ -313,13 +385,7 @@ public abstract class TRExpression extends TRNode
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append(IsaToken.LPAREN.toString());
-                    sb.append(args[0].translate());
-                    sb.append(getSemanticSeparator());
-                    sb.append(token.toString());
-                    sb.append(getSemanticSeparator());
-                    sb.append(args[1].translate());
-                    sb.append(IsaToken.RPAREN.toString());
+                    sb.append(processBinaryExpression(args[0], token, args[1]));
                 }
                 break;
 
@@ -329,19 +395,33 @@ public abstract class TRExpression extends TRNode
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append(IsaToken.LPAREN.toString());
-                    sb.append(args[0].translate());
-                    sb.append(getSemanticSeparator());
-                    sb.append(token.toString());
-                    sb.append(getSemanticSeparator());
-                    sb.append(args[1].translate());
-                    sb.append(IsaToken.RPAREN.toString());
+                    sb.append(processBinaryExpression(args[0], token, args[1]));
                     sb.append(getFormattingSeparator());
                     sb.append(IsaToken.comment(IsaWarningMessage.ISA_POWEROP_TYPEDEP.message, getFormattingSeparator()));
                     warning(IsaWarningMessage.ISA_POWEROP_TYPEDEP);
                 }
                 break;
 
+            case LT:
+            case GT:
+                if (args.length != 2)
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
+                else
+                {
+                    sb.append(processBinaryOrdExpression(args[0], token, args[1], token.equals(IsaToken.LT)));
+                }
+                break;    
+
+            case LE:
+            case GE:
+                if (args.length != 2)
+                    report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
+                else
+                {
+                    sb.append(processBinaryOrdEqExpression(args[0], token, args[1], token.equals(IsaToken.LE)));                    
+                }
+                break;    
+                    
             //TODO equals *must* be reimplemented for record types because of record equality abstraction! 
             //     Might even need a separate class from TRBinaryExpression! 
             case NE:
@@ -350,13 +430,7 @@ public abstract class TRExpression extends TRNode
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
                 {
-                    sb.append(IsaToken.LPAREN.toString());
-                    sb.append(args[0].translate());
-                    sb.append(getSemanticSeparator());
-                    sb.append(token.toString());
-                    sb.append(getSemanticSeparator());
-                    sb.append(args[1].translate());
-                    sb.append(IsaToken.RPAREN.toString());
+                    sb.append(processBinaryEqExpression(args[0], token, args[1], token.equals(IsaToken.EQUALS)));
                 }
                 break;    
             default:
