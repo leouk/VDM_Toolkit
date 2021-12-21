@@ -14,6 +14,12 @@ types
 	User ::
 		time : Time
 		endtime: Time;
+		
+	R ::
+		x: nat
+	-- remove this one to see what happens with >= 
+	eq r1 = r2 == r1.x = r2.x
+	ord r1 < r2 == r1.x < r2.x;
 	
 functions
 	f: Time * Time -> bool
@@ -24,5 +30,11 @@ functions
 	
 	g': User -> bool
 	g'(u) == u.endtime >= u.time;
+	
+	r: R * R -> bool
+	r(r1, r2) == r1 >= r2;
+	
+	r': R * R -> bool
+	r'(r1, r2) == r1 > r2;
 	
 end TestV2ITypesRecordOrdering

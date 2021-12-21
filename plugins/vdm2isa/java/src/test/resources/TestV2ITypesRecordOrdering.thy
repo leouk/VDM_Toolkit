@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-21T07:54:20.229866Z
+(* VDM to Isabelle Translation @2021-12-21T08:01:34.903841Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2ITypesRecordOrdering.vdmsl' at line 1:8
@@ -86,15 +86,64 @@ where
  
 
 	
+\<comment>\<open>VDM source: R = compose R of x:nat end
+	eq r1 = r2 == ((r1.x) = (r2.x))
+	ord r1 < r2 == ((r1.x) < (r2.x))\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 18:5\<close>
+record R = 
+	x\<^sub>R :: "VDMNat"
+	
+
+\<comment>\<open>VDM source: inv_R: (R +> bool)
+	inv_R(dummy0) ==
+null\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 18:5\<close>
+definition
+	inv_R :: "R \<Rightarrow> bool"
+where
+	"inv_R dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_R` specification.\<close>
+		( (((inv_VDMNat (x\<^sub>R dummy0))) ))"
+ 
+
+\<comment>\<open>VDM source: eq_R: (R * R +> bool)
+	eq_R(r1, r2) ==
+((r1.x) = (r2.x))\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 21:8\<close>
+definition
+	eq_R :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"eq_R r1  r2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `eq_R` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2)  \<and> 
+		\<comment>\<open>User defined body of eq_R.\<close>
+		((x\<^sub>R (r1)) = (x\<^sub>R (r2)))"
+ 
+
+\<comment>\<open>VDM source: ord_R: (R * R +> bool)
+	ord_R(r1, r2) ==
+((r1.x) < (r2.x))\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 22:9\<close>
+definition
+	ord_R :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"ord_R r1  r2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `ord_R` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2)  \<and> 
+		\<comment>\<open>User defined body of ord_R.\<close>
+		((x\<^sub>R (r1)) < (x\<^sub>R (r2)))"
+ 
+
+	
 \<comment>\<open>VDM source: f: (Time * Time -> bool)
 	f(t1, t2) ==
 (t1 >= t2)\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
 
 \<comment>\<open>VDM source: pre_f: (Time * Time +> bool)
 	pre_f(t1, t2) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
 definition
 	pre_f :: "Time\<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -106,7 +155,7 @@ where
 \<comment>\<open>VDM source: post_f: (Time * Time * bool +> bool)
 	post_f(t1, t2, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
 definition
 	post_f :: "Time\<Rightarrow> Time\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -128,12 +177,12 @@ where
 \<comment>\<open>VDM source: g: (User -> bool)
 	g(mk_User(bt, et)) ==
 (et >= bt)\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 28:5\<close>
 
 \<comment>\<open>VDM source: pre_g: (User +> bool)
 	pre_g(mk_User(bt, et)) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 28:5\<close>
 definition
 	pre_g :: "User \<Rightarrow> bool"
 where
@@ -145,7 +194,7 @@ where
 \<comment>\<open>VDM source: post_g: (User * bool +> bool)
 	post_g(mk_User(bt, et), RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 28:5\<close>
 definition
 	post_g :: "User\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -169,12 +218,12 @@ where
 \<comment>\<open>VDM source: g': (User -> bool)
 	g'(u) ==
 ((u.endtime) >= (u.time))\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 31:5\<close>
 
 \<comment>\<open>VDM source: pre_g': (User +> bool)
 	pre_g'(u) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 31:5\<close>
 definition
 	pre_g' :: "User \<Rightarrow> bool"
 where
@@ -186,7 +235,7 @@ where
 \<comment>\<open>VDM source: post_g': (User * bool +> bool)
 	post_g'(u, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 25:5\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 31:5\<close>
 definition
 	post_g' :: "User\<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -203,5 +252,81 @@ where
 	(ord_Time (time\<^sub>U\<^sub>s\<^sub>e\<^sub>r (u))  (endtime\<^sub>U\<^sub>s\<^sub>e\<^sub>r (u))) \<or> 
 	\<comment>\<open>Transform a VDM `=` expression into an `eq_Time` call\<close>
 	(eq_Time (endtime\<^sub>U\<^sub>s\<^sub>e\<^sub>r (u))  (time\<^sub>U\<^sub>s\<^sub>e\<^sub>r (u)))"
+
+	
+\<comment>\<open>VDM source: r: (R * R -> bool)
+	r(r1, r2) ==
+(r1 >= r2)\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 34:5\<close>
+
+\<comment>\<open>VDM source: pre_r: (R * R +> bool)
+	pre_r(r1, r2) ==
+null\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 34:5\<close>
+definition
+	pre_r :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"pre_r r1  r2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_r` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2)"
+
+
+\<comment>\<open>VDM source: post_r: (R * R * bool +> bool)
+	post_r(r1, r2, RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 34:5\<close>
+definition
+	post_r :: "R\<Rightarrow> R\<Rightarrow> bool \<Rightarrow> bool"
+where
+	"post_r r1  r2  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_r` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2  \<and>  (inv_bool RESULT))"
+
+definition
+	r :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"r r1  r2 \<equiv> 
+	\<comment>\<open>User defined body of r.\<close>
+	\<comment>\<open>Transform a VDM `>` expression into a reversed `ord_R` call\<close>
+	(ord_R r2  r1) \<or> 
+	\<comment>\<open>Transform a VDM `=` expression into an `eq_R` call\<close>
+	(eq_R r1  r2)"
+
+	
+\<comment>\<open>VDM source: r': (R * R -> bool)
+	r'(r1, r2) ==
+(r1 > r2)\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 37:5\<close>
+
+\<comment>\<open>VDM source: pre_r': (R * R +> bool)
+	pre_r'(r1, r2) ==
+null\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 37:5\<close>
+definition
+	pre_r' :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"pre_r' r1  r2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_r'` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2)"
+
+
+\<comment>\<open>VDM source: post_r': (R * R * bool +> bool)
+	post_r'(r1, r2, RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2ITypesRecordOrdering' (./src/test/resources/TestV2ITypesRecordOrdering.vdmsl) at line 37:5\<close>
+definition
+	post_r' :: "R\<Rightarrow> R\<Rightarrow> bool \<Rightarrow> bool"
+where
+	"post_r' r1  r2  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_r'` specification.\<close>
+		(inv_R r1  \<and>  inv_R r2  \<and>  (inv_bool RESULT))"
+
+definition
+	r' :: "R\<Rightarrow> R \<Rightarrow> bool"
+where
+	"r' r1  r2 \<equiv> 
+	\<comment>\<open>User defined body of r'.\<close>
+	\<comment>\<open>Transform a VDM `>` expression into a reversed `ord_R` call\<close>
+	(ord_R r2  r1)"
 
 end

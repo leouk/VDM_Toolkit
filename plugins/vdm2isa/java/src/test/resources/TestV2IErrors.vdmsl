@@ -37,6 +37,10 @@ types
 	--T1 = set of nat
 	--inv t == card t = 3 and (forall x, y in set t & x <> y => x < y); 
 
+	--Error   [ISA   ] 10215: Invalid invariant type for R : must define both eq and ord specificaition. in 'TestV2ITypesRecordOrdering'
+	R2 ::
+		x: nat
+	ord r1 < r2 == r1.x < r2.x;
 
 functions
 	-- multiple type binds in seq comp
@@ -51,6 +55,10 @@ functions
 	--even for single value quote! 
 	f1': int -> <ERROR>
 	f1'(-) == <ERROR>;
+
+	--cannot figure out the structural ordering when no eq/ord pairs are defined
+	rcomp: R2 * R2 -> bool
+	rcomp(r0, r1) == r0 >= r1;
 
 values
 	v65: R = mk_R(1, 2);				

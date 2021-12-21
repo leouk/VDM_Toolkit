@@ -38,8 +38,10 @@ definitions
 		r	: real
 		i	: nat
 	--@LF this will require Time to be instantiated as a linorder type class! 
+	--@LF okay, now you need to define both eq/ord and will work
 	inv t ==
 		t.r >= 0	-- Times must be positive
+	eq a = b == a.r = b.r and a.i = b.i
 	ord a < b ==
 		(a.r < b.r) or (a.r = b.r and a.i < b.i);	-- NB using real equality!
 
