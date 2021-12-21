@@ -12,6 +12,10 @@ public enum IsaInfoMessage {
     VDM_LAMBDA_INVARIANT("VDM function type invariant depends on its lambda definition dummy names used being equal."),
     VDM_RENAMED_IMPORT_3P("VDM import from %1$s: %2$s renamed %3$s."),
     VDM_NORMAL_NOT_TRANSLATED_2P("unqualified VDM import from %1$s: %2$s; use Isabelle qualified naming directly."),
+    VDM_EXPLICIT_ORDER_PRED_1P("Transform a VDM `<` expression into an `ord_%1$s` call"),
+    VDM_EXPLICIT_REVERSED_ORDER_PRED_1P("Transform a VDM `>` expression into a reversed `ord_%1$s` call"),
+    VDM_EXPLICIT_EQ_PRED_1P("Transform a VDM `=` expression into an `eq_%1$s` call"),
+    VDM_EXPLICIT_NOT_EQ_PRED_1P("Transform a VDM `<>` expression into an `not eq_%1$s` call"),
 
     ISA_PATTERN_CONTEXT("Implicit pattern context conversion"),
     ISA_UNION_TYPE_PROJECTION("Implicit union type parameters projection"),

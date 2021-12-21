@@ -39,7 +39,7 @@ public enum IsaWarningMessage {
     ISA_OPTIONALTYPE_VARIABLE_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 1, 
     "Optional type variable `%1$s` might not need extra @{term the} operator!"),
     ISA_TYPDEF_ORD_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 2, 
-    "Type definition for type `%1$s` specification requires Isabelle type to instantiate `ord` class!"),
+    "Type definition for type `%1$s` specification might requires Isabelle type to instantiate `ord` class!"),
     ISA_TYPED_NARROW_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 3, 
     "VDM narrow expressions of type %1$s might create Isabelle type errors!"),
     ISA_SEQCOMP_LINEAR_TYPEBIND_1P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 4, 

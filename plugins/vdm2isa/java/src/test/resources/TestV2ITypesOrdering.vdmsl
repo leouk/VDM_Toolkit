@@ -1,0 +1,24 @@
+module TestV2ITypesOrdering
+exports all
+definitions
+
+types	
+
+	TOrder1 = nat1
+	inv oI == oI > 1
+	eq o1 = o2 == o1 = o2
+	ord o1 < o2 == o1 > o2
+	;
+	
+	TRenamed = TOrder1
+	inv r == r > 10;
+	
+	TRenamedOrdered = TOrder1 
+	eq o1 = o2 == o1 = o2
+	ord o1 < o2 == o1 < o2
+	;
+
+	TRenamedPOrdered = TOrder1 
+	ord o1 < o2 == o1 > o2;
+	
+end TestV2ITypesOrdering

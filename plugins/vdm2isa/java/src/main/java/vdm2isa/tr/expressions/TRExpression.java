@@ -6,6 +6,7 @@ package vdm2isa.tr.expressions;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
@@ -239,8 +240,14 @@ public abstract class TRExpression extends TRNode
                 orddef, 
                 // orddef is always "<"; if ">", then flip arguments
                 lt ? TRExpressionList.newExpressionList(left, right) :
-                     TRExpressionList.newExpressionList(right, left));
-            return aexpr.translate();
+                TRExpressionList.newExpressionList(right, left));
+            StringBuilder sb = new StringBuilder();
+            String typeName = orddef.getType().parameters.get(0).getName();
+            sb.append(IsaToken.comment(
+                        lt ? IsaInfoMessage.VDM_EXPLICIT_ORDER_PRED_1P.format(typeName) :
+                            IsaInfoMessage.VDM_EXPLICIT_REVERSED_ORDER_PRED_1P.format(typeName), "\n\t"));         
+            sb.append(aexpr.translate());
+            return sb.toString();
         }
         else
         {
@@ -258,9 +265,15 @@ public abstract class TRExpression extends TRNode
         {
             assert eqdef.getParameters().getFlatPatternList().size() == 2;
             TRApplyExpression aexpr = TRExplicitFunctionDefinition.newExplicitFunctionDefinitionCall(eqdef, TRExpressionList.newExpressionList(left, right));
-            return eq ? 
-                aexpr.translate() : 
-                TRUnaryExpression.newUnaryExpression(IsaToken.NOT, aexpr).translate();
+
+            StringBuilder sb = new StringBuilder();
+            String typeName = eqdef.getType().parameters.get(0).getName();
+            sb.append(IsaToken.comment(
+                        eq ? IsaInfoMessage.VDM_EXPLICIT_EQ_PRED_1P.format(typeName) :
+                             IsaInfoMessage.VDM_EXPLICIT_NOT_EQ_PRED_1P.format(typeName), "\n\t"));         
+            sb.append(eq ? aexpr.translate() : 
+                           TRUnaryExpression.newUnaryExpression(IsaToken.NOT, aexpr).translate());
+            return sb.toString();
         }
         else
         {
@@ -278,6 +291,7 @@ public abstract class TRExpression extends TRNode
             sb.append(IsaToken.SPACE.toString());
             sb.append(IsaToken.OR.toString());
             sb.append(IsaToken.SPACE.toString());
+            sb.append("\n\t");
             sb.append(processBinaryEqExpression(left, op, right, true));
             return sb.toString();
         }
