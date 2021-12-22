@@ -22,7 +22,6 @@ import com.fujitsu.vdmj.tc.expressions.TCFloorExpression;
 import com.fujitsu.vdmj.tc.expressions.TCHeadExpression;
 import com.fujitsu.vdmj.tc.expressions.TCLenExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTailExpression;
-import com.fujitsu.vdmj.tc.expressions.TCUnaryExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryMinusExpression;
 import com.fujitsu.vdmj.tc.expressions.TCUnaryPlusExpression;
 
