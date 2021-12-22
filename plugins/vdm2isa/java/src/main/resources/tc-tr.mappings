@@ -273,6 +273,8 @@ map TCUnknownType{location, definitions} to TRUnknownType(location, definitions)
 map TCUnionType{definitions, types} to TRUnionType(this, definitions, types);
 map TCBracketType{definitions, type} to TRBracketType(this, definitions, type);
 
+map TCParameterType{definitions, name, paramdef} to TRParameterType(this, definitions, name, paramdef);
+
 #############################################################################
 # Classes that are not mapped
 #############################################################################

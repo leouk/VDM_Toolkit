@@ -12,6 +12,7 @@ import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
+import vdm2isa.tr.types.TRParameterType;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRQuoteType;
 import vdm2isa.tr.types.TRRecordType;
@@ -106,5 +107,9 @@ public abstract class TRTypeVisitor<R, S>
 
     public R caseTokenType(TRTokenType node, S arg) {
         return caseBasicType(node, arg);
+    }
+
+    public R caseParameterType(TRParameterType node, S arg) {
+        return caseType(node, arg);
     }
 }
