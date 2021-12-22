@@ -116,6 +116,8 @@ definitions
 		(var.causality = <outputLF> => var.contract = <none>) -- input contract only relevant for inputs
 		and var.causality = <inputLF> => var.dependsOn = {} ;
 
+    Refs = seq of Ref 
+    inv r == len r = card elems r;
 
 	/**
 	 * A clock is identified by a Ref (within an FMU) and activates a set of equations.
@@ -126,14 +128,20 @@ definitions
 		interval	: Interval
         timeToTick  : Time
 		dependsOn 	: set of Ref -- The clocks that can trigger an clock
-		equations	: set of Ref -- variables the clock activates
+        --@LF given its use in recursion for createFMURefs
+		equations	: Refs -- variables the clock activates
 	inv clock ==
 		(clock.type = <outputLF> => clock.interval = <triggered>)	-- An output clock must be of type triggered 
-		and (clock.type = <inputLF> => clock.dependsOn = {}); -- Only output clocks are subject to feedthrough
+		and (clock.type = <inputLF> => clock.dependsOn = {}) -- Only output clocks are subject to feedthrough
+    --@LF clock identity needs to be about its reference? 
+    eq clock1 = clock2 == clock1.ref = clock2.ref 
+    ord clock1 < clock2 == clock1.ref < clock2.ref
+    ;
 
 	FMUModeLF = <INIT> | <DONE> | <STEP> | <EVENT> -- Mode of the FMU
 	;
 
+    --@LF in fact clock identity is somewhat funny given its constitution.?
     Clocks = seq of Clock 
     inv c == len c = card elems c;
 
@@ -152,7 +160,8 @@ definitions
 		time				: Time				-- time is per FMU
         maxStep             : real				-- How far can the FMU step
 		env					: Environment
-		activeClocks		: set of Ref		-- 
+        --@LF given its use for recursion make it a seq
+		activeClocks		: Refs		-- 
 		activeEquations		: set of Equation	-- I think this needs to be a set of reference
 	inv fmu ==
 		let vars = fmu.inputs union fmu.outputs in
@@ -167,9 +176,9 @@ definitions
 			-- All references in the environment are defined
 			and (dom fmu.env subset refs)
 			-- All active clocks are defined
-			and (fmu.activeClocks subset crefs)
+			and (elems fmu.activeClocks subset crefs)
 			-- A clock can only be active when the fmu is in event mode
-			and (fmu.mode <> <EVENT> => fmu.activeClocks = {})
+			and (fmu.mode <> <EVENT> => fmu.activeClocks = [])
 			-- An equation can only be active when the fmu is in event mode
 			and (fmu.mode <> <EVENT> => fmu.activeEquations = {})
 			-- All variables' clocks are defined
@@ -326,7 +335,19 @@ functions
 	preSet(fmu, inputLF)==
 		exists v in set fmu.inputs & v.ref = inputLF and v.causality = <inputLF>
 			and fmu.mode <> <DONE>;
-	
+
+--@LF verbose	
+	feedthroughSatisfied : FMU * Variable -> bool
+	--@LF keyword identifier
+	feedthroughSatisfied(fmu, outputLF)==
+		forall i in set fmu.inputs & i.ref in set outputLF.dependsOn 
+            --@LF map application alongside record projection is yet to be handled! 
+			--and (i.contract = <reactive> => fmu.env(i.ref).time >= fmu.time)
+			--and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
+   			and (i.contract = <reactive> => let value: Value = fmu.env(i.ref) in value.time >= fmu.time)
+			and (i.contract = <delayed> => let value: Value = fmu.env(i.ref) in value.time = fmu.time)
+	pre forall i in set fmu.inputs & i.causality = <inputLF>;
+
 	/*
 		An p
 	 */
@@ -341,8 +362,9 @@ functions
 	preStepT: FMU * real -> bool
 	preStepT(fmu, stepSize)==
 		forall i in set fmu.inputs &
-			 		(i.contract = <reactive> => fmu.env(i.ref).time.r = fmu.time.r + stepSize)
-					and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
+                --@LF maps		 		
+                     (i.contract = <reactive> => let value:Value = fmu.env(i.ref) in value.time.r = fmu.time.r + stepSize)
+					and (i.contract = <delayed> => let value:Value = fmu.env(i.ref) in value.time = fmu.time)
 			and stepSize >= 0.0 and fmu.mode = <STEP>;
 
 	preStepE: FMU -> bool
@@ -351,8 +373,9 @@ functions
 
 	preSetC: FMU * Ref * bool -> bool
 	preSetC(fmu, clock, val)==
-	 	exists v in seq fmu.clocks & v.ref = clock and v.type = <inputLF>
-			and val <=> not clock in set fmu.activeClocks; -- We can only activate a clock that 
+	 	exists v in seq fmu.clocks & 
+            v.ref = clock and v.type = <inputLF>
+			and (val <=> not clock in set elems fmu.activeClocks); -- We can only activate a clock that 
 
 	preGetC: FMU * Ref -> bool
 	preGetC(fmu, clock)==
@@ -380,9 +403,9 @@ functions
 	set_cm(fmu, ref, val) ==
 		mu(fmu,
 			env				|-> fmu.env ++ {ref |-> mk_Value(val, fmu.time)},
-			activeClocks	|-> if val then fmu.activeClocks union {ref} else fmu.activeClocks \ {ref})
+			activeClocks	|-> if val and not ref in set elems fmu.activeClocks then fmu.activeClocks ^ [ref] else [ r | r in seq fmu.activeClocks & r <> ref])
 	pre preSetC(fmu, ref, val)
-	post val <=> ref in set fmu.activeClocks;
+	post val <=> ref in set elems fmu.activeClocks;
 
 	get_cm: FMU * Ref +> FMU * Value
 	get_cm(fmu, ref) ==
@@ -403,7 +426,7 @@ functions
 	pre preStepE(fmu)
 	post RESULT.#1.mode = <EVENT> 		-- FMU remains in event mode - it always does the Importer should bring it out
         and RESULT.#1.time.i = fmu.time.i + 1 -- The Integer component of the FMU should be increased
-		and RESULT.#1.activeClocks = {} ; -- All clocks get disabled when we step the FMU
+		and RESULT.#1.activeClocks = [] ; -- All clocks get disabled when we step the FMU
 
 types
 	RealNaNLF = real | <NaN>;
@@ -493,7 +516,7 @@ functions
 	updateEnvironmentClock : Importer * FMU * Ref * bool -> Importer
 	updateEnvironmentClock(I, fmu, clock, val)==
 		let fmuref = mk_FMURef(fmu.name, clock),
-			activatedVariables = createFMURefs(fmu, dunion {c.equations | c in seq fmu.clocks & clock = c.ref}, {}) in
+			activatedVariables = createFMURefs(fmu, conc [c.equations | c in seq fmu.clocks & clock = c.ref], {}) in
 		mu(I,
 			scenario |-> mu(I.scenario, fmus |-> I.scenario.fmus ++ {fmu.name |-> fmu}),
 			activeClocks |-> if val then I.activeClocks union {fmuref} else I.activeClocks \ {fmuref},
@@ -751,16 +774,6 @@ functions
 		The preconditions of the actions from the paper - notice that the actions are only valid when the FMUs are not in the done state
 	*/
 
-	
-
-	feedthroughSatisfied : FMU * Variable -> bool
-	--@LF keyword identifier
-	feedthroughSatisfied(fmu, outputLF)==
-		forall i in set fmu.inputs & i.ref in set outputLF.dependsOn 
-			and (i.contract = <reactive> => fmu.env(i.ref).time >= fmu.time)
-			and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
-	pre forall i in set fmu.inputs & i.causality = <inputLF>;
-
 /*
 	This function updates the schedule
 */
@@ -1016,7 +1029,7 @@ calculateSchedule(fmu, clocks, schedule)==
 			S1: map FMURef to real = schedule ++ (if is_real(n) then {fmuRef |-> next_tm(fmu, clock)} else {|->}) in
 		calculateSchedule(fmu, clocks \ {clock}, S1)
 pre 
-let cref = {c.ref | c in set fmu.clocks & c.type = <inputLF> and c.interval <> <triggered> } in 
+let cref = {c.ref | c in seq fmu.clocks & c.type = <inputLF> and c.interval <> <triggered> } in 
 	clocks subset cref
 measure card clocks; 
 end ClocksListRecursive
