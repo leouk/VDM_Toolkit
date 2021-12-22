@@ -408,7 +408,7 @@ public class TRValueDefinition extends TRLocalDefinition
 				sb.append(IsaToken.SPACE.toString());
 				sb.append(IsaToken.EQUALS.toString());
 				sb.append(IsaToken.SPACE.toString());
-				sb.append(/*IsaToken.parenthesise*/(exp.translate()));	
+				sb.append(exp.typeAware(null));///*IsaToken.parenthesise*/(exp.translate()));	
 			}
 			// unpick value def apart until you reach bottom line
 			else 

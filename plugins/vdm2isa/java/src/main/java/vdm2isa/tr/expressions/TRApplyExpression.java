@@ -88,8 +88,7 @@ public class TRApplyExpression extends TRExpression
 		// Hum. It depends on the result type where this will land. So, only them can know whether to "add" it or not 
 		//if (type.ultimateType() instanceof TRMapType)
 		//{
-		//	sb.append(IsaToken.OPTIONAL_THE.toString());
-		//	sb.append(IsaToken.parenthesise(call.toString()));
+		//	sb.append(IsaToken.the(call.toString()));
 		//}
 		//else
 		{

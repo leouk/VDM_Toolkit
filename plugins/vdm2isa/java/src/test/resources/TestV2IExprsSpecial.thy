@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-22T10:38:08.567Z
+(* VDM to Isabelle Translation @2021-12-22T11:35:19.420Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl' at line 1:8
@@ -181,7 +181,7 @@ definition
 where
 	"g m  n \<equiv> 
 	\<comment>\<open>User defined body of g.\<close>
-	((x\<^sub>V ((the(m n)))) + n)"
+	((x\<^sub>V (the((m n)))) + n)"
 
 	
 \<comment>\<open>VDM source: g': (M * N -> nat1)
@@ -222,10 +222,10 @@ where
 	\<comment>\<open>User defined body of g'.\<close>
 	(
 		let 
-(r::V) = (the(m n))
+(r::V) = (the((m n)))
 		in
 			(if (inv_V r) then
-			((x\<^sub>V (r)) + n)
+			((x\<^sub>V r) + n)
 		 else
 			undefined
 		)
@@ -301,7 +301,7 @@ definition
 where
 	"q q0  n \<equiv> 
 	\<comment>\<open>User defined body of q.\<close>
-	(q0)\<lparr>p\<^sub>Q := (the(h (p\<^sub>Q (q0))  n))\<rparr>"
+	(q0)\<lparr>p\<^sub>Q := (h (p\<^sub>Q q0)  n)\<rparr>"
 
 	
 \<comment>\<open>VDM source: f: (nat -> nat)

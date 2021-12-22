@@ -18,6 +18,7 @@ import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRPatternContext;
 import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRInvariantType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
@@ -169,28 +170,44 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
+    public static final boolean requiresTheOperator(TRExpression expr)
+    {
+        assert expr != null;
+        return (expr.getType().ultimateType() instanceof TRMapType)
+               ||
+               (expr instanceof TRApplyExpression
+                &&
+                ((TRApplyExpression)expr).type.ultimateType() instanceof TRMapType);
+    }
+
     //TODO Perhaps add this to translate? Yes! 
     /**
      * Add any extra type-aware wrapping to expression. 
-     * @param expr
+     * @param innerExpr when null, translate directly from this. Important for some cases like variable expression of value definition
      * @return
      */
-	protected String typeAware(String expr)
+	public String typeAware(TRExpression innerExpr)
 	{
         StringBuilder sb = new StringBuilder();
+        TRExpression tawareExpr = innerExpr != null ? innerExpr : this;
+        String exprStr = tawareExpr.translate();
+        if (TRExpression.requiresTheOperator(tawareExpr))
+        {
+            sb.append(IsaToken.the(exprStr));
+        }
         // add type info extra expression if of optional type (either as variable "x" or function call "f(x)"). 
-		if (getType() instanceof TROptionalType)
+		else if (getType() instanceof TROptionalType)
 		{	
 			TRType t = getType();
-			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getSimpleName());
-			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getSimpleName());
+			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(exprStr, t.getClass().getSimpleName());
+			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, tawareExpr, t.getClass().getSimpleName());
 			sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
-			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
+			sb.append(IsaToken.the(exprStr));
 		}
 		else
 		{
 			//if vardef is null, ctor reports the error; 
-			sb.append(expr);
+			sb.append(exprStr);
 		}
 		return sb.toString();	
 	}

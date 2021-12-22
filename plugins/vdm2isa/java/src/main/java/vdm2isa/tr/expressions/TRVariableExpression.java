@@ -87,11 +87,12 @@ public class TRVariableExpression extends TRExpression
 			TRQuoteType qt = (TRQuoteType)t;
 			sb.append(qt.translate());
 		}
-		else
+		else 
 		{
-			sb.append(IsaToken.isabelleName(name));
+			String exprStr = IsaToken.isabelleName(name);
+			sb.append(exprStr);//TRExpression.requiresTheOperator(this) ? IsaToken.the(exprStr) : exprStr);
 		}
-		return typeAware(sb.toString());
+		return sb.toString();
 	}
 
 	/**

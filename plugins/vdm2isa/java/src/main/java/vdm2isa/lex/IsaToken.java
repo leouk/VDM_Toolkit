@@ -313,6 +313,12 @@ public enum IsaToken {
 		return bracketit(IsaToken.LPAREN, s, IsaToken.RPAREN);
 	}
 
+	public static final String the(String s)
+	{
+		return parenthesise(IsaToken.OPTIONAL_THE.toString() + parenthesise(s));
+	}
+
+
 	public static final String comment(String s)
 	{
 		return comment(s, "");
