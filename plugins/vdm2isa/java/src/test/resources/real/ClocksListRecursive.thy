@@ -1201,7 +1201,7 @@ definition
 where
 	"get_m fmu  ref \<equiv> 
 	\<comment>\<open>User defined body of get_m.\<close>
-	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U fmu) ref))"
+	(fmu, the((env\<^sub>F\<^sub>M\<^sub>U fmu) ref))"
 
 	
 \<comment>\<open>VDM source: set_cm: (FMU * Ref * bool +> FMU)
@@ -1291,7 +1291,7 @@ definition
 where
 	"get_cm fmu  ref \<equiv> 
 	\<comment>\<open>User defined body of get_cm.\<close>
-	(fmu, ((env\<^sub>F\<^sub>M\<^sub>U fmu) ref))"
+	(fmu, the((env\<^sub>F\<^sub>M\<^sub>U fmu) ref))"
 
 	
 \<comment>\<open>VDM source: step_tm: (FMU * real +> (FMU * real * bool))
