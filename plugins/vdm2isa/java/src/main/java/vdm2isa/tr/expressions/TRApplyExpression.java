@@ -86,7 +86,7 @@ public class TRApplyExpression extends TRExpression
 	
 		StringBuilder sb = new StringBuilder();
 		// for map applications, we need to add "the" for optional removal
-		if (type instanceof TRMapType)
+		if (type.ultimateType() instanceof TRMapType)
 		{
 			sb.append(IsaToken.OPTIONAL_THE.toString());
 			sb.append(IsaToken.parenthesise(call.toString()));
