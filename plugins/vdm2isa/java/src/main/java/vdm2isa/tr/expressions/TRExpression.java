@@ -170,14 +170,21 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
+    private static final boolean hasMapType(TRType type)
+    {
+        assert type != null;
+        // either a map on the top-level, or a renamed type
+        return type instanceof TRMapType || type.ultimateType() instanceof TRMapType;
+    }
     public static final boolean requiresTheOperator(TRExpression expr)
     {
         assert expr != null;
-        return (expr.getType().ultimateType() instanceof TRMapType)
+        return (hasMapType(expr.getType()))
                ||
                (expr instanceof TRApplyExpression
                 &&
-                ((TRApplyExpression)expr).type.ultimateType() instanceof TRMapType);
+                hasMapType(((TRApplyExpression)expr).type)
+               );
     }
 
     //TODO Perhaps add this to translate? Yes! 

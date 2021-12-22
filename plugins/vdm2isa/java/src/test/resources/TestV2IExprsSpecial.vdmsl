@@ -11,7 +11,21 @@ types
 	P = map N to T;
 	Q :: p: P;
 	
+	R ::
+	-- map renamed + inlined, so applications are "the" aware on both
+	 m: M
+	 n: map N to V
+	inv mk_R(m, n) == 
+		-- map projections within local definitions 
+		let x = m(1), y = n(2) in x.x > y.x;
+	
 functions
+	-- mixing record field name (m) with local name (m) both with map types but
+	-- first projection has no "the" second includes a "the" given the map application!
+	r: R * N -> V
+	r(r0, n) == let m = r0.m in m(n)
+	pre n in set dom r0.m; 
+	
 	-- implicit the projection on map application
 	g: M * N -> nat1
 	g(m, n) == m(n).x + n
@@ -19,7 +33,7 @@ functions
 	
 	-- project map application into lambda for the "the" optional projection
 	g': M * N -> nat1
-	g'(m, n) == let r = m(n) in r.x + n
+	g'(m, n) == let r0 = m(n) in r0.x + n
 	pre n in set dom m;
 	
 	-- project union type into record then into map

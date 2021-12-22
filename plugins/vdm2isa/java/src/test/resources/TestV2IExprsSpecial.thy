@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-22T11:35:19.420Z
+(* VDM to Isabelle Translation @2021-12-22T11:57:43.613Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl' at line 1:8
@@ -145,16 +145,102 @@ where
  
 
 	
+\<comment>\<open>VDM source: R = compose R of m:M, n:map (N) to (V) end
+	inv mk_R(m, n) == let x:V = m(1), y:V = n(2) in ((x.x) > (y.x))\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 14:5\<close>
+record R = 
+	m\<^sub>R :: "M"
+		 n\<^sub>R :: "(N \<rightharpoonup> V)"
+	
+
+\<comment>\<open>VDM source: inv_R: (R +> bool)
+	inv_R(mk_R(m, n)) ==
+let x:V = m(1), y:V = n(2) in ((x.x) > (y.x))\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 18:9\<close>
+definition
+	inv_R :: "R \<Rightarrow> bool"
+where
+	"inv_R dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_R` specification.\<close>
+		( (((inv_M (m\<^sub>R dummy0))) \<and> 
+		 ((inv_Map (inv_N) inv_V  (n\<^sub>R dummy0))) ))  \<and> 
+		\<comment>\<open>Implicit pattern context conversion\<close>
+		(let m = (m\<^sub>R dummy0); n = (n\<^sub>R dummy0) in 
+		\<comment>\<open>User defined body of inv_R.\<close>
+		(
+		let 
+(x::V) = (the((m (1::VDMNat1))));
+		
+(y::V) = (the((n (2::VDMNat1))))
+		in
+			(if (inv_V x) \<and> 
+	(inv_V y) then
+			((x\<^sub>V x) > (x\<^sub>V y))
+		 else
+			undefined
+		)
+		))"
+ 
+
+	
+\<comment>\<open>VDM source: r: (R * N -> V)
+	r(r0, n) ==
+let m:M = (r0.m) in m(n)
+	pre (n in set (dom (r0.m)))\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 25:5\<close>
+
+\<comment>\<open>VDM source: pre_r: (R * N +> bool)
+	pre_r(r0, n) ==
+(n in set (dom (r0.m)))\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 27:11\<close>
+definition
+	pre_r :: "R\<Rightarrow> N \<Rightarrow> bool"
+where
+	"pre_r r0  n \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_r` specification.\<close>
+		(inv_R r0  \<and>  (inv_N n))  \<and> 
+		\<comment>\<open>User defined body of pre_r.\<close>
+		(n \<in> (dom (m\<^sub>R r0)))"
+
+
+\<comment>\<open>VDM source: post_r: (R * N * V +> bool)
+	post_r(r0, n, RESULT) ==
+null\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 25:5\<close>
+definition
+	post_r :: "R\<Rightarrow> N\<Rightarrow> V \<Rightarrow> bool"
+where
+	"post_r r0  n  RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_r` specification.\<close>
+		(inv_R r0  \<and>  (inv_N n)  \<and>  inv_V RESULT)"
+
+definition
+	r :: "R\<Rightarrow> N \<Rightarrow> V"
+where
+	"r r0  n \<equiv> 
+	\<comment>\<open>User defined body of r.\<close>
+	(
+		let 
+(m::M) = (((m\<^sub>R r0)))
+		in
+			(if (((inv_Map ((inv_VDMNat1)) inv_V m))) then
+			the(m n)
+		 else
+			undefined
+		)
+		)"
+
+	
 \<comment>\<open>VDM source: g: (M * N -> nat1)
 	g(m, n) ==
 ((m(n).x) + n)
 	pre (n in set (dom m))\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 30:5\<close>
 
 \<comment>\<open>VDM source: pre_g: (M * N +> bool)
 	pre_g(m, n) ==
 (n in set (dom m))\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 18:11\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 32:11\<close>
 definition
 	pre_g :: "M\<Rightarrow> N \<Rightarrow> bool"
 where
@@ -168,7 +254,7 @@ where
 \<comment>\<open>VDM source: post_g: (M * N * nat1 +> bool)
 	post_g(m, n, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 16:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 30:5\<close>
 definition
 	post_g :: "M\<Rightarrow> N\<Rightarrow> VDMNat1 \<Rightarrow> bool"
 where
@@ -186,14 +272,14 @@ where
 	
 \<comment>\<open>VDM source: g': (M * N -> nat1)
 	g'(m, n) ==
-let r:V = m(n) in ((r.x) + n)
+let r0:V = m(n) in ((r0.x) + n)
 	pre (n in set (dom m))\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 35:5\<close>
 
 \<comment>\<open>VDM source: pre_g': (M * N +> bool)
 	pre_g'(m, n) ==
 (n in set (dom m))\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 23:11\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 37:11\<close>
 definition
 	pre_g' :: "M\<Rightarrow> N \<Rightarrow> bool"
 where
@@ -207,7 +293,7 @@ where
 \<comment>\<open>VDM source: post_g': (M * N * nat1 +> bool)
 	post_g'(m, n, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 35:5\<close>
 definition
 	post_g' :: "M\<Rightarrow> N\<Rightarrow> VDMNat1 \<Rightarrow> bool"
 where
@@ -222,10 +308,10 @@ where
 	\<comment>\<open>User defined body of g'.\<close>
 	(
 		let 
-(r::V) = (the((m n)))
+(r0::V) = (the((m n)))
 		in
-			(if (inv_V r) then
-			((x\<^sub>V r) + n)
+			(if (inv_V r0) then
+			((x\<^sub>V r0) + n)
 		 else
 			undefined
 		)
@@ -235,12 +321,12 @@ where
 \<comment>\<open>VDM source: h: (P * N -> P)
 	h(p, n) ==
 (p ++ {n |-> mk_T(n)})\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 26:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 40:5\<close>
 
 \<comment>\<open>VDM source: pre_h: (P * N +> bool)
 	pre_h(p, n) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 26:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 40:5\<close>
 definition
 	pre_h :: "P\<Rightarrow> N \<Rightarrow> bool"
 where
@@ -252,7 +338,7 @@ where
 \<comment>\<open>VDM source: post_h: (P * N * P +> bool)
 	post_h(p, n, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 26:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 40:5\<close>
 definition
 	post_h :: "P\<Rightarrow> N\<Rightarrow> P \<Rightarrow> bool"
 where
@@ -271,12 +357,12 @@ where
 \<comment>\<open>VDM source: q: (Q * N -> Q)
 	q(q0, n) ==
 mu(q0, p |-> h((q0.p), n))\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 30:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 44:5\<close>
 
 \<comment>\<open>VDM source: pre_q: (Q * N +> bool)
 	pre_q(q0, n) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 30:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 44:5\<close>
 definition
 	pre_q :: "Q\<Rightarrow> N \<Rightarrow> bool"
 where
@@ -288,7 +374,7 @@ where
 \<comment>\<open>VDM source: post_q: (Q * N * Q +> bool)
 	post_q(q0, n, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 30:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 44:5\<close>
 definition
 	post_q :: "Q\<Rightarrow> N\<Rightarrow> Q \<Rightarrow> bool"
 where
@@ -307,12 +393,12 @@ where
 \<comment>\<open>VDM source: f: (nat -> nat)
 	f(x) ==
 (x + 1)\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 48:5\<close>
 
 \<comment>\<open>VDM source: pre_f: (nat +> bool)
 	pre_f(x) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 48:5\<close>
 definition
 	pre_f :: "VDMNat \<Rightarrow> bool"
 where
@@ -324,7 +410,7 @@ where
 \<comment>\<open>VDM source: post_f: (nat * nat +> bool)
 	post_f(x, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 48:5\<close>
 definition
 	post_f :: "VDMNat\<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -341,7 +427,7 @@ where
 
 	
 \<comment>\<open>VDM source: v1:nat = let x:nat = f(1) in x\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 53:5\<close>
 abbreviation
 	v1 :: "VDMNat"
 where
@@ -364,7 +450,7 @@ where
 	
 	
 \<comment>\<open>VDM source: v2:nat = let x:nat1 = f(1) in x\<close>
-\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 41:5\<close>
+\<comment>\<open>in 'TestV2IExprsSpecial' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IExprsSpecial.vdmsl) at line 55:5\<close>
 abbreviation
 	v2 :: "VDMNat"
 where

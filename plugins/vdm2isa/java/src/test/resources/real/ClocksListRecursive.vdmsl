@@ -342,10 +342,10 @@ functions
 	feedthroughSatisfied(fmu, outputLF)==
 		forall i in set fmu.inputs & i.ref in set outputLF.dependsOn 
             --@LF map application alongside record projection is yet to be handled! 
-			--and (i.contract = <reactive> => fmu.env(i.ref).time >= fmu.time)
-			--and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
-   			and (i.contract = <reactive> => let value: Value = fmu.env(i.ref) in value.time >= fmu.time)
-			and (i.contract = <delayed> => let value: Value = fmu.env(i.ref) in value.time = fmu.time)
+			and (i.contract = <reactive> => fmu.env(i.ref).time >= fmu.time)
+			and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
+   			--and (i.contract = <reactive> => let v: Value = fmu.env(i.ref) in v.time >= fmu.time)
+			--and (i.contract = <delayed> => let v: Value = fmu.env(i.ref) in v.time = fmu.time)
 	pre forall i in set fmu.inputs & i.causality = <inputLF>;
 
 	/*
@@ -363,8 +363,10 @@ functions
 	preStepT(fmu, stepSize)==
 		forall i in set fmu.inputs &
                 --@LF maps		 		
-                     (i.contract = <reactive> => let value:Value = fmu.env(i.ref) in value.time.r = fmu.time.r + stepSize)
-					and (i.contract = <delayed> => let value:Value = fmu.env(i.ref) in value.time = fmu.time)
+			 		(i.contract = <reactive> => fmu.env(i.ref).time.r = fmu.time.r + stepSize)
+					and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time)
+                --     (i.contract = <reactive> => let v:Value = fmu.env(i.ref) in v.time.r = fmu.time.r + stepSize)
+				--	and (i.contract = <delayed> => let v:Value = fmu.env(i.ref) in v.time = fmu.time)
 			and stepSize >= 0.0 and fmu.mode = <STEP>;
 
 	preStepE: FMU -> bool
