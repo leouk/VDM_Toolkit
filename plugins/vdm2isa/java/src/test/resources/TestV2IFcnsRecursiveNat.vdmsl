@@ -7,17 +7,8 @@ functions
 	g(x) == if x = 0 then 10 else g(x-1)+x
 	measure x;
 
-	f: set of nat -> nat
-	f(s) == if s = {} then 0 else let x in set s in f(s \ {x}) + x
-	measure card s;
-
-	f': set of nat -> nat
-	f'(s) == 
-		cases s:
-			{} -> 0,
-			{x} union xs -> x + f'(xs)
-		end
-	measure card s;
-
+	g': seq of nat -> nat
+	g'(x) == if x = [] then 0 else hd x + g'(tl x)
+	measure len x;
 					
 end TestV2IFcnsRecursiveNat

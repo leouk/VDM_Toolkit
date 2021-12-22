@@ -23,6 +23,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
+import vdm2isa.lex.IsaItem;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -794,7 +795,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+		sb.append(IsaTemplates.translateDefinition(
+			//TODO not yet ideal, given multiple equations are possible, but okay for now. 
+			recursive ? IsaItem.FUNCTION : IsaItem.DEFINITION,
+			this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 
 		// add lemmas statement!
 		Map<TRSpecificationKind, TCNameSet> callMap = this.getCallMap();

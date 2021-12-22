@@ -30,6 +30,7 @@ public final class IsaTemplates {
     private static final String MODULE       = "(* VDM to Isabelle Translation @%1$s\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%2$s\n%3$s\n*)\ntheory %4$s\nimports %5$s\nbegin\n\n%6$s\nend";
     private static final String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
     private static final String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
+    private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
 
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
@@ -131,20 +132,20 @@ public final class IsaTemplates {
     }
 
     //TODO perhaps have multiple inType and inVars params? 
-    public static final String translateDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    public static final String translateDefinition(IsaItem item, LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
     {
         assert name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
         // null input types leads to just the resulting type as the signature, 
         // e.g. basic type abbreviation invariants or function constants
         String signature = inType != null ? inType + IsaToken.SPACE.toString() + IsaToken.FUN.toString() + IsaToken.SPACE.toString() + outType : outType;
-        sb.append(String.format(DEFINITION, name, signature, inVars, exp));
+        sb.append(String.format(item.equals(IsaItem.DEFINITION) ? DEFINITION : FUNCTION, name, signature, inVars, exp));
         // do not consider for the mapping of "known" translation local definitions, as they might
         // appear multiple times, due to the type checker having created them and sprinkled around 
         // the TRNode AST for various uses. The actual string will still be returned, so care needs 
         // to be taken here by caller to consider whether to add local definitions to the output or not. 
         if (!local)
-            updateTranslatedIsaItem(module, name, IsaItem.DEFINITION);
+            updateTranslatedIsaItem(module, name, item);
         return sb.toString();
     }
     
@@ -164,7 +165,7 @@ public final class IsaTemplates {
     public static final String translateInvariantDefinition(LexLocation moduleLocation, String name, String inType, String inVars, String exp, boolean local)
     {
         assert name != null && /*inType != null && */ inVars != null && exp != null;
-        return translateDefinition(moduleLocation, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        return translateDefinition(IsaItem.DEFINITION, moduleLocation, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static final String isabelleIdentifier(String vdmIdentifier)
