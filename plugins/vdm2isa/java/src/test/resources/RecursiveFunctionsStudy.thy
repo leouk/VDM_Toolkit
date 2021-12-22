@@ -129,6 +129,7 @@ function
   where
   "sum {} = 0" 
 | "x \<notin> s \<Longrightarrow> sum ({x} \<union> s) = x + (sum s)"
+  oops
 
 function 
   f' :: "VDMNat VDMSet \<Rightarrow> VDMNat" 
@@ -136,6 +137,7 @@ function
   "f' {} = 0" 
 | "x \<notin> s \<Longrightarrow> f' ({x} \<union> s) = x + (f' s)"
      apply simp_all
+  thm equals0I mk_disjoint_insert
    apply (metis equals0I mk_disjoint_insert)
   apply (elim equalityE, simp)
   apply safe  
@@ -156,8 +158,22 @@ g(s) ==
     {x} union xs \<rightarrow> x + g(xs)
   end
 *)
-function
-  g :: "nat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat"
+fun
+  g' :: "VDMNat VDMSeq \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat"
   where
-  "g n s = if "
+  "g' [] s = (if s = {} then 0 else undefined)"
+| "g' (x#xs) s = (if x \<in> s then x + (g' xs (s-{x})) else (g' xs s))"
+
+function
+  g :: "VDMNat VDMSeq \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat"
+  where
+  "g [] {} = 0"
+| "g (x#xs) s = (if x \<in> s then x + (g xs (s-{x})) else (g xs s))"
+     apply simp_all
+  sorry
+termination
+  apply auto
+  oops
+
+value "g' [1,2,3,4,5,6] {1,2,3,3,3}"
 end
