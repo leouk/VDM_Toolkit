@@ -1,4 +1,4 @@
-module Clocks
+module ClocksListRecursive
 exports all
 definitions
 /**
@@ -134,6 +134,9 @@ definitions
 	FMUModeLF = <INIT> | <DONE> | <STEP> | <EVENT> -- Mode of the FMU
 	;
 
+    Clocks = seq of Clock 
+    inv c == len c = card elems c;
+
 	/**
 	 * An FMU is comprised of a set of clocks and variables, plus an environment that holds
 	 * the current values for both. The references must be unique and the references within
@@ -141,7 +144,8 @@ definitions
 	 */
 	FMU ::
 		name				: Name				-- m
-		clocks				: set of Clock		-- Ucm + Ycm
+        --@LF made this sequence to allow for the recursion
+		clocks				: Clocks		-- Ucm + Ycm
 		inputs				: set of Variable	-- Um 
         outputs             : set of Variable   -- Ym
 		mode				: FMUModeLF
@@ -152,14 +156,14 @@ definitions
 		activeEquations		: set of Equation	-- I think this needs to be a set of reference
 	inv fmu ==
 		let vars = fmu.inputs union fmu.outputs in
-		let crefs = { c.ref | c in set fmu.clocks },
+		let crefs = { c.ref | c in seq fmu.clocks },
 			vrefs = { v.ref | v in set vars},
 			refs  = crefs union vrefs
 		in
             -- The maximal step cannot be negative
             fmu.maxStep >= 0.0
 			-- All clock and variable references are unique
-			and card refs = card fmu.clocks + card vars
+			and card refs = len fmu.clocks + card vars
 			-- All references in the environment are defined
 			and (dom fmu.env subset refs)
 			-- All active clocks are defined
@@ -241,31 +245,32 @@ types
 			fmuref.name in set dom m.fmus
 			-- Every connection's source is an output from its FMU
 			and let fmu = m.fmus(fmuref.name) in
-				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <outputLF>)
+				exists v in seq fmu.clocks & fmuref.ref = v.ref and v.type = <outputLF>)
 		and
 		(forall fmuref in set rng m.clockConnections &
 			-- Every connection's destination is a known FMU
 			fmuref.name in set dom m.fmus
 			-- Every connection's destination is an input of its FMU
 			and let fmu = m.fmus(fmuref.name) in
-				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <inputLF>)
+				exists v in seq fmu.clocks & fmuref.ref = v.ref and v.type = <inputLF>)
 		and dom m.clockConnections inter dom m.connections = {}
 		and rng m.clockConnections inter rng m.connections = {};
 
 functions
 	--@LF -verbose 
-	createFMURefs: FMU * set of Ref * set of FMURef -> set of FMURef
-	createFMURefs(fmu, clocks, res)==
-		if clocks = {} then res
-		else let clock in set clocks in
-		createFMURefs(fmu, clocks \ {clock}, res union {mk_FMURef(fmu.name, clock)})
-	measure card clocks;
+	-- createFMURefs': FMU * set of Ref * set of FMURef -> set of FMURef
+	-- createFMURefs'(fmu, clocks, res)==
+	-- 	if clocks = {} then res
+	-- 	else let clock in set clocks in
+	-- 	createFMURefs'(fmu, clocks \ {clock}, res union {mk_FMURef(fmu.name, clock)})
+	-- measure card clocks;
 
-	createFMURefs': FMU * seq of Ref * set of FMURef -> set of FMURef
-	createFMURefs'(fmu, clocks, res)==
+    --@LF taming recursion a bit; will percolate differences through everywhere.
+	createFMURefs: FMU * seq of Ref * set of FMURef -> set of FMURef
+	createFMURefs(fmu, clocks, res)==
 		if clocks = [] then res
 		else 		
-		createFMURefs'(fmu, tl clocks, res union {mk_FMURef(fmu.name, hd clocks)})
+		createFMURefs(fmu, tl clocks, res union {mk_FMURef(fmu.name, hd clocks)})
 	measure len clocks;
 	
 types  
@@ -292,8 +297,8 @@ types
 		valueMap : map FMURef to Value
 	inv imp ==
 		let fmus = imp.scenario.fmus in
-		let inputclocks = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <inputLF> }, {}) | fmu in set rng fmus } in
-		let outputclocks = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <outputLF> }, {}) | fmu in set rng fmus } in
+		let inputclocks = dunion {createFMURefs(fmu, [clock.ref | clock in seq fmu.clocks & clock.type = <inputLF>], {}) | fmu in set rng fmus } in
+		let outputclocks = dunion {createFMURefs(fmu, [clock.ref | clock in seq fmu.clocks & clock.type = <outputLF> ], {}) | fmu in set rng fmus } in
 		let clocks = inputclocks union outputclocks
 		in
 		imp.activeClocks union imp.inactiveClocks = clocks  -- a clock is either inactive or active
@@ -305,7 +310,7 @@ types
 		and imp.relevantOutputClocks subset outputclocks -- a relevant output clock needs to be an output clock
 		and imp.relevantInputClocks inter imp.relevantOutputClocks = {}
 		--and imp.activeEquations = dunion {fmu.activeEquations | fmu in set rng fmus} -- Equations are actived by the clocks
-		and dom imp.schedule = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <inputLF> and clock.interval <> <triggered>}, {}) | fmu in set rng fmus }-- We only have time based clocks in the schedule
+		and dom imp.schedule = dunion {createFMURefs(fmu, [clock.ref | clock in seq fmu.clocks & clock.type = <inputLF> and clock.interval <> <triggered>], {}) | fmu in set rng fmus }-- We only have time based clocks in the schedule
 		---and imp.activeEquations = {c.equations | c in set clocks & c.ref in set imp.activeClocks} -- Invariant for the paper TYPE MISMATCH
 		--@LF this will demand ":: ord" instantiation over type Time. 
 		and imp.endtime >= imp.time -- The simulation cannot not proceed once the endtime is reached
@@ -346,12 +351,12 @@ functions
 
 	preSetC: FMU * Ref * bool -> bool
 	preSetC(fmu, clock, val)==
-	 	exists v in set fmu.clocks & v.ref = clock and v.type = <inputLF>
+	 	exists v in seq fmu.clocks & v.ref = clock and v.type = <inputLF>
 			and val <=> not clock in set fmu.activeClocks; -- We can only activate a clock that 
 
 	preGetC: FMU * Ref -> bool
 	preGetC(fmu, clock)==
-	 	exists v in set fmu.clocks & v.ref = clock and v.type = <outputLF>
+	 	exists v in seq fmu.clocks & v.ref = clock and v.type = <outputLF>
 		 and fmu.mode = <EVENT>; -- We can only get an output clock
 
 	/**
@@ -411,7 +416,7 @@ functions
 		--@LF this gets a union type and thus the error about it having to be "named"! 
 		--	  will return a <NaN>, just to see if it solves
 		<NaN>--is not yet specified
-	pre exists v in set fmu.clocks & v.ref = ref
+	pre exists v in seq fmu.clocks & v.ref = ref
 		and v.interval in set { <tunable>, <changing>, <countdown> };
 
 	/**
@@ -437,8 +442,8 @@ functions
 	 */
 	derefClock: FMU * Ref -> Clock
 	derefClock(fmu, ref) ==
-		iota c in set fmu.clocks & c.ref = ref
-	pre exists c in set fmu.clocks & c.ref = ref;
+		iota c in seq fmu.clocks & c.ref = ref
+	pre exists c in seq fmu.clocks & c.ref = ref;
 
 	/**
 	 * Move all relevant FMUs into event mode.
@@ -488,7 +493,7 @@ functions
 	updateEnvironmentClock : Importer * FMU * Ref * bool -> Importer
 	updateEnvironmentClock(I, fmu, clock, val)==
 		let fmuref = mk_FMURef(fmu.name, clock),
-			activatedVariables = createFMURefs(fmu, dunion {c.equations | c in set fmu.clocks & clock = c.ref}, {}) in
+			activatedVariables = createFMURefs(fmu, dunion {c.equations | c in seq fmu.clocks & clock = c.ref}, {}) in
 		mu(I,
 			scenario |-> mu(I.scenario, fmus |-> I.scenario.fmus ++ {fmu.name |-> fmu}),
 			activeClocks |-> if val then I.activeClocks union {fmuref} else I.activeClocks \ {fmuref},
@@ -516,7 +521,7 @@ functions
 		) in
 		updateEnvironmentClock(I1, fmuUpdated, clock, val.value)
 	pre mk_FMURef(fmu.name,clock) in set I.relevantOutputClocks -- a clock should be relevant if we should query it
-		and clock in set {c.ref | c in set fmu.clocks & c.type = <inputLF>}; 
+		and clock in set {c.ref | c in seq fmu.clocks & c.type = <inputLF>}; 
 
 
 	/*
@@ -526,7 +531,7 @@ functions
 	setClock(I, fmu, clock, val)==
 		let fmuUpdated = set_cm(fmu,clock, val),
 			fmuref = mk_FMURef(fmu.name, clock) in
-		let feedthroughClocks = {mk_FMURef(fmu.name, c.ref) | c in set fmu.clocks & clock in set c.dependsOn} in
+		let feedthroughClocks = {mk_FMURef(fmu.name, c.ref) | c in seq fmu.clocks & clock in set c.dependsOn} in
 		let I1 = mu(I,
 			valueMap |-> {fmuref} <-: I.valueMap,
 			relevantInputClocks |-> I.relevantInputClocks \ {fmuref}, -- remain the same
@@ -563,7 +568,7 @@ functions
 	--@LF -verbose
 	updateEnvironmentEquation : Importer * FMU * FMURef -> Importer
 	updateEnvironmentEquation(I, fmu, equation)==
-		let triggeredClocks = {clock | clock in set fmu.clocks & equation.ref in set clock.dependsOn} in
+		let triggeredClocks = {clock | clock in seq fmu.clocks & equation.ref in set clock.dependsOn} in
 		-- We need to check if we triggered any clocks by setting the variable
 		let triggeredInputs = {mk_FMURef(equation.name, inputClock.ref) | inputClock in set triggeredClocks & inputClock.type <> <inputLF> },
 			triggeredOutputs = {mk_FMURef(equation.name, outputClock.ref)  | outputClock in set triggeredClocks & outputClock.type <> <outputLF> } in
@@ -766,7 +771,7 @@ updateSchedule(I, fmus, intervalSet)==
 	else
 	let name in set fmus in
 		let fmu = I.scenario.fmus(name) in
-			let relevantClocks = {c.ref | c in set fmu.clocks & c.interval in set intervalSet} in  
+			let relevantClocks = {c.ref | c in seq fmu.clocks & c.interval in set intervalSet} in  
 				let scheduleEntries = calculateSchedule(fmu, relevantClocks, {|->}) in
 					let I1 = mu(I, schedule |-> I.schedule ++ scheduleEntries) in
 						updateSchedule(I1, fmus \ {name}, intervalSet)
@@ -784,7 +789,7 @@ measure card fmus;
 		and fmusSynchronized(I.scenario)
 		and variablesSynchronized(I.scenario)
 	post 
-		let timeBasedClocks = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <inputLF> and clock.interval <> <triggered>}, {}) | fmu in set rng I.scenario.fmus}
+		let timeBasedClocks = dunion {createFMURefs(fmu, [clock.ref | clock in seq fmu.clocks & clock.type = <inputLF> and clock.interval <> <triggered>], {}) | fmu in set rng I.scenario.fmus}
 		in 
 		dom RESULT.schedule = timeBasedClocks
 		-- all time-based clocks must have a schedule
@@ -1014,4 +1019,4 @@ pre
 let cref = {c.ref | c in set fmu.clocks & c.type = <inputLF> and c.interval <> <triggered> } in 
 	clocks subset cref
 measure card clocks; 
-end Clocks
+end ClocksListRecursive
