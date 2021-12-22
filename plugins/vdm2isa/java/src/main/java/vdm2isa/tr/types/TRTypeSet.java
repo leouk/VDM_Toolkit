@@ -372,7 +372,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		return sb.toString();
 	}
 
-	protected String prefixTranslate(TRType t)
+	public String prefixTranslate(TRType t)
 	{
 		assert this.contains(t);
 		return t instanceof TRQuoteType ? 
