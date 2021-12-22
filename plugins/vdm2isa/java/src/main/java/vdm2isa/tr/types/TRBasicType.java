@@ -159,6 +159,12 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
+	public boolean isUnion()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean isNumericType() {
         return NUMERIC_TYPES.contains(isaToken());
     }
