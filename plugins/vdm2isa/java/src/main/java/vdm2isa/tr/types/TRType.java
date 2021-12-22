@@ -8,7 +8,6 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
 import com.fujitsu.vdmj.tc.types.TCType;
-import com.fujitsu.vdmj.typechecker.TypeComparator;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -250,8 +249,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	public abstract <R, S> R apply(TRTypeVisitor<R, S> visitor, S arg);
 
     public boolean compatible(TRType type) {
-        return TypeComparator.compatible(type.getVDMType(), getVDMType());
-
+        return TRTypeComparator.compatible(type, this);
     }
 
 	public TCType getVDMType() {
