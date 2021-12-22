@@ -1,0 +1,44 @@
+module TestV2IExprsSpecial
+exports all
+definitions
+types
+	V :: x: nat;
+	N = nat1;
+	M = map N to V;
+	
+	U = nat | bool;
+	T :: u : U;
+	P = map N to T;
+	
+	Q :: p: P;
+	
+functions
+	-- let call with wider type than user "wanted"
+	f: nat -> nat
+	f(x) == x+1;
+	
+	-- implicit the projection on map application
+	g: M * N -> nat1
+	g(m, n) == m(n).x + n
+	pre n in set dom m;
+
+	-- project map application into lambda for the "the" optional projection
+	g': M * N -> nat1
+	g'(m, n) == let r = m(n) in r.x + n
+	pre n in set dom m;
+	
+	-- project union type into record then into map
+	h: P * N -> P
+	h(p, n) == p ++ { n |-> mk_T(n) };
+	
+	-- record update of map update of union type
+	q: Q * N -> Q
+	q(q0, n) == mu(q0, p |-> h(q0.p, n));
+	
+values
+	--VDMJ inferred type of x as result type of f
+	v1 : nat = let x = f(1) in x;
+	--VDMJ infers type of x as nat, but user imposes extra invariant on it being nat1
+	v2 : nat = let x: nat1 = f(1) in x;
+end TestV2IExprsSpecial
+
