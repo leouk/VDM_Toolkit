@@ -298,7 +298,8 @@ public enum IsaToken {
 			IsaTemplates.ALL_ISA_TOKENS.add(isa);//this);
 	}
 
-	//@todo add infixlr notation here to know where/when to "pad" the string! 
+	//TODO add infixlr notation here to know where/when to "pad" the string?
+	@Override
 	public String toString()
 	{
 		return isa;
