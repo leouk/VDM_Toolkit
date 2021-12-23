@@ -3,7 +3,6 @@ package vdm2isa.tr.expressions.visitors;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
-import vdm2isa.tr.TRVisitorSet;
 import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRFunctionInstantiationExpression;
@@ -14,7 +13,6 @@ public class TRFunctionCallFinder extends TRLeafExpressionVisitor<TCNameToken, T
     public TRFunctionCallFinder()
     {
         super();
-        visitorSet = new TRVisitorSet<TCNameToken, TCNameList, Object>(){};
     }
 
     @Override
