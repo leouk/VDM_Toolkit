@@ -69,7 +69,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	//private final TCNameToken name;
 	private final TCNameList typeParams;
-	private final TRFunctionType type;
+	private TRFunctionType type;
 	private final TRPatternListList paramPatternList;
 	private final TRExpression body;
 	private final TRExpression precondition;
@@ -175,9 +175,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				this.postdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
 				type, isCurried, paramPatternList, paramDefinitionList, TRSpecificationKind.POST); 
 		}
-
+		
 		this.paramDefinitionList = figureOutParamDefinitionList();
 
+		// updates specification for any generic parameters
+		updateSpecificationGenericParameters();
+				
 		// setup various bits later, as some might get created above.
 		TRNode.setup(type, paramPatternList, body, precondition, postcondition, measureExp, predef, postdef, paramDefinitionList, actualResult, expectedResult);
 
@@ -202,6 +205,19 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			) 
 			System.out.println(toString());
 	} 
+
+	/**
+	 * Update specification generic types to cater for type invariant calls passed as boolean valued functions on 
+	 * each of the involved generic parameters. 
+	 */
+	private void updateSpecificationGenericParameters()
+	{
+		if (!typeParams.isEmpty())
+		{
+			type = TRFunctionType.expandGenericTypes(type, typeParams);
+		}
+	}
+
 
 	@Override
 	public String toString()

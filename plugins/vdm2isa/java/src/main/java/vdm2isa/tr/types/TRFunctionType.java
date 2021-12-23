@@ -12,6 +12,7 @@ import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
+import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 
 public class TRFunctionType extends TRAbstractInnerTypedType
@@ -303,4 +304,34 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		TRNode.setup(result);
 		return result;
 	}
+
+	/**
+	 * For the given function type, expand its generic types (if any) to consider invariant calls for each invovled generic parameter
+	 * e.g. f[@S,@T]: seq of @S -> seq of @T leads to f: ('S => bool) => ('S VDMSeq) => ('T VDSeq).
+	 * That is, it expands the input (but not result) parameters. The result invariant check will be on the post condition only. 
+	 * @param type
+	 * @param typeParams
+	 * @return
+	 */
+    public static TRFunctionType expandGenericTypes(TRFunctionType type, TCNameList typeParams) 
+	{
+		assert type != null && typeParams != null;
+		TRFunctionType result = type;
+		if (result.parameters.hasGenericTypeParameters())
+		{
+			TRTypeList expandedTypeParameters = new TRTypeList();
+			for(TRType t : result.parameters)
+			{
+				if (t instanceof TRParameterType)
+				{
+					TRParameterType ptype = (TRParameterType)t;
+					
+				}
+				expandedTypeParameters.add(t);
+			}
+			// given there is at least one generic, *must* be bigger
+			assert expandedTypeParameters.size() > result.parameters.size();
+		}
+        return result;
+    }
 }
