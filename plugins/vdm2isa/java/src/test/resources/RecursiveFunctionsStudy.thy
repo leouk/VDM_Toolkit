@@ -129,7 +129,7 @@ function
   where
   "sum {} = 0" 
 | "x \<notin> s \<Longrightarrow> sum ({x} \<union> s) = x + (sum s)"
-
+  oops
 function 
   f' :: "VDMNat VDMSet \<Rightarrow> VDMNat" 
   where
@@ -157,7 +157,20 @@ g(s) ==
   end
 *)
 function
-  g :: "nat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat"
+  g :: "VDMNat VDMSet \<Rightarrow> VDMNat"
   where
-  "g n s = if "
+  "g {} = 0"
+| "g (insert x s) = (if x \<in> s then x + g(s - {x}) else x + g s)" 
+  apply blast
+    apply simp
+   apply force
+  oops
+
+function 
+  g :: "nat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat"
+where
+  "g 0 s = 0"
+| "g (Suc n) (insert v s) = v + (g n (s - {v}))"
+     apply simp_all
+  oops
 end
