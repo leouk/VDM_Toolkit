@@ -97,7 +97,13 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	@Override
 	public String translate()
 	{
-		return parameters.translate() + " " + isaToken().toString() + " " + getResultType().translate();
+		StringBuilder sb = new StringBuilder();
+		sb.append(parameters.translate());
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(isaToken().toString());
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(getResultType().translate());
+		return sb.toString();
 	}
 	
 	@Override
@@ -309,10 +315,18 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	private static final TRTypeList figureOutParametricTypes(TRType t)
 	{
 		TRParametricTypeFinder pfinder = new TRParametricTypeFinder();
+		// find all internal parameter types
 		TRParameterTypeSet ptfound = t.apply(pfinder, null);
 		TRTypeList result = new TRTypeList();
-		result.addAll(ptfound);
+
+		// create a (@T => bool) for every @T found
+		for(TRType pt : ptfound)
+		{
+			assert pt instanceof TRParameterType;
+			result.add(TRFunctionType.newFunctionType(TRBasicType.boolType(t.location), pt));
+		}
 		TRNode.setup(result);
+		assert result.size() == ptfound.size();
 		return result;
 	}
 
@@ -338,6 +352,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 			expandedTypeParameters.addAll(ptfound);
 			expandedTypeParameters.add(t);
 		}
+		//TODO does this cater for curried? Leave for now. 
 		ptfound = figureOutParametricTypes(result.getResultType());
 		extraTypes += ptfound.size();
 		expandedTypeParameters.addAll(ptfound);
