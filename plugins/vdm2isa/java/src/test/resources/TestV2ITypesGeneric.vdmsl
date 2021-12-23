@@ -1,0 +1,16 @@
+module TestV2ITypesGeneric
+exports all
+definitions
+functions
+	injective[@T]: seq of @T +> bool
+	injective(ss) == card (elems ss) = len ss;
+
+	--this will generate; thus will fail given no type conversion between @S and @T available!  
+	--pre_f : (@S -> bool) -> seq of @S -> bool 
+	--post_f: (@S -> bool) -> seq of @S -> (@T -> bool) -> seq of @T -> bool 
+	--f[@S,@T]: seq of @S -> seq of @T
+	--f(s) == s;
+	f[@S, @T]: seq of @S -> seq of @T
+	f(s) == s;
+	
+end TestV2ITypesGeneric
