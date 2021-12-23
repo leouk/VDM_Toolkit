@@ -142,7 +142,7 @@ map TCSeqCompExpression{location, first, bind, predicate, def, exptype} to TRSeq
 map TCMapCompExpression{location, first, bindings, predicate, def, exptype} to TRMapCompExpression(location, this, first, bindings, predicate, def, exptype);
 
 map TCNilExpression{location, exptype, exptype} to TRNilExpression(location, this, exptype);
-map TCApplyExpression{type, root, args, exptype} to TRApplyExpression(this, type, root, args, exptype);
+map TCApplyExpression{type, root, args, argtypes, recursiveCycles, exptype} to TRApplyExpression(this, type, root, args, argtypes, recursiveCycles, exptype);
 map TCIfExpression{location, ifExp, thenExp, elseList, elseExp, exptype} to TRIfExpression(location, this, ifExp, thenExp, elseList, elseExp, exptype);
 map TCElseIfExpression{location, elseIfExp, thenExp, exptype} to TRElseIfExpression(location, this, elseIfExp, thenExp, exptype);
 map TCVariableExpression{location, name, original, vardef, exptype} to TRVariableExpression(location, this, name, original, vardef, exptype);
