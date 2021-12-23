@@ -51,8 +51,8 @@ public class TRParameterType extends TRType {
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getFormattingSeparator());
-        sb.append(IsaToken.comment(IsaInfoMessage.ISA_GENERIC_TYPE_1P.format(name.toString()), getFormattingSeparator()));
+        //sb.append(getFormattingSeparator());
+        //sb.append(IsaToken.comment(IsaInfoMessage.ISA_GENERIC_TYPE_1P.format(name.toString()), getFormattingSeparator()));
         sb.append(IsaToken.INV.toString());
         sb.append(name.toString());//IsaToken.TRUE.toString());
         sb.append(varName != null ? IsaToken.SPACE.toString() + varName : "");
