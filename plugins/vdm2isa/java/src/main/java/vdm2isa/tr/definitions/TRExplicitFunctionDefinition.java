@@ -70,7 +70,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	//private final TCNameToken name;
 	private final TCNameList typeParams;
 	private TRFunctionType type;
-	private final TRPatternListList paramPatternList;
+	private TRPatternListList paramPatternList;
 	private final TRExpression body;
 	private final TRExpression precondition;
 	private final TRExpression postcondition;
@@ -215,6 +215,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		if (!typeParams.isEmpty())
 		{
 			type = TRFunctionType.expandGenericTypes(type, typeParams);
+			paramPatternList = type.expandGenericTypesPatterns(paramPatternList);
 		}
 	}
 

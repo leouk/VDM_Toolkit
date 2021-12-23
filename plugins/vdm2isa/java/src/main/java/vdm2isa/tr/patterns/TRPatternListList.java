@@ -27,7 +27,7 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 
 	private TRPatternList flatPatternList = null;
 
-	protected TRPatternListList()
+	public TRPatternListList()
 	{
 		super();
 	}
