@@ -108,6 +108,12 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
 		return true;
 	}
 
+	@Override
+	public boolean isUnion()
+	{
+		return true;
+	}
+	
     // @Override 
     // public String getName()
     // {

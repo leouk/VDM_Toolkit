@@ -18,7 +18,7 @@ public class Pair<K, V> implements Serializable {
 
     @Override
     public String toString() {
-        return key + "=" + value;
+        return String.valueOf(key) + "=" + String.valueOf(value);
     }
 
     @Override

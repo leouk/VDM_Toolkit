@@ -55,8 +55,8 @@ public enum IsaErrorMessage {
     "Invalid VDMSL cases expression: empty cases."),    
     VDMSL_INVALID_TLD_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 17, 
     "Invalid VDMSL top-level definition to process exports for: %1$s"),
-
-
+    VDMSL_FIELD_INCOMPATIBLE_UNION_TYPE_4P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 18, 
+    "Incompatible field (%2$s) type in `mk_%1$s` expression: expected `%3$s` but found `%4$s`."),
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,

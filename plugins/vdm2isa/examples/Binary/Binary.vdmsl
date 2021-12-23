@@ -2,76 +2,75 @@ module Binary
 imports
 from VDMUtil
 	functions
-		val2seq_of_char renamed val2str
-		seq_of_char2val renamed str2val
+		val2seq_of_char renamed val2str;
+		seq_of_char2val renamed str2val;
 exports
 	values
-		BITS: set of nat
-		BITS_PER_BYTE: nat1
-		BYTE_SIZE: nat1
-		WORD_SIZE: nat1
+		BITS: set of nat;
+		BITS_PER_BYTE: nat1;
+		BYTE_SIZE: nat1;
+		WORD_SIZE: nat1;
 	types
-		struct String
-		struct Bit
-		struct Byte
-		struct BitVector
-		struct BinByte0
-		struct BinByte
-		struct ByteVector
-		struct HexDigit
-		struct HexString
-		struct HexStringExact2
-		struct UniqueHexStringList1
-		struct CannonicalHexString
+		struct String;
+		struct Bit;
+		struct Byte;
+		struct BitVector;
+		struct BinByte0;
+		struct BinByte;
+		struct ByteVector;
+		struct HexDigit;
+		struct HexString;
+		struct HexStringExact2;
+		struct UniqueHexStringList1;
+		struct CannonicalHexString;
 	functions
 		--@doc transforms a Byte (0.255) to a partial bit vector (e.g. up to needed number of bits) 
 		--@doc transforms a partial bit vector (e.g. up to needed number of bits) to a Byte (0..255)
-		bv2nat: BitVector -> nat
-		nat2bv: nat -> BitVector
+		bv2nat: BitVector -> nat;
+		nat2bv: nat -> BitVector;
 		
 		--@doc like byte2bin but return a bit vector with BITS_PER_BYTE length (padded with false)
 		--@doc like bin2byte but only accepts a bit vector with BITS_PER_BYTE length
-		byte2bin: Byte -> BinByte
-		bin2byte: BinByte -> Byte
+		byte2bin: Byte -> BinByte;
+		bin2byte: BinByte -> Byte;
 		
-		hasSizeBytes: nat * nat1 -> bool
-		hasSizeBits: nat * nat1 -> bool
+		hasSizeBytes: nat * nat1 -> bool;
+		hasSizeBits: nat * nat1 -> bool;
 		
 		--@doc pads a given bit vector to byte size
 		--@doc gets the first enabled bit in a vector (e.g. [F,T,F,F]=3, whereas (seq) index is 6 (padded bin to 8))
 		--		 ex: [F,T,F,F] = [F,F,F,F,F,T,F,F] = Index 6 and Bit 3
 		
-		bvPad: BitVector * nat -> BitVector
-		firstBit: BitVector -> nat
-		firstBitIndex: BitVector -> nat
-		binPad: BinByte0 -> BinByte
-		firstByteIndex: BinByte0 -> Bit
-		firstByteBit: BinByte0 -> Bit
+		bvPad: BitVector * nat -> BitVector;
+		firstBit: BitVector -> nat;
+		firstBitIndex: BitVector -> nat;
+		binPad: BinByte0 -> BinByte;
+		firstByteIndex: BinByte0 -> Bit;
+		firstByteBit: BinByte0 -> Bit;
 		
-		bvAnd: BitVector * BitVector -> BitVector
-		bvOr : BitVector * BitVector -> BitVector
-		bvXor: BitVector * BitVector -> BitVector
+		bvAnd: BitVector * BitVector -> BitVector;
+		bvOr : BitVector * BitVector -> BitVector;
+		bvXor: BitVector * BitVector -> BitVector;
 		
-		bvNot: BitVector -> BitVector
+		bvNot: BitVector -> BitVector;
 		
-		natShl: nat * nat1 -> nat
-		natShr: nat * nat1 -> nat
-		bvShl: BitVector * nat1 -> BitVector
-		bvShr: BitVector * nat1 -> BitVector
+		natShl: nat * nat1 -> nat;
+		natShr: nat * nat1 -> nat;
+		bvShl: BitVector * nat1 -> BitVector;
+		bvShr: BitVector * nat1 -> BitVector;
 		
-		removeLeadingZeroedBits: BitVector -> BitVector
+		removeLeadingZeroedBits: BitVector -> BitVector;
 		
 		--@doc transforms a HexString into a nat and vice-versa
-		hex2nat: HexString -> nat
-		nat2hex: nat -> HexString
+		hex2nat: HexString -> nat;
+		nat2hex: nat -> HexString;
 		
-		hexSizeBytes: HexString -> nat
+		hexSizeBytes: HexString -> nat;
 		
-		fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T
-	  min: nat * nat +> nat
-		minxs_nat: seq1 of nat -> nat 
-		minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
-		injective[@T]: seq of @T +> bool
+		fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T;
+		minxs_nat: seq1 of nat -> nat;
+		minxs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+		injective[@T]: seq of @T +> bool;
 		
 definitions 
 

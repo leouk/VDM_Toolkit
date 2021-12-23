@@ -10,8 +10,14 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.patterns.TRBasicPattern;
+import vdm2isa.tr.patterns.TRPattern;
+import vdm2isa.tr.patterns.TRPatternList;
+import vdm2isa.tr.patterns.TRPatternListList;
+import vdm2isa.tr.types.visitors.TRParametricTypeFinder;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
+import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 
 public class TRFunctionType extends TRAbstractInnerTypedType
@@ -95,7 +101,13 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	@Override
 	public String translate()
 	{
-		return parameters.translate() + " " + isaToken().toString() + " " + getResultType().translate();
+		StringBuilder sb = new StringBuilder();
+		sb.append(parameters.translate());
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(isaToken().toString());
+		sb.append(IsaToken.SPACE.toString());
+		sb.append(getResultType().translate());
+		return sb.toString();
 	}
 	
 	@Override
@@ -123,12 +135,21 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		assert index >= 0 && index < parameters.size();
         StringBuilder sb = new StringBuilder();
-        sb.append(IsaToken.INV.toString());
-        // transform "lambda" => "Lambda" for inv_Lambda call
-        int i = sb.length();
-        sb.append(IsaToken.LAMBDA.vdmToken().toString());
-        sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-        sb.append(IsaToken.SPACE.toString());
+		//if (isParametricInvariantType())
+		//{
+			// only one parameter
+			//assert index == 0 && parameters.get(index) instanceof TRParameterType;
+			//sb.append(parameters.get(index).invTranslate(null));
+		//}
+        if (!isParametricInvariantType())
+		{
+			sb.append(IsaToken.INV.toString());
+			// transform "lambda" => "Lambda" for inv_Lambda call
+			int i = sb.length();
+			sb.append(IsaToken.LAMBDA.vdmToken().toString());
+			sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+			sb.append(IsaToken.SPACE.toString());
+		}
 		sb.append(parameters.get(index).invTranslate(null));
 		return sb.toString();
 	}
@@ -181,6 +202,15 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		parameters.checkForUnionTypes();//"function parameters");
 		super.checkForUnionTypes();
 		//result.checkForUnionTypes(); // equivalent to super.checkUnionTypes(); 
+	}
+
+	/**
+	 * Type parametric invariant types inv_T for generic type @T have function type (@T => bool). 
+	 * @return
+	 */
+	public boolean isParametricInvariantType()
+	{
+		return parameters.size() == 1 && parameters.get(0) instanceof TRParameterType && getResultType().isBooleanType();
 	}
 
 	public TRFunctionType getPreType()
@@ -303,4 +333,102 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		TRNode.setup(result);
 		return result;
 	}
+
+	public final TRPatternListList expandGenericTypesPatterns(TRPatternListList paramPatterns)
+	{
+		
+		TRTypeList paramTypes = TRFunctionType.figureOutParametricTypes(this);
+		TRPatternListList plistlist;
+		if (paramTypes.isEmpty())
+		{
+			plistlist = paramPatterns;
+		}
+		else
+		{
+			plistlist = new TRPatternListList();
+			int extraPatterns = paramTypes.size();
+			for(TRPatternList plist : paramPatterns)
+			{
+				TRPatternList plistresult = new TRPatternList();
+				// put all types in the first plist? 
+				for(TRType t : paramTypes)
+				{
+					assert t instanceof TRFunctionType && ((TRFunctionType)t).isParametricInvariantType();
+					TRFunctionType ptype = (TRFunctionType)t;
+					plistresult.add(TRBasicPattern.identifier(t.location, ptype.parameters.invTranslate()));
+				}
+				paramTypes.clear();
+				// add other parameters
+				for(TRPattern p : plist)
+				{
+					plistresult.add(p);
+				}
+				plistlist.add(plistresult);
+			}
+			assert plistlist.getFlatPatternList().size() == paramPatterns.getFlatPatternList().size() + extraPatterns;
+		}
+		return plistlist;
+	}
+
+	/**
+	 * Find all parametric types wihtin the given type by deeply searching through the type tree.
+	 * @param t
+	 * @return
+	 */
+	public static final TRTypeList figureOutParametricTypes(TRType t)
+	{
+		TRParametricTypeFinder pfinder = new TRParametricTypeFinder();
+		// find all internal parameter types
+		TRParameterTypeSet ptfound = t.apply(pfinder, null);
+		TRTypeList result = new TRTypeList();
+
+		//create a (@T => bool) for every @T found
+		for(TRType pt : ptfound)
+		{
+			assert pt instanceof TRParameterType;
+			result.add(TRFunctionType.newFunctionType(TRBasicType.boolType(t.location), pt));
+		}
+		//result.addAll(ptfound);
+		TRNode.setup(result);
+		assert result.size() == ptfound.size();
+		return result;
+	}
+
+	/**
+	 * For the given function type, expand its generic types (if any) to consider invariant calls for each invovled generic parameter
+	 * e.g. f[@S,@T]: seq of @S -> seq of @T leads to f: ('S => bool) => ('S VDMSeq) => ('T VDSeq).
+	 * That is, it expands the input (but not result) parameters. The result invariant check will be on the post condition only. 
+	 * @param type
+	 * @param typeParams
+	 * @return
+	 */
+    public static final TRFunctionType expandGenericTypes(TRFunctionType type, TCNameList typeParams) 
+	{
+		assert type != null && typeParams != null;
+		TRFunctionType result = type;
+		TRTypeList expandedTypeParameters = new TRTypeList();
+		int extraTypes = 0;
+		TRTypeList ptfound;
+		for(TRType t : result.parameters)
+		{
+			ptfound = figureOutParametricTypes(t);
+			extraTypes += ptfound.size();
+			expandedTypeParameters.addAll(ptfound);
+		}
+		//TODO does this cater for curried? Leave for now. 
+		ptfound = figureOutParametricTypes(result.getResultType());
+		extraTypes += ptfound.size();
+		expandedTypeParameters.addAll(ptfound);
+		// add parameters at the end to make it easy to build patterns 
+		expandedTypeParameters.addAll(result.parameters);
+		assert expandedTypeParameters.size() == result.parameters.size() + extraTypes;
+		//This is not true in general: for f[@S,@T]: seq of @S -> seq of @T, the pre_f will have @S,@T and yet only one is used!
+		//assert extraTypes >= typeParams.size();
+		// if found any generics, then expand the resulting function type. 
+		if (extraTypes > 0)
+		{
+			result = TRFunctionType.newFunctionType(result.getResultType(), expandedTypeParameters, result.partial);
+		}
+        return result;
+    }
 }

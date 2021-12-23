@@ -47,7 +47,7 @@ public class TRMultipleSeqBind extends TRMultipleBind
     public void setup()
     {
         super.setup();
-        if (this.seq == null || !(this.seq.getType() instanceof TRSeqType))
+        if (this.seq == null || !(this.seq.getType().ultimateType() instanceof TRSeqType))
             report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
                 "seq bind",
                 (this.seq == null ? "null" : this.seq.getType().getClass().getSimpleName()),

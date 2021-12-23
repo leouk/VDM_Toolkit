@@ -65,6 +65,15 @@ public class TRExampleLeafVisitor extends TRLeafDefinitionVisitor<TCNameToken, T
 		{
 			return mbindVisitor;
 		}
+
+		@Override
+		protected void setVisitors() {
+		}
+
+		@Override
+		protected TCNameSet newCollection() {
+			return new TCNameSet();
+		}
 	}
 
 	/**

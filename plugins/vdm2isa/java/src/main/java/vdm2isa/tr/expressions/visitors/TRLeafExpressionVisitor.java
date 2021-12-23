@@ -64,7 +64,20 @@ import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
  */
 abstract public class TRLeafExpressionVisitor<E, C extends Collection<E>, S> extends TRExpressionVisitor<C, S>
 {
-	protected TRVisitorSet<E, C, S> visitorSet;
+	protected TRVisitorSet<E, C, S> visitorSet = new TRVisitorSet<E, C, S>()
+	{
+		@Override
+		protected void setVisitors()
+		{
+			expressionVisitor = TRLeafExpressionVisitor.this;
+		}
+
+		@Override
+		protected C newCollection()
+		{
+			return TRLeafExpressionVisitor.this.newCollection();
+		}
+	};
 
 	@Override
 	public C caseCompExpression(TRAbstractCompExpression node, S arg)

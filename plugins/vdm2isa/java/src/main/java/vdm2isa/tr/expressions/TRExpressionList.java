@@ -13,7 +13,6 @@ import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
-import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.types.TRTypeList;
 

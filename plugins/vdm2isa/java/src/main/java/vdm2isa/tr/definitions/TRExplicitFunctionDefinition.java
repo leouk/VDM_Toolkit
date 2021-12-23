@@ -23,6 +23,7 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
+import vdm2isa.lex.IsaItem;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -68,8 +69,8 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 	//private final TCNameToken name;
 	private final TCNameList typeParams;
-	private final TRFunctionType type;
-	private final TRPatternListList paramPatternList;
+	private TRFunctionType type;
+	private TRPatternListList paramPatternList;
 	private final TRExpression body;
 	private final TRExpression precondition;
 	private final TRExpression postcondition;
@@ -174,9 +175,12 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				this.postdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
 				type, isCurried, paramPatternList, paramDefinitionList, TRSpecificationKind.POST); 
 		}
-
+		
 		this.paramDefinitionList = figureOutParamDefinitionList();
 
+		// updates specification for any generic parameters
+		updateSpecificationGenericParameters();
+				
 		// setup various bits later, as some might get created above.
 		TRNode.setup(type, paramPatternList, body, precondition, postcondition, measureExp, predef, postdef, paramDefinitionList, actualResult, expectedResult);
 
@@ -201,6 +205,20 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			) 
 			System.out.println(toString());
 	} 
+
+	/**
+	 * Update specification generic types to cater for type invariant calls passed as boolean valued functions on 
+	 * each of the involved generic parameters. 
+	 */
+	private void updateSpecificationGenericParameters()
+	{
+		if (!typeParams.isEmpty())
+		{
+			type = TRFunctionType.expandGenericTypes(type, typeParams);
+			paramPatternList = type.expandGenericTypesPatterns(paramPatternList);
+		}
+	}
+
 
 	@Override
 	public String toString()
@@ -750,11 +768,29 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 			if (hasUnionTypes())
 			{
+				//TODO union types with with type parameters won't add extended check; leave it for now 
 				fcnBody.append(unionTypesTranslate(body, null));
 			}
 			else
 			{
-				fcnBody.append(body.translate());
+				String bodyStr = body.translate();
+				if (!typeParams.isEmpty())
+				{
+					//TODO should this be added everywhere? Not for now. 
+					StringBuilder paramTypeCheckStr = new StringBuilder();
+					paramTypeCheckStr.append(name.getPostName(location).toString());
+					paramTypeCheckStr.append(IsaToken.SPACE.toString());
+					paramTypeCheckStr.append(fcnParams);
+					paramTypeCheckStr.append(IsaToken.SPACE.toString());
+					paramTypeCheckStr.append(IsaToken.parenthesise(bodyStr));
+					
+					fcnBody.append(IsaToken.comment(IsaInfoMessage.VDM_EXPLICIT_FUNCTION_IMPLICIT_PARAMETER_TYPE_INV_CHECK_1P.format(name.toString()), getFormattingSeparator()));
+					fcnBody.append(body.extendedCheckTranslate(paramTypeCheckStr.toString()));
+				}
+				else
+				{
+					fcnBody.append(body.translate());
+				}
 			}
 
 			if (hasPatternContext)
@@ -794,7 +830,10 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		}
 
 		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+		sb.append(IsaTemplates.translateDefinition(
+			//TODO not yet ideal, given multiple equations are possible, but okay for now. 
+			recursive ? IsaItem.FUNCTION : IsaItem.DEFINITION,
+			this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 
 		// add lemmas statement!
 		Map<TRSpecificationKind, TCNameSet> callMap = this.getCallMap();

@@ -57,6 +57,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
             TRVariableExpression.newVariableExpr(location, /*name,*/ original, exptype),
             new LexKeywordToken(Token.INSET, location),
             TRSetCompExpression.newSetCompExpression(
+                //TODO "the" awareness for expression? Hum...
                 location, expression, bindings, suchThat, 
                 this.def, //new TRMultipleBindListDefinition(location, null, null, null, null, false, false, bindings, defs),
                 TRSetType.newSetType(location, exptype, false)),

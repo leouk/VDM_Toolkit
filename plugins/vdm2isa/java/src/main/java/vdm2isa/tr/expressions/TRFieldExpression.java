@@ -89,8 +89,11 @@ public class TRFieldExpression extends TRExpression {
                         // i.e. only chase the record type for when handling the "final" field in the chain 
                         (object instanceof TRFieldExpression ? 
                             object.getType().getName() : 
-                            object.getRecordType().getName()), field.getName()) + " " +
-                    IsaToken.parenthesise(object.translate())
+                            object.getRecordType().getName()), field.getName()) 
+                    + 
+                    IsaToken.SPACE.toString() 
+                    +
+                    typeConvertTranslate(object, object.getType())
                 );
     }
 

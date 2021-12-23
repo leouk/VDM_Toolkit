@@ -188,6 +188,7 @@ public enum IsaToken {
 	OPTIONAL_SOME(null, "Some"),
 
 	VDMTOOLKIT(null, "VDMToolkit"),
+	ISAR_TYPEPARAM(null, "'"),
 	ISAR_THEOREM(null, "theorem"),
 	ISAR_LEMMA(null, "lemma"),
 	ISAR_LEMMAS(null, "lemmas"),
@@ -297,7 +298,8 @@ public enum IsaToken {
 			IsaTemplates.ALL_ISA_TOKENS.add(isa);//this);
 	}
 
-	//@todo add infixlr notation here to know where/when to "pad" the string! 
+	//TODO add infixlr notation here to know where/when to "pad" the string?
+	@Override
 	public String toString()
 	{
 		return isa;
@@ -312,6 +314,12 @@ public enum IsaToken {
 	{
 		return bracketit(IsaToken.LPAREN, s, IsaToken.RPAREN);
 	}
+
+	public static final String the(String s)
+	{
+		return parenthesise(IsaToken.OPTIONAL_THE.toString() + parenthesise(s));
+	}
+
 
 	public static final String comment(String s)
 	{

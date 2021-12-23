@@ -147,6 +147,13 @@ public class TRUnionType extends TRType implements TRDataType {
 		TRNode.setup(types, definitions);
 	}
 
+	@Override
+	public boolean isUnion()
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean isDataType()
 	{
 		return true;

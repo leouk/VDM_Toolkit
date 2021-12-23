@@ -2,7 +2,6 @@ package vdm2isa.tr.annotations;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotatedExpression;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;

@@ -44,17 +44,6 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		typename = null;
 	}
 
-	public TCTypeList getTCTypeList()
-	{
-		TCTypeList result = new TCTypeList();
-		for(TRType t : this)
-		{
-			if (t != null)
-				result.add(t.getVDMType());
-		}
-		return result;
-	}
-
 	@Override
 	public void setup()
 	{
@@ -122,6 +111,20 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return varNames.size() <= size();
 	}
 
+	@Override
+	protected String invTranslateElement(int index)
+	{
+		return invTranslateElement(index, null);
+	}
+
+	protected String invTranslateElement(int index, String varName)
+	{
+		assert index >= 0 && index < size();
+		TRType t = get(index);
+		// for parametric type invariants, we have to ignore any inv translate calls, given they are given as a synthetic pattern  / type parameter
+		return (t instanceof TRFunctionType && ((TRFunctionType)t).isParametricInvariantType()) ? "" : t.invTranslate(varName);
+	}
+
 	/**
 	 * This call constructs impicit type invariant checks for the given variable names for every TRType in the list.
 	 * Invariant checks are chained with IsaToken.AND, yet the user might want to varry output formatting (e.g. \\n\\t etc.).
@@ -145,13 +148,18 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		if (!isEmpty() && validCall) 
 		{
 			sb.append(IsaToken.LPAREN.toString());
-			sb.append(get(0).invTranslate(varNames.get(0)));
+			String invStr = invTranslateElement(0, varNames.get(0));
+			sb.append(invStr);
 			for (int i = 1; i < varNames.size(); i++)
 			{
-				sb.append(getFormattingSeparator());
-				sb.append(getInvTranslateSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(get(i).invTranslate(varNames.get(i)));
+				if (!invStr.isEmpty())
+				{
+					sb.append(getFormattingSeparator());
+					sb.append(getInvTranslateSeparator());
+					sb.append(getFormattingSeparator());
+				}
+				invStr = invTranslateElement(i, varNames.get(i));
+				sb.append(invStr);
 			}
 			sb.append(IsaToken.RPAREN.toString());
 		}
@@ -177,6 +185,17 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 			result.add(t.getVDMType());
 		}
 		return result;
+	}
+
+	/**
+	 * Type list parameters must take into account function types, which have to be parenthesised, given "=>" binds tighter
+	 * and to the right in comparison to any other operator. 
+	 */
+	@Override
+	protected String translateElement(int index)
+	{
+		String result = super.translateElement(index);
+		return get(index) instanceof TRFunctionType ? IsaToken.parenthesise(result) : result;
 	}
 
 	public static final String translate(TRType... args)

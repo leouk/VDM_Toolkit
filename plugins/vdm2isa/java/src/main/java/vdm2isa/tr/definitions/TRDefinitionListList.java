@@ -15,7 +15,7 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 	private int currentUnionContext;
 
 	// no extended setup() for definition list list
-	protected TRDefinitionListList() 
+	public TRDefinitionListList() 
 	{
 		super();
 		currentUnionContext = 0;
@@ -30,6 +30,7 @@ public class TRDefinitionListList extends TRMappedList<TCDefinitionList, TRDefin
 	public TRDefinitionListList(TCDefinitionListList list) throws Exception
 	{
 		super(list);
+		currentUnionContext = 0;
 	}
 
 	@Override

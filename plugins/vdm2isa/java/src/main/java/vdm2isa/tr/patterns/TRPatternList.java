@@ -21,7 +21,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	//Patterns might be changed/massaged, so recreated every time
 	//private TCNameList namesInPattern = null;
 
-	protected TRPatternList() 
+	public TRPatternList() 
 	{
 		super();
 	}  

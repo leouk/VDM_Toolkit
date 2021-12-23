@@ -18,6 +18,7 @@ import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRPatternContext;
 import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRInvariantType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
@@ -169,28 +170,71 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
-    //TODO Perhaps add this to translate? Yes! 
+    private static final boolean isMapType(TRType type)
+    {
+        assert type != null;
+        // either a map on the top-level, or a renamed type
+        return type instanceof TRMapType || type.ultimateType() instanceof TRMapType;
+    }
+
+    private static final boolean isOptionalType(TRType type)
+    {
+        assert type != null;
+        // either a map on the top-level, or a renamed type
+        return type instanceof TROptionalType || type.ultimateType() instanceof TROptionalType;
+    }
+
+    public static final boolean requiresTheOperator(TRType targetType)
+    {
+        assert targetType != null;
+        return !isMapType(targetType) && !isOptionalType(targetType);
+    }
+
+    public static final boolean requiresTheOperator(TRExpression expr)
+    {
+        assert expr != null;
+        return (isMapType(expr.getType()))
+               ||
+               (expr instanceof TRApplyExpression
+                &&
+                isMapType(((TRApplyExpression)expr).type)
+               );
+    }
+
     /**
-     * Add any extra type-aware wrapping to expression. 
-     * @param expr
-     * @return
+     * Depending on the target type an expression is associated with, there is a need to type convert it.
+     * For example, map application or optional types require the "the" operator wrapping. 
+     * @param innerExpr when null, translate directly from this expression. Important for some cases like variable expression of value definition
+     * @param targetType the type target this expression is landing on. Important to know whether the wraping is needed. 
+     * @return type converted translation
      */
-	protected String typeAware(String expr)
+	public String typeConvertTranslate(TRExpression innerExpr, TRType targetType)
 	{
         StringBuilder sb = new StringBuilder();
+        
+        TRExpression tawareExpr = innerExpr != null ? innerExpr : this;
+        assert tawareExpr != null && targetType != null;
+
+        String exprStr = tawareExpr.translate();
+        // the expression being translated requires "the" when it is landing on a type that also requires it (i.e. not a map or optional)
+        if (TRExpression.requiresTheOperator(tawareExpr) && TRExpression.requiresTheOperator(targetType))
+        {
+            sb.append(IsaToken.the(exprStr));
+        }
         // add type info extra expression if of optional type (either as variable "x" or function call "f(x)"). 
-		if (getType() instanceof TROptionalType)
-		{	
-			TRType t = getType();
-			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(expr, t.getClass().getSimpleName());
-			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, expr, t.getClass().getSimpleName());
-			sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
-			sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(expr)));
-		}
+		// else if (getType() instanceof TROptionalType)
+		// {	
+        //     //TODO this sounds like unnecessary.
+		// 	TRType t = getType();
+		// 	String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(exprStr, t.getClass().getSimpleName());
+		// 	warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, tawareExpr, t.getClass().getSimpleName());
+		// 	sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
+		// 	sb.append(IsaToken.the(exprStr));
+		// }
 		else
 		{
 			//if vardef is null, ctor reports the error; 
-			sb.append(expr);
+			sb.append(exprStr);
 		}
 		return sb.toString();	
 	}
@@ -224,6 +268,27 @@ public abstract class TRExpression extends TRNode
         {
             sb.append(IsaToken.RPAREN.toString());
         }
+        return sb.toString();
+    }
+
+    public String extendedCheckTranslate(String ifCheck)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.LPAREN.toString());
+        sb.append(IsaToken.IF.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(ifCheck);
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(IsaToken.THEN.toString());
+        sb.append(getFormattingSeparator() + "\t");
+        sb.append(translate());        
+        sb.append(getFormattingSeparator() + IsaToken.SPACE.toString());
+        sb.append(IsaToken.ELSE.toString());
+        sb.append(getFormattingSeparator() + "\t");
+        sb.append(IsaToken.UNDEFINED.toString());
+        sb.append(getFormattingSeparator()); 
+        sb.append(IsaToken.RPAREN.toString());
+        sb.append(getFormattingSeparator());
         return sb.toString();
     }
 

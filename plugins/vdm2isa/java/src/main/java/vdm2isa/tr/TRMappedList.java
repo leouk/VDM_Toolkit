@@ -52,10 +52,10 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, 
 					figureOutLocation(type), 
 					from.getClass().getSimpleName(), 
-					type.getClass().getSimpleName(),
+					type.getClass().getSimpleName() + " " + type.toString(),
 					e.toString());
 				// don't debug "can't convert errors"! 
-				if (e instanceof NullPointerException || e.getCause() instanceof StackOverflowError)
+				//if (e instanceof NullPointerException || e.getCause() instanceof StackOverflowError)
 					e.printStackTrace();
 			}
 			catch (Throwable t)
@@ -233,21 +233,34 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return false;
 	}
 
+	protected String translateElement(int index)
+	{
+		assert index >= 0 && index < size();
+		return get(index).translate();
+	}
+
 	@Override
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			sb.append(get(0).translate());
+			sb.append(translateElement(0));
 			for (int i = 1; i < size(); i++)
 			{
+				sb.append(getFormattingSeparator());
 				sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
-				sb.append(get(i).translate());
+				sb.append(translateElement(i));
 			}
 		}
 		return sb.toString();
+	}
+
+	protected String invTranslateElement(int index)
+	{
+		assert index >= 0 && index < size();
+		return get(index).invTranslate();
 	}
 
 	@Override
@@ -256,12 +269,19 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			sb.append(get(0).invTranslate());
+			// might be empty for TRParameterType in TRTypeList 
+			String invStr = invTranslateElement(0);
+			sb.append(invStr);
 			for (int i = 1; i < size(); i++)
 			{
-				sb.append(getInvTranslateSeparator());
-				sb.append(getFormattingSeparator());
-				sb.append(get(i).invTranslate());
+				if (!invStr.isEmpty())
+				{
+					sb.append(getFormattingSeparator());
+					sb.append(getInvTranslateSeparator());
+					sb.append(getFormattingSeparator());
+				}
+				invStr = invTranslateElement(i);
+				sb.append(invStr);
 			}
 		}
 		return sb.toString();

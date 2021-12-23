@@ -87,7 +87,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
             //TODO this won't work because getPossibleType() is returning TUnknownType! :-(
             //if (owner != null && owner.getPossibleType() instanceof TCOptionalType)
             //{
-            //    sb.append(IsaToken.parenthesise(IsaToken.OPTIONAL_THE.toString() + IsaToken.parenthesise(pattern)));
+            //    sb.append(IsaToken.the(pattern));
             //}
             //else
             {

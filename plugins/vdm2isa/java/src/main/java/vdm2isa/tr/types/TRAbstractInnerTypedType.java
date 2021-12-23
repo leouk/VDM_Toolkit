@@ -39,6 +39,12 @@ public abstract class TRAbstractInnerTypedType extends TRType {
         return type;
     }
 
+    @Override 
+    public TRType ultimateType()
+    {
+        return getInnerType().ultimateType();
+    }
+
     @Override
     protected void setInferredNamedForType(TCNameToken tn)
 	{

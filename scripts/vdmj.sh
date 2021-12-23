@@ -4,8 +4,8 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION="4.4.4-SNAPSHOT"
-PVERSION="4.4.4-P-SNAPSHOT"
+MVERSION="4.4.5-SNAPSHOT"
+PVERSION="4.4.5-SNAPSHOT-P"
 
 # Preferred VDMJ options
 VDMJ_OPTS="-strict"
