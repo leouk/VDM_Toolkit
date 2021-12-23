@@ -94,7 +94,7 @@ public class TRFieldExpression extends TRExpression {
                     + 
                     IsaToken.SPACE.toString() 
                     +
-                    typeAware(object)
+                    typeConvertTranslate(object, object.getType())
                 );
     }
 

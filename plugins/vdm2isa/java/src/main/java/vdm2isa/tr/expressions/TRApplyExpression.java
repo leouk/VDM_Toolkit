@@ -9,34 +9,38 @@ import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinitionListList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRApplyExpression extends TRExpression
 {
 	private static final long serialVersionUID = 1L;
-	//TODO bring in argTypes + recursiveCycles? 
 	public final TRType type;
 	public final TRExpression root;
 	public final TRExpressionList args;
+	public final TRTypeList argtypes;
+	public final TRDefinitionListList recursiveCycles;
 	
-	//TODO SERIOUS: have constructors for the "structural" parameters 
-	//				and for "default" for the VDMJ "calculated" (then class mapped) parameters
-	public TRApplyExpression(TCApplyExpression tc, TRType type, TRExpression root, TRExpressionList args, TRType exptype)
+	public TRApplyExpression(TCApplyExpression tc, TRType type, TRExpression root, TRExpressionList args, 
+		TRTypeList argtypes, TRDefinitionListList recursiveCycles, TRType exptype)
 	{
 		super(root != null ? root.location : LexLocation.ANY, tc, exptype);
 		this.type = type;
 		this.root = root;
 		this.args = args;
+		this.argtypes = argtypes;
+		this.recursiveCycles = recursiveCycles;
 	}
 
 	@Override
 	public void setup()
 	{
 		super.setup();
-		TRNode.setup(type, root, args); 
+		TRNode.setup(type, root, args, argtypes, recursiveCycles); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());
@@ -70,6 +74,7 @@ public class TRApplyExpression extends TRExpression
         return "ApplyExpr " + 
 			"\n\t root = " + TRApplyExpression.toSimpleString(root) +
 			"\n\t args = " + String.valueOf(args) + 
+			"\n\t argty= " + String.valueOf(argtypes) + 
 			"\n\t type = " + String.valueOf(type) +
 			"\n\t exptp= " + String.valueOf(exptype) +
 			"\n\t loc  = " + String.valueOf(location);
@@ -120,7 +125,8 @@ public class TRApplyExpression extends TRExpression
 			TRExpression root, TRExpressionList args, TRType resultType)
 	{
 		TRApplyExpression result = new TRApplyExpression(
-				new TCApplyExpression(root.getVDMExpr(), args.getVDMExpressionList()), root.getType(), root, args, resultType);
+				new TCApplyExpression(root.getVDMExpr(), args.getVDMExpressionList()), 
+				root.getType(), root, args, args.getTypeList(), new TRDefinitionListList(), resultType);
 		TRNode.setup(result);
 		return result;
 	}

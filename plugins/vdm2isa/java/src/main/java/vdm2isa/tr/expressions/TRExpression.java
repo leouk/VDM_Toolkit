@@ -170,47 +170,67 @@ public abstract class TRExpression extends TRNode
 
 	public abstract <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg);
 
-    private static final boolean hasMapType(TRType type)
+    private static final boolean isMapType(TRType type)
     {
         assert type != null;
         // either a map on the top-level, or a renamed type
         return type instanceof TRMapType || type.ultimateType() instanceof TRMapType;
     }
+
+    private static final boolean isOptionalType(TRType type)
+    {
+        assert type != null;
+        // either a map on the top-level, or a renamed type
+        return type instanceof TROptionalType || type.ultimateType() instanceof TROptionalType;
+    }
+
+    public static final boolean requiresTheOperator(TRType targetType)
+    {
+        assert targetType != null;
+        return !isMapType(targetType) && !isOptionalType(targetType);
+    }
+
     public static final boolean requiresTheOperator(TRExpression expr)
     {
         assert expr != null;
-        return (hasMapType(expr.getType()))
+        return (isMapType(expr.getType()))
                ||
                (expr instanceof TRApplyExpression
                 &&
-                hasMapType(((TRApplyExpression)expr).type)
+                isMapType(((TRApplyExpression)expr).type)
                );
     }
 
-    //TODO Perhaps add this to translate? Yes! 
     /**
-     * Add any extra type-aware wrapping to expression. 
-     * @param innerExpr when null, translate directly from this. Important for some cases like variable expression of value definition
-     * @return
+     * Depending on the target type an expression is associated with, there is a need to type convert it.
+     * For example, map application or optional types require the "the" operator wrapping. 
+     * @param innerExpr when null, translate directly from this expression. Important for some cases like variable expression of value definition
+     * @param targetType the type target this expression is landing on. Important to know whether the wraping is needed. 
+     * @return type converted translation
      */
-	public String typeAware(TRExpression innerExpr)
+	public String typeConvertTranslate(TRExpression innerExpr, TRType targetType)
 	{
         StringBuilder sb = new StringBuilder();
+        
         TRExpression tawareExpr = innerExpr != null ? innerExpr : this;
+        assert tawareExpr != null && targetType != null;
+
         String exprStr = tawareExpr.translate();
-        if (TRExpression.requiresTheOperator(tawareExpr))
+        // the expression being translated requires "the" when it is landing on a type that also requires it (i.e. not a map or optional)
+        if (TRExpression.requiresTheOperator(tawareExpr) && TRExpression.requiresTheOperator(targetType))
         {
             sb.append(IsaToken.the(exprStr));
         }
         // add type info extra expression if of optional type (either as variable "x" or function call "f(x)"). 
-		else if (getType() instanceof TROptionalType)
-		{	
-			TRType t = getType();
-			String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(exprStr, t.getClass().getSimpleName());
-			warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, tawareExpr, t.getClass().getSimpleName());
-			sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
-			sb.append(IsaToken.the(exprStr));
-		}
+		// else if (getType() instanceof TROptionalType)
+		// {	
+        //     //TODO this sounds like unnecessary.
+		// 	TRType t = getType();
+		// 	String comment = IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P.format(exprStr, t.getClass().getSimpleName());
+		// 	warning(IsaWarningMessage.ISA_OPTIONALTYPE_VARIABLE_3P, tawareExpr, t.getClass().getSimpleName());
+		// 	sb.append(getFormattingSeparator() + IsaToken.comment(comment, getFormattingSeparator()));	
+		// 	sb.append(IsaToken.the(exprStr));
+		// }
 		else
 		{
 			//if vardef is null, ctor reports the error; 
