@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-23T14:10:45.634Z
+(* VDM to Isabelle Translation @2021-12-23T14:35:16.338Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesGeneric.vdmsl' at line 1:8
@@ -42,7 +42,9 @@ definition
 where
 	"injective inv_T   ss \<equiv> 
 	\<comment>\<open>User defined body of injective.\<close>
-	((vdm_card (elems ss)) = (len ss))"
+	
+	\<comment>\<open>Implicit check on generic type invariant for `injective`.\<close>
+	(if post_injective inv_T   ss (((vdm_card (elems ss)) = (len ss))) then	((vdm_card (elems ss)) = (len ss)) else	undefined)"
 
 	
 	
@@ -79,6 +81,8 @@ definition
 where
 	"f inv_S   inv_T   s \<equiv> 
 	\<comment>\<open>User defined body of f.\<close>
-	[]"
+	
+	\<comment>\<open>Implicit check on generic type invariant for `f`.\<close>
+	(if post_f inv_S   inv_T   s ([]) then	[] else	undefined)"
 
 end
