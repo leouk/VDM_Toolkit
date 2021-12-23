@@ -10,7 +10,6 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFieldList;
-import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeComparator;

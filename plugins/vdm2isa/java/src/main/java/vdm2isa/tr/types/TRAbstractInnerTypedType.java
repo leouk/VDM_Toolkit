@@ -6,7 +6,6 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
-import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 /**
  * General abstract class for types with inner types (e.g. optional, set, seq, named, field, function etc).
