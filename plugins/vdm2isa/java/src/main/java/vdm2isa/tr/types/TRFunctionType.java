@@ -10,6 +10,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.types.visitors.TRParametricTypeFinder;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 import com.fujitsu.vdmj.tc.lex.TCNameList;
@@ -305,6 +306,16 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return result;
 	}
 
+	private static final TRTypeList figureOutParametricTypes(TRType t)
+	{
+		TRParametricTypeFinder pfinder = new TRParametricTypeFinder();
+		TRParameterTypeSet ptfound = t.apply(pfinder, null);
+		TRTypeList result = new TRTypeList();
+		result.addAll(ptfound);
+		TRNode.setup(result);
+		return result;
+	}
+
 	/**
 	 * For the given function type, expand its generic types (if any) to consider invariant calls for each invovled generic parameter
 	 * e.g. f[@S,@T]: seq of @S -> seq of @T leads to f: ('S => bool) => ('S VDMSeq) => ('T VDSeq).
@@ -313,24 +324,28 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	 * @param typeParams
 	 * @return
 	 */
-    public static TRFunctionType expandGenericTypes(TRFunctionType type, TCNameList typeParams) 
+    public static final TRFunctionType expandGenericTypes(TRFunctionType type, TCNameList typeParams) 
 	{
 		assert type != null && typeParams != null;
 		TRFunctionType result = type;
-		if (result.parameters.hasGenericTypeParameters())
+		TRTypeList expandedTypeParameters = new TRTypeList();
+		int extraTypes = 0;
+		TRTypeList ptfound;
+		for(TRType t : result.parameters)
 		{
-			TRTypeList expandedTypeParameters = new TRTypeList();
-			for(TRType t : result.parameters)
-			{
-				if (t instanceof TRParameterType)
-				{
-					TRParameterType ptype = (TRParameterType)t;
-					
-				}
-				expandedTypeParameters.add(t);
-			}
-			// given there is at least one generic, *must* be bigger
-			assert expandedTypeParameters.size() > result.parameters.size();
+			ptfound = figureOutParametricTypes(t);
+			extraTypes += ptfound.size();
+			expandedTypeParameters.addAll(ptfound);
+			expandedTypeParameters.add(t);
+		}
+		ptfound = figureOutParametricTypes(result.getResultType());
+		extraTypes += ptfound.size();
+		expandedTypeParameters.addAll(ptfound);
+		assert expandedTypeParameters.size() == result.parameters.size() + extraTypes;
+		// if found any generics, then expand the resulting function type. 
+		if (extraTypes > 0)
+		{
+			result = TRFunctionType.newFunctionType(result.getResultType(), expandedTypeParameters, result.partial);
 		}
         return result;
     }

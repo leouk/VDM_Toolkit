@@ -80,16 +80,6 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		}
 	}
 
-	public boolean hasGenericTypeParameters()
-	{
-		boolean result = false;
-		for(int i = 0; i < size() && !result; i++)
-		{
-			result = get(i) instanceof TRParameterType;
-		}
-		return result;
-	}
-
 	public boolean isCurried()
 	{
 		return curried;//getSeparator().equals(IsaToken.FUN.toString()

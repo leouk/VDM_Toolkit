@@ -1,20 +1,27 @@
 package vdm2isa.tr.types.visitors;
 
+import vdm2isa.tr.types.TRParameterType;
+import vdm2isa.tr.types.TRParameterTypeSet;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeSet;
 
-public class TRParametricTypeFinder extends TRLeafTypeVisitor<TRType, TRTypeSet, Object> 
+public class TRParametricTypeFinder extends TRLeafTypeVisitor<TRType, TRParameterTypeSet, Object> 
 {
 
     @Override
-    protected TRTypeSet newCollection() {
-        return new TRTypeSet();
+    protected TRParameterTypeSet newCollection() {
+        return new TRParameterTypeSet();
     }
 
     @Override
-    public TRTypeSet caseType(TRType node, Object arg) {
+    public TRParameterTypeSet caseType(TRType node, Object arg) {
         return newCollection();
     }
 
-    
+	@Override
+	public TRParameterTypeSet caseParameterType(TRParameterType node, Object arg)
+	{
+		TRParameterTypeSet all = newCollection();
+		all.add(node);
+		return all;
+	}    
 }

@@ -11,6 +11,6 @@ functions
 	--f[@S,@T]: seq of @S -> seq of @T
 	--f(s) == s;
 	f[@S, @T]: seq of @S -> seq of @T
-	f(s) == s;
+	f(s) == [];
 	
 end TestV2ITypesGeneric
