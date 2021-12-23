@@ -271,6 +271,27 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
+    public String extendedCheckTranslate(String ifCheck)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.LPAREN.toString());
+        sb.append(IsaToken.IF.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(ifCheck);
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(IsaToken.THEN.toString());
+        sb.append(getFormattingSeparator() + "\t");
+        sb.append(translate());        
+        sb.append(getFormattingSeparator() + IsaToken.SPACE.toString());
+        sb.append(IsaToken.ELSE.toString());
+        sb.append(getFormattingSeparator() + "\t");
+        sb.append(IsaToken.UNDEFINED.toString());
+        sb.append(getFormattingSeparator()); 
+        sb.append(IsaToken.RPAREN.toString());
+        sb.append(getFormattingSeparator());
+        return sb.toString();
+    }
+
     private String processBinaryOrdExpression(TRExpression left, IsaToken op, TRExpression right, boolean lt)
     {
         TRExplicitFunctionDefinition orddef = 

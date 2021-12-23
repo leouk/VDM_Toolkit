@@ -768,11 +768,29 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 
 			if (hasUnionTypes())
 			{
+				//TODO union types with with type parameters won't add extended check; leave it for now 
 				fcnBody.append(unionTypesTranslate(body, null));
 			}
 			else
 			{
-				fcnBody.append(body.translate());
+				String bodyStr = body.translate();
+				if (!typeParams.isEmpty())
+				{
+					//TODO should this be added everywhere? Not for now. 
+					StringBuilder paramTypeCheckStr = new StringBuilder();
+					paramTypeCheckStr.append(name.getPostName(location).toString());
+					paramTypeCheckStr.append(IsaToken.SPACE.toString());
+					paramTypeCheckStr.append(fcnParams);
+					paramTypeCheckStr.append(IsaToken.SPACE.toString());
+					paramTypeCheckStr.append(IsaToken.parenthesise(bodyStr));
+					
+					fcnBody.append(IsaToken.comment(IsaInfoMessage.VDM_EXPLICIT_FUNCTION_IMPLICIT_PARAMETER_TYPE_INV_CHECK_1P.format(name.toString()), getFormattingSeparator()));
+					fcnBody.append(body.extendedCheckTranslate(paramTypeCheckStr.toString()));
+				}
+				else
+				{
+					fcnBody.append(body.translate());
+				}
 			}
 
 			if (hasPatternContext)

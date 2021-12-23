@@ -5,6 +5,7 @@ public enum IsaInfoMessage {
     VDM_SOURCE_1P("VDM source: %1$s"),
     VDM_IMPLICITLY_DEFINED_INV_2P("Implicitly defined type invariant checks for %1$s `%2$s` specification."),
     VDM_EXPLICIT_FUNCTION_USER_DEFINED_BODY_1P("User defined body of %1$s."),
+    VDM_EXPLICIT_FUNCTION_IMPLICIT_PARAMETER_TYPE_INV_CHECK_1P("Implicit check on generic type invariant for `%1$s`."),
     VDM_IMPLICITLY_DEFINED_QUANTIFIED_INV("Implicitly defined type invariant checks for quantified type binds"),
     VDM_CASES_TRUE_CONVERSION("VDM `cases true` expressions are translated as an and-chain of implications"),
     VDM_MAP_COMP_LAMBDA_CONVERSION_1P("VDM Map comprehension is translated as a lambda-term through %1$s"),

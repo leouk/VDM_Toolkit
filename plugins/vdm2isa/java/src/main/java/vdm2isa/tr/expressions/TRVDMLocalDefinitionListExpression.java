@@ -3,7 +3,6 @@ package vdm2isa.tr.expressions;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRType;
@@ -30,6 +29,7 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
         super.setup();
         setFormattingSeparator("\n\t\t");
         TRNode.setup(expression);
+        expression.setFormattingSeparator("\n\t\t");
     } 
 
     @Override
@@ -38,29 +38,29 @@ public abstract class TRVDMLocalDefinitionListExpression extends TRExpression {
 		return expression.getType();
 	}
 
-
     public abstract String localInvTranslate();
 
     @Override
     public String invTranslate()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(IsaToken.LPAREN.toString());
-        sb.append(IsaToken.IF.toString());
-        sb.append(" ");
-        sb.append(localInvTranslate());
-        sb.append(" ");
-        sb.append(IsaToken.THEN.toString());
-        sb.append(getFormattingSeparator() + "\t");
-        sb.append(expression.translate());        
-        sb.append(getFormattingSeparator() + " ");
-        sb.append(IsaToken.ELSE.toString());
-        sb.append(getFormattingSeparator() + "\t");
-        sb.append(IsaToken.UNDEFINED.toString());
-        sb.append(getFormattingSeparator()); 
-        sb.append(IsaToken.RPAREN.toString());
-        sb.append(getFormattingSeparator());
-        return sb.toString();
+        return expression.extendedCheckTranslate(localInvTranslate());
+        // StringBuilder sb = new StringBuilder();
+        // sb.append(IsaToken.LPAREN.toString());
+        // sb.append(IsaToken.IF.toString());
+        // sb.append(IsaToken.SPACE.toString());
+        // sb.append(localInvTranslate());
+        // sb.append(IsaToken.SPACE.toString());
+        // sb.append(IsaToken.THEN.toString());
+        // sb.append(getFormattingSeparator() + "\t");
+        // sb.append(expression.translate());        
+        // sb.append(getFormattingSeparator() + IsaToken.SPACE.toString());
+        // sb.append(IsaToken.ELSE.toString());
+        // sb.append(getFormattingSeparator() + "\t");
+        // sb.append(IsaToken.UNDEFINED.toString());
+        // sb.append(getFormattingSeparator()); 
+        // sb.append(IsaToken.RPAREN.toString());
+        // sb.append(getFormattingSeparator());
+        // return sb.toString();
     }
 
 	@Override

@@ -120,9 +120,9 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         // )
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
-        sb.append(" ");
+        sb.append(IsaToken.SPACE.toString());
         sb.append(bindList.translate());
-        sb.append(" ");
+        sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.POINT.toString());
         String old = paramPatterns.setFormattingSeparator(getFormattingSeparator());
         String old2 = paramPatterns.setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());        
