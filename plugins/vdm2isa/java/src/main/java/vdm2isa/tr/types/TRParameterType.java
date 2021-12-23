@@ -2,9 +2,9 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCParameterType;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -31,6 +31,7 @@ public class TRParameterType extends TRType {
     public void setup()
     {
         super.setup();
+        setFormattingSeparator("\n\t");
         TRNode.setup(paramdef);
     }
 
@@ -42,9 +43,20 @@ public class TRParameterType extends TRType {
         return result;
     }
 
+    /**
+     * Parametric types invariant translate expects that the caller will have an "inv_NAME" in context to check
+     * the specific invariant specification call for the instantiated parameter. This has to come from 
+     * TRExplicitFunctionDefinition.  
+     */
     @Override
     public String invTranslate(String varName) {
-        return isaToken().toString() + name.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(getFormattingSeparator());
+        sb.append(IsaToken.comment(IsaInfoMessage.ISA_GENERIC_TYPE_1P.format(name.toString()), getFormattingSeparator()));
+        sb.append(IsaToken.INV.toString());
+        sb.append(name.toString());//IsaToken.TRUE.toString());
+        sb.append(varName != null ? IsaToken.SPACE.toString() + varName : "");
+        return sb.toString();
     }
 
     @Override
