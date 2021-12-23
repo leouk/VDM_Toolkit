@@ -168,6 +168,17 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return result;
 	}
 
+	/**
+	 * Type list parameters must take into account function types, which have to be parenthesised, given "=>" binds tighter
+	 * and to the right in comparison to any other operator. 
+	 */
+	@Override
+	protected String translateElement(int index)
+	{
+		String result = super.translateElement(index);
+		return get(index) instanceof TRFunctionType ? IsaToken.parenthesise(result) : result;
+	}
+
 	public static final String translate(TRType... args)
 	{
 		TRTypeList result = new TRTypeList();

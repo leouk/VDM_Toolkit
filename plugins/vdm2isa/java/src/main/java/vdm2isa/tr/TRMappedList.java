@@ -233,18 +233,24 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return false;
 	}
 
+	protected String translateElement(int index)
+	{
+		assert index >= 0 && index < size();
+		return get(index).translate();
+	}
+
 	@Override
 	public String translate()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
 		{
-			sb.append(get(0).translate());
+			sb.append(translateElement(0));
 			for (int i = 1; i < size(); i++)
 			{
 				sb.append(getSemanticSeparator());
                 sb.append(getFormattingSeparator());
-				sb.append(get(i).translate());
+				sb.append(translateElement(i));
 			}
 		}
 		return sb.toString();
