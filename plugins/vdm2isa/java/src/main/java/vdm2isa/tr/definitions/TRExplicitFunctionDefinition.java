@@ -206,13 +206,19 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			System.out.println(toString());
 	} 
 
+	protected boolean hasTypeParameters()
+	{
+		return typeParams != null && !typeParams.isEmpty();
+	}
+
 	/**
 	 * Update specification generic types to cater for type invariant calls passed as boolean valued functions on 
 	 * each of the involved generic parameters. 
 	 */
 	private void updateSpecificationGenericParameters()
 	{
-		if (!typeParams.isEmpty())
+		// type params is null  for functions without parameters
+		if (hasTypeParameters())
 		{
 			type = TRFunctionType.expandGenericTypes(type, typeParams);
 			paramPatternList = type.expandGenericTypesPatterns(paramPatternList);
@@ -774,7 +780,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 			else
 			{
 				String bodyStr = body.translate();
-				if (!typeParams.isEmpty())
+				if (hasTypeParameters())
 				{
 					//TODO should this be added everywhere? Not for now. 
 					StringBuilder paramTypeCheckStr = new StringBuilder();
