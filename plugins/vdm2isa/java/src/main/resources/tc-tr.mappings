@@ -148,7 +148,7 @@ map TCElseIfExpression{location, elseIfExp, thenExp, exptype} to TRElseIfExpress
 map TCVariableExpression{location, name, original, vardef, exptype} to TRVariableExpression(location, this, name, original, vardef, exptype);
 
 map TCPreExpression{location, function, args, exptype} to TRPreExpression(location, this, function, args, exptype);
-map TCFuncInstantiationExpression{function, type, unresolved, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(this, function, type, unresolved, actualTypes, expdef, exptype);
+map TCFuncInstantiationExpression{function, type, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(this, function, type, actualTypes, expdef, exptype);
 
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
