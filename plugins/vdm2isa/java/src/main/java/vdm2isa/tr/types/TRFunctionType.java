@@ -58,7 +58,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return "TRFunctionType " + 
 			"\n\t\t params = " + String.valueOf(parameters) +
 			"\n\t\t result = " + String.valueOf(getResultType()) +
-			"\n\t\t defs   = " + String.valueOf(definitions.size()) +// loops?
+			"\n\t\t defs   = " + String.valueOf(definitions != null ? definitions.size() : 0) +// loops?
 			"\n\t\t loc    = " + String.valueOf(getLocation());
 	}
 
@@ -406,28 +406,29 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	{
 		assert type != null && typeParams != null;
 		TRFunctionType result = type;
-		TRTypeList expandedTypeParameters = new TRTypeList();
-		int extraTypes = 0;
+		TRTypeSet expandedTypeParameters = new TRTypeSet();
 		TRTypeList ptfound;
 		for(TRType t : result.parameters)
 		{
 			ptfound = figureOutParametricTypes(t);
-			extraTypes += ptfound.size();
 			expandedTypeParameters.addAll(ptfound);
 		}
 		//TODO does this cater for curried? Leave for now. 
 		ptfound = figureOutParametricTypes(result.getResultType());
-		extraTypes += ptfound.size();
 		expandedTypeParameters.addAll(ptfound);
-		// add parameters at the end to make it easy to build patterns 
-		expandedTypeParameters.addAll(result.parameters);
-		assert expandedTypeParameters.size() == result.parameters.size() + extraTypes;
+
+		//If same type parameter is used multiple times, cound only once!
+		//assert expandedTypeParameters.size() == result.parameters.size() + extraTypes;
 		//This is not true in general: for f[@S,@T]: seq of @S -> seq of @T, the pre_f will have @S,@T and yet only one is used!
 		//assert extraTypes >= typeParams.size();
 		// if found any generics, then expand the resulting function type. 
-		if (extraTypes > 0)
+		if (!expandedTypeParameters.isEmpty())
 		{
-			result = TRFunctionType.newFunctionType(result.getResultType(), expandedTypeParameters, result.partial);
+			// add parameters at the end to make it easy to build patterns 
+			TRTypeList newParameters = new TRTypeList();
+			newParameters.addAll(expandedTypeParameters);
+			newParameters.addAll(result.parameters);		
+			result = TRFunctionType.newFunctionType(result.getResultType(), newParameters, result.partial);
 		}
         return result;
     }
