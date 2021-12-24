@@ -27,6 +27,11 @@ public class TRTokenType extends TRBasicType {
         TRNode.setup(innerTokenType, argtypes);
     }
 
+    public TRTypeSet getArgTypes()
+    {
+        return argtypes;
+    }
+
     /**
      * Once known (e.g. v: token = mk_token(...)), set the inner token type
      * @param t

@@ -26,7 +26,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	private boolean curried;
 	private TCNameToken typename;
 
-	protected TRTypeList()
+	public TRTypeList()
 	{
 		super();
 	}

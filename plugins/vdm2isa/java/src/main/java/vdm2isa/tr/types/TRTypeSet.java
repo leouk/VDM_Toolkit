@@ -56,6 +56,12 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			add((TRType)mapper.convert(type));
 		}
 	}
+
+	public TRTypeSet(TRTypeList typs)
+	{
+		this();
+		addAll(typs);
+	}
 	
 	public TRTypeSet(TRType... typs)
 	{
@@ -190,12 +196,13 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			{
 				if (x.isNumericType())
 				{
-					if (x.getVDMType().getNumeric().getWeight() < x.getVDMType().getNumeric().getWeight())
-					{
-						remove(x);
-						break;
-					}
-					else
+					// if (x.getVDMType().getNumeric().getWeight() < t.getVDMType().getNumeric().getWeight())
+					// {
+					// 	remove(x);
+					// 	break;
+					// }
+					//else
+					if (x.compareTo(t) == 0)
 					{
 						return false;	// Was already there
 					}
@@ -209,6 +216,19 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			if (!opt.getVDMType().isUnknown(opt.getVDMType().location) && contains(opt.getInnerType()))
 			{
 				remove(opt.getInnerType());	// Because T | [T] = [T]
+			}
+		}
+		else if (t instanceof TRTokenType)
+		{
+			TRTokenType tt = (TRTokenType)t;
+			for (TRType x: this)
+			{
+				if (x instanceof TRTokenType)
+				{
+					TRTokenType xt = (TRTokenType)x;
+					xt.getArgTypes().addAll(tt.getArgTypes());
+					return false;	// Was already there
+				}
 			}
 		}
 		return super.add(t);
