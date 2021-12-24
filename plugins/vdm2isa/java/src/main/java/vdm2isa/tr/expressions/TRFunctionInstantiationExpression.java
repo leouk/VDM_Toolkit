@@ -15,7 +15,6 @@ public class TRFunctionInstantiationExpression extends TRExpression {
 
 	private static final long serialVersionUID = 1L;
     public final TRExpression function;
-    public final TRTypeList unresolved;
     public final TRTypeList actualTypes;
     public final TRFunctionType type;
 
@@ -23,13 +22,12 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     public final TRExplicitFunctionDefinition impdef; //TODO! should be implicit def
 
     public TRFunctionInstantiationExpression(TCFuncInstantiationExpression tc, TRExpression function, TRFunctionType type, 
-        TRTypeList unresolved, TRTypeList actualTypes, TRExplicitFunctionDefinition expdef, TRType exptype)
+        TRTypeList actualTypes, TRExplicitFunctionDefinition expdef, TRType exptype)
     {
         super(function != null ? function.location : LexLocation.ANY, tc, exptype);
         this.function = function;
         this.type = type;
         this.actualTypes = actualTypes;
-        this.unresolved = unresolved;
         this.expdef = expdef;
         this.impdef = null;
     }
@@ -38,7 +36,7 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     public void setup()
     {
         super.setup();
-        TRNode.setup(function, type, actualTypes, unresolved, expdef, impdef);
+        TRNode.setup(function, type, actualTypes, expdef, impdef);
     }
 
     @Override
@@ -50,7 +48,8 @@ public class TRFunctionInstantiationExpression extends TRExpression {
     @Override
     public String toString()
     {
-        return function.toString() + (type != null ? "[" + type.toString() + "]" : "");
+        return function.toString() + "[" + String.valueOf(actualTypes) + "]";
+//            (type != null ? "[" + type.toString() + "]" : "");
     }
 
     @Override
@@ -60,12 +59,16 @@ public class TRFunctionInstantiationExpression extends TRExpression {
 
     @Override
     public IsaToken isaToken() {
-        throw new UnsupportedOperationException();
+        return IsaToken.APPLY;
     }
 
+    /**
+     * For function instantiation, just translate the function name. The underlying TRApplyExpr has to pick the actual
+     * parameters to add as input parameters for corresponding parameteric type invariant checking.
+     */
     @Override
     public String translate() {
-        throw new UnsupportedOperationException();
+        return function.translate();
     }
     
 }

@@ -11,6 +11,7 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionListList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
@@ -21,8 +22,8 @@ public class TRApplyExpression extends TRExpression
 	private static final long serialVersionUID = 1L;
 	public final TRType type;
 	public final TRExpression root;
-	public final TRExpressionList args;
-	public final TRTypeList argtypes;
+	public TRExpressionList args;
+	public TRTypeList argtypes;
 	public final TRDefinitionListList recursiveCycles;
 	
 	public TRApplyExpression(TCApplyExpression tc, TRType type, TRExpression root, TRExpressionList args, 
@@ -40,10 +41,42 @@ public class TRApplyExpression extends TRExpression
 	public void setup()
 	{
 		super.setup();
+		expandApplyArguments();
 		TRNode.setup(type, root, args, argtypes, recursiveCycles); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());
+	}
+
+	/**
+	 * Function instantiation requires expansion of parametric types as invariant checking input parameters.
+	 * These will be variable expresssions referring to invariant type calls
+	 */
+	protected void expandApplyArguments()
+	{
+		if (root instanceof TRFunctionInstantiationExpression)
+		{
+			TRFunctionInstantiationExpression froot = (TRFunctionInstantiationExpression)root;
+			// recreate arguments and their types based on unique actual types passed
+			TRExpressionList newArgs = new TRExpressionList();
+			TRTypeList newArgTypes = new TRTypeList();
+			// have to repeat the same invariant call multiple times, given that the funct instantiation requires at least as many even if the same
+			//TRTypeSet actualTypes = new TRTypeSet(froot.actualTypes);
+			for(TRType tparam : froot.actualTypes)
+			{
+				// for every unique actual type create an invariant function call to that type as the leading parameters
+				TRType invCallType = TRFunctionType.newFunctionType(TRBasicType.boolType(tparam.location), tparam);
+				TRExpression invCall = TRVariableExpression.newVariableExpr(tparam.location, tparam.invTranslate(), invCallType);
+				newArgTypes.add(invCallType);
+				newArgs.add(invCall);
+			}
+			// setup + update the underlying apply expression arguments to include type parameters invariant check calls
+			newArgTypes.addAll(argtypes);
+			newArgs.addAll(args);
+			TRNode.setup(newArgTypes, newArgs);
+			argtypes = newArgTypes;
+			args = newArgs;
+		}
 	}
 
 	/**
