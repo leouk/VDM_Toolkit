@@ -1,0 +1,9 @@
+module TestV2IFcnsImplicit
+exports all
+definitions
+functions
+	f(s: seq of nat) r: nat
+	pre s <> []
+	post r > 1;
+	
+end TestV2IFcnsImplicit
