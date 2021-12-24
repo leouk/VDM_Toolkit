@@ -13,4 +13,12 @@ functions
 	f[@S, @T]: seq of @S -> seq of @T
 	f(s) == [];
 	
+	--TCFunctInstantiationExpression for f
+	g[@S]: seq of @S -> seq of @S
+	g(s) == f[@S,@S](s);
+
+	--TCFunctInstantiationExpression for f
+	h: seq of nat -> seq of int
+	h(s) == f[nat,int](s);
+	
 end TestV2ITypesGeneric
