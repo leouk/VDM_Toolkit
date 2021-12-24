@@ -24,7 +24,7 @@ public class TRParameterType extends TRType {
     @Override 
     public String toString()
     {
-        return "ParamType " + String.valueOf(name) + "\n\t paramDef = " + String.valueOf(paramdef);
+        return "ParamType " + String.valueOf(name);// + "\n\t paramDef = " + String.valueOf(paramdef); funny loop
     }
 
     @Override
