@@ -1,5 +1,6 @@
 package vdm2isa.tr.types;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -30,6 +31,15 @@ public abstract class TRInvariantType extends TRType
         setInvariantDefinition(invdef);
         setEqualityDefinition(eqdef);
         setOrderingDefinition(orddef);
+    }
+
+    @Override
+    protected String getInvTypeString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.INV.toString());
+        sb.append(typename.toString());
+        return sb.toString();
     }
 
     public void setInvariantDefinition(TRExplicitFunctionDefinition invdef)

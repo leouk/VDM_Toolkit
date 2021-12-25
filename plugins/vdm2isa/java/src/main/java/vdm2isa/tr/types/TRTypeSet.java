@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import java.util.TreeSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
@@ -452,6 +453,16 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 			}
 		}
 		return sb.toString();
+	}
+
+	public Set<String> getDefLemmas()
+	{
+		TreeSet<String> result = new TreeSet<String>();
+		for(TRType t : this)
+		{
+			result.addAll(t.getDefLemmas());
+		}
+		return result;
 	}
 
 	@Override

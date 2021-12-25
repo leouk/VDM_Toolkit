@@ -1,5 +1,8 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCOptionalType;
 
@@ -60,18 +63,28 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     // }
 
     @Override
-    public String invTranslate(String varName) {
+	protected String getInvTypeString()
+	{
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.INV.toString());
         // transform "option" => "Option" for inv_Option call
         int i = sb.length();
         sb.append(isaToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
-        sb.append(getSemanticSeparator());
+        return sb.toString();
+    }
+
+    @Override
+    public String invTranslate(String varName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getInvTypeString());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(getInnerType().invTranslate(null));
-        sb.append(getSemanticSeparator());
-        sb.append(varName);
+        if (varName != null)
+        {
+            sb.append(getSemanticSeparator());
+            sb.append(varName);
+        }
         return IsaToken.parenthesise(sb.toString());
     }
 

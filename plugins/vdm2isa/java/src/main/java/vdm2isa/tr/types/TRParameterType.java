@@ -4,7 +4,6 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCParameterType;
 
 import vdm2isa.lex.IsaToken;
-import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
@@ -44,6 +43,15 @@ public class TRParameterType extends TRType {
         return result;
     }
 
+    @Override
+	protected String getInvTypeString()
+	{
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaToken.INV.toString());
+        sb.append(name.toString());//IsaToken.TRUE.toString());
+        return sb.toString();
+    }    
+
     /**
      * Parametric types invariant translate expects that the caller will have an "inv_NAME" in context to check
      * the specific invariant specification call for the instantiated parameter. This has to come from 
@@ -52,10 +60,7 @@ public class TRParameterType extends TRType {
     @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
-        //sb.append(getFormattingSeparator());
-        //sb.append(IsaToken.comment(IsaInfoMessage.ISA_GENERIC_TYPE_1P.format(name.toString()), getFormattingSeparator()));
-        sb.append(IsaToken.INV.toString());
-        sb.append(name.toString());//IsaToken.TRUE.toString());
+        sb.append(getInvTypeString());
         sb.append(varName != null ? IsaToken.SPACE.toString() + varName : "");
         return sb.toString();
     }

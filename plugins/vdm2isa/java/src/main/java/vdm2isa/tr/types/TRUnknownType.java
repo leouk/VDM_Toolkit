@@ -42,13 +42,17 @@ public class TRUnknownType extends TRType {
         return IsaToken.UNKNOWN.toString();
     }
 
+    @Override 
+    protected String getInvTypeString()
+    {
+		return IsaToken.INV.toString() + IsaToken.TRUE.toString();
+    }
+
     @Override
     public String invTranslate(String varName) {
         // unknown type is just inv_True
         warning(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE);
-        return 
-            IsaToken.INV.toString() + 
-                IsaToken.TRUE.toString() +
+        return getInvTypeString() +
                 (varName == null ? "" : " " + varName) +
                 "\n\t" + IsaToken.comment(IsaWarningMessage.ISA_UNKNOWN_VDM_TYPE.message);
     }

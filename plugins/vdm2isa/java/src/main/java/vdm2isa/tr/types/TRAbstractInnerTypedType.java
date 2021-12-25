@@ -1,5 +1,8 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 
@@ -26,6 +29,20 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     {
         super.setup();
         TRNode.setup(type);
+    }
+
+    @Override
+	protected String getInvTypeString()
+	{
+        return getInnerType().getInvTypeString();
+    }
+
+    @Override
+    public Set<String> getDefLemmas()
+    {
+        Set<String> result = super.getDefLemmas();
+        result.addAll(getInnerType().getDefLemmas());
+        return result;
     }
 
     @Override

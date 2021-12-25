@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
@@ -87,13 +88,26 @@ public class TRRecordType extends TRInvariantType
     }
 
     @Override
+    public Set<String> getDefLemmas()
+    {
+        Set<String> result = super.getDefLemmas();
+        result.addAll(fields.getDefLemmas());
+        return result;
+    }
+
+    @Override 
+    protected String getInvTypeString()
+    {
+        // definition for a reference to record, i.e. variable of its type
+        return IsaToken.INV.toString() + translate();
+    }
+
+    @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
         if (varName == null)
         {
-            // definition for a reference to record, i.e. variable of its type
-            sb.append(IsaToken.INV.toString());
-            sb.append(translate());
+            sb.append(getInvTypeString());
             sb.append(IsaToken.SPACE.toString()); 
         }
         else //if (varName != null)

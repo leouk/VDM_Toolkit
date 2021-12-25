@@ -192,6 +192,8 @@ public enum IsaToken {
 	ISAR_THEOREM(null, "theorem"),
 	ISAR_LEMMA(null, "lemma"),
 	ISAR_LEMMAS(null, "lemmas"),
+	ISAR_LEMMAS_DEFS(null, "_defs"),
+	ISAR_DEF(null, "_def"),
 	ISAR_TERM(null, "term"),
 	ISAR_TYP(null, "typ"),
 	ISAR_THM(null, "thm"),

@@ -4,6 +4,9 @@
 
 package vdm2isa.tr.types;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
@@ -150,6 +153,30 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 
 	@Override
 	public abstract String translate();
+
+	protected abstract String getInvTypeString();
+
+	/**
+	 * Every type definition will have invariant checks. We declare a "lemmas" statement collecting the set of all
+	 * defining invariants involved in a type, so that they can all be expanded at once, or individually. 
+	 * For example, "T = nat inv t == t > 10" will define an "inv_T" which depends on "inv_VDMNat"; so this will return
+	 * "inv_T_def, inv_VDMNat_def", which can then become the set in a "lemmas inv_T_defs" statement translated 
+	 * by TRTypeDefinition. 
+	 * @return
+	 */
+	public Set<String> getDefLemmas()
+	{
+		TreeSet<String> result = new TreeSet<String>();
+		//TODO use this as a mechanism to "fixing" the messy parenthesise calls (i.e. too many around)
+		// String invStr = invTranslate();	
+		// invStr.replace("(", "");
+		// invStr.replace(")", "");
+		// // no repeated invs within
+		// assert invStr.indexOf(IsaToken.INV.toString()) == invStr.lastIndexOf(IsaToken.INV.toString());
+		// result.add(invStr.trim());
+		result.add(getInvTypeString());
+		return result;
+	}
 
 	public boolean isNumericType() {
 		TRType utype = ultimateType();

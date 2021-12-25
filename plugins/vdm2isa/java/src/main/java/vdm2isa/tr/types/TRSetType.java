@@ -2,6 +2,9 @@ package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCSetType;
 import com.fujitsu.vdmj.tc.types.TCType;
+
+import java.util.Set;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCSet1Type;
 
@@ -66,11 +69,25 @@ public class TRSetType extends TRAbstractInnerTypedType
         return getInnerType().translate() + " " + isaToken().toString();
     }
 
+    @Override
+    protected String getInvTypeString()
+    {
+        return IsaToken.INV.toString() + isaToken().toString() + IsaToken.DASH.toString();
+    }
+
+    @Override
+    public Set<String> getDefLemmas()
+    {
+        Set<String> result = super.getDefLemmas();
+        result.add(getInvTypeString() + IsaToken.ISAR_LEMMAS_DEFS.toString());
+        return result;
+    }
+
     //lemma "inv_VDMSeq' (inv_VDMSeq' inv_VDMNat1) [[1,2],[1,2]]"
     @Override
     public String invTranslate(String varName) {
         return IsaToken.parenthesise( 
-            IsaToken.INV.toString() + isaToken().toString() + IsaToken.DASH.toString() + IsaToken.SPACE.toString() + 
+            getInvTypeString() + IsaToken.SPACE.toString() + 
             getInnerType().invTranslate(null) + (varName != null ? IsaToken.SPACE.toString() + varName : ""));
     }
 

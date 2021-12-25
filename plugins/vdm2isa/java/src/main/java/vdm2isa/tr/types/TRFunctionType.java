@@ -17,6 +17,9 @@ import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.visitors.TRParametricTypeFinder;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 
@@ -143,15 +146,36 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		//}
         if (!isParametricInvariantType())
 		{
-			sb.append(IsaToken.INV.toString());
-			// transform "lambda" => "Lambda" for inv_Lambda call
-			int i = sb.length();
-			sb.append(IsaToken.LAMBDA.vdmToken().toString());
-			sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+			sb.append(getInvTypeString());
 			sb.append(IsaToken.SPACE.toString());
 		}
 		sb.append(parameters.get(index).invTranslate(null));
 		return sb.toString();
+	}
+
+    @Override
+	protected String getInvTypeString()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(IsaToken.INV.toString());
+		// transform "lambda" => "Lambda" for inv_Lambda call
+		int i = sb.length();
+		sb.append(IsaToken.LAMBDA.vdmToken().toString());
+		sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+		return sb.toString();
+    }
+
+	@Override 
+	public Set<String> getDefLemmas()
+	{
+		TreeSet<String> result = new TreeSet<String>();
+		if (!isParametricInvariantType())
+		{
+			result.add(getInvTypeString());
+		}
+		result.addAll(parameters.getDefLemmas());
+		result.addAll(getResultType().getDefLemmas());
+		return result;
 	}
 
 	@Override

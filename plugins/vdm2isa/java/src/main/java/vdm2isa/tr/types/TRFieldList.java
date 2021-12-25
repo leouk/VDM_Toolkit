@@ -1,6 +1,10 @@
 package vdm2isa.tr.types;
 
 import com.fujitsu.vdmj.tc.types.TCFieldList;
+
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.types.TCField;
 
 import vdm2isa.lex.IsaToken;
@@ -69,6 +73,16 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 		}
 		return result;
 	}
+
+    public Set<String> getDefLemmas()
+    {
+        TreeSet<String> result = new TreeSet<String>();
+		for(TRField f : this)
+		{
+			result.addAll(f.getDefLemmas());
+		}
+        return result;
+    }
 
     public String invTranslate(String varName)
     {

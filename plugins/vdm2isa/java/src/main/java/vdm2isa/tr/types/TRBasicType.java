@@ -127,13 +127,18 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
-	public String invTranslate(String varName)
+	protected String getInvTypeString()
 	{
 		// there is no "inv_bool" in the translation; add inv_bool for completeness. 
 		String typeStr = isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : translate();
+		return IsaToken.INV.toString() + typeStr;
+	}
+
+	@Override
+	public String invTranslate(String varName)
+	{
 		return IsaToken.parenthesise(
-			IsaToken.INV.toString() + 
-			typeStr + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
+			getInvTypeString() + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
 	}
 
 	@Override

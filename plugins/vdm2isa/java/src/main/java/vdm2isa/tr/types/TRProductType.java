@@ -1,5 +1,7 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCProductType;
 
@@ -106,6 +108,19 @@ public class TRProductType extends TRType {
             }
         }
         return fieldVarName.toString();
+    }
+
+    @Override 
+    protected String getInvTypeString()
+    {
+		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), "product type doesn't have inv type string");
+        return "";
+    }
+
+    @Override
+    public Set<String> getDefLemmas()
+    {
+        return types.getDefLemmas();
     }
 
     @Override

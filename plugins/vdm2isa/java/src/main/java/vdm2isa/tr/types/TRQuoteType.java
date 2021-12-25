@@ -129,12 +129,17 @@ public class TRQuoteType extends TRType
     public IsaToken isaToken() {
         return IsaToken.VDMQUOTE;
     }
-    
+
+    @Override 
+    protected String getInvTypeString()
+    {
+        // there is no "inv_True" in the translation for completeness. 
+		return IsaToken.INV.toString() + IsaToken.TRUE.toString();
+    }
+
     @Override
 	public String invTranslate(String varName) {
-		// there is no "inv_True" in the translation for completeness. 
-		String typeStr = IsaToken.INV.toString() + IsaToken.TRUE.toString();
-        return IsaToken.parenthesise(typeStr + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
+		return IsaToken.parenthesise(getInvTypeString() + (varName == null ? "" : IsaToken.SPACE.toString() + varName));
 	}
 
 	@Override

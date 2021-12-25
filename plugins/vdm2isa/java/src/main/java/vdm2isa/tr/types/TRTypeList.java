@@ -6,6 +6,8 @@ package vdm2isa.tr.types;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
@@ -51,6 +53,16 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		setCurried(true);
 		setFormattingSeparator(IsaToken.SPACE.toString());
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
+	}
+
+	public Set<String> getDefLemmas()
+	{
+		TreeSet<String> result = new TreeSet<String>();
+		for(TRType t : this)
+		{
+			result.addAll(t.getDefLemmas());
+		}
+		return result;
 	}
 
 	/**

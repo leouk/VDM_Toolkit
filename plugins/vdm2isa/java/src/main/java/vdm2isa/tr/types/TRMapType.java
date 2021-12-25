@@ -1,5 +1,8 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.fujitsu.vdmj.tc.types.TCInMapType;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 import com.fujitsu.vdmj.tc.types.TCType;
@@ -70,7 +73,17 @@ public class TRMapType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public String invTranslate(String varName) 
+    public Set<String> getDefLemmas()
+    {
+        TreeSet<String> result = new TreeSet<String>();
+        result.add(getInvTypeString() + IsaToken.ISAR_LEMMAS_DEFS.toString());
+        result.addAll(from.getDefLemmas());
+        result.addAll(getToType().getDefLemmas());
+        return result;
+    }
+
+    @Override
+    protected String getInvTypeString()
     {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.INV.toString());
@@ -79,13 +92,24 @@ public class TRMapType extends TRAbstractInnerTypedType
         int i = sb.length();
         sb.append(isaToken().vdmToken().toString());
         sb.setCharAt(i, Character.toUpperCase(sb.charAt(i)));
+        return sb.toString();
+    }
+
+    @Override
+    public String invTranslate(String varName) 
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getInvTypeString());
         sb.append(IsaToken.SPACE.toString());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
         sb.append(from.invTranslate(null));
         sb.append(IsaToken.SPACE.toString());
         sb.append(getToType().invTranslate(null));
-        sb.append(IsaToken.SPACE.toString());
-        sb.append(varName);        
+        if (varName != null)
+        {
+            sb.append(IsaToken.SPACE.toString());
+            sb.append(varName);        
+        }
         return IsaToken.parenthesise(sb.toString());
     }
 

@@ -294,6 +294,8 @@ definition
   where
   "inv_VDMToken' inv_T t \<equiv> case t of Token a \<Rightarrow> inv_T a"
 
+lemmas inv_VDMToken_defs = inv_VDMToken_def inv_True_def
+
 (*****************************************************************)
 section \<open> Sets \<close>
   
@@ -313,6 +315,7 @@ definition
   where
    [intro!]:  "inv_VDMSet1 s \<equiv> inv_VDMSet s \<and> s \<noteq> {}"
 
+lemmas inv_VDMSet_defs = inv_VDMSet1_def
 lemmas inv_VDMSet1_defs = inv_VDMSet1_def inv_VDMSet_def   
   
 definition 
@@ -350,6 +353,9 @@ definition
   inv_VDMSet1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet1 \<Rightarrow> \<bool>"
   where
    [intro!]:  "inv_VDMSet1' einv s \<equiv> inv_VDMSet1 s \<and> inv_SetElems einv s"
+
+lemmas inv_VDMSet'_defs  = inv_VDMSet'_def  inv_VDMSet_def inv_SetElems_def
+lemmas inv_VDMSet1'_defs = inv_VDMSet1'_def inv_VDMSet1_defs inv_SetElems_def
 
 definition
   vdm_card :: "'a VDMSet \<Rightarrow> VDMNat"
@@ -456,7 +462,10 @@ definition
 definition
   inv_VDMSeq1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSeq1 \<Rightarrow> \<bool>"
   where
-   [intro!]:  "inv_VDMSeq1' einv s \<equiv> inv_VDMSeq1 s \<and> inv_SeqElems einv s"
+   [intro!]:  "inv_VDMSeq1' einv s \<equiv> inv_VDMSeq' einv s \<and> inv_VDMSeq1 s"
+
+lemmas inv_VDMSeq'_defs  = inv_VDMSeq'_def  inv_SeqElems_def
+lemmas inv_VDMSeq1'_defs = inv_VDMSeq1'_def inv_VDMSeq'_defs inv_VDMSeq1_def 
 
 (*****************************************************************)
 subsection \<open> Sequence operators specification \<close>  
@@ -1014,10 +1023,8 @@ definition
 where
   [intro!]: 
   "inv_Map inv_Dom inv_Rng m \<equiv> 
-      inv_VDMSet (dom m) \<and> 
-      inv_VDMSet (ran m) \<and>
-      inv_SetElems inv_Dom (dom m) \<and> 
-      inv_SetElems inv_Rng (ran m)"
+      inv_VDMSet' inv_Dom (dom m) \<and> 
+      inv_VDMSet' inv_Rng (ran m)"
   
 definition
   inv_Map1 :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>"
@@ -1031,6 +1038,10 @@ definition
   where
   [intro!]: "inv_Inmap inv_Dom inv_Ran m \<equiv> 
     inv_Map inv_Dom inv_Ran m \<and> inj m"
+
+lemmas inv_Map_defs = inv_Map_def inv_VDMSet'_defs
+lemmas inv_Map1_defs = inv_Map1_def inv_Map_defs
+lemmas inv_Inmap_defs = inv_Inmap_def inv_Map_defs inj_def
   
 (* dom exists already *)
 thm dom_def
@@ -2151,23 +2162,23 @@ lemma l_ranE_frule':
 
 lemma l_inv_MapTrue: 
   "finite (dom m) \<Longrightarrow> inv_Map inv_True inv_True m"
-  unfolding inv_Map_def inv_VDMSet_def
+  unfolding inv_Map_defs 
   by (simp add: finite_ran)
 
 lemma l_invMap_domr_absorb:   
   "inv_Map di ri m \<Longrightarrow> inv_Map di ri (S \<triangleleft> m)"
-  unfolding inv_Map_def inv_VDMSet_def
-  by (metis (mono_tags, lifting) domIff f_in_dom_r_apply_elem f_in_relimg_ran finiteRan inv_SetElems_def l_dom_r_finite l_in_dom_dom_r)
+  unfolding inv_Map_def inv_VDMSet'_defs inv_VDMSet_def
+  by (metis (mono_tags, lifting) domIff f_in_dom_r_apply_elem f_in_relimg_ran finiteRan l_dom_r_finite l_in_dom_dom_r)
 
 lemma l_inv_Map_on_dom: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Dom (dom m)" 
-  unfolding inv_Map_def by auto
+  unfolding inv_Map_defs by auto
 
 lemma l_inv_Map_on_ran: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Ran (ran m)" 
-  unfolding inv_Map_def by auto
+  unfolding inv_Map_defs by auto
 
 lemma l_invMap_di_absorb:
   "inv_Map di ri m \<Longrightarrow> inv_Map inv_True ri m"
-  by (simp add: inv_Map_def)
+  by (simp add: inv_Map_defs)
 
 section \<open>To tidy up or remove\<close>
 

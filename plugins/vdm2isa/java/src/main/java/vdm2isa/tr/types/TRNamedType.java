@@ -1,5 +1,7 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCNamedType;
 
@@ -128,6 +130,14 @@ public class TRNamedType extends TRInvariantType
         return sb.toString();
     }
 
+    @Override
+    public Set<String> getDefLemmas()
+    {
+        Set<String> result = super.getDefLemmas();
+        result.addAll(type.getDefLemmas());
+        return result;
+    }
+        
     @Override
 	public String invTranslate(String varName) {
 

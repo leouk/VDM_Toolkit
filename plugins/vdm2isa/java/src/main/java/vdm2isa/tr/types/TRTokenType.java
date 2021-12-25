@@ -1,5 +1,7 @@
 package vdm2isa.tr.types;
 
+import java.util.Set;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
 
@@ -62,11 +64,28 @@ public class TRTokenType extends TRBasicType {
 	}
 
     @Override
+    protected String getInvTypeString()
+    {
+        return IsaToken.INV.toString() + isaToken().toString() + IsaToken.DASH.toString();
+    }
+
+    @Override
+    public Set<String> getDefLemmas()
+    {
+        Set<String> result = super.getDefLemmas();
+        // this is already called by super?
+        result.add(getInvTypeString());// + IsaToken.ISAR_LEMMAS_DEFS.toString());
+        if (innerTokenType != null)
+        {
+            result.addAll(innerTokenType.getDefLemmas());
+        }
+        return result;
+    }
+
+    @Override
     public String invTranslate(String varName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(IsaToken.INV.toString());
-        sb.append(isaToken().toString());
-        sb.append(IsaToken.DASH.toString());
+        sb.append(getInvTypeString());
         figureOutInnerTokenType();
         if (innerTokenType != null)
         {

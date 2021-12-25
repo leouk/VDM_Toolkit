@@ -2,6 +2,7 @@ package vdm2isa.tr.types;
 
 
 import java.util.Iterator;
+import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
@@ -206,6 +207,19 @@ public class TRUnionType extends TRType implements TRDataType {
 		sb.append(types.translate());
 		return sb.toString();
     }
+
+	@Override 
+    protected String getInvTypeString()
+    {
+		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), "union type doesn't have inv type string");
+        return "";
+    }
+
+	@Override
+	public Set<String> getDefLemmas()
+	{
+		return types.getDefLemmas();
+	}
 
 	@Override
     public String invTranslate(String varName) {
