@@ -13,7 +13,6 @@ begin
 \<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl) at line 11:5\<close>
 type_synonym TBasic1 = "VDMNat1"
 	
-
 \<comment>\<open>VDM source: inv_TBasic1 = ?\<close>
 \<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypes.vdmsl) at line 11:5\<close>
 definition
@@ -22,9 +21,8 @@ where
 	"inv_TBasic1 dummy0 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_TBasic1` specification.\<close>
 		(((inv_VDMNat1 dummy0)))"
-
 		 
-
+lemmas inv_TBasic1_defs = inv_TBasic1_def inv_VDMNat1_def
 	
 \<comment>\<open>VDM source: TBasic2 = nat1
 	inv t == (t > 10)
