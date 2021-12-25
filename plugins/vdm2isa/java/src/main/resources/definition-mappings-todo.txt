@@ -37,8 +37,8 @@ TCExternalDefinition
 
  26  33 defs  ( 79%)
  37  37 binds (100%)
- 34  42 types ( 81%)
+ 39  42 types ( 93%)
 107 110 exp   ( 97%)
  20  20 mods  (100%)
 
-224 242 total = 93%
+229 242 total = 95%

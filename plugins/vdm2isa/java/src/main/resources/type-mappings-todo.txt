@@ -32,14 +32,14 @@
 -TCUnresolvedType
 *TCUnionType
 *TCTypeSet
+*TCParameterType
+*TCPatternListTypePair
+*TCPatternListTypePairList
+*TCPatternTypePair
+-TCUndefinedType
 
 TCOperationType
-TCParameterType
-TCPatternListTypePair
-TCPatternListTypePairList
-TCPatternTypePair
-TCUndefinedType
 TCVoidReturnType
 TCVoidType
 
-(34 out 42) = 81%
+(39 out 42) = 81%
