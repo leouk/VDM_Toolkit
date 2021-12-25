@@ -58,6 +58,9 @@ public enum IsaErrorMessage {
     VDMSL_FIELD_INCOMPATIBLE_UNION_TYPE_4P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 18, 
     "Incompatible field (%2$s) type in `mk_%1$s` expression: expected `%3$s` but found `%4$s`."),
 
+    VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 50, 
+    "Implicit function cannot have bodies for Isabelle Translation."),
+
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
     "Invalid IsaItem %1$s: %2$s has already been defined in module %3$s"), 

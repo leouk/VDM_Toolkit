@@ -16,6 +16,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRSpecificationKind;
 
@@ -97,6 +98,13 @@ public class ExuPlugin extends GeneralisaPlugin {
         }
     }
 
+    private void checkImplicitFunctionBody(TCImplicitFunctionDefinition def)
+    {
+        if (def.body != null || def.measureDef != null)
+        {
+            report(IsaErrorMessage.VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P, def.name.getLocation(), def.name.toString());
+        }
+    }
 
     private boolean isSpecificationName(TCNameToken n) {
         return n.isReserved(); 
@@ -127,6 +135,7 @@ public class ExuPlugin extends GeneralisaPlugin {
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, idef.predef);
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, idef.postdef);
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, idef.measureDef);
+            checkImplicitFunctionBody(idef);
         }
     }
 
@@ -152,6 +161,6 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     @Override
     public String help() {
-        return "exu - because the devil is in the detail, analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
+        return "exu - because the devil is in the detail; it will analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
     }
 }
