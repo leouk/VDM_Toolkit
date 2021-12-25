@@ -12,6 +12,7 @@ import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRParameterType extends TRType {
 
+    private static final long serialVersionUID = 1L;
     private final TCNameToken name;
     private final TRDefinition paramdef;
 
