@@ -1,8 +1,5 @@
 package vdm2isa.tr.types;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCOptionalType;
 

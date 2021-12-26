@@ -178,6 +178,23 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return result;
 	}
 
+	public String translateDefLemmas()
+	{
+		StringBuilder sb = new StringBuilder();
+		for(String s : getDefLemmas())
+		{
+			sb.append(s);
+			// add "_def" to all strings without it. 
+			if (!s.endsWith(IsaToken.ISAR_DEF.toString()) && 
+				!s.endsWith(IsaToken.ISAR_LEMMAS_DEFS.toString()))
+			{
+				sb.append(IsaToken.ISAR_DEF.toString());
+			}
+			sb.append(IsaToken.SPACE.toString());
+		}
+		return sb.toString();
+	}
+
 	public boolean isNumericType() {
 		TRType utype = ultimateType();
         return getVDMType().isNumeric(location)

@@ -245,9 +245,9 @@ map TCInvariantType{} to TRInvariantType();
 map TCTypeList{} to TRTypeList(this);
 map TCTypeSet{} to TRTypeSet(this);
 map TCFieldList{} to TRFieldList(this);
-map TCPatternListTypePairList{} to TRPatternListTypePairList(this);
 
-map TCPatternListTypePair{patterns, type} to TRPatternListTypePairList(patterns, type);
+map TCPatternListTypePairList{} to TRPatternListTypePairList(this);
+map TCPatternListTypePair{patterns, type} to TRPatternListTypePair(patterns, type);
 map TCPatternTypePair{pattern, type} to TRPatternTypePair(pattern, type);
 
 map TCFunctionType{definitions, parameters, partial, result} to TRFunctionType(this, definitions, parameters, partial, result);

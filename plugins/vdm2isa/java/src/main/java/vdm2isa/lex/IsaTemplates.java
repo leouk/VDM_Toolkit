@@ -32,7 +32,7 @@ public final class IsaTemplates {
     private static final String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
     private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
-
+    private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
@@ -224,6 +224,14 @@ public final class IsaTemplates {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(DATATYPE, name, exp));
         updateTranslatedIsaItem(module, name, IsaItem.DATATYPE);
+        return sb.toString();
+    }
+
+    public static final String translateLemmasDefinition(LexLocation location, String name, String lemmasDefs) 
+    {
+        assert name != null && lemmasDefs != null && !name.isEmpty() && !lemmasDefs.isEmpty();
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format(LEMMAS, IsaToken.INV.toString() + name + IsaToken.ISAR_LEMMAS_DEFS, lemmasDefs));
         return sb.toString();
     }
 

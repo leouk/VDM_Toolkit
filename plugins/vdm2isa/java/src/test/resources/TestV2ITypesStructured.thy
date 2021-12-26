@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-13T14:25:22.533Z
+(* VDM to Isabelle Translation @2021-12-26T12:01:25.623Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl' at line 1:8
@@ -12,7 +12,7 @@ begin
 \<comment>\<open>VDM source: G2 = (int * int)
 	inv mk_(l, r) == (l < r)\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 10:5\<close>
-type_synonym G2 = "(VDMInt\<times> VDMInt)"
+type_synonym G2 = "(VDMInt \<times> VDMInt)"
 	
 
 \<comment>\<open>VDM source: inv_G2: ((int * int) +> bool)
@@ -34,12 +34,15 @@ where
 		(l < r))"
 
 		 
+lemmas inv_G2_defs = inv_G2_def inv_VDMInt_def 
 
+
+	
 	
 \<comment>\<open>VDM source: G2' = (int * int)
 	inv g == ((g.#1) < (g.#2))\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 14:5\<close>
-type_synonym G2' = "(VDMInt\<times> VDMInt)"
+type_synonym G2' = "(VDMInt \<times> VDMInt)"
 	
 
 \<comment>\<open>VDM source: inv_G2': ((int * int) +> bool)
@@ -59,7 +62,10 @@ where
 		((fst (g)) < (snd (g)))"
 
 		 
+lemmas inv_G2'_defs = inv_G2'_def inv_VDMInt_def 
 
+
+	
 	
 \<comment>\<open>VDM source: TSet = set of (nat1)
 	inv s == (s <> {})
@@ -86,11 +92,11 @@ where
 \<comment>\<open>VDM source: eq_TSet: (set of (nat1) * set of (nat1) +> bool)
 	eq_TSet(s1, s2) ==
 (s1 subset s2)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:23\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 19:9\<close>
 definition
-	eq_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> bool"
+	eq_TSet :: "TSet \<Rightarrow> TSet \<Rightarrow> bool"
 where
-	"eq_TSet s1  s2 \<equiv> 
+	"eq_TSet s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `eq_TSet` specification.\<close>
 		((inv_TSet s1)  \<and>  (inv_TSet s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSet.\<close>
@@ -100,11 +106,11 @@ where
 \<comment>\<open>VDM source: ord_TSet: (set of (nat1) * set of (nat1) +> bool)
 	ord_TSet(s1, s2) ==
 ((card s1) < (card s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
-	ord_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> bool"
+	ord_TSet :: "TSet \<Rightarrow> TSet \<Rightarrow> bool"
 where
-	"ord_TSet s1  s2 \<equiv> 
+	"ord_TSet s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `ord_TSet` specification.\<close>
 		((inv_TSet s1)  \<and>  (inv_TSet s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSet.\<close>
@@ -116,17 +122,19 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
-	min_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
+	min_TSet :: "TSet \<Rightarrow> TSet \<Rightarrow> TSet"
 where
-	"min_TSet a  b \<equiv> 
+	"min_TSet a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `min_TSet` specification.\<close>
 		(if ((inv_TSet a)  \<and>  (inv_TSet b)) then
 			
 		\<comment>\<open>User defined body of min_TSet.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSet` call\<close>
+	(ord_TSet a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSet` call\<close>
+	(eq_TSet a   b))) then
 		(a)
 		else
 		(b))
@@ -140,17 +148,19 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:28\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
-	max_TSet :: "TSet\<Rightarrow> TSet \<Rightarrow> TSet"
+	max_TSet :: "TSet \<Rightarrow> TSet \<Rightarrow> TSet"
 where
-	"max_TSet a  b \<equiv> 
+	"max_TSet a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `max_TSet` specification.\<close>
 		(if ((inv_TSet a)  \<and>  (inv_TSet b)) then
 			
 		\<comment>\<open>User defined body of max_TSet.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSet` call\<close>
+	(ord_TSet a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSet` call\<close>
+	(eq_TSet a   b))) then
 		(b)
 		else
 		(a))
@@ -158,7 +168,10 @@ where
 			undefined)"
 
 	
+lemmas inv_TSet_defs = inv_TSet_def inv_VDMNat1_def inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TSet2 = TSet
 	inv s == ((card s) > 10)\<close>
@@ -180,14 +193,19 @@ where
 		((vdm_card s) > (10::VDMNat1))"
 
 		 
+lemmas inv_TSet2_defs = inv_TSet_def inv_TSet2_def inv_VDMNat1_def inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TSet3 = set of (TSet)\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
 type_synonym TSet3 = "TSet VDMSet"
 	
 
-\<comment>\<open>VDM source: inv_TSet3 = ?\<close>
+\<comment>\<open>VDM source: inv_TSet3: (TSet3 +> bool)
+	inv_TSet3(dummy0) ==
+null\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
 definition
 	inv_TSet3 :: "TSet3 \<Rightarrow> bool"
@@ -197,7 +215,10 @@ where
 		(((inv_VDMSet' (inv_TSet) dummy0)))"
 
 		 
+lemmas inv_TSet3_defs = inv_TSet_def inv_TSet3_def inv_VDMNat1_def inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TSet4 = set of (TSet3)
 	inv s == ((card s) > 20)\<close>
@@ -219,7 +240,10 @@ where
 		((vdm_card s) > (20::VDMNat1))"
 
 		 
+lemmas inv_TSet4_defs = inv_TSet_def inv_TSet3_def inv_TSet4_def inv_VDMNat1_def inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TSeq = seq1 of (nat1)
 	inv s == ((card (elems s)) = (len s))
@@ -247,11 +271,11 @@ where
 \<comment>\<open>VDM source: eq_TSeq: (seq1 of (nat1) * seq1 of (nat1) +> bool)
 	eq_TSeq(s1, s2) ==
 ((elems s1) = (elems s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:29\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 33:9\<close>
 definition
-	eq_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> bool"
+	eq_TSeq :: "TSeq \<Rightarrow> TSeq \<Rightarrow> bool"
 where
-	"eq_TSeq s1  s2 \<equiv> 
+	"eq_TSeq s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `eq_TSeq` specification.\<close>
 		((inv_TSeq s1)  \<and>  (inv_TSeq s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSeq.\<close>
@@ -262,11 +286,11 @@ where
 \<comment>\<open>VDM source: ord_TSeq: (seq1 of (nat1) * seq1 of (nat1) +> bool)
 	ord_TSeq(s1, s2) ==
 ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
-	ord_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> bool"
+	ord_TSeq :: "TSeq \<Rightarrow> TSeq \<Rightarrow> bool"
 where
-	"ord_TSeq s1  s2 \<equiv> 
+	"ord_TSeq s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `ord_TSeq` specification.\<close>
 		((inv_TSeq s1)  \<and>  (inv_TSeq s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSeq.\<close>
@@ -279,17 +303,19 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
-	min_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
+	min_TSeq :: "TSeq \<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
-	"min_TSeq a  b \<equiv> 
+	"min_TSeq a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `min_TSeq` specification.\<close>
 		(if ((inv_TSeq a)  \<and>  (inv_TSeq b)) then
 			
 		\<comment>\<open>User defined body of min_TSeq.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSeq` call\<close>
+	(ord_TSeq a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSeq` call\<close>
+	(eq_TSeq a   b))) then
 		(a)
 		else
 		(b))
@@ -303,17 +329,19 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
-	max_TSeq :: "TSeq\<Rightarrow> TSeq \<Rightarrow> TSeq"
+	max_TSeq :: "TSeq \<Rightarrow> TSeq \<Rightarrow> TSeq"
 where
-	"max_TSeq a  b \<equiv> 
+	"max_TSeq a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `max_TSeq` specification.\<close>
 		(if ((inv_TSeq a)  \<and>  (inv_TSeq b)) then
 			
 		\<comment>\<open>User defined body of max_TSeq.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSeq` call\<close>
+	(ord_TSeq a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSeq` call\<close>
+	(eq_TSeq a   b))) then
 		(b)
 		else
 		(a))
@@ -321,7 +349,10 @@ where
 			undefined)"
 
 	
+lemmas inv_TSeq_defs = inv_TSeq_def inv_VDMNat1_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TSeq2 = seq1 of (TSet)
 	inv s == ((card (elems s)) = (len s))
@@ -349,11 +380,11 @@ where
 \<comment>\<open>VDM source: eq_TSeq2: (seq1 of (TSet) * seq1 of (TSet) +> bool)
 	eq_TSeq2(s1, s2) ==
 ((elems s1) = (elems s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 39:29\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 39:9\<close>
 definition
-	eq_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> bool"
+	eq_TSeq2 :: "TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> bool"
 where
-	"eq_TSeq2 s1  s2 \<equiv> 
+	"eq_TSeq2 s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `eq_TSeq2` specification.\<close>
 		((inv_TSeq2 s1)  \<and>  (inv_TSeq2 s2))  \<and> 
 		\<comment>\<open>User defined body of eq_TSeq2.\<close>
@@ -364,11 +395,11 @@ where
 \<comment>\<open>VDM source: ord_TSeq2: (seq1 of (TSet) * seq1 of (TSet) +> bool)
 	ord_TSeq2(s1, s2) ==
 ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
-	ord_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> bool"
+	ord_TSeq2 :: "TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> bool"
 where
-	"ord_TSeq2 s1  s2 \<equiv> 
+	"ord_TSeq2 s1   s2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `ord_TSeq2` specification.\<close>
 		((inv_TSeq2 s1)  \<and>  (inv_TSeq2 s2))  \<and> 
 		\<comment>\<open>User defined body of ord_TSeq2.\<close>
@@ -381,17 +412,19 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
-	min_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
+	min_TSeq2 :: "TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
-	"min_TSeq2 a  b \<equiv> 
+	"min_TSeq2 a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `min_TSeq2` specification.\<close>
 		(if ((inv_TSeq2 a)  \<and>  (inv_TSeq2 b)) then
 			
 		\<comment>\<open>User defined body of min_TSeq2.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSeq2` call\<close>
+	(ord_TSeq2 a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSeq2` call\<close>
+	(eq_TSeq2 a   b))) then
 		(a)
 		else
 		(b))
@@ -405,17 +438,19 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:27\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
-	max_TSeq2 :: "TSeq2\<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
+	max_TSeq2 :: "TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> TSeq2"
 where
-	"max_TSeq2 a  b \<equiv> 
+	"max_TSeq2 a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `max_TSeq2` specification.\<close>
 		(if ((inv_TSeq2 a)  \<and>  (inv_TSeq2 b)) then
 			
 		\<comment>\<open>User defined body of max_TSeq2.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TSeq2` call\<close>
+	(ord_TSeq2 a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TSeq2` call\<close>
+	(eq_TSeq2 a   b))) then
 		(b)
 		else
 		(a))
@@ -423,7 +458,10 @@ where
 			undefined)"
 
 	
+lemmas inv_TSeq2_defs = inv_TSeq2_def inv_TSet_def inv_VDMNat1_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TMap = map (nat1) to (nat1)
 	inv m == ((dom m) <> {})
@@ -451,30 +489,30 @@ where
 \<comment>\<open>VDM source: eq_TMap: (map (nat1) to (nat1) * map (nat1) to (nat1) +> bool)
 	eq_TMap(m1, m2) ==
 (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) = m2(x))))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 45:35\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 45:8\<close>
 definition
-	eq_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> bool"
+	eq_TMap :: "TMap \<Rightarrow> TMap \<Rightarrow> bool"
 where
-	"eq_TMap m1  m2 \<equiv> 
+	"eq_TMap m1   m2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `eq_TMap` specification.\<close>
 		((inv_TMap m1)  \<and>  (inv_TMap m2))  \<and> 
 		\<comment>\<open>User defined body of eq_TMap.\<close>
-		(((dom m1) = (dom m2)) \<and> (\<forall> x \<in> (dom m1)  . ((the(m1 x)) = (the(m2 x)))))"
+		(((dom m1) = (dom m2)) \<and> (\<forall> x \<in> (dom m1)  . ((m1 x) = (m2 x))))"
 
 		 
 
 \<comment>\<open>VDM source: ord_TMap: (map (nat1) to (nat1) * map (nat1) to (nat1) +> bool)
 	ord_TMap(m1, m2) ==
 (((dom m1) subset (dom m2)) or (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) < m2(x)))))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 48:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
-	ord_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> bool"
+	ord_TMap :: "TMap \<Rightarrow> TMap \<Rightarrow> bool"
 where
-	"ord_TMap m1  m2 \<equiv> 
+	"ord_TMap m1   m2 \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `ord_TMap` specification.\<close>
 		((inv_TMap m1)  \<and>  (inv_TMap m2))  \<and> 
 		\<comment>\<open>User defined body of ord_TMap.\<close>
-		(((dom m1) \<subseteq> (dom m2)) \<or> (((dom m1) = (dom m2)) \<and> (\<forall> x \<in> (dom m1)  . ((the(m1 x)) < (the(m2 x))))))"
+		(((dom m1) \<subseteq> (dom m2)) \<or> (((dom m1) = (dom m2)) \<and> (\<forall> x \<in> (dom m1)  . ((m1 x) < (m2 x)))))"
 
 		 
 
@@ -483,17 +521,19 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 48:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
-	min_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
+	min_TMap :: "TMap \<Rightarrow> TMap \<Rightarrow> TMap"
 where
-	"min_TMap a  b \<equiv> 
+	"min_TMap a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `min_TMap` specification.\<close>
 		(if ((inv_TMap a)  \<and>  (inv_TMap b)) then
 			
 		\<comment>\<open>User defined body of min_TMap.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TMap` call\<close>
+	(ord_TMap a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TMap` call\<close>
+	(eq_TMap a   b))) then
 		(a)
 		else
 		(b))
@@ -507,17 +547,19 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 48:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
-	max_TMap :: "TMap\<Rightarrow> TMap \<Rightarrow> TMap"
+	max_TMap :: "TMap \<Rightarrow> TMap \<Rightarrow> TMap"
 where
-	"max_TMap a  b \<equiv> 
+	"max_TMap a   b \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `max_TMap` specification.\<close>
 		(if ((inv_TMap a)  \<and>  (inv_TMap b)) then
 			
 		\<comment>\<open>User defined body of max_TMap.\<close>
 		(
-		if (((a < b) \<or> (a = b))) then
+		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TMap` call\<close>
+	(ord_TMap a   b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TMap` call\<close>
+	(eq_TMap a   b))) then
 		(b)
 		else
 		(a))
@@ -525,14 +567,19 @@ where
 			undefined)"
 
 	
+lemmas inv_TMap_defs = inv_Map_defs inv_TMap_def inv_VDMNat1_def 
 
+
+	
 	
 \<comment>\<open>VDM source: TMap2 = map (TSet4) to (TSeq2)\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
 type_synonym TMap2 = "(TSet4 \<rightharpoonup> TSeq2)"
 	
 
-\<comment>\<open>VDM source: inv_TMap2 = ?\<close>
+\<comment>\<open>VDM source: inv_TMap2: (TMap2 +> bool)
+	inv_TMap2(dummy0) ==
+null\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
 definition
 	inv_TMap2 :: "TMap2 \<Rightarrow> bool"
@@ -542,14 +589,19 @@ where
 		(((inv_Map (inv_TSet4) (inv_TSeq2) dummy0)))"
 
 		 
+lemmas inv_TMap2_defs = inv_Map_defs inv_TMap2_def inv_TSeq2_def inv_TSet_def inv_TSet3_def inv_TSet4_def inv_VDMNat1_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_VDMSet'_def inv_VDMSet'_defs 
 
+
+	
 	
 \<comment>\<open>VDM source: TMap3 = map (TMap2) to (TMap)\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
 type_synonym TMap3 = "(TMap2 \<rightharpoonup> TMap)"
 	
 
-\<comment>\<open>VDM source: inv_TMap3 = ?\<close>
+\<comment>\<open>VDM source: inv_TMap3: (TMap3 +> bool)
+	inv_TMap3(dummy0) ==
+null\<close>
 \<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
 definition
 	inv_TMap3 :: "TMap3 \<Rightarrow> bool"
@@ -559,5 +611,7 @@ where
 		(((inv_Map (inv_TMap2) (inv_TMap) dummy0)))"
 
 		 
+lemmas inv_TMap3_defs = inv_Map_defs inv_TMap_def inv_TMap2_def inv_TMap3_def inv_TSeq2_def inv_TSet_def inv_TSet3_def inv_TSet4_def inv_VDMNat1_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_VDMSet'_def inv_VDMSet'_defs 
+
 
 end

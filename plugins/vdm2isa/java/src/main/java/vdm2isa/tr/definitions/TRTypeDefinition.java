@@ -402,11 +402,12 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             trtype.checkForUnionTypes();
             
             // translate record definition 
-            sb.append(trtype.isaToken().toString() + " "); 
+            sb.append(trtype.isaToken().toString());
+            sb.append(IsaToken.SPACE.toString()); 
             sb.append(trtype.translate());
-            sb.append(" ");
+            sb.append(IsaToken.SPACE.toString());
             sb.append(IsaToken.EQUALS.toString());
-            sb.append(" ");
+            sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
             sb.append(trtype.getFields().translate());
             sb.append(getFormattingSeparator());
@@ -483,6 +484,11 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 sb.append("\n");
             }
         }
+
+        String lemmasDefs = t.translateDefLemmas();//t.getDefLemmas().toString().replace(',', ' ').replaceAll("\\[", "").replaceAll("\\]","");
+        sb.append(IsaTemplates.translateLemmasDefinition(location, name.toString(), lemmasDefs));
+        sb.append("\n");
+        
         return sb.toString();
     }
 
