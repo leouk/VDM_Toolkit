@@ -486,7 +486,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         }
 
         String lemmasDefs = t.translateDefLemmas();//t.getDefLemmas().toString().replace(',', ' ').replaceAll("\\[", "").replaceAll("\\]","");
-        sb.append(IsaTemplates.translateLemmasDefinition(location, name.toString(), lemmasDefs));
+        sb.append(IsaTemplates.translateLemmasDefinition(location, IsaToken.INV.toString() + name.toString(), lemmasDefs));
         sb.append("\n");
         
         return sb.toString();

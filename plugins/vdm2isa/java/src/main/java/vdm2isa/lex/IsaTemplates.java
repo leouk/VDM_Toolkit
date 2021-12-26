@@ -231,7 +231,7 @@ public final class IsaTemplates {
     {
         assert name != null && lemmasDefs != null && !name.isEmpty() && !lemmasDefs.isEmpty();
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(LEMMAS, IsaToken.INV.toString() + name + IsaToken.ISAR_LEMMAS_DEFS, lemmasDefs));
+        sb.append(String.format(LEMMAS, name + IsaToken.ISAR_LEMMAS_DEFS, lemmasDefs));
         return sb.toString();
     }
 
