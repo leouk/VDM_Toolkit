@@ -7,6 +7,7 @@ package vdm2isa.tr.types;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
@@ -40,7 +41,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 
 	public TRType(TCType vdmType, TRDefinitionList definitions)
 	{
-		super(vdmType.location);
+		super(vdmType != null ? vdmType.location : LexLocation.ANY);
 		this.vdmType = vdmType;
 		this.definitions = definitions == null ? new TRDefinitionList() : definitions;
 		this.atTLD = false; //setAtTopLevelDefinition(false);

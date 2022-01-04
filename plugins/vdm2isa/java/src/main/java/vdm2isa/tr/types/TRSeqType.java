@@ -18,6 +18,7 @@ public class TRSeqType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
     public final boolean seq1;
+    private final TRType seqof;
 
     /**
      * Constructor needed for TRUnionType
@@ -29,6 +30,7 @@ public class TRSeqType extends TRAbstractInnerTypedType
     {
         super(vdmType, definitions, seqof);
         this.seq1 = seq1;
+        this.seqof = seqof; // like TRFunctionType result, which needs the "dangling" field
     }
 
     public TRSeqType(TCSeqType owner, TRDefinitionList definitions, TRType seqof)    

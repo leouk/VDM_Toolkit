@@ -55,7 +55,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 					type.getClass().getSimpleName() + " " + type.toString(),
 					e.toString());
 				// don't debug "can't convert errors"! 
-				//if (e instanceof NullPointerException || e.getCause() instanceof StackOverflowError)
+				if (e instanceof NullPointerException || e.getCause() instanceof StackOverflowError)
 					e.printStackTrace();
 			}
 			catch (Throwable t)

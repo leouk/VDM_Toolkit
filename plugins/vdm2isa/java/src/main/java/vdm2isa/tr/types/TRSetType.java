@@ -18,6 +18,7 @@ public class TRSetType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
     public final boolean set1;
+    private final TRType setof;
 
     /**
      * Constructor needed for TRUnionType
@@ -29,6 +30,7 @@ public class TRSetType extends TRAbstractInnerTypedType
     {
         super(vdmType, definitions, setof);
         this.set1 = set1;
+        this.setof = setof;
     }
 
     public TRSetType(TCSetType owner, TRDefinitionList definitions, TRType setof)    
