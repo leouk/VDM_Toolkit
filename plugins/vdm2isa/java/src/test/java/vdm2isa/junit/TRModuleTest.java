@@ -1,7 +1,9 @@
 package vdm2isa.junit;
 
-import com.fujitsu.vdmj.junit.ModuleTest;
+import junit.framework.TestCase;
 
-public class TRModuleTest extends ModuleTest {
+//import com.fujitsu.vdmj.junit.ModuleTest;
+
+public class TRModuleTest extends TestCase { //ModuleTest {
     
 }
