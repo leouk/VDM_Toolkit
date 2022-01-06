@@ -38,7 +38,7 @@ import rpc.RPCRequest;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
-import workspace.Log;
+import workspace.Diag;
 import workspace.PluginRegistry;
 import workspace.plugins.TCPlugin;
 
@@ -87,7 +87,7 @@ public class ISAPluginSL extends ISAPlugin
 		}
 		catch (Exception e)
 		{
-			Log.error(e);
+			Diag.error(e);
 			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
 		}
 	}
