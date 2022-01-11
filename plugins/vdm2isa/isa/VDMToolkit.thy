@@ -8,6 +8,7 @@ theory VDMToolkit
     Complex_Main 
     "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
+    "HOL-Library.LaTeXsugar"
 begin
 
 type_notation bool ("\<bool>")
