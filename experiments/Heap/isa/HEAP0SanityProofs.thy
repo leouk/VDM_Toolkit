@@ -94,16 +94,14 @@ lemma dispose0_postcondition_extends_f_exactly:
 	"PO_dispose0_postcondition_extends_f_exactly"
 unfolding PO_dispose0_postcondition_extends_f_exactly_def   
           dispose0_postcondition_def dispose0_post_def F0_inv_def
-by (metis Int_commute add_0_iff card_Un_Int card_empty 
+by (metis Int_commute add_0_iff card_Un_Int card.empty 
           dispose0_pre_def finite_Un l0_dispose0_precondition_def 
           l0_input_notempty_def l_locs_of_card)
 
 lemma 
 	"dispose0_postcondition f' \<Longrightarrow> card f' = card f0 + s0"
-unfolding dispose0_postcondition_def dispose0_post_def F0_inv_def
-by (metis card_Un_Int [symmetric] card_empty comm_monoid_add_class.add.left_neutral 
-      dispose0_pre_def finite_Un inf_commute l0_dispose0_precondition_def 
-      l0_input_notempty_def l_locs_of_card add.commute)
+	unfolding dispose0_postcondition_def dispose0_post_def F0_inv_def
+  using PO_dispose0_feasibility_def PO_dispose0_postcondition_extends_f_exactly_def dispose0_post_def dispose0_postcondition_def dispose0_postcondition_extends_f_exactly locale0_dispose_FSB by presburger
 	(*NOTE: we need the precondition *)
 end
 

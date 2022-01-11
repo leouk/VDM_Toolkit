@@ -1,7 +1,7 @@
 (* $Id$ *)
 (*<*)
 theory HEAP1
-imports HEAP0 VDMMaps
+imports HEAP0 
 begin
 (*>*)
 subsection \<open> Heap level 1 \label{s:isa:models:level1}\<close>
@@ -268,7 +268,7 @@ for set minimal and summation, respectively.
 definition
    min_loc :: "(Loc \<rightharpoonup> nat) \<Rightarrow> nat"
 where
-   "min_loc sm = (if sm \<noteq> empty then 
+   "min_loc sm = (if sm \<noteq> Map.empty then 
                       Min (dom sm) 
                   else 
                       undefined)" 
@@ -276,7 +276,7 @@ where
 definition 
   sum_size :: "(Loc \<rightharpoonup> nat) \<Rightarrow> nat"
 where
-  "sum_size sm = (if sm \<noteq> empty then 
+  "sum_size sm = (if sm \<noteq> Map.empty then 
                       (\<Sum> x\<in>(dom sm) . the (sm x)) 
                   else 
                       undefined)" (*TODO: or 0? *)

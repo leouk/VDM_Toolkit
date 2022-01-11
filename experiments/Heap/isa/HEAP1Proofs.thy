@@ -3,14 +3,14 @@ theory HEAP1Proofs
 imports HEAP1 HEAP1Lemmas
 begin
 
-text {* Add lemmas k_in_dom_locs = l_in_dom_locs for when the same lemma (``l\_'') has multiple uses in a theory? *}
+text \<open> Add lemmas k_in_dom_locs = l_in_dom_locs for when the same lemma (``l\_'') has multiple uses in a theory? \<close>
 
 (* ================================================================= *)
-section {* NEW 1 proofs *}
+section \<open> NEW 1 proofs \<close>
 (* ================================================================= *)
 
 text 
-{*  As part of the strategy for mechanisation with sledgehammer we 
+\<open>  As part of the strategy for mechanisation with sledgehammer we 
 	rely on a few patterns for ``zooming'', ``witnessing'', ``bridging'',
 	and ``weakening''. To easily identify what lemma participate in
 	what pattern, we use some name conventions as below. Prefixes can
@@ -88,13 +88,13 @@ text
 \end{enumerate}
 
   TODO: explain Naur's N-Queen approach to explaining the problem!
- *}
+ \<close>
 
 (* ----------------------------------------------------------------- *)
-subsection {* NEW 1 FSB *}
+subsection \<open> NEW 1 FSB \<close>
 (* ----------------------------------------------------------------- *)
 
-text {* These lemmas rely on general (expert) lemmas about maps and 
+text \<open> These lemmas rely on general (expert) lemmas about maps and 
         Other mathematical toolkit operatos, many of which Isabelle
         already has useful lemmas for. 
 
@@ -109,13 +109,13 @@ text {* These lemmas rely on general (expert) lemmas about maps and
         Or else, we might be having some outcome bias, given authors 
         expertise in this other prover. Either way, it does show that
         proof patterns do exist beyond specific provers and examples.
-      *}
+      \<close>
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW 1 FSB weakening lemmas for equal case *}
+subsubsection \<open> NEW 1 FSB weakening lemmas for equal case \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* For $new1\_eq$ case lemmas are easier:~we just need to show the
+text \<open> For $new1\_eq$ case lemmas are easier:~we just need to show the
         submap satisfy the various parts of the state invariant. We
         prove a lemma for each such subpart below. They follow directly
         from general lemmas about the involved operators and are all
@@ -123,7 +123,7 @@ text {* For $new1\_eq$ case lemmas are easier:~we just need to show the
 
         To allow for our lemma collection/analysis tool to work, we avoid
         (in X) and explicitly collect the locale-specific lemmas.
-      *}
+      \<close>
 
 context level1_new
 begin
@@ -150,10 +150,10 @@ lemma  k_new1_finite_dom_ar:
 by (metis F1_inv_def k_finite_dom_ar l1_invariant_def) 
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW 1 FSB weakening lemmas for greater than case *}
+subsubsection \<open> NEW 1 FSB weakening lemmas for greater than case \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* For $new1\_gr$ case lemmas are not as easy. Our definition of VDM map
+text \<open> For $new1\_gr$ case lemmas are not as easy. Our definition of VDM map
         union rely on a side condition about disjointness of map's domains,
         which will feature in all proofs for $new1\_gr$. 
 
@@ -175,7 +175,7 @@ text {* For $new1\_gr$ case lemmas are not as easy. Our definition of VDM map
         state invariant. We prove a lemma for each such subpart below. They follow 
         directl from general lemmas about the involved operators and are all
         sledgehammered.
-      *}
+      \<close>
 
 (* unused_thms
 
@@ -221,10 +221,10 @@ lemma k_new1_finite_dom_ar_munion:
 by (metis (mono_tags) F1_inv_def k_finite_dom_ar_munion l1_input_notempty_def l1_invariant_def)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW 1 FSB goal-splitting lemmas *}
+subsubsection \<open> NEW 1 FSB goal-splitting lemmas \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* From the top-down strategy for the feasibility proof, we need to provide
+text \<open> From the top-down strategy for the feasibility proof, we need to provide
         zooming-weakening lemmas to enable sledgehammer to work for our given witnesses,
         which also determine the key step in the proof:~the splitting of cases for
         exact and surplus memory allocation.
@@ -245,7 +245,7 @@ text {* From the top-down strategy for the feasibility proof, we need to provide
         regarding specialised versions of general lemmas (as well as new general lemmas themselves),
         AI4FM tools would be able to spot the similarities/features/patterns and suggest them 
         to new/novice users.
-      *}
+      \<close>
 
 lemma zw_new1_post_eq: 
 	"r \<in> dom f1 \<Longrightarrow> the (f1 r) = s1 \<Longrightarrow> new1_post_eq f1 s1 ({r} -\<triangleleft> f1) r"
@@ -270,14 +270,14 @@ by (metis (full_types) F1_inv_def
 				k_new1_sep_dom_ar_munion)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW 1 FSB main theorem *}
+subsubsection \<open> NEW 1 FSB main theorem \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* Finally, the top-down strategy applies zomming and weakening patterns,
+text \<open> Finally, the top-down strategy applies zomming and weakening patterns,
         once the key point about splitting exact and surplus memory allocation
         is observed\footnote{Oddly enough, we are saying ``finally'' for where 
         usually is the place work begins!}.
-      *}
+      \<close>
 
 theorem locale1_new_FSB: "PO_new1_feasibility"
 unfolding PO_new1_feasibility_def new1_postcondition_def
@@ -294,10 +294,10 @@ done
 end (* LOCAL CONTEX FOR level1_new *)
 
 (* ================================================================= *)
-section {* DISPOSE 1 proofs *}
+section \<open> DISPOSE 1 proofs \<close>
 (* ================================================================= *)
 
-text {* The strategy for the finiteness proof was the first one to be constructed.
+text \<open> The strategy for the finiteness proof was the first one to be constructed.
         It generated various lemmas in different theories, some general missing lemmas
         about maps, other problem-specific lemmas missing that are useful for other goals.
 
@@ -309,7 +309,7 @@ text {* The strategy for the finiteness proof was the first one to be constructe
         The proofs rely entirely on the ability to distribute  over munion, which requires
         the side condition that domains involved are disjoint. This is the hard part on all
         invariant proofs, which has been extracted as a lemma, namely $l\_dispose1\_munion\_disjoint$.
-      *}
+      \<close>
 
 context level1_dispose
 begin
@@ -330,7 +330,7 @@ lemma k_finite_dispose_below_aux:
   "finite (dom (dispose1_below f1 d1))"
 by (metis f_F1_inv_finite k_finite_dispose_below l1_invariant_def)
 
-text {* Now for the *KEY* lemma, which is used on all F1_inv DISPOSE1 proofs! 
+text \<open> Now for the *KEY* lemma, which is used on all F1_inv DISPOSE1 proofs! 
         It was discovered during the finiteness proof (the first part of the invariant tackled).
         It was then used for nat1\_map and sep (and possibly Disjoint).
 
@@ -343,23 +343,23 @@ text {* Now for the *KEY* lemma, which is used on all F1_inv DISPOSE1 proofs!
 
         Therefore, this lemma is the weakening rule to enable the application of various operators
         over map union, whereas the one on min_loc performs the appropriate case analysis.
-      *}
+      \<close>
 
 (* TO LOOK AT! Interesting weakening LEMMA *)
 lemma l_dispose1_munion_disjoint:
   "dom ((dom (dispose1_below f1 d1) \<union> dom (dispose1_above f1 d1 s1)) -\<triangleleft> f1) \<inter>
     dom [min_loc (dispose1_ext f1 d1 s1) \<mapsto> HEAP1.sum_size (dispose1_ext f1 d1 s1)] = {}"
-  --"simp would do as well"
+  \<comment> \<open>simp would do as well\<close>
   find_theorems "_ \<inter> _ = {}"
 apply (simp add: l_dom_dom_ar)
-  --"simp alone already simplified goal; LEMMA about dom_ar improves on result"
+  \<comment> \<open>simp alone already simplified goal; LEMMA about dom_ar improves on result"
 unfolding dispose1_ext_def 
 apply (rule impI)
-apply (cases "dispose1_below f1 d1 = empty")      --"prefer cases instead of subgoal_tac"
+apply (cases "dispose1_below f1 d1 = empty")      \<comment> \<open>prefer cases instead of subgoal_tac\<close>
 apply (simp_all add: l_munion_empty_rhs)
   apply (cases "dispose1_above f1 d1 s1= empty")
   apply (simp_all add: l_munion_empty_lhs)
-  --"nothing to adjoin: below=above=empty"
+  \<comment> \<open>nothing to adjoin: below=above=empty\<close>
     apply (simp add: l_min_loc_singleton)
     apply (insert l1_dispose1_precondition_def)
     unfolding dispose1_pre_def disjoint_def
@@ -367,7 +367,7 @@ apply (simp_all add: l_munion_empty_rhs)
     apply (insert l1_invariant_def)
     apply (frule f_F1_inv_nat1_map)
     apply (simp add: f_dispose1_pre_not_in_dom)
-  --"above to adjoin: below=empty; not above = empty"
+  \<comment> \<open>above to adjoin: below=empty; not above = empty\<close>
     find_theorems "min_loc (_ \<union>m _)"
     thm k_min_loc_munion_singleton[of "dispose1_above f1 d1 s1" d1 s1]
     find_theorems name:contrapos
@@ -390,7 +390,7 @@ apply (simp_all add: l_munion_empty_rhs)
                 add: f_dispose1_pre_not_in_dom
                         f_F1_inv_nat1_map
                           l1_invariant_def)
-  --"below to adjoin: not below = empty; above=empty"
+  \<comment> \<open>below to adjoin: not below = empty; above=empty\<close>
   apply (cases "dispose1_above f1 d1 s1= empty")
   apply (simp_all add: l_munion_empty_lhs)
     thm k_min_loc_munion_singleton[THEN subst, of "dispose1_below f1 d1" d1 s1 "(\<lambda> x . x \<in> dom f1)"]
@@ -407,9 +407,9 @@ apply (simp_all add: l_munion_empty_rhs)
                 add: f_dispose1_pre_not_in_dom
                         f_F1_inv_nat1_map
                           l1_invariant_def)
-    apply (metis Min_in dom_eq_empty_conv k_finite_dispose_below_aux) --"TODO: study Min_in interpret proof!"
-  --"both to adjoin: not below = above = empty"
-    --"NOTE: unfortunately, because dispose1_below has a free variable l, we need something different"
+    apply (metis Min_in dom_eq_empty_conv k_finite_dispose_below_aux) \<comment> \<open>TODO: study Min_in interpret proof!\<close>
+  \<comment> \<open>both to adjoin: not below = above = empty\<close>
+    \<comment> \<open>NOTE: unfortunately, because dispose1_below has a free variable l, we need something different\<close>
     apply (simp add: l_dispose1_sep0_below_empty_iff[of f1 d1 s1])
     apply (frule l_dispose1_nonempty_above_singleton)
     unfolding sep0_def
@@ -421,7 +421,7 @@ apply (simp_all add: l_munion_empty_rhs)
     apply assumption+
     apply (erule_tac x=l in ballE)
     apply (erule impE)
-    apply (simp_all)+ --"Funny: simp_all doesn't quite work here "
+    apply (simp_all)+ \<comment> \<open>Funny: simp_all doesn't quite work here \<close>
     find_theorems "min_loc(_ \<union>m _)"
     thm k_min_loc_munion_singleton[of "[d1 + s1 \<mapsto> the (f1 (d1 + s1))] \<union>m [l \<mapsto> the (f1 l)]",simplified]
     apply (frule f_dispose1_pre_not_in_dom,simp_all)
@@ -461,7 +461,7 @@ apply (metis dom_eq_singleton_conv finite.simps)
 by (rule l_dispose1_munion_disjoint)
 
 (*
-unused_thms --"Called to collect the useless theorems from previous attempt. Keep here for history? "
+unused_thms \<comment> \<open>Called to collect the useless theorems from previous attempt. Keep here for history? "
 
 lemmX
   k_dispose_abovebelow_dom_disjoint_aux:
@@ -501,17 +501,17 @@ lemmX z_F1_inv_dispose1_finite_almost_there:
 apply (rule k_finite_munion)
 apply (metis F1_inv_def finite_Diff l1_invariant l_dom_dom_ar)
 apply (metis dom_eq_singleton_conv finite.simps) 
-  --"simp would do as well"
+  \<comment> \<open>simp would do as well\<close>
   find_theorems "_ \<inter> _ = {}"
 apply (simp add: l_dom_dom_ar)
-  --"simp alone already simplified goal; LEMMA about dom_ar improves on result"
+  \<comment> \<open>simp alone already simplified goal; LEMMA about dom_ar improves on result\<close>
 unfolding dispose1_ext_def 
 apply (rule impI)
 apply (subgoal_tac "dispose1_below f1 d1 = empty")
 apply (simp_all add: l_munion_empty_rhs)
 apply (subgoal_tac "dispose1_above f1 d1 s1 = empty")
 apply (simp_all add: l_munion_empty_lhs)
---"nothing to adjoin: below=above=empty"
+\<comment> \<open>nothing to adjoin: below=above=empty"
   apply (simp add: l_min_loc_singleton)
   apply (insert dispose1_precondition)
   unfolding dispose1_pre_def disjoint_def
@@ -519,7 +519,7 @@ apply (simp_all add: l_munion_empty_lhs)
   apply (insert l1_invariant)
   apply (frule f_F1_inv_nat1_map)
   apply (simp add: f_dispose1_pre_not_in_dom)
---"above to adjoin: below=empty"
+\<comment> \<open>above to adjoin: below=empty"
   find_theorems "min_loc (_ \<union>m _)"
   thm k_min_loc_munion_singleton[of "dispose1_above f1 d1 s1" d1 s1]
   find_theorems name:contrapos
@@ -542,7 +542,7 @@ apply (simp_all add: l_munion_empty_lhs)
               add: f_dispose1_pre_not_in_dom
                       f_F1_inv_nat1_map
                         l1_invariant)
---"below to adjoin: above=empty"
+\<comment> \<open>below to adjoin: above=empty"
   thm k_min_loc_munion_singleton[THEN subst, of "dispose1_above f1 d1 s1 \<union>m dispose1_below f1 d1" d1 s1 "(\<lambda> x . x \<in> dom f1)",simplified]
         k_finite_dispose_abovebelow_munion_aux
         k_dispose_abovebelow_ext_dom_disjoint_aux
@@ -551,8 +551,8 @@ apply (simp_all add: l_munion_empty_lhs)
                       k_dispose_abovebelow_ext_dom_disjoint_aux
               split: split_if_asm)
   
-  apply (metis k_dispose_abovebelow_dom_disjoint_aux l_munion_empty_iff)       --"proof through prop of above/below"
-  --"apply (metis f_F1_inv_nat1_map f_dispose1_pre_not_in_dom l1_input_notempty)"  --"proof through precondition" 
+  apply (metis k_dispose_abovebelow_dom_disjoint_aux l_munion_empty_iff)       \<comment> \<open>proof through prop of above/below"
+  \<comment> \<open>apply (metis f_F1_inv_nat1_map f_dispose1_pre_not_in_dom l1_input_notempty)"  \<comment> \<open>proof through precondition" 
   
   apply (simp add: l_dispose1_sep0_below_empty_iff[of f1 d1 s1])
   unfolding sep0_def
@@ -598,10 +598,10 @@ lemmX z_F1_inv_dispose1_finite_old:
 apply (rule k_finite_munion)
 apply (metis F1_inv_def finite_Diff l1_invariant l_dom_dom_ar)
 apply (metis dom_eq_singleton_conv finite.simps) 
-  --"simp would do as well"
+  \<comment> \<open>simp would do as well"
   find_theorems "_ \<inter> _ = {}"
 apply (simp add: l_dom_dom_ar)
-  --"simp alone already simplified goal; LEMMA about dom_ar improves on result"
+  \<comment> \<open>simp alone already simplified goal; LEMMA about dom_ar improves on result"
 unfolding dispose1_ext_def 
 apply (rule impI)
 thm k_min_loc_munion_singleton[of "dispose1_above f1 d1 s1 \<union>m dispose1_below f1 d1" d1 s1]
@@ -621,19 +621,19 @@ apply (subgoal_tac "dispose1_above f1 d1 s1 \<union>m dispose1_below f1 d1 = emp
 find_theorems "empty \<union>m _"
 find_theorems "min_loc [_ \<mapsto> _]"
 apply (simp_all add: l_munion_empty_lhs l_min_loc_singleton)
-  --"
+  \<comment> \<open>
   apply (simp only: dom_eq_empty_conv[symmetric])
   apply (simp add: l_munion_dom 
                       k_dispose_abovebelow_dom_disjoint 
                          f_F1_inv_sep
                             l1_invariant)
-      --"
+      \<comment> \<open>
       apply (insert l1_invariant)
       apply (frule f_F1_inv_sep)
       apply (frule k_dispose_abovebelow_dom_disjoint[of f1 d1 s1])
       thm l_munion_dom[of "dispose1_above f1 d1 s1" "dispose1_below f1 d1"]
       apply (frule l_munion_dom)
-      apply simp"
+      apply simp\<close>
       
   apply (erule conjE)
   apply (simp add: l_dispose1_sep0_above_empty_iff)
@@ -642,7 +642,7 @@ apply (simp_all add: l_munion_empty_lhs l_min_loc_singleton)
   apply simp
   apply (erule_tac x=d1 in ballE)
   apply simp_all
-  "
+  \<close>
   apply (insert dispose1_precondition)
   unfolding dispose1_pre_def disjoint_def
   apply (simp add: f_dispose1_pre_not_in_dom
@@ -781,9 +781,9 @@ by (metis F1_inv_def
           z_F1_inv_dispose1_sep)
 
 theorem locale1_dispose_FSB: "PO_dispose1_feasibility"
-unfolding PO_dispose1_feasibility_def dispose1_postcondition_def --"dispose1_post_def"
+unfolding PO_dispose1_feasibility_def dispose1_postcondition_def \<comment> \<open>dispose1_post_def"
 apply (simp add: dispose1_equiv)
-  --"Apply equivalence LEMMA to tame the proof "
+  \<comment> \<open>Apply equivalence LEMMA to tame the proof \<close>
 unfolding dispose1_post2_def
 by (simp add: z_F1_inv_dispose1_post)
 
@@ -793,15 +793,15 @@ end  (* LOCALE CONTEXT FOR LEMMA COLLECTION *)
 unused_thms
 
 (* ================================================================= *)
-section {* Discussion *}
+section \<open> Discussion \<close>
 (* ================================================================= *)
 
 (* ================================================================= *)
-section {* Introduction *}
+section \<open> Introduction \<close>
 (* ================================================================= *)
 
 text 
-{*
+\<open>
    Identifiable proof patterns. I am deliberately avoiding the 
    term strategy or plan, given these have rather overloaded (and mixed)
    meaning (e.g.~part of an algorithmic procedure to solve a goal as a series
@@ -830,14 +830,14 @@ text
    mechanically tweak it in order to solve (the very many) similar goals born
    out of formal developments like the HEAP. 
 
-*}
+\<close>
 
 (* ================================================================= *)
-section {* Proof patterns *}
+section \<open> Proof patterns \<close>
 (* ================================================================= *)
 
 text 
-{*
+\<open>
    So far, I have encountered four kinds of proof pattern:~static,
    dynamic, combined, automation. In what follows, we will detail 
    their characteristics by instantiating them as much as possible
@@ -864,14 +864,14 @@ text
    automation of a necessarily interactive process is crucial.  
 
    Remember Alan's criticism: why the need for thm tags?  
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Proof patterns language (or glossary) *}
+subsection \<open> Proof patterns language (or glossary) \<close>
 (* ================================================================= *)
 
 text
-{*
+\<open>
    Both in software and pedagogical patterns, the use of a so-called
    pattern language serves to structure the description of the pattern
    itself in abstract terms, yet with specific instantiation to realistic
@@ -953,26 +953,26 @@ text
    TODO[IJW/LF]: discuss the use/capture of failure? Add failure mode to pattern language? 
 
    TODO[IJW]: review/improve with knowledge/ideas from his PhD
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Static proof patterns *}
+subsection \<open> Static proof patterns \<close>
 (* ================================================================= *)
 
 text 
-{*
+\<open>
    Static proof patterns address frequent and mundane issues of formal methods
    proofs. They require little if any interaction. They are usually the first 
    set of patterns to try and identify with the problem, which is a top-level
    proof obligation generated by the formal method used.
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Feasibility *}
+subsection \<open> Feasibility \<close>
 (* ================================================================= *)
 
 text
-{*
+\<open>
    \begin{enumerate}
     \item Name: FSB_PO
 
@@ -1085,14 +1085,14 @@ text
     \item Rationale: TODO[LF]: worth keeping at all?
 
    \end{enumerate}
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Find Witness *}
+subsection \<open> Find Witness \<close>
 (* ================================================================= *)
 
 text
-{*
+\<open>
    \begin{enumerate}
     \item Name: FW
 
@@ -1177,14 +1177,14 @@ text
     \item Rationale: TODO[LF]: worth keeping at all?
 
    \end{enumerate}
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* ????? *}
+subsection \<open> ????? \<close>
 (* ================================================================= *)
 
 text
-{*
+\<open>
    \begin{enumerate}
     \item Name: 
 
@@ -1251,14 +1251,14 @@ TODO
       
       start with @{text "True \<Longrightarrow> x \<in> dom(f \<union>m g)"} and try to find what would finish this? 
 \end{itemize} 
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Dyanmic proof patterns *}
+subsection \<open> Dyanmic proof patterns \<close>
 (* ================================================================= *)
 
 text 
-{*
+\<open>
 \begin{itemize}
     \item  zooming: expand zoom N upto M (i.e. @{text "N < M"}; layers of intrest to expand, 1 min, @{text "M-N > 0"} max) 
        \begin{itemize}
@@ -1286,27 +1286,27 @@ text
 
     \item  see thoughts on why pattern language .pdf in SVN
 \end{itemize}
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Combined proof patterns (strategical/tactical style patterns?) *}
+subsection \<open> Combined proof patterns (strategical/tactical style patterns?) \<close>
 (* ================================================================= *)
 
 text 
-{*
+\<open>
 \begin{verbatim} 
     * bridge > weakening
     * zooming > witnessing
     * chaining forward > chaining backward
 \end{verbatim} 
-*}
+\<close>
 
 (* ================================================================= *)
-subsection {* Automation proof patterns *}
+subsection \<open> Automation proof patterns \<close>
 (* ================================================================= *)
 
 text
-{*
+\<open>
 
 \begin{verbatim} 
     * type judgements
@@ -1314,7 +1314,7 @@ text
     * congruence rules
     * transitive rules 
 \end{verbatim} 
-*}
+\<close>
 
 (*------ LIBRARY --------*)
 

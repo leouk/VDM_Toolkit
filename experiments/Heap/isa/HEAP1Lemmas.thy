@@ -3,14 +3,14 @@ theory HEAP1Lemmas
 imports HEAP1 HEAP0Lemmas
 begin
 
-text {* This theory provides various lemmas for breaking the problem into managelable chunks *}
+text \<open> This theory provides various lemmas for breaking the problem into managelable chunks \<close>
 
 (*========================================================================*)
-section {* General Lemmas *}
+section \<open> General Lemmas \<close>
 (*========================================================================*)
 
 text
-{* These lemmas are used in the context of NEW1 FSB locale proofs.
+\<open> These lemmas are used in the context of NEW1 FSB locale proofs.
    Prefixes determine the intent (our whys?) as given by the expert.
    Depending on context, some intents could have more than one prefix
    or even change prefix (as determined by the expert). These "tags"
@@ -22,16 +22,17 @@ text
     ``f\_'' = deduction from asm (forward reasonsing)
     ``b\_'' = type/concept bridges 
     ``l\_'' = expert lemmas 
- *}
+ \<close>
  
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* nat1\_map weakening lemmas [EXPERT] *}
+subsubsection \<open> nat1\_map weakening lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 (* FD (Forward Deduduction): nat1_map elements are nat 1 *)
 lemma f_nat1_map_nat1_elem:
 	"nat1_map f \<Longrightarrow> x \<in> dom f \<Longrightarrow> 0 < (the(f x))"
-by (metis nat1_def nat1_map_def)
+	unfolding nat1_map_def nat1_def inv_VDMNat1_def
+  by auto
     (* SHAPE: This LEMMA needs to be "0 < bla" because nat1_def has iff status *)
 
 (* FD: submap extends nat1_map *)
@@ -85,17 +86,17 @@ by (metis fun_upd_triv map_add_empty map_add_upd map_le_map_add nat1_map_def f_n
    *)
 
 (* Lemma: nat1_map on empty map *)
-lemma l_nat1_map_empty: "nat1_map empty"
+lemma l_nat1_map_empty: "nat1_map Map.empty"
 by (metis dom_empty empty_iff nat1_map_def)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* locs\_of weakening lemmas [EXPERT] *}
+subsubsection \<open> locs\_of weakening lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* These lemmas were useful in the Z/EVES development and now here.
+text \<open> These lemmas were useful in the Z/EVES development and now here.
 		At first we had difficulties with the style of declaration as 
 		intro/elim/dest rules. I tried to keep them as iff is possible.
-	  *}
+	  \<close>
 
 (* Weaken: Locs_of (over f) to locs_of (over f's range) *)
 lemma l_locs_of_Locs_of_iff:
@@ -111,8 +112,8 @@ apply simp
 apply (rule iffI)
 find_theorems "_ \<inter> _ = {}" (* interesting LEMMA about Set_Interval suggests itself *)
 apply (erule equalityE)
-apply (simp_all add: disjoint_iff_not_equal)
-apply (metis (full_types) add_0_iff le_add1 le_neq_implies_less nat_le_linear not_le)
+  apply (simp_all add: disjoint_iff_not_equal)
+  apply (metis inv_VDMNat1_def le_less less_add_same_cancel1 not_less of_nat_0_less_iff)
 by (metis le_trans not_less)
 
 (* Weaken: dom_ar locs_of subset *)
@@ -134,11 +135,11 @@ by (metis f_in_dom_ar_apply_subsume)
 (* Weaken: Locs_of common term to arithmetic *)
 lemma k_Locs_of_arithIff:
 	"nat1_map f \<Longrightarrow> l \<in> dom f \<Longrightarrow> k \<in> dom f \<Longrightarrow> (Locs_of f l \<inter> Locs_of f k = {}) = (l+the(f l) \<le> k \<or> k+the(f k) \<le> l)"
-unfolding Locs_of_def 
-by (simp add: f_nat1_map_nat1_elem k_locs_of_arithIff) 
+	unfolding Locs_of_def 
+	by (simp add: k_locs_of_arithIff nat1_map_def)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* locs weakening lemmas [EXPERT] *}
+subsubsection \<open> locs weakening lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 (* Weaken: extend locs elem *)
@@ -215,12 +216,12 @@ by (metis domIff f_in_dom_ar_apply_not_elem)
 
 (* Lemma: locs empty map *)
 lemma l_locs_empty_iff:
-    "locs empty = {}"
+    "locs Map.empty = {}"
 apply (rule equalityI)
 apply (rule_tac [1-] subsetI)
 apply simp_all
-apply (subgoal_tac "nat1_map empty")
-apply (simp add: locs_def)
+apply (subgoal_tac "nat1_map Map.empty")
+  apply (simp add: locs_def)
 by (rule l_nat1_map_empty)
 
 (* Lemma: locs singleton map *)
@@ -235,8 +236,8 @@ by simp
 
 (* FD: in dom in locs_of *)
 lemma f_dom_locs_of: "nat1_map f \<Longrightarrow> (x \<in> dom f) \<Longrightarrow> (x \<in> locs_of x (the (f x)))"
-unfolding locs_of_def
-by (simp add: f_nat1_map_nat1_elem)
+  unfolding locs_of_def
+  by (simp add: f_nat1_map_nat1_elem inv_VDMNat1_def)
 (*
 by (metis (lifting) add_diff_cancel_left' comm_monoid_diff_class.diff_cancel 
                     eq_imp_le f_nat1_map_nat1_elem le_add1 le_neq_implies_less 
@@ -254,9 +255,9 @@ by (simp_all add: f_dom_locs_of)
 lemma l_locs_munion_iff:
       "nat1_map f \<Longrightarrow> nat1_map g \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> locs(f \<union>m g) = locs f \<union> locs g"
 apply (rule equalityI)
-apply (rule_tac [1-] subsetI) --"Little trick to cover all goals"
+apply (rule_tac [1-] subsetI) \<comment> \<open>Little trick to cover all goals\<close>
 apply simp_all
-apply (rule disjCI) --"Keep the contrapositive information; it's useful later "
+apply (rule disjCI) \<comment> \<open>Keep the contrapositive information; it's useful later \<close>
 defer 
 apply (erule disjE)
 apply (simp_all add: k_in_locs_iff l_nat1_map_munion l_munion_dom l_munion_apply)
@@ -305,7 +306,7 @@ apply (erule_tac [1-] bexE)
 apply (rule_tac [1-] x=y in bexI)
 apply (simp_all)
 apply (rule impI)
-apply (simp add: b_locs_of_as_set_interval f_nat1_map_nat1_elem)
+apply (simp add: b_locs_of_as_set_interval f_nat1_map_nat1_elem inv_VDMNat1_def)
 apply (erule conjE)
 apply (erule_tac x=y in ballE)
 by simp_all
@@ -314,13 +315,13 @@ by simp_all
    *)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* min_loc lemmas [EXPERT] *}
+subsubsection \<open> min_loc lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 lemma k_min_loc_munion:
   "finite (dom f) \<Longrightarrow> finite (dom g) \<Longrightarrow> 
-    g \<noteq> empty \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> 
-        min_loc(f \<union>m g) = (if f = empty then min_loc g else min (min_loc f) (min_loc g))"
+    g \<noteq> Map.empty \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> 
+        min_loc(f \<union>m g) = (if f = Map.empty then min_loc g else min (min_loc f) (min_loc g))"
 unfolding min_loc_def munion_def
 by (simp add: l_dagger_not_empty l_dagger_dom Min_Un)
 
@@ -328,34 +329,34 @@ lemma l_min_loc_singleton:
   "min_loc [d \<mapsto> s] = d"
 unfolding min_loc_def
 by simp
---"by (metis dom_empty finite.emptyI inf_bot_left k_min_loc_munion_singleton l_munion_empty_lhs) = Overkill!"
+\<comment> \<open>by (metis dom_empty finite.emptyI inf_bot_left k_min_loc_munion_singleton l_munion_empty_lhs) = Overkill!\<close>
 
 lemma k_min_loc_munion_singleton:
   "finite (dom f) \<Longrightarrow>
     dom f \<inter> dom [d \<mapsto> s] = {} \<Longrightarrow> 
-        min_loc(f \<union>m [d \<mapsto> s]) = (if f = empty then d else min (Min (dom f)) d)"
+        min_loc(f \<union>m [d \<mapsto> s]) = (if f = Map.empty then d else min (Min (dom f)) d)"
 apply (simp add: k_min_loc_munion l_min_loc_singleton)
 by (metis min_loc_def) 
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* sum_size lemmas [EXPERT] *}
+subsubsection \<open> sum_size lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 lemma l_sum_size_munion:
   "finite (dom f) \<Longrightarrow> finite (dom g) \<Longrightarrow> 
-    g \<noteq> empty \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> 
-        sum_size(f \<union>m g) = (if f = empty then sum_size g else (sum_size f) + (sum_size g))"
+    g \<noteq> Map.empty \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> 
+        sum_size(f \<union>m g) = (if f = Map.empty then sum_size g else (sum_size f) + (sum_size g))"
 unfolding sum_size_def munion_def
 apply (simp add: l_dagger_not_empty l_dagger_empty_lhs l_dagger_dom l_dagger_apply)
 apply (rule impI)
   find_theorems "(\<Sum> _ \<in> _ . _) = ((\<Sum> _ \<in> _ . _) + (\<Sum> _ \<in> _ . _))"
-  find_theorems name:neutral name:union
+  find_theorems name:disjoint name:union
   (*thm setsum.F_Un_neutral[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]
   thm setsum_Un_disjoint[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]*)
-  thm setprod.union_inter_neutral[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]
-  thm setsum.union_disjoint[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]
-apply (simp add: setsum.union_disjoint)
-apply (rule setsum.cong,simp)
+  (*thm setprod.union_inter_neutral[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]
+  thm setsum.union_disjoint[of "dom f" "dom g" "(\<lambda> x . the (if x \<in> dom g then g x else f x))",simplified]*)
+apply (simp add: sum.union_disjoint)
+apply (rule sum.cong,simp)
 by (metis (full_types) disjoint_iff_not_equal)
 
 lemma l_sum_size_singleton:
@@ -366,11 +367,11 @@ by simp
 lemma l_sum_size_munion_singleton:
   "finite (dom f) \<Longrightarrow>
     dom f \<inter> dom [d \<mapsto> s] = {} \<Longrightarrow> 
-        sum_size(f \<union>m [d \<mapsto> s]) = (if f = empty then s else sum_size f + s)"
+        sum_size(f \<union>m [d \<mapsto> s]) = (if f = Map.empty then s else sum_size f + s)"
 by (simp add: l_sum_size_munion l_sum_size_singleton)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* Other (less useful) lemmas [EXPERT] *}
+subsubsection \<open> Other (less useful) lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 (* Lemma: disjoint commutes *)
@@ -395,14 +396,14 @@ lemma f_F1_inv_finite:
 by (metis F1_inv_def)
 
 (*========================================================================*)
-section {* Goal-oriented - invariant update *}
+section \<open> Goal-oriented - invariant update \<close>
 (*========================================================================*)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* Lemmas for invariant sub parts over known operators *}
+subsubsection \<open> Lemmas for invariant sub parts over known operators \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* This is a great example of repeated patterns. *}
+text \<open> This is a great example of repeated patterns. \<close>
 
 (* ~~~~~~~~~~~~~~~~~~~~~~~~~~ SEP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *)
 
@@ -443,7 +444,7 @@ apply (erule_tac x=l in ballE)
 apply (erule_tac x=l in ballE)
 apply (simp_all)
 apply (erule disjE)
-apply simp --"Ahh!: Condition is wrong, needs to be strictly less than"
+apply simp \<comment> \<open>Ahh!: Condition is wrong, needs to be strictly less than\<close>
 defer
 apply (cases "f = empty")
 find_theorems "_ \<noteq> empty"
@@ -456,7 +457,7 @@ oops -- "NOTE: not quite right the side condition here"
 *)
 
 lemma l_sep_singleton: "nat1 y \<Longrightarrow> sep([x \<mapsto> y])"
-unfolding sep_def
+unfolding sep_def nat1_def inv_VDMNat1_def
 by simp
 
 (* LF: Iain how to do that without isar?
@@ -493,7 +494,7 @@ unfolding sep_def sep0_def
 apply (rule ballI)
 apply (simp add: l_munion_dom l_munion_apply)
 apply (erule disjE)
-by (simp_all)
+by (simp_all add: inv_VDMNat1_def)
 
 lemma l_sep_munion:
     "dom f \<inter> dom g = {} \<Longrightarrow> sep f \<Longrightarrow> sep g \<Longrightarrow> sep0 f g \<Longrightarrow> sep0 g f \<Longrightarrow> sep(f \<union>m g)"
@@ -512,7 +513,7 @@ apply (intro conjI impI)
 apply (simp_all add: l_disjoint_comm)
 unfolding disjoint_def
 find_theorems "locs_of _ _ \<inter> _ = {}"
-by (simp_all add: k_locs_of_arithIff f_nat1_map_nat1_elem)
+by (simp_all add: k_locs_of_arithIff f_nat1_map_nat1_elem inv_VDMNat1_def)
      (* NOTE: A general LEMMA here is difficult: we need the side condition for where the new map belongs
               (\<forall> c \<in> dom f . x+y \<le> c \<or> c+the(f c) \<le> x) 
       *)
@@ -592,13 +593,13 @@ lemma l_finite_singleton_upd:
 by (simp add: l_munion_dom)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW1 update - equal case *}
+subsubsection \<open> NEW1 update - equal case \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* Most lemmas are marked as weakening rules. That's because they
+text \<open> Most lemmas are marked as weakening rules. That's because they
         used by the top-level goals for the proof obligations. In other
         scenarios, they could be used a deduction (FD) rules as well.
-      *}
+      \<close>
 
 (* Weaken: Disjointness subsumes dom_ar *)
 lemma k_Disjoint_dom_ar:
@@ -649,10 +650,10 @@ lemma k_F1_inv_dom_ar:
 by (metis F1_inv_def k_Disjoint_dom_ar k_finite_dom_ar k_nat1_map_dom_ar k_sep_dom_ar)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* NEW1 update - greater than case *}
+subsubsection \<open> NEW1 update - greater than case \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-text {* In this final subsection, we get to the actual lemmas used by
+text \<open> In this final subsection, we get to the actual lemmas used by
         top-level goals. These lemmas were first defined in terms of @{text "f \<dagger> g"},
         which later turned into @{text "f \<union> g"}. 
 
@@ -665,7 +666,7 @@ text {* In this final subsection, we get to the actual lemmas used by
         proved. It shows that the locations of the update are within the
         locations prior to the update, as expected. That is, we lift/bridge
         the update locations from the given value (r+s) to original (r).
-      *}
+      \<close>
 
 (* Lemma: updated value (r+s) cannot be in domain f *)
 lemma l_disjoint_mapupd_keep_sep:
@@ -674,26 +675,16 @@ unfolding Disjoint_def
 apply (erule_tac x=r in ballE)
 apply (erule_tac x="(r+s)" in ballE)
 apply (erule impE)
-apply (simp_all)
+apply (simp_all add: inv_VDMNat1_def)
 apply (rule notI)
 apply (simp add: l_locs_of_Locs_of_iff)
 (* Failed after 2014
 unfolding disjoint_def
 by (smt k_locs_of_arithIff nat1_map_def)
 *)
-apply (simp add: k_locs_of_arithIff nat1_map_def)
-(* SH *)
-proof -
-  assume a1: "\<forall>x. x \<in> dom f \<longrightarrow> 0 < the (f x)"
-  assume a2: "r \<in> dom f"
-  assume a3: "s < the (f r)"
-  assume a4: "disjoint (locs_of r (the (f r))) (locs_of (r + s) (the (f (r + s))))"
-  assume a5: "r + s \<in> dom f"
-  hence "Locs_of f r \<inter> Locs_of f (r + s) = {}"
-    using a4 a2 by (simp add: disjoint_def l_locs_of_Locs_of_iff)
-  thus False
-    using a5 a3 a2 a1 add.assoc k_Locs_of_arithIff nat1_map_def by auto
-qed
+  apply (simp add: k_locs_of_arithIff nat1_map_def)
+sledgehammer
+  by (simp add: F1_inv_defs(7) k_locs_of_arithIff)
 
 (* Weaken (aux): updated value (r+s) cannot be in domain f restricted *)
 lemma k_new1_gr_dom_ar_dagger_aux2:
@@ -712,7 +703,8 @@ by (metis dom_eq_singleton_conv f_in_dom_ar_subsume l_disjoint_mapupd_keep_sep s
 lemma b_new1_gr_upd_within_req_size:
 	"r \<in> dom f \<Longrightarrow> the (f r) > s \<Longrightarrow> nat1_map f \<Longrightarrow> 
 		locs_of (r+s) (the (f r) - s) \<subseteq> locs_of r (the(f r))"
-by (simp add: b_locs_of_as_set_interval)
+	thm b_locs_of_as_set_interval
+	by (simp add: b_locs_of_as_set_interval inv_VDMNat1_def)
 	(* NOTE: Sledgehammer fails here, why? *)
 	(* NOTE: In the presence of k_locs_of_arithIff and b_locs_of_as_set_interval, 
 			     this leads to a LEMMA about subset of ranges *)
@@ -727,7 +719,7 @@ lemma b_new1_gr_upd_psubset_req_size:
 		locs_of (r+s) (the (f r) - s) \<subset> locs_of r (the(f r))"
 apply (rule psubsetI)
 apply (simp add: b_new1_gr_upd_within_req_size)
-apply (simp add: b_locs_of_as_set_interval)
+apply (simp add: b_locs_of_as_set_interval inv_VDMNat1_def)
 by (metis add_0_iff add_lessD1 add_less_cancel_left atLeastLessThan_inj(1) not_less0)
 
 (* Weaken: Disjoint distributes through dom_ar and dagger *)
@@ -750,7 +742,7 @@ apply (simp_all add: f_in_dom_ar_the_subsume)
         f_nat1_map_nat1_elem[of f r]
         b_locs_of_as_set_interval[of "the(f r)"]
   (* too slow - apply (simp_all add: b_new1_gr_upd_within_req_size f_nat1_map_nat1_elem b_locs_of_as_set_interval) *)
-  apply (simp_all add: b_new1_gr_upd_within_req_size f_nat1_map_nat1_elem b_locs_of_as_set_interval)
+  apply (simp_all add: inv_VDMNat1_def b_new1_gr_upd_within_req_size f_nat1_map_nat1_elem b_locs_of_as_set_interval)
 	apply (metis add_lessD1)
 done
 	(* NOTE: The discovery of how to properly apply frules (and throughout all goals 1-4) saved repetition :-) *)
@@ -774,7 +766,7 @@ by (metis f_in_dom_ar_subsume)
 lemma k_sep_dom_ar_dagger_aux2:
 	"nat1 s \<Longrightarrow> {r} \<inter> dom [r + s \<mapsto> the (f r) - s] = {}"
 apply (subst disjoint_iff_not_equal)
-by auto
+by (simp add: inv_VDMNat1_def)
 
 (* Weaken: sep distributes through dom_ar and munion *)
 lemma k_sep_dom_ar_dagger:
@@ -793,14 +785,14 @@ apply simp_all
 apply (rule notI)
 apply (erule_tac x=l in ballE)
 apply (simp_all)
-unfolding Disjoint_def disjoint_def
+unfolding Disjoint_def disjoint_def 
 (* Failed after 2014
 by (smt l_locs_of_Locs_of_iff k_locs_of_arithIff nat1_def)
   -- k_locs_of_arithIff no longer work
 *)
 apply (simp add: l_locs_of_Locs_of_iff b_locs_of_as_set_interval f_nat1_map_nat1_elem)
-apply (erule ballE[where x=r], erule_tac x=l in ballE,simp_all)
-done
+  apply (erule ballE[where x=r], erule_tac x=l in ballE,simp_all add: inv_VDMNat1_def)
+  using k_locs_of_arithIff nat1_map_def by auto
 
 (* Weaken: sep distributes through dom_ar and munion *)
 lemma k_sep_dom_ar_munion:
@@ -820,7 +812,7 @@ unfolding nat1_map_def
 apply (intro allI impI)
 apply (simp add: l_dagger_dom l_dagger_apply)
 apply (intro conjI impI)+
-apply (simp)
+apply (simp add: inv_VDMNat1_def)
 by (metis f_in_dom_ar_subsume f_in_dom_ar_the_subsume)
 
 (* Weaken: nat1_map distributes through dom_ar and munion *)
@@ -860,15 +852,15 @@ lemma k_F1_inv_dom_munion:
 by (metis F1_inv_def k_Disjoint_dom_ar_munion k_finite_dom_ar_munion k_nat1_map_dom_ar_munion k_sep_dom_ar_munion)
 
 (*========================================================================*)
-section {* Goal-oriented - DISPOSE1 invariant update *}
+section \<open> Goal-oriented - DISPOSE1 invariant update \<close>
 (*========================================================================*)
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
-subsubsection {* DISPOSE1 update - equal case *}
+subsubsection \<open> DISPOSE1 update - equal case \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
 lemma l_min_loc_dom_r_iff: 
-  "S \<triangleleft> g \<noteq> empty \<Longrightarrow> min_loc (S \<triangleleft> g) = Min (S \<inter> dom g)"
+  "S \<triangleleft> g \<noteq> Map.empty \<Longrightarrow> min_loc (S \<triangleleft> g) = Min (S \<inter> dom g)"
 by (metis min_loc_def l_dom_r_iff)
 
 (*
@@ -895,7 +887,7 @@ lemma k_Min_subset:
 by (metis Min_in finite_subset set_mp)
 
 lemma k_min_loc_dom:
-  "g \<noteq> empty \<Longrightarrow> finite(dom g) \<Longrightarrow> dom g \<subseteq> dom f \<Longrightarrow> min_loc g \<in> dom f"
+  "g \<noteq> Map.empty \<Longrightarrow> finite(dom g) \<Longrightarrow> dom g \<subseteq> dom f \<Longrightarrow> min_loc g \<in> dom f"
 unfolding min_loc_def
 by (metis Min_in dom_eq_empty_conv set_mp)
 
@@ -908,7 +900,7 @@ apply (subst disjoint_iff_not_equal)
 apply (rule ballI)+
 unfolding dispose1_above_def dispose1_below_def
 apply (simp only: l_dom_r_iff)
-using [[simp_trace]] apply simp
+using [[simp_trace]] apply (simp add: inv_VDMNat1_def)
 (* sep f1 ==>
 apply (elim conjE)
 apply (metis nat_neq_iff not_add_less1 sep_def)
@@ -919,7 +911,7 @@ lemma f_d1_not_dispose_above :
   "nat1 s1 \<Longrightarrow> d1 \<notin> dom (dispose1_above f1 d1 s1)"
 unfolding dispose1_above_def
 find_theorems "dom(_ \<triangleleft> _)"
-by (simp add: l_dom_r_iff)
+by (simp add: l_dom_r_iff inv_VDMNat1_def)
 
 lemma f_d1_not_dispose_below:
   "nat1_map f1 \<Longrightarrow> nat1 s1 \<Longrightarrow> d1 \<notin> dom (dispose1_below f1 d1)"
@@ -978,12 +970,12 @@ by (metis k_dispose_abovebelow_dom_disjoint k_finite_dispose_above k_finite_disp
    *)
 
 lemma k_empty_dispose_above: 
-  "d1 + s1 \<notin> dom f1 \<Longrightarrow> (dispose1_above f1 d1 s1) = empty"
+  "d1 + s1 \<notin> dom f1 \<Longrightarrow> (dispose1_above f1 d1 s1) = Map.empty"
 unfolding dispose1_above_def
 by (smt disjoint_iff_not_equal l_dom_r_iff l_map_non_empty_dom_conv mem_Collect_eq)
 
 lemma k_nonempty_dispose_below: 
-  "x \<in> dom f1 \<Longrightarrow> x + the(f1 x) = d1 \<Longrightarrow> (dispose1_below f1 d1) \<noteq> empty"
+  "x \<in> dom f1 \<Longrightarrow> x + the(f1 x) = d1 \<Longrightarrow> (dispose1_below f1 d1) \<noteq> Map.empty"
 unfolding dispose1_below_def
 by (smt dom_def f_in_dom_r_apply_elem mem_Collect_eq)
 (* LF: this worked when using old version of f_in_dom_r_apply_elem
@@ -1012,7 +1004,7 @@ apply simp
 by blast
 
 lemma k_dispose1_sep0_above_empty:
-  "sep0 [d1 \<mapsto> s1] f1 \<Longrightarrow> dispose1_above f1 d1 s1 = empty"
+  "sep0 [d1 \<mapsto> s1] f1 \<Longrightarrow> dispose1_above f1 d1 s1 = Map.empty"
 apply (simp only: dom_eq_empty_conv[symmetric])
 unfolding sep0_def dispose1_above_def
 find_theorems "dom(_ \<triangleleft> _)"
@@ -1020,14 +1012,14 @@ apply (simp add: dom_eq_empty_conv[symmetric] l_dom_r_iff)
 by blast
 
 lemma k_dispose1_sep0_below_empty:
-  "sep0 f1 [d1 \<mapsto> s1] \<Longrightarrow> dispose1_below f1 d1 = empty"
+  "sep0 f1 [d1 \<mapsto> s1] \<Longrightarrow> dispose1_below f1 d1 = Map.empty"
 apply (simp only: dom_eq_empty_conv[symmetric])
 unfolding sep0_def dispose1_below_def
 apply (simp add: dom_eq_empty_conv[symmetric] l_dom_r_iff)
 by blast
 
 lemma l_dispose1_sep0_above_empty_iff:
-  "(dispose1_above f1 d1 s1 = empty) = sep0 [d1 \<mapsto> s1] f1"
+  "(dispose1_above f1 d1 s1 = Map.empty) = sep0 [d1 \<mapsto> s1] f1"
 apply (rule iffI)
 defer
 apply (rule k_dispose1_sep0_above_empty,assumption)
@@ -1043,7 +1035,7 @@ by (metis domIff)
 
 (* NOTE: This LEMMA is *CRUCIAL* to enable talking about some free variable l satisfying sep0; otherwise we don't have l\<in> dom f *)
 lemma l_dispose1_sep0_below_empty_iff:
-  "(dispose1_below f1 d1 = empty) = sep0 f1 [d1 \<mapsto> s1]"
+  "(dispose1_below f1 d1 = Map.empty) = sep0 f1 [d1 \<mapsto> s1]"
 apply (rule iffI)
 defer
 apply (rule k_dispose1_sep0_below_empty,assumption)
@@ -1068,8 +1060,8 @@ apply (frule f_dom_locs_of,assumption)
 apply (frule f_in_dom_locs,assumption)
 apply (erule_tac x=d in ballE)
 apply (erule_tac x=d in ballE)
-unfolding locs_of_def
-by simp_all
+unfolding locs_of_def 
+  by (simp_all add: inv_VDMNat1_def)
 
 (*
 lemmX f_dispose1_pre_not_in_dom_size: 
@@ -1094,7 +1086,7 @@ unfolding dom_restr_def
 by auto
 
 lemma l_dispose1_nonempty_above_singleton:
-  "dispose1_above f1 d1 s1 \<noteq> empty \<Longrightarrow> dispose1_above f1 d1 s1 = [d1+s1 \<mapsto> the(f1 (d1+s1))]"
+  "dispose1_above f1 d1 s1 \<noteq> Map.empty \<Longrightarrow> dispose1_above f1 d1 s1 = [d1+s1 \<mapsto> the(f1 (d1+s1))]"
 by (metis k_empty_dispose_above l_dispose1_above_singleton)
 (* NOTE: the same LEMMA is not as easy with below :-( because of free l *)
 
@@ -1111,7 +1103,7 @@ where
     "fbelow \<equiv> [0\<mapsto>4, 5 \<mapsto> 6, 15 \<mapsto> 3]"
 
 lemma "F1_inv fbelow"
-unfolding fbelow_def F1_inv_defs
+unfolding fbelow_def F1_inv_defs inv_VDMNat1_def
 by auto
 
 lemma "dispose1_below fbelow 11 = [5\<mapsto>6]"
@@ -1128,8 +1120,9 @@ lemma "l \<in> dom fbelow \<Longrightarrow> l+the(fbelow l)=11 \<Longrightarrow>
 unfolding fbelow_def dispose1_below_def 
 apply safe
 apply (simp add: fun_eq_iff)
-apply (intro conjI allI impI)
-apply (simp_all split: split_if_asm)
+  apply (intro conjI allI impI)
+find_theorems name:split name:"if" name:asm
+apply (simp_all split: if_split_asm)
 unfolding dom_restr_def restrict_map_def
 apply simp
 apply auto
@@ -1152,7 +1145,7 @@ apply (erule_tac x=l in ballE)
 apply (erule_tac x=x in ballE)
 find_theorems "locs_of _ _ \<inter> locs_of _ _"
 apply (simp_all add: l_locs_of_Locs_of_iff 
-                        k_locs_of_arithIff f_nat1_map_nat1_elem)
+                        k_locs_of_arithIff f_nat1_map_nat1_elem inv_VDMNat1_def)
 by (metis antisym le_iff_add sep_def)
 
 lemma l_dispose1_below_singleton_useful:
@@ -1234,12 +1227,12 @@ oops
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~ NAT1_MAP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
 
 lemma l_sum_size_upd: 
-  "finite(dom f) \<Longrightarrow> x \<notin> dom f \<Longrightarrow> sum_size(f(x\<mapsto>y)) = (if f = empty then y else sum_size f + y)"
+  "finite(dom f) \<Longrightarrow> x \<notin> dom f \<Longrightarrow> sum_size(f(x\<mapsto>y)) = (if f = Map.empty then y else sum_size f + y)"
 unfolding sum_size_def
 apply simp
 apply (intro impI)
-by (rule setsum.cong,simp_all,rule impI,simp)
-thm setsum.cong[of "dom f" "dom f" "(\<lambda> xa . the (if xa = x then Some y else f xa))" "(\<lambda> x .  the (f x))"]
+by (rule sum.cong,simp_all,rule impI,simp)
+thm sum.cong[of "dom f" "dom f" "(\<lambda> xa . the (if xa = x then Some y else f xa))" "(\<lambda> x .  the (f x))"]
 
 lemma l_nat1_sum_size_dispose1_ext: 
     "nat1_map f1 \<Longrightarrow> finite (dom f1) \<Longrightarrow> sep f1 \<Longrightarrow> nat1 s1 \<Longrightarrow> nat1 (sum_size (dispose1_ext f1 d1 s1))"
@@ -1251,19 +1244,19 @@ apply (rule f_d1_not_dispose_above,simp)
 apply (rule f_d1_not_dispose_below,simp_all)
 apply (frule f_d1_not_dispose_abovebelow_ext[of f1 s1 d1],simp_all)
 apply (frule k_finite_dispose_abovebelow_munion[of f1 s1 d1],simp)
-by (simp add: l_sum_size_upd)
+by (simp add: l_sum_size_upd inv_VDMNat1_def)
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~ SEP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
 
 lemma l_d1_s1_not_dispose1_below: 
     "nat1_map f \<Longrightarrow> sep f \<Longrightarrow> Disjoint f \<Longrightarrow> nat1 s \<Longrightarrow> d + s \<notin> dom (dispose1_below f d)"
-apply (cases "dispose1_below f d = empty")
+apply (cases "dispose1_below f d = Map.empty")
 apply simp
 apply (simp add: l_dispose1_sep0_below_empty_iff[of f d s])
 unfolding sep0_def
 apply (simp,erule bexE)
 thm l_dispose1_below_singleton_useful
-by (simp add: l_dispose1_below_singleton_useful)
+by (simp add: l_dispose1_below_singleton_useful inv_VDMNat1_def)
 
 (* NOTE: This proof is rather protracted. Various simp rules didn't apply and we needed tedious 
          repetition of side conditions for munion to discharge.
@@ -1272,7 +1265,7 @@ lemma l_min_loc_dispose1_ext_absorb_above:
       "finite(dom f) \<Longrightarrow> nat1_map f \<Longrightarrow> Disjoint f \<Longrightarrow> sep f \<Longrightarrow> nat1 s \<Longrightarrow> 
         min_loc (dispose1_ext f d s) = min_loc(dispose1_below f d \<union>m [d \<mapsto> s])"
 unfolding dispose1_ext_def
-apply (cases "dispose1_above f d s = empty")
+apply (cases "dispose1_above f d s = Map.empty")
 apply (simp add: l_munion_empty_lhs)
 apply (simp add: l_dispose1_nonempty_above_singleton)
 thm l_munion_commute[of "[d + s \<mapsto> the (f (d + s))]" "dispose1_below f d \<union>m [d \<mapsto> s]"]
@@ -1282,15 +1275,15 @@ apply (subst l_munion_commute)
 apply (subst l_munion_assoc)
   apply (metis (full_types) inf.commute k_dispose_abovebelow_dom_disjoint l_dispose1_nonempty_above_singleton nat1_def)
   (*apply (metis inf_sup_aci(1) k_dispose_abovebelow_dom_disjoint l_dispose1_nonempty_above_singleton)*)
-  apply (simp add: disjoint_iff_not_equal)
+  apply (simp add: disjoint_iff_not_equal inv_VDMNat1_def)
    (* TOO SLOW
    apply (metis (full_types) Collect_conj_eq Collect_conv_if add_diff_cancel_right' comm_monoid_diff_class.diff_cancel dom_empty dom_fun_upd gr_implies_not0 nat_add_commute option.distinct(1) singleton_conv)
    *)
 apply (subst l_munion_commute)
 back
-  apply (simp add: disjoint_iff_not_equal)
+  apply (simp add: disjoint_iff_not_equal inv_VDMNat1_def)
   apply (subst l_munion_assoc[symmetric])
-  apply (frule f_d1_not_dispose_below,simp_all)
+  apply (frule f_d1_not_dispose_below,simp_all add: inv_VDMNat1_def)
     (* TOO SLOW
     apply (metis Collect_conj_eq Collect_conv_if2 dom_def dom_empty dom_fun_upd f_d1_not_dispose_below inf_commute mem_Collect_eq nat1_def option.distinct(1) singleton_conv2)
     *)
@@ -1298,19 +1291,19 @@ find_theorems "min_loc (_ \<union>m _)"
 thm k_min_loc_munion_singleton[of "dispose1_below f d \<union>m [d \<mapsto> s]" "d + s" "the (f (d + s))"]
 apply (subst k_min_loc_munion_singleton)
   apply (rule k_finite_munion, simp_all)
-  apply (metis k_finite_dispose_below)
-  apply (metis f_d1_not_dispose_below nat1_def)
+   apply (metis k_finite_dispose_below)
+  apply (simp add: f_d1_not_dispose_below inv_VDMNat1_def)
   apply (subst l_munion_dom)
-    apply (frule f_d1_not_dispose_below,simp_all add: l_d1_s1_not_dispose1_below)
+    apply (frule f_d1_not_dispose_below,simp_all add: l_d1_s1_not_dispose1_below inv_VDMNat1_def)
 apply (intro conjI impI)
-apply (simp add: l_munion_singleton_not_empty f_d1_not_dispose_below)
-apply (cases "dispose1_below f d = empty")
+apply (simp add: l_munion_singleton_not_empty f_d1_not_dispose_below inv_VDMNat1_def)
+apply (cases "dispose1_below f d = Map.empty")
 apply (simp add: l_munion_empty_lhs l_min_loc_singleton)
 apply (simp add: l_dispose1_sep0_below_empty_iff[of f d s])
 unfolding sep0_def
 apply simp
 apply (erule bexE)
-apply (simp add: l_dispose1_below_singleton_useless) --"so the useless version works?! hum... "
+apply (simp add: l_dispose1_below_singleton_useless) \<comment> \<open>so the useless version works?! hum... \<close>
 apply (subst k_min_loc_munion_singleton)
   apply (metis finite_singleton)
   apply (frule f_nat1_map_nat1_elem,simp_all)
@@ -1329,17 +1322,17 @@ apply (rule ballI)
 apply (simp add: l_min_loc_dispose1_ext_absorb_above)
 find_theorems "_ \<in> dom( _ -\<triangleleft> _)"
 apply (simp add: f_in_dom_ar_subsume f_in_dom_ar_the_subsume)
-apply (cases "dispose1_below f1 d1 = empty")
+apply (cases "dispose1_below f1 d1 = Map.empty")
 apply (simp add: l_min_loc_singleton l_munion_empty_lhs)
 apply (metis k_nonempty_dispose_below l_dom_ar_not_in_dom)
-  (* NOTE: Here is a repeated strategy: when dispose1_below isn't empty, we need to go through sep0 negated
+  (* NOTE: Here is a repeated strategy: when dispose1_below isn't Map.empty, we need to go through sep0 negated
            to get the right withness for the l_dispose1_below_singleton_useful lemma
    *)
     apply (simp add: l_dispose1_sep0_below_empty_iff[of f1 d1 s1])
     unfolding sep0_def
     apply simp
     apply (erule bexE)
-    apply (simp add: l_dispose1_below_singleton_useless) --"so the useless version works?! hum... "
+    apply (simp add: l_dispose1_below_singleton_useless) \<comment> \<open>so the useless version works?! hum... \<close>
     apply (subst k_min_loc_munion_singleton,simp_all)
       apply (metis sep_def)
       apply (metis l_dom_ar_notin_dom_or le_add1 min.absorb_iff1 sep_def)
@@ -1358,7 +1351,7 @@ unfolding dispose1_ext_def
 apply (subst l_sum_size_munion_singleton) 
   apply (metis k_finite_dispose_abovebelow_munion nat1_def)
   apply (simp add: k_dispose_abovebelow_dom_disjoint f_d1_not_dispose_abovebelow_ext)
-apply (cases "dispose1_below f1 d1 = empty")
+apply (cases "dispose1_below f1 d1 = Map.empty")
 apply (simp add: l_min_loc_singleton l_munion_empty_rhs l_munion_empty_lhs)
   apply (intro conjI impI)
   apply (simp add: l_dispose1_sep0_above_empty_iff) 
@@ -1371,7 +1364,7 @@ apply (simp add: l_min_loc_singleton l_munion_empty_rhs l_munion_empty_lhs)
   apply (erule_tac x="d1+s1" in ballE,simp_all)
   apply (simp add: add.assoc add.commute)
   apply (fold sep_def)
-apply (cases "dispose1_above f1 d1 s1 = empty")
+apply (cases "dispose1_above f1 d1 s1 = Map.empty")
 apply (simp add: l_min_loc_singleton l_munion_empty_rhs l_munion_empty_lhs)
 apply (simp add: l_dispose1_sep0_above_empty_iff
                  l_dispose1_sep0_below_empty_iff[of f1 d1 s1])
@@ -1424,9 +1417,9 @@ find_theorems simp:"(_ -\<triangleleft> _)"
 thm l_locs_dom_ar_iff l_dom_ar_accum
 apply (simp add: l_dom_ar_accum[symmetric])
 unfolding disjoint_def dispose1_ext_def dispose1_pre_def
-apply (cases "dispose1_below f1 d1 = empty")
+apply (cases "dispose1_below f1 d1 = Map.empty")
 apply (simp add: l_munion_empty_lhs l_min_loc_singleton l_munion_empty_rhs l_dom_ar_none)
-  apply (cases "dispose1_above f1 d1 s1 = empty")
+  apply (cases "dispose1_above f1 d1 s1 = Map.empty")
     apply (simp add: l_munion_empty_lhs l_sum_size_singleton l_dom_ar_none)
   apply (simp add: l_dispose1_nonempty_above_singleton l_dispose1_sep0_above_empty_iff
                    l_sum_size_munion l_sum_size_singleton) 
@@ -1447,42 +1440,44 @@ apply auto[1]
              *)
 *)
   apply (fold locs_of_def)
-  apply (cases "dispose1_above f1 d1 s1 = empty")
-    apply (simp add: l_munion_empty_lhs l_sum_size_singleton l_dom_ar_none)
-    apply (simp add: l_dispose1_sep0_below_empty_iff[of f1 d1 s1])
+  apply (cases "dispose1_above f1 d1 s1 = Map.empty")
+    apply (simp add: l_munion_empty_lhs l_sum_size_singleton l_dom_ar_none inv_VDMNat1_def)
+    apply (simp add: l_dispose1_sep0_below_empty_iff[of f1 d1 s1] inv_VDMNat1_def)
     unfolding sep0_def
-    apply simp
-    apply (erule bexE)
-    apply (simp add: l_dispose1_below_singleton_useful)
+      apply (simp add: inv_VDMNat1_def)
+      apply (simp add: domIff l_dispose1_above_singleton)
+    using inv_VDMNat1_def l_sum_size_munion_singleton l_sum_size_singleton apply auto[1]
         thm l_sum_size_munion_singleton[simplified] l_sum_size_singleton
                      k_min_loc_munion_singleton[simplified]
                      l_dispose1_nonempty_above_singleton
-    apply (subst k_min_loc_munion_singleton)
-      apply (metis finite_singleton)
+        apply (subst k_min_loc_munion_singleton)
+        using k_finite_dispose_below apply presburger
+         apply (simp add: f_d1_not_dispose_below)
       apply (simp add: disjoint_iff_not_equal)
-      apply (metis sep_def)
-    apply (subst l_sum_size_munion_singleton)
-      apply (metis finite_singleton)
-      apply (simp add: disjoint_iff_not_equal)
-      apply (metis sep_def)
+        apply (subst l_sum_size_munion_singleton)
+        using k_finite_dispose_abovebelow_munion nat1_def apply presburger
+         apply (simp add: disjoint_iff_not_equal)
+        apply (metis f_d1_not_dispose_abovebelow_ext nat1_def)
     apply (simp add: l_sum_size_singleton l_locs_dom_ar_iff)
-
-    apply (simp add: disjoint_iff_not_equal)
-    apply (rule ballI)+
-    apply (frule f_nat1_map_nat1_elem,simp)
+    apply (intro impI conjI ballI)
+         apply (frule f_nat1_map_nat1_elem)
+        apply (simp add: inv_VDMNat1_def)
     unfolding locs_of_def
-    apply simp
-    apply (metis add.assoc le_add1 min_def not_less)
-   (*   apply smt *)
+      apply simp
+      apply (metis domIff inv_VDMNat1_def k_dispose_abovebelow_dom_disjoint l_munion_apply less_imp_of_nat_less nat1_def of_nat_eq_0_iff)
+    apply (metis (no_types) domIff k_dispose_abovebelow_dom_disjoint l_munion_apply nat1_def)
    apply (fold locs_of_def)
     
   apply (simp add: l_dispose1_nonempty_above_singleton l_dispose1_sep0_above_empty_iff
                    l_dispose1_sep0_below_empty_iff[of f1 d1 s1]
-                   l_sum_size_munion l_sum_size_singleton)
+                   l_sum_size_munion l_sum_size_singleton inv_VDMNat1_def)
   unfolding sep0_def
   apply simp
   apply (erule bexE)
+  
+  thm l_dispose1_below_singleton_useful
   apply (simp add: l_dispose1_below_singleton_useful)
+  apply (insert k_min_loc_munion_singleton[of f1])
   apply (subst k_min_loc_munion_singleton)
     apply (metis finite_singleton)
     apply (simp add: disjoint_iff_not_equal)
@@ -1522,14 +1517,14 @@ oops
 
 (* subsumes previous *)
 lemma l_locs_maximal_quickspec:
-  "(locs f) -\<triangleleft> f = empty"
+  "(locs f) -\<triangleleft> f = Map.empty"
 oops
 
 lemma l_locs_empty_quickspec:
-  "(locs empty = {})"
+  "(locs Map.empty = {})"
 oops
  
-find_theorems "locs empty"
+find_theorems "locs Map.empty"
 
 find_theorems "locs (_ -\<triangleleft> _)"
 

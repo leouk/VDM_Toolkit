@@ -41,13 +41,13 @@ apply (erule bexE)
 apply (frule l3_2)
 apply (frule l3_3,simp)
 apply (rule_tac x=s in bexI)
-by (simp_all)
+sledgehammer
 
 lemma l4: "nat1 n \<Longrightarrow> nat1 m \<Longrightarrow> locs_of d (n+m) = (locs_of d n) \<union> (locs_of (d+n) m)"
 unfolding locs_of_def
 by auto
 
---" New lemmas (relatively trivial) "
+\<comment> \<open> New lemmas (relatively trivial)\<close>
 lemma l5: "nat1_map f \<Longrightarrow> x \<in> dom f \<Longrightarrow> nat1 (the(f x))"
 by (metis nat1_map_def)
 
@@ -69,7 +69,7 @@ by auto
 lemma l6: "x \<in> dom f \<Longrightarrow> nat1_map f \<Longrightarrow> x \<in> locs f"
 unfolding locs_def
 by (metis UN_iff l6_1)  
---" UNUSED, but discovered through the failure to prove l6 above, which led to change in l2v2 "
+\<comment> \<open> UNUSED, but discovered through the failure to prove l6 above, which led to change in l2v2 \<close>
 
 lemma l7v0: "d \<in> dom f \<Longrightarrow> x \<in> locs_of d s \<Longrightarrow> nat1_map f \<Longrightarrow> x \<in> locs f"
 unfolding locs_def
@@ -80,62 +80,62 @@ lemma l7: "d \<in> dom f \<Longrightarrow> x \<in> locs_of d (the(f d)) \<Longri
 unfolding locs_def
 by (simp,rule bexI,simp_all)
 
---" Going directly top bottom of proof - used wrong l2 lemma! "
+\<comment> \<open> Going directly top bottom of proof - used wrong l2 lemma! \<close>
 theorem try1: "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l3[of f "{d+s}"])                                          --" S4 : L3      "
-apply (frule l1[of "locs_of d s" "locs f" "(locs ({d+s} -\<triangleleft> f))"],simp)  --" S5 : L1(S4,h)"
---" step 6 is strange: it is already what you want to conclude, yet it comes from h? "
-  --" here S6 comes from Disjoint f "
+apply (frule l3[of f "{d+s}"])                                          \<comment> \<open> S4 : L3      \<close>
+apply (frule l1[of "locs_of d s" "locs f" "(locs ({d+s} -\<triangleleft> f))"],simp)  \<comment> \<open> S5 : L1(S4,h)\<close>
+\<comment> \<open> step 6 is strange: it is already what you want to conclude, yet it comes from h? \<close>
+  \<comment> \<open> here S6 comes from Disjoint f \<close>
 oops
 
---" Going in the order of steps "
+\<comment> \<open> Going in the order of steps \<close>
 theorem try2: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
     thm  l2[of "locs_of d s" 
                   "locs_of (d+s) 
                     (s+(the(f(d+s))))" 
                   "locs ({d+s} -\<triangleleft> f)"]
-apply (rule l2)                         --" S3    : L2(S5, S6)   "
+apply (rule l2)                         \<comment> \<open> S3    : L2(S5, S6)   \<close>
 defer
     thm l1[of "locs_of d s"
               "locs f"
               "locs ({d+s} -\<triangleleft> f)"]
         l3[of f "{d+s}"]
     
-apply (frule l3[of f "{d+s}"])          --" S4    : L3           "
+apply (frule l3[of f "{d+s}"])          \<comment> \<open> S4    : L3           \<close>
 apply (frule l1[of "locs_of d s" 
                    "locs f" 
                "(locs ({d+s} -\<triangleleft> f))"],
-               simp)                    --" S5 : L1(S4,h)        "
---" To me the backward steps towards the goal are harder to follow? How about S6? Will try backward "
+               simp)                    \<comment> \<open> S5 : L1(S4,h)        \<close>
+\<comment> \<open> To me the backward steps towards the goal are harder to follow? How about S6? Will try backward \<close>
 oops
 
---"Just like try2 but going underneath disjoint definition"
+\<comment> \<open>Just like try2 but going underneath disjoint definition\<close>
 theorem try3: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
-apply (rule l2)                         --" S3    : L2(S5, S6)   "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
+apply (rule l2)                         \<comment> \<open> S3    : L2(S5, S6)   \<close>
 defer
-apply (rule l1[of _ "locs f" _],simp)   --" S5   : L1(S4,h4)     "
-apply (rule l3,simp)                    --" S4   : L3(h1[3])     "
+apply (rule l1[of _ "locs f" _],simp)   \<comment> \<open> S5   : L1(S4,h4)     \<close>
+apply (rule l3,simp)                    \<comment> \<open> S4   : L3(h1[3])     \<close>
 defer
-  --" If I had a lemma (should create? no general enough?); "
+  \<comment> \<open> If I had a lemma (should create? no general enough?); \<close>
 unfolding disjoint_def
   apply (simp add: disjoint_iff_not_equal)
   apply (intro ballI)
@@ -172,20 +172,20 @@ unfolding disjoint_def
   nitpick
 oops
 
---" Version shown to Cliff - in step order and using l2 new "
+\<comment> \<open> Version shown to Cliff - in step order and using l2 new \<close>
 theorem try4: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
-apply (rule l2)                         --" S3    : L2(S5, S6)   "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
+apply (rule l2)                         \<comment> \<open> S3    : L2(S5, S6)   \<close>
 defer
-apply (rule l1[of _ "locs f" _],simp)   --" S5   : L1(S4,h4)     "
-apply (rule l3,simp)                    --" S4   : L3(h1[3])     "
+apply (rule l1[of _ "locs f" _],simp)   \<comment> \<open> S5   : L1(S4,h4)     \<close>
+apply (rule l3,simp)                    \<comment> \<open> S4   : L3(h1[3])     \<close>
 defer
 unfolding disjoint_def
   apply (simp add: disjoint_iff_not_equal)
@@ -200,9 +200,9 @@ lemma l3half_1: "nat1_map f \<Longrightarrow> (x \<in> locs f) = (\<exists>y \<i
 unfolding locs_def
 by (metis (mono_tags) UN_iff)
 
---" Version shown to Cliff - in step order and using l2original + new lemma"
+\<comment> \<open> Version shown to Cliff - in step order and using l2original + new lemma\<close>
 lemma l3half: 
---"see lemma l_locs_dom_ar_iff:"
+\<comment> \<open>see lemma l_locs_dom_ar_iff:\<close>
   "nat1_map f \<Longrightarrow> Disjoint f \<Longrightarrow> r \<in> dom f \<Longrightarrow> locs({r} -\<triangleleft> f) = locs f - locs_of r (the(f r))"
 apply (rule equalityI)
 apply (rule_tac [1-] subsetI)
@@ -234,24 +234,24 @@ lemma l8: "disjoint A (B - A)"
 unfolding disjoint_def
 by (metis Diff_disjoint)
 
---" LATEST version from Cliff that avoids expanding locs def through lemmas (caveat: 3.5 is hard to prove "
+\<comment> \<open> LATEST version from Cliff that avoids expanding locs def through lemmas (caveat: 3.5 is hard to prove \<close>
 theorem try7: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
-apply (rule l2o)                        --" S3    : L2(S4, S6)   "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
+apply (rule l2o)                        \<comment> \<open> S3    : L2(S4, S6)   \<close>
 apply (metis (full_types) l1 l3)
 by (metis l3half l8)
 
--- "trial lemma extracted from the last part of the next try proofs (try5/6 below)"
+\<comment> \<open> trial lemma extracted from the last part of the next try proofs (try5/6 below)\<close>
 lemma trial: "nat1_map f \<Longrightarrow> Disjoint f \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of (d + s) (the (f (d + s)))) (locs ({d+s} -\<triangleleft> f))"
 unfolding Disjoint_def Locs_of_def                 
-  apply (erule_tac x="d+s" in ballE)    --" S6    : S8 "
+  apply (erule_tac x="d+s" in ballE)    \<comment> \<open> S6    : S8 \<close>
     apply (simp_all)
   unfolding disjoint_def
   apply (simp add: disjoint_iff_not_equal)
@@ -267,30 +267,30 @@ unfolding Disjoint_def Locs_of_def
 done
 
 theorem try5: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
           apply (elim conjE)
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
-apply (rule l2o)                        --" S3    : L2(S4, S6)   "
-apply (rule l1[of _ "locs f" _],simp)   --" S4    : L1(S5,h4)     "
-apply (rule l3,simp)                    --" S5    : L3(h1[3])     "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
+apply (rule l2o)                        \<comment> \<open> S3    : L2(S4, S6)   \<close>
+apply (rule l1[of _ "locs f" _],simp)   \<comment> \<open> S4    : L1(S5,h4)     \<close>
+apply (rule l3,simp)                    \<comment> \<open> S5    : L3(h1[3])     \<close>
 
-apply (frule l3half,simp,simp,simp)     --" S8   : L3.5(h1[1])   "
+apply (frule l3half,simp,simp,simp)     \<comment> \<open> S8   : L3.5(h1[1])   \<close>
 (*
-apply (rule l1[of _ "locs f"])          --" S8_1 : L1(h4)        "
-  defer thm Diff_subset l3 --" either work "
-  apply (metis Diff_subset)             --" S8_2 : L3 or set-thy "
-apply (rule trial,simp,simp,simp)       --" S9   : ? S6 ? "
-      --" cannot loose anti-restriction "
+apply (rule l1[of _ "locs f"])          \<comment> \<open> S8_1 : L1(h4)        \<close>
+  defer thm Diff_subset l3 \<comment> \<open> either work \<close>
+  apply (metis Diff_subset)             \<comment> \<open> S8_2 : L3 or set-thy \<close>
+apply (rule trial,simp,simp,simp)       \<comment> \<open> S9   : ? S6 ? \<close>
+      \<comment> \<open> cannot loose anti-restriction \<close>
 *)
 oops
 
 theorem try6: 
-       --" h1         h2          h3             h4  "
+       \<comment> \<open> h1         h2          h3             h4  \<close>
       "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
@@ -299,12 +299,12 @@ theorem try6:
           thm l5 
           thm l1[of _ "locs f" _]
           thm trial
-apply (frule l4[of s "the(f(d+s))" d])  --" S1    : L4(S2)       "
-apply (rule l5,simp,simp)               --" S2    : L5(h1[3],h3) "
-apply (erule ssubst)                    --" infer : subs(S1)     ; Nothing about S6 "
-apply (rule l2o)                        --" S3    : L2(S4, S6)   "
-apply (rule l1[of _ "locs f" _],simp)   --" S4    : L1(S5,h4)     "
-apply (rule l3,simp)                    --" S5    : L3(h1[3])     "
+apply (frule l4[of s "the(f(d+s))" d])  \<comment> \<open> S1    : L4(S2)       \<close>
+apply (rule l5,simp,simp)               \<comment> \<open> S2    : L5(h1[3],h3) \<close>
+apply (erule ssubst)                    \<comment> \<open> infer : subs(S1)     ; Nothing about S6 \<close>
+apply (rule l2o)                        \<comment> \<open> S3    : L2(S4, S6)   \<close>
+apply (rule l1[of _ "locs f" _],simp)   \<comment> \<open> S4    : L1(S5,h4)     \<close>
+apply (rule l3,simp)                    \<comment> \<open> S5    : L3(h1[3])     \<close>
 apply (rule trial,simp,simp,simp)
 done
 

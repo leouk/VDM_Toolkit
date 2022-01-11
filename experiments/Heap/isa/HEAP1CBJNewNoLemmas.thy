@@ -14,7 +14,7 @@ theorem try1new: "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> 
           unfolding F1_inv_def
 apply (simp add: lnew1)
 thm lnew1[of "locs f" "locs_of d s" "locs_of d s"] 
-  --"fails because of commutativity is missing; we also need lemmas about locs and locs_of"
+  \<comment> \<open>fails because of commutativity is missing; we also need lemmas about locs and locs_of\<close>
 oops
 
 lemma lnew2: "disjoint s1 s2 \<Longrightarrow> disjoint s2 s1"
@@ -24,7 +24,7 @@ theorem try2new: "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> 
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
 apply (rule lnew2)
---"need to make -\<triangleleft> into - and + into union"
+\<comment> \<open>need to make -\<triangleleft> into - and + into union\<close>
 oops
 
 lemma l_locs_dom_ar_iff:
@@ -32,29 +32,32 @@ lemma l_locs_dom_ar_iff:
 sorry
 
 lemma l4: "nat1 n \<Longrightarrow> nat1 m \<Longrightarrow> locs_of d (n+m) = (locs_of d n) \<union> (locs_of (d+n) m)"
-unfolding locs_of_def
-by auto
+unfolding locs_of_def 
+  apply auto
+  unfolding inv_VDMNat1_def
+  by auto
 
 theorem try3new: "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
 apply (rule lnew2)
 apply (simp add: l_locs_dom_ar_iff)
-apply (simp add: l4)
+apply (simp add: l4 inv_VDMNat1_def)
 thm l4[of s "the(f(d+s))" d]
- --"fails because ISabelle doesn't know nat1'ness of the(f(d+s))"
+ \<comment> \<open>fails because ISabelle doesn't know nat1'ness of the(f(d+s))\<close>
 oops
 
 lemma f_nat1_map_nat1_elem:
 	"nat1_map f \<Longrightarrow> x \<in> dom f \<Longrightarrow> 0 < (the(f x))"
-by (metis nat1_def nat1_map_def)
+	unfolding nat1_map_def nat1_def inv_VDMNat1_def
+  by auto
 
 theorem try4new: "F1_inv f \<Longrightarrow> nat1 s \<Longrightarrow> d+s \<in> dom f \<Longrightarrow> disjoint (locs_of d s) (locs f) \<Longrightarrow>
           disjoint (locs_of d (s+ (the(f(d+s))))) (locs ({d+s} -\<triangleleft> f))"
           unfolding F1_inv_def
 apply (rule lnew2)
 apply (simp add: l_locs_dom_ar_iff)
-apply (simp add: l4 f_nat1_map_nat1_elem)
+apply (simp add: l4 f_nat1_map_nat1_elem inv_VDMNat1_def)
 apply (rule lnew1)
 apply (rule lnew2)
 apply assumption
