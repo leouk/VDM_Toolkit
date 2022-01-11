@@ -1,5 +1,5 @@
 theory RGToolkit
-imports VDMToolkit
+imports VDMToolkit 
 begin
 
 (*================================================================*)

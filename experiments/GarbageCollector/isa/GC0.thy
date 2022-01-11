@@ -1,7 +1,7 @@
 (* $Id$ *)
 (*<*)
-theory GC0
-imports RGToolkit
+theory GC0 
+imports RGToolkit 
 begin
 (*>*)
    
