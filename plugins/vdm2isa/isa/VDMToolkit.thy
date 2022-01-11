@@ -972,6 +972,29 @@ lemma l_seq_prefix_append[simp]: "s \<sqsubseteq> s @ t"
   using l_len_within_inds apply blast
   by (metis (full_types) atLeastAtMost_iff inds_def l_len_append l_len_within_inds l_vdmtake_len_append)
 
+lemma l_elems_of_inds_of_nth:  
+  "1 < j \<Longrightarrow> j < int (length s) \<Longrightarrow> s ! nat (j - 1) \<in> set s"
+  by simp
+    
+lemma l_elems_inds_found:
+  "x \<in> set s \<Longrightarrow> (\<exists> i . i < length s \<and> s ! i = x)"
+  (*apply (simp only: ListMem_iff[symmetric])*)
+  apply (induct s)
+   apply simp_all
+  apply safe
+  by auto
+    
+lemma l_elems_of_inds: 
+  "(x \<in> elems s) = (\<exists> j . j \<in> inds s \<and> (s$j) = x)" 
+  unfolding elems_def inds_def
+  apply (rule iffI)
+  unfolding applyVDMSeq_def len_def
+  apply (frule l_elems_inds_found)
+  apply safe
+   apply (rule_tac x="int(i)+1" in exI)
+   apply (simp add: inv_VDMNat1_def)
+  using inv_VDMNat1_def by fastforce
+
 (*****************************************************************)      
 section \<open> Optional inner type invariant check \<close>
 
@@ -1433,6 +1456,9 @@ by (metis dom_restr_def restrict_map_to_empty)
 lemma l_dom_r_empty: "S \<triangleleft> Map.empty = Map.empty"
 by (metis dom_restr_def restrict_map_empty)
 
+lemma l_dres_absorb: "UNIV \<triangleleft> m = m"
+by (simp add: dom_restr_def map_le_antisym map_le_def)  
+  
 lemma l_dom_r_nothing_empty: "S = {} \<Longrightarrow> S \<triangleleft> f = Map.empty"
 by (metis l_dom_r_nothing)
 (* FD: in specific dom subsumes application (over Some+None) [ZEVES-LEMMA] *)
@@ -1595,6 +1621,8 @@ apply (intro impI conjI)
 apply simp_all
 by (metis domIff set_mp)
 
+lemma l_dom_rres_same_map_weaken: 
+  "S = T \<Longrightarrow> (S -\<triangleleft> f) = (T -\<triangleleft> f)" by simp   
 
 (* IJW: TODO classify; rename *)
 lemma l_dom_ar_not_in_dom:
