@@ -20,7 +20,7 @@ import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import junit.framework.TestCase;
 
-public class TRAbstractModuleTest extends TestCase {
+public abstract class TRAbstractModuleTest extends TestCase {
     
     @Override
 	protected void setUp() throws Exception
