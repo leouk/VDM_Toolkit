@@ -31,6 +31,9 @@ lemma vdm_ord_trans: "\<forall> x y z . x < y \<and> y < z \<longrightarrow> x <
 lemma vdm_ord_asym: "\<forall> x y . x < y \<longrightarrow> \<not> y < x"
   by (meson local.less_asym)
 
+lemma vdm_total: "\<forall> x y . x \<le> y \<or> y \<le> x" 
+  nitpick oops
+
 end
 
 print_locale! VDMOrd
