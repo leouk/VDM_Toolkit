@@ -27,6 +27,7 @@ package plugins;
 import java.util.List;
 import java.util.Vector;
 
+import json.JSONArray;
 import json.JSONObject;
 import workspace.lenses.CodeLens;
 import workspace.plugins.AnalysisPlugin;
@@ -51,9 +52,21 @@ public abstract class ISAPlugin extends AnalysisPlugin
 	}
 	
 	@Override
-	public JSONObject getExperimentalOptions()
+	public JSONObject getExperimentalOptions(JSONObject standard)
 	{
-		return new JSONObject("isabelle", "server-option");
+		JSONObject provider = standard.get("translateProvider");
+		
+		if (provider != null)
+		{
+			JSONArray ids = provider.get("languageId");
+			
+			if (ids != null)
+			{
+				ids.add("isabelle");	// Edit the standard response to include isabelle
+			}
+		}
+		
+		return new JSONObject();
 	}
 	
 	@Override
