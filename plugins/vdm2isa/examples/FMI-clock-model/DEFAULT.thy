@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-16T12:08:47.776542Z
+(* VDM to Isabelle Translation @2022-02-16T13:37:03.742353Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 
@@ -9,20 +9,46 @@ imports "VDMToolkit"
 begin
 
 
+\<comment>\<open>VDM source: Real1 = real
+	inv r == (r >= 0)\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 37:5\<close>
+type_synonym Real1 = "VDMReal"
+	
+
+\<comment>\<open>VDM source: inv_Real1: (real +> bool)
+	inv_Real1(r) ==
+(r >= 0)\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 38:9\<close>
+definition
+	inv_Real1 :: "Real1 \<Rightarrow> bool"
+where
+	"inv_Real1 r \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Real1` specification.\<close>
+		(((inv_VDMReal r)))  \<and> 
+		\<comment>\<open>User defined body of inv_Real1.\<close>
+		(r \<ge> (0::VDMNat))"
+
+		 
+lemmas inv_Real1_defs = inv_Real1_def inv_VDMReal_def 
+
+
+	
+	
 \<comment>\<open>VDM source: Time = compose Time of r:real, i:nat end
-	inv t == ((t.r) >= 0)
+	inv t == (((t.r) >= 0) and ((t.r) < (t.i)))
 	eq a = b == (((a.r) = (b.r)) and ((a.i) = (b.i)))
 	ord a < b == (((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 44:5\<close>
 record Time = 
 	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
-	i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
+		 
+		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
+	
 
-term " r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t"
 \<comment>\<open>VDM source: inv_Time: (Time +> bool)
 	inv_Time(t) ==
-((t.r) >= 0)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 37:9\<close>
+(((t.r) >= 0) and ((t.r) < (t.i)))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 47:9\<close>
 definition
 	inv_Time :: "Time \<Rightarrow> bool"
 where
@@ -31,13 +57,13 @@ where
 		( (((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e t))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Time.\<close>
-		((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t) \<ge> (0::VDMNat))"
+		(((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t) \<ge> (0::VDMNat)) \<and> ((r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t) < (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e t)))"
  
 
 \<comment>\<open>VDM source: eq_Time: (Time * Time +> bool)
 	eq_Time(a, b) ==
 (((a.r) = (b.r)) and ((a.i) = (b.i)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 39:8\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 50:8\<close>
 definition
 	eq_Time :: "Time \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -51,7 +77,7 @@ where
 \<comment>\<open>VDM source: ord_Time: (Time * Time +> bool)
 	ord_Time(a, b) ==
 (((a.r) < (b.r)) or (((a.r) = (b.r)) and ((a.i) < (b.i))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 40:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 51:9\<close>
 definition
 	ord_Time :: "Time \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -66,8 +92,58 @@ lemmas inv_Time_defs = inv_Time_def inv_VDMNat_def inv_VDMReal_def
 
 	
 	
+\<comment>\<open>VDM source: Time2 = compose Time2 of r:Real1, i:nat end
+	inv mk_Time2(r, i) == (r < i)
+	eq mk_Time2(r1, i1) = mk_Time2(r2, i2) == ((r1 = r2) and (i1 = i2))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 56:5\<close>
+record Time2 = 
+	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 :: "Real1"
+		 
+		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 :: "VDMNat"
+	
+
+\<comment>\<open>VDM source: inv_Time2: (Time2 +> bool)
+	inv_Time2(mk_Time2(r, i)) ==
+(r < i)\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 59:9\<close>
+definition
+	inv_Time2 :: "Time2 \<Rightarrow> bool"
+where
+	"inv_Time2 dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Time2` specification.\<close>
+		( (((inv_Real1 (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0))) \<and> 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0))) ))  \<and> 
+		\<comment>\<open>Implicit pattern context conversion\<close>
+		(let r = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0); i = (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0) in 
+		\<comment>\<open>User defined body of inv_Time2.\<close>
+		(r < i))"
+
+		
+
+\<comment>\<open>VDM source: eq_Time2: (Time2 * Time2 +> bool)
+	eq_Time2(mk_Time2(r1, i1), mk_Time2(r2, i2)) ==
+((r1 = r2) and (i1 = i2))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 60:8\<close>
+definition
+	eq_Time2 :: "Time2 \<Rightarrow> Time2 \<Rightarrow> bool"
+where
+	"eq_Time2 dummy0   dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `eq_Time2` specification.\<close>
+		(inv_Time2 dummy0  \<and>  inv_Time2 dummy0)  \<and> 
+		\<comment>\<open>Implicit pattern context conversion\<close>
+		(let r1 = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0); i1 = (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0); 
+			r1 = (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0); i1 = (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>2 dummy0) in 
+		\<comment>\<open>User defined body of eq_Time2.\<close>
+		((r1 = r2) \<and> (i1 = i2)))"
+
+		
+lemmas inv_Time2_defs = inv_Real1_def inv_Time2_def inv_VDMNat_def inv_VDMReal_def 
+
+
+	
+	
 \<comment>\<open>VDM source: Interval = (<calculated> | <changing> | <constant> | <countdown> | <fixed> | <triggered> | <tunable>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 46:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 65:5\<close>
 datatype Interval = U_calculated  | 
 		 U_changing  | 
 		 U_constant  | 
@@ -80,7 +156,7 @@ datatype Interval = U_calculated  |
 \<comment>\<open>VDM source: inv_Interval: (Interval +> bool)
 	inv_Interval(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 46:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 65:5\<close>
 definition
 	inv_Interval :: "Interval \<Rightarrow> bool"
 where
@@ -94,7 +170,7 @@ lemmas inv_Interval_defs = inv_Interval_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: FMUMode = (<DONE> | <EVENT> | <INIT> | <STEP>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 67:5\<close>
 datatype FMUMode = U_DONE  | 
 		 U_EVENT  | 
 		 U_INIT  | 
@@ -104,7 +180,7 @@ datatype FMUMode = U_DONE  |
 \<comment>\<open>VDM source: inv_FMUMode: (FMUMode +> bool)
 	inv_FMUMode(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 67:5\<close>
 definition
 	inv_FMUMode :: "FMUMode \<Rightarrow> bool"
 where
@@ -119,7 +195,7 @@ lemmas inv_FMUMode_defs = inv_FMUMode_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: Contract = (<delayed> | <none> | <reactive>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 69:5\<close>
 datatype Contract = U_delayed  | 
 		 U_none  | 
 		 U_reactive 
@@ -128,7 +204,7 @@ datatype Contract = U_delayed  |
 \<comment>\<open>VDM source: inv_Contract: (Contract +> bool)
 	inv_Contract(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 69:5\<close>
 definition
 	inv_Contract :: "Contract \<Rightarrow> bool"
 where
@@ -142,7 +218,7 @@ lemmas inv_Contract_defs = inv_Contract_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: RealNaN = (<NaN> | real)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 71:5\<close>
 datatype RealNaN = U_NaN  | 
 		 U_VDMReal "VDMReal"
 	
@@ -150,7 +226,7 @@ datatype RealNaN = U_NaN  |
 \<comment>\<open>VDM source: inv_RealNaN: (RealNaN +> bool)
 	inv_RealNaN(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 71:5\<close>
 definition
 	inv_RealNaN :: "RealNaN \<Rightarrow> bool"
 where
@@ -168,7 +244,7 @@ lemmas inv_RealNaN_defs = inv_RealNaN_def inv_True_def inv_VDMReal_def
 	
 	
 \<comment>\<open>VDM source: PortType = (<continous> | <discrete>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 73:5\<close>
 datatype PortType = U_continous  | 
 		 U_discrete 
 	
@@ -176,7 +252,7 @@ datatype PortType = U_continous  |
 \<comment>\<open>VDM source: inv_PortType: (PortType +> bool)
 	inv_PortType(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 73:5\<close>
 definition
 	inv_PortType :: "PortType \<Rightarrow> bool"
 where
@@ -190,7 +266,7 @@ lemmas inv_PortType_defs = inv_PortType_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: Causality = (<input> | <output>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 56:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 75:5\<close>
 datatype Causality = U_input  | 
 		 U_output 
 	
@@ -198,7 +274,7 @@ datatype Causality = U_input  |
 \<comment>\<open>VDM source: inv_Causality: (Causality +> bool)
 	inv_Causality(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 56:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 75:5\<close>
 definition
 	inv_Causality :: "Causality \<Rightarrow> bool"
 where
@@ -212,7 +288,7 @@ lemmas inv_Causality_defs = inv_Causality_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: ActionType = (<get> | <getC> | <set> | <setC> | <step>)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 60:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 79:5\<close>
 datatype ActionType = U_get  | 
 		 U_getC  | 
 		 U_set  | 
@@ -223,7 +299,7 @@ datatype ActionType = U_get  |
 \<comment>\<open>VDM source: inv_ActionType: (ActionType +> bool)
 	inv_ActionType(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 60:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 79:5\<close>
 definition
 	inv_ActionType :: "ActionType \<Rightarrow> bool"
 where
@@ -238,7 +314,7 @@ lemmas inv_ActionType_defs = inv_ActionType_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: ValueType = (bool | real)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 62:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 81:5\<close>
 datatype ValueType = U_bool "bool" | 
 		 U_VDMReal "VDMReal"
 	
@@ -246,7 +322,7 @@ datatype ValueType = U_bool "bool" |
 \<comment>\<open>VDM source: inv_ValueType: (ValueType +> bool)
 	inv_ValueType(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 62:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 81:5\<close>
 definition
 	inv_ValueType :: "ValueType \<Rightarrow> bool"
 where
@@ -261,14 +337,16 @@ lemmas inv_ValueType_defs = inv_VDMReal_def inv_ValueType_def inv_bool_def
 
 
 	
+	
 \<comment>\<open>VDM source: Name = seq1 of (char)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 87:5\<close>
 type_synonym Name = "VDMChar VDMSeq1"
+	
 
 \<comment>\<open>VDM source: inv_Name: (Name +> bool)
 	inv_Name(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 87:5\<close>
 definition
 	inv_Name :: "Name \<Rightarrow> bool"
 where
@@ -279,14 +357,17 @@ where
 lemmas inv_Name_defs = inv_Name_def inv_VDMChar_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
 
+	
+	
 \<comment>\<open>VDM source: Ref = nat\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 92:5\<close>
 type_synonym Ref = "VDMNat"
 	
+
 \<comment>\<open>VDM source: inv_Ref: (Ref +> bool)
 	inv_Ref(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 92:5\<close>
 definition
 	inv_Ref :: "Ref \<Rightarrow> bool"
 where
@@ -296,9 +377,12 @@ where
  
 lemmas inv_Ref_defs = inv_Ref_def inv_VDMNat_def 
 
+
+	
+	
 \<comment>\<open>VDM source: Action = compose Action of actionType:ActionType, fmu:Name, port:Ref end
 	ord a < b == ((a.port) < (b.port))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 67:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 98:5\<close>
 record Action = 
 	actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n :: "ActionType"
 		 
@@ -310,7 +394,7 @@ record Action =
 \<comment>\<open>VDM source: inv_Action: (Action +> bool)
 	inv_Action(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 67:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 98:5\<close>
 definition
 	inv_Action :: "Action \<Rightarrow> bool"
 where
@@ -324,7 +408,7 @@ where
 \<comment>\<open>VDM source: ord_Action: (Action * Action +> bool)
 	ord_Action(a, b) ==
 ((a.port) < (b.port))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 71:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 102:9\<close>
 definition
 	ord_Action :: "Action \<Rightarrow> Action \<Rightarrow> bool"
 where
@@ -339,20 +423,10 @@ lemmas inv_Action_defs = inv_Action_def inv_ActionType_def inv_Name_def inv_Ref_
 
 	
 	
-
-
-
-	
-	
-	
-
-
-	
-	
 \<comment>\<open>VDM source: FMURef = compose FMURef of name:Name, ref:Ref end
 	eq x = y == (((x.name) = (y.name)) and ((x.ref) = (y.ref)))
 	ord a < b == ((a.ref) < (b.ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 87:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 109:5\<close>
 record FMURef = 
 	name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Name"
 		 
@@ -362,7 +436,7 @@ record FMURef =
 \<comment>\<open>VDM source: inv_FMURef: (FMURef +> bool)
 	inv_FMURef(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 87:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 109:5\<close>
 definition
 	inv_FMURef :: "FMURef \<Rightarrow> bool"
 where
@@ -375,7 +449,7 @@ where
 \<comment>\<open>VDM source: eq_FMURef: (FMURef * FMURef +> bool)
 	eq_FMURef(x, y) ==
 (((x.name) = (y.name)) and ((x.ref) = (y.ref)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 91:8\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 113:8\<close>
 definition
 	eq_FMURef :: "FMURef \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -389,7 +463,7 @@ where
 \<comment>\<open>VDM source: ord_FMURef: (FMURef * FMURef +> bool)
 	ord_FMURef(a, b) ==
 ((a.ref) < (b.ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 90:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 112:9\<close>
 definition
 	ord_FMURef :: "FMURef \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -402,8 +476,10 @@ where
 lemmas inv_FMURef_defs = inv_FMURef_def inv_Name_def inv_Ref_def inv_VDMChar_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
 
+	
+	
 \<comment>\<open>VDM source: Value = compose Value of value:ValueType, time:Time end\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 121:5\<close>
 record Value = 
 	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueType"
 		 
@@ -413,7 +489,7 @@ record Value =
 \<comment>\<open>VDM source: inv_Value: (Value +> bool)
 	inv_Value(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 121:5\<close>
 definition
 	inv_Value :: "Value \<Rightarrow> bool"
 where
@@ -423,17 +499,19 @@ where
 		 (inv_Time (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)) ))"
  
 lemmas inv_Value_defs = inv_Time_def inv_VDMNat_def inv_VDMReal_def inv_Value_def inv_ValueType_def inv_bool_def 
+
+
 	
 	
 \<comment>\<open>VDM source: Environment = map (Ref) to (Value)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 99:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 129:5\<close>
 type_synonym Environment = "(Ref \<rightharpoonup> Value)"
 	
 
 \<comment>\<open>VDM source: inv_Environment: (Environment +> bool)
 	inv_Environment(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 99:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 129:5\<close>
 definition
 	inv_Environment :: "Environment \<Rightarrow> bool"
 where
@@ -446,19 +524,15 @@ lemmas inv_Environment_defs = inv_Environment_def inv_Map_defs inv_Ref_def inv_T
 
 	
 	
-
-
-	
-	
 \<comment>\<open>VDM source: Equation = (Environment -> Environment)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 113:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 135:5\<close>
 type_synonym Equation = "Environment \<Rightarrow> Environment"
 	
 
 \<comment>\<open>VDM source: inv_Equation: (Equation +> bool)
 	inv_Equation(dummy0) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 113:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 135:5\<close>
 definition
 	inv_Equation :: "Equation \<Rightarrow> bool"
 where
@@ -475,7 +549,7 @@ lemmas inv_Equation_defs = inv_Environment_def inv_Equation_def inv_Lambda_def i
 \<comment>\<open>VDM source: Variable = compose Variable of name:Name, ref:Ref, time:Time, causality:Causality, type:PortType, clocks:set of (Ref), dependsOn:set of (Ref), contract:Contract end
 	inv var == ((((var.causality) = <output>) => ((var.contract) = <none>)) and ((((var.causality) = <input>) => ((var.dependsOn) = {})) and (((var.type) = <continous>) => ((var.clocks) = {}))))
 	eq v1 = v2 == (((v1.name) = (v2.name)) and (((v1.ref) = (v2.ref)) and ((v1.causality) = (v2.causality))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 118:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 140:5\<close>
 record Variable = 
 	name\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e :: "Name"
 		 
@@ -497,7 +571,7 @@ record Variable =
 \<comment>\<open>VDM source: inv_Variable: (Variable +> bool)
 	inv_Variable(var) ==
 ((((var.causality) = <output>) => ((var.contract) = <none>)) and ((((var.causality) = <input>) => ((var.dependsOn) = {})) and (((var.type) = <continous>) => ((var.clocks) = {}))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 127:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 149:9\<close>
 definition
 	inv_Variable :: "Variable \<Rightarrow> bool"
 where
@@ -518,7 +592,7 @@ where
 \<comment>\<open>VDM source: eq_Variable: (Variable * Variable +> bool)
 	eq_Variable(v1, v2) ==
 (((v1.name) = (v2.name)) and (((v1.ref) = (v2.ref)) and ((v1.causality) = (v2.causality))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 131:8\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 153:8\<close>
 definition
 	eq_Variable :: "Variable \<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -535,7 +609,7 @@ lemmas inv_Variable_defs = inv_Causality_def inv_Contract_def inv_Name_def inv_P
 	
 \<comment>\<open>VDM source: TimeBasedClock = compose TimeBasedClock of name:Name, shift:real, period:real, interval:Interval, master:FMURef end
 	inv clock == (((clock.shift) >= 0.0) and (((clock.period) >= 0.0) and ((clock.interval) <> <triggered>)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 135:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 157:5\<close>
 record TimeBasedClock = 
 	name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Name"
 		 
@@ -551,7 +625,7 @@ record TimeBasedClock =
 \<comment>\<open>VDM source: inv_TimeBasedClock: (TimeBasedClock +> bool)
 	inv_TimeBasedClock(clock) ==
 (((clock.shift) >= 0.0) and (((clock.period) >= 0.0) and ((clock.interval) <> <triggered>)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 141:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 163:9\<close>
 definition
 	inv_TimeBasedClock :: "TimeBasedClock \<Rightarrow> bool"
 where
@@ -575,7 +649,7 @@ lemmas inv_TimeBasedClock_defs = inv_FMURef_def inv_Interval_def inv_Name_def in
 	inv clock == ((((clock.type) = <output>) => ((clock.interval) = <triggered>)) and (((clock.type) = <input>) => ((clock.dependsOn) = {})))
 	eq c1 = c2 == (((c1.name) = (c2.name)) and (((c1.ref) = (c2.ref)) and ((c1.type) = (c2.type))))
 	ord c1 < c2 == ((c1.ref) < (c2.ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 149:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 171:5\<close>
 record Clock = 
 	name\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k :: "Name"
 		 
@@ -593,7 +667,7 @@ record Clock =
 \<comment>\<open>VDM source: inv_Clock: (Clock +> bool)
 	inv_Clock(clock) ==
 ((((clock.type) = <output>) => ((clock.interval) = <triggered>)) and (((clock.type) = <input>) => ((clock.dependsOn) = {})))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 156:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 178:9\<close>
 definition
 	inv_Clock :: "Clock \<Rightarrow> bool"
 where
@@ -613,7 +687,7 @@ where
 \<comment>\<open>VDM source: eq_Clock: (Clock * Clock +> bool)
 	eq_Clock(c1, c2) ==
 (((c1.name) = (c2.name)) and (((c1.ref) = (c2.ref)) and ((c1.type) = (c2.type))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 160:8\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 182:8\<close>
 definition
 	eq_Clock :: "Clock \<Rightarrow> Clock \<Rightarrow> bool"
 where
@@ -628,7 +702,7 @@ where
 \<comment>\<open>VDM source: ord_Clock: (Clock * Clock +> bool)
 	ord_Clock(c1, c2) ==
 ((c1.ref) < (c2.ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 159:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 181:9\<close>
 definition
 	ord_Clock :: "Clock \<Rightarrow> Clock \<Rightarrow> bool"
 where
@@ -647,7 +721,7 @@ lemmas inv_Clock_defs = inv_Causality_def inv_Clock_def inv_Interval_def inv_Nam
 \<comment>\<open>VDM source: FMU = compose FMU of id:nat, name:Name, clocks:set of (Clock), inputs:set of (Variable), outputs:set of (Variable), mode:FMUMode, time:Time, stepped:bool, maxStep:real, env:Environment, activeClocks:set of (Ref), activeEquations:set of (Equation) end
 	inv fmu == let vars:set1 of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and ((((fmu.mode) <> <EVENT>) => (((fmu.time).i) = 0)) and (forall var in set vars & ((var.clocks) subset crefs)))))))))
 	ord fmu1 < fmu2 == ((fmu1.id) < (fmu2.id))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 168:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 190:5\<close>
 record FMU = 
 	id\<^sub>F\<^sub>M\<^sub>U :: "VDMNat"
 		 
@@ -677,7 +751,7 @@ record FMU =
 \<comment>\<open>VDM source: inv_FMU: (FMU +> bool)
 	inv_FMU(fmu) ==
 let vars:set1 of (Variable) = ((fmu.inputs) union (fmu.outputs)) in let crefs:set of (Ref) = {(c.ref) | c in set (fmu.clocks)}, vrefs:set of (Ref) = {(v.ref) | v in set vars}, refs:set of (Ref) = (crefs union vrefs) in (((fmu.maxStep) >= 0.0) and (((card refs) = ((card (fmu.clocks)) + (card vars))) and (((dom (fmu.env)) subset refs) and (((fmu.activeClocks) subset crefs) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeClocks) = {})) and ((((fmu.mode) <> <EVENT>) => ((fmu.activeEquations) = {})) and ((((fmu.mode) <> <EVENT>) => (((fmu.time).i) = 0)) and (forall var in set vars & ((var.clocks) subset crefs)))))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 181:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 203:9\<close>
 definition
 	inv_FMU :: "FMU \<Rightarrow> bool"
 where
@@ -730,7 +804,7 @@ where
 \<comment>\<open>VDM source: ord_FMU: (FMU * FMU +> bool)
 	ord_FMU(fmu1, fmu2) ==
 ((fmu1.id) < (fmu2.id))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 207:13\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 229:13\<close>
 definition
 	ord_FMU :: "FMU \<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -745,20 +819,206 @@ lemmas inv_FMU_defs = inv_Causality_def inv_Clock_def inv_Contract_def inv_Envir
 
 	
 	
-\<comment>\<open>VDM source: Machine = compose Machine of fmus:map (Name) to (FMU), timeBasedClocks:set of (TimeBasedClock), connections:map (FMURef) to (FMURef), clockConnections:map (FMURef) to (FMURef), timedClockConnections:map (Name) to (set of (FMURef)) end
-	inv m == ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let output:Variable = derefOutput(srcFMU, (srcRef.ref)), input:Variable = derefInput(trgFMU, (trgRef.ref)) in ((output.type) = (input.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <output>) and ((v.interval) = <triggered>)))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <input>) and ((v.interval) = <triggered>)))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and ((((rng (m.clockConnections)) inter (rng (m.connections))) = {}) and (((dom (m.timedClockConnections)) = {(c.name) | c in set (m.timeBasedClocks)}) and (forall t in set (m.timeBasedClocks) & (((t.master) in set (m.timedClockConnections)((t.name))) and (forall c in set (dunion {c | c in set (rng (m.timedClockConnections))}) & let clock:Clock = derefClock((m.fmus)((c.name)), (c.ref)) in (((clock.interval) <> <triggered>) and ((clock.type) = <input>)))))))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 213:5\<close>
-record Machine = 
-	fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMU)"
-		 
-		 timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "TimeBasedClock VDMSet"
-		 
-		 connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
-		 
-		 clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
-		 
-		 timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMURef VDMSet)"
+\<comment>\<open>VDM source: clock_refs: (set of (Clock) -> set of (Ref))
+	clock_refs(cs) ==
+{(c.ref) | c in set cs}
+	post ((card cs) = (card RESULT))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 233:5\<close>
+
+\<comment>\<open>VDM source: pre_clock_refs: (set of (Clock) +> bool)
+	pre_clock_refs(cs) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 233:5\<close>
+definition
+	pre_clock_refs :: "Clock VDMSet \<Rightarrow> bool"
+where
+	"pre_clock_refs cs \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_clock_refs` specification.\<close>
+		((inv_VDMSet' inv_Clock  cs))"
+
+
+\<comment>\<open>VDM source: post_clock_refs: (set of (Clock) * set of (Ref) +> bool)
+	post_clock_refs(cs, RESULT) ==
+((card cs) = (card RESULT))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 236:17\<close>
+definition
+	post_clock_refs :: "Clock VDMSet \<Rightarrow> Ref VDMSet \<Rightarrow> bool"
+where
+	"post_clock_refs cs   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_clock_refs` specification.\<close>
+		((inv_VDMSet' inv_Clock  cs)  \<and>  (inv_VDMSet' (inv_Ref) RESULT))  \<and> 
+		\<comment>\<open>User defined body of post_clock_refs.\<close>
+		((vdm_card cs) = (vdm_card RESULT))"
+
+definition
+	clock_refs :: "Clock VDMSet \<Rightarrow> Ref VDMSet"
+where
+	"clock_refs cs \<equiv> 
+	\<comment>\<open>User defined body of clock_refs.\<close>
+	{ (ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) | c .  ((c \<in>cs))  }"
+
 	
+	
+\<comment>\<open>VDM source: var_refs: (set1 of (Variable) -> set1 of (Ref))
+	var_refs(vs) ==
+{(v.ref) | v in set vs}
+	post ((card vs) = (card RESULT))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 239:5\<close>
+
+\<comment>\<open>VDM source: pre_var_refs: (set1 of (Variable) +> bool)
+	pre_var_refs(vs) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 239:5\<close>
+definition
+	pre_var_refs :: "Variable VDMSet1 \<Rightarrow> bool"
+where
+	"pre_var_refs vs \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_var_refs` specification.\<close>
+		((inv_VDMSet1' inv_Variable  vs))"
+
+
+\<comment>\<open>VDM source: post_var_refs: (set1 of (Variable) * set1 of (Ref) +> bool)
+	post_var_refs(vs, RESULT) ==
+((card vs) = (card RESULT))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 242:17\<close>
+definition
+	post_var_refs :: "Variable VDMSet1 \<Rightarrow> Ref VDMSet1 \<Rightarrow> bool"
+where
+	"post_var_refs vs   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_var_refs` specification.\<close>
+		((inv_VDMSet1' inv_Variable  vs)  \<and>  (inv_VDMSet1' (inv_Ref) RESULT))  \<and> 
+		\<comment>\<open>User defined body of post_var_refs.\<close>
+		((vdm_card vs) = (vdm_card RESULT))"
+
+definition
+	var_refs :: "Variable VDMSet1 \<Rightarrow> Ref VDMSet1"
+where
+	"var_refs vs \<equiv> 
+	\<comment>\<open>User defined body of var_refs.\<close>
+	{ (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e v) | v .  ((v \<in>vs))  }"
+
+	
+	
+\<comment>\<open>VDM source: IOLeo = compose IOLeo of LFinput:set of (Variable), LFoutput:set of (Variable) end
+	inv mk_IOLeo(LFinput, LFoutput) == ((LFinput union LFoutput) <> {})\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 246:5\<close>
+record IOLeo = 
+	LFinput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o :: "Variable VDMSet"
+		 
+		 LFoutput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o :: "Variable VDMSet"
+	
+
+\<comment>\<open>VDM source: inv_IOLeo: (IOLeo +> bool)
+	inv_IOLeo(mk_IOLeo(LFinput, LFoutput)) ==
+((LFinput union LFoutput) <> {})\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 250:9\<close>
+definition
+	inv_IOLeo :: "IOLeo \<Rightarrow> bool"
+where
+	"inv_IOLeo dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_IOLeo` specification.\<close>
+		( (((inv_VDMSet' inv_Variable  (LFinput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_VDMSet' inv_Variable  (LFoutput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o dummy0))) ))  \<and> 
+		\<comment>\<open>Implicit pattern context conversion\<close>
+		(let LFinput = (LFinput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o dummy0); LFoutput = (LFoutput\<^sub>I\<^sub>O\<^sub>L\<^sub>e\<^sub>o dummy0) in 
+		\<comment>\<open>User defined body of inv_IOLeo.\<close>
+		((LFinput \<union> LFoutput) \<noteq> {}))"
+
+		
+lemmas inv_IOLeo_defs = inv_Causality_def inv_Contract_def inv_IOLeo_def inv_Name_def inv_PortType_def inv_Ref_def inv_Time_def inv_True_def inv_VDMChar_def inv_VDMNat_def inv_VDMReal_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_Variable_def 
+
+
+	
+	
+\<comment>\<open>VDM source: FMULeo = compose FMULeo of id:nat, name:Name, clocks:set of (Clock), io:IOLeo, mode:FMUMode, time:Time, stepped:bool, maxStep:Real1, env:Environment, activeClocks:set of (Ref), activeEquations:set of (Equation) end
+	inv mk_FMULeo(id, name, clocks, io, mode, time, stepped, maxStep, env, activeClocks, activeEquations) == (((time.i) < (time.r)) and let vars:set1 of (Variable) = ((io.LFinput) union (io.LFoutput)), crefs:set of (Ref) = clock_refs(clocks), vrefs:set1 of (Ref) = var_refs(vars), refs:set1 of (Ref) = (crefs union vrefs) in (post_clock_refs(clocks, crefs) and (post_var_refs(vars, vrefs) and (((crefs inter vrefs) = {}) and (((card refs) = ((card clocks) + (card vars))) and (((dom env) subset refs) and ((activeClocks subset crefs) and (((mode <> <EVENT>) => ((activeClocks = {}) and ((activeEquations = {}) and ((time.i) = 0)))) and (((mode <> <EVENT>) => (activeEquations = {})) and (((mode <> <EVENT>) => ((time.i) = 0)) and (forall var in set vars & ((var.clocks) subset crefs))))))))))))
+	eq fmu1 = fmu2 == ((fmu1.id) = (fmu2.id))
+	ord fmu1 < fmu2 == ((fmu1.id) < (fmu2.id))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 253:5\<close>
+record FMULeo = 
+	id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "VDMNat"
+		 
+		 name\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Name"
+		 
+		 clocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Clock VDMSet"
+		 
+		 io\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "IOLeo"
+		 
+		 mode\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "FMUMode"
+		 
+		 time\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Time"
+		 
+		 stepped\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "bool"
+		 
+		 maxStep\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Real1"
+		 
+		 env\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Environment"
+		 
+		 activeClocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Ref VDMSet"
+		 
+		 activeEquations\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o :: "Equation VDMSet"
+	
+
+\<comment>\<open>VDM source: inv_FMULeo: (FMULeo +> bool)
+	inv_FMULeo(mk_FMULeo(id, name, clocks, io, mode, time, stepped, maxStep, env, activeClocks, activeEquations)) ==
+(((time.i) < (time.r)) and let vars:set1 of (Variable) = ((io.LFinput) union (io.LFoutput)), crefs:set of (Ref) = clock_refs(clocks), vrefs:set1 of (Ref) = var_refs(vars), refs:set1 of (Ref) = (crefs union vrefs) in (post_clock_refs(clocks, crefs) and (post_var_refs(vars, vrefs) and (((crefs inter vrefs) = {}) and (((card refs) = ((card clocks) + (card vars))) and (((dom env) subset refs) and ((activeClocks subset crefs) and (((mode <> <EVENT>) => ((activeClocks = {}) and ((activeEquations = {}) and ((time.i) = 0)))) and (((mode <> <EVENT>) => (activeEquations = {})) and (((mode <> <EVENT>) => ((time.i) = 0)) and (forall var in set vars & ((var.clocks) subset crefs))))))))))))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 266:9\<close>
+definition
+	inv_FMULeo :: "FMULeo \<Rightarrow> bool"
+where
+	"inv_FMULeo dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `inv_FMULeo` specification.\<close>
+		( (((inv_VDMNat (id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_Name (name\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_VDMSet' inv_Clock  (clocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 (inv_IOLeo (io\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0)) \<and> 
+		 ((inv_FMUMode (mode\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 (inv_Time (time\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0)) \<and> 
+		 ((inv_bool (stepped\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_Real1 (maxStep\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_VDMSet' (inv_Ref) (activeClocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) \<and> 
+		 ((inv_VDMSet' (inv_Equation) (activeEquations\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0))) ))  \<and> 
+		\<comment>\<open>Implicit pattern context conversion\<close>
+		(let id = (id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); name = (name\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); clocks = (clocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); io = (io\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); mode = (mode\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); time = (time\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); stepped = (stepped\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); maxStep = (maxStep\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); env = (env\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); activeClocks = (activeClocks\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0); activeEquations = (activeEquations\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o dummy0) in 
+		\<comment>\<open>User defined body of inv_FMULeo.\<close>
+		(
+		\<comment>\<open>Implicit union type parameters projection\<close>
+		()))"
+
+		
+
+\<comment>\<open>VDM source: eq_FMULeo: (FMULeo * FMULeo +> bool)
+	eq_FMULeo(fmu1, fmu2) ==
+((fmu1.id) = (fmu2.id))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 304:12\<close>
+definition
+	eq_FMULeo :: "FMULeo \<Rightarrow> FMULeo \<Rightarrow> bool"
+where
+	"eq_FMULeo fmu1   fmu2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `eq_FMULeo` specification.\<close>
+		(inv_FMULeo fmu1  \<and>  inv_FMULeo fmu2)  \<and> 
+		\<comment>\<open>User defined body of eq_FMULeo.\<close>
+		((id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o fmu1) = (id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o fmu2))"
+
+		
+
+\<comment>\<open>VDM source: ord_FMULeo: (FMULeo * FMULeo +> bool)
+	ord_FMULeo(fmu1, fmu2) ==
+((fmu1.id) < (fmu2.id))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 306:13\<close>
+definition
+	ord_FMULeo :: "FMULeo \<Rightarrow> FMULeo \<Rightarrow> bool"
+where
+	"ord_FMULeo fmu1   fmu2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `ord_FMULeo` specification.\<close>
+		(inv_FMULeo fmu1  \<and>  inv_FMULeo fmu2)  \<and> 
+		\<comment>\<open>User defined body of ord_FMULeo.\<close>
+		((id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o fmu1) < (id\<^sub>F\<^sub>M\<^sub>U\<^sub>L\<^sub>e\<^sub>o fmu2))"
+
+		
+lemmas inv_FMULeo_defs = inv_Causality_def inv_Clock_def inv_Contract_def inv_Environment_def inv_Equation_def inv_FMULeo_def inv_FMUMode_def inv_IOLeo_def inv_Interval_def inv_Lambda_def inv_Map_defs inv_Name_def inv_PortType_def inv_Real1_def inv_Ref_def inv_Time_def inv_True_def inv_VDMChar_def inv_VDMNat_def inv_VDMReal_def inv_VDMSeq1'_def inv_VDMSeq1'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_Value_def inv_ValueType_def inv_Variable_def inv_bool_def 
+
 
 	
 	
@@ -766,12 +1026,12 @@ record Machine =
 	derefClock(fmu, ref) ==
 (iota c in set (fmu.clocks) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 313:5\<close>
 
 \<comment>\<open>VDM source: pre_derefClock: (FMU * Ref +> bool)
 	pre_derefClock(fmu, ref) ==
 (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 350:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 316:9\<close>
 definition
 	pre_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -785,7 +1045,7 @@ where
 \<comment>\<open>VDM source: post_derefClock: (FMU * Ref * Clock +> bool)
 	post_derefClock(fmu, ref, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 313:5\<close>
 definition
 	post_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> Clock \<Rightarrow> bool"
 where
@@ -806,12 +1066,12 @@ where
 	derefInput(fmu, ref) ==
 (iota c in set (fmu.inputs) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 321:5\<close>
 
 \<comment>\<open>VDM source: pre_derefInput: (FMU * Ref +> bool)
 	pre_derefInput(fmu, ref) ==
 (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 358:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 324:9\<close>
 definition
 	pre_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -825,7 +1085,7 @@ where
 \<comment>\<open>VDM source: post_derefInput: (FMU * Ref * Variable +> bool)
 	post_derefInput(fmu, ref, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 321:5\<close>
 definition
 	post_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -846,12 +1106,12 @@ where
 	derefOutput(fmu, ref) ==
 (iota c in set (fmu.outputs) & ((c.ref) = ref))
 	pre (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 329:5\<close>
 
 \<comment>\<open>VDM source: pre_derefOutput: (FMU * Ref +> bool)
 	pre_derefOutput(fmu, ref) ==
 (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 366:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 332:9\<close>
 definition
 	pre_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -865,7 +1125,7 @@ where
 \<comment>\<open>VDM source: post_derefOutput: (FMU * Ref * Variable +> bool)
 	post_derefOutput(fmu, ref, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 329:5\<close>
 definition
 	post_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
 where
@@ -880,10 +1140,27 @@ where
 	\<comment>\<open>User defined body of derefOutput.\<close>
 	(THE c. (((c \<in>(outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref)))"
 
+	
+	
+\<comment>\<open>VDM source: Machine = compose Machine of fmus:map (Name) to (FMU), timeBasedClocks:set of (TimeBasedClock), connections:map (FMURef) to (FMURef), clockConnections:map (FMURef) to (FMURef), timedClockConnections:map (Name) to (set of (FMURef)) end
+	inv m == ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and (pre_derefOutput(srcFMU, (srcRef.ref)) and let output:Variable = derefOutput(srcFMU, (srcRef.ref)), input:Variable = derefInput(trgFMU, (trgRef.ref)) in ((output.type) = (input.type)))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <output>) and ((v.interval) = <triggered>)))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <input>) and ((v.interval) = <triggered>)))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and ((((rng (m.clockConnections)) inter (rng (m.connections))) = {}) and (((dom (m.timedClockConnections)) = {(c.name) | c in set (m.timeBasedClocks)}) and (forall t in set (m.timeBasedClocks) & (((t.master) in set (m.timedClockConnections)((t.name))) and (forall c in set (dunion {c | c in set (rng (m.timedClockConnections))}) & let clock:Clock = derefClock((m.fmus)((c.name)), (c.ref)) in (((clock.interval) <> <triggered>) and ((clock.type) = <input>)))))))))))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 339:5\<close>
+record Machine = 
+	fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMU)"
+		 
+		 timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "TimeBasedClock VDMSet"
+		 
+		 connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
+		 
+		 clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(FMURef \<rightharpoonup> FMURef)"
+		 
+		 timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMURef VDMSet)"
+	
+
 \<comment>\<open>VDM source: inv_Machine: (Machine +> bool)
 	inv_Machine(m) ==
-((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let output:Variable = derefOutput(srcFMU, (srcRef.ref)), input:Variable = derefInput(trgFMU, (trgRef.ref)) in ((output.type) = (input.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <output>) and ((v.interval) = <triggered>)))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <input>) and ((v.interval) = <triggered>)))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and ((((rng (m.clockConnections)) inter (rng (m.connections))) = {}) and (((dom (m.timedClockConnections)) = {(c.name) | c in set (m.timeBasedClocks)}) and (forall t in set (m.timeBasedClocks) & (((t.master) in set (m.timedClockConnections)((t.name))) and (forall c in set (dunion {c | c in set (rng (m.timedClockConnections))}) & let clock:Clock = derefClock((m.fmus)((c.name)), (c.ref)) in (((clock.interval) <> <triggered>) and ((clock.type) = <input>)))))))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 219:9\<close>
+((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and (pre_derefOutput(srcFMU, (srcRef.ref)) and let output:Variable = derefOutput(srcFMU, (srcRef.ref)), input:Variable = derefInput(trgFMU, (trgRef.ref)) in ((output.type) = (input.type)))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <output>) and ((v.interval) = <triggered>)))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <input>) and ((v.interval) = <triggered>)))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and ((((rng (m.clockConnections)) inter (rng (m.connections))) = {}) and (((dom (m.timedClockConnections)) = {(c.name) | c in set (m.timeBasedClocks)}) and (forall t in set (m.timeBasedClocks) & (((t.master) in set (m.timedClockConnections)((t.name))) and (forall c in set (dunion {c | c in set (rng (m.timedClockConnections))}) & let clock:Clock = derefClock((m.fmus)((c.name)), (c.ref)) in (((clock.interval) <> <triggered>) and ((clock.type) = <input>)))))))))))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 345:9\<close>
 definition
 	inv_Machine :: "Machine \<Rightarrow> bool"
 where
@@ -893,8 +1170,7 @@ where
 		 ((inv_VDMSet' inv_TimeBasedClock  (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
-		 ((inv_Map (inv_Name) (inv_VDMSet' inv_FMURef ) (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) )
-      )  \<and> 
+		 ((inv_Map (inv_Name) (inv_VDMSet' inv_FMURef ) (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_Machine.\<close>
 		((\<forall> srcRef \<in> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))  . (((name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f srcRef) \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> (
 		let 
@@ -911,7 +1187,7 @@ where
 (trgFMU::FMU) = (the(((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f trgRef))))
 		in
 			(if (inv_FMU trgFMU) then
-			((\<exists> v \<in> (inputs\<^sub>F\<^sub>M\<^sub>U trgFMU)  . ((ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f trgRef) = (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e v))) \<and> (
+			((\<exists> v \<in> (inputs\<^sub>F\<^sub>M\<^sub>U trgFMU)  . ((ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f trgRef) = (ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e v))) \<and> ((pre_derefOutput srcFMU   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f srcRef)) \<and> (
 		let 
 (output::Variable) = (derefOutput srcFMU   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f srcRef))
 		;
@@ -925,7 +1201,7 @@ where
 		 else
 			undefined
 		)
-		))
+		)))
 		 else
 			undefined
 		)
@@ -959,9 +1235,9 @@ where
 		 else
 			undefined
 		)
-		))) \<and> ((((dom (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> ((((rng (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (rng (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> (((dom (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) = { (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) | c .  ((c \<in>(timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)))  }) \<and> (\<forall> t \<in> (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)  . (((master\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t) \<in> the((timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t))) \<and> (\<forall> c \<in> (\<Union> { c .   ((c \<in>(rng (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))))  })  . (
+		))) \<and> ((((dom (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> ((((rng (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (rng (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> (((dom (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) = { (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) | c .  ((c \<in>(timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)))  }) \<and> (\<forall> t \<in> (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)  . (((master\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t) \<in> ((timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t))) \<and> (\<forall> c \<in> (\<Union> { c .   ((c \<in>(rng (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))))  })  . (
 		let 
-(clock::Clock) = (derefClock (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c)))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))
+(clock::Clock) = (derefClock ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))
 		in
 			(if (inv_Clock clock) then
 			(((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock) \<noteq> Interval.U_triggered ) \<and> ((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock) = Causality.U_input ))
@@ -980,12 +1256,12 @@ lemmas inv_Machine_defs = inv_Causality_def inv_Clock_def inv_Contract_def inv_E
 mu(fmu, env |-> ((fmu.env) ++ {ref |-> val}))
 	pre preSet(fmu, ref)
 	post (((RESULT.mode) = (fmu.mode)) and (((RESULT.time) = (fmu.time)) and ((RESULT.inputs) = (fmu.inputs))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 265:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 395:5\<close>
 
 \<comment>\<open>VDM source: pre_set_m: (FMU * Ref * Value +> bool)
 	pre_set_m(fmu, ref, val) ==
 preSet(fmu, ref)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 269:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 399:9\<close>
 definition
 	pre_set_m :: "FMU \<Rightarrow> Ref \<Rightarrow> Value \<Rightarrow> bool"
 where
@@ -999,7 +1275,7 @@ where
 \<comment>\<open>VDM source: post_set_m: (FMU * Ref * Value * FMU +> bool)
 	post_set_m(fmu, ref, val, RESULT) ==
 (((RESULT.mode) = (fmu.mode)) and (((RESULT.time) = (fmu.time)) and ((RESULT.inputs) = (fmu.inputs))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 271:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 401:5\<close>
 definition
 	post_set_m :: "FMU \<Rightarrow> Ref \<Rightarrow> Value \<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -1024,12 +1300,12 @@ where
 mk_(fmu, (fmu.env)(ref))
 	pre preGet(fmu, ref)
 	post (((fmu.mode) <> <EVENT>) => fmusNotAffected({(RESULT.#1)}, {fmu}))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 274:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 404:5\<close>
 
 \<comment>\<open>VDM source: pre_get_m: (FMU * Ref +> bool)
 	pre_get_m(fmu, ref) ==
 preGet(fmu, ref)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 278:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 408:9\<close>
 definition
 	pre_get_m :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1043,7 +1319,7 @@ where
 \<comment>\<open>VDM source: post_get_m: (FMU * Ref * (FMU * Value) +> bool)
 	post_get_m(fmu, ref, RESULT) ==
 (((fmu.mode) <> <EVENT>) => fmusNotAffected({(RESULT.#1)}, {fmu}))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 279:30\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 409:30\<close>
 definition
 	post_get_m :: "FMU \<Rightarrow> Ref \<Rightarrow> (FMU \<times> Value) \<Rightarrow> bool"
 where
@@ -1072,12 +1348,12 @@ then ((fmu.activeClocks) union {ref})
 else ((fmu.activeClocks) \ {ref})))
 	pre preSetC(fmu, ref, val)
 	post (val <=> (ref in set (RESULT.activeClocks)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 281:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 411:5\<close>
 
 \<comment>\<open>VDM source: pre_set_cm: (FMU * Ref * bool +> bool)
 	pre_set_cm(fmu, ref, val) ==
 preSetC(fmu, ref, val)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 286:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 416:9\<close>
 definition
 	pre_set_cm :: "FMU \<Rightarrow> Ref \<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -1091,7 +1367,7 @@ where
 \<comment>\<open>VDM source: post_set_cm: (FMU * Ref * bool * FMU +> bool)
 	post_set_cm(fmu, ref, val, RESULT) ==
 (val <=> (ref in set (RESULT.activeClocks)))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 287:14\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 417:14\<close>
 definition
 	post_set_cm :: "FMU \<Rightarrow> Ref \<Rightarrow> bool \<Rightarrow> FMU \<Rightarrow> bool"
 where
@@ -1118,12 +1394,12 @@ where
 	get_cm(fmu, ref) ==
 mk_(fmu, (fmu.env)(ref))
 	pre preGetC(fmu, ref)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 289:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 419:5\<close>
 
 \<comment>\<open>VDM source: pre_get_cm: (FMU * Ref +> bool)
 	pre_get_cm(fmu, ref) ==
 preGetC(fmu, ref)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 292:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 422:9\<close>
 definition
 	pre_get_cm :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1137,7 +1413,7 @@ where
 \<comment>\<open>VDM source: post_get_cm: (FMU * Ref * (FMU * Value) +> bool)
 	post_get_cm(fmu, ref, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 289:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 419:5\<close>
 definition
 	post_get_cm :: "FMU \<Rightarrow> Ref \<Rightarrow> (FMU \<times> Value) \<Rightarrow> bool"
 where
@@ -1164,12 +1440,12 @@ then mk_((fmu.maxStep), true)
 else mk_(step, false)) in let newTime:Time = mk_Time((((fmu.time).r) + stepTaken), ((fmu.time).i)) in let updatedFMU:FMU = mu(fmu, time |-> newTime, env |-> updateOutputs(fmu, newTime), stepped |-> true) in mk_(updatedFMU, stepTaken, eventTriggered)
 	pre preStepT(fmu, step)
 	post postStepT((RESULT.#1), (RESULT.#2), (RESULT.#3), fmu, step)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 294:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 424:5\<close>
 
 \<comment>\<open>VDM source: pre_step_tm: (FMU * real +> bool)
 	pre_step_tm(fmu, step) ==
 preStepT(fmu, step)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 307:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 437:9\<close>
 definition
 	pre_step_tm :: "FMU \<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -1183,7 +1459,7 @@ where
 \<comment>\<open>VDM source: post_step_tm: (FMU * real * (FMU * real * bool) +> bool)
 	post_step_tm(fmu, step, RESULT) ==
 postStepT((RESULT.#1), (RESULT.#2), (RESULT.#3), fmu, step)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 308:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 438:10\<close>
 definition
 	post_step_tm :: "FMU \<Rightarrow> VDMReal \<Rightarrow> (FMU \<times> VDMReal \<times> bool) \<Rightarrow> bool"
 where
@@ -1250,12 +1526,12 @@ where
 let updatedFMU:FMU = mu(fmu, time |-> mk_Time(((fmu.time).r), (((fmu.time).i) + 1)), activeClocks |-> {}) in mk_(updatedFMU, false)
 	pre preStepE(fmu)
 	post postStepE((RESULT.#1), fmu, (RESULT.#2))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 311:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 441:5\<close>
 
 \<comment>\<open>VDM source: pre_step_e: (FMU +> bool)
 	pre_step_e(fmu) ==
 preStepE(fmu)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 318:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 448:9\<close>
 definition
 	pre_step_e :: "FMU \<Rightarrow> bool"
 where
@@ -1269,7 +1545,7 @@ where
 \<comment>\<open>VDM source: post_step_e: (FMU * (FMU * bool) +> bool)
 	post_step_e(fmu, RESULT) ==
 postStepE((RESULT.#1), fmu, (RESULT.#2))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 319:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 449:10\<close>
 definition
 	post_step_e :: "FMU \<Rightarrow> (FMU \<times> bool) \<Rightarrow> bool"
 where
@@ -1304,12 +1580,12 @@ where
 	next_tm(fmu, ref) ==
 not yet specified
 	pre (exists [v in set (fmu.clocks)] & (((v.ref) = ref) and (((v.type) = <input>) and ((v.interval) in set {<tunable>, <changing>, <countdown>}))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 325:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 455:5\<close>
 
 \<comment>\<open>VDM source: pre_next_tm: (FMU * Ref +> bool)
 	pre_next_tm(fmu, ref) ==
 (exists [v in set (fmu.clocks)] & (((v.ref) = ref) and (((v.type) = <input>) and ((v.interval) in set {<tunable>, <changing>, <countdown>}))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 328:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 458:9\<close>
 definition
 	pre_next_tm :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
 where
@@ -1323,7 +1599,7 @@ where
 \<comment>\<open>VDM source: post_next_tm: (FMU * Ref * RealNaN +> bool)
 	post_next_tm(fmu, ref, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 325:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 455:5\<close>
 definition
 	post_next_tm :: "FMU \<Rightarrow> Ref \<Rightarrow> RealNaN \<Rightarrow> bool"
 where
@@ -1343,12 +1619,12 @@ where
 \<comment>\<open>VDM source: updateOutputs: (FMU * Time -> Environment)
 	updateOutputs(fmu, time) ==
 let outputRef:set of (Ref) = {(o.ref) | o in set (fmu.outputs)} in {oValue |-> calculate(oValue, (fmu.env), time) | oValue in set (dom (fmu.env)) & (oValue in set outputRef)}\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 335:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 465:5\<close>
 
 \<comment>\<open>VDM source: pre_updateOutputs: (FMU * Time +> bool)
 	pre_updateOutputs(fmu, time) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 335:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 465:5\<close>
 definition
 	pre_updateOutputs :: "FMU \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -1360,7 +1636,7 @@ where
 \<comment>\<open>VDM source: post_updateOutputs: (FMU * Time * Environment +> bool)
 	post_updateOutputs(fmu, time, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 335:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 465:5\<close>
 definition
 	post_updateOutputs :: "FMU \<Rightarrow> Time \<Rightarrow> Environment \<Rightarrow> bool"
 where
@@ -1516,12 +1792,12 @@ where
 \<comment>\<open>VDM source: calculate: (Ref * Environment * Time -> Value)
 	calculate(ref, env, time) ==
 mk_Value((env(ref).value), time)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 340:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 470:5\<close>
 
 \<comment>\<open>VDM source: pre_calculate: (Ref * Environment * Time +> bool)
 	pre_calculate(ref, env, time) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 340:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 470:5\<close>
 definition
 	pre_calculate :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -1533,7 +1809,7 @@ where
 \<comment>\<open>VDM source: post_calculate: (Ref * Environment * Time * Value +> bool)
 	post_calculate(ref, env, time, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 340:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 470:5\<close>
 definition
 	post_calculate :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> Value \<Rightarrow> bool"
 where
@@ -1547,7 +1823,6 @@ where
 	"calculate ref   env   time \<equiv> 
 	\<comment>\<open>User defined body of calculate.\<close>
 	\<lparr>value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (the((env ref)))), time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = time\<rparr>"
-
 
 	
 	
@@ -1565,12 +1840,12 @@ else ((I.activeEquations) \ activatedVariables)), readyEquations |-> (if val
 then ((I.readyEquations) \ activatedVariables)
 else (I.readyEquations)))
 	post let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((val => (((I.activeClocks) subset (RESULT.activeClocks)) and (((RESULT.readyClocks) psubset (I.readyClocks)) and (((RESULT.inactiveClocks) psubset (I.inactiveClocks)) and (fmuRef in set (RESULT.activeClocks)))))) and ((not val) => (fmuRef in set (RESULT.inactiveClocks))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 372:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 480:5\<close>
 
 \<comment>\<open>VDM source: pre_updateEnvironmentClock: (Importer * FMU * Ref * bool +> bool)
 	pre_updateEnvironmentClock(I, fmu, clock, val) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 372:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 480:5\<close>
 definition
 	pre_updateEnvironmentClock :: "Importer \<Rightarrow> FMU \<Rightarrow> Ref \<Rightarrow> bool \<Rightarrow> bool"
 where
@@ -1582,7 +1857,7 @@ where
 \<comment>\<open>VDM source: post_updateEnvironmentClock: (Importer * FMU * Ref * bool * Importer +> bool)
 	post_updateEnvironmentClock(I, fmu, clock, val, RESULT) ==
 let fmuRef:FMURef = mk_FMURef((fmu.name), clock) in ((val => (((I.activeClocks) subset (RESULT.activeClocks)) and (((RESULT.readyClocks) psubset (I.readyClocks)) and (((RESULT.inactiveClocks) psubset (I.inactiveClocks)) and (fmuRef in set (RESULT.activeClocks)))))) and ((not val) => (fmuRef in set (RESULT.inactiveClocks))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 384:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 492:10\<close>
 definition
 	post_updateEnvironmentClock :: "Importer \<Rightarrow> FMU \<Rightarrow> Ref \<Rightarrow> bool \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1649,12 +1924,12 @@ where
 let I1:Importer = setPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
 	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and preSetI(I, fmu, (equation.ref))))
 	post let newFMU:FMU = ((RESULT.scenario).fmus)((equation.name)), oldFMU:FMU = ((I.scenario).fmus)((equation.name)) in (((newFMU.mode) = (oldFMU.mode)) and (((newFMU.time) = (oldFMU.time)) and (((newFMU.outputs) = (oldFMU.outputs)) and (fmusNotAffected((rng ({(equation.name)} <-: ((I.scenario).fmus))), (rng ({(equation.name)} <-: ((RESULT.scenario).fmus)))) and (equation in set (RESULT.calculatedEquations))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 396:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 504:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateInput: (Importer * FMURef +> bool)
 	pre_calculateInput(I, equation) ==
 let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and preSetI(I, fmu, (equation.ref))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 402:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 510:9\<close>
 definition
 	pre_calculateInput :: "Importer \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -1677,7 +1952,7 @@ where
 \<comment>\<open>VDM source: post_calculateInput: (Importer * FMURef * Importer +> bool)
 	post_calculateInput(I, equation, RESULT) ==
 let newFMU:FMU = ((RESULT.scenario).fmus)((equation.name)), oldFMU:FMU = ((I.scenario).fmus)((equation.name)) in (((newFMU.mode) = (oldFMU.mode)) and (((newFMU.time) = (oldFMU.time)) and (((newFMU.outputs) = (oldFMU.outputs)) and (fmusNotAffected((rng ({(equation.name)} <-: ((I.scenario).fmus))), (rng ({(equation.name)} <-: ((RESULT.scenario).fmus)))) and (equation in set (RESULT.calculatedEquations))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 407:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 515:5\<close>
 definition
 	post_calculateInput :: "Importer \<Rightarrow> FMURef \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1725,12 +2000,12 @@ where
 let I1:Importer = getPort(I, equation) in updateEnvironmentEquation(I1, ((I.scenario).fmus)((equation.name)), equation)
 	pre let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and preGetI(I, fmu, (equation.ref))))
 	post postVaraibleCalculation(equation, I, RESULT)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 420:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 528:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateOutput: (Importer * FMURef +> bool)
 	pre_calculateOutput(I, equation) ==
 let fmu:FMU = ((I.scenario).fmus)((equation.name)) in ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and (((fmu.mode) = <EVENT>) and preGetI(I, fmu, (equation.ref))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 426:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 534:9\<close>
 definition
 	pre_calculateOutput :: "Importer \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -1753,7 +2028,7 @@ where
 \<comment>\<open>VDM source: post_calculateOutput: (Importer * FMURef * Importer +> bool)
 	post_calculateOutput(I, equation, RESULT) ==
 postVaraibleCalculation(equation, I, RESULT)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 430:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 538:10\<close>
 definition
 	post_calculateOutput :: "Importer \<Rightarrow> FMURef \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1786,12 +2061,12 @@ where
 let triggeredClocks:set of (Clock) = {clock | clock in set (fmu.clocks) & ((equation.ref) in set (clock.dependsOn))} in let triggeredInputs:set of (FMURef) = {mk_FMURef((equation.name), (inputClock.ref)) | inputClock in set triggeredClocks & ((inputClock.type) <> <input>)}, triggeredOutputs:set of (FMURef) = {mk_FMURef((equation.name), (outputClock.ref)) | outputClock in set triggeredClocks & ((outputClock.type) <> <output>)} in mu(I, scenario |-> mu((I.scenario), fmus |-> (((I.scenario).fmus) ++ {(fmu.name) |-> fmu})), calculatedEquations |-> ((I.calculatedEquations) union {equation}), relevantInputClocks |-> ((I.relevantInputClocks) union triggeredInputs), relevantOutputClocks |-> ((I.relevantOutputClocks) union triggeredOutputs))
 	pre ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((fmu.mode) = <EVENT>))
 	post ((equation in set (RESULT.calculatedEquations)) and (((I.relevantInputClocks) subset (RESULT.relevantInputClocks)) and (((I.relevantOutputClocks) subset (RESULT.relevantOutputClocks)) and fmusNotAffected((rng ({(fmu.name)} <-: ((I.scenario).fmus))), (rng ({(fmu.name)} <-: ((RESULT.scenario).fmus)))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 432:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 540:5\<close>
 
 \<comment>\<open>VDM source: pre_updateEnvironmentEquation: (Importer * FMU * FMURef +> bool)
 	pre_updateEnvironmentEquation(I, fmu, equation) ==
 ((equation in set ((I.activeEquations) \ (I.calculatedEquations))) and ((fmu.mode) = <EVENT>))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 445:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 553:9\<close>
 definition
 	pre_updateEnvironmentEquation :: "Importer \<Rightarrow> FMU \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -1805,7 +2080,7 @@ where
 \<comment>\<open>VDM source: post_updateEnvironmentEquation: (Importer * FMU * FMURef * Importer +> bool)
 	post_updateEnvironmentEquation(I, fmu, equation, RESULT) ==
 ((equation in set (RESULT.calculatedEquations)) and (((I.relevantInputClocks) subset (RESULT.relevantInputClocks)) and (((I.relevantOutputClocks) subset (RESULT.relevantOutputClocks)) and fmusNotAffected((rng ({(fmu.name)} <-: ((I.scenario).fmus))), (rng ({(fmu.name)} <-: ((RESULT.scenario).fmus)))))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 447:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 555:9\<close>
 definition
 	post_updateEnvironmentEquation :: "Importer \<Rightarrow> FMU \<Rightarrow> FMURef \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1852,12 +2127,12 @@ where
 let connections:map (FMURef) to (FMURef) = ((I.scenario).connections) in let outputs:set of (Action) = {mk_Action(<get>, (output.name), (output.ref)) | output in set (dom connections)}, inputs:set of (Action) = {mk_Action(<set>, (input.name), (input.ref)) | input in set (rng connections)} in runAlgorithm(I, [act | act in set (outputs union inputs)])
 	pre preInitialization(I)
 	post postInitialization(RESULT)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 456:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 564:5\<close>
 
 \<comment>\<open>VDM source: pre_initializeData: (Importer +> bool)
 	pre_initializeData(I) ==
 preInitialization(I)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 462:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 570:9\<close>
 definition
 	pre_initializeData :: "Importer \<Rightarrow> bool"
 where
@@ -1871,7 +2146,7 @@ where
 \<comment>\<open>VDM source: post_initializeData: (Importer * Importer +> bool)
 	post_initializeData(I, RESULT) ==
 postInitialization(RESULT)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 463:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 571:10\<close>
 definition
 	post_initializeData :: "Importer \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -1917,12 +2192,12 @@ where
 \<comment>\<open>VDM source: tickingClocks: (Importer -> (Importer * set of (FMURef)))
 	tickingClocks(I) ==
 let clocksToTick:set of (Name) = (dom ((I.schedule) :> {((I.time).r)})) in let affectededInputs:set of (FMURef) = (dunion (rng (clocksToTick <: ((I.scenario).timedClockConnections)))) in let updatedSchedule:map (Name) to (real) = {(c.name) |-> ((c.period) + ((I.time).r)) | c in set ((I.scenario).timeBasedClocks) & ((c.name) in set clocksToTick)} in let I1:Importer = mu(I, relevantInputClocks |-> affectededInputs, schedule |-> ((I.schedule) ++ updatedSchedule)) in mk_(I1, affectededInputs)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 468:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 576:5\<close>
 
 \<comment>\<open>VDM source: pre_tickingClocks: (Importer +> bool)
 	pre_tickingClocks(I) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 468:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 576:5\<close>
 definition
 	pre_tickingClocks :: "Importer \<Rightarrow> bool"
 where
@@ -1934,7 +2209,7 @@ where
 \<comment>\<open>VDM source: post_tickingClocks: (Importer * (Importer * set of (FMURef)) +> bool)
 	post_tickingClocks(I, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 468:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 576:5\<close>
 definition
 	post_tickingClocks :: "Importer \<Rightarrow> (Importer \<times> FMURef VDMSet) \<Rightarrow> bool"
 where
@@ -2051,12 +2326,12 @@ else calculateRelevantFMUs(M, (relevantFMUs union addedFMUs), (notRelevantFMUs \
 	pre ((relevantFMUs inter notRelevantFMUs) = {})
 	post ((RESULT subset (dom (M.fmus))) and let notAdded:set of (Name) = ((dom (M.fmus)) \ RESULT) in (not (exists [srcClock in set (dom (M.clockConnections))] & (((srcClock.name) in set RESULT) and (((M.clockConnections)(srcClock).name) in set notAdded)))))
 	measure (card notRelevantFMUs)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 489:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 597:5\<close>
 
 \<comment>\<open>VDM source: pre_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) +> bool)
 	pre_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs) ==
 ((relevantFMUs inter notRelevantFMUs) = {})\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 497:48\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 605:48\<close>
 definition
 	pre_calculateRelevantFMUs :: "Machine \<Rightarrow> Name VDMSet \<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -2070,7 +2345,7 @@ where
 \<comment>\<open>VDM source: post_calculateRelevantFMUs: (Machine * set of (Name) * set of (Name) * set of (Name) +> bool)
 	post_calculateRelevantFMUs(M, relevantFMUs, notRelevantFMUs, RESULT) ==
 ((RESULT subset (dom (M.fmus))) and let notAdded:set of (Name) = ((dom (M.fmus)) \ RESULT) in (not (exists [srcClock in set (dom (M.clockConnections))] & (((srcClock.name) in set RESULT) and (((M.clockConnections)(srcClock).name) in set notAdded)))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 499:13\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 607:13\<close>
 definition
 	post_calculateRelevantFMUs :: "Machine \<Rightarrow> Name VDMSet \<Rightarrow> Name VDMSet \<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -2119,12 +2394,12 @@ else clockedSimulationAlgorithm(I, clocks))
 	pre preEventMode(I, clocks)
 	post postEventMode(RESULT)
 	measure not yet specified\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 510:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 618:5\<close>
 
 \<comment>\<open>VDM source: pre_clockedSimulationAlgorithm: (Importer * set of (FMURef) +> bool)
 	pre_clockedSimulationAlgorithm(I, clocks) ==
 preEventMode(I, clocks)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 545:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 653:9\<close>
 definition
 	pre_clockedSimulationAlgorithm :: "Importer \<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -2138,7 +2413,7 @@ where
 \<comment>\<open>VDM source: post_clockedSimulationAlgorithm: (Importer * set of (FMURef) * Importer +> bool)
 	post_clockedSimulationAlgorithm(I, clocks, RESULT) ==
 postEventMode(RESULT)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 546:10\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 654:10\<close>
 definition
 	post_clockedSimulationAlgorithm :: "Importer \<Rightarrow> FMURef VDMSet \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2212,12 +2487,12 @@ where
 let I1:Importer = solveSystemOfEquations(I) in let I2:Importer = updateDiscreteState(I1, relevantFMUs) in I2
 	pre let fmus:set of (FMU) = (rng (relevantFMUs <: ((I.scenario).fmus))) in (fmusSynchronized(fmus) and assertFMUMode(fmus, {<EVENT>}))
 	post let newfmus:set of (FMU) = (rng (relevantFMUs <: ((RESULT.scenario).fmus))), oldfmus:set of (FMU) = (rng (relevantFMUs <: ((I.scenario).fmus))) in eventSolved(RESULT, newfmus, oldfmus)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 551:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 659:1\<close>
 
 \<comment>\<open>VDM source: pre_eventIteration: (Importer * set of (Name) +> bool)
 	pre_eventIteration(I, relevantFMUs) ==
 let fmus:set of (FMU) = (rng (relevantFMUs <: ((I.scenario).fmus))) in (fmusSynchronized(fmus) and assertFMUMode(fmus, {<EVENT>}))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 580:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 688:9\<close>
 definition
 	pre_eventIteration :: "Importer \<Rightarrow> Name VDMSet \<Rightarrow> bool"
 where
@@ -2240,7 +2515,7 @@ where
 \<comment>\<open>VDM source: post_eventIteration: (Importer * set of (Name) * Importer +> bool)
 	post_eventIteration(I, relevantFMUs, RESULT) ==
 let newfmus:set of (FMU) = (rng (relevantFMUs <: ((RESULT.scenario).fmus))), oldfmus:set of (FMU) = (rng (relevantFMUs <: ((I.scenario).fmus))) in eventSolved(RESULT, newfmus, oldfmus)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 584:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 692:9\<close>
 definition
 	post_eventIteration :: "Importer \<Rightarrow> Name VDMSet \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2298,12 +2573,12 @@ then I
 else let action:Action = selectAction(I) in solveSystemOfEquations(runAction(I, action)))
 	post (((RESULT.activeEquations) \ (RESULT.calculatedEquations)) = {})
 	measure ((card (I.readyEquations)) + (card ((I.activeEquations) \ (I.calculatedEquations))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 594:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 702:1\<close>
 
 \<comment>\<open>VDM source: pre_solveSystemOfEquations: (Importer +> bool)
 	pre_solveSystemOfEquations(I) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 594:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 702:1\<close>
 definition
 	pre_solveSystemOfEquations :: "Importer \<Rightarrow> bool"
 where
@@ -2315,7 +2590,7 @@ where
 \<comment>\<open>VDM source: post_solveSystemOfEquations: (Importer * Importer +> bool)
 	post_solveSystemOfEquations(I, RESULT) ==
 (((RESULT.activeEquations) \ (RESULT.calculatedEquations)) = {})\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 600:62\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 708:62\<close>
 definition
 	post_solveSystemOfEquations :: "Importer \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2354,12 +2629,12 @@ then let clockAction in set {action | action in set clockActions & isActionEnabl
 else let portActions:set of (Action) = ({mk_Action(<set>, (input.name), (input.ref)) | input in set ((I.activeEquations) \ (I.calculatedEquations)) & ((input.ref) in set {(i.ref) | i in set (fmus((input.name)).inputs)})} union {mk_Action(<get>, (output.name), (output.ref)) | output in set ((I.activeEquations) \ (I.calculatedEquations)) & ((output.ref) in set {(o.ref) | o in set (fmus((output.name)).outputs)})}) in let portAction in set {action | action in set portActions & isActionEnabled(I, action)} in portAction)
 	pre (((I.activeEquations) \ (I.calculatedEquations)) <> {})
 	post (((RESULT.actionType) <> <step>) and ((((RESULT.actionType) in set {<getC>, <setC>}) => (((I.relevantOutputClocks) union (I.relevantInputClocks)) <> {})) and (((RESULT.actionType) not in set {<getC>, <setC>}) => (((I.relevantOutputClocks) union (I.relevantInputClocks)) = {}))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 608:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 716:1\<close>
 
 \<comment>\<open>VDM source: pre_selectAction: (Importer +> bool)
 	pre_selectAction(I) ==
 (((I.activeEquations) \ (I.calculatedEquations)) <> {})\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 625:51\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 733:51\<close>
 definition
 	pre_selectAction :: "Importer \<Rightarrow> bool"
 where
@@ -2373,7 +2648,7 @@ where
 \<comment>\<open>VDM source: post_selectAction: (Importer * Action +> bool)
 	post_selectAction(I, RESULT) ==
 (((RESULT.actionType) <> <step>) and ((((RESULT.actionType) in set {<getC>, <setC>}) => (((I.relevantOutputClocks) union (I.relevantInputClocks)) <> {})) and (((RESULT.actionType) not in set {<getC>, <setC>}) => (((I.relevantOutputClocks) union (I.relevantInputClocks)) = {}))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 628:9\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 736:9\<close>
 definition
 	post_selectAction :: "Importer \<Rightarrow> Action \<Rightarrow> bool"
 where
@@ -2444,12 +2719,12 @@ where
 let timedBasedClocks:set of (TimeBasedClock) = ((I.scenario).timeBasedClocks) in mu(I, schedule |-> {(c.name) |-> ((c.period) + (c.shift)) | c in set timedBasedClocks})
 	pre let fmus:set of (FMU) = (rng ((I.scenario).fmus)) in (assertFMUMode(fmus, {<INIT>}) and (fmusSynchronized(fmus) and variablesSynchronized((I.scenario), {<discrete>, <continous>})))
 	post let fmus:set of (FMU) = (rng ((RESULT.scenario).fmus)) in (((dom (RESULT.schedule)) = {(c.name) | c in set ((RESULT.scenario).timeBasedClocks)}) and (assertFMUMode(fmus, {<INIT>}) and (fmusSynchronized(fmus) and (ImporterNotAffected(I, RESULT) and variablesSynchronized((RESULT.scenario), {<discrete>, <continous>})))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 652:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 760:1\<close>
 
 \<comment>\<open>VDM source: pre_createSchedule: (Importer +> bool)
 	pre_createSchedule(I) ==
 let fmus:set of (FMU) = (rng ((I.scenario).fmus)) in (assertFMUMode(fmus, {<INIT>}) and (fmusSynchronized(fmus) and variablesSynchronized((I.scenario), {<discrete>, <continous>})))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 659:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 767:5\<close>
 definition
 	pre_createSchedule :: "Importer \<Rightarrow> bool"
 where
@@ -2472,7 +2747,7 @@ where
 \<comment>\<open>VDM source: post_createSchedule: (Importer * Importer +> bool)
 	post_createSchedule(I, RESULT) ==
 let fmus:set of (FMU) = (rng ((RESULT.scenario).fmus)) in (((dom (RESULT.schedule)) = {(c.name) | c in set ((RESULT.scenario).timeBasedClocks)}) and (assertFMUMode(fmus, {<INIT>}) and (fmusSynchronized(fmus) and (ImporterNotAffected(I, RESULT) and variablesSynchronized((RESULT.scenario), {<discrete>, <continous>})))))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 664:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 772:5\<close>
 definition
 	post_createSchedule :: "Importer \<Rightarrow> Importer \<Rightarrow> bool"
 where
@@ -2552,12 +2827,12 @@ where
 {mk_FMURef((fmu.name), clock) |-> next_tm(fmu, clock) | clock in set clocks}
 	pre let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <input>) and ((c.interval) <> <triggered>))} in (clocks subset cref)
 	post ((card (dom RESULT)) = (card clocks))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 671:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 779:1\<close>
 
 \<comment>\<open>VDM source: pre_calculateSchedule: (FMU * set of (Ref) +> bool)
 	pre_calculateSchedule(fmu, clocks) ==
 let cref:set of (Ref) = {(c.ref) | c in set (fmu.clocks) & (((c.type) = <input>) and ((c.interval) <> <triggered>))} in (clocks subset cref)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 674:5\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 782:5\<close>
 definition
 	pre_calculateSchedule :: "FMU \<Rightarrow> Ref VDMSet \<Rightarrow> bool"
 where
@@ -2580,7 +2855,7 @@ where
 \<comment>\<open>VDM source: post_calculateSchedule: (FMU * set of (Ref) * map (FMURef) to (real) +> bool)
 	post_calculateSchedule(fmu, clocks, RESULT) ==
 ((card (dom RESULT)) = (card clocks))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 676:22\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 784:22\<close>
 definition
 	post_calculateSchedule :: "FMU \<Rightarrow> Ref VDMSet \<Rightarrow> (FMURef \<rightharpoonup> VDMReal) \<Rightarrow> bool"
 where
@@ -2676,12 +2951,12 @@ where
 	createFMURefs(fmu, clocks) ==
 {mk_FMURef((fmu.name), clock) | clock in set clocks}
 	post ((card RESULT) = (card clocks))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 678:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 786:1\<close>
 
 \<comment>\<open>VDM source: pre_createFMURefs: (FMU * set of (Ref) +> bool)
 	pre_createFMURefs(fmu, clocks) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 678:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 786:1\<close>
 definition
 	pre_createFMURefs :: "FMU \<Rightarrow> Ref VDMSet \<Rightarrow> bool"
 where
@@ -2693,7 +2968,7 @@ where
 \<comment>\<open>VDM source: post_createFMURefs: (FMU * set of (Ref) * set of (FMURef) +> bool)
 	post_createFMURefs(fmu, clocks, RESULT) ==
 ((card RESULT) = (card clocks))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 681:18\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 789:18\<close>
 definition
 	post_createFMURefs :: "FMU \<Rightarrow> Ref VDMSet \<Rightarrow> FMURef VDMSet \<Rightarrow> bool"
 where
@@ -2715,12 +2990,12 @@ where
 \<comment>\<open>VDM source: selectMinStep: (set of (real) -> real)
 	selectMinStep(steps) ==
 minset(steps, 10000)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 683:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 791:1\<close>
 
 \<comment>\<open>VDM source: pre_selectMinStep: (set of (real) +> bool)
 	pre_selectMinStep(steps) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 683:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 791:1\<close>
 definition
 	pre_selectMinStep :: "VDMReal VDMSet \<Rightarrow> bool"
 where
@@ -2732,7 +3007,7 @@ where
 \<comment>\<open>VDM source: post_selectMinStep: (set of (real) * real +> bool)
 	post_selectMinStep(steps, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 683:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 791:1\<close>
 definition
 	post_selectMinStep :: "VDMReal VDMSet \<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -2757,12 +3032,12 @@ else let e in set s in (if (e < min)
 then minset((s \ {e}), e)
 else minset((s \ {e}), min)))
 	measure (card s)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 686:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 794:1\<close>
 
 \<comment>\<open>VDM source: pre_minset: (set of (real) * real +> bool)
 	pre_minset(s, min) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 686:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 794:1\<close>
 definition
 	pre_minset :: "VDMReal VDMSet \<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -2774,7 +3049,7 @@ where
 \<comment>\<open>VDM source: post_minset: (set of (real) * real * real +> bool)
 	post_minset(s, min, RESULT) ==
 null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 686:1\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 794:1\<close>
 definition
 	post_minset :: "VDMReal VDMSet \<Rightarrow> VDMReal \<Rightarrow> VDMReal \<Rightarrow> bool"
 where
@@ -5646,8 +5921,8 @@ where
 	\<comment>\<open>User defined body of queryClock.\<close>
 	(
 		let 
-(fmuUpdated::FMU) = (get_cm fmu   clock);
-(val::Value) = (get_cm fmu   clock)
+(val::Value) = (get_cm fmu   clock);
+(fmuUpdated::FMU) = (get_cm fmu   clock)
 		;
 		
 (fmuref::FMURef) = \<lparr>name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = (name\<^sub>F\<^sub>M\<^sub>U fmu), ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f = clock\<rparr>
@@ -5896,8 +6171,8 @@ where
 	\<comment>\<open>User defined body of getPort.\<close>
 	(
 		let 
-(fmu::FMU) = (get_m ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port));
-(val::Value) = (get_m ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))
+(val::Value) = (get_m ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port));
+(fmu::FMU) = (get_m ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f port))
 		;
 		
 (connectedInput::FMURef) = (the(((connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e (scenario\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I)) port)))
@@ -5976,9 +6251,9 @@ where
 	\<comment>\<open>User defined body of stepFMU.\<close>
 	(
 		let 
+(fmuUpdated::FMU) = (step_tm fmu   (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I));
 (step::VDMReal) = (step_tm fmu   (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I));
-(event::bool) = (step_tm fmu   (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I));
-(fmuUpdated::FMU) = (step_tm fmu   (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))
+(event::bool) = (step_tm fmu   (stepSize\<^sub>I\<^sub>m\<^sub>p\<^sub>o\<^sub>r\<^sub>t\<^sub>e\<^sub>r I))
 		in
 			(if (
 		( (((inv_VDMNat (id\<^sub>F\<^sub>M\<^sub>U (fst dummy0)))) \<and> 
@@ -7949,7 +8224,9 @@ hide_const "postTermination"
 hide_const "max_Action"
 hide_const "pre_enterStepMode"
 hide_const "measure_calculateRelevantFMUs"
+hide_const "clock_refs"
 hide_const "pre_calculateSchedule"
+hide_const "inv_Real1"
 hide_const "pre_updateEnvironmentEquation"
 hide_const "max_Time"
 hide_const "minset"
@@ -7958,6 +8235,7 @@ hide_const "pre_clockedSimulationAlgorithm"
 hide_const "sameSetOfFMUs"
 hide_const "updateEnvironmentClock"
 hide_const "post_stepnegotiation"
+hide_type "IOLeo"
 hide_const "post_activateClocks"
 hide_const "post_initialization"
 hide_const "measure_cosimulationStep"
@@ -7967,16 +8245,19 @@ hide_const "pre_createSchedule"
 hide_const "pre_activateClocks"
 hide_const "max_FMURef"
 hide_const "pre_fmusNotAffected"
+hide_const "eq_FMULeo"
 hide_const "post_calculateSchedule"
 hide_const "preSetI"
 hide_const "post_set_m"
 hide_const "calculateOutput"
 hide_const "filterOutputs"
 hide_const "preSetC"
+hide_type "FMULeo"
 hide_const "post_initializeData"
 hide_const "post_terminate"
 hide_const "pre_set_cm"
 hide_const "preCoSimulationStep"
+hide_const "ord_FMULeo"
 hide_const "measure_activateClocks"
 hide_const "pre_calculateRelevantFMUs"
 hide_type "FMU"
@@ -8010,6 +8291,7 @@ hide_const "selectAction"
 hide_const "measure_runAlgorithm"
 hide_type "Causality"
 hide_const "preInitialization"
+hide_type "Time2"
 hide_const "runAlgorithm"
 hide_const "terminate"
 hide_const "eq_Variable"
@@ -8017,6 +8299,7 @@ hide_type "Value"
 hide_const "ord_Action"
 hide_const "cosimStep"
 hide_type "ActionType"
+hide_const "max_FMULeo"
 hide_const "preGetC"
 hide_const "preGetI"
 hide_type "Clock"
@@ -8035,6 +8318,7 @@ hide_const "eq_Clock"
 hide_const "ord_FMURef"
 hide_const "inv_FMU"
 hide_const "step_tm"
+hide_const "eq_Time2"
 hide_const "pre_derefInput"
 hide_const "pre_stepFMU"
 hide_const "post_set_cm"
@@ -8068,6 +8352,7 @@ hide_const "preStepE"
 hide_type "Environment"
 hide_const "inv_Machine"
 hide_const "derefClock"
+hide_const "min_FMULeo"
 hide_const "max_Clock"
 hide_const "preStepT"
 hide_const "pre_timeAdvanced"
@@ -8087,6 +8372,7 @@ hide_const "updateOutputs"
 hide_const "min_FMU"
 hide_const "createScenario"
 hide_const "createTimeBased"
+hide_const "inv_IOLeo"
 hide_const "createClock"
 hide_const "pre_get_cm"
 hide_const "post_calculateRelevantFMUs"
@@ -8096,19 +8382,23 @@ hide_const "getPort"
 hide_const "pre_step_e"
 hide_const "pre_cosimStep"
 hide_const "pre_calculateInput"
+hide_const "inv_Time2"
 hide_const "post_solveSystemOfEquations"
 hide_const "ord_Clock"
+hide_const "inv_FMULeo"
 hide_const "solveSystemOfEquations"
 hide_const "inv_Clock"
 hide_const "next_tm"
 hide_const "pre_initialization"
 hide_const "createSchedule"
 hide_const "ImporterNotAffected"
+hide_const "post_var_refs"
 hide_const "post_step_e"
 hide_const "eventSolved"
 hide_const "pre_eventSolved"
 hide_const "min_Time"
 hide_const "ord_Time"
+hide_const "var_refs"
 hide_const "variablesSynchronized"
 hide_const "preGet"
 hide_const "min_Clock"
@@ -8124,7 +8414,9 @@ hide_const "clockedSimulationAlgorithm"
 hide_const "pre_terminate"
 hide_const "pre_queryClock"
 hide_const "postStepE"
+hide_type "Real1"
 hide_type "Name"
+hide_const "post_clock_refs"
 hide_const "createFMURefs"
 hide_const "pre_getPort"
 hide_const "min_FMURef"

@@ -45,10 +45,13 @@ definitions
 		r	: real
 		i	: nat
 	inv t ==
-		t.r >= 0	-- Times must be positive
+		t.r >= 0 and t.r < t.i	-- Times must be positive
+		 
 	eq a = b == a.r = b.r and a.i = b.i
 	ord a < b ==
-		(a.r < b.r) or (a.r = b.r and a.i < b.i);	-- NB using real equality!
+		(a.r < b.r) or (a.r = b.r and a.i < b.i) 
+		
+		;	-- NB using real equality!
 
 	Time2 ::
 		r	: Real1
@@ -224,6 +227,84 @@ definitions
 			---		& exists c in set fmu.clocks & c.ref in set fmu.activeClocks and equation in set c.equations)
 			-- All scheduled clocks are defined
 		ord fmu1 < fmu2 == fmu1.id < fmu2.id;
+
+functions
+	--@LF this is just like your let, but look at the pre/post! 
+	clock_refs: set of Clock -> set of Ref 
+	clock_refs(cs) == { c.ref | c in set cs }
+	post
+		card cs = card RESULT;
+
+
+	var_refs: set1 of Variable -> set1 of Ref
+	var_refs(vs) == { v.ref | v in set vs }
+	post
+		card vs = card RESULT; 
+	
+types
+
+	IOLeo ::
+		--@LF these are reserved wrods I think
+		LFinput				: set of Variable	-- Um 
+        LFoutput            : set of Variable   -- Ym
+	inv mk_IOLeo(LFinput, LFoutput) == LFinput union LFoutput <> {};
+
+	
+	FMULeo :: 
+		id 					: nat
+		name				: Name				-- m
+		--@LF is there any ooportunity to make any of these a type like Real1 for the structured types themselves? 
+		clocks				: set of Clock		-- Ucm + Ycm
+		io 					: IOLeo
+		mode				: FMUMode -- Mode of the FMU
+		time				: Time				-- time is per FMU
+		stepped				: bool 				-- Has the FMU been stepped
+        maxStep             : Real1				-- How far can the FMU step
+		env					: Environment
+		activeClocks		: set of Ref		-- 
+		activeEquations		: set of Equation	-- I think this needs to be a set of reference
+	inv mk_FMULeo(id, name, clocks, io, mode, 
+		time, stepped, maxStep, env, activeClocks, activeEquations) ==
+		time.i < time.r 
+		and
+		let vars  : set1 of Variable = io.LFinput union io.LFoutput,
+		--@LF concrete example where exu will ask for call to pre_vars_refs that you don't need to worry about
+		--	  because you can deduce that vars is non empty; you might want to add the postcondition of clock_refs/var_refs  
+		    crefs : set of Ref  = clock_refs(clocks), --@LF now you have the postcondition
+			vrefs : set1 of Ref  = var_refs(vars), --@LF now you have the set1 pre on var_refs 
+			refs  : set1 of Ref = crefs union vrefs --@LF if you wanted to tolerate shared refs... "\ (crefs inter vrefs)"" 
+		in
+			--@LF these explicit posts can be sometimes spurious/unnecessary, but they also shield against changes 
+			post_clock_refs(clocks, crefs) and post_var_refs(vars, vrefs) and 
+            -- The maximal step cannot be negative
+            --@LF not needed anympore maxStep >= 0.0
+			-- All clock and variable references are unique
+			--@LF for unique references cardinality isn't sufficient card refs = card clocks + card vars
+			crefs inter vrefs = {} 
+			and
+			card refs = card clocks + card vars --@LF this will be a consequence (i.e. possibly unnecessary here)
+			-- All references in the environment are defined
+			and (dom env subset refs)
+			-- All active clocks are defined
+			and (activeClocks subset crefs)
+			-- A clock can only be active when the fmu is in event mode
+			--@LF whether a single => or three won't make much of a difference to Isabelle 
+			and (mode <> <EVENT> => activeClocks = {} and activeEquations = {} and time.i = 0)
+			-- An equation can only be active when the fmu is in event mode
+			and (mode <> <EVENT> => activeEquations = {})
+			-- The integer clock can only be nonzero in event mode
+			and (mode <> <EVENT> => time.i = 0)
+			-- All variables' clocks are defined
+			and (forall var in set vars & var.clocks subset crefs)
+			-- An active variable is active by a clock Todo
+			--and (forall (cref |-> val) in set activeEquations 
+			---		& exists c in set clocks & c.ref in set activeClocks and equation in set c.equations)
+			-- All scheduled clocks are defined
+		--@LF given the specificity of orderness, you must add a specificity of equality
+		eq fmu1 = fmu2 == fmu1.id = fmu2.id
+		--@LF given that the FMU1/2 projections are just single case, won't bother with the mk_FMU expression 
+		ord fmu1 < fmu2 == fmu1.id < fmu2.id
+		;
 
 functions
 	/**
