@@ -1,5 +1,6 @@
 module TestV2IFcnsRecursiveSet
 definitions
+functions
 	f: set of nat -> nat
 	f(s) == if s = {} then 0 else let x in set s in f(s \ {x}) + x
 	measure card s;
