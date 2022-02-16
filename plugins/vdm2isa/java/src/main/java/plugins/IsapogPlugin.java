@@ -49,7 +49,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
-        strategy = IsaProofStrategy.SURRENDER;//IsaProofStrategy.REALISTIC;
+        strategy = IsaProofStrategy.REALISTIC;
     }
 
     public int getLocalPOCount()

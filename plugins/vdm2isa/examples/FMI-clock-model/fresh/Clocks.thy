@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-16T13:46:26.861446Z
+(* VDM to Isabelle Translation @2022-02-16T13:57:53.828715Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'Clocks.vdmsl' at line 1:8
@@ -338,7 +338,6 @@ lemmas inv_Ref_defs = inv_Ref_def inv_VDMNat_def
 	
 	
 \<comment>\<open>VDM source: Action = compose Action of actionType:ActionType, fmu:Name, port:Ref end
-	eq a = b == ((a.port) = (b.port))
 	ord a < b == ((a.port) < (b.port))\<close>
 \<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 86:5\<close>
 record Action = 
@@ -364,25 +363,10 @@ where
 
 		
 
-\<comment>\<open>VDM source: eq_Action: (Action * Action +> bool)
-	eq_Action(a, b) ==
-((a.port) = (b.port))\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:8\<close>
-definition
-	eq_Action :: "Action \<Rightarrow> Action \<Rightarrow> bool"
-where
-	"eq_Action a   b \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for  `eq_Action` specification.\<close>
-		(inv_Action a  \<and>  inv_Action b)  \<and> 
-		\<comment>\<open>User defined body of eq_Action.\<close>
-		((port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n a) = (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b))"
-
-		
-
 \<comment>\<open>VDM source: ord_Action: (Action * Action +> bool)
 	ord_Action(a, b) ==
 ((a.port) < (b.port))\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 91:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:9\<close>
 definition
 	ord_Action :: "Action \<Rightarrow> Action \<Rightarrow> bool"
 where
@@ -401,7 +385,7 @@ lemmas inv_Action_defs = inv_Action_def inv_ActionType_def inv_Name_def inv_Ref_
 \<comment>\<open>VDM source: FMURef = compose FMURef of name:Name, ref:Ref end
 	eq x = y == (((x.name) = (y.name)) and ((x.ref) = (y.ref)))
 	ord a < b == ((a.ref) < (b.ref))\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 97:5\<close>
 record FMURef = 
 	name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f :: "Name"
 		 
@@ -411,7 +395,7 @@ record FMURef =
 \<comment>\<open>VDM source: inv_FMURef: (FMURef +> bool)
 	inv_FMURef(dummy0) ==
 null\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 98:5\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 97:5\<close>
 definition
 	inv_FMURef :: "FMURef \<Rightarrow> bool"
 where
@@ -425,7 +409,7 @@ where
 \<comment>\<open>VDM source: eq_FMURef: (FMURef * FMURef +> bool)
 	eq_FMURef(x, y) ==
 (((x.name) = (y.name)) and ((x.ref) = (y.ref)))\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 102:8\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 101:8\<close>
 definition
 	eq_FMURef :: "FMURef \<Rightarrow> FMURef \<Rightarrow> bool"
 where
@@ -440,7 +424,7 @@ where
 \<comment>\<open>VDM source: ord_FMURef: (FMURef * FMURef +> bool)
 	ord_FMURef(a, b) ==
 ((a.ref) < (b.ref))\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 101:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 100:9\<close>
 definition
 	ord_FMURef :: "FMURef \<Rightarrow> FMURef \<Rightarrow> bool"
 where
