@@ -159,6 +159,22 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localModules += toadd;
     }
 
+    protected static final TCModuleList filterModuleList(TCModuleList tclist)
+    {
+        TCModuleList result = new TCModuleList(); 
+        result.addAll(tclist);
+        Iterator<TCModule> mi = result.iterator();
+        while (mi.hasNext())
+        {
+            if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
+            {
+                mi.remove();
+                break;
+            }
+        } 
+        return result;
+    } 
+
     @Override
     public final boolean run(String[] argv) throws Exception {
         boolean result = false;
@@ -176,17 +192,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
 			TCModuleList tclist = minterpreter.getTC();			
 
-            TCModuleList tclist_filtered = new TCModuleList(); 
-            tclist_filtered.addAll(tclist);
-            Iterator<TCModule> mi = tclist_filtered.iterator();
-            while (mi.hasNext())
-            {
-                if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
-                {
-                    mi.remove();
-                    break;
-                }
-            } 
+            TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist);
 
             //if (argv != null && argv.length > 0)
             //    Console.out.println("Params = " + Arrays.asList(argv).toString());
@@ -263,6 +269,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             if (errors.size() >= GeneralisaPlugin.maxErrors - 1) 
             {
 				String tooMany = "Too many translation errors";
+                workspace.Diag.severe(String.valueOf(errors.size()));
+                workspace.Diag.severe(errors.toString());
     			errors.add(new VDM2IsaError(10, tooMany, location));
     			throw new InternalException(10, tooMany);
             }
@@ -361,15 +369,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected static void reset() {
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
-		// These are now a tc-tr.mappings init actions
-        //IsaTemplates.reset();
-		//TRRecordType.reset();
-        //TRQuoteType.reset();
     }
 
     public static void setupProperties() {
         GeneralisaPlugin.strict = false;
-        GeneralisaPlugin.maxErrors = 2 * Properties.tc_max_errors;
+        GeneralisaPlugin.maxErrors = Integer.MAX_VALUE; // 2 * Properties.tc_max_errors;
         GeneralisaPlugin.isaVersion = "Isabelle2021: February 2021";
         GeneralisaPlugin.reportWarnings = true;
     }

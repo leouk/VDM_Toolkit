@@ -72,17 +72,25 @@ public class ISAPluginSL extends ISAPlugin
 //				out.write("Isabelle output...\n");
 //				out.close();
 //			}
-			
-			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
-			
+			GeneralisaPlugin.setupProperties();
+			GeneralisaPlugin.reset();
+			//GeneralisaPlugin.checkVDMSettings();
+
+			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
+			//GeneralisaPlugin.processVDMWarnings();
+
+			TCModuleList filtered_tclist = GeneralisaPlugin.filterModuleList(tclist);
+			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(filtered_tclist);
+			trModules.setup();
 			for (TRModule module: trModules)
 			{
 				File outfile = new File(saveUri, module.name.getName() + ".thy");
 				PrintWriter out = new PrintWriter(outfile);
+				String s = module.translate();
+				Diag.finest(s);
 				out.write(module.translate());
 				out.close();
 			}
-
 			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
 		}
 		catch (Exception e)
