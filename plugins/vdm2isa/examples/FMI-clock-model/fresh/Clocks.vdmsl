@@ -87,10 +87,9 @@ definitions
 		actionType : ActionType
 		fmu : Name
 		port : Ref
+	eq a = b == a.port = b.port
 	ord a < b == a.port < b.port;
 	
-
-
 	/**
 	* A reference to a connection point in a specific named FMU.
 	*/
