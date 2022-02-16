@@ -1,3 +1,8 @@
+/* 
+module Clocks
+exports all
+definitions
+*/
 /*********************************************************************************
  *
  *	Copyright (c) 2017-2022, INTO-CPS Association,
@@ -27,6 +32,11 @@
  *
  *********************************************************************************/
  types
+
+	--@LF percolating this through wherever real >=0 iss needed makes for simpler  expansions/proofs. 
+	Real1 = real
+	inv r == r >=0 ;
+
 	/**
 	 * A point in superdense time is represented by a real quantity and a whole
 	 * number instant "within" that time.
@@ -39,6 +49,12 @@
 	eq a = b == a.r = b.r and a.i = b.i
 	ord a < b ==
 		(a.r < b.r) or (a.r = b.r and a.i < b.i);	-- NB using real equality!
+
+	Time2 ::
+		r	: Real1
+		i	: nat
+	inv mk_Time2(r, i) == r < i
+	eq mk_Time2(r1, i1) = mk_Time2(r2, i2) == r1 = r2 and i1 = i2;
 
 	/**
 	 * Possible "interval" values for a Clock variable
@@ -61,6 +77,18 @@
 
 	ValueType = real | int | bool;
 
+	--@LF declaration before use
+	/**
+	 * A convenient way to name FMUs.
+	 */
+	Name = seq1 of char;
+
+	/**
+	 * A variable or clock reference. These are unique within an FMU.
+	 */
+	Ref = nat;
+
+
 	/*
 		An FMU action has a type and some infomration describe the paramters of the actions
 	*/
@@ -71,15 +99,6 @@
 	ord a < b == a.port < b.port;
 	
 
-	/**
-	 * A variable or clock reference. These are unique within an FMU.
-	 */
-	Ref = nat;
-
-	/**
-	 * A convenient way to name FMUs.
-	 */
-	Name = seq1 of char;
 
 	/**
 	 * A reference to a connection point in a specific named FMU.
@@ -93,18 +112,18 @@
 		and x.ref = y.ref;
 
 	/**
-	 * The current known FMU variable values. These are usually used by FMUs, but note that
-	 * Clocks can produce temporary environments that are not committed until a step.
-	 */
-	Environment = map Ref to Value;
-
-	/**
 	 * The value that a clock or variable can have. 
 	 * It contains a time and a value
 	 */
 	Value ::
 		value : ValueType
 		time : Time;
+
+	/**
+	 * The current known FMU variable values. These are usually used by FMUs, but note that
+	 * Clocks can produce temporary environments that are not committed until a step.
+	 */
+	Environment = map Ref to Value;
 
 	/**
 	 * An Equation is used to modify the values of an FMU in order to compute a new
@@ -206,6 +225,32 @@
 			-- All scheduled clocks are defined
 		ord fmu1 < fmu2 == fmu1.id < fmu2.id;
 
+functions
+	/**
+	 * Dereference a clock in a given FMU.
+	 */
+	derefClock: FMU * Ref -> Clock
+	derefClock(fmu, ref) ==
+		iota c in set fmu.clocks & c.ref = ref
+	pre exists c in set fmu.clocks & c.ref = ref;
+
+	/**
+	 * Dereference an input in a given FMU.
+	 */
+	derefInput: FMU * Ref -> Variable
+	derefInput(fmu, ref) ==
+		iota c in set fmu.inputs & c.ref = ref
+	pre exists c in set fmu.inputs & c.ref = ref;
+
+	/**
+	 * Dereference an output in a given FMU.
+	 */
+	derefOutput: FMU * Ref -> Variable
+	derefOutput(fmu, ref) ==
+		iota c in set fmu.outputs & c.ref = ref
+	pre exists c in set fmu.outputs & c.ref = ref;
+
+types
 	/**
 	 * A machine is a collection of FMUs, plus a connection map between them. The connection
 	 * sources must be FMU outputs and the destinations must be FMU inputs.
@@ -230,6 +275,10 @@
 				and trgRef.name in set dom m.fmus
 				and let trgFMU = m.fmus(trgRef.name) in 
 					(exists v in set trgFMU.inputs & trgRef.ref = v.ref)
+				and
+				--@LF exu warning 11151 entail a potential failure in the call to deferOutput, which
+				--		  migh mean a failed pre with some of Machine's parameters 
+				pre_derefOutput(srcFMU, srcRef.ref) 
 				and 
 				let output : Variable = derefOutput(srcFMU, srcRef.ref),
 					input : Variable = derefInput(trgFMU, trgRef.ref) in
@@ -341,29 +390,7 @@ functions
 	calculate(ref, env, time) ==
 		mk_Value(env(ref).value, time);
 
-	/**
-	 * Dereference a clock in a given FMU.
-	 */
-	derefClock: FMU * Ref -> Clock
-	derefClock(fmu, ref) ==
-		iota c in set fmu.clocks & c.ref = ref
-	pre exists c in set fmu.clocks & c.ref = ref;
 
-	/**
-	 * Dereference an input in a given FMU.
-	 */
-	derefInput: FMU * Ref -> Variable
-	derefInput(fmu, ref) ==
-		iota c in set fmu.inputs & c.ref = ref
-	pre exists c in set fmu.inputs & c.ref = ref;
-
-	/**
-	 * Dereference an output in a given FMU.
-	 */
-	derefOutput: FMU * Ref -> Variable
-	derefOutput(fmu, ref) ==
-		iota c in set fmu.outputs & c.ref = ref
-	pre exists c in set fmu.outputs & c.ref = ref;
 
 	
 	/*
@@ -691,3 +718,5 @@ let e in set s in
 if e < min then minset(s \ {e}, e)
 else minset(s \ {e}, min)
 measure card s;
+
+/*end Clocks*/
