@@ -6,6 +6,11 @@
 * exu warning 11151 with user-defined (e.g. calls to f, g etc) you cannot ignore 
 
 * push invariants closer to their types as much as possible
+* prefer record pattern in invariants instead of projection for clarity in names (e.g. mk_T(x,y) == x < y instead of t.x < t.y)
+
+- translator issue with projection over map application over record projections 
+	(e.g. m.f(x.name), missing "the")!
+- record invariants with mk_R projections with let-in environment ! Missing, see FMULeo 
 
 ====
 
