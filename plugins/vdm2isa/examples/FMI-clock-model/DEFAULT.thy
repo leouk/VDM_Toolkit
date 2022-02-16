@@ -16,10 +16,9 @@ begin
 \<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 34:5\<close>
 record Time = 
 	r\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMReal"
-		 
-		 i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
-	
+	i\<^sub>T\<^sub>i\<^sub>m\<^sub>e :: "VDMNat"
 
+term " r\<^sub>T\<^sub>i\<^sub>m\<^sub>e t"
 \<comment>\<open>VDM source: inv_Time: (Time +> bool)
 	inv_Time(t) ==
 ((t.r) >= 0)\<close>
@@ -262,7 +261,41 @@ lemmas inv_ValueType_defs = inv_VDMReal_def inv_ValueType_def inv_bool_def
 
 
 	
+\<comment>\<open>VDM source: Name = seq1 of (char)\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
+type_synonym Name = "VDMChar VDMSeq1"
+
+\<comment>\<open>VDM source: inv_Name: (Name +> bool)
+	inv_Name(dummy0) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
+definition
+	inv_Name :: "Name \<Rightarrow> bool"
+where
+	"inv_Name dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Name` specification.\<close>
+		(((inv_VDMSeq1' (inv_VDMChar) dummy0)))"
+ 
+lemmas inv_Name_defs = inv_Name_def inv_VDMChar_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
+
+
+\<comment>\<open>VDM source: Ref = nat\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
+type_synonym Ref = "VDMNat"
 	
+\<comment>\<open>VDM source: inv_Ref: (Ref +> bool)
+	inv_Ref(dummy0) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
+definition
+	inv_Ref :: "Ref \<Rightarrow> bool"
+where
+	"inv_Ref dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Ref` specification.\<close>
+		(((inv_VDMNat dummy0)))"
+ 
+lemmas inv_Ref_defs = inv_Ref_def inv_VDMNat_def 
+
 \<comment>\<open>VDM source: Action = compose Action of actionType:ActionType, fmu:Name, port:Ref end
 	ord a < b == ((a.port) < (b.port))\<close>
 \<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 67:5\<close>
@@ -306,44 +339,12 @@ lemmas inv_Action_defs = inv_Action_def inv_ActionType_def inv_Name_def inv_Ref_
 
 	
 	
-\<comment>\<open>VDM source: Ref = nat\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
-type_synonym Ref = "VDMNat"
-	
 
-\<comment>\<open>VDM source: inv_Ref: (Ref +> bool)
-	inv_Ref(dummy0) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 77:5\<close>
-definition
-	inv_Ref :: "Ref \<Rightarrow> bool"
-where
-	"inv_Ref dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Ref` specification.\<close>
-		(((inv_VDMNat dummy0)))"
- 
-lemmas inv_Ref_defs = inv_Ref_def inv_VDMNat_def 
 
 
 	
 	
-\<comment>\<open>VDM source: Name = seq1 of (char)\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
-type_synonym Name = "VDMChar VDMSeq1"
 	
-
-\<comment>\<open>VDM source: inv_Name: (Name +> bool)
-	inv_Name(dummy0) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 82:5\<close>
-definition
-	inv_Name :: "Name \<Rightarrow> bool"
-where
-	"inv_Name dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Name` specification.\<close>
-		(((inv_VDMSeq1' (inv_VDMChar) dummy0)))"
- 
-lemmas inv_Name_defs = inv_Name_def inv_VDMChar_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
 
 	
@@ -401,6 +402,27 @@ where
 lemmas inv_FMURef_defs = inv_FMURef_def inv_Name_def inv_Ref_def inv_VDMChar_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
 
+\<comment>\<open>VDM source: Value = compose Value of value:ValueType, time:Time end\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
+record Value = 
+	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueType"
+		 
+		 time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "Time"
+	
+
+\<comment>\<open>VDM source: inv_Value: (Value +> bool)
+	inv_Value(dummy0) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
+definition
+	inv_Value :: "Value \<Rightarrow> bool"
+where
+	"inv_Value dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Value` specification.\<close>
+		( (((inv_ValueType (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))) \<and> 
+		 (inv_Time (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)) ))"
+ 
+lemmas inv_Value_defs = inv_Time_def inv_VDMNat_def inv_VDMReal_def inv_Value_def inv_ValueType_def inv_bool_def 
 	
 	
 \<comment>\<open>VDM source: Environment = map (Ref) to (Value)\<close>
@@ -424,27 +446,6 @@ lemmas inv_Environment_defs = inv_Environment_def inv_Map_defs inv_Ref_def inv_T
 
 	
 	
-\<comment>\<open>VDM source: Value = compose Value of value:ValueType, time:Time end\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
-record Value = 
-	value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "ValueType"
-		 
-		 time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e :: "Time"
-	
-
-\<comment>\<open>VDM source: inv_Value: (Value +> bool)
-	inv_Value(dummy0) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 105:5\<close>
-definition
-	inv_Value :: "Value \<Rightarrow> bool"
-where
-	"inv_Value dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_Value` specification.\<close>
-		( (((inv_ValueType (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0))) \<and> 
-		 (inv_Time (time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0)) ))"
- 
-lemmas inv_Value_defs = inv_Time_def inv_VDMNat_def inv_VDMReal_def inv_Value_def inv_ValueType_def inv_bool_def 
 
 
 	
@@ -759,6 +760,126 @@ record Machine =
 		 timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e :: "(Name \<rightharpoonup> FMURef VDMSet)"
 	
 
+	
+	
+\<comment>\<open>VDM source: derefClock: (FMU * Ref -> Clock)
+	derefClock(fmu, ref) ==
+(iota c in set (fmu.clocks) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
+
+\<comment>\<open>VDM source: pre_derefClock: (FMU * Ref +> bool)
+	pre_derefClock(fmu, ref) ==
+(exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 350:9\<close>
+definition
+	pre_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
+where
+	"pre_derefClock fmu   ref \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefClock` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
+		\<comment>\<open>User defined body of pre_derefClock.\<close>
+		(\<exists> c \<in> (clocks\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) = ref))"
+
+
+\<comment>\<open>VDM source: post_derefClock: (FMU * Ref * Clock +> bool)
+	post_derefClock(fmu, ref, RESULT) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
+definition
+	post_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> Clock \<Rightarrow> bool"
+where
+	"post_derefClock fmu   ref   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefClock` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Clock RESULT)"
+
+definition
+	derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> Clock"
+where
+	"derefClock fmu   ref \<equiv> 
+	\<comment>\<open>User defined body of derefClock.\<close>
+	(THE c. (((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) = ref)))"
+
+	
+	
+\<comment>\<open>VDM source: derefInput: (FMU * Ref -> Variable)
+	derefInput(fmu, ref) ==
+(iota c in set (fmu.inputs) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
+
+\<comment>\<open>VDM source: pre_derefInput: (FMU * Ref +> bool)
+	pre_derefInput(fmu, ref) ==
+(exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 358:9\<close>
+definition
+	pre_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
+where
+	"pre_derefInput fmu   ref \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefInput` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
+		\<comment>\<open>User defined body of pre_derefInput.\<close>
+		(\<exists> c \<in> (inputs\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref))"
+
+
+\<comment>\<open>VDM source: post_derefInput: (FMU * Ref * Variable +> bool)
+	post_derefInput(fmu, ref, RESULT) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
+definition
+	post_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
+where
+	"post_derefInput fmu   ref   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefInput` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
+
+definition
+	derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable"
+where
+	"derefInput fmu   ref \<equiv> 
+	\<comment>\<open>User defined body of derefInput.\<close>
+	(THE c. (((c \<in>(inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref)))"
+
+	
+	
+\<comment>\<open>VDM source: derefOutput: (FMU * Ref -> Variable)
+	derefOutput(fmu, ref) ==
+(iota c in set (fmu.outputs) & ((c.ref) = ref))
+	pre (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
+
+\<comment>\<open>VDM source: pre_derefOutput: (FMU * Ref +> bool)
+	pre_derefOutput(fmu, ref) ==
+(exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 366:9\<close>
+definition
+	pre_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
+where
+	"pre_derefOutput fmu   ref \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefOutput` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
+		\<comment>\<open>User defined body of pre_derefOutput.\<close>
+		(\<exists> c \<in> (outputs\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref))"
+
+
+\<comment>\<open>VDM source: post_derefOutput: (FMU * Ref * Variable +> bool)
+	post_derefOutput(fmu, ref, RESULT) ==
+null\<close>
+\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
+definition
+	post_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
+where
+	"post_derefOutput fmu   ref   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefOutput` specification.\<close>
+		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
+
+definition
+	derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable"
+where
+	"derefOutput fmu   ref \<equiv> 
+	\<comment>\<open>User defined body of derefOutput.\<close>
+	(THE c. (((c \<in>(outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref)))"
+
 \<comment>\<open>VDM source: inv_Machine: (Machine +> bool)
 	inv_Machine(m) ==
 ((forall srcRef in set (dom (m.connections)) & (((srcRef.name) in set (dom (m.fmus))) and let srcFMU:FMU = (m.fmus)((srcRef.name)), trgRef:FMURef = (m.connections)(srcRef) in ((exists [v in set (srcFMU.outputs)] & ((srcRef.ref) = (v.ref))) and (((trgRef.name) in set (dom (m.fmus))) and let trgFMU:FMU = (m.fmus)((trgRef.name)) in ((exists [v in set (trgFMU.inputs)] & ((trgRef.ref) = (v.ref))) and let output:Variable = derefOutput(srcFMU, (srcRef.ref)), input:Variable = derefInput(trgFMU, (trgRef.ref)) in ((output.type) = (input.type))))))) and ((forall fmuref in set (dom (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <output>) and ((v.interval) = <triggered>)))))) and ((forall fmuref in set (rng (m.clockConnections)) & (((fmuref.name) in set (dom (m.fmus))) and let fmu:FMU = (m.fmus)((fmuref.name)) in (exists [v in set (fmu.clocks)] & (((fmuref.ref) = (v.ref)) and (((v.type) = <input>) and ((v.interval) = <triggered>)))))) and ((((dom (m.clockConnections)) inter (dom (m.connections))) = {}) and ((((rng (m.clockConnections)) inter (rng (m.connections))) = {}) and (((dom (m.timedClockConnections)) = {(c.name) | c in set (m.timeBasedClocks)}) and (forall t in set (m.timeBasedClocks) & (((t.master) in set (m.timedClockConnections)((t.name))) and (forall c in set (dunion {c | c in set (rng (m.timedClockConnections))}) & let clock:Clock = derefClock((m.fmus)((c.name)), (c.ref)) in (((clock.interval) <> <triggered>) and ((clock.type) = <input>)))))))))))\<close>
@@ -772,7 +893,8 @@ where
 		 ((inv_VDMSet' inv_TimeBasedClock  (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
 		 ((inv_Map inv_FMURef  inv_FMURef  (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> 
-		 ((inv_Map (inv_Name) (inv_VDMSet' inv_FMURef ) (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) ))  \<and> 
+		 ((inv_Map (inv_Name) (inv_VDMSet' inv_FMURef ) (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) )
+      )  \<and> 
 		\<comment>\<open>User defined body of inv_Machine.\<close>
 		((\<forall> srcRef \<in> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))  . (((name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f srcRef) \<in> (dom (fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) \<and> (
 		let 
@@ -837,9 +959,9 @@ where
 		 else
 			undefined
 		)
-		))) \<and> ((((dom (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> ((((rng (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (rng (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> (((dom (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) = { (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) | c .  ((c \<in>(timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)))  }) \<and> (\<forall> t \<in> (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)  . (((master\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t) \<in> ((timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t))) \<and> (\<forall> c \<in> (\<Union> { c .   ((c \<in>(rng (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))))  })  . (
+		))) \<and> ((((dom (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (dom (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> ((((rng (clockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) \<inter> (rng (connections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))) = {}) \<and> (((dom (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)) = { (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) | c .  ((c \<in>(timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)))  }) \<and> (\<forall> t \<in> (timeBasedClocks\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m)  . (((master\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t) \<in> the((timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>T\<^sub>i\<^sub>m\<^sub>e\<^sub>B\<^sub>a\<^sub>s\<^sub>e\<^sub>d\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k t))) \<and> (\<forall> c \<in> (\<Union> { c .   ((c \<in>(rng (timedClockConnections\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m))))  })  . (
 		let 
-(clock::Clock) = (derefClock ((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))
+(clock::Clock) = (derefClock (the((fmus\<^sub>M\<^sub>a\<^sub>c\<^sub>h\<^sub>i\<^sub>n\<^sub>e m) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c)))   (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f c))
 		in
 			(if (inv_Clock clock) then
 			(((interval\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock) \<noteq> Interval.U_triggered ) \<and> ((type\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k clock) = Causality.U_input ))
@@ -1426,125 +1548,6 @@ where
 	\<comment>\<open>User defined body of calculate.\<close>
 	\<lparr>value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = (value\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (the((env ref)))), time\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = time\<rparr>"
 
-	
-	
-\<comment>\<open>VDM source: derefClock: (FMU * Ref -> Clock)
-	derefClock(fmu, ref) ==
-(iota c in set (fmu.clocks) & ((c.ref) = ref))
-	pre (exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
-
-\<comment>\<open>VDM source: pre_derefClock: (FMU * Ref +> bool)
-	pre_derefClock(fmu, ref) ==
-(exists [c in set (fmu.clocks)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 350:9\<close>
-definition
-	pre_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
-where
-	"pre_derefClock fmu   ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefClock` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefClock.\<close>
-		(\<exists> c \<in> (clocks\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) = ref))"
-
-
-\<comment>\<open>VDM source: post_derefClock: (FMU * Ref * Clock +> bool)
-	post_derefClock(fmu, ref, RESULT) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 347:5\<close>
-definition
-	post_derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> Clock \<Rightarrow> bool"
-where
-	"post_derefClock fmu   ref   RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefClock` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Clock RESULT)"
-
-definition
-	derefClock :: "FMU \<Rightarrow> Ref \<Rightarrow> Clock"
-where
-	"derefClock fmu   ref \<equiv> 
-	\<comment>\<open>User defined body of derefClock.\<close>
-	(THE c. (((c \<in>(clocks\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>C\<^sub>l\<^sub>o\<^sub>c\<^sub>k c) = ref)))"
-
-	
-	
-\<comment>\<open>VDM source: derefInput: (FMU * Ref -> Variable)
-	derefInput(fmu, ref) ==
-(iota c in set (fmu.inputs) & ((c.ref) = ref))
-	pre (exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
-
-\<comment>\<open>VDM source: pre_derefInput: (FMU * Ref +> bool)
-	pre_derefInput(fmu, ref) ==
-(exists [c in set (fmu.inputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 358:9\<close>
-definition
-	pre_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
-where
-	"pre_derefInput fmu   ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefInput` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefInput.\<close>
-		(\<exists> c \<in> (inputs\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref))"
-
-
-\<comment>\<open>VDM source: post_derefInput: (FMU * Ref * Variable +> bool)
-	post_derefInput(fmu, ref, RESULT) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 355:5\<close>
-definition
-	post_derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
-where
-	"post_derefInput fmu   ref   RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefInput` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
-
-definition
-	derefInput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable"
-where
-	"derefInput fmu   ref \<equiv> 
-	\<comment>\<open>User defined body of derefInput.\<close>
-	(THE c. (((c \<in>(inputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref)))"
-
-	
-	
-\<comment>\<open>VDM source: derefOutput: (FMU * Ref -> Variable)
-	derefOutput(fmu, ref) ==
-(iota c in set (fmu.outputs) & ((c.ref) = ref))
-	pre (exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
-
-\<comment>\<open>VDM source: pre_derefOutput: (FMU * Ref +> bool)
-	pre_derefOutput(fmu, ref) ==
-(exists [c in set (fmu.outputs)] & ((c.ref) = ref))\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 366:9\<close>
-definition
-	pre_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> bool"
-where
-	"pre_derefOutput fmu   ref \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for  `pre_derefOutput` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref))  \<and> 
-		\<comment>\<open>User defined body of pre_derefOutput.\<close>
-		(\<exists> c \<in> (outputs\<^sub>F\<^sub>M\<^sub>U fmu)  . ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref))"
-
-
-\<comment>\<open>VDM source: post_derefOutput: (FMU * Ref * Variable +> bool)
-	post_derefOutput(fmu, ref, RESULT) ==
-null\<close>
-\<comment>\<open>in 'DEFAULT' (Clocks.vdmsl) at line 363:5\<close>
-definition
-	post_derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable \<Rightarrow> bool"
-where
-	"post_derefOutput fmu   ref   RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_derefOutput` specification.\<close>
-		(inv_FMU fmu  \<and>  (inv_Ref ref)  \<and>  inv_Variable RESULT)"
-
-definition
-	derefOutput :: "FMU \<Rightarrow> Ref \<Rightarrow> Variable"
-where
-	"derefOutput fmu   ref \<equiv> 
-	\<comment>\<open>User defined body of derefOutput.\<close>
-	(THE c. (((c \<in>(outputs\<^sub>F\<^sub>M\<^sub>U fmu))) \<and> ((ref\<^sub>V\<^sub>a\<^sub>r\<^sub>i\<^sub>a\<^sub>b\<^sub>l\<^sub>e c) = ref)))"
 
 	
 	
