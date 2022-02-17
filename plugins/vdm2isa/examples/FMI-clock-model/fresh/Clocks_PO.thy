@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-16T13:57:54.106947Z
+(* VDM to Isabelle Translation @2022-02-17T08:21:48.570524Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'Clocks' (Clocks.vdmsl) at line 36:9
@@ -106,7 +106,50 @@ theorem Time_STRICT_ORDER:
 	
 	
 \<comment>\<open>VDM source: Action = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:8\<close>
+theorem Action_TOTAL:
+	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
+	"((\<forall> (a :: Action)   (b :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n a))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n a)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n a)))) )))  \<and>  (( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b)))) ))) \<longrightarrow> isTest ((eq_Action a   b)) (inv_bool))))"
+	
+	try
+	
+	
+	oops
+	
+	
+	
+	
+\<comment>\<open>VDM source: Action = ?\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:8\<close>
+theorem Action_EQUIV_RELATION:
+	"(((\<forall> (x :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) ))) \<longrightarrow> (eq_Action x   x))) \<and> ((\<forall> (x :: Action)  (y :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) ))) \<and>  (( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y)))) ))) \<longrightarrow> ((eq_Action x   y) \<longrightarrow> (eq_Action y   x)))) \<and> (\<forall> (x :: Action)  (y :: Action)  (z :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) ))) \<and>  (( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n y)))) ))) \<and>  (( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n z))))) \<and> 
+		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n z)))) \<and> 
+		 (((inv_VDMNat (port\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n z)))) ))) \<longrightarrow> (((eq_Action x   y) \<and> (eq_Action y   z)) \<longrightarrow> (eq_Action x   z)))))))"
+	
+	try
+	
+	
+	oops
+	
+	
+	
+	
+\<comment>\<open>VDM source: Action = ?\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 91:9\<close>
 theorem Action_TOTAL:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (a :: Action)   (b :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n a))))) \<and> 
@@ -124,7 +167,7 @@ theorem Action_TOTAL:
 	
 	
 \<comment>\<open>VDM source: Action = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 90:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 91:9\<close>
 theorem Action_STRICT_ORDER:
 	"(((\<forall> (x :: Action)  . ((( (((((inv_True (actionType\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x))))) \<and> 
 		 (((inv_VDMSeq1' (inv_VDMChar) (fmu\<^sub>A\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n x)))) \<and> 
@@ -145,7 +188,7 @@ theorem Action_STRICT_ORDER:
 	
 	
 \<comment>\<open>VDM source: FMURef = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 101:8\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 100:8\<close>
 theorem FMURef_TOTAL:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: FMURef)   (y :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) \<and> 
@@ -161,7 +204,7 @@ theorem FMURef_TOTAL:
 	
 	
 \<comment>\<open>VDM source: FMURef = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 101:8\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 100:8\<close>
 theorem FMURef_EQUIV_RELATION:
 	"(((\<forall> (x :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) \<and> 
 		 (((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) ))) \<longrightarrow> (eq_FMURef x   x))) \<and> ((\<forall> (x :: FMURef)  (y :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) \<and> 
@@ -180,7 +223,7 @@ theorem FMURef_EQUIV_RELATION:
 	
 	
 \<comment>\<open>VDM source: FMURef = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 100:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 99:9\<close>
 theorem FMURef_TOTAL:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (a :: FMURef)   (b :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f a)))) \<and> 
@@ -196,7 +239,7 @@ theorem FMURef_TOTAL:
 	
 	
 \<comment>\<open>VDM source: FMURef = ?\<close>
-\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 100:9\<close>
+\<comment>\<open>in 'Clocks' (Clocks.vdmsl) at line 99:9\<close>
 theorem FMURef_STRICT_ORDER:
 	"(((\<forall> (x :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) \<and> 
 		 (((inv_VDMNat (ref\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) ))) \<longrightarrow> (\<not> (ord_FMURef x   x)))) \<and> (\<forall> (x :: FMURef)  (y :: FMURef)  (z :: FMURef)  . ((( ((((inv_VDMSeq1' (inv_VDMChar) (name\<^sub>F\<^sub>M\<^sub>U\<^sub>R\<^sub>e\<^sub>f x)))) \<and> 

@@ -87,9 +87,14 @@ definitions
 		actionType : ActionType
 		fmu : Name
 		port : Ref
-	eq a = b == a.port = b.port
+	eq mk_Action(act1, fmu1, port1) = mk_Action(act2, fmu2, port2) == 
+		act1 = act2 
+		and fmu1 = fmu2 
+		and port1 = port2
 	ord a < b == a.port < b.port;
 	
+
+
 	/**
 	* A reference to a connection point in a specific named FMU.
 	*/
@@ -97,78 +102,86 @@ definitions
 		name	: Name
 		ref		: Ref
 	ord a < b == a.ref < b.ref
-	eq x = y == 
-		x.name = y.name
-		and x.ref = y.ref;
+	eq mk_FMURef(name1, ref1) = mk_FMURef(name2, ref2) == 
+		name1 = name2
+		and ref1 = ref2;
 
--- 	/**
--- 	* The value that a clock or variable can have. 
--- 	* It contains a time and a value
--- 	*/
--- 	Value ::
--- 		value : ValueType
--- 		time : Time;
+	/**
+	* The value that a clock or variable can have. 
+	* It contains a time and a value
+	*/
+	FMIValue ::
+		fmiValue : ValueType
+		time 	 : Time
+	ord mk_FMIValue(-, t1) < mk_FMIValue(-, t2) == t1 < t2
+	eq mk_FMIValue(val1, t1) = mk_FMIValue(val2, t2) == 
+		val1 = val2
+		and t1 = t2;
 
--- 	/**
--- 	* The current known FMU variable values. These are usually used by FMUs, but note that
--- 	* Clocks can produce temporary environments that are not committed until a step.
--- 	*/
--- 	Environment = map Ref to Value;
+	/**
+	* The current known FMU variable values. These are usually used by FMUs, but note that
+	* Clocks can produce temporary environments that are not committed until a step.
+	*/
+	Environment = map Ref to FMIValue;
 
--- 	/**
--- 	* An Equation is used to modify the values of an FMU in order to compute a new
--- 	* step in time. A clock defines a set of equations to activate.
--- 	*/
--- 	Equation = Environment -> Environment;
-
-
--- 	/**
--- 	* A variable is identified by a Ref (within an FMU).
--- 	*/
--- 	Variable ::
--- 		name 		: Name
--- 		ref			: Ref
--- 		time        : Time
--- 		causality	: Causality
--- 		type		: PortType
--- 		clocks		: set of Ref -- clocks that the variable can active
--- 		dependsOn   : set of Ref -- feedthrough only relevant for outputs
--- 		contract    : Contract 
--- 	inv var ==
--- 		(var.causality = <output> => var.contract = <none>) -- input contract only relevant for inputs
--- 		and (var.causality = <input> => var.dependsOn = {})
--- 		and (var.type = <continous> => var.clocks = {})
--- 	eq v1 = v2 ==
--- 		v1.name = v2.name and v1.ref = v2.ref and v1.causality = v2.causality;
+	/**
+	* An Equation is used to modify the values of an FMU in order to compute a new
+	* step in time. A clock defines a set of equations to activate.
+	*/
+	Equation = Environment -> Environment;
 
 
--- 	TimeBasedClock ::
--- 		name		: Name
--- 		shift 		: real
--- 		period		: real
--- 		interval	: Interval
--- 		master 		: FMURef -- who should ask about the clock schedule
--- 	inv clock ==
--- 		clock.shift >= 0.0
--- 		and clock.period >= 0.0
--- 		and clock.interval <> <triggered>;
+	/**
+	* A variable is identified by a Ref (within an FMU).
+	*/
+	Variable ::
+		name 		: Name
+		ref			: Ref
+		time        : Time
+		causality	: Causality
+		type		: PortType
+		clocks		: set of Ref -- clocks that the variable can active
+		dependsOn   : set of Ref -- feedthrough only relevant for outputs
+		contract    : Contract 
+	inv mk_Variable(-, -, -, causality, type, clocks, dependsOn, contract) ==
+		(causality = <output> => contract = <none>) -- input contract only relevant for inputs
+		and (causality = <input> => contract <> <none>) -- input contract defined on inputs
+		and (causality = <input> => dependsOn = {})
+		and (type = <continous> => clocks = {})
+		and ((type = <discrete> and causality = <input>)  => clocks = {})
+	ord mk_Variable(-, ref1, -, -, -, -, -, -) 
+		<  mk_Variable(-, ref2, -, -, -, -, -, -) ==
+		ref1 < ref2 
+	eq  mk_Variable(name1, ref1, -, causality1, -, -, -, -) 
+		=  mk_Variable(name2, ref2, -, causality2, -, -, -, -) ==
+		name1 = name2 and ref1 = ref2 and causality1 = causality2;
 
--- 	/**
--- 	* A clock is identified by a Ref (within an FMU) and activates a set of equations.
--- 	*/
--- 	Clock ::
--- 		name 		: Name 
--- 		ref			: Ref
--- 		type		: Causality
--- 		interval	: Interval
--- 		dependsOn 	: set of Ref -- The clocks that can trigger an clock
--- 		equations	: set of Ref -- variables the clock activates
--- 	inv clock ==
--- 		(clock.type = <output> => clock.interval = <triggered>)	-- An output clock must be of type triggered 
--- 		and (clock.type = <input> => clock.dependsOn = {})  -- Only output clocks are subject to feedthrough
--- 	ord c1 < c2 == c1.ref < c2.ref 
--- 	eq c1 = c2 == 
--- 		c1.name = c2.name and c1.ref = c2.ref and c1.type = c2.type;
+
+	TimeBasedClock ::
+		name		: Name
+		shift 		: Real1
+		period		: Real1
+		interval	: Interval
+		master 		: FMURef -- who should ask about the clock schedule
+	inv clock == clock.interval <> <triggered>;
+
+
+	/**
+	* A clock is identified by a Ref (within an FMU) and activates a set of equations.
+	*/
+	Clock ::
+		name 		: Name 
+		ref			: Ref
+		type		: Causality
+		interval	: Interval
+		dependsOn 	: set of Ref -- The clocks that can trigger an clock
+		equations	: set of Ref -- variables the clock activates
+	inv clock ==
+		(clock.type = <output> => clock.interval = <triggered>)	-- An output clock must be of type triggered 
+		and (clock.type = <input> => clock.dependsOn = {})  -- Only output clocks are subject to feedthrough
+	ord c1 < c2 == c1.ref < c2.ref 
+	eq mk_Clock(name1, ref1, type1, interval1, -, -) = mk_Clock(name2, ref2, type2, interval2, -, -) == 
+		name1 = name2 and ref1 = ref2 and type1 = type2 and interval1 = interval2;
 
 -- 	/**
 -- 	* An FMU is comprised of a set of clocks and variables, plus an environment that holds
@@ -216,274 +229,402 @@ definitions
 -- 			-- All scheduled clocks are defined
 -- 		ord fmu1 < fmu2 == fmu1.id < fmu2.id;
 
--- functions
--- 	--@LF this is just like your let, but look at the pre/post! 
--- 	clock_refs: set of Clock -> set of Ref 
--- 	clock_refs(cs) == { c.ref | c in set cs }
--- 	post
--- 		card cs = card RESULT;
+functions
+	--@LF this is just like your let, but look at the pre/post! 
+	clock_refs: set of Clock -> set of Ref 
+	clock_refs(cs) == { c.ref | c in set cs }
+	post
+		card cs = card RESULT;
 
 
--- 	var_refs: set1 of Variable -> set1 of Ref
--- 	var_refs(vs) == { v.ref | v in set vs }
--- 	post
--- 		card vs = card RESULT; 
+	var_refs: set1 of Variable -> set1 of Ref
+	var_refs(vs) == { v.ref | v in set vs }
+	post
+		card vs = card RESULT; 
 	
--- types
+types
 
--- 	IOLeo ::
--- 		--@LF these are reserved wrods I think
--- 		LFinput				: set of Variable	-- Um 
--- 		LFoutput            : set of Variable   -- Ym
--- 	inv mk_IOLeo(LFinput, LFoutput) == LFinput union LFoutput <> {};
+	IOLeo ::
+		--@LF these are reserved wrods I think
+		LFinput				: set of Variable	-- Um 
+		LFoutput            : set of Variable   -- Ym
+	inv mk_IOLeo(LFinput, LFoutput) == LFinput union LFoutput <> {};
 
 	
--- 	FMULeo :: 
--- 		id 					: nat
--- 		name				: Name				-- m
--- 		--@LF is there any ooportunity to make any of these a type like Real1 for the structured types themselves? 
--- 		clocks				: set of Clock		-- Ucm + Ycm
--- 		io 					: IOLeo
--- 		mode				: FMUMode -- Mode of the FMU
--- 		time				: Time				-- time is per FMU
--- 		stepped				: bool 				-- Has the FMU been stepped
--- 		maxStep             : Real1				-- How far can the FMU step
--- 		env					: Environment
--- 		activeClocks		: set of Ref		-- 
--- 		activeEquations		: set of Equation	-- I think this needs to be a set of reference
--- 	inv mk_FMULeo(id, name, clocks, io, mode, 
--- 		time, stepped, maxStep, env, activeClocks, activeEquations) ==
--- 		time.i < time.r 
--- 		and
--- 		let vars  : set1 of Variable = io.LFinput union io.LFoutput,
--- 		--@LF concrete example where exu will ask for call to pre_vars_refs that you don't need to worry about
--- 		--	  because you can deduce that vars is non empty; you might want to add the postcondition of clock_refs/var_refs  
--- 			crefs : set of Ref  = clock_refs(clocks), --@LF now you have the postcondition
--- 			vrefs : set1 of Ref  = var_refs(vars), --@LF now you have the set1 pre on var_refs 
--- 			refs  : set1 of Ref = crefs union vrefs --@LF if you wanted to tolerate shared refs... "\ (crefs inter vrefs)"" 
--- 		in
--- 			--@LF these explicit posts can be sometimes spurious/unnecessary, but they also shield against changes 
--- 			post_clock_refs(clocks, crefs) and post_var_refs(vars, vrefs) and 
--- 			-- The maximal step cannot be negative
--- 			--@LF not needed anympore maxStep >= 0.0
--- 			-- All clock and variable references are unique
--- 			--@LF for unique references cardinality isn't sufficient card refs = card clocks + card vars
--- 			crefs inter vrefs = {} 
--- 			and
--- 			card refs = card clocks + card vars --@LF this will be a consequence (i.e. possibly unnecessary here)
--- 			-- All references in the environment are defined
--- 			and (dom env subset refs)
--- 			-- All active clocks are defined
--- 			and (activeClocks subset crefs)
--- 			-- A clock can only be active when the fmu is in event mode
--- 			--@LF whether a single => or three won't make much of a difference to Isabelle 
--- 			and (mode <> <EVENT> => activeClocks = {} and activeEquations = {} and time.i = 0)
--- 			-- An equation can only be active when the fmu is in event mode
--- 			and (mode <> <EVENT> => activeEquations = {})
--- 			-- The integer clock can only be nonzero in event mode
--- 			and (mode <> <EVENT> => time.i = 0)
--- 			-- All variables' clocks are defined
--- 			and (forall var in set vars & var.clocks subset crefs)
--- 			-- An active variable is active by a clock Todo
--- 			--and (forall (cref |-> val) in set activeEquations 
--- 			---		& exists c in set clocks & c.ref in set activeClocks and equation in set c.equations)
--- 			-- All scheduled clocks are defined
--- 		--@LF given the specificity of orderness, you must add a specificity of equality
--- 		eq fmu1 = fmu2 == fmu1.id = fmu2.id
--- 		--@LF given that the FMU1/2 projections are just single case, won't bother with the mk_FMU expression 
--- 		ord fmu1 < fmu2 == fmu1.id < fmu2.id
--- 		;
+	FMU :: 
+		id 					: nat
+		name				: Name				-- m
+		--@LF is there any ooportunity to make any of these a type like Real1 for the structured types themselves? 
+		clocks				: set of Clock		-- Ucm + Ycm
+		io 					: IOLeo
+		mode				: FMUMode -- Mode of the FMU
+		time				: Time				-- time is per FMU
+		stepped				: bool 				-- Has the FMU been stepped
+		maxStep             : Real1				-- How far can the FMU step
+		env					: Environment
+		activeClocks		: set of Ref		-- 
+		activeEquations		: set of Equation	-- I think this needs to be a set of reference
+	inv mk_FMU(-, -, clocks, io, mode, time, -, -, env, activeClocks, activeEquations) ==
+		let vars  : set1 of Variable = io.LFinput union io.LFoutput,
+		--@LF concrete example where exu will ask for call to pre_vars_refs that you don't need to worry about
+		--	  because you can deduce that vars is non empty; you might want to add the postcondition of clock_refs/var_refs  
+			crefs : set of Ref  = clock_refs(clocks), --@LF now you have the postcondition
+			vrefs : set1 of Ref  = var_refs(vars), --@LF now you have the set1 pre on var_refs 
+			refs  : set1 of Ref = crefs union vrefs --@LF if you wanted to tolerate shared refs... "\ (crefs inter vrefs)"" 
+		in
+			--@LF these explicit posts can be sometimes spurious/unnecessary, but they also shield against changes 
+			post_clock_refs(clocks, crefs) and post_var_refs(vars, vrefs) and 
+			-- All clock and variable references are unique
+			crefs inter vrefs = {} 
+			--@ST missing "the" over map here 
+			and
+			card refs = card clocks + card vars --@LF this will be a consequence (i.e. possibly unnecessary here)
+			-- All references in the environment are defined
+			and (dom env subset refs)
+			-- All active clocks are defined
+			and (activeClocks subset crefs)
+			-- A clock can only be active when the fmu is in event mode
+			--@LF whether a single => or three won't make much of a difference to Isabelle 
+			and (mode <> <EVENT> => activeClocks = {} and activeEquations = {} and time.i = 0)
+			-- An equation can only be active when the fmu is in event mode
+			and (mode <> <EVENT> => activeEquations = {})
+			-- The integer clock can only be nonzero in event mode
+			and (mode <> <EVENT> => time.i = 0)
+			-- All variables' clocks are defined
+			and (forall var in set vars & var.clocks subset crefs)
+			-- An active variable is active by a clock Todo
+			--and (forall (cref |-> val) in set activeEquations 
+			---		& exists c in set clocks & c.ref in set activeClocks and equation in set c.equations)
+			-- All scheduled clocks are defined
+		--@LF given the specificity of orderness, you must add a specificity of equality
+		eq fmu1 = fmu2 == fmu1.id = fmu2.id
+		--@LF given that the FMU1/2 projections are just single case, won't bother with the mk_FMU expression 
+		ord fmu1 < fmu2 == fmu1.id < fmu2.id
+		;
+--@ST jkdjflksfdjlkfjsdlkfjklsdf
+functions
+	/**
+	* Dereference a clock in a given FMU.
+	*/
+	derefClock: FMU * Ref -> Clock
+	derefClock(fmu, ref) ==
+		iota c in set fmu.clocks & c.ref = ref
+	pre exists c in set fmu.clocks & c.ref = ref;
 
--- functions
--- 	/**
--- 	* Dereference a clock in a given FMU.
--- 	*/
--- 	derefClock: FMU * Ref -> Clock
--- 	derefClock(fmu, ref) ==
--- 		iota c in set fmu.clocks & c.ref = ref
--- 	pre exists c in set fmu.clocks & c.ref = ref;
+	/**
+	* Dereference an input in a given FMU.
+	*/
+	derefInput: FMU * Ref -> Variable
+	derefInput(fmu, ref) ==
+		iota c in set fmu.io.LFinput & c.ref = ref
+	pre exists c in set fmu.io.LFinput & c.ref = ref;
 
--- 	/**
--- 	* Dereference an input in a given FMU.
--- 	*/
--- 	derefInput: FMU * Ref -> Variable
--- 	derefInput(fmu, ref) ==
--- 		iota c in set fmu.inputs & c.ref = ref
--- 	pre exists c in set fmu.inputs & c.ref = ref;
+	/**
+	* Dereference an output in a given FMU.
+	*/
+	derefOutput: FMU * Ref -> Variable
+	derefOutput(fmu, ref) ==
+		iota c in set fmu.io.LFoutput & c.ref = ref
+	pre exists c in set fmu.io.LFoutput & c.ref = ref;
 
--- 	/**
--- 	* Dereference an output in a given FMU.
--- 	*/
--- 	derefOutput: FMU * Ref -> Variable
--- 	derefOutput(fmu, ref) ==
--- 		iota c in set fmu.outputs & c.ref = ref
--- 	pre exists c in set fmu.outputs & c.ref = ref;
+types
+Connections ::
+		dataConnections			: map FMURef to FMURef
+		clockConnections		: map FMURef to FMURef
+		timedClockConnections	: map Name to set1 of FMURef
+	inv mk_Connections(connections, clockConnections, timedClockConnections) ==
+		dom clockConnections inter dom connections = {}
+		and rng clockConnections inter rng connections = {}
+		-- and rng clockConnections inter rng timedClockConnections = {}
+		and (forall connection in set dom connections & connection.name <> connections(connection).name)
+		and (forall connection in set dom clockConnections & connection.name <> clockConnections(connection).name);
 
--- types
+
 -- 	/**
 -- 	* A machine is a collection of FMUs, plus a connection map between them. The connection
 -- 	* sources must be FMU outputs and the destinations must be FMU inputs.
 -- 	*/
--- 	Machine ::
--- 		fmus					: map Name to FMU
--- 		timeBasedClocks 		: set of TimeBasedClock
--- 		connections				: map FMURef to FMURef
--- 		clockConnections		: map FMURef to FMURef
--- 		timedClockConnections	: map Name to set of FMURef
--- 	inv m ==
--- 		(forall srcRef in set dom m.connections &
--- 			-- Every connection's source is a known FMU
--- 			srcRef.name in set dom m.fmus
--- 			-- Every connection's source is an output from its FMU
--- 			and 
--- 			let srcFMU : FMU = m.fmus(srcRef.name),
--- 				trgRef : FMURef = m.connections(srcRef) in 
--- 				-- Every connection's destination is an input of its FMU
--- 				(exists v in set srcFMU.outputs & srcRef.ref = v.ref)
--- 				-- Every connection's destination is a known FMU
--- 				and trgRef.name in set dom m.fmus
--- 				and let trgFMU = m.fmus(trgRef.name) in 
--- 					(exists v in set trgFMU.inputs & trgRef.ref = v.ref)
--- 				and
--- 				--@LF exu warning 11151 entail a potential failure in the call to deferOutput, which
--- 				--		  migh mean a failed pre with some of Machine's parameters 
--- 				pre_derefOutput(srcFMU, srcRef.ref) 
--- 				and 
--- 				let output : Variable = derefOutput(srcFMU, srcRef.ref),
--- 					input : Variable = derefInput(trgFMU, trgRef.ref) in
--- 				output.type = input.type
--- 		)
--- 		and
--- 		(forall fmuref in set dom m.clockConnections &
--- 			-- Every connection's source is a known FMU
--- 			fmuref.name in set dom m.fmus
--- 			-- Every connection's source is an output from its FMU
--- 			and let fmu : FMU = m.fmus(fmuref.name) in
--- 				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <output> and v.interval = <triggered>)
--- 		and
--- 		(forall fmuref in set rng m.clockConnections &
--- 			-- Every connection's destination is a known FMU
--- 			fmuref.name in set dom m.fmus
--- 			-- Every connection's destination is an input of its FMU
--- 			and let fmu : FMU = m.fmus(fmuref.name) in
--- 				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <input> and v.interval = <triggered>)
--- 		and dom m.clockConnections inter dom m.connections = {}
--- 		and rng m.clockConnections inter rng m.connections = {}
--- 		and dom m.timedClockConnections = {c.name | c in set m.timeBasedClocks}
--- 		and forall t in set m.timeBasedClocks & t.master in set m.timedClockConnections(t.name)
--- 		and forall c in set dunion {c | c in set rng m.timedClockConnections} & 
--- 																				let clock = derefClock(m.fmus(c.name),c.ref) in
--- 																				clock.interval <> <triggered> and clock.type = <input>;	
--- functions
--- 	/**
--- 	* These functions are total, because the error conditions that you would expect
--- 	* on an API are modelled by preconditions or type invariants.
--- 	*/
+	Machine ::
+		fmus					: map Name to FMU
+		timeBasedClocks 		: set of TimeBasedClock
+		connections 			: Connections
+	inv mk_Machine(fmus, timeBasedClocks, connections) ==
+		(forall srcRef in set dom connections.dataConnections &
+			-- Every connection's source is a known FMU
+			srcRef.name in set dom fmus
+			-- Every connection's source is an output from its FMU
+			and 
+			let srcFMU : FMU = fmus(srcRef.name),
+				trgRef : FMURef = connections.dataConnections(srcRef) in 
+				-- Every connection's destination is an input of its FMU
+				(exists v in set srcFMU.io.LFoutput & srcRef.ref = v.ref)
+				-- Every connection's destination is a known FMU
+				and trgRef.name in set dom fmus
+				and let trgFMU = fmus(trgRef.name) in 
+					(exists v in set trgFMU.io.LFinput & trgRef.ref = v.ref)
+				and
+				--@LF exu warning 11151 entail a potential failure in the call to deferOutput, which
+				--		  migh mean a failed pre with some of Machine's parameters 
+				 pre_derefOutput(srcFMU, srcRef.ref) 
+				and pre_derefInput(trgFMU, trgRef.ref)
+				and 
+				let outputVar : Variable = derefOutput(srcFMU, srcRef.ref),
+					inputVar : Variable = derefInput(trgFMU, trgRef.ref) in
+				outputVar.type = inputVar.type
+		)
+		and
+		(forall fmuref in set dom connections.clockConnections &
+			-- Every connection's source is a known FMU
+			fmuref.name in set dom fmus
+			-- Every connection's source is an output from its FMU
+			and let fmu : FMU = fmus(fmuref.name) in
+				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <output> and v.interval = <triggered>)
+		and
+		(forall fmuref in set rng connections.clockConnections &
+			-- Every connection's destination is a known FMU
+			fmuref.name in set dom fmus
+			-- Every connection's destination is an input of its FMU
+			and let fmu : FMU = fmus(fmuref.name) in
+				exists v in set fmu.clocks & fmuref.ref = v.ref and v.type = <input> and v.interval = <triggered>)
+		and dom connections.timedClockConnections = {c.name | c in set timeBasedClocks}
+		and forall t in set timeBasedClocks & t.master in set connections.timedClockConnections(t.name)
+		and forall c in set dunion {c | c in set rng connections.timedClockConnections} &
+																				pre_derefClock(fmus(c.name),c.ref)
+																				and 
+																				let clock = derefClock(fmus(c.name),c.ref) in
+																				clock.interval <> <triggered> and clock.type = <input>;	
+functions
+	/**
+	* These functions are total, because the error conditions that you would expect
+	* on an API are modelled by preconditions or type invariants.
+	*/
 
--- 	set_m: FMU * Ref * Value +> FMU
--- 	set_m(fmu, ref, val) ==
--- 		mu(fmu, env |-> fmu.env ++ { ref |-> val })
--- 		-- and calculate equations?
--- 	pre preSet(fmu, ref)
--- 	post RESULT.mode = fmu.mode
--- 	and RESULT.time = fmu.time
--- 	and RESULT.inputs = fmu.inputs;
+	/*
+		The preconditions of the actions from the paper - notice that the actions are only valid when the FMUs are not in the done state
+	*/
+	preSet: FMU * Ref -> bool
+	preSet(fmu, input)==
+		exists1 v in set fmu.io.LFinput & v.ref = input and v.causality = <input>
+			and fmu.mode <> <DONE>
+			and (fmu.mode = <STEP> => v.type = <continous>)
+			and (fmu.mode = <EVENT> => v.type = <discrete>);
+	
 
--- 	get_m: FMU * Ref +> FMU * Value
--- 	get_m(fmu, ref) ==
--- 		-- calculate equations?
--- 		mk_(fmu, fmu.env(ref))
--- 	pre preGet(fmu, ref)
--- 	post fmu.mode <> <EVENT> => fmusNotAffected({RESULT.#1}, {fmu});
+	set_m: FMU * Ref * FMIValue +> FMU
+	set_m(fmu, ref, val) ==
+		mu(fmu, env |-> fmu.env ++ { ref |-> val })
+		-- and calculate equations?
+	pre preSet(fmu, ref)
+	post RESULT.mode = fmu.mode
+	and RESULT.time = fmu.time
+	and RESULT.io.LFinput = fmu.io.LFinput;
 
--- 	set_cm: FMU * Ref * bool +> FMU
--- 	set_cm(fmu, ref, val) ==
--- 		mu(fmu,
--- 			env				|-> fmu.env ++ {ref |-> mk_Value(val, fmu.time)},
--- 			activeClocks	|-> if val then fmu.activeClocks union {ref} else fmu.activeClocks \ {ref})
--- 	pre preSetC(fmu, ref, val)
--- 	post val <=> ref in set RESULT.activeClocks;
+	feedthroughSatisfied : FMU * Variable -> bool
+	feedthroughSatisfied(fmu, outputVariable)==
+		let inputs : set of Variable = {input | input in set fmu.io.LFinput & input.ref in set outputVariable.dependsOn} in
+		(forall i in set inputs &
+				i.ref in set dom fmu.env
+				and (i.contract = <reactive> => fmu.env(i.ref).time >= fmu.time)
+				and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time));
 
--- 	get_cm: FMU * Ref +> FMU * Value
--- 	get_cm(fmu, ref) ==
--- 		mk_(fmu, fmu.env(ref))
--- 	pre preGetC(fmu, ref);
+	preGet: FMU * Ref -> bool
+	preGet(fmu, ref)==
+		let outputVariable : Variable = derefOutput(fmu, ref) in
+		(exists1 v in set fmu.io.LFoutput & v.ref = ref and v.causality = <output>)
+			and fmu.mode <> <DONE>
+			and feedthroughSatisfied(fmu, outputVariable)
+	pre pre_derefOutput(fmu, ref);
 
--- 	step_tm: FMU * real +> FMU * real * bool
--- 	step_tm(fmu, step) ==
--- 		let mk_(stepTaken, eventTriggered) : real * bool = 
--- 			if step >= fmu.maxStep then mk_(fmu.maxStep, true) else mk_(step, false)
--- 		in
--- 		let newTime = mk_Time(fmu.time.r + stepTaken, fmu.time.i) in
--- 		let updatedFMU = mu(fmu, 
--- 								time |-> newTime,
--- 								env |-> updateOutputs(fmu, newTime),
--- 								stepped |-> true
--- 							)
--- 		in
--- 		mk_(updatedFMU, stepTaken, eventTriggered)
--- 	pre preStepT(fmu, step)
--- 	post postStepT(RESULT.#1, RESULT.#2, RESULT.#3, fmu, step);
+
+	get_m: FMU * Ref +> FMU * FMIValue
+	get_m(fmu, ref) ==
+		-- calculate equations?
+		mk_(fmu, fmu.env(ref))
+	pre preGet(fmu, ref) and pre_preGet(fmu, ref);
+
+
+	preSetC: FMU * Ref * bool -> bool
+	preSetC(fmu, clock, val)==
+	 	(exists1 v in set fmu.clocks & v.ref = clock and v.type = <input>)
+			and val <=> not clock in set fmu.activeClocks -- We can only activate a clock that 
+            and fmu.mode = <EVENT>;
+
+	set_cm: FMU * Ref * bool +> FMU
+	set_cm(fmu, ref, val) ==
+		mu(fmu,
+			env				|-> fmu.env ++ {ref |-> mk_FMIValue(val, fmu.time)},
+			activeClocks	|-> if val then fmu.activeClocks union {ref} else fmu.activeClocks \ {ref})
+	pre preSetC(fmu, ref, val)
+	post val <=> ref in set RESULT.activeClocks;
+
+	preGetC: FMU * Ref -> bool
+	preGetC(fmu, clock)==
+	 	(exists1 v in set fmu.clocks & v.ref = clock and v.type = <output>)
+		 and fmu.mode = <EVENT>; -- We can only get an output clock
+
+	get_cm: FMU * Ref +> FMU * FMIValue
+	get_cm(fmu, ref) ==
+		mk_(fmu, fmu.env(ref))
+	pre preGetC(fmu, ref);
+
+
+	preStepT: FMU * Real1 -> bool
+	preStepT(fmu, stepSize)==
+		let continousInputs : set of Variable = {i | i in set fmu.io.LFinput & i.type = <continous>} in
+		(forall i in set continousInputs &
+			 		(i.contract = <reactive> => fmu.env(i.ref).time.r = fmu.time.r + stepSize)
+					and (i.contract = <delayed> => fmu.env(i.ref).time = fmu.time))
+			and fmu.mode = <STEP>;
+
+
+	postStepT : FMU * Real1 * bool * FMU * Real1 -> bool
+	postStepT(fmu, stepTaken, eventTriggered, oldFMU, stepAsked) ==
+		stepTaken <= stepAsked -- We cannot take a step larger than what the Importer requested
+        and stepTaken <= oldFMU.maxStep -- We cannot take a step larger than what the FMU is capable of
+		and eventTriggered <=> (oldFMU.maxStep <= stepTaken)
+		and fmu.time.r = oldFMU.time.r + stepTaken
+		and fmu.time.i = oldFMU.time.i;
+
+	/*
+	* This function updates the value at the outputs
+	*/
+	updateOutputs : FMU * Time -> Environment
+	updateOutputs(fmu, time) ==
+		let outputRef : set of Ref = {outputVar.ref | outputVar in set fmu.io.LFoutput} in
+			{oValue |-> calculate(oValue, fmu.env, time) | oValue in set dom fmu.env & oValue in set outputRef};
+	
+	calculate : Ref * Environment * Time -> FMIValue 
+	calculate(ref, env, time) ==
+		-- env: map S to T 
+		-- T :: x : X, y: Y
+		-- mk_FMIValue(real ! bool ! nat ... , Time)
+		mk_FMIValue(env(ref).fmiValue, time)
+	pre ref in set dom env;
+
+	step_tm: FMU * Real1 +> FMU * Real1 * bool
+	step_tm(fmu, step) ==
+		let mk_(stepTaken, eventTriggered) : Real1 * bool = 
+			if step >= fmu.maxStep then mk_(fmu.maxStep, true) else mk_(step, false)
+		in
+		let newTime = mk_Time(fmu.time.r + stepTaken, fmu.time.i) in
+		let updatedFMU = mu(fmu, 
+								time |-> newTime,
+								env |-> updateOutputs(fmu, newTime),
+								stepped |-> true
+							)
+		in
+		mk_(updatedFMU, stepTaken, eventTriggered)
+	pre preStepT(fmu, step)
+	post postStepT(RESULT.#1, RESULT.#2, RESULT.#3, fmu, step);
 		
-		
--- 	step_e: FMU +> FMU * bool
--- 	step_e(fmu) ==
--- 	let updatedFMU : FMU = mu(fmu, 
--- 							time |-> mk_Time(fmu.time.r, fmu.time.i + 1),
--- 							activeClocks |-> {}) 
--- 		in
--- 		mk_(updatedFMU, false) -- We never trigger a state event 
--- 	pre preStepE(fmu)
--- 	post postStepE(RESULT.#1, fmu, RESULT.#2);
+	
+	preStepE: FMU -> bool
+	preStepE(fmu)==
+		fmu.mode = <EVENT>;
+
+	postStepE: FMU * FMU * bool -> bool
+	postStepE(fmu, oldFMU, -)==
+		fmu.mode = <EVENT> 		-- FMU remains in event mode - it always does the Importer should bring it out
+        and fmu.time.i = oldFMU.time.i + 1 -- The Integer component of the FMU should be increased
+		and fmu.time.r = oldFMU.time.r
+		and fmu.activeClocks = {}; -- All clocks get disabled when we step the FMU
+
+	step_e: FMU +> FMU * bool
+	step_e(fmu) ==
+	let updatedFMU : FMU = mu(fmu, 
+							time |-> mk_Time(fmu.time.r, fmu.time.i + 1),
+							activeClocks |-> {}) 
+		in
+		mk_(updatedFMU, false) -- We never trigger a state event 
+	pre preStepE(fmu)
+	post postStepE(RESULT.#1, fmu, RESULT.#2);
 	
 
--- 	/*
--- 	* 
--- 	*/
--- 	next_tm: FMU * Ref +> RealNaN
--- 	next_tm(fmu, ref) ==
--- 		is not yet specified
--- 	pre exists v in set fmu.clocks & v.ref = ref and v.type = <input>
--- 		and v.interval in set { <tunable>, <changing>, <countdown> };
-
-
--- 	/*
--- 	* This function updates the value at the outputs
--- 	*/
--- 	updateOutputs : FMU * Time -> Environment
--- 	updateOutputs(fmu, time) ==
--- 		let outputRef : set of Ref = {o.ref | o in set fmu.outputs} in
--- 			{oValue |-> calculate(oValue, fmu.env, time) | oValue in set dom fmu.env & oValue in set outputRef};
-	
--- 	calculate : Ref * Environment * Time -> Value 
--- 	calculate(ref, env, time) ==
--- 		mk_Value(env(ref).value, time);
+	/*
+	* 
+	*/
+	next_tm: FMU * Ref +> RealNaN
+	next_tm(fmu, ref) ==
+		is not yet specified
+	pre exists v in set fmu.clocks & v.ref = ref and v.type = <input>
+		and v.interval in set { <tunable>, <changing>, <countdown> };
 
 
 
-	
--- 	/*
--- 	* This function updates the Importer's environment according to observed clock value
--- 	*/
--- 	updateEnvironmentClock : Importer * FMU * Ref * bool -> Importer
--- 	updateEnvironmentClock(I, fmu, clock, val)==
--- 		let fmuref : FMURef = mk_FMURef(fmu.name, clock),
--- 			activatedVariables : set of FMURef = createFMURefs(fmu, dunion {c.equations | c in set fmu.clocks & clock = c.ref}) in
--- 		mu(I,
--- 			scenario |-> mu(I.scenario, fmus |-> I.scenario.fmus ++ {fmu.name |-> fmu}),
--- 			activeClocks |-> if val then I.activeClocks union {fmuref} else I.activeClocks \ {fmuref},
--- 			readyClocks |-> if val then I.readyClocks \ {fmuref} else I.readyClocks,
--- 			inactiveClocks |-> if val then I.inactiveClocks \ {fmuref} else I.inactiveClocks union {fmuref},
--- 			activeEquations |-> if val then I.activeEquations union activatedVariables else I.activeEquations \ activatedVariables,
--- 			readyEquations |-> if val then I.readyEquations \ activatedVariables else I.readyEquations
--- 		)
--- 	post let fmuRef : FMURef = mk_FMURef(fmu.name, clock) in
--- 	(val => (I.activeClocks subset RESULT.activeClocks
--- 			and RESULT.readyClocks psubset I.readyClocks
--- 			and RESULT.inactiveClocks psubset I.inactiveClocks
--- 			and fmuRef in set RESULT.activeClocks))
--- 	and
--- 	(not val => (fmuRef in set RESULT.inactiveClocks));
+types
+
+	-- EventInformation ::
+	-- activeClocks : set of FMURef
+
+	/*
+		The Importer runs the simulation
+		It keeps track of the input and output to adapt to the behavior of the scenario
+		It has a simulation time and values to exchange between the FMUs
+	*/
+	Importer :: 
+		scenario : Machine
+        schedule : map Name to Real1 -- the time the clock should tick
+		activeClocks : set of FMURef -- active clocks
+		readyClocks : set of FMURef -- clocks that can be activated
+		inactiveClocks : set of FMURef -- inactive clocks
+		fmusWithEvent	: set of Name -- FMUs that triggered a state event
+		relevantOutputClocks : set of FMURef -- All Output clocks the Importer must query since their state can have changed
+		relevantInputClocks  : set of FMURef -- All Input clocks the Importer must update because their output changed 
+		activeEquations : set of FMURef -- All active equations 
+		calculatedEquations : set of FMURef -- The equations the Importer has calculated
+		readyEquations : set of FMURef -- The equations that can be activated
+		time : Time -- Simulation Time
+		endtime : Time
+		stepSize : Real1 -- Planned step size
+		valueMap : map FMURef to FMIValue
+	inv imp ==
+		let fmus = imp.scenario.fmus in
+		let inputclocks = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <input> }) | fmu in set rng fmus } in
+		let outputclocks = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <output> }) | fmu in set rng fmus } in
+		let clocks = inputclocks union outputclocks
+		in
+		--imp.activeClocks union imp.inactiveClocks = clocks  -- a clock is either inactive or active
+		card (imp.activeClocks union imp.inactiveClocks) = card clocks
+		and imp.activeClocks inter imp.inactiveClocks = {} -- a clock cannot be active and inactive
+		and imp.activeClocks inter imp.readyClocks = {} -- an active clock can not be ready
+		and imp.activeClocks = dunion {createFMURefs(fmu, fmu.activeClocks) | fmu in set rng fmus }
+		and imp.fmusWithEvent subset dom fmus -- all fmus that wishes to enter event mode is in the scenario
+		and imp.relevantInputClocks subset inputclocks -- a relevant input clock needs to be an input clock
+		and imp.relevantOutputClocks subset outputclocks -- a relevant output clock needs to be an output clock
+		and imp.relevantInputClocks inter imp.relevantOutputClocks = {}
+		--and imp.activeEquations = dunion {fmu.activeEquations | fmu in set rng fmus} -- Equations are actived by the clocks
+		--and dom imp.schedule = dunion {createFMURefs(fmu, {clock.ref | clock in set fmu.clocks & clock.type = <input> and clock.interval <> <triggered>}) | fmu in set rng fmus }-- We only have time based clocks in the schedule
+		---and imp.activeEquations = {c.equations | c in set clocks & c.ref in set imp.activeClocks} -- Invariant for the paper TYPE MISMATCH
+		and imp.endtime >= imp.time -- The simulation cannot not proceed once the endtime is reached
+		and imp.activeEquations inter imp.readyEquations = {}
+		and imp.readyEquations inter imp.calculatedEquations = {}
+		;
+
+
+functions
+
+	/*
+	* This function updates the Importer's environment according to observed clock value
+	*/
+	updateEnvironmentClock : Importer * FMU * Ref * bool -> Importer
+	updateEnvironmentClock(I, fmu, clock, val)==
+		let fmuref : FMURef = mk_FMURef(fmu.name, clock),
+			activatedVariables : set of FMURef = createFMURefs(fmu, dunion {c.equations | c in set fmu.clocks & clock = c.ref}) in
+		mu(I,
+			scenario |-> mu(I.scenario, fmus |-> I.scenario.fmus ++ {fmu.name |-> fmu}),
+			activeClocks |-> if val then I.activeClocks union {fmuref} else I.activeClocks \ {fmuref},
+			readyClocks |-> if val then I.readyClocks \ {fmuref} else I.readyClocks,
+			inactiveClocks |-> if val then I.inactiveClocks \ {fmuref} else I.inactiveClocks union {fmuref},
+			activeEquations |-> if val then I.activeEquations union activatedVariables else I.activeEquations \ activatedVariables,
+			readyEquations |-> if val then I.readyEquations \ activatedVariables else I.readyEquations
+		)
+	post let fmuRef : FMURef = mk_FMURef(fmu.name, clock) in
+	(val => (I.activeClocks subset RESULT.activeClocks
+			and RESULT.readyClocks psubset I.readyClocks
+			and RESULT.inactiveClocks psubset I.inactiveClocks
+			and fmuRef in set RESULT.activeClocks))
+	and
+	(not val => (fmuRef in set RESULT.inactiveClocks));
 
 -- 	/*
 -- 	* Calculates an input equation that needs to be calculated
@@ -771,21 +912,28 @@ definitions
 -- 	clocks subset cref
 -- post card dom RESULT = card clocks;
 
--- createFMURefs: FMU * set of Ref -> set of FMURef
--- createFMURefs(fmu, clocks) ==
--- { mk_FMURef(fmu.name, clock) | clock in set clocks }
--- post card RESULT = card clocks;
+	createFMURefs: FMU * set of Ref -> set of FMURef
+	createFMURefs(fmu, clocks) ==
+		{ mk_FMURef(fmu.name, clock) | clock in set clocks }
+	post card RESULT = card clocks;
 
--- selectMinStep : set of real -> real
--- selectMinStep(steps) == minset(steps, 10000);
+	minset : set of Real1 * Real1 -> Real1
+	minset(s, leomin) ==
+	if s = {} then leomin
+	else 
+	let e in set s in
+	let new_set : set of Real1 = s \ {e}
+	in 
+	if e < leomin then minset(new_set, e)
+	else minset(new_set, leomin)
+	pre true
+	post forall elem in set s & elem >= RESULT
+	measure card s;
 
--- minset : set of real * real -> real
--- minset(s, min) ==
--- if s = {} then min
--- else 
--- let e in set s in
--- if e < min then minset(s \ {e}, e)
--- else minset(s \ {e}, min)
--- measure card s;
+	selectMinStep : set1 of Real1 -> Real1
+	selectMinStep(steps) == minset(steps, 10000)
+	pre pre_minset(steps, 10000)
+	post forall elem in set steps & elem >= RESULT;
 
+	
 end Clocks
