@@ -44,6 +44,7 @@ import workspace.plugins.TCPlugin;
 
 public class ISAPluginSL extends ISAPlugin
 {
+	public static final String VDM_TOOLKIT = "VDMToolkit.thy"; //IsaToken.VDMTOOLKIT.toString() + ".thy";
 	public ISAPluginSL()
 	{
 		super();
@@ -91,6 +92,10 @@ public class ISAPluginSL extends ISAPlugin
 				out.write(module.translate());
 				out.close();
 			}
+
+			// if it reaches here without exceptions, then also generate the VDMToolkit on the saveURI
+			ResourceUtil.save(VDM_TOOLKIT, new File(saveUri, VDM_TOOLKIT));                
+			
 			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
 		}
 		catch (Exception e)
