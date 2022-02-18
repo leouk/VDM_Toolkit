@@ -4,37 +4,44 @@ definitions
 
 types	
 
-	Time :: 
+	Time' :: 
 		r : real
 		i : nat
-	inv mk_Time(r, -) == r >= 0
-	eq a = b == a.r = b.r and a.i = b.i
+	inv mk_Time'(r, -) == r >= 0
+	eq mk_Time'(r1, i1) = mk_Time'(r2, i2) == r1 = r2 and i1 = i2
 	ord a < b == a.r < b.r or (a.r = b.r and a.i < b.i);
+
+-- 	Time :: 
+-- 		r : real
+-- 		i : nat
+-- 	inv mk_Time(r, -) == r >= 0
+-- 	eq a = b == a.r = b.r and a.i = b.i
+-- 	ord a < b == a.r < b.r or (a.r = b.r and a.i < b.i);
 	
-	User ::
-		time : Time
-		endtime: Time;
+-- 	User ::
+-- 		time : Time
+-- 		endtime: Time;
 		
-	R ::
-		x: nat
-	-- remove this one to see what happens with >= 
-	eq r1 = r2 == r1.x = r2.x
-	ord r1 < r2 == r1.x < r2.x;
+-- 	R ::
+-- 		x: nat
+-- 	-- remove this one to see what happens with >= 
+-- 	eq r1 = r2 == r1.x = r2.x
+-- 	ord r1 < r2 == r1.x < r2.x;
 	
-functions
-	f: Time * Time -> bool
-	f(t1, t2) == t1 >= t2;
+-- functions
+-- 	f: Time * Time -> bool
+-- 	f(t1, t2) == t1 >= t2;
 	
-	g: User -> bool
-	g(mk_User(bt, et)) == et >= bt;
+-- 	g: User -> bool
+-- 	g(mk_User(bt, et)) == et >= bt;
 	
-	g': User -> bool
-	g'(u) == u.endtime >= u.time;
+-- 	g': User -> bool
+-- 	g'(u) == u.endtime >= u.time;
 	
-	r: R * R -> bool
-	r(r1, r2) == r1 >= r2;
+-- 	rr: R * R -> bool
+-- 	rr(r1, r2) == r1 >= r2;
 	
-	r': R * R -> bool
-	r'(r1, r2) == r1 > r2;
+-- 	rr': R * R -> bool
+-- 	rr'(r1, r2) == r1 > r2;
 	
 end TestV2ITypesRecordOrdering
