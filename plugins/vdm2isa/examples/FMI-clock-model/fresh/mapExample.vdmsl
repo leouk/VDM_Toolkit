@@ -1,0 +1,22 @@
+module mapExample
+exports all
+definitions
+
+types
+    S ::
+      x : nat;
+
+    T ::
+        y : map nat to S;
+
+
+functions 
+    f : T * S -> nat
+    f(m, s) ==
+        m.y(m.y(s.x).x).x;
+
+  --@STH missing the in Isabelle
+    g : T * S -> nat
+    g(m, s) ==
+        f(m, m.y(m.y(s.x).x));
+end mapExample
