@@ -37,7 +37,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private int localPOCountMissed;
-    private IsaProofStrategy strategy;
+    public static IsaProofStrategy strategy;
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
@@ -49,7 +49,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
-        strategy = IsaProofStrategy.REALISTIC;
+        strategy = IsaProofStrategy.SURRENDER;
     }
 
     public int getLocalPOCount()
@@ -276,5 +276,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override
     public String help() {
         return "isapog - translate VDM pog results for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ")";
+    }
+
+    public static final void setupProperties()
+	{
+        GeneralisaPlugin.setupProperties();
+        IsapogPlugin.strategy = IsaProofStrategy.SURRENDER;
     }
 }
