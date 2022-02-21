@@ -7,6 +7,7 @@ import vdm2isa.tr.expressions.TRApplyExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRFunctionInstantiationExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
+import vdm2isa.tr.types.TRMapType;
 
 public class TRFunctionCallFinder extends TRLeafExpressionVisitor<TCNameToken, TCNameList, Object>
 {
@@ -20,13 +21,20 @@ public class TRFunctionCallFinder extends TRLeafExpressionVisitor<TCNameToken, T
     {
         return newCollection();
     }
+
+    protected TCNameList figureOutCallType(TRVariableExpression vexp, TCNameList result)
+    {
+        assert result != null;
+        result.add(vexp.name);
+        return result;
+    }
     
     @Override
     public TCNameList caseApplyExpression(TRApplyExpression node, Object arg)
     {
         TCNameList result = newCollection();
 
-        if (node.root instanceof TRVariableExpression)
+        if (node.root instanceof TRVariableExpression && !(node.type instanceof TRMapType))
         {
             TRVariableExpression vexp = (TRVariableExpression)node.root;
             result.add(vexp.name);

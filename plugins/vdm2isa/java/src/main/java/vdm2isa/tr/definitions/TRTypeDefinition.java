@@ -518,7 +518,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	{
 		TRFunctionCallFinder finder = new TRFunctionCallFinder();
 		Map<TRSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
-
+        //@TODO refactor this and getCallMap elsewhere
 		if (invdef != null && !invdef.isImplicitlyGeneratedUndeclaredSpecification())
 		{
 			assert invdef.getBody() != null;

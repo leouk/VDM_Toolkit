@@ -19,6 +19,7 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRSpecificationKind;
+import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
 
@@ -57,7 +58,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         if (spec != null)
         {
-            TCFunctionCallFinder finder = new TCFunctionCallFinder();
+            TCRFunctionCallFinder finder = new TCRFunctionCallFinder();
             TCNameSet found = new TCNameSet();
             found.addAll(spec.body.apply(finder, null));
             if (spec.predef != null)

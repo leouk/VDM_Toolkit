@@ -7,7 +7,9 @@ types
       x : nat;
 
     T ::
-        y : map nat to S;
+        y : map nat to S
+    inv mk_T(y) == 
+      forall x in set dom y & y(x).x > 10; 
 
 
 functions 
