@@ -26,6 +26,7 @@ functions
 	post x < RESULT and y < RESULT;
 	
 	-- The one case where TRDefinition won't handle because of the use of SetComp for let-be-st!  
+	--@LF Warning [VDM   ] 11102
 	letbest: () -> nat
 	letbest() == let mk_R(x,y): R be st x > y in x+y;
 	
@@ -35,7 +36,7 @@ values
 	--TODO: TCQuoteLiteralExpression quote literal requires quote type prior definition for Isabelle 
 	--v13= merge mm;	
 	--v18: S = mk_S();
-	v65: R = mk_R(1, 2);			--TCMkTypeExpression		
+	 v65: R = mk_R(1, 2);			--TCMkTypeExpression		
 	v651 = mk_R(1,2).x;				 --TCFieldExpression via TRMkTypeExpression
 	v652 = v65.x;     			     --TCFieldExpression via TRVariableExpression
 	v653 = mkr(1).x;					--TCFieldExpression via TRApplyExpression
@@ -52,5 +53,9 @@ values
 	--v921= (def mk_R(x,y) = v65, var1: nat = 10 in var1+x+y); --TCDefExpression
 	v921= (def mk_R(x,y) = v65 in x+y); --TCDefExpression
 	--v922= (def mk_R(x,y): R in x+y); --TCDefExpression
+
+	v923= { mk_R(x,y) | mk_R(x,y) in set {v65} & x < y };
+	v924= { r | r in set {v65} & r.x < r.y };
+	v925= { r | r in seq [v65] & r.x < r.y };
 
 end TestV2IExprsRecords

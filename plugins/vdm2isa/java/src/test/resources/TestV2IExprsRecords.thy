@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2021-12-17T14:01:51.036482Z
+(* VDM to Isabelle Translation @2022-02-21T09:20:05.027366Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IExprsRecords.vdmsl' at line 1:8
@@ -14,6 +14,7 @@ begin
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 7:5\<close>
 record R = 
 	x\<^sub>R :: "VDMNat"
+		 
 		 y\<^sub>R :: "VDMNat"
 	
 
@@ -29,9 +30,12 @@ where
 		( (((inv_VDMNat (x\<^sub>R r))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R r))) ))  \<and> 
 		\<comment>\<open>User defined body of inv_R.\<close>
-		((x\<^sub>R (r)) < (y\<^sub>R (r)))"
+		((x\<^sub>R r) < (y\<^sub>R r))"
  
+lemmas inv_R_defs = inv_R_def inv_VDMNat_def 
 
+
+	
 	
 \<comment>\<open>VDM source: mkr: (nat -> R)
 	mkr(n) ==
@@ -55,9 +59,9 @@ where
 null\<close>
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 14:5\<close>
 definition
-	post_mkr :: "VDMNat\<Rightarrow> R \<Rightarrow> bool"
+	post_mkr :: "VDMNat \<Rightarrow> R \<Rightarrow> bool"
 where
-	"post_mkr n  RESULT \<equiv> 
+	"post_mkr n   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_mkr` specification.\<close>
 		((inv_VDMNat n)  \<and>  inv_R RESULT)"
 
@@ -68,6 +72,7 @@ where
 	\<comment>\<open>User defined body of mkr.\<close>
 	\<lparr>x\<^sub>R = n, y\<^sub>R = (n + (1::VDMNat1))\<rparr>"
 
+	
 	
 \<comment>\<open>VDM source: recbind: (R -> nat)
 	recbind(mk_R(x, y)) ==
@@ -91,9 +96,9 @@ where
 null\<close>
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 18:5\<close>
 definition
-	post_recbind :: "R\<Rightarrow> VDMNat \<Rightarrow> bool"
+	post_recbind :: "R \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
-	"post_recbind dummy0  RESULT \<equiv> 
+	"post_recbind dummy0   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_recbind` specification.\<close>
 		(inv_R dummy0  \<and>  (inv_VDMNat RESULT))"
 
@@ -106,6 +111,7 @@ where
 	\<comment>\<open>User defined body of recbind.\<close>
 	(x + y))"
 
+	
 	
 \<comment>\<open>VDM source: recbindSpec: (R -> nat)
 	recbindSpec(mk_R(x, y)) ==
@@ -135,9 +141,9 @@ where
 ((x < RESULT) and (y < RESULT))\<close>
 \<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 26:21\<close>
 definition
-	post_recbindSpec :: "R\<Rightarrow> VDMNat \<Rightarrow> bool"
+	post_recbindSpec :: "R \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
-	"post_recbindSpec dummy0  RESULT \<equiv> 
+	"post_recbindSpec dummy0   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_recbindSpec` specification.\<close>
 		(inv_R dummy0  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>Implicit pattern context conversion\<close>
@@ -155,15 +161,16 @@ where
 	(x + y))"
 
 	
+	
 \<comment>\<open>VDM source: letbest: (() -> nat)
 	letbest() ==
 let mk_R(x, y):R be st (x > y) in (x + y)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 30:5\<close>
 
 \<comment>\<open>VDM source: pre_letbest: (() +> bool)
 	pre_letbest() ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 30:5\<close>
 definition
 	pre_letbest :: "bool"
 where
@@ -173,7 +180,7 @@ where
 \<comment>\<open>VDM source: post_letbest: (nat +> bool)
 	post_letbest(RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 29:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 30:5\<close>
 definition
 	post_letbest :: "VDMNat \<Rightarrow> bool"
 where
@@ -191,12 +198,13 @@ where
 		 ((inv_VDMNat (y\<^sub>R dummy0))) )))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x > y)) }))"
 
 	
+	
 \<comment>\<open>VDM source: v64:(nat1 * nat1 * nat1 * nat1) = mk_(1, 2, 3, 4)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 35:5\<close>
 abbreviation
-	v64 :: "(VDMNat1\<times> VDMNat1\<times> VDMNat1\<times> VDMNat1)"
+	v64 :: "(VDMNat1 \<times> VDMNat1 \<times> VDMNat1 \<times> VDMNat1)"
 where
-	"v64 \<equiv> ((1::VDMNat1), (2::VDMNat1), (3::VDMNat1), (4::VDMNat1))"
+	"v64 \<equiv> ((1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1) , (4::VDMNat1))"
 
 	definition
 	inv_v64 :: "\<bool>"
@@ -210,8 +218,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v65:R = mk_R(1, 2)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 38:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 39:6\<close>
 abbreviation
 	v65 :: "R"
 where
@@ -224,12 +233,13 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v651:nat = (mk_R(1, 2).x)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 40:5\<close>
 abbreviation
 	v651 :: "VDMNat"
 where
-	"v651 \<equiv> (x\<^sub>R (\<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>))"
+	"v651 \<equiv> (x\<^sub>R \<lparr>x\<^sub>R = (1::VDMNat1), y\<^sub>R = (2::VDMNat1)\<rparr>)"
 
 	definition
 	inv_v651 :: "\<bool>"
@@ -238,12 +248,13 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v652:nat = (v65.x)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 40:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 41:5\<close>
 abbreviation
 	v652 :: "VDMNat"
 where
-	"v652 \<equiv> (x\<^sub>R (v65))"
+	"v652 \<equiv> (x\<^sub>R v65)"
 
 	definition
 	inv_v652 :: "\<bool>"
@@ -252,12 +263,13 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v653:nat = (mkr(1).x)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 41:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 42:5\<close>
 abbreviation
 	v653 :: "VDMNat"
 where
-	"v653 \<equiv> (x\<^sub>R ((mkr (1::VDMNat1))))"
+	"v653 \<equiv> (x\<^sub>R (mkr (1::VDMNat1)))"
 
 	definition
 	inv_v653 :: "\<bool>"
@@ -266,8 +278,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v67:R = mu(v65, x |-> 10, y |-> 20)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 42:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 43:5\<close>
 abbreviation
 	v67 :: "R"
 where
@@ -280,8 +293,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v731:R = (iota mk_R(x, y) in set {v65} & (x < y))\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 44:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 45:5\<close>
 abbreviation
 	v731 :: "R"
 where
@@ -294,8 +308,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v741:(R -> nat) = (lambda mk_R(x, y):R & (x + y))\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 45:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 46:5\<close>
 abbreviation
 	v741 :: "R \<Rightarrow> VDMNat"
 where
@@ -303,11 +318,11 @@ where
 	\<lambda> (dummy0 :: R) .let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
 		(if (( (((inv_VDMNat (x\<^sub>R dummy0))) \<and> 
 		 ((inv_VDMNat (y\<^sub>R dummy0))) ))) \<and> (inv_VDMNat (x + y)) then
-		(x + y)
-	 else
-		undefined
-	)
-	)"
+			(x + y)
+		 else
+			undefined
+		)
+		)"
 
 	definition
 	inv_v741 :: "\<bool>"
@@ -316,8 +331,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v781:bool = (forall mk_R(x, y) in set {v65} & (y < x))\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 47:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 48:5\<close>
 abbreviation
 	v781 :: "bool"
 where
@@ -330,20 +346,23 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v791:nat = let mk_R(x, y):R = v65, var1:nat = 10 in ((var1 + x) + y)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 48:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 49:5\<close>
 abbreviation
 	v791 :: "VDMNat"
 where
 	"v791 \<equiv> (
 		let 
 (dummy0::R) = v65;
-(dummy0::R) = v65;
+(dummy0::R) = v65
+		;
 		
 (var1::VDMNat) = (10::VDMNat1)
 		in
 			let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in 
-		(if (inv_R dummy0) \<and> 
+		(if (inv_R dummy0)
+	 \<and> 
 	((inv_VDMNat var1)) then
 			((var1 + x) + y)
 		 else
@@ -358,8 +377,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v801:nat = let mk_R(x, y) in set {v65} be st (x < y) in (x + y)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 51:5\<close>
 abbreviation
 	v801 :: "VDMNat"
 where
@@ -373,8 +393,9 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v810:set of (nat) = {(x + y) | mk_R(x, y) in set {v65} & (y < x)}\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 51:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 52:5\<close>
 abbreviation
 	v810 :: "VDMNat VDMSet"
 where
@@ -387,9 +408,10 @@ where
 
 	
 	
+	
 \<comment>\<open>VDM source: v921:nat = def mk_R(x, y) = v65 in
 (x + y)\<close>
-\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 53:5\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 54:5\<close>
 abbreviation
 	v921 :: "VDMNat"
 where
@@ -409,6 +431,51 @@ where
 	inv_v921 :: "\<bool>"
 where
 	"inv_v921  \<equiv> (inv_VDMNat v921)"
+
+	
+	
+	
+\<comment>\<open>VDM source: v923:set of (R) = {mk_R(x, y) | mk_R(x, y) in set {v65} & (x < y)}\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 57:5\<close>
+abbreviation
+	v923 :: "R VDMSet"
+where
+	"v923 \<equiv> { (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) | dummy0 .  ((dummy0 \<in>{v65}))  \<and> (let x = (x\<^sub>R dummy0); y = (y\<^sub>R dummy0) in (x < y)) }"
+
+	definition
+	inv_v923 :: "\<bool>"
+where
+	"inv_v923  \<equiv> (inv_VDMSet' inv_R  v923)"
+
+	
+	
+	
+\<comment>\<open>VDM source: v924:set of (R) = {r | r in set {v65} & ((r.x) < (r.y))}\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 58:5\<close>
+abbreviation
+	v924 :: "R VDMSet"
+where
+	"v924 \<equiv> { r .   ((r \<in>{v65}))  \<and> ((x\<^sub>R r) < (y\<^sub>R r)) }"
+
+	definition
+	inv_v924 :: "\<bool>"
+where
+	"inv_v924  \<equiv> (inv_VDMSet' inv_R  v924)"
+
+	
+	
+	
+\<comment>\<open>VDM source: v925:set of (R) = {r | r in seq [v65] & ((r.x) < (r.y))}\<close>
+\<comment>\<open>in 'TestV2IExprsRecords' (./src/test/resources/TestV2IExprsRecords.vdmsl) at line 59:5\<close>
+abbreviation
+	v925 :: "R VDMSet"
+where
+	"v925 \<equiv> { r .   ((r \<in>(elems [v65])))  \<and> ((x\<^sub>R r) < (y\<^sub>R r)) }"
+
+	definition
+	inv_v925 :: "\<bool>"
+where
+	"inv_v925  \<equiv> (inv_VDMSet' inv_R  v925)"
 
 	
 end
