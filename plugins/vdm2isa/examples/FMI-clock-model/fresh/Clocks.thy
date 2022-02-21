@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-17T14:07:16.225393Z
+(* VDM to Isabelle Translation @2022-02-18T09:47:13.178377Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'Clocks.vdmsl' at line 1:8
