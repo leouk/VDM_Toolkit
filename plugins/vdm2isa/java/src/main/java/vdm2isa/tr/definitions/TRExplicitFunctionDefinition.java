@@ -720,7 +720,9 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		String fcnOutType  = type.getResultType().translate();
 		// even for union pattern translate, we can "abosrb" the parameter name within the union case selection
 		// i.e. parameter name can be the same as the selected union parameter name without capturing it. 
+		boolean oldFreshness = paramPatternList.setDummyFreshness(false, true);
 		String fcnParams   = paramPatternList.translate();
+		paramPatternList.setDummyFreshness(false,true);//oldFreshness, true);
 		StringBuilder fcnBody = new StringBuilder();
 		switch (implicitSpecificationKind)
 		{
@@ -795,7 +797,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 				}
 				else
 				{
-					fcnBody.append(body.translate());
+					fcnBody.append(bodyStr);
 				}
 			}
 

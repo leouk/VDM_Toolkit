@@ -106,8 +106,7 @@ public class TRBasicPattern extends TRPattern {
 
     public TRBasicPattern(TCIgnorePattern owner)
     {
-        this(owner, IsaToken.PLACEHOLDER, IsaToken.dummyVarNames(1, owner.location) + "_ignore");//IsaToken.PLACEHOLDER.toString());
-
+        this(owner, IsaToken.PLACEHOLDER, IsaToken.dummyVarNames(1, false, owner.location) + "_ignore");//IsaToken.PLACEHOLDER.toString());
     }
 
     @Override
@@ -155,8 +154,8 @@ public class TRBasicPattern extends TRPattern {
         return result;
     }
 
-    public static final TRPattern dummyPattern(LexLocation location) {
-        return TRBasicPattern.identifier(location, IsaToken.dummyVarNames(1, location));
+    public static final TRPattern dummyPattern(LexLocation location, boolean requiresFreshness) {
+        return TRBasicPattern.identifier(location, IsaToken.dummyVarNames(1, requiresFreshness, location));
     }
 
     public static final TRPattern underscore(LexLocation location) {

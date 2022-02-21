@@ -189,7 +189,7 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
                 result = pattern;
                 break;
             case CROSSPROD: 
-                result = IsaToken.dummyVarNames(1, location);
+                result = IsaToken.dummyVarNames(1, getDummyFreshness(), location);
                 break;
             default:
                 result = null;

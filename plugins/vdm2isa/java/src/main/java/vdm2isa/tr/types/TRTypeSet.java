@@ -468,7 +468,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	@Override
 	public String invTranslate()
 	{
-		return invTranslate(IsaToken.dummyVarNames(1, getLocation()));
+		return invTranslate(IsaToken.dummyVarNames(1, false, getLocation()));
 	}
 
 	public String invTranslate(String varName)

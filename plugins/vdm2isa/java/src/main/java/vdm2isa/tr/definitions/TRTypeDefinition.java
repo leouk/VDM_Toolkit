@@ -130,7 +130,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 TRType paramType = figureOutInvariantType(false);
                 
                 TRFunctionType invType = TRFunctionType.getInvariantType(paramType);
-                TRPatternListList parameters = TRPatternListList.newPatternListList(TRBasicPattern.dummyPattern(location));
+                TRPatternListList parameters = TRPatternListList.newPatternListList(TRBasicPattern.dummyPattern(location, false));
                 this.invdef = TRExplicitFunctionDefinition.createUndeclaredSpecification(
                     //TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TCNameList typeParams, 
                     //TRFunctionType type, boolean isCurried, TRPatternListList parameters, 

@@ -557,7 +557,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     {
         return TRMultipleTypeBind.newMultipleTypeBind(
                         TRBasicPattern.identifier(exprType.location, 
-                            IsaToken.dummyVarNames(1, exprType.location) + kind.name()
+                            IsaToken.dummyVarNames(1, false, exprType.location) + kind.name()
                             ), 
                         exprType);
     }

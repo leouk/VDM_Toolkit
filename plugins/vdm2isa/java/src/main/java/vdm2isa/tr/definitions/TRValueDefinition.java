@@ -186,7 +186,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		else 
 		{
-			result = TRBasicPattern.identifier(localName.getLocation(), IsaToken.dummyVarNames(1, localName.getLocation()));
+			result = TRBasicPattern.identifier(localName.getLocation(), IsaToken.dummyVarNames(1, false, localName.getLocation()));
 			report(IsaErrorMessage.VDMSL_INVALID_PATTERN);//TODO better error please?! 
 		}
 		return result;

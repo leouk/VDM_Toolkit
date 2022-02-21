@@ -128,10 +128,10 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return getInnerType();//result;//getInnerType();
 	}
 
-	public String dummyVarNames(String varName)
+	public String dummyVarNames(String varName, boolean requiresFreshness)
 	{
 		assert varName != null;
-		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size(), location));
+		return IsaToken.parenthesise(varName + " " + IsaToken.dummyVarNames(parameters.size(), requiresFreshness, location));
 	}
 
 	protected String paramInvTranslate(int index)

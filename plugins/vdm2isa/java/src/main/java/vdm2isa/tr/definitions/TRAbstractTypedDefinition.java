@@ -107,7 +107,7 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
         if (type instanceof TRFunctionType)
         {   
             // function types require dummy names for invariant string translation
-            dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), type.location);
+            dummyNames = IsaToken.dummyVarNames(((TRFunctionType)type).parameters.size(), false, type.location);
         }
         return dummyNames;
     }

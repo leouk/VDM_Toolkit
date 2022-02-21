@@ -18,6 +18,8 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
     
     private static final long serialVersionUID = 1L;
 
+	private boolean dummyFreshness;
+
 	//Patterns might be changed/massaged, so recreated every time
 	//private TCNameList namesInPattern = null;
 
@@ -41,6 +43,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 	public void setup()
 	{
 		super.setup();
+		dummyFreshness = false;
 		// pattern lists are space separated in Isabelle, not commas please. 
 		setSemanticSeparator(IsaToken.SPACE.toString());//IsaToken.COMMA.toString());
 		setFormattingSeparator(IsaToken.SPACE.toString());
@@ -72,6 +75,25 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		}
         return nlist;
     }
+
+	public boolean getDummyFreshness()
+	{
+		return dummyFreshness;
+	}
+
+	public boolean setDummyFreshness(boolean requiresFreshness, boolean deep)
+	{
+		boolean result = getDummyFreshness();
+		dummyFreshness = requiresFreshness;
+		if (deep)
+		{
+			for (TRPattern n : this)
+			{
+				n.setDummyFreshness(requiresFreshness);
+			}
+		}
+		return result;
+	}
 
 	public boolean uniqueNames()
 	{

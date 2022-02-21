@@ -43,6 +43,27 @@ public class TRPatternListList extends TRMappedList<TCPatternList, TRPatternList
 		super(from);
 	}
 
+	private boolean dummyFreshness = false;
+
+	public boolean getDummyFreshness()
+	{
+		return dummyFreshness;
+	}
+
+	public boolean setDummyFreshness(boolean requiresFreshness, boolean deep)
+	{
+		boolean result = getDummyFreshness();
+		dummyFreshness = requiresFreshness;
+		if (deep)
+		{
+			for (TRPatternList n : this)
+			{
+				n.setDummyFreshness(requiresFreshness, deep);
+			}
+		}
+		return result;
+	}
+
 	public boolean uniqueNames()
 	{
 		return this.getFlatPatternList().uniqueNames();

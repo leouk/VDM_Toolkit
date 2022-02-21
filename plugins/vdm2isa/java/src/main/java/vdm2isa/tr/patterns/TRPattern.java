@@ -24,14 +24,36 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
     private static final long serialVersionUID = 1L;
 
     private final TCPattern vdmPattern;
-    private Boolean uniqueNames = null;
+    private Boolean uniqueNames;
+    private boolean dummyFreshness;
 
     protected TRPattern(TCPattern p, LexLocation location)
     {
         super(location);
         this.uniqueNames = null;
+        this.dummyFreshness = false;
         this.vdmPattern = p == null ? new TCIgnorePattern(location) : p; 
     }
+
+    @Override 
+    public void setup()
+    {
+        super.setup();
+        uniqueNames = null;
+        dummyFreshness = false;
+    }
+
+	public boolean getDummyFreshness()
+	{
+		return dummyFreshness;
+	}
+
+	public boolean setDummyFreshness(boolean requiresFreshness)
+	{
+		boolean result = getDummyFreshness();
+		dummyFreshness = requiresFreshness;
+		return result;
+	}
 
     public TRPatternList getPatternList()
     {

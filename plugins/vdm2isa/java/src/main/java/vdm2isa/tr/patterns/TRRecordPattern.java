@@ -70,7 +70,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
      */
      @Override
     public String translate() {
-         return IsaToken.dummyVarNames(1, location);
+         return IsaToken.dummyVarNames(1, getDummyFreshness(), location);
     }
 
     @Override

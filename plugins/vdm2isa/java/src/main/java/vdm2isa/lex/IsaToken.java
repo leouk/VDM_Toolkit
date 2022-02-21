@@ -378,23 +378,35 @@ public enum IsaToken {
 
 	protected static long dummyCount = 0;
 
-	public static final String dummyVarNames(int count, LexLocation location)
+	private static final String dummyName(int idx, boolean requiresFreshness)
+	{
+		assert idx >= 0;
+		// only increment the dummy count for freshness if necessary, returning
+		// the earlier version onto the string. 
+		String result = IsaToken.DUMMY.toString() +
+			(requiresFreshness ? (IsaToken.dummyCount++) + "cnt" : "") + Long.toString(idx);
+		return result;
+	}
+
+	/**
+	 * Creates requested number of dummy names, where freshness is dependent of context. 
+	 * @param count number of dummies to create
+	 * @param requiresFreshness whether they are fresh (unique)
+	 * @param location
+	 * @return space separated list of dummy names
+	 */
+	public static final String dummyVarNames(int count, boolean requiresFreshness, LexLocation location)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (count <= 0)
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_DUMMYNAME_ERROR_1P, location, count);
 		else
 		{
-			sb.append(IsaToken.DUMMY.toString() + Long.toString(0));//IsaToken.dummyCount));
-			// keep dummy names unique for user clarity (doesn't matter semantically)
-			// doesn't quite work, becuse it's location senstivive :-(
-			IsaToken.dummyCount++;
+			sb.append(IsaToken.dummyName(0, requiresFreshness));
 			for (int i = 1; i < count; i++)
 			{
 				sb.append(IsaToken.SPACE.toString()); 
-				sb.append(IsaToken.DUMMY.toString() + Long.toString(i));//IsaToken.dummyCount));
-				// keep dummy names unique for user clarity (doesn't matter semantically)
-				IsaToken.dummyCount++;
+				sb.append(IsaToken.dummyName(i, requiresFreshness));
 			}	
 		}
 		return sb.toString();

@@ -51,7 +51,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         setFormattingSeparator("\n\t\t");
         setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
         // LetBeSt is represented through in set of a set comprehension constructed on the fly, with necessary adjustments to exptype for the set comp.
-        String original = IsaToken.dummyVarNames(1, location);
+        String original = IsaToken.dummyVarNames(1, false, location);
         TRMultipleBindList bindings = bind.getMultipleBindList();
         this.vInSetS = TRBinaryExpression.newBinaryExpression(
             TRVariableExpression.newVariableExpr(location, /*name,*/ original, exptype),
@@ -87,7 +87,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE);
         sb.append(IsaToken.parenthesise(
-            IsaToken.dummyVarNames(1, location) +
+            IsaToken.dummyVarNames(1, false, location) +
             IsaToken.TYPEOF.toString() +
             getType().translate()));
         sb.append(IsaToken.SPACE);
