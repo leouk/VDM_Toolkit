@@ -57,7 +57,10 @@ public class ISAPluginSL extends ISAPlugin
 		{
 			JSONObject params = request.get("params");
 			File saveUri = Utils.uriToFile(params.get("saveUri"));
-
+			JSONObject options = params.get("options");
+			boolean printVDMComments = options.get("printVDMComments");
+			IsaProofStrategy ps = IsaProofStrategy.valueOf(options.get("proofStrategy"));
+			
 			TCPlugin tc = PluginRegistry.getInstance().getPlugin("TC");
 			TCModuleList tclist = tc.getTC();
 			
