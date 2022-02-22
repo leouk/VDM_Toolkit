@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import json.JSONArray;
 import json.JSONObject;
+import vdmj.commands.Command;
 import workspace.lenses.CodeLens;
 import workspace.plugins.AnalysisPlugin;
 
@@ -75,5 +76,25 @@ public abstract class ISAPlugin extends AnalysisPlugin
 		List<CodeLens> lenses = new Vector<CodeLens>();
 		// lenses.add(new EditCodeLens());
 		return lenses;
+	}
+	
+	@Override
+	public Command getCommand(String line)
+	{
+		if (line.startsWith("isa"))
+		{
+			return new ISACommand(line);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	@Override
+	public String[][] getCommandHelp()
+	{
+		String[][] entries = { {"isa", "isa - Example plugin command" } };
+		return entries;
 	}
 }
