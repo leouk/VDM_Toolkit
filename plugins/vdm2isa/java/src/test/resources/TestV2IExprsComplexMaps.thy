@@ -36,7 +36,100 @@ where
 lemmas inv_R_defs = inv_R_def inv_VDMNat_def 
 
 
-	
+abbreviation
+	v5_manual :: "(R \<rightharpoonup> VDMNat1)"
+where
+	"v5_manual \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+    \<comment> \<open>@LF Add 'parts' Isa comments \<close>
+  \<comment> \<open>@LF domain set\<close>
+		{ dummy0DOMAIN | (dummy0DOMAIN :: R) . 
+          \<comment> \<open>@LF remove the type bound warning, but has to do with the R! \<close>
+          \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  
+        (inv_R dummy0DOMAIN)   
+          \<and>
+        (let x = x\<^sub>R dummy0DOMAIN; y = y\<^sub>R dummy0DOMAIN in  
+        \<comment> \<open>@LF this will be tricky: have to get the context outside of the bound and into the predicate part
+                that's needed because the bound variables are not x and y but R! \<close>  
+          ((x \<in>{(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}))  \<and>  
+           ((y \<in>{(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and>
+          (x < y)) }
+  \<comment> \<open>@LF range set\<close>
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}))  \<and>  ((y \<in>{(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)}))  \<and> (x < y) } 
+  \<comment> \<open>@LF domain invariant\<close>		
+		inv_R 
+  \<comment> \<open>@LF range invariant\<close>
+		(inv_VDMNat1)
+    domid
+    (rngcnst 10)
+    truecnst 
+)"
+(*
+		(
+	\<lambda> (dummy0DOMAIN :: R)   (dummy0RANGE :: VDMNat1) .
+		(if ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> 
+		(((inv_VDMNat (x\<^sub>R (
+		if ((\<exists> (dummy0DOMAIN :: R)   (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R (
+		if ((\<exists> (dummy0DOMAIN :: R)   (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined)))))
+		) then
+			(
+		if ((\<exists> (dummy0DOMAIN :: R)   (dummy0DOMAIN :: R)  . (((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and>  ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		))) \<longrightarrow> ((dummy0DOMAIN = \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>) \<and> (x < y))))) then
+		(dummy0DOMAIN)
+		else
+		(undefined))
+		 else
+			undefined
+		)
+		) 
+		(rngcnst (10::VDMNat1)) 
+		(
+	\<lambda> (dummy0DOMAIN :: R)   (dummy0RANGE :: VDMNat1) .
+		(if ((
+		(((inv_VDMNat (x\<^sub>R dummy0DOMAIN))) \<and> 
+		 ((inv_VDMNat (y\<^sub>R dummy0DOMAIN)))
+		)))  \<and>  (((inv_VDMNat1 dummy0RANGE))) \<and> (inv_bool (
+		if ((\<exists> x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and> (x < y))))) then
+		((True::\<bool>))
+		else
+		(undefined))) then
+			(
+		if ((\<exists> x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and> (x < y))))) then
+		((True::\<bool>))
+		else
+		(undefined))
+		 else
+			undefined
+		)
+		))"
+	*)
 	
 \<comment>\<open>VDM source: v5:map (R) to (nat1) = {mk_R(x, y) |-> 10 | x in set {1, 2, 3}, y in set {4, 5, 6} & (x < y)}\<close>
 \<comment>\<open>in 'TestV2IExprsComplexMaps' (./src/test/resources/TestV2IExprsComplexMaps.vdmsl) at line 24:5\<close>
