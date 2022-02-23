@@ -72,7 +72,7 @@ public class ISAPluginSL extends ISAPlugin
 			{
 				Diag.fine("Setting up Isabelle translation plugin properties");
 				GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
-				GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? Long.valueOf(options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
+//				GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? Long.valueOf(options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
 				GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
 				Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
 				Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
@@ -83,7 +83,7 @@ public class ISAPluginSL extends ISAPlugin
 				Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
 				Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
 				IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
-				IsaProofStrategy.valueOf(String.valueOf(options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+					IsaProofStrategy.valueOf(String.valueOf(options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
 			}
 			else
 			{
