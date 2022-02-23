@@ -35,6 +35,7 @@ import lsp.Utils;
 import rpc.RPCErrors;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
@@ -44,7 +45,7 @@ import workspace.plugins.TCPlugin;
 
 public class ISAPluginSL extends ISAPlugin
 {
-	public static final String VDM_TOOLKIT = "VDMToolkit.thy"; //IsaToken.VDMTOOLKIT.toString() + ".thy";
+	public static final String VDM_TOOLKIT = IsaToken.VDMTOOLKIT.toString() + ".thy";
 	public ISAPluginSL()
 	{
 		super();
