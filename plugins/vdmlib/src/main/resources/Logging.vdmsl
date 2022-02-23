@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------------
 --@header 
---@doc Copyright Leo Freitas 2019-2020 
---@v35, 13/10/2020
---@todo operations logging
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Implementation of basic logging operations with different output levels
 ------------------------------------------------------------------------------------
 module Logging
 imports

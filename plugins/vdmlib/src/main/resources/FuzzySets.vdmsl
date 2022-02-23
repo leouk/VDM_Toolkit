@@ -1,5 +1,9 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
 --@doc Implementation of basic fuzzy sets as defined in https://en.wikipedia.org/wiki/Fuzzy_set
 --@author Leo Freitas, 30/07/2021
+------------------------------------------------------------------------------------
 module FuzzySets
 imports
 	from VDMUtil	

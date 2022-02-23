@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------------
 --@header 
---@doc Copyright Leo Freitas 2019-2020 
---@v35, 17/10/2020
---@todo complete traces
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Extension of the standard VDM mathematical toolkit 
+--@todo complete traces; merge Support2 into it
 ------------------------------------------------------------------------------------
 module Support1
 imports

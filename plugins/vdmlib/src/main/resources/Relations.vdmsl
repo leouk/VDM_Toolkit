@@ -1,7 +1,8 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
 --@doc Z mathametical toolkit for relations for VDM as executable specifications
---@author Leo Freitas 
---@date Aug 2010 
---@version March 2019
+------------------------------------------------------------------------------------
 module Relations
 exports
 	types

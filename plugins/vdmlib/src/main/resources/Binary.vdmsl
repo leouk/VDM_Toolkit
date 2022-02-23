@@ -1,3 +1,9 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Imeplementation of binary transformations to Hex and some bit-vector operators 
+------------------------------------------------------------------------------------
+
 module Binary
 imports
 from VDMUtil

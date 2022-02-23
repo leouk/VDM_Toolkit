@@ -3,6 +3,9 @@
 --@doc Copyright Leo Freitas 2019-2020 
 --@v40, 31/11/2020
 --@doc International Standard of Quantities and Units
+--@doc inspired by ISQ (https://en.wikipedia.org/wiki/International_System_of_Units) 
+--		 encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
+--		 simplified to consider just time, with hours as the base unit of time.
 ------------------------------------------------------------------------------------
 module ISQ
 imports
@@ -302,10 +305,6 @@ definitions
 ------------------------------------------------------------------------------------
 --@chapter International Standard Units (and Quantities) 
 ------------------------------------------------------------------------------------
---@doc inspired by ISQ (https://en.wikipedia.org/wiki/International_System_of_Units) 
---		 encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
---		 simplified to consider just time, with hours as the base unit of time.
---
 types
 
 ------------------------------------------------------------------------------------

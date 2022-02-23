@@ -1,7 +1,9 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
 --@doc Generic ordering relations notions 
---@author Leo Freitas, March 2019
 --@doc Generalisation of oredering notions with user-defined parameter @Y
---@author Leo Freitas and Aaron Buhagiar, August 2021
+------------------------------------------------------------------------------------
 module Ordering
 imports
 	from Relations

@@ -1,4 +1,8 @@
---@doc like Stack but without type parameter (no quote type)
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Stack as an abstract data type (inspired by SPARK ADTs)
+------------------------------------------------------------------------------------
 module Stack
 exports 
 	types

@@ -1,3 +1,10 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Implementation of matrix operations as abstract data type vectors 
+--@doc This is inpired in lemmas/operations on Matrices from Isabelle/HOL
+--@todo not struct export Vector! 
+------------------------------------------------------------------------------------
 module Matrix_Seq
 exports all
 definitions 

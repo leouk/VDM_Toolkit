@@ -1,3 +1,8 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Implementation of basic assertion operations
+------------------------------------------------------------------------------------
 module Asserting
 imports 
 	from IO 
