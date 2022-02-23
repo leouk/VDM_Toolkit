@@ -4,31 +4,37 @@
 			"name": "Asserting",
 			"description": "VDM Toolkit assertions library",
 			"files": ["Asserting.vdmsl"],
-			"depends": ["IO.vdmsl"]
+			"depends": ["IO"]
 		},
 		{
 			"name": "Binary",
 			"description": "VDM Toolkit binary operators library",
 			"files": ["Binary.vdmsl"],
-			"depends": ["VDMUtil.vdmsl", "Support1.vdmsl"]
+			"depends": ["VDMUtil", "Support1"]
 		},
 		{
 			"name": "FuzzySets",
 			"description": "VDM Toolkit fuzzy sets library",
 			"files": ["FuzzySets.vdmsl"],
-			"depends": ["VDMUtil.vdmsl", "Support1.vdmsl"]
+			"depends": ["VDMUtil", "Support1"]
 		},
 		{
 			"name": "ISQ",
 			"description": "VDM Toolkit international system of quantities library",
 			"files": ["ISQ.vdmsl"],
-			"depends": ["Support1.vdmsl", "MATH.vdmsl"]
+			"depends": ["Support1", "MATH"]
 		},
 		{
 			"name": "Logging",
 			"description": "VDM Toolkit information logging library",
 			"files": ["Logging.vdmsl"],
-			"depends": ["VDMUtil.vdmsl", "IO.vdmsl"]
+			"depends": ["VDMUtil", "IO"]
+		},
+		{
+			"name": "Matrix_Seq",
+			"description": "VDM Toolkit matrix operators support library",
+			"files": ["Matrix_Seq.vdmsl"],
+			"depends": []
 		},
 		{
 			"name": "Ordering",
@@ -40,7 +46,7 @@
 			"name": "Relations",
 			"description": "VDM Toolkit Z-style relational operators library",
 			"files": ["Relations.vdmsl"],
-			"depends": ["Ordering.vdmsl"]
+			"depends": ["Ordering"]
 		},
 		{
 			"name": "Stack",
@@ -49,10 +55,10 @@
 			"depends": []
 		},
 		{
-			"name": "Matrix_Seq",
-			"description": "VDM Toolkit matrix operators support library",
-			"files": ["Matrix_Seq.vdmsl"],
-			"depends": []
+			"name": "Support1",
+			"description": "VDM Toolkit mathematical support library",
+			"files": ["Support1.vdmsl"],
+			"depends": ["MATH"]
 		}	
 	]
 }
