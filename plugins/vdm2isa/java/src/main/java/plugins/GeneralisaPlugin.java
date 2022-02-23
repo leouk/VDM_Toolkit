@@ -43,7 +43,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 	// target isabelle version (i.e. result of "isabelle version" call)
 	public static String isaVersion; 
 	// assuming max translation errors equals max type errors for now
-	public static int maxErrors;
+	public static long maxErrors;
 	// strict handling of errors (e.g. print output or not etc.)
 	public static boolean strict;	
     // whether to report or hide warnings
