@@ -1,0 +1,65 @@
+module Asserting
+imports 
+	from IO 
+		operations printf renamed printf
+exports 
+	operations
+		high_assert: seq1 of char * ? * ? * (? * ? -> bool) ==> ();
+    high_assert_all: seq1 of (seq1 of char * ? * ? * (? * ? -> bool)) ==> ();
+		assert: seq1 of char * ? * ? * bool ==> ();
+		assert_all: seq1 of (seq1 of char * ? * ? * bool) ==> ()
+		
+definitions 
+
+operations 
+  --@doc Inspired in an example from Nick Battle - high-order test between expected and actual of any type raising an error in case test fails
+  high_assert: seq1 of char * ? * ? * (? * ? -> bool) ==> ()
+  high_assert(msg, expected, actual, test) ==
+    if not test(expected, actual) then
+    (
+        printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
+        exit "Assertion failed";
+    );
+
+  --@doc like high assert, but accummulate failures before exiting
+  high_assert_all: seq1 of (seq1 of char * ? * ? * (? * ? -> bool)) ==> ()
+  high_assert_all(ss) ==
+    (dcl i: nat := 0;
+       for s in ss do
+        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+        -- let mk_(msg,expected,actual,test) = s in
+        let msg			: seq1 of char = s.#1,
+        	  expected: ? 		 = s.#2,
+        	  actual  : ? 		 = s.#3,
+        	  test	  : (?*?->bool) = s.#4
+         in
+           if not test(expected, actual) then
+           (
+               i := i+1;
+               --@todo NB: it would be nice to have a formatf as well as printf in I/O?
+               printf("FAILED! %1s: Expected %2s, actual %3s\n\n", [msg, expected, actual]);
+            );
+       if i > 0 then
+        exit "Assertion failed";         
+    );
+    
+	--@todo NB: perhaps pass type parameter for "?"? No :-(... operations can't have type params okay.
+  --assert[@T]: seq1 of char * @T * @T * bool ==> ()
+	assert: seq1 of char * ? * ? * bool ==> ()
+  assert(msg, expected, actual, equals) ==
+    high_assert(msg, expected, actual, (lambda e: ?, a: ? & if equals then e = a else e <> a));
+
+  assert_all: seq1 of (seq1 of char * ? * ? * bool) ==> ()
+  assert_all(ss) ==
+    high_assert_all([
+        --@todo/codegen/mods0 CG-warning/Java-Error: tuple pattern
+        --let mk_(msg,expected,actual,equals) = ss(i) in
+        let v			  : seq1 of char * ? * ? * bool = ss(i),
+        		msg			: seq1 of char = v.#1,
+        		expected: ? = v.#2,
+        		actual  : ? = v.#3,
+        		equals  : bool = v.#4
+        in
+            mk_(msg, expected, actual,(lambda e: ?, a: ? & if equals then e = a else e <> a)) | i in set inds ss ]);
+            
+end Asserting

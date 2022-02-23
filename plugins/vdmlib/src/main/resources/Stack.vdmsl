@@ -1,0 +1,201 @@
+--@doc like Stack but without type parameter (no quote type)
+module Stack
+exports 
+	types
+		--@doc do not export struct!
+		Stack
+	functions
+		size: Stack -> nat;
+		empty: () -> Stack;
+		vset: Stack -> set of ?;
+		top: Stack -> ?;
+		push: Stack * ? -> Stack;
+		pop: Stack -> Stack;
+
+		within_stack: Stack * ? -> bool ; 
+		filter: Stack * (? -> bool) -> Stack;
+		howMany: Stack * (? -> bool) -> nat;
+		search: Stack * (? -> bool) -> ?;
+		lookup[@T]: Stack -> ?;
+		ttop[@T]: Stack -> @T;
+		top_has_type[@T]: Stack -> bool;
+		type_test[@T]: () -> (? -> bool);
+		type_convergent[@T]: Stack -> bool;
+		tOccurrances[@T]: Stack -> nat;
+		update[@T]: Stack * @T -> Stack;
+		
+		post_empty: Stack +> bool;
+		post_vset: Stack * set of ? +> bool;
+		post_top: Stack * ? +> bool;
+		post_push: Stack * ? * Stack +> bool;
+		post_pop: Stack * Stack +> bool;
+		
+		post_filter: Stack * (? -> bool) * Stack +> bool;
+		post_howMany: Stack * (? -> bool) * nat +> bool;
+		post_search: Stack * (? -> bool) * ? +> bool; 
+		post_lookup[@T]: Stack * ? +> bool
+		
+definitions
+
+types
+	Stack = seq of ?;
+	
+functions
+
+	--@doc stack size
+	size: Stack -> nat
+	size(s) == len s;
+	
+	--@doc empty stack
+	empty: () -> Stack
+	empty() == []
+	post
+		size(RESULT) = 0;
+		
+	--@doc set view of the stack
+	vset: Stack -> set of ?
+	vset(s) == elems s
+	post
+		(card RESULT = 0 <=> size(s) = 0)
+		and
+		card RESULT <= size(s);
+
+	--@doc checks whether given element is within stack, nil is within empty stack but not within non-empty stack?
+	within_stack: Stack * ? -> bool
+	within_stack(s,t) ==
+		(size(s) = 0 <=> t = nil)
+		and
+		(size(s) > 0 <=> t in set vset(s));
+		
+	--@doc peek at the top without changing stack 
+	top: Stack -> ?
+	top(s) ==
+		if s = [] then nil else s(size(s))
+	post
+		within_stack(s,RESULT);
+			
+	--@doc pushes given element to the returned stack, nil is allowed (?)
+	push: Stack * ? -> Stack
+	push(s,t) == s ^ [t]
+	post
+		size(s)+1 = size(RESULT) 
+		and
+		t in set vset(RESULT);
+		
+	--@doc pops the given stack returning the updated stack
+	pop: Stack -> Stack 
+	pop(s) == 
+		if s = [] then s else tl s
+	post
+		(size(s) = 0 <=> RESULT = s)
+		and
+		(size(s) > 0 <=> size(s) = size(RESULT)+1)
+		;
+
+	--@doc filters given stack by given search criteria 
+	filter: Stack * (? -> bool) -> Stack
+	filter(s, criteria) ==
+		[ i | i in seq s & criteria(i) ]
+	post
+		size(RESULT) <= size(s)
+		and
+		let vr: set of ? = vset(RESULT) in
+			vr subset vset(s)
+			and
+			forall i in set vr & criteria(i);
+
+	--@doc how many instances of specific value filter the stack contains	
+	howMany: Stack * (? -> bool) -> nat
+	howMany(s,criteria) == size(filter(s,criteria))
+	post
+		RESULT <= size(s);
+		
+	--@doc finds the first value satisfying criteria predicate from the top
+	search: Stack * (? -> bool) -> ? 
+	search(s,criteria) ==
+		let fr: Stack = filter(s,criteria) in
+			if size(fr) > 0 then fr(size(fr)) else nil--hd (reverse fr) else nil
+	post
+		--@doc lookup succeeds similarly to top
+		(RESULT <> nil <=> within_stack(s,RESULT));
+		
+	--@doc determines whether the top of the stack has type @T, empty stack top is nil, which doesn't have type @T
+	top_has_type[@T]: Stack -> bool
+	top_has_type(s) == is_(top(s),@T);
+
+	--@doc peek at the top with expected result type, can't be nil	
+	ttop[@T]: Stack -> @T
+	ttop(s) == let r: @T = top(s) in r
+	pre
+		top_has_type[@T](s) and size(s) > 0
+	post
+		post_top(s, RESULT);
+
+	--@doc creates an is_ type test for @T 
+	type_test[@T]: () -> (? -> bool)
+	type_test() == (lambda t: ? & is_(t, @T));
+
+	--@doc all elements of the stack are type convergent up to @T
+	type_convergent[@T]: Stack -> bool
+	type_convergent(s) == 
+		forall i in set inds s & type_test[@T]()(s(i));
+	
+	lookup[@T]: Stack -> ?
+	lookup(s) == 
+		search(s, type_test[@T]())
+	post
+		post_search(s,type_test[@T](),RESULT)
+		and
+		(RESULT <> nil => type_test[@T]()(RESULT));
+		
+	--@doc like within_stack but for type @T values rather than specific t: @T
+	within_tstack[@T]: Stack -> bool
+	within_tstack(s) ==
+		(size(s) = 0 <=> false)
+		and
+		(size(s) > 0 <=> lookup[@T](s) <> nil);
+	
+	--@doc like howMany or within_stack, but for up to type @T's occurrance e.g. how many types values of type @T occur ibn Stack
+	tOccurrances[@T]: Stack -> nat
+	tOccurrances(s) == 
+		size(filter(s, type_test[@T]()))
+	post
+		RESULT <= size(s);
+		
+	lastIndexOf[@T]: Stack -> [nat1]
+	lastIndexOf(s) == 
+		--@doc09 simple index of doesn't work because we are looking for @T not t
+		--			 support`indexOf[?](t, s);
+		if within_tstack[@T](s) then
+		  --@doc09 has to be the last index!
+		  let i in set inds s be st type_test[@T]()(s(i)) and (forall j in set inds s \ {i} & j <= i) in i
+		else
+			nil
+	post
+		(RESULT <> nil => lookup[@T](s) <> nil);
+	
+	--@doc looks up within the stack the first instance satisfying type test for @T
+	update[@T]: Stack * @T -> Stack
+	update(s, t) == 
+		let i: nat1 = lastIndexOf[@T](s) in 
+			s(1,...,i-1) ^ [t] ^ s(i+1,...,len s) 
+	pre
+		within_tstack[@T](s)
+	post
+		size(s) = size(RESULT)
+		and
+		lookup[@T](s) <> nil;
+
+	--print let s=push(push(push(push(push(empty(),3),4),5),3),0), l=(lambda i: nat & i=6) in search(s,l)
+	--print let s=push(push(push(push(push(empty(),3),4),5),3),0) in type_convergent[nat](s)
+	--print let s=push(push(push(push(push(empty(),3),"test"),mk_(0,1)),3),[0,1]) in type_convergent[nat](s)
+	--print let s=push(push(push(push(push(empty(),3),"test"),mk_(0,1)),3),[0,1]) in type_convergent[nat|seq of char|nat*nat|seq of nat](s)
+	--print let s=push(push(push(push(push(empty(),3),"test"),mk_(0,1)),3),[0,1]), l=(lambda i: ? & is_(i,nat)) in search(s,l)
+	--print let s=push(push(push(push(push(empty(),3),"test"),mk_(0,1)),3),[0,1]), l=(lambda i: ? & is_(i,nat)) in lookup[nat](s)
+
+	--print top(empty())
+	--print ttop[nat](empty())
+				   
+	--print let s = push(push(push(push(empty(),1),true),3),false) in update[bool](s, true)
+	--print let s = push(push(push(push(push(empty(),1),true),3),false),"Leo") in tOccurrances[seq of char](s)   		
+end Stack

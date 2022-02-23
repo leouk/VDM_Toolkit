@@ -1,0 +1,208 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2020 
+--@v35, 13/10/2020
+--@todo operations logging
+------------------------------------------------------------------------------------
+module Logging
+imports
+	from IO
+		operations
+			print renamed print;
+			printf renamed printf;
+,	
+	from VDMUtil
+		functions
+			val2seq_of_char renamed val2str;
+		
+exports 
+	types
+		struct String;
+		struct LogLevel;
+		struct Trace;
+		
+	values
+		DEFAULT_LOG_LEVEL: LogLevel;
+	
+	operations
+		set_log_level: LogLevel ==> ();
+		get_log_level: () ==> LogLevel;
+		get_trace: () ==> Trace;
+		should_log: LogLevel ==> bool;
+		print_trace: () ==> ();
+		reset_trace: () ==> ();
+		log: LogLevel * String ==> ();
+		logf: LogLevel * String * seq of ? ==> ();
+		tlog: LogLevel * ? * String ==> ();
+		tlogf: LogLevel * ? * String * seq of ? ==> ();
+		last_trace_is: LogLevel ==> bool;
+definitions 
+types
+	String = seq1 of char;
+	
+	Trace = seq of String;
+	
+	LogLevel = <Debug> | <Verbose> | <Todo> | <Trace> | <Info> | <Question> | <Warning> | <Error> | <Fatal>
+	ord l1 < l2 == 
+		let 
+			value =  --map (<Debug> | ... ) to nat
+				{ <Debug>       |-> 0,
+					<Verbose>     |-> 1,
+					<Todo>		    |-> 2,
+					<Trace>       |-> 3,
+					<Info> 		    |-> 4,
+					<Question>		|-> 5,
+					<Warning>     |-> 6,
+					<Error>		    |-> 7,
+					<Fatal>       |-> 8
+				}
+		in
+			value(l1) < value(l2);			
+
+values
+	DEFAULT_LOG_LEVEL: LogLevel = <Info>;
+
+functions
+	last[@T]: seq1 of @T -> @T
+	last(s) == s(len s);
+	
+	log_pad: LogLevel -> String
+	log_pad(level) ==
+		"\t" ^
+		(cases level:
+			<Trace>   -> "@@",
+			<Info>    -> "##",
+			<Question>-> "??",
+			<Warning> -> "!!",
+			<Error>   -> "XX",
+			others		-> ""
+		end)
+		^
+		" ";
+		
+	level_trace: LogLevel -> String
+	level_trace(level) == "[" ^ val2str[LogLevel](level) ^ "]: " ^ log_pad(level); 
+	
+	make_trace: LogLevel * ? * String * seq of char -> String
+	make_trace(level, tag, trace, extra) == 
+		let tag': seq of char = (if tag <> nil then "(" ^ val2str[?](tag) ^ ")" else []) in
+			level_trace(level) ^ tag' ^ trace ^ extra ^ "\n";
+	
+	--@todo refactor for god sake!
+	take[@e]: nat * seq of @e -> seq of @e
+	take(n, s) == s(1,...,n)
+	--pre n <= len s
+	post
+		len RESULT = (if n < len s then n else len s) --min(n, len s)
+		and
+		elems RESULT subset elems s;
+	
+	seq_prefix[@e]: seq of @e * seq of @e -> bool
+	seq_prefix(s,t) == 
+		(s = t) or (s = []) or (len s <= len t and (exists i in set inds t & s = take[@e](i, t)))
+	post
+		--@OnFail("seq prefix %1$s [= %2$s", s, t)
+		(RESULT 
+		<=>
+		 (elems s subset elems t
+		  and
+		  len s <= len t
+		 )
+		);	
+		
+state Logging of
+  log_level: LogLevel
+	log_trace: Trace
+init logstate == logstate = mk_Logging(DEFAULT_LOG_LEVEL, [])	
+end
+
+operations
+	set_log_level(level: LogLevel) ==
+		log_level := level
+	ext
+		wr log_level
+	post
+		log_level = level;
+		
+	pure get_log_level: () ==> LogLevel
+	get_log_level() == return log_level;
+		
+	pure get_trace: () ==> Trace
+	get_trace() == return log_trace;
+	
+	--@todo generalise this? 
+	pure 
+	last_trace_is: LogLevel ==> bool--nat
+	last_trace_is(level) ==
+		return
+		--if
+		  log_trace <> [] and seq_prefix[char](level_trace(level), log_trace(len log_trace)) --then
+		--else
+		--	0
+	--post
+		--RESULT <= len log_trace
+		--and
+		--find_indexes(log_trace, =<Warning>) <> {} => RESULT > 0
+		--and
+		--(log_trace = [] => RESULT = 0)
+	;
+			 
+	pure should_log: LogLevel ==> bool
+	should_log(level) ==
+		return log_level <= level; --log_level_leq(log_level, level) then 	
+
+	reset_trace() ==
+		(log_trace := [];
+		)
+	ext
+		wr log_trace
+	post
+		log_trace = [];
+	
+	print_trace() ==
+		for s in log_trace do
+			print(s)
+	ext 
+		rd log_trace;
+		
+	--@doc09 = tagged version of logging, if present. Useful to classify locally beyond chosen log level (e.g. Warning that is serious)
+	--			   could have been [String], but using '?' to be flexible.
+	tlog(level: LogLevel, tag: ?, msg: String) ==
+		(
+		log_trace := log_trace ^ [make_trace(level, tag, msg, "")]; 
+		if should_log(level) then --log_level_leq(log_level, level) then
+			print(last[String](log_trace))
+		)
+	ext
+		wr log_trace
+		rd log_level
+	post
+		elems log_trace~ subset elems log_trace
+		and
+		len log_trace~ < len log_trace;		
+		
+	tlogf(level: LogLevel, tag: ?, msg: String, params: seq of ?) ==
+		(
+		--@doc09 needed a formatf to handle this...
+		log_trace := log_trace ^ [make_trace(level, tag, msg, "(" ^ val2str[seq of ?](params) ^ ")")];
+		if should_log(level) then
+			printf(make_trace(level, tag, msg, ""), params);
+		)
+	ext
+		wr log_trace: Trace
+		rd log_level: LogLevel
+	post
+		elems log_trace~ subset elems log_trace
+		and
+		len log_trace~ < len log_trace;
+		
+	--@doc = logs the given trace if within log level with a trailing new line 
+	log(level: LogLevel, msg: String) ==
+		tlog(level, nil, msg);
+	
+	--@doc = logs the given trace if within log level with a trailing new line after the parameters
+	--			 works like a simplified version of Java's printf
+	logf(level: LogLevel, msg: String, params: seq of ?) ==
+		tlogf(level, nil, msg, params);
+
+end Logging

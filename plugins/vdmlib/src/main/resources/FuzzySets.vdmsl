@@ -1,0 +1,521 @@
+--@doc Implementation of basic fuzzy sets as defined in https://en.wikipedia.org/wiki/Fuzzy_set
+--@author Leo Freitas, 30/07/2021
+module FuzzySets
+imports
+	from VDMUtil	
+		functions	
+			set2seq renamed set2seq;
+,
+	--@todo perhaps remove this dependency?
+	from Support1
+		functions
+			sum_r renamed sum_r;
+exports 
+	types
+		struct Score;
+		struct PartialScore;
+		--@doc DO NOT struct export
+		Universe;
+		--@doc DO NOT struct export
+		FuzzySet;
+		struct FuzzyTNorm;
+		struct FuzzyTest;
+		struct FuzzyStrongNegator;
+	functions
+		make_fuzzy_set[@T]: set of @T -> FuzzySet;
+		universe[@T]: FuzzySet -> set of @T;
+		membership[@T]: @T * FuzzySet -> Score;
+		crisp_fuzzy_set: FuzzySet * FuzzyTest -> FuzzySet;	
+		alpha_cut: FuzzySet * Score -> FuzzySet;
+    	strong_alpha_cut: FuzzySet * Score -> FuzzySet;
+    	support_fuzzy_set: FuzzySet -> FuzzySet;
+    	core_fuzzy_set: FuzzySet -> FuzzySet;
+		full_member[@T]: @T * FuzzySet -> bool;
+		not_member[@T]: @T * FuzzySet -> bool;
+		partial_member[@T]: @T * FuzzySet -> bool;
+		strict_empty[@T]: FuzzySet -> bool;
+		empty[@T]: FuzzySet -> bool;
+		equals[@T, @R]: FuzzySet * FuzzySet -> bool;
+		included[@T, @R]: FuzzySet * FuzzySet -> bool;
+		crossed_over[@T]: FuzzySet -> bool;
+		level[@T]: FuzzySet * Score -> FuzzySet;
+		maxs: set1 of Score -> Score;
+		mins: set1 of Score -> Score;
+		height[@T]: FuzzySet -> Score;
+		normal[@T]: FuzzySet -> bool;
+		post_normal[@T]: FuzzySet * bool +> bool;
+		normalise[@T]: FuzzySet -> FuzzySet;
+		pre_normalise[@T]: FuzzySet +> bool;
+		post_normalise[@T]: FuzzySet * FuzzySet +> bool;
+		width[@T]: FuzzySet -> Score;
+		convex[@T]: FuzzySet -> bool;
+		
+		--@doc fuzy set operations
+		valid_fuzzy_t_norm[@T]: FuzzySet * FuzzyTNorm * (@T * @T -> bool) -> bool;
+		has_fuzzy_strong_negator[@T]: FuzzySet * FuzzyStrongNegator -> bool;
+		std_negator: Score -> Score; 
+		t_norm_min: Score * Score -> Score;
+		t_norm_prod: Score * Score -> Score;
+		t_norm_luk: Score * Score -> Score;
+		t_norm_drastic: Score * Score -> Score;
+		t_norm_potent_min: Score * Score -> Score;
+		t_norm_hamacher: Score * Score -> Score;
+		s_norm: FuzzyTNorm -> FuzzyTNorm;
+		complement[@T]: FuzzySet -> FuzzySet;
+		general_fuzzy_inter[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
+		general_fuzzy_union[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
+		general_fuzzy_diff[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * FuzzyStrongNegator * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet;
+		fuzzy_inter[@T]: FuzzySet * FuzzySet -> FuzzySet;
+		fuzzy_union[@T]: FuzzySet * FuzzySet -> FuzzySet;
+		fuzzy_diff[@T]: FuzzySet * FuzzySet -> FuzzySet;
+		disjoint[@T, @R]: FuzzySet * FuzzySet -> bool;
+		scalar_card[@T]: FuzzySet -> real ;
+		relative_card[@T]: FuzzySet -> real;
+		extended_relative_card[@T]: FuzzySet * FuzzySet -> real;
+		general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real; 
+definitions 
+
+types
+
+	--@doc fuzzy set score [0..1]
+	Score = real
+	inv s == 0 <= s and s <= 1;
+	
+	--@doc partial test score ]0..1[
+	PartialScore = Score
+	inv ps == ps <> 0 and ps <> 1;
+
+	--@doc fuzzy set universe 
+	Universe = set of ?;
+	
+	--@doc fuzzy set definition (U, m), where U = dom m;  	
+	--@doc DO NOT struct export to allow for varied implementations and to no expose "?" 
+	--@doc design decision: force as many @T as needed to keep things type strict. 
+	FuzzySet = map ? to Score;
+	
+	--@doc fuzzy set test used for various (crisp) filtering.
+	FuzzyTest = Score -> bool;
+	
+	FuzzyTNorm = (Score * Score -> Score);
+	
+	FuzzyStrongNegator = (Score -> Score);
+
+functions
+	
+	--@doc make a core fuzzy set (all maps to 1) on given universe set. 
+	make_fuzzy_set[@T]: set of @T -> FuzzySet
+	make_fuzzy_set(U) == { x |-> 1 | x in set U };
+	
+	--@doc fuzzy set universe closed under the polymorphic type
+	universe[@T]: FuzzySet -> set of @T
+	universe(fs) == dom fs;
+	
+	scores[@T]: FuzzySet -> set of Score
+	scores(fs) == rng fs;
+	
+	--@doc fuzzy set membership (objective) function closed under the polymorphic type
+	membership[@T]: @T * FuzzySet -> Score
+	membership(x, fs) ==
+		fs(x) 
+	pre	
+		x in set universe[@T](fs);
+	
+	--@doc general crisp fuzzy set filtered by the given fuzzy test 
+	--@todo could have avoided the @T everywhere but then would loose implementation independence on map ? to Score.
+	crisp_fuzzy_set[@T]: FuzzySet * FuzzyTest -> FuzzySet
+	crisp_fuzzy_set(fs, ft) ==
+		{ x | x in set universe[@T](fs) & ft(membership[@T](x, fs)) } <: fs; 
+	
+	--@doc fuzzy set "alpha" cut (i.e. all mappings >= alpha)
+  alpha_cut[@T]: FuzzySet * Score -> FuzzySet
+  alpha_cut(fs, alpha) == 
+  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s >= alpha));
+  
+	--@doc fuzzy set strong "alpha" cut (i.e. all mappings > alpha)
+  strong_alpha_cut[@T]: FuzzySet * Score -> FuzzySet
+  strong_alpha_cut(fs, alpha) == 
+  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s > alpha));
+  
+	--@doc fuzzy set all elements have membership (i.e. all mappings > 0)
+  support_fuzzy_set[@T]: FuzzySet -> FuzzySet
+  support_fuzzy_set(fs) == 
+		strong_alpha_cut[@T](fs, 0);
+	
+  --@doc fuzzy set full membership test
+	full_member[@T]: @T * FuzzySet -> bool
+	full_member(x, fs) ==
+		pre_membership[@T](x, fs) and membership[@T](x, fs) = 1;
+		
+	--@doc fuzzy set no membership test
+	not_member[@T]: @T * FuzzySet -> bool
+	not_member(x, fs) ==
+		pre_membership[@T](x, fs) and membership[@T](x, fs) = 0;
+
+	--@doc fuzzy set partial membership test	
+	partial_member[@T]: @T * FuzzySet -> bool
+	partial_member(x, fs) ==
+		pre_membership[@T](x, fs) and is_PartialScore(membership[@T](x, fs));	
+
+	--@doc level fuzzy set 
+	level[@T]: FuzzySet * Score -> FuzzySet
+	level(fs, alpha) == 
+		crisp_fuzzy_set[@T](fs, (lambda s: Score & s = alpha));
+			
+	--@doc fuzzy set all elements are full members (i.e. all mapptings = 1)		
+  core_fuzzy_set[@T]: FuzzySet -> FuzzySet
+  core_fuzzy_set(fs) == 
+  	level[@T](fs, 1);
+
+	strict_empty[@T]: FuzzySet -> bool
+	strict_empty(fs) == 
+		universe[@T](fs) = {};
+
+	--@doc empty fuzzy set is either empty universe or all elements maps to 0.
+	--     filtering on empty universe might be redundant.  
+	empty[@T]: FuzzySet -> bool
+	empty(fs) == 
+		--(dom fs <> {} => card dom fs = card dom crisp_fuzzy_set(fs, (lambda s: Score & s = 0)));
+		(universe[@T](fs) <> {} => 
+				card universe[@T](fs) 
+				= 
+				card universe[@T](level[@T](fs, 0))
+		);
+	
+	--@doc universe types are compatible so long as their types multually converge (or are equivalent)
+	universe_compatible[@T, @R]: FuzzySet * FuzzySet -> bool
+	universe_compatible(fsA, fsB) ==
+		is_(universe[@T](fsA), set of @R) 
+		and
+		is_(universe[@R](fsB), set of @T);
+		
+	--@doc fuzzy set equality can be mapped to VDM equality	so long as their universe type agree
+	equals[@T, @R]: FuzzySet * FuzzySet -> bool
+	equals(fsA, fsB) == 
+		universe_compatible[@T, @R](fsA, fsB)
+		and
+		fsA = fsB;
+	
+	--@doc fuzzy set subset containment; it requires A's universe to be within B's
+	included[@T, @R]: FuzzySet * FuzzySet -> bool
+	included(fsA, fsB) ==
+		universe_compatible[@T, @R](fsA, fsB)
+		and
+		universe[@T](fsA) subset universe[@R](fsB)
+		and
+		(forall x in set universe[@T](fsA) & membership[@T](x, fsA) <= membership[@R](x, fsB));
+	
+	--@doc a fuzzy set where some element maps to 0.5 has crossed over
+	crossed_over[@T]: FuzzySet -> bool
+	crossed_over(fs) ==
+		not empty[@T](level[@T](fs, 0.5));
+	
+	--@doc maximum over scores using VDM's iota (i.e. for Isabelle, convert to fold). 
+	maxs: set1 of Score -> Score
+	maxs(s) == 
+		(iota m in set s & (forall n in set s & n <= m))
+	post
+		forall x in set s & x <= RESULT;
+
+	--@doc maximum over scores using VDM's iota (i.e. for Isabelle, convert to fold). 
+	mins: set1 of Score -> Score
+	mins(s) == 
+		(iota m in set s & (forall n in set s & m <= n))
+	post
+		forall x in set s & RESULT <= x;
+	
+	--@doc fuzzy set height is the suppremum (or maximum) of the mapped scores (or zero if none)
+	height[@T]: FuzzySet -> Score
+	height(fs) == 
+		--@doc check for empty universe as maxs depends on non-empty universe. 
+		if strict_empty[@T](fs) then 0 else maxs(scores[@T](fs));
+	
+	--@doc normal fuzzy set is one where at least one element has full membership
+	normal[@T]: FuzzySet -> bool
+	normal(fs) ==
+		height[@T](fs) = 1
+	post
+		--@doc here the design decision over the fuzzy set type shows itself. 
+		(exists u in set universe[@T](fs) & full_member[@T](u, fs));
+			 
+	--@doc non-empty fuzzy set can be normalised by dividing its membership over its height for every element
+	normalise[@T]: FuzzySet -> FuzzySet
+	normalise(fs) ==
+		let
+			h: Score = height[@T](fs)
+		 in	
+		 	{ x |-> membership[@T](x, fs) / h | x in set universe[@T](fs) }  
+	pre
+		--@doc to normalise, must not be striclty empty, as it will divide by height; perhaps say in terms of height
+		--not strict_empty[@T](fs)
+		height[@T](fs) <> 0
+	post
+		normal[@T](fs);
+	
+	--@doc assuming the single-dimensioned fuzzy set, width is difference between its maximum and minimum
+	width[@T]: FuzzySet -> Score
+	width(fs) == 
+		let
+			support_fs: FuzzySet = support_fuzzy_set[@T](fs)
+		 in
+		 	if strict_empty[@T](support_fs) then 
+			 	0 
+			else 
+				(maxs(scores[@T](support_fs)) - mins(scores[@T](support_fs)));
+	
+	--@doc convex fuzzy set	
+	convex[@T]: FuzzySet -> bool
+	convex(fs) ==
+		(forall x, y in set universe[@T](fs) & forall z in set {x,y} & 
+				membership[@T](z, fs) >= mins({membership[@T](x, fs), membership[@T](y, fs)})
+		);
+
+	--@doc valid t-norm for fuzzy set operations (i.e. https://en.wikipedia.org/wiki/T-norm)
+	--@doc we use the membership projection to get to the actual scores for the t_norm instance
+	valid_fuzzy_t_norm[@T]: FuzzySet * FuzzyTNorm * (@T * @T -> bool) -> bool
+	valid_fuzzy_t_norm(fs, t_norm, ordered) ==
+		--@doc commutative: t_norm(a, b) = t_norm(b, a)
+		(forall a, b in set universe[@T](fs) & 
+				t_norm(membership[@T](a, fs), membership[@T](b, fs)) 
+				= 
+				t_norm(membership[@T](b, fs), membership[@T](a, fs))
+		)
+		--@doc monotonic: a <= c and b <= d => t_norm(a, b) <= t_norm(a, b) 
+		and
+	  (forall a, b, c, d in set universe[@T](fs) & 
+	  		(ordered(a, c) and ordered(b, d)
+	  		 => 
+	  		 (t_norm(membership[@T](a, fs), membership[@T](b, fs)) 
+		   		<= 
+	  	 	  t_norm(membership[@T](d, fs), membership[@T](d, fs))
+	  		 )
+	  		)
+	  )
+	  --@doc associative: t_norm(a, t_norm(b, c)) = t_norm(t_norm(a, b), c) 
+	  and
+	  (forall a, b, c in set universe[@T](fs) & 
+	  		t_norm(membership[@T](a, fs), 
+	  			t_norm(membership[@T](b, fs), 
+	  						 membership[@T](c, fs)
+	  						)
+	  					) 
+	  		= 
+	  		t_norm(
+	  			t_norm(membership[@T](a, fs), 
+	  						 membership[@T](b, fs)
+	  						), 
+	  			membership[@T](c, fs)
+	  			)
+	  )
+	  --@doc has an identity: t_norm(a, 1) = 1 
+	  --@todo no need for zero?
+	  and
+	  (forall a in set universe[@T](fs) & 
+	  		t_norm(membership[@T](a, fs), 1) 
+	  		=  
+	  		membership[@T](a, fs)
+	  );
+	
+	--@doc example valid T-Norms, so long scores are over ordered universe   
+	t_norm_min: Score * Score -> Score
+	t_norm_min(a, b) == mins({a, b});
+	
+	t_norm_prod: Score * Score -> Score
+	t_norm_prod(a, b) == a * b;
+	
+	t_norm_luk: Score * Score -> Score
+	t_norm_luk(a, b) == maxs({0, a+b-1});
+	
+	t_norm_drastic: Score * Score -> Score
+	t_norm_drastic(a, b) == 
+		if a = 1 then b else if b = 1 then a else 0;
+		
+	t_norm_potent_min: Score * Score -> Score
+	t_norm_potent_min(a, b) == 
+		if a + b > 1 then mins({a,b}) else 0;
+		
+	t_norm_hamacher: Score * Score -> Score
+	t_norm_hamacher(a, b) == 
+		if a = b and b = 0 then 0 else a * (b / ((a+b) - (a*b)));
+	
+	--@doc standard complementary s_norm  
+	s_norm: FuzzyTNorm -> FuzzyTNorm
+	s_norm(t_norm) == 
+		(lambda a: Score, b: Score & 1 - t_norm(1 - a, 1 - b));   
+	
+	--@doc has strong negator (strict involution), n(n(x)) = x
+	has_fuzzy_strong_negator[@T]: FuzzySet * FuzzyStrongNegator -> bool 
+	has_fuzzy_strong_negator(fs, s_n) ==
+		(forall a in set universe[@T](fs) & s_n(s_n(membership[@T](a, fs))) = membership[@T](a, fs));
+	
+	std_negator: Score -> Score
+	std_negator(s) == 1 - s;
+	 
+	--@doc fuzzy set complement	
+	complement[@T]: FuzzySet -> FuzzySet
+	complement(fs) == 
+		{ x |-> std_negator(membership[@T](x, fs)) | x in set universe[@T](fs) }
+	post
+		has_fuzzy_strong_negator[@T](fs, std_negator);
+
+	--@doc fuzzy intersection of two sets considering the given FuzzyTNorm; requires valid t_norm and compatible universes
+	--@todo genarily compatible universes complicates things; perhaps force single type @T?
+	general_fuzzy_inter[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet
+	general_fuzzy_inter(fsA, fsB, t_norm, orderA, orderB) ==
+		let
+			uA: set of @T = universe[@T](fsA),
+			uB: set of @R = universe[@R](fsB)
+		 in
+  		{ x |-> t_norm(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
+	pre
+		universe_compatible[@T,@R](fsA, fsB)
+		and
+		valid_fuzzy_t_norm[@T](fsA, t_norm, orderA)
+		and
+		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB);
+			
+	--@doc fuzzy union of two sets considering the given FuzzyTNorm; 
+	--		 requires valid t_norm (which will be turned into cannonical s_norm) and compatible universes
+	--@todo genarily compatible universes complicates things; perhaps force single type @T?
+	general_fuzzy_union[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet
+	general_fuzzy_union(fsA, fsB, t_norm, orderA, orderB) ==
+		let
+			uA: set of @T = universe[@T](fsA),
+			uB: set of @R = universe[@R](fsB)
+		 in
+  		(uB <-: fsA) 
+		  munion  
+		  (uA <-: fsB)
+		  munion
+		  { x |-> s_norm(t_norm)(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
+	pre
+		--@doc relax this by munion their corresponding differences
+		--	dom fsA = dom fsB
+		--and
+		universe_compatible[@T,@R](fsA, fsB)
+		and
+		valid_fuzzy_t_norm[@T](fsA, t_norm, orderA)
+		and
+		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB);
+	
+	general_fuzzy_diff[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * FuzzyStrongNegator * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet
+	general_fuzzy_diff(fsA, fsB, t_norm, s_n, orderA, orderB) ==
+		let
+			uA: set of @T = universe[@T](fsA),
+			uB: set of @R = universe[@R](fsB)
+		 in
+		  { x |-> t_norm(membership[@T](x, fsA), s_n(membership[@T](x, fsB))) | x in set uA inter uB }
+	pre
+		--@doc relax this by munion their corresponding differences
+		--	dom fsA = dom fsB
+		--and
+		universe_compatible[@T,@R](fsA, fsB)
+		and
+		valid_fuzzy_t_norm[@T](fsA, t_norm, orderA)
+		and
+		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB)
+		and
+		has_fuzzy_strong_negator[@R](fsB, s_n);
+	
+	
+		 
+	--@doc we defined above the general version of the operators taking into account the underlying t_norm algebra
+	--		 these can be greatly simplified if we choose one of the t_norms above.
+	-- 		 In "A Course in Fuzzy" by Li-Xin Wang (p.45), we have some particular instantiations. 
+	--		 The Fuzzy set wiki also takes specific choices for t_norm as min for inter and max for union
+
+	--@doc simplified fuzzy inter: 
+	--		 1. it (implicitily) assumes @T for fuzy set universe is partially ordered 
+	--		 2. it assumes that both fuzzy sets universe type are the same
+	fuzzy_inter[@T]: FuzzySet * FuzzySet -> FuzzySet 
+	fuzzy_inter(fsA, fsB) ==
+		let
+			uA: set of @T = universe[@T](fsA),
+			uB: set of @T = universe[@T](fsB)
+		 in
+		  { x |-> t_norm_min(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
+	pre
+		--@doc given we are assuming the partial order for @T, and that there is no polymorphic access to ord_@T
+		--		 we are effectively assuming this holds for given type @T order relation
+		--valid_fuzzy_t_norm[@T](fsA, t_norm_min, ord_@T)
+		--and
+		--valid_fuzzy_t_norm[@R](fsB, t_norm_min, ord_@T)
+		--and
+		--@doc still check the universes type-agree
+		universe_compatible[@T,@T](fsA, fsB);	
+
+	--@doc simplified fuzzy union: 
+	--		 1. it (implicitily) assumes @T for fuzy set universe is partially ordered 
+	--		 2. it assumes that both fuzzy sets universe type are the same
+	fuzzy_union[@T]: FuzzySet * FuzzySet -> FuzzySet 
+	fuzzy_union(fsA, fsB) ==
+		let
+			uA: set of @T = universe[@T](fsA),
+			uB: set of @T = universe[@T](fsB)
+		 in
+  		(uB <-: fsA) 
+		  munion  
+		  (uA <-: fsB)
+		  munion
+		  { x |-> maxs({ membership[@T](x, fsA), membership[@T](x, fsB) }) | x in set uA inter uB }
+	pre
+		--@doc given we are assuming the partial order for @T, and that there is no polymorphic access to ord_@T
+		--		 we are effectively assuming this holds for given type @T order relation
+		--valid_fuzzy_t_norm[@T](fsA, s_norm(t_norm_min), ord_@T)
+		--and
+		--valid_fuzzy_t_norm[@R](fsB, s_norm(t_norm_min), ord_@T)
+		--and
+		--@doc still check the universes type-agree
+		universe_compatible[@T,@T](fsA, fsB);	
+		
+	--@doc simplified fuzzy set difference A \ B is the intersection between A and B's complement.
+	fuzzy_diff[@T]: FuzzySet * FuzzySet -> FuzzySet
+	fuzzy_diff(fsA, fsB) ==
+		fuzzy_inter[@T](fsA, complement[@T](fsB))
+	pre
+		--@doc still check the universes type-agree
+		universe_compatible[@T,@T](fsA, fsB);	
+	
+	--@doc disjoint fuzzy sets have no membership between their elements	
+	disjoint[@T, @R]: FuzzySet * FuzzySet -> bool
+	disjoint(fsA, fsB) ==
+	  universe_compatible[@T, @R](fsA, fsB)
+	  and
+	  (forall x in set universe[@T](fsA) inter universe[@R](fsB) &
+	  		t_norm_min(membership[@T](x, fsA), membership[@R](x, fsB)) = 0
+	  );
+
+	--@doc fuzzy set scalar cardinality as the sum over its scores; non-zero if non-empty
+	scalar_card[@T]: FuzzySet -> real 
+	scalar_card(fs) == 
+		sum_r(set2seq[Score](scores[@T](fs)))
+	post
+		--@doc weaker empty, given summing of results 
+		(not empty[@T](fs) => RESULT > 0);
+
+	--@doc relative cardinality with respect to the universe size
+	relative_card[@T]: FuzzySet -> real
+	relative_card(fs) == 
+		if strict_empty[@T](fs) then
+			0
+		else
+			scalar_card[@T](fs) / card universe[@T](fs);
+
+	--@doc extended relative cardinality with fixed fuzzy_inter 
+	extended_relative_card[@T]: FuzzySet * FuzzySet -> real 
+	extended_relative_card(fsA, fsB) ==
+		scalar_card[@T](fuzzy_inter[@T](fsA, fsB)) / scalar_card[@T](fsB)
+	pre
+		scalar_card[@T](fsB) > 0
+		and
+		pre_fuzzy_inter[@T](fsA, fsB);	
+
+	--@doc general relative cardinality with general t_norm intersection and order 
+	general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real 
+	general_relative_card(fsA, fsB, t_norm, orderA, orderB) ==
+		scalar_card[@T](general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)) / scalar_card[@T](fsB)
+	pre
+		scalar_card[@T](fsB) > 0
+		and
+		pre_general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB);
+
+end FuzzySets

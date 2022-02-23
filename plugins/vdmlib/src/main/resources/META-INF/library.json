@@ -1,0 +1,58 @@
+{
+	"vdmsl": [
+		{
+			"name": "Asserting",
+			"description": "VDM Toolkit assertions library",
+			"files": ["Asserting.vdmsl"],
+			"depends": ["IO.vdmsl"]
+		},
+		{
+			"name": "Binary",
+			"description": "VDM Toolkit binary operators library",
+			"files": ["Binary.vdmsl"],
+			"depends": ["VDMUtil.vdmsl", "Support1.vdmsl"]
+		},
+		{
+			"name": "FuzzySets",
+			"description": "VDM Toolkit fuzzy sets library",
+			"files": ["FuzzySets.vdmsl"],
+			"depends": ["VDMUtil.vdmsl", "Support1.vdmsl"]
+		},
+		{
+			"name": "ISQ",
+			"description": "VDM Toolkit international system of quantities library",
+			"files": ["ISQ.vdmsl"],
+			"depends": ["Support1.vdmsl", "MATH.vdmsl"]
+		},
+		{
+			"name": "Logging",
+			"description": "VDM Toolkit information logging library",
+			"files": ["Logging.vdmsl"],
+			"depends": ["VDMUtil.vdmsl", "IO.vdmsl"]
+		},
+		{
+			"name": "Ordering",
+			"description": "VDM Toolkit partial/total ordering properties library",
+			"files": ["Ordering.vdmsl"],
+			"depends": []
+		},
+		{
+			"name": "Relations",
+			"description": "VDM Toolkit Z-style relational operators library",
+			"files": ["Relations.vdmsl"],
+			"depends": ["Ordering.vdmsl"]
+		},
+		{
+			"name": "Stack",
+			"description": "VDM Toolkit (SPARK-style) stack abstract data type",
+			"files": ["Stack.vdmsl"],
+			"depends": []
+		},
+		{
+			"name": "Matrix_Seq",
+			"description": "VDM Toolkit matrix operators support library",
+			"files": ["Matrix_Seq.vdmsl"],
+			"depends": []
+		}	
+	]
+}

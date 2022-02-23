@@ -1,0 +1,133 @@
+--@doc Generic ordering relations notions 
+--@author Leo Freitas, March 2019
+--@doc Generalisation of oredering notions with user-defined parameter @Y
+--@author Leo Freitas and Aaron Buhagiar, August 2021
+module Ordering
+imports
+	from Relations
+		functions
+			unzip renamed unzip
+exports 
+	functions
+		reflexive[@X, @Y]: @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		    trans[@X, @Y]: @X * @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		  antisym[@X, @Y]: @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		
+		       partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		strict_partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+		       symmetric_rel[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+	
+		partial_order_set[@X, @Y]: set of (@X * @X) * [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+    	  partial_order_X[@X, @Y]: [@Y] * (@X * @X * [@Y] -> bool) -> bool;
+	
+		min: nat * nat -> nat;
+		max: nat * nat -> nat;
+		mins: set1 of nat -> nat;
+		maxs: set1 of nat -> nat;
+		order_xs[@T]: seq1 of @T * (@T * @T -> @T) -> @T;
+	  	fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T;
+	
+		equal[@T] : @T * @T -> bool;
+		refl[@T]: @T -> @T;
+		refl_bool: bool -> bool
+
+definitions 
+
+functions
+	reflexive[@X, @Y]: @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
+	reflexive(x1, y, order) == order(x1, x1, y);
+
+	trans[@X,@Y]: @X * @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
+	trans(x1, x2, x3, y, order) == 
+		(order(x1, x2, y) and order(x2, x3, y) => order(x1, x3, y));
+	
+	antisym[@X, @Y]: @X * @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
+	antisym(x1,x2,y, order) == 
+		(order(x1, x2, y) and order(x2, x1, y) => x1 = x2);
+	
+	partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y] -> bool) -> bool
+	partial_order(s, y, order) ==
+		(forall x in set s & reflexive[@X, @Y](x, y, order)) 
+		and
+		(forall x1, x2, x3 in set s & trans[@X, @Y](x1, x2, x3, y, order))
+		and
+		(forall x1, x2 in set s & antisym[@X, @Y](x1, x2, y, order))
+		;
+		
+	strict_partial_order[@X, @Y]: set of @X * [@Y] * (@X * @X * [@Y]-> bool) -> bool
+	strict_partial_order(s, y, strict_order) ==
+		partial_order[@X, @Y](s, y, (lambda x1: @X, x2: @X, y2: [@Y] & strict_order(x1, x2, y2) or x1 = x2))
+		and
+		(forall x1, x2 in set s & strict_order(x1, x2, y) <=> x1 <= x2 and x1 <> x2); 
+		
+	symmetric_rel[@X,@Y]: set of @X * [@Y] * (@X * @X * [@Y]-> bool) -> bool
+	symmetric_rel(s, y, eql) == 
+		(forall x1 in set s & 
+				(forall x2 in set s \ {x1} & 
+						reflexive[@X, @Y](x1, y, eql) and reflexive[@X, @Y](x2, y, eql)
+						and
+						(eql(x1, x2, y) <=> eql(x2, x1, y))
+				)
+		);
+		
+	partial_order_set[@X, @Y]: set of (@X * @X) * [@Y] * (@X * @X * [@Y]-> bool) -> bool
+	partial_order_set(s, y, order) == 
+		(forall mk_(x1, x2) in set s & 
+			reflexive[@X, @Y](x1, y, order) and reflexive[@X, @Y](x2, y, order) 
+			and
+			--@doc to make it executable in more general terms 
+			--forall x3 : @X & 
+			(forall x3 in set unzip[@X](s) &
+				trans[@X, @Y](x1, x2, x3, y, order))
+			and
+			antisym[@X, @Y](x1, x2, y, order)
+		);
+
+	partial_order_X[@X,@Y]: [@Y] * (@X * @X * [@Y]-> bool) -> bool
+	partial_order_X(y, order) == 
+		(forall x1, x2, x3 : @X & 
+			reflexive[@X, @Y](x1, y, order) 
+			and 
+			trans[@X, @Y](x1, x2, x3, y, order)
+			and
+			antisym[@X, @Y](x1, x2, y, order)
+		);
+
+	min: nat * nat -> nat
+	min(x,y) == if x < y then x else y;
+	
+	max: nat * nat -> nat
+	max(x,y) == if x > y then x else y;
+
+	mins: set1 of nat -> nat
+	mins(s) == order_xs[nat]([ e | e in set s ], min);
+
+	maxs: set1 of nat -> nat
+	maxs(s) == order_xs[nat]([ e | e in set s ], max);
+		
+	order_xs[@T]: seq1 of @T * (@T * @T -> @T) -> @T
+  order_xs(s,lt_ord) == 
+  		fold1[@T](lt_ord,s)
+  post 
+	  	RESULT in set elems s and forall e in set elems s & lt_ord(RESULT,e) = RESULT or RESULT = e;
+
+  fold1[@T]: (@T * @T -> @T) * seq1 of @T +> @T
+  fold1(f, s) == 
+	  	if len s = 1 then
+	  		hd s
+	  	else
+	  		let lens: nat1 = len s in
+	  			f(fold1[@T](f,s(1,...,lens div 2)), fold1[@T](f,s((lens div 2)+1,...,lens)))
+  	measure
+  		len s;
+
+	equal[@T] : @T * @T -> bool
+	equal(x,y) == x = y;
+
+	refl[@T]: @T -> @T
+	refl(x) == x;
+	
+	refl_bool: bool -> bool
+	refl_bool(x) == refl[bool](x);
+			
+end Ordering

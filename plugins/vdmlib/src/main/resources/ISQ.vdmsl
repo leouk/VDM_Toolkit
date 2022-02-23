@@ -1,0 +1,1405 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2020 
+--@v40, 31/11/2020
+--@doc International Standard of Quantities and Units
+------------------------------------------------------------------------------------
+module ISQ
+imports
+from MATH
+	functions
+		pi_f renamed pi_f;
+,
+--@todo remove any dependencies?
+from Support1
+	functions
+		fold renamed fold;
+		prods_r renamed prods_r;
+		averages_r renamed averages_r;
+		replicate renamed replicate;
+exports 
+	types
+		--@todo which ones to struct export which not to?
+		struct Dimension;
+		struct DimensionlessVector;
+		struct DimensionVector;
+		struct SingleDimension;
+		struct Magnitude;
+	  struct MagnitudeN0;
+	  struct Magnitude1;
+		struct Quantity;
+		struct QuantityN0;
+	  struct SQuantity;
+		struct SQuantityN0;
+		struct ConversionSchema;
+		struct MeasurementSystem;	
+		struct MeasurementSystemN0;
+		struct Prefix;	
+	
+		struct Second;
+
+		struct SI_MeasurementSystem;
+		struct Metre;
+		struct Kilogram;
+		struct Ampere;
+		struct Kelvin;
+		struct Mole;
+		struct Candela;
+
+		struct Area;
+		struct Volume;
+		struct Frequency;
+		struct Velocity;
+		struct Acceleration;
+		struct Energy;
+		struct Power;
+		struct Force;
+		struct Pressure;
+		struct Charge;
+		struct PotentialDifference;
+		struct Capacitance;
+		struct Hertz;
+		struct Watt;
+		struct Radian;
+		struct Steradian;
+
+		struct BIS_MeasurementSystem;
+		struct Yard;
+		struct Pound;
+		struct Rankine;
+		struct BISVolume;
+		struct BISVelocity;
+
+		struct CGS_MeasurementSystem;
+		struct Centimetre;
+		struct Gram;
+		
+		struct MHC_MeasurementSystem;
+		struct Milligram;
+		struct Hour;
+		struct Celcius;
+
+		struct WhichMonth;
+		struct HowManyDays;
+	
+		struct MDC_MeasurementSystem;
+		struct Day;
+		
+		struct MWC_MeasurementSystem;
+	  struct Week;
+	
+	functions
+		dim_comp: DimensionlessVector * DimensionlessVector -> DimensionlessVector;
+		dim_comp_n: DimensionlessVector * nat -> DimensionlessVector;
+		dim_inv: DimensionlessVector -> DimensionlessVector;
+		dim_inv_n: DimensionlessVector * nat1 -> DimensionlessVector;
+		dim_div: DimensionlessVector * DimensionlessVector -> DimensionlessVector;
+	
+		quant_dim_eq: Quantity * Quantity -> bool;
+		quant_times: Quantity * Quantity -> Quantity;
+		quant_div: Quantity * QuantityN0 -> Quantity;
+		quant_inv: QuantityN0 -> Quantity;
+		quant_itself_n: Quantity * nat1 -> Quantity;
+		quant_inv_n: QuantityN0 * nat1 -> Quantity;
+		quant_plus: Quantity * Quantity -> Quantity;
+		quant_uminus: Quantity -> Quantity;
+		quant_minus: Quantity * Quantity -> Quantity;
+		scaleQ: Magnitude * Quantity -> Quantity;
+
+		scaleMS: Magnitude * MeasurementSystem -> MeasurementSystem;
+		quant_conv: ConversionSchema * DimensionVector -> MagnitudeN0;
+		conv_inv: ConversionSchema -> ConversionSchema;
+		conv_comp: ConversionSchema * ConversionSchema -> ConversionSchema;
+		ms_conv_eq: MeasurementSystem * MeasurementSystem -> bool;
+		ms_times: MeasurementSystem * MeasurementSystem -> MeasurementSystem;
+		ms_itself_n: MeasurementSystem * nat1 -> MeasurementSystem;
+		ms_inv_n: MeasurementSystemN0 * nat1 -> MeasurementSystem;
+		ms_inv: MeasurementSystemN0 -> MeasurementSystem;
+		ms_div: MeasurementSystem * MeasurementSystemN0 -> MeasurementSystem;
+		
+		ms_quant_conv: ConversionSchema * MeasurementSystem -> MeasurementSystem;
+		ms_conv: /*ConversionSchema * ConversionSchema * MeasurementSystem*/
+						 MeasurementSystem * ConversionSchema -> MeasurementSystem;
+
+		mag: Prefix -> Magnitude;
+		deca: Prefix -> Prefix;
+		hecto: Prefix -> Prefix;
+		kilo: Prefix -> Prefix;
+		mega: Prefix -> Prefix;
+		giga: Prefix -> Prefix;
+		tera: Prefix -> Prefix;
+		deci: Prefix -> Prefix;
+		centi: Prefix -> Prefix;
+		milli: Prefix -> Prefix;
+		micro: Prefix -> Prefix;
+		nano: Prefix -> Prefix;
+		pico: Prefix -> Prefix;
+	
+		second: ConversionSchema * UnitSystem -> Second;
+		minute: ConversionSchema * UnitSystem -> Second;
+		hour  : ConversionSchema * UnitSystem -> Second;
+		day   : ConversionSchema * UnitSystem -> Second;
+		week  : ConversionSchema * UnitSystem -> Second;
+
+		metrify: MeasurementSystem -> Quantity;
+		SI_ASTRONOMICAL     : () -> Metre;
+		SI_DEGREE           : () -> Radian;
+		SI_LITRE            : () -> Volume;
+		SI_TONNE            : () -> Kilogram;
+		SI_YARD             : () -> Metre;
+		SI_FOOT             : () -> Metre;
+		SI_INCH             : () -> Metre;
+		SI_MILE             : () -> Metre;
+		SI_NAUTICAL_MILE    : () -> Metre;
+		SI_POUND            : () -> Kilogram;
+		SI_OUNCE            : () -> Kilogram;
+		SI_STONE            : () -> Kilogram;
+		SI_KNOT             : () -> Velocity;
+		SI_MPH              : () -> Velocity;
+		SI_MPS              : () -> Velocity;
+		SI_KPH              : () -> Velocity;
+		SI_PINT             : () -> Volume;
+		SI_GALLON           : () -> Volume;
+		SI_DEGREES_FARENHEIT: Magnitude -> Kelvin;
+
+		imperialise: MeasurementSystem -> Quantity;
+		BIS_FOOT         : () -> Yard;
+		BIS_INCH         : () -> Yard;
+		BIS_MILE         : () -> Yard;
+		BIS_ACRE         : () -> BISVolume;
+		BIS_OUNCE        : () -> Kilogram;
+		BIS_GALLON       : () -> BISVolume;
+		BIS_PINT         : () -> BISVolume;
+		BIS_MILE_PER_HOUR: () -> BISVelocity;
+
+		hDAY      : () -> Hour;
+		hWEEK     : () -> Hour;
+		hMONTH    : WhichMonth -> Hour; 
+		hAVG_MONTH: () -> Hour;
+		hYEAR     : () -> Hour;
+		weeks2months_hrs: nat1 -> Hour;
+		n_times_day2every_x_hours: nat1 -> Hour;
+	 		
+		dWEEK: () -> Day;
+		weeks2days: nat1 -> Day;
+
+		wDAY      : () -> Week;
+		wAVG_MONTH: () -> Week;
+		weeks2months_wks: nat1 -> Week;
+
+		approx: Magnitude * nat -> Magnitude;
+		approx_eq: Magnitude * Magnitude * nat -> bool;
+		mph2mps: Magnitude -> Magnitude;
+
+	values
+		DIMENSIONS 	     : set1 of Dimension;
+		ONE_DV           : DimensionlessVector;
+		LENGTH           : SingleDimension;
+		MASS             : SingleDimension;
+		TIME             : SingleDimension;
+		CURRENT          : SingleDimension;
+		TEMP             : SingleDimension;
+		AMOUNT           : SingleDimension;
+		INTENSITY        : SingleDimension;
+		                 
+		AREA             : DimensionVector; 
+		VOLUME           : DimensionVector; 
+		FREQUENCY        : DimensionVector; 
+		VELOCITY         : DimensionVector; 
+		ACCELERATION     : DimensionVector; 
+		ENERGY           : DimensionVector; 
+		POWER            : DimensionVector; 
+		FORCE            : DimensionVector; 
+		PRESSURE         : DimensionVector; 
+		CHARGE           : DimensionVector; 
+		PDIFFERENCE      : DimensionVector; 
+		CAPACITANCE	     : DimensionVector; 
+		WATT             : DimensionVector; 
+		RADIAN           : DimensionlessVector;
+		STERADIAN        : DimensionlessVector;
+		                 
+		CONV_ID          : ConversionSchema;
+
+		UNIT_LENGTH      : IntQuantity; 
+		UNIT_MASS        : IntQuantity; 
+		UNIT_TIME        : IntQuantity; 
+		UNIT_CURRENT     : IntQuantity; 
+		UNIT_TEMP        : IntQuantity; 
+		UNIT_AMOUNT      : IntQuantity; 
+		UNIT_INTENSITY   : IntQuantity; 
+
+		UNIT_AREA        : Quantity;
+    UNIT_VOLUME      : Quantity;
+    UNIT_FREQUENCY   : Quantity;
+		UNIT_VELOCITY    : Quantity;
+    UNIT_ACCELERATION: Quantity;
+    UNIT_ENERGY      : Quantity;
+    UNIT_POWER       : Quantity;
+    UNIT_FORCE       : Quantity;
+    UNIT_PRESSURE    : Quantity;
+    UNIT_CHARGE      : Quantity;
+    UNIT_PDIFFERENCE : Quantity;
+    UNIT_CAPACITANCE : Quantity;
+
+    UNIT_RADIAN      : Quantity;
+    UNIT_STERADIAN   : Quantity;
+    UNIT_WATT        : Quantity;
+	
+		SI  	           : ConversionSchema;   
+		METRE            : Metre   ;
+		KILOGRAM         : Kilogram;
+		SECOND	         : Second  ;
+		AMPERE           : Ampere  ;
+		KELVIN           : Kelvin  ;
+		MOLE             : Mole    ;
+		CANDELA          : Candela ;
+		                 
+		SI_AREA          : Area        ;
+		SI_VOLUME        : Volume      ;
+		SI_FREQUENCY     : Frequency   ;
+		SI_VELOCITY      : Velocity    ;
+		SI_ACCELERATION  : Acceleration;
+		SI_ENERGY        : Energy      ;
+		SI_POWER         : Power       ;
+		SI_FORCE         : Force       ;
+		SI_PRESSURE      : Pressure    ;
+		SI_CHARGE        : Charge      ;
+		SI_PDIFFERENCE   : PotentialDifference;
+		SI_CAPACITANCE   : Capacitance ;
+		SI_WATT				   : Watt				 ;
+		SI_RADIAN			   : Radian			 ;
+		SI_STERADIAN     : Steradian   ;
+
+		BIS 	           : ConversionSchema;
+    BIS_YARD	       : Yard    ;
+    BIS_POUND        : Pound   ;
+    BIS_RANKINE      : Rankine ;
+    BIS_VOLUME       : BISVolume;
+                     
+		CGS              : ConversionSchema;
+    CENTIMETRE       : Centimetre;
+    GRAM             : Gram			;
+                     
+    MHC              : ConversionSchema;
+    MGRAM		         : Milligram;
+    MHOUR            : Hour 		; 
+    MCELCIUS         : Celcius ;	
+
+		MDC							 : ConversionSchema;
+		MDAY 						 : Day;
+                     
+    MWC			         : ConversionSchema;
+    MWEEK		         : Week;
+
+		HOURS_PER_DAY    : nat1;
+		DAYS_PER_WEEK    : nat1;
+		WEEKS_PER_YEAR   : nat1;
+		MONTHS_PER_YEAR  : nat1;
+	  DAYS_PER_MONTH   : map WhichMonth to HowManyDays;
+		
+definitions 
+
+------------------------------------------------------------------------------------
+--@chapter International Standard Units (and Quantities) 
+------------------------------------------------------------------------------------
+--@doc inspired by ISQ (https://en.wikipedia.org/wiki/International_System_of_Units) 
+--		 encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
+--		 simplified to consider just time, with hours as the base unit of time.
+--
+types
+
+------------------------------------------------------------------------------------
+--@section ISQ dimensions
+------------------------------------------------------------------------------------
+	--@doc SI base units
+	Dimension = <Length> | <Mass> | <Time> | <Current> | <Temperature> | <Amount> | <Intensity>;
+	
+values
+	DIMENSIONS: set1 of Dimension = {<Length>, <Mass>, <Time>, <Current>, <Temperature>, <Amount>, <Intensity>};
+	
+types
+	--@doc SI dimension compositions: two operators, times (counts quantity) and inverse (counts negative quantity)
+	--		 total mapping to ensure that we have full dimension information for all base units of interst 
+	--		 ex: pressure as kg/ms^2 = { <Mass> |-> 1, <Length> |-> -1, <Time> |-> -2 } (i.e. pascal = kilo per metre per second per second)  
+	DimensionVector0= map Dimension to int;
+	DimensionlessVector = DimensionVector0
+	inv dv == 
+		--@doc needs info on all known dimensions
+		dom dv = DIMENSIONS
+		and
+		--@doc needs at least one dimension set 
+		true--rng(dv :-> {0}) <> {} 
+		--(dunion rng dv) \ {0} <> {}
+		;
+
+	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in RADIAN or STERADIAN
+	DimensionVector = DimensionlessVector
+	inv dv == rng(dv :-> {0}) <> {};
+	
+	--@doc The vector where only one of the base unit dimension registers 
+	--		 (i.e. only one mapping to 1, and all other mappings are to zero)
+	SingleDimension = DimensionVector
+	inv sd == card dom (sd :> {1}) = 1 and rng (sd :-> {1}) = {0};
+	 
+------------------------------------------------------------------------------------
+--@section ISQ quantities
+------------------------------------------------------------------------------------
+  
+  --@doc magnitude values 
+	Magnitude = real;
+	MagnitudeN0 = Magnitude
+	inv m == m <> 0;
+	Magnitude1 = Magnitude
+	inv m == m > 0;
+
+	--@doc quantity semantic domain as magnitude and a dimension vector to measure it within (e.g. 3 km/hr)
+	--@doc the domain is ordered by magnitude when within the same dimension; see quant_lt operators below 
+	--		 (i.e. can't compare different dimension quantities directly)
+	Quantity ::
+		mag: Magnitude
+		dim: DimensionlessVector
+	eq  mk_Quantity(m1, d1) = mk_Quantity(m2, d2) == m1 = m2 and d1 = d2
+	ord mk_Quantity(m1, d1) < mk_Quantity(m2, d2) == m1 < m2 and d1 = d2;
+	
+	--@doc non-zero quantity in any dimension
+	QuantityN0 = Quantity
+	inv mk_Quantity(m, -) == is_MagnitudeN0(m);
+
+	--@doc single dimension quantity (e.g. 3km)
+	SQuantity = Quantity
+	inv mk_Quantity(-, d) == is_SingleDimension(d);
+
+	--@doc non-zero single dimension quantity
+	SQuantityN0 = SQuantity
+	inv sq == is_QuantityN0(sq);
+	
+	IntQuantity = Quantity
+	inv iq == is_int(iq.mag);
+		
+------------------------------------------------------------------------------------
+--@section ISQ measurement systems
+------------------------------------------------------------------------------------
+
+	--@doc the name of unit system for measurement; could be enums, but then harder to extend?
+	UnitSystem = seq1 of char;
+	
+	--@doc a conversion schema defines (non zero magnitude) factors to convert between 
+	--		 measurement systems for all standard dimensions
+	ConversionSchema = map Dimension to MagnitudeN0
+	inv cs == dom cs = DIMENSIONS;
+	
+	--@doc Each conversion target associates different conversion schemas to a specific unit system target
+	--		 (e.g. converting to BIS with given schema from whatever unit) 
+	--@doc Conversions Source to Target unit system conversion schemas.
+	Conversion  = map UnitSystem to ConversionSchema;
+	Conversions = map UnitSystem to Conversion
+	--@doc It's always possible to convert to itself: crucial to allow bottoming it up 
+	inv cs == forall u in set dom cs & u in set dom cs(u); -- dom cs = dunion { dom i | i in set (rng cs) }
+	
+	--@doc a measurement system is a conversion schema and a typed quantity, possibly in multiple dimensions
+	--@doc equality and comparison can happen between mulitple dimensions within the same measurement system
+	--		 (i.e. if conversion schemas are the same for the given unit system)
+	MeasurementSystem ::
+		quantity: Quantity
+		  schema: ConversionSchema
+		    unit: UnitSystem
+	inv mk_MeasurementSystem(mk_Quantity(-, d), s, -) == dom d = dom s
+	eq  mk_MeasurementSystem(mk_Quantity(m1, -), s1, u1) 
+			= 
+			mk_MeasurementSystem(mk_Quantity(m2, -), s2, u2) 
+		  ==
+		  m1 = m2 and s1 = s2 and u1 = u2
+	ord mk_MeasurementSystem(mk_Quantity(m1, -), s1, u1) 
+			< 
+			mk_MeasurementSystem(mk_Quantity(m2, -), s2, u2) 
+			==
+			m1 < m2 and s1 = s2 and u1 = u2;
+
+	MeasurementSystemN0	= MeasurementSystem
+	inv ms == is_QuantityN0(ms.quantity);
+
+	--@doc we can prefix either magnitude, quantity or measurement system
+	Prefix = (Magnitude | Quantity | MeasurementSystem);
+
+values
+	--@doc the dimensionless vector is the one in the vector algebra (i.e. dimensions are added/substracted)
+	ONE_DV   : DimensionlessVector= { i |-> 0 | i in set DIMENSIONS };
+	
+functions			
+------------------------------------------------------------------------------------
+--@section ISQ dimension operators
+------------------------------------------------------------------------------------
+
+	--@doc composing dimentions is aking to adding them (i.e. exponent laws: metre**i * metre**j = metre**(i+j))
+	--		 (e.g. watt = kg * m**2 / s**2, so L=2,M=1,T=-2)
+	dim_comp: DimensionlessVector * DimensionlessVector -> DimensionlessVector
+	dim_comp(d1, d2) == { d |-> d1(d) + d2(d) | d in set dom d1 inter dom d2 }
+	post	
+		--@doc if result has dimension, it must have come from either d1 or d2
+		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
+	
+	--@doc utility for d**2 or d**3 etc (i.e. compose twice/thrice with itself)
+	dim_comp_n: DimensionlessVector * nat -> DimensionlessVector
+	dim_comp_n(di, n) == 
+		fold[DimensionlessVector](dim_comp, ONE_DV, replicate[DimensionVector](n, di)) 
+	post	
+		--@doc if result has dimension, it must have come from either d1 or d2
+		true--(is_DimensionVector(RESULT) <=> is_DimensionVector(di))
+	measure
+		n;
+		
+	--@doc inverting dimensions is aking to negating them (i.e. exponent law: metre**-i * 1 / metre**i)
+	dim_inv: DimensionlessVector -> DimensionlessVector
+	dim_inv(di) == { d |-> -di(d) | d in set dom di }
+	post	
+		--@doc if result has dimension, it must have come from either d1 or d2
+		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(di));
+	
+	--@doc utility for d**-2 or d**-3 etc (i.e. compose twice/thrice with itself then invert)
+	--@todo remove for dim_comp_n negative calling inv?
+	dim_inv_n: DimensionlessVector * nat1 -> DimensionlessVector
+	dim_inv_n(di, n) == dim_inv(dim_comp_n(di, n))
+	post	
+		--@doc if result has dimension, it must have come from either d1 or d2
+		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(di));
+
+	--@doc dividing dimensions is aking to composing with the second dimension's inverse 
+	dim_div: DimensionlessVector * DimensionlessVector -> DimensionlessVector
+	dim_div(d1, d2) == dim_comp(d1, dim_inv(d2))
+	post	
+		--@doc if result has dimension, it must have come from either d1 or d2
+		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
+	
+------------------------------------------------------------------------------------
+--@section ISQ quantity operators
+------------------------------------------------------------------------------------
+	
+	--@doc check whether two dimensions have the same quantity dimension vector
+	quant_dim_eq: Quantity * Quantity -> bool
+	quant_dim_eq(mk_Quantity(-, d1), mk_Quantity(-, d2)) == d1 = d2; 
+		
+	--@doc multiplying quantities multiply their magnitude and compose their dimensions
+	quant_times: Quantity * Quantity -> Quantity
+	quant_times(mk_Quantity(m1, d1), mk_Quantity(m2, d2)) == 
+		mk_Quantity(m1*m2, dim_comp(d1, d2));
+		
+	--@doc useful to make metre^3
+	quant_itself_n: Quantity * nat1 -> Quantity
+	quant_itself_n(mk_Quantity(m, d), n) == mk_Quantity(m, dim_comp_n(d, n));
+		 
+		--@doc dividing quantities divides their magnitude and divides their dimensions
+	--@doc notice the second argument must be a non-zero quantity
+	quant_div: Quantity * QuantityN0 -> Quantity
+	quant_div(mk_Quantity(m1, d1), mk_Quantity(m2, d2)) ==
+		mk_Quantity(m1/m2, dim_div(d1, d2));
+		
+	--@doc inverting quantities invert their magnitude and invert their dimensions
+	quant_inv: QuantityN0 -> Quantity
+	quant_inv(q) == quant_div(mk_Quantity(1, q.dim), q);
+
+	quant_inv_n: QuantityN0 * nat1 -> Quantity
+	quant_inv_n(q, n) == quant_inv(quant_itself_n(q, n));
+		
+	--@doc summing quantities sum their magnitude, providing they have the same dimension
+	--@doc if it's for a single dimension quantity input, you get a single dimension quantity output 
+	quant_plus: Quantity * Quantity -> Quantity
+	quant_plus(d1, d2) == mk_Quantity(d1.mag + d2.mag, d1.dim)
+	pre
+		quant_dim_eq(d1, d2)
+	post
+		(is_SQuantity(d1) <=> is_SQuantity(RESULT));
+		
+	--@doc summing quantities sum their magnitude, providing they have the same dimension
+	quant_uminus: Quantity -> Quantity
+	quant_uminus(d1) == mk_Quantity(-d1.mag, d1.dim)
+	post
+		(is_SQuantity(d1) <=> is_SQuantity(RESULT));
+
+	--@doc summing quantities sum their magnitude, providing they have the same dimension
+	quant_minus: Quantity * Quantity -> Quantity
+	quant_minus(d1, d2) == mk_Quantity(d1.mag - d2.mag, d1.dim)
+	pre
+		quant_dim_eq(d1, d2)
+	post
+		(is_SQuantity(d1) <=> is_SQuantity(RESULT));
+
+	--@doc scale a quantity magnitude by given magnitude 
+	scaleQ: Magnitude * Quantity -> Quantity
+	scaleQ(m1, mk_Quantity(m2, d)) == mk_Quantity(m1 * m2, d);
+
+------------------------------------------------------------------------------------
+--@section ISQ basic dimension vectors and common units
+------------------------------------------------------------------------------------
+
+values
+	--@doc basic dimension vectors
+	LENGTH   : SingleDimension = ONE_DV ++ { <Length>      |-> 1 };
+	MASS     : SingleDimension = ONE_DV ++ { <Mass>        |-> 1 };
+	TIME     : SingleDimension = ONE_DV ++ { <Time>        |-> 1 };
+	CURRENT  : SingleDimension = ONE_DV ++ { <Current>     |-> 1 };
+	TEMP     : SingleDimension = ONE_DV ++ { <Temperature> |-> 1 };
+	AMOUNT   : SingleDimension = ONE_DV ++ { <Amount>      |-> 1 };
+	INTENSITY: SingleDimension = ONE_DV ++ { <Intensity>   |-> 1 };
+
+	--@doc common dimension units
+  AREA        : DimensionVector = dim_comp_n(LENGTH, 2);																--L**2
+  VOLUME      : DimensionVector = dim_comp_n(LENGTH, 3);                                --L**3
+  FREQUENCY   : DimensionVector = dim_inv(TIME);                                        --T**-1
+  VELOCITY    : DimensionVector = dim_comp(LENGTH, FREQUENCY);                          --L*T**-1
+  ACCELERATION: DimensionVector = dim_comp(VELOCITY, FREQUENCY);                        --L*T**-2
+  ENERGY      : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 2)));   --L**2*M*T**-2
+  POWER       : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));   --L**2*M*T**-3
+  FORCE       : DimensionVector = dim_comp(LENGTH, dim_comp(MASS, dim_inv_n(TIME, 2))); --L*M*T**-2
+  PRESSURE    : DimensionVector = dim_comp(dim_inv(LENGTH),                             --L**-1*M*T**-2
+  																	dim_comp(MASS, dim_inv_n(TIME, 2)));                
+  CHARGE      : DimensionVector = dim_comp(INTENSITY, TIME);                            --I*T
+  PDIFFERENCE : DimensionVector = dim_comp(AREA, dim_comp(MASS, 
+  																	dim_comp(dim_inv_n(TIME, 3), dim_inv(INTENSITY)))); --L**2*M*T**-3*I**-1
+  CAPACITANCE	: DimensionVector = dim_comp(dim_inv(AREA),                               --L**-2*M**-1*T**4*I**2
+  																	dim_comp(dim_inv(MASS), 
+  																		dim_comp(dim_comp_n(TIME, 4), 
+  																						 dim_comp_n(INTENSITY, 2)))); 	
+  																						 
+  RADIAN      : DimensionlessVector = dim_comp(LENGTH, dim_inv(LENGTH)); --L*L**-1
+	STERADIAN   : DimensionlessVector = dim_comp(AREA, dim_inv(AREA));     --L**2*L**-2
+	WATT        : DimensionVector     = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));  --L**2*M*T**-3
+	
+  --@doc identity conversion schema maps all dimensions to 1 (i.e. no conversion)																						 
+  CONV_ID     : ConversionSchema = { i |-> 1 | i in set DIMENSIONS };
+  
+------------------------------------------------------------------------------------
+--@section International Standard Units constants basic, accepted, derived, prefixes 
+------------------------------------------------------------------------------------
+
+	UNIT_LENGTH   : IntQuantity   = mk_Quantity(1, LENGTH);
+	UNIT_MASS     : IntQuantity   = mk_Quantity(1, MASS);
+	UNIT_TIME     : IntQuantity   = mk_Quantity(1, TIME);
+	UNIT_CURRENT  : IntQuantity   = mk_Quantity(1, CURRENT);
+	UNIT_TEMP     : IntQuantity   = mk_Quantity(1, TEMP);
+	UNIT_AMOUNT   : IntQuantity   = mk_Quantity(1, AMOUNT);
+	UNIT_INTENSITY: IntQuantity   = mk_Quantity(1, INTENSITY);
+
+	PREFIX_DECA   : MagnitudeN0 = (10**1);
+	PREFIX_HECTO  : MagnitudeN0 = (10**2)  ;
+	PREFIX_KILO   : MagnitudeN0 = (10**3)  ;
+	PREFIX_MEGA   : MagnitudeN0 = (10**4)  ;
+	PREFIX_GIGA   : MagnitudeN0 = (10**5)  ;
+	PREFIX_TERA   : MagnitudeN0 = (10**6);
+	PREFIX_DECI   : MagnitudeN0 = 1/PREFIX_DECA;
+	PREFIX_CENTI  : MagnitudeN0 = 1/PREFIX_HECTO;
+	PREFIX_MILLI  : MagnitudeN0 = 1/PREFIX_KILO;
+	PREFIX_MICRO  : MagnitudeN0 = 1/PREFIX_MEGA;
+	PREFIX_NANO   : MagnitudeN0 = 1/PREFIX_GIGA;
+	PREFIX_PICO   : MagnitudeN0 = 1/PREFIX_TERA;
+
+  UNIT_AREA        : Quantity = mk_Quantity(1, AREA)         ;
+  UNIT_VOLUME      : Quantity = mk_Quantity(1, VOLUME)       ;
+  UNIT_FREQUENCY   : Quantity = mk_Quantity(1, FREQUENCY)    ;
+  UNIT_VELOCITY    : Quantity = mk_Quantity(1, VELOCITY)     ;
+  UNIT_ACCELERATION: Quantity = mk_Quantity(1, ACCELERATION) ;
+  UNIT_ENERGY      : Quantity = mk_Quantity(1, ENERGY)       ;
+  UNIT_POWER       : Quantity = mk_Quantity(1, POWER)        ;
+  UNIT_FORCE       : Quantity = mk_Quantity(1, FORCE)        ;
+  UNIT_PRESSURE    : Quantity = mk_Quantity(1, PRESSURE)     ;
+  UNIT_CHARGE      : Quantity = mk_Quantity(1, CHARGE)       ;
+  UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, PDIFFERENCE);
+  UNIT_CAPACITANCE : Quantity = mk_Quantity(1, CAPACITANCE) ;
+
+  UNIT_RADIAN      : Quantity = mk_Quantity(1, RADIAN)       ;
+  UNIT_STERADIAN   : Quantity = mk_Quantity(1, STERADIAN)    ;
+  UNIT_WATT        : Quantity = mk_Quantity(1, WATT)         ;
+	
+------------------------------------------------------------------------------------
+--@section SI basic and derived unit types
+------------------------------------------------------------------------------------
+	SI_UNIT: UnitSystem = "SI";
+	
+	--@doc International Systems of Units "Systeme Internacional" base units and conversion schemas
+	SI	  : ConversionSchema     = CONV_ID;
+
+	HOURS_PER_DAY  : nat1 = 24;
+	DAYS_PER_WEEK  : nat1 =  7;
+
+types
+	--@doc an SI measurement system has an SI conversion
+	SI_MeasurementSystem = MeasurementSystem
+	inv mk_MeasurementSystem(-, s, u) == s = SI and u = SI_UNIT;
+	
+	--@doc every standard basic dimension has an SI measurement system type
+	Metre = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = LENGTH;
+
+	Kilogram = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = MASS;
+
+	--@doc second is common between different conversion schemas, so only fix the dimension, not conversion schema
+	Second = MeasurementSystem
+	inv ms == ms.quantity.dim = TIME;
+	
+	Ampere = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = CURRENT;
+	
+	Kelvin = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = TEMP;
+	
+	Mole = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = AMOUNT;
+	
+	Candela = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = INTENSITY;
+
+	--@doc common derived SI measurement systems
+	Area = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = AREA;
+	
+	Volume = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = VOLUME;
+
+	Frequency = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = FREQUENCY;
+
+	Velocity = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = VELOCITY;
+
+	Acceleration = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = ACCELERATION;
+
+	Energy = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = ENERGY;
+
+	Power = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = POWER;
+
+	Force = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = FORCE;
+
+	Pressure = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = PRESSURE;
+
+	Charge = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = CHARGE;
+
+	PotentialDifference = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = PDIFFERENCE;
+    
+	Capacitance = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = CAPACITANCE;	
+
+	--@doc some commonly derived SI measurement system dimensions types
+	Hertz = Frequency;
+	
+	Radian = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = RADIAN; 
+	
+	Steradian = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = STERADIAN;
+	
+	Watt = SI_MeasurementSystem
+	inv ms == ms.quantity.dim = WATT;
+
+functions	
+------------------------------------------------------------------------------------
+--@section ISQ scaling and conversion over quantities and measurement systems
+------------------------------------------------------------------------------------
+
+	--@doc scale a dimension by given magnitude within a measurement system
+	scaleMS: Magnitude * MeasurementSystem -> MeasurementSystem
+	scaleMS(m1, mk_MeasurementSystem(q, s, u)) == mk_MeasurementSystem(scaleQ(m1, q), s, u);
+	
+	--@doc to quantity convert in multiple dimensions, we must use product of the integer exponenciation on the dimensions
+	--		 for all dimensions. Those with zero dimension, will lead to 1, others will be multiplied accordingly
+	quant_conv: ConversionSchema * DimensionVector -> MagnitudeN0
+	quant_conv(cs, dv) ==
+		prods_r({ cs(i)**dv(i) | i in set dom cs inter dom dv })
+	pre
+		dom cs = dom dv;
+
+------------------------------------------------------------------------------------
+--@section ISQ measurement systems operators
+------------------------------------------------------------------------------------
+	
+	--@doc check whether two measurement systems have the same unit system
+	ms_conv_eq: MeasurementSystem * MeasurementSystem -> bool
+	ms_conv_eq(m1, m2) == m1.schema = m2.schema and m1.unit = m2.unit;
+		
+	--@doc multiplying measurement system quantities providing we keep their unit system
+	ms_times: MeasurementSystem * MeasurementSystem -> MeasurementSystem
+	ms_times(m1, m2) == 
+		mk_MeasurementSystem(quant_times(m1.quantity, m2.quantity), m1.schema, m1.unit)
+	pre
+		ms_conv_eq(m1, m2);
+	
+	ms_itself_n: MeasurementSystem * nat1 -> MeasurementSystem
+	ms_itself_n(mk_MeasurementSystem(q, s, u), n) == 
+		mk_MeasurementSystem(quant_itself_n(q, n), s, u);  
+
+	--@doc inverting measurement system quantities providing we keep their conversion scehma
+	ms_inv: MeasurementSystemN0 -> MeasurementSystem
+	ms_inv(mk_MeasurementSystem(q, s, u)) == mk_MeasurementSystem(quant_inv(q), s, u);
+		
+	ms_inv_n: MeasurementSystemN0 * nat1 -> MeasurementSystem
+	ms_inv_n(m, n) == ms_inv(ms_itself_n(m, n));
+		
+	--@doc dividing quantities divides their magnitude and divides their dimensions
+	--@doc notice the second argument must be a non-zero quantity
+	ms_div: MeasurementSystem * MeasurementSystemN0 -> MeasurementSystem
+	ms_div(m1, m2) == mk_MeasurementSystem(quant_div(m1.quantity, m2.quantity), m1.schema, m1.unit)
+	pre
+		ms_conv_eq(m1, m2);
+			
+------------------------------------------------------------------------------------
+--@section ISQ conversion operators
+------------------------------------------------------------------------------------
+	
+	--@doc inverse of conversion 	
+	conv_inv: ConversionSchema -> ConversionSchema
+	conv_inv(cs) == { i |-> 1/cs(i) | i in set dom cs }
+	post
+		dom cs = dom RESULT;
+	
+	--@doc composition (times) conversion
+	conv_comp: ConversionSchema * ConversionSchema -> ConversionSchema
+	conv_comp(cs1, cs2) == { i |-> cs1(i)*cs2(i) | i in set dom cs1 inter dom cs2 }
+	pre
+		dom cs1 = dom cs2
+	post
+		dom cs1 = dom RESULT;
+
+	--@doc given a conversion schema (cs_conv) and a measurement system, convert the quantity by 
+	--		 converting the magnitude according to the schema (cs_conv), keeping the given schema (cs)
+	--		 (i.e. it is will be transformed by ms_conv)
+	ms_quant_conv: ConversionSchema * MeasurementSystem -> MeasurementSystem
+	ms_quant_conv(cs_conv, mk_MeasurementSystem(mk_Quantity(m, d), s, u)) ==
+		mk_MeasurementSystem(mk_Quantity(quant_conv(cs_conv, d) * m, d), s, u);--@todo this ought to be cs_conv unit for s?!
+		
+	--@doc (From -> To) convert(ms): 
+	--		 given a measurement system (ms), convert its quantity from the given conversion schema 
+	--		 to the selected conversion schema (i.e. inverting and composing schemas, then
+	--		 converting the magnitude accordingly). Avoid id conversion for speed.
+	ms_conv: /*ConversionSchema * ConversionSchema * MeasurementSystem*/ MeasurementSystem * ConversionSchema -> MeasurementSystem
+	ms_conv(/*cs_from, cs_to, ms*/ms, cs_to) == 
+		let
+			cs_from : ConversionSchema = ms.schema
+		 in
+			if cs_from = cs_to then 
+				ms
+			else
+				ms_quant_conv(conv_comp(cs_from, conv_inv(cs_to)), ms)
+	/*
+	--@todo this is to take Conversions into account, which isn't there yet? 
+	pre
+		cs_from = ms.schema
+	post
+		conv_comp(cs_from, conv_inv(cs_to)) = RESULT.schema;
+	*/	
+	;
+------------------------------------------------------------------------------------
+--@section SI prefixes
+------------------------------------------------------------------------------------
+	
+	--@doc project the magnitude of a quantity or measurement system
+	mag: Prefix -> Magnitude
+	mag(x) == 
+		cases true:
+			(is_Magnitude(x))         -> x,
+			(is_Quantity(x))          -> x.mag,
+			(is_MeasurementSystem(x)) -> x.quantity.mag
+		end;
+
+	scale_prefix: Prefix * Magnitude -> Prefix
+	scale_prefix(x, p) == 
+		cases true:
+			(is_Magnitude(x))         -> x * p,
+			(is_Quantity(x))          -> scaleQ(p, x),
+			(is_MeasurementSystem(x)) -> scaleMS(p, x)
+		end;
+
+	deca: Prefix -> Prefix
+	deca(x) == scale_prefix(x, PREFIX_DECA );
+
+	hecto: Prefix -> Prefix
+	hecto(x)== scale_prefix(x, PREFIX_HECTO);
+
+	kilo: Prefix -> Prefix
+	kilo(x) == scale_prefix(x, PREFIX_KILO );
+
+	mega: Prefix -> Prefix
+	mega(x) == scale_prefix(x, PREFIX_MEGA );
+
+	giga: Prefix -> Prefix
+	giga(x) == scale_prefix(x, PREFIX_GIGA );
+
+	tera: Prefix -> Prefix
+	tera(x) == scale_prefix(x, PREFIX_TERA );
+	
+	deci: Prefix -> Prefix
+	deci(x) == scale_prefix(x, PREFIX_DECI );
+
+	centi: Prefix -> Prefix
+	centi(x)== scale_prefix(x, PREFIX_CENTI);
+
+	milli: Prefix -> Prefix
+	milli(x)== scale_prefix(x, PREFIX_MILLI);
+
+	micro: Prefix -> Prefix
+	micro(x)== scale_prefix(x, PREFIX_MICRO);
+
+	nano: Prefix -> Prefix
+	nano(x) == scale_prefix(x, PREFIX_NANO );
+
+	pico: Prefix -> Prefix
+	pico(x) == scale_prefix(x, PREFIX_PICO );	
+	
+------------------------------------------------------------------------------------
+--@section SI common time measurements, which are the same across SI and BIS etc.
+------------------------------------------------------------------------------------
+
+	second: ConversionSchema * UnitSystem -> Second
+	second(cs, u) == mk_MeasurementSystem(UNIT_TIME, cs, u);
+	
+	--@doc we take hour as the "base" unit of time, instead of SI's second given our use (i.e. smaller numbers?);
+	--		 this can be easily generalised to seconds or whatver needed 
+	minute: ConversionSchema * UnitSystem -> Second
+	minute(cs, u) == scaleMS(60, second(cs, u));
+	
+	hour: ConversionSchema * UnitSystem -> Second 
+	hour(cs, u) == scaleMS(60, minute(cs, u));
+	
+	day: ConversionSchema * UnitSystem -> Second 
+	day(cs, u) == scaleMS(24, hour(cs, u));
+	
+	week: ConversionSchema * UnitSystem -> Second
+	week(cs, u) == scaleMS(DAYS_PER_WEEK, day(cs, u));
+		
+-----------------------------------------------------------------------------------
+--@section SI accepted constants and known dimensions
+------------------------------------------------------------------------------------
+values
+	METRE   : Metre    = mk_MeasurementSystem(UNIT_LENGTH   , SI, SI_UNIT);
+	KILOGRAM: Kilogram = mk_MeasurementSystem(UNIT_MASS     , SI, SI_UNIT);
+	SECOND	: Second   = mk_MeasurementSystem(UNIT_TIME     , SI, SI_UNIT); 
+	AMPERE  : Ampere   = mk_MeasurementSystem(UNIT_CURRENT  , SI, SI_UNIT); 
+	KELVIN  : Kelvin   = mk_MeasurementSystem(UNIT_TEMP     , SI, SI_UNIT); 
+	MOLE    : Mole     = mk_MeasurementSystem(UNIT_AMOUNT   , SI, SI_UNIT); 
+	CANDELA : Candela  = mk_MeasurementSystem(UNIT_INTENSITY, SI, SI_UNIT); 
+	
+	SI_AREA        : Area         = mk_MeasurementSystem(UNIT_AREA              , SI, SI_UNIT);
+	SI_VOLUME      : Volume       = mk_MeasurementSystem(UNIT_VOLUME            , SI, SI_UNIT);
+	SI_FREQUENCY   : Frequency    = mk_MeasurementSystem(UNIT_FREQUENCY         , SI, SI_UNIT);
+	SI_VELOCITY    : Velocity     = mk_MeasurementSystem(UNIT_VELOCITY          , SI, SI_UNIT);
+	SI_ACCELERATION: Acceleration = mk_MeasurementSystem(UNIT_ACCELERATION      , SI, SI_UNIT);
+	SI_ENERGY      : Energy       = mk_MeasurementSystem(UNIT_ENERGY            , SI, SI_UNIT);
+	SI_POWER       : Power        = mk_MeasurementSystem(UNIT_POWER             , SI, SI_UNIT);
+	SI_FORCE       : Force        = mk_MeasurementSystem(UNIT_FORCE             , SI, SI_UNIT);
+	SI_PRESSURE    : Pressure     = mk_MeasurementSystem(UNIT_PRESSURE          , SI, SI_UNIT);
+	SI_CHARGE      : Charge       = mk_MeasurementSystem(UNIT_CHARGE            , SI, SI_UNIT);
+	SI_PDIFFERENCE : PotentialDifference = mk_MeasurementSystem(UNIT_PDIFFERENCE, SI, SI_UNIT);
+	SI_CAPACITANCE : Capacitance  = mk_MeasurementSystem(UNIT_CAPACITANCE       , SI, SI_UNIT);
+                                                                              
+	SI_RADIAN			 : Radian			  = mk_MeasurementSystem(UNIT_RADIAN            , SI, SI_UNIT);
+	SI_STERADIAN   : Steradian    = mk_MeasurementSystem(UNIT_STERADIAN         , SI, SI_UNIT);
+	SI_WATT				 : Watt					= mk_MeasurementSystem(UNIT_WATT              , SI, SI_UNIT);
+
+functions
+	
+	--@doc transform given measurement system to the International Standard system	   	
+	metrify: MeasurementSystem -> Quantity
+	metrify(ms) == ms_conv(ms, SI).quantity;
+	
+	SI_ASTRONOMICAL: () -> Metre
+	SI_ASTRONOMICAL() == scaleMS(149597870700, METRE);
+
+	SI_DEGREE: () -> Radian
+	SI_DEGREE() == scaleMS(2*pi_f()/180, SI_RADIAN);--scaleMS(2*3.14159265358979323846/180, SI_RADIAN);
+	
+	SI_LITRE: () -> Volume
+	SI_LITRE() == scaleMS(mag(milli(1)), SI_VOLUME);
+	
+	SI_TONNE: () -> Kilogram
+	SI_TONNE() == scaleMS(mag(kilo(1)), KILOGRAM);
+
+------------------------------------------------------------------------------------
+--@section SI common imperial conversions
+------------------------------------------------------------------------------------
+
+	SI_YARD: () -> Metre
+	SI_YARD() == scaleMS(0.9144, METRE);
+	
+	SI_FOOT: () -> Metre
+	SI_FOOT() == scaleMS(1/3, SI_YARD());
+	
+	SI_INCH: () -> Metre
+	SI_INCH() == scaleMS(1/36, SI_YARD());
+	
+	SI_MILE: () -> Metre
+	SI_MILE() == scaleMS(1760, SI_YARD());
+	
+	SI_NAUTICAL_MILE: () -> Metre
+	SI_NAUTICAL_MILE() == scaleMS(1852, METRE);
+	
+	SI_POUND: () -> Kilogram
+	SI_POUND() == scaleMS(0.45359237, KILOGRAM);
+	
+	SI_OUNCE: () -> Kilogram
+	SI_OUNCE() == scaleMS(1/16, SI_POUND());
+	
+	SI_STONE: () -> Kilogram
+	SI_STONE() == scaleMS(14, SI_POUND());
+	
+	SI_KNOT: () -> Velocity
+	SI_KNOT() == ms_div(SI_NAUTICAL_MILE(), hour(SI, SI_UNIT));
+	
+	SI_MPH: () -> Velocity
+	SI_MPH() == ms_div(SI_MILE(), hour(SI, SI_UNIT));
+	
+	--@doc the standard velocity in SI is meters per second 
+	SI_MPS: () -> Velocity
+	SI_MPS() == SI_VELOCITY;
+
+	SI_KPH: () -> Velocity
+	SI_KPH() == ms_div(kilo(METRE), hour(SI, SI_UNIT));
+	
+	SI_PINT: () -> Volume
+	SI_PINT() == scaleMS(0.56826125, SI_LITRE());
+	
+	SI_GALLON: () -> Volume
+	SI_GALLON() == scaleMS(8, SI_PINT());
+	
+	SI_DEGREES_FARENHEIT: Magnitude -> Kelvin
+	SI_DEGREES_FARENHEIT(x) == scaleMS((x + 459.67) * 5/9, KELVIN);
+
+	SI_JOULE: () -> SI_MeasurementSystem
+	SI_JOULE() == ms_times(KILOGRAM, ms_times(/*SI_AREA()*/ms_itself_n(METRE, 2), ms_inv_n(second(SI, SI_UNIT), 2)));
+					 
+------------------------------------------------------------------------------------
+--@section British Imperial measurement system setup and common conversions
+------------------------------------------------------------------------------------
+values
+	BIS_UNIT   : UnitSystem = "BIS";
+	--@doc British Imperial System; choose Rankine instead of Farenheit for offset simplicity
+	BIS 	     : ConversionSchema = CONV_ID ++ { <Length> |-> 0.9143993, <Mass> |-> 0.453592338, <Temperature> |-> 5/9 };
+
+types
+	--@doc an BIS measurement system has an BIS conversion
+	BIS_MeasurementSystem = MeasurementSystem
+	inv ms == ms.schema = BIS and ms.unit = BIS_UNIT;
+	
+	Yard = BIS_MeasurementSystem
+	inv ms == ms.quantity.dim = LENGTH;
+	
+	Pound = BIS_MeasurementSystem
+	inv ms == ms.quantity.dim = MASS;
+	
+	Rankine = BIS_MeasurementSystem
+	inv ms == ms.quantity.dim = TEMP;
+	
+	BISVolume = BIS_MeasurementSystem
+	inv ms == ms.quantity.dim = VOLUME;
+	
+	BISVelocity = BIS_MeasurementSystem
+	inv ms == ms.quantity.dim = VELOCITY;
+	
+values
+  BIS_YARD	 : Yard    = mk_MeasurementSystem(UNIT_LENGTH, BIS, BIS_UNIT);
+  BIS_POUND  : Pound   = mk_MeasurementSystem(UNIT_MASS  , BIS, BIS_UNIT);
+  BIS_RANKINE: Rankine = mk_MeasurementSystem(UNIT_TEMP  , BIS, BIS_UNIT);
+  BIS_VOLUME : BISVolume=mk_MeasurementSystem(UNIT_VOLUME, BIS, BIS_UNIT);
+  
+functions
+	
+	--@doc transform given measurement system to the British Imperial System
+	imperialise: MeasurementSystem -> Quantity
+	imperialise(ms) == ms_conv(ms, BIS).quantity;
+
+	BIS_FOOT: () -> Yard
+	BIS_FOOT() == scaleMS(1/3, BIS_YARD);
+
+	BIS_INCH: () -> Yard
+	BIS_INCH() == scaleMS(1/12, BIS_FOOT());
+	
+	BIS_MILE: () -> Yard
+	BIS_MILE() == scaleMS(1760, BIS_YARD);
+	
+	BIS_ACRE: () -> BISVolume
+	BIS_ACRE() == scaleMS(4840, BIS_VOLUME);
+
+	BIS_OUNCE: () -> Kilogram
+	BIS_OUNCE() == scaleMS(1/12, BIS_POUND);
+	
+	--@todo inch**3 x yard**3?
+	BIS_GALLON: () -> BISVolume
+	BIS_GALLON() == 	
+		let
+			inch			: Yard 		  = BIS_INCH(),
+			inch_cubed: BISVolume = ms_times(inch, ms_times(inch, inch))
+		 in
+		  scaleMS(277.421, inch_cubed);
+		  
+	BIS_PINT: () -> BISVolume
+	BIS_PINT() == scaleMS(1/8, BIS_GALLON());
+	
+	BIS_MILE_PER_HOUR: () -> BISVelocity
+	BIS_MILE_PER_HOUR() == ms_div(BIS_MILE(), hour(BIS, BIS_UNIT));
+	
+------------------------------------------------------------------------------------
+--@section Other measurement system of interest setup
+------------------------------------------------------------------------------------
+values 
+	CGS_UNIT: UnitSystem = "CGS";
+	MHC_UNIT: UnitSystem = "MHC";
+	
+	--@doc Centemetre-Gram-Second system;	
+	CGS: ConversionSchema = CONV_ID ++ { <Length> |-> mag(centi(METRE)), <Mass> |-> mag(milli(KILOGRAM)) };
+
+	--@doc Miligram-Hour system;
+	MHC: ConversionSchema = CONV_ID ++ { <Mass> |-> mag(milli(milli(KILOGRAM))), <Time> |-> mag(hour(SI, SI_UNIT)), <Temperature> |-> -272.15 };
+
+	WEEKS_PER_YEAR : nat1 = 52;
+	MONTHS_PER_YEAR: nat1 = 12;
+	DAYS_PER_YEAR  : nat1 = 365;
+
+types
+	CGS_MeasurementSystem = MeasurementSystem
+	inv ms == ms.schema = CGS and ms.unit = CGS_UNIT;
+	
+	Centimetre = CGS_MeasurementSystem
+	inv ms == ms.quantity.dim = LENGTH;
+	
+	Gram = CGS_MeasurementSystem
+	inv ms == ms.quantity.dim = MASS;
+	
+	
+	MHC_MeasurementSystem = MeasurementSystem
+	inv ms == ms.schema = MHC and ms.unit = MHC_UNIT;
+	
+	Milligram = MHC_MeasurementSystem
+	inv ms == ms.quantity.dim = MASS;
+	
+	Hour = MHC_MeasurementSystem
+	inv ms == ms.quantity.dim = TIME;
+	
+	Celcius = MHC_MeasurementSystem
+	inv ms == ms.quantity.dim = TEMP;
+		
+	WhichMonth = nat1
+	inv wm == wm <= MONTHS_PER_YEAR;
+	
+	HowManyDays = nat1
+	inv hmd == hmd in set {28,...,31};
+	
+values 
+	CENTIMETRE: Centimetre = mk_MeasurementSystem(UNIT_LENGTH, CGS, CGS_UNIT);
+	GRAM      : Gram			 = mk_MeasurementSystem(UNIT_MASS  , CGS, CGS_UNIT);
+
+	MGRAM		: Milligram = mk_MeasurementSystem(UNIT_MASS, MHC, MHC_UNIT); --1mg=(1kg/1000)/1000
+	MHOUR   : Hour 			= mk_MeasurementSystem(UNIT_TIME, MHC, MHC_UNIT);--hour(MHC); --1hr
+	MCELCIUS: Celcius 	= mk_MeasurementSystem(UNIT_TEMP, MHC, MHC_UNIT); --1c = -272.15k
+	--MMHG  : IntQuantity   = UNIT_????; in KILOGRAM / (METRE * SECOND**2)
+
+  DAYS_PER_MONTH : map WhichMonth to HowManyDays = {1|->31, 2|->28, 3|->31, 4|->30, 5|->31, 6|->30,
+                                  			            7|->31, 8|->31, 9|->30, 10|->31, 11|->30, 12|->31};
+
+functions
+	
+	hDAY: () -> Hour
+	hDAY() == scaleMS(HOURS_PER_DAY, MHOUR);
+	
+	hWEEK : () -> Hour 
+	hWEEK() == scaleMS(DAYS_PER_WEEK, hDAY());
+	
+	hMONTH: WhichMonth -> Hour 
+	hMONTH(m) == scaleMS(DAYS_PER_MONTH(m), hDAY());
+	
+	hAVG_MONTH: () -> Hour
+	hAVG_MONTH() == scaleMS(averages_r(rng DAYS_PER_MONTH), hDAY());
+	
+	hYEAR : () -> Hour
+	hYEAR() == scaleMS(DAYS_PER_YEAR, hDAY());
+	
+	hW2M: () -> Hour
+	hW2M() == ms_times(hWEEK(), ms_inv(hAVG_MONTH()));
+	
+	weeks2months_hrs: nat1 -> Hour
+	weeks2months_hrs(w) == scaleMS(w, hW2M());
+	
+	--@doc 3 times a day = DAY() / 3 = 1 times 8 hours;
+	--		 DAY()= 24hrs / 3 =  8hrs
+	--@doc don't change the dimension vector, so just scale by the inverse
+	n_times_day2every_x_hours: nat1 -> Hour
+	n_times_day2every_x_hours(times_a_day) == scaleMS(1/mag(scaleMS(times_a_day, MHOUR)), hDAY());
+
+values
+	MDC_UNIT: UnitSystem = "MDC";
+	MDC: ConversionSchema = MHC ++ { <Time> |-> mag(metrify(hDAY())) };
+	
+	MWC_UNIT: UnitSystem = "MWC";
+	MWC: ConversionSchema = MHC ++ { <Time> |-> mag(metrify(hWEEK())) };
+	 
+types
+	MDC_MeasurementSystem = MeasurementSystem
+	inv ms == ms.schema = MDC and ms.unit = MDC_UNIT;
+	
+	Day = MDC_MeasurementSystem
+	inv ms == ms.quantity.dim = TIME;
+	
+	MWC_MeasurementSystem = MeasurementSystem
+	inv ms == ms.schema = MWC and ms.unit = MWC_UNIT;
+	
+	Week = MWC_MeasurementSystem
+	inv ms == ms.quantity.dim = TIME;
+
+values
+	MDAY : Day  = mk_MeasurementSystem(UNIT_TIME, MDC, MDC_UNIT);
+	MWEEK: Week = mk_MeasurementSystem(UNIT_TIME, MWC, MWC_UNIT);
+		
+functions
+	
+	dWEEK: () -> Day
+	dWEEK() == scaleMS(DAYS_PER_WEEK, MDAY);
+	
+	weeks2days: nat1 -> Day
+	weeks2days(n) == scaleMS(n, dWEEK());
+
+	wDAY: () -> Week
+	wDAY() == scaleMS(1/DAYS_PER_WEEK, MWEEK);
+	
+	wAVG_MONTH: () -> Week
+	wAVG_MONTH() == scaleMS(averages_r(rng DAYS_PER_MONTH), wDAY());
+	
+	wW2M: () -> Week
+	wW2M() == ms_times(MWEEK, ms_inv(wAVG_MONTH()));
+	
+	weeks2months_wks: nat1 -> Week
+	weeks2months_wks(w) == scaleMS(w, wW2M());
+	
+------------------------------------------------------------------------------------
+--@section Useful for testing in approximating
+------------------------------------------------------------------------------------	 
+values
+	ORDER_MAGNITUDE: nat = 10;
+	
+functions
+	
+	--@doc approximate to the given precision; useful for comparing up to an order of magnitude
+	approx: Magnitude * nat -> Magnitude
+	approx(m, precision) == m * (10**precision);
+	
+	--@doc approximate  both sides to the same precision then floor them for equality testing
+	approx_eq: Magnitude * Magnitude * nat -> bool
+	approx_eq(lhs, rhs, precision) == 
+		let 
+			lhs': Magnitude = approx(lhs, precision),
+			rhs': Magnitude = approx(rhs, precision)
+		 in
+		  floor(lhs') = floor(rhs');
+
+------------------------------------------------------------------------------------
+--@section Useful conversions
+------------------------------------------------------------------------------------
+	
+	--@doc miles per hour in BIS to metre per second in SI
+	--@doc if want kilometres per hour, need to create a new MeasurementSystem on KPH
+	mph2mps: Magnitude -> Magnitude
+	mph2mps(mph) ==	mag(metrify(scaleMS(mph, BIS_MILE_PER_HOUR())));
+	
+------------------------------------------------------------------------------------
+--@section Theorems between measurement systems from Isabelle proofs for sense check
+------------------------------------------------------------------------------------
+	refl_bool: bool -> bool
+	refl_bool(x) == x; 
+
+	MEASUREMENT_SYSTEMS: () -> set1 of MeasurementSystem 
+	MEASUREMENT_SYSTEMS() ==
+			 {SI_ASTRONOMICAL(), SI_DEGREE(), SI_LITRE(), SI_TONNE(), SI_YARD(), SI_FOOT(), 
+			  SI_INCH(), SI_MILE(), SI_NAUTICAL_MILE(), SI_POUND(), SI_OUNCE(), SI_STONE(), 
+			  SI_KNOT(), SI_MPH(), SI_MPS(), SI_KPH(), SI_PINT(), SI_GALLON(), BIS_FOOT(), 
+			  BIS_INCH(), BIS_MILE(), BIS_ACRE(), BIS_OUNCE(), BIS_GALLON(), BIS_PINT(), 
+			  BIS_MILE_PER_HOUR(), hDAY(), hWEEK(), hAVG_MONTH(), hYEAR(), wDAY(), wAVG_MONTH()
+			 };
+			 
+	CONVERSION_SCHEMAS : () -> set1 of ConversionSchema
+	CONVERSION_SCHEMAS() == {SI, BIS, MHC, MDC, MWC};
+	
+	DIMENSION_VECTORS  : () -> set1 of DimensionVector  
+	DIMENSION_VECTORS() == 
+			 {LENGTH, MASS, TIME, CURRENT, TEMP, AMOUNT, INTENSITY, AREA, 
+				VOLUME, FREQUENCY, VELOCITY, ACCELERATION, ENERGY, POWER, FORCE, 
+				PRESSURE, CHARGE, PDIFFERENCE, CAPACITANCE	, WATT, RADIAN, STERADIAN 
+			 };
+			 
+	MAGNITUDES: () -> set1 of Magnitude
+	MAGNITUDES() == { 10, 20, 30, 40, 100, centi(100), kilo(10), pico(1), deci(10) };
+
+traces
+------------------------------------------------------------------------------------
+--@todo
+--@subsection Measurement equiv and comparison lemmas (ISQProof.thy, ISQQuantities.thy)
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+--@todo
+--@subsection Measurement equiv and comparison lemmas (ISQProof.thy, ISQQuantities.thy)
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+--@subsection Conversion lemmas (ISQConversion.thy)
+------------------------------------------------------------------------------------
+
+	--@doc qconv cid x = x
+	ISQ_C_id: let ms in set MEASUREMENT_SYSTEMS() in 
+							refl_bool(ms_quant_conv(CONV_ID, ms) = ms);
+	
+	--@doc qconv (c1 o c2) x = qconv c1 (qconv c2 x)
+	ISQ_C_comp: let ms in set MEASUREMENT_SYSTEMS() in 
+								let c1 in set CONVERSION_SCHEMAS() in
+									let c2 in set CONVERSION_SCHEMAS() \ {c1} in 
+										refl_bool(
+										ms_quant_conv(conv_comp(c1, c2), ms) 
+										= 
+										ms_quant_conv(c1, ms_quant_conv(c2, ms))
+										);
+										
+	ISQ_C_inv: let ms in set MEASUREMENT_SYSTEMS() in 
+							 let c in set CONVERSION_SCHEMAS() in
+							 		refl_bool(
+							 			ms_quant_conv(conv_inv(c), ms_quant_conv(c, ms)) 
+							 			= 
+							 			ms
+							 		);
+							 		
+	ISQ_C_scalQ: let ms in set MEASUREMENT_SYSTEMS() in 
+							   let c in set CONVERSION_SCHEMAS() in
+							   	 let d in set MAGNITUDES() in
+							 	  	refl_bool(
+							 	  		ms_quant_conv(c, scaleMS(d, ms)) 
+							 	  		= 
+							 	  		scaleMS(d, ms_quant_conv(c, ms))
+							 	  	);
+							 		
+------------------------------------------------------------------------------------
+--@todo
+--@subsection Various other SI lemmas (SI_Constants.thy, SI_Derived, SI_Accepted, 
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+--@subsection SI_Accepted
+------------------------------------------------------------------------------------
+	--@doc 1 hour = 3600 sec
+	SIA_1: let
+					 lhs: Magnitude = mag(hour(SI, SI_UNIT)),
+					 rhs: Magnitude = mag(scaleMS(3600, second(SI, SI_UNIT)))
+				 in
+				  refl_bool(lhs = rhs);
+	--@doc watt/hour = 3600 joule
+	SIA_2: let
+					 lhs: MeasurementSystem = ms_times(SI_WATT, hour(SI, SI_UNIT)),
+					 rhs: MeasurementSystem = scaleMS(3600, SI_JOULE())
+				 in
+				  refl_bool(lhs = rhs);
+  --@doc 25 m/s = 90 km/hr
+	SIA_3: let
+					 lhs: Magnitude = mag(scaleMS(25, SI_MPS())),
+					 rhs: Magnitude = mag(scaleMS(90, SI_KPH()))
+				 in
+				  refl_bool(lhs = rhs);
+------------------------------------------------------------------------------------
+--@subsection SI_Prefix
+------------------------------------------------------------------------------------
+	--@doc 2.3 (centi *q metre)**3 = pico(2.3) * metre^3
+	SIP_1: let
+					 lhs: Magnitude = mag(scaleMS(2.3, ms_itself_n(centi(METRE),3))),
+					 rhs: Magnitude = mag(scaleMS(pico(2.3), ms_itself_n(METRE, 3)))
+				 in
+				  refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+	--@doc 1 (centi *q metre)**-1 = 100 * metre**-1
+	SIP_2: let
+					 lhs: Magnitude = mag(ms_inv(centi(METRE))),
+					 rhs: Magnitude = mag(scaleMS(100, ms_inv(METRE)))
+				 in
+				  refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+				  
+------------------------------------------------------------------------------------
+--@subsection SI Imperial 
+------------------------------------------------------------------------------------
+	--@doc 1 mile = 5280 feet in SI's view up to some order of magnitude but not others
+	SIBIS_1: let
+						 lhs: Magnitude = mag(SI_MILE()),
+						 rhs: Magnitude = mag(scaleMS(5280, SI_FOOT()))
+						in
+						 refl_bool(approx_eq(lhs, rhs, 2) and not approx_eq(lhs, rhs, 3));
+	--@doc 1 mph = 1.609344 kph in SI; but if we want more generally, create a MS for KPH (like CGS)
+	SIBIS_2: let
+					 	 lhs: Magnitude = mag(SI_MPH()),
+						 rhs: Magnitude = mag(scaleMS(1.609344, SI_KPH()))
+						in
+						 refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));						 
+------------------------------------------------------------------------------------
+--@subsection BIS 
+------------------------------------------------------------------------------------
+	--@doc 1yard ~= 0.914 metres
+	BIS_0: refl_bool(mag(metrify(BIS_YARD)) = 0.9143993);
+	--@doc lhs = magnitude of a BIS foot in SI,
+	--		 rhs = magnitude of 1/3 of BIS yard in SI
+	--		 test= metrify(1 foot) = metrify(1 yard) / (3 * metre)
+  BIS_1: let
+  					lhs: Magnitude = mag(metrify(BIS_FOOT())),
+  					rhs: Magnitude = mag(metrify(BIS_YARD).mag) / (3 * mag(METRE))
+  				in   
+  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+  --@doc lhs = magnitude of a BIS 70mph in SI metre per second
+  --		 rhs = magnitude of particular factor in SI metre per second
+  BIS_2: let
+  					lhs: Magnitude = mph2mps(70),
+  					rhs: Magnitude = mag(scaleMS((704087461 / 22500000), SI_MPS()))
+  				in   
+  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+  --@doc lhs = magnitude of 1 centimetre in CGS as a BIS yard
+  --		 rhs = magnitude of BIS yard by given factor 
+  BIS_3: let
+  					lhs: Magnitude = mag(imperialise(scaleMS(1, CENTIMETRE))), 
+  					rhs: Magnitude = mag(scaleMS(100000 / 9143993, BIS_YARD))
+  				in   
+  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+  					
+------------------------------------------------------------------------------------
+--@subsection CGS
+------------------------------------------------------------------------------------
+	--@doc 1KM in SI = 100000 centimetres in CGS
+	CGS_1: let 
+					 lhs: Magnitude = mag(ms_conv(/*SI, CGS, kilo(METRE)*/kilo(METRE), CGS)),
+					 rhs: Magnitude = mag(scaleMS(100000, CENTIMETRE))
+				 in
+					 refl_bool((lhs = 100000) and (lhs = rhs));
+	--@doc 100 cm in CGS = 1 metre in SI
+	CGS_2: refl_bool(mag(metrify(scaleMS(100, CENTIMETRE))) = mag(METRE));
+
+------------------------------------------------------------------------------------
+--@subsection MHC, MDC, MWC
+------------------------------------------------------------------------------------
+	--@doc (in hours) week / avg_month = week / year * avg_month / year
+	MHC_1: let
+					 lhs: MeasurementSystem = hW2M(),
+					 rhs: MeasurementSystem = ms_div(ms_div(hWEEK(), hYEAR()), ms_div(hAVG_MONTH(), hYEAR()))
+					in
+						refl_bool(lhs = rhs);
+	--@doc (in weeks) 4 weeks = 0.9438202247191011 avg_month
+	MWC_1: let
+					 lhs: MeasurementSystem = weeks2months_wks(4),
+					 rhs: MeasurementSystem = scaleMS(0.9438202247191011, wAVG_MONTH())
+					in
+						refl_bool(lhs = rhs);
+	
+	--@doc 12 weeks = 84 days
+	MWC_2: let
+					 lhs: MeasurementSystem = scaleMS(12, MWEEK),
+					 rhs: MeasurementSystem = scaleMS(84, MDAY)
+					in
+						refl_bool(mag(ms_conv(lhs, MDC)) = mag(rhs)); 					
+------------------------------------------------------------------------------------
+--@subsection Other
+------------------------------------------------------------------------------------
+
+	--@doc 1KM = 1093.614 yards
+	T1: refl_bool(imperialise(kilo(METRE)).mag = 1093.6141355313812);
+	--@doc 1yard = 0.914 metres
+	T2: refl_bool(metrify(BIS_YARD).mag = 0.9143993);
+	--@doc 1000g = 2.20462 pounds
+	T4: refl_bool(mag(ms_conv(/*CGS, BIS, kilo(GRAM)*/kilo(GRAM), BIS)) = 2.2046227773803357);
+end ISQ

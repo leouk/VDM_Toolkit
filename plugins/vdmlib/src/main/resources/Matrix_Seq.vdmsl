@@ -1,0 +1,200 @@
+module Matrix_Seq
+exports all
+definitions 
+
+types
+	Vector = seq of ?;
+	Matrix = seq of Vector;
+	Index  = nat1;
+	
+functions
+
+	min: nat * nat -> nat
+	min(x,y) == if x < y then x else y;
+
+	seqMapH[@T,@R]: (@T->@R) * seq of @T -> seq of @R
+  seqMapH(f,s) == seqMap[@T,@R,@R](f,s)
+  post len RESULT <= len s;
+
+	seqMap[@T,@R,@S]: (@T->@R) * seq of @T -> seq of @S
+  seqMap(f,s) == [ f(s(i)) | i in set inds s ]--& s(i) in set dom f ]
+  --pre forall i in set inds s & s(i) in set dom f
+  post len RESULT <= len s;
+  
+  foldr[@T,@R]: (@T * @R -> @R) * @R * seq of @T -> @R
+  foldr(f, e, s) == cases s:
+                     []    -> e,
+                     [x]   -> x,
+                     s1^s2 -> f(foldr[@T,@R](f,e,s1), foldr[@T,@R](f,e,s2))
+                   end
+  --pre (exists x:@T & forall y:@T & f(x,y) = y and f(y,x) = y)
+  --and forall x,y,z:@T & f(x,f(y,z)) = f(f(x,y),z)
+  measure 
+  	len s;
+
+/*  
+  forward_compose[@T,@R,@S]: (@R +> @S) -> (@T +> @R) -> (@T +> @S)  
+  forward_compose(f)(g) == (lambda x: @T & f(g(x)));
+  
+  foldr2[@T,@R]: (@T -> @R -> @R) -> seq of @T -> @R -> @R
+  foldr2(f)(s) ==
+  	cases s:
+  		[] 			-> (lambda x: @R & x),
+  							-- f(x): @R -> @R, foldr2[@T,@R](f,xs): @R -> @R 
+  		[x]^xs	-> forward_compose[@R,@R,@R](f(x))(foldr2[@T,@R](f)(xs))
+  	end
+  measure
+  	len s;
+*/  	  
+  zip[@T,@R]: seq of @T * seq of @R -> seq of (@T * @R)
+  zip(xs,ys) == [ mk_(xs(i),ys(i)) | i in set inds xs inter inds ys ] 
+  post
+  	{ x.#1 | x in set elems RESULT } subset elems xs
+  	and
+  	{ y.#2 | y in set elems RESULT } subset elems ys
+ 		and 	
+  	len RESULT = min(len xs, len ys);
+
+	replicate[@T]: nat * @T -> seq of @T
+	replicate(n,t) == 
+		if n = 0 then [] else [t] ^ replicate[@T](n-1, t)
+	post
+		len RESULT = n
+		and
+		(n > 0 => elems RESULT = {t}) 
+	measure
+		n; 
+		
+	unzip[@T,@R]: seq of (@T * @R) -> (seq of @T * seq of @R)
+	unzip(s) == mk_([ s(i).#1 | i in set inds s ], [ s(i).#2 | i in set inds s ])
+	post
+		let mk_(xs,ys) = RESULT in
+			len xs = len s
+			and
+			len ys = len s
+			and
+			{ mk_(xs(i), ys(i)) | i in set inds s } = elems s;
+
+	vec: Index * Vector -> bool
+	vec(n,v) == len v = n;
+	
+	mat: Index * Index * Matrix -> bool
+	mat(nr,nc,m) == len m = nc and forall v in set elems m & vec(nr, v);
+	
+	vector_of_t[@T]: Vector -> bool
+	vector_of_t(v) == is_(v, seq of @T);
+	
+	matrix_of_t[@T]: Matrix -> bool
+	matrix_of_t(m) == is_(m, seq of seq of @T);
+	
+	vectorZero[@T]: @T * nat -> Vector
+	vectorZero(zero,n) == 
+		replicate[@T](n,zero)
+	post
+		vector_of_t[@T](RESULT);
+		
+	matrixZero[@T]: @T * nat * nat -> Matrix--seq of seq of @T 
+	matrixZero(zero,nr,nc) == 
+		replicate[Vector](nc, vectorZero[@T](zero, nr))
+	post
+		matrix_of_t[@T](RESULT);
+	
+	vectorOneOfN[@T]: @T * @T * nat * nat -> Vector
+	vectorOneOfN(zero,on,n,i) == 
+		replicate[@T](i,zero) ^ [on] ^ replicate[@T](n-1-i, zero)
+	pre
+		n > i
+	post
+		vector_of_t[@T](RESULT);
+	
+	matrixOneOfN[@T]: @T * @T * nat -> Matrix
+	matrixOneOfN(zero,on,n) == 
+		[ vectorOneOfN[@T](zero,on,n,i) | i in set {0,...,n-1} ]
+	post
+		matrix_of_t[@T](RESULT);
+	
+	vectorAdd[@T]: (@T * @T -> @T) * Vector * Vector -> Vector
+	vectorAdd(pl,v,w) == 
+		seqMapH[@T * @T, @T]((lambda xy: @T * @T & pl(xy.#1, xy.#2)), zip[?,?](v,w))
+	pre
+		vector_of_t[@T](v) and vector_of_t[@T](w)
+	post
+		vector_of_t[@T](RESULT);
+	
+	matrixAdd[@T]: (@T * @T -> @T) * Matrix * Matrix -> Matrix
+	matrixAdd(pl,m1,m2) == 
+		seqMapH[@T * @T, seq of @ T]((lambda xy: Vector * Vector & vectorAdd[@T](pl,xy.#1,xy.#2)), zip[Vector, Vector](m1, m2))
+	pre
+		matrix_of_t[@T](m1) and matrix_of_t[@T](m2)
+	post
+		matrix_of_t[@T](RESULT);
+	
+	--print scalarProd[nat](0,sum,sum,[0,1,2],[0,1,2])
+	sum: nat * nat -> nat
+	sum(x,y) == x + y;
+
+	scalarProd[@T]: @T * (@T * @T +> @T) * (@T * @T +> @T) * Vector * Vector -> @T
+	scalarProd(zero,pl,ti,v,w) == 
+			--foldr[(@T*@T),@T]((lambda xy: (@T * @T), s: @T & pl(ti(xy.#1,xy.#2),s)),zero,zip[@T,@T](v,w));
+			cases (zip[@T,@T](v,w)):
+         []     -> zero,
+         [x]    -> pl(ti(x.#1,x.#2),zero),
+         [x]^s  -> let mk_(xs,ys) = unzip[@T,@T](s) in pl(ti(x.#1,x.#2), scalarProd[@T](zero,pl,ti,xs,ys))
+         --s1^s2  -> let mk_(xs1,ys1) = unzip[@T,@T](s1),
+         --							 mk_(xs2,ys2) = unzip[@T,@T](s2),
+         --							 ti_x = scalarProd[@T](zero,pl,ti,xs1,ys1),
+         -- 						 ti_y = scalarProd[@T](zero,pl,ti,xs2,ys2)
+         -- 						 in	
+         --					   pl(ti_x, ti_y)
+       end
+  pre
+		vector_of_t[@T](v) and vector_of_t[@T](w)
+	measure
+  	len zip[@T,@T](v,w);
+	
+	row[@T]: Matrix * Index -> Vector
+	row(m,r) == 
+		seqMapH[seq of @T, @T]((lambda v: seq of @T & v(r)), m)
+	pre
+		matrix_of_t[@T](m)
+		and
+		forall i in set inds m & r in set inds m(i)
+	post
+		vector_of_t[@T](RESULT);
+
+	col[@T]: Matrix * Index -> Vector
+	col(m,c) == m(c)
+	pre
+		matrix_of_t[@T](m)
+		and
+		c in set inds m
+	post
+		vector_of_t[@T](RESULT);
+		
+	cell[@T]: Matrix * Index * Index -> @T
+	cell(m,r,c) == col[@T](m,c)(r)
+	pre
+		pre_col[@T](m,c)
+		and
+		r in set inds col[@T](m,c);
+	
+	--print transpose[nat](3, [[0,1,2],[3,4,5],[6,7,8]])	
+	--@Warning(5031) must be a union type warning
+	transpose[@T]: nat * Matrix -> Matrix
+	transpose(nr, m) ==
+		cases m: 
+			[] 		 -> replicate[seq of @T](nr,[]),
+			[v]^m' -> let f: (@T * (seq of @T)) -> (seq of seq of @T) = (lambda vi_mi: (@T * (seq of @T)) & [vi_mi.#1] ^ vi_mi.#2),
+										s: seq of (@T * (seq of @T)) = zip[@T,seq of @T](v, transpose[@T](nr,m'))
+								 in
+								 		[ f(s(i)) | i in set inds s ]
+								 		--seqMap[(@T * (seq of @T)), (seq of seq of @T), (seq of @T)](f,s)
+		end
+	pre
+		matrix_of_t[@T](m)
+	post
+		matrix_of_t[@T](RESULT)
+	measure
+		len m;
+	
+end Matrix_Seq
