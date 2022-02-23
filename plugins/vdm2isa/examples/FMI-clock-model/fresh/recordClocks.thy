@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-23T07:20:44.462557Z
+(* VDM to Isabelle Translation @2022-02-23T07:53:28.812479Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'recordClocks.vdmsl' at line 1:8
@@ -368,7 +368,7 @@ mk_FMIValue((env(ref).fmiValue), time)
 \<comment>\<open>VDM source: pre_calculate: (Ref * Environment * Time +> bool)
 	pre_calculate(ref, env, time) ==
 ((ref in set (dom env)) and inv_Environment(env))\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 92:9\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 96:9\<close>
 definition
 	pre_calculate :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -402,13 +402,13 @@ where
 \<comment>\<open>VDM source: calculate2: (Ref * Environment * Time -> FMIValue)
 	calculate2(ref, env, time) ==
 let valueType:ValueType = (env(ref).fmiValue) in mk_FMIValue(valueType, time)
-	pre ((ref in set (dom env)) and inv_Environment(env))\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 94:5\<close>
+	pre (ref in set (dom env))\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 98:5\<close>
 
 \<comment>\<open>VDM source: pre_calculate2: (Ref * Environment * Time +> bool)
 	pre_calculate2(ref, env, time) ==
-((ref in set (dom env)) and inv_Environment(env))\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 100:9\<close>
+(ref in set (dom env))\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 103:13\<close>
 definition
 	pre_calculate2 :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -416,13 +416,13 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculate2` specification.\<close>
 		((inv_Ref ref)  \<and>  (inv_Environment env)  \<and>  inv_Time time)  \<and> 
 		\<comment>\<open>User defined body of pre_calculate2.\<close>
-		((ref \<in> (dom env)) \<and> (inv_Environment env))"
+		(ref \<in> (dom env))"
 
 
 \<comment>\<open>VDM source: post_calculate2: (Ref * Environment * Time * FMIValue +> bool)
 	post_calculate2(ref, env, time, RESULT) ==
 null\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 94:5\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 98:5\<close>
 definition
 	post_calculate2 :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> FMIValue \<Rightarrow> bool"
 where
@@ -448,16 +448,65 @@ where
 
 	
 	
+\<comment>\<open>VDM source: calculate3: (Ref * Environment * Time -> FMIValue)
+	calculate3(ref, env, time) ==
+let valueType:real = (env(ref).fmiValue) in mk_FMIValue(valueType, time)
+	pre ((ref in set (dom env)) and inv_Environment(env))\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 106:5\<close>
+
+\<comment>\<open>VDM source: pre_calculate3: (Ref * Environment * Time +> bool)
+	pre_calculate3(ref, env, time) ==
+((ref in set (dom env)) and inv_Environment(env))\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 112:9\<close>
+definition
+	pre_calculate3 :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> bool"
+where
+	"pre_calculate3 ref   env   time \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_calculate3` specification.\<close>
+		((inv_Ref ref)  \<and>  (inv_Environment env)  \<and>  inv_Time time)  \<and> 
+		\<comment>\<open>User defined body of pre_calculate3.\<close>
+		((ref \<in> (dom env)) \<and> (inv_Environment env))"
+
+
+\<comment>\<open>VDM source: post_calculate3: (Ref * Environment * Time * FMIValue +> bool)
+	post_calculate3(ref, env, time, RESULT) ==
+null\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 106:5\<close>
+definition
+	post_calculate3 :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> FMIValue \<Rightarrow> bool"
+where
+	"post_calculate3 ref   env   time   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_calculate3` specification.\<close>
+		((inv_Ref ref)  \<and>  (inv_Environment env)  \<and>  inv_Time time  \<and>  inv_FMIValue RESULT)"
+
+definition
+	calculate3 :: "Ref \<Rightarrow> Environment \<Rightarrow> Time \<Rightarrow> FMIValue"
+where
+	"calculate3 ref   env   time \<equiv> 
+	\<comment>\<open>User defined body of calculate3.\<close>
+	(
+		let 
+(valueType::VDMReal) = (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (the((env ref))))
+		in
+			(if ((inv_VDMReal valueType)) then
+			\<lparr>fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = ValueType.U_VDMReal valueType, time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e = time\<rparr>
+		 else
+			undefined
+		)
+		)"
+
+	
+	
 \<comment>\<open>VDM source: updateOutputs: (FMU * Time -> Environment)
 	updateOutputs(fmu, time) ==
 let outputRef:set of (Ref) = {(outputVar.ref) | outputVar in set ((fmu.io).LFoutput)} in {oValue |-> calculate(oValue, (fmu.env), time) | oValue in set ((dom (fmu.env)) inter outputRef) & pre_calculate(oValue, (fmu.env), time)}
 	pre true\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 110:5\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 122:5\<close>
 
 \<comment>\<open>VDM source: pre_updateOutputs: (FMU * Time +> bool)
 	pre_updateOutputs(fmu, time) ==
 true\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 115:9\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 127:9\<close>
 definition
 	pre_updateOutputs :: "FMU \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -471,7 +520,7 @@ where
 \<comment>\<open>VDM source: post_updateOutputs: (FMU * Time * Environment +> bool)
 	post_updateOutputs(fmu, time, RESULT) ==
 null\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 110:5\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 122:5\<close>
 definition
 	post_updateOutputs :: "FMU \<Rightarrow> Time \<Rightarrow> Environment \<Rightarrow> bool"
 where
@@ -654,14 +703,14 @@ where
 	
 \<comment>\<open>VDM source: updateOutputs2: (FMU * Time -> Environment)
 	updateOutputs2(fmu, time) ==
-let outputRef:set of (Ref) = {(outputVar.ref) | outputVar in set ((fmu.io).LFoutput)}, env:Environment = {oValue |-> calculate2(oValue, (fmu.env), time) | oValue in set ((dom (fmu.env)) inter outputRef) & pre_calculate2(oValue, (fmu.env), time)} in env
+let outputRef:set of (Ref) = {(outputVar.ref) | outputVar in set ((fmu.io).LFoutput)}, env:Environment = {oValue |-> calculate2(oValue, (fmu.env), time) | oValue in set ((dom (fmu.env)) inter outputRef) & (inv_Environment((fmu.env)) and pre_calculate2(oValue, (fmu.env), time))} in env
 	pre true\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 119:5\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 131:5\<close>
 
 \<comment>\<open>VDM source: pre_updateOutputs2: (FMU * Time +> bool)
 	pre_updateOutputs2(fmu, time) ==
 true\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 126:9\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 139:9\<close>
 definition
 	pre_updateOutputs2 :: "FMU \<Rightarrow> Time \<Rightarrow> bool"
 where
@@ -675,7 +724,7 @@ where
 \<comment>\<open>VDM source: post_updateOutputs2: (FMU * Time * Environment +> bool)
 	post_updateOutputs2(fmu, time, RESULT) ==
 null\<close>
-\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 119:5\<close>
+\<comment>\<open>in 'recordClocks' (recordClocks.vdmsl) at line 131:5\<close>
 definition
 	post_updateOutputs2 :: "FMU \<Rightarrow> Time \<Rightarrow> Environment \<Rightarrow> bool"
 where
@@ -695,13 +744,13 @@ where
 		
 (env::Environment) = (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
 		mapCompSetBound 
-		{ oValue .   ((oValue \<in>((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)))  \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time) } 
+		{ oValue .   ((oValue \<in>((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)))  \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) } 
 		{ (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time) | (dummy0RANGE :: FMIValue) .  \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  (( ((((case (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE) of
 		 ValueType.U_bool (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE) \<Rightarrow> (inv_bool (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))
 		  | ValueType.U_VDMReal (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE) \<Rightarrow> (inv_VDMReal (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
-		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) )))  \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time) } 
+		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) )))  \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) } 
 		(inv_VDMNat) 
 		 ((((case (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e FMIValue) of
 		 ValueType.U_bool (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e FMIValue) \<Rightarrow> (inv_bool (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e FMIValue))
@@ -724,7 +773,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))) of
@@ -735,7 +784,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))) \<Rightarrow> (inv_bool (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (
@@ -745,7 +794,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))))
@@ -756,7 +805,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))) \<Rightarrow> (inv_VDMReal (fmiValue\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e (
@@ -766,7 +815,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))))
@@ -778,7 +827,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))))))) \<and> 
@@ -789,7 +838,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined)))))) )) ) then
@@ -800,7 +849,7 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<longrightarrow> (\<comment>\<open>Transform a VDM `=` expression into an `eq_FMIValue` call\<close>
-	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
+	(eq_FMIValue dummy0RANGE   (calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))))) then
 		(dummy0RANGE)
 		else
 		(undefined))
@@ -816,12 +865,12 @@ where
 		 ))) \<and> 
 		 ( ((((inv_VDMReal (r\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE))))) \<and> 
 		 ((inv_VDMNat (i\<^sub>T\<^sub>i\<^sub>m\<^sub>e (time\<^sub>F\<^sub>M\<^sub>I\<^sub>V\<^sub>a\<^sub>l\<^sub>u\<^sub>e dummy0RANGE)))) )) ))) \<and> (inv_bool (
-		if ((\<exists> oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)  . ((oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))) then
+		if ((\<exists> oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)  . ((oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
 		((True::\<bool>))
 		else
 		(undefined))) then
 			(
-		if ((\<exists> oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)  . ((oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time)))) then
+		if ((\<exists> oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)  . ((oValue \<in> ((dom (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<inter> outputRef)) \<and> ((inv_Environment (env\<^sub>F\<^sub>M\<^sub>U fmu)) \<and> (pre_calculate2 oValue   (env\<^sub>F\<^sub>M\<^sub>U fmu)   time))))) then
 		((True::\<bool>))
 		else
 		(undefined))
