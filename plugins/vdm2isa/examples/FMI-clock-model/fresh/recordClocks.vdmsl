@@ -1,0 +1,128 @@
+module recordClocks 
+exports all
+definitions
+
+types
+	--@LF percolating this through wherever real >=0 iss needed makes for simpler  expansions/proofs. 
+	Real1 = real
+	inv r == r >=0 ;
+
+	/**
+	 * A point in superdense time is represented by a real quantity and a whole
+	 * number instant "within" that time.
+	 */
+	Time ::
+		r	: Real1
+		i	: nat
+	eq a = b == a.r = b.r and a.i = b.i
+	ord a < b ==
+		(a.r < b.r) or (a.r = b.r and a.i < b.i); 
+		
+	/**
+	 * The different types of actions
+	 */
+
+	ValueType = real | int | bool;
+
+	--@LF declaration before use
+	/**
+	 * A convenient way to name FMUs.
+	 */
+	Name = seq1 of char;
+
+	/**
+	 * A variable or clock reference. These are unique within an FMU.
+	 */
+	Ref = nat;
+
+	/**
+	* The value that a clock or variable can have. 
+	* It contains a time and a value
+	*/
+	FMIValue ::
+		fmiValue : ValueType
+		time 	 : Time
+	eq mk_FMIValue(val1, t1) = mk_FMIValue(val2, t2) == 
+		val1 = val2
+		and t1 = t2
+	ord mk_FMIValue(-, t1) < mk_FMIValue(-, t2) == t1 < t2;
+
+	/**
+	* The current known FMU variable values. These are usually used by FMUs, but note that
+	* Clocks can produce temporary environments that are not committed until a step.
+	*/
+	Environment = map Ref to FMIValue
+	inv - == true;
+
+	/**
+	* An Equation is used to modify the values of an FMU in order to compute a new
+	* step in time. A clock defines a set of equations to activate.
+	*/
+	Equation = Environment -> Environment;
+
+	/**
+	* A variable is identified by a Ref (within an FMU).
+	*/
+	Variable ::
+		name 		: Name
+		ref			: Ref;
+
+
+	IOLeo ::
+		--@LF these are reserved wrods I think
+		LFinput				: set of Variable	-- Um 
+		LFoutput            : set of Variable   -- Ym
+	inv mk_IOLeo(LFinput, LFoutput) == LFinput union LFoutput <> {};
+
+	
+	FMU :: 
+		id 					: nat
+		name				: Name				-- m
+		--@LF is there any ooportunity to make any of these a type like Real1 for the structured types themselves? 
+		io 					: IOLeo
+		env					: Environment;
+
+functions
+
+	-- @STH I cannot see any difference in the translator between the two versions below - this is GOOD!
+	calculate : Ref * Environment * Time -> FMIValue 
+	calculate(ref, env, time) ==
+		mk_FMIValue(env(ref).fmiValue, time)
+	pre ref in set dom env
+		and inv_Environment(env);
+
+	calculate2 : Ref * Environment * Time -> FMIValue 
+	calculate2(ref, env, time) ==
+		let valueType : ValueType = env(ref).fmiValue 
+		in
+			mk_FMIValue(valueType, time)
+	pre ref in set dom env
+		and inv_Environment(env);
+
+	/*
+	* This function updates the value at the outputs
+	*/
+	-- @STH - this causes 10227: Invalid map comp binding and places the error on line 43
+	-- 10227: Invalid map comp binding: expected `(recordClocks`oValue)` but created `(dummy0RANGE :: FMIValue)`. in 'recordClocks' (recordClocks.vdmsl) at line 43:5
+	-- @STH - I also get this error:
+	-- 10118: Incompatible field (0) type in `mk_FMIValue` expression: expected `ValueType.U_bool "bool" | 
+	-- 	 ValueType.U_VDMReal "VDMReal"` but found `ValueType`. in 'recordClocks' (recordClocks.vdmsl) at line 92:9
+	updateOutputs : FMU * Time -> Environment
+	updateOutputs(fmu, time) ==
+		let outputRef : set of Ref = 
+			{outputVar.ref | outputVar in set fmu.io.LFoutput} in
+				{oValue |-> calculate(oValue, fmu.env, time) | oValue in set dom fmu.env inter outputRef & pre_calculate(oValue, fmu.env, time)}
+	pre true;
+
+
+
+	updateOutputs2 : FMU * Time -> Environment
+	updateOutputs2(fmu, time) ==
+		let outputRef : set of Ref = 
+				{outputVar.ref | outputVar in set fmu.io.LFoutput},
+			env : Environment = {oValue |-> calculate2(oValue, fmu.env, time) | oValue in set dom fmu.env inter outputRef & pre_calculate2(oValue, fmu.env, time)}
+		in
+			env
+	pre true;
+	
+end recordClocks
