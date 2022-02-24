@@ -1,0 +1,291 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc For certain complex types, explicit type conversions and is_T checks are 
+--	   needed in order for the code generator to work (i.e. the is_T check annotates)
+--	   the TC-AST in a way that is required for the CG to know what to do.
+------------------------------------------------------------------------------------
+module Support2
+exports 
+	functions
+	  --pre_seqMap[@T,@R]: (@T->@R) * seq of @T +> bool;
+			
+		
+		--map_to[@D,@R]: @R -> map @D to @R;
+		--post_map_to[@D,@R]: @R * (map @D to @R) +> bool;
+		--map_id[@D]: () -> map @D to @D;
+
+		seq_of[@T]: @T * nat1 -> seq1 of @T;
+
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		check_is_either[@T1,@T2]: ? -> bool;
+		check_is_seq_of_depth[@T]: ? * nat -> bool;
+		check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) /*(? -> bool)*/ /*(seq of @T -> bool)*/ -> bool;
+		check_is_seq_of[@T]: ? -> bool;
+		check_is_seq_of_inv[@T]: ? * (seq of @T -> bool) /*(? -> bool)*/ -> bool;
+		as_seq_of_inv[@T/*,@TS*/]: ? * (seq of @T -> bool) -> seq of @T;
+		true_invSeq[@T]: seq of @T -> bool;
+	
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+		check_is_set_of_depth[@T]: ? * nat -> bool;
+		check_is_set_of_inv_depth[@T]: ? * nat * (set of @T -> bool) -> bool;
+		check_is_set_of[@T]: ? -> bool;
+		check_is_set_of_inv[@T]: ? * (set of @T -> bool) -> bool;
+		as_set_of_inv[@T/*,@TS*/]: ? * (set of @T -> bool) -> set of @T;
+		true_invSet[@T]: set of @T -> bool;
+		
+
+definitions 
+			
+functions
+
+	--@todo/codegen/mods0 CG-Error: ATypeMultipleBind "d : @D"
+	--@doc maps all domain elements to given range r; executes if @D is enumerable
+	--map_to[@D,@R]: @R -> map @D to @R
+	--map_to(r) ==
+	--	{ d |-> r | d : @D }
+	--post
+	--	rng RESULT = {r};
+	
+	--@todo/codegen/mods0 CG-Error: ATypeMultipleBind "d : @D"
+	--@doc identity map	
+	--map_id[@D]: () -> map @D to @D
+	--map_id() == { d |-> d | d : @D }
+	--post
+	--	dom RESULT = rng RESULT;
+
+	--@todo/codegen/mods0 CG-Error: seq comprehension with "-"
+	seq_of[@T]: @T * nat1 -> seq1 of @T
+	seq_of(v, l) == [ v | - in seq [ p | p in set {1,...,l} ] ];
+				
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	check_is_either[@T1,@T2]: ? -> bool
+	check_is_either(x) == is_(x, @T1) or is_(x, @T2);
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	--@doc09 this function is needed for the CG lack of support for complex structured sequences; only allowed is seq of ?
+	--			 we assume that the sequence cannot have union types like [[1,2,3], 1, 3, [[1,2],1]]... (i.e. uniform types per type layer)
+	--			 the use case: is_(xs, seq of @T), where @T is the bound type; for the CG @T has to be "basic"/primitive
+	--		   the problem: when @T is seq of @T2! We have to have a way to control the recursive call, which in VDMJ would 
+	--			 be caught by the is_(xs, seq of @T); because we can't have seq of complext @T, we have to use the layer of wrapping 
+	--			 as a parameter. 
+	--
+	--			 Expectation: is_(xs, seq of @T)  				 ~= check_is_seq_of[@T](xs) (i.e. cut one level of "seq of")
+	--			 Example 		: is_(xs, seq of nat) 				 ~= check_is_seq_of[nat](xs)
+	--			 How about  : is_(xs, seq of (seq of nat)) ~= check_is_seq_of[seq of nat](xs) 
+	--			
+	--			 But that will fail CG because of the seq of nat parameter. So we need the level of "seq of" cut as parameter
+	--
+	--			 is_(xs, seq of (seq of nat)) ~= check_is_seq_of[nat](xs, 1)  
+	--			 is_(xs, seq of (seq of nat)) ~= check_is_seq_of[seq of nat](xs, 0)
+	--
+	--			 is_(xs, (seq of * N) of @T)  ~= check_is_seq_of[@T](xs, N-1) for any value N-1 >= 0
+	--
+	-- evaluates to true:
+	-- p check_is_seq_of[seq of nat]([[1,2,3],[2,3,2]], 1)
+	-- p check_is_seq_of[nat]([[1,2,3],[2,3,2]], 2)
+	-- p check_is_seq_of[nat]([2,3,2], 1)
+	-- p check_is_seq_of[nat]([2,3,2], 0)
+	--
+	-- evaluates to false:
+	-- p check_is_seq_of[nat]([[1,2,3],[2,3,2]], 0)
+	-- p check_is_seq_of[seq of nat]([[1,2,3],[2,3,2]], 0)
+	-- p check_is_seq_of[seq of nat]([2,3,2], 0)
+	-- p check_is_seq_of[seq of nat]([2,3,2], 1)
+ 
+  --
+  -- p let xs = [["ABC","CDE"],["EFG"]] in 
+  --		is_(xs, seq of DataIDList)
+  -- 		=
+  -- 		is_(xs, seq of seq of seq of char)
+  --		=
+  -- 		check_is_seq_of[seq of seq of char=DataIDList](xs, 0..1)
+  --		because (seq of * 3 above) - (seq of * 2 from DataIDList) + 0..1 is >= 0
+  --		<>
+  -- 		check_is_seq_of[DataIDList](xs, 2)
+  --		because (seq of * 3 above) - (seq of * 2 from DataIDList) + 2 is not >= 0
+  --		=
+  --		check_is_seq_of[DataID=seq of char](xs, 2)
+  --		because (seq of * 3 above) - (seq of * 1 from DataID) + 2 >= 0
+ 
+	check_is_seq_of_depth[@T]: ? * nat -> bool
+	check_is_seq_of_depth(xs, l) == 
+		is_(xs, seq of ?) 
+		and 
+		--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+		forall x in set elems narrow_(xs, seq of ?) & 
+			if is_(x, seq of ?) and l > 1 then
+				check_is_seq_of_depth[@T](x, l-1)
+			else
+				is_(x,@T)
+	measure
+		if not is_(xs, seq of ?) then
+			0
+		else
+			let 
+				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+				xs' : seq of seq of ? = [ xs(i) | i in set inds narrow_(xs, seq of ?) & 
+						is_(xs(i), seq of ?) 		--@doc09 inner value is also a sequence?
+						and 
+							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						l > 1 									--@doc09 has the bound on @T been reached?
+						--and 
+						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						--not is_(xs(i), seq of char) --@doc09 seq of char are treated differently by CG, so ignore then? 
+						]
+			in
+				if xs' = [] or is_(xs(1), seq of char) then
+					len xs'
+				else 
+					len xs' + len conc xs' - len xs' + 1
+	;
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	--@doc09 checks the invariant as well, in this case presume @T can't be a sequence
+	--
+	--@doc09 on the invariant check case, if we end up having the need for layers etc, then the signature must agree?
+	check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) -> bool
+	check_is_seq_of_inv_depth(xs, l, invariant) ==
+		check_is_seq_of_depth[@T](xs, l)
+		and
+		invariant(xs);
+
+	--@doc input xs has to be a seq of ? to enable the CG not to get upset about function parameters beyond "seq of ?"
+	--		 the missing precondition would enforce a compile-time type check that seq of @T is @TS without its invariant
+	--		 as_seq_of_inv[MethodID, MethodIDList](select_bla[seq of ?](bla), inv_MethodIDList)
+	--		 x
+	--	   as_seq_of_inv[MethodID, FethodIDList](select_bla[seq of ?](bla), inv_MethodIDList)
+	--
+	--@doc09 because of the complicated nature of type narrowing, particularly when l > 0, the result might not match @T
+	--			 ex: as_seq_of_inv_depth[MethodID]([[<NoXYZ>],[<XYZ>,<NoXYZ>]], 2, (lambda s: ? & true)) 
+	--					 should be a seq of MethodIDList, which is not @T. Because the invariant function holds, the type result is up to that!
+	--
+	--@todo/codegen/mods0 CG-warning/Java-Error: we *must* have "seq of @T" for code gen; hence no option for depth for as_seq_of :-(  
+	as_seq_of_inv[@T/*,@TS*/]: ? * (seq of @T -> bool) -> seq of @T
+	as_seq_of_inv(xs, fcn_inv) == 
+		if check_is_seq_of_inv[@T](xs, fcn_inv) then
+			--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+			--																	so, a typo for @TS won't be caught by VDMJ neither will CG complain :-(  
+			--@todo/codegen/mods0 CG-warning/?: narrow_ isn't needed here because xs is already seq of ?
+			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
+			xs -- narrow_(xs, @TS)
+		else
+			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
+			undefined -- [] -- undefined?
+	--pre
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--is_(xs, seq of @T)
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--and is_(xs, @TS)
+	post 
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (seq of @T); 
+		--is_(RESULT, @TS)
+		--@todo/codegen/mods0 CG-warning/?: at least enforce that the result will satisfy the @T invariant for result given no @TS is given
+		check_is_seq_of_inv[@T](xs, fcn_inv) => fcn_inv(RESULT);
+		
+	check_is_seq_of[@T]: ? -> bool
+	check_is_seq_of(xs) == check_is_seq_of_depth[@T](xs, 0);
+	
+	check_is_seq_of_inv[@T]: ? * (seq of @T -> bool) -> bool
+	check_is_seq_of_inv(xs, fcn_inv) == check_is_seq_of_inv_depth[@T](xs, 0, fcn_inv);
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
+	check_is_set_of_depth[@T]: ? * nat -> bool
+	check_is_set_of_depth(xs, l) == 
+		is_(xs, set of ?) 
+		and 
+		--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+		forall x in set narrow_(xs, set of ?) & 
+			if is_(x, set of ?) and l > 1 then
+				check_is_set_of_depth[@T](x, l-1)
+			else
+				is_(x,@T)
+	measure
+		if not is_(xs, set of ?) then
+			0
+		else
+			let 
+				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
+				xs' : set of set of ? = { e | e in set narrow_(xs, set of ?) & 
+						is_(e, set of ?) 		--@doc09 inner value is also a setuence?
+						and 
+							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						l > 1 									--@doc09 has the bound on @T been reached?
+						--and 
+						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+						--not is_(xs(i), set of char) --@doc09 set of char are treated differently by CG, so ignore then? 
+						}
+			in
+				if xs' = {} then
+					card xs'
+				else 
+					card xs' + card dunion xs' - card xs' + 1
+	;
+	
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	--@doc09 checks the invariant as well, in this case presume @T can't be a setuence
+	check_is_set_of_inv_depth[@T]: ? * nat * (set of @T -> bool) -> bool
+	check_is_set_of_inv_depth(xs, l, invariant) ==
+		check_is_set_of_depth[@T](xs, l)
+		and
+		invariant(xs);
+
+	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
+	as_set_of_inv[@T/*,@TS*/]: ? * (set of @T -> bool) -> set of @T
+	as_set_of_inv(xs, fcn_inv) == 
+		if check_is_set_of_inv[@T](xs, fcn_inv) then
+			--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
+			--																	so, a typo for @TS won't be caught by VDMJ neither will CG complain :-(  
+			--@todo/codegen/mods0 CG-warning/?: narrow_ isn't needed here because xs is already set of ?
+			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
+			xs -- narrow_(xs, @TS)
+		else
+			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
+			undefined -- [] -- undefined?
+	--pre
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--is_(xs, set of @T)
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--and is_(xs, @TS)
+	post 
+		--@todo/codegen/mods0 CG-warning/?: f[T](x) for complex T (set of @T); 
+		--is_(RESULT, @TS)
+		--@todo/codegen/mods0 CG-warning/?: at least enforce that the result will satisfy the @T invariant for result given no @TS is given
+		check_is_set_of_inv[@T](xs, fcn_inv) => fcn_inv(RESULT);
+		
+	check_is_set_of[@T]: ? -> bool
+	check_is_set_of(xs) == check_is_set_of_depth[@T](xs, 0);
+	
+	check_is_set_of_inv[@T]: ? * (set of @T -> bool) -> bool
+	check_is_set_of_inv(xs, fcn_inv) == check_is_set_of_inv_depth[@T](xs, 0, fcn_inv);
+	
+	true_invSet[@T]: set of @T -> bool
+  true_invSet(-) == true;
+        
+	true_invSeq[@T]: seq of @T -> bool
+	true_invSeq(-) == true;
+
+	--maxxs_nat: seq1 of nat -> nat
+	--maxxs_nat(s) == 
+		--@todo/codegen/mods0 CG-warning/Java-Error: function parameters
+		--maxxs[nat](s, max);
+	--	maxxs[nat](s, leomax_constant);
+   	 
+end Support2

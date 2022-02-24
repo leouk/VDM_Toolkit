@@ -1,0 +1,532 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc Implementation of recursive definitions for various set and map operations  
+--@doc Some of this could be done faster by comprehension; hopefully it is useful 
+--	   for learning recursion and polymorphic functions applications
+--@todo refactor some of the definitions into Support1 
+------------------------------------------------------------------------------------
+module SetMapLib
+
+imports from IO operations println; print
+
+exports 
+
+	functions
+		-- Recursively processes all elements of a given set in the context of some parameter (e.g., check consistency)
+		-- (e.g., like "filter process_Elem s"; s = {0, 1, 2}, process_Set(P, s, e) = P(0, e) and P(1, e) and P(2, e))
+		-- 
+		-- The pre is the conjunction of all pre_(elem, e, p) given
+		process_Set [@elem, @param]: (@elem * @param -> bool) * set of @elem * @param -> bool;
+		
+		-- Recursively processes all elements of a given sequence in the context of some parameter (e.g., check consistency)
+		process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> bool;
+
+		-- Recursively processes all elements of a given map in the context of some parameter (e.g., check consistency)
+		process_Map [@D, @R, @param]: (@D * @R * @param -> bool) * (map @D to @R) * @param -> bool;
+
+		-- tests whether a seq of sets are mutually disjoint
+		-- (e.g., it establishes that s(i) inter s(j) = {}, for all i <> j in set inds s);
+		disjoint [@elem]: seq of (set of @elem) +> bool;
+
+		-- distributed union explicitly declared: TODO REMOVE?
+		distUnion [@elem]: set of (set of @elem) +> set of @elem;
+
+		-- determinises if a seqence of sets forms a partition of the given set (e.g., it completes the set disjointly)
+		partition [@elem]: seq of (set of @elem) * set of @elem +> bool;
+
+		-- Recursively collects, for all elements of a given set, all the ressulting elements for each element
+		-- (e.g., like "map colElem s"; s = {0, 1, 2}, CollectElem(f, s) = {f(0), f(1), f(2)}
+		--
+		-- Pre is the conjunction of elem function applied to arguments, like in process_Set
+		collect_Elems [@elem, @res]: (@elem -> set of @res) * set of @elem -> set of @res;
+		--post_collect_Elems[@elem, @res]: (@elem -> set of @res) * set of @elem * set of @res +> bool;
+
+		-- Map subset definition: not working :-(  ??
+		map_Subset [@D, @R]: map @D to @R * map @D to @R +> bool;
+
+		domain[@D, @R]: set of (@D * @R) +> set of @D;
+		range [@D, @R]: set of (@D * @R) +> set of @R;
+
+		seq_filter_ho [@E]: seq of @E * (@E +> bool) +> seq of @E;
+		seq_extract_ho[@E]: seq of @E * (nat1 +> bool) +> seq of @E;
+
+		seq_filter [@E]: seq of @E * set of @E +> seq of @E;
+		seq_extract[@E]: seq of @E * set of nat1 +> seq of @E;
+
+		filter_seq [@E]: set of @E * seq of @E +> seq of @E;
+
+		isInjSeq[@E]: seq of @E +> bool;
+		inj_concat[@E]: seq of @E * seq of @E -> seq of @E;
+
+		-- A dependency map has a set of dependent keys for each key known
+		-- Doesn't check for circular dependencies
+		depMapInv[@K]: map @K to set of @K +> bool;
+		
+		-- Calculate a dependency chain for a key of a given map as a set of keys
+		-- map-fixed * map-todo * key-to-calc-dep -> dependency-chain-set
+		-- Unguarded: map may contain circular or unknown dependenceies
+		--allDeps[@K]: map @K to set of @K * map @K to set of @K * @K -> set of @K
+		
+		-- Known dependencies of a k are all dependencies filtered by those known in m
+		-- Unguarded: map may contain circular or unknown dependencies
+		knownDeps[@K]: map @K to set of @K * @K -> set of @K;
+			
+		-- Valid dependencies of a key on a map without circular loops, self-dependencies or unknown dependencies
+		validDeps[@K]: map @K to set of @K * @K -> set of @K;
+		--post_validDeps[@K]: map @K to set of @K * @K * set of @K +> bool
+		
+		-- Calculated the dependency-chain as a map for a given dependency map.
+		-- e.g., 			m  = { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {1} }
+		--		depMap[nat](m) = { 0 |-> {1, 2, 3}, 1 |-> {2}, 2 |-> {}, 3 |-> {1, 2} }
+		depMap[@K]: map @K to set of @K -> map @K to set of @K;
+		
+		-- Checks for circular dependency chains within dependency map 
+		hasCircularDeps[@K]: map @K to set of @K * @K +> bool;
+		
+		-- Checks for unknown dependencies chains within dependency map
+		hasUnknownDeps[@K]: map @K to set of @K * @K +> bool;
+		
+		-- Checks whether given key has valid dependencies within a map
+		isKeyDepValid[@K]: map @K to set of @K * @K +> bool;
+		
+		-- Check all keys are valid within a given map
+		isDepMapValid[@K]: map @K to set of @K +> bool;
+
+
+	 operations	
+		Test: () ==> ();
+
+definitions 
+
+types
+
+     ISeq = seq of nat
+	 inv s == len s = card elems s; --forall i, j in set inds s & i <> j => s(i) <> s(j);
+
+functions
+
+--*********************************************************************************************************
+-- Auxiliary functions: polymorphic + high-order to avoid repetition; measures missing due to interp BUG (Feb 2011)
+--*********************************************************************************************************
+
+process_Set [@elem, @param]: (@elem * @param -> bool) * set of @elem * @param -> bool
+process_Set(process_Elem, s, e) ==
+	if s = {} then true 
+	else (let x in set s
+		  in process_Elem(x, e) and 
+			 process_Set[@elem, @param](process_Elem, s \ {x}, e))
+pre
+	forall x in set s & pre_(process_Elem, x, e) 
+post
+	forall x in set s & process_Elem(x, e)
+measure
+	lmeasure_process_Set
+;
+
+process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> bool
+process_Seq(process_Elem, s, e) ==
+	if (s = []) then true 
+	else process_Elem(hd s, e) and process_Seq[@elem, @param](process_Elem, tl s, e)
+pre
+	forall i in set inds s & pre_(process_Elem, s(i), e)
+--post
+--	forall i in set inds s & process_Elem(s(i), e)
+measure
+	lmeasure_process_Seq
+;
+
+process_Map [@D, @R, @param]: (@D * @R * @param -> bool) * (map @D to @R) * @param -> bool
+process_Map(process_Elem, m, e) ==
+	if (m = { |-> }) then true
+	else let d in set dom m in
+					process_Elem(d, m(d), e) 
+					and
+					process_Map[@D, @R, @param](process_Elem, {d} <-: m, e)
+pre
+	forall i in set dom m & pre_(process_Elem, m(i), e)
+post
+	forall i in set dom m & process_Elem(i, m(i), e)
+measure
+	lmeasure_process_Map;
+
+
+process_PSet [@elem, @param]: (@elem * @param -> bool) * 
+							  (@elem * @param +> bool) * 
+							  set of @elem * @param -> bool
+process_PSet(process_Elem, lpre_process_Elem, s, e) ==
+	if s = {} then true 
+	else (let x in set s
+		  in process_Elem(x, e) and 
+			 process_PSet[@elem, @param](process_Elem, lpre_process_Elem, s \ {x}, e))
+pre
+	forall x in set s & lpre_process_Elem(x, e)
+post
+	forall x in set s & process_Elem(x, e)
+measure
+	lmeasure_process_PSet
+;
+
+process_PSeq [@elem, @param]: (@elem * @param -> bool) * 
+					(@elem * @param +> bool) * 
+					seq of @elem * @param -> bool
+process_PSeq(process_Elem, lpre_process_Elem, s, e) ==
+	if (s = []) then true 
+	else process_Elem(hd s, e) and process_PSeq[@elem, @param](process_Elem, lpre_process_Elem, tl s, e)
+pre
+	forall i in set inds s & lpre_process_Elem(s(i), e)
+post
+	forall i in set inds s & process_Elem(s(i), e)
+measure
+	lmeasure_process_PSeq
+;
+
+--*********************************************************************************************************
+-- Auxilliary set-related functions
+--*********************************************************************************************************
+
+disjoint [@elem]: seq of (set of @elem) +> bool
+disjoint(s) ==
+	-- empty or singleton sequences are trivially disjoint
+	if (len s <= 1) then 
+		true
+	else
+	-- other sequences of sets are disjoint if they are pairwise disjoint to all higher indexes (e.g., slightlty more efficient than POST?)
+		len s = card { i | i in set inds s & forall j in set inds s & j > i => s(i) inter s(j) = {} } 
+--post
+--	RESULT => (forall i, j in set inds s & i <> j => s(i) inter s(j) = {}) -- BAD PERFORMANCE
+;
+
+distUnion [@elem]: set of (set of @elem) +> set of @elem -- BAD PERFORMANCE
+distUnion(s) ==
+	if (s = {}) then {}
+	else let e in set s 
+		 	in e union distUnion[@elem](s \ {e})
+post
+	RESULT = dunion(s) 
+measure
+ 	lmeasure_dunion
+;
+	
+partition [@elem]: seq of (set of @elem) * set of @elem +> bool
+partition(s, p) ==
+	disjoint[@elem](s) and
+	p = dunion(elems s)
+	--p = distUnion[@elem](elems s)
+--post
+--	RESULT => (disjoint[@elem](s) and p = dunion(elems s)) -- BAD PERFORMANCE
+;
+
+collect_Elems [@elem, @res]: (@elem -> set of @res) * set of @elem -> set of @res
+collect_Elems(colElem, ss) ==
+	if (ss = {}) then {} 
+	else let s in set ss 
+		 in colElem(s) union collect_Elems[@elem, @res](colElem, ss \ {s})
+pre
+	forall s in set ss & pre_(colElem, s)
+post
+	-- collecting elements must not miss any result
+	RESULT = dunion { colElem(sq) | sq in set ss }
+-- BUG: VDM interpreter doesn't handle measures in polymorphic functions 
+measure
+	lmeasure_collect_Elems
+;
+
+map_Subset [@D, @R]: map @D to @R * map @D to @R +> bool
+map_Subset(l, r) == dom l subset dom r and rng l subset rng r;
+
+domain[@D, @R]: set of (@D * @R) +> set of @D
+domain(rel) == 
+	collect_Elems[(@D * @R), @R]((lambda r: @D * @R & {r.#1}), rel)
+post
+	post_collect_Elems[(@D * @R), @R]((lambda r: @D * @R & {r.#1}), rel, RESULT);
+
+range[@D, @R]: set of (@D * @R) +> set of @R
+range(rel) == 
+	collect_Elems[(@D * @R), @R]((lambda r: @D * @R & {r.#2}), rel)
+post
+	post_collect_Elems[(@D * @R), @R]((lambda r: @D * @R & {r.#2}), rel, RESULT);
+
+--*********************************************************************************************************
+-- Auxiliary sequence-related functions
+--*********************************************************************************************************
+
+seq_filter [@E]: seq of @E * set of @E +> seq of @E
+seq_filter(ss, es) == [ ss(i) | i in set inds ss & ss(i) in set es ];
+
+seq_extract[@E]: seq of @E * set of nat1 +> seq of @E
+seq_extract(ss, es) == [ ss(i) | i in set inds ss & i in set es ];
+
+seq_filter_ho [@E]: seq of @E * (@E +> bool) +> seq of @E
+seq_filter_ho(ss, pred) == [ ss(i) | i in set inds ss & pred(ss(i)) ];
+
+seq_extract_ho [@E]: seq of @E * (nat1 +> bool) +> seq of @E
+seq_extract_ho(ss, pred) == [ ss(i) | i in set inds ss & pred(i) ];
+
+-- use accumulator function for better performance
+filter_seq [@E]: set of @E * seq of @E +> seq of @E
+filter_seq(es, ss) == filter_seq0[@E](es, ss, [])
+post
+	elems RESULT subset elems ss
+	and
+	elems RESULT subset es
+	and
+	isInjSeq[@E](RESULT);
+
+filter_seq0 [@E]: set of @E * seq of @E * seq of @E +> seq of @E
+filter_seq0(es, ss, res) == 	
+	if ss = [] then res 
+	else let head = hd ss, tail = tl ss in 
+			if head in set es then filter_seq0[@E](es \ {head} , tail, res ^ [hd ss])
+			else				   filter_seq0[@E](es, tail, res)
+measure
+	lmeasure_filter_seq0;
+
+isInjSeq[@E]: seq of @E +> bool
+isInjSeq(s) == len s = card elems s;
+
+inj_concat[@E]: seq of @E * seq of @E -> seq of @E
+inj_concat(s, t) == s ^ t
+pre
+	isInjSeq[@E](s ^ t);
+
+force_inj_concat[@E]: seq of @E * seq of @E -> seq of @E
+force_inj_concat(s, t) == 
+	let r = s ^ t in filter_seq[@E](elems r, r);
+
+--*********************************************************************************************************
+-- Auxiliary dependency maps functions
+--*********************************************************************************************************
+
+-- A dependency map has a set of dependent keys for each key known
+-- Doesn't check for circular dependencies
+depMapInv[@K]: map @K to set of @K +> bool
+depMapInv(dm) ==
+	forall k in set dom dm &
+		-- no self dependency
+		k not in set dm(k) 
+		and
+		-- immediate dependencies are known
+		dm(k) subset dom dm;
+
+-- Calculate a dependency chain for a key of a given map as a set of keys
+-- map-fixed * map-todo * key-to-calc-dep -> dependency-chain-set
+-- Unguarded: map may contain circular or unknown dependenceies
+allDeps[@K]: map @K to set of @K * map @K to set of @K * @K -> set of @K
+allDeps(mf, m, k) ==
+	let res = m(k), mn = ({k} <-: m) in
+		res union dunion { allDeps[@K](mf, mn, i) | i in set dom mn inter res }
+pre
+	-- key must be known in map-todo 
+	k in set dom m
+	and
+	-- map todo is bounded within original/fixed map
+	--map_Subset[@K, @K](m, mf): fails :-(
+	dom m subset dom mf and rng m subset rng mf
+--post
+	-- Result is known / bound within Original Sigma
+	--RESULT subset dom mf
+measure
+	lmeasure_AllDeps;
+
+-- Known dependencies of a k are all dependencies filtered by those known in m
+-- Unguarded: map may contain circular or unknown dependencies
+knownDeps[@K]: map @K to set of @K * @K -> set of @K
+knownDeps(m, k) == allDeps[@K](m, m, k) inter dom m
+pre
+	pre_allDeps[@K](m, m, k)
+post
+	RESULT subset dom m;
+	
+-- Valid dependencies of a key on a map without circular loops, self-dependencies or unknown dependencies
+validDeps[@K]: map @K to set of @K * @K -> set of @K
+validDeps(m, k) == allDeps[@K](m, m, k) 
+pre
+	-- can calculate deps
+	pre_allDeps[@K](m, m, k)
+	and
+	-- given maps are valid
+	depMapInv[@K](m)
+post
+	-- all dependencies are known
+	RESULT subset dom m
+	and
+	-- no circular dependency
+	k not in set RESULT;
+
+-- Calculated the dependency-chain as a map for a given dependency map.
+-- e.g., 			m  = { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {1} }
+--		depMap[nat](m) = { 0 |-> {1, 2, 3}, 1 |-> {2}, 2 |-> {}, 3 |-> {1, 2} }
+depMap[@K]: map @K to set of @K -> map @K to set of @K
+depMap(m) == 
+	{ k |-> validDeps[@K](m, k) | k in set dom m & 
+				-- establishes the precondition for each validDeps(m, k)
+				isKeyDepValid[@K](m, k) 
+				and
+				-- no circular dependencies everywhere
+				not hasCircularDeps[@K](m, k) 
+				and
+			 	-- no unknown dependencies everywhere
+			 	not hasUnknownDeps[@K](m, k) }
+--pre
+--	isDepMapValid[@K](m) -- is this needed?   
+--	
+--	TODO: CHECK; think not because already in the set filter?
+--		isKeyDepValid[@K](m, k) and not hasCircularDeps[@K](m, k) and not hasUnknownDeps[@K](m, k) => pre_validDeps[@K](m, k) => post_validDeps[@K](m,k) !
+post
+	-- all mapped elements *must* have calculated results
+	dom RESULT = dom m
+	and
+	-- all collected results are known
+	dunion rng RESULT subset dom m;
+
+-- Checks for circular dependency chains within dependency map 
+hasCircularDeps[@K]: map @K to set of @K * @K +> bool
+hasCircularDeps(m, k) == 
+	pre_allDeps[@K](m, m, k) and
+	k in set allDeps[@K](m, m, k);
+
+-- Checks for unknown dependencies in Sigma
+hasUnknownDeps[@K]: map @K to set of @K * @K +> bool
+hasUnknownDeps(m, k) ==
+	pre_allDeps[@K](m, m, k) and
+	not allDeps[@K](m, m, k) subset dom m;
+
+isKeyDepValid[@K]: map @K to set of @K * @K +> bool
+isKeyDepValid(m, k) == pre_validDeps[@K](m, k);
+
+isDepMapValid[@K]: map @K to set of @K +> bool
+isDepMapValid(m) == forall i in set dom m & isKeyDepValid[@K](m, i);
+
+--*********************************************************************************************************
+-- Auxiliary functions measures - missing due to interp BUG (Feb 2011); fixed (June 2011); Overture 1.0.1
+--*********************************************************************************************************
+
+lmeasure_process_Set [@elem, @param]: (@elem * @param -> bool) * set of @elem * @param -> nat
+lmeasure_process_Set(-, s, -) == card s;
+
+lmeasure_process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> nat
+lmeasure_process_Seq(-, s, -) == len s;
+
+lmeasure_process_Map [@D, @R, @param]: (@D * @R * @param -> bool) * (map @D to @R) * @param -> nat
+lmeasure_process_Map(-, m, -) == card(dom m);
+
+lmeasure_process_PSet [@elem, @param]: (@elem * @param -> bool) * 
+							  (@elem * @param +> bool) * 
+							  set of @elem * @param -> nat
+lmeasure_process_PSet(-, -, s, -) == card s;
+
+lmeasure_process_PSeq [@elem, @param]: (@elem * @param -> bool) * 
+									  (@elem * @param +> bool) * 
+									  seq of @elem * @param -> nat
+lmeasure_process_PSeq(-, -, s, -) == len s;
+
+lmeasure_dunion [@elem]: set of (set of @elem) -> nat
+lmeasure_dunion(s) == card s;
+
+lmeasure_collect_Elems [@elem, @res]: (@elem -> set of @res) * set of @elem -> nat
+lmeasure_collect_Elems(-, ss) == card ss;
+
+lmeasure_filter_seq0[@E]: set of @E * seq of @E * seq of @E -> nat
+lmeasure_filter_seq0(-, ss, -) == len ss;
+
+lmeasure_AllDeps[@K]: map @K to set of @K * map @K to set of @K * @K -> nat
+lmeasure_AllDeps(-, m, -) == card (dom m);
+
+operations
+
+Test: () ==> ()
+Test() ==
+	(
+		
+		IO`println("\n\n Test map-dependencies functions");
+
+		(dcl -- valid map
+			m0 : map nat to set of nat := { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {1} },
+			-- circular elem in map
+			m1 : map nat to set of nat := { 0 |-> {1}, 1 |-> {2}, 2 |-> {3}, 3 |-> {0, 1} },
+			-- unknown elem in map
+			m2 : map nat to set of nat := { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {4} },
+			-- unknown + circular elem in map
+			m3 : map nat to set of nat := { 0 |-> {1}, 1 |-> {2}, 2 |-> {3, 4}, 3 |-> {0, 1} },
+			
+			m : map nat to set of nat := let x in set {m0, m1, m2, m3} in x,
+			k : nat := let x in set dom m in x,
+			di: bool := depMapInv[nat](m),
+			pd: bool := pre_allDeps[nat](m, m, k),
+			ad: [set of nat] := if (pd) then allDeps[nat](m, m, k) else nil,
+			hc: bool := hasCircularDeps[nat](m, k),
+			hu: bool := hasUnknownDeps[nat](m, k),
+			ik: bool := isKeyDepValid[nat](m, k),
+			id: bool := isDepMapValid[nat](m),
+			kd: [set of nat] := if (ad <> nil) then knownDeps[nat](m, k) else nil,
+			vd: [set of nat] := if (ad <> nil and di and ad subset dom m and k not in set ad) then validDeps[nat](m, k) else nil,	
+			dm: [map nat to set of nat] := if (ad <> nil and vd <> nil and ik) then depMap[nat](m) else nil
+			;
+
+		IO`print("map m           = "); IO`println(m);
+		IO`print("key k           = "); IO`println(k);
+		IO`print("depMapInv(m)    = "); IO`println(di);
+		IO`print("pre_allDeps(m,k)= "); IO`println(pd);
+		IO`print("allDeps(m,k)    = "); IO`println(ad);
+		IO`print("hasCircDep(m,k) = "); IO`println(hc);
+		IO`print("hasUnkDep(m,k)  = "); IO`println(hu);
+		IO`print("isKeyDepVal(m,k)= "); IO`println(ik);
+		IO`print("isDepMapVal(m)  = "); IO`println(id);
+		IO`print("knownDeps(m,k)  = "); IO`println(kd);
+		IO`print("validDeps(m,k)  = "); IO`println(vd);
+		IO`print("depMap(m)       = "); IO`println(dm)
+		);
+
+
+		IO`println("\n\n Test set-related functions");
+
+		(dcl -- valid disj set
+			 ds0  : seq of set of nat := [ {0, 1}, {2, 3}, {4,...,8}, {9, 10} ],
+			 -- invalid at later indexes (e.g., i > j)
+			 ds1  : seq of set of nat := [ {0, 1}, {2, 3}, {4,...,8}, {9, 5, 10} ],
+			 -- invalid at lower indexes (e.g., i < j)
+			 ds2  : seq of set of nat := [ {0, 5, 1}, {2, 3}, {4,...,8}, {9, 10} ],
+
+			 disjs: seq of set of nat := let x in set {ds0, ds1, ds2} in x,
+			 alls : set of nat		  := {0,...,10},
+			 disj : bool 		:= disjoint[nat](disjs),
+			 part : bool		:= partition[nat](disjs, alls),
+			 duni : set of nat	:= distUnion[nat](elems disjs)
+			;
+
+			IO`print("disjs s        = "); IO`println(disjs);
+			IO`print("alls  a        = "); IO`println(alls);
+			IO`print("disjoint(s)    = "); IO`println(disj);
+			IO`print("partition(s,a) = "); IO`println(part);
+			IO`print("distUnion(e s) = "); IO`println(duni);
+	
+		);		
+
+		IO`println("\n\n Test seq-related functions");
+
+
+		(dcl 
+			 s0 : seq of nat := [0, 2, 1, 3, 1, 4, 2, 5, 6, 2, 3, 1, 3, 6, 0, 1, 5, 10, 3],
+			 
+			 sf : seq of nat := seq_filter[nat](s0, elems s0),
+			 se : seq of nat := seq_extract[nat](s0, { i | i in set inds s0 & i div 2 = 0 }),
+			 fs : seq of nat := filter_seq[nat](elems s0, s0),
+	
+			 is0: ISeq	:= [ 0 , 1, 2, 3 ],
+			 is1: ISeq	:= inj_concat[nat](is0, [6, 10, 20]),
+			fis2: ISeq	:= force_inj_concat[nat](is0, s0)
+		;
+			IO`print("s0                          = "); IO`println(s0);
+			IO`print("seq_filter(s0, elems s0)    = "); IO`println(sf);
+			IO`print("filter_seq(elems s0, s0)    = "); IO`println(fs);
+			IO`print("extract(s0, even(inds s0)}) = "); IO`println(se);
+			IO`print("is0                         = "); IO`println(is0);
+			IO`print("inv_ISeq(is0)               = "); IO`println(inv_ISeq(is0));
+			IO`print("inv_ISeq( s0)               = "); IO`println(inv_ISeq(s0));
+			IO`print("inj_concat(is0, [6, 10, 20])= "); IO`println(is1);
+			IO`print("force_inj_concat(is0, s0)   = "); IO`println(fis2);
+		);
+	);
+
+end SetMapLib
