@@ -270,6 +270,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             if (errors.size() >= GeneralisaPlugin.maxErrors - 1) 
             {
 				String tooMany = "Too many translation errors";
+                workspace.Diag.severe(tooMany);
                 workspace.Diag.severe(String.valueOf(errors.size()));
                 workspace.Diag.severe(errors.toString());
     			errors.add(new VDM2IsaError(10, tooMany, location));

@@ -26,6 +26,8 @@ package plugins;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Map.Entry;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -46,6 +48,8 @@ import workspace.plugins.TCPlugin;
 public class ISAPluginSL extends ISAPlugin
 {
 	public static final String VDM_TOOLKIT = IsaToken.VDMTOOLKIT.toString() + ".thy";
+	private boolean runIsapog = false;
+
 	public ISAPluginSL()
 	{
 		super();
@@ -70,20 +74,36 @@ public class ISAPluginSL extends ISAPlugin
 
 			if (options != null)
 			{
-				Diag.fine("Setting up Isabelle translation plugin properties");
-				GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
-//				GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? Long.valueOf(options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
-				GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
-				Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
-				Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
-				Vdm2isaPlugin.printIsaComments = options.get("printIsaComments") != null ? options.get("printIsaComments") : Vdm2isaPlugin.printIsaComments;
-				Vdm2isaPlugin.runExu = options.get("runExu") != null ? options.get("runExu") : Vdm2isaPlugin.runExu;
-				Vdm2isaPlugin.valueAsAbbreviation = options.get("valueAsAbbreviation") != null ? options.get("valueAsAbbreviation") : Vdm2isaPlugin.valueAsAbbreviation;
-				Vdm2isaPlugin.translateTypeDefMinMax = options.get("translateTypeDefMinMax") != null ? options.get("translateTypeDefMinMax") : Vdm2isaPlugin.translateTypeDefMinMax;
-				Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
-				Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
-				IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
-					IsaProofStrategy.valueOf(String.valueOf(options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+				//IsaProofStrategy x = IsaProofStrategy.SURRENDER;
+				try {
+					Diag.fine("Setting up Isabelle translation plugin properties");
+					Diag.fine("Options JSON = " + options.toString());
+					GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
+					GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? ((long)options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
+					GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
+					Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
+					Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
+					Vdm2isaPlugin.printIsaComments = options.get("printIsaComments") != null ? options.get("printIsaComments") : Vdm2isaPlugin.printIsaComments;
+					Vdm2isaPlugin.runExu = options.get("runExu") != null ? options.get("runExu") : Vdm2isaPlugin.runExu;
+					Vdm2isaPlugin.valueAsAbbreviation = options.get("valueAsAbbreviation") != null ? options.get("valueAsAbbreviation") : Vdm2isaPlugin.valueAsAbbreviation;
+					Vdm2isaPlugin.translateTypeDefMinMax = options.get("translateTypeDefMinMax") != null ? options.get("translateTypeDefMinMax") : Vdm2isaPlugin.translateTypeDefMinMax;
+					Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
+					Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
+					runIsapog = options.get("runIsapog") != null ? options.get("runIsapog") : runIsapog;
+					//TODO further parameters about whether to use locale or definition strategies for POs  
+					IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
+					 	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+				}
+				catch (Throwable e)
+				{
+					// String.valueOf was generating a peculiar exception, hence the code below. Perhaps remove. 
+					Diag.error("Error: " + e.getMessage());
+					StringWriter out = new StringWriter();
+					PrintWriter writer = new PrintWriter(out);
+					e.printStackTrace(writer);
+					writer.flush();
+					Diag.error("Trace: " + out.toString());
+				}
 			}
 			else
 			{
@@ -130,6 +150,7 @@ public class ISAPluginSL extends ISAPlugin
 		}
 		catch (Exception e)
 		{
+			Diag.error("is it here?");
 			Diag.error(e);
 			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
 		}
