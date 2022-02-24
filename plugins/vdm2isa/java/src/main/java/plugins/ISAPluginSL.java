@@ -91,8 +91,8 @@ public class ISAPluginSL extends ISAPlugin
 					Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
 					runIsapog = options.get("runIsapog") != null ? options.get("runIsapog") : runIsapog;
 					//TODO further parameters about whether to use locale or definition strategies for POs  
-					IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
-					 	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+					//IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
+					 //	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
 				}
 				catch (Throwable e)
 				{
