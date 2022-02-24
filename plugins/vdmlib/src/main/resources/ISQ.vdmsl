@@ -6,6 +6,7 @@
 --@doc inspired by ISQ (https://en.wikipedia.org/wiki/International_System_of_Units) 
 --		 encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
 --		 simplified to consider just time, with hours as the base unit of time.
+--@todo conversions map yet to be created/used; just exported for now.
 ------------------------------------------------------------------------------------
 module ISQ
 imports
@@ -28,13 +29,18 @@ exports
 		struct DimensionVector;
 		struct SingleDimension;
 		struct Magnitude;
-	  struct MagnitudeN0;
-	  struct Magnitude1;
+		struct MagnitudeN0;
+		struct Magnitude1;
 		struct Quantity;
 		struct QuantityN0;
-	  struct SQuantity;
+		struct SQuantity;
 		struct SQuantityN0;
 		struct ConversionSchema;
+		
+		--@TODO make use of those
+		struct Conversion;
+		struct Conversions;
+
 		struct MeasurementSystem;	
 		struct MeasurementSystemN0;
 		struct Prefix;	
@@ -89,7 +95,7 @@ exports
 		struct Day;
 		
 		struct MWC_MeasurementSystem;
-	  struct Week;
+		struct Week;
 	
 	functions
 		dim_comp: DimensionlessVector * DimensionlessVector -> DimensionlessVector;
@@ -194,6 +200,10 @@ exports
 		approx_eq: Magnitude * Magnitude * nat -> bool;
 		mph2mps: Magnitude -> Magnitude;
 
+		MEASUREMENT_SYSTEMS: () -> set1 of MeasurementSystem; 
+		CONVERSION_SCHEMAS : () -> set1 of ConversionSchema;
+		DIMENSION_VECTORS  : () -> set1 of DimensionVector;
+		
 	values
 		DIMENSIONS 	     : set1 of Dimension;
 		ONE_DV           : DimensionlessVector;
@@ -232,21 +242,21 @@ exports
 		UNIT_INTENSITY   : IntQuantity; 
 
 		UNIT_AREA        : Quantity;
-    UNIT_VOLUME      : Quantity;
-    UNIT_FREQUENCY   : Quantity;
+    	UNIT_VOLUME      : Quantity;
+    	UNIT_FREQUENCY   : Quantity;
 		UNIT_VELOCITY    : Quantity;
-    UNIT_ACCELERATION: Quantity;
-    UNIT_ENERGY      : Quantity;
-    UNIT_POWER       : Quantity;
-    UNIT_FORCE       : Quantity;
-    UNIT_PRESSURE    : Quantity;
-    UNIT_CHARGE      : Quantity;
-    UNIT_PDIFFERENCE : Quantity;
-    UNIT_CAPACITANCE : Quantity;
+		UNIT_ACCELERATION: Quantity;
+		UNIT_ENERGY      : Quantity;
+		UNIT_POWER       : Quantity;
+		UNIT_FORCE       : Quantity;
+		UNIT_PRESSURE    : Quantity;
+		UNIT_CHARGE      : Quantity;
+		UNIT_PDIFFERENCE : Quantity;
+		UNIT_CAPACITANCE : Quantity;
 
-    UNIT_RADIAN      : Quantity;
-    UNIT_STERADIAN   : Quantity;
-    UNIT_WATT        : Quantity;
+		UNIT_RADIAN      : Quantity;
+		UNIT_STERADIAN   : Quantity;
+		UNIT_WATT        : Quantity;
 	
 		SI  	           : ConversionSchema;   
 		METRE            : Metre   ;
@@ -268,37 +278,37 @@ exports
 		SI_PRESSURE      : Pressure    ;
 		SI_CHARGE        : Charge      ;
 		SI_PDIFFERENCE   : PotentialDifference;
-		SI_CAPACITANCE   : Capacitance ;
-		SI_WATT				   : Watt				 ;
-		SI_RADIAN			   : Radian			 ;
+		SI_CAPACITANCE	 : Capacitance ;
+		SI_WATT			 : Watt		   ;
+		SI_RADIAN		 : Radian	   ;
 		SI_STERADIAN     : Steradian   ;
 
-		BIS 	           : ConversionSchema;
-    BIS_YARD	       : Yard    ;
-    BIS_POUND        : Pound   ;
-    BIS_RANKINE      : Rankine ;
-    BIS_VOLUME       : BISVolume;
+		BIS 	         : ConversionSchema;
+		BIS_YARD	     : Yard    ;
+		BIS_POUND        : Pound   ;
+		BIS_RANKINE      : Rankine ;
+		BIS_VOLUME       : BISVolume;
                      
 		CGS              : ConversionSchema;
-    CENTIMETRE       : Centimetre;
-    GRAM             : Gram			;
+		CENTIMETRE       : Centimetre;
+		GRAM             : Gram			;
                      
-    MHC              : ConversionSchema;
-    MGRAM		         : Milligram;
-    MHOUR            : Hour 		; 
-    MCELCIUS         : Celcius ;	
+		MHC              : ConversionSchema;
+		MGRAM		     : Milligram;
+		MHOUR            : Hour 		; 
+		MCELCIUS         : Celcius ;	
 
-		MDC							 : ConversionSchema;
-		MDAY 						 : Day;
+		MDC				 : ConversionSchema;
+		MDAY 			 : Day;
                      
-    MWC			         : ConversionSchema;
-    MWEEK		         : Week;
+		MWC			     : ConversionSchema;
+		MWEEK		     : Week;
 
 		HOURS_PER_DAY    : nat1;
 		DAYS_PER_WEEK    : nat1;
 		WEEKS_PER_YEAR   : nat1;
 		MONTHS_PER_YEAR  : nat1;
-	  DAYS_PER_MONTH   : map WhichMonth to HowManyDays;
+		DAYS_PER_MONTH   : map WhichMonth to HowManyDays;
 		
 definitions 
 
@@ -391,6 +401,8 @@ types
 	--		 (e.g. converting to BIS with given schema from whatever unit) 
 	--@doc Conversions Source to Target unit system conversion schemas.
 	Conversion  = map UnitSystem to ConversionSchema;
+	
+	--@TODO conversions matrix could be useful for well known transformations of interest to be instantiated.
 	Conversions = map UnitSystem to Conversion
 	--@doc It's always possible to convert to itself: crucial to allow bottoming it up 
 	inv cs == forall u in set dom cs & u in set dom cs(u); -- dom cs = dunion { dom i | i in set (rng cs) }
@@ -743,7 +755,7 @@ functions
 	--@doc notice the second argument must be a non-zero quantity
 	ms_div: MeasurementSystem * MeasurementSystemN0 -> MeasurementSystem
 	ms_div(m1, m2) == mk_MeasurementSystem(quant_div(m1.quantity, m2.quantity), m1.schema, m1.unit)
-	pre
+	pre 
 		ms_conv_eq(m1, m2);
 			
 ------------------------------------------------------------------------------------
