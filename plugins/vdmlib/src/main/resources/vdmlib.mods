@@ -5,9 +5,6 @@
 ./Support2.vdmsl
 ./Logging.vdmsl
 ./Asserting.vdmsl
-./ISO8601/Char.vdmsl
-./ISO8601/Numeric.vdmsl
-./ISO8601/ISO8601.vdmsl
 ./Binary.vdmsl
 ./Ordering.vdmsl
 ./Relations.vdmsl

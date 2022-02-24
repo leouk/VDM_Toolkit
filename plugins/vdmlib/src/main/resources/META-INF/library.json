@@ -22,13 +22,13 @@
 			"name": "ISQ",
 			"description": "VDM Toolkit international system of quantities library",
 			"files": ["ISQ.vdmsl"],
-			"depends": ["Support1", "MATH"]
+			"depends": ["MATH", "Support1"]
 		},
 		{
 			"name": "Logging",
 			"description": "VDM Toolkit information logging library",
 			"files": ["Logging.vdmsl"],
-			"depends": ["VDMUtil", "IO"]
+			"depends": ["IO", "VDMUtil"]
 		},
 		{
 			"name": "Matrix_Seq",
@@ -40,13 +40,19 @@
 			"name": "Ordering",
 			"description": "VDM Toolkit partial/total ordering properties library",
 			"files": ["Ordering.vdmsl"],
-			"depends": []
+			"depends": ["Relations"]
 		},
 		{
 			"name": "Relations",
 			"description": "VDM Toolkit Z-style relational operators library",
 			"files": ["Relations.vdmsl"],
-			"depends": ["Ordering"]
+			"depends": []
+		},
+		{
+			"name": "SetMapLib",
+			"description": "VDM Toolkit recursive and polymorphic operators over sets and maps (experimental)",
+			"files": ["SetMapLib.vdmsl"],
+			"depends": ["IO"]
 		},
 		{
 			"name": "Stack",
@@ -58,7 +64,13 @@
 			"name": "Support1",
 			"description": "VDM Toolkit mathematical support library",
 			"files": ["Support1.vdmsl"],
-			"depends": ["MATH"]
+			"depends": ["MATH", "VDMUtil"]
+		},
+		{
+			"name": "Support2",
+			"description": "VDM Toolkit type coercions and conversions useful for code generation (experimental)",
+			"files": ["Support2.vdmsl"],
+			"depends": []
 		}	
 	]
 }
