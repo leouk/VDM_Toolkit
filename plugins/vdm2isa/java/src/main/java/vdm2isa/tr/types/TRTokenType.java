@@ -40,7 +40,7 @@ public class TRTokenType extends TRBasicType {
      */
     public void setInnerTokenType(TRType t)
     {
-        if (innerTokenType == null)
+        if (innerTokenType == null || innerTokenType instanceof TRUnknownType)
         {
             innerTokenType = t;
             TRNode.setup(innerTokenType);                
@@ -49,8 +49,13 @@ public class TRTokenType extends TRBasicType {
 
     protected void figureOutInnerTokenType()
     {
-        // if the token types collapse to a singleton, we are game. 
+        // if the token types collapse to a singleton, we are game; otherwise, it's a token delcaration, hence take as generic type
         setInnerTokenType(argtypes.colapses());
+        if (innerTokenType == null)
+        {
+            //innerTokenType = TRUnknownType.newUnkownType(location);
+            innerTokenType = TRSeqType.newSeqType(location, TRBasicType.charType(location), false);
+        }    
     }
 
 	@Override
