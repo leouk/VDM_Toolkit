@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-25T12:33:51.518Z
+(* VDM to Isabelle Translation @2022-02-25T13:04:57.029Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl' at line 1:8
@@ -216,7 +216,7 @@ where
 		\<comment>\<open>Implicit pattern context conversion\<close>
 		(let schedule = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in 
 		\<comment>\<open>User defined body of inv_Plant.\<close>
-		(\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a)  (the(schedule peri))))))"
+		(\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a)   ((the(schedule peri)))))))"
  
 lemmas inv_Plant_defs = inv_Alarm_def inv_Expert_def inv_ExpertId_def inv_Map_defs inv_Period_def inv_Plant_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
 
@@ -259,7 +259,7 @@ definition
 where
 	"NumberOfExperts peri   plant \<equiv> 
 	\<comment>\<open>User defined body of NumberOfExperts.\<close>
-	(vdm_card (the((schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant) peri)))"
+	(vdm_card ((the((schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant) peri))))"
 
 	
 	
@@ -298,7 +298,7 @@ where
 	\<comment>\<open>Implicit pattern context conversion\<close>
 	(let sch = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); dummy0_ignore = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in 
 	\<comment>\<open>User defined body of ExpertIsOnDuty.\<close>
-	{ peri .   ((peri \<in>(dom sch)))  \<and> (ex \<in> the(sch peri)) })"
+	{ peri .   ((peri \<in>(dom sch)))  \<and> (ex \<in> ((the(sch peri)))) })"
 
 	
 	
@@ -334,7 +334,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_ExpertToPage` specification.\<close>
 		(inv_Alarm a  \<and>  (inv_Period peri)  \<and>  inv_Plant plant  \<and>  inv_Expert RESULT)  \<and> 
 		\<comment>\<open>User defined body of post_ExpertToPage.\<close>
-		((RESULT \<in> the((schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant) peri)) \<and> ((quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a) \<in> (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t RESULT)))"
+		((RESULT \<in> ((the((schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant) peri)))) \<and> ((quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a) \<in> (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t RESULT)))"
 
 definition
 	ExpertToPage :: "Alarm \<Rightarrow> Period \<Rightarrow> Plant \<Rightarrow> Expert"
@@ -380,7 +380,7 @@ where
 	\<comment>\<open>Implicit pattern context conversion\<close>
 	(let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in 
 	\<comment>\<open>User defined body of ChangeExpert.\<close>
-	\<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = (plan \<dagger> [peri\<mapsto>((the(plan peri) - {v11}) \<union> {v22})]), alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = alarms\<rparr>)"
+	\<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})]), alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = alarms\<rparr>)"
 
 	
 	
@@ -749,7 +749,7 @@ where
 abbreviation
 	a1 :: "Alarm"
 where
-	"a1 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Power supply missing''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = Qualification.U_Elec \<rparr>"
+	"a1 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Power supply missing''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Elec \<rparr>"
 
 	definition
 	inv_a1 :: "\<bool>"
@@ -764,7 +764,7 @@ where
 abbreviation
 	a2 :: "Alarm"
 where
-	"a2 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Tank overflow''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = Qualification.U_Mech \<rparr>"
+	"a2 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Tank overflow''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Mech \<rparr>"
 
 	definition
 	inv_a2 :: "\<bool>"
@@ -779,7 +779,7 @@ where
 abbreviation
 	a3 :: "Alarm"
 where
-	"a3 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''CO2 detected''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = Qualification.U_Chem \<rparr>"
+	"a3 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''CO2 detected''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Chem \<rparr>"
 
 	definition
 	inv_a3 :: "\<bool>"

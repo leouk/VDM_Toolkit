@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-25T12:33:55.318Z
+(* VDM to Isabelle Translation @2022-02-25T12:42:25.551Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 33:7
@@ -14,7 +14,7 @@ begin
 theorem Expert_TOTAL:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (ex :: Expert)  . ((( ((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex)))) \<and> 
-		 ((inv_VDMSet' inv_Qualification (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex))) ))) \<longrightarrow> isTest ((inv_Expert ex)) (inv_bool))))"
+		 ((inv_VDMSet' (()) (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex))) ))) \<longrightarrow> isTest ((inv_Expert ex)) (inv_bool))))"
 	
 	oops
 	
