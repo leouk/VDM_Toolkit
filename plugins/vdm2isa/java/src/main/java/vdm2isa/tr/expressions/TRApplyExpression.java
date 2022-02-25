@@ -13,6 +13,7 @@ import vdm2isa.tr.definitions.TRDefinitionListList;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
@@ -124,11 +125,11 @@ public class TRApplyExpression extends TRExpression
 		StringBuilder sb = new StringBuilder();
 		// for map applications, we need to add "the" for optional removal
 		// Hum. It depends on the result type where this will land. So, only them can know whether to "add" it or not 
-		//if (type.ultimateType() instanceof TRMapType)
-		//{
-		//	sb.append(IsaToken.the(call.toString()));
-		//}
-		//else
+		if (type.ultimateType() instanceof TRMapType)
+		{
+			sb.append(IsaToken.the(call.toString()));
+		}
+		else
 		{
 			sb.append(call.toString());
 		}
