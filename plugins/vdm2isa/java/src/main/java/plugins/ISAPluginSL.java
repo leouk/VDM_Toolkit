@@ -27,7 +27,6 @@ package plugins;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map.Entry;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -90,9 +89,10 @@ public class ISAPluginSL extends ISAPlugin
 					Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
 					Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
 					runIsapog = options.get("runIsapog") != null ? options.get("runIsapog") : runIsapog;
-					//TODO further parameters about whether to use locale or definition strategies for POs  
-					//IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
-					 //	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+					//TODO further parameters about whether to use locale or definition strategies for POs 
+					Diag.fine("Proof strategy " + options.get("proofStrategy").getClass().getName());
+					IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
+					 	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
 				}
 				catch (Throwable e)
 				{
