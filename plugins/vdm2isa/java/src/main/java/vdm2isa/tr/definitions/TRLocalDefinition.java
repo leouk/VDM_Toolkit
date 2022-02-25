@@ -136,8 +136,13 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
                 sb.append(getFormattingSeparator());
                 sb.append(dtype.getDataTypeConstructors().unionTypesTranslate(isaName, body, innerContext));
             }
+            return IsaToken.parenthesise(sb.toString());
         }
-        return IsaToken.parenthesise(sb.toString());
+        else 
+        {
+            sb.append(body.translate());
+        }
+        return sb.toString();
 	}
 
     public static final TRLocalDefinition newLocalDefinition(
