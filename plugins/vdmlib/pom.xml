@@ -28,6 +28,12 @@
 			<version>4.4.5-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.fujitsu</groupId>
+			<artifactId>annotations</artifactId>
+			<version>4.4.5-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
