@@ -280,7 +280,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     public static final void setupProperties()
 	{
-        GeneralisaPlugin.setupProperties();
+        Vdm2isaPlugin.setupProperties();
         IsapogPlugin.strategy = IsaProofStrategy.SURRENDER;
     }
 }

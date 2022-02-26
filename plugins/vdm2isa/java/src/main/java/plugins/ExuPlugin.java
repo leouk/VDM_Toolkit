@@ -22,6 +22,9 @@ import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
 
+    // accepts invariant checks over compatible/equal types as unnecessary
+    public static boolean linientInvCheck; 
+    
 	public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
@@ -57,7 +60,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         if (spec != null)
         {
-            TCRFunctionCallFinder finder = new TCRFunctionCallFinder();
+            TCRFunctionCallFinder finder = new TCRFunctionCallFinder(ExuPlugin.linientInvCheck);
             TCNameSet found = new TCNameSet();
             found.addAll(spec.body.apply(finder, null));
             if (spec.predef != null)
@@ -162,5 +165,11 @@ public class ExuPlugin extends GeneralisaPlugin {
     @Override
     public String help() {
         return "exu - because the devil is in the detail; it will analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
+    }
+
+    public static final void setupProperties()
+    {
+        GeneralisaPlugin.setupProperties();
+        ExuPlugin.linientInvCheck = true;
     }
 }

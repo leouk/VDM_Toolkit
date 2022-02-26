@@ -144,7 +144,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 
 	public static final void setupProperties()
 	{
-		GeneralisaPlugin.setupProperties();
+		ExuPlugin.setupProperties();
 		Vdm2isaPlugin.linientPost 	= false;
 		Vdm2isaPlugin.printVDMComments = true;
 		Vdm2isaPlugin.printIsaComments = true;
