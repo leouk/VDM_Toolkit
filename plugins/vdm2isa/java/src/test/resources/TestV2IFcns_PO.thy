@@ -24,6 +24,7 @@ theorem g_FUNC_POST_CONDITION:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  (y :: VDMNat1)  . ((((inv_VDMNat x))) \<and>  (((inv_VDMNat1 y))) \<longrightarrow> ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y))))))"
 	
+	using inv_VDMNat1_def inv_VDMNat_def post_g_def by fastforce
 	oops
 	
 	
@@ -33,7 +34,7 @@ theorem g_FUNC_POST_CONDITION:
 theorem h_SUB_TYPE:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> (x > (0::VDMNat)))))"
-	
+	nitpick
 	oops
 	
 	
@@ -43,7 +44,7 @@ theorem h_SUB_TYPE:
 theorem h_FUNC_POST_CONDITION:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (post_h x  (g x  x))))))"
-	
+	using pre_g_def pre_h_def by force
 	oops
 	
 	

@@ -35,8 +35,7 @@ where
 		
 lemmas inv_R_defs = inv_R_def inv_VDMNat_def 
 
-
-abbreviation
+definition
 	v5_manual :: "(R \<rightharpoonup> VDMNat1)"
 where
 	"v5_manual \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
@@ -64,6 +63,60 @@ where
     (rngcnst 10)
     truecnst 
 )"
+
+definition
+	v5_manual' :: "(R \<rightharpoonup> VDMNat1)"
+where
+	"v5_manual' \<equiv> (\<comment>\<open>VDM Map comprehension is translated as a lambda-term through mapCompSetBound\<close>
+		mapCompSetBound 
+    \<comment> \<open>@LF Add 'parts' Isa comments \<close>
+  \<comment> \<open>@LF domain set\<close>
+		{ \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr> | x y . 
+          \<comment> \<open>@LF remove the type bound warning, but has to do with the R! \<close>
+          \<comment>\<open>Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!!\<close>  
+        (inv_R \<lparr>x\<^sub>R = x, y\<^sub>R = y\<rparr>)   
+          \<and>
+        \<comment> \<open>@LF this will be tricky: have to get the context outside of the bound and into the predicate part
+                that's needed because the bound variables are not x and y but R! \<close>  
+          ((x \<in>{(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}))  \<and>  
+           ((y \<in>{(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and>
+          (x < y) }
+  \<comment> \<open>@LF range set\<close>
+		{ (10::VDMNat1) | x  y .  ((x \<in>{(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}))  \<and>  ((y \<in>{(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)}))  \<and> (x < y) } 
+  \<comment> \<open>@LF domain invariant\<close>		
+		inv_R 
+  \<comment> \<open>@LF range invariant\<close>
+		(inv_VDMNat1)
+  \<comment> \<open>@LF domain expression as just the record itself; if it had been \<^term>\<open>\<lparr>x\<^sub>R = x+x, y\<^sub>R = y+y\<rparr>\<close>
+          then get the complicated expression with the lambda+if+expression below\<close>
+    domid
+  \<comment> \<open>@LF range expression\<close>
+    (rngcnst 10)
+  \<comment> \<open>@LF predicate expression depends on inner parts of R, so no chance of simple expression! \<close>
+    (\<lambda> (dummy0DOMAIN :: R) (dummy0RANGE :: VDMNat1) .
+      \<comment> \<open>@LF don't test the inner record parts but the overall record invariant!\<close>
+      (if inv_R dummy0DOMAIN  \<and> inv_VDMNat1 dummy0RANGE \<and> 
+            \<comment> \<open>@LF remove inv_bool for all terms except undefined? \<close>
+            (inv_bool (if (
+              (\<exists> x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)} . 
+                  (\<exists> y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)} . 
+                    (((x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}) \<and> 
+                      (y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and> (x < y))))) then
+                        True
+                    else
+                        undefined)
+          ) then
+        (
+      if ((\<exists> x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}  . (\<exists> y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)}  . (((x \<in> {(1::VDMNat1) , (2::VDMNat1) , (3::VDMNat1)}) \<and> (y \<in> {(4::VDMNat1) , (5::VDMNat1) , (6::VDMNat1)})) \<and> (x < y))))) then
+      ((True::\<bool>))
+      else
+      (undefined))
+       else
+        undefined
+      )
+		) 
+)"
+
 (*
 		(
 	\<lambda> (dummy0DOMAIN :: R)   (dummy0RANGE :: VDMNat1) .
