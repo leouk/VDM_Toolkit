@@ -18,6 +18,7 @@ public class TRSeqType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
     public final boolean seq1;
+    @SuppressWarnings("unused")
     private final TRType seqof;
 
     /**

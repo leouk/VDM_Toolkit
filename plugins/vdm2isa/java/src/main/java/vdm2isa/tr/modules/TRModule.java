@@ -5,17 +5,7 @@
 package vdm2isa.tr.modules;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
-// import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCQualifiedDefinition;
-// import com.fujitsu.vdmj.tc.definitions.TCRenamedDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
-//import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCExport;
 import com.fujitsu.vdmj.tc.modules.TCExportAll;

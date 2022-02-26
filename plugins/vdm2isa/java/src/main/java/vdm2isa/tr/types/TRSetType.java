@@ -18,6 +18,7 @@ public class TRSetType extends TRAbstractInnerTypedType
 {
 	private static final long serialVersionUID = 1L;
     public final boolean set1;
+    @SuppressWarnings("unused")
     private final TRType setof;
 
     /**

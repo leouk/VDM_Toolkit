@@ -87,7 +87,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         return "Translated " + 
             plural(getLocalPOCount(), "PO", "s") + 
             " (of " + (getLocalPOCount()+getLocalPONotTranslatedCount()) + ")" +
-            " with " + this.strategy.name().toLowerCase() + " proof strategy for ";
+            " with " + IsapogPlugin.strategy.name().toLowerCase() + " proof strategy for ";
     }
 
     @Override
