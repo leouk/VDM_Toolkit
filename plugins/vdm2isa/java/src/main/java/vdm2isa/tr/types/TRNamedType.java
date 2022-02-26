@@ -142,6 +142,7 @@ public class TRNamedType extends TRInvariantType
 	public String invTranslate(String varName) {
 
         StringBuilder sb = new StringBuilder();
+        
         // for named or record types, use name
         // at TLD use the type name as well; 
         // ex T = nat
@@ -162,6 +163,11 @@ public class TRNamedType extends TRInvariantType
         // "ultimate" types, delegate to their invTranslate
         else 
         {
+            //TODO not sure if this is to be set here or after new StringBuilder? 
+            // set the inferred named type at inv translate as well given
+            // at PO generation this might be the only one called
+            type.setInferredNamedForType(typename);
+            
             // TRType utype = ultimateType();
             // if (utype.equals(type))
             // {
