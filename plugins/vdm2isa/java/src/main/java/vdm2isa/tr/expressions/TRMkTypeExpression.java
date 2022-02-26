@@ -89,7 +89,10 @@ public class TRMkTypeExpression extends TRExpression {
                 sb.append(utypeset.prefixTranslate(uinter));
             }
         }
-        sb.append(arg.translate());
+        else
+        {
+            sb.append(arg.translate());
+        }
         return sb.toString();
     }
 
