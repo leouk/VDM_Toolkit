@@ -34,3 +34,4 @@
 ./src/test/resources/TestV2IExprsRecords.vdmsl
 ./src/test/resources/TestV2ITypesUnion.vdmsl
 ./src/test/resources/Examples/Alarm/alarm.vdmsl
+./src/test/resources/Examples/Traffic/traffic.vdmsl
