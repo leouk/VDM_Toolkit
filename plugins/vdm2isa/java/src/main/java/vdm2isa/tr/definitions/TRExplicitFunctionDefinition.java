@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.definitions.TCAccessSpecifier;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
@@ -93,7 +94,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	private TRDefinitionListList paramDefinitionList;
 	private TRSpecificationKind implicitSpecificationKind;
 
-	public TRExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
+	protected TRExplicitFunctionDefinition(TCDefinition definition, 
 			TRIsaVDMCommentList comments,
 			TRAnnotationList annotations,
 			TCNameToken name,
@@ -139,6 +140,35 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 		this.implicitSpecificationKind = TRSpecificationKind.NONE;
 		//setLocal(false); //Leave to name scope? // LetDefExpression to set this to true if/when needed
     }
+
+	public TRExplicitFunctionDefinition(TCExplicitFunctionDefinition definition, 
+		TRIsaVDMCommentList comments,
+		TRAnnotationList annotations,
+		TCNameToken name,
+		NameScope nameScope, 
+		boolean used, 
+		boolean excluded,
+		TCNameList typeParams, 
+		TRFunctionType type,
+		TRPatternListList paramPatternList, 
+		TRExpression body,
+		TRExpression precondition,
+		TRExpression postcondition, 
+		boolean typeInvariant, 
+		TRExpression measureExp,
+		boolean isCurried, 
+		TRExplicitFunctionDefinition predef,
+		TRExplicitFunctionDefinition postdef,
+		TRDefinitionListList paramDefinitionList,
+		boolean recursive,
+		boolean isUndefined,
+		TRType actualResult,
+		TRType expectedResult)
+	{	
+        this((TCDefinition)definition, comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body,
+                precondition, postcondition, typeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList,
+                recursive, isUndefined, actualResult, expectedResult);
+	}
 
 	@Override
 	public void setup()
@@ -229,7 +259,7 @@ public class TRExplicitFunctionDefinition extends TRDefinition
 	@Override
 	public String toString()
 	{
-		return "TRExplicitFuncDef for " + 
+		return getClass().getSimpleName().toString() + " for " + 
 			" \n\tname        = " + String.valueOf(name) +
 			" \n\tlocal	      = " + isLocal() + 
 			" \n\tused	      = " + used + 
