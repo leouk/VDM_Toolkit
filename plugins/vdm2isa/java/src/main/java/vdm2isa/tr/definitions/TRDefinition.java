@@ -191,4 +191,18 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 	{
 		return new HashMap<TRSpecificationKind, TCNameSet>();
 	}
+
+	/**
+	 * Synthetic VDM definitions are created as TCLocalDefinition with unknown type
+	 * (i.e. VDM definition input is null). Obviously no type correct VDM spec will
+	 * have a TCUnknowType. This occurs for instance when processing PO modules, 
+	 * where the definition of the TRProofObligationDefinition has no underlying VDM
+	 * definition, for instance. This check is used to avoid wrong hide_const/typ exports 
+	 * @param d
+	 * @return
+	 */
+	public static final boolean isSyntheticDefinition(TCDefinition d)
+	{
+		return d instanceof TCLocalDefinition && ((TCLocalDefinition)d).type instanceof TCUnknownType;
+	}
 }

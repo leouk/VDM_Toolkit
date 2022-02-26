@@ -5,6 +5,7 @@
 package vdm2isa.tr.modules;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
 // import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 // import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 // import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
@@ -337,10 +338,18 @@ public class TRModule extends TRNode
 			sb.append(IsaToken.comment(IsaInfoMessage.ISA_PROCESS_VDM_EXPORTS.message, getFormattingSeparator()));
 			for(TCDefinition d : defsToHide)
 			{
-				sb.append(d instanceof TCTypeDefinition ? IsaToken.HIDE_TYPE.toString() : IsaToken.HIDE_CONST.toString());
-				sb.append(IsaToken.SPACE.toString());
-				sb.append(IsaToken.innerSyntaxIt(IsaToken.isabelleName(d.name)));
-				sb.append(getFormattingSeparator());
+				// synthetic definitions in PO modules don't need to be processed
+				if (TRDefinition.isSyntheticDefinition(d)) 
+				{
+					continue;
+				}
+				else
+				{
+					sb.append(d instanceof TCTypeDefinition ? IsaToken.HIDE_TYPE.toString() : IsaToken.HIDE_CONST.toString());
+					sb.append(IsaToken.SPACE.toString());
+					sb.append(IsaToken.innerSyntaxIt(IsaToken.isabelleName(d.name)));
+					sb.append(getFormattingSeparator());
+				}
 			}
 		}
 		return sb.toString();
