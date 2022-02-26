@@ -8,6 +8,7 @@ import vdm2isa.tr.definitions.TRBasicProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TREqualsDefinition;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
+import vdm2isa.tr.definitions.TRImplicitFunctionDefinition;
 import vdm2isa.tr.definitions.TRImportedDefinition;
 import vdm2isa.tr.definitions.TRLocalDefinition;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
@@ -77,5 +78,9 @@ public abstract class TRDefinitionVisitor<R, S>
 
     public R caseRenamedDefinition(TRRenamedDefinition node, S arg) {
         return caseImportedDefinition(node, arg);
+    }
+
+    public R caseImplicitFunctionDefinition(TRImplicitFunctionDefinition node, S arg) {
+        return caseDefinition(node, arg);
     }
 }
