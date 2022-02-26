@@ -80,6 +80,9 @@ values
 functions
 
 -- changing the light to green for a given Path
+  ChgLight: (map Path to Light) * Path * Light -> (map Path to Light)
+  ChgLight(lights,p,colour) ==
+    lights ++ {p |-> colour};
 
   ToGreen: Path * Kernel -> Kernel
   ToGreen(p,mk_Kernel(lights,conflicts)) ==
@@ -102,9 +105,5 @@ functions
   ToAmber(p,mk_Kernel(lights,conflicts)) ==
     mk_Kernel(ChgLight(lights,p,<Amber>),conflicts)
   pre p in set dom lights and lights(p) = <Green>;
-
-  ChgLight: (map Path to Light) * Path * Light -> (map Path to Light)
-  ChgLight(lights,p,colour) ==
-    lights ++ {p |-> colour}
 
 end traffic
