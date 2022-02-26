@@ -1,6 +1,36 @@
+module traffic
+exports all
+definitions 
 -- Traffic light control kernel
 -- For Chapter 5 (Basic Elements)
 -- First Version: Without timing constraints
+
+types
+
+  Light = <Red> | <Amber> | <Green>;
+
+  Time = real
+  inv t == t >= 0;
+
+  Path = token;
+  
+  Conflict :: path1: Path
+              path2: Path
+  inv mk_Conflict(path1,path2) == path1 <> path2;
+
+-- the kernel data structure has two components representing 
+-- 1) a mapping with the current status of the lights for each 
+-- direction and 2) an unordered collection of conflicts between 
+-- paths.
+
+  Kernel :: lights    : map Path to Light
+            conflicts : set of Conflict
+  inv mk_Kernel(ls,cs) ==
+        forall c in set cs & 
+              mk_Conflict(c.path2,c.path1) in set cs and
+              c.path1 in set dom ls and 
+	      c.path2 in set dom ls and 
+              (ls(c.path1) = <Red> or ls(c.path2) = <Red>)
 
 values
 
@@ -34,33 +64,6 @@ values
   kernel : Kernel 
          = mk_Kernel(lights,conflicts)
 
-types
-
-  Light = <Red> | <Amber> | <Green>;
-
-  Time = real
-  inv t == t >= 0;
-
-  Path = token;
-  
-  Conflict :: path1: Path
-              path2: Path
-  inv mk_Conflict(path1,path2) == path1 <> path2;
-
--- the kernel data structure has two components representing 
--- 1) a mapping with the current status of the lights for each 
--- direction and 2) an unordered collection of conflicts between 
--- paths.
-
-  Kernel :: lights    : map Path to Light
-            conflicts : set of Conflict
-  inv mk_Kernel(ls,cs) ==
-        forall c in set cs & 
-              mk_Conflict(c.path2,c.path1) in set cs and
-              c.path1 in set dom ls and 
-	      c.path2 in set dom ls and 
-              (ls(c.path1) = <Red> or ls(c.path2) = <Red>)
-
 functions
 
 -- changing the light to green for a given path
@@ -90,3 +93,5 @@ functions
   ChgLight: (map Path to Light) * Path * Light -> (map Path to Light)
   ChgLight(lights,p,colour) ==
     lights ++ {p |-> colour}
+
+end traffic
