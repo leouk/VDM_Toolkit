@@ -1,3 +1,4 @@
+./src/test/resources/VDMToolkit.vdmsl
 ./src/test/resources/TestV2IModules.vdmsl
 ./src/test/resources/TestV2IBindsComplex.vdmsl
 ./src/test/resources/TestV2IErrors.vdmsl
