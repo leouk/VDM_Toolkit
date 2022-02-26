@@ -43,12 +43,13 @@ text \<open>Bottom invariant check is that value is not undefined.\<close>
 definition
   inv_True :: "'a \<Rightarrow> \<bool>"
   where
-  [intro!]: "inv_True \<equiv> \<lambda> x . x \<noteq> undefined"
+  [intro!]: "inv_True \<equiv> \<lambda> x . True"
+  (* \<lambda> x . x \<noteq> undefined *)
 
 definition
   "inv_bool" :: "\<bool> \<Rightarrow> \<bool>"
 where
-  (*<*) [intro!]: (*>*) 
+  (*<*) [simp]: (*>*) 
   "inv_bool i \<equiv> inv_True i"
 
 definition
@@ -75,10 +76,15 @@ where
   (*<*) [intro!]: (*>*) 
   "inv_VDMRat r \<equiv> inv_True r"
 
+(*
 lemma l_inv_True_undefined[simp]: "\<not> inv_True undefined" unfolding inv_True_def by simp
 lemma l_inv_bool_undefined[simp]: "\<not> inv_bool undefined" unfolding inv_bool_def by simp
 
 lemma l_inv_True_True[simp]: "r \<noteq> undefined \<Longrightarrow> inv_True r" 
+  by (simp add: inv_True_def)  
+*)
+
+lemma l_inv_True_True[simp]: "inv_True r"
   by (simp add: inv_True_def)  
 
 text \<open>VDM has div and mod but also rem for remainder. This is treated 
@@ -299,7 +305,10 @@ definition
   where
   "inv_VDMToken' inv_T t \<equiv> case t of Token a \<Rightarrow> inv_T a"
 
-lemmas inv_VDMToken_defs = inv_VDMToken_def inv_True_def
+lemmas inv_VDMToken'_defs = inv_VDMToken'_def inv_True_def
+
+lemma l_inv_VDMTokenI[simp]: "inv_T a \<Longrightarrow> t = (Token a) \<Longrightarrow> inv_VDMToken' inv_T t" 
+  by (simp add: inv_VDMToken'_def)
 
 (*****************************************************************)
 section \<open> Sets \<close>
@@ -801,8 +810,12 @@ unfolding inv_SeqElems_def elems_def by auto
 lemma l_inv_SeqElems_append': "f x \<Longrightarrow> inv_SeqElems f xs \<Longrightarrow> inv_SeqElems f (xs @ [x])"
   by (simp add: l_inv_SeqElems_append)
 
+(*
 lemma l_invSeqElems_inv_True_True[simp]: "undefined \<notin> elems r \<Longrightarrow> inv_SeqElems inv_True r" 
   by (metis elems_def inv_SeqElems0_def l_inv_SeqElems_alt l_inv_True_True)
+*)
+lemma l_invSeqElems_inv_True_True[simp]: "inv_SeqElems inv_True r" 
+  by (metis inv_SeqElems0_def l_inv_SeqElems_alt l_inv_True_True)
 
 lemma l_len_nat1[simp]: "s \<noteq> [] \<Longrightarrow> 0 < len s"
   unfolding len_def by simp
