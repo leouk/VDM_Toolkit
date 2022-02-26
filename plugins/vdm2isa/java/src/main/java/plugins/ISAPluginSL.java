@@ -80,6 +80,7 @@ public class ISAPluginSL extends ISAPlugin
 					GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
 					GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? ((long)options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
 					GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
+					ExuPlugin.linientInvCheck = options.get("linientInvCheck") != null ? options.get("linientInvCheck") : ExuPlugin.linientInvCheck; 
 					Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
 					Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
 					Vdm2isaPlugin.printIsaComments = options.get("printIsaComments") != null ? options.get("printIsaComments") : Vdm2isaPlugin.printIsaComments;
