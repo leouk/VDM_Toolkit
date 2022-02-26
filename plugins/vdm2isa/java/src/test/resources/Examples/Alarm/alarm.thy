@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-25T13:04:57.029Z
+(* VDM to Isabelle Translation @2022-02-26T09:59:10.025Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl' at line 1:8
@@ -154,38 +154,38 @@ lemmas inv_Alarm_defs = inv_Alarm_def inv_Qualification_def inv_True_def inv_VDM
 
 	
 	
-\<comment>\<open>VDM source: QualificationOK: (Qualification * set of (Expert) -> bool)
-	QualificationOK(reqquali, exs) ==
+\<comment>\<open>VDM source: QualificationOK: (set of (Expert) * Qualification -> bool)
+	QualificationOK(exs, reqquali) ==
 (exists [ex in set exs] & (reqquali in set (ex.quali)))\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 46:3\<close>
 
-\<comment>\<open>VDM source: pre_QualificationOK: (Qualification * set of (Expert) +> bool)
-	pre_QualificationOK(reqquali, exs) ==
+\<comment>\<open>VDM source: pre_QualificationOK: (set of (Expert) * Qualification +> bool)
+	pre_QualificationOK(exs, reqquali) ==
 null\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 46:3\<close>
 definition
-	pre_QualificationOK :: "Qualification \<Rightarrow> Expert VDMSet \<Rightarrow> bool"
+	pre_QualificationOK :: "Expert VDMSet \<Rightarrow> Qualification \<Rightarrow> bool"
 where
-	"pre_QualificationOK reqquali   exs \<equiv> 
+	"pre_QualificationOK exs   reqquali \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_QualificationOK` specification.\<close>
-		((inv_Qualification reqquali)  \<and>  (inv_VDMSet' inv_Expert  exs))"
+		((inv_VDMSet' inv_Expert  exs)  \<and>  (inv_Qualification reqquali))"
 
 
-\<comment>\<open>VDM source: post_QualificationOK: (Qualification * set of (Expert) * bool +> bool)
-	post_QualificationOK(reqquali, exs, RESULT) ==
+\<comment>\<open>VDM source: post_QualificationOK: (set of (Expert) * Qualification * bool +> bool)
+	post_QualificationOK(exs, reqquali, RESULT) ==
 null\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 46:3\<close>
 definition
-	post_QualificationOK :: "Qualification \<Rightarrow> Expert VDMSet \<Rightarrow> bool \<Rightarrow> bool"
+	post_QualificationOK :: "Expert VDMSet \<Rightarrow> Qualification \<Rightarrow> bool \<Rightarrow> bool"
 where
-	"post_QualificationOK reqquali   exs   RESULT \<equiv> 
+	"post_QualificationOK exs   reqquali   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_QualificationOK` specification.\<close>
-		((inv_Qualification reqquali)  \<and>  (inv_VDMSet' inv_Expert  exs)  \<and>  (inv_bool RESULT))"
+		((inv_VDMSet' inv_Expert  exs)  \<and>  (inv_Qualification reqquali)  \<and>  (inv_bool RESULT))"
 
 definition
-	QualificationOK :: "Qualification \<Rightarrow> Expert VDMSet \<Rightarrow> bool"
+	QualificationOK :: "Expert VDMSet \<Rightarrow> Qualification \<Rightarrow> bool"
 where
-	"QualificationOK reqquali   exs \<equiv> 
+	"QualificationOK exs   reqquali \<equiv> 
 	\<comment>\<open>User defined body of QualificationOK.\<close>
 	(
 	\<comment>\<open>Implicit union type parameters projection\<close>
@@ -194,7 +194,7 @@ where
 	
 	
 \<comment>\<open>VDM source: Plant = compose Plant of schedule:Schedule, alarms:set of (Alarm) end
-	inv mk_Plant(schedule, alarms) == (forall a in set alarms & (forall peri in set (dom schedule) & QualificationOK((a.quali), schedule(peri))))\<close>
+	inv mk_Plant(schedule, alarms) == (forall a in set alarms & (forall peri in set (dom schedule) & QualificationOK(schedule(peri), (a.quali))))\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 52:3\<close>
 record Plant = 
 	schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t :: "Schedule"
@@ -204,7 +204,7 @@ record Plant =
 
 \<comment>\<open>VDM source: inv_Plant: (Plant +> bool)
 	inv_Plant(mk_Plant(schedule, alarms)) ==
-(forall a in set alarms & (forall peri in set (dom schedule) & QualificationOK((a.quali), schedule(peri))))\<close>
+(forall a in set alarms & (forall peri in set (dom schedule) & QualificationOK(schedule(peri), (a.quali))))\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 54:7\<close>
 definition
 	inv_Plant :: "Plant \<Rightarrow> bool"
@@ -216,7 +216,7 @@ where
 		\<comment>\<open>Implicit pattern context conversion\<close>
 		(let schedule = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in 
 		\<comment>\<open>User defined body of inv_Plant.\<close>
-		(\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a)   ((the(schedule peri)))))))"
+		(\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK ((the(schedule peri)))   (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a)))))"
  
 lemmas inv_Plant_defs = inv_Alarm_def inv_Expert_def inv_ExpertId_def inv_Map_defs inv_Period_def inv_Plant_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
 
@@ -227,12 +227,12 @@ lemmas inv_Plant_defs = inv_Alarm_def inv_Expert_def inv_ExpertId_def inv_Map_de
 	NumberOfExperts(peri, plant) ==
 (card (plant.schedule)(peri))
 	pre (peri in set (dom (plant.schedule)))\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 62:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 61:3\<close>
 
 \<comment>\<open>VDM source: pre_NumberOfExperts: (Period * Plant +> bool)
 	pre_NumberOfExperts(peri, plant) ==
 (peri in set (dom (plant.schedule)))\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 65:12\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 64:12\<close>
 definition
 	pre_NumberOfExperts :: "Period \<Rightarrow> Plant \<Rightarrow> bool"
 where
@@ -246,7 +246,7 @@ where
 \<comment>\<open>VDM source: post_NumberOfExperts: (Period * Plant * nat +> bool)
 	post_NumberOfExperts(peri, plant, RESULT) ==
 null\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 62:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 61:3\<close>
 definition
 	post_NumberOfExperts :: "Period \<Rightarrow> Plant \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -266,12 +266,12 @@ where
 \<comment>\<open>VDM source: ExpertIsOnDuty: (Expert * Plant -> set of (Period))
 	ExpertIsOnDuty(ex, mk_Plant(sch, -)) ==
 {peri | peri in set (dom sch) & (ex in set sch(peri))}\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 67:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 66:3\<close>
 
 \<comment>\<open>VDM source: pre_ExpertIsOnDuty: (Expert * Plant +> bool)
 	pre_ExpertIsOnDuty(ex, mk_Plant(sch, -)) ==
 null\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 67:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 66:3\<close>
 definition
 	pre_ExpertIsOnDuty :: "Expert \<Rightarrow> Plant \<Rightarrow> bool"
 where
@@ -283,7 +283,7 @@ where
 \<comment>\<open>VDM source: post_ExpertIsOnDuty: (Expert * Plant * set of (Period) +> bool)
 	post_ExpertIsOnDuty(ex, mk_Plant(sch, -), RESULT) ==
 null\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 67:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 66:3\<close>
 definition
 	post_ExpertIsOnDuty :: "Expert \<Rightarrow> Plant \<Rightarrow> Period VDMSet \<Rightarrow> bool"
 where
@@ -307,12 +307,12 @@ where
 mk_Expert(mk_token("Leo"), {<Elec>})
 	pre ((peri in set (dom (plant.schedule))) and (a in set (plant.alarms)))
 	post ((RESULT in set (plant.schedule)(peri)) and ((a.quali) in set (RESULT.quali)))\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 72:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 71:3\<close>
 
 \<comment>\<open>VDM source: pre_ExpertToPage: (Alarm * Period * Plant +> bool)
 	pre_ExpertToPage(a, peri, plant) ==
 ((peri in set (dom (plant.schedule))) and (a in set (plant.alarms)))\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 74:38\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 73:38\<close>
 definition
 	pre_ExpertToPage :: "Alarm \<Rightarrow> Period \<Rightarrow> Plant \<Rightarrow> bool"
 where
@@ -326,7 +326,7 @@ where
 \<comment>\<open>VDM source: post_ExpertToPage: (Alarm * Period * Plant * Expert +> bool)
 	post_ExpertToPage(a, peri, plant, RESULT) ==
 ((RESULT in set (plant.schedule)(peri)) and ((a.quali) in set (RESULT.quali)))\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 76:43\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 75:43\<close>
 definition
 	post_ExpertToPage :: "Alarm \<Rightarrow> Period \<Rightarrow> Plant \<Rightarrow> Expert \<Rightarrow> bool"
 where
@@ -348,12 +348,12 @@ where
 \<comment>\<open>VDM source: ChangeExpert: (Plant * Expert * Expert * Period -> Plant)
 	ChangeExpert(mk_Plant(plan, alarms), v11, v22, peri) ==
 mk_Plant((plan ++ {peri |-> ((plan(peri) \ {v11}) union {v22})}), alarms)\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 80:1\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:1\<close>
 
 \<comment>\<open>VDM source: pre_ChangeExpert: (Plant * Expert * Expert * Period +> bool)
 	pre_ChangeExpert(mk_Plant(plan, alarms), v11, v22, peri) ==
 null\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 80:1\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:1\<close>
 definition
 	pre_ChangeExpert :: "Plant \<Rightarrow> Expert \<Rightarrow> Expert \<Rightarrow> Period \<Rightarrow> bool"
 where
@@ -365,7 +365,7 @@ where
 \<comment>\<open>VDM source: post_ChangeExpert: (Plant * Expert * Expert * Period * Plant +> bool)
 	post_ChangeExpert(mk_Plant(plan, alarms), v11, v22, peri, RESULT) ==
 null\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 80:1\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:1\<close>
 definition
 	post_ChangeExpert :: "Plant \<Rightarrow> Expert \<Rightarrow> Expert \<Rightarrow> Period \<Rightarrow> Plant \<Rightarrow> bool"
 where
@@ -385,7 +385,7 @@ where
 	
 	
 \<comment>\<open>VDM source: p1:Period = mk_token("Monday day")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 85:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 84:3\<close>
 abbreviation
 	p1 :: "Period"
 where
@@ -400,7 +400,7 @@ where
 	
 	
 \<comment>\<open>VDM source: p2:Period = mk_token("Monday night")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 86:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 85:3\<close>
 abbreviation
 	p2 :: "Period"
 where
@@ -415,7 +415,7 @@ where
 	
 	
 \<comment>\<open>VDM source: p3:Period = mk_token("Tuesday day")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 87:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 86:3\<close>
 abbreviation
 	p3 :: "Period"
 where
@@ -430,7 +430,7 @@ where
 	
 	
 \<comment>\<open>VDM source: p4:Period = mk_token("Tuesday night")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 88:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 87:3\<close>
 abbreviation
 	p4 :: "Period"
 where
@@ -445,7 +445,7 @@ where
 	
 	
 \<comment>\<open>VDM source: p5:Period = mk_token("Wednesday day")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 89:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 88:3\<close>
 abbreviation
 	p5 :: "Period"
 where
@@ -460,7 +460,7 @@ where
 	
 	
 \<comment>\<open>VDM source: ps:set of (Period) = {p1, p2, p3, p4, p5}\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 90:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 89:3\<close>
 abbreviation
 	ps :: "Period VDMSet"
 where
@@ -475,7 +475,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid1:ExpertId = mk_token("134")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 93:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 92:3\<close>
 abbreviation
 	eid1 :: "ExpertId"
 where
@@ -490,7 +490,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid2:ExpertId = mk_token("145")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 94:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 93:3\<close>
 abbreviation
 	eid2 :: "ExpertId"
 where
@@ -505,7 +505,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid3:ExpertId = mk_token("154")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 95:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 94:3\<close>
 abbreviation
 	eid3 :: "ExpertId"
 where
@@ -520,7 +520,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid4:ExpertId = mk_token("165")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 96:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 95:3\<close>
 abbreviation
 	eid4 :: "ExpertId"
 where
@@ -535,7 +535,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid5:ExpertId = mk_token("169")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 97:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 96:3\<close>
 abbreviation
 	eid5 :: "ExpertId"
 where
@@ -550,7 +550,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid6:ExpertId = mk_token("174")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 98:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 97:3\<close>
 abbreviation
 	eid6 :: "ExpertId"
 where
@@ -565,7 +565,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid7:ExpertId = mk_token("181")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 99:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 98:3\<close>
 abbreviation
 	eid7 :: "ExpertId"
 where
@@ -580,7 +580,7 @@ where
 	
 	
 \<comment>\<open>VDM source: eid8:ExpertId = mk_token("190")\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 100:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 99:3\<close>
 abbreviation
 	eid8 :: "ExpertId"
 where
@@ -595,7 +595,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e1:Expert = mk_Expert(eid1, {<Elec>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 102:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 101:3\<close>
 abbreviation
 	e1 :: "Expert"
 where
@@ -610,7 +610,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e2:Expert = mk_Expert(eid2, {<Mech>, <Chem>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 103:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 102:3\<close>
 abbreviation
 	e2 :: "Expert"
 where
@@ -625,7 +625,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e3:Expert = mk_Expert(eid3, {<Bio>, <Chem>, <Elec>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 104:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 103:3\<close>
 abbreviation
 	e3 :: "Expert"
 where
@@ -640,7 +640,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e4:Expert = mk_Expert(eid4, {<Bio>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 105:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 104:3\<close>
 abbreviation
 	e4 :: "Expert"
 where
@@ -655,7 +655,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e5:Expert = mk_Expert(eid5, {<Chem>, <Bio>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 106:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 105:3\<close>
 abbreviation
 	e5 :: "Expert"
 where
@@ -670,7 +670,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e6:Expert = mk_Expert(eid6, {<Elec>, <Chem>, <Bio>, <Mech>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 107:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 106:3\<close>
 abbreviation
 	e6 :: "Expert"
 where
@@ -685,7 +685,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e7:Expert = mk_Expert(eid7, {<Elec>, <Mech>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 108:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 107:3\<close>
 abbreviation
 	e7 :: "Expert"
 where
@@ -700,7 +700,7 @@ where
 	
 	
 \<comment>\<open>VDM source: e8:Expert = mk_Expert(eid8, {<Mech>, <Bio>})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 109:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 108:3\<close>
 abbreviation
 	e8 :: "Expert"
 where
@@ -715,7 +715,7 @@ where
 	
 	
 \<comment>\<open>VDM source: experts:set of (Expert) = {e1, e2, e3, e4, e5, e6, e7, e8}\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 110:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 109:3\<close>
 abbreviation
 	experts :: "Expert VDMSet"
 where
@@ -730,7 +730,7 @@ where
 	
 	
 \<comment>\<open>VDM source: s:map (Period) to (set of (Expert)) = {p1 |-> {e7, e5, e1}, p2 |-> {e6}, p3 |-> {e1, e3, e8}, p4 |-> {e6}}\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 112:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 111:3\<close>
 abbreviation
 	s :: "(Period \<rightharpoonup> Expert VDMSet)"
 where
@@ -745,11 +745,11 @@ where
 	
 	
 \<comment>\<open>VDM source: a1:Alarm = mk_Alarm("Power supply missing", <Elec>)\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 118:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 117:3\<close>
 abbreviation
 	a1 :: "Alarm"
 where
-	"a1 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Power supply missing''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Elec \<rparr>"
+	"a1 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Power supply missing''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = U_Elec \<rparr>"
 
 	definition
 	inv_a1 :: "\<bool>"
@@ -760,11 +760,11 @@ where
 	
 	
 \<comment>\<open>VDM source: a2:Alarm = mk_Alarm("Tank overflow", <Mech>)\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 119:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 118:3\<close>
 abbreviation
 	a2 :: "Alarm"
 where
-	"a2 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Tank overflow''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Mech \<rparr>"
+	"a2 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Tank overflow''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = U_Mech \<rparr>"
 
 	definition
 	inv_a2 :: "\<bool>"
@@ -775,11 +775,11 @@ where
 	
 	
 \<comment>\<open>VDM source: a3:Alarm = mk_Alarm("CO2 detected", <Chem>)\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 120:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 119:3\<close>
 abbreviation
 	a3 :: "Alarm"
 where
-	"a3 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''CO2 detected''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Chem \<rparr>"
+	"a3 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''CO2 detected''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = U_Chem \<rparr>"
 
 	definition
 	inv_a3 :: "\<bool>"
@@ -790,11 +790,11 @@ where
 	
 	
 \<comment>\<open>VDM source: a4:Alarm = mk_Alarm("Biological attack", <Bio>)\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 121:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 120:3\<close>
 abbreviation
 	a4 :: "Alarm"
 where
-	"a4 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Biological attack''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m =  Qualification.U_Bio \<rparr>"
+	"a4 \<equiv> \<lparr>alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = (''Biological attack''), quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m = U_Bio \<rparr>"
 
 	definition
 	inv_a4 :: "\<bool>"
@@ -805,7 +805,7 @@ where
 	
 	
 \<comment>\<open>VDM source: ALARMS:set of (Alarm) = {a1, a2, a3, a4}\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 122:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 121:3\<close>
 abbreviation
 	ALARMS :: "Alarm VDMSet"
 where
@@ -820,7 +820,7 @@ where
 	
 	
 \<comment>\<open>VDM source: plant1:Plant = mk_Plant(s, {a1, a2, a3})\<close>
-\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 124:3\<close>
+\<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 123:3\<close>
 abbreviation
 	plant1 :: "Plant"
 where
