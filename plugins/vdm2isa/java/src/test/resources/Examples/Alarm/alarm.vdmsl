@@ -43,8 +43,8 @@ types
            quali     : Qualification;
 
 functions 
-  QualificationOK: Qualification * set of Expert -> bool
-  QualificationOK(reqquali, exs) ==
+  QualificationOK: set of Expert * Qualification -> bool
+  QualificationOK(exs, reqquali) ==
     exists ex in set exs & reqquali in set ex.quali;
 
 types
@@ -53,9 +53,8 @@ types
            alarms   : set of Alarm
   inv mk_Plant(schedule,alarms) ==
         forall a in set alarms &
-	   forall peri in set dom schedule &
-	     QualificationOK(a.quali, schedule(peri));
-	     
+	   forall peri in set dom schedule & 
+	     QualificationOK(schedule(peri), a.quali);
 
 functions
 
