@@ -18,6 +18,7 @@ public class TRProofObligationDefinition extends TRDefinition {
     private static final long serialVersionUID = 1L;
    
     public final ProofObligation po;
+    public final int poNumber; // po.number is not helpful
     public final TRExpression poExpr;
     public final TRType poType;
     private TRDefinitionList poScripts;
@@ -36,9 +37,9 @@ public class TRProofObligationDefinition extends TRDefinition {
      * @param poScript
      */
     public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
-        TRExpression poExpr, TRType poType, TRProofScriptDefinition poScript)
+        TRExpression poExpr, TRType poType, int poNumber, TRProofScriptDefinition poScript)
     {
-        this(comments, po, poExpr, poType, poScript != null ? 
+        this(comments, po, poExpr, poType, poNumber, poScript != null ? 
             TRProofObligationDefinition.asProofScriptDefinitionList(poScript) : 
             new TRDefinitionList());
     }
@@ -48,12 +49,13 @@ public class TRProofObligationDefinition extends TRDefinition {
  //   TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
 
      public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
-       TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
+       TRExpression poExpr, TRType poType, int poNumber, TRDefinitionList poScripts)
     {
         super(null, figureOutLocation(po), comments, null, IsaToken.newNameToken(figureOutLocation(po), figureOutLocation(po).module, "PO_" + po != null ? String.valueOf(po.name) : "null"), NameScope.GLOBAL, true, false);
         this.po = po;
         this.poExpr = poExpr;
-        this.poType = poType;//always null for now, given avoiding calls to typeCheck(poExpr);
+        this.poType = poType;// always poExpr.getType() equivalent, now we have PO.getCheckedExpression()
+        this.poNumber = poNumber;
         this.poScripts = poScripts;
     }
 
@@ -98,6 +100,9 @@ public class TRProofObligationDefinition extends TRDefinition {
         sb.append(po.name);
         sb.append(IsaToken.UNDERSCORE.toString());
         sb.append(po.kind.name());
+        sb.append(IsaToken.UNDERSCORE.toString());
+        sb.append(IsaToken.PO.toString());
+        sb.append(poNumber);
         sb.append(IsaToken.COLON.toString());
         sb.append(getFormattingSeparator());
         sb.append(tldIsaComment());
@@ -116,7 +121,8 @@ public class TRProofObligationDefinition extends TRDefinition {
             sb.append(TRBasicProofScriptStepDefinition.oops(location));
         }
         sb.append(getFormattingSeparator());
-        return sb.toString();
+        // replace all names with "$" signs as Isabelle doesn't like them.
+        return sb.toString().replaceAll("\\$", "dollar");
 	}
 
     @Override
@@ -134,18 +140,18 @@ public class TRProofObligationDefinition extends TRDefinition {
 	}
 
     public static final TRProofObligationDefinition newProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
-    TRExpression poExpr, TRType poType, TRProofScriptDefinition... poScripts)
+    TRExpression poExpr, TRType poType, int poNumber, TRProofScriptDefinition... poScripts)
     {
-        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, 
+        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, poNumber,
             TRProofObligationDefinition.asProofScriptDefinitionList(poScripts));
         TRNode.setup(result);
         return result;
     }
 
     public static final TRProofObligationDefinition newProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
-        TRExpression poExpr, TRType poType, TRDefinitionList poScripts)
+        TRExpression poExpr, TRType poType, int poNumber, TRDefinitionList poScripts)
     {
-        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, poScripts);
+        TRProofObligationDefinition result = new TRProofObligationDefinition(comments, po, poExpr, poType, poNumber, poScripts);
         TRNode.setup(result);
         return result;
     }

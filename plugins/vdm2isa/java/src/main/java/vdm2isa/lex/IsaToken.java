@@ -50,6 +50,7 @@ public enum IsaToken {
 	SEQBIND(null, "\\<leftarrow>"),
 	SETSEQBIND(null, "\\<leftarrow> sorted_list_of_set"),
 	UNDERSCORE(null, "_"),
+	PO(null, "PO"),
 
 	// Unary Operators
 	NOT(Token.NOT, "\\<not>"),

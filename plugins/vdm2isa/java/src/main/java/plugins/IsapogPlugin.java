@@ -136,8 +136,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
                         TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
                         TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
-                        TRType poType = null;
-                        TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poScript);
+                        TRType poType = potrExpr.getType();
+                        TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poNumber, poScript);
                         isapogl.add(poe);
                         poNumber++;
                     }
