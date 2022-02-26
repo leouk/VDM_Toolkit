@@ -71,7 +71,10 @@ functions
   ExpertToPage: Alarm * Period * Plant -> Expert
   ExpertToPage(a, peri, plant) == mk_Expert(mk_token("Leo"), {<Elec>})
   pre peri in set dom plant.schedule and
-      a in set plant.alarms
+      a in set plant.alarms 
+      --@LF needed for the explicit definition of ExpertToPage
+      and mk_Expert(mk_token("Leo"), {<Elec>}) in set plant.schedule(peri)
+      and a.quali = <Elec>
   post RESULT in set plant.schedule(peri) and
        a.quali in set RESULT.quali;
 

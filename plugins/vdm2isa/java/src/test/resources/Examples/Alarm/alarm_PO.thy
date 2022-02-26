@@ -15,10 +15,7 @@ theorem Expert_TOTAL_PO1:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (ex :: Expert)  . ((( ((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex)))) \<and> 
 		 ((inv_VDMSet' ((inv_Qualification )) (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex))) ))) \<longrightarrow> isTest ((inv_Expert ex)) (inv_bool))))"
-	
-	oops
-	
-	
+	by (simp)
 	
 	
 \<comment>\<open>VDM source: Expert = ?\<close>
@@ -29,8 +26,7 @@ theorem Expert_INV_SATISFIABILITY_PO2:
 		((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex)))) \<and> 
 		 ((inv_VDMSet' ((inv_Qualification )) (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex)))
 		))) \<longrightarrow> ((quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex) \<noteq> {}))))"
-	
-	oops
+	by (metis Expert.select_convs(2) ex_in_conv insertI1)
 	
 	
 	
@@ -41,7 +37,7 @@ theorem Schedule_TOTAL_PO3:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> isTest ((inv_Schedule sch)) (inv_bool))))"
 	
-	oops
+	by simp	
 	
 	
 	
@@ -51,8 +47,7 @@ theorem Schedule_TOTAL_PO3:
 theorem Schedule_INV_SATISFIABILITY_PO4:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<exists> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> (\<forall> exs \<in> (rng sch)  . ((exs \<noteq> {}) \<and> (\<forall> ex1 \<in> exs  . (\<forall> ex2 \<in> exs  . ((ex1 \<noteq> ex2) \<longrightarrow> ((expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex1) \<noteq> (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex2))))))))))"
-	
-	oops
+	by (metis empty_iff ran_empty rng_def)
 	
 	
 	
@@ -64,7 +59,7 @@ theorem Plant_TOTAL_PO5:
 	"((\<forall> (dummy0 :: Plant)  . ((( ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0)))) \<and> 
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0))) ))) \<longrightarrow> (let schedule = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in isTest ((inv_Plant \<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = schedule, alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = alarms\<rparr>)) (inv_bool)))))"
 	
-	oops
+	by simp
 	
 	
 	
@@ -78,7 +73,7 @@ theorem Plant_MAP_APPLY_PO6:
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0)))
 		))) \<longrightarrow> (let schedule = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in (\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (peri \<in> (dom schedule))))))))"
 	
-	oops
+	by metis
 	
 	
 	
@@ -92,7 +87,7 @@ theorem Plant_INV_SATISFIABILITY_PO7:
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0)))
 		))) \<longrightarrow> (let schedule = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in (\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK ((the(schedule peri)))   (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a))))))))"
 	
-	oops
+	by (metis Plant.select_convs(2) equals0D)
 	
 	
 	
@@ -106,7 +101,7 @@ theorem NumberOfExperts_MAP_APPLY_PO8:
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant)))
 		))) \<longrightarrow> ((peri \<in> (dom (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant))) \<longrightarrow> (peri \<in> (dom (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant)))))))"
 	
-	oops
+	by presburger
 	
 	
 	
@@ -123,11 +118,15 @@ theorem ExpertIsOnDuty_MAP_APPLY_PO9:
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0)))
 		))) \<longrightarrow> (let sch = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); dollarany1 = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in (\<forall> peri \<in> (dom sch)  . (peri \<in> (dom sch)))))))"
 	
-	oops
+	by simp
 	
 	
-	
-	
+lemma l_invVDMStringI[simp]:" inv_VDMSeq' inv_VDMChar S"
+  by (simp add: inv_SeqElems0_def inv_VDMChar_def inv_VDMSeq'_def l_inv_SeqElems_alt)
+
+lemma l_invQualiSet[simp]: "finite Q \<Longrightarrow> inv_VDMSet' inv_Qualification Q"
+  by (simp add: inv_Qualification_def inv_SetElems_def inv_VDMSet'_def)
+
 \<comment>\<open>VDM source: ExpertToPage = ?\<close>
 \<comment>\<open>in 'alarm' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl) at line 71:3\<close>
 theorem ExpertToPage_FUNC_POST_CONDITION_PO10:
@@ -135,7 +134,18 @@ theorem ExpertToPage_FUNC_POST_CONDITION_PO10:
 	"((\<forall> (a :: Alarm)   (peri :: Period)   (plant :: Plant)  . ((( (((inv_VDMSeq' (inv_VDMChar) (alarmtext\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a))) \<and> 
 		 ((((inv_True (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a))))) )))  \<and>  ((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) peri))))  \<and>  (( ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant)))) \<and> 
 		 ((inv_VDMSet' inv_Alarm  (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t plant))) ))) \<longrightarrow> ((pre_ExpertToPage a   peri   plant) \<longrightarrow> (post_ExpertToPage a   peri   plant   \<lparr>expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t = (Token (''Leo'')), quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t = {Qualification.U_Elec }\<rparr>)))))"
-	
+	apply (safe, simp)
+  unfolding post_ExpertToPage_def pre_ExpertToPage_def 
+  apply simp
+  unfolding inv_Expert_def inv_ExpertId_def
+  apply (safe)
+  \<comment> \<open>Token proofs will require intervention. This is not ideal \<close>
+      apply (rule l_inv_VDMTokenI[of _ "''Leo''" _])
+       apply simp
+      apply simp
+     apply simp
+  apply simp
+  apply simp
 	oops
 	
 	
@@ -198,7 +208,8 @@ theorem ChangeExpert_MAP_APPLY_PO13:
 		((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t v22)))) \<and> 
 		 ((inv_VDMSet' ((inv_Qualification )) (quali\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t v22)))
 		)))  \<and>  ((((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)) peri)))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  (peri \<in> (dom plan))))))"
-	
+	apply (safe, simp)
+  
 	oops
 	
 	
