@@ -96,7 +96,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         if (interpreter instanceof ModuleInterpreter)
         {
             Vdm2isaPlugin vdm2isa = new Vdm2isaPlugin(interpreter);
-            result = vdm2isa.run(argv);  
+            result = vdm2isa.isaRun(tclist, argv);  
             if (result)
                 Console.out.println("Starting Isabelle VDM Proof Obligation generation.");
             
