@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-23T13:30:40.493074Z
+(* VDM to Isabelle Translation @2022-02-27T08:10:01.909074Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IFcns.vdmsl' at line 1:8
@@ -373,5 +373,82 @@ where
 	"curriedS x y \<equiv> 
 	\<comment>\<open>User defined body of curriedS.\<close>
 	(x + y)"
+
+	
+	
+\<comment>\<open>VDM source: static private implicit((x, y:nat), (z:set of (nat)))r:seq of (nat)
+	pre ((x < y) and (x in set z))
+	post (x > (len r))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 54:5\<close>
+
+\<comment>\<open>VDM source: pre_implicit: (nat * nat * set of (nat) +> bool)
+	pre_implicit(x, y, z) ==
+((x < y) and (x in set z))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 55:15\<close>
+definition
+	pre_implicit :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool"
+where
+	"pre_implicit x   y   z \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_implicit` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z))  \<and> 
+		\<comment>\<open>User defined body of pre_implicit.\<close>
+		((x < y) \<and> (x \<in> z))"
+
+
+\<comment>\<open>VDM source: post_implicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
+	post_implicit(x, y, z, r) ==
+(x > (len r))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 56:12\<close>
+definition
+	post_implicit :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool"
+where
+	"post_implicit x   y   z   r \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_implicit` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z)  \<and>  (inv_VDMSeq' (inv_VDMNat) r))  \<and> 
+		\<comment>\<open>User defined body of post_implicit.\<close>
+		(x > (len r))"
+
+
+	
+	
+\<comment>\<open>VDM source: static private implicitexplicit((x, y:nat), (z:set of (nat)))r:seq of (nat) ==
+	[x, y]
+	pre ((x < y) and (x in set z))
+	post (x > (len r))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 58:5\<close>
+
+\<comment>\<open>VDM source: pre_implicitexplicit: (nat * nat * set of (nat) +> bool)
+	pre_implicitexplicit(x, y, z) ==
+((x < y) and (x in set z))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 60:15\<close>
+definition
+	pre_implicitexplicit :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool"
+where
+	"pre_implicitexplicit x   y   z \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `pre_implicitexplicit` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z))  \<and> 
+		\<comment>\<open>User defined body of pre_implicitexplicit.\<close>
+		((x < y) \<and> (x \<in> z))"
+
+
+\<comment>\<open>VDM source: post_implicitexplicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
+	post_implicitexplicit(x, y, z, r) ==
+(x > (len r))\<close>
+\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 61:12\<close>
+definition
+	post_implicitexplicit :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool"
+where
+	"post_implicitexplicit x   y   z   r \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `post_implicitexplicit` specification.\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z)  \<and>  (inv_VDMSeq' (inv_VDMNat) r))  \<and> 
+		\<comment>\<open>User defined body of post_implicitexplicit.\<close>
+		(x > (len r))"
+
+definition
+	implicitexplicit :: "VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq"
+where
+	"implicitexplicit x   y   z \<equiv> 
+	\<comment>\<open>User defined body of implicitexplicit.\<close>
+	[x , y]"
 
 end

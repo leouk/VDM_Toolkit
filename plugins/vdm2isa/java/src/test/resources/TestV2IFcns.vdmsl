@@ -51,4 +51,13 @@ functions
 	pre x > y
 	post x < RESULT and y < RESULT;
 
+	implicit(x, y: nat, z: set of nat) r: seq of nat 
+	pre x < y and x in set z
+	post x > len r;
+
+	implicitexplicit(x, y: nat, z: set of nat) r: seq of nat 
+		== [x,y]
+	pre x < y and x in set z
+	post x > len r;
+
 end TestV2IFcns
