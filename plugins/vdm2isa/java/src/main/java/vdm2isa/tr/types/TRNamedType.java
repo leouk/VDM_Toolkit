@@ -42,10 +42,10 @@ public class TRNamedType extends TRInvariantType
 	}
 
     @Override
-    public void setAtTopLevelDefinition(boolean b)
+    public boolean setAtTopLevelDefinition(boolean b)
     {
         // inner type at super = to type set
-        super.setAtTopLevelDefinition(b);
+        return super.setAtTopLevelDefinition(b);
 		//this.type.setAtTopLevelDefinition(b);
     }	
 

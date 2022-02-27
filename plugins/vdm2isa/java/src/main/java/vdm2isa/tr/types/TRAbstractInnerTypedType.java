@@ -75,9 +75,9 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     }
 
     @Override
-    public void setAtTopLevelDefinition(boolean b)
+    public boolean setAtTopLevelDefinition(boolean b)
     {
-        super.setAtTopLevelDefinition(b);
+        return super.setAtTopLevelDefinition(b);
         //getInnerType().setAtTopLevelDefinition(b);
     }
 
