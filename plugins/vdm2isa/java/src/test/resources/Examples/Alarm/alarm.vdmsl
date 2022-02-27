@@ -68,20 +68,15 @@ functions
     {peri| peri in set dom sch & ex in set sch(peri)};
 
   ExpertToPage(a:Alarm,peri:Period,plant:Plant) r: Expert
-  --ExpertToPage: Alarm * Period * Plant -> Expert
-  --ExpertToPage(a, peri, plant) == mk_Expert(mk_token("Leo"), {<Elec>})
   pre peri in set dom plant.schedule and
       a in set plant.alarms 
-      --@LF needed for the explicit definition of ExpertToPage
-      --and mk_Expert(mk_token("Leo"), {<Elec>}) in set plant.schedule(peri)
-      --and a.quali = <Elec>
   post r in set plant.schedule(peri) and
        a.quali in set r.quali;
 
 --mistake
-ChangeExpert: Plant * Expert * Expert * Period -> Plant
-ChangeExpert(mk_Plant(plan,alarms), v11, v22,peri) ==
-  mk_Plant(plan ++ {peri |-> plan(peri)\{v11} union {v22}},alarms)
+  ChangeExpert: Plant * Expert * Expert * Period -> Plant
+  ChangeExpert(mk_Plant(plan,alarms), v11, v22,peri) ==
+    mk_Plant(plan ++ {peri |-> plan(peri)\{v11} union {v22}},alarms)
 
 values
   p1:Period = mk_token("Monday day");
