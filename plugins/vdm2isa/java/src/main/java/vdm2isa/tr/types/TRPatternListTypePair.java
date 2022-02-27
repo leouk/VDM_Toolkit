@@ -39,4 +39,14 @@ public class TRPatternListTypePair extends TRNode
         sb.append(type.translate());
         return IsaToken.parenthesise(sb.toString());
     }    
+
+    public TRPatternList getPatternsList()
+    {
+        return this.patterns;
+    } 
+
+    public TRType getPatternListType()
+    {
+        return type;
+    }
 }
