@@ -1091,7 +1091,7 @@ lemma "inj m" unfolding inj_on_def apply simp oops
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
   where
-  [intro!]: "rng m \<equiv> ran m"
+  [simp]: "rng m \<equiv> ran m"
 
 lemmas rng_defs = rng_def ran_def
   
@@ -2205,7 +2205,7 @@ lemma l_ranE_frule':
 
 lemma l_inv_MapTrue: 
   "finite (dom m) \<Longrightarrow> undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_Map inv_True inv_True m"
-  by (simp add: finite_ran inv_Map_def inv_VDMSet'_def rng_def)  
+  by (simp add: finite_ran inv_Map_def inv_VDMSet'_def)  
 
 lemma l_invMap_domr_absorb:   
   "inv_Map di ri m \<Longrightarrow> inv_Map di ri (S \<triangleleft> m)"
