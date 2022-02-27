@@ -267,7 +267,8 @@ theorem ToGreen_MAP_APPLY_PO21:
 		(((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) ((inv_Light )) (lights\<^sub>K\<^sub>e\<^sub>r\<^sub>n\<^sub>e\<^sub>l dummy0))) \<and> 
 		 ((inv_VDMSet' inv_Conflict  (conflicts\<^sub>K\<^sub>e\<^sub>r\<^sub>n\<^sub>e\<^sub>l dummy0)))
 		))) \<longrightarrow> (let lights = (lights\<^sub>K\<^sub>e\<^sub>r\<^sub>n\<^sub>e\<^sub>l dummy0); conflicts = (conflicts\<^sub>K\<^sub>e\<^sub>r\<^sub>n\<^sub>e\<^sub>l dummy0) in ((p \<in> (dom lights)) \<longrightarrow> ((((the(lights p))) = Light.U_Red ) \<longrightarrow> (\<forall> dummy0 \<in> conflicts  . (let p1 = (path1\<^sub>C\<^sub>o\<^sub>n\<^sub>f\<^sub>l\<^sub>i\<^sub>c\<^sub>t dummy0); p2 = (path2\<^sub>C\<^sub>o\<^sub>n\<^sub>f\<^sub>l\<^sub>i\<^sub>c\<^sub>t dummy0) in ((p = p1) \<longrightarrow> (p2 \<in> (dom lights)))))))))))"
-	
+	apply (simp add: Let_def, intro allI ballI impI)
+  unfolding inv_Conflict_defs apply simp
 	oops
 	
 	
