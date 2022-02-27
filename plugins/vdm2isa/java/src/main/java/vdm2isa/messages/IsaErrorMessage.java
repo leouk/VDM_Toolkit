@@ -77,7 +77,7 @@ public enum IsaErrorMessage {
     ISA_INVALID_INVTR_2P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 5, 
     "Node %1$s `%2$s` does not support VDM invariant translation to Isabelle."),
     ISA_INVALID_IMPLSPEC_2P (VDM2IsaError.ISABELLE_E_ISA_BASE + 6, 
-    "Invalid implicitly generated specificaiton check for %1$s. Must be one of %2$s."),
+    "Invalid implicitly generated specificaiton check for `%1$s`. Must be one of %2$s."),
     ISA_INVALID_COMPLEX_BIND_VALUE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 7,
     "Multiple local names in VDM value definitions (e.g., `[A,B] = [1,2]`) cannot be translated for `%1$s`."),
     ISA_NO_EMPTYRECORD_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 8,
