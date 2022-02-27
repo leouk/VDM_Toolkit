@@ -23,6 +23,8 @@ public enum IsaInfoMessage {
     ISA_UNION_TYPE_COERCIONS("Type coercions might needed at body or union selection deletion might be needed"),
     ISA_PROCESS_VDM_EXPORTS("Processing VDM exports as Isabelle hidden declarations"),
     ISA_GENERIC_TYPE_1P("VDM generic type `%1$s` will become an Isabelle type parameter. Specific instantiations require invariant checking function"),
+    
+    PO_IGNORE_PO_2P("VDM proof obligation `%1$s` is spurious given Isabelle's encoding of `%2$s`."),
     TEST("test");
 
     public final String message; 

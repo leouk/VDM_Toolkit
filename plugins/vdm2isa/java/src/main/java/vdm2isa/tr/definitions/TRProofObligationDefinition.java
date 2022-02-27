@@ -3,12 +3,14 @@ package vdm2isa.tr.definitions;
 import java.util.Arrays;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.pog.POType;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
@@ -87,6 +89,23 @@ public class TRProofObligationDefinition extends TRDefinition {
         return poExpr != null ? tldIsaCommentTranslate(poExpr) : "";
     }
 
+    private boolean figureOutIgnorePO(String poNameStr, String poExprStr, POType kind)
+    {
+        boolean result = false;
+        // measure-related POs are spurious given Isabelle's recursive definition principles
+        result = (poNameStr.indexOf("measure_") != -1 && 
+                  poExprStr.indexOf("measure_") != -1 &&
+                  kind.equals(POType.TOTAL)
+                 )
+                 ||
+                 //this name was just something in gateway.vdmsl
+                 (//poNameStr.indexOf("rest_p") != -1 &&
+                  poExprStr.indexOf("measure_") != -1 &&
+                  kind.equals(POType.RECURSIVE)
+                ); 
+        return result;
+    }
+
     @Override
 	public String translate()
 	{
@@ -94,10 +113,17 @@ public class TRProofObligationDefinition extends TRDefinition {
         // get comments etc.
         sb.append(super.translate());
 
+        // replace all names with "$" signs as Isabelle doesn't like them.
+        String poExprStr = poExpr.translate().replaceAll("\\$", "dollar");
+        // Some PO names are "Gateway; rest_p" etc; fix those to be proper identifiers
+        String poNameStr = po.name.replaceAll("; ", IsaToken.UNDERSCORE.toString());
+
+        boolean ignorePO = figureOutIgnorePO(poNameStr, poExprStr, po.kind);
+
         // declare the theorem with the PO's name
         sb.append(isaToken().toString());
         sb.append(" ");
-        sb.append(po.name);
+        sb.append(poNameStr);
         sb.append(IsaToken.UNDERSCORE.toString());
         sb.append(po.kind.name());
         sb.append(IsaToken.UNDERSCORE.toString());
@@ -106,7 +132,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         sb.append(IsaToken.COLON.toString());
         sb.append(getFormattingSeparator());
         sb.append(tldIsaComment());
-        sb.append(IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExpr.translate())));
+        sb.append(IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExprStr)));
         sb.append(getFormattingSeparator());
         
         // translate the script if it exists or oops it
@@ -121,8 +147,21 @@ public class TRProofObligationDefinition extends TRDefinition {
             sb.append(TRBasicProofScriptStepDefinition.oops(location));
         }
         sb.append(getFormattingSeparator());
-        // replace all names with "$" signs as Isabelle doesn't like them.
-        return sb.toString().replaceAll("\\$", "dollar");
+
+        // if ignoring the PO still issue its translation as an isabelle block comment
+        if (ignorePO)
+        {
+            StringBuilder ignore = new StringBuilder();
+            ignore.append(getFormattingSeparator());
+            ignore.append(IsaToken.comment(IsaInfoMessage.PO_IGNORE_PO_2P.format(poNameStr, "measures"), getFormattingSeparator()));
+            ignore.append(sb.toString());
+            ignore.append(getFormattingSeparator());
+            return IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN, ignore.toString(), IsaToken.BLOCK_COMMENT_CLOSE);
+        }
+        else
+        {
+            return sb.toString();
+        }
 	}
 
     @Override
