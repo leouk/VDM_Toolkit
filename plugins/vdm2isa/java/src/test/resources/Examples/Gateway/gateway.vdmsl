@@ -77,7 +77,12 @@ functions
   FlattenMessages: seq of Message -> Message
   FlattenMessages(ms) ==
     conc ms
-  pre len conc ms <= 100 
+  pre len conc ms <= 100;
+
+  FlattenMessages': seq of Message -> Message
+  FlattenMessages'(ms) ==
+    conc ms
+  pre ms <> [] and len conc ms <= 100 ;
 
 end gateway
 
