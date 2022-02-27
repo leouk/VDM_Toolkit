@@ -101,13 +101,14 @@ public class ExuPlugin extends GeneralisaPlugin {
         }
     }
 
-    private void checkImplicitFunctionBody(TCImplicitFunctionDefinition def)
-    {
-        if (def.body != null || def.measureDef != null)
-        {
-            report(IsaErrorMessage.VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P, def.name.getLocation(), def.name.toString());
-        }
-    }
+    // but implicit functions can have body! oh man
+    // private void checkImplicitFunctionBody(TCImplicitFunctionDefinition def)
+    // {
+    //     if (def.body != null || def.measureDef != null)
+    //     {
+    //         report(IsaErrorMessage.VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P, def.name.getLocation(), def.name.toString());
+    //     }
+    // }
 
     private boolean isSpecificationName(TCNameToken n) {
         return n.isReserved(); 
@@ -138,7 +139,7 @@ public class ExuPlugin extends GeneralisaPlugin {
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.PRE, idef.predef);
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.POST, idef.postdef);
             checkSpecificationCallsConsistency(tclist, TRSpecificationKind.MEASURE, idef.measureDef);
-            checkImplicitFunctionBody(idef);
+            //checkImplicitFunctionBody(idef);
         }
     }
 
