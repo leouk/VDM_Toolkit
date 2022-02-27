@@ -41,7 +41,7 @@ public class TRMuExpression extends TRExpression {
     protected TRType getBestGuessType()
     {
         TRType result = record.getRecordType();
-        if (!(result instanceof TRRecordType) && !hasReportedGuessedType)
+        if (!(result.ultimateType() instanceof TRRecordType) && !hasReportedGuessedType)
         {
             report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects record type");
             hasReportedGuessedType = true;

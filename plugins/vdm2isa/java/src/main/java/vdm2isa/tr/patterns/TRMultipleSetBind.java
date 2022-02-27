@@ -57,7 +57,7 @@ public class TRMultipleSetBind extends TRMultipleBind
         super.setup();
         // If this set bind is part of a sequence bind or not; to be set by the TRSeqCompExpression
         this.seqBind = false;
-        if (this.set == null || !(this.set.getType() instanceof TRSetType))
+        if (this.set == null || !(this.set.getType().ultimateType() instanceof TRSetType))
             report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
                 "set bind",
                 (this.set == null ? "null" : this.set.getType().getClass().getSimpleName()),

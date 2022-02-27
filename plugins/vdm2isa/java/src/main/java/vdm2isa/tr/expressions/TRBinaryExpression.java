@@ -301,9 +301,9 @@ public class TRBinaryExpression extends TRExpression
 			case STARSTAR:
 			case STARSTARNAT:				
 				result = left.getType();
-				if (result instanceof TRUnknownType)
+				if (result.ultimateType() instanceof TRUnknownType)
 					result = right.getType(); 
-				if (!(result instanceof TRBasicType))
+				if (!(result.ultimateType() instanceof TRBasicType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects basic type");
 				break; 
 
@@ -311,18 +311,18 @@ public class TRBinaryExpression extends TRExpression
             case INTER:
             case SETDIFF:
 				result = left.getType();
-				if (result instanceof TRUnknownType)
+				if (result.ultimateType() instanceof TRUnknownType)
 					result = right.getType(); 
-				if (!(result instanceof TRSetType))
+				if (!(result.ultimateType() instanceof TRSetType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects set type");
 
 				break;
 
 			case CONCATENATE:
 				result = left.getType();
-				if (result instanceof TRUnknownType)
+				if (result.ultimateType() instanceof TRUnknownType)
 					result = right.getType(); 
-				if (!(result instanceof TRSeqType))
+				if (!(result.ultimateType() instanceof TRSeqType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects seq type");
 				break;
 
@@ -330,23 +330,23 @@ public class TRBinaryExpression extends TRExpression
             case PLUSPLUS:
             case COMP:
 				result = left.getType();
-				if (result instanceof TRUnknownType)
+				if (result.ultimateType() instanceof TRUnknownType)
 					result = right.getType(); 
-				if (!(result instanceof TRMapType))
+				if (!(result.ultimateType() instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects map type");
 				break;
 
 			case DOMRESTO:  // S <: m , get right  
             case DOMRESBY:
 				result = right.getType();
-				if (!(result instanceof TRMapType))
+				if (!(result.ultimateType() instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects map type");
 				break;
 
             case RANGERESTO: // m :> S, get left
             case RANGERESBY:
 				result = left.getType();
-				if (!(result instanceof TRMapType))
+				if (!(result.ultimateType() instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "2", "expects map type");
 				break;
 

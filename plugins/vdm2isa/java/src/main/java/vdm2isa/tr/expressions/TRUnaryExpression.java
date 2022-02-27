@@ -186,16 +186,16 @@ public class TRUnaryExpression extends TRExpression {
             case UPLUS:
 				// might be -1 or -1.5
 				result = expType;
-				if (!(result instanceof TRBasicType))
+				if (!(result.ultimateType() instanceof TRBasicType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects basic type");
 				break;
 
 			case DUNION:
             case DINTER:
-				if (expType instanceof TRSetType)
+				if (expType.ultimateType() instanceof TRSetType)
 				{
-					result = ((TRSetType)expType).getInnerType();
-					if (!(result instanceof TRSetType))
+					result = ((TRSetType)expType.ultimateType()).getInnerType();
+					if (!(result.ultimateType() instanceof TRSetType))
 						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects set type");
 				}
 				else
@@ -203,20 +203,20 @@ public class TRUnaryExpression extends TRExpression {
 				break;
 			
 			case INDS:
-				if (expType instanceof TRSeqType)
+				if (expType.ultimateType() instanceof TRSeqType)
 				{
 					TRType indsType = TRBasicType.nat1Type(location);
-					result = TRSetType.newSetType(location, indsType, ((TRSeqType)expType).seq1);
+					result = TRSetType.newSetType(location, indsType, ((TRSeqType)expType.ultimateType()).seq1);
 				}	
 				else
 					result = super.getType();
 				break;
 
 			case ELEMS:
-				if (expType instanceof TRSeqType)
+				if (expType.ultimateType() instanceof TRSeqType)
 				{
-					TRType elemsType = ((TRSeqType)expType).getInnerType();
-					result = TRSetType.newSetType(location, elemsType, ((TRSeqType)expType).seq1);
+					TRType elemsType = ((TRSeqType)expType.ultimateType()).getInnerType();
+					result = TRSetType.newSetType(location, elemsType, ((TRSeqType)expType.ultimateType()).seq1);
 				}	
 				else
 					result = super.getType();
@@ -225,14 +225,14 @@ public class TRUnaryExpression extends TRExpression {
 			case REVERSE:
 			case TAIL:
 				result = expType;
-				if (!(result instanceof TRSeqType))
+				if (!(result.ultimateType() instanceof TRSeqType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects seq type");
 				break;
 
 			case HEAD:
-				if (expType instanceof TRSeqType)
+				if (expType.ultimateType() instanceof TRSeqType)
 				{
-					TRSeqType seqt = (TRSeqType)expType;
+					TRSeqType seqt = (TRSeqType)expType.ultimateType();
 					result = seqt.getInnerType();
 				}
 				else
@@ -240,7 +240,7 @@ public class TRUnaryExpression extends TRExpression {
 				break;
 	
 			case DISTCONC:
-				if (expType instanceof TRSeqType)
+				if (expType.ultimateType() instanceof TRSeqType)
 				{
 					TRSeqType seqt = (TRSeqType)expType;
 					//TODO normalise these choices between raising a more specific error or delegating to super?  
@@ -254,11 +254,11 @@ public class TRUnaryExpression extends TRExpression {
 				break;
 
 			case MERGE:
-				if (expType instanceof TRSetType)
+				if (expType.ultimateType() instanceof TRSetType)
 				{
-					TRSetType sexp = (TRSetType)expType;
+					TRSetType sexp = (TRSetType)expType.ultimateType();
 					result = sexp.getInnerType();
-					if (!(result instanceof TRMapType))
+					if (!(result.ultimateType() instanceof TRMapType))
 						report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects map type");
 				}
 				else
@@ -267,14 +267,14 @@ public class TRUnaryExpression extends TRExpression {
 
             case INVERSE:
 				result = expType;
-				if (!(result instanceof TRMapType))
+				if (!(result.ultimateType() instanceof TRMapType))
 					report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), isaToken().toString(), "1", "expects map type");
 				break;
 
 			case DOM:
-				if (expType instanceof TRMapType)
+				if (expType.ultimateType() instanceof TRMapType)
 				{
-					TRMapType mtyp = (TRMapType)expType;
+					TRMapType mtyp = (TRMapType)expType.ultimateType();
 					result = mtyp.getFromType();
 				}
 				else
@@ -282,9 +282,9 @@ public class TRUnaryExpression extends TRExpression {
 				break;
 
 			case RNG:
-				if (expType instanceof TRMapType)
+				if (expType.ultimateType() instanceof TRMapType)
 				{
-					TRMapType mtyp = (TRMapType)expType;
+					TRMapType mtyp = (TRMapType)expType.ultimateType();
 					result = mtyp.getToType();
 				}
 				else
@@ -292,9 +292,9 @@ public class TRUnaryExpression extends TRExpression {
 				break;
 
 			case FPOWERSET:
-				if (expType instanceof TRSetType)
+				if (expType.ultimateType() instanceof TRSetType)
 				{
-					TRSetType sexp = (TRSetType)expType;
+					TRSetType sexp = (TRSetType)expType.ultimateType();
 					result = TRSetType.newSetType(location, sexp, false);
 				}
 				else

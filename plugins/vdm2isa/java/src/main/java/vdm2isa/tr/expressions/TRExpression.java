@@ -518,18 +518,18 @@ public abstract class TRExpression extends TRNode
         return sb.toString();
     }
 
-    public final TRType getUltimateType(TRType t)
-    {
-        TRType result = t;
-        if (t instanceof TRNamedType)
-            result = ((TRNamedType)t).ultimateType();
-        return result;
-    }
+    // public final TRType getUltimateType(TRType t)
+    // {
+    //     TRType result = t;
+    //     if (t instanceof TRNamedType)
+    //         result = ((TRNamedType)t).ultimateType();
+    //     return result;
+    // }
 
     public final TRType getRecordType()
     {
         TRType result = doGetRecordType();
-        if (!(result instanceof TRRecordType))
+        if (!(result.ultimateType() instanceof TRRecordType))
         {
             report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), result.getClass().getSimpleName());            
         }
@@ -542,7 +542,7 @@ public abstract class TRExpression extends TRNode
     protected TRType/* Might not be record type? */ doGetRecordType()
     {
         // get the ultimate type (i.e. chase all [re-]named types)
-        TRType result = getUltimateType(getType());
+        TRType result = getType().ultimateType();//getUltimateType(getType());
 
         // TRFunctionType: if a function, chase its result type 
         // TRMapType     : if a map, chase range type
@@ -555,7 +555,7 @@ public abstract class TRExpression extends TRNode
             TRAbstractInnerTypedType t = (TRAbstractInnerTypedType)result;
             
             if (!(result instanceof TRSetType || result instanceof TRSeqType))
-                result = getUltimateType(t.getInnerType());            
+                result = t.getInnerType().ultimateType();//getUltimateType(t.getInnerType());            
         }  
         return result;      
     }

@@ -47,7 +47,7 @@ public class TRFieldExpression extends TRExpression {
     @Override
     protected TRType doGetRecordType()
     {
-        return getUltimateType(object.getType());
+        return object.getType().ultimateType();//getUltimateType(object.getType());
     }
 
     @Override 
