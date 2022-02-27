@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-27T08:15:41.432397Z
+(* VDM to Isabelle Translation @2022-02-27T12:37:28.416425Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/Examples/Alarm/alarm.vdmsl' at line 1:8
