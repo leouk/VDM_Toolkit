@@ -143,16 +143,13 @@ lemma ex2'_dom: "dom ex2' = {5,6,7,8,9}"
   unfolding domid_def rngcnst_def inv_True_def inv_VDMNat_def
   apply (safe, simp_all) 
   thm option.distinct
-  apply (smt (z3) option.distinct(1))
-      apply (rule notI)   oops
-
+  by (smt (z3) option.distinct(1))
+   
 lemma ex2'_rng:"rng ex2' = {10}"
   unfolding rng_defs ex2'_def mapCompSetBound_def inv_VDMSet'_def inv_VDMSet_def truecnst_def
   apply (simp only: ex2'_dom_finite ex2'_dom_clearer, simp split:if_splits add: ex2'_dom_inv' inv_VDMNat_def)
-  apply (safe, simp_all, force+)
-  unfolding inv_True_def 
-  apply simp oops
-
+  by (safe, simp_all, force+)
+  
 lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
   unfolding ex2'_defs (* don't expand inv_VDMNat *)
   apply (simp split:if_splits)
@@ -206,11 +203,8 @@ lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
 (*  by (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite finite.emptyI finite.insertI inv_SetElems_def inv_VDMNat_def l_invVDMSet_finite mem_Collect_eq singletonD) *)
   apply (erule impE)
   using ex2'_dom_clearer ex2'_dom_inv' apply force
-    apply (simp add: inv_VDMNat_def)
-   apply fastforce
-  sledgehammer
-  using inv_VDMNat_def by auto
-
+  by (simp add: inv_VDMNat_def)
+  
 (* more direct binds even if with range expressions it's fine. UNIV isn't finite! DUH 
    = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
 definition
