@@ -134,8 +134,10 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			report(IsaErrorMessage.VDMSL_INVALID_SPECIFICATION_2P, "Explicit function", "postcondition");
 		
 		// if the body is null, this is an implicitly generated TRExplicitFunctionDefinition,
-		// which *must* be of a specific specification kind.
+		// which *must* be of a specific specification kind. 
+        // unless this class is an implicit specification, which might not have body
 		if (isImplicitlyGeneratedUndeclaredSpecification() && 
+            !isImplicitFunction() && 
 			!VALID_IMPLICITLY_GENERATED_SPEC_KIND.contains(implicitSpecificationKind))
 		{
 			report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.toString(),
@@ -145,7 +147,8 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		// only create undeclared specification for those who need it: when precondition/predef are null but
 		// have body that's the case (f: nat -> nat f(x) == x; no pre/post); which will then create it, but that
 		// in itself won't have pre/predef and no body! So if not guarded here, would loop! 
-		if (!isImplicitlyGeneratedUndeclaredSpecification() && !isSpecificationDefinition())
+		if (!isImplicitlyGeneratedUndeclaredSpecification() && 
+            !isSpecificationDefinition())
 		{
 			// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
 			if (this.precondition == null && this.predef == null)
@@ -246,10 +249,14 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 */
 	public boolean isImplicitlyGeneratedUndeclaredSpecification()
 	{
-		return body == null;//&& getVDMDefinition() == null;
+        // can't have the instance check here as this will confuse negated cases
+        //&& !(this instanceof TRImplicitFunctionDefinition);//&& getVDMDefinition() == null;
+		return body == null; 
 	}
 
-	/**
+    public abstract boolean isImplicitFunction();
+
+    /**
 	 * If inferred specification kind is not NONE, it means this is a TRExplicitFunctionDeclaration for either
 	 * user defined specification (e.g., pre/post etc.) or implicitly generated undeclared specification 
 	 * (e.g., missing pre/post checks on input types etc.). Testing this is important to avoid looping (e.g. pre_post_pre_f).
@@ -474,20 +481,49 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 				break;			
 		}
 
-		// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-		sb.append(IsaTemplates.translateDefinition(
-			//TODO not yet ideal, given multiple equations are possible, but okay for now. 
-			recursive ? IsaItem.FUNCTION : IsaItem.DEFINITION,
-			this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+        // there are four cases to consider:
+        // 1) implicit function without body = don't issue definition (i.e. user defined implicit without body)
+        // 2) implicit function with a body  = issue definition (i.e. user defined implicit with explicit body)
+        // 3) explicit function without body = issue definition (i.e. implicitly defined pre/post)
+        // 4) explicit function with a body  = issue definition (i.e. user defined explicit function or pre/post)
+        if (!(isImplicitFunction() && getBody() == null))
+        {
+            // translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
+            sb.append(IsaTemplates.translateDefinition(
+                //TODO not yet ideal, given multiple equations are possible, but okay for now. 
+                recursive ? IsaItem.FUNCTION : IsaItem.DEFINITION,
+                this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+        }
 
-		// add lemmas statement!
+        String lemmasDefs = translateDefLemmas();//t.getDefLemmas().toString().replace(',', ' ').replaceAll("\\[", "").replaceAll("\\]","");
+        //sb.append(IsaTemplates.translateLemmasDefinition(location, IsaToken.INV.toString() + name.toString(), lemmasDefs));
+        //sb.append("\n");
+
+		setFormattingSeparator(old);
+
+		return sb.toString();
+	}
+
+    public String translateDefLemmas()
+	{
+		StringBuilder sb = new StringBuilder();
+
+   		// add lemmas statement!
 		Map<TRSpecificationKind, TCNameSet> callMap = this.getCallMap();
 		List<String> lemmaNames = new Vector<String>(3);//NONE+PRE+POST vs INV+EQ+ORD?
 		for(Map.Entry<TRSpecificationKind, TCNameSet> entry : callMap.entrySet())
 		{
+            // sb.append(s);
+			// // add "_def" to all strings without it. 
+			// if (!s.endsWith(IsaToken.ISAR_DEF.toString()) && 
+			// 	!s.endsWith(IsaToken.ISAR_LEMMAS_DEFS.toString()))
+			// {
+			// 	sb.append(IsaToken.ISAR_DEF.toString());
+			// }
+			// sb.append(IsaToken.SPACE.toString());
+
 			switch (entry.getKey())
 			{
-				// ready; do nothing else
 				case NONE:
 				case PRE:
 				case POST:
