@@ -94,7 +94,11 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     @Override
     public String boundExpressionTranslate(int index, boolean invTr) {
         assert index >= 0 && index < plist.size();
-        return invTr ? IsaToken.parenthesise(type.invTranslate(plist.get(index).translate())) : type.translate();
+        // for bounded typed expressions, make sure we use the "inv_T" (atTLD) instead of its parts! 
+        boolean old = type.setAtTopLevelDefinition(true);
+        String result = invTr ? IsaToken.parenthesise(type.invTranslate(plist.get(index).translate())) : type.translate();
+        type.setAtTopLevelDefinition(old);
+        return result;
     }
 
     @Override
