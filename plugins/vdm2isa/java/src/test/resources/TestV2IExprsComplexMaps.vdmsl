@@ -30,11 +30,11 @@ values
 		
 	-- v8 = { mk_(x,y) |-> [x,y] | x, y in set {1,2} }; -- whaaaa.... 
 	
-	-- vWarning1 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
-	-- vWarning11= { 1 |-> 5 | x in set {4,5,6}, x in set {1,2,3,4} & x > 3 };
-	-- vWarning2 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
-	-- vWarning3 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6}, x in set {7,8,9} & x > 6 };
-	-- vWarning4 = { 1 | fv in set {3,4,5}, x in set {1,2,3} & x >= fv };
-	-- vWarning5 = { 1|-> 5 | x in set {<A>,<B>,<C>}, x in set {1,2,3} & x = <A> };
+	vWarning1 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning11= { 1 |-> 5 | x in set {4,5,6}, x in set {1,2,3,4} & x > 3 };
+	vWarning2 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6} & x > 3 };
+	vWarning3 = { 1 |-> 5 | x in set {1,2,3}, x in set {4,5,6}, x in set {7,8,9} & x > 6 };
+	vWarning4 = { 1 | fv in set {3,4,5}, x in set {1,2,3} & x >= fv };
+	vWarning5 = { 1|-> 5 | x in set {<A>,<B>,<C>}, x in set {1,2,3} & x = <A> };
 	
 end TestV2IExprsComplexMaps
