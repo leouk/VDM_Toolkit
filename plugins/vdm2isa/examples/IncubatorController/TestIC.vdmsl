@@ -1,0 +1,12 @@
+-- Test Values for Incubator Controller VDM-SL Specification (TestIC.rtf)
+values
+r10a10:IncubatorController = mk_IncubatorController(10,10);
+
+
+
+
+
+
+
+
+
