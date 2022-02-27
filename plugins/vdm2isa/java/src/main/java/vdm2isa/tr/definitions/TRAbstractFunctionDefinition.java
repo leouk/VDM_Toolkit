@@ -24,12 +24,17 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
-import vdm2isa.tr.patterns.TRBasicPattern;
-import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRUnionContext;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
 
+/**
+ * Initially we thought that we would need separate hierarchy between 
+ * implicit and explicit function definitions. Yet, it's possible to cast
+ * the parameter structure from implicit to explicit easily. 
+ * 
+ * Will keep the hierarchy for operations and for separation of concerns.  
+ */
 public abstract class TRAbstractFunctionDefinition extends TRDefinition 
 {
 	private static final long serialVersionUID = 1L;
@@ -41,7 +46,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 * about record equality.   
 	 */
 	//TODO should this be extended to other bits? Probably not! 
-	private static final Set<TRSpecificationKind> 
+	protected static final Set<TRSpecificationKind> 
 		VALID_IMPLICITLY_GENERATED_SPEC_KIND = new HashSet<TRSpecificationKind>( 
 			Arrays.asList(TRSpecificationKind.PRE, 
 						TRSpecificationKind.POST, 
@@ -78,20 +83,15 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			boolean excluded,
 			TCNameList typeParams, 
 			TRFunctionType type,
-			//TRPatternListList paramPatternList, 
 			TRExpression body,
 			TRExpression precondition,
 			TRExpression postcondition, 
-			//boolean typeInvariant, 
 			TRExpression measureExp,
-			//boolean isCurried, 
 			TRExplicitFunctionDefinition predef,
 			TRExplicitFunctionDefinition postdef,
-			//TRDefinitionListList paramDefinitionList,
 			boolean recursive,
 			boolean isUndefined,
-			TRType actualResult//,
-			//TRType expectedResult
+			TRType actualResult
             )
 	{	
 		// get the name location, given definition might be null for synthetic cases. 
@@ -190,24 +190,6 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 */
 	protected abstract void updateSpecificationGenericParameters();
 
-	protected static TRPatternListList createUndeclaredSpecificationParameters(TCNameToken name, TRPatternListList parameters, TRSpecificationKind kind)
-	{
-		TRPatternListList result = parameters.copy();
-		if (kind == TRSpecificationKind.POST)
-		{
-			// add synthetic RESULT extra parameter to the last patternList
-			// e.g., uncurried(x,y)== x + y, will lead to [[x,y]] then [[x,y,RESULT]]
-			// 		 curried(x)(y) == x + y, will lead to [[x],[y]] then [[x],[y,RESULT]]
-			result.lastElement().add(
-				TRBasicPattern.identifier(
-						parameters.getLocation(), 
-						name.getResultName(parameters.getLocation()).toString()
-				)
-			);
-		}
-		return result;
-	}
-	
 	/**
 	 * Determines wether this TRExplicitFunctionDefinition is one of those constructed by the typechecker.
 	 * Depending on which kind (if any), then translation has to take into account different considerations. 
@@ -343,7 +325,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 
     protected abstract boolean parametersNeedsPatternContext();
 
-    protected abstract String parametersPatternContextTranslate();
+    protected abstract String translateParametersPatternContext();
 
 	@Override
 	public String translate()
@@ -421,7 +403,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 				fcnBody.append(getFormattingSeparator());
 				fcnBody.append(IsaToken.comment(IsaInfoMessage.ISA_PATTERN_CONTEXT.toString(), getFormattingSeparator()));
 				fcnBody.append(IsaToken.LPAREN.toString());
-				fcnBody.append(parametersPatternContextTranslate());
+				fcnBody.append(translateParametersPatternContext());
 			}
 			// include the user declared body after including implicit considerations
 			fcnBody.append(getFormattingSeparator());
@@ -435,6 +417,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			}
 			else
 			{
+                assert body != null;
 				String bodyStr = body.translate();
 				if (hasTypeParameters())
 				{
@@ -520,23 +503,20 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 					break;
 			}
 		}
-
-		setFormattingSeparator(old);
-
 		return sb.toString();
 	}
 
-	@Override
-	public String setFormattingSeparator(String sep)
-	{
-		// if (getFormattingSeparator() != null && sep != null && getFormattingSeparator().equals("\n\t\t") && !sep.equals("\n\t\t"))
-		// {
-		// 	Throwable t = new Throwable(); 
-		// 	System.out.println("Change format sep from " + getFormattingSeparator().length() + getFormattingSeparator() + " to " + sep.length() + sep); 
-		// 	t.printStackTrace();
-		// }
-		return super.setFormattingSeparator(sep);
-	}
+	// @Override
+	// public String setFormattingSeparator(String sep)
+	// {
+	// 	// if (getFormattingSeparator() != null && sep != null && getFormattingSeparator().equals("\n\t\t") && !sep.equals("\n\t\t"))
+	// 	// {
+	// 	// 	Throwable t = new Throwable(); 
+	// 	// 	System.out.println("Change format sep from " + getFormattingSeparator().length() + getFormattingSeparator() + " to " + sep.length() + sep); 
+	// 	// 	t.printStackTrace();
+	// 	// }
+	// 	return super.setFormattingSeparator(sep);
+	// }
 
 	@Override
 	public IsaToken isaToken() {
