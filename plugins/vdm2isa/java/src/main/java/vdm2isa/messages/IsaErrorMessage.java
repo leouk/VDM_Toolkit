@@ -124,7 +124,9 @@ public enum IsaErrorMessage {
     "Invalid token typed expression `%1$s`; this *must* be created with mk_token"),
     ISA_INVALID_IGNORE_VALUEDEF(VDM2IsaError.ISABELLE_E_ISA_BASE + 29, 
     "Translating VDM ignore (-) patterns as top-level definitions can cause unexpected outcomes (e.g. multiple definitions with the same dummy name)"),
-    
+    ISA_INVALID_VDM_PATTERN_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 30, 
+    "Isabelle translation does not support more than one non-basic pattern in a pattern list `%1$s`."),
+
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
     "VDM PO (%1$s) %2$s %3$s error `%4$s`; should never happen."),

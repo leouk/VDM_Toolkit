@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 
@@ -48,6 +49,23 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		setSemanticSeparator(IsaToken.SPACE.toString());//IsaToken.COMMA.toString());
 		setFormattingSeparator(IsaToken.SPACE.toString());
 		setInvTranslateSeparator(getFormattingSeparator() + IsaToken.AND.toString() + getFormattingSeparator());
+
+		if (hasMultipleNonBasicPatterns())
+		{
+			report(IsaErrorMessage.ISA_INVALID_VDM_PATTERN_1P, this.toString());
+		}
+	}
+
+	protected boolean hasMultipleNonBasicPatterns()
+	{
+		int result = 0;
+		// count number of non basic patterns
+		for(int i = 0; i < size() && result <= 1; i++)
+		{
+			result += get(i) instanceof TRAbstractContextualPattern ? 1 : 0;
+		}
+		// return result
+		return result > 1;
 	}
 
 	@Override
