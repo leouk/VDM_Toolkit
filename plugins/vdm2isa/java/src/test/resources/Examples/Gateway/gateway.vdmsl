@@ -6,7 +6,7 @@ definitions
 
 types
 
-  --@LF would push this to be seq1 but leave it
+  --@idiom(isa) reodering of declaration before use
   String = seq of char
   inv s == s <> [];  
 
@@ -37,16 +37,16 @@ functions
     else <LO>;
 
 -- Classify the message and add to the appropriate port.
---@LF have to put declaration before use 
   ProcessMessage: Message * Category * Ports -> Ports
   ProcessMessage(m,cat,ps) ==
     if Classify(m,cat) = <HI>
     then mk_Ports([m]^ps.high,ps.low)
     else mk_Ports(ps.high,[m]^ps.low);
 
--- The main gateway function using recursion
 
-  --@LF recursive functions still to finalise; but given recursion is on lists it will work
+-- The main gateway function using recursion
+  --@idiom(vdm) recursive functions lead to complex/inductive proofs
+  --@idiom(isa) --@TODO recursion is only allowed for lists and nat 
   Gateway: seq of Message * Category -> Ports
   Gateway(ms,cat) ==
     if ms = []
@@ -54,13 +54,15 @@ functions
     else let rest_p = Gateway(tl ms,cat)
          in
            ProcessMessage(hd ms,cat,rest_p)
-  --@LF define the measure expression rather than extra definition 
+  --@idiom(isa) measure expressions only used in Isabelle when fun-declaration/termination automated proofs fail
+  --@idiom(isa) measure-related POs are ignored given Isabelle's definitional principle subsumes them
    measure len ms;
 
 -- The main gateway function without using recursion
 
   Gateway2: seq of Message * Category -> Ports
   Gateway2(ms,cat) ==
+    --@idiom(vdm) defining recusrion through comprehension leads to easier proofs and definitions
     mk_Ports([m|m in seq ms & Classify(m,cat) = <HI>],
              [m|m in seq ms & Classify(m,cat) = <LO>]);
 
@@ -74,6 +76,7 @@ functions
   Censor(ms,cat) ==
     [m | m in seq ms & Classify(m,cat) = <LO>];
 
+  --@idiom(PO) PO for FlattenMessage fails when ms = []
   FlattenMessages: seq of Message -> Message
   FlattenMessages(ms) ==
     conc ms

@@ -7,7 +7,7 @@ definitions
 
 types
 
-  --@LF reodered types declared before use
+  --@idiom(isa) reodered types and functions declared before use
   Light = <Red> | <Amber> | <Green>;
 
   Time = real
@@ -58,6 +58,7 @@ values
   -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 89:23
   -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 94:12
   -- Type checked 1 module in 0.247 secs. No type errors and 9 warnings
+  --@idiom(vdm) always remove VDM strict warnings
   LIGHTS : map Path to Light
          = {P1 |-> <Red>,
             P2 |-> <Red>,
