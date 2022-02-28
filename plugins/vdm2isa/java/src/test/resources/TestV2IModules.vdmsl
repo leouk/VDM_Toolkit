@@ -40,6 +40,7 @@ module C
 imports 
 	from A values v,	--inlined import across modules
 	from B functions g
+exports all
 definitions
 functions
 	h: nat -> nat

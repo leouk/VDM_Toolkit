@@ -1,4 +1,5 @@
 module TestV2IFcnsRecursiveSet
+exports all
 definitions
 functions
 	f: set of nat -> nat

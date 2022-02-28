@@ -19,7 +19,6 @@ import vdm2isa.tr.patterns.TRPatternContext;
 import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRMapType;
-import vdm2isa.tr.types.TRNamedType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
