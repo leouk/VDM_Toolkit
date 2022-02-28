@@ -2,9 +2,6 @@ module alarm
 exports all
 definitions
 
--- values  
---    test : seq of char = "1234";
---    test2: seq of char = ['1', '2', '3', '4'];
 types
 
 --   T = nat inv t == t > 10;
@@ -21,7 +18,7 @@ types
 --   T2 = nat
 --   inv - == f(v1) or f(v2);
 
-  --@TODO go back to token type 
+  --@idiom(isa) reordering of delcarations before use
   Period = token;
 
   ExpertId = token;
@@ -86,7 +83,7 @@ values
   p5:Period = mk_token("Wednesday day");
   ps : set of Period = {p1,p2,p3,p4,p5};
 
-  --@LF all tokens *must* be strings
+  --@idiom(isa) all tokens *must* be strings
   eid1:ExpertId = mk_token("134");
   eid2:ExpertId = mk_token("145");
   eid3:ExpertId = mk_token("154");
