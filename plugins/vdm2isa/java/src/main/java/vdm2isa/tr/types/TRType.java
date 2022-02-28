@@ -90,11 +90,16 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return inferredNameForType != null ? inferredNameForType.toString() : null;
 	}
 
-	public boolean setAtTopLevelDefinition(boolean b)
+	public boolean setAtTopLevelDefinition(boolean b, boolean deep)
     {
 		boolean result = atTLD;
         atTLD = b;
 		return result;
+    }
+
+	public boolean setAtTopLevelDefinition(boolean b)
+    {
+		return setAtTopLevelDefinition(b, true);
     }
 
     public boolean atTopLevelDefinition()

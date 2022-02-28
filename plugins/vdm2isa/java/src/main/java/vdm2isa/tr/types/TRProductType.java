@@ -27,9 +27,11 @@ public class TRProductType extends TRType {
     public void setup()
     {
         super.setup();
+        setSemanticSeparator(IsaToken.COMMA.toString() + IsaToken.SPACE.toString()); //?
         TRNode.setup(types);
         assert types != null;
         types.setCurried(false);
+        
     }
 
     @Override
@@ -57,6 +59,34 @@ public class TRProductType extends TRType {
         }
 		return result;
 	}   
+
+    public static final String dummyProjection(long index, long size)
+    {
+        // using long because index in field num expression is a long :-()
+        assert index >= 0 && index < size;
+        return IsaToken.DUMMY.toString() + Long.toString(index+1) + "of" + Long.toString(size);
+    }
+
+    /**
+     * Creates a dummy projection for the local lambda term (e.g. % (dummy1of3, dummy2of3, dummy3of3) . ....) 
+     * @param size
+     * @param sep
+     * @return
+     */
+    public static final String dummyFullProjection(long size, String sep)
+    {
+        assert size > 0;
+        StringBuilder sb = new StringBuilder();
+        sb.append(TRProductType.dummyProjection(0, size));
+        for(long index = 1; index < size; index++)
+        {
+            //sb.append(IsaToken.COMMA.toString());
+            //sb.append(IsaToken.SPACE.toString());
+            sb.append(sep);
+            sb.append(TRProductType.dummyProjection(index, size));
+        }
+        return IsaToken.parenthesise(sb.toString()); 
+    }
 
     /**
      * Isabelle only have tuples (or pairs). So, VDM n-tuples have to be projected out of pairs. 
@@ -110,6 +140,20 @@ public class TRProductType extends TRType {
         return fieldVarName.toString();
     }
 
+    /**
+     * Project the field for invariant (and other translations) taking into account whether the user requested
+     * a specific var name (i.e. project the pattern out depending on the index, e.g., fst snd varName), or it's
+     * a invariant translate for structured types projection (i.e. project the dummy pattern from a locally defined lambda term).
+     * @param index
+     * @param size
+     * @param varName
+     * @return
+     */
+    public static final String fieldFullProjection(long index, long size, String varName)
+    {   
+        return varName == null ? TRProductType.dummyProjection(index, size) : TRProductType.fieldProjection(index, size, varName);
+    } 
+
     @Override 
     protected String getInvTypeString()
     {
@@ -123,6 +167,15 @@ public class TRProductType extends TRType {
         return types.getDefLemmas();
     }
 
+    /**
+     * If varName is null, product type invariant translate for calls over structured types (e.g. seq of product, set of product, etc.)
+     * require different treatment than other types: 
+     *      - suppose a type T = X*Y, S = seq of T;
+     *      - it would output "inv_VDMSeq inv_T S" and that's fine (i.e. T is a named type)
+     *      - not suppose the more explicit S = seq of (X*Y)
+     *      - it woudl output "inv_VDMSeq (inv_X /\ inv_Y) S" in normal "invTranslate(null)" calls
+     *      - for product types it has to become "inv_VDMSeq (% (x,y) . inv_X x /\ inv_Y y)"! 
+     */
     @Override
 	public String invTranslate(String varName)
 	{
@@ -132,7 +185,18 @@ public class TRProductType extends TRType {
 			sb.append("\n\t\t");
             sb.append(IsaToken.LPAREN.toString());
             int size = this.types.size();
-            String fieldVarName = varName == null ? "" : TRProductType.fieldProjection(0, size, varName); 
+
+            // if varName is null, this is part of a structured type invariant translate, hence create local lambda for dummy named projection
+            if (varName == null)
+            {
+                sb.append(IsaToken.LAMBDA.toString());
+                sb.append(IsaToken.SPACE.toString());
+                sb.append(TRProductType.dummyFullProjection(size, getSemanticSeparator()));
+                sb.append(IsaToken.SPACE.toString());
+                sb.append(IsaToken.POINT.toString());
+                sb.append(IsaToken.SPACE.toString());
+            }
+            String fieldVarName = TRProductType.fieldFullProjection(0, size, varName);            
 			sb.append(this.types.get(0).invTranslate(fieldVarName));
 
             // For larger products, the answer is to have fst (n-times-snd x), where snd are for all but the last.
@@ -145,7 +209,7 @@ public class TRProductType extends TRType {
 			{
 				sb.append(IsaToken.AND.toString());
 				sb.append("\n\t\t ");
-                fieldVarName = varName == null ? "" : TRProductType.fieldProjection(i, size, varName); 
+                fieldVarName = TRProductType.fieldFullProjection(i, size, varName); 
                 sb.append(this.types.get(i).invTranslate(fieldVarName));
 			}
 			sb.append("\n\t\t");

@@ -54,11 +54,17 @@ public class TRMapType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public boolean setAtTopLevelDefinition(boolean b)
+    public boolean setAtTopLevelDefinition(boolean b, boolean deep)
     {
         // inner type at super = to type set
-        return super.setAtTopLevelDefinition(b);
-		//this.getFromType().setAtTopLevelDefinition(b);
+        boolean old = super.setAtTopLevelDefinition(b, deep);
+        if (deep)
+        {
+            this.getFromType().setAtTopLevelDefinition(b, deep);
+            //on super call
+            //this.getToType().setAtTopLevelDefinition(b, deep);
+        }
+        return old;
     }	
 
     @Override

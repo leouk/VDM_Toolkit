@@ -110,11 +110,11 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return setSemanticSeparator(sep, false);
 	}
 
-	public void setAtTopLevelDefinition(boolean b)
+	public void setAtTopLevelDefinition(boolean b, boolean deep)
 	{
 		for(TRType t : this)
 		{
-			t.setAtTopLevelDefinition(b);
+			t.setAtTopLevelDefinition(b, deep);
 		}
 	}
 

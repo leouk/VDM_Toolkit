@@ -88,15 +88,18 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
         // invariant type string depends on the TRType class
 		String invStr;
 
+        // values and local definitions ought to always used previously defined inv_T instead of its "opened" definition! 
+        boolean old = type.setAtTopLevelDefinition(!(this instanceof TRTypeDefinition), true);
         if (type instanceof TRInvariantType)
         {
 			// records have to apply to the varName rather than use it as part of the type-inv-translate string
-			invStr = type.invTranslate(null) + varName;
+			invStr = type.invTranslate(null) + IsaToken.SPACE.toString() + varName;
         }
         else
         {
             invStr = type.invTranslate(varName);
         }
+        type.setAtTopLevelDefinition(old, true);
         //System.out.println("getInvariantString(" + String.valueOf(varName) + ") = " + invStr);
         return invStr;
     }

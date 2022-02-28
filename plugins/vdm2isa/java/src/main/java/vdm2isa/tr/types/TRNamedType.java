@@ -42,11 +42,15 @@ public class TRNamedType extends TRInvariantType
 	}
 
     @Override
-    public boolean setAtTopLevelDefinition(boolean b)
+    public boolean setAtTopLevelDefinition(boolean b, boolean deep)
     {
         // inner type at super = to type set
-        return super.setAtTopLevelDefinition(b);
-		//this.type.setAtTopLevelDefinition(b);
+        boolean old = super.setAtTopLevelDefinition(b, deep);
+		if (deep)
+        {
+            this.type.setAtTopLevelDefinition(b, deep);
+        }
+        return old;
     }	
 
     @Override
@@ -143,6 +147,11 @@ public class TRNamedType extends TRInvariantType
 
         StringBuilder sb = new StringBuilder();
         
+        //TODO not sure if this is to be set here or after new StringBuilder? 
+        // set the inferred named type at inv translate as well given
+        // at PO generation this might be the only one called
+        type.setInferredNamedForType(typename);
+
         // for named or record types, use name
         // at TLD use the type name as well; 
         // ex T = nat
@@ -155,27 +164,32 @@ public class TRNamedType extends TRInvariantType
         // TSet3 = set of TSet -- not TSet3.atTLD => TSet3.type.atTLD ? then inv_VDMSet' inv_TSet instead of inv_VDMSet' inv_VDMNat1!
         if (type instanceof TRInvariantType || atTopLevelDefinition())
         {
+            if (varName != null)
+            {
+                sb.append(IsaToken.LPAREN.toString());
+            }
             sb.append(IsaToken.INV.toString());
             // for record types on RHS, get the name as well 
             sb.append(atTopLevelDefinition() ? getName() : type.getName());
-            sb.append(varName != null ? getSemanticSeparator() + varName : "");
+            if (varName != null)
+            {
+                sb.append(getSemanticSeparator());
+                sb.append(varName);
+                sb.append(IsaToken.RPAREN.toString());
+            }
         }
         // "ultimate" types, delegate to their invTranslate
         else 
         {
-            //TODO not sure if this is to be set here or after new StringBuilder? 
-            // set the inferred named type at inv translate as well given
-            // at PO generation this might be the only one called
-            type.setInferredNamedForType(typename);
             
             // TRType utype = ultimateType();
             // if (utype.equals(type))
             // {
             //     report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, getName(), "ultimate type `" + utype.translate() + "`");
             // }
-            sb.append(type.invTranslate(varName));
+            sb.append(IsaToken.parenthesise(type.invTranslate(varName)));
         }
-        return IsaToken.parenthesise(sb.toString());
+        return sb.toString();
         // if (atTopLevelDefinition() || ultimateType() instanceof TRRecordType)
         //     sb.append(IsaToken.parenthesise(IsaToken.INV.toString() + type.getName() + (varName != null ? getSemanticSeparator() + varName : ""))); 
         // else if (//atTopLevelDefinition() || 

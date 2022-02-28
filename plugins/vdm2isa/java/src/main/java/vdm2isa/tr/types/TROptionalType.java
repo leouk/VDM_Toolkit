@@ -46,6 +46,17 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
 		return result;
 	}
 
+    @Override
+    public boolean setAtTopLevelDefinition(boolean b, boolean deep)
+    {
+        boolean old = super.setAtTopLevelDefinition(b, deep);
+        if (deep)
+        {
+            this.dataTypeConstructors.setAtTopLevelDefinition(b, deep);
+        }
+        return old;
+    }
+
     @Override 
     protected void setInferredNamedForType(TCNameToken tn)
     {
@@ -76,6 +87,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
         StringBuilder sb = new StringBuilder();
         sb.append(getInvTypeString());
         // make sure we get the inv check without var name (e.g. inv_VDMNat1 instea of inv_VDMNat1 x)
+        sb.append(IsaToken.SPACE.toString());
         sb.append(getInnerType().invTranslate(null));
         if (varName != null)
         {
