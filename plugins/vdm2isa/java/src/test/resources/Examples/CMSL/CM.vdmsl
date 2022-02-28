@@ -94,33 +94,6 @@ Angle2MagId(angle) ==
   then mk_token("Magazine 3")
   else mk_token("Magazine 4");
 
-CM: MissileInputs * Output * map MagId to [MissileType] * 
-    nat -> Output
-CM( missileInputs, outputSoFar, lastMissile, curTime) ==
-  if missileInputs = []
-  then outputSoFar
-  else let mk_(curMis,angle) = hd missileInputs,
-           magid = Angle2MagId(angle)
-       in
-         if magid not in set dom lastMissile or
-            (magid in set dom lastMissile and
-             missilePriority(curMis) > 
-             missilePriority(lastMissile(magid)))
-         then let newOutput = 
-                     InterruptPlan(curTime,outputSoFar,
-                                   responseDB(curMis),
-                                   magid)
-              in CM(tl missileInputs, newOutput, 
-                    lastMissile ++ {magid |-> curMis},
-                    curTime + stepLength)
-         else CM(tl missileInputs, outputSoFar, 
-                 lastMissile,curTime + stepLength)
-measure len missileInputs;
-
-CounterMeasures: MissileInputs -> Output
-CounterMeasures(missileInputs) ==
-  CM(missileInputs,{|->},{|->},0);
-
 LeavePrefixUnchanged: seq of OutputStep * nat -> 
                       seq of OutputStep
 LeavePrefixUnchanged(output_l, curTime) ==
@@ -165,6 +138,35 @@ InterruptPlan(curTime,expOutput,plan,magid) ==
               MakeOutputFromPlan(curTime, plan)} 
   munion
   ({magid} <-: expOutput);
+  
+CM: MissileInputs * Output * map MagId to [MissileType] * 
+    nat -> Output
+CM( missileInputs, outputSoFar, lastMissile, curTime) ==
+  if missileInputs = []
+  then outputSoFar
+  else let mk_(curMis,angle) = hd missileInputs,
+           magid = Angle2MagId(angle)
+       in
+         if magid not in set dom lastMissile or
+            (magid in set dom lastMissile and
+             missilePriority(curMis) > 
+             missilePriority(lastMissile(magid)))
+         then let newOutput = 
+                     InterruptPlan(curTime,outputSoFar,
+                                   responseDB(curMis),
+                                   magid)
+              in CM(tl missileInputs, newOutput, 
+                    lastMissile ++ {magid |-> curMis},
+                    curTime + stepLength)
+         else CM(tl missileInputs, outputSoFar, 
+                 lastMissile,curTime + stepLength)
+measure len missileInputs;
+
+CounterMeasures: MissileInputs -> Output
+CounterMeasures(missileInputs) ==
+  CM(missileInputs,{|->},{|->},0);
+
+
 end CM 
 \end{vdm_al}
 
