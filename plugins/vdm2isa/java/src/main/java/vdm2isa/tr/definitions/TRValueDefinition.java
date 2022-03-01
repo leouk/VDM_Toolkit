@@ -299,11 +299,14 @@ public class TRValueDefinition extends TRLocalDefinition
 		else if (result.size() == 1)
 		{
 			// if it's a record pattern, it's fine: it's handled by records; 
-			// if it's a structured pattern, then something is wrong with the AST because defs.size() == 1
-			if (pattern instanceof TRStructuredPattern)
-			{
-				report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", pattern.toString(), "does not have corresponding definitions");
-			}
+			
+			//This is okay: the pattern itself on the LHS is the definition! 
+			// // if it's a structured pattern, then something is wrong with the AST because defs.size() == 1
+			// if (pattern instanceof TRStructuredPattern)
+			// {
+			// 	report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, "value", pattern.toString(), "does not have corresponding definitions");
+			// }
+
 			// this will cater for record patterns as well! 
 			result.clear();
 			result.add(this);
