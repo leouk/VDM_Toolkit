@@ -129,6 +129,7 @@ RelativeToAbsoluteTimes(ts) ==
          [ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
 measure len ts;
 
+--@idiom(PO) missing case for when absTimes = []! (hd absTimes is undefined then!)
 --@idiom(isa) multiple structured patterns and complex binds
 OutputAtTimeZero : seq of Response -> seq of OutputStep
 OutputAtTimeZero(response) ==
@@ -174,9 +175,12 @@ CM: MissileInputs * Output * map MagId to [MissileType] *
 CM( missileInputs, outputSoFar, lastMissile, curTime) ==
   if missileInputs = []
   then outputSoFar
-  else let mk_(curMis,angle) = hd missileInputs,
-           magid = Angle2MagId(angle)
-       in
+  else let mk_(curMis,angle) = hd missileInputs in 
+        --@LF Here the local bound variable "angle" if used in the same let context (e.g. let mk_(x,y) = t, z = f(x) in ...)
+        --    the projection won't work, as locally defined names are only projected after the "in"; so for now the separation 
+        --    of lets is a simple solution. 
+        --@idiom(isa) pattern bound variable cannot appear in single let 
+        let  magid = Angle2MagId(angle) in
          if magid not in set dom lastMissile or
             (magid in set dom lastMissile and
              missilePriority(curMis) > 
@@ -184,9 +188,11 @@ CM( missileInputs, outputSoFar, lastMissile, curTime) ==
          then let newOutput = 
                      InterruptPlan(curTime,outputSoFar,
                                    responseDB(curMis),
-                                   magid)
+                                   magid),
+                --@NB even with the explicit type given to the maplet, VDMJ "eats" up the optionality :-(
+                magidMaplet: map MagId to [MissileType] = {magid |-> curMis}
               in CM(tl missileInputs, newOutput, 
-                    lastMissile ++ {magid |-> curMis},
+                    lastMissile ++ magidMaplet,--{magid |-> curMis},
                     curTime + stepLength)
          else CM(tl missileInputs, outputSoFar, 
                  lastMissile,curTime + stepLength)
@@ -195,7 +201,6 @@ measure len missileInputs;
 CounterMeasures: MissileInputs -> Output
 CounterMeasures(missileInputs) ==
   CM(missileInputs,{|->},{|->},0);
-
 
 end CM 
 \end{vdm_al}
