@@ -399,6 +399,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			}
 		}
 		// local definitions (e.g. let v: T = e1 in e2) only require the type info
+		// they may also require expansion if using structured/record pattern on the LHS
 		else
 		{
 			// reached bottom line 

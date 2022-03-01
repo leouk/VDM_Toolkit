@@ -72,7 +72,7 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 		return result;
 	}
 
-	protected static String patternContextTranslate(TRDefinition def)
+	protected static final String patternContextTranslate(TRDefinition def)
 	{
 		StringBuilder sb = new StringBuilder();
 		if (def instanceof TRValueDefinition)

@@ -164,9 +164,18 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
         return super.toString() + " [" + String.valueOf(plist) + "]";
     }
 
+    /**
+     * This method gets used in various places where pattern context translation is needed (i.e. let ... in ...).
+     * For record pattern, this means the record itself, but for TRStructurePattern, we neeed the list with *this*
+     * pattern. Otherwise the context for the pattern fields is missing. 
+     * 
+     * Therefore, everywhere in TRStructuredPattern we *must* use plist (i.e. its inner parts), whereas outside,
+     * we *must* use getPatternList() to view the whole pattern (TRStructurePattern) as the list! 
+     */
+    @Override
     public TRPatternList getPatternList()
     {
-        return plist;
+        return super.getPatternList();//plist;
     }
 
     @Override
@@ -233,6 +242,7 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
     protected String indexedPatternExpression(int index, String dummyName) 
     {
         assert TRStructuredPattern.validStructuredContext(this) && index >= 0 && index < plist.size();
-        return TRProductType.fieldProjection(index, getPatternList().size(), dummyName);
+        // Do not call getPatternList() as it will give the wrong answer! (see getPatternList doc)
+        return TRProductType.fieldProjection(index, plist.size(), dummyName);
     }
 }

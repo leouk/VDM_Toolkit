@@ -80,8 +80,11 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.IN.toString());
         sb.append(getFormattingSeparator() + "\t");
-        //TODO don't these recordPattern context needs parenthesis? 
+        // TRDefinitionList.patternContextTranslate for the let TRValueDefinition won't issue pattern for TRStructuredPattern
+        // It works for records well because they don't have pattern list (i.e. it's themselves in the pattern),
+        // TRStructuredPattern on the other hand, have a plist of basic (or other) patterns.  
         sb.append(localDefs.patternContextTranslate(null));
+        sb.append(getFormattingSeparator() + "\t");
         localDefs.setFormattingSeparator(old);
         sb.append(invTranslate());
         return IsaToken.parenthesise(sb.toString());
