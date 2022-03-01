@@ -198,6 +198,7 @@ public abstract class TRExpression extends TRNode
                 &&
                 isMapType(((TRApplyExpression)expr).type)
                );
+               //TODO missing case of "map X to [Y]" (i.e. extra "the")?
     }
 
     /**
@@ -365,6 +366,14 @@ public abstract class TRExpression extends TRNode
         }
     }
 
+    /**
+     * Process each side of the binary expression and parenthesise the result. Here we also need to take into account
+     * type conversions (e.g. m ++ { x |-> y }, where m = map X to [Y]! It has to become [x |-> Some y])
+     * @param left
+     * @param op
+     * @param right
+     * @return
+     */
     private String processBinaryExpression(TRExpression left, IsaToken op, TRExpression right)
     {
         StringBuilder sb = new StringBuilder();

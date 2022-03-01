@@ -14,6 +14,7 @@ import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
@@ -114,6 +115,28 @@ public class TRApplyExpression extends TRExpression
 			"\n\t loc  = " + String.valueOf(location);
     }
 
+	//TODO harmonise with TRExpression.typeConvertTranslate?!
+	protected String translateTheResult(String call)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		// for map applications, we need to add "the" for optional removal
+		// Hum. It depends on the result type where this will land. So, only them can know whether to "add" it or not 
+		TRType utype = type.ultimateType();
+		if (utype instanceof TRMapType)
+		{	
+			// if the map's result type is istself an optional type, chase it too
+			TRMapType mtype = (TRMapType)utype;
+			TRType rtype = mtype.getToType().ultimateType();
+			sb.append(rtype instanceof TROptionalType ? IsaToken.the(IsaToken.the(call)) : IsaToken.the(call));
+		}
+		else
+		{
+			sb.append(call);
+		}
+		return sb.toString();
+	}
+
 	@Override
 	public String translate()
 	{
@@ -121,19 +144,7 @@ public class TRApplyExpression extends TRExpression
 		call.append(root.translate());
 		call.append(getSemanticSeparator());
 		call.append(args.translate());
-	
-		StringBuilder sb = new StringBuilder();
-		// for map applications, we need to add "the" for optional removal
-		// Hum. It depends on the result type where this will land. So, only them can know whether to "add" it or not 
-		if (type.ultimateType() instanceof TRMapType)
-		{
-			sb.append(IsaToken.the(call.toString()));
-		}
-		else
-		{
-			sb.append(call.toString());
-		}
-		return IsaToken.parenthesise(sb.toString());
+		return IsaToken.parenthesise(translateTheResult(call.toString()));
 	}
 
 	@Override
