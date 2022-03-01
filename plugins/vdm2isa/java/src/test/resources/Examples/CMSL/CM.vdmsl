@@ -121,14 +121,15 @@ RelativeToAbsoluteTimes(ts) ==
   if ts = []
   then []
   else let mk_(f,t) = hd ts
-           --,
-           --ns = RelativeToAbsoluteTimes(tl ts) 
+           ,
+           ns = RelativeToAbsoluteTimes(tl ts) 
        in
          [mk_(f,t)] 
-         --^
-         --[ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
+         ^
+         [ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
 measure len ts;
 
+--@idiom(isa) multiple structured patterns and complex binds
 OutputAtTimeZero : seq of Response -> seq of OutputStep
 OutputAtTimeZero(response) ==
   let absTimes = RelativeToAbsoluteTimes(response) in
@@ -137,6 +138,17 @@ OutputAtTimeZero(response) ==
       [ let mk_(-,t) = absTimes(i-1),
             mk_(f,-) = absTimes(i) in
           mk_(f,t) | i in set {2,...,len absTimes}];
+
+--@LF the equivalent version below contains less patterns, hence will entail simpler invariant checks (i.e. no need for
+--    invariant check the result of a field projection say). On the other hand, this might be harder to understand/read 
+--    than the example above. So here is a catch-22 scenario: clarity for ease of proof. 
+--@idiom(vdm) simpler binds/patterns; harder to read VDM
+OutputAtTimeZero' : seq of Response -> seq of OutputStep
+OutputAtTimeZero'(response) ==
+  let absTimes = RelativeToAbsoluteTimes(response) in
+    let mk_(firstFlare,-) = hd absTimes in
+      [mk_(firstFlare,0)] ^
+      [ mk_(absTimes(i).#1, absTimes(i-1).#2) | i in set {2,...,len absTimes} ];
 
 MakeOutputFromPlan : nat * seq of Response -> seq of OutputStep
 MakeOutputFromPlan(curTime, response) ==

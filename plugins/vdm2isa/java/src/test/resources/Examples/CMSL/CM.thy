@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-03-01T09:51:48.486Z
+(* VDM to Isabelle Translation @2022-03-01T11:28:27.886Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl' at line 1:8
@@ -595,9 +595,12 @@ where
 	\<comment>\<open>User defined body of LeavePrefixUnchangedRecord.\<close>
 	[ oid . oid \<leftarrow> output_l , ((oid \<in>(elems output_l))) , (
 		let 
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
 (dummy0::OutputStepRecord) = oid
 		in
-			let dummy0_ignore = (x\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0); t = (y\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0) in 
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let dummy0_ignore = (x\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0); t = (y\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0) in 
 			(if (inv_OutputStepRecord  dummy0) then
 			(t \<le> curTime)
 		 else
@@ -642,9 +645,12 @@ where
 	\<comment>\<open>User defined body of LeavePrefixUnchanged.\<close>
 	[ oid . oid \<leftarrow> output_l , ((oid \<in>(elems output_l))) , (
 		let 
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
 (dummy0::OutputStep) = oid
 		in
-			
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let dummy0_ignore = (fst dummy0); t = (snd dummy0) in 
 			(if (inv_OutputStep dummy0) then
 			(t \<le> curTime)
 		 else
@@ -658,7 +664,7 @@ where
 	RelativeToAbsoluteTimes(ts) ==
 (if (ts = [])
 then []
-else let mk_(f, t):Response = (hd ts) in [mk_(f, t)])
+else let mk_(f, t):Response = (hd ts), ns:seq of ((FlareType * nat)) = RelativeToAbsoluteTimes((tl ts)) in ([mk_(f, t)] ^ [let mk_(nf, nt):(FlareType * nat) = n in mk_(nf, (nt + t)) | n in seq ns]))
 	measure (len ts)\<close>
 \<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 118:1\<close>
 
@@ -688,10 +694,10 @@ where
 		 (inv_VDMNat dummy2of2)
 		) RESULT))"
 
-definition
+fun
 	RelativeToAbsoluteTimes :: "Response VDMSeq \<Rightarrow> (FlareType \<times> VDMNat) VDMSeq"
 where
-	"RelativeToAbsoluteTimes ts \<equiv> 
+	"RelativeToAbsoluteTimes ts = 
 	\<comment>\<open>User defined body of RelativeToAbsoluteTimes.\<close>
 	(
 		if ((ts = [])) then
@@ -699,13 +705,39 @@ where
 		else
 		((
 		let 
- (dummy0::Response) = hd ts;
-(f::FlareType) = fst dummy0;
-(t::VDMNat) = snd dummy0
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::Response) = (hd ts)
+		;
+		
+(ns::(FlareType \<times> VDMNat) VDMSeq) = (RelativeToAbsoluteTimes (tl ts))
 		in
-			
-			(if (inv_Response dummy0) then
-			[(f , t)]
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let f = (fst dummy0); t = (snd dummy0) in 
+		
+			(if (inv_Response dummy0)
+	 \<and> 
+	((inv_VDMSeq' 
+		(\<lambda> (dummy1of2, dummy2of2) . (((inv_True dummy1of2)))\<and>
+		 (inv_VDMNat dummy2of2)
+		) ns)) then
+			([(f , t)] @ [ (
+		let 
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::(FlareType \<times> VDMNat)) = n
+		in
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let nf = (fst dummy0); nt = (snd dummy0) in 
+			(if (
+		((((inv_True (fst dummy0))))\<and>
+		 (inv_VDMNat (snd dummy0))
+		)) then
+			(nf , (nt + t))
+		 else
+			undefined
+		)
+		) . n \<leftarrow> ns , ((n \<in>(elems ns))) ])
 		 else
 			undefined
 		)
@@ -757,21 +789,31 @@ where
 		) absTimes)) then
 			(
 		let 
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
 (dummy0::(FlareType \<times> VDMNat)) = (hd absTimes)
 		in
-			
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let firstFlare = (fst dummy0); dummy0_ignore = (snd dummy0) in 
 			(if (
 		((((inv_True (fst dummy0))))\<and>
 		 (inv_VDMNat (snd dummy0))
 		)) then
 			([(firstFlare , (0::VDMNat))] @ [ (
 		let 
-(dummy0::(FlareType \<times> VDMNat)) = (absTimes$(i$-$(1::VDMNat1)))
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::(FlareType \<times> VDMNat)) = (absTimes$(i - (1::VDMNat1)))
 		;
 		
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
 (dummy0::(FlareType \<times> VDMNat)) = (absTimes$i)
 		in
-			
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let dummy0_ignore = (fst dummy0); t = (snd dummy0) in 
+		\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let f = (fst dummy0); dummy0_ignore = (snd dummy0) in 
 			(if (
 		((((inv_True (fst dummy0))))\<and>
 		 (inv_VDMNat (snd dummy0))
@@ -785,8 +827,73 @@ where
 		 else
 			undefined
 		)
-		) . i \<leftarrow> sorted_list_of_set ({(2::VDMNat1)..(len absTimes)}) , ((i \<in>{(2::VDMNat1)..(len absTimes)})) ]
-	\<comment>\<open>`Set bind `(i \<in> {(2::VDMNat1)..(len absTimes)})` in sequence comprehension requires its Isabelle type to instantiate class linorder.`   This can be a problem if the target type of @{term \<open>{(2::VDMNat1)..(len absTimes)}\<close>}   has a VDM ord_ predicate.\<close> )
+		) . i \<leftarrow> sorted_list_of_set ({(2::VDMNat1)..(len absTimes)}) , ((i \<in>{(2::VDMNat1)..(len absTimes)})) ])
+		 else
+			undefined
+		)
+		)
+		 else
+			undefined
+		)
+		)"
+
+	
+	
+\<comment>\<open>VDM source: OutputAtTimeZero': (seq of (Response) -> seq of (OutputStep))
+	OutputAtTimeZero'(response) ==
+let absTimes:seq of ((FlareType * nat)) = RelativeToAbsoluteTimes(response) in let mk_(firstFlare, -):(FlareType * nat) = (hd absTimes) in ([mk_(firstFlare, 0)] ^ [mk_((absTimes(i).#1), (absTimes((i - 1)).#2)) | i in set {2, ... ,(len absTimes)}])\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+
+\<comment>\<open>VDM source: pre_OutputAtTimeZero': (seq of (Response) +> bool)
+	pre_OutputAtTimeZero'(response) ==
+null\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+definition
+	pre_OutputAtTimeZero' :: "Response VDMSeq \<Rightarrow> bool"
+where
+	"pre_OutputAtTimeZero' response \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_OutputAtTimeZero'` specification.\<close>
+		((inv_VDMSeq' inv_Response response))"
+
+
+\<comment>\<open>VDM source: post_OutputAtTimeZero': (seq of (Response) * seq of (OutputStep) +> bool)
+	post_OutputAtTimeZero'(response, RESULT) ==
+null\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+definition
+	post_OutputAtTimeZero' :: "Response VDMSeq \<Rightarrow> OutputStep VDMSeq \<Rightarrow> bool"
+where
+	"post_OutputAtTimeZero' response   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_OutputAtTimeZero'` specification.\<close>
+		((inv_VDMSeq' inv_Response response)  \<and>  (inv_VDMSeq' inv_OutputStep RESULT))"
+
+definition
+	OutputAtTimeZero' :: "Response VDMSeq \<Rightarrow> OutputStep VDMSeq"
+where
+	"OutputAtTimeZero' response \<equiv> 
+	\<comment>\<open>User defined body of OutputAtTimeZero'.\<close>
+	(
+		let 
+(absTimes::(FlareType \<times> VDMNat) VDMSeq) = (RelativeToAbsoluteTimes response)
+		in
+			
+			(if ((inv_VDMSeq' 
+		(\<lambda> (dummy1of2, dummy2of2) . (((inv_True dummy1of2)))\<and>
+		 (inv_VDMNat dummy2of2)
+		) absTimes)) then
+			(
+		let 
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::(FlareType \<times> VDMNat)) = (hd absTimes)
+		in
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let firstFlare = (fst dummy0); dummy0_ignore = (snd dummy0) in 
+			(if (
+		((((inv_True (fst dummy0))))\<and>
+		 (inv_VDMNat (snd dummy0))
+		)) then
+			([(firstFlare , (0::VDMNat))] @ [ ((fst ((absTimes$i))) , (snd ((absTimes$(i - (1::VDMNat1)))))) . i \<leftarrow> sorted_list_of_set ({(2::VDMNat1)..(len absTimes)}) , ((i \<in>{(2::VDMNat1)..(len absTimes)})) ])
 		 else
 			undefined
 		)
@@ -801,12 +908,12 @@ where
 \<comment>\<open>VDM source: MakeOutputFromPlan: (nat * seq of (Response) -> seq of (OutputStep))
 	MakeOutputFromPlan(curTime, response) ==
 let outputLF:seq of (OutputStep) = OutputAtTimeZero(response) in [let mk_(flare, t):OutputStep = oid in mk_(flare, (t + curTime)) | oid in seq outputLF]\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 148:1\<close>
 
 \<comment>\<open>VDM source: pre_MakeOutputFromPlan: (nat * seq of (Response) +> bool)
 	pre_MakeOutputFromPlan(curTime, response) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 148:1\<close>
 definition
 	pre_MakeOutputFromPlan :: "VDMNat \<Rightarrow> Response VDMSeq \<Rightarrow> bool"
 where
@@ -818,7 +925,7 @@ where
 \<comment>\<open>VDM source: post_MakeOutputFromPlan: (nat * seq of (Response) * seq of (OutputStep) +> bool)
 	post_MakeOutputFromPlan(curTime, response, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 148:1\<close>
 definition
 	post_MakeOutputFromPlan :: "VDMNat \<Rightarrow> Response VDMSeq \<Rightarrow> OutputStep VDMSeq \<Rightarrow> bool"
 where
@@ -840,10 +947,12 @@ where
 			[
 		(
 		let 
-(t::AbsTime) = oid;
-(flare::FlareType) = oid
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::OutputStep) = oid
 		in
-			
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let flare = (fst dummy0); t = (snd dummy0) in 
 			(if (inv_OutputStep dummy0) then
 			(flare , (t + curTime))
 		 else
@@ -867,12 +976,12 @@ where
 ({magid |-> ((if (magid in set (dom expOutput))
 then LeavePrefixUnchanged(expOutput(magid), curTime)
 else []) ^ MakeOutputFromPlan(curTime, plan))} munion ({magid} <-: expOutput))\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 157:1\<close>
 
 \<comment>\<open>VDM source: pre_InterruptPlan: (nat * Output * Plan * MagId +> bool)
 	pre_InterruptPlan(curTime, expOutput, plan, magid) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 157:1\<close>
 definition
 	pre_InterruptPlan :: "VDMNat \<Rightarrow> Output \<Rightarrow> Plan \<Rightarrow> MagId \<Rightarrow> bool"
 where
@@ -884,7 +993,7 @@ where
 \<comment>\<open>VDM source: post_InterruptPlan: (nat * Output * Plan * MagId * Output +> bool)
 	post_InterruptPlan(curTime, expOutput, plan, magid, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 157:1\<close>
 definition
 	post_InterruptPlan :: "VDMNat \<Rightarrow> Output \<Rightarrow> Plan \<Rightarrow> MagId \<Rightarrow> Output \<Rightarrow> bool"
 where
@@ -899,9 +1008,9 @@ where
 	\<comment>\<open>User defined body of InterruptPlan.\<close>
 	([magid\<mapsto>((
 		if ((magid \<in> (dom expOutput))) then
-		((LeavePrefixUnchanged ((the(expOutput magid)))   curTime))
+		((LeavePrefixUnchanged ((the(expOutput magid)))  curTime))
 		else
-		([])) @ (MakeOutputFromPlan curTime   plan))] \<union>m ({magid} -\<triangleleft> expOutput))"
+		([])) @ (MakeOutputFromPlan curTime  plan))] \<union>m ({magid} -\<triangleleft> expOutput))"
 
 	
 	
@@ -913,12 +1022,12 @@ else let mk_(curMis, angle):MissileInput = (hd missileInputs), magid:MagId = Ang
 then let newOutput:Output = InterruptPlan(curTime, outputSoFar, responseDB(curMis), magid) in CM((tl missileInputs), newOutput, (lastMissile ++ {magid |-> curMis}), (curTime + stepLength))
 else CM((tl missileInputs), outputSoFar, lastMissile, (curTime + stepLength))))
 	measure (len missileInputs)\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 167:1\<close>
 
 \<comment>\<open>VDM source: pre_CM: (MissileInputs * Output * map (MagId) to ([MissileType]) * nat +> bool)
 	pre_CM(missileInputs, outputSoFar, lastMissile, curTime) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 167:1\<close>
 definition
 	pre_CM :: "MissileInputs \<Rightarrow> Output \<Rightarrow> (MagId \<rightharpoonup> MissileType option) \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -930,7 +1039,7 @@ where
 \<comment>\<open>VDM source: post_CM: (MissileInputs * Output * map (MagId) to ([MissileType]) * nat * Output +> bool)
 	post_CM(missileInputs, outputSoFar, lastMissile, curTime, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 167:1\<close>
 definition
 	post_CM :: "MissileInputs \<Rightarrow> Output \<Rightarrow> (MagId \<rightharpoonup> MissileType option) \<Rightarrow> VDMNat \<Rightarrow> Output \<Rightarrow> bool"
 where
@@ -949,13 +1058,16 @@ where
 		else
 		((
 		let 
-(angle::Angle) = (hd missileInputs);
-(curMis::MissileType) = (hd missileInputs)
+	\<comment>\<open>Implicit pattern context projection for `let-bind definition`\<close>
+	
+(dummy0::MissileInput) = (hd missileInputs)
 		;
 		
 (magid::MagId) = (Angle2MagId angle)
 		in
-			
+			\<comment>\<open>Implicit pattern context projection for `pattern list`\<close>
+	 let curMis = (fst dummy0); angle = (snd dummy0) in 
+		
 			(if (inv_MissileInput dummy0)
 	 \<and> 
 	(inv_MagId magid) then
@@ -963,17 +1075,17 @@ where
 		if (((magid \<notin> (dom lastMissile)) \<or> ((magid \<in> (dom lastMissile)) \<and> (((the(missilePriority curMis))) > ((the(missilePriority ((the(lastMissile magid)))))))))) then
 		((
 		let 
-(newOutput::Output) = (InterruptPlan curTime   outputSoFar   ((the(responseDB curMis)))   magid)
+(newOutput::Output) = (InterruptPlan curTime  outputSoFar  ((the(responseDB curMis)))  magid)
 		in
 			
 			(if (inv_Output newOutput) then
-			(CM (tl missileInputs)   newOutput   (lastMissile \<dagger> [magid\<mapsto>curMis])   (curTime + stepLength))
+			(CM (tl missileInputs)  newOutput  (lastMissile \<dagger> [magid\<mapsto>curMis])  (curTime + stepLength))
 		 else
 			undefined
 		)
 		))
 		else
-		((CM (tl missileInputs)   outputSoFar   lastMissile   (curTime + stepLength))))
+		((CM (tl missileInputs)  outputSoFar  lastMissile  (curTime + stepLength))))
 		 else
 			undefined
 		)
@@ -984,12 +1096,12 @@ where
 \<comment>\<open>VDM source: CounterMeasures: (MissileInputs -> Output)
 	CounterMeasures(missileInputs) ==
 CM(missileInputs, {|->}, {|->}, 0)\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 190:1\<close>
 
 \<comment>\<open>VDM source: pre_CounterMeasures: (MissileInputs +> bool)
 	pre_CounterMeasures(missileInputs) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 190:1\<close>
 definition
 	pre_CounterMeasures :: "MissileInputs \<Rightarrow> bool"
 where
@@ -1001,7 +1113,7 @@ where
 \<comment>\<open>VDM source: post_CounterMeasures: (MissileInputs * Output +> bool)
 	post_CounterMeasures(missileInputs, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 190:1\<close>
 definition
 	post_CounterMeasures :: "MissileInputs \<Rightarrow> Output \<Rightarrow> bool"
 where
@@ -1014,6 +1126,6 @@ definition
 where
 	"CounterMeasures missileInputs \<equiv> 
 	\<comment>\<open>User defined body of CounterMeasures.\<close>
-	(CM missileInputs   []   []   (0::VDMNat))"
+	(CM missileInputs  []  []  (0::VDMNat))"
 
 end

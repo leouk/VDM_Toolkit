@@ -77,5 +77,8 @@ values
 	--Error   [ISA   ] 10229: Translating VDM ignore (-) patterns as top-level definitions will cause unexpected outcomes.
 	-:nat = 10;	
 
+	--Error   [ISA   ] 10231: Invalid set range: its inner type *must* be numeric, yet not rat or real = VDMInt VDMSet
+	WickedSet : set of int = {-1.4,...,3.0};
+
 end TestV2IErrors
 
