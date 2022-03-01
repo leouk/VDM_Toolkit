@@ -24,6 +24,14 @@ types
 
   OutputStep = FlareType * AbsTime;
 
+  --@LF using a record as well as a structured pattern to show the difference
+  --    in the isabelle translation of record + structure pattern (let...in...) contexts
+  --@idiom(vdm)
+  --@idiom(isa)
+  OutputStepRecord :: 
+    x: FlareType 
+    y: AbsTime;
+
   Output = map MagId to seq of OutputStep;
 
   Response = FlareType * nat;
@@ -38,6 +46,7 @@ types
   --@idiom(vdm) layer structured types tightly through named types 
   FlareProd = FlareType * Delay;
   Plan2 = seq of FlareProd;
+
 values
 
   plan1 : Plan = [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
@@ -93,6 +102,12 @@ Angle2MagId(angle) ==
   elseif angle < 270
   then mk_token("Magazine 3")
   else mk_token("Magazine 4");
+
+LeavePrefixUnchangedRecord: seq of OutputStepRecord * nat -> 
+                      seq of OutputStepRecord
+LeavePrefixUnchangedRecord(output_l, curTime) ==
+  --@idiom(isa) o is a reserved identifier for function composition (f o g) x
+  [oid | oid in seq output_l & let mk_OutputStepRecord(-,t) = oid in t <= curTime];
 
 LeavePrefixUnchanged: seq of OutputStep * nat -> 
                       seq of OutputStep
