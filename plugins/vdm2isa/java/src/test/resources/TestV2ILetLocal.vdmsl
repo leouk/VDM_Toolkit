@@ -1,0 +1,23 @@
+module TestV2ILetLocal
+exports all
+definitions
+functions
+
+
+	f': nat ->nat
+	f'(i) == i;
+
+	g: (nat * nat) -> nat
+	g(t) ==
+	let mk_(x,y) = t,
+		z = f'(x)
+	in
+		x+y+z ;
+
+	g': (nat * nat) -> nat
+	g'(t) ==
+	let mk_(x,y) = t in
+		let z = f'(x) in
+		x+y+z ;
+
+end TestV2ILetLocal

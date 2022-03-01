@@ -142,6 +142,12 @@ public class ExuPlugin extends GeneralisaPlugin {
         }
     }
 
+    protected void checkPatterns(TCDefinition d)
+    {
+        // Check for duplicated structured/record pattern in d
+        // Check for let-def case? 
+    }
+
     protected void checkModules(TCModuleList tclist) 
     {
         int mcount = 0;
@@ -150,6 +156,7 @@ public class ExuPlugin extends GeneralisaPlugin {
             for(TCDefinition d : m.defs)
             {
                 checkSpecificationDependencies(d, tclist);
+                checkPatterns(d);
             }
             mcount++;
         }
