@@ -20,6 +20,7 @@ import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRMkBasicExpression;
 import vdm2isa.tr.expressions.TRNilExpression;
+import vdm2isa.tr.patterns.TRAbstractContextualPattern;
 import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternBind;
@@ -34,6 +35,7 @@ import vdm2isa.tr.types.TRType;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.messages.IsaWarningMessage;
 
 /**
@@ -317,15 +319,38 @@ public class TRValueDefinition extends TRLocalDefinition
 			// given certain patterns might have more locals than we want defs to, 
 			// use a set instead of list (e.g. mk_R(x,y) = r, will create one variable only
 			// and the patternContextTranslate() figures the rest out)
-			result = new TRDefinitionSet();
-			for(int i = 0; i < defs.size(); i++)
+			//
+			// for structured pattern though (e.g. mk_(x,y) = t), the definition list has two names.
+			// but actually it should be a dummy name for the structured pattern and let the pattern
+			// context figure the rest out. That means, TRValueDefinition translate has to take that
+			// into account (i.e. defList.size() > 1, but pattern is structured). 
+			//
+			// on the other hand, if the value definition is global (e.g. values mk_(x,y) = mk_(10,5)),
+			// then the separation of value names into multiple value defs still applies! 
+			// that is: the only case where we don't separate the values into multiple definitions is 
+			// for local strucrtured patterns
+			//
+			// all non-local are split; and all non-strucrtured are split 
+			if (!(isLocal() && pattern instanceof TRStructuredPattern))
 			{
-				TRLocalDefinition ld = (TRLocalDefinition)defs.get(i);
-				TRPattern patt = figureOutPattern(i, ld.name);
-				TRType patternType = figureOutPatternType(patt, ld.type); 
-				//TRExpression e = figureOutExpression(i, ld.type);
-				//figure expression string out rather than try to "construct" new one; simpler. 
-				result.add(newValueDefinition(ld, patt, patternType/*ld.getType()*/));
+				result = new TRDefinitionSet();
+				// definition sets will "loose" order. For now revert inclusion? 
+				//for(int i = 0; i < defs.size(); i++)
+				for(int i = defs.size() - 1; i >= 0; i--)
+				{
+					TRLocalDefinition ld = (TRLocalDefinition)defs.get(i);
+					TRPattern patt = figureOutPattern(i, ld.name);
+					TRType patternType = figureOutPatternType(patt, ld.type); 
+					//TRExpression e = figureOutExpression(i, ld.type);
+					//figure expression string out rather than try to "construct" new one; simpler. 
+					result.add(newValueDefinition(ld, patt, patternType/*ld.getType()*/));
+				}
+			}
+			else
+			{
+				// if local and structured, only issue one definition!  
+				result.clear();
+				result.add(this);
 			}
 		}
 		// figuring out doesn't loose definitions; and all are value definitions
@@ -406,8 +431,17 @@ public class TRValueDefinition extends TRLocalDefinition
 		else
 		{
 			// reached bottom line 
+			// see also figureOutDefs() when defList.size() > 1 and pattern is structured
+			// this latter case relies on whoever issues the value translation to cater for pattern contexts? 
 			if (defList.size() == 1)
 			{
+				if (pattern instanceof TRAbstractContextualPattern)
+				{
+					sb.append(getFormattingSeparator());
+					sb.append(IsaToken.comment(
+							IsaInfoMessage.ISA_PATTERN_CONTEXT_1P.format(
+									isLocal() ? "let-bind definition" : "value definition"), getFormattingSeparator()));
+				}
 				sb.append(super.translate());
 				sb.append(IsaToken.SPACE.toString());
 				sb.append(IsaToken.EQUALS.toString());
