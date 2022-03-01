@@ -126,6 +126,8 @@ public enum IsaErrorMessage {
     "Translating VDM ignore (-) patterns as top-level definitions can cause unexpected outcomes (e.g. multiple definitions with the same dummy name)"),
     ISA_INVALID_VDM_PATTERN_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 30, 
     "Isabelle translation does not support more than one non-basic pattern in a pattern list `%1$s`."),
+    ISA_INVALID_SET_RANGE_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 31,
+    "Invalid set range: its inner type *must* be numeric, yet not rat or real = %1$s"),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 
