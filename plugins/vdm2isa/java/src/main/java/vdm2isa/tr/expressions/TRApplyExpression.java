@@ -45,7 +45,7 @@ public class TRApplyExpression extends TRExpression
 		expandApplyArguments();
 		TRNode.setup(type, root, args, argtypes, recursiveCycles); 
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
-		this.args.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
+		this.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());
 	}
 
@@ -119,7 +119,7 @@ public class TRApplyExpression extends TRExpression
 	{
 		StringBuilder call = new StringBuilder();
 		call.append(root.translate());
-		call.append(args.getSemanticSeparator());
+		call.append(getSemanticSeparator());
 		call.append(args.translate());
 	
 		StringBuilder sb = new StringBuilder();
