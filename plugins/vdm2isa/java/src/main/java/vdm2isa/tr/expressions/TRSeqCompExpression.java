@@ -108,7 +108,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
         }
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.SEQ_CLOSE.toString());
-        if (isSetSeqBind())
+        if (isSetSeqBind() && !bindings.isSetSeqBindLinearOrdered())
         {
             assert !bindings.isEmpty();
             sb.append("\n\t");//getFormattingSeparator());

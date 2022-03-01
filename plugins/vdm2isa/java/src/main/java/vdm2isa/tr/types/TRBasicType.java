@@ -43,6 +43,10 @@ public class TRBasicType extends TRType
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT, 
 						IsaToken.RAT, IsaToken.REAL)); 
 
+	//@NB oddly S: set of int = {-1.3,...,4.5} is allowed? I am removing real / rat from this
+	public static final Set<IsaToken> SET_RANGE_TYPES = new HashSet<IsaToken>(
+		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT)); 
+					
 	/**
 	 * Constructor useful for synthetically constructed types 
 	 * @param location
@@ -151,6 +155,12 @@ public class TRBasicType extends TRType
 	public boolean isOrdered()
 	{
 		return ORDERED_TYPES.contains(isaToken());
+	}
+
+	@Override
+	public boolean isPossibleSetRange()
+	{
+		return SET_RANGE_TYPES.contains(isaToken());
 	}
 
 	/**

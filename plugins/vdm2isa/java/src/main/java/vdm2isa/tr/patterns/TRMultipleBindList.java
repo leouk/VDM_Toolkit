@@ -328,6 +328,11 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 			((TRMultipleSetBind)get(0)).seqBind;
 	}
 
+	public boolean isSetSeqBindLinearOrdered()
+	{
+		return isSetSeqBind() && ((TRMultipleSetBind)get(0)).linearOrderedType();
+	}
+
 	/**
 	 * Returns the first bind RHS or null for empty
 	 * @return

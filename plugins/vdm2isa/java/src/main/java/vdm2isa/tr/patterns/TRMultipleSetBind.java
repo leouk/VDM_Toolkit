@@ -9,7 +9,9 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRSetRangeExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
+import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
 
@@ -77,6 +79,16 @@ public class TRMultipleSetBind extends TRMultipleBind
     }
 
     /**
+     * To avoid seq set bind warnings about linear orders, we can infer in some cases (and hence avoid the warning).
+     * For now, that's for "x in S" where "S = {l..h}" and the set inner type is an adequate basic type. 
+     * @return
+     */
+    public boolean linearOrderedType()
+    {
+        return (set instanceof TRSetRangeExpression) && getRHSType().isPossibleSetRange();
+    }
+
+    /**
      * Set bindings translation in comprehension just needs the name, given the actual bind will be in the 
      * predicate part (see TRSetCompExpression). If this bind is for a sequence comprehension, Isabelle 
      * requires the set to be ordered and to be translated to a sequence. Given VDM enforces set ordering 
@@ -94,7 +106,10 @@ public class TRMultipleSetBind extends TRMultipleBind
         { 
             // On type checked VDM values the underlying type is ordered; but possibly with an ord_ clause, which might not work for Isabelle 
             String trStr = translate();
-            warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, trStr);
+            if (!linearOrderedType())
+            {
+                warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, trStr);
+            }
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.SETSEQBIND);
             sb.append(getFormattingSeparator());
