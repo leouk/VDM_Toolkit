@@ -37,6 +37,7 @@ public enum IsaToken {
 	SEQ(Token.SEQ, "VDMSeq"),
 	SEQ1(Token.SEQ1, "VDMSeq1"),
 	MAP(Token.MAP, "\\<rightharpoonup>"),
+	MAP_EMPTY(null, "Map.empty"),
 	INMAP(Token.INMAP, "\\<rightharpoonup>"),
 	FUN(Token.ARROW, "\\<Rightarrow>"),
 	TRUE(Token.TRUE, "True"),
