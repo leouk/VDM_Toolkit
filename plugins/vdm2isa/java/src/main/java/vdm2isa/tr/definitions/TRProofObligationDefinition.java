@@ -116,7 +116,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         // replace all names with "$" signs as Isabelle doesn't like them.
         String poExprStr = poExpr.translate().replaceAll("\\$", "dollar");
         // Some PO names are "Gateway; rest_p" etc; fix those to be proper identifiers
-        String poNameStr = po.name.replaceAll("; ", IsaToken.UNDERSCORE.toString());
+        String poNameStr = po.name.replaceAll("; ", IsaToken.UNDERSCORE.toString()).replaceAll(", ", IsaToken.UNDERSCORE.toString());
 
         boolean ignorePO = figureOutIgnorePO(poNameStr, poExprStr, po.kind);
 

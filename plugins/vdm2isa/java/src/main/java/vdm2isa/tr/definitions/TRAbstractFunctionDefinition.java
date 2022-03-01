@@ -175,6 +175,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 				,TRSpecificationKind.ORD
 				,TRSpecificationKind.MAX
 				,TRSpecificationKind.MIN
+				,TRSpecificationKind.MEASURE
 			).contains(implicitSpecificationKind)
 			|| isLocal()
 			//|| true
