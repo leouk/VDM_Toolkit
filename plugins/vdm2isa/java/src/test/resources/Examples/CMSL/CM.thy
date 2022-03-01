@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2022-03-01T09:35:21.824664Z
+(* VDM to Isabelle Translation @2022-03-01T09:51:48.486Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in './src/test/resources/Examples/CMSL/CM.vdmsl' at line 1:8
-files = [./src/test/resources/Examples/CMSL/CM.vdmsl]
+in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl' at line 1:8
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl]
 *)
 theory CM
 imports "VDMToolkit" 
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: MissileType = (<MissileA> | <MissileB> | <MissileC> | <None>)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 8:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 8:3\<close>
 datatype MissileType = U_MissileA  | 
 		 U_MissileB  | 
 		 U_MissileC  | 
@@ -20,7 +20,7 @@ datatype MissileType = U_MissileA  |
 \<comment>\<open>VDM source: inv_MissileType: (MissileType +> bool)
 	inv_MissileType(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 8:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 8:3\<close>
 definition
 	inv_MissileType :: "MissileType \<Rightarrow> bool"
 where
@@ -35,14 +35,14 @@ lemmas inv_MissileType_defs = inv_MissileType_def inv_True_def
 	
 \<comment>\<open>VDM source: Angle = nat
 	inv num == (num <= 360)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 10:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 10:3\<close>
 type_synonym Angle = "VDMNat"
 	
 
 \<comment>\<open>VDM source: inv_Angle: (nat +> bool)
 	inv_Angle(num) ==
 (num <= 360)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 11:7\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 11:7\<close>
 definition
 	inv_Angle :: "Angle \<Rightarrow> bool"
 where
@@ -58,14 +58,14 @@ lemmas inv_Angle_defs = inv_Angle_def inv_VDMNat_def
 	
 	
 \<comment>\<open>VDM source: MissileInput = (MissileType * Angle)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 13:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 13:3\<close>
 type_synonym MissileInput = "(MissileType \<times> Angle)"
 	
 
 \<comment>\<open>VDM source: inv_MissileInput: (MissileInput +> bool)
 	inv_MissileInput(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 13:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 13:3\<close>
 definition
 	inv_MissileInput :: "MissileInput \<Rightarrow> bool"
 where
@@ -83,14 +83,14 @@ lemmas inv_MissileInput_defs = inv_Angle_def inv_MissileInput_def inv_MissileTyp
 	
 	
 \<comment>\<open>VDM source: MissileInputs = seq of (MissileInput)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 15:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 15:3\<close>
 type_synonym MissileInputs = "MissileInput VDMSeq"
 	
 
 \<comment>\<open>VDM source: inv_MissileInputs: (MissileInputs +> bool)
 	inv_MissileInputs(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 15:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 15:3\<close>
 definition
 	inv_MissileInputs :: "MissileInputs \<Rightarrow> bool"
 where
@@ -107,14 +107,14 @@ lemmas inv_MissileInputs_defs = inv_Angle_def inv_MissileInput_def inv_MissileIn
 	
 	
 \<comment>\<open>VDM source: MagId = token\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 17:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 17:3\<close>
 type_synonym MagId = "VDMChar VDMSeq VDMToken"
 	
 
 \<comment>\<open>VDM source: inv_MagId: (MagId +> bool)
 	inv_MagId(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 17:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 17:3\<close>
 definition
 	inv_MagId :: "MagId \<Rightarrow> bool"
 where
@@ -128,14 +128,14 @@ lemmas inv_MagId_defs = inv_MagId_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq
 	
 	
 \<comment>\<open>VDM source: AbsTime = nat\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 19:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 19:3\<close>
 type_synonym AbsTime = "VDMNat"
 	
 
 \<comment>\<open>VDM source: inv_AbsTime: (AbsTime +> bool)
 	inv_AbsTime(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 19:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 19:3\<close>
 definition
 	inv_AbsTime :: "AbsTime \<Rightarrow> bool"
 where
@@ -149,7 +149,7 @@ lemmas inv_AbsTime_defs = inv_AbsTime_def inv_VDMNat_def
 	
 	
 \<comment>\<open>VDM source: FlareType = (<DoNothingA> | <DoNothingB> | <DoNothingC> | <FlareOneA> | <FlareOneB> | <FlareOneC> | <FlareTwoA> | <FlareTwoB> | <FlareTwoC>)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 21:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 21:3\<close>
 datatype FlareType = U_DoNothingA  | 
 		 U_DoNothingB  | 
 		 U_DoNothingC  | 
@@ -164,7 +164,7 @@ datatype FlareType = U_DoNothingA  |
 \<comment>\<open>VDM source: inv_FlareType: (FlareType +> bool)
 	inv_FlareType(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 21:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 21:3\<close>
 definition
 	inv_FlareType :: "FlareType \<Rightarrow> bool"
 where
@@ -178,14 +178,14 @@ lemmas inv_FlareType_defs = inv_FlareType_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: OutputStep = (FlareType * AbsTime)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 25:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 25:3\<close>
 type_synonym OutputStep = "(FlareType \<times> AbsTime)"
 	
 
 \<comment>\<open>VDM source: inv_OutputStep: (OutputStep +> bool)
 	inv_OutputStep(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 25:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 25:3\<close>
 definition
 	inv_OutputStep :: "OutputStep \<Rightarrow> bool"
 where
@@ -202,15 +202,41 @@ lemmas inv_OutputStep_defs = inv_AbsTime_def inv_FlareType_def inv_OutputStep_de
 
 	
 	
+\<comment>\<open>VDM source: OutputStepRecord = compose OutputStepRecord of x:FlareType, y:AbsTime end\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 31:3\<close>
+record OutputStepRecord = 
+	x\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "FlareType"
+		 
+		 y\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d :: "AbsTime"
+	
+
+\<comment>\<open>VDM source: inv_OutputStepRecord: (OutputStepRecord +> bool)
+	inv_OutputStepRecord(dummy0) ==
+null\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 31:3\<close>
+definition
+	inv_OutputStepRecord :: "OutputStepRecord \<Rightarrow> bool"
+where
+	"inv_OutputStepRecord dummy0 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_OutputStepRecord` specification.\<close>
+		( (((inv_FlareType (x\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0))) \<and> 
+		 ((inv_AbsTime (y\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0))) ))"
+
+		
+lemmas inv_OutputStepRecord_defs = inv_AbsTime_def inv_FlareType_def inv_OutputStepRecord_def inv_True_def inv_VDMNat_def 
+
+
+	
+	
 \<comment>\<open>VDM source: Output = map (MagId) to (seq of (OutputStep))\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 27:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 35:3\<close>
 type_synonym Output = "(MagId \<rightharpoonup> OutputStep VDMSeq)"
 	
 
 \<comment>\<open>VDM source: inv_Output: (Output +> bool)
 	inv_Output(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 27:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 35:3\<close>
 definition
 	inv_Output :: "Output \<Rightarrow> bool"
 where
@@ -227,14 +253,14 @@ lemmas inv_Output_defs = inv_AbsTime_def inv_FlareType_def inv_MagId_def inv_Map
 	
 	
 \<comment>\<open>VDM source: Response = (FlareType * nat)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 29:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 37:3\<close>
 type_synonym Response = "(FlareType \<times> VDMNat)"
 	
 
 \<comment>\<open>VDM source: inv_Response: (Response +> bool)
 	inv_Response(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 29:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 37:3\<close>
 definition
 	inv_Response :: "Response \<Rightarrow> bool"
 where
@@ -252,14 +278,14 @@ lemmas inv_Response_defs = inv_FlareType_def inv_Response_def inv_True_def inv_V
 	
 	
 \<comment>\<open>VDM source: Delay = nat\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 31:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 39:3\<close>
 type_synonym Delay = "VDMNat"
 	
 
 \<comment>\<open>VDM source: inv_Delay: (Delay +> bool)
 	inv_Delay(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 31:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 39:3\<close>
 definition
 	inv_Delay :: "Delay \<Rightarrow> bool"
 where
@@ -273,14 +299,14 @@ lemmas inv_Delay_defs = inv_Delay_def inv_VDMNat_def
 	
 	
 \<comment>\<open>VDM source: Plan = seq of ((FlareType * Delay))\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 33:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 41:3\<close>
 type_synonym Plan = "(FlareType \<times> Delay) VDMSeq"
 	
 
 \<comment>\<open>VDM source: inv_Plan: (Plan +> bool)
 	inv_Plan(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 33:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 41:3\<close>
 definition
 	inv_Plan :: "Plan \<Rightarrow> bool"
 where
@@ -297,14 +323,14 @@ lemmas inv_Plan_defs = inv_Delay_def inv_FlareType_def inv_Plan_def inv_True_def
 	
 	
 \<comment>\<open>VDM source: FlareProd = (FlareType * Delay)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 39:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 47:3\<close>
 type_synonym FlareProd = "(FlareType \<times> Delay)"
 	
 
 \<comment>\<open>VDM source: inv_FlareProd: (FlareProd +> bool)
 	inv_FlareProd(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 39:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 47:3\<close>
 definition
 	inv_FlareProd :: "FlareProd \<Rightarrow> bool"
 where
@@ -322,14 +348,14 @@ lemmas inv_FlareProd_defs = inv_Delay_def inv_FlareProd_def inv_FlareType_def in
 	
 	
 \<comment>\<open>VDM source: Plan2 = seq of (FlareProd)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 40:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 48:3\<close>
 type_synonym Plan2 = "FlareProd VDMSeq"
 	
 
 \<comment>\<open>VDM source: inv_Plan2: (Plan2 +> bool)
 	inv_Plan2(dummy0) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 40:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 48:3\<close>
 definition
 	inv_Plan2 :: "Plan2 \<Rightarrow> bool"
 where
@@ -346,34 +372,8 @@ lemmas inv_Plan2_defs = inv_Delay_def inv_FlareProd_def inv_FlareType_def inv_Pl
 
 	
 	
-\<comment>\<open>VDM source: R = compose R of x:FlareType, y:AbsTime end\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 42:3\<close>
-record R = 
-	x\<^sub>R :: "FlareType"
-		 
-		 y\<^sub>R :: "AbsTime"
-	
-
-\<comment>\<open>VDM source: inv_R: (R +> bool)
-	inv_R(dummy0) ==
-null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 42:3\<close>
-definition
-	inv_R :: "R \<Rightarrow> bool"
-where
-	"inv_R dummy0 \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `inv_R` specification.\<close>
-		( (((inv_FlareType (x\<^sub>R dummy0))) \<and> 
-		 ((inv_AbsTime (y\<^sub>R dummy0))) ))"
-
-		
-lemmas inv_R_defs = inv_AbsTime_def inv_FlareType_def inv_R_def inv_True_def inv_VDMNat_def 
-
-
-	
-	
 \<comment>\<open>VDM source: plan1:Plan = [mk_(<FlareOneA>, 900), mk_(<FlareTwoA>, 500), mk_(<DoNothingA>, 100), mk_(<FlareOneA>, 500)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 45:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 52:3\<close>
 abbreviation
 	plan1 :: "Plan"
 where
@@ -388,7 +388,7 @@ where
 	
 	
 \<comment>\<open>VDM source: plan2:Plan2 = [mk_(<FlareOneA>, 900), mk_(<FlareTwoA>, 500), mk_(<DoNothingA>, 100), mk_(<FlareOneA>, 500)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 48:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 55:3\<close>
 abbreviation
 	plan2 :: "Plan2"
 where
@@ -403,7 +403,7 @@ where
 	
 	
 \<comment>\<open>VDM source: responseDB:map (MissileType) to (Plan) = {<MissileA> |-> [mk_(<FlareOneA>, 900), mk_(<FlareTwoA>, 500), mk_(<DoNothingA>, 100), mk_(<FlareOneA>, 500)], <MissileB> |-> [mk_(<FlareTwoB>, 500), mk_(<FlareTwoB>, 700)], <MissileC> |-> [mk_(<FlareOneC>, 400), mk_(<DoNothingC>, 100), mk_(<FlareTwoC>, 400), mk_(<FlareOneC>, 500)]}\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 51:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 58:3\<close>
 abbreviation
 	responseDB :: "(MissileType \<rightharpoonup> Plan)"
 where
@@ -418,7 +418,7 @@ where
 	
 	
 \<comment>\<open>VDM source: responseDB2:map (MissileType) to (Plan2) = responseDB\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 62:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 69:3\<close>
 abbreviation
 	responseDB2 :: "(MissileType \<rightharpoonup> Plan2)"
 where
@@ -433,7 +433,7 @@ where
 	
 	
 \<comment>\<open>VDM source: missilePriority:map (MissileType) to (nat) = {<MissileA> |-> 1, <MissileB> |-> 2, <MissileC> |-> 3, <None> |-> 0}\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 64:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 71:3\<close>
 abbreviation
 	missilePriority :: "(MissileType \<rightharpoonup> VDMNat)"
 where
@@ -448,7 +448,7 @@ where
 	
 	
 \<comment>\<open>VDM source: stepLength:nat = 100\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 70:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 77:3\<close>
 abbreviation
 	stepLength :: "VDMNat"
 where
@@ -463,7 +463,7 @@ where
 	
 	
 \<comment>\<open>VDM source: testval1:MissileInputs = [mk_(<MissileA>, 88), mk_(<MissileB>, 70), mk_(<MissileA>, 222), mk_(<MissileC>, 44)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 72:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 79:3\<close>
 abbreviation
 	testval1 :: "MissileInputs"
 where
@@ -478,7 +478,7 @@ where
 	
 	
 \<comment>\<open>VDM source: testval2:MissileInputs = [mk_(<MissileC>, 188), mk_(<MissileB>, 70), mk_(<MissileA>, 2), mk_(<MissileC>, 44)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 77:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 84:3\<close>
 abbreviation
 	testval2 :: "MissileInputs"
 where
@@ -493,7 +493,7 @@ where
 	
 	
 \<comment>\<open>VDM source: testval3:MissileInputs = [mk_(<MissileA>, 288), mk_(<MissileB>, 170), mk_(<MissileA>, 222), mk_(<MissileC>, 44)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 82:3\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 89:3\<close>
 abbreviation
 	testval3 :: "MissileInputs"
 where
@@ -516,12 +516,12 @@ then mk_token("Magazine 2")
 elseif (angle < 270)
 then mk_token("Magazine 3")
 else mk_token("Magazine 4"))\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 89:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 96:1\<close>
 
 \<comment>\<open>VDM source: pre_Angle2MagId: (Angle +> bool)
 	pre_Angle2MagId(angle) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 89:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 96:1\<close>
 definition
 	pre_Angle2MagId :: "Angle \<Rightarrow> bool"
 where
@@ -533,7 +533,7 @@ where
 \<comment>\<open>VDM source: post_Angle2MagId: (Angle * MagId +> bool)
 	post_Angle2MagId(angle, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 89:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 96:1\<close>
 definition
 	post_Angle2MagId :: "Angle \<Rightarrow> MagId \<Rightarrow> bool"
 where
@@ -560,44 +560,45 @@ where
 
 	
 	
-\<comment>\<open>VDM source: LeavePrefixUnchanged': (seq of (R) * nat -> seq of (R))
-	LeavePrefixUnchanged'(output_l, curTime) ==
-[oid | oid in seq output_l & let mk_R(-, t):R = oid in (t <= curTime)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 99:1\<close>
+\<comment>\<open>VDM source: LeavePrefixUnchangedRecord: (seq of (OutputStepRecord) * nat -> seq of (OutputStepRecord))
+	LeavePrefixUnchangedRecord(output_l, curTime) ==
+[oid | oid in seq output_l & let mk_OutputStepRecord(-, t):OutputStepRecord = oid in (t <= curTime)]\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 106:1\<close>
 
-\<comment>\<open>VDM source: pre_LeavePrefixUnchanged': (seq of (R) * nat +> bool)
-	pre_LeavePrefixUnchanged'(output_l, curTime) ==
+\<comment>\<open>VDM source: pre_LeavePrefixUnchangedRecord: (seq of (OutputStepRecord) * nat +> bool)
+	pre_LeavePrefixUnchangedRecord(output_l, curTime) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 99:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 106:1\<close>
 definition
-	pre_LeavePrefixUnchanged' :: "R VDMSeq \<Rightarrow> VDMNat \<Rightarrow> bool"
+	pre_LeavePrefixUnchangedRecord :: "OutputStepRecord VDMSeq \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
-	"pre_LeavePrefixUnchanged' output_l   curTime \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_LeavePrefixUnchanged'` specification.\<close>
-		((inv_VDMSeq' inv_R  output_l)  \<and>  (inv_VDMNat curTime))"
+	"pre_LeavePrefixUnchangedRecord output_l   curTime \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_LeavePrefixUnchangedRecord` specification.\<close>
+		((inv_VDMSeq' inv_OutputStepRecord  output_l)  \<and>  (inv_VDMNat curTime))"
 
 
-\<comment>\<open>VDM source: post_LeavePrefixUnchanged': (seq of (R) * nat * seq of (R) +> bool)
-	post_LeavePrefixUnchanged'(output_l, curTime, RESULT) ==
+\<comment>\<open>VDM source: post_LeavePrefixUnchangedRecord: (seq of (OutputStepRecord) * nat * seq of (OutputStepRecord) +> bool)
+	post_LeavePrefixUnchangedRecord(output_l, curTime, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 99:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 106:1\<close>
 definition
-	post_LeavePrefixUnchanged' :: "R VDMSeq \<Rightarrow> VDMNat \<Rightarrow> R VDMSeq \<Rightarrow> bool"
+	post_LeavePrefixUnchangedRecord :: "OutputStepRecord VDMSeq \<Rightarrow> VDMNat \<Rightarrow> OutputStepRecord VDMSeq \<Rightarrow> bool"
 where
-	"post_LeavePrefixUnchanged' output_l   curTime   RESULT \<equiv> 
-		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_LeavePrefixUnchanged'` specification.\<close>
-		((inv_VDMSeq' inv_R  output_l)  \<and>  (inv_VDMNat curTime)  \<and>  (inv_VDMSeq' inv_R  RESULT))"
+	"post_LeavePrefixUnchangedRecord output_l   curTime   RESULT \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_LeavePrefixUnchangedRecord` specification.\<close>
+		((inv_VDMSeq' inv_OutputStepRecord  output_l)  \<and>  (inv_VDMNat curTime)  \<and>  (inv_VDMSeq' inv_OutputStepRecord  RESULT))"
 
 definition
-	LeavePrefixUnchanged' :: "R VDMSeq \<Rightarrow> VDMNat \<Rightarrow> R VDMSeq"
+	LeavePrefixUnchangedRecord :: "OutputStepRecord VDMSeq \<Rightarrow> VDMNat \<Rightarrow> OutputStepRecord VDMSeq"
 where
-	"LeavePrefixUnchanged' output_l   curTime \<equiv> 
-	\<comment>\<open>User defined body of LeavePrefixUnchanged'.\<close>
+	"LeavePrefixUnchangedRecord output_l   curTime \<equiv> 
+	\<comment>\<open>User defined body of LeavePrefixUnchangedRecord.\<close>
 	[ oid . oid \<leftarrow> output_l , ((oid \<in>(elems output_l))) , (
 		let 
-(dummy0::R) = oid
+(dummy0::OutputStepRecord) = oid
 		in
-			let dummy0_ignore = (x\<^sub>R dummy0); t = (y\<^sub>R dummy0) in (if (inv_R  dummy0) then
+			let dummy0_ignore = (x\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0); t = (y\<^sub>O\<^sub>u\<^sub>t\<^sub>p\<^sub>u\<^sub>t\<^sub>S\<^sub>t\<^sub>e\<^sub>p\<^sub>R\<^sub>e\<^sub>c\<^sub>o\<^sub>r\<^sub>d dummy0) in 
+			(if (inv_OutputStepRecord  dummy0) then
 			(t \<le> curTime)
 		 else
 			undefined
@@ -609,12 +610,12 @@ where
 \<comment>\<open>VDM source: LeavePrefixUnchanged: (seq of (OutputStep) * nat -> seq of (OutputStep))
 	LeavePrefixUnchanged(output_l, curTime) ==
 [oid | oid in seq output_l & let mk_(-, t):OutputStep = oid in (t <= curTime)]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 105:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 112:1\<close>
 
 \<comment>\<open>VDM source: pre_LeavePrefixUnchanged: (seq of (OutputStep) * nat +> bool)
 	pre_LeavePrefixUnchanged(output_l, curTime) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 105:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 112:1\<close>
 definition
 	pre_LeavePrefixUnchanged :: "OutputStep VDMSeq \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -626,7 +627,7 @@ where
 \<comment>\<open>VDM source: post_LeavePrefixUnchanged: (seq of (OutputStep) * nat * seq of (OutputStep) +> bool)
 	post_LeavePrefixUnchanged(output_l, curTime, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 105:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 112:1\<close>
 definition
 	post_LeavePrefixUnchanged :: "OutputStep VDMSeq \<Rightarrow> VDMNat \<Rightarrow> OutputStep VDMSeq \<Rightarrow> bool"
 where
@@ -643,7 +644,8 @@ where
 		let 
 (dummy0::OutputStep) = oid
 		in
-			let dummy0_ignore = (fst dummy0); t = (snd dummy0) in (if (inv_OutputStep dummy0) then
+			
+			(if (inv_OutputStep dummy0) then
 			(t \<le> curTime)
 		 else
 			undefined
@@ -656,14 +658,14 @@ where
 	RelativeToAbsoluteTimes(ts) ==
 (if (ts = [])
 then []
-else let mk_(f, t):Response = (hd ts), ns:seq of ((FlareType * nat)) = RelativeToAbsoluteTimes((tl ts)) in ([mk_(f, t)] ^ [let mk_(nf, nt):(FlareType * nat) = n in mk_(nf, (nt + t)) | n in seq ns]))
+else let mk_(f, t):Response = (hd ts) in [mk_(f, t)])
 	measure (len ts)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 111:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 118:1\<close>
 
 \<comment>\<open>VDM source: pre_RelativeToAbsoluteTimes: (seq of (Response) +> bool)
 	pre_RelativeToAbsoluteTimes(ts) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 111:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 118:1\<close>
 definition
 	pre_RelativeToAbsoluteTimes :: "Response VDMSeq \<Rightarrow> bool"
 where
@@ -675,7 +677,7 @@ where
 \<comment>\<open>VDM source: post_RelativeToAbsoluteTimes: (seq of (Response) * seq of ((FlareType * nat)) +> bool)
 	post_RelativeToAbsoluteTimes(ts, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 111:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 118:1\<close>
 definition
 	post_RelativeToAbsoluteTimes :: "Response VDMSeq \<Rightarrow> (FlareType \<times> VDMNat) VDMSeq \<Rightarrow> bool"
 where
@@ -686,10 +688,10 @@ where
 		 (inv_VDMNat dummy2of2)
 		) RESULT))"
 
-fun
+definition
 	RelativeToAbsoluteTimes :: "Response VDMSeq \<Rightarrow> (FlareType \<times> VDMNat) VDMSeq"
 where
-	"RelativeToAbsoluteTimes ts = 
+	"RelativeToAbsoluteTimes ts \<equiv> 
 	\<comment>\<open>User defined body of RelativeToAbsoluteTimes.\<close>
 	(
 		if ((ts = [])) then
@@ -697,33 +699,13 @@ where
 		else
 		((
 		let 
-(t::VDMNat) = (hd ts);
-(f::FlareType) = (hd ts)
-		;
-		
-(ns::(FlareType \<times> VDMNat) VDMSeq) = (RelativeToAbsoluteTimes (tl ts))
+ (dummy0::Response) = hd ts;
+(f::FlareType) = fst dummy0;
+(t::VDMNat) = snd dummy0
 		in
-			let f = (fst dummy0); t = (snd dummy0) in 
-		(if (inv_Response dummy0)
-	 \<and> 
-	((inv_VDMSeq' 
-		(\<lambda> (dummy1of2, dummy2of2) . (((inv_True dummy1of2)))\<and>
-		 (inv_VDMNat dummy2of2)
-		) ns)) then
-			([(f , t)] @ [ (
-		let 
-(nt::VDMNat) = n;
-(nf::FlareType) = n
-		in
-			let nf = (fst dummy0); nt = (snd dummy0) in (if (
-		((((inv_True (fst dummy0))))\<and>
-		 (inv_VDMNat (snd dummy0))
-		)) then
-			(nf , (nt + t))
-		 else
-			undefined
-		)
-		) . n \<leftarrow> ns , ((n \<in>(elems ns))) ])
+			
+			(if (inv_Response dummy0) then
+			[(f , t)]
 		 else
 			undefined
 		)
@@ -734,12 +716,12 @@ where
 \<comment>\<open>VDM source: OutputAtTimeZero: (seq of (Response) -> seq of (OutputStep))
 	OutputAtTimeZero(response) ==
 let absTimes:seq of ((FlareType * nat)) = RelativeToAbsoluteTimes(response) in let mk_(firstFlare, -):(FlareType * nat) = (hd absTimes) in ([mk_(firstFlare, 0)] ^ [let mk_(-, t):(FlareType * nat) = absTimes((i - 1)), mk_(f, -):(FlareType * nat) = absTimes(i) in mk_(f, t) | i in set {2, ... ,(len absTimes)}])\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 122:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 132:1\<close>
 
 \<comment>\<open>VDM source: pre_OutputAtTimeZero: (seq of (Response) +> bool)
 	pre_OutputAtTimeZero(response) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 122:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 132:1\<close>
 definition
 	pre_OutputAtTimeZero :: "Response VDMSeq \<Rightarrow> bool"
 where
@@ -751,7 +733,7 @@ where
 \<comment>\<open>VDM source: post_OutputAtTimeZero: (seq of (Response) * seq of (OutputStep) +> bool)
 	post_OutputAtTimeZero(response, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 122:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 132:1\<close>
 definition
 	post_OutputAtTimeZero :: "Response VDMSeq \<Rightarrow> OutputStep VDMSeq \<Rightarrow> bool"
 where
@@ -768,6 +750,7 @@ where
 		let 
 (absTimes::(FlareType \<times> VDMNat) VDMSeq) = (RelativeToAbsoluteTimes response)
 		in
+			
 			(if ((inv_VDMSeq' 
 		(\<lambda> (dummy1of2, dummy2of2) . (((inv_True dummy1of2)))\<and>
 		 (inv_VDMNat dummy2of2)
@@ -776,7 +759,8 @@ where
 		let 
 (dummy0::(FlareType \<times> VDMNat)) = (hd absTimes)
 		in
-			let firstFlare = (fst dummy0); dummy0_ignore = (snd dummy0) in (if (
+			
+			(if (
 		((((inv_True (fst dummy0))))\<and>
 		 (inv_VDMNat (snd dummy0))
 		)) then
@@ -787,8 +771,8 @@ where
 		
 (dummy0::(FlareType \<times> VDMNat)) = (absTimes$i)
 		in
-			let dummy0_ignore = (fst dummy0); t = (snd dummy0) in 
-		let f = (fst dummy0); dummy0_ignore = (snd dummy0) in (if (
+			
+			(if (
 		((((inv_True (fst dummy0))))\<and>
 		 (inv_VDMNat (snd dummy0))
 		))
@@ -817,12 +801,12 @@ where
 \<comment>\<open>VDM source: MakeOutputFromPlan: (nat * seq of (Response) -> seq of (OutputStep))
 	MakeOutputFromPlan(curTime, response) ==
 let outputLF:seq of (OutputStep) = OutputAtTimeZero(response) in [let mk_(flare, t):OutputStep = oid in mk_(flare, (t + curTime)) | oid in seq outputLF]\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 131:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
 
 \<comment>\<open>VDM source: pre_MakeOutputFromPlan: (nat * seq of (Response) +> bool)
 	pre_MakeOutputFromPlan(curTime, response) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 131:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
 definition
 	pre_MakeOutputFromPlan :: "VDMNat \<Rightarrow> Response VDMSeq \<Rightarrow> bool"
 where
@@ -834,7 +818,7 @@ where
 \<comment>\<open>VDM source: post_MakeOutputFromPlan: (nat * seq of (Response) * seq of (OutputStep) +> bool)
 	post_MakeOutputFromPlan(curTime, response, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 131:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 141:1\<close>
 definition
 	post_MakeOutputFromPlan :: "VDMNat \<Rightarrow> Response VDMSeq \<Rightarrow> OutputStep VDMSeq \<Rightarrow> bool"
 where
@@ -851,14 +835,16 @@ where
 		let 
 (outputLF::OutputStep VDMSeq) = (OutputAtTimeZero response)
 		in
+			
 			(if ((inv_VDMSeq' inv_OutputStep outputLF)) then
 			[
 		(
 		let 
-(flare::FlareType) = oid;
-(t::AbsTime) = oid
+(t::AbsTime) = oid;
+(flare::FlareType) = oid
 		in
-			let flare = (fst dummy0); t = (snd dummy0) in (if (inv_OutputStep dummy0) then
+			
+			(if (inv_OutputStep dummy0) then
 			(flare , (t + curTime))
 		 else
 			undefined
@@ -881,12 +867,12 @@ where
 ({magid |-> ((if (magid in set (dom expOutput))
 then LeavePrefixUnchanged(expOutput(magid), curTime)
 else []) ^ MakeOutputFromPlan(curTime, plan))} munion ({magid} <-: expOutput))\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 140:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
 
 \<comment>\<open>VDM source: pre_InterruptPlan: (nat * Output * Plan * MagId +> bool)
 	pre_InterruptPlan(curTime, expOutput, plan, magid) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 140:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
 definition
 	pre_InterruptPlan :: "VDMNat \<Rightarrow> Output \<Rightarrow> Plan \<Rightarrow> MagId \<Rightarrow> bool"
 where
@@ -898,7 +884,7 @@ where
 \<comment>\<open>VDM source: post_InterruptPlan: (nat * Output * Plan * MagId * Output +> bool)
 	post_InterruptPlan(curTime, expOutput, plan, magid, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 140:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
 definition
 	post_InterruptPlan :: "VDMNat \<Rightarrow> Output \<Rightarrow> Plan \<Rightarrow> MagId \<Rightarrow> Output \<Rightarrow> bool"
 where
@@ -927,12 +913,12 @@ else let mk_(curMis, angle):MissileInput = (hd missileInputs), magid:MagId = Ang
 then let newOutput:Output = InterruptPlan(curTime, outputSoFar, responseDB(curMis), magid) in CM((tl missileInputs), newOutput, (lastMissile ++ {magid |-> curMis}), (curTime + stepLength))
 else CM((tl missileInputs), outputSoFar, lastMissile, (curTime + stepLength))))
 	measure (len missileInputs)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
 
 \<comment>\<open>VDM source: pre_CM: (MissileInputs * Output * map (MagId) to ([MissileType]) * nat +> bool)
 	pre_CM(missileInputs, outputSoFar, lastMissile, curTime) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
 definition
 	pre_CM :: "MissileInputs \<Rightarrow> Output \<Rightarrow> (MagId \<rightharpoonup> MissileType option) \<Rightarrow> VDMNat \<Rightarrow> bool"
 where
@@ -944,7 +930,7 @@ where
 \<comment>\<open>VDM source: post_CM: (MissileInputs * Output * map (MagId) to ([MissileType]) * nat * Output +> bool)
 	post_CM(missileInputs, outputSoFar, lastMissile, curTime, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 150:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 160:1\<close>
 definition
 	post_CM :: "MissileInputs \<Rightarrow> Output \<Rightarrow> (MagId \<rightharpoonup> MissileType option) \<Rightarrow> VDMNat \<Rightarrow> Output \<Rightarrow> bool"
 where
@@ -969,8 +955,8 @@ where
 		
 (magid::MagId) = (Angle2MagId angle)
 		in
-			let curMis = (fst dummy0); angle = (snd dummy0) in 
-		(if (inv_MissileInput dummy0)
+			
+			(if (inv_MissileInput dummy0)
 	 \<and> 
 	(inv_MagId magid) then
 			(
@@ -979,6 +965,7 @@ where
 		let 
 (newOutput::Output) = (InterruptPlan curTime   outputSoFar   ((the(responseDB curMis)))   magid)
 		in
+			
 			(if (inv_Output newOutput) then
 			(CM (tl missileInputs)   newOutput   (lastMissile \<dagger> [magid\<mapsto>curMis])   (curTime + stepLength))
 		 else
@@ -997,12 +984,12 @@ where
 \<comment>\<open>VDM source: CounterMeasures: (MissileInputs -> Output)
 	CounterMeasures(missileInputs) ==
 CM(missileInputs, {|->}, {|->}, 0)\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 173:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
 
 \<comment>\<open>VDM source: pre_CounterMeasures: (MissileInputs +> bool)
 	pre_CounterMeasures(missileInputs) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 173:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
 definition
 	pre_CounterMeasures :: "MissileInputs \<Rightarrow> bool"
 where
@@ -1014,7 +1001,7 @@ where
 \<comment>\<open>VDM source: post_CounterMeasures: (MissileInputs * Output +> bool)
 	post_CounterMeasures(missileInputs, RESULT) ==
 null\<close>
-\<comment>\<open>in 'CM' (./src/test/resources/Examples/CMSL/CM.vdmsl) at line 173:1\<close>
+\<comment>\<open>in 'CM' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl) at line 183:1\<close>
 definition
 	post_CounterMeasures :: "MissileInputs \<Rightarrow> Output \<Rightarrow> bool"
 where

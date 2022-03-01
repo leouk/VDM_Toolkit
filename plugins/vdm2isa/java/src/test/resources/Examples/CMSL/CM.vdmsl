@@ -120,10 +120,13 @@ RelativeToAbsoluteTimes : seq of Response ->
 RelativeToAbsoluteTimes(ts) ==
   if ts = []
   then []
-  else let mk_(f,t) = hd ts,
-           ns = RelativeToAbsoluteTimes(tl ts) in
-         [mk_(f,t)] ^
-         [ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
+  else let mk_(f,t) = hd ts
+           --,
+           --ns = RelativeToAbsoluteTimes(tl ts) 
+       in
+         [mk_(f,t)] 
+         --^
+         --[ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
 measure len ts;
 
 OutputAtTimeZero : seq of Response -> seq of OutputStep
