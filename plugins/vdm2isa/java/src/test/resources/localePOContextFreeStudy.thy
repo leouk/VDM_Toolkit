@@ -47,14 +47,15 @@ locale fPOS =
   assumes a1: PO1
   and a2: PO2
 
-interpretation fPOS
+interpretation ps_surrender: fPOS
+  apply (unfold_locales)
+  oops
+
+interpretation ps_optimistic: fPOS
   apply (unfold_locales)
   unfolding PO1_defs
    apply (simp add: f_def)
   unfolding PO2_defs
   by presburger
 
-interpretation fPOS
-  apply (unfold_locales)
-  oops
 end
