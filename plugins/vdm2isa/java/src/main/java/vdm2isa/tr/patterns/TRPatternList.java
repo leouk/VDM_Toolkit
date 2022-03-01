@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRMappedList;
 import vdm2isa.tr.TRNode;
 
@@ -168,6 +169,8 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		{
 			String old = getSemanticSeparator();
 			setSemanticSeparator(IsaToken.SEMICOLON.toString() + IsaToken.SPACE.toString());
+			sb.append(IsaToken.comment(
+				IsaInfoMessage.ISA_PATTERN_CONTEXT_1P.format("pattern list"), "\n\t" + getFormattingSeparator()));
 			sb.append(patternOpenContext());
 			List<Integer> patternContextIndices = getPatternContextIndeces();
 			sb.append(get(patternContextIndices.get(0)).patternContextTranslate(varName));

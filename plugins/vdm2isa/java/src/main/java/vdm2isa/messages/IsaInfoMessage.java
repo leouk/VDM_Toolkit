@@ -18,7 +18,7 @@ public enum IsaInfoMessage {
     VDM_EXPLICIT_EQ_PRED_1P("Transform a VDM `=` expression into an `eq_%1$s` call"),
     VDM_EXPLICIT_NOT_EQ_PRED_1P("Transform a VDM `<>` expression into an `not eq_%1$s` call"),
 
-    ISA_PATTERN_CONTEXT("Implicit pattern context conversion"),
+    ISA_PATTERN_CONTEXT_1P("Implicit pattern context projection for `%1$s`"),
     ISA_UNION_TYPE_PROJECTION("Implicit union type parameters projection"),
     ISA_UNION_TYPE_COERCIONS("Type coercions might needed at body or union selection deletion might be needed"),
     ISA_PROCESS_VDM_EXPORTS("Processing VDM exports as Isabelle hidden declarations"),

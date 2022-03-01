@@ -408,7 +408,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			if (hasPatternContext)
 			{
 				fcnBody.append(getFormattingSeparator());
-				fcnBody.append(IsaToken.comment(IsaInfoMessage.ISA_PATTERN_CONTEXT.toString(), getFormattingSeparator()));
+				fcnBody.append(IsaToken.comment(IsaInfoMessage.ISA_PATTERN_CONTEXT_1P.format("function parameters"), getFormattingSeparator()));
 				fcnBody.append(IsaToken.LPAREN.toString());
 				fcnBody.append(translateParametersPatternContext());
 			}
