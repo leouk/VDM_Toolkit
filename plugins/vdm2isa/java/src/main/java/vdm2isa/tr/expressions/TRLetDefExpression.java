@@ -1,13 +1,23 @@
 package vdm2isa.tr.expressions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.expressions.TCDefExpression;
 import com.fujitsu.vdmj.tc.expressions.TCLetDefExpression;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameSet;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRValueDefinition;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.patterns.TRAbstractContextualPattern;
 import vdm2isa.tr.types.TRType;
 
 public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
@@ -65,6 +75,47 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
        return IsaToken.LET;
     }
 
+    private void checkLocalDefsPatternDependencies()
+    {
+        if (localDefs.size() > 1)
+        {
+            TCNameSet RHSnames  = new TCNameSet();
+            TCNameList LHSnames = new TCNameList();
+            boolean considerClash = false;
+            for(TRDefinition d : localDefs)
+            {
+                // only patterns that require context matter for this check
+                considerClash = considerClash || 
+                    (d instanceof TRValueDefinition && 
+                     ((TRValueDefinition)d).pattern instanceof TRAbstractContextualPattern);
+                RHSnames.addAll(d.getVDMDefinition().getFreeVariables());
+                LHSnames.addAll(d.getVDMDefinition().getVariableNames());                
+            }
+            if (considerClash && !RHSnames.isEmpty())
+            {
+                // if any RHS name is used on the LHS within local definitions, it has to be
+                // through a chained let-def, which will fail for structured patterns given 
+                // the lack of let context (e.g. let mk_(x,y) = t, z = f(x)). Note that without
+                // structured patterns (e.g. let x = t, y = x+1, z =x+y) there is no problem
+                Set<String> clash = new HashSet<String>();
+                for(TCNameToken n : LHSnames)
+                {
+                    // add the locally defined names
+                    clash.add(n.getName());
+                }
+                for(TCNameToken n : RHSnames)
+                {
+                    // check whether the defined names include any free name
+                    if (clash.contains(n.getName()))
+                    {
+                        report(IsaErrorMessage.ISA_INVALID_LETDEF_CHAIN_1P, n.getName());
+                    }
+                }            
+            }
+        }
+    }
+
+    @Override
     public String translate() {
         StringBuilder sb = new StringBuilder();
         // let x: T1 = v1, y: T2 = v2 in exp(x, y)
@@ -75,7 +126,8 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());
-        String old = localDefs.setFormattingSeparator(getFormattingSeparator());        
+        String old = localDefs.setFormattingSeparator(getFormattingSeparator());
+        checkLocalDefsPatternDependencies();        
         sb.append(localDefs.translate());
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.IN.toString());

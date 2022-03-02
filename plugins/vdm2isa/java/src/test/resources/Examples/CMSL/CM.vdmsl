@@ -180,7 +180,7 @@ CM( missileInputs, outputSoFar, lastMissile, curTime) ==
         --    the projection won't work, as locally defined names are only projected after the "in"; so for now the separation 
         --    of lets is a simple solution. 
         --@idiom(isa) pattern bound variable cannot appear in single let 
-        let  magid = Angle2MagId(angle) in
+         let magid = Angle2MagId(angle) in
          if magid not in set dom lastMissile or
             (magid in set dom lastMissile and
              missilePriority(curMis) > 

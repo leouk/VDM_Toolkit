@@ -128,6 +128,8 @@ public enum IsaErrorMessage {
     "Isabelle translation does not support more than one non-basic pattern in a pattern list `%1$s`."),
     ISA_INVALID_SET_RANGE_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 31,
     "Invalid set range: its inner type *must* be numeric, yet not rat or real = %1$s"),
+    ISA_INVALID_LETDEF_CHAIN_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 32,
+    "Let-def chains with earlier LHS name `%1$s` in patterns cannot be used on RHS; break the let-chain."),
 
     //POG messages relate to difficulties during POG
     PO_PROCESSING_ERROR_4P  (VDM2IsaError.ISABELLE_E_PO_BASE + 0, 

@@ -11,7 +11,6 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRSetRangeExpression;
 import vdm2isa.tr.patterns.visitors.TRMultipleBindVisitor;
-import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
 
