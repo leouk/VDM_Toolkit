@@ -44,7 +44,7 @@ public class TRBasicType extends TRType
 						IsaToken.RAT, IsaToken.REAL)); 
 
 	//@NB oddly S: set of int = {-1.3,...,4.5} is allowed? I am removing real / rat from this
-	public static final Set<IsaToken> SET_RANGE_TYPES = new HashSet<IsaToken>(
+	public static final Set<IsaToken> LINEARLY_ORDERED_TYPES = new HashSet<IsaToken>(
 		Arrays.asList(IsaToken.NAT, IsaToken.NAT1, IsaToken.INT)); 
 					
 	/**
@@ -158,9 +158,9 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
-	public boolean isPossibleSetRange()
+	public boolean isLinearlyOrdered()
 	{
-		return SET_RANGE_TYPES.contains(isaToken());
+		return LINEARLY_ORDERED_TYPES.contains(isaToken());
 	}
 
 	/**

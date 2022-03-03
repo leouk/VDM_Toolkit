@@ -84,7 +84,9 @@ public class TRMultipleSetBind extends TRMultipleBind
      */
     public boolean linearOrderedType()
     {
-        return (set instanceof TRSetRangeExpression) && getRHSType().isPossibleSetRange();
+        // This also works with "x in set inds xs", not just "x in set {2,...,3}"
+        // in fact with any set "x in set S" such that its inner type is linerarly ordered
+        return /*(set instanceof TRSetRangeExpression) && */ getRHSType().isLinearlyOrdered();
     }
 
     /**

@@ -30,10 +30,10 @@ public class TRSetRangeExpression extends TRExpression {
         super.setup();
         assert first != null && last != null;
         TRNode.setup(first, last);
-        if (!first.getType().isPossibleSetRange() || !last.getType().isPossibleSetRange())
+        if (!first.getType().isLinearlyOrdered() || !last.getType().isLinearlyOrdered())
         {
             report(IsaErrorMessage.ISA_INVALID_SET_RANGE_TYPE_1P, 
-                first.getType().isPossibleSetRange() ? last.getType().translate() : first.getType().translate());
+                first.getType().isLinearlyOrdered() ? last.getType().translate() : first.getType().translate());
         }
     }
 

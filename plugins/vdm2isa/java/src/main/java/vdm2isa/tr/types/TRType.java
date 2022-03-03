@@ -220,12 +220,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	}
 
 	// Force the check on TRBasicType as well (i.e. not "||" but "&&"), given we don't allow REAL/RAT!
-	public boolean isPossibleSetRange()
+	public boolean isLinearlyOrdered()
 	{
 		TRType utype = ultimateType();
 		return utype.getVDMType().isNumeric(location) &&
 				(utype instanceof TRBasicType) &&
- 				 utype.isPossibleSetRange();
+ 				 utype.isLinearlyOrdered();
  	}
 
 	public boolean isUnion()

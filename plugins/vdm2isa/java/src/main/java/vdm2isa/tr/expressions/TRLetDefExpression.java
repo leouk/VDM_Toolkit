@@ -82,14 +82,22 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
             TCNameSet RHSnames  = new TCNameSet();
             TCNameList LHSnames = new TCNameList();
             boolean considerClash = false;
+            boolean contextualPatterns = false;
             for(TRDefinition d : localDefs)
             {
                 // only patterns that require context matter for this check
-                considerClash = considerClash || 
+                contextualPatterns = 
                     (d instanceof TRValueDefinition && 
-                     ((TRValueDefinition)d).pattern instanceof TRAbstractContextualPattern);
+                        ((TRValueDefinition)d).pattern instanceof TRAbstractContextualPattern);
+                considerClash = considerClash || contextualPatterns;
                 RHSnames.addAll(d.getVDMDefinition().getFreeVariables());
-                LHSnames.addAll(d.getVDMDefinition().getVariableNames());                
+                // only worry about LHS names coming from contextual patterns
+                // e.g. let t = f(), mk_(x,y) = g(t) is okay     [t is not pattern on earlier LHS]
+                //      let mk_(x,y) = f(), t = g(x) is not okay [x on earlier LHS] 
+                if (contextualPatterns)
+                {
+                    LHSnames.addAll(d.getVDMDefinition().getVariableNames());                
+                }
             }
             if (considerClash && !RHSnames.isEmpty())
             {
