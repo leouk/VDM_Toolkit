@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-02-27T08:10:01.909074Z
+(* VDM to Isabelle Translation @2022-03-03T16:27:57.957985Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IFcns.vdmsl' at line 1:8
@@ -185,7 +185,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_h` specification.\<close>
 		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h.\<close>
-		((pre_g x   x) \<and> (x < (20::VDMNat1)))"
+		((pre_g x  x) \<and> (x < (20::VDMNat1)))"
 
 
 \<comment>\<open>VDM source: post_h: (nat * nat +> bool)
@@ -199,14 +199,14 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_h` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h.\<close>
-		((post_g x   x   RESULT) \<and> (x > (20::VDMNat1)))"
+		((post_g x  x  RESULT) \<and> (x > (20::VDMNat1)))"
 
 definition
 	h :: "VDMNat \<Rightarrow> VDMNat"
 where
 	"h x \<equiv> 
 	\<comment>\<open>User defined body of h.\<close>
-	(g x   x)"
+	(g x  x)"
 
 	
 	
@@ -249,7 +249,7 @@ definition
 where
 	"h' x \<equiv> 
 	\<comment>\<open>User defined body of h'.\<close>
-	(g x   x)"
+	(g x  x)"
 
 	
 	
@@ -285,14 +285,14 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_h''` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h''.\<close>
-		((pre_g x   RESULT) \<and> (x > (20::VDMNat1)))"
+		((pre_g x  RESULT) \<and> (x > (20::VDMNat1)))"
 
 definition
 	h'' :: "VDMNat \<Rightarrow> VDMNat"
 where
 	"h'' x \<equiv> 
 	\<comment>\<open>User defined body of h''.\<close>
-	(g x   x)"
+	(g x  x)"
 
 	
 	
@@ -450,5 +450,7 @@ where
 	"implicitexplicit x   y   z \<equiv> 
 	\<comment>\<open>User defined body of implicitexplicit.\<close>
 	[x , y]"
+
+
 
 end
