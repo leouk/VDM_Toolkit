@@ -1,8 +1,13 @@
 package vdm2isa.lex;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -11,6 +16,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 
 import plugins.GeneralisaPlugin;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 
 /**
  * Isabelle templates for VDM translation. These are to be independent of VDMJ's TRNode AST (i.e. no imports from vdm2isa.tr). 
@@ -22,7 +28,7 @@ import vdm2isa.messages.IsaErrorMessage;
  */
 public final class IsaTemplates {
     
-    private static final Map<String, Map<String, IsaItem>> translatedItems = new TreeMap<String, Map<String, IsaItem>>();
+    private static final SortedMap<String, SortedMap<String, IsaItem>> translatedItems = new TreeMap<String, SortedMap<String, IsaItem>>();
     //TODO add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
 
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
@@ -33,12 +39,36 @@ public final class IsaTemplates {
     private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
     private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
+    private static final String POGLOCALE    = "locale %1$s = \n\tassumes\n\t\t%2$s\nbegin\n\t%3$s\nend";
+    private static final String POGSCRIPT    = "interpretation %1$s \n\t %2$s";
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
 
     // Has to be here and not in IsaToken, because cannot be in Enum initialiser + constructor
     protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
+
+    public static final Map<String, Map<String, IsaItem>> getTranslatedItemsMap()
+    {
+        return Collections.unmodifiableMap(translatedItems);
+    } 
+
+    public static final SortedSet<String> getIsaItemsIn(LexLocation moduleLoc, IsaItem item)
+    {
+        SortedSet<String> result = new TreeSet<String>();
+        if (translatedItems.containsKey(moduleLoc.module))
+        {
+            Map<String, IsaItem> mitems = translatedItems.get(moduleLoc.module);
+            for(Map.Entry<String, IsaItem> e : mitems.entrySet())
+            {
+                if (e.getValue().equals(item))
+                {
+                    result.add(e.getKey());
+                }
+            }
+        }
+        return result;
+    } 
 
     public static final void reset()
     {
@@ -50,6 +80,7 @@ public final class IsaTemplates {
     //@todo pass TCNameToken? Or LexLocation?
     private static void updateTranslatedIsaItem(LexLocation moduleLoc, String name, IsaItem item)
     {
+        assert moduleLoc != null && moduleLoc.module != null && !moduleLoc.module.isEmpty();
         String moduleName = moduleLoc.module;
         //TODO accumulate all def names for latter creation of lemmas xyz_def etc...? 
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
@@ -57,7 +88,7 @@ public final class IsaTemplates {
             GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
         else if (!moduleIsKnown)
         {
-            Map<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();
+            SortedMap<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();
             mapPerModule.put(name, item);
             translatedItems.put(moduleName, mapPerModule);
         }
@@ -99,6 +130,7 @@ public final class IsaTemplates {
      */
     public static final boolean checkSeparator(LexLocation location, String sep, IsaSeparator kind)
     {
+        assert location != null;
         // assume it's not okay
         boolean result = false;
 		if (sep == null)
@@ -124,22 +156,83 @@ public final class IsaTemplates {
 
     public static final String translateAbbreviation(LexLocation module, String name, String typeStr, String exp)
     {
-        assert name != null && typeStr != null && exp != null;
+        assert module != null && name != null && typeStr != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(ABBREVIATION, name, typeStr, exp));
         updateTranslatedIsaItem(module, name, IsaItem.ABBREVIATION);
         return sb.toString();
     }
 
+    public static final String translateTheoremDefinition(LexLocation module, String name, String exp)
+    {
+        assert module != null && name != null && exp != null; 
+        return translateDefinition(IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
+    }
+
+    private static final String translatePO(LexLocation module, int poNo, String po)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(module.module);
+        sb.append(IsaToken.UNDERSCORE.toString());
+        sb.append(IsaToken.PO.toString());
+        sb.append(poNo);
+        sb.append(IsaToken.COLON.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(po);
+        return sb.toString();
+    }
+
+    public static final String pogLocaleName(LexLocation module)
+    {
+        assert module != null;
+        return  module.module + IsaToken.UNDERSCORE.toString() + IsaToken.POG.toString();
+    }
+
+    public static final String translatePOGLocaleInterpreation(LexLocation module, String interpretation, String script)
+    {
+        assert module != null && script != null;
+        StringBuilder sb = new StringBuilder();
+        String pogInterpreationName = 
+            (interpretation != null && !interpretation.isEmpty() ? 
+                interpretation + IsaToken.COLON.toString() : "") + IsaTemplates.pogLocaleName(module);  
+        sb.append(String.format(POGSCRIPT, pogInterpreationName));
+        return sb.toString(); 
+    }
+
+    public static final String translatePOGLocale(LexLocation module)
+    {
+        assert module != null;
+        String pogLocComment = IsaToken.comment(IsaInfoMessage.PO_POGLOC_USER.format(module.module));
+        SortedSet<String> pos = IsaTemplates.getIsaItemsIn(module, IsaItem.THEOREM);
+        StringBuilder pogLocAssumptions = new StringBuilder();     
+        if (!pos.isEmpty())
+        {
+            int poNo = 1;
+            Iterator<String> posit = pos.iterator();
+            String po = posit.next();
+            pogLocAssumptions.append("\t ");
+            pogLocAssumptions.append(translatePO(module, poNo, po));
+            while (posit.hasNext())
+            {
+                pogLocAssumptions.append("\n\t and ");
+                poNo++;
+                po = posit.next();
+                pogLocAssumptions.append(translatePO(module, poNo, po));
+            }
+        }
+        return String.format(POGLOCALE, pogLocaleName(module), pogLocAssumptions.toString(), pogLocComment);
+    }
+
     //TODO perhaps have multiple inType and inVars params? 
     public static final String translateDefinition(IsaItem item, LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
     {
-        assert name != null && outType != null && inVars != null && exp != null;
+        assert module != null && name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
         // null input types leads to just the resulting type as the signature, 
         // e.g. basic type abbreviation invariants or function constants
         String signature = inType != null ? inType + IsaToken.SPACE.toString() + IsaToken.FUN.toString() + IsaToken.SPACE.toString() + outType : outType;
-        sb.append(String.format(item.equals(IsaItem.DEFINITION) ? DEFINITION : FUNCTION, name, signature, inVars, exp));
+        // theorems are definitions too 
+        sb.append(String.format(item.equals(IsaItem.FUNCTION) ? FUNCTION : DEFINITION, name, signature, inVars, exp));
         // do not consider for the mapping of "known" translation local definitions, as they might
         // appear multiple times, due to the type checker having created them and sprinkled around 
         // the TRNode AST for various uses. The actual string will still be returned, so care needs 
@@ -154,18 +247,18 @@ public final class IsaTemplates {
         return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, invStr, local);
     }
 
-    public static final String translateInvariantTypeSynonym(LexLocation moduleLocation, String name, String inType, String dummyNames, String inv)
+    public static final String translateInvariantTypeSynonym(LexLocation module, String name, String inType, String dummyNames, String inv)
     {
-        assert name != null && inType != null && dummyNames != null;// && inv != null;
+        assert module != null && name != null && inType != null && dummyNames != null;// && inv != null;
         // Take into account inner type invariant (recursively?); possibly will introduce errors for some exps
         inv = IsaToken.INV.toString() + name + " " + dummyNames + " " + IsaToken.AND.toString() + " " + ((inv == null) ? IsaToken.TRUE.toString() : inv);
-        return translateInvariantDefinition(moduleLocation, name, inType, dummyNames, inv, false);
+        return translateInvariantDefinition(module, name, inType, dummyNames, inv, false);
     }
 
-    public static final String translateInvariantDefinition(LexLocation moduleLocation, String name, String inType, String inVars, String exp, boolean local)
+    public static final String translateInvariantDefinition(LexLocation module, String name, String inType, String inVars, String exp, boolean local)
     {
-        assert name != null && /*inType != null && */ inVars != null && exp != null;
-        return translateDefinition(IsaItem.DEFINITION, moduleLocation, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        assert module != null && name != null && /*inType != null && */ inVars != null && exp != null;
+        return translateDefinition(IsaItem.DEFINITION, module, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static final String isabelleIdentifier(String vdmIdentifier)
@@ -210,7 +303,7 @@ public final class IsaTemplates {
     public static final String translateTypeSynonymDefinition(LexLocation module, String name, String exp)
     {
         // TRNamedType will handle this, but the name is useful for IsaItem logging
-        assert name != null && exp != null;
+        assert module != null && name != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TSYNONYM, name, exp));
         updateTranslatedIsaItem(module, name, IsaItem.TYPE_SYNONYM);
@@ -220,7 +313,7 @@ public final class IsaTemplates {
     public static final String translateDatatypeDefinition(LexLocation module, String name, String exp)
     {
         // TRNamedType will handle this, but the name is useful for IsaItem logging
-        assert name != null && exp != null;
+        assert module != null && name != null && exp != null;
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(DATATYPE, name, exp));
         updateTranslatedIsaItem(module, name, IsaItem.DATATYPE);
@@ -229,7 +322,7 @@ public final class IsaTemplates {
 
     public static final String translateLemmasDefinition(LexLocation location, String name, String lemmasDefs) 
     {
-        assert name != null && lemmasDefs != null && !name.isEmpty() && !lemmasDefs.isEmpty();
+        assert location != null && name != null && lemmasDefs != null && !name.isEmpty() && !lemmasDefs.isEmpty();
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(LEMMAS, name + IsaToken.ISAR_LEMMAS_DEFS, lemmasDefs));
         return sb.toString();
@@ -245,7 +338,7 @@ public final class IsaTemplates {
     }
 
     public static final String getPOModuleName(String module) {
-        return module + "_PO";
+        return module + IsaToken.UNDERSCORE.toString() + IsaToken.PO.toString();
     }
 
     public static final String replicate(String s, long count)

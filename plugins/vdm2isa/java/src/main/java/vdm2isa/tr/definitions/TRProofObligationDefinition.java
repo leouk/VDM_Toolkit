@@ -7,6 +7,8 @@ import com.fujitsu.vdmj.pog.POType;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import vdm2isa.lex.IsaItem;
+import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
@@ -65,7 +67,7 @@ public class TRProofObligationDefinition extends TRDefinition {
     public void setup()
     {
         super.setup();
-        setFormattingSeparator("\n\t");
+        setFormattingSeparator("\n");// setFormattingSeparator("\n\t");
         if (poExpr == null)
         {
             report(IsaErrorMessage.PO_INVALID_POEXPR_2P, po.name, po.value);
@@ -108,6 +110,50 @@ public class TRProofObligationDefinition extends TRDefinition {
 
     @Override
 	public String translate()
+    {   
+        StringBuilder sb = new StringBuilder();
+        // get comments etc.
+        sb.append(super.translate());
+        sb.append(sb.length() > 0 ? "\n" : "");
+        sb.append(tldIsaComment());
+        sb.append(sb.length() > 0 ? "\n" : "");
+
+        // Some PO names are "Gateway; rest_p" etc; fix those to be proper identifiers
+        // Make PO name with its number first to make ordering + unique namesness easier
+        String poNameStr = 
+            IsaToken.PO.toString() + poNumber + IsaToken.UNDERSCORE.toString() +
+            po.name.replaceAll("; ", 
+                IsaToken.UNDERSCORE.toString()).replaceAll(", ", 
+                IsaToken.UNDERSCORE.toString()) +
+            IsaToken.UNDERSCORE.toString() + po.kind.name();
+
+        // replace all names with "$" signs as Isabelle doesn't like them.
+        String poExprStr = poExpr.translate().replaceAll("\\$", "dollar"); 
+        
+        sb.append(IsaTemplates.translateTheoremDefinition(getLocation(), poNameStr, 
+            poExprStr));//IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExprStr))));
+        sb.append(getFormattingSeparator());
+
+        boolean ignorePO = figureOutIgnorePO(poNameStr, poExprStr, po.kind);
+
+        // if ignoring the PO still issue its translation as an isabelle block comment
+        if (ignorePO)
+        {
+            StringBuilder ignore = new StringBuilder();
+            ignore.append(getFormattingSeparator());
+            ignore.append(IsaToken.comment(IsaInfoMessage.PO_IGNORE_PO_2P.format(poNameStr, "measures"), getFormattingSeparator()));
+            ignore.append(sb.toString());
+            ignore.append(getFormattingSeparator());
+            return IsaToken.bracketit(IsaToken.BLOCK_COMMENT_OPEN, ignore.toString(), IsaToken.BLOCK_COMMENT_CLOSE);
+        }
+        else
+        {
+            return sb.toString();
+        }
+
+    }
+
+    public String oldTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
         // get comments etc.

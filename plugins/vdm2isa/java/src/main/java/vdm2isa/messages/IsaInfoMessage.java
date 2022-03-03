@@ -25,6 +25,7 @@ public enum IsaInfoMessage {
     ISA_GENERIC_TYPE_1P("VDM generic type `%1$s` will become an Isabelle type parameter. Specific instantiations require invariant checking function"),
     
     PO_IGNORE_PO_2P("VDM proof obligation `%1$s` is spurious given Isabelle's encoding of `%2$s`."),
+    PO_POGLOC_USER("User defined lemmas for %1$s POs"),
     TEST("test");
 
     public final String message; 
