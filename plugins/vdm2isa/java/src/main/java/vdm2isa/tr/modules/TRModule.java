@@ -364,7 +364,15 @@ public class TRModule extends TRNode
 		StringBuilder sb = new StringBuilder();
 		sb.append(allDefs.translate());
 		sb.append(getExports());
+		sb.append(getFormattingSeparator());
+		sb.append(getFormattingSeparator());
+		sb.append(getPostScript());
 		return IsaTemplates.translateModule("", loc, name.toString(), getImports(), sb.toString());
+	}
+
+	public String getPostScript()
+	{
+		return "";
 	}
 
     /**

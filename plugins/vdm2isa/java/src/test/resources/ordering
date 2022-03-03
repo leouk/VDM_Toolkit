@@ -37,3 +37,4 @@
 ./src/test/resources/Examples/Traffic/traffic.vdmsl
 ./src/test/resources/Examples/Gateway/gateway.vdmsl
 ./src/test/resources/Examples/CMSL/CM.vdmsl
+./src/test/resources/Examples/CMSL/CMISA.vdmsl

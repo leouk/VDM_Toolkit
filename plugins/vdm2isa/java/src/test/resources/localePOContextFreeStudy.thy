@@ -4,10 +4,21 @@ begin
 
 type_synonym T = VDMNat 
 
+(*
+module m1
+types 
+  T = nat inv t == t \<ge> 10 and t \<le> 20;
+
+functions 
+  f : T \<rightarrow> nat1
+  f(x) == x * x 
+  post x < RESULT;
+end m1
+*)
 definition 
   inv_T :: "VDMNat \<Rightarrow> \<bool>"
   where
-  "inv_T t \<equiv> inv_VDMNat t \<and> t \<ge> 10"
+  "inv_T t \<equiv> inv_VDMNat t \<and> t \<ge> 10 \<and> t \<le> 20"
 
 lemmas inv_T_defs = inv_T_def inv_VDMNat_def
 
@@ -19,7 +30,7 @@ definition
 definition 
   post_f :: "T \<Rightarrow> VDMNat1 \<Rightarrow> \<bool>"
   where
-  "post_f t RESULT \<equiv> inv_T t \<and> inv_VDMNat1 RESULT"
+  "post_f t RESULT \<equiv> inv_T t \<and> inv_VDMNat1 RESULT \<and> t < RESULT"
 
 lemmas pre_f_defs = pre_f_def inv_T_defs 
 lemmas post_f_defs = post_f_def inv_T_defs inv_VDMNat1_def
@@ -27,7 +38,7 @@ lemmas post_f_defs = post_f_def inv_T_defs inv_VDMNat1_def
 definition 
   f :: "T \<Rightarrow> VDMNat1"
   where
-  "f x \<equiv> x"
+  "f x \<equiv> x * x"
 
 definition 
   PO1 :: "\<bool>"
@@ -46,9 +57,15 @@ lemmas PO2_defs = PO2_def inv_T_defs
 locale fPOS = 
   assumes a1: PO1
   and a2: PO2
+begin
+
+lemma l1: "whatever = whichever" 
+  sorry 
+end
 
 interpretation ps_surrender: fPOS
   apply (unfold_locales)
+  apply (insert fPOS.l1)
   oops
 
 interpretation ps_optimistic: fPOS
