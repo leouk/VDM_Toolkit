@@ -1078,7 +1078,7 @@ where
 (newOutput::Output) = (InterruptPlan curTime  outputSoFar  ((the(responseDB curMis)))  magid)
 		;
 		
-(magidMaplet::(MagId \<rightharpoonup> MissileType option)) = [magid\<mapsto>curMis]
+(magidMaplet::(MagId \<rightharpoonup> MissileType option)) = [magid\<mapsto> Some curMis]
 		in
 			
 			(if (inv_Output newOutput)

@@ -1,6 +1,9 @@
-\begin{vdm_al}
+module BOM
+exports all
+definitions 
 types
 
+--@idiom(isa) reorder
 BOM = map Pn to set of Pn
 inv bom == 
   (forall ps in set rng bom & ps subset dom bom) and
@@ -23,6 +26,7 @@ Parts(p, bom) ==
   TransClos(bom, bom(p))
 pre p in set dom bom;
 
+--@idiom(isa) recursion over non-contructive types is not possible in Isabelle.
 TransClos: (map Pn to set of Pn) * set of Pn -> set of Pn
 TransClos(bom, ps) ==
   if forall p in set ps & bom(p) subset ps
@@ -31,11 +35,13 @@ TransClos(bom, ps) ==
        in
          TransClos(bom, ps union newps)            
 pre ps subset dom bom
-measure IncrAcc;
+--@idiom(isa) Isabelle doesn't use VDM measures direclty
+measure card dom bom - card ps;
 
-IncrAcc: (map Pn to set of Pn) * set of Pn -> nat
-IncrAcc(bom,pns) ==
-  card dom bom - card pns;
+TransClos': (map Pn to set of Pn) * set of Pn -> set of Pn 
+TransClos'(bom, ps) == 
+  { p | p in set ps && bom(p) subset ps } union dunion { bom(p) | p in set ps}
+pre ps subset dom bom;
   
 Explode: Pn * BOM -> set of Pn
 Explode(p, bom) ==
@@ -72,5 +78,5 @@ Erase(p1, p2, bom) ==
   bom ++ { p1 |-> bom(p1) \ {p2} }
 pre (p1 in set dom bom) and (p2 in set dom bom) and
     (p2 in set bom(p1))
-\end{vdm_al}
+end BOM
 

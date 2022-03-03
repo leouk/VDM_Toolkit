@@ -175,14 +175,14 @@ CM: MissileInputs * Output * map MagId to [MissileType] *
 CM( missileInputs, outputSoFar, lastMissile, curTime) ==
   if missileInputs = []
   then outputSoFar
-  else let mk_(curMis,angle) = hd missileInputs in 
+  else let mk_(curMis,angle) = hd missileInputs , 
         --@LF Here the local bound variable "angle" if used in the same let context (e.g. let mk_(x,y) = t, z = f(x) in ...)
         --    the projection won't work, as locally defined names are only projected after the "in"; so for now the separation 
         --    of lets is a simple solution. 
         --@idiom(isa) pattern bound variable cannot appear in single let 
-         let magid = Angle2MagId(angle) in
+          magid = Angle2MagId(angle) in
          if magid not in set dom lastMissile or
-            (magid in set dom lastMissile and
+            (magid in set dom lastMissile and lastMissile(magid) <> nil and 
              missilePriority(curMis) > 
              missilePriority(lastMissile(magid)))
          then let newOutput = 
@@ -190,7 +190,7 @@ CM( missileInputs, outputSoFar, lastMissile, curTime) ==
                                    responseDB(curMis),
                                    magid),
                 --@NB even with the explicit type given to the maplet, VDMJ "eats" up the optionality :-(
-                magidMaplet: map MagId to [MissileType] = {magid |-> curMis}
+                magidMaplet: map MagId to [MissileType] = {magid |-> curMis}--map MagId to MissileType
               in CM(tl missileInputs, newOutput, 
                     lastMissile ++ magidMaplet,--{magid |-> curMis},
                     curTime + stepLength)

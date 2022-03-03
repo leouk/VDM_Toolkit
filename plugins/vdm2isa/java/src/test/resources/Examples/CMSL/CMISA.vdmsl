@@ -1,0 +1,200 @@
+module CMISA
+-- imports from CM
+--     functions 
+--         RelativeToAbsoluteTimes renamed RelativeToAbsoluteTimesCM;
+--         OutputAtTimeZero renamed OutputAtTimeZeroCM;
+--         MakeOutputFromPlan renamed MakeOutputFromPlanCM;
+exports all
+definitions 
+
+types
+  MissileType = <MissileA> | <MissileB> | <MissileC> | <None>;
+
+  Angle = nat
+  inv num == num <= 360;
+
+  MissileInput = MissileType * Angle;
+
+  MissileInputs = seq of MissileInput;
+
+  MagId = token;
+
+  AbsTime = nat;
+
+  FlareType = <FlareOneA>  | <FlareTwoA>  | <FlareOneB> |
+              <FlareTwoB>  | <FlareOneC>  | <FlareTwoC> |
+              <DoNothingA> | <DoNothingB> | <DoNothingC>;
+
+  OutputStep = FlareType * AbsTime;
+
+  --@idiom(vdm) for reference, watch the difference (in proofs) between Output and Output' 
+  Output' = map MagId to seq of OutputStep;
+
+  OutputSteps = seq of OutputStep; 
+  Output = map MagId to OutputSteps;
+
+  --@idiom(vdm) for clarity in later proofs, it's useful to know where the nat comes from
+  Response = FlareType * AbsTime;
+
+  --@idiom(vdm) avoid too many synonyms; I am presuming this is just a response
+  --Delay = nat;
+  --Plan = seq of (FlareType * Delay);
+  Plan = seq of Response;
+
+  MagMissile = map MagId to [MissileType];
+
+values
+
+values
+
+  plan1 : Plan = [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
+                      mk_(<DoNothingA>,100), mk_(<FlareOneA>,500)];
+  
+  responseDB : map MissileType to Plan =
+    {<MissileA> |-> [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
+                      mk_(<DoNothingA>,100), mk_(<FlareOneA>,500)],
+     <MissileB> |-> [ mk_(<FlareTwoB>,500), mk_(<FlareTwoB>,700)],
+     <MissileC> |-> [ mk_(<FlareOneC>,400), mk_(<DoNothingC>,100),
+                      mk_(<FlareTwoC>,400), mk_(<FlareOneC>,500)]
+    };
+
+  missilePriority : map MissileType to nat
+                      = {<MissileA> |-> 1,
+                         <MissileB> |-> 2,
+                         <MissileC> |-> 3,
+                         <None> |-> 0};
+
+  --@idiom(vdm) useful to know in proof what this nat refers to
+  stepLength : AbsTime = 100;
+
+  testval1 : MissileInputs = [mk_(<MissileA>,88),
+                              mk_(<MissileB>,70),
+                              mk_(<MissileA>,222),
+                              mk_(<MissileC>,44)];
+
+  testval2 : MissileInputs = [mk_(<MissileC>,188),
+                              mk_(<MissileB>,70),
+                              mk_(<MissileA>,2),
+                              mk_(<MissileC>,44)];
+
+  testval3 : MissileInputs = [mk_(<MissileA>,288),
+                              mk_(<MissileB>,170),
+                              mk_(<MissileA>,222),
+                              mk_(<MissileC>,44)];
+
+functions
+    
+    Angle2MagId: Angle -> MagId
+    Angle2MagId(angle) ==
+    if angle < 90
+    then mk_token("Magazine 1")
+    elseif angle < 180
+    then mk_token("Magazine 2")
+    elseif angle < 270
+    then mk_token("Magazine 3")
+    else mk_token("Magazine 4");
+
+--@idiom(vdm) having OutputSteps makes places where the type is used wrapped up in proofs
+--@idiom(vdm) assuming this nat = AbsTime
+LeavePrefixUnchanged: OutputSteps * AbsTime -> OutputSteps
+LeavePrefixUnchanged(output_l, curTime) ==
+  --@idiom(isa) o is a reserved identifier for function composition (f o g) x
+  [oid | oid in seq output_l & let mk_(-,t) = oid in t <= curTime]
+post 
+    len RESULT <= len output_l
+    and 
+    (forall mk_(-, t) in seq RESULT & t <= curTime);
+
+--@idiom(vdm) simplify the pattens and their type invariant checks through separate definition
+update_time: Response * AbsTime -> Response 
+update_time(mk_(f, t), offset) == mk_(f, t+offset)
+--@idiom(vdm) strengthening property of the computation for RelativeToAbsoluteTimes
+post t <= RESULT.#2;
+
+--@idiom(isa) compare the translation and POs; as well as test them.
+RelativeToAbsoluteTimes: Plan * AbsTime -> Plan
+RelativeToAbsoluteTimes(ts, offset) ==
+    if ts = [] then
+        ts
+    else 
+        [ update_time(hd ts, offset) ] ^ RelativeToAbsoluteTimes(tl ts, offset + (hd ts).#2)
+post 
+    len ts = len RESULT
+    and
+    --@LF if AbsTime was nat1, this could be <
+    (forall i in set inds ts & ts(i).#2 <= RESULT(i).#2)
+measure len ts;
+        
+--@TODO theorem annotation! 
+--@idiom(vdm) you can issue extra properties as theorems
+--@Theorem(forall p: Plan & RelativeToAbsoluteTimes(p, 0) = RelativeToAbsoluteTimesCM(p))
+
+--@LF the equivalent version below contains less patterns, hence will entail simpler invariant checks (i.e. no need for
+--    invariant check the result of a field projection say). On the other hand, this might be harder to understand/read 
+--    than the example above. So here is a catch-22 scenario: clarity for ease of proof. 
+--@idiom(vdm) simpler binds/patterns; harder to read VDM
+OutputAtTimeZero : Plan -> Plan
+OutputAtTimeZero(response) ==
+    if (response = []) then
+        response 
+    else 
+        --@idiom(isa) chained let broken to avoid capture? 
+      let absTimes = RelativeToAbsoluteTimes(response, 0),
+          mk_(firstFlare,-) = hd absTimes in
+      [mk_(firstFlare,0)] ^
+      [ mk_(absTimes(i).#1, absTimes(i-1).#2) | i in set {2,...,len absTimes} ];
+
+--@idiom(vdm) failed PO as side condition
+--@Theorem(forall p: Plan & p <> [] => OutputAtTimeZero(p) = OutputAtTimeZeroCM(p))
+
+MakeOutputFromPlan : AbsTime * Plan -> OutputSteps
+MakeOutputFromPlan(curTime, response) ==
+  --@idiom(vdm) avoid the let contexts if not particularly important
+  --@idiom(vdm) fold (and reuse!) previoulsy defined specification 
+    [ update_time(oid, curTime) | oid in seq OutputAtTimeZero(response)];
+
+--@Lemma(forall p: Plan & Leo'sLemma(P))
+
+--@Theorem(forall p: Plan & p <> [] => MakeOutputFromPlan(p) = MakeOutputFromPlanCM(p))
+InterruptPlan: AbsTime * Output * Plan * MagId -> Output
+InterruptPlan(curTime, expOutput, plan, magid) ==
+    {magid |-> (if magid in set dom expOutput
+            then LeavePrefixUnchanged(expOutput(magid), curTime)
+            else []) ^
+            MakeOutputFromPlan(curTime, plan)} 
+    munion
+    ({magid} <-: expOutput);
+
+--@idiom(vdm) declare structured types in function definitions as named types to 
+--            keep type definition invariant checks folded within POs   
+CM: MissileInputs * Output * MagMissile * AbsTime -> Output
+CM( missileInputs, outputSoFar, lastMissile, curTime) ==
+  if missileInputs = []
+  then outputSoFar
+  else let mk_(curMis,angle) = hd missileInputs , 
+        --@LF Here the local bound variable "angle" if used in the same let context (e.g. let mk_(x,y) = t, z = f(x) in ...)
+        --    the projection won't work, as locally defined names are only projected after the "in"; so for now the separation 
+        --    of lets is a simple solution. 
+        --@idiom(isa) pattern bound variable cannot appear in single let 
+          magid = Angle2MagId(angle) in
+         if magid not in set dom lastMissile or
+            (magid in set dom lastMissile and
+             missilePriority(curMis) > 
+             missilePriority(lastMissile(magid)))
+         then let newOutput = 
+                     InterruptPlan(curTime,outputSoFar,
+                                   responseDB(curMis),
+                                   magid),
+                --@NB even with the explicit type given to the maplet, VDMJ "eats" up the optionality :-(
+                magidMaplet: MagMissile = {magid |-> curMis}
+              in CM(tl missileInputs, newOutput, 
+                    lastMissile ++ magidMaplet,--{magid |-> curMis},
+                    curTime + stepLength)
+         else CM(tl missileInputs, outputSoFar, lastMissile, curTime + stepLength)
+measure len missileInputs;
+
+CounterMeasures: MissileInputs -> Output
+CounterMeasures(missileInputs) ==
+  CM(missileInputs,{|->},{|->},0);
+
+end CMISA
