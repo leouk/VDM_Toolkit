@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.fujitsu</groupId>
 		<artifactId>vdmj-suite</artifactId>
-		<version>4.4.4-SNAPSHOT</version>
+		<version>4.4.5-SNAPSHOT</version>
 	</parent>
 
 	<developers>
@@ -26,12 +26,17 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.13.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fujitsu</groupId>
 			<artifactId>vdmj</artifactId>
-			<version>${revision}</version>
+			<version>4.4.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fujitsu</groupId>
+			<artifactId>lsp</artifactId>
+			<version>4.4.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

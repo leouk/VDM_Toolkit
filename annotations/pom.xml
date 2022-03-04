@@ -2,18 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-
 <!-- This is not quite right yet -->
-	<artifactId>VDMToolkit-annotations</artifactId>
-	<name>VDM Toolkit Annotations Suite</name>
+	<artifactId>VDMToolkit_annotations</artifactId>
+	<name>VDMToolkit_annotations</name>
+	<description>VDM Toolkit Annotations Suite</description>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>com.fujitsu</groupId>
 		<artifactId>vdmj-suite</artifactId>
-		<version>4.4.4-SNAPSHOT</version>
+		<version>4.4.5-SNAPSHOT</version>
 	</parent>
 	
 	<!-- sub modules -->
