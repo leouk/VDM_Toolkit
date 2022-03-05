@@ -209,6 +209,10 @@ public enum IsaToken {
 	ISAR_TRY(null, "try"),
 	ISAR_TRY0(null, "try0"),
 	ISAR_NITPICK(null, "nitpick"),
+	ISAR_UNFOLD_LOCALES(null, "unfold_locales"),
+	ISAR_SIMP(null, "simp"),
+	ISAR_SIMP_ALL(null, "simp_all"),
+	ISAR_BY(null, "by"),
 
 	MODULE(Token.MODULE, "theory"),
 	IF(Token.IF, "if"),

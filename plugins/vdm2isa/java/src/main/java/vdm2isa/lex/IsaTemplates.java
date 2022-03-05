@@ -38,6 +38,7 @@ public final class IsaTemplates {
     private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
     private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
+    private static final String LEMMA        = "lemma %1$s: \\<open>%2$s\\<close> \n\t %3$s";
     private static final String POGLOCALE    = "locale %1$s = \n\tassumes\n\t\t%2$s\nbegin\n\t%3$s\nend";
     private static final String POGSCRIPT    = "interpretation %1$s \n\t %2$s";
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
@@ -168,6 +169,27 @@ public final class IsaTemplates {
         return translateDefinition(IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
     }
 
+    public static final String translateLemmaDefinition(LexLocation module, String name, String attribute, String exp, String script)
+    {
+        assert module != null && (name == null || !name.isEmpty()) && exp != null && !exp.isEmpty();
+        if (name == null)
+        {
+            name = "";
+        }
+        if (attribute != null && !attribute.isEmpty())
+        {
+            name += "[" + attribute + "]";
+        }
+        if (script == null || script.isEmpty())
+        {
+            script = IsaToken.ISAR_OOPS.toString();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format(LEMMA, name, exp, script));
+        updateTranslatedIsaItem(module, name, IsaItem.LEMMA);
+        return sb.toString();
+    }
+
     private static final String translatePO(LexLocation module, int poNo, String po)
     {
         StringBuilder sb = new StringBuilder();
@@ -187,14 +209,50 @@ public final class IsaTemplates {
         return  module.module + IsaToken.UNDERSCORE.toString() + IsaToken.POG.toString();
     }
 
-    public static final String translatePOGLocaleInterpreation(LexLocation module, String interpretation, String script)
+    public static final String translatePOGLocaleInterpretationDefaultScript()
     {
-        assert module != null && script != null;
         StringBuilder sb = new StringBuilder();
+        sb.append("\t");
+        sb.append(IsaToken.ISAR_APPLY.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(IsaToken.ISAR_UNFOLD_LOCALES.toString());
+        sb.append("\n\t");
+        sb.append(IsaToken.ISAR_BY.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(IsaToken.ISAR_SIMP_ALL.toString());
+        return sb.toString();
+    }
+
+    //TODO script has to be per lemma?!
+    public static final String translatePOGLocaleInterpreation(LexLocation module, boolean createPOGLocaleInterpretationLemmas, String interpretation, String interpretationScript)
+    {
+        assert module != null ;//&& script != null;
+        if (interpretationScript == null || interpretationScript.isEmpty())
+        {
+            interpretationScript = createPOGLocaleInterpretationLemmas ? 
+                translatePOGLocaleInterpretationDefaultScript() : IsaToken.ISAR_OOPS.toString();
+        }
+        StringBuilder sb = new StringBuilder();
+        String pogLocaleName = IsaTemplates.pogLocaleName(module);
+        if (createPOGLocaleInterpretationLemmas)
+        {
+            SortedSet<String> pos = IsaTemplates.getIsaItemsIn(module, IsaItem.THEOREM);
+            int poNo = 1;
+            for(String po : pos)
+            {
+                sb.append("\n");
+                sb.append(translateLemmaDefinition(module, 
+                    pogLocaleName + IsaToken.UNDERSCORE.toString() + "l" + poNo, 
+                    IsaToken.ISAR_SIMP.toString(), po, "sorry"));
+                poNo++;
+                sb.append("\n");
+            }
+        }
         String pogInterpreationName = 
             (interpretation != null && !interpretation.isEmpty() ? 
-                interpretation + IsaToken.COLON.toString() : "") + IsaTemplates.pogLocaleName(module);  
-        sb.append(String.format(POGSCRIPT, pogInterpreationName));
+                interpretation + IsaToken.COLON.toString() : "") + pogLocaleName;  
+        sb.append("\n");
+        sb.append(String.format(POGSCRIPT, pogInterpreationName, interpretationScript));
         return sb.toString(); 
     }
 
