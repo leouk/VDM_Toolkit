@@ -3,6 +3,7 @@ package vdm2isa.tr.modules;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
+import plugins.IsapogPlugin;
 import vdm2isa.lex.IsaItem;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -55,7 +56,14 @@ public class TRProofObligationModule extends TRModule
     @Override 
     public String getPostScript()
     {
-        return IsaTemplates.translatePOGLocale(getLocation());
+        StringBuilder sb = new StringBuilder();
+        sb.append(IsaTemplates.translatePOGLocale(getLocation()));
+        sb.append(getFormattingSeparator());
+        sb.append(getFormattingSeparator());
+        String interpretation = null;
+        String script = null;//null=defaultScript; IsaToken.ISAR_OOPS.toString();
+        sb.append(IsaTemplates.translatePOGLocaleInterpreation(getLocation(), IsapogPlugin.createPOGLocaleInterpretationLemmas, interpretation, script));
+        return sb.toString();
     }
 
     public static final TRModule newProofObligationModule(String owner, TRDefinitionList pos) {

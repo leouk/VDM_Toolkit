@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2022-03-03T16:27:58.178065Z
+(* VDM to Isabelle Translation @2022-03-05T08:34:12.222Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 11:5
-files = [./src/test/resources/TestV2IFcns.vdmsl]
+in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 11:5
+files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns_PO
 imports TestV2IFcns
@@ -10,7 +10,7 @@ begin
 
 
 \<comment>\<open>VDM source: constS = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 11:5\<close>
 
 
 definition
@@ -22,7 +22,7 @@ where
 	
 	
 \<comment>\<open>VDM source: g = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 21:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 21:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -35,7 +35,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 29:18\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -48,7 +48,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 27:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 27:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -61,7 +61,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:20\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 30:20\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -84,7 +84,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:23\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 30:23\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -107,7 +107,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:13\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 28:13\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -120,7 +120,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:18\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 28:18\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -133,7 +133,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 33:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 33:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -146,7 +146,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 34:14\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 34:14\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -159,7 +159,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 34:19\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 34:19\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -172,7 +172,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h'' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 39:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -185,7 +185,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h'' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 42:18\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 42:18\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -208,7 +208,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h'' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 40:15\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 40:15\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -221,7 +221,7 @@ where
 	
 	
 \<comment>\<open>VDM source: h'' = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 40:20\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 40:20\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -234,7 +234,7 @@ where
 	
 	
 \<comment>\<open>VDM source: curriedS = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 49:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 49:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -247,7 +247,7 @@ where
 	
 	
 \<comment>\<open>VDM source: implicit = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 55:15\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 55:15\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -260,7 +260,7 @@ where
 	
 	
 \<comment>\<open>VDM source: implicit = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 54:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -273,7 +273,7 @@ where
 	
 	
 \<comment>\<open>VDM source: implicitexplicit = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 60:15\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 60:15\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -286,7 +286,7 @@ where
 	
 	
 \<comment>\<open>VDM source: implicitexplicit = ?\<close>
-\<comment>\<open>in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 58:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns.vdmsl) at line 58:5\<close>
 
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
@@ -301,7 +301,7 @@ where
 
 locale TestV2IFcns_POG = 
 	assumes
-			TestV2IFcns_PO1: PO10_h'_FUNC_APPLY
+			 TestV2IFcns_PO1: PO10_h'_FUNC_APPLY
 	 and TestV2IFcns_PO2: PO11_h'_SUB_TYPE
 	 and TestV2IFcns_PO3: PO12_h''_FUNC_POST_CONDITION
 	 and TestV2IFcns_PO4: PO13_h''_SUB_TYPE
@@ -325,7 +325,87 @@ begin
 	\<comment>\<open>User defined lemmas for TestV2IFcns POs\<close>
 end
 
-interpretation TestV2IFcns_POG
-  oops
 
+lemma TestV2IFcns_POG_l1: \<open>PO10_h'_FUNC_APPLY\<close> 
+  sorry
+
+lemma TestV2IFcns_POG_l2: \<open>PO11_h'_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l3: \<open>PO12_h''_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l4: \<open>PO13_h''_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l5: \<open>PO14_h''_FUNC_APPLY\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l6: \<open>PO15_h''_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l7: \<open>PO16_curriedS_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l8: \<open>PO17_implicit_TOTAL\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l9: \<open>PO18_implicit_FUNC_SATISFIABILITY\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l10: \<open>PO19_implicitexplicit_TOTAL\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l11: \<open>PO1_constS_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l12: \<open>PO20_implicitexplicit_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l13: \<open>PO2_g_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l14: \<open>PO3_h_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l15: \<open>PO4_h_FUNC_POST_CONDITION\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l16: \<open>PO5_h_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l17: \<open>PO6_h_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l18: \<open>PO7_h_FUNC_APPLY\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l19: \<open>PO8_h_SUB_TYPE\<close> 
+	 sorry
+
+lemma TestV2IFcns_POG_l20: \<open>PO9_h'_FUNC_POST_CONDITION\<close> 
+	 sorry
+interpretation TestV2IFcns_POG 
+  apply unfold_locales
+  apply (simp add: TestV2IFcns_POG_l1)
+  apply (simp add: TestV2IFcns_POG_l2)
+  apply (simp add: TestV2IFcns_POG_l3)
+  apply (simp add: TestV2IFcns_POG_l4)
+  apply (simp add: TestV2IFcns_POG_l5)
+  apply (simp add: TestV2IFcns_POG_l6)
+  apply (simp add: TestV2IFcns_POG_l7)
+  apply (simp add: TestV2IFcns_POG_l8)
+  apply (simp add: TestV2IFcns_POG_l9)
+  apply (simp add: TestV2IFcns_POG_l10)
+  apply (simp add: TestV2IFcns_POG_l11)
+  apply (simp add: TestV2IFcns_POG_l12)
+  apply (simp add: TestV2IFcns_POG_l13)
+  apply (simp add: TestV2IFcns_POG_l14)
+  apply (simp add: TestV2IFcns_POG_l15)
+  apply (simp add: TestV2IFcns_POG_l16)
+  apply (simp add: TestV2IFcns_POG_l17)
+  apply (simp add: TestV2IFcns_POG_l18)
+  apply (simp add: TestV2IFcns_POG_l19)
+  apply (simp add: TestV2IFcns_POG_l20)
+	done
 end
