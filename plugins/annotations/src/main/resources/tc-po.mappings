@@ -6,3 +6,4 @@
 package annotations.tc to annotations.po;
 map TCTimeAnnotation{name, args} to PONullAnnotation(name, args);
 map TCWitnessAnnotation{name, args} to POWitnessAnnotation(name, args);
+map TCTheoremAnnotation{name, args} to POTheoremAnnotation(name, args);

@@ -15,6 +15,8 @@ import com.fujitsu.vdmj.po.expressions.POApplyExpression;
 
 public class POWitnessAnnotation extends POAnnotation
 {
+	private static final long serialVersionUID = 1L;
+
 	public POWitnessAnnotation(TCIdentifierToken name, POExpressionList args)
 	{
 		super(name, args);

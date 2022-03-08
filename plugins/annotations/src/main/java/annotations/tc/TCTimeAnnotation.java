@@ -20,6 +20,8 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 public class TCTimeAnnotation extends TCAnnotation
 {
+	private static final long serialVersionUID = 1L;
+
 	public TCTimeAnnotation(TCIdentifierToken name, TCExpressionList args)
 	{
 		super(name, args);

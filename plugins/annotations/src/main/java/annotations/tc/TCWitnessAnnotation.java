@@ -18,6 +18,8 @@ import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
 
 public class TCWitnessAnnotation extends TCAnnotation
 {
+	private static final long serialVersionUID = 1L;
+
 	public TCWitnessAnnotation(TCIdentifierToken name, TCExpressionList args)
 	{
 		super(name, args);
