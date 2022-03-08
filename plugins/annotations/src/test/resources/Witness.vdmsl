@@ -1,0 +1,51 @@
+module Witness
+exports all
+definitions 
+
+types 
+
+--@Witness(mk_Date(0, 2, 3))
+--@Witness(mk_Date(32, 2, 2010))
+--@Witness(mk_Date(30, 2, 2010))
+Date :: 
+  day  : nat1
+  month: nat1
+  year : nat
+inv mk_Date ( d ,m, y ) == d <= 31 and m<=12 and y <=3000;
+
+functions
+	--@Witness(post_SQRT(25,5))
+	--@Witness(post_SQRT(36,6),pre_SQRT(25))
+	--@Witness(post_SQRT(121,11),pre_SQRT(121))
+	--@Witness(post_SQRT(36,5),pre_SQRT(36))
+	--@Witness(post_SQRT(36,6),pre_SQRT(36))
+	SQRT(x:nat)r:real
+	pre x < 101
+	post r = x;
+	
+	f: nat -> nat
+	f(x) == x + 1
+	pre x > 0 --@Printf(x)
+	post RESULT > x;
+	
+operations
+	--@Witness(postADD(10,mk_Register(0),mk_Register(25)),preADD(10,mk_Register(0)))
+	--@Witness(postADD(10,mk_Register(0),mk_Register(10)),preADD(10,mk_Register(0)))
+	ADD(i:nat)
+	pre i > 9 and i mod 5 = 0
+	post someStateRegister = someStateRegister + i;
+
+	Test: () ==> ()
+	Test() == (
+		--@Printf(someStateRegister)
+		someStateRegister := someStateRegister + 5;
+		--@Printf(someStateRegister)
+	)
+
+state Register of
+  someStateRegister: nat
+  inv mk_Register(someStateRegister) == someStateRegister mod 5 = 0
+  init reg == reg = mk_Register(0)
+end
+
+end Witness
