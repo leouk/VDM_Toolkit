@@ -16,6 +16,7 @@ import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.definitions.TRProofScriptStepDefinition;
 import vdm2isa.tr.definitions.TRQualifiedDefinition;
 import vdm2isa.tr.definitions.TRRenamedDefinition;
+import vdm2isa.tr.definitions.TRStateDefinition;
 import vdm2isa.tr.definitions.TRTypeDefinition;
 import vdm2isa.tr.definitions.TRValueDefinition;
 
@@ -81,6 +82,10 @@ public abstract class TRDefinitionVisitor<R, S>
     }
 
     public R caseImplicitFunctionDefinition(TRImplicitFunctionDefinition node, S arg) {
+        return caseDefinition(node, arg);
+    }
+
+    public R createStateDefinition(TRStateDefinition node, S arg) {
         return caseDefinition(node, arg);
     }
 }

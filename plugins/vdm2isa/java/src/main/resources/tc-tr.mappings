@@ -21,6 +21,8 @@ map TCQualifiedDefinition{location, comments, annotations, name, nameScope, used
 map TCImportedDefinition{location, comments, annotations, name, nameScope, used, excluded, def} to TRImportedDefinition(this, location, comments, annotations, name, nameScope, used, excluded, def);
 map TCRenamedDefinition{location, comments, annotations, name, used, excluded, def} to TRRenamedDefinition(this, location, comments, annotations, name, used, excluded, def);
 
+map TCStateDefinition{location, comments, annotations, name, nameScope, used, excluded, recordType, initPattern, initExpression, initdef, statedefs, canBeExecuted} to TRStateDefinition(this, location, comments, annotations, name, nameScope, used, excluded, recordType, initPattern, initExpression, initdef, statedefs, canBeExecuted);
+
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
 #############################################################################

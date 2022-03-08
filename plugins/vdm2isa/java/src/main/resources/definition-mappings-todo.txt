@@ -24,16 +24,16 @@
 -TCUntypedDefinition (this is used in TCValueDefinition for calculating things then gets resolved)
 *TCImportedDefinition
 *TCRenamedDefinition
+*TCStateDefinition
 
 TCImplicitFunctionDefinition
-TCStateDefinition
 TCExplicitOperationDefinition
 TCImplicitOperationDefinition
 TCNamedTraceDefinition
 TCAssignmentDefinition
 TCExternalDefinition
 
-(26 of 33) = 79%
+(27 of 33) = 79%
 
  26  33 defs  ( 79%)
  37  37 binds (100%)
