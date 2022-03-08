@@ -14,7 +14,18 @@ definitions
 \end{vdm_al}
 \subsection{The System State and Events} 
 
+
 \begin{vdm_al}
+  RExchange ::
+   status: map Subscriber to Status
+   calls:  inmap Subscriber to Subscriber
+ inv mk_Exchange(status, calls) == 
+    forall i in set dom calls & 
+       (status(i) = <WI> and status(calls(i)) = <WR>) 
+       or
+       (status(i) = <SI> and status(calls(i)) = <SR>)
+ ;
+ 
  state Exchange of
    status: map Subscriber to Status
    calls:  inmap Subscriber to Subscriber
