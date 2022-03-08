@@ -40,6 +40,7 @@ import vdm2isa.tr.expressions.TRSeqEnumExpression;
 import vdm2isa.tr.expressions.TRSetCompExpression;
 import vdm2isa.tr.expressions.TRSetEnumExpression;
 import vdm2isa.tr.expressions.TRSetRangeExpression;
+import vdm2isa.tr.expressions.TRStateInitExpression;
 import vdm2isa.tr.expressions.TRSubseqExpression;
 import vdm2isa.tr.expressions.TRTupleExpression;
 import vdm2isa.tr.expressions.TRUnaryExpression;
@@ -251,6 +252,10 @@ public abstract class TRExpressionVisitor<R, S>
     }
 
     public R caseMkBasicExpression(TRMkBasicExpression node, S arg) {
+        return caseExpression(node, arg);
+    }
+
+    public R caseStateInitExpression(TRStateInitExpression node, S arg) {
         return caseExpression(node, arg);
     }
 }

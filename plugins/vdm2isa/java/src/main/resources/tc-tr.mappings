@@ -153,6 +153,8 @@ map TCVariableExpression{location, name, original, vardef, exptype} to TRVariabl
 map TCPreExpression{location, function, args, exptype} to TRPreExpression(location, this, function, args, exptype);
 map TCFuncInstantiationExpression{function, type, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(this, function, type, actualTypes, expdef, exptype);
 
+map TCStateInitExpression{location, state, exptype} to TRStateInitExpression(this, location, state, exptype);
+
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
 #############################################################################

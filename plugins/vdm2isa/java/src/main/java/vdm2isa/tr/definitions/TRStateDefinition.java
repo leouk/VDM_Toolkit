@@ -44,7 +44,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         TRPattern initPattern,
         TRExpression initExpression, 
         TRExplicitFunctionDefinition initdef, 
-        //TRDefinitionList statedefs, 
+        TRDefinitionList statedefs, 
         boolean canBeExecuted  
         ) 
     {
@@ -52,7 +52,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         this.initPattern = initPattern;
         this.initExpression = initExpression;
         this.initdef = initdef;
-        this.statedefs = null;//statedefs; 
+        this.statedefs = statedefs; 
         this.canBeExecuted = canBeExecuted; 
         // see similar exmaple in TRMapType etc. 
         this.recordType = recordType;   // super.type = this.recordType; needed for TR mapping 
