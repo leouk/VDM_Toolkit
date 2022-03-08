@@ -1,0 +1,9 @@
+module MinimalTheorem
+exports all
+definitions 
+types 
+    T = nat
+    inv t == t > 10;
+
+    --@Theorem("T_Test", forall x: T & x > 0) 
+end MinimalTheorem

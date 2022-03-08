@@ -76,6 +76,7 @@ do
     shift
 done
 
+# MAVENREPO/vdmlib/${VERSION}/vdmlib-${VERSION}.jar
 # Locate the jars
 VDMJ_JAR=$MAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar
 STDLIB_JAR=$MAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
@@ -95,13 +96,11 @@ then
     check "$ANNOTATIONS_JAR"
     ANNOTATIONS2_JAR=$MAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
     check "$ANNOTATIONS2_JAR"
-    ANNOTATIONS3_JAR=$MAVENREPO/annotations3/${VERSION}/annotations3-${VERSION}.jar
+    VDM_TOOLKIT_ANNOTATIONS_JAR=$MAVENREPO/annotations3/${VERSION}/annotations3-${VERSION}.jar
     check "$ANNOTATIONS3_JAR"
-    WITNESS_JAR=$MAVENREPO/witness/${VERSION}/witness-${VERSION}.jar
-    check "$WITNESS_JAR"
     VDMJ_OPTS="$VDMJ_OPTS -annotations"
     VM_OPTS="$VM_OPTS -Dannotations.debug"
-    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$ANNOTATIONS3_JAR:$WITNESS_JAR"
+    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$VDM_TOOLKIT_ANNOTATIONS_JAR"
 fi
 
 # The dialect is based on $0, so hard-link this file as vdmsl, vdmpp and vdmrt.

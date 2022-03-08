@@ -9,8 +9,6 @@ import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.pog.TheoremObligation;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 
-import org.ietf.jgss.Oid;
-
 public class POTheoremAnnotation extends POAnnotation {
 
     private static final long serialVersionUID = 1L;
