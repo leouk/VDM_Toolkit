@@ -1,7 +1,0 @@
-##########################################################################################
-# The annotation class mapping definition for the VDMJ Interpreter. See ClassMapper.
-##########################################################################################
-
-# annotations
-package annotations.tc to annotations.in;
-map TCTimeAnnotation{name, args} to INTimeAnnotation(name, args);
