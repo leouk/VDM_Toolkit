@@ -336,10 +336,13 @@ lemma TestV2IFcns_POG_l3[simp]: \<open>PO12_h''_FUNC_POST_CONDITION\<close>
 	 sorry
 
 lemma TestV2IFcns_POG_l4[simp]: \<open>PO13_h''_SUB_TYPE\<close> 
-	 sorry
+  unfolding PO13_h''_SUB_TYPE_def inv_VDMNat_def
+  using PO10_h'_FUNC_APPLY_def inv_VDMNat_def pre_g_def by auto
 
 lemma TestV2IFcns_POG_l5[simp]: \<open>PO14_h''_FUNC_APPLY\<close> 
-	 sorry
+  unfolding PO14_h''_FUNC_APPLY_def inv_VDMNat_def pre_g_def inv_VDMNat1_def
+  nitpick
+  oops
 
 lemma TestV2IFcns_POG_l6[simp]: \<open>PO15_h''_SUB_TYPE\<close> 
 	 sorry

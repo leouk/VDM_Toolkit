@@ -98,7 +98,7 @@ definition
 value "[1::nat \<mapsto> 2::nat, 3 \<mapsto> 3] 10"
 text \<open>Set bound map comprehension can filter bound set for their elements invariants.
       This corresponds to the VDMSL expression
-      %
+      % TODO use x and y instead of d and r?  
       \begin{vdmssl}
         { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) }
         domexpr: S * T -> S
@@ -112,6 +112,8 @@ text \<open>Set bound map comprehension can filter bound set for their elements 
       might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
       so that @{lemma "[1::nat \<mapsto> 2::nat, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
      \<close>
+value "((1::real) / (0::real)) + 5"
+value "(3 - (5::nat))"
 definition 
   mapCompSetBound :: "'a set \<Rightarrow> 'b set \<Rightarrow> ('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
   where

@@ -6,4 +6,12 @@ types
     inv t == t > 10;
 
     --@Theorem("T_Test", forall x: T & x > 0) 
+
+functions 
+    f: nat * nat1 -> nat1 
+    f(x,y) == x + y;
+
+    --@Lemma("fProp1L", .....)
+
+    --@Theorem("fProperty1", forall x: nat, y : nat1 & x < f(x,y) and y < f(x,y))
 end MinimalTheorem
