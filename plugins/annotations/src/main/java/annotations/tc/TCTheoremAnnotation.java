@@ -77,7 +77,7 @@ public class TCTheoremAnnotation extends TCAnnotation {
                 TCVariableExpression varExpr = (TCVariableExpression)e;
                 //TCNameToken name =new TCNameToken(strExpr.location, strExpr.location.module, strExpr.value.value);
                 //@NB should this be GLOBAL or NAMES? 
-                TCDefinition d = env.findName(varExpr.name, NameScope.GLOBAL);
+                TCDefinition d = env.findName(varExpr.name, NameScope.NAMESANDSTATE);
                 if (d != null)
                 {
                     varExpr.report(6008, String.format("@Theorem name `%1$s` has already been defined", varExpr.name.toString()));
