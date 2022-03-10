@@ -2208,28 +2208,27 @@ value " 7 vdmrem (-3::\<int>) =  1"
 
 value "inds0 [A, B, C]"
 value "nths [1,2,(3::nat)] {2..3}"
-value "[1,2,3::nat] {2$$3}"
 
 (*lemma "s$${l..u} = subSeq s {l..u}" *)
 (* negatives give funny result, as nat -4 = 0 and nat -1 = 0! *)
 value "nths [A,B,C,D] {(nat (-1))..(nat (-4))}"
 value "nths [A,B,C,D] {(nat (-4))..(nat (-1))}"
-value "[A,B,C,D]$${-4..-1}"
-value "[A,B,C,D]$${-1..-4}"
-value "[A,B,C,D,E]$${4..1}"
-value "[A,B,C,D,E]$${1..5}" (* 5-1+1*)
-value "[A,B,C,D,E]$${2..5}" (* 5-2+1*)
-value "[A,B,C,D,E]$${1..3}"
-value "[A,B,C,D,E]$${0..2}"
-value "[A,B,C,D,E]$${-1..2}"
-value "[A,B,C,D,E]$${-10..20}"
-value "[A,B,C,D,E]$${2..-1}"
-value "[A,B,C,D,E]$${2..2}"
-value "[A,B,C,D,E]$${0..1}"
-value "len ([A,B,C,D,E]$${2..2})"
-value "len ([A]$${2..2})"
+value "[A,B,C,D]$$${-4..-1}"
+value "[A,B,C,D]$$${-1..-4}"
+value "[A,B,C,D,E]$$${4..1}"
+value "[A,B,C,D,E]$$${1..5}" (* 5-1+1*)
+value "[A,B,C,D,E]$$${2..5}" (* 5-2+1*)
+value "[A,B,C,D,E]$$${1..3}"
+value "[A,B,C,D,E]$$${0..2}"
+value "[A,B,C,D,E]$$${-1..2}"
+value "[A,B,C,D,E]$$${-10..20}"
+value "[A,B,C,D,E]$$${2..-1}"
+value "[A,B,C,D,E]$$${2..2}"
+value "[A,B,C,D,E]$$${0..1}"
+value "len ([A,B,C,D,E]$$${2..2})"
+value "len ([A]$$${2..2})"
 value "card {(2::int)..2}"
-value "[A,B,C,D,E]$${0..0}"
+value "[A,B,C,D,E]$$${0..0}"
 find_theorems "card {_.._}"
 
 subsection \<open> Set translations: enumeration, comprehension, ranges \<close>
