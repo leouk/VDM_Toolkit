@@ -4,12 +4,15 @@
 *)
 theory VDMToolkit
   imports 
-(* Include real fields, list and option type ordering *)
+    \<comment> \<open> Include real fields, list and option types ordering \<close>
     Complex_Main 
     "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
     "HOL-Library.LaTeXsugar"
 begin
+
+(*****************************************************************)      
+section \<open> Basic types \<close>  
 
 type_notation bool ("\<bool>")
 type_notation nat ("\<nat>")
@@ -17,9 +20,13 @@ type_notation int ("\<int>")
 type_notation rat ("\<rat>")
 type_notation real ("\<real>")
 
-(*****************************************************************)      
-section \<open> Basic types \<close>  
-                                                     
+text \<open>VDM numeric expressions have a series of implicit type widening rules. For 
+      example, \<^term>\<open>(4::\<nat>) - (x::\<nat>)\<close> could lead to an integer \<^term>\<open>-y\<close> result, despite 
+      all parameters involved being \<^typ>\<open>\<nat>\<close>, whereas in HOL, the result is always a \<^typ>\<open>\<nat>\<close> 
+      ultimately equal to\<^term>\<open>0\<close>.
+
+      Therefore, we take the view of the widest (compatible) type to use in the translation,
+      where type widening to \<^typ>\<open>\<rat>\<close> or \<^typ>\<open>\<real>\<close> is dealt with through Isabelle's type coercions.\<close>
 type_synonym VDMNat  = \<int>
 type_synonym VDMNat1 = \<int>
 type_synonym VDMInt  = \<int>
@@ -27,6 +34,9 @@ type_synonym VDMRat  = \<rat>
 type_synonym VDMReal = \<real>
 type_synonym VDMChar = char
 
+text \<open>Moreover, VDM type invariant checks have to be made explicit in VDM. That is possible either 
+     through subtyping, which will require substantial proof-engineering machinery; or through explicit
+     type invariant predicates. We choose the later for all VDM types.\<close>
 definition
   inv_VDMNat :: "\<int> \<Rightarrow> \<bool>"
 where
@@ -90,7 +100,9 @@ lemma l_inv_True_True[simp]: "inv_True r"
 text \<open>VDM has div and mod but also rem for remainder. This is treated 
 differently depending on whether the values involved have different sign.
 For now, we add these equivalences below, but might have to pay price in proof
-later (i.e. TODO: add lemmas linking vdmdiv/rem to Isabelle's div/mod). \<close>
+later. 
+
+To illustrate this difference consider\<close>
 
 value " 7 div ( 3::\<int>) =  2"
 value "-7 div (-3::\<int>) =  2"
@@ -112,7 +124,9 @@ value "0 div (-3::\<int>) = 0"
 lemma "\<lfloor>10.01323\<rfloor> = 10" apply (simp only: floor_eq_iff)
   by (simp add: floor_eq_iff)
 
-text \<open>VDM narrow expressions are tricky; but at least for reals/rat (floor_ceiling class) to VDMInt is fine\<close>
+text \<open>In general, VDM narrow expressions are tricky, given they can downcast types according 
+  to the user-specified type of interest. In particular, at least for \<^typ>\<open>\<real>\<close> and \<^typ>\<open>\<rat>\<close> 
+  (floor_ceiling type class), type narrowing to \<^typ>\<open>VDMInt\<close> is fine\<close>
 definition 
   vdm_narrow_real :: "('a::floor_ceiling) \<Rightarrow> VDMInt"
   where
@@ -130,40 +144,6 @@ where
        -\<lfloor>\<bar>-x / y\<bar>\<rfloor>
     else  
        \<lfloor>\<bar>x / y\<bar>\<rfloor>)"  
-
-lemma vdmdiv_div_ge0[simp] : 
-  "x \<ge> 0 \<Longrightarrow> y \<ge> 0 \<Longrightarrow> x vdmdiv y = x div y"
-  unfolding vdm_div_def
-  apply (induct y) apply simp_all
-  by (metis divide_less_0_iff floor_divide_of_int_eq floor_less_zero floor_of_int floor_of_nat le_less_trans less_irrefl of_int_of_nat_eq of_nat_less_0_iff)
-(*
-  apply (induct x)
-   apply simp_all
-  apply (induct y)
-   apply safe
-     apply (simp add: divide_less_0_iff)
-  apply (metis abs_of_nat floor_divide_of_int_eq of_int_of_nat_eq)
-   defer
-  using divide_pos_neg apply force
-  using [[show_types]]
-  nitpick
-
-Nitpicking goal:
-  \<And>n na.
-     real (na::nat) / real_of_int (- int (Suc (n::nat))) < 0 \<Longrightarrow>
-     - \<lfloor>real na / \<bar>real_of_int (- int (Suc n))\<bar>\<rfloor> = int na div - int (Suc n) 
-Nitpick found a counterexample:
-
-  Skolem constants:
-    n = 1
-    na = 1
-
-1 / -2  < 0 \<Longrightarrow>
-      0 = 1 div -2
-
-  value "(1::int) div -2 = -1"
-  value "\<lfloor>1 / (2::real)\<rfloor> = 0"
-*)
 
 definition
   pre_vdm_div :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>"
@@ -183,12 +163,6 @@ definition
 where
   [intro!] :
   "x vdmmod y \<equiv> x - y * \<lfloor>x / y\<rfloor>"
-
-lemma vdmmod_mod_ge0[simp] : 
-  "y \<ge> 0 \<Longrightarrow> x vdmmod y = x mod y"
-  unfolding vdm_mod_def
-  apply (induct y) apply simp_all
-  by (metis floor_divide_of_int_eq minus_div_mult_eq_mod mult.commute of_int_of_nat_eq)
 
 definition
   pre_vdm_mod :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>"
@@ -236,17 +210,17 @@ value "-7 vdmrem (-3::\<int>) = -1"
 value "-7 vdmrem ( 3::\<int>) = -1" 
 value " 7 vdmrem (-3::\<int>) =  1"
 
-text \<open>VDM has the ** operator for numbers, which is Math.pow, and accepts 
-non-integer exponents. For Isabelle, we have ^ for nat, and powr for a subset 
-of the reals (i.e. real_normed_algebr_1+banach; natural logarithm exponentiation). 
-This assumes that the parameters involved will be of similar nature. \<close>
+text \<open>VDM has the power (\verb'**') operator for numbers, which is \<^term>\<open>Transcendental.powr\<close> in Issable. 
+   Like in VDM, it accepts non-integer exponents. Isabelle have \<^term>\<open>x^y\<close> for exponent \<^term>\<open>y\<close> of type \<^typ>\<open>\<nat>\<close>, 
+   and \<^term>\<open>x powr y\<close> for exponent \<^term>\<open>y\<close> that is a subset of the \<^typ>\<open>\<real>\<close> (i.e. real normed algebra natural logarithms; 
+  or natural logarithm exponentiation). We take the latter for translation.\<close>
 
 find_theorems "_ _ (_::real)" name:powr 
 lemma "4 powr (1/(2::int)) = 2" by simp
 
 definition
   vdm_pow :: "'a::ln \<Rightarrow> 'a::ln \<Rightarrow> 'a::ln" (infixl "vdmpow" 80)
-  where
+  where                     
   [intro!]: "x vdmpow y \<equiv> x powr y"
 
 definition
@@ -259,40 +233,60 @@ definition
   where
   "post_vdm_pow_post x y RESULT \<equiv> True"
 
-text \<open>For floor and abs, we just use Isabelle's. Note that in VDM abs of int 
-will return int, so this will entail more complicated translations. \<close>
+text \<open>For VDM floor and abs, we use Isabelle's. Note that in VDM abs of \<^typ>\<open>\<int>\<close>  
+will return \<^typ>\<open>VDMNat\<close>, as the underlying type invariant might require further filtering 
+on the function's results. \<close>
 
 find_theorems "_ (_::'a list list)" name:concat
 definition 
-  vdm_floor :: "VDMReal \<Rightarrow> VDMInt"
+  vdm_floor :: "VDMReal \<Rightarrow> VDMNat"
   where
   [intro!]: "vdm_floor x \<equiv> \<lfloor>x\<rfloor>"
 
+text \<open>The postcondition for flooring, takes the axiom defined in the archimedian field type class\<close>
 definition
-  post_vdm_floor :: "VDMReal \<Rightarrow> VDMInt \<Rightarrow> \<bool>"
+  post_vdm_floor :: "VDMReal \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
   where
   "post_vdm_floor x RESULT \<equiv> 
     of_int RESULT \<le> x \<and> x < of_int (RESULT + 1)"    
-  (* same as the floor_correct axiom of Archimedian_Field*)
 
 definition 
   vdm_abs :: "('a::{zero,abs,ord}) \<Rightarrow> ('a::{zero,abs,ord})"
   where
   [intro!]: "vdm_abs x \<equiv> \<bar>x\<bar>"
 
+text \<open>Absolute postcondition does not use \<^term>\<open>inv_VDMNat\<close> because the result could also be of type \<^typ>\<open>\<real>\<close>.\<close>
 definition
   post_vdm_abs :: "('a::{zero,abs,ord}) \<Rightarrow> ('a::{zero,abs,ord}) \<Rightarrow> \<bool>"
   where
   "post_vdm_abs x RESULT \<equiv> RESULT \<ge> 0" (*inv_VDMNat RESULT"*)
 
+text \<open>For positive operands of VDM's div/mod, we can get back to Isabelle's version, which will give access
+to various lemmas useful in proofs. So, if possible, automatically jump to the Isabelle versions.\<close>
+lemma vdmdiv_div_ge0[simp] : 
+  "x \<ge> 0 \<Longrightarrow> y \<ge> 0 \<Longrightarrow> x vdmdiv y = x div y"
+  unfolding vdm_div_def
+  apply (induct y) apply simp_all
+  by (metis divide_less_0_iff floor_divide_of_int_eq floor_less_zero floor_of_int floor_of_nat le_less_trans less_irrefl of_int_of_nat_eq of_nat_less_0_iff)
+
+lemma vdmmod_mod_ge0[simp] : 
+  "y \<ge> 0 \<Longrightarrow> x vdmmod y = x mod y"
+  unfolding vdm_mod_def
+  apply (induct y) apply simp_all
+  by (metis floor_divide_of_int_eq minus_div_mult_eq_mod mult.commute of_int_of_nat_eq)
+
 subsection \<open>VDM tokens\<close>
 
 text 
-\<open>VDM tokens are like a record of parametric type (i.e. you can 
+\<open>VDM tokens are like a record with a parametric type (i.e. you can 
 have anything inside a mk_token(x) expression, akin to a VDM record
-like Token :: token : ?. Isabelle does not allow parametric records.
-Chose to use datatypes instead. \<close>
+ \verb'Token :: token : ?', where \verb'?' refers to \verb'vdmj' wildcard type. 
+Isabelle does not allow parametric records, hence we use datatypes instead. 
 
+This will impose the restriction on token variables during translation: they will always 
+have to be of the same inner type; whereas for token constants, then any type is acceptable. \<close>
+(* types T = token; values x: T = mk_token("ABC"); y: T = mk_token(10); --wrong type inference for 'a
+   values z: token = mk_token("ABC"); w: token = mk_token(10); -- okay given no specific type synonym for 'a *)
 datatype 'a VDMToken = Token 'a
 
 definition 
@@ -305,6 +299,9 @@ definition
   where
   "inv_VDMToken' inv_T t \<equiv> case t of Token a \<Rightarrow> inv_T a"
 
+text \<open>Isabelle lemmas definitions are issues for all the inner calls and related definitions used
+      within given definitions. This allows for a laywered unfolding and simplification of VDM terms 
+      during proofs. \<close>
 lemmas inv_VDMToken'_defs = inv_VDMToken'_def inv_True_def
 
 lemma l_inv_VDMTokenI[simp]: "inv_T a \<Longrightarrow> t = (Token a) \<Longrightarrow> inv_VDMToken' inv_T t" 
@@ -312,7 +309,13 @@ lemma l_inv_VDMTokenI[simp]: "inv_T a \<Longrightarrow> t = (Token a) \<Longrigh
 
 (*****************************************************************)
 section \<open> Sets \<close>
-  
+
+text \<open>All VDM structured types (e.g. sets, sequences, maps, etc.) must check the
+     type invariant of its constituent parts, beyond any user-defined invariant. 
+
+      Moreover, all VDM sets are finite. Therefore, we define VDM set invariant checks as
+      combination of finiteness checks with invariant checks of its elements type. \<close>
+
 type_synonym 'a VDMSet = "'a set"
 type_synonym 'a VDMSet1 = "'a set"
 
@@ -1211,6 +1214,8 @@ text \<open>Set bound map comprehension can filter bound set for their elements 
       %
       \begin{vdmssl}
         { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) }
+        { domexpr(d, r) | d in set S , r in set T & pred(d, r) } 
+        { rngexpr(d, r) | d in set S , r in set T & pred(d, r) }
         domexpr: S * T -> S
         rngexpr: S * T -> T
         pred   : S * T -> bool 
