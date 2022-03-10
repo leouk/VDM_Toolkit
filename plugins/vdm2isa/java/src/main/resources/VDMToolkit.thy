@@ -577,44 +577,6 @@ lemma l_vdmsubseq_empty[simp]:
 lemma l_vdmsubseq_beyond[simp]: 
   "l > u \<Longrightarrow> s $$ {l..u} = []" unfolding applyVDMSubseq_def by simp
 
-\<comment> \<open> The nat conversion makes int a nat, but the subtration of Suc 0 makes it int again! \<close>
-lemma l_vdmsubseq_len_l0: "{i. i < length s \<and>  nat l - Suc 0 \<le> i \<and> i \<le>  nat u - Suc 0} = 
-       {nat l - Suc 0..nat u - Suc 0} \<inter> {0..<(length s)}"  
-  by (safe;simp)
-
-lemma l_vdmsubseq_len_l1: "
-       {nat l - Suc (0::\<nat>)..nat u - Suc (0::\<nat>)} \<inter> {0::\<nat>..<length s} =
-       {int (nat l - Suc (0::\<nat>))..int (nat u - Suc (0::\<nat>))} \<inter> {0::\<int>..<int (length s)}"
-  by simp
-
-lemma l_vdmsubseq_len[simp]:
-  "len (s $$ {l..u}) = nat (u - l)"
-  unfolding applyVDMSubseq_def len_def
-  apply (simp add: length_nths) 
-  apply (induct s)
-  
-  apply (insert l_vdmsubseq_len_l1[of l u s])
-   apply (simp add: l_isa_card_inter_bound) 
-  
-  find_theorems "card (_ \<inter> _)"
-  oops
-
-lemma "l \<le> u \<Longrightarrow> s \<noteq> [] \<Longrightarrow> len (s $$ {l..u}) = (if l \<le> 1 then min 0 (min u (len s)) else u - l + 1)" 
-  unfolding applyVDMSubseq_def inv_VDMNat1_def len_def min_def
-  apply (simp add: length_nths;safe) nitpick
-     apply (subgoal_tac "{i. i < length s \<and> i \<le> nat u - Suc 0} = {0..u-1}")
-  apply (subgoal_tac "card {0..u - 1} = u", simp)
-  oops
-
-lemma l_vdmsubseq_len[simp]: 
-  "len (s $$ {l..u}) = (if (s = [] \<or> l > u \<or> l \<le> 0 \<or> u \<le> 0) then 0 else u - l + 1)" 
-  unfolding applyVDMSubseq'_def inv_VDMNat1_def len_def
-  apply (simp)  
-   apply (subgoal_tac "{i. i < length s \<and> nat l - Suc 0 \<le> i \<and> i \<le> nat u - Suc 0} = {nat l - Suc 0..nat u - Suc 0+1}")
-   apply simp_all
-  nitpick
-  oops
-
 (*
 s(i,...,j) = 
 
@@ -632,23 +594,18 @@ s(i,...,j) =
   "len (s $$ {l..u}) = (min 0 (max 1 ((min u (len s)) - (min l 1) + 1)))"
 *)
 
-
-lemma l1: "{i. i < length s \<and> nat l - Suc 0 \<le> i \<and> i \<le> nat u - Suc 0} = 
-            (if l < u then {(nat l) - 1..(nat u) - 1} else {})"
-  apply (safe) nitpick oops
-
-lemma l_vdmsubseq_len[simp]: 
-  "len (s $$ {l..u}) = max 0 ((min (nat u) (len s) - max 1 (nat l)) + 1)" 
-  unfolding applyVDMSubseq'_def inv_VDMNat1_def len_def 
-  apply (simp add: length_nths;safe)
-   defer
+lemma "len (s $$ {i..j}) = (min j ((len s) - (max 1 i))) + 1"
+  unfolding applyVDMSubseq_def len_def
+  apply (simp add: length_nths)
+  unfolding min_def max_def apply (simp, safe)
+  apply (induct s)
    apply simp
-  apply (simp ) (*add: l1) *)
-  nitpick oops
+      apply (induct i )
+  oops
   
 lemma l_vdmsubseq_ext_eq:
-  "inv_VDMNat1 l \<Longrightarrow> inv_VDMNat1 u \<Longrightarrow> s $$ {l..u} = (extendedSubSeq s {l..u})" 
-  unfolding extendedSubSeq_def applyVDMSubseq'_def inv_VDMNat1_def 
+  "inv_VDMNat1 l \<Longrightarrow> inv_VDMNat1 u \<Longrightarrow> s $$$ {l..u} = s $$ {l..u}" 
+  unfolding applyVDMSubseq_def applyVDMSubseq'_def inv_VDMNat1_def 
   apply (simp;safe)
   apply (subgoal_tac "{nat l - Suc 0..nat u - Suc 0} = {x. l \<le> int x + 1 \<and> int x + 1 \<le> u}")
    apply (erule subst; simp)
@@ -657,9 +614,6 @@ lemma l_vdmsubseq_ext_eq:
   apply (subgoal_tac "{x. l \<le> int x + 1 \<and> int x + 1 \<le> u} = {}")
    apply (erule ssubst,simp)
   by auto
-
-text \<open> VDM \verb'l1 ++ l2' is just @{term "l1 @ l2"} \<close> 
-thm append_def
 
 lemmas applyVDMSeq_defs = applyVDMSeq_def inv_VDMNat1_def len_def
 
