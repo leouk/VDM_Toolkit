@@ -19,8 +19,8 @@ public class INTheoremAnnotation extends INAnnotation {
     protected void doInit(Context ctxt)
     {
         INExpression e = args.get(0);
-        Console.out.print("Attempting proof by symbolic execution for @Theorem " + e.toString() + 
-            " in " + e.getLocation().module + " " + args.get(0).getLocation().toShortString());
+        Console.out.print("Attempting proof by symbolic execution for @" + name.getName() + 
+            " " + e.toString() + " in " + e.getLocation().module + " " + args.get(0).getLocation().toShortString());
         for(int i = 1; i < args.size(); i++)
         {
             try 
