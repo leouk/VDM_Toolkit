@@ -1,7 +1,6 @@
 package annotations.po;
 
 import com.fujitsu.vdmj.po.annotations.POAnnotation;
-import com.fujitsu.vdmj.po.definitions.PODefinition;
 import com.fujitsu.vdmj.po.expressions.POExpressionList;
 import com.fujitsu.vdmj.po.modules.POModule;
 import com.fujitsu.vdmj.pog.POContextStack;
@@ -20,7 +19,6 @@ public class POTheoremAnnotation extends POAnnotation {
     @Override 
     public void poAfter(POModule module, ProofObligationList list)
 	{
-        //@NB is that right? 
 		TheoremObligation po = new TheoremObligation(module.location, args.get(0).toString(), args.get(1).toString(), new POContextStack());
         list.add(po);
 	}

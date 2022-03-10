@@ -7,9 +7,8 @@ import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
-import com.fujitsu.vdmj.tc.expressions.TCStringLiteralExpression;
+import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
-import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.statements.TCStatement;
 import com.fujitsu.vdmj.typechecker.Environment;
@@ -60,56 +59,43 @@ public class TCTheoremAnnotation extends TCAnnotation {
 		checkArgs(env, scope);
 	}
 
-    public static final boolean validIdentifier(String identifier)
-    {
-        //@NB what woudl be the best way to check for "valid" VDM identifiers? 
-        return true;
-    }
-
-
 	private void checkArgs(Environment env, NameScope scope)
 	{
 		if (args.isEmpty())
 		{
-			name.report(6008, "@Theorem must start with an unique theorem name identifier (VDM string-literal) argument");
+			name.report(6008, "@Theorem must start with an unique theorem name identifier argument");
 		}
+        // else if (args.size() > 2)
+        // {
+        //     name.report(6008, "@Theorem must contain exactly two arguments: the theorem name and its defining predicate");
+        // }
 		else
 		{
-            Iterator<TCExpression> eit = args.iterator();
-            TCExpression e = eit.next();
-            if (e instanceof TCStringLiteralExpression)
+            TCExpression e = args.get(0);
+            if (e instanceof TCVariableExpression)
 			{
-                TCStringLiteralExpression strExpr = (TCStringLiteralExpression)e;
-                if (!validIdentifier(strExpr.value.value))
+                TCVariableExpression varExpr = (TCVariableExpression)e;
+                //TCNameToken name =new TCNameToken(strExpr.location, strExpr.location.module, strExpr.value.value);
+                //@NB should this be GLOBAL or NAMES? 
+                TCDefinition d = env.findName(varExpr.name, NameScope.GLOBAL);
+                if (d != null)
                 {
-                    //@NB is this the right report number? 
-                    strExpr.report(6008, "@Theorem name parameter must be valid Isabelle name idenfier");
+                    varExpr.report(6008, String.format("@Theorem name `%1$s` has already been defined", varExpr.name.toString()));
                 }
-                else
+                else 
                 {
-                    TCNameToken name = new TCNameToken(strExpr.location, strExpr.location.module, strExpr.value.value);
-                    //@NB should this be GLOBAL or NAMES? 
-                    TCDefinition d = env.findName(name, NameScope.GLOBAL);
-                    if (d != null)
+                    for(int i = 1; i < args.size(); i++)
                     {
-                        strExpr.report(6008, String.format("@Theorem name `%1$s` has already been defined", strExpr.value.value));
-                    }
-                    else 
-                    {
-                        while (eit.hasNext())
-                        {
-                            e = eit.next();
-                            //@NB should this be NameScope.GLOBAL? Or which one? 
-                            //    the theorem expr should type check as if it was defined
-                            //    as a global boolean value
-                            e.typeCheck(env, null, scope, null);	// Just checks scope
-                        }    
-                    }
+                        //@NB should this be NameScope.GLOBAL? Or which one? 
+                        //    the theorem expr should type check as if it was defined
+                        //    as a global boolean value
+                        args.get(i).typeCheck(env, null, scope, null);	// Just checks scope
+                    }    
                 }				
 			}
 			else
 			{
-                name.report(6008, "@Theorem must start with an unique theorem name identifier (VDM string-literal) argument");
+                name.report(6008, "@Theorem must start with an unique theorem name identifier argument");
 			}
 		}
 	}
