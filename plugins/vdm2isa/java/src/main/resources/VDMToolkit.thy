@@ -9,6 +9,7 @@ theory VDMToolkit
     "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
     "HOL-Library.LaTeXsugar"
+    "HOL-Library.While_Combinator"
 begin
 
 (*****************************************************************)      
@@ -99,7 +100,7 @@ lemma l_inv_True_True[simp]: "inv_True r"
 
 text \<open>In general, VDM narrow expressions are tricky, given they can downcast types according 
   to the user-specified type of interest. In particular, at least for \<^typ>\<open>\<real>\<close> and \<^typ>\<open>\<rat>\<close> 
-  (floor_ceiling type class), type narrowing to \<^typ>\<open>VDMInt\<close> is fine\<close>
+  (\<^term>\<open>floor_ceiling\<close> type class), type narrowing to \<^typ>\<open>VDMInt\<close> is fine\<close>
 definition 
   vdm_narrow_real :: "('a::floor_ceiling) \<Rightarrow> VDMInt"
   where
@@ -279,7 +280,7 @@ subsection \<open>VDM tokens\<close>
 
 text 
 \<open>VDM tokens are like a record with a parametric type (i.e. you can 
-have anything inside a mk_token(x) expression, akin to a VDM record
+have anything inside a \verb'mk_token(x)' expression, akin to a VDM record
  \verb'Token :: token : ?', where \verb'?' refers to \verb'vdmj' wildcard type. 
 Isabelle does not allow parametric records, hence we use datatypes instead. 
 
@@ -1108,24 +1109,24 @@ text \<open>Isabelle maps are similar to VDMs, but with some significant differe
 text \<open>Type bound map comprehension cannot filter for type invariants, hence won't have @{term undefined} results.
       This corresponds to the VDMSL expression
       %
-      \begin{vdmssl}
+      \begin{verbatim}
         { domexpr(d) |-> rngexpr(d, r) | d:S, r: T & P(d, r) }
-      \end{vdmsl}
+      \end{verbatim}
       % 
       where the maplet expression can be just variables or functions over the domain/range input(s). 
 
       VDM also issues a proof obligation for type bound maps (i.e. avoid it please!) to ensure the resulting map is finite.
       Concretely, the example below generates the corresponding proof obligation:
       %
-      \begin{vdmsl}
+      \begin{verbatim}
       	ex: () -> map nat to nat
-	      ex() == { x+y |-> 10 | x: nat, y in set {4,5,6} & x < 10 };
+	      ex() == { x+y |-> 10 | x: nat, y in set {4,5,6} \& x < 10 };
 
         exists finmap1: map nat to (map (nat1) to (nat1)) & 
             forall x:nat, y in set {4, 5, 6} & (x < 10) => 
               exists findex2 in set dom finmap1 & 
                 finmap1(findex2) = {(x + y) |-> 10}
-      \end{vdmsl}
+      \end{verbatim}
      \<close>
 definition 
   mapCompTypeBound :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
@@ -1142,17 +1143,16 @@ value "[1::nat \<mapsto> 2::nat, 3 \<mapsto> 3] 10"
 text \<open>Set bound map comprehension can filter bound set for their elements invariants.
       This corresponds to the VDMSL expression
       %
-      \begin{vdmssl}
-        { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) }
-        { domexpr(d, r) | d in set S , r in set T & pred(d, r) } 
-        { rngexpr(d, r) | d in set S , r in set T & pred(d, r) }
-        domexpr: S * T -> S
-        rngexpr: S * T -> T
+      \begin{verbatim}
+        { domexpr(d, r) |-> rngexpr(d, r) | d in set S, r in set T & pred(d, r) } 
+        { domexpr(d, r) | d in set S , r in set T & pred(d, r) }  
+        { rngexpr(d, r) | d in set S , r in set T & pred(d, r) } 
+        domexpr: S * T -> S 
+        rngexpr: S * T -> T 
         pred   : S * T -> bool 
-      \end{vdmsl}
+      \end{verbatim}
       % 
-      If the types of domexpr or rngexpr are different from S or T then this will not work! 
-      %
+      If the types of \verb'domexpr' or \verb'rngexpr' are different from \verb'S' or \verb'T' then this will not work! 
       If the filtering is not unique (i.e. result is not a function), then the @{term "THE x . P x"} expression
       might lead to (undefined) unexpected results. In Isabelle maps, repetitions is equivalent to overriding,
       so that @{lemma "[1::nat \<mapsto> 2::nat, 1 \<mapsto> 3] 1 = Some 3" by simp}. 
@@ -1162,7 +1162,7 @@ definition
   where
   "mapCompSetBound S T inv_S inv_T domexpr rngexpr pred \<equiv> 
         (\<lambda> dummy::'a . 
-            \<comment> \<open>In fact you have to check the inv_Type of domexpr and rngexpr!!!\<close>
+            \<comment> \<open>In fact you have to check the \<^term>\<open>inv_Type\<close> of domexpr and rngexpr!!!\<close>
             if inv_VDMSet' inv_S S \<and> inv_VDMSet' inv_T T then
               if (\<exists> r \<in> T . \<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r) then
                 Some (THE r . r \<in> T \<and> inv_T r \<and> (\<exists> d \<in> S . dummy = domexpr d r \<and> r = rngexpr d r \<and> pred d r)) 
@@ -1170,7 +1170,7 @@ definition
                 \<comment> \<open>This is for map application outside its domain error, VDMJ 4061 \<close>
                 None
             else
-              \<comment> \<open>This is for type invariant violation errors, VDMJ ???? @NB?\<close>
+              \<comment> \<open>This is for type invariant violation errors, VDMJ ????\<close>
               undefined
         )"
 
@@ -1237,7 +1237,7 @@ text \<open>Lambda definitions entail an implicit satisfiability proof obligatio
       as part of its type invariant checks. 
 
       Because Isabelle lambdas are always curried, we need to also take this into
-      account. For example, "lambda x: nat, y: nat1 & x+y" will effectively become
+      account. For example, \verb'lambda x: nat, y: nat1 & x+y' will effectively become
       @{term "(\<lambda> x . \<lambda> y . x + y)"}. Thus callers to this invariant check must 
       account for such currying when using more than one parameter in lambdas. 
       (i.e. call this as @{term "inv_Lambda inv_Dom (inv_Lambda inv_Dom' inv_Ran) l"} 
