@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.statements.TCStatement;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -55,6 +56,12 @@ public class TCTheoremAnnotation extends TCAnnotation {
 
     @Override
 	public void tcBefore(TCDefinition def, Environment env, NameScope scope)
+	{
+		//checkArgs(env, scope);
+	}
+
+    @Override
+	public void tcAfter(TCDefinition def, TCType type, Environment env, NameScope scope)
 	{
 		checkArgs(env, scope);
 	}
