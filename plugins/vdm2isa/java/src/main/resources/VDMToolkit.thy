@@ -95,34 +95,7 @@ lemma l_inv_True_True[simp]: "r \<noteq> undefined \<Longrightarrow> inv_True r"
 *)
 
 lemma l_inv_True_True[simp]: "inv_True r"
-  by (simp add: inv_True_def)  
-
-text \<open>VDM has div and mod but also rem for remainder. This is treated 
-differently depending on whether the values involved have different sign.
-For now, we add these equivalences below, but might have to pay price in proof
-later. 
-
-To illustrate this difference consider\<close>
-
-value " 7 div ( 3::\<int>) =  2"
-value "-7 div (-3::\<int>) =  2"
-
-value "-7 div ( 3::\<int>) = -3" (* in VDM this -2!*)
-value " 7 div (-3::\<int>) = -3" (* in VDM this -2!*)
-
-value "1 div (-2::\<int>) = -1"  (* in VDM this is 0! *)
-value "-1 div (2::\<int>) = -1"  (* in VDM this is 0! *)
-
-value " 7 mod ( 3::\<int>) =  1"
-value "-7 mod (-3::\<int>) = -1"
-value "-7 mod ( 3::\<int>) =  2"
-value " 7 mod (-3::\<int>) = -2"
-value "7 * (3::int)"
-
-value "0 div (-3::\<int>) = 0"
-
-lemma "\<lfloor>10.01323\<rfloor> = 10" apply (simp only: floor_eq_iff)
-  by (simp add: floor_eq_iff)
+  by (simp add: inv_True_def)
 
 text \<open>In general, VDM narrow expressions are tricky, given they can downcast types according 
   to the user-specified type of interest. In particular, at least for \<^typ>\<open>\<real>\<close> and \<^typ>\<open>\<rat>\<close> 
@@ -131,9 +104,6 @@ definition
   vdm_narrow_real :: "('a::floor_ceiling) \<Rightarrow> VDMInt"
   where
   "vdm_narrow_real r \<equiv> \<lfloor>r\<rfloor>"
-
-value "vdm_narrow_real (4.5::VDMRat)"
-value "vdm_narrow_real (4.5::VDMReal)"
 
 definition
   vdm_div :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" (infixl "vdmdiv" 70)
@@ -156,7 +126,16 @@ definition
   "post_vdm_div x y RESULT \<equiv> 
     (x \<ge> 0 \<and> y \<ge> 0 \<longrightarrow> RESULT \<ge> 0) \<and>
     (x < 0 \<and> y < 0 \<longrightarrow> RESULT \<ge> 0) \<and>
-    (x < 0 \<or> y < 0 \<and> \<not>(x < 0 \<and> y < 0) \<longrightarrow> RESULT < 0)"
+    (x < 0 \<and> 0 < y \<longrightarrow> RESULT \<le> 0) \<and>
+    (0 < x \<and> y < 0 \<longrightarrow> RESULT \<le> 0)"
+  (* Could perhaps strengthen the < 0 case for when 1 < x? *)
+
+text \<open>VDM has div and mod but also rem for remainder. This is treated 
+differently depending on whether the values involved have different sign.
+For now, we add these equivalences below, but might have to pay price in proof
+later. To illustrate this difference consider the result of 
+@{lemma \<open>-7 div (3::\<int>) = -3\<close> by simp} versus 
+@{lemma \<open>-7 vdmdiv (3::\<int>) = -2\<close> by (simp add: vdm_div_def)}\<close>
 
 definition 
   vdm_mod :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" (infixl "vdmmod" 70)
@@ -174,7 +153,7 @@ definition
   where
   "post_vdm_mod x y RESULT \<equiv> 
     (y \<ge> 0 \<longrightarrow> RESULT \<ge> 0) \<and>
-    (y < 0 \<longrightarrow> RESULT < 0)"
+    (y < 0 \<longrightarrow> RESULT \<le> 0)"
 
 definition 
   vdm_rem :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" (infixl "vdmrem" 70)
@@ -187,36 +166,17 @@ definition
   where
   "pre_vdm_rem x y \<equiv> y \<noteq> 0"
 
-value "((1::nat),(2::nat),(3::nat))"
 definition
   post_vdm_rem :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>"
   where
   "post_vdm_rem x y RESULT \<equiv> 
     (x \<ge> 0 \<longrightarrow> RESULT \<ge> 0) \<and>
-    (x < 0 \<longrightarrow> RESULT < 0)"
-
-value " 7 vdmdiv ( 3::\<int>) =  2"
-value "-7 vdmdiv (-3::\<int>) =  2"
-value "-7 vdmdiv ( 3::\<int>) = -2" (* in VDM this -2!*)
-value " 7 vdmdiv (-3::\<int>) = -2"
-
-value " 7 vdmmod ( 3::\<int>) =  1"
-value "-7 vdmmod (-3::\<int>) = -1"
-value "-7 vdmmod ( 3::\<int>) =  2" 
-value " 7 vdmmod (-3::\<int>) = -2"
-
-value " 7 vdmrem ( 3::\<int>) =  1"
-value "-7 vdmrem (-3::\<int>) = -1"
-value "-7 vdmrem ( 3::\<int>) = -1" 
-value " 7 vdmrem (-3::\<int>) =  1"
+    (x < 0 \<longrightarrow> RESULT \<le> 0)"
 
 text \<open>VDM has the power (\verb'**') operator for numbers, which is \<^term>\<open>Transcendental.powr\<close> in Issable. 
    Like in VDM, it accepts non-integer exponents. Isabelle have \<^term>\<open>x^y\<close> for exponent \<^term>\<open>y\<close> of type \<^typ>\<open>\<nat>\<close>, 
    and \<^term>\<open>x powr y\<close> for exponent \<^term>\<open>y\<close> that is a subset of the \<^typ>\<open>\<real>\<close> (i.e. real normed algebra natural logarithms; 
   or natural logarithm exponentiation). We take the latter for translation.\<close>
-
-find_theorems "_ _ (_::real)" name:powr 
-lemma "4 powr (1/(2::int)) = 2" by simp
 
 definition
   vdm_pow :: "'a::ln \<Rightarrow> 'a::ln \<Rightarrow> 'a::ln" (infixl "vdmpow" 80)
@@ -261,19 +221,59 @@ definition
   where
   "post_vdm_abs x RESULT \<equiv> RESULT \<ge> 0" (*inv_VDMNat RESULT"*)
 
-text \<open>For positive operands of VDM's div/mod, we can get back to Isabelle's version, which will give access
-to various lemmas useful in proofs. So, if possible, automatically jump to the Isabelle versions.\<close>
+text \<open>For equally signed  operands of VDM's div/mod, we can get back to Isabelle's version of the operators, 
+  which will give access to various lemmas useful in proofs. So, if possible, automatically jump to the Isabelle versions.\<close>
 lemma vdmdiv_div_ge0[simp] : 
-  "x \<ge> 0 \<Longrightarrow> y \<ge> 0 \<Longrightarrow> x vdmdiv y = x div y"
+  "0 \<le> x \<Longrightarrow> 0 \<le> y \<Longrightarrow> x vdmdiv y = x div y"
   unfolding vdm_div_def
   apply (induct y) apply simp_all
   by (metis divide_less_0_iff floor_divide_of_int_eq floor_less_zero floor_of_int floor_of_nat le_less_trans less_irrefl of_int_of_nat_eq of_nat_less_0_iff)
 
-lemma vdmmod_mod_ge0[simp] : 
-  "y \<ge> 0 \<Longrightarrow> x vdmmod y = x mod y"
+lemma vdmdiv_div_le0[simp] : 
+  "x \<le> 0 \<Longrightarrow> y \<le> 0 \<Longrightarrow> x vdmdiv y = x div y"
+  unfolding vdm_div_def
+  apply (induct y) apply simp_all
+  apply safe
+   apply (simp add: divide_less_0_iff)
+  by (metis (no_types, hide_lams) floor_divide_of_int_eq minus_add_distrib minus_divide_right of_int_1 of_int_add of_int_minus of_int_of_nat_eq uminus_add_conv_diff)
+
+lemma vdmmod_mod[simp] : 
+  "x vdmmod y = x mod y"
   unfolding vdm_mod_def
   apply (induct y) apply simp_all
-  by (metis floor_divide_of_int_eq minus_div_mult_eq_mod mult.commute of_int_of_nat_eq)
+   apply (metis floor_divide_of_int_eq minus_mult_div_eq_mod of_int_of_nat_eq)
+  by (smt (verit, ccfv_threshold) floor_divide_of_int_eq minus_div_mult_eq_mod mult.commute of_int_diff of_int_eq_1_iff of_int_minus of_int_of_nat_eq)
+
+lemma l_vdm_div_fsb: "pre_vdm_div x y \<Longrightarrow> post_vdm_div x y (x vdmdiv y)" 
+  unfolding pre_vdm_div_def post_vdm_div_def
+  apply (safe)
+  using div_int_pos_iff vdmdiv_div_ge0 apply presburger
+  using vdm_div_def apply (smt (verit) divide_neg_neg floor_less_iff of_int_0_less_iff of_int_minus)
+  using vdm_div_def using divide_less_0_iff apply auto[1]
+  using vdm_div_def 
+  by auto
+  
+lemma l_vdm_mod_fsb: "pre_vdm_mod x y \<Longrightarrow> post_vdm_mod x y (x vdmmod y)" 
+  unfolding pre_vdm_mod_def post_vdm_mod_def
+  apply safe
+  by (simp add: vdm_mod_def)+
+
+lemma l_vdm_rem_fsb: "pre_vdm_rem x y \<Longrightarrow> post_vdm_rem x y (x vdmrem y)" 
+  unfolding pre_vdm_rem_def post_vdm_rem_def vdm_rem_def
+  apply safe
+  apply (cases "y \<ge> 0")
+    apply simp
+    apply (metis Euclidean_Division.pos_mod_sign add.commute add.left_neutral add_mono_thms_linordered_semiring(3) div_mult_mod_eq le_less mult.commute)
+   defer
+   apply (cases "y \<le> 0")
+    apply simp 
+    apply (metis div_mod_decomp_int group_cancel.rule0 le_add_same_cancel1 le_less mult.commute neg_mod_sign not_le)
+  unfolding vdm_div_def
+   apply (simp_all, safe)
+     apply (smt (verit, ccfv_SIG) divide_minus_left floor_divide_lower floor_less_iff floor_uminus_of_int mult.commute of_int_mult)
+    apply (simp add: divide_neg_pos)
+   apply (smt (verit) ceiling_def ceiling_divide_eq_div minus_mod_eq_mult_div neg_mod_sign)
+  using divide_pos_neg by force
 
 subsection \<open>VDM tokens\<close>
 
@@ -324,22 +324,53 @@ definition
   where
    [intro!]:  "inv_VDMSet s \<equiv> finite s"
 
-lemma l_invVDMSet_finite_f: "inv_VDMSet s \<Longrightarrow> finite s"
-  using inv_VDMSet_def by auto
-    
 definition
   inv_VDMSet1 :: "'a VDMSet1 \<Rightarrow> \<bool>"
   where
    [intro!]:  "inv_VDMSet1 s \<equiv> inv_VDMSet s \<and> s \<noteq> {}"
 
-lemmas inv_VDMSet_defs = inv_VDMSet1_def
-lemmas inv_VDMSet1_defs = inv_VDMSet1_def inv_VDMSet_def   
-  
 definition 
   inv_SetElems :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet \<Rightarrow> \<bool>"
 where
   "inv_SetElems einv s \<equiv> \<forall> e \<in> s . einv e"
 
+text \<open> Added wrapped version of the definition so that we can translate 
+complex structured types (e.g. \verb'seq of seq of T', etc.). Parameter order matter
+for partial instantiation (e.g. \<^term>\<open>inv_VDMSet' (inv_VDMSet' inv_VDMNat) s\<close>).\<close>
+definition
+  inv_VDMSet' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSet' einv s \<equiv> inv_VDMSet s \<and> inv_SetElems einv s"
+    
+definition
+  inv_VDMSet1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet1 \<Rightarrow> \<bool>"
+  where
+   [intro!]:  "inv_VDMSet1' einv s \<equiv> inv_VDMSet1 s \<and> inv_SetElems einv s"
+
+definition
+  vdm_card :: "'a VDMSet \<Rightarrow> VDMNat"
+  where
+  "vdm_card s \<equiv> (if inv_VDMSet s then int (card s) else undefined)"
+
+definition
+  pre_vdm_card :: "'a VDMSet \<Rightarrow> \<bool>"
+  where
+  [intro!]:  "pre_vdm_card s \<equiv> inv_VDMSet s"
+
+definition
+  post_vdm_card :: "'a VDMSet \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
+  where
+  [intro!]:  "post_vdm_card s RESULT \<equiv> pre_vdm_card s \<longrightarrow> inv_VDMNat RESULT"
+
+lemmas inv_VDMSet_defs   = inv_VDMSet_def
+lemmas inv_VDMSet1_defs  = inv_VDMSet1_def inv_VDMSet_def   
+lemmas inv_VDMSet'_defs  = inv_VDMSet'_def  inv_VDMSet_def inv_SetElems_def
+lemmas inv_VDMSet1'_defs = inv_VDMSet1'_def inv_VDMSet1_defs inv_SetElems_def
+lemmas vdm_card_defs     = vdm_card_def inv_VDMSet_defs
+
+lemma l_invVDMSet_finite_f: "inv_VDMSet s \<Longrightarrow> finite s"
+  using inv_VDMSet_def by auto
+    
 lemma l_inv_SetElems_Cons[simp]: "(inv_SetElems f (insert a s)) = (f a \<and> (inv_SetElems f s))"
 unfolding inv_SetElems_def
   by auto
@@ -357,43 +388,7 @@ unfolding inv_SetElems_def by simp
 
 lemma l_invSetElems_inv_True_True[simp]: "undefined \<notin> r \<Longrightarrow> inv_SetElems inv_True r" 
   by (metis inv_SetElems_def l_inv_True_True)
-
-text \<open> Added wrapped version of the definition so that we can translate 
-complex structured types (e.g. seq of seq of T, etc.). Param order matter
-for partial instantiation (e.g. inv_VDMSet' (inv_VDMSet' inv_VDMNat) s).\<close>
-definition
-  inv_VDMSet' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet \<Rightarrow> \<bool>"
-  where
-   [intro!]:  "inv_VDMSet' einv s \<equiv> inv_VDMSet s \<and> inv_SetElems einv s"
-    
-definition
-  inv_VDMSet1' :: "('a \<Rightarrow> \<bool>) \<Rightarrow> 'a VDMSet1 \<Rightarrow> \<bool>"
-  where
-   [intro!]:  "inv_VDMSet1' einv s \<equiv> inv_VDMSet1 s \<and> inv_SetElems einv s"
-
-lemmas inv_VDMSet'_defs  = inv_VDMSet'_def  inv_VDMSet_def inv_SetElems_def
-lemmas inv_VDMSet1'_defs = inv_VDMSet1'_def inv_VDMSet1_defs inv_SetElems_def
-
-definition
-  vdm_card :: "'a VDMSet \<Rightarrow> VDMNat"
-  where
-  "vdm_card s \<equiv> (if inv_VDMSet s then int (card s) else undefined)"
-
-definition
-  pre_vdm_card :: "'a VDMSet \<Rightarrow> \<bool>"
-  where
-  [intro!]:  "pre_vdm_card s \<equiv> inv_VDMSet s"
-
-definition
-  post_vdm_card :: "'a VDMSet \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
-  where
-  [intro!]:  "post_vdm_card s RESULT \<equiv> pre_vdm_card s \<longrightarrow> inv_VDMNat RESULT"
-
-lemmas vdm_card_defs = vdm_card_def inv_VDMSet_def
   
-lemma "vdm_card {0,1,(2::int)} = 3"
-  unfolding vdm_card_def inv_VDMSet_def by simp 
-
 lemma l_vdm_card_finite[simp]: "finite s \<Longrightarrow> vdm_card s = int (card s)"
   unfolding vdm_card_defs by simp
 
@@ -412,10 +407,6 @@ lemma l_vdm_card_non_negative[simp]:
   "finite s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> 0 < vdm_card s"
   by (simp add: card_gt_0_iff)
     
-theorem PO_feas_vdm_card:
-  "pre_vdm_card s \<Longrightarrow> post_vdm_card s (vdm_card s)"
-  by (simp add: inv_VDMNat_def inv_VDMSet_def post_vdm_card_def pre_vdm_card_def)
-
 lemma l_vdm_card_isa_card[simp]:
   "finite s \<Longrightarrow> card s \<le> i \<Longrightarrow> vdm_card s \<le> i"
   by simp
@@ -440,6 +431,10 @@ proof -
   then show ?thesis
     using a1 by (metis (no_types) Int_commute)
 qed
+
+theorem l_vdm_card_fsb:
+  "pre_vdm_card s \<Longrightarrow> post_vdm_card s (vdm_card s)"
+  by (simp add: inv_VDMNat_def inv_VDMSet_def post_vdm_card_def pre_vdm_card_def)
 
 text \<open> @TODO power set \<close>
     
@@ -495,12 +490,17 @@ where
 definition
   post_len :: "'a VDMSeq \<Rightarrow> VDMNat \<Rightarrow> \<bool>"
 where
-  "post_len s R \<equiv> inv_VDMNat(R)"
+  "post_len s R \<equiv> inv_VDMNat R \<and> (s \<noteq> [] \<longrightarrow> inv_VDMNat1 R)"
 
 definition 
   elems :: "'a VDMSeq \<Rightarrow> 'a VDMSet"
 where
   [intro!]: "elems l \<equiv> set l"
+
+definition 
+  post_elems :: "'a VDMSeq \<Rightarrow> 'a VDMSet \<Rightarrow> \<bool>" 
+  where
+  "post_elems s R \<equiv> R \<subseteq> set s"
 
 text \<open> Be careful with representation differences 
    VDM lists are 1-based, whereas Isabelle list 
@@ -508,23 +508,20 @@ text \<open> Be careful with representation differences
    for sequence [A, B, C] instead of {1,2,3} \<close>
 
 definition
-   inds0 :: "'a VDMSeq \<Rightarrow> VDMNat set"
+   inds0 :: "'a VDMSeq \<Rightarrow> VDMNat VDMSet"
 where
   "inds0 l \<equiv> {0 ..< len l}"
 
-value "inds0 [A, B, C]"
-(* indexes are 0, 1, 2; VDM would give 1, 2, 3 *)
-
 definition
-   inds :: "'a VDMSeq \<Rightarrow> VDMNat1 set"
+   inds :: "'a VDMSeq \<Rightarrow> VDMNat1 VDMSet"
 where
   [intro!]: "inds l \<equiv> {1 .. len l}"
 
 definition
-  post_inds :: "'a VDMSeq \<Rightarrow> VDMNat1 set \<Rightarrow> \<bool>"
+  post_inds :: "'a VDMSeq \<Rightarrow> VDMNat1 VDMSet \<Rightarrow> \<bool>"
   where
-  "post_inds l R \<equiv> (length l) = (card R)"
-  
+  "post_inds l R \<equiv> finite R \<and> (len l) = (card R)"
+
 definition
    inds_as_nat :: "'a VDMSeq \<Rightarrow> \<nat> set"
 where
@@ -550,59 +547,35 @@ definition
                    else 
                       undefined)"
 
-(* TODO: fold these three into proper one *)
 definition
-  applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq" ("(1_ {_$$_})")
-  where
-  "applyVDMSubseq l i j \<equiv> (if (inv_VDMNat1 i \<and> inv_VDMNat1 j) then
-                             nths l {nat i.. nat j}
-                           else
-                             undefined 
-                          )"
-
-value "nths [1,2,(3::nat)] {2..3}"
-value "[1,2,3::nat] {2$$3}"
-
-definition
-  applyVDMSubseq' :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq"        ("_ $$ (1{_.._})") where
-  "s$${l..u} \<equiv> if inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> (l \<le> u) then 
+  applyVDMSubseq' :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> 'a VDMSeq"        ("_ $$$ (1{_.._})") where
+  "s $$$ {l..u} \<equiv> if inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> (l \<le> u) then 
                   nths s {(nat l)-1..(nat u)-1}
                 else
                   []"
 
-\<comment> \<open>Thanks to Tom Hayle for this generalised version\<close>
+text \<open>Thanks to Tom Hayle for suggesting a generalised version, which is similar to the one below\<close>
 definition
-  extendedSubSeq :: "'a VDMSeq \<Rightarrow> VDMNat1 VDMSet \<Rightarrow> 'a VDMSeq" 
+  applyVDMSubseq :: "'a VDMSeq \<Rightarrow> VDMInt VDMSet \<Rightarrow> 'a VDMSeq" (infixl "$$" 105)
   where
-  "extendedSubSeq xs s \<equiv> nths xs {x::nat | x . x+1 \<in> s }"
+  "xs $$ s \<equiv> nths xs {x::nat | x . x+1 \<in> s }"
 
-(*lemma "s$${l..u} = subSeq s {l..u}" *)
-(* negatives give funny result, as nat -4 = 0 and nat -1 = 0! *)
-value "nths [A,B,C,D] {(nat (-1))..(nat (-4))}"
-value "nths [A,B,C,D] {(nat (-4))..(nat (-1))}"
-value "[A,B,C,D]$${-4..-1}"
-value "[A,B,C,D]$${-1..-4}"
-value "[A,B,C,D,E]$${4..1}"
-value "[A,B,C,D,E]$${1..5}" (* 5-1+1*)
-value "[A,B,C,D,E]$${2..5}" (* 5-2+1*)
-value "[A,B,C,D,E]$${1..3}"
-value "[A,B,C,D,E]$${0..2}"
-value "[A,B,C,D,E]$${-1..2}"
-value "[A,B,C,D,E]$${-10..20}"
-value "[A,B,C,D,E]$${2..-1}"
-value "[A,B,C,D,E]$${2..2}"
-value "[A,B,C,D,E]$${0..1}"
-value "len ([A,B,C,D,E]$${2..2})"
-value "len ([A]$${2..2})"
-value "card {(2::int)..2}"
-value "[A,B,C,D,E]$${0..0}"
-find_theorems "card {_.._}"
+lemma l_vdm_len_fsb: "post_len s (len s)"
+  using post_len_def len_def 
+  by (simp add: len_def post_len_def inv_VDMNat1_def inv_VDMNat_def)
+
+lemma l_vdm_elems_fsb: "post_elems s (elems s)"
+  by (simp add: elems_def post_elems_def)
+
+lemma l_vdm_inds_fsb: "post_inds s (inds s)"
+  using post_inds_def inds_def len_def 
+  by (simp add: inds_def len_def post_inds_def)
 
 lemma l_vdmsubseq_empty[simp]: 
-  "[] $$ {l..u} = []" unfolding applyVDMSubseq'_def by simp
+  "[] $$ {l..u} = []" unfolding applyVDMSubseq_def by simp
 
 lemma l_vdmsubseq_beyond[simp]: 
-  "l > u \<Longrightarrow> s $$ {l..u} = []" unfolding applyVDMSubseq'_def by simp
+  "l > u \<Longrightarrow> s $$ {l..u} = []" unfolding applyVDMSubseq_def by simp
 
 \<comment> \<open> The nat conversion makes int a nat, but the subtration of Suc 0 makes it int again! \<close>
 lemma l_vdmsubseq_len_l0: "{i. i < length s \<and>  nat l - Suc 0 \<le> i \<and> i \<le>  nat u - Suc 0} = 
@@ -615,12 +588,14 @@ lemma l_vdmsubseq_len_l1: "
   by simp
 
 lemma l_vdmsubseq_len[simp]:
-  "len (s $$ {(l::int)..u}) = (if inv_VDMNat1 l \<and> inv_VDMNat1 u \<and> (l \<le> u) then card ({(nat l) - Suc 0..(nat u) - Suc 0} \<inter> {0..<(len s)}) else 0)"
-  unfolding applyVDMSubseq'_def len_def min_def inv_VDMNat1_def
-  apply (simp add: length_nths l_vdmsubseq_len_l0) 
-  apply (safe;simp) using[[show_types]]
+  "len (s $$ {l..u}) = nat (u - l)"
+  unfolding applyVDMSubseq_def len_def
+  apply (simp add: length_nths) 
+  apply (induct s)
+  
   apply (insert l_vdmsubseq_len_l1[of l u s])
-  apply (simp add: l_isa_card_inter_bound)
+   apply (simp add: l_isa_card_inter_bound) 
+  
   find_theorems "card (_ \<inter> _)"
   oops
 
@@ -1086,11 +1061,7 @@ definition
 lemmas inv_Map_defs = inv_Map_def inv_VDMSet'_defs
 lemmas inv_Map1_defs = inv_Map1_def inv_Map_defs
 lemmas inv_Inmap_defs = inv_Inmap_def inv_Map_defs inj_def
-  
-(* dom exists already *)
-thm dom_def
-lemma "inj m" unfolding inj_on_def apply simp oops
-  
+    
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
   where
@@ -1160,6 +1131,11 @@ definition
   map_comp :: "('b \<rightharpoonup> 'c) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> ('a \<rightharpoonup> 'c)" (infixl "\<circ>m" 55)
   where
   "f \<circ>m g \<equiv> (\<lambda> x . if x \<in> dom g then f (the (g x)) else None)"
+
+definition 
+  map_compatible :: "('a \<rightharpoonup> 'b) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>" 
+  where
+  "map_compatible m1 m2 \<equiv> (\<forall> a \<in> dom m1 \<inter> dom m2 . m1 a = m2 a)"
 
 (*****************************************************************)      
 subsection \<open>Map comprehension\<close>
@@ -2229,6 +2205,79 @@ lemma l_invMap_di_absorb:
 
 section \<open>To tidy up or remove\<close>
 
+value "vdm_narrow_real (4.5::VDMRat)"
+value "vdm_narrow_real (4.5::VDMReal)"
+
+value " 7 div    ( 3::\<int>) =  2"
+value " 7 vdmdiv ( 3::\<int>) =  2"
+
+value "-7 div    (-3::\<int>) =  2"
+value "-7 vdmdiv (-3::\<int>) =  2"
+
+value "-7 div    ( 3::\<int>) = -3" 
+value "-7 vdmdiv ( 3::\<int>) = -2"
+
+value " 7 div    (-3::\<int>) = -3" 
+value " 7 vdmdiv (-3::\<int>) = -2" 
+
+value " 1 div    (-2::\<int>) = -1"  
+value " 1 vdmdiv (-2::\<int>) =  0"  
+value "-1 div    ( 2::\<int>) = -1"  
+value "-1 vdmdiv ( 2::\<int>) =  0"  
+
+value "0 div    (-3::\<int>) = 0"
+value "0 vdmdiv (-3::\<int>) = 0"
+value "0 div    ( 3::\<int>) = 0"
+value "0 vdmdiv ( 3::\<int>) = 0"
+
+value " 7 mod    ( 3::\<int>) =  1"
+value " 7 vdmmod ( 3::\<int>) =  1"
+
+value "-7 mod    (-3::\<int>) = -1"
+value "-7 vdmmod (-3::\<int>) = -1"
+
+value "-7 mod    ( 3::\<int>) =  2"
+value "-7 vdmmod ( 3::\<int>) =  2"
+
+value " 7 mod    (-3::\<int>) = -2"
+value " 7 vdmmod (-3::\<int>) = -2"
+
+value " 7 vdmmod ( 3::\<int>) =  1"
+value "-7 vdmmod (-3::\<int>) = -1"
+value "-7 vdmmod ( 3::\<int>) =  2" 
+value " 7 vdmmod (-3::\<int>) = -2"
+
+value " 7 vdmrem ( 3::\<int>) =  1"
+value "-7 vdmrem (-3::\<int>) = -1"
+value "-7 vdmrem ( 3::\<int>) = -1" 
+value " 7 vdmrem (-3::\<int>) =  1"
+
+value "inds0 [A, B, C]"
+value "nths [1,2,(3::nat)] {2..3}"
+value "[1,2,3::nat] {2$$3}"
+
+(*lemma "s$${l..u} = subSeq s {l..u}" *)
+(* negatives give funny result, as nat -4 = 0 and nat -1 = 0! *)
+value "nths [A,B,C,D] {(nat (-1))..(nat (-4))}"
+value "nths [A,B,C,D] {(nat (-4))..(nat (-1))}"
+value "[A,B,C,D]$${-4..-1}"
+value "[A,B,C,D]$${-1..-4}"
+value "[A,B,C,D,E]$${4..1}"
+value "[A,B,C,D,E]$${1..5}" (* 5-1+1*)
+value "[A,B,C,D,E]$${2..5}" (* 5-2+1*)
+value "[A,B,C,D,E]$${1..3}"
+value "[A,B,C,D,E]$${0..2}"
+value "[A,B,C,D,E]$${-1..2}"
+value "[A,B,C,D,E]$${-10..20}"
+value "[A,B,C,D,E]$${2..-1}"
+value "[A,B,C,D,E]$${2..2}"
+value "[A,B,C,D,E]$${0..1}"
+value "len ([A,B,C,D,E]$${2..2})"
+value "len ([A]$${2..2})"
+value "card {(2::int)..2}"
+value "[A,B,C,D,E]$${0..0}"
+find_theorems "card {_.._}"
+
 subsection \<open> Set translations: enumeration, comprehension, ranges \<close>
   
 (* { expr | var . filter }, { var \<in> type . filter }, { var . filter } *)
@@ -2293,28 +2342,5 @@ where
                   (\<forall> i \<in> elems s . i > 0 \<and> i \<le> 9)"
 
 value "inv_MySeq [1, 2, 3]"
-
-(*
-type_synonym ('a,'b) "map" = "'a \<Rightarrow> 'b option" (infixr "~=>" 0)
-*)
-text \<open>
-   In Isabelle, VDM maps can be declared by the @{text "\<rightharpoonup>"} operator (not @{text "\<Rightarrow>"}) 
-   (i.e. type 'right' and you will see the arrow on dropdown menu).
-
-   It represents a function to an optional result as follows:
-
-   VDM     : map X to Y
-   Isabelle: @{text "X \<rightharpoonup> Y"}
-
-   which is the same as 
-
-   Isabelle: @{text "X \<Rightarrow> Y option"}
-   
-   where an optional type is like using nil in VDM (map X to [Y]).
-   That is, Isabele makes the map total by mapping everything outside
-   the domain to None (or nil). In Isabelle
-
-   @{text "datatype 'a option = None | Some 'a"}
-\<close>
 
 (*<*)end(*>*)
