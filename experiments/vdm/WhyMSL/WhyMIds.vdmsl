@@ -1,0 +1,309 @@
+module WhyMIds
+--load ./WhyMIds.vdmsl ./WhyMUtil.vdmsl ./lib/IO.vdmsl
+
+imports from IO 	  functions println; print,
+		from WhyMUtil functions partition renamed partition;
+
+exports types 
+			struct Id; -- NOT QUITE THERE YET: Still a bit buggy in VDMJ
+			Identity;
+		functions
+			idsPrefix	  : [Identity] +> seq1 of char;
+			canCreateIds  : set of Id +> bool;
+			isIdConsistent: set of Id * set of Id * [Id] +> bool;
+			toolIds: set of Id +> set of Id;
+			logIds : set of Id +> set of Id;
+			inv_Name	  : seq1 of char +> bool
+
+			inv_TheoryId  : Id +> bool
+			inv_ConjId	  : Id +> bool
+			inv_ProofId	  : Id +> bool
+			inv_VarId	  : Id +> bool
+			inv_DefId	  : Id +> bool
+			inv_LogId	  : Id +> bool
+			inv_ToolId	  : Id +> bool
+
+		operations 
+			allIds		  : () 	  	   	 ==> set of Id;
+			idsPartitioned: () 		   	 ==> bool;
+			createId  	  : [Identity] 	 ==> [Id];
+			createNamedId : seq1 of char * [Identity] ==> [Id];
+
+			TestIds		  : ()			 ==> ();
+			
+definitions 
+
+values
+	MAX_IDS  : nat1 = 100;
+	TEST_IDS : set of nat = {0,...,2};
+
+-- This structuring for Ids is arguably unnecessary / overkill. I've put it here to play with the interpreter and spec.
+-- Given the module exports it hidden (e.g., without "struct" keyword), then we can change it as needed.
+types
+
+	Name = seq1 of char
+	inv n == len n >= 1; -- redundant for now [give access to idPrefix() fcn post]
+
+	Identity = <THEORY> | <CONJ> | <PROOF> | <VAR> | <DEF> | <LOG> | <TOOL>;
+
+	Id :: name: Name
+		  type: [Identity]
+		  cnt : nat1;
+
+	TheoryId = Id
+	inv tid == tid.type = <THEORY>;
+
+	ConjId = Id
+	inv cid == cid.type = <CONJ>;
+
+	ProofId = Id
+	inv pid == pid.type = <PROOF>;
+
+	VarId = Id
+	inv vid == vid.type = <VAR>;
+
+	DefId = Id
+	inv did == did.type = <DEF>; 
+
+	LogId = Id
+	inv lid == lid.type = <LOG>;
+
+	ToolId = Id
+	inv oid == oid.type = <TOOL>;
+
+	--Id = TheoryId | ConjId | ProofId | VarId | DefId;
+
+values
+	lId : LogId  = mk_Id("log", <LOG>, 1);
+	tId : ToolId = mk_Id("tool", <TOOL>, 1);
+
+functions
+
+theoryIds: set of Id +> set of TheoryId
+theoryIds(ids) == { i | i in set ids & inv_TheoryId(i) }
+post
+	RESULT subset ids
+;
+
+conjIds: set of Id +> set of ConjId
+conjIds(ids) == { i | i in set ids & inv_ConjId(i) }
+post
+	RESULT subset ids
+;
+
+proofIds: set of Id +> set of ProofId
+proofIds(ids) == { i | i in set ids & inv_ProofId(i) }
+post
+	RESULT subset ids
+;
+
+varIds: set of Id +> set of VarId
+varIds(ids) == { i | i in set ids & inv_VarId(i) }
+post
+	RESULT subset ids
+;
+
+defIds: set of Id +> set of DefId
+defIds(ids) == { i | i in set ids & inv_DefId(i) }
+post
+	RESULT subset ids
+;
+
+toolIds: set of Id +> set of Id --will have externsal access: ToolId
+toolIds(ids) == { i | i in set ids & inv_ToolId(i) }
+post
+	RESULT subset ids
+;
+
+logIds: set of Id +> set of Id -- LogId
+logIds(ids) == { i | i in set ids & inv_LogId(i) }
+post
+	RESULT subset ids
+;
+
+generalIds: set of Id +> set of Id
+generalIds(ids) == { i | i in set ids & i.type = nil }
+post
+	RESULT subset ids
+;
+
+idsPrefix: [Identity] +> seq1 of char
+idsPrefix(idt) ==
+	(cases idt :
+		<THEORY> -> "tid",
+		<CONJ> 	 -> "cid",
+		<PROOF>	 -> "pid",
+		<VAR>	 -> "vid",
+		<DEF>	 -> "did",
+		<TOOL>	 -> "tool",
+		<LOG>	 -> "log",
+		others	 -> "id"
+	end)
+post
+	inv_Name(RESULT);
+
+-- pre/post checks as functions dependent on the state, to allow for exporting
+canCreateIds: set of Id +> bool
+canCreateIds(s) == card s < MAX_IDS;
+
+-- consistent if possible to create a priori, and, after creation, if not nil, is indeed "new"
+-- TODO: intermediate implication should really be conjunction?
+isIdConsistent: set of Id * set of Id * [Id] +> bool
+isIdConsistent(old, new, id) == 
+	canCreateIds(old) => (id <> nil => id not in set old and id in set new);
+
+state Ids of
+	keepp : bool
+	known : set of Id
+inv mk_Ids(keepp, known) == 
+		-- known ids are bound
+		card known <= MAX_IDS
+		and
+		-- typed id counts are bound
+		forall i in set { id.cnt | id in set known } & i <= card known 
+		and
+		-- known ids are partitioned by category (e.g., no type nil)
+		keepp =>
+			(let tids = theoryIds(known), 
+				cids = conjIds(known), 	
+				pids = proofIds(known), 
+				vids = varIds(known), 
+				dids = defIds(known), 
+				lids = logIds(known),
+				oids = toolIds(known),
+				gids = generalIds(known)
+			in
+				-- easier for debugging to see what's going on when failure happens
+				partition[Id]([ tids, cids, pids, vids, dids, lids, oids, gids ], known))
+init i == i = mk_Ids(false, {})
+end
+
+operations
+
+-- should be private : if mk_token(prefix ^ [card known]) (!!! It makes an Alias to card known !!!)
+--currentId: Name ==> Id
+--currentId(prefix) == --return mk_token(prefix ^ toString[nat](card known))  
+
+-- internal
+canCreateIds0: () ==> bool
+canCreateIds0() == return canCreateIds(known);
+
+-- all ids
+allIds: () ==> set of Id
+allIds() == return known;
+
+-- as part of the st invariant, it becomes too slow to execute.
+idsPartitioned: () ==> bool
+idsPartitioned() ==
+	return (let tids = theoryIds(known), 
+				cids = conjIds(known), 	
+				pids = proofIds(known), 
+				vids = varIds(known), 
+				dids = defIds(known), 
+				lids = logIds(known),
+				oids = toolIds(known),
+				gids = generalIds(known)
+			in
+				-- easier for debugging to see what's going on when failure happens
+				partition[Id]([ tids, cids, pids, vids, dids, lids, oids, gids ], known));
+
+-- creates a fresh id with a given name prefix
+freshId: Name * [Identity] ==> Id
+freshId(prefix, idt) ==
+	let n = (cases idt :
+				<THEORY> -> card theoryIds(known),
+				<CONJ> 	 -> card conjIds(known),
+				<PROOF>	 -> card proofIds(known),
+				<VAR>	 -> card varIds(known),
+				<DEF>	 -> card defIds(known),
+				<TOOL>	 -> card toolIds(known),
+				<LOG>	 -> card logIds(known),
+				others	 -> card known  -- or just nil?
+			end) 
+	in
+		(dcl result : Id := mk_Id(prefix, idt, n+1);		
+		 known := known union {result};
+		 return result)
+pre
+	-- there needs to be room
+	canCreateIds(known)
+post
+	-- the new is known, yet could not had been known
+	isIdConsistent(known~, known, RESULT)
+--errs FULL_IDS: (not canCreateIds(known)) -> known~=known and RESULT = nil;
+--
+;
+
+-- create a specific type of id (or general one if nil is given); return Id or nil if no more room
+createId: [Identity] ==> [Id]
+createId(idt) == return createNamedId0(idsPrefix(idt), idt);
+
+createNamedId: seq1 of char * [Identity] ==> [Id]
+createNamedId(name, idt) == return createNamedId0(name, idt)
+pre
+	inv_Name(name);
+
+-- create a specific type of id (or general one if nil is given); return Id or nil if no more room
+createNamedId0: Name * [Identity] ==> [Id]
+createNamedId0(name, idt) == return
+	if canCreateIds0() then 
+		freshId(name, idt)
+	else
+		nil
+pre
+	inv_Name(name)
+post
+	-- same as in freshId, with extra check on canCreateIds(known~) in this case
+	isIdConsistent(known~, known, RESULT);
+
+TestIds: () ==> ()
+TestIds() ==
+	(IO`println("Testing Ids functions");
+	
+		(dcl 
+			aids : set of Id := { mk_Id("bla", j, i+1) | i in set TEST_IDS, j in set {<THEORY>, <CONJ>, <PROOF>, <DEF>, <VAR>, <TOOL>, <LOG>, nil} } union {lId, tId},
+			tids : set of Id := theoryIds(aids),
+			cids : set of Id := conjIds(aids),
+			pids : set of Id := proofIds(aids),
+			dids : set of Id := defIds(aids),
+			lids : set of Id := logIds(aids),
+			oids : set of Id := toolIds(aids),
+			gids : set of Id := generalIds(aids),
+			vids : set of Id := varIds(aids)
+			;
+			IO`println(gids);
+			IO`println(tids);
+			IO`println(cids);
+			IO`println(pids);
+			IO`println(dids);
+			IO`println(lids);
+			IO`println(oids);
+			IO`println(vids);		 	
+		);
+	
+	 IO`println("Testing Ids state operations");
+
+		(dcl 
+			gids : set of (nat * Id) := { mk_(i, createId(nil)) 	 | i in set TEST_IDS },
+			tids : set of (nat * Id) := { mk_(i, createId(<THEORY>)) | i in set TEST_IDS },
+			cids : set of (nat * Id) := { mk_(i, createId(<CONJ>))   | i in set TEST_IDS },
+			pids : set of (nat * Id) := { mk_(i, createId(<PROOF>))  | i in set TEST_IDS },
+			dids : set of (nat * Id) := { mk_(i, createId(<DEF>))  | i in set TEST_IDS },
+			oids : set of (nat * Id) := { mk_(i, createId(<TOOL>))  | i in set TEST_IDS },
+			lids : set of (nat * Id) := { mk_(i, createId(<LOG>))  | i in set TEST_IDS },
+			vids : set of (nat * Id) := { mk_(i, createId(<VAR>))  | i in set TEST_IDS }
+			;
+			IO`println(gids);
+			IO`println(tids);
+			IO`println(cids);
+			IO`println(pids);
+			IO`println(dids);
+			IO`println(lids);
+			IO`println(oids);
+			IO`println(vids);		 	
+		);
+
+		IO`print("Ids partitioned? "); IO`println(idsPartitioned());
+	);
+
+end WhyMIds

@@ -1,0 +1,1 @@
+$Isa.trans($node.Left) \<mapsto> $Isa.trans($node.Right)

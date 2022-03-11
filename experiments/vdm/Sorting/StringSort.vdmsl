@@ -1,0 +1,50 @@
+module StringSort
+imports	from Sort
+	functions sort;
+exports
+	types 
+		struct String;
+	functions 
+		sort: seq of String -> seq of String;
+		less: String * String -> bool;
+definitions
+types
+	Collation = seq of char
+	inv c == card elems c = len c;		-- No duplicates in a collation sequence
+
+	String = seq of char;				-- Strings can be empty (and sort *before* everything else)
+
+values
+	codeChars:Collation = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+
+functions
+
+	-- It is absurdly difficult to sort strings in VDM :-) The reason is that chars
+	-- are opaque (only comparable to other chars for equality) which means that it
+	-- is difficult to decide their order. The functions below implement a collation
+	-- sequence for strings based on the order and content of codeChars (above).
+
+	valofCh: char * Collation -> nat1
+	valofCh(c, collation) ==
+		iota i in set inds collation & collation(i) = c
+	pre c in set elems collation;
+
+	lessCh: char * char -> bool
+	lessCh(a, b) ==
+		valofCh(a, codeChars) < valofCh(b, codeChars);
+
+	less: String * String -> bool
+	less(a, b) ==
+		if a = [] and b = []
+		then false
+		else if a = [] or b = []
+			then a = []
+			else if a(1) <> b(1)
+				then lessCh(a(1), b(1))
+				else less(tl a, tl b)
+	measure len a + len b;	-- Strictly decreasing
+
+	sort: seq of String -> seq of String
+	sort(l) == Sort`sort[String](l, less);
+
+end StringSort

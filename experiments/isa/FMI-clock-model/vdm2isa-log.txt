@@ -1,0 +1,419 @@
+* set VDMJ verbose + strict
+* clear all VDMJ "verbose WARNING:" 
+* clear all exu errors (and as many warnings)
+* clear all vdm2isa errors (and as many warnings) 
+* exu warning 11151 with specification (eg. inv_X, pre_X, post_X) you can ignore, but might need
+* exu warning 11151 with user-defined (e.g. calls to f, g etc) you cannot ignore 
+
+* push invariants closer to their types as much as possible
+* prefer record pattern in invariants instead of projection for clarity in names (e.g. mk_T(x,y) == x < y instead of t.x < t.y)
+
+- translator issue with projection over map application over record projections 
+	(e.g. m.f(x.name), missing "the")!
+- record invariants with mk_R projections with let-in environment ! Missing, see FMULeo 
+
+====
+
+nljsf: FMI-clock-model $ vdmj -i -verbose *.vdmsl
+Warning 5026: Strict: order should be inv, eq, ord in 'DEFAULT' (Clocks.vdmsl) at line 91:5
+Warning 5026: Strict: order should be inv, eq, ord in 'DEFAULT' (Clocks.vdmsl) at line 160:5
+Parsed 1 module in 0.283 secs. No syntax errors and 2 warnings
+Loaded ast-tc.mappings in 0.215 secs
+Mapped 11097 nodes with ast-tc.mappings in 0.096 secs (115593/sec)
+DEFAULT`Action => (DEFAULT`ActionType, DEFAULT`Ref, DEFAULT`Name)
+DEFAULT`FMURef => (DEFAULT`Ref, DEFAULT`Name)
+DEFAULT`Environment => (DEFAULT`Ref, DEFAULT`Value)
+DEFAULT`Value => (DEFAULT`ValueType, DEFAULT`Time)
+DEFAULT`Equation => (DEFAULT`Environment)
+DEFAULT`Variable => (DEFAULT`Causality, DEFAULT`Ref, DEFAULT`Name, DEFAULT`PortType, DEFAULT`Time, DEFAULT`Contract)
+DEFAULT`TimeBasedClock => (DEFAULT`FMURef, DEFAULT`Name, DEFAULT`Interval)
+DEFAULT`Clock => (DEFAULT`Causality, DEFAULT`Ref, DEFAULT`Name, DEFAULT`Interval)
+DEFAULT`FMU => (DEFAULT`Variable, DEFAULT`Ref, DEFAULT`Name, DEFAULT`FMUMode, DEFAULT`Time, DEFAULT`Equation, DEFAULT`Clock, DEFAULT`Environment)
+DEFAULT`Machine => (DEFAULT`FMURef, DEFAULT`Name, DEFAULT`TimeBasedClock, DEFAULT`FMU)
+DEFAULT`set_m => (preSet)
+DEFAULT`get_m => (preGet)
+DEFAULT`set_cm => (Value, preSetC)
+DEFAULT`get_cm => (preGetC)
+DEFAULT`step_tm => (postStepT, DEFAULT`Time, preStepT, updateOutputs, DEFAULT`FMU)
+WARNING: updateOutputs declared after step_tm
+DEFAULT`step_e => (postStepE, Time, preStepE, DEFAULT`FMU)
+DEFAULT`updateOutputs => (DEFAULT`Ref)
+DEFAULT`calculate => (Value)
+DEFAULT`updateEnvironmentClock => (DEFAULT`FMURef, createFMURefs)
+WARNING: createFMURefs declared after updateEnvironmentClock
+DEFAULT`calculateInput => (updateEnvironmentEquation, setPort, DEFAULT`Importer, DEFAULT`FMU)
+WARNING: updateEnvironmentEquation declared after calculateInput
+DEFAULT`calculateOutput => (postVaraibleCalculation, updateEnvironmentEquation, getPort, DEFAULT`Importer, DEFAULT`FMU)
+WARNING: updateEnvironmentEquation declared after calculateOutput
+DEFAULT`updateEnvironmentEquation => (DEFAULT`FMURef, DEFAULT`Clock)
+DEFAULT`initializeData => (DEFAULT`FMURef, preInitialization, DEFAULT`Action, runAlgorithm, postInitialization)
+DEFAULT`tickingClocks => (DEFAULT`FMURef, DEFAULT`Name, DEFAULT`Importer)
+DEFAULT`calculateRelevantFMUs => (DEFAULT`Name)
+DEFAULT`clockedSimulationAlgorithm => (postEventMode, DEFAULT`Name, calculateRelevantFMUs, activateClocks, eventIteration, preEventMode, enterEventMode, DEFAULT`Importer)
+WARNING: eventIteration declared after clockedSimulationAlgorithm
+DEFAULT`eventIteration => (fmusSynchronized, eventSolved, DEFAULT`Importer, solveSystemOfEquations, updateDiscreteState, DEFAULT`FMU)
+WARNING: solveSystemOfEquations declared after eventIteration
+DEFAULT`selectAction => (DEFAULT`Action, DEFAULT`Name, DEFAULT`FMU)
+DEFAULT`createSchedule => (assertFMUMode, DEFAULT`TimeBasedClock, DEFAULT`FMU)
+DEFAULT`calculateSchedule => (DEFAULT`Ref)
+DEFAULT`selectMinStep => (minset)
+WARNING: minset declared after selectMinStep
+DEFAULT`Importer => (DEFAULT`Machine, DEFAULT`FMURef, DEFAULT`Name, DEFAULT`Time, DEFAULT`Value, DEFAULT`FMU)
+DEFAULT`createImporter => (DEFAULT`FMURef, Time, Importer)
+DEFAULT`runScenario => (createImporter, DEFAULT`Machine, cosimulationStep, terminate, Time, initialization, createScenario, DEFAULT`Importer)
+WARNING: cosimulationStep declared after runScenario
+WARNING: terminate declared after runScenario
+WARNING: initialization declared after runScenario
+DEFAULT`runAction => (DEFAULT`Name, DEFAULT`FMU)
+DEFAULT`updateDiscreteState => (DEFAULT`Machine, DEFAULT`Name, assertFMUMode, DEFAULT`FMU)
+DEFAULT`enterEventMode => (preCoSimulationStep, ImporterNotAffected, DEFAULT`FMU)
+DEFAULT`enterStepMode => (Time, assertFMUMode, postStepMode, DEFAULT`FMU)
+DEFAULT`activateClocks => (DEFAULT`FMURef)
+DEFAULT`initialization => (initializeData, preInitialization, createSchedule, preCoSimulationStep, enterStepMode, DEFAULT`Importer)
+DEFAULT`cosimStep => (DEFAULT`FMURef, DEFAULT`Action, runAlgorithm, preCoSimulationStep, postCosimulationStep)
+DEFAULT`terminate => (postTermination, preTermination)
+DEFAULT`cosimulationStep => (DEFAULT`FMURef, cosimStep, tickingClocks, preCoSimulationStep, stepnegotiation, Time, DEFAULT`Importer)
+WARNING: stepnegotiation declared after cosimulationStep
+DEFAULT`stepnegotiation => (selectMinStep)
+DEFAULT`queryClock => (DEFAULT`FMURef, get_cm, updateEnvironmentClock, DEFAULT`Value, DEFAULT`FMU, DEFAULT`Importer)
+DEFAULT`setClock => (DEFAULT`FMURef, updateEnvironmentClock, set_cm, DEFAULT`FMU, DEFAULT`Importer)
+DEFAULT`setPort => (set_m, preSetI, fmusNotAffected, DEFAULT`Value, DEFAULT`FMU)
+DEFAULT`getPort => (DEFAULT`FMURef, preGetI, fmusNotAffected, DEFAULT`Value, DEFAULT`FMU, get_m)
+DEFAULT`stepFMU => (preStepI, fmusNotAffected, step_tm, DEFAULT`FMU)
+DEFAULT`variablesSynchronized => (DEFAULT`FMURef, filterOutputs)
+WARNING: filterOutputs declared after variablesSynchronized
+DEFAULT`preSetI => (DEFAULT`FMURef, DEFAULT`Variable, derefInput)
+DEFAULT`preGetI => (DEFAULT`FMURef, DEFAULT`Variable, derefOutput, derefInput)
+DEFAULT`preGetCI => (DEFAULT`FMURef)
+DEFAULT`preSetCI => (DEFAULT`FMURef)
+DEFAULT`preGet => (DEFAULT`Variable, derefOutput)
+DEFAULT`preStepT => (DEFAULT`Variable)
+DEFAULT`preEventMode => (preCoSimulationStep)
+WARNING: preCoSimulationStep declared after preEventMode
+DEFAULT`postEventMode => (preCoSimulationStep)
+WARNING: preCoSimulationStep declared after postEventMode
+DEFAULT`feedthroughSatisfied => (DEFAULT`Variable)
+DEFAULT`fmusSynchronizedAtTime => (fmusSynchronized)
+DEFAULT`eventSolved => (sameSetOfFMUs, assertFMUMode)
+WARNING: sameSetOfFMUs declared after eventSolved
+WARNING: assertFMUMode declared after eventSolved
+DEFAULT`timeAdvanced => (sameSetOfFMUs)
+WARNING: sameSetOfFMUs declared after timeAdvanced
+DEFAULT`preCoSimulationStep => (assertFMUMode, DEFAULT`FMU)
+DEFAULT`postCosimulationStep => (assertFMUMode, DEFAULT`FMU)
+DEFAULT`postStepMode => (ImporterNotAffected)
+WARNING: ImporterNotAffected declared after postStepMode
+DEFAULT`fmusNotAffected => (sameSetOfFMUs)
+WARNING: sameSetOfFMUs declared after fmusNotAffected
+DEFAULT`preInitialization => (assertFMUMode, DEFAULT`FMU)
+DEFAULT`postInitialization => (assertFMUMode, DEFAULT`FMU)
+DEFAULT`preTermination => (preCoSimulationStep)
+DEFAULT`postTermination => (assertFMUMode)
+DEFAULT`createFMU => (Time, Value, FMU)
+DEFAULT`createVariable => (Variable, Time)
+DEFAULT`createClock => (Clock)
+DEFAULT`createTimeBased => (TimeBasedClock)
+DEFAULT`createScenario => (FMURef, Machine, createTimeBased, DEFAULT`Variable, createClock, createVariable, DEFAULT`Name, createFMU, DEFAULT`TimeBasedClock, DEFAULT`Clock, DEFAULT`FMU)
+Type checked 1 module in 0.242 secs. No type errors
+Loaded tc-in.mappings in 0.084 secs
+Mapped 10718 nodes with tc-in.mappings in 0.037 secs (289675/sec)
+Initialized 1 module in 0.034 secs. 
+Interpreter started
+> vdm2isa
+Calling Exu VDM analyser...
+Warning [VDM   ] 11152: Type definition for type `Action` requires both eq and ord specifications; otherwise, it will require Isabelle `ord` type class instantiation! in 'DEFAULT' (Clocks.vdmsl) at line 67:5
+Warning [VDM   ] 11152: Type definition for type `Variable` requires both eq and ord specifications; otherwise, it will require Isabelle `ord` type class instantiation! in 'DEFAULT' (Clocks.vdmsl) at line 118:5
+Warning [VDM   ] 11152: Type definition for type `FMU` requires both eq and ord specifications; otherwise, it will require Isabelle `ord` type class instantiation! in 'DEFAULT' (Clocks.vdmsl) at line 168:5
+Warning [VDM   ] 11151: Definition of `inv_Machine` inv depends on `derefOutput` yet `inv_Machine` does not check type invariants for `derefOutput`. in 'DEFAULT' (Clocks.vdmsl) at line 234:41
+Warning [VDM   ] 11151: Definition of `inv_Machine` inv depends on `derefClock` yet `inv_Machine` does not check type invariants for `derefClock`. in 'DEFAULT' (Clocks.vdmsl) at line 257:93
+Warning [VDM   ] 11151: Definition of `inv_Machine` inv depends on `derefInput` yet `inv_Machine` does not check type invariants for `derefInput`. in 'DEFAULT' (Clocks.vdmsl) at line 235:40
+Warning [VDM   ] 11151: Definition of `set_m` body depends on `preSet` yet `set_m` does not check type invariants for `preSet`. in 'DEFAULT' (Clocks.vdmsl) at line 269:9
+Warning [VDM   ] 11151: Definition of `pre_set_m` pre depends on `preSet` yet `pre_set_m` does not check type invariants for `preSet`. in 'DEFAULT' (Clocks.vdmsl) at line 269:9
+Warning [VDM   ] 11151: Definition of `get_m` body depends on `preGet` yet `get_m` does not check type invariants for `preGet`. in 'DEFAULT' (Clocks.vdmsl) at line 278:9
+Warning [VDM   ] 11151: Definition of `pre_get_m` pre depends on `preGet` yet `pre_get_m` does not check type invariants for `preGet`. in 'DEFAULT' (Clocks.vdmsl) at line 278:9
+Warning [VDM   ] 11151: Definition of `post_get_m` post depends on `fmusNotAffected` yet `post_get_m` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Clocks.vdmsl) at line 279:33
+Warning [VDM   ] 11151: Definition of `set_cm` body depends on `preSetC` yet `set_cm` does not check type invariants for `preSetC`. in 'DEFAULT' (Clocks.vdmsl) at line 286:9
+Warning [VDM   ] 11151: Definition of `pre_set_cm` pre depends on `preSetC` yet `pre_set_cm` does not check type invariants for `preSetC`. in 'DEFAULT' (Clocks.vdmsl) at line 286:9
+Warning [VDM   ] 11151: Definition of `get_cm` body depends on `preGetC` yet `get_cm` does not check type invariants for `preGetC`. in 'DEFAULT' (Clocks.vdmsl) at line 292:9
+Warning [VDM   ] 11151: Definition of `pre_get_cm` pre depends on `preGetC` yet `pre_get_cm` does not check type invariants for `preGetC`. in 'DEFAULT' (Clocks.vdmsl) at line 292:9
+Warning [VDM   ] 11151: Definition of `step_tm` body depends on `preStepT` yet `step_tm` does not check type invariants for `preStepT`. in 'DEFAULT' (Clocks.vdmsl) at line 307:9
+Warning [VDM   ] 11151: Definition of `step_tm` body depends on `updateOutputs` yet `step_tm` does not check type invariants for `updateOutputs`. in 'DEFAULT' (Clocks.vdmsl) at line 302:41
+Warning [VDM   ] 11151: Definition of `pre_step_tm` pre depends on `preStepT` yet `pre_step_tm` does not check type invariants for `preStepT`. in 'DEFAULT' (Clocks.vdmsl) at line 307:9
+Warning [VDM   ] 11151: Definition of `post_step_tm` post depends on `postStepT` yet `post_step_tm` does not check type invariants for `postStepT`. in 'DEFAULT' (Clocks.vdmsl) at line 308:10
+Warning [VDM   ] 11151: Definition of `step_e` body depends on `preStepE` yet `step_e` does not check type invariants for `preStepE`. in 'DEFAULT' (Clocks.vdmsl) at line 318:9
+Warning [VDM   ] 11151: Definition of `pre_step_e` pre depends on `preStepE` yet `pre_step_e` does not check type invariants for `preStepE`. in 'DEFAULT' (Clocks.vdmsl) at line 318:9
+Warning [VDM   ] 11151: Definition of `post_step_e` post depends on `postStepE` yet `post_step_e` does not check type invariants for `postStepE`. in 'DEFAULT' (Clocks.vdmsl) at line 319:10
+Warning [VDM   ] 11151: Definition of `updateOutputs` body depends on `calculate` yet `updateOutputs` does not check type invariants for `calculate`. in 'DEFAULT' (Clocks.vdmsl) at line 338:25
+Warning [VDM   ] 11151: Definition of `calculate` body depends on `env` yet `calculate` does not check type invariants for `env`. in 'DEFAULT' (Clocks.vdmsl) at line 342:18
+Warning [VDM   ] 11151: Definition of `updateEnvironmentClock` body depends on `createFMURefs` yet `updateEnvironmentClock` does not check type invariants for `createFMURefs`. in 'DEFAULT' (Clocks.vdmsl) at line 375:50
+Warning [VDM   ] 11151: Definition of `calculateInput` body depends on `preSetI` yet `calculateInput` does not check type invariants for `preSetI`. in 'DEFAULT' (Clocks.vdmsl) at line 405:17
+Warning [VDM   ] 11151: Definition of `calculateInput` body depends on `updateEnvironmentEquation` yet `calculateInput` does not check type invariants for `updateEnvironmentEquation`. in 'DEFAULT' (Clocks.vdmsl) at line 400:13
+Warning [VDM   ] 11151: Definition of `calculateInput` body depends on `setPort` yet `calculateInput` does not check type invariants for `setPort`. in 'DEFAULT' (Clocks.vdmsl) at line 399:29
+Warning [VDM   ] 11151: Definition of `pre_calculateInput` pre depends on `preSetI` yet `pre_calculateInput` does not check type invariants for `preSetI`. in 'DEFAULT' (Clocks.vdmsl) at line 405:17
+Warning [VDM   ] 11151: Definition of `post_calculateInput` post depends on `fmusNotAffected` yet `post_calculateInput` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Clocks.vdmsl) at line 413:13
+Warning [VDM   ] 11151: Definition of `calculateOutput` body depends on `updateEnvironmentEquation` yet `calculateOutput` does not check type invariants for `updateEnvironmentEquation`. in 'DEFAULT' (Clocks.vdmsl) at line 424:13
+Warning [VDM   ] 11151: Definition of `calculateOutput` body depends on `preGetI` yet `calculateOutput` does not check type invariants for `preGetI`. in 'DEFAULT' (Clocks.vdmsl) at line 429:13
+Warning [VDM   ] 11151: Definition of `calculateOutput` body depends on `getPort` yet `calculateOutput` does not check type invariants for `getPort`. in 'DEFAULT' (Clocks.vdmsl) at line 423:29
+Warning [VDM   ] 11151: Definition of `pre_calculateOutput` pre depends on `preGetI` yet `pre_calculateOutput` does not check type invariants for `preGetI`. in 'DEFAULT' (Clocks.vdmsl) at line 429:13
+Warning [VDM   ] 11151: Definition of `post_calculateOutput` post depends on `postVaraibleCalculation` yet `post_calculateOutput` does not check type invariants for `postVaraibleCalculation`. in 'DEFAULT' (Clocks.vdmsl) at line 430:10
+Warning [VDM   ] 11151: Definition of `post_updateEnvironmentEquation` post depends on `fmusNotAffected` yet `post_updateEnvironmentEquation` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Clocks.vdmsl) at line 449:13
+Warning [VDM   ] 11151: Definition of `initializeData` body depends on `preInitialization` yet `initializeData` does not check type invariants for `preInitialization`. in 'DEFAULT' (Clocks.vdmsl) at line 462:9
+Warning [VDM   ] 11151: Definition of `initializeData` body depends on `runAlgorithm` yet `initializeData` does not check type invariants for `runAlgorithm`. in 'DEFAULT' (Clocks.vdmsl) at line 461:17
+Warning [VDM   ] 11151: Definition of `pre_initializeData` pre depends on `preInitialization` yet `pre_initializeData` does not check type invariants for `preInitialization`. in 'DEFAULT' (Clocks.vdmsl) at line 462:9
+Warning [VDM   ] 11151: Definition of `post_initializeData` post depends on `postInitialization` yet `post_initializeData` does not check type invariants for `postInitialization`. in 'DEFAULT' (Clocks.vdmsl) at line 463:10
+Warning [VDM   ] 11151: Definition of `calculateRelevantFMUs` body depends on `calculateRelevantFMUs` yet `calculateRelevantFMUs` does not check type invariants for `calculateRelevantFMUs`. in 'DEFAULT' (Clocks.vdmsl) at line 496:13
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `clockedSimulationAlgorithm` yet `clockedSimulationAlgorithm` does not check type invariants for `clockedSimulationAlgorithm`. in 'DEFAULT' (Clocks.vdmsl) at line 543:14
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `calculateRelevantFMUs` yet `clockedSimulationAlgorithm` does not check type invariants for `calculateRelevantFMUs`. in 'DEFAULT' (Clocks.vdmsl) at line 517:42
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `activateClocks` yet `clockedSimulationAlgorithm` does not check type invariants for `activateClocks`. in 'DEFAULT' (Clocks.vdmsl) at line 528:29
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `eventIteration` yet `clockedSimulationAlgorithm` does not check type invariants for `eventIteration`. in 'DEFAULT' (Clocks.vdmsl) at line 532:29
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `preEventMode` yet `clockedSimulationAlgorithm` does not check type invariants for `preEventMode`. in 'DEFAULT' (Clocks.vdmsl) at line 545:9
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `enterEventMode` yet `clockedSimulationAlgorithm` does not check type invariants for `enterEventMode`. in 'DEFAULT' (Clocks.vdmsl) at line 518:29
+Warning [VDM   ] 11151: Definition of `clockedSimulationAlgorithm` body depends on `enterStepMode` yet `clockedSimulationAlgorithm` does not check type invariants for `enterStepMode`. in 'DEFAULT' (Clocks.vdmsl) at line 542:13
+Warning [VDM   ] 11151: Definition of `pre_clockedSimulationAlgorithm` pre depends on `preEventMode` yet `pre_clockedSimulationAlgorithm` does not check type invariants for `preEventMode`. in 'DEFAULT' (Clocks.vdmsl) at line 545:9
+Warning [VDM   ] 11151: Definition of `post_clockedSimulationAlgorithm` post depends on `postEventMode` yet `post_clockedSimulationAlgorithm` does not check type invariants for `postEventMode`. in 'DEFAULT' (Clocks.vdmsl) at line 546:10
+Warning [VDM   ] 11151: Definition of `eventIteration` body depends on `fmusSynchronized` yet `eventIteration` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 581:9
+Warning [VDM   ] 11151: Definition of `eventIteration` body depends on `assertFMUMode` yet `eventIteration` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Clocks.vdmsl) at line 582:13
+Warning [VDM   ] 11151: Definition of `eventIteration` body depends on `solveSystemOfEquations` yet `eventIteration` does not check type invariants for `solveSystemOfEquations`. in 'DEFAULT' (Clocks.vdmsl) at line 565:29
+Warning [VDM   ] 11151: Definition of `eventIteration` body depends on `updateDiscreteState` yet `eventIteration` does not check type invariants for `updateDiscreteState`. in 'DEFAULT' (Clocks.vdmsl) at line 573:29
+Warning [VDM   ] 11151: Definition of `pre_eventIteration` pre depends on `fmusSynchronized` yet `pre_eventIteration` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 581:9
+Warning [VDM   ] 11151: Definition of `pre_eventIteration` pre depends on `assertFMUMode` yet `pre_eventIteration` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Clocks.vdmsl) at line 582:13
+Warning [VDM   ] 11151: Definition of `post_eventIteration` post depends on `eventSolved` yet `post_eventIteration` does not check type invariants for `eventSolved`. in 'DEFAULT' (Clocks.vdmsl) at line 586:12
+Warning [VDM   ] 11151: Definition of `solveSystemOfEquations` body depends on `runAction` yet `solveSystemOfEquations` does not check type invariants for `runAction`. in 'DEFAULT' (Clocks.vdmsl) at line 599:35
+Warning [VDM   ] 11151: Definition of `solveSystemOfEquations` body depends on `selectAction` yet `solveSystemOfEquations` does not check type invariants for `selectAction`. in 'DEFAULT' (Clocks.vdmsl) at line 598:27
+Warning [VDM   ] 11151: Definition of `solveSystemOfEquations` body depends on `solveSystemOfEquations` yet `solveSystemOfEquations` does not check type invariants for `solveSystemOfEquations`. in 'DEFAULT' (Clocks.vdmsl) at line 599:12
+Warning [VDM   ] 11151: Definition of `selectAction` body depends on `isActionEnabled` yet `selectAction` does not check type invariants for `isActionEnabled`. in 'DEFAULT' (Clocks.vdmsl) at line 615:74
+Warning [VDM   ] 11151: Definition of `createSchedule` body depends on `variablesSynchronized` yet `createSchedule` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 662:9
+Warning [VDM   ] 11151: Definition of `createSchedule` body depends on `assertFMUMode` yet `createSchedule` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Clocks.vdmsl) at line 660:5
+Warning [VDM   ] 11151: Definition of `createSchedule` body depends on `fmusSynchronized` yet `createSchedule` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 661:9
+Warning [VDM   ] 11151: Definition of `pre_createSchedule` pre depends on `variablesSynchronized` yet `pre_createSchedule` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 662:9
+Warning [VDM   ] 11151: Definition of `pre_createSchedule` pre depends on `assertFMUMode` yet `pre_createSchedule` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Clocks.vdmsl) at line 660:5
+Warning [VDM   ] 11151: Definition of `pre_createSchedule` pre depends on `fmusSynchronized` yet `pre_createSchedule` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 661:9
+Warning [VDM   ] 11151: Definition of `post_createSchedule` post depends on `variablesSynchronized` yet `post_createSchedule` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 669:9
+Warning [VDM   ] 11151: Definition of `post_createSchedule` post depends on `ImporterNotAffected` yet `post_createSchedule` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Clocks.vdmsl) at line 668:9
+Warning [VDM   ] 11151: Definition of `post_createSchedule` post depends on `assertFMUMode` yet `post_createSchedule` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Clocks.vdmsl) at line 666:9
+Warning [VDM   ] 11151: Definition of `post_createSchedule` post depends on `fmusSynchronized` yet `post_createSchedule` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Clocks.vdmsl) at line 667:9
+Warning [VDM   ] 11151: Definition of `calculateSchedule` body depends on `next_tm` yet `calculateSchedule` does not check type invariants for `next_tm`. in 'DEFAULT' (Clocks.vdmsl) at line 673:38
+Warning [VDM   ] 11151: Definition of `selectMinStep` body depends on `minset` yet `selectMinStep` does not check type invariants for `minset`. in 'DEFAULT' (Clocks.vdmsl) at line 684:25
+Warning [VDM   ] 11151: Definition of `minset` body depends on `minset` yet `minset` does not check type invariants for `minset`. in 'DEFAULT' (Clocks.vdmsl) at line 691:17
+Warning [VDM   ] 11151: Definition of `inv_Importer` inv depends on `createFMURefs` yet `inv_Importer` does not check type invariants for `createFMURefs`. in 'DEFAULT' (Importer.vdmsl) at line 53:35
+Warning [VDM   ] 11151: Definition of `createImporter` body depends on `createFMURefs` yet `createImporter` does not check type invariants for `createFMURefs`. in 'DEFAULT' (Importer.vdmsl) at line 77:43
+Warning [VDM   ] 11151: Definition of `runScenario` body depends on `createImporter` yet `runScenario` does not check type invariants for `createImporter`. in 'DEFAULT' (Importer.vdmsl) at line 101:28
+Warning [VDM   ] 11151: Definition of `runScenario` body depends on `cosimulationStep` yet `runScenario` does not check type invariants for `cosimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 103:29
+Warning [VDM   ] 11151: Definition of `runScenario` body depends on `terminate` yet `runScenario` does not check type invariants for `terminate`. in 'DEFAULT' (Importer.vdmsl) at line 104:9
+Warning [VDM   ] 11151: Definition of `runScenario` body depends on `initialization` yet `runScenario` does not check type invariants for `initialization`. in 'DEFAULT' (Importer.vdmsl) at line 102:38
+Warning [VDM   ] 11151: Definition of `runScenario` body depends on `createScenario` yet `runScenario` does not check type invariants for `createScenario`. in 'DEFAULT' (Importer.vdmsl) at line 100:34
+Warning [VDM   ] 11151: Definition of `runAlgorithm` body depends on `runAction` yet `runAlgorithm` does not check type invariants for `runAction`. in 'DEFAULT' (Importer.vdmsl) at line 118:26
+Warning [VDM   ] 11151: Definition of `runAlgorithm` body depends on `runAlgorithm` yet `runAlgorithm` does not check type invariants for `runAlgorithm`. in 'DEFAULT' (Importer.vdmsl) at line 118:13
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `stepFMU` yet `runAction` does not check type invariants for `stepFMU`. in 'DEFAULT' (Importer.vdmsl) at line 130:38
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `calculateOutput` yet `runAction` does not check type invariants for `calculateOutput`. in 'DEFAULT' (Importer.vdmsl) at line 128:73
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `calculateInput` yet `runAction` does not check type invariants for `calculateInput`. in 'DEFAULT' (Importer.vdmsl) at line 129:73
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `fmus` yet `runAction` does not check type invariants for `fmus`. in 'DEFAULT' (Importer.vdmsl) at line 128:43
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `setPort` yet `runAction` does not check type invariants for `setPort`. in 'DEFAULT' (Importer.vdmsl) at line 129:118
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `getPort` yet `runAction` does not check type invariants for `getPort`. in 'DEFAULT' (Importer.vdmsl) at line 128:119
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `queryClock` yet `runAction` does not check type invariants for `queryClock`. in 'DEFAULT' (Importer.vdmsl) at line 132:42
+Warning [VDM   ] 11151: Definition of `runAction` body depends on `setClock` yet `runAction` does not check type invariants for `setClock`. in 'DEFAULT' (Importer.vdmsl) at line 131:42
+Warning [VDM   ] 11151: Definition of `updateDiscreteState` body depends on `res` yet `updateDiscreteState` does not check type invariants for `res`. in 'DEFAULT' (Importer.vdmsl) at line 143:51
+Warning [VDM   ] 11151: Definition of `updateDiscreteState` body depends on `assertFMUMode` yet `updateDiscreteState` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 159:9
+Warning [VDM   ] 11151: Definition of `updateDiscreteState` body depends on `fmusSynchronized` yet `updateDiscreteState` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 160:13
+Warning [VDM   ] 11151: Definition of `updateDiscreteState` body depends on `step_e` yet `updateDiscreteState` does not check type invariants for `step_e`. in 'DEFAULT' (Importer.vdmsl) at line 142:28
+Warning [VDM   ] 11151: Definition of `pre_updateDiscreteState` pre depends on `assertFMUMode` yet `pre_updateDiscreteState` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 159:9
+Warning [VDM   ] 11151: Definition of `pre_updateDiscreteState` pre depends on `fmusSynchronized` yet `pre_updateDiscreteState` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 160:13
+Warning [VDM   ] 11151: Definition of `post_updateDiscreteState` post depends on `timeAdvanced` yet `post_updateDiscreteState` does not check type invariants for `timeAdvanced`. in 'DEFAULT' (Importer.vdmsl) at line 167:13
+Warning [VDM   ] 11151: Definition of `post_updateDiscreteState` post depends on `assertFMUMode` yet `post_updateDiscreteState` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 165:9
+Warning [VDM   ] 11151: Definition of `post_updateDiscreteState` post depends on `fmusSynchronized` yet `post_updateDiscreteState` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 166:13
+Warning [VDM   ] 11151: Definition of `enterEventMode` body depends on `preCoSimulationStep` yet `enterEventMode` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 177:9
+Warning [VDM   ] 11151: Definition of `pre_enterEventMode` pre depends on `preCoSimulationStep` yet `pre_enterEventMode` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 177:9
+Warning [VDM   ] 11151: Definition of `post_enterEventMode` post depends on `variablesSynchronized` yet `post_enterEventMode` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 183:13
+Warning [VDM   ] 11151: Definition of `post_enterEventMode` post depends on `ImporterNotAffected` yet `post_enterEventMode` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 180:9
+Warning [VDM   ] 11151: Definition of `post_enterEventMode` post depends on `assertFMUMode` yet `post_enterEventMode` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 181:13
+Warning [VDM   ] 11151: Definition of `enterStepMode` body depends on `variablesSynchronized` yet `enterStepMode` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 200:13
+Warning [VDM   ] 11151: Definition of `enterStepMode` body depends on `assertFMUMode` yet `enterStepMode` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 198:9
+Warning [VDM   ] 11151: Definition of `enterStepMode` body depends on `fmusSynchronized` yet `enterStepMode` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 199:13
+Warning [VDM   ] 11151: Definition of `pre_enterStepMode` pre depends on `variablesSynchronized` yet `pre_enterStepMode` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 200:13
+Warning [VDM   ] 11151: Definition of `pre_enterStepMode` pre depends on `assertFMUMode` yet `pre_enterStepMode` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 198:9
+Warning [VDM   ] 11151: Definition of `pre_enterStepMode` pre depends on `fmusSynchronized` yet `pre_enterStepMode` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Importer.vdmsl) at line 199:13
+Warning [VDM   ] 11151: Definition of `post_enterStepMode` post depends on `postStepMode` yet `post_enterStepMode` does not check type invariants for `postStepMode`. in 'DEFAULT' (Importer.vdmsl) at line 201:10
+Warning [VDM   ] 11151: Definition of `activateClocks` body depends on `activateClocks` yet `activateClocks` does not check type invariants for `activateClocks`. in 'DEFAULT' (Importer.vdmsl) at line 214:9
+Warning [VDM   ] 11151: Definition of `activateClocks` body depends on `assertFMUMode` yet `activateClocks` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 219:9
+Warning [VDM   ] 11151: Definition of `activateClocks` body depends on `setClock` yet `activateClocks` does not check type invariants for `setClock`. in 'DEFAULT' (Importer.vdmsl) at line 213:29
+Warning [VDM   ] 11151: Definition of `pre_activateClocks` pre depends on `assertFMUMode` yet `pre_activateClocks` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 219:9
+Warning [VDM   ] 11151: Definition of `post_activateClocks` post depends on `assertFMUMode` yet `post_activateClocks` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Importer.vdmsl) at line 226:9
+Warning [VDM   ] 11151: Definition of `initialization` body depends on `initializeData` yet `initialization` does not check type invariants for `initializeData`. in 'DEFAULT' (Importer.vdmsl) at line 238:29
+Warning [VDM   ] 11151: Definition of `initialization` body depends on `preInitialization` yet `initialization` does not check type invariants for `preInitialization`. in 'DEFAULT' (Importer.vdmsl) at line 248:9
+Warning [VDM   ] 11151: Definition of `initialization` body depends on `createSchedule` yet `initialization` does not check type invariants for `createSchedule`. in 'DEFAULT' (Importer.vdmsl) at line 242:29
+Warning [VDM   ] 11151: Definition of `initialization` body depends on `enterStepMode` yet `initialization` does not check type invariants for `enterStepMode`. in 'DEFAULT' (Importer.vdmsl) at line 247:9
+Warning [VDM   ] 11151: Definition of `pre_initialization` pre depends on `preInitialization` yet `pre_initialization` does not check type invariants for `preInitialization`. in 'DEFAULT' (Importer.vdmsl) at line 248:9
+Warning [VDM   ] 11151: Definition of `post_initialization` post depends on `preCoSimulationStep` yet `post_initialization` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 249:10
+Warning [VDM   ] 11151: Definition of `post_initialization` post depends on `ImporterNotAffected` yet `post_initialization` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 250:13
+Warning [VDM   ] 11151: Definition of `cosimStep` body depends on `derefOutput` yet `cosimStep` does not check type invariants for `derefOutput`. in 'DEFAULT' (Importer.vdmsl) at line 266:71
+Warning [VDM   ] 11151: Definition of `cosimStep` body depends on `runAlgorithm` yet `cosimStep` does not check type invariants for `runAlgorithm`. in 'DEFAULT' (Importer.vdmsl) at line 270:13
+Warning [VDM   ] 11151: Definition of `cosimStep` body depends on `preCoSimulationStep` yet `cosimStep` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 271:9
+Warning [VDM   ] 11151: Definition of `cosimStep` body depends on `derefInput` yet `cosimStep` does not check type invariants for `derefInput`. in 'DEFAULT' (Importer.vdmsl) at line 267:113
+Warning [VDM   ] 11151: Definition of `pre_cosimStep` pre depends on `preCoSimulationStep` yet `pre_cosimStep` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 271:9
+Warning [VDM   ] 11151: Definition of `post_cosimStep` post depends on `postCosimulationStep` yet `post_cosimStep` does not check type invariants for `postCosimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 272:10
+Warning [VDM   ] 11151: Definition of `terminate` body depends on `preTermination` yet `terminate` does not check type invariants for `preTermination`. in 'DEFAULT' (Importer.vdmsl) at line 277:9
+Warning [VDM   ] 11151: Definition of `pre_terminate` pre depends on `preTermination` yet `pre_terminate` does not check type invariants for `preTermination`. in 'DEFAULT' (Importer.vdmsl) at line 277:9
+Warning [VDM   ] 11151: Definition of `post_terminate` post depends on `postTermination` yet `post_terminate` does not check type invariants for `postTermination`. in 'DEFAULT' (Importer.vdmsl) at line 278:10
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `cosimStep` yet `cosimulationStep` does not check type invariants for `cosimStep`. in 'DEFAULT' (Importer.vdmsl) at line 303:29
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `clockedSimulationAlgorithm` yet `cosimulationStep` does not check type invariants for `clockedSimulationAlgorithm`. in 'DEFAULT' (Importer.vdmsl) at line 295:52
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `cosimulationStep` yet `cosimulationStep` does not check type invariants for `cosimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 313:13
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `tickingClocks` yet `cosimulationStep` does not check type invariants for `tickingClocks`. in 'DEFAULT' (Importer.vdmsl) at line 289:64
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `preCoSimulationStep` yet `cosimulationStep` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 315:9
+Warning [VDM   ] 11151: Definition of `cosimulationStep` body depends on `stepnegotiation` yet `cosimulationStep` does not check type invariants for `stepnegotiation`. in 'DEFAULT' (Importer.vdmsl) at line 299:49
+Warning [VDM   ] 11151: Definition of `pre_cosimulationStep` pre depends on `preCoSimulationStep` yet `pre_cosimulationStep` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 315:9
+Warning [VDM   ] 11151: Definition of `post_cosimulationStep` post depends on `timeAdvanced` yet `post_cosimulationStep` does not check type invariants for `timeAdvanced`. in 'DEFAULT' (Importer.vdmsl) at line 322:13
+Warning [VDM   ] 11151: Definition of `post_cosimulationStep` post depends on `preCoSimulationStep` yet `post_cosimulationStep` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Importer.vdmsl) at line 316:10
+Warning [VDM   ] 11151: Definition of `post_cosimulationStep` post depends on `ImporterNotAffected` yet `post_cosimulationStep` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 318:13
+Warning [VDM   ] 11151: Definition of `stepnegotiation` body depends on `selectMinStep` yet `stepnegotiation` does not check type invariants for `selectMinStep`. in 'DEFAULT' (Importer.vdmsl) at line 332:9
+Warning [VDM   ] 11151: Definition of `queryClock` body depends on `preGetCI` yet `queryClock` does not check type invariants for `preGetCI`. in 'DEFAULT' (Importer.vdmsl) at line 360:13
+Warning [VDM   ] 11151: Definition of `queryClock` body depends on `get_cm` yet `queryClock` does not check type invariants for `get_cm`. in 'DEFAULT' (Importer.vdmsl) at line 348:36
+Warning [VDM   ] 11151: Definition of `queryClock` body depends on `updateEnvironmentClock` yet `queryClock` does not check type invariants for `updateEnvironmentClock`. in 'DEFAULT' (Importer.vdmsl) at line 357:9
+Warning [VDM   ] 11151: Definition of `pre_queryClock` pre depends on `preGetCI` yet `pre_queryClock` does not check type invariants for `preGetCI`. in 'DEFAULT' (Importer.vdmsl) at line 360:13
+Warning [VDM   ] 11151: Definition of `setClock` body depends on `updateEnvironmentClock` yet `setClock` does not check type invariants for `updateEnvironmentClock`. in 'DEFAULT' (Importer.vdmsl) at line 376:9
+Warning [VDM   ] 11151: Definition of `setClock` body depends on `set_cm` yet `setClock` does not check type invariants for `set_cm`. in 'DEFAULT' (Importer.vdmsl) at line 368:32
+Warning [VDM   ] 11151: Definition of `setPort` body depends on `set_m` yet `setPort` does not check type invariants for `set_m`. in 'DEFAULT' (Importer.vdmsl) at line 393:23
+Warning [VDM   ] 11151: Definition of `setPort` body depends on `preSetI` yet `setPort` does not check type invariants for `preSetI`. in 'DEFAULT' (Importer.vdmsl) at line 398:9
+Warning [VDM   ] 11151: Definition of `pre_setPort` pre depends on `preSetI` yet `pre_setPort` does not check type invariants for `preSetI`. in 'DEFAULT' (Importer.vdmsl) at line 398:9
+Warning [VDM   ] 11151: Definition of `post_setPort` post depends on `fmusNotAffected` yet `post_setPort` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 399:10
+Warning [VDM   ] 11151: Definition of `getPort` body depends on `preGetI` yet `getPort` does not check type invariants for `preGetI`. in 'DEFAULT' (Importer.vdmsl) at line 412:9
+Warning [VDM   ] 11151: Definition of `getPort` body depends on `get_m` yet `getPort` does not check type invariants for `get_m`. in 'DEFAULT' (Importer.vdmsl) at line 406:29
+Warning [VDM   ] 11151: Definition of `pre_getPort` pre depends on `preGetI` yet `pre_getPort` does not check type invariants for `preGetI`. in 'DEFAULT' (Importer.vdmsl) at line 412:9
+Warning [VDM   ] 11151: Definition of `post_getPort` post depends on `fmusNotAffected` yet `post_getPort` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 413:10
+Warning [VDM   ] 11151: Definition of `stepFMU` body depends on `preStepI` yet `stepFMU` does not check type invariants for `preStepI`. in 'DEFAULT' (Importer.vdmsl) at line 428:9
+Warning [VDM   ] 11151: Definition of `stepFMU` body depends on `step_tm` yet `stepFMU` does not check type invariants for `step_tm`. in 'DEFAULT' (Importer.vdmsl) at line 422:44
+Warning [VDM   ] 11151: Definition of `pre_stepFMU` pre depends on `preStepI` yet `pre_stepFMU` does not check type invariants for `preStepI`. in 'DEFAULT' (Importer.vdmsl) at line 428:9
+Warning [VDM   ] 11151: Definition of `post_stepFMU` post depends on `fmusNotAffected` yet `post_stepFMU` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 429:10
+Warning [VDM   ] 11151: Definition of `post_stepFMU` post depends on `ImporterNotAffected` yet `post_stepFMU` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Importer.vdmsl) at line 432:9
+Warning [VDM   ] 11151: Definition of `variablesSynchronized` body depends on `filterOutputs` yet `variablesSynchronized` does not check type invariants for `filterOutputs`. in 'DEFAULT' (Validation.vdmsl) at line 33:39
+Warning [VDM   ] 11151: Definition of `filterOutputs` body depends on `filterOutputs` yet `filterOutputs` does not check type invariants for `filterOutputs`. in 'DEFAULT' (Validation.vdmsl) at line 45:108
+Warning [VDM   ] 11151: Definition of `isActionEnabled` body depends on `preStepI` yet `isActionEnabled` does not check type invariants for `preStepI`. in 'DEFAULT' (Validation.vdmsl) at line 57:38
+Warning [VDM   ] 11151: Definition of `isActionEnabled` body depends on `preGetCI` yet `isActionEnabled` does not check type invariants for `preGetCI`. in 'DEFAULT' (Validation.vdmsl) at line 59:42
+Warning [VDM   ] 11151: Definition of `isActionEnabled` body depends on `preSetCI` yet `isActionEnabled` does not check type invariants for `preSetCI`. in 'DEFAULT' (Validation.vdmsl) at line 58:42
+Warning [VDM   ] 11151: Definition of `isActionEnabled` body depends on `preSetI` yet `isActionEnabled` does not check type invariants for `preSetI`. in 'DEFAULT' (Validation.vdmsl) at line 56:40
+Warning [VDM   ] 11151: Definition of `isActionEnabled` body depends on `preGetI` yet `isActionEnabled` does not check type invariants for `preGetI`. in 'DEFAULT' (Validation.vdmsl) at line 55:40
+Warning [VDM   ] 11151: Definition of `preSetI` body depends on `preSet` yet `preSetI` does not check type invariants for `preSet`. in 'DEFAULT' (Validation.vdmsl) at line 78:13
+Warning [VDM   ] 11151: Definition of `preSetI` body depends on `derefInput` yet `preSetI` does not check type invariants for `derefInput`. in 'DEFAULT' (Validation.vdmsl) at line 70:32
+Warning [VDM   ] 11151: Definition of `preGetI` body depends on `derefOutput` yet `preGetI` does not check type invariants for `derefOutput`. in 'DEFAULT' (Validation.vdmsl) at line 82:33
+Warning [VDM   ] 11151: Definition of `preGetI` body depends on `preGet` yet `preGetI` does not check type invariants for `preGet`. in 'DEFAULT' (Validation.vdmsl) at line 88:13
+Warning [VDM   ] 11151: Definition of `preGetI` body depends on `derefInput` yet `preGetI` does not check type invariants for `derefInput`. in 'DEFAULT' (Validation.vdmsl) at line 85:36
+Warning [VDM   ] 11151: Definition of `preStepI` body depends on `preStepT` yet `preStepI` does not check type invariants for `preStepT`. in 'DEFAULT' (Validation.vdmsl) at line 96:13
+Warning [VDM   ] 11151: Definition of `preGetCI` body depends on `preGetC` yet `preGetCI` does not check type invariants for `preGetC`. in 'DEFAULT' (Validation.vdmsl) at line 102:21
+Warning [VDM   ] 11151: Definition of `preSetCI` body depends on `preSetC` yet `preSetCI` does not check type invariants for `preSetC`. in 'DEFAULT' (Validation.vdmsl) at line 109:13
+Warning [VDM   ] 11151: Definition of `preGet` body depends on `feedthroughSatisfied` yet `preGet` does not check type invariants for `feedthroughSatisfied`. in 'DEFAULT' (Validation.vdmsl) at line 132:17
+Warning [VDM   ] 11151: Definition of `preGet` body depends on `derefOutput` yet `preGet` does not check type invariants for `derefOutput`. in 'DEFAULT' (Validation.vdmsl) at line 129:33
+Warning [VDM   ] 11151: Definition of `preEventMode` body depends on `preCoSimulationStep` yet `preEventMode` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Validation.vdmsl) at line 176:9
+Warning [VDM   ] 11151: Definition of `postEventMode` body depends on `preCoSimulationStep` yet `postEventMode` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Validation.vdmsl) at line 181:9
+Warning [VDM   ] 11151: Definition of `fmusSynchronizedAtTime` body depends on `fmusSynchronized` yet `fmusSynchronizedAtTime` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 198:10
+Warning [VDM   ] 11151: Definition of `eventSolved` body depends on `timeAdvanced` yet `eventSolved` does not check type invariants for `timeAdvanced`. in 'DEFAULT' (Validation.vdmsl) at line 204:17
+Warning [VDM   ] 11151: Definition of `eventSolved` body depends on `sameSetOfFMUs` yet `eventSolved` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 207:13
+Warning [VDM   ] 11151: Definition of `eventSolved` body depends on `assertFMUMode` yet `eventSolved` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 203:13
+Warning [VDM   ] 11151: Definition of `pre_eventSolved` pre depends on `sameSetOfFMUs` yet `pre_eventSolved` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 207:13
+Warning [VDM   ] 11151: Definition of `timeAdvanced` body depends on `sameSetOfFMUs` yet `timeAdvanced` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 225:13
+Warning [VDM   ] 11151: Definition of `pre_timeAdvanced` pre depends on `sameSetOfFMUs` yet `pre_timeAdvanced` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 225:13
+Warning [VDM   ] 11151: Definition of `preCoSimulationStep` body depends on `variablesSynchronized` yet `preCoSimulationStep` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 234:21
+Warning [VDM   ] 11151: Definition of `preCoSimulationStep` body depends on `fmusSynchronizedAtTime` yet `preCoSimulationStep` does not check type invariants for `fmusSynchronizedAtTime`. in 'DEFAULT' (Validation.vdmsl) at line 235:21
+Warning [VDM   ] 11151: Definition of `preCoSimulationStep` body depends on `assertFMUMode` yet `preCoSimulationStep` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 233:17
+Warning [VDM   ] 11151: Definition of `postCosimulationStep` body depends on `timeAdvanced` yet `postCosimulationStep` does not check type invariants for `timeAdvanced`. in 'DEFAULT' (Validation.vdmsl) at line 244:21
+Warning [VDM   ] 11151: Definition of `postCosimulationStep` body depends on `variablesSynchronized` yet `postCosimulationStep` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 242:21
+Warning [VDM   ] 11151: Definition of `postCosimulationStep` body depends on `assertFMUMode` yet `postCosimulationStep` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 241:13
+Warning [VDM   ] 11151: Definition of `postCosimulationStep` body depends on `fmusSynchronized` yet `postCosimulationStep` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 243:21
+Warning [VDM   ] 11151: Definition of `postStepMode` body depends on `fmusNotAffected` yet `postStepMode` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Validation.vdmsl) at line 251:9
+Warning [VDM   ] 11151: Definition of `postStepMode` body depends on `ImporterNotAffected` yet `postStepMode` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Validation.vdmsl) at line 249:9
+Warning [VDM   ] 11151: Definition of `postStepMode` body depends on `preCoSimulationStep` yet `postStepMode` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Validation.vdmsl) at line 253:13
+Warning [VDM   ] 11151: Definition of `postStepMode` body depends on `assertFMUMode` yet `postStepMode` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 252:13
+Warning [VDM   ] 11151: Definition of `fmusNotAffected` body depends on `sameSetOfFMUs` yet `fmusNotAffected` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 258:9
+Warning [VDM   ] 11151: Definition of `pre_fmusNotAffected` pre depends on `sameSetOfFMUs` yet `pre_fmusNotAffected` does not check type invariants for `sameSetOfFMUs`. in 'DEFAULT' (Validation.vdmsl) at line 258:9
+Warning [VDM   ] 11151: Definition of `preInitialization` body depends on `fmusSynchronizedAtTime` yet `preInitialization` does not check type invariants for `fmusSynchronizedAtTime`. in 'DEFAULT' (Validation.vdmsl) at line 265:13
+Warning [VDM   ] 11151: Definition of `preInitialization` body depends on `assertFMUMode` yet `preInitialization` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 263:9
+Warning [VDM   ] 11151: Definition of `postInitialization` body depends on `fmusSynchronizedAtTime` yet `postInitialization` does not check type invariants for `fmusSynchronizedAtTime`. in 'DEFAULT' (Validation.vdmsl) at line 272:13
+Warning [VDM   ] 11151: Definition of `postInitialization` body depends on `variablesSynchronized` yet `postInitialization` does not check type invariants for `variablesSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 274:13
+Warning [VDM   ] 11151: Definition of `postInitialization` body depends on `assertFMUMode` yet `postInitialization` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 271:9
+Warning [VDM   ] 11151: Definition of `preTermination` body depends on `preCoSimulationStep` yet `preTermination` does not check type invariants for `preCoSimulationStep`. in 'DEFAULT' (Validation.vdmsl) at line 278:9
+Warning [VDM   ] 11151: Definition of `postTermination` body depends on `ImporterNotAffected` yet `postTermination` does not check type invariants for `ImporterNotAffected`. in 'DEFAULT' (Validation.vdmsl) at line 287:13
+Warning [VDM   ] 11151: Definition of `postTermination` body depends on `assertFMUMode` yet `postTermination` does not check type invariants for `assertFMUMode`. in 'DEFAULT' (Validation.vdmsl) at line 285:5
+Warning [VDM   ] 11151: Definition of `postTermination` body depends on `fmusSynchronized` yet `postTermination` does not check type invariants for `fmusSynchronized`. in 'DEFAULT' (Validation.vdmsl) at line 286:13
+Warning [VDM   ] 11151: Definition of `postVaraibleCalculation` body depends on `fmusNotAffected` yet `postVaraibleCalculation` does not check type invariants for `fmusNotAffected`. in 'DEFAULT' (Validation.vdmsl) at line 297:13
+Warning [VDM   ] 11151: Definition of `createScenario` body depends on `createTimeBased` yet `createScenario` does not check type invariants for `createTimeBased`. in 'DEFAULT' (scenario.vdmsl) at line 97:32
+Warning [VDM   ] 11151: Definition of `createScenario` body depends on `createClock` yet `createScenario` does not check type invariants for `createClock`. in 'DEFAULT' (scenario.vdmsl) at line 66:27
+Warning [VDM   ] 11151: Definition of `createScenario` body depends on `createVariable` yet `createScenario` does not check type invariants for `createVariable`. in 'DEFAULT' (scenario.vdmsl) at line 64:27
+Warning [VDM   ] 11151: Definition of `createScenario` body depends on `createFMU` yet `createScenario` does not check type invariants for `createFMU`. in 'DEFAULT' (scenario.vdmsl) at line 68:23
+Exu analysed 1 module (of 1) in 0.0 secs. 
+No issues and 216 warnings.
+Starting Isabelle to VDM translation.
+Translating module DEFAULT as ./DEFAULT.thy
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 118:55
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Clocks.vdmsl) at line 234:21
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Validation.vdmsl) at line 185:31
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Validation.vdmsl) at line 129:13
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`oValue)` but created `(dummy0RANGE :: Value)`. in 'DEFAULT' (Clocks.vdmsl) at line 105:5
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `o`. in 'DEFAULT' (Clocks.vdmsl) at line 337:47
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `value`. in 'DEFAULT' (Importer.vdmsl) at line 392:13
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Validation.vdmsl) at line 82:13
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Validation.vdmsl) at line 100:13
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 116:37
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Clocks.vdmsl) at line 459:84
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Validation.vdmsl) at line 45:40
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`c)` but created `(dummy0DOMAIN :: Name)`. in 'DEFAULT' (Clocks.vdmsl) at line 82:5
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`c)` but created `(dummy0RANGE :: VDMReal)`. in 'DEFAULT' (Clocks.vdmsl) at line 138:23
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`name)` but created `(dummy0RANGE :: FMU)`. in 'DEFAULT' (Clocks.vdmsl) at line 168:5
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`fmu)` but created `(dummy0RANGE :: FMU)`. in 'DEFAULT' (Clocks.vdmsl) at line 168:5
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`fmu)` but created `(dummy0RANGE :: (FMU \<times> bool))`. in 'DEFAULT' (Clocks.vdmsl) at line 311:20
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Clocks.vdmsl) at line 621:76
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `o`. in 'DEFAULT' (Clocks.vdmsl) at line 622:101
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 218:63
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 216:49
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 225:68
+Error   [VDM   ] 10106: Invalid seq bind arguments for `TRSeqType` length(1) = expected seq type. in 'DEFAULT' (Importer.vdmsl) at line 221:49
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`clock)` but created `(dummy0DOMAIN :: FMURef)`. in 'DEFAULT' (Clocks.vdmsl) at line 87:5
+Error   [ISA   ] 10213: Invalid Isabelle identifier in pattern `output`. in 'DEFAULT' (Importer.vdmsl) at line 265:85
+Error   [ISA   ] 10227: Invalid map comp binding: expected `(DEFAULT`fmu)` but created `(dummy0DOMAIN :: Name)`. in 'DEFAULT' (Clocks.vdmsl) at line 82:5
+Error   [ISA   ] 10215: Invalid invariant type for Action : must define both eq and ord specificaition. in 'DEFAULT' (Clocks.vdmsl) at line 67:5
+Error   [ISA   ] 10215: Invalid invariant type for Variable : must define both eq and ord specificaition. in 'DEFAULT' (Clocks.vdmsl) at line 118:5
+Error   [ISA   ] 10215: Invalid invariant type for FMU : must define both eq and ord specificaition. in 'DEFAULT' (Clocks.vdmsl) at line 168:5
+Error   [VDM   ] 10118: Incompatible field (0) type in `mk_Value` expression: expected `ValueType.U_bool "bool" | 
+		 ValueType.U_VDMReal "VDMReal"` but found `ValueType`. in 'DEFAULT' (Clocks.vdmsl) at line 342:9
+Error   [ISA   ] 10221: Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `Action` VDM type. in 'DEFAULT' (Importer.vdmsl) at line 127:5
+Error   [ISA   ] 10221: Isabelle `case` requires types it can deconstruct (e.g. optional, union, etc.) for `Action` VDM type. in 'DEFAULT' (Validation.vdmsl) at line 54:9
+Error   [VDM   ] 10118: Incompatible field (3) type in `mk_Variable` expression: expected `Causality.U_input  | 
+		 Causality.U_output ` but found `Causality`. in 'DEFAULT' (scenario.vdmsl) at line 50:9
+Error   [VDM   ] 10118: Incompatible field (4) type in `mk_Variable` expression: expected `PortType.U_continous  | 
+		 PortType.U_discrete ` but found `PortType`. in 'DEFAULT' (scenario.vdmsl) at line 50:9
+Error   [VDM   ] 10118: Incompatible field (7) type in `mk_Variable` expression: expected `Contract.U_delayed  | 
+		 Contract.U_none  | 
+		 Contract.U_reactive ` but found `Contract`. in 'DEFAULT' (scenario.vdmsl) at line 50:9
+Error   [VDM   ] 10118: Incompatible field (2) type in `mk_Clock` expression: expected `Causality.U_input  | 
+		 Causality.U_output ` but found `Causality`. in 'DEFAULT' (scenario.vdmsl) at line 55:9
+Error   [VDM   ] 10118: Incompatible field (3) type in `mk_Clock` expression: expected `Interval.U_calculated  | 
+		 Interval.U_changing  | 
+		 Interval.U_constant  | 
+		 Interval.U_countdown  | 
+		 Interval.U_fixed  | 
+		 Interval.U_triggered  | 
+		 Interval.U_tunable ` but found `Interval`. in 'DEFAULT' (scenario.vdmsl) at line 55:9
+Error   [VDM   ] 10118: Incompatible field (3) type in `mk_TimeBasedClock` expression: expected `Interval.U_calculated  | 
+		 Interval.U_changing  | 
+		 Interval.U_constant  | 
+		 Interval.U_countdown  | 
+		 Interval.U_fixed  | 
+		 Interval.U_triggered  | 
+		 Interval.U_tunable ` but found `Interval`. in 'DEFAULT' (scenario.vdmsl) at line 59:9
+Warning [ISA   ] 11202: Type definition for type `Time` specification might requires Isabelle type to instantiate `ord` class! in 'DEFAULT' (Clocks.vdmsl) at line 34:5
+Warning [ISA   ] 11202: Type definition for type `Clock` specification might requires Isabelle type to instantiate `ord` class! in 'DEFAULT' (Clocks.vdmsl) at line 149:5
+Warning [ISA   ] 11202: Type definition for type `FMU` specification might requires Isabelle type to instantiate `ord` class! in 'DEFAULT' (Clocks.vdmsl) at line 168:5
+Warning [ISA   ] 11202: Type definition for type `FMURef` specification might requires Isabelle type to instantiate `ord` class! in 'DEFAULT' (Clocks.vdmsl) at line 87:5
+Warning [ISA   ] 11202: Type definition for type `Action` specification might requires Isabelle type to instantiate `ord` class! in 'DEFAULT' (Clocks.vdmsl) at line 67:5
+Warning [ISA   ] 11208: Module `DEFAULT` translation will be saved in a file with the same name instead of the one in 
+	Files = [Clocks.vdmsl, Importer.vdmsl, Validation.vdmsl, scenario.vdmsl] 
+Warning [VDM   ] 11105: TRNotYetSpecifiedExpression expression invalid type (`null`)? VDMJ might still figure it out. in 'DEFAULT' (Clocks.vdmsl) at line 548:33
+Warning [VDM   ] 11102: Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!! in 'DEFAULT' (Clocks.vdmsl) at line 338:25
+Warning [ISA   ] 11204: Set bind `(act \<in> (outputs \<union> inputs))` in sequence comprehension requires its Isabelle type to instantiate class linorder. in 'DEFAULT' (Clocks.vdmsl) at line 461:40
+Warning [VDM   ] 11102: Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!! in 'DEFAULT' (Clocks.vdmsl) at line 475:32
+Warning [VDM   ] 11102: Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!! in 'DEFAULT' (Clocks.vdmsl) at line 475:52
+Warning [ISA   ] 11204: Set bind `(clock \<in> clocks)` in sequence comprehension requires its Isabelle type to instantiate class linorder. in 'DEFAULT' (Clocks.vdmsl) at line 528:57
+Warning [VDM   ] 11102: Type bound set compression will generate a (possibly spurious, i.e. inv_VDMSet') difficult set finiteness proof!!! in 'DEFAULT' (Importer.vdmsl) at line 176:25
+Warning [ISA   ] 11204: Set bind `(act \<in> ((outputs \<union> inputs) \<union> steps))` in sequence comprehension requires its Isabelle type to instantiate class linorder. in 'DEFAULT' (Importer.vdmsl) at line 269:47
+Warning [ISA   ] 11200: Unknown VDM types will generate Isabelle additional type variable `a warning. in 'DEFAULT' (scenario.vdmsl) at line 78:27
+Warning [ISA   ] 11200: Unknown VDM types will generate Isabelle additional type variable `a warning. in 'DEFAULT' (scenario.vdmsl) at line 89:32
+Translated 1 module (of 1) in 1.0 secs. 
+Found 38 issuess and 16 warnings. Proceeding with translation with remaining issues may lead to Isabelle errors!
+> 

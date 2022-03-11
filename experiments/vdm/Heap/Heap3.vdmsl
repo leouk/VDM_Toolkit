@@ -1,0 +1,102 @@
+-- $Id$
+module Heap3
+exports all
+
+imports from Heap1 functions locs_of renamed Heap1locs_of,
+	 	from Heap2 types Loc renamed Heap2Loc;
+						 Piece renamed Heap2Piece;
+definitions 
+
+
+types 
+	Loc = Heap2Loc;
+	Piece = Heap2Piece;
+	
+	Store = map Loc to [nat];
+	
+	Free3 = [Loc] * Store
+	inv mk_(start, store) == isOk3(start, store);
+
+functions 
+	retr3_0: Free3 -> set of Loc
+	retr3_0(mk_(start, store)) == locs3(start, store);
+
+	isOk3: [Loc] * Store -> bool
+	isOk3(a, store) == 
+		if a = nil then
+			true
+		else
+			{ a, a+1 } subset dom store and
+			store(a) <> nil and
+			store(a) > 1 and
+			store(a+1) <> nil => (a+ store(a) < store(a+1) and
+								  isOk3(store(a+1), store))
+		measure measure_LocStore;
+
+	locs3: [Loc] * Store -> set of Loc
+	locs3(start, store) ==
+		if start = nil then
+			{}
+		else
+			{start,...,start + store(start+1)-1} union locs3(store(start+1), store)
+		pre isOk3(start, store)
+		measure measure_LocStore;
+
+	isReachable3: Loc * [Loc] * Store -> bool	
+	isReachable3(a, start, store) == 
+		if start = nil then
+			false
+		else if a = start then
+			true
+		else
+			isReachable3(a, store(start+1), store)
+		measure measure_LocLocStore;
+
+	nonFreeLocEquiv: [Loc] * Store * Store -> bool
+	nonFreeLocEquiv(startB, storeB, storeA) ==
+		forall loc in set ((dom storeB) \ locs3(startB, storeB)) &
+			loc in set dom storeA and storeA(loc) = storeB(loc);
+	--nonFreeLocEquiv: Free3 * Free3 -> bool
+	--nonFreeLocEquiv(mk_(startB, storeB), mk_(startA, storeA)) ==
+	--	forall loc in set ((dom storeB) \ locs3(startB, storeB)) &
+	--		loc in set dom storeA and storeA(loc) = storeB(loc);
+		-- prevent altering non-free location predicate refactoring
+		-- let mk_(start, store) = free3 in
+		-- forall loc in set ((dom store~) \ locs3(start~, store~)) &
+		--	loc in set dom store and store(loc) = store~(loc);
+
+	measure_LocStore: [Loc] * Store -> nat
+	measure_LocStore(-, store) == card dom store;
+
+	measure_LocLocStore: Loc * [Loc] * Store -> nat
+	measure_LocLocStore(-, -, store) == card dom store;
+
+state StateName of
+	free3: Free3
+end 
+
+operations 
+	NEW3(req: nat) res:Piece
+		ext wr free3
+		pre req > 1 and
+			let mk_(start, store) = free3 in
+				exists a in set dom store & 
+					store(a) <> nil and
+					(store(a) = req or store(a) - req > 1) and
+					isReachable3(a, start, store)
+		post res.SIZE = req and
+			 let mk_(startA, storeA) = free3, mk_(startB, storeB) = free3~ in
+				locs3(startA, storeA) = locs3(startB, storeB) \ Heap1locs_of(res) and
+				Heap1locs_of(res) subset locs3(startB, storeB) and
+				nonFreeLocEquiv(startB, storeB, storeA);
+
+	DISPOSE3(ret: Piece)
+		ext wr free3
+		pre ret.SIZE > 1 and		
+			let mk_(start, store) = free3 in
+				Heap1locs_of(ret) inter locs3(start, store) = {}
+		post let mk_(startA, storeA) = free3, mk_(startB, storeB) = free3~ in
+				locs3(startA, storeA) = locs3(startB, storeB) union Heap1locs_of(ret) and
+				nonFreeLocEquiv(startB, storeB, storeA);
+ 
+end Heap3

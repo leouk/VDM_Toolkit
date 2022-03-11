@@ -1,0 +1,39 @@
+module mapExample
+exports all
+definitions
+
+types
+    S ::
+      x : nat;
+
+    T ::
+        y : map nat to S
+    inv mk_T(y) == 
+      forall x in set dom y & y(x).x > 10; 
+
+
+functions 
+    f : T * S -> nat
+    f(m, s) ==
+        m.y(m.y(s.x).x).x;
+
+  --@STH missing the in Isabelle
+  --@STH here I think we could argue that we should add the precondition of f if I set a flag to the translator
+    g : T * S -> nat
+    g(m, s) ==
+        f(m, m.y(m.y(s.x).x));
+
+    --STH wrong patterns in Isabelle
+    h: S * S -> S 
+    h(mk_S(x), mk_S(y)) == mk_S(x+y);
+
+    h': S * S -> S 
+    h'(a, b) == let mk_S(x) = a, 
+                mk_S(y) = b in 
+              mk_S(x+y);
+
+    h'': S * S -> S 
+    h''(a, b) == 
+              mk_S(a.x+b.x);
+     
+end mapExample

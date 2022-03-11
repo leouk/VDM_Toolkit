@@ -1,0 +1,264 @@
+module RorI
+exports all
+definitions 
+	
+functions 
+
+	fact: nat -> nat
+	fact(n) == 
+		if n = 0 then 
+			1
+		else
+			n * fact(n-1)
+	measure 
+		n--fact_measure
+	;
+	/*
+	fact(5)
+	=
+	5 * fact(5-1)
+	=
+	5 * fact(4)
+	=
+	5 * (4 * fact(4-1))
+	=
+	5 * (4 * fact(3))
+	=
+	5 * (4 * (3 * fact(3-1)))
+	=
+	5 * (4 * (3 * fact(2)))
+	=
+	5 * (4 * (3 * (2 * fact(2-1))))
+	=
+	5 * (4 * (3 * (2 * fact(1))))
+	=
+	5 * (4 * (3 * (2 * (1 * fact(1-1)))))
+	=
+	5 * (4 * (3 * (2 * (1 * fact(0)))))
+	=
+	5 * (4 * (3 * (2 * (1 * 1))))
+?	=
+	5 * (4 * (3 * (2 * 1)))
+	=
+	5 * (4 * (3 * 2))
+	=
+	5 * (4 * 6)
+	=
+	5 * 24
+	=
+	120
+	*/
+	
+	
+	facti: nat * nat -> nat
+	facti(n, p) ==
+		if n = 0 then
+			p
+		else
+			facti(n-1, n*p)
+	measure 
+		n--facti_measure
+	;
+	/*
+	facti(5,1)
+	=
+	facti(4,5)
+	=
+	facti(3,20)
+	=
+	facti(2,60)
+	=
+	facti(1,120)
+	=
+	120
+	*/
+	
+	fact_measure: nat -> nat
+	fact_measure(n) == n;
+	
+	facti_measure: nat*nat -> nat
+	facti_measure(n, -) == n;	
+
+
+	-- F0 = 0									
+	-- F1 = 1
+	-- Fn = F(n-2) + F(n-1)
+	
+	--
+	-- F5 = F3 + F4 
+	--			= F3 						 	 + (F2 + F3)  								[computes F3 twice]!
+	--			= (F1 + F2) 				 + (F2 + (F1 + F2))					[computes F2 3 times]!
+	--			= (F1 + (F0 + F1)) + ((F0 + F1) + (F1 + (F0 + F1)))
+	-- 		= (1  + 0   + 1  ) + (0 + 1 )   + (1 + (0 + 1))
+	--			= 5
+	fibr : nat -> nat
+	fibr(n) ==
+		if n = 0 then 
+			0
+		else if n = 1 then
+			1
+		else
+			fibr(n-2) + fibr(n-1)
+	measure
+		n--fibr_m
+		;
+
+	fibr2 : nat1 -> nat1
+	fibr2(n) ==
+		if n in set {1,2} then 
+			1
+		else
+			fibr2(n-2) + fibr2(n-1)
+	measure
+		n;
+	
+	-- (Fn-1, Fn) = (Fn, Fn+1)		
+	nextfib: (nat * nat) -> nat * nat
+	nextfib(mk_(prev,curr)) == mk_(curr, prev+curr);
+	
+	-- fibpair(n) = (Fn-1, Fn+1)
+	fibpair: nat -> nat * nat
+	fibpair(n) == 
+		if n = 1 then 
+			mk_(0,1) 
+		else
+		 nextfib(fibpair(n-1))
+	measure
+		n--fibr_m
+		;
+
+	fibi0 : nat * nat * nat -> nat
+	fibi0(n,prev,curr) ==
+		if n = 1 then 
+			curr 
+		else
+			fibi0(n-1, curr, prev+curr)
+	measure 
+		n--fibi_m
+		;
+	
+	-- fibi(5) = fibi0(5, 				0, 1)		
+	--					 = fibi0(4, 				1, 0+1)					= fibi0(4, 1, 1)
+	--					 = fibi0(3, 		(0+1), 1+(0+1))			= fibi0(3, 1, 2)
+	--					 = fibi0(2, 1+(0+1), (0+1)+1+(0+1))= fibi0(2, 2, 3)
+	--					 = fibi0(2, 2, 3)  								 
+	--					 = fibi0(1, 3, 2+3)								= fibi0(1,3,5) = 5
+	fibi: nat -> nat
+	fibi(n) == fibi0(n, 0, 1);
+		
+	fibi2: nat1 -> nat1
+	fibi2(n) == fibi0(n, 0, 1);
+		
+	fibr_m : nat -> nat
+	fibr_m(n) == n;
+	
+	fibi_m : nat * nat * nat -> nat
+	fibi_m(n,-,-) == n;
+	
+	sumR: seq of int -> int
+	sumR(ss) == 
+		cases ss:
+			[]		 -> 0,
+			[x]^xs -> x + sumR(xs)
+		end
+	measure
+		len ss;	 
+	
+	prodR: seq of int -> int
+	prodR(ss) == 
+		cases ss:
+			[]		 -> 1,
+			[x]^xs -> x * prodR(xs)
+		end
+	measure
+		len ss;	 
+	
+	plus: int * int -> int
+	plus(x,y) == x + y;
+	
+	times: int * int -> int
+	times(x,y) == x * y;
+	
+	sumF: seq of int -> int
+	sumF(ss) == fold[int](plus, ss, 0);
+	
+	prodF: seq of int -> int
+	prodF(ss) == fold[int](times, ss, 1);
+	
+	-- Fold (iterate, accumulate, reduce) a binary function over a sequence.
+  -- The function is assumed to be associative and have an identity element.
+  fold[@T]: (@T * @T -> @T) * seq of @T * @T -> @T
+  --fold: (int * int -> int) * seq of int * int -> int
+  fold(f, s, e) == 
+  	cases s:
+      []    -> e,
+      [x]   -> x,
+      s1^s2 -> f(fold[@T](f,s1,e), fold[@T](f,s2,e))
+    end
+  --@doc pre not possible to refer to @T and execute
+  --pre (exists x:@T & forall y:@T & f(x,y) = y and f(y,x) = y)
+  --		and 
+  --		forall x,y,z:@T & f(x,f(y,z)) = f(f(x,y),z)
+ 	measure
+ 		len s;
+
+operations
+
+FactOpR: nat ==> nat
+FactOpR(n) ==
+	(if n = 0 then 
+		return 1
+	else
+		return n * FactOpR(n-1));
+
+FactOpL: nat ==> nat
+FactOpL(n) ==
+	(dcl result : nat := 1,
+			 mult   : nat := n;
+	 while mult > 0 do
+		 (result := result * mult;
+		  mult := mult - 1);
+	 return result);
+				
+values
+	SMALL : nat = 5;
+	LARGE : nat = SMALL * 10;
+	
+traces
+	ALLR:
+		let n in set {1,...,SMALL} in fact(n);
+		
+	ALLI:
+		let n in set {1,...,SMALL} in facti(n, 1);
+		
+	ALLO:
+		let n in set {1,...,SMALL} in FactOpR(n);
+		
+	ALLOL:
+		let n in set {1,...,SMALL} in FactOpL(n);
+
+	ALLRLARGE:
+		let n in set {1,...,LARGE} in fact(n);
+		
+	ALLILARGE:
+		let n in set {1,...,LARGE} in facti(n, 1);
+
+	ALLOLARGE:
+		let n in set {1,...,LARGE} in FactOpR(n);
+
+	ALLOLLARGE:
+		let n in set {1,...,LARGE} in FactOpL(n);
+		
+	FIBR:
+		let n in set {1,...,SMALL} in fibr(n);
+		
+	FIBI:
+		let n in set {1,...,SMALL} in fibi(n);
+
+	FIBRLARGE:
+		let n in set {1,...,LARGE / 2} in fibr(n);
+		
+	FIBILARGE:
+		let n in set {1,...,LARGE } in fibi(n);
+		
+end RorI

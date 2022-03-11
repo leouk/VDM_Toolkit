@@ -1,0 +1,57 @@
+module Comprehension
+exports all
+definitions 
+
+types
+  Grid = nat
+  inv grid == grid < GRID_SIZE;
+  
+  Dot :: 
+  	x: Grid
+  	y: Grid;
+  	
+  Move ::
+  	d1 : Dot
+  	d2 : Dot;
+  
+values 
+	GRID_SIZE: nat1 = 4; 
+	
+	ALL_MOVES: set1 of Move = 
+		dunion({{mk_Move(mk_Dot(r,c), mk_Dot(r,c+1)) | 
+								c in set {0,...,GRID_SIZE-2}
+						 } | 
+						    r in set {0,...,GRID_SIZE - 1}}) 
+		union
+		dunion({{mk_Move(mk_Dot(r,c), mk_Dot(r+1,c)) | 
+								c in set {0,...,GRID_SIZE-1}
+						} | r in set {0,...,GRID_SIZE - 2}});
+	/*
+	=
+	{mk_Move(mk_Dot(0, 0), mk_Dot(0, 1)), 
+	 mk_Move(mk_Dot(0, 0), mk_Dot(1, 0)), 
+	 mk_Move(mk_Dot(0, 1), mk_Dot(0, 2)), 
+	 mk_Move(mk_Dot(0, 1), mk_Dot(1, 1)), 
+	 mk_Move(mk_Dot(0, 2), mk_Dot(0, 3)), 
+	 mk_Move(mk_Dot(0, 2), mk_Dot(1, 2)), 
+	 mk_Move(mk_Dot(0, 3), mk_Dot(1, 3)), 
+	 mk_Move(mk_Dot(1, 0), mk_Dot(1, 1)), 
+	 mk_Move(mk_Dot(1, 0), mk_Dot(2, 0)), 
+	 mk_Move(mk_Dot(1, 1), mk_Dot(1, 2)), 
+	 mk_Move(mk_Dot(1, 1), mk_Dot(2, 1)), 
+	 mk_Move(mk_Dot(1, 2), mk_Dot(1, 3)), 
+	 mk_Move(mk_Dot(1, 2), mk_Dot(2, 2)), 
+	 mk_Move(mk_Dot(1, 3), mk_Dot(2, 3)), 
+	 mk_Move(mk_Dot(2, 0), mk_Dot(2, 1)), 
+	 mk_Move(mk_Dot(2, 0), mk_Dot(3, 0)), 
+	 mk_Move(mk_Dot(2, 1), mk_Dot(2, 2)), 
+	 mk_Move(mk_Dot(2, 1), mk_Dot(3, 1)), 
+	 mk_Move(mk_Dot(2, 2), mk_Dot(2, 3)), 
+	 mk_Move(mk_Dot(2, 2), mk_Dot(3, 2)), 
+	 mk_Move(mk_Dot(2, 3), mk_Dot(3, 3)), 
+	 mk_Move(mk_Dot(3, 0), mk_Dot(3, 1)), 
+	 mk_Move(mk_Dot(3, 1), mk_Dot(3, 2)), 
+	 mk_Move(mk_Dot(3, 2), mk_Dot(3, 3))
+	}
+	*/ 
+end Comprehension

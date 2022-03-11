@@ -1,0 +1,249 @@
+-- module name
+module Basics
+
+-- what is visible outside
+exports all
+
+-- what is defined here as: values, types, functions, state, and operations
+definitions 
+
+-- write here some constants   "NAME : TYPE = INITIAL_VALUE"
+values
+	SIZE  : nat1 = 3; --1..++
+	
+	MAX   : nat1 = SIZE * SIZE;
+	
+	CHAR  : char = 'L';
+	
+	STRING: seq of char = "Leo"; 
+	
+	ODD : set of nat = {1, 3, 5};
+	
+	-- comprehension syntax: { RESULT_EXPR | GENERATOR [& PRED] }
+	--		RESULT_EXPR: all variables must be bound
+	--		GENERATOR  : binds all vars in RESULT EXPR
+	--		PRED		   : filtering predicate (or true by default) 
+	COMPREHENSION : set of nat = { x*x | x in set ODD };	
+	COMPREHENSIOn2: seq of nat = [ x*x | x in set ODD & x > 1 ]; 
+		-- exercise: print COMPREHENSION etc.
+		-- exercise: play around with the various functions on cmd line
+	
+-- write here your types
+types
+
+	-- type synonyms: "NAME = definition" 
+	Coord = nat1 * nat1 -- cross product or pair
+	inv c == c.#1 <= SIZE and c.#2 <= SIZE;
+--	inv mk_(x,y) == x <= SIZE and y <= SIZE;
+	
+	-- enumerated types: "NAME = <NAME> [| <NAME>]"
+	Color = <Red> | <Green> | <Blue>; 
+	
+	-- records:  "NAME :: FIELD_NAME: TYPE [FIELD_NAME: TYPE]"
+  	    -- types can also have invariants; if not present, it's just true
+		-- invariants are predicates checked everywhere the type is used 
+	Pos :: x: nat1 
+	       y: nat1
+	    -- you can construct a record with mk_NAME(FIELD_NAME, ...)
+	    -- in the in variant you must have functions or constants
+	--inv p == p.x <= SIZE and p.y <= SIZE
+	inv mk_Pos(x,y) == x <= SIZE and y <= SIZE;
+		-- exercise: explain invariant
+	
+	Pos2 :: row : nat1
+			col : nat
+		-- you can (equivalently) talk about record field with selectors (NAME.FIELD_NAME)
+	inv p == p.row <= SIZE and p.col <= SIZE; -- and(lesthanequal(p.row, SIZE), lesthanequal(p.col, SIZE)
+	
+	Size = nat1
+	inv s == s <= SIZE;
+	
+	Pos3 :: row: Size
+			col: Size;
+	
+	-- map (or function) type: "NAME = map DOMAIN_TYPE_NAME to RANGE_TYPE_NAME"
+		-- functions (uniquely) map values from the domain to the range type
+		-- elements of a map are maplets: { x |-> y }
+		-- no ``divergent arrows'': { p1 |-> <Red>, p1 |-> <Blue> } WRONG!!!
+				--				    { p1 |-> <Red>, p2 |-> <Red> } OKAY!!!
+				--					{ p1 |-> <Red>, p1 |-> <Red> } OKAY!!!
+				-- p1 cannot map to different values!
+		--
+		-- useful aux functions:
+				-- dom g / rng g = all elements domain/range
+				-- various operators (see cheat sheet)
+	Game = map Pos to Color
+	inv g == card (dom g) <= MAX;
+		-- invariant says the size of the set of elements of the domain cannot exceed maximum
+		-- e.g assuming g =  { p1 |-> <Red>, p2 |-> <Red> }
+		--		dom g = {p1, p2}, rng g = { <Red> }
+		--
+		--		 card(dom g) <= MAX 
+		--		=card(dom { p1 |-> <Red>, p2 |-> <Red> }) <= MAX
+		--		=card({p1, p2})  <= MAX
+		--		= 2 <= MAX
+		--		= true
+		--
+		-- See VDM Cheat Sheet for bunch of other VDM map operators!!!
+	
+	-- sequence (or list) type: NAME = seq of RANGE_TYPE_NAME
+		-- sequences in VDM are maps from nat1 to range type
+		-- they accept repeated elements (i.e. [1,2,3] <> [1,2,2,3])
+		--
+		-- length  : len [A,B,C,B]  = 4			(seq of T -> nat)
+		-- indexes : inds [A,B,C,B] = {1,2,3,4}	(seq of T -> set of nat1)
+		-- elements: elems [A,B,C,B]= {A,B,C}	(seq of T -> set of T)
+		-- first   : hd [A,B,C,B]   = A			(seq of T -> T)
+		-- rest    : tl [A,B,C,B]   = [B,C,B]	(seq of T -> seq of T)
+		-- concat  : [A,B,C] ^ [B]  = [A,B,C,B]  (seq of T * seq of T -> seq of T)
+		--
+		-- see cheat sheet for more.
+	Moves = seq of Pos
+	inv m == len m = card (elems m) and
+			 elems m <> {};
+		-- invariants are implicitly defined as boolean valued functions
+		-- 
+		-- ex. inv_Moves : Moves -> bool
+		--	   inv_Moves(m) == len m = card(inds m) and elems m <> {};
+		--
+		-- exercise: explain invariant
+	
+	-- THERE ARE PLENTY OF OTHER TYPE CONSTRUCTS --
+
+	-- ex: VDM allows type unions, which are more complex. Won't use
+	Funny = Moves | Game | Pos;
+	
+-- write here (referencially transparent) functions (i.e. no variable updates; e.g. math functions)
+functions
+
+	-- explicit functions: 
+	--		those with executable specs (==)
+	--		operational/algorithmic (i.e. how to do it?)
+	--		might contain pre/post spec too
+	--
+	-- signature syntax    : NAME : PARAM_TYPE [* PARAM_TYPE] -> PARAM_TYPE
+	-- definition syntax   : NAME(PARAM [, PARAM) == VDM EXPRESSION
+	-- specification syntax:	 [pre PREDICATE] [post PREDICATE]	
+	--
+	-- NOTE: all functions have basically defined pre/post to check type invariants + user's pre/post		
+
+	-- ex: filter the contents of sequence by a given set
+	--		filter_seq {'L','E','O'} ['L','E','O','N','A','R','D','O'] = ['L','E','O','O'] 
+	filter_seq : set of char * seq of char -> seq of char
+						-- exercise write this recursively
+    filter_seq(es, ss) == is not yet specified
+    -- [pre true] when not given
+	post
+		-- can refer to RESULT for the output value
+		elems RESULT subset elems ss
+		and
+		elems RESULT subset es
+		and
+		mystery[char](RESULT);
+	
+		-- ex: you can even have it over generic (not full polymorphic) types
+		mystery[@E]: seq of @E -> bool
+		mystery(s) == if s = [] then 
+						true 
+					   else 
+					   	-- exercise: write this recursively
+					     true --is not yet specified
+			post len s = card elems s;
+				-- exercise: what does it achieve? change fcn name
+
+	-- implicit functions: 
+	--		those with descriptive specs 
+	--		denotational (i.e. what does it achieve?)
+	--		*MUST* contain post spec
+	--
+	-- signature syntax    : NAME : PARAM_TYPE [* PARAM_TYPE] -> PARAM_TYPE
+	-- definition syntax   : NAME(PARAM [, PARAM) == VDM EXPRESSION
+	-- specification syntax:	 [pre PREDICATE] [post PREDICATE]			
+	
+	-- ex: specify a root function
+	root (x: real, y: nat1) r: real
+		-- [pre inv_nat1(y)] = [pre y > 0]
+		post ntimes(r,y) = x or ntimes(r,y) = -x;
+		
+		-- sqrt is just root of 2
+		sqrt : real -> real
+		sqrt(r) == root(r,2);
+		
+		-- ntimes multiply root result 
+		ntimes: real * nat1 -> real
+										--exercise: define it recursively
+		ntimes(r,y) == if y = 1 then r else r; --is not yet specified; --r*ntimes(r,y-1); 
+
+		ntimesAlt: real * nat -> real
+		ntimesAlt(r,y) == ntimes(r,y)
+			pre y > 0;
+			
+	-- functions and type invariants
+		-- type invariants are checked at entrance (pre) and exit (post)
+		-- explicitly defined recursive functions need a 'measure'
+		-- a measure explains why the function will terminate (i.e. aka total correctness)
+	sumMovesXs: Moves -> nat
+	sumMovesXs(m) == if m = [] then 
+						0 
+					 else 
+					 	-- local expression(s) (let) + pattern matching on mk_Pos(-,-)
+					 	-- '-' in a pattern equals 'do not care' value
+					 	let mk_Pos(x, -) = hd m, tail = tl m 
+					 	in x + sumMovesXs(tail)
+					 	-- same as: (hd m).x + sumMovesXs(tl m);
+		measure hasTerminated;
+
+	sumMovesXsAlt: seq of Pos -> int 
+	sumMovesXsAlt(m) == sumMovesXs(m)
+		pre inv_Moves(m)
+		post RESULT > 0; -- i.e., "inv_nat"(RESULT);
+	
+	hasTerminated: Moves -> nat
+	hasTerminated(m) == len m;
+
+    -- Predicates can be described as boolean-valued functions
+	somePredicate: Game -> bool
+	somePredicate(g) == g <> { |-> }  -- empty map
+		post card(dom g) > 0;
+	
+	someOtherPredicate: Moves -> bool
+	someOtherPredicate(m) == m <> [] -- empty sequence; empty set = {}
+		post len m > 0;
+
+-- the system state (imperative / updateable) part (i.e. akin attributes of an class/object)
+state State of
+	g: Game		-- state components, like record fields
+	m: Moves
+		-- extra state invariant beyond type invariants
+inv mk_State(gm, mv) == somePredicate(gm) and someOtherPredicate(mv) and
+	   					forall x in set dom gm & x in set elems mv
+	   					-- exercise: explain invariant
+		-- state initialisation expression
+init s == s = mk_State({ mk_Pos(1,1) |-> <Red> }, [mk_Pos(1,1)]) -- {(1,1)|-><Red>}(1,1)
+end
+
+-- here you write operations over the state, which is in context (i.e. akin to methods of a class/object)
+-- like functions they can be implicit (denotational / answers what) or explicit (operational / answers how)
+operations
+
+	-- explicit operation syntax: "NAME : TYPE ==> TYPE"  (i.e. () = void) 
+	addMove: Pos ==> ()
+	addMove(x) == m := m ^ [x]; 
+		-- variety of statements are available: 
+		--	assignment : :=
+		--  loops	   : for x in S do { ... }
+		--  blocks     : {...}
+		--  seq comp   : STMT ; STMT
+		--  local var  : dcl NAME: TYPE := VALUE
+		--  result var : return EXPR
+
+	pure enoughMoves: () ==> bool
+	enoughMoves() == return (len m) > 2;
+		-- any state element not mentioned remain constant
+		
+	play() 
+		post enoughMoves();
+		
+-- exercise: run console and play around with functions and variables
+-- finish of the exercise
+end Basics

@@ -1,0 +1,1 @@
+$Isa.trans($node.From) \<rightharpoonup> $Isa.trans($node.To)

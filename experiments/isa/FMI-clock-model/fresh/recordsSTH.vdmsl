@@ -1,0 +1,43 @@
+module recordsSTH 
+exports all
+definitions
+
+types
+    S ::
+      x : nat
+      y : nat
+    ord mk_S(x,y) < s1 ==
+      x < s1.x 
+      and y < s1.y
+    eq mk_S(x,y) = s1 == 
+      x = s1.x 
+      and y = s1.y
+    inv mk_S(x,y) == x < y;
+
+
+    --STH problematic with the patterns and the variable names
+    -- No warning by the translator - the error is only visible in Isabelle
+    T ::
+      x : nat
+      y : nat
+    ord mk_T(x1,y1) < mk_T(x2,y2) ==
+      x1 < x2 
+      and y1 < y2
+    eq mk_T(x1,y1) = mk_T(x2,y2) == 
+      x1 = x2 
+      and y1 = y2
+    inv mk_T(x,y) == x < y;
+
+
+functions
+  --STH problematic with the patterns and the variable names
+  transform : S * S -> T
+  transform(mk_S(x,y), mk_S(x2,y2)) ==
+    mk_T(x + y2, x2 + y);
+
+  -- Works fine
+  transform1 : S * S -> T
+  transform1(s1, s2) ==
+    mk_T(s1.x + s2.y, s2.x + s1.y);
+
+end recordsSTH

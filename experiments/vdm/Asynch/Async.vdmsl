@@ -1,0 +1,80 @@
+types
+	Message ::
+		type	: nat
+		payload	: nat;
+
+	Queue  = seq of Message;
+
+state S of
+	queues : seq of Queue
+
+init s == s = mk_S([[] ,[], []])
+end
+
+operations
+	run: Message * nat ==> ()
+	run(msg, start) ==
+	(
+		dcl next : nat1 := 1;
+		queues(start) := queues(start) ^ [msg];		-- Initial message
+
+		while conc queues <> [] do					-- Any messages at all?
+		(
+			if queues(next) <> [] then
+			(
+				let m = hd queues(next) in
+				(
+					cases next:
+						1 ->
+							cases m.type:
+								1 -> module1_op1(m),
+								2 -> module1_op2(m)
+							end, 
+						2 ->
+							cases m.type:
+								1 -> module2_op1(m)
+							end, 
+						3 ->
+							cases m.type:
+								1 -> module3_op1(m)
+							end
+					end;
+
+					queues(next) := tl queues(next);
+				)
+			);
+
+			next := next + 1;
+			if next > len queues then next := 1;
+		)
+	)
+	pre start in set inds queues;
+
+	module1_op1: Message ==> ()
+	module1_op1(m) ==
+	(
+		IO`printf("module1_op1: %s\n", [m]);
+		queues(2) := queues(2) ^ [ mk_Message(1, 0) ];
+		queues(3) := queues(3) ^ [ mk_Message(1, 0) ]; 
+	);
+
+	module1_op2: Message ==> ()
+	module1_op2(m) ==
+	(
+		IO`printf("module1_op2: %s\n", [m]);
+		queues(2) := queues(2) ^ [ mk_Message(1, 0) ];
+	);	
+
+	module2_op1: Message ==> ()
+	module2_op1(m) ==
+	(
+		IO`printf("module2_op1: %s\n", [m]);
+		queues(3) := queues(3) ^ [ mk_Message(1, 0) ]; 
+	);
+
+	module3_op1: Message ==> ()
+	module3_op1(m) ==
+	(
+		IO`printf("module3_op1: %s\n", [m]);
+		skip;	-- Done :-) 
+	);

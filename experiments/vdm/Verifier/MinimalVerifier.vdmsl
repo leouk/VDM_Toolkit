@@ -1,0 +1,125 @@
+module MinimalVerifier
+exports all
+definitions 
+
+types
+
+  Upper = char
+  inv c == c in set elems "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  Lower = char
+  inv c == c in set elems "abcdefghijklmnopqrstuvwxyz";
+
+  Letter = Upper | Lower;
+
+  Digit = char
+  inv c == c in set elems "0123456789";
+
+  AlphaNum = Letter | Digit;
+
+  Space = char
+  inv sp == sp = ' ';
+  
+  Underscore = char
+  inv us == us = '_';
+  
+  Id = seq1 of (AlphaNum | Underscore)
+	inv id == is_Letter(hd id) or is_Underscore(hd id);
+
+	Value = bool | int;
+		
+	Sigma ::
+		pc: nat
+		value_map: map Id to Value;
+		
+	Pre   = Sigma -> bool;
+	Post  = Sigma * Sigma -> bool;
+	Inv   = Pre;
+	Frame = Post;
+
+	Operation = Sigma -> [Sigma];
+		 
+	Specification ::
+		invP  : Inv
+		preP  : Pre
+		postP : Post
+		frameP: Frame
+		expr  : Operation;
+
+	Expr = map Id to Specification;
+	
+	World = map Id to Sigma;
+	
+values
+	INVALID_SIGMA: [Sigma] = nil;
+	
+functions
+	update_sigma_inv: Sigma * Sigma -> bool
+	update_sigma_inv(bst, ast) == 
+		--@doc anything structure over sigma that evaluation can never change, e.g. PC going backwards
+		bst.pc <= ast.pc;
+		
+	evaluate_specification: Id * Sigma * Specification -> [Sigma]
+	evaluate_specification(id, bst, mk_Specification(s_inv, s_pre, s_post, s_frame, e)) == 
+		 if 
+		 	 (
+		 	 --@Time("\t\t\t\t%2s.inv(bst) @%3s pc\n", id, bst.pc)
+		 	 s_inv(bst)
+		 	 ) 
+		 	 and 
+		 	 --@Time("\t\t\t\t%2s.pre(bst) @%3s pc\n", id, bst.pc)
+		 	 s_pre(bst) then
+		 	 let 
+		 	 	 ast: [Sigma] = 
+		 	 	 	(--@Time("\t\t\t\t%2s.impls(bst) @%3s pc\n", id, bst.pc)
+		 	 	 	 e(bst)
+		 	 	 	)
+		 	 	in
+		 	 	 if ast <> INVALID_SIGMA 
+		 	 	 		and 
+		 	 	 		(
+					 	 --@Time("\t\t\t\t%2s.inv(%ast) @%3s aclock\n", id, ast.pc)
+					 	 s_inv(ast)
+					 	) 
+					 	and 
+					 	(
+					 	 --@Time("\t\t\t\t%2s.post(bst, ast) @%3s-%4s\n", id, bst.pc, ast.pc)
+					 	 s_post(bst, ast)
+					 	) 
+					 	and 
+					 	(
+					 	 --@Time("\t\t\t\t%2s.frame(bst, ast) @%3s-%4s\n", id, bst.pc, ast.pc)
+					 	 s_frame(bst, ast) 
+						)
+				then
+		 	 	 	 ast
+		 	 	 else
+		 	 	   INVALID_SIGMA
+		 else
+		 	 INVALID_SIGMA
+  pre
+  	--@doc somehting on id consistency
+  	is_Letter(hd id)
+  post
+  	(let 
+  		r_pre: bool = s_inv(bst) and s_pre(bst) 
+  	 in 
+  	  (not r_pre => RESULT = INVALID_SIGMA)
+  	  and
+  	  (r_pre and RESULT <> INVALID_SIGMA 
+  	   => 
+  	   update_sigma_inv(bst, RESULT) 
+  	   and 
+  	   s_inv(RESULT) and s_post(bst, RESULT) and s_frame(bst, RESULT)
+  	  )
+  	);
+
+  evaluate_expression: Expr * Sigma -> World
+  evaluate_expression(expr, bst) ==
+  	{ i |-> evaluate_specification(i, bst, expr(i)) | i in set dom expr } :-> {INVALID_SIGMA}
+  post
+  	dom RESULT subset dom expr
+  	and
+  	(forall j in set dom expr \ dom RESULT & evaluate_specification(j, bst, expr(j)) = INVALID_SIGMA);
+  			 
+end MinimalVerifier

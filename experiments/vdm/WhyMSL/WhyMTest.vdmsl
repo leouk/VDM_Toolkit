@@ -1,0 +1,270 @@
+module WhyMTest
+--load ./WhyMTest.vdmsl ./WhyM.vdmsl ./WhyMIds.vdmsl ./WhyMUtil.vdmsl ./lib/IO.vdmsl
+
+imports from WhyM all, from IO all, from WhyMIds all
+exports all
+
+definitions 
+
+values
+
+log1 : WhyM`Log 	= mk_WhyMIds`Id("log", <LOG>, 210);
+
+/*
+tool1: WhyM`Tool 	= mk_WhyMIds`Id("Isabelle-2011", <TOOL>, 211);
+byAuto: WhyM`Script = [mk_token("by auto")];
+
+Bool : WhyM`Signature = mk_token("Bool");
+Nat  : WhyM`Signature = mk_token("Nat");
+Int  : WhyM`Signature = mk_token("Int");
+ 
+cid  : WhyM`ConjId = mk_WhyMIds`Id("cid", <CONJ>, 200); --WhyMIds`createConjId();
+pid   : WhyM`DefId = mk_WhyMIds`Id("pid", <DEF>, 201);
+xvar  : WhyM`VarId = mk_WhyMIds`Id("vid", <VAR>, 202);
+yvar  : WhyM`VarId = mk_WhyMIds`Id("vid", <VAR>, 202);
+plusOp: WhyM`VarId = mk_WhyMIds`Id("vid", <VAR>, 203);
+plusSig: WhyM`Signature = mk_token("Int * Int -> Int");
+pAssoc: WhyM`DefProp = mk_token("Associative");
+pComm : WhyM`DefProp = mk_token("Commutative");
+pDist : WhyM`DefProp = mk_token("Distributive");
+plusAtom: WhyM`Atom = mk_WhyM`Atom(
+				mk_WhyM`TermData(
+					{}, 		-- bound vars
+					{ xvar, yvar }	-- free vars
+				),
+				mk_token("x+y")	-- Expr "body"
+			);
+plusTerm: WhyM`Term = mk_WhyM`Expr(
+			plusAtom,
+			plusSig,			-- type ; redundant Signature?
+			nil					-- value; no value binding yet?
+		);
+
+Plus  : WhyM`Definition =  
+			mk_WhyM`Definition(
+				pid,
+				plusTerm,					-- actual definition Term 
+				{ pAssoc, pComm, pDist },	-- set of known properties
+				{},							-- set of known anti-props
+				<CORE>,						-- kind of concept
+				{<FUNCTIONAL>},				-- kind of structure
+				<EXTENSIONAL>,				-- where did it originate?
+				"sum of two integers",		-- textual description
+				{},							-- known related definitions
+				{ |-> }						-- known witnesses for this ?
+		);
+
+lem1 : WhyM`ProofId = mk_WhyMIds`Id("pid", <PROOF>, 204);
+thm1 : WhyM`ProofId = mk_WhyMIds`Id("pid", <PROOF>, 205);
+xpx  : WhyM`Expr	= mk_WhyM`Expr(
+			mk_WhyM`Atom(
+				mk_WhyM`TermData(
+					{}, 		-- bound vars
+					{ xvar, xvar }	-- free vars
+				),
+				mk_token("x+x")	-- Expr "body"
+			),
+			plusSig,			-- type ; redundant Signature?
+			nil					-- value; no value binding yet?
+		);
+ctx1 : WhyM`Context = mk_WhyM`Context(
+			[],		-- inferred knowledge from current sequent 
+			0,		-- what stage / step are we? Needed??? 
+			1, 		-- how does the system ranks it?
+			1		-- how does the user ranks it?
+		);
+goal1: WhyM`Sequent = mk_WhyM`Sequent(mk_WhyM`EqTerm(xpx, xpx), ctx1);
+
+score1: WhyM`Score = mk_WhyM`Score(
+			1,	-- fixed
+			2,	-- domain-assigned
+			0	-- learned
+		);
+
+why1  : WhyM`Why = mk_WhyM`Why(
+			<EQ_TRANSF>,	-- intent "tag"; is this enough? or should it be a seq?
+			score1,			-- score
+			true			-- proof=true; disproof=false
+		);
+
+
+ev1	: WhyM`Attempt = mk_WhyM`Attempt(why1,		-- intent 
+			tool1,		-- which tool is it associated with
+			<BLIND>,	-- kind of attempt
+			nil,
+			WhyM`ATTEMPT_SKETCH_WORTH,		-- how much is this attempt worth?
+			score1,
+			byAuto);
+
+prf1: WhyM`Proof = mk_WhyM`Proof(lem1, [ev1]);
+
+conj1: WhyM`Conjecture = mk_WhyM`Conjecture(
+			cid, 
+			[],							-- seq of Hyp as sequence
+			goal1,						-- goal to prove; here x+x = x+x
+			{ lem1 |-> mk_WhyM`Proof(lem1, [mk_WhyM`Attempt(why1,		-- intent 
+			tool1,		-- which tool is it associated with
+			<BLIND>,	-- kind of attempt
+			nil,
+			WhyM`ATTEMPT_SKETCH_WORTH,		-- how much is this attempt worth?
+			score1,
+			byAuto)]) },			-- body of evidence as sequence
+			[<TOY>, <LEMMA>],			-- shape
+			[<BACKWARD>, <REWRITE>],	-- inference
+			[],							-- seq of Clue
+			[]
+		);
+
+functions
+
+TestTerm : () +> WhyM`Term
+TestTerm() ==  plusTerm;
+
+TestAtom : () +> WhyM`Atom
+TestAtom() == plusAtom;
+
+TestDef : () +> WhyM`Definition
+TestDef() ==  Plus;
+
+TestGoal : () +> WhyM`Sequent
+TestGoal() ==  goal1;
+
+TestWhy: () +> WhyM`Why
+TestWhy() == why1;
+
+TestXPlusX : () +> WhyM`Term
+TestXPlusX() ==  xpx;
+
+TestEvd : () -> WhyM`Attempt
+TestEvd() == ev1;
+
+TestConj : () +> WhyM`Conjecture
+TestConj() ==  conj1;
+
+operations
+
+-- YEAH! BUT IT LETS OTHER WhyM`createXXXId() in values; and it was leeting this one before too... This if not good :-(
+-- Error 3300: Operation 'WhyM`createThyId' cannot be called from a function in 'WhyMTest' (./WhyMTest.vdmsl) at line 132:13
+--
+-- MADE THIS AN OPERATION FROM BEING A FUNCTION BEFOREHAND
+TestThy : () ==> WhyM`Theory
+TestThy() == return 
+		mk_WhyM`Theory(
+			WhyM`createThyId(),
+			nil,						-- specialises  				
+			log1, 						-- log
+			{}, 						-- uses/dependencies
+			{tool1},					-- allowed tools
+			{Bool, Nat, Int},			-- types
+			{ plusOp |-> Plus },		-- operators
+			{ thm1 |-> conj1 },			-- conjectures
+			{}							-- Why strategies
+		);
+
+TestSigma : () ==> WhyM`Sigma
+TestSigma() ==  
+	def thy = TestThy() in
+		return {thy.id |-> thy};
+
+CreateAll: () ==> ()
+CreateAll() ==
+	(dcl a: WhyM`Term 		:= TestTerm(),
+		 b: WhyM`Definition := TestDef(),
+		 c: WhyM`Sequent 	:= TestGoal(),
+		 d: WhyM`Why 		:= TestWhy(),
+		 e: WhyM`Attempt 	:= TestEvd(),
+		 f: WhyM`Conjecture := TestConj(),
+		 g: WhyM`Theory		:= TestThy(),
+		 h: WhyM`Atom		:= TestAtom(),
+		 i: WhyM`Sigma		:= TestSigma()
+		;
+	IO`print(WhyM`inv_TermData(h.vars)); 
+	IO`print(" "); 
+	IO`println(h);
+	
+	IO`print(true);
+	IO`print(" ");
+ 	IO`println(a);
+	
+	IO`print(WhyM`inv_Definition(b)); 
+	IO`print(" ");
+ 	IO`println(b);
+	
+	IO`print(true); 
+	IO`print(" ");
+ 	IO`println(c);
+	
+	IO`print(true);
+	IO`print(" ");
+ 	IO`println(d);
+	
+	IO`print(true);
+	IO`print(" ");
+ 	IO`println(e);
+	
+	IO`print(true);
+	IO`print(" ");
+ 	IO`println(f);
+	
+	IO`print(WhyM`inv_Theory(g)); 	
+	IO`print(" ");
+ 	IO`println(g);
+
+	IO`print(WhyM`inv_Sigma(i)); 	
+	IO`print(" ");
+ 	IO`println(i);
+
+	IO`println("\n");
+);
+
+*/
+
+operations
+
+NewTheory : () ==> WhyM`TheoryId
+NewTheory() ==
+	(dcl tid : WhyM`TheoryId := WhyM`newTheory("bla");
+	  IO`print("Create theory "); IO`println(tid); 
+	  return tid);
+
+addTheoryDeps: WhyM`TheoryId * set of WhyM`TheoryId ==> ()
+addTheoryDeps(tid, depThys) ==
+	( IO`print("Updating theory ");
+	  IO`print(tid);
+	  IO`print(": add dependencies ");
+	  IO`println(depThys);
+	  WhyM`addTheoryUseDeps(tid, depThys))
+--pre
+--	pre_WhyM`addTheoryDeps(WhyM`WhyMSt, tid, depThys)
+;
+
+PlayGround : () ==> ()
+PlayGround() ==
+	( IO`println("Welcome to the WhyM playground!\n\n");
+	  (dcl tid1 : WhyM`TheoryId := NewTheory(),
+	   	  tid2 : WhyM`TheoryId := NewTheory(),
+	  	  tid3 : WhyM`TheoryId := NewTheory(),
+	  	  tid4 : WhyM`TheoryId := NewTheory();
+
+
+		  addTheoryDeps(tid4, {tid2, tid3});
+		  addTheoryDeps(tid4, {tid2, tid3});
+		  addTheoryDeps(tid3, {tid2, tid1});
+		  addTheoryDeps(tid2, {tid1}));
+
+	  WhyM`ShowWorld();
+
+		IO`println("Theory deps = ");
+		IO`println(WhyM`calcTheoryUseDeps()); 
+
+
+);
+ 
+Execute: () ==> ()
+Execute() ==
+	(--CreateAll() ;
+	def - = WhyM`createTool("Isabelle") in
+	PlayGround());
+	
+
+end WhyMTest

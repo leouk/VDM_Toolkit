@@ -1,0 +1,82 @@
+-- IncubatorController.rtf  VDM-SL Specification (incomplete)
+types
+	Signal = <INCREASE>|<DECREASE>|<DO_NOTHING>
+
+values
+MIN:int = -10;
+MAX:int = 10;
+
+state IncubatorController of
+      requestedTemp : [int]
+	actualTemp : [int]
+
+inv  mk_IncubatorController(r, a)  ==  
+(r = nil or InRange(r)) and (a = nil or InRange(a))
+
+init   IC == IC = mk_IncubatorController(nil, nil)
+end
+
+
+
+
+-- Functions specified under the ’functions’ clause
+
+functions
+
+InRange: int -> bool
+InRange(num) == 	if num >= MIN and num <= MAX
+			then true
+			else false;
+
+-- Operations specified under the ’operations’ clause
+
+operations
+
+-- ‘SetInitialTemp’ operation
+
+SetInitialTemp(tempIn: int) 
+ext	wr	actualTemp: [int]
+pre	InRange(tempIn) and actualTemp = nil 	
+post	actualTemp = tempIn ;	
+
+
+-- ‘RequestChange’ operation
+
+RequestChange(tempIn: int) signalOut: Signal
+ext	wr	actualTemp: [int]
+	rd	requestedTemp : [int]
+pre	InRange(tempIn) and actualTemp <> nil 	
+post	requestedTemp = tempIn and
+	(	tempIn > actualTemp and signalOut = <INCREASE>
+	  or	tempIn < actualTemp and signalOut = <DECREASE>
+	  or	tempIn = actualTemp and signalOut = <DO_NOTHING> );
+
+
+-- Complete ‘Increment’ operation here
+
+
+
+
+
+
+-- Complete ‘Decrement’ operation here
+
+
+
+
+
+
+-- ‘GetRequestedTemp’ operation
+
+GetRequestedTemp() currentRequested: [int]
+ext	rd	requestedTemp : [int]
+pre	true
+post	currentRequested = requestedTemp;
+
+
+-- Complete ‘GetActualTemp’ operation here
+
+
+
+
+

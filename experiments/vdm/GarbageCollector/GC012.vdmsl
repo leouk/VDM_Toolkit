@@ -1,0 +1,256 @@
+module GC012
+exports all
+definitions 
+
+types 
+	Addr = nat
+	inv a == a <= MAX_ADDR;
+
+	-- annoying repetition needed for the import of Sigma0 for retr0
+	Sigma0 ::
+		busy: set of Addr
+		free: set of Addr
+	inv mk_Sigma0(busy, free) == busy inter free = {};
+	
+	Heap = map Addr to Node;
+	
+	Node = seq of [Addr];
+	
+	-- annoying repetition needed for the import of Sigma1 for retr1
+	Sigma1 ::
+		roots: set of Addr
+		hp	 : Heap
+		free : set of Addr
+	inv mk_Sigma1(roots, hp, free) ==
+		dom hp = ALL_ADDR
+		and
+		free inter reach(roots, hp) = {}
+		and
+		rng(free <: hp) = {[]};
+	
+	Sigma2 ::
+		roots : set of Addr
+		hp	  : Heap
+		free  : set of Addr
+		marked: set of Addr
+	inv mk_Sigma2(roots, hp, free, marked) == 
+				dom hp = ALL_ADDR 
+				and
+				free inter reach(roots, hp) = {}
+				and
+				rng (free <: hp) = {[]}
+				and
+				(roots union free) subset marked;
+values 
+	MAX_ADDR: nat = 3;
+	ALL_ADDR: set of Addr = {0,...,MAX_ADDR};
+	--ALL_RADDR: set of (Addr * Addr) = {mk_(a,b) | a in set ALL_ADDR, b in set ALL_ADDR};
+
+functions 
+	hat: set of Addr -> set of set of Addr
+	hat(s) == power s;
+	
+	ran: set of (Addr * Addr) -> set of Addr
+	ran(R) == { b | mk_(-,b) in set R };
+	
+	dres: set of Addr * set of (Addr * Addr) -> set of (Addr * Addr)
+	dres(S, R) == { mk_(a,b) | mk_(a,b) in set R & a in set S }; 
+	
+	rcomp: set of (Addr * Addr) * set of (Addr * Addr) -> set of (Addr * Addr)
+	rcomp(R,Q) == { mk_(a,c) | a in set ALL_ADDR, c in set ALL_ADDR & exists b in set ALL_ADDR & mk_(a,b) in set R and mk_(b,c) in set Q };
+
+	id: set of Addr -> set of (Addr * Addr)
+	id(R) == { mk_(a,a) | a in set R };
+
+	--ztrancl: set of (Addr * Addr) -> set of (Addr * Addr)
+	--ztrancl(R) == dinter { Q | Q in set power ALL_RADDR & R subset Q and rcomp(Q, Q) subset Q };
+
+	ALL_RADDR: () -> set of (Addr * Addr) 
+	ALL_RADDR() == {mk_(a,b) | a in set ALL_ADDR, b in set ALL_ADDR};
+
+	zrtrancl: set of (Addr * Addr) -> set of (Addr * Addr)
+	zrtrancl(R) == dinter { Q | Q in set power ALL_RADDR() & id(ALL_ADDR) subset Q and R subset Q and rcomp(Q, Q) subset Q };
+--------------------------------------------------------
+--------------------------------------------------------
+		
+	child_rel: Heap -> set of (Addr * Addr) 
+	child_rel(hp) == { mk_(a,b) | a in set dom hp, b in set ALL_ADDR & b in set (elems hp(a) \ {nil}) };
+	
+	reach: set of Addr * Heap -> set of Addr
+	reach(s, hp) == ran(dres(s, zrtrancl(child_rel(hp)))); 
+	
+	retr0: Sigma1 -> Sigma0
+	retr0(mk_Sigma1(roots, hp, free)) == mk_Sigma0(reach(roots, hp), free);
+
+	retr1: Sigma2 -> Sigma1
+	retr1(mk_Sigma2(roots, hp, free, -)) == mk_Sigma1(roots, hp, free);
+
+	INIT_ALL_ADDR: () -> Heap
+	INIT_ALL_ADDR() == { a |-> [] | a in set ALL_ADDR };
+
+state Sigma012 of
+	s0: Sigma0
+	s1: Sigma1
+	s2: Sigma2
+inv mk_Sigma012(s0, s1, s2) ==
+	retr0(s1) = s0
+	and
+	retr1(s2) = s1
+init gc2 == gc2 = mk_Sigma012(
+	mk_Sigma0({}, ALL_ADDR),
+	mk_Sigma1({0}, INIT_ALL_ADDR(), {0}),
+	mk_Sigma2({0}, INIT_ALL_ADDR(), {0}, {0}))
+end 
+
+operations 
+-- NOTE: we explicitly used variables in rely/guar that overture doesn't allow in code because of ext rd!
+--		   that is, in Collector0 post, only busy is available (and not busy~), given ext rd busy! Confusing for Isabelle.
+--			 Thus, we will use the Z style notation here and in Isabelle to avoid problems. 
+--			 I repeat intended pre/post in comments also making explicit type invariants 
+
+Collector0() == 
+	s0.free := s0.free union (ALL_ADDR \ (s0.busy union s0.free)) 
+--ext wr free
+--		rd busy
+ext wr s0
+pre true
+post s0.busy = s0~.busy
+		 and
+		 (ALL_ADDR \ s0.busy) subset dunion hat(s0~.free)
+
+--pre  inv_Sigma0
+--rely inv_Sigma0 and (busy' \ busy) subset free and free' subset free
+--guar inv_Sigma0 and free subset free'
+--post inv_Sigma0 and (ALL_ADDR \ busy) subset dunion hat(free)
+;
+	
+Mutator0() ==
+	return
+--ext wr busy
+--		wr free
+ext wr s0
+pre true
+post true
+--pre  inv_Sigma0
+--rely inv_Sigma0 and busy' = busy and free subset free'
+--guar inv_Sigma0 and (busy' \ busy) subset free and free' subset free
+--post inv_Sigma0
+;
+
+	Collector1() ==
+		return
+	--ext wr free
+	--		rd roots, hp
+	ext wr s1
+	pre true
+	post s1.roots = s1~.roots and s1.hp = s1~.hp and (ALL_ADDR \ reach(s1.roots, s1.hp)) subset dunion hat(s1~.free);
+	
+	--pre  inv_Sigma1
+	--rely inv_Sigma1 and garbage(roots, free, hp) subset garbage(roots, free', hp') and free' subset free
+	--guar inv_Sigma1 and free subset free'
+	--post inv_Sigma1 and (ALL_ADDR \ reach(roots, hp)) subset dunion hat(free)
+
+	Mutator1() ==
+		return
+	--ext wr hp, free
+	--		rd roots
+	ext wr s1
+	pre true
+	post s1.roots = s1~.roots;
+	
+	--pre  inv_Sigma1
+	--rely inv_Sigma1 and free' <-: hp' = free <-: hp and free subset free'
+	--guar inv_Sigma1 and guarantee(roots, free, hp) subset garbage(roots, free', hp') and free' subset free
+	--post inv_Sigma1
+
+	Collector2: () ==> ()
+	Collector2() == (Unmark2(); Mark2(); Sweep2());
+		
+	Unmark2()
+		== return
+	--ext wr marked 
+	--		rd free, roots
+	ext wr s2
+	pre true
+	post s2.hp = s2~.hp and s2.free = s2~.free and s2.roots = s2~.roots and s2.marked = (s2.roots union s2.free)
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked = marked' and free = free'
+	--guar inv_Sigma2
+	--post inv_Sigma2 and marked' = (roots union free)
+	;
+	
+	Mark2()
+		== 
+		(dcl cond: bool := true,
+				 mc  : nat  := 0;
+			while cond do
+				(mc := card s2.marked;
+				 Propagate2();
+				 cond := card s2.marked = mc
+				)
+		)
+	--ext wr marked
+	--		rd hp, roots, free
+	ext wr s2
+	pre true
+	post s2.hp = s2~.hp and s2.roots = s2~.roots and s2.free = s2~.free and s2.marked = (s2.free union reach(s2.roots, s2.hp))
+
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked = marked' and free = free' and hp = hp'
+	--guar inv_Sigma2
+	--post inv_Sigma2 and marked' = (free union reach(roots, hp))
+	;
+	
+	Sweep2()
+		== return
+	--ext wr free, marked
+	ext wr s2
+	pre true
+	post s2.hp = s2~.hp and s2.roots = s2~.roots and s2.free = s2~.free union (ALL_ADDR \ s2~.marked)
+
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked = marked' and free = free' 
+	--guar inv_Sigma2
+	--post inv_Sigma2 and free' = free union (ALL_ADDR \ marked)
+	;
+
+	Propagate2()
+		== 
+		(dcl consid: set of Addr := {};
+			while consid <> ALL_ADDR do
+				(let x in set (ALL_ADDR \ consid) in
+					if x in set s2.marked then 
+						MarkIds2(x)
+					else 
+						skip
+				)
+		)
+	--ext wr marked
+	--		rd hp
+	ext wr s2
+	pre true
+	post s2.hp = s2~.hp and s2.free = s2~.free and s2.roots = s2~.roots and 
+			 s2.marked = s2~.marked union dunion { elems s2.hp(a) \ {nil} | a in set s2~.marked }
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked = marked' and free = free' and hp = hp'
+	--guar inv_Sigma2
+	--post inv_Sigma2 and marked' = marked union dunion { elems hp(a) \ {nil} | a in set marked }
+	;
+	
+	MarkIds2(x: Addr)
+		== return
+	--ext wr marked
+	--		rd hp
+	ext wr s2
+	pre true
+	post s2.hp = s2~.hp and s2.free = s2~.free and s2.roots = s2~.roots and 
+			s2.marked = s2~.marked union (elems s2.hp(x) \ {nil})
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 
+	--guar inv_Sigma2
+	--post inv_Sigma2 and marked' = marked union (elems hp(x) \ {nil})
+	;
+end GC012

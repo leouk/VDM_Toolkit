@@ -1,0 +1,100 @@
+module MinimalStd
+exports all
+definitions 
+
+values
+	M: int = 10;
+
+types 
+	T1 = nat1
+	inv t == t <= M;
+
+functions 
+	f: T1 -> T1
+	f(x) == x + 1
+	pre 
+		x < M
+	post
+		x < RESULT; 
+
+-- (forall x:Mimimal`T1 & pre_f(x) => 
+--			(exists RESULT: Minimal`T1 & post_f(x, RESULT) and RESULT = x+1))
+-- = [one point rule]
+-- (forall x:Mimimal`T1 & pre_f(x) => 
+--			(inv_T1(x+1) and post_f(x, x+1))
+-- = [overture simplifies type check on result]
+-- (forall x:Minimal`T1 & (pre_f(x) => post_f(x, (x + 1))))
+-- = [eliminate forall and expand defs]
+-- inv_T1(x) and pre_f(x) => post_f(x, (x+1)) and inv_T1(x+1)
+-- =
+-- x > 0 and x <= M and true => x < (x+1) and inv_T1(x+1)
+-- =
+-- x > 0 and x <= M and true => x < (x+1) and (x+1) > 0 and (x+1) <= M
+-- =		
+-- x > 0 and x <= M and true => true and x >= 0 and x < M
+-- =		
+-- x > 0 and x <= M => x >= 0 and x < M
+-- =
+-- (x > 0 and x <= M => x >= 0)
+-- and 
+-- (x > 0 and x <= M => x < M)
+-- =
+-- true
+-- and 
+-- (x > 0 and x <= M => x < M)
+-- =
+-- (x > 0 and x <= M => x < M)
+-- =
+-- (x > 0 and (x < M or x = M) => x < M)
+-- =
+-- (x > 0 and (x < M or x = M) => x < M)  -- remember: A => B = (not A or B)
+-- =
+-- (x > 0 and x < M => x < M)
+-- and
+-- (x > 0 and x = M => x < M) 
+-- =
+-- true
+-- and
+-- (x > 0 and x = M => x < M) 
+-- = 
+-- (x > 0 and x = M => *M < M*) 
+--
+-- WITH NEW PRE:
+-- x > 0 and x <= M and x < M => x < (x+1) and inv_T1(x+1)
+-- =
+-- x > 0 and x < M => x < (x+1) and (x+1) > 0 and (x+1) <= M
+-- =		
+-- x > 0 and x < M => true and x >= 0 and x < M
+-- =		
+-- x > 0 and x < M => x >= 0 and x < M
+-- =
+-- (x > 0 and x < M => x >= 0)
+-- and 
+-- (x > 0 and x < M => x < M)
+-- =
+-- true
+-- and 
+-- (x > 0 and x < M => x < M)
+-- =
+-- (x > 0 and x < M => x < M)
+-- =
+-- true
+
+state S of 
+	t1: T1
+	t2: T1
+	inv mk_S(t1, t2) == t1 < t2
+	init s == s = mk_S(1, 4)
+end
+
+operations
+	
+	op(t: T1) r: T1 ==
+		(t1 := t1+t;
+		 return t2 - t1 -- t2+t1
+		)
+	ext
+		wr t1 rd t2;
+	-- forall 
+	
+end MinimalStd

@@ -1,0 +1,175 @@
+module GC2
+imports 
+from GC0
+	types
+		Addr renamed Addr;
+		
+	values
+		ALL_ADDR renamed ALL_ADDR,
+		
+from GC1
+	types
+		Heap renamed Heap;
+		Sigma1 renamed Sigma1;
+
+	functions
+		reach renamed reach;
+
+	values
+	  empty_heap renamed empty_heap;
+
+exports 
+	types
+		struct Sigma2;
+		
+	functions
+		retr1: Sigma2 -> Sigma1;
+		
+	operations
+		Collector2: () ==> ();
+		
+definitions 
+
+state StateSigma2 of
+	roots : set of Addr
+	hp	  : Heap
+	free  : set of Addr
+	marked: set of Addr
+inv mk_StateSigma2(roots, hp, free, marked) == 
+			dom hp = ALL_ADDR 
+			and
+			free inter reach(roots, hp) = {}
+			and
+			rng (free <: hp) subset {[]}
+			and
+			(roots union free) subset marked 
+init gc2 == gc2 = mk_StateSigma2({0}, empty_heap, {0}, {0})
+end 
+
+types
+	Sigma2 ::
+		roots : set of Addr
+		hp	  : Heap
+		free  : set of Addr
+		marked: set of Addr
+	inv mk_Sigma2(roots, hp, free, marked) == 
+				dom hp = ALL_ADDR 
+				and
+				free inter reach(roots, hp) = {}
+				and
+				rng (free <: hp) = {[]}
+				and
+				(roots union free) subset marked;
+				
+functions 
+	retr1: Sigma2 -> Sigma1
+	retr1(mk_Sigma2(roots, hp, free, -)) == mk_Sigma1(roots, hp, free);
+	
+	--NOTE: There is an assumption that roots is constant, so it appears in all frames as read only and also in all relies 
+operations 
+	Collector2: () ==> ()
+	Collector2() == (Unmark2(); Mark2(); Sweep2());
+		
+	Unmark2()
+		== return
+	ext wr marked 
+			rd roots, hp, free
+	pre true
+	post marked = (roots union free)
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked' = marked and free' = free and roots'=roots
+	--guar inv_Sigma2 and free' = free and roots' = roots and hp' = hp
+	--post inv_Sigma2 and marked' = (roots union free)
+	;
+	
+	Mark2()
+		== 
+		(dcl cond: bool := true,
+				 mc  : nat  := 0;
+			while cond do
+				(mc := card marked;
+				 Propagate2();
+				 cond := card marked = mc
+				)
+		)
+	ext wr marked
+			rd roots, hp, free
+	pre true
+	post marked = (free union reach(roots, hp))
+
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked' = marked and free' = free and hp' = hp and roots' = roots
+	--guar inv_Sigma2 and free' = free and hp' = hp and roots' = roots
+	--post inv_Sigma2 and marked' = (free union reach(roots, hp))
+	;
+	
+	Sweep2()
+		== return
+	ext wr free, marked
+			rd roots, hp
+	pre true
+	post free = free~ union (ALL_ADDR \ marked~)
+
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked' = marked and free' = free and roots' = roots 
+	--guar inv_Sigma2 and hp' = hp and roots' = roots
+	--post inv_Sigma2 and free' = free union (ALL_ADDR \ marked)
+	;
+
+	Propagate2()
+		== 
+		(dcl consid: set of Addr := {};
+			while consid <> ALL_ADDR do
+				(let x in set (ALL_ADDR \ consid) in
+					if x in set marked then 
+						MarkIds2(x)
+					else 
+						skip
+				)
+		)
+	ext wr marked
+			rd roots, hp, free
+	pre true
+	post marked = marked~ union dunion { elems hp(a) \ {nil} | a in set marked~ }
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and marked' = marked and free' = free and hp' = hp and roots' = roots
+	--guar inv_Sigma2 and free' = free and roots' = roots and hp' = hp
+	--post inv_Sigma2 and marked' = marked union dunion { elems hp(a) \ {nil} | a in set marked }
+	;
+	
+	MarkIds2(x: Addr)
+		== return
+	ext wr marked
+			rd roots, hp, free
+	pre true
+	post marked = marked~ union (elems hp(x) \ {nil})
+	
+	--pre  inv_Sigma2
+	--rely inv_Sigma2 and roots' = roots
+	--guar inv_Sigma2 and roots' = roots and free' = free and hp' = hp
+	--post inv_Sigma2 and marked' = marked union (elems hp(x) \ {nil})
+	;
+
+--------------------------------------------------------
+-- Rigorous proof sketches
+--------------------------------------------------------
+		
+-- theorem (Adequacy): 
+-- forall s1 in set Sigma1 & exists s2 in set Sigma2 & retr1(s2) = s1
+-- =[allI, expand retr1, type info]
+-- 1. s1 in set Sigma1; inv_Sigma1(s1) => exists s2 in set Sigma2 & inv_Sigma2(s2) and s1 = mk_Sigma1(s2.roots, s2.hp, s2.free)
+-- =[record type info Sigma1/2, record equality]
+-- 1. roots1, free1 in set of Addr; hp1: Heap; inv_Sigma1(roots1, free1, hp1) => exists roots2, free2, marked2 in set of Addr; hp2: Heap & inv_Sigma2(roots2, free2, marked2, hp2) and roots1 = roots2 and hp1 = hp2 and free1 = free2
+-- =[one point rule, type info, hide type info]
+-- 1. roots1, free1 in set of Addr; hp1: Heap; inv_Sigma1(roots1, free1, hp1) => free1 in set Addr and roots1 in set Addr and hp1 in Heap
+-- 2. roots1, free1 in set of Addr; hp1: Heap; inv_Sigma1(roots1, free1, hp1) => exists marked2 in set of Addr & inv_Sigma2(roots1, free1, marked2, hp1) 
+-- =[expand inv_Sigma1/2]
+-- 1. dom hp1 = ALL_ADDR and free1 inter reach(roots1, hp1) = {} and rng(free1 <: hp1) = {[]} => exists marked2 in set of Addr & dom hp1 = ALL_ADDR and free1 inter reach(roots1, hp1) = {} and rng (free1 <: hp1) = {[]} and (roots1 union free1) subset marked2
+-- =[contract ex on unbound variables, conjE, conjI, assumption]
+-- 1. dom hp1 = ALL_ADDR; free1 inter reach(roots1, hp1) = {} and rng(free1 <: hp1) = {[]} => exists marked2 in set of Addr & (roots1 union free1) subset marked2
+-- =[exI[of marked2="roots1 union free1", self-subset]
+-- No subgoals!
+
+end GC2

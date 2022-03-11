@@ -1,0 +1,31 @@
+module SquareRoot
+exports all
+definitions 
+
+functions 
+
+newton_guess: real * real -> real
+newton_guess(value,guess) ==
+	(guess + (value / guess)) / 2
+pre
+	value >= 0 and guess > 0;
+
+
+operations 
+
+SquareRoot : real * real ==> real 
+SquareRoot (value,err) ==
+    (dcl guess:real := value / 2,
+  		     nextx: real := value;
+			while abs (guess - nextx) >= err * guess do
+			   ( guess := nextx;
+			     nextx := newton_guess(value,guess);
+			);
+			return nextx
+			)
+pre 
+	value >= 0 and err > 0 and err <= value
+post
+	(RESULT * RESULT) - err <= value;
+	
+end SquareRoot
