@@ -28,7 +28,7 @@ public class POTheoremAnnotation extends POAnnotation {
         POVariableExpression poName = (POVariableExpression)args.get(0);
         ctxt.push(new PONameContext(new TCNameList(poName.name)));
 
-		TheoremObligation po = new TheoremObligation(def.location, poName.name.toString(), args.get(1).toString(), ctxt);
+		TheoremObligation po = new TheoremObligation(def.location, poName, args.get(1), ctxt);
         obligations.add(po);  
 	}
 }
