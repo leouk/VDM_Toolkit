@@ -7,19 +7,21 @@
 
 <!-- This is not quite right yet -->
 	<artifactId>VDMToolkit-suite</artifactId>
-	<name>VDM Toolkit Suite</name>
+	<name>VDMToolkit-suite</name>
+	<description>VDM Toolkit translation, annotations, libraries</description>
 	<packaging>pom</packaging>
+	<version>4.4.5-SNAPSHOT</version>	<!-- This version is inherited by all modules -->
 
 	<parent>
 		<groupId>com.fujitsu</groupId>
 		<artifactId>vdmj-suite</artifactId>
-		<version>4.4.4-SNAPSHOT</version>
+		<version>4.4.5-SNAPSHOT</version>
 	</parent>
 	
 	<!-- sub modules -->
 	<modules>
-		<module>annotations3</module>
-		<module>witness</module>
+		<module>VDMToolkit_Annotations</module>
+		<module>vdmlib</module>
 		<module>vdm2isa</module>
 	</modules>
 
