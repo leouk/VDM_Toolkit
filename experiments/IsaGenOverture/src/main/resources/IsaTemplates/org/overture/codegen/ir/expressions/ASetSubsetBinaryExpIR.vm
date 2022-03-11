@@ -1,1 +1,0 @@
-($Isa.trans($node.Left) \<subset> $Isa.trans($node.Right))

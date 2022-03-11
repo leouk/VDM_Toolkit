@@ -1,5 +1,0 @@
-#if ($Isa.isUnionType($node))
-datatype $node.Name = $Isa.trans($node.Type)
-#else
-type_synonym $node.Name = "$Isa.trans($node.Type)"
-#end

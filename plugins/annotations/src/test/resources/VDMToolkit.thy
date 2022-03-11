@@ -1,0 +1,1 @@
+../../../../vdm2isa/java/src/main/resources/VDMToolkit.thy

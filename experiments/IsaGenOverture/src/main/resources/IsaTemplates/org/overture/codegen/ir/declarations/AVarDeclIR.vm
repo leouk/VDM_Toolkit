@@ -1,1 +1,0 @@
-$Isa.trans($node.Pattern) = $Isa.trans($node.Exp)

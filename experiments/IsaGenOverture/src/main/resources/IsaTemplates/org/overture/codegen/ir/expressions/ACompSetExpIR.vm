@@ -1,1 +1,0 @@
-{$Isa.trans($node.First) | $Isa.transBinds($node.Bindings) #if($node.Predicate) & $Isa.trans($node.Predicate)#end}

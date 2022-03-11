@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-03-11T08:19:20.803Z
+(* VDM to Isabelle Translation @2022-03-11T09:31:26.008Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/annotations/src/test/resources/MinimalTheorem.vdmsl' at line 1:8
@@ -9,7 +9,7 @@ imports "VDMToolkit"
 begin
 
 
-\<comment>\<open>VDM source: T = nat
+(*Not yet implemented annotations for TRTypeDefinition*)\<comment>\<open>VDM source: T = nat
 	inv t == (t > 10)\<close>
 \<comment>\<open>in 'MinimalTheorem' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/annotations/src/test/resources/MinimalTheorem.vdmsl) at line 13:5\<close>
 type_synonym T = "VDMNat"
@@ -34,7 +34,7 @@ lemmas inv_T_defs = inv_T_def inv_VDMNat_def
 
 	
 	
-\<comment>\<open>VDM source: f: (nat * nat1 -> nat1)
+(*Not yet implemented annotations for TRExplicitFunctionDefinition*)\<comment>\<open>VDM source: f: (nat * nat1 -> nat1)
 	f(x, y) ==
 (x + y)\<close>
 \<comment>\<open>in 'MinimalTheorem' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/annotations/src/test/resources/MinimalTheorem.vdmsl) at line 20:5\<close>

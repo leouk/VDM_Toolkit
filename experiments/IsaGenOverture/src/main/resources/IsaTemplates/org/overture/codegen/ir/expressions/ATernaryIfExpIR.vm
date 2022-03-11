@@ -1,1 +1,0 @@
-if $Isa.trans($node.Condition) then $Isa.trans($node.TrueValue) else $Isa.trans($node.FalseValue)

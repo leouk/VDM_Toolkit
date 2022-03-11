@@ -1,3 +1,0 @@
-abbreviation
- $node.Name :: "$Isa.trans($node.type)" where
-"${node.Name} \<equiv> $Isa.initial($node.Initial)"

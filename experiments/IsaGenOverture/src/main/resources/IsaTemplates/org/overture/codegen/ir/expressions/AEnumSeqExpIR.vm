@@ -1,5 +1,0 @@
-#if ($Isa.isString($node.Type))
-$Isa.transString($node.Members)##
-#else
-$Isa.transSeq($node.Members)##
-#end

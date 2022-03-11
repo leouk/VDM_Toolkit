@@ -1,1 +1,0 @@
-/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IFcns_PO.thy
