@@ -1,1 +1,0 @@
-/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/isa/VDMToolkit.thy
