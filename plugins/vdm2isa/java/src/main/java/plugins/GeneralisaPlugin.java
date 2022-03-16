@@ -91,7 +91,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesStructured.vdmsl"
             //    , "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2ITypesUnion.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IWarnings.vdmsl"
-            //,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl"
+                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/real/Clocks.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/examples/FMI-clock-model/fresh/mapExample.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/Alarm/alarm.vdmsl"
@@ -100,7 +100,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CM.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CMISA.vdmsl"
             //     ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/java/src/test/resources/Examples/CMSL/CMISA.vdmsl"
-                  ,   "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/annotations/src/test/resources/MinimalTheorem.vdmsl"
+            //      ,   "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/annotations/src/test/resources/MinimalTheorem.vdmsl"
         });
     }
 

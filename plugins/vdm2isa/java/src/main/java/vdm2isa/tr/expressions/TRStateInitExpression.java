@@ -42,6 +42,6 @@ public class TRStateInitExpression extends TRExpression {
 
     @Override
     public String translate() {
-        return "todo";
+        return state.getInitExpression().right.translate();
     }
 }

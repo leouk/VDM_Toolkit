@@ -1,6 +1,7 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCStateDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
@@ -10,9 +11,11 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.types.TRFunctionType;
@@ -67,7 +70,15 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         // * need to worry about state invariant implicit check see TRTypeDefinition for it  
         // * arguably you could perhaps think of extending TRTypeDefinition 
 
+        if (!validInitExpression())
+            report(IsaErrorMessage.VDMSL_INVALID_STATE_INIT_1P, name);
         TRNode.setup(recordType, initPattern, initExpression, initdef, statedefs);
+    }
+
+    private boolean validInitExpression()
+    {
+        return initExpression instanceof TRBinaryExpression && 
+            IsaToken.from(((TRBinaryExpression)initExpression).op).equals(IsaToken.EQUALS);
     }
 
     @Override 
@@ -75,6 +86,11 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
     {
         return "SteteDef = " + 
             "...";
+    }
+
+    public TRBinaryExpression getInitExpression()
+    {
+        return (TRBinaryExpression)initExpression;
     }
 
     @Override
