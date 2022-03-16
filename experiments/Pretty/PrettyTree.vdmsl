@@ -1,0 +1,109 @@
+module PrettyTree
+imports 
+from FastPrettyPrinter
+    values 
+        Dnil renamed Dnil;
+        line renamed line;
+    types 
+        DOC renamed DOC;
+        String renamed String;
+    functions 
+        group renamed group;
+        doc_concat renamed doc_concat; 
+        nest renamed nest;
+        text renamed text; 
+        bracket renamed bracket;
+        pretty renamed pretty;
+exports
+    functions
+        testtree: nat -> String;
+        testtree': nat -> String;
+definitions 
+types 
+    Tree :: 
+        s: String 
+        t: seq of Tree;
+
+functions 
+
+    --@Warning(5013)
+    showTree: Tree -> DOC 
+    showTree(mk_Tree(s, ts)) ==
+        group(doc_concat(text(s), nest(len s, showBracket(ts))));
+
+    --@Warning(5013)
+    showBracket: seq of Tree -> DOC
+    showBracket(ts) == 
+        if ts = [] then 
+            Dnil
+        else
+            doc_concat(
+                text("["), 
+                doc_concat(
+                    nest(1, showTrees(ts)),
+                    text("]")
+                )
+            );
+
+    --@Warning(5013, 5012)
+    showTrees: seq1 of Tree -> DOC 
+    showTrees(ts) ==
+        cases ts:
+            [t]     -> showTree(t),
+            [t]^ts' -> doc_concat(
+                            showTree(t), 
+                            doc_concat(
+                                text(","),
+                                doc_concat(line, showTrees(ts')) 
+                            )
+                        )
+        end;
+
+    --@Warning(5013)
+    showTree': Tree -> DOC 
+    showTree'(mk_Tree(s, ts)) ==
+        doc_concat(text(s), showBracket'(ts));
+
+    --@Warning(5013)
+    showBracket': seq of Tree -> DOC
+    showBracket'(ts) == 
+        if ts = [] then 
+            Dnil
+        else
+            bracket("[", showTrees'(ts), "]");
+
+    --@Warning(5013)
+    showTrees': seq1 of Tree -> DOC 
+    showTrees'(ts) ==
+        cases ts:
+            [t]     -> showTree(t),
+            [t]^ts' -> doc_concat(
+                            showTree(t), 
+                            doc_concat(
+                                text(","),
+                                doc_concat(line, showTrees(ts')) 
+                            )
+                        )
+        end;
+
+    testtree: nat -> String 
+    testtree(w) == pretty(w, showTree(tree));
+
+    testtree': nat -> String 
+    testtree'(w) == pretty(w, showTree'(tree));
+
+values
+
+    tree: Tree = mk_Tree("aaa", 
+        [
+            mk_Tree("bbb", [mk_Tree("ccc", []), mk_Tree("dd", [])]),
+            mk_Tree("eee", []),
+            mk_Tree("ffff", 
+            [
+                mk_Tree("gg", []),
+                mk_Tree("hhh", []),
+                mk_Tree("ii", [])
+            ])
+        ]);
+
+end PrettyTree

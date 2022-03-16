@@ -92,8 +92,9 @@ functions
             (is_DUnion(x) ) -> flatten(x.d1),
             others          -> <NIL>
         end
-    measure 
-        SIZE(x);
+    --measure 
+    --    SIZE(x)
+    ;
 
     doc_union: DOC * DOC -> DOC 
     doc_union(x, y) == mk_DUnion(x, y)
@@ -109,8 +110,9 @@ functions
             (is_Line(d)) -> "\n" ^ copy(d.i, ' ') ^ layout(d.d),
             others       -> ""
         end
-    measure 
-        size(d);
+    --measure 
+   --     size(d)
+   ;
 
     best: nat * nat * DOC -> Doc 
     best(w, k, d) == bee(w, k, [mk_(0, d)]);
@@ -146,8 +148,9 @@ functions
                 (is_Line(d)) -> true,
                 others       -> true 
             end
-    measure
-        size(d);
+    --measure
+    --    size(d)
+    ;
 
     pretty: nat * DOC -> String 
     pretty(w, d) == layout(best(w, 0, d));
@@ -220,24 +223,24 @@ functions
         len RESULT = i and elems RESULT = {c};
 
     --@Warning(5012) structural measure size function
-    size: Doc -> nat
-    size(d) ==
-        cases true:
-            (is_Text(d)) -> 1 + size(d.d),
-            (is_Line(d)) -> size(d.d),
-            others       -> 0
-        end;
+    -- size: Doc -> nat
+    -- size(d) ==
+    --     cases true:
+    --         (is_Text(d)) -> 1 + size(d.d),
+    --         (is_Line(d)) -> size(d.d),
+    --         others       -> 0
+    --     end;
 
-    --@Warning(5012) structural measure size function
-    SIZE: DOC -> nat
-    SIZE(d) ==
-        cases true:
-            (is_DConcat(d)) -> SIZE(d.d1) + SIZE(d.d2), -- +1?
-            (is_DNest(d)  ) -> SIZE(d.d), -- +1?
-            (is_DText(d)  ) -> 1,
-            (is_DLine(d)  ) -> 1,
-            (is_DUnion(d) ) -> SIZE(d.d1),
-            others          -> 0
-        end;
+    -- --@Warning(5012) structural measure size function
+    -- SIZE: DOC -> nat
+    -- SIZE(d) ==
+    --     cases true:
+    --         (is_DConcat(d)) -> SIZE(d.d1) + SIZE(d.d2), -- +1?
+    --         (is_DNest(d)  ) -> SIZE(d.d), -- +1?
+    --         (is_DText(d)  ) -> 1,
+    --         (is_DLine(d)  ) -> 1,
+    --         (is_DUnion(d) ) -> SIZE(d.d1),
+    --         others          -> 0
+    --     end;
 
 end FastPrettyPrinter

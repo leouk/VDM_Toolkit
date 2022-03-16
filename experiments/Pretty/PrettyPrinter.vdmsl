@@ -11,6 +11,10 @@ exports
         doc_concat: Doc * Doc -> Doc;
         nest: nat * Doc -> Doc;
         layout: Doc -> String; 
+        flatten: Doc -> Doc;
+        group: Doc -> Doc;
+        pretty: nat * Doc -> String ;
+
 definitions 
 
 types
@@ -67,15 +71,15 @@ functions
     measure 
         size(doc);
 
-    layout_union: Doc * Doc -> Doc
-    layout_union(doc1, doc2) == doc1
-    pre
-        flatten(doc1) = flatten(doc2)
-    post 
-        flatten(doc1) = flatten(RESULT);
+    -- layout_union: Doc * Doc -> Doc
+    -- layout_union(doc1, doc2) == doc1
+    -- pre
+    --     flatten(doc1) = flatten(doc2)
+    -- post 
+    --     flatten(doc1) = flatten(RESULT);
 
     flatten: Doc -> Doc 
-    flatten(doc) == doc;
+    flatten(doc) == is not yet specified;
 
     group: Doc -> Doc
     group(doc) == is not yet specified;
