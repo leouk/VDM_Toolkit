@@ -1,0 +1,243 @@
+/*********************
+ * Copyright Leo Freitas, 2022
+ * adjusted from Phillip Wadler's "Prettier Printer" Haskell algorithm
+ * https://homepages.inf.ed.ac.uk/wadler/papers/prettier/prettier.pdf 
+ */
+module FastPrettyPrinter
+exports
+    types
+        struct String;
+        Doc;
+        DOC;
+    values 
+        dnil: Doc;
+        Dnil: DOC;
+        line: DOC;
+    functions
+        text : String -> DOC;
+        doc_concat: DOC * DOC -> DOC;
+        nest : nat * DOC -> DOC;
+        group: DOC -> DOC;
+        layout: Doc -> String; 
+        pretty: nat * DOC -> String;
+
+        folddoc: (DOC * DOC -> DOC) * seq of DOC -> DOC;
+        spread: seq of DOC -> DOC;
+        stack: seq of DOC -> DOC; 
+        bracket: String * DOC * String -> DOC;
+        fill_line: DOC * DOC -> DOC; 
+        fill: seq of DOC -> DOC; 
+        
+definitions 
+
+types
+    String = seq of char;
+
+    Text :: 
+        s: String 
+        d: Doc; 
+    
+    Line ::
+        i: nat 
+        d: Doc;
+
+    Doc = <Nil> | Text | Line; 
+
+    DConcat ::
+        d1: DOC
+        d2: DOC;
+
+    DNest ::
+        i: nat 
+        d: DOC;
+
+    DText :: 
+        s: String;
+
+    DLine :: ;
+
+    DUnion ::
+        d1: DOC
+        d2: DOC;
+
+    DOC = <NIL> | DConcat | DNest | DText | DLine | DUnion;
+
+    IDOC = (nat * DOC);
+
+values 
+    dnil : Doc = <Nil>;
+    Dnil : DOC = <NIL>;
+    line : DOC = mk_DLine();
+
+functions 
+    text : String -> DOC
+    text(s) == mk_DText(s);
+
+    doc_concat: DOC * DOC -> DOC 
+    doc_concat(x, y) == mk_DConcat(x, y);
+
+    nest : nat * DOC -> DOC
+    nest(i, x) == mk_DNest(i, x);
+
+    group: DOC -> DOC 
+    group(x) == mk_DUnion(flatten(x), x);
+
+    flatten: DOC -> DOC 
+    flatten(x) == 
+        cases true:
+            (is_DConcat(x)) -> mk_DUnion(flatten(x.d1), flatten(x.d2)), 
+            (is_DNest(x)  ) -> mk_DNest(x.i, flatten(x.d)),
+            (is_DText(x)  ) -> mk_DText(x.s),
+            (is_DLine(x)  ) -> mk_DText(" "),
+            (is_DUnion(x) ) -> flatten(x.d1),
+            others          -> <NIL>
+        end
+    measure 
+        SIZE(x);
+
+    doc_union: DOC * DOC -> DOC 
+    doc_union(x, y) == mk_DUnion(x, y)
+    pre 
+        flatten(x) = flatten(y)
+    post 
+        flatten(x) = flatten(RESULT);
+
+    layout: Doc -> String
+    layout(d) ==
+        cases true:
+            (is_Text(d)) -> d.s ^ layout(d.d),
+            (is_Line(d)) -> "\n" ^ copy(d.i, ' ') ^ layout(d.d),
+            others       -> ""
+        end
+    measure 
+        size(d);
+
+    best: nat * nat * DOC -> Doc 
+    best(w, k, d) == bee(w, k, [mk_(0, d)]);
+
+    
+    --@Warning(5012) complex measure on structural info 
+    bee: nat * nat * seq of IDOC -> Doc
+    bee(w, k, ds) ==
+        cases ds:
+            []       -> dnil,
+            [mk_(i,d)] ^ z  ->
+                cases true: 
+                    (is_DConcat(d)) -> bee(w, k, [mk_(i, d.d1), mk_(i, d.d2)] ^ z), 
+                    (is_DNest(d)  ) -> bee(w, k, [mk_(i+d.i, d.d)] ^ z),
+                    (is_DText(d)  ) -> mk_Text(d.s, bee(w, k + len d.s, z)),
+                    (is_DLine(d)  ) -> mk_Line(i, bee(w, i, z)),
+                    (is_DUnion(d) ) -> better(w, k, bee(w, k, [mk_(i,d.d1)] ^ z),
+                                                    bee(w, k, [mk_(i,d.d1)] ^ z)),
+                    others          -> bee(w, k, z)
+                end
+        end;
+
+    better: nat * nat * Doc * Doc -> Doc 
+    better(w, k, x, y) == if fits(w-k, x) then x else y;
+
+    fits: int * Doc -> bool
+    fits(w, d) ==
+        if w < 0 then 
+            false
+        else 
+            cases true: 
+                (is_Text(d)) -> fits(w - len d.s, d.d),
+                (is_Line(d)) -> true,
+                others       -> true 
+            end
+    measure
+        size(d);
+
+    pretty: nat * DOC -> String 
+    pretty(w, d) == layout(best(w, 0, d));
+
+    horiz_concat: DOC * DOC -> DOC
+    horiz_concat(x, y) == doc_concat(x, doc_concat(text(" "), y));
+
+    vert_concat: DOC * DOC -> DOC
+    vert_concat(x, y) == doc_concat(x, doc_concat(line, y));
+
+    folddoc: (DOC * DOC -> DOC) * seq of DOC -> DOC
+    folddoc(f, xs) ==
+        cases xs:
+            []      -> Dnil, 
+            [x]     -> x,
+            [x]^xs' -> f(x, folddoc(f, xs'))
+        end
+    measure 
+        len xs; 
+
+    spread: seq of DOC -> DOC 
+    spread(xs) == folddoc(horiz_concat, xs);
+
+    stack: seq of DOC -> DOC 
+    stack(xs) == folddoc(vert_concat, xs);
+
+    bracket: String * DOC * String -> DOC
+    bracket(l, x, r) ==  
+        group(doc_concat(
+                text(l), 
+                doc_concat(
+                    nest(2, doc_concat(line, x)),
+                    doc_concat(
+                        line,
+                        text(r)
+                    )
+                )
+            )
+        );
+
+    fill_line: DOC * DOC -> DOC 
+    fill_line(x, y) == doc_concat(x, doc_concat(doc_union(text(" "), line), y))
+    pre 
+        pre_doc_union(text(" "), line)
+    post 
+        --post_doc_union(text(" "), line, within resut the right side... leave it)
+        true;
+
+    --fill_words: TODO: create "words"
+
+    --@Warning(5012) complex measure on strcuture of DOC
+    fill: seq of DOC -> DOC 
+    fill(xs) == 
+        cases xs:
+            []       -> Dnil,
+            [x]      -> x, 
+            [x']^xs' -> 
+                cases xs': 
+                    []     -> x',
+                    [y]^zs ->   doc_union(
+                                    horiz_concat(flatten(x'), fill([flatten(y)] ^ zs)),
+                                    vert_concat(x', fill([y]^zs))
+                                )
+                end 
+        end; 
+
+    copy: nat * char -> String
+    copy(i, c) == [ c | - in set {1,...,i} ]
+    post 
+        len RESULT = i and elems RESULT = {c};
+
+    --@Warning(5012) structural measure size function
+    size: Doc -> nat
+    size(d) ==
+        cases true:
+            (is_Text(d)) -> 1 + size(d.d),
+            (is_Line(d)) -> size(d.d),
+            others       -> 0
+        end;
+
+    --@Warning(5012) structural measure size function
+    SIZE: DOC -> nat
+    SIZE(d) ==
+        cases true:
+            (is_DConcat(d)) -> SIZE(d.d1) + SIZE(d.d2), -- +1?
+            (is_DNest(d)  ) -> SIZE(d.d), -- +1?
+            (is_DText(d)  ) -> 1,
+            (is_DLine(d)  ) -> 1,
+            (is_DUnion(d) ) -> SIZE(d.d1),
+            others          -> 0
+        end;
+
+end FastPrettyPrinter

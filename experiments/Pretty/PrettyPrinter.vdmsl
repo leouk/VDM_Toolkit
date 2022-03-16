@@ -1,24 +1,101 @@
 module PrettyPrinter
+exports
+    types
+        struct String;
+        Doc;
+    values 
+        dnil: Doc;
+        line: Doc;
+    functions
+        text: String -> Doc;
+        doc_concat: Doc * Doc -> Doc;
+        nest: nat * Doc -> Doc;
+        layout: Doc -> String; 
 definitions 
 
 types
     String = seq of char;
+
     Text :: 
         s: String 
         d: Doc; 
+    
     Line ::
         i: nat 
         d: Doc;
-        
-    Doc = DNil | Text ; 
+
+    Doc = <Nil> | Text | Line; 
 
 values 
-    dnil : Doc;
-    line : Doc; 
+    dnil : Doc = <Nil>;
+    line : Doc = mk_Line(0, dnil);
+
 functions 
-    dconcat: Doc -> Doc -> Doc
     text : String -> Doc
-    nest : int -> Doc -> Doc
+    text(s) == mk_Text(s, dnil);
+
+    doc_concat: Doc * Doc -> Doc
+    doc_concat(doc1, doc2) ==
+        if is_Text(doc1) then  
+            mk_Text(doc1.s, doc_concat(doc1.d, doc2))
+        else if is_Line(doc1) then  
+            mk_Line(doc1.i, doc_concat(doc1.d, doc2))
+        else 
+            doc2
+    measure 
+        size(doc1);
+
+    nest : nat * Doc -> Doc
+    nest(j, doc) ==
+        if is_Text(doc) then       
+            mk_Text(doc.s, nest(j, doc.d))
+        else if is_Line(doc) then  
+            mk_Line(doc.i+j, nest(j, doc.d))
+        else 
+            doc
+    measure
+        size(doc);
+
     layout: Doc -> String
+    layout(doc) ==
+        if is_Text(doc) then 
+            doc.s ^ layout(doc.d)
+        else if is_Line(doc) then
+            "\n" ^ copy(doc.i, ' ') ^ layout(doc.d)
+        else    
+            ""
+    measure 
+        size(doc);
+
+    layout_union: Doc * Doc -> Doc
+    layout_union(doc1, doc2) == doc1
+    pre
+        flatten(doc1) = flatten(doc2)
+    post 
+        flatten(doc1) = flatten(RESULT);
+
+    flatten: Doc -> Doc 
+    flatten(doc) == doc;
+
+    group: Doc -> Doc
+    group(doc) == is not yet specified;
+
+    pretty: nat * Doc -> String 
+    pretty(i, doc) == is not yet specified;
+
+    copy: nat * char -> String
+    copy(i, c) == [ c | - in set {1,...,i} ]
+    post 
+        len RESULT = i and elems RESULT = {c};
+
+    --@Warning(5012) structural measure size function
+    size: Doc -> nat
+    size(doc) ==
+        if is_Text(doc) then    
+            1 + size(doc.d)
+        else if is_Line(doc) then  
+            1 + size(doc.d)
+        else 
+            0;
 
 end PrettyPrinter
