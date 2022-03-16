@@ -1,0 +1,24 @@
+module PrettyPrinter
+definitions 
+
+types
+    String = seq of char;
+    Text :: 
+        s: String 
+        d: Doc; 
+    Line ::
+        i: nat 
+        d: Doc;
+        
+    Doc = DNil | Text ; 
+
+values 
+    dnil : Doc;
+    line : Doc; 
+functions 
+    dconcat: Doc -> Doc -> Doc
+    text : String -> Doc
+    nest : int -> Doc -> Doc
+    layout: Doc -> String
+
+end PrettyPrinter
