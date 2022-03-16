@@ -137,6 +137,32 @@ public class TRRecordType extends TRInvariantType
         return IsaToken.RECORD;
     }
 
+    /**
+     * TLD record translation considers not only its name but it's fields too. This will be called at type and state definition time
+     * @return
+     */
+    public String translateTypeTLD()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        // make sure no union types at TLD
+        checkForUnionTypes();
+
+        // translate record definition 
+        sb.append(isaToken().toString());
+        sb.append(IsaToken.SPACE.toString()); 
+        sb.append(translate());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(IsaToken.EQUALS.toString());
+        sb.append(IsaToken.SPACE.toString());
+        sb.append(getFormattingSeparator());
+        sb.append(getFields().translate());
+        sb.append(getFormattingSeparator());
+        sb.append("\n");
+        
+        return sb.toString();
+    }
+
     @Override
     public String translate() {
         return getName(); 

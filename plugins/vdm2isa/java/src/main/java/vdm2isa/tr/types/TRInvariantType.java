@@ -124,7 +124,7 @@ public abstract class TRInvariantType extends TRType
 		return visitor.caseInvariantType(this, arg);
 	}
 
-    public String translateTLD()
+    public String translateSpecTLD()
     {
         StringBuilder sb = new StringBuilder();
         if (invdef != null)

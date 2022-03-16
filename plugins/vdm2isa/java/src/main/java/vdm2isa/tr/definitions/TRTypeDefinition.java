@@ -398,20 +398,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         if (t instanceof TRRecordType)
         {
             TRRecordType trtype = (TRRecordType)t;
-            // make sure no union types at TLD
-            trtype.checkForUnionTypes();
-            
-            // translate record definition 
-            sb.append(trtype.isaToken().toString());
-            sb.append(IsaToken.SPACE.toString()); 
-            sb.append(trtype.translate());
-            sb.append(IsaToken.SPACE.toString());
-            sb.append(IsaToken.EQUALS.toString());
-            sb.append(IsaToken.SPACE.toString());
-            sb.append(getFormattingSeparator());
-            sb.append(trtype.getFields().translate());
-            sb.append(getFormattingSeparator());
-            sb.append("\n");
+            sb.append(trtype.translateTypeTLD());
         }
         else if (t instanceof TRNamedType)
         {
@@ -464,7 +451,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         // issue inv / eq / ord
         if (t instanceof TRInvariantType)
         {
-            sb.append(getInvariantType().translateTLD());
+            sb.append(getInvariantType().translateSpecTLD());
         }
 
         if (Vdm2isaPlugin.translateTypeDefMinMax)
