@@ -241,6 +241,48 @@ functions
         and
         (i = 0 <=> RESULT = []);
 
+    step: char * (String * seq of String) -> (String * seq of String)
+    step(c, mk_(curr, res)) ==
+        if isSpace(c) then
+            if curr = "" then 
+                mk_(curr, res)
+            else 
+                mk_("", [curr] ^ res)
+        else    
+            mk_(['c'] ^ curr, res);
+ 
+    isSpace: char -> bool 
+    isSpace(c) == c in set {' ', '\t', '\n'};
+
+    break[@T]: (@T -> bool) * seq of @T -> (seq of @T * seq of @T)
+    break(p, xs) == 
+        cases xs:
+            [] -> mk_(xs, xs),
+            [x] ^ xs' -> if p(x) then mk_([],   )
+            xs' ^ [x]^xs''  -> if p(x) then mk_([], xs') else let mk_(ys, zs) = break[@T](p, xs'') in mk_([x]^ys, zs),
+            xs' ^ [] -> mk_(xs', xs')
+        end
+    measure 
+        len xs;
+
+    dropWhile[@T]: (@T -> bool) * seq of @T -> seq of @T 
+    dropWhile(p, xs) ==
+        cases xs: 
+            [] -> [],
+            xs' ^ [x] ^ xs'' -> if p(x) then dropWhile[@T](p, xs'') else xs'
+        end
+    measure 
+        len xs;
+
+    words: String -> seq of String 
+    words(s) == 
+        cases dropWhile[char](isSpace, s):
+            "" -> [],
+            s' -> let mk_(ys, zs) = break[char](isSpace, s') in [ys, zs]
+        end
+    measure 
+        measure_dropWhile[char](isSpace, s);
+
     --@Warning(5012) structural measure size function
     -- size: Doc -> nat
     -- size(d) ==
