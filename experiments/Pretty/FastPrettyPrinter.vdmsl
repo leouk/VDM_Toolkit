@@ -80,15 +80,15 @@ functions
     nest(i, x) == mk_DNest(i, x);
 
     group: DOC -> DOC 
-    group(x) == mk_DUnion(flatten(x), x);
+    group(x) == doc_union(flatten(x), x);
 
     flatten: DOC -> DOC 
     flatten(x) == 
         cases true:
-            (is_DConcat(x)) -> mk_DUnion(flatten(x.d1), flatten(x.d2)), 
+            (is_DConcat(x)) -> mk_DConcat(flatten(x.d1), flatten(x.d2)), 
             (is_DNest(x)  ) -> mk_DNest(x.i, flatten(x.d)),
-            (is_DText(x)  ) -> mk_DText(x.s),
-            (is_DLine(x)  ) -> mk_DText(" "),
+            (is_DText(x)  ) -> text(x.s),
+            (is_DLine(x)  ) -> text(" "),
             (is_DUnion(x) ) -> flatten(x.d1),
             others          -> <NIL>
         end
