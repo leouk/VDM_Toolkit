@@ -3,23 +3,20 @@ imports
 from FastPrettyPrinter
     values 
         Dnil renamed Dnil;
-        line renamed line;
     types 
         DOC renamed DOC;
         String renamed String;
     functions 
-        group renamed group;
         folddoc renamed folddoc;
         doc_concat renamed doc_concat; 
-        nest renamed nest;
         text renamed text; 
         bracket renamed bracket;
         pretty renamed pretty;
         fill renamed fill;
-exports all
-    -- functions
-    --     testtree: nat -> String;
-    --     testtree': nat -> String;
+        words renamed words;
+exports 
+    functions
+        testXML: nat -> String;
 definitions 
 types 
     XMLElement :: 
@@ -41,71 +38,71 @@ functions
     seq_map[@S, @T]: (@S -> @T) * seq of @S -> seq of @T
     seq_map(f, xs) == [ f(xs(i)) | i in set inds xs ];
 
-    words: String -> seq of String 
-    words(s) == [s]; --copy split from support? 
+    --@Warning(5013)
+    showXML: XML -> DOC 
+    showXML(x) == folddoc(doc_concat, showXMLs(x));
 
-    -- --@Warning(5013)
-    -- showXML: XML -> DOC 
-    -- showXML(x) == folddoc(doc_concat, showXMLs(x));
+    showXMLs: XML -> seq of DOC
+    showXMLs(x) ==
+        cases x:
+            mk_XMLElement(n, a, []) -> [doc_concat(text("<"), doc_concat(showTag(n, a), text("/>")))],
+            mk_XMLElement(n, a, c)  -> [doc_concat(
+                                            text("<"), 
+                                            doc_concat(
+                                                showTag(n, a), 
+                                                doc_concat(
+                                                    text(">"),
+                                                    doc_concat(
+                                                        showFill[XML](showXMLs, c),
+                                                        doc_concat(
+                                                            text("</"),
+                                                            doc_concat(
+                                                                text(n),
+                                                                text(">")
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )],
+            mk_XMLText(s)           -> seq_map[String, DOC](text, words(s))
+        end;
 
-    -- showXMLs: XML -> seq of DOC
-    -- showXMLs(x) ==
-    --     cases x:
-    --         mk_XMLElement(n, a, []) -> [doc_concat(text("<"), doc_concat(showTag(n, a), text("/>")))],
-    --         mk_XMLElement(n, a, c)  -> [doc_concat(
-    --                                         text("<"), 
-    --                                         doc_concat(
-    --                                             showTag(n, a), 
-    --                                             doc_concat(
-    --                                                 text(">"),
-    --                                                 doc_concat(
-    --                                                     showFill[XML](showXMLs, c),
-    --                                                     doc_concat(
-    --                                                         text("</"),
-    --                                                         doc_concat(
-    --                                                             text(n),
-    --                                                             text(">")
-    --                                                         )
-    --                                                     )
-    --                                                 )
-    --                                             )
-    --                                         )
-    --                                     )],
-    --         mk_XMLText(s)           -> seq_map[String, DOC](text, words(s))
-    --     end;
-
-    -- showAtts: XMLAttribute -> seq of DOC 
+    showAtts: XMLAttribute -> seq of DOC 
  
-    -- showAtts(mk_XMLAttribute(n, v)) == [doc_concat(text(n), doc_concat(text("="), text(quoted(v))))];
+    showAtts(mk_XMLAttribute(n, v)) == [doc_concat(text(n), doc_concat(text("="), text(quoted(v))))];
 
-    -- quoted: String -> String 
-    -- quoted(s) == "\"" ^ s ^ "\"";
+    quoted: String -> String 
+    quoted(s) == "\"" ^ s ^ "\"";
 
-    -- showTag: String * seq of XMLAttribute -> DOC
-    -- showTag(n, a) == doc_concat(text(n), showFill[XMLAttribute](showAtts, a));
+    showTag: String * seq of XMLAttribute -> DOC
+    showTag(n, a) == doc_concat(text(n), showFill[XMLAttribute](showAtts, a));
 
---     showFill[@T]: (@T -> seq of DOC) * seq of @T -> DOC 
---     showFill(f, xs) ==
---         if xs = [] then Dnil else bracket("", ..., "");
+    showFill[@T]: (@T -> seq of DOC) * seq of @T -> DOC 
+    showFill(f, xs) ==
+        if xs = [] then Dnil else bracket("", fill(conc seq_map[@T, seq of DOC](f, xs)), "");
 
---     testtree: nat -> String 
---     testtree(w) == pretty(w, showTree(tree));
+    testXML: nat -> String 
+    testXML(w) == pretty(w, showXML(xml));
 
---     testtree': nat -> String 
---     testtree'(w) == pretty(w, showTree'(tree));
+values
 
--- values
-
---     tree: Tree = mk_Tree("aaa", 
---         [
---             mk_Tree("bbb", [mk_Tree("ccc", []), mk_Tree("dd", [])]),
---             mk_Tree("eee", []),
---             mk_Tree("ffff", 
---             [
---                 mk_Tree("gg", []),
---                 mk_Tree("hhh", []),
---                 mk_Tree("ii", [])
---             ])
---         ]);
+    xml: XML = mk_XMLElement("p", 
+        [
+            mk_XMLAttribute("color", "red"),
+            mk_XMLAttribute("font", "Times"),
+            mk_XMLAttribute("size", "10")
+        ],
+        [
+            mk_XMLText("Here is some"),
+            mk_XMLElement("em", [], [mk_XMLText("emphasized")]),
+            mk_XMLText("text."),
+            mk_XMLText("Here is a"),
+            mk_XMLElement("a", 
+                [mk_XMLAttribute("href", "http://www.eg.com/")], 
+                [mk_XMLText("Link")]
+            ),
+            mk_XMLText("elsewhere")
+        ]);
 
 end PrettyXML
