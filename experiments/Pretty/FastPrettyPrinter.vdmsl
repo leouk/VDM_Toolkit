@@ -115,7 +115,7 @@ functions
    ;
 
     best: nat * nat * DOC -> Doc 
-    best(w, k, d) == bee(w, k, [mk_(0, d)]);
+    best(w, k, d) == bee'(w, k, [mk_(0, d)]);
 
     
     --@Warning(5012) complex measure on structural info 
@@ -133,6 +133,19 @@ functions
                                                     bee(w, k, [mk_(i,d.d1)] ^ z)),
                     others          -> bee(w, k, z)
                 end
+        end;
+
+    --@Warning(5012)
+    bee': nat * nat * seq of IDOC -> Doc
+    bee'(w, k, ds) ==
+        cases ds:
+            []       -> dnil,
+            [mk_(-,<NIL>)] ^ z           -> bee'(w,k,z),
+            [mk_(i,mk_DConcat(x,y))] ^ z -> bee'(w, k, [mk_(i,x), mk_(i, y)] ^ z),
+            [mk_(i,mk_DNest(j, x))] ^ z  -> bee'(w, k, [mk_(i+j, x)] ^ z),
+            [mk_(-,mk_DText(s))] ^ z     -> mk_Text(s, bee'(w, k+len s, z)),
+            [mk_(i,mk_DLine())] ^ z      -> mk_Line(i, bee'(w, i, z)), 
+            [mk_(i,mk_DUnion(x,y))] ^ z  -> better(w, k, bee'(w, k, [mk_(i, x)] ^ z), bee'(w, k, [mk_(i, y)] ^ z))
         end;
 
     better: nat * nat * Doc * Doc -> Doc 
