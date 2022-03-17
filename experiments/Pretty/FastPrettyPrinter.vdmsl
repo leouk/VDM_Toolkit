@@ -233,7 +233,11 @@ functions
     copy: nat * char -> String
     copy(i, c) == [ c | - in set {1,...,i} ]
     post 
-        len RESULT = i and elems RESULT = {c};
+        len RESULT = i 
+        and 
+        (i > 0 <=> elems RESULT = {c})
+        and
+        (i = 0 <=> RESULT = []);
 
     --@Warning(5012) structural measure size function
     -- size: Doc -> nat
