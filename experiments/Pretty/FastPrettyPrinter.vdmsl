@@ -129,6 +129,7 @@ functions
                     (is_DNest(d)  ) -> bee(w, k, [mk_(i+d.i, d.d)] ^ z),
                     (is_DText(d)  ) -> mk_Text(d.s, bee(w, k + len d.s, z)),
                     (is_DLine(d)  ) -> mk_Line(i, bee(w, i, z)),
+                    --@doc the inner calls to bee are not lazy, so might not have the speedup benefit intended?
                     (is_DUnion(d) ) -> better(w, k, bee(w, k, [mk_(i,d.d1)] ^ z),
                                                     bee(w, k, [mk_(i,d.d1)] ^ z)),
                     others          -> bee(w, k, z)
@@ -145,6 +146,7 @@ functions
             [mk_(i,mk_DNest(j, x))] ^ z  -> bee'(w, k, [mk_(i+j, x)] ^ z),
             [mk_(-,mk_DText(s))] ^ z     -> mk_Text(s, bee'(w, k+len s, z)),
             [mk_(i,mk_DLine())] ^ z      -> mk_Line(i, bee'(w, i, z)), 
+                    --@doc the inner calls to bee are not lazy, so might not have the speedup benefit intended?
             [mk_(i,mk_DUnion(x,y))] ^ z  -> better(w, k, bee'(w, k, [mk_(i, x)] ^ z), bee'(w, k, [mk_(i, y)] ^ z))
         end;
 
