@@ -252,11 +252,12 @@ functions
     break(p, xs) == 
         cases xs:
             []       -> mk_([], []),
-            [x]^xs'  -> if p(x) then mk_([], xs') 
+            [x]^xs'  -> if p(x) then mk_([], xs) 
                         else let mk_(ys, zs) = break[@T](p, xs') in mk_([x]^ys, zs)
         end
     measure 
-        len xs;
+        len xs
+    ;
 
     dropWhile[@T]: (@T -> bool) * seq of @T -> seq of @T 
     dropWhile(p, xs) ==
@@ -265,16 +266,18 @@ functions
             [x] ^ xs' -> if p(x) then dropWhile[@T](p, xs') else xs
         end
     measure 
-        len xs;
+        len xs
+     ;
 
     words: String -> seq of String 
     words(s) == 
         cases dropWhile[char](isSpace, s):
-            "" -> [],
-            s' -> let mk_(ys, zs) = break[char](isSpace, s') in [ys, zs]
+            [] -> [], -- "" -> []
+            s' -> let mk_(ys, zs) = break[char](isSpace, s') in [ys] ^ words(zs)
         end
     measure 
         len s--measure_dropWhile[char](isSpace, s);
+    ;
 
     -- Warning(5012) structural measure size function
     -- size: Doc -> nat
