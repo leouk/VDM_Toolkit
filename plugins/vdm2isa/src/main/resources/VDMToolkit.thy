@@ -2128,6 +2128,31 @@ definition
   where
   [intro!]: "(P ;; Q, bst) \<equiv> let mst = P bst in (Q mst)" 
 
+fun
+  seqcomps :: "('a \<Rightarrow> 'a) list \<Rightarrow> 'a \<Rightarrow> 'a" 
+  where
+  [intro!]: "seqcomps [] bst     = bst" 
+| [intro!]: "seqcomps (x#xs) bst = seqcomps xs (x bst)" 
+
+(*
+find_consts name:fold
+
+fun
+  seqcomps' :: "('a \<Rightarrow> 'a) list \<Rightarrow> 'a \<Rightarrow> 'a" 
+  where
+  [intro!]: "seqcomps' [] bst     = foldl (\<lambda> b::'a . (\<lambda> a . b)) bst []" 
+| [intro!]: "seqcomps' (x#xs) bst = foldl (\<lambda> b . (\<lambda> a . a b)) l " 
+
+primrec foldl :: "('b \<Rightarrow> 'a \<Rightarrow> 'b) \<Rightarrow> 'b \<Rightarrow> 'a list \<Rightarrow> 'b" where
+foldl_Nil:  "foldl f a [] = a" |
+foldl_Cons: "foldl f a (x # xs) = foldl f (f a x) xs"
+*)
+
+definition
+  seqcomps' :: "('a \<Rightarrow> 'a) list \<Rightarrow> 'a \<Rightarrow> 'a" 
+  where
+  [intro!]: "seqcomps' l bst = foldl (\<lambda> b . (\<lambda> a . a b)) bst l" 
+
 lemma l_seq_comp_simp[simp]: "(P ;; Q, bst) = Q (P bst)" unfolding seqcomp_def by simp
 
 lemma l_ranE_frule:
