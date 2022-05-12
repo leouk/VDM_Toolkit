@@ -85,7 +85,9 @@ public final class IsaTemplates {
         //TODO accumulate all def names for latter creation of lemmas xyz_def etc...? 
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
         if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
-            GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
+        {
+          //  GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
+        }    
         else if (!moduleIsKnown)
         {
             SortedMap<String, IsaItem> mapPerModule = new TreeMap<String, IsaItem>();

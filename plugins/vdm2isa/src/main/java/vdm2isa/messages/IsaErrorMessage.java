@@ -1,5 +1,7 @@
 package vdm2isa.messages;
 
+import plugins.IsaProofStrategy;
+
 /**
  * Plugin error messages by category. "_XP" on the name hints at the number of parameters expect.
  * Do not add \"v\" within messages, but `v` instead; this is in case message is also issued as an Isabelle comment. 
@@ -143,7 +145,10 @@ public enum IsaErrorMessage {
     PO_INVALID_POEXPR_2P(VDM2IsaError.ISABELLE_E_PO_BASE + 3, 
     "Invalid proof obligation expression: %1$s = %2$s."),
     PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P(VDM2IsaError.ISABELLE_E_PO_BASE + 4,
-    "PO conversion failed, yet remaining unprocessed POs were not converted to Isabelle as comments?! \n\t%1$s");
+    "PO conversion failed, yet remaining unprocessed POs were not converted to Isabelle as comments?! \n\t%1$s"),    
+    PO_INVALID_PROOF_STRATEGY_1P(VDM2IsaError.ISABELLE_E_PO_BASE + 5,
+    "Invalid user defined proof strategy %1$s; availabe ones are = " + IsaProofStrategy.values().toString())
+    ;
     
     public final int number;
     public final String message; 

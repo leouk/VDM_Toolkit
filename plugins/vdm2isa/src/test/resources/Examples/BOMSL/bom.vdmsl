@@ -40,7 +40,7 @@ measure card dom bom - card ps;
 
 TransClos': (map Pn to set of Pn) * set of Pn -> set of Pn 
 TransClos'(bom, ps) == 
-  { p | p in set ps && bom(p) subset ps } union dunion { bom(p) | p in set ps}
+  { p | p in set ps & bom(p) subset ps } union dunion { bom(p) | p in set ps}
 pre ps subset dom bom;
   
 Explode: Pn * BOM -> set of Pn

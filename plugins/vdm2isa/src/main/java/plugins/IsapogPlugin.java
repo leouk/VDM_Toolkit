@@ -105,6 +105,13 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 String workingAt = "";
                 try
                 {
+                    // get user declared strategy
+                    if (argv != null && argv.length > 1)
+                    {
+                        workingAt = "user chosen proof strategy = " + argv[1];
+                        strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
+                    }
+
                     // create an isabelle module interpreter 
                     workingAt = "creating isa interpreter";
                     ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
@@ -215,6 +222,17 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         {
                             report(IsaErrorMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
                         }
+                    }
+                }
+                catch (IllegalArgumentException a)
+                {
+                    if (workingAt.equals("user chosen proof strategy"))
+                    {
+                        report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, argv[1]);
+                    }
+                    else
+                    {
+                        processException(a, workingAt, true);
                     }
                 }
                 catch (InternalException e)

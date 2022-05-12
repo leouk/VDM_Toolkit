@@ -133,6 +133,9 @@ public class TRProofObligationDefinition extends TRDefinition {
             poExprStr));//IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExprStr))));
         sb.append(getFormattingSeparator());
 
+        sb.append(IsaToken.comment("Inferred proof strategy for lemma:\n"));
+        sb.append(IsaToken.comment(poScripts.translate(), getFormattingSeparator()));
+
         boolean ignorePO = figureOutIgnorePO(poNameStr, poExprStr, po.kind);
 
         // if ignoring the PO still issue its translation as an isabelle block comment

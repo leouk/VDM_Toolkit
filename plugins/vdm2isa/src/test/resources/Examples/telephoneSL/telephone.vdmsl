@@ -2,6 +2,7 @@
 \subsection{Types}
 \begin{vdm_al}
 module EXCH
+exports all
 definitions
  types
    Subscriber = token;
@@ -19,7 +20,7 @@ definitions
   RExchange ::
    status: map Subscriber to Status
    calls:  inmap Subscriber to Subscriber
- inv mk_Exchange(status, calls) == 
+ inv mk_RExchange(status, calls) == 
     forall i in set dom calls & 
        (status(i) = <WI> and status(calls(i)) = <WR>) 
        or
