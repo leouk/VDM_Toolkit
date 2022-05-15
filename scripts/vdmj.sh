@@ -5,7 +5,7 @@
 
 # Change these to flip VDMJ version
 MVERSION="4.4.5-SNAPSHOT"
-PVERSION="4.4.5-SNAPSHOT-P"
+PVERSION="4.4.5-P-SNAPSHOT"
 
 # Preferred VDMJ options
 VDMJ_OPTS="-strict"
@@ -81,7 +81,7 @@ done
 VDMJ_JAR=$MAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar
 STDLIB_JAR=$MAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
 PLUGINS_JAR=$MAVENREPO/cmd-plugins/${VERSION}/cmd-plugins-${VERSION}.jar
-ISAPLUGIN_JAR=$MAVENREPO/vdm2isa/${VERSION}/vdm2isa-${VERSION}.jar
+ISAPLUGIN_JAR=$MAVENREPO/vdm2isa/${MVERSION}/vdm2isa-${MVERSION}.jar
 check "$VDMJ_JAR"
 check "$STDLIB_JAR"
 check "$PLUGINS_JAR"
@@ -97,7 +97,7 @@ MAIN="com.fujitsu.vdmj.VDMJ"
     #check "$ANNOTATIONS_JAR"
     ANNOTATIONS2_JAR=$MAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
     #check "$ANNOTATIONS2_JAR"
-    VDM_TOOLKIT_ANNOTATIONS_JAR=$MAVENREPO/VDMToolkit_Annotations/${VERSION}/VDMToolkit_Annotations-${VERSION}.jar
+    VDM_TOOLKIT_ANNOTATIONS_JAR=$MAVENREPO/VDMToolkit_Annotations/${MVERSION}/VDMToolkit_Annotations-${MVERSION}.jar
     #check "$ANNOTATIONS3_JAR"
     #echo $VDM_TOOLKIT_ANNOTATIONS_JAR
     VDMJ_OPTS="$VDMJ_OPTS -annotations"
@@ -113,5 +113,5 @@ DIALECT=vdmsl
 export RLWRAP_HOME=~/.vdmj
 
 # Execute the JVM... and echo for Windows users help
-#echo "$JAVA64 $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS $@"
+echo "$CLASSPATH"
 exec rlwrap "$JAVA64" $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS "$@"
