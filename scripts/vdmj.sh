@@ -113,5 +113,5 @@ DIALECT=vdmsl
 export RLWRAP_HOME=~/.vdmj
 
 # Execute the JVM... and echo for Windows users help
-echo "$CLASSPATH"
+# echo "$CLASSPATH"
 exec rlwrap "$JAVA64" $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS "$@"
