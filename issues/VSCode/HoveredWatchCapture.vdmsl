@@ -1,0 +1,13 @@
+module HoveredWatchCapture
+exports all
+definitions
+functions 
+    f: nat -> nat 
+    f(x) == 
+        let y: nat = x + 1,
+            y': nat = y + x 
+        in  
+            --@doc debug + hover here and see y' = y!  
+            y' + y; 
+
+end HoveredWatchCapture 

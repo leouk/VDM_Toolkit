@@ -1,0 +1,55 @@
+module AtomicStateReset
+exports 
+    types 
+        struct T; St
+    operations 
+        deposit: nat * nat ==> ();    
+        reset: () ==> ();
+definitions 
+
+types 
+    T = nat; 
+
+state St of 
+    accounts: map nat to nat 
+    deposited: map nat to seq of nat 
+    somethingElse: nat
+inv mk_St(accts, dep, somethingElse) == 
+    somethingElse > 0
+    and
+    dom accts = dom dep
+    and 
+    (forall a in set dom accts & accts(a) > 0)
+init s == s = mk_St({ a |-> 10 | a in set {1,...,5}}, { a |-> [] | a in set {1,...,5}}, 10)
+end
+
+operations 
+    deposit(amount: nat, owner: nat) ==
+    (
+        skip;
+        atomic(
+            accounts(owner) := accounts(owner) + 1 + somethingElse;
+            deposited(owner) := deposited(owner) ^ [amount]; 
+        );
+        atomic(
+            accounts(owner) := 0;
+            deposited(owner) := deposited(owner) ^ [amount]; 
+        );
+    )
+    ext rd somethingElse wr accounts, deposited
+    pre owner in set dom accounts;
+
+    reset: () ==> ()
+    reset() ==
+    (   
+        --@doc this breaks any later state invariants checks (!); now fixed in VDMJ 20220520 (dev).
+        let s = mk_St({ a |-> 10 | a in set {1,...,5}}, { a |-> [] | a in set {1,...,5}}, 10) in    
+            atomic (
+                accounts := s.accounts ;
+                deposited := s.deposited;
+                somethingElse := s.somethingElse;
+            );
+    )
+    
+
+end AtomicStateReset 
