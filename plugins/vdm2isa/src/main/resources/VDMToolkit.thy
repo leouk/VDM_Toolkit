@@ -1385,6 +1385,9 @@ by (metis empty_iff equals0I
           fun_upd_triv option.exhaust 
           ranI ran_restrictD restrict_complement_singleton_eq)
 
+lemma l_finite_rng: 
+  "finite (dom m) \<Longrightarrow> finite (rng m)" 
+  by (simp add: finite_ran)
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 subsubsection \<open> Domain restriction weakening lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
@@ -2078,7 +2081,7 @@ next
  by simp
 qed
 
-(* IJW: TODO: classify; rename; relocate? *)
+(* TODO: classify; rename; relocate? *)
 
 lemma l_dom_r_finite: "finite (dom f) \<Longrightarrow> finite (dom ( S \<triangleleft> f))" 
 apply (rule_tac B="dom f" in  finite_subset)
