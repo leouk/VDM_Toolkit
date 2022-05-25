@@ -86,7 +86,7 @@ public final class IsaTemplates {
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
         if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
         {
-          //  GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
+            GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
         }    
         else if (!moduleIsKnown)
         {
