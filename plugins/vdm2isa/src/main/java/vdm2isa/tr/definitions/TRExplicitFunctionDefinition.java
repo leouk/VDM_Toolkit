@@ -255,17 +255,17 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 		{
 			case PRE:
 				result = type.getCurriedPreType(isCurried);
-				assert result.getVDMType().equals(type.getVDMFunctionType().getCurriedPreType(true));
+				assert result.getVDMType().equals(type.getVDMFunctionCurriedPreType(true));
 				break;
 			case POST:
 				result = type.getCurriedPostType(isCurried);
-				assert result.getVDMType().equals(type.getVDMFunctionType().getCurriedPostType(true));
+				assert result.getVDMType().equals(type.getVDMFunctionCurriedPostType(true));
 				break;
 
 			case INV:
 			case INIT:
 				result = type.getInvariantType();
-				assert result.getVDMType().equals(type.getVDMFunctionType().getPreType());
+				assert result.getVDMType().equals(type.getVDMFunctionPreType());
 				break;
 
 			case ORD:
@@ -277,7 +277,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 
 			case MEASURE:
 				result = type.getMeasureType(isCurried, type.getResultType());
-				assert result.getVDMType().equals(type.getVDMFunctionType().getMeasureType(isCurried, type.getResultType().getVDMType()));
+				assert result.getVDMType().equals(type.getVDMFunctionMeasureType(isCurried, type.getResultType().getVDMType()));
 				break;
 
 			case NONE:
