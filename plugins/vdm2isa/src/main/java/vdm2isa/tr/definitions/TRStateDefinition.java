@@ -1,35 +1,27 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.lex.Token;
-import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCStateDefinition;
-import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
-import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
-import vdm2isa.tr.definitions.TRSpecificationKind;
-import vdm2isa.tr.definitions.TRDefinitionListList;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.TRStateInitExpression;
+import vdm2isa.tr.patterns.TRBasicPattern;
 import vdm2isa.tr.patterns.TRPattern;
 import vdm2isa.tr.patterns.TRPatternListList;
-import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRRecordType;
-import vdm2isa.tr.types.TRInvariantType;
 import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRInvariantType;
+import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeList;
-import vdm2isa.tr.patterns.TRPatternListList;
-import vdm2isa.tr.patterns.TRBasicPattern;
 
 public class TRStateDefinition extends TRAbstractTypedDefinition {
 

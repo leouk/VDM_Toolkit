@@ -7,16 +7,20 @@ package vdm2isa.tr.expressions.visitors;
 import vdm2isa.tr.annotations.TRAnnotatedExpression;
 import vdm2isa.tr.expressions.TRAbstractCompExpression;
 import vdm2isa.tr.expressions.TRApplyExpression;
+import vdm2isa.tr.expressions.TRAssignmentStatement;
 import vdm2isa.tr.expressions.TRBinaryExpression;
+import vdm2isa.tr.expressions.TRBlockStatement;
 import vdm2isa.tr.expressions.TRBoundedExpression;
 import vdm2isa.tr.expressions.TRCaseAlternative;
 import vdm2isa.tr.expressions.TRCasesExpression;
 import vdm2isa.tr.expressions.TRElseIfExpression;
 import vdm2isa.tr.expressions.TREnumeratedExpression;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRFieldDesignator;
 import vdm2isa.tr.expressions.TRFieldExpression;
 import vdm2isa.tr.expressions.TRFieldNumberExpression;
 import vdm2isa.tr.expressions.TRFunctionInstantiationExpression;
+import vdm2isa.tr.expressions.TRIdentifierDesignator;
 import vdm2isa.tr.expressions.TRIfExpression;
 import vdm2isa.tr.expressions.TRIotaExpression;
 import vdm2isa.tr.expressions.TRIsExpression;
@@ -271,13 +275,27 @@ public abstract class TRExpressionVisitor<R, S>
 		return caseExpression(node, arg);
 	}
 
-	public R caseTRStatement(TRStatement node, S arg) {
+	public R caseStatement(TRStatement node, S arg) {
 		return caseExpression(node, arg);
+	}
+
+	public R caseAssignmentStatement(TRAssignmentStatement node, S arg) {
+		return caseStatement(node, arg);
+	}
+
+	public R caseBlockStatement(TRBlockStatement node, S arg) {
+		return caseStatement(node, arg);
 	}
 
 	public R caseTRStateDesignator(TRStateDesignator node, S arg) {
 		return caseExpression(node, arg);
 	}
 
+	public R caseFieldDesignator(TRFieldDesignator node, S arg) {
+		return caseTRStateDesignator(node, arg);
+	}
 
+	public R caseIdentifierDesignator(TRIdentifierDesignator node, S arg) {
+		return caseTRStateDesignator(node, arg);
+	}
 }
