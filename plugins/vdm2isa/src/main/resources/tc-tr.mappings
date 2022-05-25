@@ -21,7 +21,10 @@ map TCQualifiedDefinition{location, comments, annotations, name, nameScope, used
 map TCImportedDefinition{location, comments, annotations, name, nameScope, used, excluded, def} to TRImportedDefinition(this, location, comments, annotations, name, nameScope, used, excluded, def);
 map TCRenamedDefinition{location, comments, annotations, name, used, excluded, def} to TRRenamedDefinition(this, location, comments, annotations, name, used, excluded, def);
 
-map TCStateDefinition{location, comments, annotations, name, nameScope, used, excluded, recordType, initPattern, initExpression, initdef, statedefs, canBeExecuted} to TRStateDefinition(this, location, comments, annotations, name, nameScope, used, excluded, recordType, initPattern, initExpression, initdef, statedefs, canBeExecuted);
+map TCStateDefinition{location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted} to TRStateDefinition(this, location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted);
+
+map TCExplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, unresolved, body, precondition, postcondition, predef, postdef, state, isConstructor} to TRExplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, unresolved, body, precondition, postcondition, predef, postdef, state, isConstructor);
+map TCImplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, type, unresolved, body, precondition, postcondition, predef, postdef, state} to TRImplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, type, unresolved, body, precondition, postcondition, predef, postdef, state);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
@@ -153,7 +156,26 @@ map TCVariableExpression{location, name, original, vardef, exptype} to TRVariabl
 map TCPreExpression{location, function, args, exptype} to TRPreExpression(location, this, function, args, exptype);
 map TCFuncInstantiationExpression{function, type, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(this, function, type, actualTypes, expdef, exptype);
 
-map TCStateInitExpression{location, state, exptype} to TRStateInitExpression(this, location, state, exptype);
+map TCStateInitExpression{exptype, state} to TRStateInitExpression(this, exptype, state);
+
+map TCPreOpExpression{location, exptype, opname, expression, state} to TRPreOpExpression(this, location, exptype, opname, expression, state);
+map TCPostOpExpression{location, exptype, opname, preexpression, postexpression, state} to TRPostOpExpression(this, location, exptype, opname, preexpression, postexpression, state);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.statements to vdm2isa.tr.expressions;
+#############################################################################
+
+map TCStatement{} to TRStatement();
+map TCStatementList{} to TRStatementList(this);
+
+map TCSimpleBlockStatement{} to TRSimpleBlockStatement();
+map TCBlockStatement{location, comments, stmttype, statements, assignmentDefs} to TRBlockStatement(location, comments, this, stmttype, statements, assignmentDefs);
+
+map TCAssignmentStatement{location, comments, stmttype, target, exp, targetType, expType} to TRAssignmentStatement(location, comments, this, stmttype, target, exp, targetType, expType);
+
+map TCStateDesignator{} to TRStateDesignator();
+map TCFieldDesignator{location, object, field} to TRFieldDesignator(location, object, field);
+map TCIdentifierDesignator{location, name} to TRIdentifierDesignator(location, name);
 
 #############################################################################
 package com.fujitsu.vdmj.ast.lex to vdm2isa.lex;
@@ -283,6 +305,9 @@ map TCUnionType{definitions, types} to TRUnionType(this, definitions, types);
 map TCBracketType{definitions, type} to TRBracketType(this, definitions, type);
 
 map TCParameterType{definitions, name, paramdef} to TRParameterType(this, definitions, name, paramdef);
+
+map TCOperationType{definitions, parameters, result, pure} to TROperationType(this, definitions, parameters, result, pure);
+map TCVoidType{definitions} to TRVoidType(this, definitions);
 
 #############################################################################
 # Classes that are not mapped
