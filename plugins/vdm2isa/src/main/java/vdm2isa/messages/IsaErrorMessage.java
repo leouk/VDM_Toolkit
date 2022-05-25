@@ -63,6 +63,8 @@ public enum IsaErrorMessage {
     "Incompatible field (%2$s) type in `mk_%1$s` expression: expected `%3$s` but found `%4$s`."),
     VDMSL_INVALID_STATE_INIT_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 19, 
     "Invalid state initialisation expression: it must be a equals expression for `$1%s`"),
+    VDMSL_INVALID_FIELD_NOTAGNAME_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 20,
+    "Field has no tag name in record %1$s"),
 
     VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 50, 
     "Implicit function cannot have bodies for Isabelle Translation."),

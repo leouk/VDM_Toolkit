@@ -4,9 +4,7 @@ import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
 import plugins.IsapogPlugin;
-import vdm2isa.lex.IsaItem;
 import vdm2isa.lex.IsaTemplates;
-import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 

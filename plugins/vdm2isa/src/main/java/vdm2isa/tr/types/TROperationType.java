@@ -1,32 +1,13 @@
 package vdm2isa.tr.types;
 
-import com.fujitsu.vdmj.tc.types.TCType;
-import com.fujitsu.vdmj.tc.types.TCOperationType;
-import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.definitions.TCStateDefinition;
-import com.fujitsu.vdmj.tc.lex.TCNameList;
-import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.typechecker.NameScope;
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
+import com.fujitsu.vdmj.tc.types.TCOperationType;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCUnresolvedType;
 
-import javax.xml.transform.Result;
-
-import com.fujitsu.vdmj.lex.LexLocation;
-
-import vdm2isa.lex.IsaToken;
-import vdm2isa.lex.TRIsaVDMCommentList;
-import vdm2isa.lex.IsaTemplates;
-import vdm2isa.messages.IsaErrorMessage;
-import vdm2isa.messages.IsaInfoMessage;
-
-import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRStateDefinition;
-import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRAbstractInnerTypedType;
-import vdm2isa.tr.types.TRTypeList;
-import vdm2isa.tr.types.TRVoidType;
-
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TROperationType extends TRFunctionType {
