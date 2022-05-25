@@ -213,8 +213,7 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         String fcnParams = tp();//+ IsaToken.SPACE.toString() + stateType;
 
         sb.append(IsaTemplates.translateDefinition(
-                //TODO not yet ideal, given multiple equations are possible, but okay for now. 
-                false ? IsaItem.FUNCTION : IsaItem.DEFINITION,
+                IsaItem.DEFINITION,
                 this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, 
                 "Empty body", isLocal()));
         

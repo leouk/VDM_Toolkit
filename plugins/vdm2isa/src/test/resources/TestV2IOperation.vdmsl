@@ -1,4 +1,4 @@
-module TestV2IOperator 
+module TestV2IOperation 
 exports all
 definitions 
 
@@ -35,4 +35,4 @@ Implicit_return(M,A:real) r:real
 pre M > 0 and A > 0
 post (y - A)/M = y~ and r > A;
 
-end TestV2IOperator
+end TestV2IOperation
