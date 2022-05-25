@@ -105,9 +105,9 @@
 *TCCasesExpression
 *TCMapCompExpression
 *TCMkBasicExpression
+*TCStateInitExpression
 
 TCPreOpExpression
 TCPostOpExpression
-TCStateInitExpression
 
-(107 of 110) = 97
+(108 of 110) = 97
