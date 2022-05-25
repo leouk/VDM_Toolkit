@@ -133,4 +133,8 @@ public class TRField extends TRAbstractInnerTypedType {
             report(IsaErrorMessage.ISA_INVALID_UNIONTYPE_1P, recordName + "." + getTagName());   
         }
     }
+
+    public TCNameToken getNameToken() {
+        return tagname;
+    }
 }

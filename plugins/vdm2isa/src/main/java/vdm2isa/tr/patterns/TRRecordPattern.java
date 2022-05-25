@@ -3,12 +3,15 @@ package vdm2isa.tr.patterns;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.patterns.TCRecordPattern;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.patterns.visitors.TRPatternVisitor;
+import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
@@ -23,6 +26,29 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
         super(p, location, plist);
         this.typename = typename;
         this.type = type;
+    }
+
+    public static TRRecordPattern RecordPatternGenerator(TRRecordType record, LexLocation location)
+    {
+        TCPatternList tcpl = new TCPatternList();
+        TRPatternList trpl = new TRPatternList();
+
+        for(TRField t : record.getFields())
+        {
+            if (t.getNameToken() == null)
+            {
+                record.report(IsaErrorMessage.VDMSL_INVALID_FIELD_NOTAGNAME_1P, record.getName());
+            }
+            else
+            {
+                tcpl.add(new TCIdentifierPattern(t.getNameToken()));
+                trpl.add(TRBasicPattern.identifier(location,t.getTagName()));    
+            }
+        }
+
+        TCRecordPattern r = new TCRecordPattern(record.typename, tcpl);
+
+        return new TRRecordPattern(r, location, record.typename, trpl, record);
     }
     
     @Override 
