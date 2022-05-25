@@ -1,8 +1,8 @@
-(* VDM to Isabelle Translation @2022-05-12T12:07:37.603Z
+(* VDM to Isabelle Translation @2022-05-25T09:32:42.673414Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
-in 'plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl' at line 1:8
-files = [plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl]
+in './src/test/resources/TestV2IState.vdmsl' at line 1:8
+files = [./src/test/resources/TestV2IState.vdmsl]
 *)
 theory TestV2IState
 imports "VDMToolkit" 
@@ -15,7 +15,7 @@ y:real
 	inv mk_S(x, y) == ((x > 15) and (y < 5))
 	init s == (s = mk_S(25, 0))
 end\<close>
-\<comment>\<open>in 'TestV2IState' (plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl) at line 5:7\<close>
+\<comment>\<open>in 'TestV2IState' (./src/test/resources/TestV2IState.vdmsl) at line 5:7\<close>
 record S = 
 		x\<^sub>S :: "VDMNat"
 		 
@@ -25,7 +25,7 @@ record S =
 \<comment>\<open>VDM source: inv_S: (S +> bool)
 	inv_S(mk_S(x, y)) ==
 ((x > 15) and (y < 5))\<close>
-\<comment>\<open>in 'TestV2IState' (plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl) at line 8:25\<close>
+\<comment>\<open>in 'TestV2IState' (./src/test/resources/TestV2IState.vdmsl) at line 8:25\<close>
 definition
 	inv_S :: "S \<Rightarrow> bool"
 where
@@ -45,7 +45,7 @@ where
 \<comment>\<open>VDM source: init_S: (S -> bool)
 	init_S ==
 mk_S(25, 0)\<close>
-\<comment>\<open>in 'TestV2IState' (plugins/vdm2isa/java/src/test/resources/TestV2IState.vdmsl) at line 9:13\<close>
+\<comment>\<open>in 'TestV2IState' (./src/test/resources/TestV2IState.vdmsl) at line 9:13\<close>
 definition
 	init_S :: "S"
 where

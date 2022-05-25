@@ -41,12 +41,16 @@ import vdm2isa.tr.expressions.TRSetCompExpression;
 import vdm2isa.tr.expressions.TRSetEnumExpression;
 import vdm2isa.tr.expressions.TRSetRangeExpression;
 import vdm2isa.tr.expressions.TRStateInitExpression;
+import vdm2isa.tr.expressions.TRStatement;
 import vdm2isa.tr.expressions.TRSubseqExpression;
 import vdm2isa.tr.expressions.TRTupleExpression;
 import vdm2isa.tr.expressions.TRUnaryExpression;
 import vdm2isa.tr.expressions.TRVDMLocalDefinitionListExpression;
 import vdm2isa.tr.expressions.TRVDMTestExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
+import vdm2isa.tr.expressions.TRPreOpExpression;
+import vdm2isa.tr.expressions.TRPostOpExpression;
+import vdm2isa.tr.expressions.TRStateDesignator;
 
 /**
  * The base type for all TRExpression visitors. All methods, by default, call
@@ -255,7 +259,25 @@ public abstract class TRExpressionVisitor<R, S>
         return caseExpression(node, arg);
     }
 
-    public R caseStateInitExpression(TRStateInitExpression node, S arg) {
+    public R createStateInitExpression(TRStateInitExpression node, S arg) {
         return caseExpression(node, arg);
     }
+
+	public R casePreOpExpression(TRPreOpExpression node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+	public R casePostOpExpression(TRPostOpExpression node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+	public R caseTRStatement(TRStatement node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+	public R caseTRStateDesignator(TRStateDesignator node, S arg) {
+		return caseExpression(node, arg);
+	}
+
+
 }
