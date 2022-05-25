@@ -1,0 +1,38 @@
+module TestV2IOperator 
+exports all
+definitions 
+
+state S of  
+   x : nat 
+   y : real
+inv mk_S(x,y) == x > 15 and y < 5
+init s == s = mk_S(25,0)
+end
+
+operations
+
+Explicit: nat1 ==> ()
+Explicit(inc) == 
+   (x := x + inc)
+ pre inc < 10 and x > 0
+ post x~ < x;
+
+Explicit_no_condition: real*real ==> ()
+Explicit_no_condition(M,A) == 
+   (y := y*M;
+    y := y+A);
+
+Implicit(M,A:real) ==
+   (y := y*M+A)
+pre M > 0 and A > 0
+post (y - A)/M = y~;
+
+Implicit_no_body(M,A:real)
+pre M > 0 and A > 0
+post (y - A)/M = y~;
+
+Implicit_return(M,A:real) r:real
+pre M > 0 and A > 0
+post (y - A)/M = y~ and r > A;
+
+end TestV2IOperator
