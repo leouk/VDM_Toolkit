@@ -19,6 +19,8 @@ import vdm2isa.tr.definitions.TRRenamedDefinition;
 import vdm2isa.tr.definitions.TRStateDefinition;
 import vdm2isa.tr.definitions.TRTypeDefinition;
 import vdm2isa.tr.definitions.TRValueDefinition;
+import vdm2isa.tr.definitions.TRExplicitOperationDefinition;
+import vdm2isa.tr.definitions.TRImplicitOperationDefinition;
 
 /**
  * The base type for all TRDefinition visitors. All methods, by default, call
@@ -85,7 +87,16 @@ public abstract class TRDefinitionVisitor<R, S>
         return caseDefinition(node, arg);
     }
 
-    public R createStateDefinition(TRStateDefinition node, S arg) {
+    public R caseStateDefinition(TRStateDefinition node, S arg) {
         return caseDefinition(node, arg);
     }
+
+    public R caseExplicitOperationDefinition(TRExplicitOperationDefinition node, S arg){
+        return caseDefinition(node, arg);
+    }
+
+    public R caseImplicitOperationDefinition(TRImplicitOperationDefinition node, S arg){
+        return caseDefinition(node, arg);
+    }
+
 }

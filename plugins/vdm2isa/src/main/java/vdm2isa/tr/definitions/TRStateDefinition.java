@@ -4,33 +4,44 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCStateDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
-import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaInfoMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
+import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
+import vdm2isa.tr.definitions.TRSpecificationKind;
+import vdm2isa.tr.definitions.TRDefinitionListList;
 import vdm2isa.tr.expressions.TRBinaryExpression;
 import vdm2isa.tr.expressions.TRExpression;
+import vdm2isa.tr.expressions.TRStateInitExpression;
 import vdm2isa.tr.patterns.TRPattern;
-import vdm2isa.tr.types.TRFunctionType;
-import vdm2isa.tr.types.TRInvariantType;
-import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRRecordType;
+import vdm2isa.tr.types.TRInvariantType;
+import vdm2isa.tr.types.TRFunctionType;
+import vdm2isa.tr.types.TRTypeList;
+import vdm2isa.tr.patterns.TRPatternListList;
+import vdm2isa.tr.patterns.TRBasicPattern;
 
 public class TRStateDefinition extends TRAbstractTypedDefinition {
 
-    private final TRPattern initPattern;
-    private final TRExpression initExpression;
-    private final TRExplicitFunctionDefinition initdef;
+    public static TRStateDefinition state;
+    public final TRPattern invPattern;
+	public final TRExpression invExpression;
+    public final TRPattern initPattern;
+    public final TRExpression initExpression;
+    public final TRExplicitFunctionDefinition initdef;
     private final TRDefinitionList statedefs;
     private final boolean canBeExecuted;
-    private final TRRecordType recordType;
+    public final TRRecordType recordType;
 
     public TRStateDefinition(
         // all those belong to TRDefinition
@@ -44,6 +55,8 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
 
         // will keep it simple and rely on the TRRecordType structure for the TCStateDefinition 
         // correspondent that will work nicely, given the record translation
+        TRPattern invPattern,
+        TRExpression invExpression,
         TRPattern initPattern,
         TRExpression initExpression, 
         TRExplicitFunctionDefinition initdef, 
@@ -52,6 +65,8 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         ) 
     {
         super(definition, location, comments, annotations, name, nameScope, used, excluded, recordType);
+        this.invPattern = invPattern;
+        this.invExpression = invExpression;
         this.initPattern = initPattern;
         this.initExpression = initExpression;
         this.initdef = initdef;
@@ -59,6 +74,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         this.canBeExecuted = canBeExecuted; 
         // see similar exmaple in TRMapType etc. 
         this.recordType = recordType;   // super.type = this.recordType; needed for TR mapping 
+        TRStateDefinition.state = this;
     }
 
     @Override
@@ -67,11 +83,29 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
         super.setup();
         // anything specific to check?
         // * look into TRTypeDefinition for implicitly creating init expression if empty
-        // * need to worry about state invariant implicit check see TRTypeDefinition for it  
+        // Do we have to have an init expression? If its empty is a valid translation not instead proving that there is at least one valid state
+        
+
         // * arguably you could perhaps think of extending TRTypeDefinition 
 
-        if (!validInitExpression())
+        TRNode.setup(recordType, statedefs, initPattern, initExpression, initdef, invPattern, invExpression);
+
+        if (!validInitExpression()){
             report(IsaErrorMessage.VDMSL_INVALID_STATE_INIT_1P, name);
+        } 
+
+        if(needsImplicitlyGeneratedUndeclaredSpecification()){
+            TRType paramType = ((TRInvariantType)recordType).copy(false);
+            TRFunctionType invType = TRFunctionType.getInvariantType(paramType);
+            TRPatternListList parameters = TRPatternListList.newPatternListList(TRBasicPattern.dummyPattern(location, false));
+            
+            recordType.setInvariantDefinition(TRExplicitFunctionDefinition.createUndeclaredSpecification(
+                name, nameScope, used, excluded, null, invType, false , parameters, 
+                new TRDefinitionListList(), TRSpecificationKind.INV
+            ));
+
+        }
+
         TRNode.setup(recordType, initPattern, initExpression, initdef, statedefs);
     }
 
@@ -81,11 +115,15 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
             IsaToken.from(((TRBinaryExpression)initExpression).op).equals(IsaToken.EQUALS);
     }
 
+    protected boolean needsImplicitlyGeneratedUndeclaredSpecification()
+	{
+		return this.invPattern == null && this.invExpression == null;
+	}
+
     @Override 
     public String toString()
     {
-        return "SteteDef = " + 
-            "...";
+        return super.toString();
     }
 
     public TRBinaryExpression getInitExpression()
@@ -95,7 +133,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
 
     @Override
     public <R, S> R apply(TRDefinitionVisitor<R, S> visitor, S arg) {
-        return visitor.createStateDefinition(this, arg);
+        return visitor.caseStateDefinition(this, arg);
     }
 
     @Override
@@ -106,6 +144,53 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
     @Override 
     public String translate()
     {
-        return "STATE! = " + super.translate();
+        return super.translate() + recordType.translateTypeTLD() + 
+        recordType.translateSpecTLD() + translateInit();
+    }
+
+    public String translateInit(){
+        if(initExpression == null){
+            return "";
+        }
+        if(initExpression instanceof TRBinaryExpression){
+            TRType result = ((TRInvariantType)recordType).copy(false);
+
+            TRFunctionType func = new TRFunctionType(
+                (TCFunctionType)initdef.type.getVDMType(),
+                initdef.type.getDefinitions(),
+                new TRTypeList(),
+                initdef.type.partial, 
+                result
+            );
+
+            TRExplicitFunctionDefinition ninitdef = TRExplicitFunctionDefinition.newExplicitFunctionDefinition(
+                initdef.comments,
+                initdef.annotations,
+                initdef.name,
+                initdef.nameScope, 
+                initdef.used, 
+                initdef.excluded,
+                initdef.typeParams, 
+                func,
+                new TRPatternListList(), 
+                getInitExpression().right,
+                initdef.precondition,
+                initdef.postcondition, 
+                false, 
+                initdef.measureExp,
+                false, 
+                initdef.predef,
+                initdef.postdef,
+                new TRDefinitionListList(),
+                initdef.recursive,
+                initdef.isUndefined,
+                result,
+                result
+            );
+            
+            return ninitdef.translate();
+        } else {
+            return "";
+        }
     }
 }
