@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-05-25T09:33:07.161455Z
+(* VDM to Isabelle Translation @2022-05-25T11:38:49.204193Z
    Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in './src/test/resources/TestV2IOperation.vdmsl' at line 1:8
@@ -116,27 +116,27 @@ y := (y + A)
 \<comment>\<open>in 'TestV2IOperator' (./src/test/resources/TestV2IOperation.vdmsl) at line 20:1\<close>
 
 \<comment>\<open>VDM source: pre_Explicit_no_condition: (real * real * (unresolved TestV2IOperator`S) * (unresolved TestV2IOperator`S) +> bool)
-	pre_Explicit_no_condition(M, A, mk_(unresolved TestV2IOperator`S)(x, y)) ==
+	pre_Explicit_no_condition(M, A) ==
 null\<close>
 \<comment>\<open>in 'TestV2IOperator' (./src/test/resources/TestV2IOperation.vdmsl) at line 20:1\<close>
 definition
 	pre_Explicit_no_condition :: "VDMReal \<Rightarrow> VDMReal \<Rightarrow> S \<Rightarrow> bool"
 where
-	"pre_Explicit_no_condition M   A   dummy0 \<equiv> 
+	"pre_Explicit_no_condition M   A \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_Explicit_no_condition` specification.\<close>
-		((inv_VDMReal M)  \<and>  (inv_VDMReal A)  \<and>  inv_S dummy0)"
+		((inv_VDMReal M)  \<and>  (inv_VDMReal A))"
 
 
 \<comment>\<open>VDM source: post_Explicit_no_condition: (real * real * (unresolved TestV2IOperator`S) * (unresolved TestV2IOperator`S) +> bool)
-	post_Explicit_no_condition(M, A, mk_(unresolved TestV2IOperator`S)(x, y), RESULT) ==
+	post_Explicit_no_condition(M, A, RESULT) ==
 null\<close>
 \<comment>\<open>in 'TestV2IOperator' (./src/test/resources/TestV2IOperation.vdmsl) at line 20:1\<close>
 definition
 	post_Explicit_no_condition :: "VDMReal \<Rightarrow> VDMReal \<Rightarrow> () \<Rightarrow> bool"
 where
-	"post_Explicit_no_condition M   A   dummy0   RESULT \<equiv> 
+	"post_Explicit_no_condition M   A   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_Explicit_no_condition` specification.\<close>
-		"
+		((inv_VDMReal M)  \<and>  (inv_VDMReal A)  \<and>  ())"
 
 definition
 	Explicit_no_condition :: "VDMReal \<Rightarrow> VDMReal \<Rightarrow> S \<Rightarrow> S"

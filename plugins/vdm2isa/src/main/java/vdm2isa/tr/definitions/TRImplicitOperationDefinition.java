@@ -1,6 +1,5 @@
 package vdm2isa.tr.definitions;
 
-import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -13,7 +12,8 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.expressions.TRStatement;
 import vdm2isa.tr.types.TROperationType;
 import vdm2isa.tr.types.TRPatternListTypePairList;
-import vdm2isa.tr.types.TRTypeList;
+import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeSet;
 
 
 public class TRImplicitOperationDefinition extends TRExplicitOperationDefinition {
@@ -32,39 +32,38 @@ public class TRImplicitOperationDefinition extends TRExplicitOperationDefinition
 
         // For this class
         TRPatternListTypePairList parameterPatterns,
+        TRDefinitionList paramDefinitions,
         TROperationType type,
-        TRTypeList unresolved,
         TRStatement body,
         TRExpression precondition,
         TRExpression postcondition, 
         TRExplicitFunctionDefinition predef,
         TRExplicitFunctionDefinition postdef,
-        TRStateDefinition state
+        TRStateDefinition state,
+        TRType actualResult,
+        TRTypeSet possibleExceptions
     ) {
         super(
-            (TCDefinition) definition,
-            comments,
-            annotations,
-            name,
-            nameScope, 
-            used, 
-            excluded,
-
-            // For this class
+            definition, 
+			comments,
+			annotations,
+			name,
+			nameScope, 
+			used, 
+			excluded,
             parameterPatterns != null ? parameterPatterns.getParamPatternListList().getFlatPatternList() : null,
-            new TRDefinitionList(),
+            paramDefinitions,
             type,
-            unresolved,
-            body,
-            precondition,
-            postcondition, 
-            predef,
-            postdef,
+			body,
+			precondition,
+			postcondition, 
+			predef,
+			postdef,
             state,
-            false,
+			actualResult,
+			possibleExceptions,
             false
         );
-
         this.parameterPatterns = parameterPatterns;
     }
 

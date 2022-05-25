@@ -2,6 +2,7 @@ package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -19,31 +20,20 @@ import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.patterns.TRRecordPattern;
 import vdm2isa.tr.types.TROperationType;
 import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeList;
 import vdm2isa.tr.types.TRTypeSet;
 
 
 public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition {
 
     private static final long serialVersionUID = 1L;
-	// public TROperationType type;
-	public final TRTypeList unresolved;
 	public final TRPatternList parameterPatterns;
-	// public final TRExpression precondition;
-	// public final TRExpression postcondition;
-	//public final TRStatement body;
-
-	// public TRExplicitFunctionDefinition predef;
-	// public TRExplicitFunctionDefinition postdef;
+	
 	public TRDefinitionList paramDefinitions;
 	public TRStateDefinition state;
 
-	private TRType actualResult = null;
-	public boolean isConstructor = false;
 	public TRTypeSet possibleExceptions = null;
-    //public TRPatternListList paramPatternList;
 
-    public TRExplicitOperationDefinition(
+    protected TRExplicitOperationDefinition(
         TCDefinition definition,
         TRIsaVDMCommentList comments,
         TRAnnotationList annotations,
@@ -56,17 +46,16 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         TRPatternList parameterPatterns,
         TRDefinitionList paramDefinitions,
         TROperationType type,
-        TRTypeList unresolved,
         TRStatement body,
         TRExpression precondition,
         TRExpression postcondition, 
         TRExplicitFunctionDefinition predef,
         TRExplicitFunctionDefinition postdef,
         TRStateDefinition state,
-        boolean isConstructor,
+        TRType actualResult,
+        TRTypeSet possibleExceptions,
         boolean ignore
     ) {
-        //super(definition, name != null ? name.getLocation() : LexLocation.ANY, comments, annotations, name, nameScope, used, excluded);
         super(
             definition, 
 			comments,
@@ -89,22 +78,14 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
 			null, // paramDefinitionList
 			false,
 			body != null ? false : true,
-			type.getInnerType(),
+			actualResult,
 			type.getInnerType(), 
-            false
+            ignore
         );
         this.parameterPatterns = parameterPatterns;
         this.paramDefinitions = paramDefinitions;
-        // this.type = type;
-		this.unresolved = unresolved;
-
-        // this.precondition = precondition;
-        // this.postcondition = postcondition;
-        // this.predef = predef;
-        // this.postdef = postdef;
-        this.state = state;
-        this.isConstructor = isConstructor;
-
+		this.state = state;
+        this.possibleExceptions = possibleExceptions;
     }
 
     public TRExplicitOperationDefinition(
@@ -120,48 +101,49 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         TRPatternList parameterPatterns,
         TRDefinitionList paramDefinitions,
         TROperationType type,
-        TRTypeList unresolved,
         TRStatement body,
         TRExpression precondition,
         TRExpression postcondition, 
         TRExplicitFunctionDefinition predef,
         TRExplicitFunctionDefinition postdef,
         TRStateDefinition state,
-        boolean isConstructor
+        TRType actualResult,
+        TRTypeSet possibleExceptions
     ) {
         this(
-            (TCDefinition) definition,
-            comments,
-            annotations,
-            name,
-            nameScope, 
-            used, 
-            excluded,
-
-            // For this class
+            definition, 
+			comments,
+			annotations,
+			name,
+			nameScope, 
+			used, 
+			excluded,
             parameterPatterns,
             paramDefinitions,
             type,
-            unresolved,
-            body, // TRStatement body,
-            precondition,
-            postcondition, 
-            predef,
-            postdef,
+			body,
+			precondition,
+			postcondition, 
+			predef,
+			postdef,
             state,
-            isConstructor,
+			actualResult,
+			possibleExceptions,
             false
         );
     }
 
     @Override
     public void setup(){
+        super.setup();
+        assert getVDMDefinition() != null && (getVDMDefinition() instanceof TCExplicitOperationDefinition || getVDMDefinition() instanceof TCImplicitFunctionDefinition);
         paramPatternList = TRPatternListList.newPatternListList(TRPatternListList.newPatternListList(parameterPatterns, TRPatternList.newPatternList(
             TRRecordPattern.RecordPatternGenerator(TRStateDefinition.state.recordType,TRStateDefinition.state.recordType.location))).getFlatPatternList());
         paramPatternList.setSemanticSeparator(IsaToken.SPACE.toString());
-        super.setup();
+        //TODO: check, but this can't be done later on! 
+//        super.setup();
         setFormattingSeparator("\n\t");
-        TRNode.setup(predef, postdef, precondition, postcondition, type, state, paramDefinitions, parameterPatterns, unresolved);
+        TRNode.setup(state, paramDefinitions, parameterPatterns, possibleExceptions);
     }
 
     @Override
