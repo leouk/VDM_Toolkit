@@ -1,24 +1,58 @@
 package plugins;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fujitsu.vdmj.in.modules.INModule;
+import com.fujitsu.vdmj.in.modules.INModuleList;
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.types.TCType;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.types.TRType;
 
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.modules.TCModule;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 /**
  * Need to create an artificial interpreter to gain access to parseExpression.
  */
 public class IsaInterpreter extends ModuleInterpreter {
     
+    @SuppressWarnings("unchecked")
+    private static <T extends List<?>> T filterCheckedModules(T checkedModules)
+    {
+        assert checkedModules instanceof TCModuleList;
+        TCModuleList result = new TCModuleList();
+        for(TCModule m : (TCModuleList)checkedModules)
+        {
+            if (m.name.getName().equals(IsaToken.VDMTOOLKIT.toString())) continue;
+            result.add(m);
+        }
+        return (T)result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends List<?>> T filterExecutableModules(T executableModules)
+    {
+        assert executableModules instanceof INModuleList;
+        INModuleList result = new INModuleList();
+        for(INModule m : (INModuleList)executableModules)
+        {
+            if (m.name.getName().equals(IsaToken.VDMTOOLKIT.toString())) continue;
+            result.add(m);
+        }
+        return (T)result;
+    }
+
     public IsaInterpreter(ModuleInterpreter interpreter) throws Exception
     {
-        //interpreter.getIN()?
-        super(interpreter.getModules(), interpreter.getTC());
+        super(filterExecutableModules(interpreter.getModules()), filterCheckedModules(interpreter.getTC()));
     }
 
     /**
@@ -29,6 +63,7 @@ public class IsaInterpreter extends ModuleInterpreter {
      * @return
      * @throws Exception
      */
+    @Deprecated
     public Pair<TCExpression, TCType> typeCheck(String vdmInput, String module) throws Exception
     {
         // avoid RESULT as a name because type checker doesn't like / allow them. 
@@ -44,6 +79,7 @@ public class IsaInterpreter extends ModuleInterpreter {
      * @return
      * @throws Exception
      */
+    @Deprecated
     public Pair<TRExpression, TRType> map2isa(Pair<TCExpression, TCType> tcexpr) throws Exception
     {
         TRExpression expr = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr.key);
@@ -55,4 +91,12 @@ public class IsaInterpreter extends ModuleInterpreter {
     {
         return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
     }
+
+    // @Override
+    // public ProofObligationList getProofObligations() throws Exception
+    // {
+    //     ProofObligationList result; 
+
+    //     return result;
+    // }
 }
