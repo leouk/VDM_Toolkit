@@ -30,6 +30,8 @@ public final class IsaTemplates {
     private static final SortedMap<String, SortedMap<String, IsaItem>> translatedItems = new TreeMap<String, SortedMap<String, IsaItem>>();
     //TODO add "@IsaModifier" annotation for the translation process, e.g. @IsaModifier("intro!") --> [intro!]
 
+    private static final SortedMap<String, String> theoremScripts = new TreeMap<String, String>();
+
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //TODO generalise the tabbing/newlining later 
     private static final String MODULE       = "(* VDM to Isabelle Translation @%1$s\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%2$s\n%3$s\n*)\ntheory %4$s\nimports %5$s\nbegin\n\n%6$s\nend";
@@ -38,10 +40,13 @@ public final class IsaTemplates {
     private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
     private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
-    private static final String LEMMA        = "lemma %1$s: \\<open>%2$s\\<close> \n\t %3$s";
+    private static final String LEMMA        = "lemma %1$s: \\<open>%2$s\\<close> \n\t \\<comment>\\<open>Inferred proof strategy for lemma:\\<close>\n\t %3$s";
     private static final String POGLOCALE    = "locale %1$s = \n\tassumes\n\t\t%2$s\nbegin\n\t%3$s\nend";
     private static final String POGSCRIPT    = "interpretation %1$s \n\t %2$s";
     //public final String TSYNONYM_INV = "definition\n\tinv_%1s :: \"%2s\"\nwhere\n\t\"%1s x \\<equiv> inv_%2s x \\<and> %3s\"\n";
+
+                // sb.append(IsaToken.comment(""));
+
 
     public final static String DATATYPE     = "datatype %1$s = %2$s";
 
@@ -73,6 +78,7 @@ public final class IsaTemplates {
     public static final void reset()
     {
         translatedItems.clear();
+        theoremScripts.clear();
         IsaToken.dummyCount = 0;
         //IsaTemplates.INVALID_ISA_ISATOKEN_IDENTIFIERS.clear();
     }
@@ -165,10 +171,13 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    public static final String translateTheoremDefinition(LexLocation module, String name, String exp)
+    public static final String translateTheoremDefinition(LexLocation module, String name, String exp, String script)
     {
         assert module != null && name != null && exp != null; 
-        return translateDefinition(IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
+        String result = translateDefinition(IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
+        assert !theoremScripts.containsKey(name); 
+        theoremScripts.put(name, script);
+        return result;
     }
 
     public static final String translateLemmaDefinition(LexLocation module, String name, String attribute, String exp, String script)
@@ -192,13 +201,14 @@ public final class IsaTemplates {
         return sb.toString();
     }
 
-    private static final String translatePO(LexLocation module, int poNo, String po)
+    private static final String translatePO(LexLocation module, int poNo, int poTotal, String po)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(module.module);
         sb.append(IsaToken.UNDERSCORE.toString());
         sb.append(IsaToken.PO.toString());
-        sb.append(poNo);
+        sb.append(IsaToken.UNDERSCORE.toString());
+        sb.append(String.format("%1$" + String.valueOf(poTotal).length() + "s", poNo).replace(' ', '0'));
         sb.append(IsaToken.COLON.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(po);
@@ -219,13 +229,13 @@ public final class IsaTemplates {
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.ISAR_UNFOLD_LOCALES.toString());
         sb.append("\n\t");
-        sb.append(IsaToken.ISAR_BY.toString());
+        sb.append(IsaToken.ISAR_APPLY.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.ISAR_SIMP_ALL.toString());
+        sb.append(IsaToken.ISAR_DONE.toString());
         return sb.toString();
     }
 
-    //TODO script has to be per lemma?!
     public static final String translatePOGLocaleInterpreation(LexLocation module, boolean createPOGLocaleInterpretationLemmas, String interpretation, String interpretationScript)
     {
         assert module != null ;//&& script != null;
@@ -242,10 +252,11 @@ public final class IsaTemplates {
             int poNo = 1;
             for(String po : pos)
             {
+                String poScript = theoremScripts.containsKey(po) ? theoremScripts.get(po) : IsaToken.ISAR_SORRY.toString();
                 sb.append("\n");
                 sb.append(translateLemmaDefinition(module, 
                     pogLocaleName + IsaToken.UNDERSCORE.toString() + "l" + poNo, 
-                    IsaToken.ISAR_SIMP.toString(), po, "sorry"));
+                    IsaToken.ISAR_SIMP.toString(), po, poScript));
                 poNo++;
                 sb.append("\n");
             }
@@ -267,16 +278,17 @@ public final class IsaTemplates {
         if (!pos.isEmpty())
         {
             int poNo = 1;
+            int poTotal = pos.size();
             Iterator<String> posit = pos.iterator();
             String po = posit.next();
             pogLocAssumptions.append("\t ");
-            pogLocAssumptions.append(translatePO(module, poNo, po));
+            pogLocAssumptions.append(translatePO(module, poNo, poTotal, po));
             while (posit.hasNext())
             {
                 pogLocAssumptions.append("\n\t and ");
                 poNo++;
                 po = posit.next();
-                pogLocAssumptions.append(translatePO(module, poNo, po));
+                pogLocAssumptions.append(translatePO(module, poNo, poTotal, po));
             }
         }
         return String.format(POGLOCALE, pogLocaleName(module), pogLocAssumptions.toString(), pogLocComment);
