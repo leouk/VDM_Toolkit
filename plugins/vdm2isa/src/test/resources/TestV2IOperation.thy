@@ -69,11 +69,12 @@ x := (x + inc)
 definition
 	pre_Explicit :: "VDMNat1 \<Rightarrow> S \<Rightarrow> bool"
 where
-	"pre_Explicit inc   S \<equiv> 
+	"pre_Explicit inc   dummy \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_Explicit` specification.\<close>
-		((inv_VDMNat1 inc)  \<and>  inv_S S)  \<and> 
-		\<comment>\<open>User defined body of pre_Explicit.\<close>
-		((inc < (10::VDMNat1)) \<and> (x > (0::VDMNat)))"
+		((inv_VDMNat1 inc)  \<and>  inv_S dummy)  \<and> 
+\<comment>\<open>User defined body of pre_Explicit.\<close>
+   ( let x = (x\<^sub>S dummy); y = (y\<^sub>S dummy) in 		
+		((inc < (10::VDMNat1)) \<and> (x > (0::VDMNat))))"
 
 
 \<comment>\<open>VDM source: post_Explicit: (nat1 * S * S +> bool)
