@@ -47,7 +47,7 @@ public class TRModule extends TRNode
 
 	private final Set<String> imports; 
 	private final Set<TCDefinition> defsToHide;
-	private final TRDefinitionList allDefs;
+	protected final TRDefinitionList allDefs;
 
 	public TRModule(TCModule m, TRIsaVDMCommentList comments, TRAnnotationList annotations, TCIdentifierToken name, 
 		TRDefinitionList importdefs, TRDefinitionList exportdefs, TRDefinitionList definitions, FileList files)
@@ -370,6 +370,10 @@ public class TRModule extends TRNode
 		return IsaTemplates.translateModule("", loc, name.toString(), getImports(), sb.toString());
 	}
 
+	/**
+	 * Any further information about the module that specific implementations might want to add
+	 * @return
+	 */
 	public String getPostScript()
 	{
 		return "";

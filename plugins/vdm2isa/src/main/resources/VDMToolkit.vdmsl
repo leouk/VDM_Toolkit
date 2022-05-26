@@ -6,6 +6,10 @@ module VDMToolkit
 exports all
 
 /*
+@doc This file is now mostly redundant/irrelevant. That's because of the new translation strategy, which does not use the CG.
+	 Instead, it directly translates the VDMJ AST straight to the Isabelle theory file output. 
+ */
+/*
 @doc This VDM file defines named constructs used by the Isabelle theory file "VDMToolkit.thy". These are important so
 		 that during code generation to Isabelle, AST transformations can be type checked. This is achieved by implicitly
 		 importing all definitions from here. Their sole purpose is to allow the on-the-fly (IR) spec to be albe to check
