@@ -22,6 +22,7 @@ public class TRProofObligationDefinition extends TRDefinition {
    
     public final ProofObligation po;
     public final int poNumber; // po.number is not helpful
+    public int totalPOs; // not ideal, but useful to know, so that the locale names match PO number (if we know total in advance)
     public final TRExpression poExpr;
     public final TRType poType;
     private TRDefinitionList poScripts;
@@ -47,10 +48,6 @@ public class TRProofObligationDefinition extends TRDefinition {
             new TRDefinitionList());
     }
 
-    //, nameScope, used, excluded
-//    protected TRDefinition(LexLocation location, TRIsaVDMCommentList comments, TCAnnotationList annotations,
- //   TCNameToken name, NameScope nameScope, boolean used, boolean excluded)
-
      public TRProofObligationDefinition(TRIsaVDMCommentList comments, ProofObligation po,
        TRExpression poExpr, TRType poType, int poNumber, TRDefinitionList poScripts)
     {
@@ -60,6 +57,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         this.poType = poType;// always poExpr.getType() equivalent, now we have PO.getCheckedExpression()
         this.poNumber = poNumber;
         this.poScripts = poScripts;
+        this.totalPOs = poNumber;
     }
 
     @Override 
@@ -90,6 +88,13 @@ public class TRProofObligationDefinition extends TRDefinition {
         return poExpr != null ? tldIsaCommentTranslate(poExpr) : "";
     }
 
+    /**
+     * POs about measures are to be ignored given how Isabelle recursive functions are defined. 
+     * @param poNameStr
+     * @param poExprStr
+     * @param kind
+     * @return
+     */
     private boolean figureOutIgnorePO(String poNameStr, String poExprStr, POType kind)
     {
         boolean result = false;
@@ -120,7 +125,11 @@ public class TRProofObligationDefinition extends TRDefinition {
         // Some PO names are "Gateway; rest_p" etc; fix those to be proper identifiers
         // Make PO name with its number first to make ordering + unique namesness easier
         String poNameStr = 
-            IsaToken.PO.toString() + poNumber + IsaToken.UNDERSCORE.toString() +
+            IsaToken.PO.toString() + 
+            IsaToken.UNDERSCORE.toString() +
+            // pad the PO number with respect to the total for Locale matching.
+            String.format("%1$" + String.valueOf(totalPOs).length() + "s", poNumber).replace(' ', '0') +
+            IsaToken.UNDERSCORE.toString() +
             po.name.replaceAll("; ", 
                 IsaToken.UNDERSCORE.toString()).replaceAll(", ", 
                 IsaToken.UNDERSCORE.toString()) +
@@ -129,14 +138,15 @@ public class TRProofObligationDefinition extends TRDefinition {
         // replace all names with "$" signs as Isabelle doesn't like them.
         String poExprStr = poExpr.translate().replaceAll("\\$", "dollar"); 
         
+        String poScriptStr = poScripts.translate();
         sb.append(IsaTemplates.translateTheoremDefinition(getLocation(), poNameStr, 
-            poExprStr));//IsaToken.innerSyntaxIt(IsaToken.parenthesise(poExprStr))));
+            poExprStr, poScriptStr));
         sb.append(getFormattingSeparator());
 
-        sb.append(IsaToken.comment("Inferred proof strategy for lemma:\n"));
-        sb.append(IsaToken.comment(poScripts.translate(), getFormattingSeparator()));
-
+        // POs about measures
         boolean ignorePO = figureOutIgnorePO(poNameStr, poExprStr, po.kind);
+
+
 
         // if ignoring the PO still issue its translation as an isabelle block comment
         if (ignorePO)
@@ -176,7 +186,8 @@ public class TRProofObligationDefinition extends TRDefinition {
         sb.append(po.kind.name());
         sb.append(IsaToken.UNDERSCORE.toString());
         sb.append(IsaToken.PO.toString());
-        sb.append(poNumber);
+        // pad the PO number with respect to the total for Locale matching.
+        sb.append(String.format("%1$" + String.valueOf(totalPOs).length() + "s", poNumber));
         sb.append(IsaToken.COLON.toString());
         sb.append(getFormattingSeparator());
         sb.append(tldIsaComment());

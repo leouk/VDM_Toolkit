@@ -6,7 +6,9 @@ import com.fujitsu.vdmj.tc.modules.TCModule;
 import plugins.IsapogPlugin;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRNode;
+import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRProofObligationDefinition;
 
 public class TRProofObligationModule extends TRModule
 {
@@ -33,6 +35,28 @@ public class TRProofObligationModule extends TRModule
     {
         super.setup();
         setFormattingSeparator("\n");
+
+        // Normalise PO number for sorting in locale to match "string" name
+        figureOutTotalPOs();
+    }
+
+    //TODO this is terrible :-(. Need a good revamp of all this. Perhaps bring out of IsaTemplate the Locale POG stuff? 
+    private final void figureOutTotalPOs()
+    {
+        int totalPOs = 0;
+        for (TRDefinition d : this.allDefs)
+        {
+            if (d instanceof TRProofObligationDefinition) totalPOs++;
+        }
+        assert totalPOs <= this.allDefs.size();
+        for (TRDefinition d : this.allDefs)
+        {
+            if (d instanceof TRProofObligationDefinition)
+            {
+                TRProofObligationDefinition pod = (TRProofObligationDefinition)d;
+                pod.totalPOs = totalPOs;
+            }
+        }
     }
 
     /**
@@ -51,11 +75,15 @@ public class TRProofObligationModule extends TRModule
         //return poModuleOwner.startsWith(fileName) && poModuleOwner.equals(IsaTemplates.getPOModuleName(fileName));
     }
 
+    /**
+     * For proo obligation module, we have to consider the proof scripts of interest per definition. 
+     */
     @Override 
     public String getPostScript()
     {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaTemplates.translatePOGLocale(getLocation()));
+        
         sb.append(getFormattingSeparator());
         sb.append(getFormattingSeparator());
         String interpretation = null;
