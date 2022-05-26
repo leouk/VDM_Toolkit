@@ -3,7 +3,7 @@ exports all
 definitions
 
 functions
-/*
+
 	-- constant function with undeclared specification
 	const: () -> nat
 	const() == 10;
@@ -17,8 +17,6 @@ functions
 	-- "normal" function with undeclared specification
 	f: nat * nat1 -> nat1
 	f(x, y) == x + y;
-
-*/
 
 	-- "normal" function with declared specification
 	g: nat * nat1 -> nat1
@@ -44,7 +42,6 @@ functions
 	pre x < 20
 	post pre_g(x,RESULT) ;
 
-/*
 	-- curried function with undeclared specification	
 	curried: nat -> nat -> nat
 	curried(x)(y) == x + y;
@@ -63,64 +60,112 @@ functions
 		== [x,y]
 	pre x < y and x in set z
 	post x > len r;
-*/
+
 end TestV2IFcns
 
 /*
+> pog
+Generated 20 proof obligations:
+
 Proof Obligation 1: (Unproved)
-g: post condition obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 24:5
-(forall x:nat, y:nat1 & pre_g(x, y) => post_g(x, y, (x + y)))
+constS: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 12:5
+pre_constS() => post_constS(10)
+
+Proof Obligation 2: (Unproved)
+g: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 22:5
+(forall x:nat, y:nat1 &
+  pre_g(x, y) => post_g(x, y, (x + y)))
 
 Proof Obligation 3: (Unproved)
-h: post condition obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 30:5
-(forall x:nat &  pre_h(x) => post_h(x, g(x, x)))
-
-Proof Obligation 5: (Unproved)
-h: subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 33:23
-(forall x:nat &  ((pre_g(x, x) and (x < 20)) => let RESULT:nat = g(x, x) in RESULT > 0))
-
-Proof Obligation 6: (Unproved)
-h: function apply obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 31:13
-(forall x:nat & (pre_g(x, x) and (x < 20)) => pre_g(x, x))
-
-Proof Obligation 7: (Unproved)
-h: subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 31:18
-(forall x:nat & (pre_g(x, x) and (x < 20)) =>
+h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 30:18
+(forall x:nat &
   x > 0)
 
+Proof Obligation 4: (Unproved)
+h: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 28:5
+(forall x:nat &
+  pre_h(x) => post_h(x, g(x, x)))
+
+Proof Obligation 5: (Unproved)
+h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 31:20
+(forall x:nat &
+  (pre_h(x) => let RESULT:nat = g(x, x) in 
+    x > 0))
+
+Proof Obligation 6: (Unproved)
+h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 31:23
+(forall x:nat &
+  (pre_h(x) => let RESULT:nat = g(x, x) in 
+    RESULT > 0))
+
+Proof Obligation 7: (Unproved)
+h: function apply obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:13
+(forall x:nat & pre_h(x) =>
+  pre_g(x, x))
+
 Proof Obligation 8: (Unproved)
-h': post condition obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 36:5
+h: subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 29:18
+(forall x:nat & pre_h(x) =>
+  x > 0)
+
+Proof Obligation 9: (Unproved)
+h': post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 34:5
 (forall x:nat &
   pre_h'(x) => post_h'(x, g(x, x)))
 
-Proof Obligation 9: (Unproved)
-h': function apply obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 37:14
-(forall x:nat & (x < 20) =>
+Proof Obligation 10: (Unproved)
+h': function apply obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 35:14
+(forall x:nat & pre_h'(x) =>
   pre_g(x, x))
 
-Proof Obligation 10: (Unproved)
-h': subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 37:19
-(forall x:nat & (x < 20) =>
+Proof Obligation 11: (Unproved)
+h': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 35:19
+(forall x:nat & pre_h'(x) =>
   x > 0)
 
-Proof Obligation 11: (Unproved)
-h'': post condition obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 42:5
+Proof Obligation 12: (Unproved)
+h'': post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 40:5
 (forall x:nat &
   pre_h''(x) => post_h''(x, g(x, x)))
 
-Proof Obligation 12: (Unproved)
-h'': subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 45:18
+Proof Obligation 13: (Unproved)
+h'': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 43:18
 (forall x:nat &
-  ((x < 20) => let RESULT:nat = g(x, x) in 
+  (pre_h''(x) => let RESULT:nat = g(x, x) in 
     RESULT > 0))
 
-Proof Obligation 13: (Unproved)
-h'': function apply obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 43:15
-(forall x:nat & (x < 20) =>
+Proof Obligation 14: (Unproved)
+h'': function apply obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 41:15
+(forall x:nat & pre_h''(x) =>
   pre_g(x, x))
 
-Proof Obligation 14: (Unproved)
-h'': subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 43:20
-(forall x:nat & (x < 20) =>
+Proof Obligation 15: (Unproved)
+h'': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 41:20
+(forall x:nat & pre_h''(x) =>
   x > 0)
+
+Proof Obligation 16: (Unproved)
+curriedS: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 50:5
+(forall x:nat, y:nat &
+  pre_curriedS(x)(y) => post_curriedS(x)(y, (x + y)))
+
+Proof Obligation 17: (Unproved)
+implicit: total function obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 56:15
+(forall x:nat, y:nat, z:set of (nat) &
+  is_(pre_implicit(x, y, z), bool))
+
+Proof Obligation 18: (Unproved)
+implicit: function satisfiability obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 55:5
+(forall x:nat, y:nat, z:set of (nat) &
+  pre_implicit(x, y, z) => exists r:seq of (nat) & post_implicit(x, y, z, r))
+
+Proof Obligation 19: (Unproved)
+implicitexplicit: total function obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 61:15
+(forall x:nat, y:nat, z:set of (nat) &
+  is_(pre_implicitexplicit(x, y, z), bool))
+
+Proof Obligation 20: (Unproved)
+implicitexplicit: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 59:5
+(forall x:nat, y:nat, z:set of (nat) &
+  pre_implicitexplicit(x, y, z) => post_implicitexplicit(x, y, z, [x, y]))
 */
