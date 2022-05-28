@@ -5,7 +5,8 @@
 theory VDMToolkit
   imports 
     \<comment> \<open> Include real fields, list and option types ordering \<close>
-    Complex_Main 
+    Complex_Main
+    VDMEisbach
     "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
     "HOL-Library.LaTeXsugar"
@@ -190,9 +191,9 @@ definition
   "pre_vdm_pow x y \<equiv> True"
 
 definition
-  post_vdm_pow_post :: "'a::ln \<Rightarrow> 'a::ln \<Rightarrow> 'a::ln \<Rightarrow> \<bool>"
+  post_vdm_pow :: "'a::ln \<Rightarrow> 'a::ln \<Rightarrow> 'a::ln \<Rightarrow> \<bool>"
   where
-  "post_vdm_pow_post x y RESULT \<equiv> True"
+  "post_vdm_pow x y RESULT \<equiv> True"
 
 text \<open>For VDM floor and abs, we use Isabelle's. Note that in VDM abs of \<^typ>\<open>\<int>\<close>  
 will return \<^typ>\<open>VDMNat\<close>, as the underlying type invariant might require further filtering 
@@ -543,7 +544,7 @@ text \<open> @{term applyVDMSeq} sticks with @{term undefined}. \<close>
 definition
   applyVDMSeq :: "'a VDMSeq \<Rightarrow> VDMNat1 \<Rightarrow> 'a" (infixl "$" 100)
   where
- "applyVDMSeq l n \<equiv> (if (inv_VDMNat1 n \<and> n \<le> len l) then 
+ "l $ n \<equiv> (if (inv_VDMNat1 n \<and> n \<le> len l) then 
                       (l ! nat (n - 1)) 
                    else 
                       undefined)"
@@ -609,7 +610,7 @@ lemma l_vdmsubseq_ext_eq:
   unfolding applyVDMSubseq_def applyVDMSubseq'_def inv_VDMNat1_def 
   apply (simp;safe)
   apply (subgoal_tac "{nat l - Suc 0..nat u - Suc 0} = {x. l \<le> int x + 1 \<and> int x + 1 \<le> u}")
-   apply (erule subst; simp)
+   apply (erule HOL.subst; simp)
    apply (safe;simp)
      apply linarith+
   apply (subgoal_tac "{x. l \<le> int x + 1 \<and> int x + 1 \<le> u} = {}")
@@ -650,7 +651,7 @@ definition
   post_append :: "'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> 'a VDMSeq \<Rightarrow> \<bool>"
   where
   "post_append s t r \<equiv> r = s @ t"
-  
+
 lemmas VDMSeq_defs = elems_def inds_def applyVDMSeq_defs
 
 lemma l_applyVDMSeq_inds[simp]: 
@@ -1016,7 +1017,7 @@ definition
 lemmas inv_Map_defs = inv_Map_def inv_VDMSet'_defs
 lemmas inv_Map1_defs = inv_Map1_def inv_Map_defs
 lemmas inv_Inmap_defs = inv_Inmap_def inv_Map_defs inj_def
-    
+
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
   where
@@ -1424,22 +1425,22 @@ lemmX f_in_dom_r_apply_elem:
 unfolding dom_restr_def
 by (cases "l\<in>S", auto)
 *)
-(* IJW: Simplified as doesn't need the l:dom f case *)
+(* Simplified as doesn't need the l:dom f case *)
 lemma  f_in_dom_r_apply_elem: " x \<in> S \<Longrightarrow> ((S \<triangleleft> f) x) = (f x)"
 by (metis dom_restr_def restrict_in)
 
 lemma  f_in_dom_r_apply_the_elem: "x \<in> dom f \<Longrightarrow> x \<in> S \<Longrightarrow> ((S \<triangleleft> f) x) = Some(the(f x))"
 by (metis domIff f_in_dom_r_apply_elem option.collapse)
 
-(* IJW: TODO: classify; rename. *) 
+(* TODO: classify; rename. *) 
 lemma l_dom_r_disjoint_weakening: "A \<inter> B = {} \<Longrightarrow> dom(A \<triangleleft> f) \<inter> dom(B \<triangleleft> f) = {}"
 by (metis dom_restr_def dom_restrict inf_bot_right inf_left_commute restrict_restrict)
 
-(* IJW: TODO: classify; rename - refactor out for l_dom_r_iff? *)
+(* TODO: classify; rename - refactor out for l_dom_r_iff? *)
 lemma l_dom_r_subseteq: "S \<subseteq> dom f \<Longrightarrow> dom (S \<triangleleft> f) = S" unfolding dom_restr_def
 by (metis Int_absorb1 dom_restrict)
 
-(* IJW: TODO: classift; rename  - refactor out for l_dom_r_subset? *)
+(* TODO: classift; rename  - refactor out for l_dom_r_subset? *)
 lemma l_dom_r_dom_subseteq: "(dom ( S \<triangleleft> f)) \<subseteq> dom f" 
 unfolding dom_restr_def by auto
 
@@ -1471,7 +1472,7 @@ lemma f_in_relimg_ran:
   "y \<in> ran (S \<triangleleft> m) \<Longrightarrow> y \<in> ran m"
   by (meson l_relimg_ran_subset subsetCE)
 
-(* IJW: An experiment - not sure which are the best rules to choose! *)
+(* An experiment - not sure which are the best rules to choose! *)
 lemmas restr_simps = l_dom_r_iff l_dom_r_accum l_dom_r_nothing l_dom_r_empty
                      f_in_dom_r_apply_elem l_dom_r_disjoint_weakening l_dom_r_subseteq
                      l_dom_r_dom_subseteq
@@ -1509,7 +1510,7 @@ lemmX f_in_dom_ar_apply_not_elem:
 unfolding dom_antirestr_def
 by (cases "l\<in>S", auto)
 *)
-(* IJW: TODO: I had a more general lemma: *)
+(* TODO: I had a more general lemma: *)
 lemma f_in_dom_ar_apply_not_elem: "l \<notin> S \<Longrightarrow> (S -\<triangleleft> f) l = f l"
 by (metis dom_antirestr_def)
 
@@ -1580,27 +1581,27 @@ by (metis domIff set_mp)
 lemma l_dom_rres_same_map_weaken: 
   "S = T \<Longrightarrow> (S -\<triangleleft> f) = (T -\<triangleleft> f)" by simp   
 
-(* IJW: TODO classify; rename *)
+(*  TODO classify; rename *)
 lemma l_dom_ar_not_in_dom:
   assumes *: "x \<notin> dom f"
   shows  "x \<notin> dom (s -\<triangleleft> f)"
 by (metis * domIff dom_antirestr_def)
 
-(* IJW: TODO: classify; rename *)
+(*  TODO: classify; rename *)
 lemma l_dom_ar_not_in_dom2: "x \<in> F \<Longrightarrow> x \<notin> dom (F  -\<triangleleft> f)"
 by (metis domIff dom_antirestr_def)
 
 lemma l_dom_ar_notin_dom_or: "x \<notin> dom f \<or> x \<in> S \<Longrightarrow> x \<notin> dom (S -\<triangleleft> f)"
 by (metis Diff_iff l_dom_dom_ar)
 
-(* IJW: TODO: classify - shows conditions for being in antri restr dom *)
+(*  TODO: classify - shows conditions for being in antri restr dom *)
 lemma l_in_dom_ar: "x \<notin> F \<Longrightarrow> x \<in> dom f \<Longrightarrow> x \<in> dom  (F  -\<triangleleft> f)"
 by (metis f_in_dom_ar_apply_not_elem domIff) 
 
 lemma l_Some_in_dom: 
   "f x = Some y \<Longrightarrow> x \<in> dom f" by auto
 
-(* IJW: TODO: classify; fix proof; rename; decide whether needed?! *)
+(*  TODO: classify; fix proof; rename; decide whether needed?! *)
 lemma l_dom_ar_insert: "((insert x F) -\<triangleleft> f) = {x} -\<triangleleft> (F-\<triangleleft> f)" 
 proof
   fix xa
@@ -1620,17 +1621,17 @@ proof
 qed
 
 
-(* IJW: TODO: classify; rename?; subsume by l_dom_ar_accum? *)
-(* IJW: Think it may also be unused? *)
+(*  TODO: classify; rename?; subsume by l_dom_ar_accum? *)
+(*  Think it may also be unused? *)
 lemma l_dom_ar_absorb_singleton: "x \<in> F \<Longrightarrow> ({x} -\<triangleleft> F -\<triangleleft> f) =(F -\<triangleleft> f)"
 by (metis l_dom_ar_insert insert_absorb)
 
-(* IJW: TODO: rename; classify; generalise? *)
+(*  TODO: rename; classify; generalise? *)
 lemma l_dom_ar_disjoint_weakening:
   "dom f \<inter> Y = {} \<Longrightarrow> dom (X -\<triangleleft> f) \<inter> Y = {}" 
  by (metis Diff_Int_distrib2 empty_Diff l_dom_dom_ar)
 
-(* IJW: TODO: not used? *)
+(* TODO: not used? *)
 lemma l_dom_ar_singletons_comm: "{x}-\<triangleleft> {y} -\<triangleleft> f = {y}-\<triangleleft> {x} -\<triangleleft> f" 
     by (metis l_dom_ar_insert insert_commute)
 
@@ -1702,7 +1703,7 @@ lemmas and use them in Isar; whereas Leo, you don't seem
 to use this variety. Probably because the automation takes
 care of the reasoning?...
 *)
-(* IJW: TODO: Rename; classify *)
+(*  TODO: Rename; classify *)
 lemma dagger_notemptyL: 
   "f \<noteq> Map.empty \<Longrightarrow> f \<dagger> g \<noteq> Map.empty" by (metis dagger_def map_add_None)
 
@@ -1711,7 +1712,7 @@ lemma dagger_notemptyR:
 
 
 (* Lemma: dagger associates with dom_ar [ZEVES-LEMMA] *)
-(* IJW: It's not really an assoc prop? Well, kinda, but also kinda distrib *)
+(*  It's not really an assoc prop? Well, kinda, but also kinda distrib *)
 lemma l_dagger_dom_ar_assoc:
 	"S \<inter> dom g = {} \<Longrightarrow> (S -\<triangleleft> f) \<dagger> g = S -\<triangleleft> (f \<dagger> g)"
 apply (simp add: fun_eq_iff)
@@ -1729,7 +1730,7 @@ lemma l_dagger_not_empty:
   "g \<noteq> Map.empty \<Longrightarrow> f \<dagger> g \<noteq> Map.empty"
 by (metis dagger_def map_add_None)
 
-(* IJW TODO: Following 6 need renamed; classified? LEO: how do you do such choices? *)
+(* TODO: Following 6 need renamed; classified? LEO: how do you do such choices? *)
 lemma in_dagger_domL:
   "x \<in> dom f \<Longrightarrow> x \<in> dom(f \<dagger> g)" 
 by (metis dagger_def domIff map_add_None)
@@ -1753,9 +1754,6 @@ by (metis dagger_def fun_upd_other map_add_empty map_add_upd)
 
 lemma dagger_upd_dist: "f \<dagger> fa(e \<mapsto> r) = (f \<dagger> fa)(e \<mapsto> r)" by (metis dagger_def map_add_upd)
 
-
-
-(* IJW TOD): rename *)
 lemma antirestr_then_dagger_notin: "x \<notin> dom f \<Longrightarrow> {x} -\<triangleleft> (f \<dagger> [x \<mapsto> y]) = f"
 proof
   fix z
@@ -1776,14 +1774,13 @@ proof
 qed 
 
 
-(* IJW: TODO: rename; classify *)
+(* TODO: rename; classify *)
 lemma dagger_notin_right: "x \<notin> dom g \<Longrightarrow> (f \<dagger> g) x = f x" 
 by (metis l_dagger_apply)
-(* IJW: TODO: rename; classify *)
+(* TODO: rename; classify *)
 
 lemma dagger_notin_left: "x \<notin> dom f \<Longrightarrow> (f \<dagger> g) x = g x"
  by (metis dagger_def map_add_dom_app_simps(2))
-
 
 lemma l_dagger_commute: "dom f \<inter> dom g = {} \<Longrightarrow>f \<dagger> g = g \<dagger> f"
   unfolding dagger_def 
@@ -2009,13 +2006,13 @@ apply (insert f_dom_ar_subset_dom[of S g])
 oops
 *)
 
-(* IJW: TODO: rename? *)
+(* TODO: rename? *)
 lemma l_munion_upd: "dom f \<inter> dom [x \<mapsto> y] = {}  \<Longrightarrow> f \<union>m [x \<mapsto> y] = f(x \<mapsto>y)" 
 unfolding munion_def
   apply simp
   by (metis dagger_def map_add_empty map_add_upd)
 
-(* IJW: TODO: Do I really need these?! *)
+(* TODO: Do I really need these?! *)
 lemma munion_notemp_dagger: "dom f \<inter> dom g = {} \<Longrightarrow> f \<union>m g\<noteq>Map.empty \<Longrightarrow> f \<dagger> g \<noteq> Map.empty" 
 by (metis munion_def)
 
@@ -2323,5 +2320,66 @@ where
                   (\<forall> i \<in> elems s . i > 0 \<and> i \<le> 9)"
 
 value "inv_MySeq [1, 2, 3]"
+
+section \<open>VDM PO layered expansion-proof strategy setup\<close>
+
+text \<open>I use various theorem tags to step-wise expand-simplify VDM goals\<close>
+
+(*TODO: this needs loads of experimentation for fine tuning *)
+
+lemmas [VDM_basic_defs]       = inv_True_def inv_VDMChar_def (*inv_bool_def *)
+                                inv_VDMToken'_def inv_VDMToken_def 
+
+lemmas [VDM_num_defs]         = inv_VDMNat_def inv_VDMNat1_def inv_VDMInt_def
+                                inv_VDMReal_def inv_VDMRat_def
+
+lemmas [VDM_num_fcns]         = vdm_narrow_real_def vdm_div_def vdm_mod_def
+                                vdm_rem_def vdm_pow_def vdm_abs_def vdm_floor_def
+                   
+lemmas [VDM_num_spec_pre]     = pre_vdm_mod_def pre_vdm_div_def 
+                                pre_vdm_rem_def pre_vdm_pow_def
+                              
+lemmas [VDM_num_spec_post]    = post_vdm_mod_def post_vdm_div_def 
+                                post_vdm_rem_def post_vdm_pow_def
+                                post_vdm_floor_def post_vdm_abs_def
+lemmas [VDM_num_spec]         = VDM_num_spec_pre VDM_num_spec_post
+
+
+lemmas [VDM_set_defs]         = inv_VDMSet_def inv_VDMSet1_def inv_VDMSet'_def inv_VDMSet1'_def inv_SetElems_def 
+lemmas [VDM_set_fcns]         = vdm_card_def
+lemmas [VDM_set_spec_pre]     = pre_vdm_card_def 
+lemmas [VDM_set_spec_post]    = post_vdm_card_def
+lemmas [VDM_set_spec]         = VDM_set_spec_pre VDM_set_spec_post
+                              
+lemmas [VDM_seq_defs]         = inv_VDMSeq'_def inv_VDMSeq1'_def inv_SeqElems_def
+lemmas [VDM_seq_fcns_1]       = len_def elems_def inds_def inds_as_nat_def 
+lemmas [VDM_seq_fcns_2]       = vdm_reverse_def vdmtake_def seq_prefix_def 
+lemmas [VDM_seq_fcns_3]       = applyVDMSeq_def applyVDMSubseq'_def applyVDMSubseq_def
+lemmas [VDM_seq_fcns]         = VDM_seq_fcns_3 VDM_seq_fcns_2 VDM_seq_fcns_1         
+lemmas [VDM_seq_spec_pre]     = pre_hd_def pre_tl_def pre_applyVDMSeq_def pre_applyVDMSubseq_def
+lemmas [VDM_seq_spec_post_1]  = post_len_def post_elems_def post_inds_def post_hd_def post_tl_def   
+lemmas [VDM_seq_spec_post_2]  = post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
+lemmas [VDM_seq_spec_post_3]  = post_applyVDMSeq_def post_applyVDMSubseq_def 
+lemmas [VDM_seq_spec_post]    = VDM_seq_spec_post_3 VDM_seq_spec_post_2 VDM_seq_spec_post_1
+lemmas [VDM_seq_spec]         = VDM_seq_spec_pre VDM_seq_spec_post
+
+lemmas [VDM_map_defs]         = inv_Option_def inv_Map1_def inv_Map_def inv_Inmap_def
+lemmas [VDM_map_fcns_1]       = rng_def dagger_def munion_def 
+lemmas [VDM_map_fcns_2]       = dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def
+lemmas [VDM_map_fcns_3]       = vdm_merge_def vdm_inverse_def map_subset_def 
+lemmas [VDM_map_fcns_4]       = map_comp_def map_compatible_def
+lemmas [VDM_map_fcns]         = VDM_map_fcns_4 VDM_map_fcns_3 VDM_map_fcns_2 VDM_map_fcns_1 
+lemmas [VDM_map_fcns_1_simps] = dagger_simps upd_simps munion_simps 
+lemmas [VDM_map_fcns_2_simps] = restr_simps antirestr_simps
+lemmas [VDM_map_fcns_simps]   = VDM_map_fcns_2_simps VDM_map_fcns_1_simps
+lemmas [VDM_map_comp_1]       = maplet_defs
+lemmas [VDM_map_comp_2]       = mapCompSetBound_defs 
+lemmas [VDM_map_comp_3]       = mapCompTypeBound_defs
+lemmas [VDM_map_comp]         = VDM_map_comp_3 VDM_map_comp_2 VDM_map_comp_1
+lemmas [VDM_num_crc_1]        = is_VDMRealWhole_def is_VDMRatWhole_def 
+lemmas [VDM_num_crc_2]        = vdmint_of_real_def vdmint_of_rat_def
+lemmas [VDM_num_crc_3]        = total_coercion_def vdmset_of_t_def vdmseq_of_t_def isTest_def isTest'_def
+lemmas [VDM_num_crc]          = VDM_num_crc_3 VDM_num_crc_2 VDM_num_crc_1
+lemmas [VDM_stms_defs]        = seqcomp_def seqcomps.simps seqcomps'_def
 
 (*<*)end(*>*)

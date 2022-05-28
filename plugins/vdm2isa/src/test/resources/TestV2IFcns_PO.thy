@@ -337,7 +337,7 @@ lemma TestV2IFcns_POG_l2[simp]: \<open>PO_02_g_FUNC_POST_CONDITION\<close>
 
 lemma TestV2IFcns_POG_l3[simp]: \<open>PO_03_h_SUB_TYPE\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -367,7 +367,7 @@ lemma TestV2IFcns_POG_l8[simp]: \<open>PO_08_h_SUB_TYPE\<close>
 
 lemma TestV2IFcns_POG_l9[simp]: \<open>PO_09_h'_FUNC_POST_CONDITION\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -375,7 +375,7 @@ lemma TestV2IFcns_POG_l9[simp]: \<open>PO_09_h'_FUNC_POST_CONDITION\<close>
 
 lemma TestV2IFcns_POG_l10[simp]: \<open>PO_10_h'_FUNC_APPLY\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -383,7 +383,7 @@ lemma TestV2IFcns_POG_l10[simp]: \<open>PO_10_h'_FUNC_APPLY\<close>
 
 lemma TestV2IFcns_POG_l11[simp]: \<open>PO_11_h'_SUB_TYPE\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -391,7 +391,7 @@ lemma TestV2IFcns_POG_l11[simp]: \<open>PO_11_h'_SUB_TYPE\<close>
 
 lemma TestV2IFcns_POG_l12[simp]: \<open>PO_12_h''_FUNC_POST_CONDITION\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -399,7 +399,7 @@ lemma TestV2IFcns_POG_l12[simp]: \<open>PO_12_h''_FUNC_POST_CONDITION\<close>
 
 lemma TestV2IFcns_POG_l13[simp]: \<open>PO_13_h''_SUB_TYPE\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -407,7 +407,7 @@ lemma TestV2IFcns_POG_l13[simp]: \<open>PO_13_h''_SUB_TYPE\<close>
 
 lemma TestV2IFcns_POG_l14[simp]: \<open>PO_14_h''_FUNC_APPLY\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -415,7 +415,7 @@ lemma TestV2IFcns_POG_l14[simp]: \<open>PO_14_h''_FUNC_APPLY\<close>
 
 lemma TestV2IFcns_POG_l15[simp]: \<open>PO_15_h''_SUB_TYPE\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -423,7 +423,7 @@ lemma TestV2IFcns_POG_l15[simp]: \<open>PO_15_h''_SUB_TYPE\<close>
 
 lemma TestV2IFcns_POG_l16[simp]: \<open>PO_16_curriedS_FUNC_POST_CONDITION\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
-	 try
+	nitpick
 	
 	
 	oops
@@ -433,11 +433,26 @@ lemma TestV2IFcns_POG_l17[simp]: \<open>PO_17_implicit_TOTAL\<close>
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
 	 by (simp add: PO_17_implicit_TOTAL_def)
 	
-	
-	
+named_theorems Fcns_defs and Fcns_PO_defs 
+
+lemmas [Fcns_PO_defs] = PO_18_implicit_FUNC_SATISFIABILITY_def
+lemmas [Fcns_defs] = post_implicit_def pre_implicit_def Fcns_PO_defs
 
 lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<close> 
-	 \<comment>\<open>Inferred proof strategy for lemma:\<close>
+  apply (simp add: Fcns_PO_defs, safe?)+
+  apply (simp add: Fcns_defs, safe?)+
+  apply (simp add: VDM_seq_defs, safe?)+
+  apply (simp add: VDM_set_defs, safe?)+
+  apply (simp add: VDM_basic_defs, safe?)+
+  apply (metis diff_ge_0_iff_ge inv_VDMNat_def inv_VDMSeq'_defs(2) l_inv_SeqElems_append not_one_le_zero)
+  oops
+
+lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<close> 
+  apply (simp add: VDM_basic_defs VDM_set_defs VDM_seq_defs Fcns_defs, safe?)+
+  by (metis diff_ge_0_iff_ge inv_VDMNat_def inv_VDMSeq'_defs(2) l_inv_SeqElems_append not_one_le_zero)
+
+lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<close> 
+	 \<comment>\<open>Inferred proof strategy for lemma:\<close> 
 	unfolding PO_18_implicit_FUNC_SATISFIABILITY_def
   apply (safe?, simp?)
   unfolding post_implicit_def pre_implicit_def
