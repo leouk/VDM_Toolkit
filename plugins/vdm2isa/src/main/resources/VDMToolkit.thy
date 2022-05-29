@@ -1021,7 +1021,7 @@ lemmas inv_Inmap_defs = inv_Inmap_def inv_Map_defs inj_def
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
   where
-  [simp]: "rng m \<equiv> ran m"
+  [intro!]: "rng m \<equiv> ran m"
 
 lemmas rng_defs = rng_def ran_def
   
@@ -1388,7 +1388,7 @@ by (metis empty_iff equals0I
 
 lemma l_finite_rng: 
   "finite (dom m) \<Longrightarrow> finite (rng m)" 
-  by (simp add: finite_ran)
+  by (simp add: finite_ran rng_def)
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 subsubsection \<open> Domain restriction weakening lemmas [EXPERT] \<close>
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
@@ -2165,7 +2165,7 @@ lemma l_ranE_frule':
 
 lemma l_inv_MapTrue: 
   "finite (dom m) \<Longrightarrow> undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_Map inv_True inv_True m"
-  by (simp add: finite_ran inv_Map_def inv_VDMSet'_def)  
+  by (simp add: finite_ran inv_Map_def inv_VDMSet'_def rng_def)  
 
 lemma l_invMap_domr_absorb:   
   "inv_Map di ri m \<Longrightarrow> inv_Map di ri (S \<triangleleft> m)"
@@ -2341,45 +2341,55 @@ lemmas [VDM_num_spec_pre]     = pre_vdm_mod_def pre_vdm_div_def
                               
 lemmas [VDM_num_spec_post]    = post_vdm_mod_def post_vdm_div_def 
                                 post_vdm_rem_def post_vdm_pow_def
-                                post_vdm_floor_def post_vdm_abs_def
-lemmas [VDM_num_spec]         = VDM_num_spec_pre VDM_num_spec_post
+                                post_vdm_floor_def post_vdm_abs_def  
 
 
 lemmas [VDM_set_defs]         = inv_VDMSet_def inv_VDMSet1_def inv_VDMSet'_def inv_VDMSet1'_def inv_SetElems_def 
 lemmas [VDM_set_fcns]         = vdm_card_def
 lemmas [VDM_set_spec_pre]     = pre_vdm_card_def 
 lemmas [VDM_set_spec_post]    = post_vdm_card_def
-lemmas [VDM_set_spec]         = VDM_set_spec_pre VDM_set_spec_post
                               
 lemmas [VDM_seq_defs]         = inv_VDMSeq'_def inv_VDMSeq1'_def inv_SeqElems_def
 lemmas [VDM_seq_fcns_1]       = len_def elems_def inds_def inds_as_nat_def 
 lemmas [VDM_seq_fcns_2]       = vdm_reverse_def vdmtake_def seq_prefix_def 
 lemmas [VDM_seq_fcns_3]       = applyVDMSeq_def applyVDMSubseq'_def applyVDMSubseq_def
-lemmas [VDM_seq_fcns]         = VDM_seq_fcns_3 VDM_seq_fcns_2 VDM_seq_fcns_1         
 lemmas [VDM_seq_spec_pre]     = pre_hd_def pre_tl_def pre_applyVDMSeq_def pre_applyVDMSubseq_def
 lemmas [VDM_seq_spec_post_1]  = post_len_def post_elems_def post_inds_def post_hd_def post_tl_def   
 lemmas [VDM_seq_spec_post_2]  = post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
 lemmas [VDM_seq_spec_post_3]  = post_applyVDMSeq_def post_applyVDMSubseq_def 
-lemmas [VDM_seq_spec_post]    = VDM_seq_spec_post_3 VDM_seq_spec_post_2 VDM_seq_spec_post_1
-lemmas [VDM_seq_spec]         = VDM_seq_spec_pre VDM_seq_spec_post
 
 lemmas [VDM_map_defs]         = inv_Option_def inv_Map1_def inv_Map_def inv_Inmap_def
 lemmas [VDM_map_fcns_1]       = rng_def dagger_def munion_def 
 lemmas [VDM_map_fcns_2]       = dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def
 lemmas [VDM_map_fcns_3]       = vdm_merge_def vdm_inverse_def map_subset_def 
 lemmas [VDM_map_fcns_4]       = map_comp_def map_compatible_def
-lemmas [VDM_map_fcns]         = VDM_map_fcns_4 VDM_map_fcns_3 VDM_map_fcns_2 VDM_map_fcns_1 
 lemmas [VDM_map_fcns_1_simps] = dagger_simps upd_simps munion_simps 
 lemmas [VDM_map_fcns_2_simps] = restr_simps antirestr_simps
-lemmas [VDM_map_fcns_simps]   = VDM_map_fcns_2_simps VDM_map_fcns_1_simps
 lemmas [VDM_map_comp_1]       = maplet_defs
 lemmas [VDM_map_comp_2]       = mapCompSetBound_defs 
 lemmas [VDM_map_comp_3]       = mapCompTypeBound_defs
-lemmas [VDM_map_comp]         = VDM_map_comp_3 VDM_map_comp_2 VDM_map_comp_1
 lemmas [VDM_num_crc_1]        = is_VDMRealWhole_def is_VDMRatWhole_def 
 lemmas [VDM_num_crc_2]        = vdmint_of_real_def vdmint_of_rat_def
 lemmas [VDM_num_crc_3]        = total_coercion_def vdmset_of_t_def vdmseq_of_t_def isTest_def isTest'_def
-lemmas [VDM_num_crc]          = VDM_num_crc_3 VDM_num_crc_2 VDM_num_crc_1
 lemmas [VDM_stms_defs]        = seqcomp_def seqcomps.simps seqcomps'_def
+
+lemmas [VDM_num_spec]         = VDM_num_spec_pre VDM_num_spec_post
+lemmas [VDM_set_spec]         = VDM_set_spec_pre VDM_set_spec_post
+lemmas [VDM_seq_spec_post]    = VDM_seq_spec_post_3 VDM_seq_spec_post_2 VDM_seq_spec_post_1
+lemmas [VDM_seq_spec]         = VDM_seq_spec_pre VDM_seq_spec_post
+
+lemmas [VDM_seq_fcns]         = VDM_seq_fcns_3 VDM_seq_fcns_2 VDM_seq_fcns_1
+lemmas [VDM_map_fcns]         = VDM_map_fcns_4 VDM_map_fcns_3 VDM_map_fcns_2 VDM_map_fcns_1 
+lemmas [VDM_map_fcns_simps]   = VDM_map_fcns_2_simps VDM_map_fcns_1_simps
+lemmas [VDM_map_comp]         = VDM_map_comp_3 VDM_map_comp_2 VDM_map_comp_1
+lemmas [VDM_num_crc]          = VDM_num_crc_3 VDM_num_crc_2 VDM_num_crc_1
+
+lemmas [VDM_num]  = VDM_num_defs VDM_num_fcns VDM_num_crc 
+lemmas [VDM_set]  = VDM_seq_defs VDM_set_fcns
+lemmas [VDM_seq]  = VDM_seq_defs VDM_seq_fcns
+lemmas [VDM_map]  = VDM_map_defs VDM_map_fcns VDM_map_comp
+lemmas [VDM_stms] = VDM_stms_defs
+lemmas [VDM_spec] = VDM_num_spec VDM_set_spec VDM_seq_spec
+lemmas [VDM_all]  = VDM_basic_defs VDM_num VDM_set VDM_seq VDM_map VDM_stms  
 
 (*<*)end(*>*)

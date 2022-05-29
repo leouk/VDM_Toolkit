@@ -6,6 +6,7 @@ files = [./src/test/resources/Examples/Alarm/alarm.vdmsl]
 *)
 theory alarm_PO
 imports alarm
+  keywords "print_vdmset" :: diag
 begin
 
 
@@ -138,15 +139,21 @@ theorem ExpertToPage_FUNC_SATISFIABILITY_PO12:
 	by (meson Expert.select_convs(2) inv_Expert_def)
 	
 	
-	
-	
+named_theorems Typ_defs and Fcns_defs 
+
+lemmas [Typ_defs] = inv_Plant_def inv_Schedule_def inv_Qualification_def inv_Expert_def inv_Period_def inv_ExpertId_def
+lemmas [Fcns_defs] = Let_def QualificationOK_def
+
+
 \<comment>\<open>VDM source: ChangeExpert = ?\<close>
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:32\<close>
 theorem ChangeExpert_MAP_APPLY_PO13:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	"((\<forall> (dummy0 :: Plant)   (v11 :: Expert)   (v22 :: Expert)   (peri :: Period)  . (((inv_Plant dummy0))  \<and>  ((inv_Expert v11))  \<and>  ((inv_Expert v22))  \<and>  (((inv_Period peri))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  (peri \<in> (dom plan))))))"
-	unfolding inv_Plant_defs Let_def apply (safe, simp)
-  
+	apply (simp add: Typ_defs Fcns_defs, safe?)+
+  apply (simp add: VDM_map, safe?)+
+  apply (simp add: VDM_basic_defs VDM_seq_defs VDM_set_defs Typ_defs, safe?)+
+  unfolding VDM_basic_defs VDM_seq_defs VDM_set_defs Typ_defs apply (simp?, safe?)
 	oops
 	
 	

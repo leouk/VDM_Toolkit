@@ -10,12 +10,14 @@ named_theorems
   VDM_num_spec_pre    and
   VDM_num_spec_post   and
   VDM_num_spec        and
+  VDM_num             and
 
   VDM_set_defs        and
   VDM_set_fcns        and
   VDM_set_spec_pre    and
   VDM_set_spec_post   and
   VDM_set_spec        and
+  VDM_set             and
 
   VDM_seq_defs        and
   VDM_seq_fcns_1      and
@@ -28,6 +30,7 @@ named_theorems
   VDM_seq_spec_post_3 and
   VDM_seq_spec_post   and
   VDM_seq_spec        and
+  VDM_seq             and
 
   VDM_map_defs        and
 
@@ -46,11 +49,17 @@ named_theorems
   VDM_map_comp_2      and
   VDM_map_comp_3      and
 
+  VDM_map             and
+
   VDM_num_crc         and
   VDM_num_crc_1       and
   VDM_num_crc_2       and
   VDM_num_crc_3       and
                   
-  VDM_stms_defs  
+  VDM_stms_defs       and 
+  VDM_stms            and
+
+  VDM_spec            and
+  VDM_all
 
 end
