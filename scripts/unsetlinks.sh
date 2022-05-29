@@ -10,15 +10,15 @@ fi
 cd $HOME/.vscode
 VERSION=$1
 
-if [ ! -e extensions/jonaskrask.vdm-vscode-$VERSION ]
+if [ ! -e extensions/overturetool.vdm-vscode-$VERSION ]
 then
-    echo "Cannot find extensions/jonaskrask.vdm-vscode-$VERSION"
+    echo "Cannot find extensions/overturetool.vdm-vscode-$VERSION"
     exit 1
 fi
 
-RESOURCES=extensions/jonaskrask.vdm-vscode-$VERSION/resources
+RESOURCES=extensions/overturetool.vdm-vscode-$VERSION/resources
 
-for DIR in jars jars_highPrecision
+for DIR in jars 
 do
     if [ ! -e $RESOURCES/$DIR/saved ]
     then
