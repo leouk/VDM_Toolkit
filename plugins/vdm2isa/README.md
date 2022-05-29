@@ -23,8 +23,8 @@ This plugin project creates an interconnected eco system of plugins as:
 	3. goes over VDM POGs POs + new POs.  
 	4. creates `M_PO.thy` for every `M.thy`.
 	
-4. `ps2isa` plugin:
-	1. depends on successful `isapog` call.
+4. `isapog` strategies:
+	1. `isapog` has various parameters to control how proofs scripts attempts can be generated.
 	2. goes over proof obligation list and infers/chooses proof strategies to attempt; multiple outputs are possible.
 	3. creates `M_PS_i.thy` for every `M_PO.thy` for every strategy `i`.
 

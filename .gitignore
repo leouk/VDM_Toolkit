@@ -1,10 +1,7 @@
 experiments/Games/ConwayGL/target
 experiments/Games/ConwayGL/bin
-annotations/Annotations3/target
-annotations/witness/target
 experiments/Games/ConwayNB/bin
 plugins/vdm2isa/java/.generated
 plugins/vdm2isa/java/src/main/resources/.generated
 plugins/vdm2isa/java/bin
-plugins/annotations/target
 plugins/AnnotationsVDMToolkit/target
