@@ -5,12 +5,18 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-<!-- This is not quite right yet -->
+	<groupId>vdmtoolkit</groupId>
 	<artifactId>VDMToolkit-suite</artifactId>
-	<name>VDMToolkit-suite</name>
+	<name>VDMToolkit Suite</name>
 	<description>VDM Toolkit translation, annotations, libraries</description>
 	<packaging>pom</packaging>
 	<version>4.4.5-SNAPSHOT</version>	<!-- This version is inherited by all modules -->
+
+	<properties>
+	    <maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <revision>4.4.5-SNAPSHOT</revision>	<!-- CHANGE VERSION HERE, AND MODULE'S PARENT POMs -->
+	</properties>
 
 	<parent>
 		<groupId>com.fujitsu</groupId>
@@ -20,7 +26,7 @@
 	
 	<!-- sub modules -->
 	<modules>
-		<module>VDMToolkit_Annotations</module>
+		<module>annotationsVDMToolkit</module>
 		<module>vdmlib</module>
 		<module>vdm2isa</module>
 	</modules>

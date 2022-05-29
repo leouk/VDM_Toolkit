@@ -5,12 +5,25 @@
 	<name>vdm2isa</name>
 	<description>VDMSL translation to Isabelle</description>
 	
+	<!--
 	<parent>
 		<groupId>com.fujitsu</groupId>
 		<artifactId>vdmj-suite</artifactId>
 		<version>4.4.5-SNAPSHOT</version>
 	</parent>
-	
+	-->
+	<parent>
+		<groupId>vdmtoolkit</groupId>
+		<artifactId>VDMToolkit-suite</artifactId>
+		<version>4.4.5-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<developers>
 		<developer>
 			<id>LeoFreitas</id>
@@ -40,9 +53,9 @@
 			<version>4.4.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fujitsu</groupId>
-			<artifactId>VDMToolkit_Annotations</artifactId>
-			<version>4.4.5-SNAPSHOT</version>
+			<groupId>vdmtoolkit</groupId>
+			<artifactId>annotationsVDMToolkit</artifactId>
+			<version>${revision}</version>
 		</dependency>
 		<!--
 		<dependency>
