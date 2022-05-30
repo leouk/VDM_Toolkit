@@ -12,14 +12,9 @@ import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.syntax.ExpressionReader;
 import com.fujitsu.vdmj.syntax.ParserException;
 
-/**
- * @TheoremAttribute(ThmName = {XYZ, ABC, etc.};)
- */
-public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
+public class ASTdocAnnotation extends ASTAnnotation {
 
-    private static final long serialVersionUID = 1L;
-
-    public ASTTheoremAttributeAnnotation(LexIdentifierToken name) {
+    public ASTdocAnnotation(LexIdentifierToken name) {
         super(name);
     }
     
