@@ -1,7 +1,7 @@
 module WhyMUtil
 --load ./WhyMUtil.vdmsl ./lib/IO.vdmsl
 
-imports from IO functions println; print
+imports from IO operations println; print
 
 exports 
 
@@ -17,10 +17,10 @@ exports
 
 		-- tests whether a seq of sets are mutually disjoint
 		-- (e.g., it establishes that s(i) inter s(j) = {}, for all i <> j in set inds s);
-		disjoint [@elem, @param]: seq of (set of @elem) +> bool;
+		disjoint [@elem]: seq of (set of @elem) +> bool;
 
 		-- distributed union explicitly declared: TODO REMOVE?
-		distUnion [@elem, @param]: set of (set of @elem) +> set of @elem;
+		distUnion [@elem]: set of (set of @elem) +> set of @elem;
 
 		-- determinises if a seqence of sets forms a partition of the given set (e.g., it completes the set disjointly)
 		partition [@elem]: seq of (set of @elem) * set of @elem +> bool;
@@ -111,7 +111,7 @@ pre
 post
 	forall x in set s & process_Elem(x, e)
 measure
-	measure_process_Set
+	xmeasure_process_Set
 ;
 
 process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> bool
@@ -123,37 +123,37 @@ pre
 post
 	forall i in set inds s & process_Elem(s(i), e)
 measure
-	measure_process_Seq
+	xmeasure_process_Seq
 ;
 
 process_PSet [@elem, @param]: (@elem * @param -> bool) * 
 							  (@elem * @param +> bool) * 
 							  set of @elem * @param -> bool
-process_PSet(process_Elem, pre_process_Elem, s, e) ==
+process_PSet(process_Elem, xpre_process_Elem, s, e) ==
 	if s = {} then true 
 	else (let x in set s
 		  in process_Elem(x, e) and 
-			 process_PSet[@elem, @param](process_Elem, pre_process_Elem, s \ {x}, e))
+			 process_PSet[@elem, @param](process_Elem, xpre_process_Elem, s \ {x}, e))
 pre
-	forall x in set s & pre_process_Elem(x, e)
+	forall x in set s & xpre_process_Elem(x, e)
 post
 	forall x in set s & process_Elem(x, e)
 measure
-	measure_process_PSet
+	xmeasure_process_PSet
 ;
 
 process_PSeq [@elem, @param]: (@elem * @param -> bool) * 
 					(@elem * @param +> bool) * 
 					seq of @elem * @param -> bool
-process_PSeq(process_Elem, pre_process_Elem, s, e) ==
+process_PSeq(process_Elem, xpre_process_Elem, s, e) ==
 	if (s = []) then true 
-	else process_Elem(hd s, e) and process_PSeq[@elem, @param](process_Elem, pre_process_Elem, tl s, e)
+	else process_Elem(hd s, e) and process_PSeq[@elem, @param](process_Elem, xpre_process_Elem, tl s, e)
 pre
-	forall i in set inds s & pre_process_Elem(s(i), e)
+	forall i in set inds s & xpre_process_Elem(s(i), e)
 post
 	forall i in set inds s & process_Elem(s(i), e)
 measure
-	measure_process_PSeq
+	xmeasure_process_PSeq
 ;
 
 --*********************************************************************************************************
@@ -180,7 +180,7 @@ distUnion(s) ==
 post
 	RESULT = dunion(s) 
 measure
- 	measure_dunion
+ 	xmeasure_dunion
 ;
 	
 partition [@elem]: seq of (set of @elem) * set of @elem +> bool
@@ -204,7 +204,7 @@ post
 	RESULT = dunion { colElem(sq) | sq in set ss }
 -- BUG: VDM interpreter doesn't handle measures in polymorphic functions 
 measure
-	measure_collect_Elems
+	xmeasure_collect_Elems
 ;
 
 map_Subset [@D, @R]: map @D to @R * map @D to @R +> bool
@@ -255,7 +255,7 @@ filter_seq0(es, ss, res) ==
 			if head in set es then filter_seq0[@E](es \ {head} , tail, res ^ [hd ss])
 			else				   filter_seq0[@E](es, tail, res)
 measure
-	measure_filter_seq0;
+	xmeasure_filter_seq0;
 
 isInjSeq[@E]: seq of @E +> bool
 isInjSeq(s) == len s = card elems s;
@@ -302,7 +302,7 @@ pre
 	-- Result is known / bound within Original Sigma
 	--RESULT subset dom mf
 measure
-	measure_AllDeps;
+	xmeasure_AllDeps;
 
 -- Known dependencies of a k are all dependencies filtered by those known in m
 -- Unguarded: map may contain circular or unknown dependencies
@@ -377,34 +377,34 @@ isDepMapValid(m) == forall i in set dom m & isKeyDepValid[@K](m, i);
 -- Auxiliary functions measures - missing due to interp BUG (Feb 2011); fixed (June 2011); Overture 1.0.1
 --*********************************************************************************************************
 
-measure_process_Set [@elem, @param]: (@elem * @param -> bool) * set of @elem * @param -> nat
-measure_process_Set(-, s, -) == card s;
+xmeasure_process_Set [@elem, @param]: (@elem * @param -> bool) * set of @elem * @param -> nat
+xmeasure_process_Set(-, s, -) == card s;
 
-measure_process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> nat
-measure_process_Seq(-, s, -) == len s;
+xmeasure_process_Seq [@elem, @param]: (@elem * @param -> bool) * seq of @elem * @param -> nat
+xmeasure_process_Seq(-, s, -) == len s;
 
 
-measure_process_PSet [@elem, @param]: (@elem * @param -> bool) * 
+xmeasure_process_PSet [@elem, @param]: (@elem * @param -> bool) * 
 							  (@elem * @param +> bool) * 
 							  set of @elem * @param -> nat
-measure_process_PSet(-, -, s, -) == card s;
+xmeasure_process_PSet(-, -, s, -) == card s;
 
-measure_process_PSeq [@elem, @param]: (@elem * @param -> bool) * 
+xmeasure_process_PSeq [@elem, @param]: (@elem * @param -> bool) * 
 									  (@elem * @param +> bool) * 
 									  seq of @elem * @param -> nat
-measure_process_PSeq(-, -, s, -) == len s;
+xmeasure_process_PSeq(-, -, s, -) == len s;
 
-measure_dunion [@elem]: set of (set of @elem) -> nat
-measure_dunion(s) == card s;
+xmeasure_dunion [@elem]: set of (set of @elem) -> nat
+xmeasure_dunion(s) == card s;
 
-measure_collect_Elems [@elem, @res]: (@elem -> set of @res) * set of @elem -> nat
-measure_collect_Elems(-, ss) == card ss;
+xmeasure_collect_Elems [@elem, @res]: (@elem -> set of @res) * set of @elem -> nat
+xmeasure_collect_Elems(-, ss) == card ss;
 
-measure_filter_seq0[@E]: set of @E * seq of @E * seq of @E -> nat
-measure_filter_seq0(-, ss, -) == len ss;
+xmeasure_filter_seq0[@E]: set of @E * seq of @E * seq of @E -> nat
+xmeasure_filter_seq0(-, ss, -) == len ss;
 
-measure_AllDeps[@K]: map @K to set of @K * map @K to set of @K * @K -> nat
-measure_AllDeps(-, m, -) == card (dom m);
+xmeasure_AllDeps[@K]: map @K to set of @K * map @K to set of @K * @K -> nat
+xmeasure_AllDeps(-, m, -) == card (dom m);
 
 operations
 

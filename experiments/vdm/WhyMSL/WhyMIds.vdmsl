@@ -1,27 +1,27 @@
 module WhyMIds
 --load ./WhyMIds.vdmsl ./WhyMUtil.vdmsl ./lib/IO.vdmsl
 
-imports from IO 	  functions println; print,
+imports from IO 	  operations println; print,
 		from WhyMUtil functions partition renamed partition;
 
 exports types 
 			struct Id; -- NOT QUITE THERE YET: Still a bit buggy in VDMJ
-			Identity;
+			struct Identity;
 		functions
 			idsPrefix	  : [Identity] +> seq1 of char;
 			canCreateIds  : set of Id +> bool;
 			isIdConsistent: set of Id * set of Id * [Id] +> bool;
 			toolIds: set of Id +> set of Id;
 			logIds : set of Id +> set of Id;
-			inv_Name	  : seq1 of char +> bool
+			inv_Name	  : seq1 of char +> bool;
 
-			inv_TheoryId  : Id +> bool
-			inv_ConjId	  : Id +> bool
-			inv_ProofId	  : Id +> bool
-			inv_VarId	  : Id +> bool
-			inv_DefId	  : Id +> bool
-			inv_LogId	  : Id +> bool
-			inv_ToolId	  : Id +> bool
+			inv_TheoryId  : Id +> bool;
+			inv_ConjId	  : Id +> bool;
+			inv_ProofId	  : Id +> bool;
+			inv_VarId	  : Id +> bool;
+			inv_DefId	  : Id +> bool;
+			inv_LogId	  : Id +> bool;
+			inv_ToolId	  : Id +> bool;
 
 		operations 
 			allIds		  : () 	  	   	 ==> set of Id;

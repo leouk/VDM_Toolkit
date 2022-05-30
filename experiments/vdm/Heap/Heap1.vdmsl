@@ -1,8 +1,8 @@
 -- $Id$
 module Heap1
-exports all
 
 imports from Heap0 types Loc renamed Heap0Loc;
+exports all
 definitions 
 
 types 

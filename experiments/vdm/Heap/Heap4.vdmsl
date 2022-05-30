@@ -1,8 +1,6 @@
 -- $Id$
 module Heap4
-exports all
-
-imports from Heap1 functions locs_of renamed Heap1locs_of,
+imports from Heap1 functions locs_of renamed Heap1locs_of;,
 		from Heap3 types Loc   renamed Heap3Loc; 
 						 Piece renamed Heap3Piece;
 						 Free3 renamed Heap3Free3;
@@ -10,6 +8,7 @@ imports from Heap1 functions locs_of renamed Heap1locs_of,
 				   functions isOk3		  renamed Heap3isOk3;
 							 isReachable3 renamed Heap3isReachable3;
 							 locs3		  renamed Heap3locs3;
+exports all
 definitions 
 
 types 
@@ -29,7 +28,7 @@ functions
 				else
 					y
 		pre ss <> {}
-		measure measure_min;
+		measure xmeasure_min;
 	
 	remove4: [Loc] * [Loc] * Store * nat1 -> (Store * Piece)
 	remove4(prev, curr, store, n) ==
@@ -44,7 +43,7 @@ functions
 						 else
 							store ++ { curr |-> store(curr)-n }) in 
 				mk_(store1, mk_Piece(curr + store(curr)-n, n))
-		measure measure_LocLocStoreNat1;
+		measure xmeasure_LocLocStoreNat1;
 
 	insert4: [Loc] * [Loc] * Store * Loc * nat1 -> Store
 	insert4(prev, curr, store, a, s) == 
@@ -73,16 +72,16 @@ functions
 			(prev = nil or curr = nil or prev < curr) and
 			Heap3isOk3(prev, store) and
 			Heap3isOk3(curr, store)
-		measure measure_LocLocStoreLocNat1;
+		measure xmeasure_LocLocStoreLocNat1;
 
-	measure_min: set of nat -> nat
-	measure_min(ss) == card ss;
+	xmeasure_min: set of nat -> nat
+	xmeasure_min(ss) == card ss;
 
-	measure_LocLocStoreNat1: [Loc] * [Loc] * Store * nat1 -> nat
-	measure_LocLocStoreNat1(-, -, store, -) == card dom store;
+	xmeasure_LocLocStoreNat1: [Loc] * [Loc] * Store * nat1 -> nat
+	xmeasure_LocLocStoreNat1(-, -, store, -) == card dom store;
 
-	measure_LocLocStoreLocNat1: [Loc] * [Loc] * Store * Loc * nat1 -> nat
-	measure_LocLocStoreLocNat1(-, -, store, -, -) == card dom store;
+	xmeasure_LocLocStoreLocNat1: [Loc] * [Loc] * Store * Loc * nat1 -> nat
+	xmeasure_LocLocStoreLocNat1(-, -, store, -, -) == card dom store;
 
 state StateName of
 	free4: Free3

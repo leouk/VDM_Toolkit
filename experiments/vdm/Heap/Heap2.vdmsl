@@ -1,12 +1,12 @@
 -- $Id$
 module Heap2
-exports all
 
 imports from Heap1 types Loc renamed Heap1Loc; 
 						 Piece renamed Heap1Piece;
 						 Free1 renamed Heap1Free1;
 	
 				   functions locs_of renamed Heap1locs_of;
+exports all
 
 definitions 
 
@@ -34,14 +34,14 @@ functions
 					true
 				 else
 					fp.FPLOC + fp.FPSIZE < fp.FPNEXT.FPLOC and isOk2(fp.FPNEXT)
-		measure measure_Free2;
+		measure xmeasure_Free2;
 
 	locs2: Free2 -> set of Loc
 	locs2(fp) == if fp = nil then
 					{}
 				 else
 					{fp.FPLOC,...,fp.FPLOC+fp.FPSIZE-1} union locs2(fp.FPNEXT)
-		measure measure_Free2;
+		measure xmeasure_Free2;
 
 	isReachable: Fp * Free2 -> bool
 	isReachable(fp, start) == if start = nil then
@@ -50,13 +50,13 @@ functions
 								true
 							  else 
 								isReachable(fp, start.FPNEXT)
-		measure measure_fpFree2;	
+		measure xmeasure_fpFree2;	
 
 	retr2_0: Free2 -> set of Loc
 	retr2_0(ps) == locs2(ps);
 
 	retr2_1: Free2 -> Free1
-	retr2_1(free) == { mk_Piece(fp.FPLOC, fp.FPSIZE) | 
+	retr2_1(free) == { mk_Heap1Piece(fp.FPLOC, fp.FPSIZE) | 
 							fp in set ALL_FP & isReachable(fp, free) };
 
 	-- inverse of retr2_1: useful to prove adequacy proof
@@ -67,30 +67,30 @@ functions
 				s = ps \ { p } and
 				forall q in set s & p.LOC < q.LOC;
 
-	inv_retr2_1: Free1 -> Free2
-	inv_retr2_1(ps) == if ps = {} then
+	xinv_retr2_1: Free1 -> Free2
+	xinv_retr2_1(ps) == if ps = {} then
 							nil
 						else
 							let mk_(p, s) = split(ps) in
-								mk_Fp(p.LOC, p.SIZE, inv_retr2_1(s))
-		measure measure_Free1;
+								mk_Fp(p.LOC, p.SIZE, xinv_retr2_1(s))
+		measure xmeasure_Free1;
 
-	measure_Free1: Free1 -> nat
-	measure_Free1(ps) == card ps;
+	xmeasure_Free1: Free1 -> nat
+	xmeasure_Free1(ps) == card ps;
 
-	measure_Free2: Free2 -> nat
-	measure_Free2(fp) == if fp = nil or fp.FPNEXT = nil then 0 else 1+measure_Free2(fp.FPNEXT)
-		measure measure_unk;
+	xmeasure_Free2: Free2 -> nat
+	xmeasure_Free2(fp) == if fp = nil or fp.FPNEXT = nil then 0 else 1+xmeasure_Free2(fp.FPNEXT)
+		measure xmeasure_unk;
 
-	measure_unk: Free2 -> nat
-	measure_unk(fp) == is not yet specified;
+	xmeasure_unk: Free2 -> nat
+	xmeasure_unk(fp) == is not yet specified;
 
-	measure_fpFree2: Fp * Free2 -> nat
-	measure_fpFree2(fp, f2) == if f2 = nil or fp = f2 then 0 else 1+measure_fpFree2(fp, f2.FPNEXT)
-		measure measure_unk2;
+	xmeasure_fpFree2: Fp * Free2 -> nat
+	xmeasure_fpFree2(fp, f2) == if f2 = nil or fp = f2 then 0 else 1+xmeasure_fpFree2(fp, f2.FPNEXT)
+		measure xmeasure_unk2;
 
-	measure_unk2: Fp * Free2 -> nat
-	measure_unk2(fp, f2) == is not yet specified;
+	xmeasure_unk2: Fp * Free2 -> nat
+	xmeasure_unk2(fp, f2) == is not yet specified;
 
 state Heap2St of
 	free2: Free2

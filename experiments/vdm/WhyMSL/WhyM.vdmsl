@@ -2,7 +2,7 @@ module WhyM
 --load ./WhyM.vdmsl ./WhyMIds.vdmsl ./WhyMUtil.vdmsl ./lib/IO.vdmsl ./lib/VDMUtil.vdmsl
 
 imports from VDMUtil  functions  set2seq		renamed set2seq,
-		from IO		 functions  println	renamed println;
+		from IO		 operations  println	renamed println;
 								print   renamed print,
 
 		from WhyMIds  types 	 Id 			renamed Id0;
@@ -636,9 +636,9 @@ values
 	ThyGatherTools : Theory +> set of Tool 		 = (lambda t: Theory & t.allowed);
 
 	-- Given a definition, return the set of related DefLink of specific type 
-	DefFilterRelDef : Definition +> set of DefLink = (lambda x: Definition & { dr | dr in set x.related & inv_LinkDef(dr) });--is_Definition(dr) });
-	DefFilterRelConj: Definition +> set of DefLink = (lambda x: Definition & { cr | cr in set x.related & inv_LinkConj(cr) });--is_Conjecture(cr) });
-	DefFilterRelThy : Definition +> set of DefLink = (lambda x: Definition & { th | th in set x.related & inv_LinkThy(th) });--is_Theory(th)     });
+	DefFilterRelDef : Definition +> set of DefLink = (lambda x: Definition & { dr | dr in set x.related & xinv_LinkDef(dr) });--is_Definition(dr) });
+	DefFilterRelConj: Definition +> set of DefLink = (lambda x: Definition & { cr | cr in set x.related & xinv_LinkConj(cr) });--is_Conjecture(cr) });
+	DefFilterRelThy : Definition +> set of DefLink = (lambda x: Definition & { th | th in set x.related & xinv_LinkThy(th) });--is_Theory(th)     });
 	
 	-- Given set of definitions, gather all known signatures
 	DefsGatherSigs  : set of Definition +> set of Signature  = (lambda x: set of Definition & dunion { TermSig(d.term) | d in set x }); 
@@ -821,14 +821,14 @@ hasUnknownTypeDeps(s, tid) ==
 -- Related (DefLink) data collection for Definition
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-inv_LinkDef: DefLink +> bool
-inv_LinkDef(dl) == dl.link <> nil and inv_DefId(dl.link);
+xinv_LinkDef: DefLink +> bool
+xinv_LinkDef(dl) == dl.link <> nil and inv_DefId(dl.link);
 
-inv_LinkConj: DefLink +> bool
-inv_LinkConj(dl) == dl.link <> nil and inv_ConjId(dl.link);
+xinv_LinkConj: DefLink +> bool
+xinv_LinkConj(dl) == dl.link <> nil and inv_ConjId(dl.link);
 
-inv_LinkThy: DefLink +> bool
-inv_LinkThy(dl) == dl.link = nil;
+xinv_LinkThy: DefLink +> bool
+xinv_LinkThy(dl) == dl.link = nil;
 
 -- Def have "related" def set: this computes their closure filtered by def
 DefsRelatedDefs: set of Definition +> set of DefLink
@@ -837,7 +837,7 @@ DefsRelatedDefs(defs) ==
 post
 	post_collectElems0[Definition, DefLink](DefFilterRelDef, defs, RESULT)
 	and
-	forall dl in set RESULT & inv_LinkDef(dl)
+	forall dl in set RESULT & xinv_LinkDef(dl)
 ;
 
 -- Def have "related" conj set: this computes their closure filtered by conj
@@ -847,7 +847,7 @@ DefsRelatedConjs(defs) ==
 post
 	post_collectElems0[Definition, DefLink](DefFilterRelConj, defs, RESULT)
 	and
-	forall dl in set RESULT & inv_LinkConj(dl)
+	forall dl in set RESULT & xinv_LinkConj(dl)
 ;
 
 -- Def have "related" thy set: this computes their closure filtered by thy
@@ -857,7 +857,7 @@ DefsRelatedThys(defs) ==
 post
 	post_collectElems0[Definition, DefLink](DefFilterRelThy, defs, RESULT)
 	and
-	forall dl in set RESULT & inv_LinkThy(dl)
+	forall dl in set RESULT & xinv_LinkThy(dl)
 ;
 
 -- Flatten all whys within a theory's strategies
@@ -909,7 +909,7 @@ BoundedVars(t) ==
 --post
 --	RESULT <> {} -- TODO: Is this not total fcn then? Yep
 measure
-	measure_TermVars
+	xmeasure_TermVars
 ;
 	
 FreeVars: Term +> set of VarId
@@ -922,12 +922,12 @@ FreeVars(t) ==
 --post
 --	RESULT <> {} -- TODO: Is this not total fcn then?
 measure
-	measure_TermVars
+	xmeasure_TermVars
 ;
 
 -- TODO: needs a proper measure here: given the term is to be "well-formed" this incompleteness here shouldn't be a problem
-measure_TermVars: Term -> nat
-measure_TermVars(t) == 
+xmeasure_TermVars: Term -> nat
+xmeasure_TermVars(t) == 
 	cases true:
 		(is_EqTerm(t))		-> if is_EqTerm(t.lhs) then 3 elseif is_EqTerm(t.rhs) then 2 else 1,
 		(is_Expr(t)),			

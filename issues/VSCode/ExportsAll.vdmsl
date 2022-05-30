@@ -1,0 +1,5 @@
+module ExportsAll
+--@no errors despite nothing to export? 
+exports all
+definitions 
+end ExportsAll

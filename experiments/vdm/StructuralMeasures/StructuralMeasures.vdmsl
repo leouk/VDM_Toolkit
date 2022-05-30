@@ -1,4 +1,5 @@
 module StructuralMeasures
+exports all
 definitions
 types
 

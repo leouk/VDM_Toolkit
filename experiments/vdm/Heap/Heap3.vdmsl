@@ -1,10 +1,10 @@
 -- $Id$
 module Heap3
-exports all
 
 imports from Heap1 functions locs_of renamed Heap1locs_of,
 	 	from Heap2 types Loc renamed Heap2Loc;
 						 Piece renamed Heap2Piece;
+exports all
 definitions 
 
 
@@ -31,7 +31,7 @@ functions
 			store(a) > 1 and
 			store(a+1) <> nil => (a+ store(a) < store(a+1) and
 								  isOk3(store(a+1), store))
-		measure measure_LocStore;
+		measure xmeasure_LocStore;
 
 	locs3: [Loc] * Store -> set of Loc
 	locs3(start, store) ==
@@ -40,7 +40,7 @@ functions
 		else
 			{start,...,start + store(start+1)-1} union locs3(store(start+1), store)
 		pre isOk3(start, store)
-		measure measure_LocStore;
+		measure xmeasure_LocStore;
 
 	isReachable3: Loc * [Loc] * Store -> bool	
 	isReachable3(a, start, store) == 
@@ -50,7 +50,7 @@ functions
 			true
 		else
 			isReachable3(a, store(start+1), store)
-		measure measure_LocLocStore;
+		measure xmeasure_LocLocStore;
 
 	nonFreeLocEquiv: [Loc] * Store * Store -> bool
 	nonFreeLocEquiv(startB, storeB, storeA) ==
@@ -65,11 +65,11 @@ functions
 		-- forall loc in set ((dom store~) \ locs3(start~, store~)) &
 		--	loc in set dom store and store(loc) = store~(loc);
 
-	measure_LocStore: [Loc] * Store -> nat
-	measure_LocStore(-, store) == card dom store;
+	xmeasure_LocStore: [Loc] * Store -> nat
+	xmeasure_LocStore(-, store) == card dom store;
 
-	measure_LocLocStore: Loc * [Loc] * Store -> nat
-	measure_LocLocStore(-, -, store) == card dom store;
+	xmeasure_LocLocStore: Loc * [Loc] * Store -> nat
+	xmeasure_LocLocStore(-, -, store) == card dom store;
 
 state StateName of
 	free3: Free3
