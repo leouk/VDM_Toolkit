@@ -1,5 +1,7 @@
 module TestV2IState 
-exports all
+exports 
+   types 
+      struct S
 definitions 
 
 state S of  

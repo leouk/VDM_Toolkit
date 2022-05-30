@@ -2,7 +2,4 @@ module TestV2ITypesComplexRecursive
 exports all
 definitions
 
-types T = nat;
-	
-
 end TestV2ITypesComplexRecursive
