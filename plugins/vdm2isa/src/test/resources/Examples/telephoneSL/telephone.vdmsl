@@ -31,10 +31,10 @@ definitions
    status: map Subscriber to Status
    calls:  inmap Subscriber to Subscriber
  inv mk_Exchange(status, calls) == 
-    forall i in set dom calls & 
-       (status(i) = <WI> and status(calls(i)) = <WR>) 
-       or
-       (status(i) = <SI> and status(calls(i)) = <SR>)
+    true -- forall i in set dom calls & 
+    --    (status(i) = <WI> and status(calls(i)) = <WR>) 
+    --    or
+    --    (status(i) = <SI> and status(calls(i)) = <SR>)
  end
 
 \end{vdm_al}
