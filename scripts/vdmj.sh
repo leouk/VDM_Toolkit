@@ -108,7 +108,7 @@ MAIN="com.fujitsu.vdmj.VDMJ"
     ANNOTATIONS2_JAR=$VDMJMAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
     check "$ANNOTATIONS2_JAR"
     ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${MVERSION}/annotationsVDMToolkit-${MVERSION}.jar
-    check "$ANNOTATIONS_VDM_TOOLKIT_JARq"
+    check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
     VDMJ_OPTS="$VDMJ_OPTS -annotations"
     VM_OPTS="$VM_OPTS -Dannotations.debug -Dvdmj.parser.merge_comments=true"
     CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$ANNOTATIONS_VDM_TOOLKIT_JAR"

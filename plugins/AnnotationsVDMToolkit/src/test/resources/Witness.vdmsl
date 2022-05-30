@@ -25,7 +25,7 @@ functions
 	
 	f: nat -> nat
 	f(x) == x + 1
-	pre x > 0 --@Printf(x)
+	pre x > 0 --@Printf("%1$s", x)
 	post RESULT > x;
 	
 operations
@@ -37,9 +37,9 @@ operations
 
 	Test: () ==> ()
 	Test() == (
-		--@Printf(someStateRegister)
+		--@Printf("%1$s", someStateRegister)
 		someStateRegister := someStateRegister + 5;
-		--@Printf(someStateRegister)
+		--@Printf("%1$s", someStateRegister)
 	)
 
 state Register of
