@@ -8,10 +8,11 @@ public class TestVDMJ {
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
         //    "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
-        //   "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Doc.vdmsl"
-           "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTheoremAttr.vdmsl"
+        //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Doc.vdmsl"
+        //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTheoremAttr.vdmsl"
         //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTime.vdmsl"
-        //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Witness.vdmsl"
+        //   ,
+        "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Witness.vdmsl"
         });  
     }
 }
