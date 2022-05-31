@@ -2,7 +2,6 @@ module MinimalTheoremAttr
 exports all
 definitions
 types
-    --@TheoremAttribute T = {simp};
     T = nat
     --@TheoremAttribute inv_T = {simp};
     inv t == (t > 10);
@@ -15,6 +14,6 @@ functions
     --@TheoremAttribute pre_f = {trans};
     pre (x > 10)
     --@TheoremAttribute post_f = {elim};
-    post RESULT <= x;
+    post (RESULT <= x);
 
 end MinimalTheoremAttr

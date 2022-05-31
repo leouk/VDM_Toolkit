@@ -38,23 +38,24 @@ public class TCTheoremAttributeAnnotation extends TCAnnotation {
 	@Override
 	public void tcBefore(TCDefinition def, Environment env, NameScope scope)
 	{
-        if (!Arrays.asList(/*NameScope.GLOBAL, NameScope.STATE,*/ NameScope.TYPENAME).contains(scope))
+        if (!Arrays.asList(/*NameScope.GLOBAL, NameScope.STATE, NameScope.TYPENAME, */NameScope.NAMES).contains(scope))
         {
-            name.report(6009, "@TheoremAttribute only applies to global (state, type, fcns, ops) names");
+            name.report(6601, String.format("@TheoremAttribute name scope error. It applies to global (state, type, fcns, ops) names only \n\t name %1$s scope %2$s\n", getDefName().name, scope));
         }
 		else 
 		{
-			if (def instanceof TCTypeDefinition || def instanceof TCExplicitFunctionDefinition || def instanceof TCExplicitOperationDefinition)
+			//@NB TCTypeDefinition env.findName fails, despite the name being there? 
+			if (/*def instanceof TCTypeDefinition || */def instanceof TCExplicitFunctionDefinition || def instanceof TCExplicitOperationDefinition)
 			{
 				TCDefinition d = env.findName(def.name, scope);
 				if (!def.equals(d))
 				{
-					name.report(6009, String.format("@TheoremAttribute associated with wrong definition: \n\t expected %1$s;\n\t found %2$s", def, d));
+					name.report(6601, String.format("@TheoremAttribute associated with wrong definition name %1$s: \n\t expected %2$s;\n\t found %3$s\n", getDefName(), def, d));
 				}
 			} 
 			else 
 			{
-				name.report(6009, "@TheoremAttribute only applies to type, function and operation definitions");
+				name.report(6600, "@TheoremAttribute only applies to type, function and operation definitions\n");
 			}
 		}
 	}
@@ -62,13 +63,13 @@ public class TCTheoremAttributeAnnotation extends TCAnnotation {
 	@Override
 	public void tcBefore(TCModule module)
 	{
-		name.report(6009, "@TheoremAttribute only applies to top-level definitions, not modules");
+		name.report(6600, "@TheoremAttribute only applies to top-level definitions, not modules\n");
 	}
 
 	@Override
 	public void tcBefore(TCClassDefinition clazz)
 	{
-		name.report(6009, "@TheoremAttribute only applies to top-level definitions, not classes");
+		name.report(6600, "@TheoremAttribute only applies to top-level definitions, not classes\n");
 	}
 
 	@Override
@@ -77,25 +78,31 @@ public class TCTheoremAttributeAnnotation extends TCAnnotation {
 		TCDefinition d = env.findName(getDefName().name, scope);
 		if (d == null)
 		{
-			name.report(6009, String.format("@TheoremAttribute could not find definition for %1$s", getDefName().name));
+			name.report(6003, String.format("@TheoremAttribute could not find definition for %1$s\n", getDefName().name));
 		}
 		else if (d instanceof TCExplicitFunctionDefinition)
 		{
 			TCExplicitFunctionDefinition edef = (TCExplicitFunctionDefinition)d;
-			if (!edef.body.equals(exp))
+			// declared name must match 
+			if (!edef.name.matches(getDefName().name))
 			{
-				name.report(6009, String.format("@TheoremAttribute only applies to pre/post/inv/eq/ord definitions: \n\tgiven %1$s", edef.body));
+				name.report(6004, String.format("@TheoremAttribute only applies to pre/post/inv/eq/ord definitions: \n\tname %1$s yet given %2$s\n", getDefName(), edef.name));
+			}
+			// declared expression must match so that the name is indeed attached to write body being translated
+			else if (!edef.body.equals(exp))
+			{
+				name.report(6004, String.format("@TheoremAttribute only applies to pre/post/inv/eq/ord definitions: \n\tgiven %1$s\n", edef.body));
 			}
 		}
 		else
 		{
-			name.report(6009, "@TheoremAttribute only applies to explicit function expressions");
+			name.report(6000, "@TheoremAttribute only applies to explicit function expressions\n");
 		}
 	}
 
 	@Override
 	public void tcBefore(TCStatement stmt, Environment env, NameScope scope)
 	{
-		name.report(6009, "@TheoremAttribute only applies to top-level definitions, not statements");
+		name.report(6000, "@TheoremAttribute only applies to top-level definitions, not statements\n");
 	}
 }
