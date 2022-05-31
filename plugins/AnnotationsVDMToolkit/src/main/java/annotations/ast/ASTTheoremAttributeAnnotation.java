@@ -4,6 +4,7 @@ import com.fujitsu.vdmj.ast.annotations.ASTAnnotation;
 import com.fujitsu.vdmj.ast.expressions.ASTEqualsExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTExpressionList;
+import com.fujitsu.vdmj.ast.expressions.ASTSetEnumExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTVariableExpression;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
 import com.fujitsu.vdmj.lex.LexException;
@@ -24,7 +25,7 @@ public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
     }
     
     /**
-	 * Override the default parse, and look for @TheoremAttribute <name> = <exp>;
+	 * Override the default parse, and look for @TheoremAttribute <name> = <set-enum>;
 	 */
 	@Override
 	public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
@@ -41,16 +42,23 @@ public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
 			if (eqexp.left instanceof ASTVariableExpression)
 			{
 				args.add(eqexp.left);
-				args.add(eqexp.right);
+				if (eqexp.right instanceof ASTSetEnumExpression)
+				{
+					args.add(eqexp.right);
+				}
+				else 
+				{
+					parseException("expecting <name> = <set-enum>", eqexp.right.location);
+				}
 			}
 			else
 			{
-				parseException("expecting <name> = <exp>;", eqexp.location);
+				parseException("expecting <name> = <set-enum>;", eqexp.left.location);
 			}
 		}
 		else
 		{
-			parseException("expecting <name> = <exp>;", exp.location);
+			parseException("expecting <name> = <set-enum>;", exp.location);
 		}
 		
 		if (ltr.getLast().isNot(Token.SEMICOLON))
