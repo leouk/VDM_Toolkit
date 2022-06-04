@@ -1,0 +1,33 @@
+module A
+exports all
+definitions 
+types
+	--@Witness(ONE_R, mk_R(1,2))
+	R ::
+		a : nat
+		b : nat
+	inv mk_R(a, b) == a < b;
+end A
+
+module B
+imports from A types R renamed R
+exports all
+definitions 
+
+types
+
+	--@NB: can I "refer" here to witnesses of type R given its import or how would that work? 
+	--@Witness(ONE_S, mk_S(ONE_R, ONE_R))
+	S ::
+		a : R
+		b : R
+	inv mk_S(mk_R(a1, b1), mk_R(a2, b2)) == a1 + a2 < b1 + b2;
+
+functions
+	f: R -> nat
+	f(rec) == rec.a + rec.b
+	post
+		-- (THREE, post_f(ONE, f(ONE)))
+		RESULT > rec.a and RESULT > rec.b;
+
+end B
