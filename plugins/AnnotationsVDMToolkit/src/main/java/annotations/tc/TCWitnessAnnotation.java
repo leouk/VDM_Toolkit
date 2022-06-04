@@ -1,6 +1,7 @@
 package annotations.tc;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
+import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
@@ -26,7 +27,6 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
-import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
 
 public class TCWitnessAnnotation extends TCAnnotation
@@ -43,17 +43,40 @@ public class TCWitnessAnnotation extends TCAnnotation
 	public static void doInit()
 	{
 		tagDefinitions = new TCDefinitionList();
-		
 		for (TCAnnotation a : getInstances(TCWitnessAnnotation.class))
 		{
 			TCWitnessAnnotation witness = (TCWitnessAnnotation)a;
-			
-			if (witness.args.get(0) instanceof TCVariableExpression &&
-				witness.args.get(1) instanceof TCExpression)
+			if (witness.checkArgs())
 			{
 				tagDefinitions.add(witness.createDefinition());
 			}
 		}
+	}
+
+	private boolean checkArgs()
+	{
+		boolean result = args.size() == 2;
+		if (result)
+		{
+			result = args.get(0) instanceof TCVariableExpression;
+			if (result)
+			{
+				result = args.get(1) instanceof TCExpression;
+				if (!result) 
+				{
+					name.report(6021, "@Witness first argument must be a valid name, found " + args.get(0));		
+				}
+			}
+			else 
+			{
+				name.report(6021, "@Witness first argument must be a valid name, found " + args.get(0));
+			}
+		}
+		else 
+		{
+			name.report(6021, "@Witness must have exactly 2 arguments, found " + args.size());
+		}
+		return result;
 	}
 	
 	private TCValueDefinition createDefinition()
@@ -79,6 +102,30 @@ public class TCWitnessAnnotation extends TCAnnotation
 		
 		args.get(0).typeCheck(local, null, scope, null);
 		args.get(1).typeCheck(local, null, scope, null);
+	}
+
+	@Override
+	public void tcBefore(TCModule module)
+	{
+		name.report(6020, "@Witness only applies to operations, functions and type definitions");
+	}
+
+	@Override
+	public void tcBefore(TCClassDefinition clazz)
+	{
+		name.report(6020, "@Witness only applies to operations, functions and type definitions");
+	}
+
+	@Override
+	public void tcBefore(TCExpression exp, Environment env, NameScope scope)
+	{
+		name.report(6020, "@Witness only applies to operations, functions and type definitions");
+	}
+
+	@Override
+	public void tcBefore(TCStatement stmt, Environment env, NameScope scope)
+	{
+		name.report(6020, "@Witness only applies to operations, functions and type definitions");
 	}
 }
 

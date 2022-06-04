@@ -20,36 +20,36 @@ public class ASTWitnessAnnotation extends ASTAnnotation
 		super(name);
 	}
 
-	    /**
-	 * Override the default parse, and look for @TheoremAttribute <name> = <set-enum>;
-	 */
-	@Override
-	public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
-	{
-		ASTExpressionList args = new ASTExpressionList();
+	// /**
+	//  * Override the default parse, and look for @TheoremAttribute <name> = <set-enum>;
+	//  */
+	// @Override
+	// public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
+	// {
+	// 	ASTExpressionList args = new ASTExpressionList();
 	
-		if (ltr.nextToken().is(Token.BRA))
-		{
-			if (ltr.nextToken().isNot(Token.KET))
-			{
-				//@NB perhaps this could inner bit could be a method in ASTAnnotation?
-				ExpressionReader er = new ExpressionReader(ltr);
-				Properties.annotations_debug = true;
-				ASTExpression exp = er.readExpression();
-				args.add(er.readExpression());
+	// 	if (ltr.nextToken().is(Token.BRA))
+	// 	{
+	// 		if (ltr.nextToken().isNot(Token.KET))
+	// 		{
+	// 			//@NB perhaps this could inner bit could be a method in ASTAnnotation?
+	// 			ExpressionReader er = new ExpressionReader(ltr);
+	// 			Properties.annotations_debug = true;
+	// 			ASTExpression exp = er.readExpression();
+	// 			args.add(er.readExpression());
 		
-				while (ltr.getLast().is(Token.COMMA))
-				{
-					ltr.nextToken();
-					args.add(er.readExpression());
-				}
-			}
+	// 			while (ltr.getLast().is(Token.COMMA))
+	// 			{
+	// 				ltr.nextToken();
+	// 				args.add(er.readExpression());
+	// 			}
+	// 		}
 	
-			if (ltr.getLast().isNot(Token.KET))
-			{
-				parseException("Expecting ')' after annotation", ltr.getLast().location);
-			}
-		}
-		return args;
-	}
+	// 		if (ltr.getLast().isNot(Token.KET))
+	// 		{
+	// 			parseException("Expecting ')' after annotation", ltr.getLast().location);
+	// 		}
+	// 	}
+	// 	return args;
+	// }
 }
