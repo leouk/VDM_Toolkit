@@ -20,8 +20,6 @@ import com.fujitsu.vdmj.values.ValueFactory;
 
 public class INTimeAnnotation extends INAnnotation
 {
-    private static long startTime = System.currentTimeMillis();
-    
     private final static Map<String, Long> timeTotal = new TreeMap<String, Long>();
     
     private long checkPoint;

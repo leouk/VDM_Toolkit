@@ -1,7 +1,7 @@
 package annotations.tc;
 
 import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
-import com.fujitsu.vdmj.tc.annotations.TCAnnotationList;
+import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
@@ -9,25 +9,12 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
 import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+import com.fujitsu.vdmj.tc.statements.TCStatement;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
-
-import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
-import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCDefinition;
-import com.fujitsu.vdmj.tc.expressions.TCExpression;
-import com.fujitsu.vdmj.tc.expressions.TCExpressionList;
-import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
-import com.fujitsu.vdmj.tc.modules.TCModule;
-import com.fujitsu.vdmj.tc.statements.TCStatement;
-import com.fujitsu.vdmj.typechecker.Environment;
-import com.fujitsu.vdmj.typechecker.NameScope;
-
-import com.fujitsu.vdmj.tc.types.TCType;
-import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
-import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
 
 public class TCWitnessAnnotation extends TCAnnotation
 {
@@ -116,11 +103,11 @@ public class TCWitnessAnnotation extends TCAnnotation
 		name.report(6020, "@Witness only applies to operations, functions and type definitions");
 	}
 
-	@Override
-	public void tcBefore(TCExpression exp, Environment env, NameScope scope)
-	{
-		name.report(6020, "@Witness only applies to operations, functions and type definitions");
-	}
+	// @Override
+	// public void tcBefore(TCExpression exp, Environment env, NameScope scope)
+	// {
+	// 	name.report(6020, "@Witness only applies to operations, functions and type definitions");
+	// }
 
 	@Override
 	public void tcBefore(TCStatement stmt, Environment env, NameScope scope)

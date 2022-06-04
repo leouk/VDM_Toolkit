@@ -105,8 +105,9 @@ MAIN="com.fujitsu.vdmj.VDMJ"
 #then
     ANNOTATIONS_JAR=$VDMJMAVENREPO/annotations/${VERSION}/annotations-${VERSION}.jar
     check "$ANNOTATIONS_JAR"
-    ANNOTATIONS2_JAR=$VDMJMAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
-    check "$ANNOTATIONS2_JAR"
+    # Remove Annotations2 to allow for right "Witness" to be picked
+    #ANNOTATIONS2_JAR=$VDMJMAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
+    #check "$ANNOTATIONS2_JAR"
     ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${MVERSION}/annotationsVDMToolkit-${MVERSION}.jar
     check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
     VDMJ_OPTS="$VDMJ_OPTS -annotations"

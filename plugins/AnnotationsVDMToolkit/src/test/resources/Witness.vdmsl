@@ -1,63 +1,97 @@
-module Witness
+module A
+exports all
+definitions 
+types
+	--@Witness(ONE_R, mk_R(1,2))
+	R ::
+		a : nat
+		b : nat
+	inv mk_R(a, b) == a < b;
+end A
+
+module B
+imports from A types R renamed R
 exports all
 definitions 
 
-types 
+types
 
---@Witness(mk_Date(0, 2, 3))
---@Witness(mk_Date(32, 2, 2010))
---@Witness(mk_Date(30, 2, 2010))
-Date :: 
-  day  : nat1
-  month: nat1
-  year : nat
-inv mk_Date ( d ,m, y ) == d <= 31 and m<=12 and y <=3000;
-
---@Witness(mk_Time(10, 10, 10))
-Time ::
-  hour  : nat
-  minute: nat
-  second: nat
-inv mk_Time(h,m,s) == s < 60 and m < 60 and h < 24;
-
---@Witness(Date.@Witness, Time.@Witness)
-DTG :: 
-  d: Date
-  t: Time;
+	--@Witness(ONE_S, mk_S(A`ONE_R, A`ONE_R))
+	S ::
+		a : R
+		b : R
+	inv mk_S(mk_R(a1, b1), mk_R(a2, b2)) == a1 + a2 < b1 + b2;
 
 functions
-	--@Witness(post_SQRT(25,5))
-	--@Witness(post_SQRT(36,6),pre_SQRT(25))
-	--@Witness(post_SQRT(121,11),pre_SQRT(121))
-	--@Witness(post_SQRT(36,5),pre_SQRT(36))
-	--@Witness(post_SQRT(36,6),pre_SQRT(36))
-	SQRT(x:nat)r:real
-	pre x < 101
-	post r = x;
+
+	f: R -> nat
+	f(rec) == rec.a + rec.b
+	post
+		--@Witness(THREE, post_f(A`ONE_R, f(A`ONE_R)))
+		(RESULT > rec.a and RESULT > rec.b);
+
+end B
+
+-- module Witness
+-- exports all
+-- definitions 
+
+-- types 
+
+-- --@Witness(mk_Date(0, 2, 3))
+-- --@Witness(mk_Date(32, 2, 2010))
+-- --@Witness(mk_Date(30, 2, 2010))
+-- Date :: 
+--   day  : nat1
+--   month: nat1
+--   year : nat
+-- inv mk_Date ( d ,m, y ) == d <= 31 and m<=12 and y <=3000;
+
+-- --@Witness(mk_Time(10, 10, 10))
+-- Time ::
+--   hour  : nat
+--   minute: nat
+--   second: nat
+-- inv mk_Time(h,m,s) == s < 60 and m < 60 and h < 24;
+
+-- --@Witness(Date.@Witness, Time.@Witness)
+-- DTG :: 
+--   d: Date
+--   t: Time;
+
+-- functions
+-- 	--@Witness(post_SQRT(25,5))
+-- 	--@Witness(post_SQRT(36,6),pre_SQRT(25))
+-- 	--@Witness(post_SQRT(121,11),pre_SQRT(121))
+-- 	--@Witness(post_SQRT(36,5),pre_SQRT(36))
+-- 	--@Witness(post_SQRT(36,6),pre_SQRT(36))
+-- 	SQRT(x:nat)r:real
+-- 	pre x < 101
+-- 	post r = x;
 	
-	f: nat -> nat
-	f(x) == x + 1
-	pre x > 0 --@Printf("%1$s", x)
-	post RESULT > x;
+-- 	f: nat -> nat
+-- 	f(x) == x + 1
+-- 	pre x > 0 --@Printf("%1$s", x)
+-- 	post RESULT > x;
 	
-operations
-	--@Witness(postADD(10,mk_Register(0),mk_Register(25)),preADD(10,mk_Register(0)))
-	--@Witness(postADD(10,mk_Register(0),mk_Register(10)),preADD(10,mk_Register(0)))
-	ADD(i:nat)
-	pre i > 9 and i mod 5 = 0
-	post someStateRegister = someStateRegister + i;
+-- operations
+-- 	--@Witness(postADD(10,mk_Register(0),mk_Register(25)),preADD(10,mk_Register(0)))
+-- 	--@Witness(postADD(10,mk_Register(0),mk_Register(10)),preADD(10,mk_Register(0)))
+-- 	ADD(i:nat)
+-- 	pre i > 9 and i mod 5 = 0
+-- 	post someStateRegister = someStateRegister + i;
 
-	Test: () ==> ()
-	Test() == (
-		--@Printf("%1$s", someStateRegister)
-		someStateRegister := someStateRegister + 5;
-		--@Printf("%1$s", someStateRegister)
-	)
+-- 	Test: () ==> ()
+-- 	Test() == (
+-- 		--@Printf("%1$s", someStateRegister)
+-- 		someStateRegister := someStateRegister + 5;
+-- 		--@Printf("%1$s", someStateRegister)
+-- 	)
 
-state Register of
-  someStateRegister: nat
-  inv mk_Register(someStateRegister) == someStateRegister mod 5 = 0
-  init reg == reg = mk_Register(0)
-end
+-- state Register of
+--   someStateRegister: nat
+--   inv mk_Register(someStateRegister) == someStateRegister mod 5 = 0
+--   init reg == reg = mk_Register(0)
+-- end
 
-end Witness
+-- end Witness

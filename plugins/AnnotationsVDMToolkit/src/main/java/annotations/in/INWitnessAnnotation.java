@@ -3,7 +3,6 @@ package annotations.in;
 import com.fujitsu.vdmj.in.annotations.INAnnotation;
 import com.fujitsu.vdmj.in.definitions.INValueDefinition;
 import com.fujitsu.vdmj.in.expressions.INExpressionList;
-import com.fujitsu.vdmj.in.statements.INStatement;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.ContextException;
@@ -73,31 +72,10 @@ public class INWitnessAnnotation extends INAnnotation
 		Value result = args.get(1).eval(local);
 		System.out.println(this + " = " + result);
 	}
-	
-	@Override
-	public void inBefore(INStatement stmt, Context ctxt)
-	{
-	}
 }
 
-// import com.fujitsu.vdmj.in.annotations.INAnnotation;
-// import com.fujitsu.vdmj.in.expressions.INExpressionList;
-// import com.fujitsu.vdmj.runtime.Context;
-// import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
-// import com.fujitsu.vdmj.values.Value;
 
-// import com.fujitsu.vdmj.runtime.ContextException;
-// import com.fujitsu.vdmj.runtime.ExceptionHandler;
-// import com.fujitsu.vdmj.values.BooleanValue;
-// import com.fujitsu.vdmj.in.expressions.INMkTypeExpression;
 
-// public class INWitnessAnnotation extends INAnnotation
-// {
-// 	public INWitnessAnnotation(TCIdentifierToken name, INExpressionList args)
-// 	{
-// 		super(name, args);
-// 	}
-	
 // 	@Override
 // 	protected void doInit(Context ctxt){
 // 		try{
