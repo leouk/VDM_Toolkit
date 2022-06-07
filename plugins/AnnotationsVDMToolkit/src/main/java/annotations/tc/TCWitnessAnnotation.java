@@ -1,5 +1,6 @@
 package annotations.tc;
 
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
 import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
@@ -15,6 +16,7 @@ import com.fujitsu.vdmj.tc.statements.TCStatement;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 public class TCWitnessAnnotation extends TCAnnotation
 {
@@ -80,6 +82,8 @@ public class TCWitnessAnnotation extends TCAnnotation
 	{
 		Environment local = new FlatEnvironment(tagDefinitions, globals);
 		tagDefinitions.typeCheck(local, NameScope.LOCAL);
+		if (TypeChecker.getErrorCount() > 0)
+		;//	Console.out.println(TypeChecker.getErrors().toString());
 	}
 
 	@Override
@@ -89,6 +93,8 @@ public class TCWitnessAnnotation extends TCAnnotation
 		
 		args.get(0).typeCheck(local, null, scope, null);
 		args.get(1).typeCheck(local, null, scope, null);
+		if (TypeChecker.getErrorCount() > 0)
+		;//	Console.out.println(TypeChecker.getErrors().toString());
 	}
 
 	@Override

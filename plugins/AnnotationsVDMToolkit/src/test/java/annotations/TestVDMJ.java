@@ -11,8 +11,8 @@ public class TestVDMJ {
         //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Doc.vdmsl"
         //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTheoremAttr.vdmsl"
         //   ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/MinimalTime.vdmsl"
-        //   ,
-        "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Witness.vdmsl"
+        "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/WitnessDates.vdmsl"
+        ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/AnnotationsVDMToolkit/src/test/resources/Witness.vdmsl"
         });  
     }
 }
