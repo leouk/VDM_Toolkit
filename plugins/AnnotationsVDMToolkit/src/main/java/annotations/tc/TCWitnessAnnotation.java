@@ -1,9 +1,11 @@
 package annotations.tc;
 
-import com.fujitsu.vdmj.messages.Console;
+import java.util.List;
+import java.util.Vector;
+
+import com.fujitsu.vdmj.messages.VDMError;
 import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
 import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
@@ -14,7 +16,7 @@ import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 import com.fujitsu.vdmj.tc.statements.TCStatement;
 import com.fujitsu.vdmj.typechecker.Environment;
-import com.fujitsu.vdmj.typechecker.FlatEnvironment;
+import com.fujitsu.vdmj.typechecker.FlatCheckedEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
@@ -71,7 +73,7 @@ public class TCWitnessAnnotation extends TCAnnotation
 	private TCValueDefinition createDefinition()
 	{
 		TCVariableExpression tag = (TCVariableExpression)args.get(0);
-		myDefinition  = new TCValueDefinition(NameScope.LOCAL, null,
+		myDefinition  = new TCValueDefinition(NameScope.ANYTHING, null,
 				null, new TCIdentifierPattern(tag.name), null, args.get(1));
 		
 		return myDefinition;
@@ -80,21 +82,30 @@ public class TCWitnessAnnotation extends TCAnnotation
 	@Override
 	protected void doInit(Environment globals)
 	{
-		Environment local = new FlatEnvironment(tagDefinitions, globals);
-		tagDefinitions.typeCheck(local, NameScope.LOCAL);
-		if (TypeChecker.getErrorCount() > 0)
-		;//	Console.out.println(TypeChecker.getErrors().toString());
-	}
-
-	@Override
-	public void tcBefore(TCDefinition def, Environment env, NameScope scope)
-	{
-		Environment local = new FlatEnvironment(tagDefinitions, env);
+		//@NB shouldn't this be NameScope.ANYTHING?
+		Environment local = new FlatCheckedEnvironment(tagDefinitions, globals, NameScope.GLOBAL);
+		List<VDMError> errs = TypeChecker.getErrors();
+		int before = errs.size();
+		myDefinition.typeCheck(local, NameScope.ANYTHING);
 		
-		args.get(0).typeCheck(local, null, scope, null);
-		args.get(1).typeCheck(local, null, scope, null);
-		if (TypeChecker.getErrorCount() > 0)
-		;//	Console.out.println(TypeChecker.getErrors().toString());
+		if (errs.size() > before)
+		{
+			List<VDMError> problems = new Vector<VDMError>();
+			int after = errs.size();
+			
+			for (int i = before; i < after; i++)
+			{
+				//@NB why? 
+				problems.add(errs.remove(before));	// Always remove this one
+			}
+
+			TypeChecker.report(6666, "Bad witness", name.getLocation());
+
+			for (VDMError e: problems)
+			{
+				TypeChecker.detail("Witness", e);
+			}
+		}
 	}
 
 	@Override
@@ -121,13 +132,6 @@ public class TCWitnessAnnotation extends TCAnnotation
 		name.report(6020, "@Witness only applies to operations, functions and type definitions");
 	}
 }
-
-	// //TCAfter to ensure the types have been resolved rather than TCBefore
-	// @Override
-	// public void tcAfter(TCDefinition def, TCType type, Environment env, NameScope scope)
-	// {
-	// 	checkArgs(def, type, env, scope);
-	// }
 	
 	// //Method to check the number of arguments provided and the type of those arguments
 	// private void checkArgs(TCDefinition def, TCType type, Environment env, NameScope scope)
