@@ -9,7 +9,5 @@ public abstract class IsaAnnotation extends TRNode implements MappingOptional {
 
     protected IsaAnnotation(LexLocation location) {
         super(location);
-        //TODO Auto-generated constructor stub
-    }
-    
+    }    
 }
