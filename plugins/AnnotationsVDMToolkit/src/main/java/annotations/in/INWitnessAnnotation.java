@@ -3,7 +3,9 @@ package annotations.in;
 import com.fujitsu.vdmj.in.annotations.INAnnotation;
 import com.fujitsu.vdmj.in.definitions.INValueDefinition;
 import com.fujitsu.vdmj.in.expressions.INExpressionList;
+import com.fujitsu.vdmj.in.expressions.INVariableExpression;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.ContextException;
 import com.fujitsu.vdmj.runtime.Interpreter;
@@ -15,7 +17,7 @@ import com.fujitsu.vdmj.values.Value;
 public class INWitnessAnnotation extends INAnnotation
 {
 	private static final long serialVersionUID = 1L;
-	private static NameValuePairList tagValues = null;
+	private static Context witnessCtxt = null;
 	private final INValueDefinition myDefinition;
 
 	public INWitnessAnnotation(TCIdentifierToken name, INExpressionList args, INValueDefinition myDefinition)
@@ -26,10 +28,9 @@ public class INWitnessAnnotation extends INAnnotation
 	
 	public static void doInit()
 	{
-		tagValues  = new NameValuePairList();
 		Context root = Interpreter.getInstance().getInitialContext();
-		Context ctxt = new Context(LexLocation.ANY, "Witness context", root);
-		ctxt.setThreadState(CPUValue.vCPU);
+		witnessCtxt = new Context(LexLocation.ANY, "Witness context", root);
+		witnessCtxt.setThreadState(CPUValue.vCPU);
 		boolean retry = false;
 		int retries = 3;
 		
@@ -40,10 +41,8 @@ public class INWitnessAnnotation extends INAnnotation
 				try
 				{
 					INWitnessAnnotation witness = (INWitnessAnnotation)a;
-					assert witness.myDefinition != null;
-					NameValuePairList nvpl = witness.myDefinition.getNamedValues(ctxt);
-					ctxt.putList(nvpl);
-					tagValues.addAll(nvpl);
+					NameValuePairList nvpl = witness.myDefinition.getNamedValues(witnessCtxt);
+					witnessCtxt.putList(nvpl);
 				}
 				catch (ContextException e)
 				{
@@ -64,13 +63,10 @@ public class INWitnessAnnotation extends INAnnotation
 	@Override
 	protected void doInit(Context ctxt)
 	{
-		Context local = new Context(LexLocation.ANY, "Witness context", ctxt);
-		ctxt.setThreadState(CPUValue.vCPU);
-		ctxt.putList(tagValues);
-		
-		// Evaluate things using "local" context
-		Value result = args.get(1).eval(local);
-		System.out.println(this + " = " + result);
+		INVariableExpression ve = (INVariableExpression)args.get(0);
+		Value result = witnessCtxt.get(ve.name);
+		//@NB why not Console.out? 
+		Console.out.println(this + " = " + result);		
 	}
 }
 
