@@ -1,5 +1,5 @@
 theory VDMEisbach
-  imports"HOL-Eisbach.Eisbach_Tools"
+  imports (*"HOL-Eisbach.Eisbach_Tools"*) Complex_Main
 begin
 
 named_theorems 
