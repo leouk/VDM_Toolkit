@@ -5,3 +5,5 @@ plugins/vdm2isa/java/.generated
 plugins/vdm2isa/java/src/main/resources/.generated
 plugins/vdm2isa/java/bin
 plugins/AnnotationsVDMToolkit/target
+plugins/vdm2isa/src/main/resources/dump
+plugins/vdm2isa/src/main/resources/output
