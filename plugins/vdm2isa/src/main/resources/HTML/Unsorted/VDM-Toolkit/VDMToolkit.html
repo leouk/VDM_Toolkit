@@ -19,7 +19,8 @@
 <span class="keyword1"><span class="command">theory</span></span> VDMToolkit
   <span class="keyword2"><span class="keyword">imports</span></span> 
     <span class="comment1">― ‹ Include real fields, list and option types ordering ›</span>
-    <a href="../../HOL/HOL/Complex_Main.html">Complex_Main</a> 
+    <a href="../../HOL/HOL/Complex_Main.html">Complex_Main</a>
+    <a href="VDMEisbach.html">VDMEisbach</a>
     <span class="quoted">"<a href="../../HOL/HOL-Library/List_Lexorder.html">HOL-Library.List_Lexorder</a>"</span>
     <span class="quoted">"<a href="../../HOL/HOL-Library/Option_ord.html">HOL-Library.Option_ord</a>"</span>
     <span class="quoted">"<a href="../../HOL/HOL-Library/LaTeXsugar.html">HOL-Library.LaTeXsugar</a>"</span>
@@ -204,9 +205,9 @@ later. To illustrate this difference consider the result of
   <span class="quoted"><span class="quoted">"<span class="free">pre_vdm_pow</span> <span class="free"><span class="bound"><span class="entity">x</span></span></span> <span class="free"><span class="bound"><span class="entity">y</span></span></span> <span class="main">≡</span> True"</span></span>
 
 <span class="keyword1"><span class="command">definition</span></span>
-  <span class="entity">post_vdm_pow_post</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="main">𝔹</span>"</span></span>
+  <span class="entity">post_vdm_pow</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">::</span>ln <span class="main">⇒</span> <span class="main">𝔹</span>"</span></span>
   <span class="keyword2"><span class="keyword">where</span></span>
-  <span class="quoted"><span class="quoted">"<span class="free">post_vdm_pow_post</span> <span class="free"><span class="bound"><span class="entity">x</span></span></span> <span class="free"><span class="bound"><span class="entity">y</span></span></span> <span class="free"><span class="bound"><span class="entity">RESULT</span></span></span> <span class="main">≡</span> True"</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">post_vdm_pow</span> <span class="free"><span class="bound"><span class="entity">x</span></span></span> <span class="free"><span class="bound"><span class="entity">y</span></span></span> <span class="free"><span class="bound"><span class="entity">RESULT</span></span></span> <span class="main">≡</span> True"</span></span>
 
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹For VDM floor and abs, we use Isabelle's. Note that in VDM abs of <span class="antiquoted"><span class="antiquoted"><span class="operator"><span class="operator"><span class="hidden">\&lt;^</span><span class="control">typ</span><span class="hidden">&gt;</span></span></span><span class="quoted"><span class="quoted">‹<span class="main"><span class="main">ℤ</span></span>›</span></span></span></span>  
 will return <span class="antiquoted"><span class="antiquoted"><span class="operator"><span class="operator"><span class="hidden">\&lt;^</span><span class="control">typ</span><span class="hidden">&gt;</span></span></span><span class="quoted"><span class="quoted">‹VDMNat›</span></span></span></span>, as the underlying type invariant might require further filtering 
@@ -557,7 +558,7 @@ We need to rule them out.
 <span class="keyword1"><span class="command">definition</span></span>
   <span class="entity">applyVDMSeq</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="tfree">'a</span> VDMSeq <span class="main">⇒</span> VDMNat1 <span class="main">⇒</span> <span class="tfree">'a</span>"</span></span> <span class="main">(</span><span class="keyword2"><span class="keyword">infixl</span></span> <span class="quoted">"<span class="keyword1">$</span>"</span> 100<span class="main">)</span>
   <span class="keyword2"><span class="keyword">where</span></span>
- <span class="quoted"><span class="quoted">"<span class="free">applyVDMSeq</span> <span class="free"><span class="bound"><span class="entity">l</span></span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≡</span> <span class="main">(</span><span class="keyword1">if</span> <span class="main">(</span>inv_VDMNat1 <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">∧</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≤</span> len <span class="free"><span class="bound"><span class="entity">l</span></span></span><span class="main">)</span> <span class="keyword1">then</span> 
+ <span class="quoted"><span class="quoted">"<span class="free"><span class="bound"><span class="entity">l</span></span></span> <span class="main"><span class="free">$</span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≡</span> <span class="main">(</span><span class="keyword1">if</span> <span class="main">(</span>inv_VDMNat1 <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">∧</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≤</span> len <span class="free"><span class="bound"><span class="entity">l</span></span></span><span class="main">)</span> <span class="keyword1">then</span> 
                       <span class="main">(</span><span class="free"><span class="bound"><span class="entity">l</span></span></span> <span class="main">!</span> nat <span class="main">(</span><span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">-</span> <span class="main">1</span><span class="main">)</span><span class="main">)</span> 
                    <span class="keyword1">else</span> 
                       undefined<span class="main">)</span>"</span></span>
@@ -623,7 +624,7 @@ s(i,...,j) =
   <span class="keyword1"><span class="command">unfolding</span></span> applyVDMSubseq_def applyVDMSubseq'_def inv_VDMNat1_def 
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span><span class="main"><span class="keyword3">;</span></span><span class="operator">safe</span><span class="main">)</span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">subgoal_tac</span> <span class="quoted"><span class="quoted">"<span class="main">{</span>nat <span class="free">l</span> <span class="main">-</span> Suc <span class="main">0</span><span class="main">..</span>nat <span class="free">u</span> <span class="main">-</span> Suc <span class="main">0</span><span class="main">}</span> <span class="main">=</span> <span class="main">{</span><span class="bound">x</span><span class="main">.</span> <span class="free">l</span> <span class="main">≤</span> int <span class="bound">x</span> <span class="main">+</span> <span class="main">1</span> <span class="main">∧</span> int <span class="bound">x</span> <span class="main">+</span> <span class="main">1</span> <span class="main">≤</span> <span class="free">u</span><span class="main">}</span>"</span></span><span class="main">)</span>
-   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule</span> subst<span class="main"><span class="keyword3">;</span></span> <span class="operator">simp</span><span class="main">)</span>
+   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule</span> HOL.subst<span class="main"><span class="keyword3">;</span></span> <span class="operator">simp</span><span class="main">)</span>
    <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">safe</span><span class="main"><span class="keyword3">;</span></span><span class="operator">simp</span><span class="main">)</span>
      <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">linarith</span><span class="main"><span class="keyword3">+</span></span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">subgoal_tac</span> <span class="quoted"><span class="quoted">"<span class="main">{</span><span class="bound">x</span><span class="main">.</span> <span class="free">l</span> <span class="main">≤</span> int <span class="bound">x</span> <span class="main">+</span> <span class="main">1</span> <span class="main">∧</span> int <span class="bound">x</span> <span class="main">+</span> <span class="main">1</span> <span class="main">≤</span> <span class="free">u</span><span class="main">}</span> <span class="main">=</span> <span class="main">{}</span>"</span></span><span class="main">)</span>
@@ -664,7 +665,7 @@ s(i,...,j) =
   <span class="entity">post_append</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="tfree">'a</span> VDMSeq <span class="main">⇒</span> <span class="tfree">'a</span> VDMSeq <span class="main">⇒</span> <span class="tfree">'a</span> VDMSeq <span class="main">⇒</span> <span class="main">𝔹</span>"</span></span>
   <span class="keyword2"><span class="keyword">where</span></span>
   <span class="quoted"><span class="quoted">"<span class="free">post_append</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="free"><span class="bound"><span class="entity">t</span></span></span> <span class="free"><span class="bound"><span class="entity">r</span></span></span> <span class="main">≡</span> <span class="free"><span class="bound"><span class="entity">r</span></span></span> <span class="main">=</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">@</span> <span class="free"><span class="bound"><span class="entity">t</span></span></span>"</span></span>
-  
+
 <span class="keyword1"><span class="command">lemmas</span></span> VDMSeq_defs <span class="main">=</span> elems_def inds_def applyVDMSeq_defs
 
 <span class="keyword1"><span class="command">lemma</span></span> l_applyVDMSeq_inds<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> 
@@ -1030,11 +1031,11 @@ lemma l_invSeqElems_inv_True_True[simp]: "undefined ∉ elems r ⟹ inv_SeqElems
 <span class="keyword1"><span class="command">lemmas</span></span> inv_Map_defs <span class="main">=</span> inv_Map_def inv_VDMSet'_defs
 <span class="keyword1"><span class="command">lemmas</span></span> inv_Map1_defs <span class="main">=</span> inv_Map1_def inv_Map_defs
 <span class="keyword1"><span class="command">lemmas</span></span> inv_Inmap_defs <span class="main">=</span> inv_Inmap_def inv_Map_defs inj_def
-    
+
 <span class="keyword1"><span class="command">definition</span></span>
   <span class="entity">rng</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="tfree">'a</span> <span class="main">⇀</span> <span class="tfree">'b</span><span class="main">)</span> <span class="main">⇒</span> <span class="tfree">'b</span> VDMSet"</span></span> 
   <span class="keyword2"><span class="keyword">where</span></span>
-  <span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">rng</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="main">≡</span> ran <span class="free"><span class="bound"><span class="entity">m</span></span></span>"</span></span>
+  <span class="main">[</span><span class="operator">intro</span><span class="main"><span class="main"><span class="main"><span class="main">!</span></span></span></span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">rng</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="main">≡</span> ran <span class="free"><span class="bound"><span class="entity">m</span></span></span>"</span></span>
 
 <span class="keyword1"><span class="command">lemmas</span></span> rng_defs <span class="main">=</span> rng_def ran_def
   
@@ -1399,6 +1400,9 @@ definition
           fun_upd_triv option.exhaust 
           ranI ran_restrictD restrict_complement_singleton_eq<span class="main">)</span>
 
+<span class="keyword1"><span class="command">lemma</span></span> l_finite_rng<span class="main">:</span> 
+  <span class="quoted"><span class="quoted">"finite <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span> <span class="main">⟹</span> finite <span class="main">(</span>rng <span class="free">m</span><span class="main">)</span>"</span></span> 
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> finite_ran rng_def<span class="main">)</span>
 <span class="comment1">(* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)</span>
 <span class="keyword1"><span class="command">subsubsection</span></span> <span class="quoted"><span class="plain_text">‹ Domain restriction weakening lemmas [EXPERT] ›</span></span>
 <span class="comment1">(* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)</span>
@@ -1435,22 +1439,22 @@ lemmX f_in_dom_r_apply_elem:
 unfolding dom_restr_def
 by (cases "l∈S", auto)
 *)</span>
-<span class="comment1">(* IJW: Simplified as doesn't need the l:dom f case *)</span>
+<span class="comment1">(* Simplified as doesn't need the l:dom f case *)</span>
 <span class="keyword1"><span class="command">lemma</span></span>  f_in_dom_r_apply_elem<span class="main">:</span> <span class="quoted"><span class="quoted">" <span class="free">x</span> <span class="main">∈</span> <span class="free">S</span> <span class="main">⟹</span> <span class="main">(</span><span class="main">(</span><span class="free">S</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span> <span class="free">x</span><span class="main">)</span> <span class="main">=</span> <span class="main">(</span><span class="free">f</span> <span class="free">x</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dom_restr_def restrict_in<span class="main">)</span>
 
 <span class="keyword1"><span class="command">lemma</span></span>  f_in_dom_r_apply_the_elem<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∈</span> dom <span class="free">f</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∈</span> <span class="free">S</span> <span class="main">⟹</span> <span class="main">(</span><span class="main">(</span><span class="free">S</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span> <span class="free">x</span><span class="main">)</span> <span class="main">=</span> Some<span class="main">(</span>the<span class="main">(</span><span class="free">f</span> <span class="free">x</span><span class="main">)</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> domIff f_in_dom_r_apply_elem option.collapse<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: classify; rename. *)</span> 
+<span class="comment1">(* TODO: classify; rename. *)</span> 
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_r_disjoint_weakening<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">A</span> <span class="main">∩</span> <span class="free">B</span> <span class="main">=</span> <span class="main">{}</span> <span class="main">⟹</span> dom<span class="main">(</span><span class="free">A</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">∩</span> dom<span class="main">(</span><span class="free">B</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">=</span> <span class="main">{}</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dom_restr_def dom_restrict inf_bot_right inf_left_commute restrict_restrict<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: classify; rename - refactor out for l_dom_r_iff? *)</span>
+<span class="comment1">(* TODO: classify; rename - refactor out for l_dom_r_iff? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_r_subseteq<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">S</span> <span class="main">⊆</span> dom <span class="free">f</span> <span class="main">⟹</span> dom <span class="main">(</span><span class="free">S</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">=</span> <span class="free">S</span>"</span></span> <span class="keyword1"><span class="command">unfolding</span></span> dom_restr_def
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> Int_absorb1 dom_restrict<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: classift; rename  - refactor out for l_dom_r_subset? *)</span>
+<span class="comment1">(* TODO: classift; rename  - refactor out for l_dom_r_subset? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_r_dom_subseteq<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>dom <span class="main">(</span> <span class="free">S</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span><span class="main">)</span> <span class="main">⊆</span> dom <span class="free">f</span>"</span></span> 
 <span class="keyword1"><span class="command">unfolding</span></span> dom_restr_def <span class="keyword1"><span class="command">by</span></span> <span class="operator">auto</span>
 
@@ -1482,7 +1486,7 @@ by (cases "l∈S", auto)
   <span class="quoted"><span class="quoted">"<span class="free">y</span> <span class="main">∈</span> ran <span class="main">(</span><span class="free">S</span> <span class="main">◃</span> <span class="free">m</span><span class="main">)</span> <span class="main">⟹</span> <span class="free">y</span> <span class="main">∈</span> ran <span class="free">m</span>"</span></span>
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">meson</span> l_relimg_ran_subset subsetCE<span class="main">)</span>
 
-<span class="comment1">(* IJW: An experiment - not sure which are the best rules to choose! *)</span>
+<span class="comment1">(* An experiment - not sure which are the best rules to choose! *)</span>
 <span class="keyword1"><span class="command">lemmas</span></span> restr_simps <span class="main">=</span> l_dom_r_iff l_dom_r_accum l_dom_r_nothing l_dom_r_empty
                      f_in_dom_r_apply_elem l_dom_r_disjoint_weakening l_dom_r_subseteq
                      l_dom_r_dom_subseteq
@@ -1520,7 +1524,7 @@ lemmX f_in_dom_ar_apply_not_elem:
 unfolding dom_antirestr_def
 by (cases "l∈S", auto)
 *)</span>
-<span class="comment1">(* IJW: TODO: I had a more general lemma: *)</span>
+<span class="comment1">(* TODO: I had a more general lemma: *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> f_in_dom_ar_apply_not_elem<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">l</span> <span class="main">∉</span> <span class="free">S</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">S</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="free">l</span> <span class="main">=</span> <span class="free">f</span> <span class="free">l</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dom_antirestr_def<span class="main">)</span>
 
@@ -1591,27 +1595,27 @@ by (cases "l∈S", auto)
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_rres_same_map_weaken<span class="main">:</span> 
   <span class="quoted"><span class="quoted">"<span class="free">S</span> <span class="main">=</span> <span class="free">T</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">S</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">=</span> <span class="main">(</span><span class="free">T</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span> <span class="keyword1"><span class="command">by</span></span> <span class="operator">simp</span>   
 
-<span class="comment1">(* IJW: TODO classify; rename *)</span>
+<span class="comment1">(*  TODO classify; rename *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_not_in_dom<span class="main">:</span>
   <span class="keyword2"><span class="keyword">assumes</span></span> *<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="free">f</span>"</span></span>
   <span class="keyword2"><span class="keyword">shows</span></span>  <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="main">(</span><span class="free">s</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> * domIff dom_antirestr_def<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: classify; rename *)</span>
+<span class="comment1">(*  TODO: classify; rename *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_not_in_dom2<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∈</span> <span class="free">F</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∉</span> dom <span class="main">(</span><span class="free">F</span>  <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> domIff dom_antirestr_def<span class="main">)</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_notin_dom_or<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="free">f</span> <span class="main">∨</span> <span class="free">x</span> <span class="main">∈</span> <span class="free">S</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∉</span> dom <span class="main">(</span><span class="free">S</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> Diff_iff l_dom_dom_ar<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: classify - shows conditions for being in antri restr dom *)</span>
+<span class="comment1">(*  TODO: classify - shows conditions for being in antri restr dom *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_in_dom_ar<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> <span class="free">F</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∈</span> dom <span class="free">f</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∈</span> dom  <span class="main">(</span><span class="free">F</span>  <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> f_in_dom_ar_apply_not_elem domIff<span class="main">)</span> 
 
 <span class="keyword1"><span class="command">lemma</span></span> l_Some_in_dom<span class="main">:</span> 
   <span class="quoted"><span class="quoted">"<span class="free">f</span> <span class="free">x</span> <span class="main">=</span> Some <span class="free">y</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∈</span> dom <span class="free">f</span>"</span></span> <span class="keyword1"><span class="command">by</span></span> <span class="operator">auto</span>
 
-<span class="comment1">(* IJW: TODO: classify; fix proof; rename; decide whether needed?! *)</span>
+<span class="comment1">(*  TODO: classify; fix proof; rename; decide whether needed?! *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_insert<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="main">(</span>insert <span class="free">x</span> <span class="free">F</span><span class="main">)</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">=</span> <span class="main">{</span><span class="free">x</span><span class="main">}</span> <span class="main">-◃</span> <span class="main">(</span><span class="free">F</span><span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span> 
 <span class="keyword1"><span class="command">proof</span></span>
   <span class="keyword3"><span class="command">fix</span></span> <span class="skolem">xa</span>
@@ -1631,17 +1635,17 @@ by (cases "l∈S", auto)
 <span class="keyword1"><span class="command">qed</span></span>
 
 
-<span class="comment1">(* IJW: TODO: classify; rename?; subsume by l_dom_ar_accum? *)</span>
-<span class="comment1">(* IJW: Think it may also be unused? *)</span>
+<span class="comment1">(*  TODO: classify; rename?; subsume by l_dom_ar_accum? *)</span>
+<span class="comment1">(*  Think it may also be unused? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_absorb_singleton<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∈</span> <span class="free">F</span> <span class="main">⟹</span> <span class="main">(</span><span class="main">{</span><span class="free">x</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">F</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">=</span><span class="main">(</span><span class="free">F</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> l_dom_ar_insert insert_absorb<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: rename; classify; generalise? *)</span>
+<span class="comment1">(*  TODO: rename; classify; generalise? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_disjoint_weakening<span class="main">:</span>
   <span class="quoted"><span class="quoted">"dom <span class="free">f</span> <span class="main">∩</span> <span class="free">Y</span> <span class="main">=</span> <span class="main">{}</span> <span class="main">⟹</span> dom <span class="main">(</span><span class="free">X</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">∩</span> <span class="free">Y</span> <span class="main">=</span> <span class="main">{}</span>"</span></span> 
  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> Diff_Int_distrib2 empty_Diff l_dom_dom_ar<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: not used? *)</span>
+<span class="comment1">(* TODO: not used? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_ar_singletons_comm<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="main">{</span><span class="free">x</span><span class="main">}</span><span class="main">-◃</span> <span class="main">{</span><span class="free">y</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">f</span> <span class="main">=</span> <span class="main">{</span><span class="free">y</span><span class="main">}</span><span class="main">-◃</span> <span class="main">{</span><span class="free">x</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">f</span>"</span></span> 
     <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> l_dom_ar_insert insert_commute<span class="main">)</span>
 
@@ -1713,7 +1717,7 @@ lemmas and use them in Isar; whereas Leo, you don't seem
 to use this variety. Probably because the automation takes
 care of the reasoning?...
 *)</span>
-<span class="comment1">(* IJW: TODO: Rename; classify *)</span>
+<span class="comment1">(*  TODO: Rename; classify *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> dagger_notemptyL<span class="main">:</span> 
   <span class="quoted"><span class="quoted">"<span class="free">f</span> <span class="main">≠</span> Map.empty <span class="main">⟹</span> <span class="free">f</span> <span class="main">†</span> <span class="free">g</span> <span class="main">≠</span> Map.empty"</span></span> <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def map_add_None<span class="main">)</span>
 
@@ -1722,7 +1726,7 @@ care of the reasoning?...
 
 
 <span class="comment1">(* Lemma: dagger associates with dom_ar [ZEVES-LEMMA] *)</span>
-<span class="comment1">(* IJW: It's not really an assoc prop? Well, kinda, but also kinda distrib *)</span>
+<span class="comment1">(*  It's not really an assoc prop? Well, kinda, but also kinda distrib *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_dagger_dom_ar_assoc<span class="main">:</span>
 	<span class="quoted"><span class="quoted">"<span class="free">S</span> <span class="main">∩</span> dom <span class="free">g</span> <span class="main">=</span> <span class="main">{}</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">S</span> <span class="main">-◃</span> <span class="free">f</span><span class="main">)</span> <span class="main">†</span> <span class="free">g</span> <span class="main">=</span> <span class="free">S</span> <span class="main">-◃</span> <span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="free">g</span><span class="main">)</span>"</span></span>
 <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> fun_eq_iff<span class="main">)</span>
@@ -1740,7 +1744,7 @@ care of the reasoning?...
   <span class="quoted"><span class="quoted">"<span class="free">g</span> <span class="main">≠</span> Map.empty <span class="main">⟹</span> <span class="free">f</span> <span class="main">†</span> <span class="free">g</span> <span class="main">≠</span> Map.empty"</span></span>
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def map_add_None<span class="main">)</span>
 
-<span class="comment1">(* IJW TODO: Following 6 need renamed; classified? LEO: how do you do such choices? *)</span>
+<span class="comment1">(* TODO: Following 6 need renamed; classified? LEO: how do you do such choices? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> in_dagger_domL<span class="main">:</span>
   <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∈</span> dom <span class="free">f</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">∈</span> dom<span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="free">g</span><span class="main">)</span>"</span></span> 
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def domIff map_add_None<span class="main">)</span>
@@ -1764,9 +1768,6 @@ care of the reasoning?...
 
 <span class="keyword1"><span class="command">lemma</span></span> dagger_upd_dist<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">f</span> <span class="main">†</span> <span class="free">fa</span><span class="main">(</span><span class="free">e</span> <span class="main">↦</span> <span class="free">r</span><span class="main">)</span> <span class="main">=</span> <span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="free">fa</span><span class="main">)</span><span class="main">(</span><span class="free">e</span> <span class="main">↦</span> <span class="free">r</span><span class="main">)</span>"</span></span> <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def map_add_upd<span class="main">)</span>
 
-
-
-<span class="comment1">(* IJW TOD): rename *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> antirestr_then_dagger_notin<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="free">f</span> <span class="main">⟹</span> <span class="main">{</span><span class="free">x</span><span class="main">}</span> <span class="main">-◃</span> <span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="main">[</span><span class="free">x</span> <span class="main">↦</span> <span class="free">y</span><span class="main">]</span><span class="main">)</span> <span class="main">=</span> <span class="free">f</span>"</span></span>
 <span class="keyword1"><span class="command">proof</span></span>
   <span class="keyword3"><span class="command">fix</span></span> <span class="skolem">z</span>
@@ -1787,14 +1788,13 @@ care of the reasoning?...
 <span class="keyword1"><span class="command">qed</span></span> 
 
 
-<span class="comment1">(* IJW: TODO: rename; classify *)</span>
+<span class="comment1">(* TODO: rename; classify *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> dagger_notin_right<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="free">g</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="free">g</span><span class="main">)</span> <span class="free">x</span> <span class="main">=</span> <span class="free">f</span> <span class="free">x</span>"</span></span> 
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> l_dagger_apply<span class="main">)</span>
-<span class="comment1">(* IJW: TODO: rename; classify *)</span>
+<span class="comment1">(* TODO: rename; classify *)</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> dagger_notin_left<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="main">∉</span> dom <span class="free">f</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">f</span> <span class="main">†</span> <span class="free">g</span><span class="main">)</span> <span class="free">x</span> <span class="main">=</span> <span class="free">g</span> <span class="free">x</span>"</span></span>
  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def map_add_dom_app_simps<span class="main"><span class="main">(</span></span>2<span class="main"><span class="main">)</span></span><span class="main">)</span>
-
 
 <span class="keyword1"><span class="command">lemma</span></span> l_dagger_commute<span class="main">:</span> <span class="quoted"><span class="quoted">"dom <span class="free">f</span> <span class="main">∩</span> dom <span class="free">g</span> <span class="main">=</span> <span class="main">{}</span> <span class="main">⟹</span><span class="free">f</span> <span class="main">†</span> <span class="free">g</span> <span class="main">=</span> <span class="free">g</span> <span class="main">†</span> <span class="free">f</span>"</span></span>
   <span class="keyword1"><span class="command">unfolding</span></span> dagger_def 
@@ -2020,13 +2020,13 @@ apply (insert f_dom_ar_subset_dom[of S g])
 oops
 *)</span>
 
-<span class="comment1">(* IJW: TODO: rename? *)</span>
+<span class="comment1">(* TODO: rename? *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> l_munion_upd<span class="main">:</span> <span class="quoted"><span class="quoted">"dom <span class="free">f</span> <span class="main">∩</span> dom <span class="main">[</span><span class="free">x</span> <span class="main">↦</span> <span class="free">y</span><span class="main">]</span> <span class="main">=</span> <span class="main">{}</span>  <span class="main">⟹</span> <span class="free">f</span> <span class="keyword1">∪m</span> <span class="main">[</span><span class="free">x</span> <span class="main">↦</span> <span class="free">y</span><span class="main">]</span> <span class="main">=</span> <span class="free">f</span><span class="main">(</span><span class="free">x</span> <span class="main">↦</span><span class="free">y</span><span class="main">)</span>"</span></span> 
 <span class="keyword1"><span class="command">unfolding</span></span> munion_def
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">simp</span>
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> dagger_def map_add_empty map_add_upd<span class="main">)</span>
 
-<span class="comment1">(* IJW: TODO: Do I really need these?! *)</span>
+<span class="comment1">(* TODO: Do I really need these?! *)</span>
 <span class="keyword1"><span class="command">lemma</span></span> munion_notemp_dagger<span class="main">:</span> <span class="quoted"><span class="quoted">"dom <span class="free">f</span> <span class="main">∩</span> dom <span class="free">g</span> <span class="main">=</span> <span class="main">{}</span> <span class="main">⟹</span> <span class="free">f</span> <span class="keyword1">∪m</span> <span class="free">g</span><span class="main">≠</span>Map.empty <span class="main">⟹</span> <span class="free">f</span> <span class="main">†</span> <span class="free">g</span> <span class="main">≠</span> Map.empty"</span></span> 
 <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> munion_def<span class="main">)</span>
 
@@ -2092,7 +2092,7 @@ dagger_notemp_munion munion_notempty_left munion_notempty_right
  <span class="keyword1"><span class="command">by</span></span> <span class="operator">simp</span>
 <span class="keyword1"><span class="command">qed</span></span>
 
-<span class="comment1">(* IJW: TODO: classify; rename; relocate? *)</span>
+<span class="comment1">(* TODO: classify; rename; relocate? *)</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> l_dom_r_finite<span class="main">:</span> <span class="quoted"><span class="quoted">"finite <span class="main">(</span>dom <span class="free">f</span><span class="main">)</span> <span class="main">⟹</span> finite <span class="main">(</span>dom <span class="main">(</span> <span class="free">S</span> <span class="main">◃</span> <span class="free">f</span><span class="main">)</span><span class="main">)</span>"</span></span> 
 <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule_tac</span> B<span class="main"><span class="main">=</span></span><span class="quoted"><span class="quoted">"dom <span class="free">f</span>"</span></span> <span class="keyword2"><span class="keyword"><span class="quasi_keyword">in</span></span></span>  finite_subset<span class="main">)</span>
@@ -2142,6 +2142,31 @@ dagger_notemp_munion munion_notempty_left munion_notempty_right
   <span class="keyword2"><span class="keyword">where</span></span>
   <span class="main">[</span><span class="operator">intro</span><span class="main"><span class="main"><span class="main"><span class="main">!</span></span></span></span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="free"><span class="bound"><span class="entity">P</span></span></span> <span class="main"><span class="free">;;</span></span> <span class="free"><span class="bound"><span class="entity">Q</span></span></span><span class="main"><span class="free">,</span></span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span><span class="main">)</span> <span class="main">≡</span> <span class="keyword1">let</span> <span class="bound">mst</span> <span class="main">=</span> <span class="free"><span class="bound"><span class="entity">P</span></span></span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span> <span class="keyword1">in</span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">Q</span></span></span> <span class="bound">mst</span><span class="main">)</span>"</span></span> 
 
+<span class="keyword1"><span class="command">fun</span></span>
+  <span class="entity">seqcomps</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="tfree">'a</span> <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">)</span> list <span class="main">⇒</span> <span class="tfree">'a</span> <span class="main">⇒</span> <span class="tfree">'a</span>"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">intro</span><span class="main"><span class="main"><span class="main"><span class="main"><span class="main"><span class="main"><span class="main">!</span></span></span></span></span></span></span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">seqcomps</span> <span class="main">[]</span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span>     <span class="main">=</span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span>"</span></span> 
+<span class="main">|</span> <span class="main">[</span><span class="operator">intro</span><span class="main"><span class="main"><span class="main"><span class="main"><span class="main"><span class="main"><span class="main">!</span></span></span></span></span></span></span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">seqcomps</span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">x</span></span></span><span class="main">#</span><span class="free"><span class="bound"><span class="entity">xs</span></span></span><span class="main">)</span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span> <span class="main">=</span> <span class="free">seqcomps</span> <span class="free"><span class="bound"><span class="entity">xs</span></span></span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">x</span></span></span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span><span class="main">)</span>"</span></span> 
+
+<span class="comment1">(*
+find_consts name:fold
+
+fun
+  seqcomps' :: "('a ⇒ 'a) list ⇒ 'a ⇒ 'a" 
+  where
+  [intro!]: "seqcomps' [] bst     = foldl (λ b::'a . (λ a . b)) bst []" 
+| [intro!]: "seqcomps' (x#xs) bst = foldl (λ b . (λ a . a b)) l " 
+
+primrec foldl :: "('b ⇒ 'a ⇒ 'b) ⇒ 'b ⇒ 'a list ⇒ 'b" where
+foldl_Nil:  "foldl f a [] = a" |
+foldl_Cons: "foldl f a (x # xs) = foldl f (f a x) xs"
+*)</span>
+
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">seqcomps'</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="tfree">'a</span> <span class="main">⇒</span> <span class="tfree">'a</span><span class="main">)</span> list <span class="main">⇒</span> <span class="tfree">'a</span> <span class="main">⇒</span> <span class="tfree">'a</span>"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">intro</span><span class="main"><span class="main"><span class="main"><span class="main">!</span></span></span></span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">seqcomps'</span> <span class="free"><span class="bound"><span class="entity">l</span></span></span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span> <span class="main">=</span> foldl <span class="main">(</span><span class="main">λ</span> <span class="bound">b</span> <span class="main">.</span> <span class="main">(</span><span class="main">λ</span> <span class="bound">a</span> <span class="main">.</span> <span class="bound">a</span> <span class="bound">b</span><span class="main">)</span><span class="main">)</span> <span class="free"><span class="bound"><span class="entity">bst</span></span></span> <span class="free"><span class="bound"><span class="entity">l</span></span></span>"</span></span> 
+
 <span class="keyword1"><span class="command">lemma</span></span> l_seq_comp_simp<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="free">P</span> <span class="main">;;</span> <span class="free">Q</span><span class="main">,</span> <span class="free">bst</span><span class="main">)</span> <span class="main">=</span> <span class="free">Q</span> <span class="main">(</span><span class="free">P</span> <span class="free">bst</span><span class="main">)</span>"</span></span> <span class="keyword1"><span class="command">unfolding</span></span> seqcomp_def <span class="keyword1"><span class="command">by</span></span> <span class="operator">simp</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> l_ranE_frule<span class="main">:</span>
@@ -2154,7 +2179,7 @@ dagger_notemp_munion munion_notempty_left munion_notempty_right
 
 <span class="keyword1"><span class="command">lemma</span></span> l_inv_MapTrue<span class="main">:</span> 
   <span class="quoted"><span class="quoted">"finite <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span> <span class="main">⟹</span> undefined <span class="main">∉</span> dom <span class="free">m</span> <span class="main">⟹</span> undefined <span class="main">∉</span> rng <span class="free">m</span> <span class="main">⟹</span> inv_Map inv_True inv_True <span class="free">m</span>"</span></span>
-  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> finite_ran inv_Map_def inv_VDMSet'_def<span class="main">)</span>  
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> finite_ran inv_Map_def inv_VDMSet'_def rng_def<span class="main">)</span>  
 
 <span class="keyword1"><span class="command">lemma</span></span> l_invMap_domr_absorb<span class="main">:</span>   
   <span class="quoted"><span class="quoted">"inv_Map <span class="free">di</span> <span class="free">ri</span> <span class="free">m</span> <span class="main">⟹</span> inv_Map <span class="free">di</span> <span class="free">ri</span> <span class="main">(</span><span class="free">S</span> <span class="main">◃</span> <span class="free">m</span><span class="main">)</span>"</span></span>
@@ -2309,6 +2334,77 @@ dagger_notemp_munion munion_notempty_left munion_notempty_right
                   <span class="main">(</span><span class="main">∀</span> <span class="bound">i</span> <span class="main">∈</span> elems <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">.</span> <span class="bound">i</span> <span class="main">&gt;</span> <span class="main">0</span> <span class="main">∧</span> <span class="bound">i</span> <span class="main">≤</span> <span class="numeral">9</span><span class="main">)</span>"</span></span>
 
 <span class="keyword1"><span class="command">value</span></span> <span class="quoted"><span class="quoted">"inv_MySeq <span class="main">[</span><span class="main">1</span><span class="main">,</span> <span class="numeral">2</span><span class="main">,</span> <span class="numeral">3</span><span class="main">]</span>"</span></span>
+
+<span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹VDM PO layered expansion-proof strategy setup›</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹I use various theorem tags to step-wise expand-simplify VDM goals›</span></span>
+
+<span class="comment1">(*TODO: this needs loads of experimentation for fine tuning *)</span>
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_basic_defs</span><span class="main">]</span>       <span class="main">=</span> inv_True_def inv_VDMChar_def <span class="comment1">(*inv_bool_def *)</span>
+                                inv_VDMToken'_def inv_VDMToken_def 
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_defs</span><span class="main">]</span>         <span class="main">=</span> inv_VDMNat_def inv_VDMNat1_def inv_VDMInt_def
+                                inv_VDMReal_def inv_VDMRat_def
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_fcns</span><span class="main">]</span>         <span class="main">=</span> vdm_narrow_real_def vdm_div_def vdm_mod_def
+                                vdm_rem_def vdm_pow_def vdm_abs_def vdm_floor_def
+                   
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_spec_pre</span><span class="main">]</span>     <span class="main">=</span> pre_vdm_mod_def pre_vdm_div_def 
+                                pre_vdm_rem_def pre_vdm_pow_def
+                              
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_spec_post</span><span class="main">]</span>    <span class="main">=</span> post_vdm_mod_def post_vdm_div_def 
+                                post_vdm_rem_def post_vdm_pow_def
+                                post_vdm_floor_def post_vdm_abs_def  
+
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set_defs</span><span class="main">]</span>         <span class="main">=</span> inv_VDMSet_def inv_VDMSet1_def inv_VDMSet'_def inv_VDMSet1'_def inv_SetElems_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set_fcns</span><span class="main">]</span>         <span class="main">=</span> vdm_card_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set_spec_pre</span><span class="main">]</span>     <span class="main">=</span> pre_vdm_card_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set_spec_post</span><span class="main">]</span>    <span class="main">=</span> post_vdm_card_def
+                              
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_defs</span><span class="main">]</span>         <span class="main">=</span> inv_VDMSeq'_def inv_VDMSeq1'_def inv_SeqElems_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_fcns_1</span><span class="main">]</span>       <span class="main">=</span> len_def elems_def inds_def inds_as_nat_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_fcns_2</span><span class="main">]</span>       <span class="main">=</span> vdm_reverse_def vdmtake_def seq_prefix_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_fcns_3</span><span class="main">]</span>       <span class="main">=</span> applyVDMSeq_def applyVDMSubseq'_def applyVDMSubseq_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec_pre</span><span class="main">]</span>     <span class="main">=</span> pre_hd_def pre_tl_def pre_applyVDMSeq_def pre_applyVDMSubseq_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec_post_1</span><span class="main">]</span>  <span class="main">=</span> post_len_def post_elems_def post_inds_def post_hd_def post_tl_def   
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec_post_2</span><span class="main">]</span>  <span class="main">=</span> post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec_post_3</span><span class="main">]</span>  <span class="main">=</span> post_applyVDMSeq_def post_applyVDMSubseq_def 
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_defs</span><span class="main">]</span>         <span class="main">=</span> inv_Option_def inv_Map1_def inv_Map_def inv_Inmap_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_1</span><span class="main">]</span>       <span class="main">=</span> rng_def dagger_def munion_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_2</span><span class="main">]</span>       <span class="main">=</span> dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_3</span><span class="main">]</span>       <span class="main">=</span> vdm_merge_def vdm_inverse_def map_subset_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_4</span><span class="main">]</span>       <span class="main">=</span> map_comp_def map_compatible_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_1_simps</span><span class="main">]</span> <span class="main">=</span> dagger_simps upd_simps munion_simps 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_2_simps</span><span class="main">]</span> <span class="main">=</span> restr_simps antirestr_simps
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_comp_1</span><span class="main">]</span>       <span class="main">=</span> maplet_defs
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_comp_2</span><span class="main">]</span>       <span class="main">=</span> mapCompSetBound_defs 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_comp_3</span><span class="main">]</span>       <span class="main">=</span> mapCompTypeBound_defs
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_crc_1</span><span class="main">]</span>        <span class="main">=</span> is_VDMRealWhole_def is_VDMRatWhole_def 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_crc_2</span><span class="main">]</span>        <span class="main">=</span> vdmint_of_real_def vdmint_of_rat_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_crc_3</span><span class="main">]</span>        <span class="main">=</span> total_coercion_def vdmset_of_t_def vdmseq_of_t_def isTest_def isTest'_def
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_stms_defs</span><span class="main">]</span>        <span class="main">=</span> seqcomp_def seqcomps.simps seqcomps'_def
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_spec</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_num_spec_pre</span></span> <span class="dynamic"><span class="dynamic">VDM_num_spec_post</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set_spec</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_set_spec_pre</span></span> <span class="dynamic"><span class="dynamic">VDM_set_spec_post</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec_post</span><span class="main">]</span>    <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_seq_spec_post_3</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_spec_post_2</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_spec_post_1</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_spec</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_seq_spec_pre</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_spec_post</span></span>
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq_fcns</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_seq_fcns_3</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_fcns_2</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_fcns_1</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_4</span></span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_3</span></span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_2</span></span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_1</span></span> 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_fcns_simps</span><span class="main">]</span>   <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_2_simps</span></span> <span class="dynamic"><span class="dynamic">VDM_map_fcns_1_simps</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map_comp</span><span class="main">]</span>         <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_map_comp_3</span></span> <span class="dynamic"><span class="dynamic">VDM_map_comp_2</span></span> <span class="dynamic"><span class="dynamic">VDM_map_comp_1</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num_crc</span><span class="main">]</span>          <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_num_crc_3</span></span> <span class="dynamic"><span class="dynamic">VDM_num_crc_2</span></span> <span class="dynamic"><span class="dynamic">VDM_num_crc_1</span></span>
+
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_num</span><span class="main">]</span>  <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_num_defs</span></span> <span class="dynamic"><span class="dynamic">VDM_num_fcns</span></span> <span class="dynamic"><span class="dynamic">VDM_num_crc</span></span> 
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_set</span><span class="main">]</span>  <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_seq_defs</span></span> <span class="dynamic"><span class="dynamic">VDM_set_fcns</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_seq</span><span class="main">]</span>  <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_seq_defs</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_fcns</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_map</span><span class="main">]</span>  <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_map_defs</span></span> <span class="dynamic"><span class="dynamic">VDM_map_fcns</span></span> <span class="dynamic"><span class="dynamic">VDM_map_comp</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_stms</span><span class="main">]</span> <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_stms_defs</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_spec</span><span class="main">]</span> <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_num_spec</span></span> <span class="dynamic"><span class="dynamic">VDM_set_spec</span></span> <span class="dynamic"><span class="dynamic">VDM_seq_spec</span></span>
+<span class="keyword1"><span class="command">lemmas</span></span> <span class="main">[</span><span class="operator">VDM_all</span><span class="main">]</span>  <span class="main">=</span> <span class="dynamic"><span class="dynamic">VDM_basic_defs</span></span> <span class="dynamic"><span class="dynamic">VDM_num</span></span> <span class="dynamic"><span class="dynamic">VDM_set</span></span> <span class="dynamic"><span class="dynamic">VDM_seq</span></span> <span class="dynamic"><span class="dynamic">VDM_map</span></span> <span class="dynamic"><span class="dynamic">VDM_stms</span></span>  
 
 <span class="comment1">(*&lt;*)</span><span class="keyword2"><span class="keyword">end</span></span><span class="comment1">(*&gt;*)</span></pre>
 </body>
