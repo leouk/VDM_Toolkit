@@ -1,14 +1,19 @@
 package annotations.in;
 
+import java.util.List;
+import java.util.Vector;
+
 import com.fujitsu.vdmj.in.annotations.INAnnotation;
 import com.fujitsu.vdmj.in.definitions.INValueDefinition;
 import com.fujitsu.vdmj.in.expressions.INExpressionList;
 import com.fujitsu.vdmj.in.expressions.INVariableExpression;
+import com.fujitsu.vdmj.in.statements.INStatement;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.ContextException;
 import com.fujitsu.vdmj.runtime.Interpreter;
+import com.fujitsu.vdmj.runtime.StateContext;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.values.CPUValue;
 import com.fujitsu.vdmj.values.NameValuePairList;
@@ -29,13 +34,16 @@ public class INWitnessAnnotation extends INAnnotation
 	public static void doInit()
 	{
 		Context root = Interpreter.getInstance().getInitialContext();
-		witnessCtxt = new Context(LexLocation.ANY, "Witness context", root);
+		witnessCtxt = new StateContext(LexLocation.ANY, "@Witness initialization", root, null);
 		witnessCtxt.setThreadState(CPUValue.vCPU);
 		boolean retry = false;
 		int retries = 3;
+		List<ContextException> problems = new Vector<ContextException>();
 		
 		do
 		{
+			problems.clear();
+			
 			for (INAnnotation a: getInstances(INWitnessAnnotation.class))
 			{
 				try
@@ -52,12 +60,24 @@ public class INWitnessAnnotation extends INAnnotation
 					}
 					else
 					{
-						throw e;
+						problems.add(e);	// Store to be reported
 					}
 				}
 			}
 		}
 		while (retry && --retries > 0);
+		
+		// Raise a single exception if we have trouble, but list them all first
+		if (!problems.isEmpty())
+		{
+			for (ContextException e: problems)
+			{
+				Console.err.println(e.toString());
+			}
+			
+			ContextException first = problems.get(0);
+			throw new ContextException(6666, "Bad witness(es)", first.location, witnessCtxt);
+		}
 	}
 	
 	@Override
@@ -65,8 +85,12 @@ public class INWitnessAnnotation extends INAnnotation
 	{
 		INVariableExpression ve = (INVariableExpression)args.get(0);
 		Value result = witnessCtxt.get(ve.name);
-		//@NB why not Console.out? 
-		Console.out.println(this + " = " + result);		
+		Console.out.println(this + " = " + result);
+	}
+	
+	@Override
+	public void inBefore(INStatement stmt, Context ctxt)
+	{
 	}
 }
 
