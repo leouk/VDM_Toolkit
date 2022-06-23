@@ -1,0 +1,407 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@doc VDM set ranges as an abstract data type for speed 
+--@todo complete operators, add examples of high order operators
+------------------------------------------------------------------------------------
+module Ranges
+imports 
+    from Support1 
+        functions 
+            injective renamed injective;
+            disjoint renamed disjoint;
+            well_ordered renamed well_ordered;
+            unique_seq_inv renamed unique_seq_inv;
+            mins renamed mins;
+            maxs renamed maxs;
+    ,from Relations
+        functions 
+            rel_img renamed rel_img;
+exports
+    types 
+        DenseRange0;
+        struct RangeType;
+        struct DenseRange;
+        struct SingletonRange;
+        struct RangeTypeDenseRangeFunction;        
+        struct RangeTypeTest;
+        struct AllAny;
+        struct Mandate;
+        struct MandateMap;
+    values 
+        MIN_RANGE: RangeType;
+        MAX_RANGE: RangeType;
+        FALSE_RANGETYPE_TEST: RangeTypeTest;        
+        TRUE_RANGETYPE_TEST : RangeTypeTest;
+    functions
+        make_dense_range: RangeType * RangeType -> DenseRange                                                                     ;
+        make_dense_range0: RangeType * RangeType -> DenseRange0                                                                     ;
+        range_disjoint: DenseRange0 * DenseRange0 -> bool                                                                      ;
+        ranges_disjoint: set of DenseRange0 -> bool                                                                            ;
+        range_subset: DenseRange0 * DenseRange0 -> bool                                                                        ;
+        range_psubset: DenseRange0 * DenseRange0 -> bool                                                                     ;
+        ranges_extremme: set1 of DenseRange0 * bool -> RangeType                                          ;
+        ordered_dense_range: set of DenseRange * set of DenseRange -> bool                                                     ;
+        well_ordered_dense_range[@elem]: set of (@elem * set of DenseRange) -> bool                                            ;
+        coalesce[@elem,@val]: set of (@elem * @val) -> set of (@elem * set of @val)                                            ;
+        amount_below_range: RangeType * DenseRange0 -> bool                                                                       ;
+        amount_above_range: RangeType * DenseRange0 -> bool                                                                       ;
+        amount_above_eq_range: RangeType * DenseRange0 -> bool                                                                    ;
+        amount_below_eq_range: RangeType * DenseRange0 -> bool;
+        amount_within_range: RangeType * DenseRange0 -> bool                                                                      ;
+        amount_is_within_range: DenseRange0 -> RangeTypeTest                                                                      ;
+        amount_within_or_below_range: RangeType * DenseRange0 -> bool                                                             ;
+        avg_amount_for: DenseRange -> RangeType                                                                                   ;
+        ho_ranges_union: set of DenseRange * RangeTypeDenseRangeFunction -> RangeTypeTest                                            ;
+        --ho_ranges_union2: set of DenseRange * RangeTypeDenseRangeFunction2 -> RangeTypeTest                                        ;
+        ho_ranges_inter: set of DenseRange * RangeTypeDenseRangeFunction -> RangeTypeTest                                            ;
+        ho_ranges_test: set of DenseRange * AllAny * RangeTypeDenseRangeFunction -> RangeTypeTest                            ;
+        within_ranges_union: set of DenseRange -> RangeTypeTest                                                                   ;
+        within_ranges_inter: set of DenseRange -> RangeTypeTest                                                                   ;
+        amounts_within_ranges: set of RangeType * AllAny * RangeTypeTest -> bool                ;
+        amounts_from_range: DenseRange0 -> set of RangeType                                                                       ;
+        mandate_map[@elem]: seq of @elem * (@elem -> Mandate) -> MandateMap                                                    ;
+        well_ordered_mandate: MandateMap -> bool                                                                               ;
+        per_mandate[@T]: seq of @T * (@T -> Mandate) -> seq of seq of @T                                                       ;
+        merge_sequences[@T]: seq of @T * seq of @T * (seq of @T -> bool) * (seq of @T -> bool) * (@T -> Mandate) -> seq1 of @T ;
+        unique_well_ordered_seq_inv[@T,@R]: seq of @T * (@T -> @R) * (@T -> Mandate) -> bool                                   ;
+  
+definitions
+
+values 
+    --@doc these are somewhat artificial, for testing only
+	MIN_RANGE: RangeType = 0;
+	MAX_RANGE: RangeType = 100000;
+
+	MANDATES            : MandateSeq1 = [<Mandatory>, <Desirable>, <Voluntary>];
+	FALSE_RANGETYPE_TEST: RangeTypeTest = (lambda -: RangeType & false);
+	TRUE_RANGETYPE_TEST : RangeTypeTest = (lambda -: RangeType & true);
+
+types
+    RangeType = nat;
+
+    --@doc forall | exists
+    AllAny = <All> | <Any>;
+
+	DenseRange0 ::
+        -- { mins(s),...,maxs(s) }
+		lower: RangeType
+		upper: RangeType
+	inv mk_DenseRange0(l, u) == l <= u;
+	
+	RangeTypeDenseRangeFunction = (RangeType * DenseRange0 -> bool);
+	RangeTypeTest = (RangeType -> bool);
+	--RangeTypeDenseRangeFunction2 = (DenseRange0 -> RangeTypeTest);
+	
+    SingletonRange = DenseRange0 
+    inv mk_DenseRange0(l, u) == l = u;
+
+	DenseRange = DenseRange0
+	inv dr == 0 < dr.upper;
+
+    --@doc Mandate defines what is expected of the entity it is associated with
+	Mandate = <Mandatory> | <Desirable> | <Voluntary>
+	ord m1 < m2 == 
+		let 
+			value =  --map (<Mandatory> | <Desirable> | <Voluntary>) to nat1
+				{ <Mandatory> |-> 1,
+					<Desirable> |-> 2,
+					<Voluntary> |-> 3
+				}
+		in
+			value(m1) < value(m2);			
+	
+	--@doc type mostly for the MANDATES constant: unique ordered mandates as per expected protocol
+	MandateSeq1 = seq1 of Mandate
+	inv ms == 
+		injective[Mandate](ms)
+		and
+		(forall i, j in set inds(ms) & i < j => ms(i) < ms(j));
+			
+	--@doc sequence indeces for every mandate; this should be dense for a well-ordered mandate map
+	MandateMap = map Mandate to set of nat1;
+
+--@LF functions on dense ranges
+functions
+    make_dense_range: RangeType * RangeType -> DenseRange
+	make_dense_range(l, h) == mk_DenseRange0(l, h)
+	pre
+		0 < h and l <= h;
+
+    make_dense_range0: RangeType * RangeType -> DenseRange0
+	make_dense_range0(l, h) == mk_DenseRange0(l, h)
+	pre
+		l <= h;
+
+    --@doc inter <> {} operator for DenseRange (perhaps call it inter?)
+    range_disjoint: DenseRange0 * DenseRange0 -> bool
+    range_disjoint(mk_DenseRange0(l1, h1), mk_DenseRange0(l2,h2)) == h2 < l1 or h1 < l2;
+
+    --@doc Ranges subset
+    range_subset: DenseRange0 * DenseRange0 -> bool
+    range_subset(mk_DenseRange0(l1, h1), mk_DenseRange0(l2,h2)) == l2 <= l1 and h1 <= h2;
+
+    range_psubset: DenseRange0 * DenseRange0 -> bool
+    range_psubset(dr1, dr2) == range_subset(dr1,dr2) and dr1 <> dr2;
+
+    --@doc disjoint operator for DenseRange
+    ranges_disjoint: set of DenseRange0 -> bool
+    ranges_disjoint(drs) == 
+        card drs > 1 
+        =>
+        (forall i in set drs & forall j in set drs \ {i} & range_disjoint(i,j));
+
+    ranges_extremme: set1 of DenseRange0 * bool -> RangeType
+    ranges_extremme(rs, maximum) == 
+        if  maximum then
+            --@doc minimum lower bound among the high bounds is the extremme low within high ranges
+            mins({ l | mk_DenseRange0(l, -) in set rs })
+        else 
+            --@doc maximum upper bound among the low bounds is the extremme high within low ranges
+            maxs({ h | mk_DenseRange0(-, h) in set rs });
+
+    --@doc sets of dense ranges are ordered if highest high from the left is smaller than 
+    --		 the lowest low from the rigt.  
+    ordered_dense_range: set of DenseRange * set of DenseRange -> bool
+    ordered_dense_range(left, right) ==
+        left <> {} and right <> {} 
+        => 
+        --maxs({ h | mk_DenseRange0(-, h) in set left }) < mins({ l | mk_DenseRange0(l, -) in set right})
+        ranges_extremme(left, false) < ranges_extremme(right, true); 
+
+    --@doc given @elem ordered-tagged dense-ranges, ensure ranges are ordered	
+    well_ordered_dense_range[@elem]: set of (@elem * set of DenseRange) -> bool
+    well_ordered_dense_range(rs) ==
+        forall mk_(t1, r1), mk_(t2, r2) in set rs & 
+            --@OnFail("%s\n", [mk_(t1, t2, t1 < t2, r1, r2)])
+            (t1 < t2 
+                => 
+                ordered_dense_range(r1, r2)
+            );
+
+    /*
+    --@doc For various situations, we have tagged range checks such that they don't overlap. So, say
+            {i,...,j}, low
+            {a,...,b}, low
+            {c,...,d}, okay
+            {e,...,f}, high
+            {g,...,h}, high
+            
+            We want that:
+            
+            * no overlap between any range
+            disjoint([{i,...,j},{a,...,b},{c,...,d}, {e,...,f}, {g,...,h}])
+            
+            * ordering obbeyed according to tag ordering (presuming dense range has one): low < okay < high
+            maxs({{i,...,j},{a,...,b}}) < mins({c,...,d}) and maxs({c,...,d}) < mins({{e,...f},{g,...,h}}) 
+            
+            * generalise to any ordered tag
+            
+            * coalescing picks all of a kind then compare. Perhaps not needed, but minimises the number of
+            min/leomax (and folding), hence faster (i.e. only one min/leomax per size of type @elem rather than
+            size of set s.  
+    */
+    coalesce[@elem,@val]: set of (@elem * @val) -> set of (@elem * set of @val)
+    coalesce(s) == { mk_(t, rel_img[@elem, @val](s, { t })) | mk_(t, -) in set s };
+
+    --@doc amount is below range lower bound  
+    amount_below_range: RangeType * DenseRange0 -> bool
+    amount_below_range(a, mk_DenseRange0(l,-)) == a < l; 
+
+    --@doc amount is below range lower bound  
+    amount_below_eq_range: RangeType * DenseRange0 -> bool
+    amount_below_eq_range(a, mk_DenseRange0(l,-)) == a <= l; 
+
+    --@doc amount is above range upper bound  
+    amount_above_range: RangeType * DenseRange0 -> bool
+    amount_above_range(a, mk_DenseRange0(-,h)) == h < a; 
+
+    --@doc amount is above range upper bound  
+    amount_above_eq_range: RangeType * DenseRange0 -> bool
+    amount_above_eq_range(a, mk_DenseRange0(-,h)) == h <= a; 
+
+    --@doc in-set operator for DenseRange
+    amount_within_range: RangeType * DenseRange0 -> bool
+    amount_within_range(a, mk_DenseRange0(l, h)) == l <= a and a <= h;
+
+    --@doc
+    --@qst_lf(38) perhaps have the RangeTypeDenseRangeFunction2 everywhere? 
+    amount_is_within_range: DenseRange0 -> RangeTypeTest
+    amount_is_within_range(range) == (lambda a: RangeType & amount_within_range(a, range));
+
+    --@doc akin to <= for dense ranges, yet accounting also for (singleton) cross-range comparison
+    amount_within_or_below_range: RangeType * DenseRange0 -> bool
+    amount_within_or_below_range(a, mk_DenseRange0(-, h)) == a <= h; 
+    --	amount_below_range(a, dr) or amount_within_range(a, dr);
+
+    avg_amount_for: DenseRange -> RangeType
+    avg_amount_for(r) == (r.lower + r.upper) div 2;
+    --let x in set {r.lower, r.upper, (r.lower + r.upper) div 2} in x;
+
+    ho_ranges_union: set of DenseRange * RangeTypeDenseRangeFunction -> RangeTypeTest
+    ho_ranges_union(drs, function) == (lambda a: RangeType & exists r in set drs & function(a, r));
+
+    --ho_ranges_union2: set of DenseRange * RangeTypeDenseRangeFunction2 -> RangeTypeTest
+    --ho_ranges_union2(drs, function) == (lambda a: RangeType & exists r in set drs & function(r)(a));
+
+    --@doc intersection can be empty despite the degenerate forall theorem (e.g. dinter[X]{} = X), given
+    --		 we are not returning a set of values in range but a trivial (always true) test.
+    ho_ranges_inter: set of DenseRange * RangeTypeDenseRangeFunction -> RangeTypeTest
+    ho_ranges_inter(drs, function) == (lambda a: RangeType & forall r in set drs & function(a, r));
+
+    ho_ranges_test: set of DenseRange * AllAny * RangeTypeDenseRangeFunction -> RangeTypeTest
+    ho_ranges_test(drs, ranges_modifier, function) ==
+        cases ranges_modifier:
+            <All> -> ho_ranges_inter(drs, function),
+            <Any> -> ho_ranges_union(drs, function),
+            others -> FALSE_RANGETYPE_TEST
+        end;
+                
+    within_ranges_union: set of DenseRange -> RangeTypeTest
+    within_ranges_union(drs) == ho_ranges_union(drs, amount_within_range);
+
+    within_ranges_inter: set of DenseRange -> RangeTypeTest
+    within_ranges_inter(drs) == ho_ranges_inter(drs, amount_within_range);
+
+    --@doc check given amounts against uniform set1 of measurement ranges according to given comparator function  
+	--@doc distinction between bounds is important given that okay is guarantee everyever, whereas high/low is an occurrance somewhere
+	amounts_within_ranges: set of RangeType * AllAny * RangeTypeTest -> bool
+	amounts_within_ranges(amounts, boundary, test) ==
+		cases boundary:
+			<Any>  -> exists a in set amounts & test(a),
+			<All>  -> forall a in set amounts & test(a),
+			others -> false
+		end;
+
+    --@AB RangeTypes from range to return a set of amount based on the range 
+    amounts_from_range: DenseRange0 -> set of RangeType
+    amounts_from_range(mk_DenseRange0(l,h)) == {l,...,h}
+    post 
+        RESULT <> {};
+
+--@LF functions on manadate maps; we might not use/need those.
+functions
+    --@doc creates a map of indices per mandate item within the sequence, where f is the projection function
+    --     to extract the mandate from @elem (i.e. a record field projection fuction. 
+    mandate_map[@elem]: seq of @elem * (@elem -> Mandate) -> MandateMap
+    mandate_map(s, f) == 
+        { j |-> { i | i in set inds s & f(s(i)) = j } | j in set elems MANDATES }
+    pre
+        injective[Mandate](MANDATES)
+    post
+        --@doc there is a mapping for every mandate, even those outside the sequence
+        card dom RESULT = card elems MANDATES
+        and
+        --@doc all indices are within the sequence
+        dunion rng RESULT subset inds s
+        and
+        --@doc maximum index on the mapping is the len of the sequence
+        len s = maxs(dunion rng RESULT)
+        and
+        --@doc every mandate index has the mapped mandate: two versions of the same check? Second better? 
+        --(let s_m: seq of Mandate = seqMap[@elem, Mandate](f, s) in 
+        --  forall i in set inds s_m & i in set RESULT(s_m(i)))
+        --and
+        (forall m in set dom RESULT & forall i in set RESULT(m) & f(s(i)) = m); 
+
+    --@doc all language parts with mandate induce a sequence of entities (e.g., measurements, objectives, etc.)
+    --@qst_leo their well-ordering in terms of higher values are prioritised is important for later TeleoR?
+    well_ordered_mandate: MandateMap -> bool
+    well_ordered_mandate(mandate_idxs) ==
+        --@doc can't have mixed objectives + link seq bind with mandate_inds map 
+        --     i.e. same as disjoint([M,D,V]), where M/D/V are set of inds for each mandate in the map) 
+        disjoint[nat1]([ mandate_idxs(j) | j in seq MANDATES & elems MANDATES subset dom mandate_idxs ])
+        and
+        --@todo generalise to any mandate set? Below. Test/check! 
+        /*
+        (let 
+            mandatory_idxs: set of nat1 = mandate_idxs(<Mandatory>),
+            desirable_idxs: set of nat1 = mandate_idxs(<Desirable>),
+            voluntary_idxs: set of nat1 = mandate_idxs(<Voluntary>)
+        in
+            --@doc Objectives are ordered according to mandate strength. Mandatory must appear first,
+            --     then desirable then voluntary. This is important for later TeleoR objective priority ordering.
+            --		 This also entails density of each index set in the mandate 
+            --
+            --     i.e. M0,...,Mi,...,Dj,...,Dk,...,Vx,...,Vy
+            --          Mi < Dj (maximal mandatory index is smaller than minimal desirable)
+            --          Dk < Vx (maximal desirable index is smaller than minimal voluntary)
+            well_ordered[Mandate]({mk_(<Mandatory>, (if mandatory_idxs = {} then {} else {mandatory_idxs})), 
+                                    mk_(<Desirable>, (if desirable_idxs = {} then {} else {desirable_idxs})), 
+                                    mk_(<Voluntary>, (if voluntary_idxs = {} then {} else {voluntary_idxs})) })
+        )
+        and
+        */
+        well_ordered[Mandate]({ mk_(m, {mandate_idxs(m)}) | m in set elems MANDATES & mandate_idxs(m) <> {} });
+
+    --@doc given a sequence of @Ts with Mandate, order them by mandate; 
+    --		 post condition helps establish that flattened result is well_ordered wrt mandate 
+    per_mandate[@T]: seq of @T * (@T -> Mandate) -> seq of seq of @T        
+    per_mandate(ms, extract_mandate) ==
+        let map_idxs: MandateMap = mandate_map[@T](ms, extract_mandate) in
+            [ [ ms(i) | i in set map_idxs(m) ] | m in seq MANDATES ]
+    post
+        len ms = len (conc RESULT)
+        and
+        (let map_idxs: MandateMap = mandate_map[@T](ms, extract_mandate) in 
+                well_ordered_mandate(map_idxs));
+
+    --@doc generalised sequence merge function to ensure well-orderedness within the mandate and the given
+    --		 expected result invariant, which includes uniqueness and well-orderedness. Inputs must have uniqueness 
+    --		 This is used for measurements, objectives and ambitions; and could also
+    --		 be used for doses or any other mandate-orientated sequence ordering. The ordering seed extract from
+    --		 @T its mandate. This is also useful for CG, as @T.mandate wouldn't work.
+    merge_sequences[@T]: seq of @T * seq of @T * (seq of @T -> bool) * (seq of @T -> bool) * (@T -> Mandate) -> seq1 of @T
+    merge_sequences(s1, s2, unique_inv, merge_invariant, ordering_seed) ==
+        let
+            sr: seq1 of @T = s1 ^ s2
+            in
+            if merge_invariant(sr) then
+                sr
+            else 
+                let
+                    map1_idxs: MandateMap = mandate_map[@T](s1, ordering_seed),
+                    map2_idxs: MandateMap = mandate_map[@T](s2, ordering_seed),
+                    --per_mandate  : map Mandate to seq of @T 
+                    --								= { m |-> [ m1(i) | i in set map_idxs1(m) ] ^ [ m2(j) | j in set map_idxs2(m) ] | m in set elems MANDATES },
+                    per_mandates : seq of seq of @T--seq of FilteredMeasurementSeq             
+                                                    = [ 
+                                                            [ s1(i) | i in set map1_idxs(m) ] ^ 
+                                                            [ s2(j) | j in set map2_idxs(m) ] 
+                                                            | 
+                                                            m in seq MANDATES 
+                                                            &
+                                                            --@qst_lf(24) & unique_inv([ m1(i)...]^[m2(j)...]...) guaranteed by if; to avoid let here? 
+                                                            unique_inv(sr)
+                                                        ]
+                    in
+                    conc per_mandates 
+    pre
+        --@doc can't both be empty as this will not create an MeasurementSeq (seq1)
+        --not (s1 = [] and s2 = [])
+        not (s1 ^ s2) = []		
+        and
+        --@doc each must have uniqueness 
+        unique_inv(s1 ^ s2)
+    post
+        --@doc result might not be a prefix because of mandates, but it will contain all elements involved 
+        elems RESULT = elems s1 union elems s2
+        and
+        --@doc result is unique and well ordered as per the invariant of merge, so also right size
+        len RESULT = len s1 + len s2
+        and
+        --@doc merge invariant must be stronger than unique invariant (i.e. merge is more than just uniqueness)
+        --(unique_invariant(RESULT) => merge_invariant(RESULT))	
+        unique_inv(RESULT) 
+        and
+        --@doc implicit from the MeasurementSeq type invariant; added for clarity
+        merge_invariant(RESULT);
+
+    --@doc well ordered according to order seed and unique according to unique seed.	  
+    unique_well_ordered_seq_inv[@T,@R]: seq of @T * (@T -> @R) * (@T -> Mandate) -> bool
+    unique_well_ordered_seq_inv(s, unique_seed, order_seed) ==
+        unique_seq_inv[@T,@R](s, unique_seed)
+        and
+        well_ordered_mandate(mandate_map[@T](s, order_seed));
+
+end Ranges
