@@ -439,8 +439,11 @@ lemmas [Fcns_PO_defs] = PO_18_implicit_FUNC_SATISFIABILITY_def
 lemmas [Fcns_defs] = post_implicit_def pre_implicit_def Fcns_PO_defs
 
 lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<close> 
+  thm Fcns_PO_defs
   apply (simp add: Fcns_PO_defs, safe?)+
+  thm Fcns_defs
   apply (simp add: Fcns_defs, safe?)+
+  thm VDM_seq_defs
   apply (simp add: VDM_seq_defs, safe?)+
   apply (simp add: VDM_set_defs, safe?)+
   apply (simp add: VDM_basic_defs, safe?)+
