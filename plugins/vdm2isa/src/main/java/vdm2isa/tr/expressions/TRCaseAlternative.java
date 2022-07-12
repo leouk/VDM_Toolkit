@@ -85,7 +85,6 @@ public class TRCaseAlternative extends TRExpression {
 
     public static final TRCaseAlternative newCaseAlternative(LexLocation location, TRPattern pattern, TRExpression resultExpr)
     {
-        //TODO check with @NB whether this being null is okay, given it's never used anywhere. 
         TCCaseAlternative tc = new TCCaseAlternative(null, pattern.getVDMPattern(), resultExpr.getVDMExpr());
         TRCaseAlternative result = new TRCaseAlternative(location, tc, pattern, resultExpr);
         TRNode.setup(result);

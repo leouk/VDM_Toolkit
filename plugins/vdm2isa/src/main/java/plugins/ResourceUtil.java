@@ -29,7 +29,7 @@ public class ResourceUtil
     {
         InputStreamReader isr = load(resourceURI);
 		OutputStream out = new FileOutputStream(targetFile);
-        //@NB I am assuming VDMJ.filecharset is UTF-8, but we need UTF-8-Isabelle?!
+		// given the output is in YXML, UTF-8 is fine. 
 		OutputStreamWriter osr = new OutputStreamWriter(out, DEFAULT_ENCODING);
 		
 		char[] buf = new char[8192];

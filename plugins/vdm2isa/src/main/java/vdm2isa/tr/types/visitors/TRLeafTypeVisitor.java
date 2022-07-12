@@ -8,6 +8,7 @@ import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRMapType;
 import vdm2isa.tr.types.TRNamedType;
+import vdm2isa.tr.types.TROperationType;
 import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRProductType;
 import vdm2isa.tr.types.TRRecordType;
@@ -89,19 +90,19 @@ public abstract class TRLeafTypeVisitor<E, C extends Collection<E>, S> extends T
 		}
 	}
 
-	// @Override
-	// public C caseOperationType(TROperationType node, S arg)
-	// {
-	// 	C all = newCollection();
+	@Override
+	public C caseOperationType(TROperationType node, S arg)
+	{
+		C all = newCollection();
 		
-	// 	for (TRType param: node.parameters)
-	// 	{
-	// 		all.addAll(param.apply(this, arg));
-	// 	}
+		for (TRType param: node.parameters)
+		{
+			all.addAll(param.apply(this, arg));
+		}
 		
-	// 	all.addAll(node.result.apply(this, arg));
-	// 	return all;
-	// }
+		all.addAll(node.getResultType().apply(this, arg));
+		return all;
+	}
 
 	@Override
 	public C caseOptionalType(TROptionalType node, S arg)

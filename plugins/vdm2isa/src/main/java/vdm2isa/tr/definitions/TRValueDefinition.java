@@ -179,7 +179,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			//if ! those then warn?
 			//getVDMDef().findName(localName)
 			//pattern.getPatternList().get(index).getPattern().equals(localName.getName());
-			//TODO cater for @NB's weird case [-,-,a] = [1,2,3]!  
+			//TODO cater for weird case [-,-,a] = [1,2,3]!  
 		}
 		else if (pattern instanceof TRPatternBind)
 		{

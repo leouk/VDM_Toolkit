@@ -25,15 +25,15 @@
 *TCImportedDefinition
 *TCRenamedDefinition
 *TCStateDefinition
+*TCExplicitOperationDefinition
+*TCImplicitOperationDefinition
+*TCImplicitFunctionDefinition
 
-TCImplicitFunctionDefinition
-TCExplicitOperationDefinition
-TCImplicitOperationDefinition
 TCNamedTraceDefinition
 TCAssignmentDefinition
 TCExternalDefinition
 
-(27 of 33) = 79%
+(30 of 33) = 79%
 
  26  33 defs  ( 79%)
  37  37 binds (100%)

@@ -67,7 +67,7 @@ public enum IsaToken {
 	HEAD(Token.HEAD, "hd"),
 	TAIL(Token.TAIL, "tl"),
 	INDS(Token.INDS, "inds"),
-	ELEMS(Token.ELEMS, "elems"),				//@nb no TCElemsExpression? 
+	ELEMS(Token.ELEMS, "elems"),				
 	DISTCONC(Token.DISTCONC, "conc"),
 	REVERSE(Token.REVERSE, "vdm_reverse"),
 	MERGE(Token.MERGE, "vdm_merge"),
