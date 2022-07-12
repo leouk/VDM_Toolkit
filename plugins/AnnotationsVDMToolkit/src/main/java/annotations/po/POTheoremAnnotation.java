@@ -22,8 +22,6 @@ public class POTheoremAnnotation extends POAnnotation {
     @Override 
     public void poAfter(PODefinition def, ProofObligationList obligations, POContextStack ctxt)
 	{
-        //@NB TheoremObligation doesn't make use of the name argument? Does it need to go into ctxt?
-        //    From the output this is not quite right, but wasn't sure the way forward on this one. 
         assert args.get(0) instanceof POVariableExpression;
         POVariableExpression poName = (POVariableExpression)args.get(0);
         ctxt.push(new PONameContext(new TCNameList(poName.name)));

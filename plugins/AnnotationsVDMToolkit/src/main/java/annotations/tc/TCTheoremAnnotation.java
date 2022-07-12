@@ -24,6 +24,9 @@ public class TCTheoremAnnotation extends TCAnnotation {
 
     private static final long serialVersionUID = 1L;
 
+	//@TODO add top-level static environment for the theorem names 
+	//@TODO also add the same for witness environment names in TCWitness! 
+	
     public TCTheoremAnnotation(TCIdentifierToken name, TCExpressionList args) {
         super(name, args);
     }
@@ -80,8 +83,6 @@ public class TCTheoremAnnotation extends TCAnnotation {
             if (e instanceof TCVariableExpression)
 			{
                 TCVariableExpression varExpr = (TCVariableExpression)e;
-                //TCNameToken name =new TCNameToken(strExpr.location, strExpr.location.module, strExpr.value.value);
-                //@NB should this be GLOBAL or NAMES? 
                 TCDefinition d = env.findName(varExpr.name, NameScope.NAMESANDSTATE);
                 if (d != null)
                 {
@@ -91,9 +92,6 @@ public class TCTheoremAnnotation extends TCAnnotation {
                 {
                     for(int i = 1; i < args.size(); i++)
                     {
-                        //@NB should this be NameScope.GLOBAL? Or which one? 
-                        //    the theorem expr should type check as if it was defined
-                        //    as a global boolean value
                         args.get(i).typeCheck(env, null, scope, null);	// Just checks scope
                     }    
                 }				

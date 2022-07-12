@@ -82,7 +82,6 @@ public class TCWitnessAnnotation extends TCAnnotation
 	@Override
 	protected void doInit(Environment globals)
 	{
-		//@NB shouldn't this be NameScope.ANYTHING?
 		Environment local = new FlatCheckedEnvironment(tagDefinitions, globals, NameScope.GLOBAL);
 		List<VDMError> errs = TypeChecker.getErrors();
 		int before = errs.size();
@@ -95,7 +94,6 @@ public class TCWitnessAnnotation extends TCAnnotation
 			
 			for (int i = before; i < after; i++)
 			{
-				//@NB why? 
 				problems.add(errs.remove(before));	// Always remove this one
 			}
 

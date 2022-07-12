@@ -37,13 +37,15 @@ public class TCTheoremAttributeAnnotation extends TCAnnotation {
 	@Override
 	public void tcBefore(TCDefinition def, Environment env, NameScope scope)
 	{
-        if (!Arrays.asList(/*NameScope.GLOBAL, NameScope.STATE, NameScope.TYPENAME, */NameScope.NAMES).contains(scope))
-        {
+        //if (!Arrays.asList(/*NameScope.GLOBAL, NameScope.STATE, NameScope.TYPENAME, */NameScope.NAMES).contains(scope))
+        if (!NameScope.GLOBAL.matches(scope))
+		{
             name.report(6601, String.format("@TheoremAttribute name scope error. It applies to global (state, type, fcns, ops) names only \n\t name %1$s scope %2$s\n", getDefName().name, scope));
         }
 		else 
 		{
 			//@NB TCTypeDefinition env.findName fails, despite the name being there? 
+			//	-- because you need findType for TCTypeDefinition 
 			if (/*def instanceof TCTypeDefinition || */def instanceof TCExplicitFunctionDefinition || def instanceof TCExplicitOperationDefinition)
 			{
 				TCDefinition d = env.findName(def.name, scope);

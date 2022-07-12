@@ -37,14 +37,14 @@ public class INWitnessAnnotation extends INAnnotation
 		witnessCtxt = new StateContext(LexLocation.ANY, "@Witness initialization", root, null);
 		witnessCtxt.setThreadState(CPUValue.vCPU);
 		boolean retry = false;
-		int retries = 3;
 		List<ContextException> problems = new Vector<ContextException>();
-		
+		List<INAnnotation> witnesses = getInstances(INWitnessAnnotation.class);
+		int retries = witnesses.size();
 		do
 		{
 			problems.clear();
 			
-			for (INAnnotation a: getInstances(INWitnessAnnotation.class))
+			for (INAnnotation a: witnesses)
 			{
 				try
 				{
