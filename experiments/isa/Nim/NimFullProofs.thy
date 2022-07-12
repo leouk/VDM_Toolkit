@@ -170,7 +170,9 @@ theorem PO_play_move_sat_exp_obl
   unfolding post_play_move_def 
   apply safe
   unfolding post_sum_elems_def
-  unfolding pre_play_move_def pre_sum_elems_def 
+  thm pre_play_move_def
+  unfolding pre_play_move_def 
+    pre_sum_elems_def 
                       apply simp_all
   txt \<open> too many subgoals if you apply safe\<close>
   apply safe
@@ -192,13 +194,14 @@ lemma l1: "inv_Move m \<Longrightarrow> inv_Moves s \<Longrightarrow> pre_play_m
   unfolding post_sum_elems_def pre_sum_elems_def 
   txt \<open> naive strategy doesn't work. You can use sorry to discover the 
         splitting lemmas to be proved next: that is, will they help the larger proof? \<close>
-    (*sorry*)  oops
+   apply (simp, safe, simp_all)
+    sorry 
 
 lemma l2: "inv_Move m \<Longrightarrow> inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> pre_sum_elems s"
     using inv_Moves_def by blast
 
 lemma l3: "inv_Move m \<Longrightarrow> inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> pre_sum_elems (play_move p m s)"
-  (*using inv_Moves_def l1 apply blast sorry *) oops 
+  using inv_Moves_def l1 apply blast done
 
 text \<open> The fact this proof is the same as l2, might mean they are the same goal? \<close>
 lemma l4: "inv_Move m \<Longrightarrow> inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> inv_SeqElems inv_Move s"
@@ -225,23 +228,21 @@ lemma l7: "inv_Move m \<Longrightarrow>
 (*  "cvc4": Try this: using inv_Moves_def l1 apply blast (4 ms) 
 "vampire": Try this: apply (simp add: inv_Moves_def play_move_def) (4 ms)
 *)    
-  (* using inv_Moves_def l1 apply blast sorry *) oops
+  by (simp add: l4 l_inv_SeqElems_append play_move_def)
 
 lemma l8: "inv_Move m \<Longrightarrow>
        inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> inv_VDMNat (sum_elems (play_move p m s))"
 (*"cvc4": Try this: using inv_Moves_def inv_VDMNat_def l1 l_sum_elems_nat apply blast (8 ms) 
 "vampire": Try this: apply (meson inv_Moves_def l1 post_sum_elems_def) (6 ms) *)
-  (* apply (meson inv_Moves_def l1 post_sum_elems_def) 
-  sorry*) oops
-
+  by (meson inv_Moves_def l1 post_sum_elems_def) 
+  
 text \<open> @{term l9} seems similar to @{term l5} \<close>
 lemma l9: " inv_Move m \<Longrightarrow>
        inv_Moves s \<Longrightarrow>
        pre_play_move0 p m s \<Longrightarrow> play_move p m s \<noteq> [] \<Longrightarrow> 0 < sum_elems (play_move p m s)"
  (* "cvc4": Try this: by (simp add: l7 l_sum_elems_nat1) (3 ms) 
 "vampire": Try this: using l3 l_pre_sum_elems_sat by blast (1 ms)*)
-  (*using l3 l_pre_sum_elems_sat apply blast 
-   sorry *) oops
+  using l3 l_pre_sum_elems_sat apply blast done
 
 lemma l10: " inv_Move m \<Longrightarrow>
        inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> sum_elems s < sum_elems (play_move p m s)"
@@ -250,13 +251,13 @@ lemma l10: " inv_Move m \<Longrightarrow>
   apply (safe,simp_all) 
    apply (induct s)
   apply simp_all
-  (*sorry*) oops
+  sorry 
 
 lemma l11: " inv_Move m \<Longrightarrow>
        inv_Moves s \<Longrightarrow> pre_play_move0 p m s \<Longrightarrow> sum_elems s + m = sum_elems (play_move p m s)"
   unfolding pre_play_move0_def play_move_def (*sum_elems_def *)
   apply (simp)
-  apply (safe,simp_all) (*sorry*) oops
+  apply (safe,simp_all) sorry
 
 lemma l12: "inv_Move m \<Longrightarrow> inv_Moves s \<Longrightarrow> fair_play p s \<Longrightarrow> \<not> fair_play p (play_move p m s)"
   unfolding fair_play_def who_plays_next_def play_move_def
@@ -277,17 +278,17 @@ theorem PO_play_move_sat_exp_obl
   unfolding post_sum_elems_def
   apply (safe, simp_all)+
   txt \<open> All goals below are discovered with sledgehammer.\<close>
-  (*using l1 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce*) defer
+  using l1 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce
   apply (simp add: pre_moves_left_def pre_play_move_def)
-          apply (simp add: inv_Moves_def l_inv_SeqElems_append play_move_def pre_sum_elems_def)
+          apply (simp add: inv_Moves_def l_inv_SeqElems_append play_move_def pre_sum_elems_def) 
   apply (simp add: inv_Moves_def pre_play_move_def)
   using inv_VDMNat_def l_sum_elems_nat pre_sum_elems_def apply blast
         apply (simp add: l_pre_sum_elems_sat)
        apply (simp add: inv_VDMNat_def l_sum_elems_nat pre_sum_elems_def)
-  (*using l_pre_sum_elems_sat apply blast*) defer
-  (*using l10 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce*) defer
-  (*using l11 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce*) defer
-  using l12 pre_play_move_def (*apply blast*)
+  using l_pre_sum_elems_sat apply blast
+  using l10 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce
+  using l11 l_inv_Move_nat1 pre_play_move0_def pre_play_move_def apply fastforce 
+  using l12 pre_play_move_def apply blast
   apply (simp add: play_move_def)
   oops
 

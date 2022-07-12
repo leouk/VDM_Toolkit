@@ -1,7 +1,7 @@
 (*<*)theory NimFull 
 imports VDMToolkit
-        "~~/src/HOL/Library/While_Combinator"
-Smart_Isabelle.Smart_Isabelle "~~/src/HOL/Eisbach/Eisbach"
+        "HOL-Library.While_Combinator"
+        "HOL-Eisbach.Eisbach"
 begin(*>*)
 section \<open> Introduction \<close>
 
