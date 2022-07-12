@@ -5,8 +5,8 @@
 theory VDMToolkit
   imports 
     \<comment> \<open> Include real fields, list and option types ordering \<close>
-    Complex_Main
-    VDMEisbach
+    "Complex_Main"
+(*    VDMEisbach*)
     "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
     "HOL-Library.LaTeXsugar"
@@ -2327,6 +2327,66 @@ text \<open>I use various theorem tags to step-wise expand-simplify VDM goals\<c
 
 (*TODO: this needs loads of experimentation for fine tuning *)
 
+named_theorems 
+  VDM_basic_defs      and
+
+  VDM_num_defs        and
+  VDM_num_fcns        and
+  VDM_num_spec_pre    and
+  VDM_num_spec_post   and
+  VDM_num_spec        and
+  VDM_num             and
+
+  VDM_set_defs        and
+  VDM_set_fcns        and
+  VDM_set_spec_pre    and
+  VDM_set_spec_post   and
+  VDM_set_spec        and
+  VDM_set             and
+
+  VDM_seq_defs        and
+  VDM_seq_fcns_1      and
+  VDM_seq_fcns_2      and
+  VDM_seq_fcns_3      and
+  VDM_seq_fcns        and
+  VDM_seq_spec_pre    and
+  VDM_seq_spec_post_1 and
+  VDM_seq_spec_post_2 and
+  VDM_seq_spec_post_3 and
+  VDM_seq_spec_post   and
+  VDM_seq_spec        and
+  VDM_seq             and
+
+  VDM_map_defs        and
+
+  VDM_map_fcns_simps  and 
+  VDM_map_fcns_1_simps and 
+  VDM_map_fcns_2_simps and 
+
+  VDM_map_fcns        and
+  VDM_map_fcns_1      and
+  VDM_map_fcns_2      and
+  VDM_map_fcns_3      and
+  VDM_map_fcns_4      and
+
+  VDM_map_comp        and
+  VDM_map_comp_1      and
+  VDM_map_comp_2      and
+  VDM_map_comp_3      and
+
+  VDM_map             and
+
+  VDM_num_crc         and
+  VDM_num_crc_1       and
+  VDM_num_crc_2       and
+  VDM_num_crc_3       and
+                  
+  VDM_stms_defs       and 
+  VDM_stms            and
+
+  VDM_spec            and
+  VDM_all
+
 lemmas [VDM_basic_defs]       = inv_True_def inv_VDMChar_def (*inv_bool_def *)
                                 inv_VDMToken'_def inv_VDMToken_def 
 
@@ -2348,7 +2408,9 @@ lemmas [VDM_set_defs]         = inv_VDMSet_def inv_VDMSet1_def inv_VDMSet'_def i
 lemmas [VDM_set_fcns]         = vdm_card_def
 lemmas [VDM_set_spec_pre]     = pre_vdm_card_def 
 lemmas [VDM_set_spec_post]    = post_vdm_card_def
-                              
+
+thm VDM_num_fcns
+
 lemmas [VDM_seq_defs]         = inv_VDMSeq'_def inv_VDMSeq1'_def inv_SeqElems_def
 lemmas [VDM_seq_fcns_1]       = len_def elems_def inds_def inds_as_nat_def 
 lemmas [VDM_seq_fcns_2]       = vdm_reverse_def vdmtake_def seq_prefix_def 
