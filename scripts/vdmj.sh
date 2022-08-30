@@ -6,14 +6,14 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION="4.4.5-SNAPSHOT"
-PVERSION="4.4.5-P-SNAPSHOT"
+MVERSION="4.5.0-SNAPSHOT"
+PVERSION="4.5.0-P-SNAPSHOT"
 
 # Preferred VDMJ options
 VDMJ_OPTS="-strict"
 
 # The Maven repository directory containing VDMJ and VDM_Toolkit jars
-VDMJMAVENREPO=~/.m2/repository/com/fujitsu
+VDMJMAVENREPO=~/.m2/repository/dk/au/ece/vdmj
 VDMTOOLKITMAVENREPO=~/.m2/repository/vdmtoolkit
 
 # Location of the vdmj.properties file, if any. Override with -D.
