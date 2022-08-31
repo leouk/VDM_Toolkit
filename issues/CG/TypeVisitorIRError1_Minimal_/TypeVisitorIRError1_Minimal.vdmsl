@@ -1,6 +1,6 @@
 module TypeVisitorIRError1_Minimal
 imports 
-from TypesToImport
+from TypesToImport4
   types
     String renamed String
 
@@ -8,7 +8,7 @@ exports
 	types
 		struct Numeric
 	values 
-		V1: Numeric
+		V1: Numeric;
 		V2: Numeric
 		
 definitions 

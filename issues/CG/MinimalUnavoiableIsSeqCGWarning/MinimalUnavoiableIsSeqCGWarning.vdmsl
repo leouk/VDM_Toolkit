@@ -2,10 +2,10 @@ module MinimalUnavoiableIsSeqCGWarning
 imports
 from BasicTypeNonStruct
 	types
-		Type renamed Type
+		Type renamed Type;
 		SeqType renamed SeqType
 	functions
-		check_is_seq_of_inv renamed check_is_seq_of_inv
+		check_is_seq_of_inv renamed check_is_seq_of_inv;
 		select_first_value renamed select_first_value
 exports all
 definitions 

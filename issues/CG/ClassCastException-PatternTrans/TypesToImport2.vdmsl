@@ -1,6 +1,6 @@
 module TypesToImport2
 imports
-from TypesToImport
+from TypesToImport1
 	types
 		String renamed String
 exports 

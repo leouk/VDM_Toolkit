@@ -1,11 +1,11 @@
 module TypesToImport
 exports 
 types
-	struct TransparentType
+	struct TransparentType;
 	OpaqueType
 
 values
-	TCONST: TransparentType
+	TCONST: TransparentType;
 	OCONST: OpaqueType
 definitions 
 

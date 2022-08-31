@@ -1,14 +1,14 @@
 module MinimalNarrow
 exports 
 	functions
-		narrow_: nat -> nat
+		narroW: nat -> nat;
 		f: [bool] -> bool
 definitions 
 
 functions 
   --@doc fixed on VDMJ
-  --narrow_: nat -> nat
-  --narrow_(x) == x;
+  narroW: nat -> nat
+  narroW(x) == x;
   
   f: [bool] -> bool
   f(x) == if x <> nil then narrow_(x,bool) else false;

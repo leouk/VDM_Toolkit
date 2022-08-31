@@ -1,12 +1,9 @@
 module MinimalMapProblem
-imports
-from Char
-	types Id renamed Id;
-	functions make_id renamed make_id;
 exports all
 definitions 
 
 types
+	Id = seq1 of char; 
 	Percent = nat
 	inv p == p in set {0,...,100};
 	
@@ -17,6 +14,10 @@ types
 	--@witness({ make_id("physical") |-> 100, make_id("side_effects") |-> 60, make_id("benefits") |-> 40 }
 	Map = map Id to Confidence--map MeasurementKind to Confidence
 	inv mm == mm <> {|->};  
+
+functions
+	make_id: seq1 of char -> Id
+	make_id(i) == i;
   	
 values
 	PHYSICAL          : Id = make_id("physical");

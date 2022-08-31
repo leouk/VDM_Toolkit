@@ -1,7 +1,7 @@
 module TypesToImport3
 exports
 	types
-		struct Technology0
+		struct Technology0;
 		struct Technology
 definitions 
 

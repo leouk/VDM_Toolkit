@@ -1,4 +1,4 @@
-module TypesToImport
+module TypesToImport4
 exports 
 	types
 		struct String
@@ -7,4 +7,4 @@ definitions
 types
 	String = seq1 of char;
 	
-end TypesToImport
+end TypesToImport4

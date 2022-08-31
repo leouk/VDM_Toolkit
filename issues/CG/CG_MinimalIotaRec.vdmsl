@@ -1,4 +1,4 @@
-module CG_MinimalIotaRec
+module CG_MinimalIotaRec2
 exports all
 definitions 
 
@@ -60,4 +60,4 @@ functions
 	pre
 		pre_gotcha(a, rs);	
 	
-end CG_MinimalIotaRec
+end CG_MinimalIotaRec2

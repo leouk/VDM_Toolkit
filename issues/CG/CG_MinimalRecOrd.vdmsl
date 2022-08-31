@@ -1,4 +1,4 @@
-module CG_MinimalRecOrd
+module CG_MinimalRecOrd2
 exports all
 definitions 
 
@@ -30,4 +30,4 @@ types
 	--ord mk_R(-,y1) < mk_R(-,y2) ==
 	--	y1 subset y2
 		;			
-end CG_MinimalRecOrd
+end CG_MinimalRecOrd2
