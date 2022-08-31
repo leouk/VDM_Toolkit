@@ -53,7 +53,7 @@ public class ISAPluginSL extends ISAPlugin
 	{
 		super();
 	}
-	
+
 	@Override
 	public RPCMessageList analyse(RPCRequest request)
 	{

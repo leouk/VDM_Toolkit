@@ -24,18 +24,38 @@
 
 package plugins;
 
-import java.util.List;
-import java.util.Vector;
+import com.fujitsu.vdmj.Settings;
+import com.fujitsu.vdmj.lex.Dialect;
 
 import json.JSONArray;
 import json.JSONObject;
+import rpc.RPCMessageList;
+import rpc.RPCRequest;
 import vdmj.commands.Command;
-import workspace.lenses.CodeLens;
+import workspace.Diag;
+import workspace.EventHub;
+import workspace.EventListener;
+import workspace.events.LSPEvent;
+import workspace.events.UnknownCommandEvent;
+import workspace.events.UnknownMethodEvent;
 import workspace.plugins.AnalysisPlugin;
 
-public abstract class ISAPlugin extends AnalysisPlugin
+public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 {
-	public ISAPlugin()
+	public static ISAPlugin factory(Dialect dialect)
+	{
+		switch (dialect)
+		{
+			case VDM_SL:
+				return new ISAPluginSL();
+				
+			default:
+				Diag.error("Unknown dialect " + dialect);
+				throw new RuntimeException("Unsupported dialect: " + Settings.dialect);
+		}
+	}
+
+	protected ISAPlugin()
 	{
 		super();
 	}
@@ -49,9 +69,33 @@ public abstract class ISAPlugin extends AnalysisPlugin
 	@Override
 	public void init()
 	{
-		// Ignore
+		EventHub.getInstance().register(UnknownMethodEvent.class, this);
+		//@NB thought to add this as well to allow for command line in VSCode?
+		EventHub.getInstance().register(UnknownCommandEvent.class, this);
 	}
 	
+	@Override
+	public RPCMessageList handleEvent(LSPEvent event) throws Exception
+	{
+		if (event instanceof UnknownMethodEvent)
+		{
+			if (event.request.getMethod().equals("slsp/TR/translate"))
+			{
+				JSONObject params = event.request.get("params");
+				String language = params.get("languageId");
+				
+				if (language.equals("isabelle"))
+				{
+					return analyse(event.request);
+				}
+			}
+		}
+		
+		return null;	// Not handled
+	}
+	
+	abstract public RPCMessageList analyse(RPCRequest request);
+
 	@Override
 	public JSONObject getExperimentalOptions(JSONObject standard)
 	{
@@ -69,15 +113,7 @@ public abstract class ISAPlugin extends AnalysisPlugin
 		
 		return new JSONObject();
 	}
-	
-	@Override
-	public List<CodeLens> getCodeLenses(boolean dirty)
-	{
-		List<CodeLens> lenses = new Vector<CodeLens>();
-		// lenses.add(new EditCodeLens());
-		return lenses;
-	}
-	
+
 	@Override
 	public Command getCommand(String line)
 	{
