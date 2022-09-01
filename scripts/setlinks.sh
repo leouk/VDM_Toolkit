@@ -17,7 +17,7 @@ then
     exit 1
 fi
 
-RESOURCES="extensions/overturetool.vdm-vscode-$VERSION/resources"
+RESOURCES="$HOME/.vscode/extensions/overturetool.vdm-vscode-$VERSION/resources"
 # GROUPID="com/fujitsu"
 GROUPID="dk/au/ece/vdmj"
 VDMTOOLKIT="vdmtoolkit"
@@ -37,6 +37,7 @@ do
 done
 
 ln -sf $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
+echo "Created annotations from $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar to $RESOURCES/jars/vdmj"
 ln -sf $HOME/.m2/repository/$GROUPID/annotations2/$SUITE$SNAPSHOT/annotations2-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
 ln -sf $HOME/.m2/repository/$GROUPID/vdmj/$SUITE$SNAPSHOT/vdmj-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
 ln -sf $HOME/.m2/repository/$GROUPID/lsp/$SUITE$SNAPSHOT/lsp-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
