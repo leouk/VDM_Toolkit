@@ -25,18 +25,16 @@ begin
 lemma vdm_ord_irrefl: "\<forall> x . \<not> x < x"
   by simp
 
-lemma vdm_ord_trans: "\<forall> x y z . x < y \<and> y < z \<longrightarrow> x < y"
-  by simp
+lemma vdm_ord_trans: "\<forall> x y z . x < y \<and> y < z \<longrightarrow> x < z"
+  by (meson local.order.strict_trans)
 
 lemma vdm_ord_asym: "\<forall> x y . x < y \<longrightarrow> \<not> y < x"
   by (meson local.less_asym)
 
-lemma "\<forall> x y z . \<not> x < x \<and> (x < y \<and> y < z \<longrightarrow> x < y) \<and> (x < y \<longrightarrow> \<not> y < x) \<longrightarrow> x \<le> y \<or> y \<le> x"
+lemma "\<forall> x y z . \<not> x < x \<and> (x < y \<and> y < z \<longrightarrow> x < z) \<and> (x < y \<longrightarrow> \<not> y < x) \<longrightarrow> x \<le> y \<or> y \<le> x"
   apply (intro allI impI, elim conjE, simp)
   apply (elim impE)
-  defer
-   apply (intro disjI1)  
-   apply (insert antisym_conv1[of x y]) oops  
+  oops
 
 lemma vdm_total: "\<forall> x y . x \<le> y \<or> y \<le> x" 
   nitpick oops
