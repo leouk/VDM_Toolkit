@@ -36,12 +36,12 @@ do
     echo "Cleaned $DIR"
 done
 
-ln -sf $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
-echo "Created annotations from $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar to $RESOURCES/jars/vdmj"
-ln -sf $HOME/.m2/repository/$GROUPID/annotations2/$SUITE$SNAPSHOT/annotations2-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
-ln -sf $HOME/.m2/repository/$GROUPID/vdmj/$SUITE$SNAPSHOT/vdmj-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
-ln -sf $HOME/.m2/repository/$GROUPID/lsp/$SUITE$SNAPSHOT/lsp-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj
-ln -sf $HOME/.m2/repository/$GROUPID/stdlib/$SUITE$SNAPSHOT/stdlib-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/libs
+ln -sf $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/annotations-$SUITE$SNAPSHOT.jar
+echo "Created annotations from $HOME/.m2/repository/$GROUPID/annotations/$SUITE$SNAPSHOT/annotations-$SUITE$SNAPSHOT.jar to $RESOURCES/jars/vdmj/annotations-$SUITE$SNAPSHOT.jar"
+ln -sf $HOME/.m2/repository/$GROUPID/annotations2/$SUITE$SNAPSHOT/annotations2-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/annotations2-$SUITE$SNAPSHOT.jar
+ln -sf $HOME/.m2/repository/$GROUPID/vdmj/$SUITE$SNAPSHOT/vdmj-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/vdmj-$SUITE$SNAPSHOT.jar
+ln -sf $HOME/.m2/repository/$GROUPID/lsp/$SUITE$SNAPSHOT/lsp-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/lsp-$SUITE$SNAPSHOT.jar
+ln -sf $HOME/.m2/repository/$GROUPID/stdlib/$SUITE$SNAPSHOT/stdlib-$SUITE$SNAPSHOT.jar $RESOURCES/jars/vdmj/libs/stdlib-$SUITE$SNAPSHOT.jar
 echo "Created jars/vdmj links"
 
 ln -sf $HOME/.m2/repository/$GROUPID/annotations/$SUITE-P$SNAPSHOT/annotations-$SUITE-P$SNAPSHOT.jar $RESOURCES/jars/vdmj_hp
