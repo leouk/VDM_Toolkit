@@ -97,21 +97,24 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	abstract public RPCMessageList analyse(RPCRequest request);
 
 	@Override
-	public JSONObject getExperimentalOptions(JSONObject standard)
+	public void setServerCapabilities(JSONObject capabilities)
 	{
-		JSONObject provider = standard.get("translateProvider");
+		JSONObject experimental = capabilities.get("experimental");
 		
-		if (provider != null)
+		if (experimental != null)
 		{
-			JSONArray ids = provider.get("languageId");
+			JSONObject provider = experimental.get("translateProvider");
 			
-			if (ids != null)
+			if (provider != null)
 			{
-				ids.add("isabelle");	// Edit the standard response to include isabelle
+				JSONArray ids = provider.get("languageId");
+				
+				if (ids != null)
+				{
+					ids.add("isabelle");	// Edit the capabilities to include isabelle
+				}
 			}
 		}
-		
-		return new JSONObject();
 	}
 
 	@Override
