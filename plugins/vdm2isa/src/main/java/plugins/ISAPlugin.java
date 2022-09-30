@@ -32,6 +32,7 @@ import json.JSONObject;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdmj.commands.Command;
+import vdmj.commands.HelpList;
 import workspace.Diag;
 import workspace.EventHub;
 import workspace.EventListener;
@@ -124,9 +125,8 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	}
 	
 	@Override
-	public String[][] getCommandHelp()
+	public HelpList getCommandHelp()
 	{
-		String[][] entries = { {"isa", "isa - Example plugin command" } };
-		return entries;
+		return new HelpList("isa - Example plugin command");
 	}
 }
