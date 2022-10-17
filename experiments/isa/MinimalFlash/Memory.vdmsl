@@ -5,30 +5,30 @@ definitions
 values
 	pageAddrSize		: nat1 = 5;
 	colAddrSize			: nat1 = 6;
-	spare						: nat1 = 2;
+	spare				: nat1 = 2;
 	pagesPerBlock		: nat1 = 32;
 	blocksPerLUN		: nat1 = 4;
 	LUNsPerTarget		: nat1 = 4;
 	targetsPerDev		: nat1 = 2;
 
-	pageCount				: nat1 = 2**pageAddrSize; -- =32
+	pageCount			: nat1 = 2**pageAddrSize; -- =32
 	
 	invSpareRange		: bool = pageCount + spare <= 2**colAddrSize;
-	invPagesPerBlock: bool = (pagesPerBlock mod 32 = 0);
+	invPagesPerBlock	: bool = (pagesPerBlock mod pageCount = 0);
 
 	SOME_AMOUNT			: nat1= 256;
-	MEM_BOUND				: nat = pageCount + spare + SOME_AMOUNT;
-	COL_ADDR				: set of nat = {0,...,pageCount+spare-1};
-	PAGE_ADDR				: set of nat = {0,...,pagesPerBlock-1};
+	MEM_BOUND			: nat = pageCount + spare + SOME_AMOUNT;
+	COL_ADDR			: set of nat = {0,...,pageCount+spare-1};
+	PAGE_ADDR			: set of nat = {0,...,pagesPerBlock-1};
 	BLOCK_ADDR			: set of nat = {0,...,blocksPerLUN-1};
-	LUN_ADDR				: set of nat = {0,...,LUNsPerTarget-1};
+	LUN_ADDR			: set of nat = {0,...,LUNsPerTarget-1};
 	TARGET_IDS			: set of nat = {1,...,targetsPerDev};
-	MAX_BBS					: nat = (card TARGET_IDS * card LUN_ADDR * card BLOCK_ADDR) div 2;
+	MAX_BBS				: nat = (card TARGET_IDS * card LUN_ADDR * card BLOCK_ADDR) div 2;
 	
 	BAD_COL_ADDR		: set of nat = {pageCount,...,pageCount+spare-1};
 	BAD_PAGE_ADDR		: set of nat = {0,pagesPerBlock-1};
 	
-	invBadCol				: bool = BAD_COL_ADDR subset COL_ADDR;
+	invBadCol			: bool = BAD_COL_ADDR subset COL_ADDR;
 	invBadPage			: bool = BAD_PAGE_ADDR subset PAGE_ADDR;
 	
 types 
@@ -42,52 +42,71 @@ types
 	Data = <Erased> | <Bad> | <Other>;
 	
 	-- Addressable entities can be partial for updates and must be total for the state
-	AddrData0 = map ColAddr to Data;
-	AddrPage0 = map PageAddr to AddrData0;
+	AddrData0 = map ColAddr   to Data;
+	AddrPage0 = map PageAddr  to AddrData0;
 	AddrBlock0= map BlockAddr to AddrPage0;
-	AddrLUN0 = map LUNAddr to LUN0;
-	Targets0 = map TargetIds to AddrLUN0;
+	AddrLUN0  = map LUNAddr   to LUN0;
+	Targets0  = map TargetIds to AddrLUN0;
 	
-	LUN0 :: blocks : AddrBlock0 SR: Status PR: AddrData0;
+	LUN0 :: 
+		blocks: AddrBlock0 
+		SR	  : Status 
+		PR	  : AddrData0;
 	
-	Flag = <Fail> | <Ready> | <WriteProtected>;
-	Status = set of Flag inv status == <Fail> in set status => <Ready> in set status;
+	Flag  = <Fail> | <Ready> | <WriteProtected>;
+	Status = set of Flag 
+	inv status == 
+		<Fail> in set status => <Ready> in set status;
 
-	AddrData  = AddrData0 								inv ad == dom ad = COL_ADDR;
-	AddrPage  = map PageAddr to AddrData  inv ap == dom ap = PAGE_ADDR;
-	AddrBlock = map BlockAddr to AddrPage inv ab == dom ab = BLOCK_ADDR;
-	AddrLUN   = map LUNAddr to LUN 				inv al == dom al = LUN_ADDR;
-	Targets  = map TargetIds to AddrLUN   inv tg == dom tg = TARGET_IDS;
+	AddrData = AddrData0 				
+	inv ad == dom ad = COL_ADDR;
 	
-	LUN = LUN0 inv mk_LUN0(blocks, -, PR) == inv_AddrBlock(blocks) and inv_AddrData(PR);
+	AddrPage = map PageAddr  to AddrData  
+	inv ap == dom ap = PAGE_ADDR;
+
+	AddrBlock = map BlockAddr to AddrPage 
+	inv ab == dom ab = BLOCK_ADDR;
 	
-	BadTLBA= map TargetIds to BadLBA 
+	AddrLUN = map LUNAddr   to LUN 
+	inv al == dom al = LUN_ADDR;
+	
+	Targets = map TargetIds to AddrLUN   
+	inv tg == dom tg = TARGET_IDS;
+	
+	LUN = LUN0 
+	inv mk_LUN0(blocks, -, PR) == 
+		inv_AddrBlock(blocks) -- dom blocks = BLOCK_ADDR
+		and 
+		inv_AddrData(PR);	  -- dom PR = COL_ADDR
+	
+	BadTLBA = map TargetIds to BadLBA 
 	inv m == forall t in set dom m & m(t) <> {|->};
+
 	BadLBA = map LUNAddr to set1 of BlockAddr;
 
 values
 	erased_page		: AddrData  = { ca |-> <Erased> | ca in set COL_ADDR };
-	erased_block		: AddrPage  = { pa |-> erased_page | pa in set PAGE_ADDR };
+	erased_block	: AddrPage  = { pa |-> erased_page | pa in set PAGE_ADDR };
 	erased_lunblocks: AddrBlock = { ba |-> erased_block | ba in set BLOCK_ADDR };
-	erased_lun			: LUN 			= mk_LUN0(erased_lunblocks, {<Ready>}, erased_page);
-	erased_target		: AddrLUN		= { la |-> erased_lun | la in set LUN_ADDR };
-	erased_flash		: Targets		= { tid |-> erased_target | tid in set TARGET_IDS };
+	erased_lun		: LUN 		= mk_LUN0(erased_lunblocks, {<Ready>}, erased_page);
+	erased_target	: AddrLUN	= { la |-> erased_lun | la in set LUN_ADDR };
+	erased_flash	: Targets	= { tid |-> erased_target | tid in set TARGET_IDS };
 
 	-- AddrXXX0 reflect a subset of the adddressable entity
-	bad_page				: AddrData0 = { ca |-> <Bad> | ca in set BAD_COL_ADDR };
-	bad_block0			: AddrPage0 = { 0 |-> bad_page };
-	bad_blockN			: AddrPage0 = { pagesPerBlock-1 |-> bad_page };
+	bad_page		: AddrData0 = { ca |-> <Bad> | ca in set BAD_COL_ADDR };
+	bad_block0		: AddrPage0 = { 0 |-> bad_page };
+	bad_blockN		: AddrPage0 = { pagesPerBlock-1 |-> bad_page };
 	
-															 -- target 1 LUN 0 blocks 0 and 3, and LUN 2 blocks 1 and 2 as bad
-															 -- target 2 LUN 2 blocks 1 and 2 as bad
-	bad_tlba_ex1		: BadTLBA   = { 1 |-> { 0 |-> { 0, 3 }, 2 |-> { 1, 2 } }, 
-															  	2 |-> { 2 |-> { 1, 2 } } };
+								-- target 1 LUN 0 blocks 0 and 3, and LUN 2 blocks 1 and 2 as bad
+								-- target 2 LUN 2 blocks 1 and 2 as bad
+	bad_tlba_ex1	: BadTLBA   = { 1 |-> { 0 |-> { 0, 3 }, 2 |-> { 1, 2 } }, 
+									2 |-> { 2 |-> { 1, 2 } } };
 																 
 	invCountBadTLBA1: bool = count_bad(bad_tlba_ex1) = 6;
 	
 functions
 	npower: nat1 * nat -> nat
-	npower(b, e) ==
+	npower(b, e) == -- b ** e
 		if (e = 0) then 1 else b * npower(b, (e - 1))
 	measure
 		npower_measure;
@@ -107,10 +126,13 @@ functions
 	
 	count_bad: BadTLBA -> nat
 	count_bad(badTLBA) ==
-		--count_bad({ 1 |-> { 0 |-> { 0, 3 }, 2 |-> { 1, 2 } }, 3 |-> { 2 |-> { 1, 2 } } })
+		--count_bad({ 1 |-> { 0 |-> { 0, 3 }, 
+		--			          2 |-> { 1, 2 } }, 
+		--			  2 |-> { 2 |-> { 1, 2 } } })
 		--=
-		--sum_elems({ 1 |-> sum_elems({ 0 |-> card {0,3}, 2 |-> card {1,2} }),
-		--					{ 3 |-> sum_elems({ 2 |-> card {1,2} })})
+		--sum_elems({ 1 |-> sum_elems({ 0 |-> card {0,3}, 
+		--			  		 		    2 |-> card {1,2} }),
+		--			  2 |-> sum_elems({ 2 |-> card {1,2} })})
 		--=
 		--sum_elems({ 1 |-> 4, 3 |-> 2 }) = 6
 		sum_elems(
@@ -118,15 +140,16 @@ functions
 				|-> 
 				sum_elems(
 					{ la 
-						|-> 
-						card badTLBA(tid)(la) | 
-						la in set dom badTLBA(tid) }) 
+					  |-> 
+					  card badTLBA(tid)(la) 
+					  | 
+					  la in set dom badTLBA(tid) }) 
 						
 				| tid in set dom badTLBA }
 		);
 		
 state FlashMemory of
-	targets						 : Targets
+	targets			   : Targets
 	maxBadBlocksShipped: nat
 init
 	fm == fm = mk_FlashMemory(erased_flash, MAX_BBS)
@@ -171,7 +194,7 @@ functions
 				
 	only_changed: Targets * Targets * TargetIds * LUNAddr * BlockAddr -> bool
 	only_changed(bt, at, tid, la, ba) == 
-		{tid} <-: bt = {tid} <-: at
+		({tid} <-: bt) = ({tid} <-: at)
 		and
 		{la} <-: bt(tid) = {la} <-: at(tid)
 		and
@@ -192,6 +215,9 @@ operations
 		forall tid in set dom badTLBA & 
 			forall la in set dom badTLBA(tid) &
 				forall ba in set badTLBA(tid)(la) &
+				--{ 1 |-> { 0 |-> { 0, 3 }, 
+				--          2 |-> { 1, 2 } }, 
+				--  2 |-> { 2 |-> { 1, 2 } } }
 					only_changed(targets~, targets, tid, la, ba);
 					
 	MarkFlash(badTLBA: BadTLBA) ==

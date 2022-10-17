@@ -26,11 +26,6 @@ definitions
 -- R5.3: free memory cannot be deallocated (i.e. no null-pointer dereferencing).
 -- R5.4: deallocated memory must be represented in the system somehow.
 --
-state Heap of
-	f: Free
-   
-	init h == h = mk_Heap({0,...,MAX-1})
-end
 
 values
 	MAX : nat1 = 10;
@@ -43,65 +38,68 @@ types
 
 functions
 	-- Function to return the selected set of locations if they exist, contigous chunks only.
-		  locs_of : Loc * nat1 -> set of Loc
-		  locs_of(x, s) == {x,...,x+s-1}
-			pre x + s < MAX;
+	locs_of : Loc * nat1 -> set of Loc
+	locs_of(x, s) == {x,...,x+s-1}
+	pre x + s < MAX;
 
 	-- Function that returns true if there exists memory in the given set of free memory.
-			isBlock : Loc * nat1 * Free -> bool
-			isBlock(x, s, f) == 
-					locs_of(x, s) subset f;
+	isBlock : Loc * nat1 * Free -> bool
+	isBlock(x, s, f) == 
+			locs_of(x, s) subset f;
 	
 	-- Functions to allocate memory
-			malloc_im(f: Free, s: nat1) fr: Free, r: Loc
-			pre exists x: Loc & isBlock(x, s, f)
-			post fr = f \ locs_of(r, s);
+	malloc_im(f: Free, s: nat1) fr: Free, r: Loc
+	pre exists x: Loc & isBlock(x, s, f)
+	post fr = f \ locs_of(r, s);
 			 
-		  malloc_ex: Free * nat1 -> Free * Loc
-		  malloc_ex(f, s) == 
-		   		let r in set f be st
-		   			isBlock(r, s, f)
-		   		in mk_(f \ locs_of(r, s), r)
-		  pre exists x: Loc & isBlock(x, s, f);
+	malloc_ex: Free * nat1 -> Free * Loc
+	malloc_ex(f, s) == 
+		let r in set f be st
+			isBlock(r, s, f)
+		in mk_(f \ locs_of(r, s), r)
+	pre exists x: Loc & isBlock(x, s, f);
 		   
 	-- Functions to deallocate memory
-		  free_im(f: Free, r: Loc, s: nat1) fr: Free
-		  pre locs_of(r, s) inter f = {}
-		  post locs_of(r, s) subset f and f subset fr;
+	free_im(f: Free, r: Loc, s: nat1) fr: Free
+	pre locs_of(r, s) inter f = {}
+	post locs_of(r, s) subset f and f subset fr;
 		   
-		  free_ex: Free * Loc * nat1 -> Free
-		  free_ex(f, r, s) ==
-		   		f union locs_of(r, s)
-		  pre locs_of(r, s) inter f = {}
-			post isBlock(r, s, RESULT)
+	free_ex: Free * Loc * nat1 -> Free
+	free_ex(f, r, s) ==
+		f union locs_of(r, s)
+	pre locs_of(r, s) inter f = {}
+	post isBlock(r, s, RESULT)
+
+state Heap of
+	f: Free   
+init h == h = mk_Heap({0,...,MAX-1})
+end
 
 operations
  	-- Operations to allocate memory
-	    omalloc_im(s: nat1) r: Loc
-	    ext wr f
-	    pre exists x : Loc & isBlock(x, s, f)
-	    post isBlock(r, s, f~) and f = f~ \ locs_of(r, s);
-	    
-	    omalloc_ex: nat1 ==> Loc
-	    omalloc_ex(s) == 
-	    		let r in set f be st
-	    			isBlock(r, s, f)
-	    		in (f := f \ locs_of(r, s); return r)
-	    pre exists x: Loc & isBlock(x, s, f)
-	    post isBlock(RESULT, s, f~) and f = f~ \ locs_of(RESULT, s);
-
+	omalloc_im(s: nat1) r: Loc
+	ext wr f
+	pre exists x : Loc & isBlock(x, s, f)
+	post isBlock(r, s, f~) and f = f~ \ locs_of(r, s);
+	
+	omalloc_ex: nat1 ==> Loc
+	omalloc_ex(s) == 
+			let r in set f be st
+				isBlock(r, s, f)
+			in (f := f \ locs_of(r, s); return r)
+	pre exists x: Loc & isBlock(x, s, f)
+	post isBlock(RESULT, s, f~) and f = f~ \ locs_of(RESULT, s);
 
 	-- Operations to deallocate memory
-			ofree_im(d: Loc, s: nat1)
-			ext wr f
-			pre locs_of(d, s) inter f = {}
-			post f = f~ union locs_of(d, s);
-			
-			ofree_ex : Loc * nat1 ==> ()
-			ofree_ex(d, s) ==
-				f := f union locs_of(d, s)
-			pre locs_of(d, s) inter f = {} 
-			post f = f~ union locs_of(d, s);
-
+	ofree_im(d: Loc, s: nat1)
+	ext wr f
+	pre locs_of(d, s) inter f = {}
+	post f = f~ union locs_of(d, s);
+	
+	ofree_ex : Loc * nat1 ==> ()
+	ofree_ex(d, s) ==
+		f := f union locs_of(d, s)
+	pre locs_of(d, s) inter f = {} 
+	post f = f~ union locs_of(d, s);
 
 end Heap
