@@ -1,9 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>vdm2isa</artifactId>
-	<name>vdm2isa</name>
-	<description>VDMSL translation to Isabelle</description>
 	
 	<!--
 	<parent>
@@ -15,20 +12,20 @@
 	<parent>
 		<groupId>vdmtoolkit</groupId>
 		<artifactId>VDMToolkit-suite</artifactId>
-		<version>4.5.0-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<properties>
-		<maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<artifactId>vdm2isa</artifactId>
+	<name>vdm2isa</name>
+	<!--TODO: separate the command plugin from the LSP extension as separate projects?-->
+	<description>VDM-SL translation to Isabelle as a command plugin and VSCode LSP extension</description>
 
 	<developers>
 		<developer>
-			<id>LeoFreitas</id>
+			<id>leouk</id>
 			<name>Leo Freitas</name>
-			<email>leo.freitas@newcastle.ac.uk</email>
+			<email>leo.york@gmail.com</email>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -37,31 +34,29 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>vdmj</artifactId>
-			<version>4.5.0-SNAPSHOT</version>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>vdmjunit</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>stdlib</artifactId>
-			<version>4.5.0-SNAPSHOT</version>
+			<version>${dk.au.ece.vdmj-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>annotations</artifactId>
-			<version>4.5.0-SNAPSHOT</version>
+			<version>${dk.au.ece.vdmj-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>lsp</artifactId>
-			<version>4.5.0-SNAPSHOT</version>
+			<version>${dk.au.ece.vdmj-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>vdmtoolkit</groupId>
@@ -85,31 +80,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-							<finalName>
-								${project.artifactId}-${project.version}-${maven.build.timestamp}
-							</finalName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-						<plugin>
+					<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 				<executions>
@@ -133,6 +105,8 @@
 									<filtering>false</filtering>
 									<include>*.vdmsl</include>
 									<include>*.thy</include>
+									<include>ROOT</include>
+									<include>VDMJ-class-mapping.md</include>
 								</resource>
 								<resource>
 									<directory>.</directory>
@@ -143,6 +117,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
