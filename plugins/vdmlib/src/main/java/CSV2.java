@@ -110,7 +110,7 @@ public class CSV2 implements Serializable
 	public static Value createValue(String module, String method, String value)
 			throws Exception
 	{
-		LexTokenReader ltr = new LexTokenReader(value, Dialect.VDM_PP);
+		LexTokenReader ltr = new LexTokenReader(value, Dialect.VDM_SL);
 		ExpressionReader reader = new ExpressionReader(ltr);
 		reader.setCurrentModule(module);
 		ASTExpression exp = reader.readExpression();
