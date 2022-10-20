@@ -26,6 +26,7 @@
 		<module>annotationsVDMToolkit</module>
 		<module>vdmlib</module>
 		<module>vdm2isa</module>
+		<module>vdm2isa-lsp</module>
 	</modules>
 
 	<!-- General dependency inclusion with relative versioning -->
