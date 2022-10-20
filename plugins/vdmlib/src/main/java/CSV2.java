@@ -38,11 +38,13 @@ import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.VDMFunction;
+import com.fujitsu.vdmj.runtime.VDMOperation;
 import com.fujitsu.vdmj.syntax.ExpressionReader;
 import com.fujitsu.vdmj.tc.TCNode;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.values.BooleanValue;
 import com.fujitsu.vdmj.values.CPUValue;
+import com.fujitsu.vdmj.values.NaturalValue;
 import com.fujitsu.vdmj.values.NilValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.TupleValue;
@@ -58,19 +60,37 @@ import util.CsvValueBuilder;
  * Basic CSV file support for VDM with default to string conversions
  * 
  * @author AJB
+ * @author Leo Freitas
  */
 public class CSV2 implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private static String lastError = "";
 
-	public static File getFile(Value fval)
+	protected static File getFile(Value fval)
 	{
 		String path = IO.stringOf(fval).replace('/', File.separatorChar);
 		return new File(path).getAbsoluteFile();
 	}
 
-	public static String getLine(File file, long index) throws IOException
+	private static int getLineCount(File file) throws IOException
+	{
+		BufferedReader bufRdr = new BufferedReader(new FileReader(file));
+		int lines = 0;
+		try
+		{
+			while (bufRdr.readLine() != null)
+			{
+				lines++;
+			}
+		} finally
+		{
+			bufRdr.close();
+		}
+		return lines;
+	}
+
+	protected static String getLine(File file, long index) throws IOException
 	{
 		BufferedReader bufRdr = new BufferedReader(new FileReader(file));
 		String line = null;
@@ -107,7 +127,7 @@ public class CSV2 implements Serializable
 		return line;
 	}
 
-	public static Value createValue(String module, String method, String value)
+	protected static Value createValue(String module, String method, String value)
 			throws Exception
 	{
 		LexTokenReader ltr = new LexTokenReader(value, Dialect.VDM_SL);
@@ -192,4 +212,39 @@ public class CSV2 implements Serializable
 		return new TupleValue(result);
 	}
 
+		/**
+	 * Gets the line count of the CSV file
+	 * 
+	 * @param fval
+	 *            name of the file
+	 * @return int value with count
+	 */
+	@VDMFunction
+	public static Value flinecount(Value fval)
+	{
+		ValueList result = new ValueList();
+
+		try
+		{
+			File file = getFile(fval);
+			long count = getLineCount(file);
+
+			result.add(new BooleanValue(true));
+			result.add(new NaturalValue(count));
+		} catch (Exception e)
+		{
+			lastError = e.toString();
+			result = new ValueList();
+			result.add(new BooleanValue(false));
+			result.add(new NilValue());
+		}
+
+		return new TupleValue(result);
+	}
+
+	@VDMOperation
+	public static Value ferror()
+	{
+		return new SeqValue(lastError);
+	}
 }

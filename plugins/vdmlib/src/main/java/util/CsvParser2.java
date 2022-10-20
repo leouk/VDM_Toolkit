@@ -85,7 +85,6 @@ public class CsvParser2
 						// Proceed to next comma and try to parse value again
 						// Happens for values such as {1,2},{3,4}
 						lastError = e2.getMessage();
-
 					}
 				}
 			}
