@@ -8,7 +8,7 @@ import vdm2isa.tr.TRNode;
 
 public class TRStatementList extends TRMappedList<TCStatement, TRStatement> {
     
-    private int currentUnionContext;
+    //private int currentUnionContext;
 
 	/**
 	 * Allow this top-level list to be defined empty
@@ -16,7 +16,7 @@ public class TRStatementList extends TRMappedList<TCStatement, TRStatement> {
 	public TRStatementList()
 	{
 		super();
-		currentUnionContext = 0;
+		//currentUnionContext = 0;
 	}
 
     public TRStatementList(TRStatementList from)

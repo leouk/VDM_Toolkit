@@ -32,7 +32,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
     public final TRExpression initExpression;
     public final TRExplicitFunctionDefinition initdef;
     private final TRDefinitionList statedefs;
-    private final boolean canBeExecuted;
+    public final boolean canBeExecuted;
     public final TRRecordType recordType;
 
     public TRStateDefinition(
@@ -98,7 +98,6 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
 
         }
 
-        TRNode.setup(recordType, initPattern, initExpression, initdef, statedefs);
     }
 
     private boolean validInitExpression()
