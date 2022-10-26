@@ -16,22 +16,43 @@ where
   by pat_completeness auto
 
 
+definition 
+  sumset_domain :: "VDMNat VDMSet \<Rightarrow> \<bool>" 
+  where
+  "sumset_domain s \<equiv> inv_SetElems inv_VDMNat s \<and> inv_VDMSet s"
+
 function (domintros)
   sumset :: "VDMNat VDMSet \<Rightarrow> VDMNat" 
   where 
   "sumset s = 
-    (if s = {} then 0 else let e = (SOME x . x \<in> s) in sumset (s - {e}) + e)"
+    (if sumset_domain s then 
+        (if s = {} then 0 else let e = (SOME x . x \<in> s) in sumset (s - {e}) + e)
+     else 
+        undefined)"
   by (blast, force)
 
 thm sumset.domintros
 thm sumset.pinduct
 
+lemma lsum_set_domain_empty[simp]: "sumset_domain {}"
+  unfolding sumset_domain_def 
+  by simp
+
 lemma lsum_empty_set_zero: "sumset {} = 0"
   thm ex_in_conv empty_iff all_not_in_conv equals0D
-  by (meson empty_iff sumset.domintros sumset.pelims)
-
-lemma lsum_set_dom_inv: "sumset_dom s \<Longrightarrow> inv_SetElems inv_VDMNat s" 
-  unfolding inv_VDMNat_def inv_SetElems_def   
+  find_theorems name:sumset
+  apply (subst sumset.psimps)
+   apply (meson empty_iff sumset.domintros)
+  by simp
+  
+lemma lsum_set_dom_inv: "sumset_dom s \<Longrightarrow> sumset_domain s" 
+  find_theorems name:sumset
+  apply (frule sumset.psimps)
+  apply (simp split: if_splits)
+  oops
+  
+ (* 
+  unfolding sumset_domain_def inv_VDMNat_def inv_SetElems_def   
   apply (induct rule: sumset.pinduct)
   apply (case_tac "s = {}", simp_all)
   apply (simp add: ex_in_conv[symmetric])
@@ -41,7 +62,8 @@ lemma lsum_set_dom_inv: "sumset_dom s \<Longrightarrow> inv_SetElems inv_VDMNat 
   nitpick
    apply (meson empty_iff sumset.domintros)
   apply (cut_tac accI[of _ "sumset_rel"])
-  
+*)
+
 lemma lsum_set_inv_dom: "inv_SetElems inv_VDMNat s \<Longrightarrow> sumset_dom s" 
   unfolding inv_VDMNat_def inv_SetElems_def
   apply (cases "s = {}")
