@@ -64,18 +64,25 @@ lemma lsum_set_dom_inv: "sumset_dom s \<Longrightarrow> sumset_domain s"
   apply (cut_tac accI[of _ "sumset_rel"])
 *)
 
-lemma lsum_set_inv_dom: "inv_SetElems inv_VDMNat s \<Longrightarrow> sumset_dom s" 
-  unfolding inv_VDMNat_def inv_SetElems_def
+lemma lsum_set_inv_dom: "sumset_domain s \<Longrightarrow> sumset_dom s" 
+  apply (insert accp_wfPD[of sumset_rel s])
+  unfolding wfP_def wf_def
+  apply simp
   apply (cases "s = {}")
    apply (meson empty_iff sumset.domintros)
-  apply (intro sumset.domintros)
-  
+  apply (intro sumset.domintros)  
   apply (simp add: sumset.psimps)
-  apply (subgoal_tac "s = {}")
-  apply (cut_tac accI)
-  apply (induct "sumset_rel s" rule: accp_induct_rule)
-  
+  oops
 
+lemma "finite (SIGMA a:A. B a)" 
+  using [[show_types]]
+  thm finite_set_choice
+  thm finite_set_choice[of "{0,1,2,3::nat}"  "(\<lambda> x y . x < y)"]
+  oops
+
+  find_consts "'a set \<Rightarrow> 'a list"
+  find_consts name:sorted_key_list_of_set
+(*Set_Idioms, Mapping, Countable_Set*)
 lemma lsum_set_result_is_nat:  
   "inv_SetElems inv_VDMNat s \<Longrightarrow> inv_VDMNat (sumset s)"
   unfolding inv_VDMNat_def inv_SetElems_def 
