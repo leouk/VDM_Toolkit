@@ -80,6 +80,7 @@ lemma "finite (SIGMA a:A. B a)"
   thm finite_set_choice[of "{0,1,2,3::nat}"  "(\<lambda> x y . x < y)"]
   oops
 
+
   find_consts "'a set \<Rightarrow> 'a list"
   find_consts name:sorted_key_list_of_set
 (*Set_Idioms, Mapping, Countable_Set*)
