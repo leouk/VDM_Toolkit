@@ -19,14 +19,14 @@ where
 
 section \<open>Well foundedness study on bounded @{text nat_term}\<close>
 
-abbreviation \<open>NAT_MAX \<equiv> 3\<close>
+abbreviation \<open>NAT_MAX \<equiv> 2\<close>
 
 definition 
   nat_term :: \<open>(\<nat> \<times> \<nat>) VDMSet\<close>
   where
   \<open>nat_term \<equiv> { (m, n) . n = Suc m \<and> n < NAT_MAX }\<close>
 
-lemma l_nat_term_eq: \<open>nat_term = { (0, 1), (1, 2) }\<close> (*, (2, 3), (3, 4) }\<close>*)
+lemma l_nat_term_eq: \<open>nat_term = { (0, 1) }\<close> (*, (1, 2) }\<close>*) (*, (2, 3), (3, 4) }\<close>*)
   apply (simp add: nat_term_def, safe)
   by (simp_all) 
 
@@ -36,6 +36,7 @@ definition
 (*\<open>nat_fin_psub \<equiv> finite_psubset :: ((\<nat> \<times> \<nat>) VDMSet \<times> (\<nat> \<times> \<nat>) VDMSet) VDMSet\<close> *)
   \<open>nat_fin_psub \<equiv> {(A, B). A \<subset> B \<and> finite B \<and> B \<subseteq> nat_term }\<close>
 
+(*
 lemma l_nat_fin_psub_eq1: \<open>{({(0, 1)}, {(0, 1), (1, 2)}), ({(1, 2)}, {(0, 1), (1, 2)}), ({}, {(0, 1), (1, 2)}), ({}, {(0, 1)}), ({}, {(1, 2)})} \<subseteq> nat_fin_psub\<close>  
   apply (intro subsetI)
   unfolding nat_fin_psub_def
@@ -58,6 +59,16 @@ lemma \<open>nat_fin_psub = {({(0, 1)}, {(0, 1), (1, 2)}), ({(1, 2)}, {(0, 1), (
    apply (rule l_nat_fin_psub_eq2)
   apply (rule l_nat_fin_psub_eq1)
   done
+
+*)
+
+lemma \<open>nat_fin_psub = {({}, {(0, 1)})}\<close> 
+  apply (intro equalityI subsetI, simp_all add: nat_fin_psub_def case_prod_beta)
+   defer
+   apply (simp add: l_nat_term_eq l_psubset_insert)
+  apply (rule prod_eqI, simp_all)
+   apply (metis (no_types, lifting) l_nat_term_eq leD order_less_imp_le singletonD subset_empty subset_iff)
+  by (metis One_nat_def l_nat_term_eq leD order_less_imp_le subset_empty subset_singletonD)
 
 definition 
   nat_lex_nat :: \<open>(((\<nat> \<times> \<nat>) set \<times> \<nat>) \<times> ((\<nat> \<times> \<nat>) set \<times> \<nat>)) set\<close>
