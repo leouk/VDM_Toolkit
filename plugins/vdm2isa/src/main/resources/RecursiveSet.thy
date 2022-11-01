@@ -2,7 +2,7 @@ theory RecursiveSet
   imports VDMToolkit
 begin
 
-section \<open>Partial recursive functions\<close>
+section \<open>Recursive partial recursive functions\<close>
 
 function findzero :: "(nat \<Rightarrow> nat) \<Rightarrow> nat \<Rightarrow> nat"
 where
@@ -17,6 +17,20 @@ where
 "findzero' f n = (if f n = 0 then n else findzero' f (Suc n))"
   by pat_completeness auto
 
+lemma l_findzero'_base: "f x = 0 \<Longrightarrow> findzero'_dom (f, x)"
+  apply (rule findzero'.domintros)
+  by simp
+
+lemma l_findzero'_step: "findzero'_dom (f, Suc i) \<Longrightarrow> findzero'_dom (f, i)"
+  apply (rule findzero'.domintros)
+  by simp
+
+
+lemma "\<lbrakk> x \<ge> n ; f x = 0\<rbrakk> \<Longrightarrow> findzero'_dom (f, n)"
+  apply (induct rule: inc_induct)
+  using l_findzero'_base apply presburger
+  using l_findzero'_step by blast
+
 section \<open>Well foundedness study on bounded @{text nat_term}\<close>
 
 abbreviation \<open>NAT_MAX \<equiv> 2\<close>
@@ -26,12 +40,12 @@ definition
   where
   \<open>nat_term \<equiv> { (m, n) . n = Suc m \<and> n < NAT_MAX }\<close>
 
-lemma l_nat_term_eq: \<open>nat_term = { (0, 1) }\<close> (*, (1, 2) }\<close>*) (*, (2, 3), (3, 4) }\<close>*)
+lemma l_nat_term_eq: \<open>nat_term = { (0, 1) }\<close> (*, (1, 2) }\<close> , (2, 3), (3, 4) }\<close>*)
   apply (simp add: nat_term_def, safe)
   by (simp_all) 
 
 definition 
-  nat_fin_psub :: \<open>((\<nat> \<times> \<nat>) VDMSet \<times> (\<nat> \<times> \<nat>) VDMSet) VDMSet\<close>
+  nat_fin_psub :: \<open>(((\<nat> \<times> \<nat>) VDMSet) \<times> ((\<nat> \<times> \<nat>) VDMSet)) VDMSet\<close>
   where
 (*\<open>nat_fin_psub \<equiv> finite_psubset :: ((\<nat> \<times> \<nat>) VDMSet \<times> (\<nat> \<times> \<nat>) VDMSet) VDMSet\<close> *)
   \<open>nat_fin_psub \<equiv> {(A, B). A \<subset> B \<and> finite B \<and> B \<subseteq> nat_term }\<close>
@@ -45,12 +59,20 @@ lemma l_nat_fin_psub_eq1: \<open>{({(0, 1)}, {(0, 1), (1, 2)}), ({(1, 2)}, {(0, 
   by blast+
 
 lemma l_nat_fin_psub_eq2:\<open>nat_fin_psub \<subseteq> {({(0, 1)}, {(0, 1), (1, 2)}), ({(1, 2)}, {(0, 1), (1, 2)}), ({}, {(0, 1), (1, 2)}), ({}, {(0, 1)}), ({}, {(1, 2)})}\<close>
-  apply (intro subsetI)
-  unfolding nat_fin_psub_def
-  apply (simp add: case_prod_beta)
+  apply (intro subsetI, simp_all add: nat_fin_psub_def case_prod_beta)
   apply (elim conjE)
+  apply clarsimp
   apply (simp add: subset_eq[of _ \<open>nat_term\<close>])
-  apply (rule disjI2)+
+  apply (erule_tac x=\<open>(aa,ba)\<close> in ballE)
+   apply (simp add: l_nat_term_eq)
+   apply (elim disjE conjE, simp)
+  thm impCE impE
+  apply (rule prod_eqI, simp_all)
+  apply (simp add: l_nat_term_eq)
+   apply (metis (no_types, lifting) l_nat_term_eq leD order_less_imp_le singletonD subset_empty subset_iff)
+  by (metis One_nat_def l_nat_term_eq leD order_less_imp_le subset_empty subset_singletonD)
+
+  apply (simp add: subset_eq[of _ \<open>nat_term\<close>])
   nitpick  
   sorry 
 
@@ -71,9 +93,44 @@ lemma \<open>nat_fin_psub = {({}, {(0, 1)})}\<close>
   by (metis One_nat_def l_nat_term_eq leD order_less_imp_le subset_empty subset_singletonD)
 
 definition 
-  nat_lex_nat :: \<open>(((\<nat> \<times> \<nat>) set \<times> \<nat>) \<times> ((\<nat> \<times> \<nat>) set \<times> \<nat>)) set\<close>
+  nat_lex_nat :: \<open>(((\<nat> \<times> \<nat>) set \<times> \<nat>) \<times> (((\<nat> \<times> \<nat>) set) \<times> \<nat>)) set\<close>
   where
   \<open>nat_lex_nat \<equiv> nat_fin_psub <*lex*> nat_term\<close>
+
+lemma \<open>x \<in> nat_lex_nat\<close>
+  using[[show_types]]
+  oops
+lemma \<open>((a, b), (a', b')) \<in> nat_lex_nat\<close>
+  using[[show_types]]
+  oops
+
+lemma \<open>nat_lex_nat = 
+      {(({}, 0), 
+        ({(0, 1)}, 0)
+       ), 
+       (({}, 0), 
+        ({(0, 1)}, 1)
+       ), 
+       (({}, 1), 
+        ({(0, 1)}, 0)
+       ), 
+       (({}, 1), 
+        ({(0, 1)}, 1)
+       )}\<close>
+  apply (intro equalityI subsetI, simp_all)
+   defer
+   apply (simp add: nat_lex_nat_def)
+   apply (elim disjE, simp_all add: nat_fin_psub_def nat_term_def, blast+)
+   apply (simp add: nat_lex_nat_def)
+  unfolding lex_prod_def 
+  apply (simp add: case_prod_beta)
+  apply (elim disjE conjE, simp add: nat_fin_psub_def)
+   apply clarsimp 
+  oops
+
+lemma "x < y \<Longrightarrow> (x, y) \<in> less_than"
+  using less_than_def less_than_iff pred_nat_def by presburger
+
 
 definition lex_prod' :: "('a \<times>'a) set \<Rightarrow> ('b \<times> 'b) set \<Rightarrow> (('a \<times> 'b) \<times> ('a \<times> 'b)) set"
     (infixr "<*lexi*>" 80)
@@ -83,53 +140,282 @@ definition lex_prod' :: "('a \<times>'a) set \<Rightarrow> ('b \<times> 'b) set 
 lemma lex_prod_equiv: "(ra <*lex*> rb) = (ra <*lexi*>rb)"
   by (safe, simp_all add: lex_prod_def lex_prod'_def)
 
-datatype T = A | B | C | D
+subsection \<open>General version for all VDM set-recursive functions\<close>
 
 definition 
-  t_term :: \<open>(T \<times> T) VDMSet\<close>
+  gen_fin_psub :: \<open>(('a \<times> 'a) VDMSet \<times> ('a \<times> 'a) VDMSet) VDMSet\<close>
   where
-  \<open>t_term \<equiv> { (A, B), (B, C), (C, D) }\<close>
+  \<open>gen_fin_psub \<equiv> finite_psubset\<close>
 
 definition 
-  t_fin_psub :: \<open>((T \<times> T) VDMSet \<times> (T \<times> T) VDMSet) VDMSet\<close>
+  gen_lex_nat :: \<open>((('a \<times> 'a) VDMSet \<times> \<nat>) \<times> ('a \<times> 'a) VDMSet \<times> \<nat>) VDMSet\<close>
   where
-  \<open>t_fin_psub \<equiv> {(A, B). A \<subset> B \<and> finite B \<and> B \<subseteq> t_term }\<close>
+  \<open>gen_lex_nat \<equiv> gen_fin_psub <*lex*> pred_nat\<close>
+
+lemma "wf gen_lex_nat"  
+  by (simp add: gen_fin_psub_def gen_lex_nat_def wf_lex_prod wf_pred_nat)
 
 
-definition 
-  gen_lex_nat :: \<open>(('a VDMSet \<times> \<nat>) \<times> 'a VDMSet \<times> \<nat>) set\<close>
-  where
-  \<open>gen_lex_nat \<equiv> finite_psubset <*lex*> nat_term\<close>
-
-
-
-lemma \<open>nat_lex_nat = A\<close>
-  apply (simp add: nat_lex_nat_def nat_fin_psub_def nat_term_def lex_prod_def)
-  
 section \<open>Sum-set function\<close>
+
+function factorial :: "nat \<Rightarrow> nat" 
+  where 
+  "factorial 0 = 1" |
+  "factorial (Suc n) = Suc n * (factorial n)"
+     apply auto
+  by (meson old.nat.exhaust)
+termination
+  using "termination" by blast
 
 definition 
   sumset_domain :: "VDMNat VDMSet \<Rightarrow> \<bool>" 
   where
   "sumset_domain s \<equiv> inv_SetElems inv_VDMNat s \<and> inv_VDMSet s"
 
+definition 
+  sumset_term ::"(VDMNat VDMSet \<times> VDMNat VDMSet) set" where
+  "sumset_term \<equiv> finite_psubset \<inter> { (s - {(SOME e . e \<in> s)}, s)| s . s \<noteq> {} \<and> sumset_domain s }"
+  (*{ ({}, s) | s . s \<noteq> {} \<and> sumset_domain s} \<union> redundant? { ({}, s) | s . True } \<union> ? *)
+
+text \<open>Is the sumset termination relaiton non-trivial?\<close>
+lemma l_sumset_term_not_empty: "sumset_term \<noteq> {}"
+  apply safe
+  find_theorems elim
+  apply (erule equalityE)
+  find_theorems "{} \<subseteq> _"
+  find_theorems "_ \<subseteq> {}" elim
+  find_theorems "(_ \<subseteq> _) = _" 
+  thm subset_iff_psubset_eq subset_eq
+  apply (simp add: subset_eq)
+  unfolding sumset_term_def
+  apply simp
+  apply (erule_tac x="{1}" in allE)
+  by (auto simp add: sumset_domain_def inv_VDMNat_def) 
+
+text \<open>Is the sumset termination relation well founded?\<close>
+lemma l_sumset_term_wf: "wf sumset_term"
+  by (simp add: sumset_term_def wf_Int1)
+
+lemma l_sumset_domain_finite: "sumset_domain s \<Longrightarrow> finite s" 
+  using l_invVDMSet_finite_f sumset_domain_def by blast
+
+lemma l_sumset_domain_sumset_term: 
+  "sumset_domain s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> x = (SOME x. x \<in> s) \<Longrightarrow> (s - {x}, s) \<in> sumset_term"
+  apply (simp add: l_sumset_domain_finite sumset_term_def)
+  by (metis Diff_subset member_remove order_less_le remove_def some_in_eq)
+
 function (domintros)
   sumset :: "VDMNat VDMSet \<Rightarrow> VDMNat" 
   where 
   "sumset s = 
-    (if s = {} then 0 else let e = (SOME x . x \<in> s) in sumset (s - {e}) + e)"
+    (if sumset_domain s then 
+        (if s = {} then 
+            0 
+         else 
+            let e = (SOME x . x \<in> s) in 
+              sumset (s - {e}) + e) 
+     else 
+        undefined
+    )"
   by (blast, force)
+termination
+  apply (rule "termination"[of "sumset_term"])
+   apply (simp add: l_sumset_term_wf)
+  by (simp add: l_sumset_domain_sumset_term)
+    
+lemma l_sumset_domain_empty[simp]: "sumset_domain {}" 
+  by (simp add: sumset_domain_def)
+
+lemma "sumset_domain {} \<Longrightarrow> sumset_dom {}" 
+  by (meson empty_iff sumset.domintros)
+
+definition 
+  sumset_term' ::"(VDMNat VDMSet \<times> VDMNat VDMSet) set" where
+  "sumset_term' \<equiv> finite_psubset \<inter> { (s1, s2) . sumset_domain s1 \<and> sumset_domain s2 }"
+
+
+definition 
+  sumset_term'' ::"(VDMNat VDMSet \<times> VDMNat VDMSet) set" where
+  "sumset_term'' \<equiv> finite_psubset \<inter> { (s, s - {(SOME e . e \<in> s)})| s . s \<noteq> {} \<and> sumset_domain s }"
+
+lemma l_sumset_term_not_empty: "sumset_term = {}"
+   unfolding sumset_term_def
+   apply (intro equalityI subsetI)
+    apply simp_all
+   unfolding finite_psubset_def
+   apply (simp add: case_prod_beta) 
+   apply (elim conjE exE)
+   apply safe
+   apply simp
+   oops
+
+
+
+lemma l_sumset_term'_wf: "wf sumset_term'"
+  by (metis inf_le1 sumset_term'_def wf_finite_psubset wf_subset)
+
+
+lemma l_sumset_term''_wf: "wf sumset_term''" 
+  by (simp add: sumset_term''_def wf_Int1)
+
+lemma l_sumset_domain_some: "sumset_domain x \<Longrightarrow> x \<noteq> {} \<Longrightarrow> sumset_domain (x - {SOME e. e \<in> x})"
+  unfolding sumset_domain_def inv_VDMSet_def
+  by (metis Diff_empty Diff_insert0 finite_Diff insert_Diff l_inv_SetElems_Cons)
+
+lemma l_sumset_term'_iff[iff]: "(y, x) \<in> sumset_term' \<longleftrightarrow> (sumset_domain y \<and> sumset_domain x \<and> y \<subset> x)"
+  apply (rule iffI)
+   apply (simp add: sumset_term'_def)
+  by (simp add: l_sumset_domain_finite sumset_term'_def)
+
+lemma l_sumset_term_iff[iff]: "((x - {SOME e . e \<in> x}), x) \<in> sumset_term \<longleftrightarrow> (sumset_domain (x - {SOME e . e \<in> x}) \<and> sumset_domain x \<and> x \<noteq> {})"
+  apply (rule iffI)
+   apply (simp add: sumset_term_def l_sumset_domain_some)
+  apply (simp add: sumset_term_def sumset_domain_def inv_VDMSet_def)
+  apply (intro psubsetI)
+   apply fastforce
+  by (metis Diff_iff singletonI some_in_eq)
+  
+lemma "s \<noteq> {} \<Longrightarrow> sumset_domain s \<Longrightarrow> ({}, s) \<in> sumset_term" 
+  apply (simp add: sumset_term_def l_sumset_domain_finite )
+  oops
+  
+
+(*
+lemma "sumset_domain (insert e s) \<Longrightarrow> sumset_dom (insert e s)"
+  thm wf_induct 
+      wf_induct[OF l_sumset_term_wf]
+      wf_induct[OF l_sumset_term_wf, of "\<lambda> x . sumset_dom (insert e x)"] 
+  apply (rule      wf_induct[OF l_sumset_term_wf, of "\<lambda> x . sumset_dom (insert e x)"] 
+  )
+  apply (simp add: l_sumset_term_iff)
+  apply (erule_tac x=y in allE
+  apply (rule sumset.domintros)
+  apply (erule notE)
+  oops
+*)
+
+  find_theorems name:"_dom" -name:VDMToolkit -name:Transfer -name:Map
+
+
+  thm sumset.domintros
+  thm sumset_rel.intros
+  find_theorems name: accp
+  find_theorems name: accp name:Wellfounded
+  find_theorems "_Collect"
+  find_consts name:sumset_rel
+
+lemma "(sumset_dom s) \<longleftrightarrow> (s \<in> Wellfounded.acc { (x, y). (sumset_rel x y) })"
+  by (simp add: accp_eq_acc)
+
+lemma "s \<in> Wellfounded.acc { (x, y). (sumset_rel x y) }"
+  apply (rule accI, simp)
+  find_theorems "sumset_rel" 
+  thm sumset_rel.intros
+
+lemma "sumset_rel = lfp (\<lambda>p x1 x2. \<exists>s x. x1 = s - {x} \<and> x2 = s \<and> s \<noteq> {} \<and> x = (SOME x. x \<in> s))"
+  apply (intro ext, simp add: lfp_def)
+  apply (intro iffI allI impI)
+   defer
+  
+
+
+(*     (lfp (\<lambda>(p (x1 x2)). ((x1 = (x2 - {(SOME x. (x \<in> x2))})) \<and> (x2 \<noteq> {}))) x xa) *)
+
+(* (\<forall> e \<in> s . e \<ge> 0) \<Longrightarrow> ...(s - {SOME e \<in> s}, s) \<in> ?R.... \<Longrightarrow> sumset_dom s*)
+lemma "sumset_domain s \<Longrightarrow> sumset_dom s"
+    (*
+  apply (rule wf_induct)
+   1. sumset_domain s \<Longrightarrow> wf ?r
+ 2. \<And>x. sumset_domain s \<Longrightarrow> \<forall>y. (y, x) \<in> ?r \<longrightarrow> y \<Longrightarrow> x
+    *)
+(*
+  apply (rule wf_induct[of _ \<open>\<lambda> x . sumset_dom x\<close> s])
+  goal (2 subgoals):
+   1. sumset_domain s \<Longrightarrow> wf ?r
+   2. \<And>x. sumset_domain s \<Longrightarrow> \<forall>y. (y, x) \<in> ?r \<longrightarrow> sumset_dom y \<Longrightarrow> sumset_dom x
+*)
+  thm wf_induct 
+      wf_induct[of _ \<open>\<lambda> x . sumset_dom x\<close> s]
+      l_sumset_term''_wf 
+      wf_subset
+      wf_induct[OF l_sumset_term''_wf, of \<open>\<lambda> x . sumset_dom (x - {SOME e . e \<in> x})\<close> s]
+  apply (rule wf_induct[OF l_sumset_term''_wf, of \<open>\<lambda> x . sumset_dom (x - {SOME e . e \<in> x})\<close> s])
+  apply (erule_tac x=x in allE)
+  apply (elim impE)
+   apply (simp add: sumset_term_def)
+  find_theorems name:induc name:fin name:set
+  oops
+
+lemma "sumset_domain s \<Longrightarrow> sumset_dom s"
+  apply (rule wf_induct[OF l_sumset_term_wf, of \<open>\<lambda> x . sumset_dom x\<close> s])
+  apply (erule_tac x=x in allE)
+  apply (elim impE)
+   apply (simp add: sumset_term_def)
+
+   
+definition 
+  sumset_call :: \<open>(VDMNat VDMSet) \<Rightarrow> (VDMNat VDMSet)\<close>
+  where
+  \<open>sumset_call s \<equiv> if s = {} then {} else s - {(SOME e . e \<in> s)}\<close>
+
+(* r = result of (f(s), f(s-{e})) for all s, or the computation of sumset with its <lex> for pred_nat?
+   f = the result of the parameter decrease for f, or the decreasing measure for sumset? 
+definition inv_image :: "'b rel \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> 'a rel"
+  where "inv_image r f = {(x, y). (f x, f y) \<in> r}"
+*)
+definition 
+  sumset_lex_nat :: \<open>(((VDMNat \<times> VDMNat) VDMSet \<times> \<nat>) \<times> (VDMNat \<times> VDMNat) VDMSet \<times> \<nat>) VDMSet\<close>
+  where
+  \<open>sumset_lex_nat \<equiv> gen_fin_psub <*lex*> pred_nat\<close>
+
+declare [[show_brackets]]
+definition 
+(*  sumset_lex_nat :: \<open>(((VDMNat \<times> VDMNat) VDMSet \<times> \<nat>) \<times> (VDMNat \<times> VDMNat) VDMSet \<times> \<nat>) VDMSet\<close>
+  where
+*)  
+  sumset_lex_nat' :: \<open>(((VDMNat \<times> VDMNat) set \<times> ((VDMNat \<times> VDMNat) set \<times> \<nat>)) \<times> ((VDMNat \<times> VDMNat) set \<times> ((VDMNat \<times> VDMNat) set \<times> \<nat>))) set\<close>
+  where
+  \<open>sumset_lex_nat' \<equiv> gen_fin_psub <*lex*> gen_fin_psub <*lex*> pred_nat\<close>
+
+lemma l_sumset_lex_nat_wf: "wf sumset_lex_nat"
+  by (simp add: gen_fin_psub_def sumset_lex_nat_def wf_lex_prod wf_pred_nat)
+
+lemma l_sumset_lex_nat'_wf: "wf sumset_lex_nat'"
+  by (metis gen_fin_psub_def l_sumset_lex_nat_wf sumset_lex_nat'_def sumset_lex_nat_def wf_finite_psubset wf_lex_prod)
+
+term "sumset_lex_nat"
+term "inv_image sumset_lex_nat"
+term "inv_image sumset_lex_nat'"
+
+(*lemma "sumset_term \<subseteq> inv_image sumset_lex_nat sumset_call"
+ *)
 
 thm sumset.domintros
 thm sumset.pinduct
 
-lemma "x < y \<Longrightarrow> (x, y) \<in> less_than"
-  using less_than_def less_than_iff pred_nat_def by presburger
+lemma "sumset_domain s \<Longrightarrow> sumset_dom s" 
+  thm sumset.domintros
+  apply (rule sumset.domintros)
+  apply (elim notE)
+  find_theorems name:induc name:fin name:set
 
-definition 
-  sumset_term ::"(VDMNat VDMSet \<times> VDMNat VDMSet) set" where
-  "sumset_term \<equiv> { (s1, s2) . s1 \<subseteq> s2 \<and> finite s2 }"
-
+lemma "sumset_domain s \<Longrightarrow> sumset_dom s" 
+proof - 
+  { fix s :: "VDMNat VDMSet"
+    have "sumset_domain s \<longrightarrow> sumset_dom s" (is "?P s \<longrightarrow> ?Q s")
+      term "?P" 
+      term "?Q"
+    proof (rule wf_induct[OF l_sumset_term_wf])
+      fix x :: "VDMNat VDMSet"
+      assume ih: "(\<forall>y. (((y, x) \<in> sumset_term) \<longrightarrow> (?P y \<longrightarrow> ?Q y)))"
+      show "?P x \<longrightarrow> ?Q x"
+      proof
+        assume P: "?P x" 
+        show "?Q x" 
+        thm sumset.domintros
+        proof (rule sumset.domintros)
+          thm sumset.cases
+          using sumset.cases  
 definition
   sumset_lex :: "((\<nat> set \<times> (\<nat> \<times> \<nat>) set \<times> \<nat>) \<times> \<nat> set \<times> (\<nat> \<times> \<nat>) set \<times> \<nat>) set"
   where
