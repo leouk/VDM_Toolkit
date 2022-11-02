@@ -8,7 +8,7 @@
 module Support2
 exports 
 	functions
-	  --pre_seqMap[@T,@R]: (@T->@R) * seq of @T +> bool;
+		--pre_seqMap[@T,@R]: (@T->@R) * seq of @T +> bool;
 			
 		
 		--map_to[@D,@R]: @R -> map @D to @R;
@@ -17,16 +17,10 @@ exports
 
 		seq_of[@T]: @T * nat1 -> seq1 of @T;
 
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
 		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
 		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
 		check_is_either[@T1,@T2]: ? -> bool;
+
 		check_is_seq_of_depth[@T]: ? * nat -> bool;
 		check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) /*(? -> bool)*/ /*(seq of @T -> bool)*/ -> bool;
 		check_is_seq_of[@T]: ? -> bool;
@@ -34,12 +28,6 @@ exports
 		as_seq_of_inv[@T/*,@TS*/]: ? * (seq of @T -> bool) -> seq of @T;
 		true_invSeq[@T]: seq of @T -> bool;
 	
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
 		--@todo/codegen/mods0 CG-warning/?: cannot force @TS to be the right type for @T (i.e. is_@TS(xs))
 		--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
 		check_is_set_of_depth[@T]: ? * nat -> bool;
@@ -277,15 +265,9 @@ functions
 	check_is_set_of_inv(xs, fcn_inv) == check_is_set_of_inv_depth[@T](xs, 0, fcn_inv);
 	
 	true_invSet[@T]: set of @T -> bool
-  true_invSet(-) == true;
+    true_invSet(-) == true;
         
 	true_invSeq[@T]: seq of @T -> bool
 	true_invSeq(-) == true;
-
-	--maxxs_nat: seq1 of nat -> nat
-	--maxxs_nat(s) == 
-		--@todo/codegen/mods0 CG-warning/Java-Error: function parameters
-		--maxxs[nat](s, max);
-	--	maxxs[nat](s, leomax_constant);
    	 
 end Support2

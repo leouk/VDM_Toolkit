@@ -6,8 +6,10 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION="4.5.0-SNAPSHOT"
+MVERSION="4.5.0-SNAPSHOT"  #$VDMJ_VERSION
 PVERSION="4.5.0-P-SNAPSHOT"
+
+VTVERSION="1.2.0-SNAPSHOT" #VDMJTK_VERSION
 
 # Preferred VDMJ options
 VDMJ_OPTS="-strict"
@@ -52,9 +54,9 @@ fi
 # Just warn if a later version is available in Maven
 LATEST=$(ls $VDMTOOLKITMAVENREPO/vdm2isa | grep "^[0-9].[0-9].[0-9]" | tail -1)
 
-if [ "$MVERSION" != "$LATEST" ]
+if [ "$VTVERSION" != "$LATEST" ]
 then
-    echo "WARNING: Latest VDM TOOLKIT version is $LATEST, not $MVERSION"
+    echo "WARNING: Latest VDM TOOLKIT version is $LATEST, not $VTVERSION"
 fi
 
 # Chosen version defaults to "master"
@@ -90,8 +92,8 @@ done
 VDMJ_JAR=$VDMJMAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar
 STDLIB_JAR=$VDMJMAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
 PLUGINS_JAR=$VDMJMAVENREPO/cmd-plugins/${VERSION}/cmd-plugins-${VERSION}.jar
-VDMTOOLKIT_LIB_JAR=$VDMTOOLKITMAVENREPO/vdmlib/${MVERSION}/vdmlib-${MVERSION}.jar
-VDMTOOLKIT_PLUGIN_JAR=$VDMTOOLKITMAVENREPO/vdm2isa/${MVERSION}/vdm2isa-${MVERSION}.jar
+VDMTOOLKIT_LIB_JAR=$VDMTOOLKITMAVENREPO/vdmlib/${VTVERSION}/vdmlib-${VTVERSION}.jar
+VDMTOOLKIT_PLUGIN_JAR=$VDMTOOLKITMAVENREPO/vdm2isa/${VTVERSION}/vdm2isa-${VTVERSION}.jar
 check "$VDMJ_JAR"
 check "$STDLIB_JAR"
 check "$PLUGINS_JAR"
@@ -108,7 +110,7 @@ MAIN="com.fujitsu.vdmj.VDMJ"
     # Remove Annotations2 to allow for right "Witness" to be picked
     #ANNOTATIONS2_JAR=$VDMJMAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
     #check "$ANNOTATIONS2_JAR"
-    ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${MVERSION}/annotationsVDMToolkit-${MVERSION}.jar
+    ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${VTVERSION}/annotationsVDMToolkit-${VTVERSION}.jar
     check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
     VDMJ_OPTS="$VDMJ_OPTS -annotations"
     VM_OPTS="$VM_OPTS -Dannotations.debug -Dvdmj.parser.merge_comments=true"
