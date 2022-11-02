@@ -27,12 +27,19 @@ text \<open>In Isabelle, recursive functions must discharge proof obligations on
 
   For example, a function that finds the zero of functions can be given as:
 \<close>
-function findzero :: "(nat \<Rightarrow> nat) \<Rightarrow> nat \<Rightarrow> nat"
+function (domintros) findzero :: "(nat \<Rightarrow> nat) \<Rightarrow> nat \<Rightarrow> nat"
 where
 "findzero f n = (if f n = 0 then n else findzero f (Suc n))"
   by pat_completeness auto
 
 print_theorems 
+
+term findzero_dom
+term findzero_rel
+thm findzero.domintros impI
+    findzero_rel.intros
+find_theorems name:"Wellfounded.acc"
+
 text \<open>Various theorems are made available, such as:
 
   @{thm findzero.cases}[display]
@@ -106,9 +113,15 @@ text \<open>Termination proof is achieved by establishing a well-founded relatio
     second element in the relation pair. This makes the proof of well-foundedness easy for 
     @{command sledgehammer}, which is important in order for translated code be easier to prove. 
         \<close>
-definition 
+
+abbreviation 
+  sumset_wf_rel :: "(VDMNat VDMSet \<times> VDMNat VDMSet) set"
+  where
+  "sumset_wf_rel \<equiv> { (s - {(SOME e . e \<in> s)}, s)| s . s \<noteq> {} \<and> pre_sumset s }"
+
+definition
   sumset_term ::"(VDMNat VDMSet \<times> VDMNat VDMSet) set" where
-  "sumset_term \<equiv> finite_psubset \<inter> { (s - {(SOME e . e \<in> s)}, s)| s . s \<noteq> {} \<and> pre_sumset s }"
+  "sumset_term \<equiv> finite_psubset \<inter> sumset_wf_rel"
 
 text \<open>Termination requires well-founded relation, so we prove that function sumset termination 
       relation is well-founded using @{command sledgehammer}.\<close>
@@ -122,6 +135,7 @@ text \<open>Moreover, once we establish well-foundedness, we need to get to the 
       In this case, the only needed term for Isabelle to establish termination is set finiteness, 
       however, we insist on the whole precondition to ensure that the intended VDM meaning is 
       maintained.\<close>
+
 lemma l_pre_sumset_sumset_term: 
   "pre_sumset s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> x = (SOME x. x \<in> s) \<Longrightarrow> (s - {x}, s) \<in> sumset_term"
   apply (simp add: pre_sumset_def sumset_term_def)
@@ -153,6 +167,7 @@ function (domintros)
 termination
   text \<open>Next, we have to discharge the termination proof, which is given as
        @{goals}[display]\<close>
+  thm "termination"
   apply (rule "termination"[of "sumset_term"])
   text \<open>We follow the strategy of using the termination relation and well formedness, which
        transforms the mysterious/abstract domain predicate into two new subgoals
@@ -163,7 +178,8 @@ termination
   text \<open>Finally, we show that termination relation is entailed by function precondition.\<close>
   by (simp add: l_pre_sumset_sumset_term)
 
-text \<open>Is the sumset termination relaiton non-trivial?\<close>
+text \<open>Is the sumset termination relaiton non-trivial? That is, we have some solutions within
+      the finite subsets representing the recursive wellfounded relation.\<close>
 lemma l_sumset_term_not_empty: "sumset_term \<noteq> {}"
   apply safe
   find_theorems elim
@@ -177,5 +193,13 @@ lemma l_sumset_term_not_empty: "sumset_term \<noteq> {}"
   apply simp
   apply (erule_tac x="{1}" in allE)
   by (auto simp add: pre_sumset_def inv_VDMNat_def) 
+
+text \<open>This is suboptimal. Let's then show it's the relation (i.e. finite subset trick to
+make wellfounded induction proof easier, does not compromise the wellfounded relation itself).\<close>
+lemma "sumset_term = sumset_wf_rel"
+  apply (intro equalityI subsetI)
+   apply (simp add: sumset_term_def)
+  using l_pre_sumset_sumset_term by blast
+
 
 end
