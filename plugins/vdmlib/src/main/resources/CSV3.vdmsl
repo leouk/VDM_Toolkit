@@ -1,0 +1,41 @@
+module CSV3
+exports all
+definitions
+types
+    String1 = seq1 of char;
+
+    --@doc this is treated 
+    Path = String1;
+
+    FileStatus = <Valid> | <DoesNotExist>; 
+
+functions 
+    file_status: Path -> FileStatus 
+    file_status(f) == is not yet specified; 
+
+state CSV of 
+    file: [Path]
+    ferror: [String1]
+    data: seq of ?
+end
+
+operations 
+
+    pure
+    lastError: () ==> [String1]
+    lastError() == ferror;
+
+    setCSVFile(f: Path) == 
+        file := f
+    ext wr file
+    pre file_status(f) = <Valid>
+    post file = f and file <> nil;
+
+    loadCSV() == 
+        (
+            skip
+        )
+    ext rd ferror wr data 
+    pre file <> nil and ferror = nil;
+
+end CSV3
