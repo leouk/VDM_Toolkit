@@ -37,8 +37,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private static final List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
 
     // list of VDM warning numbers to raise as errors
-    private static final List<Integer> vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
-            5012, 5013, 5016, 5017, 5018, 5019, 5020, 5021, 5031, 5032, 5033, 5037);
+    private static final List<Integer> vdmWarningOfInterest = 
+        Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
+                            5012, 5013, 5016, 5017, 5018, 5019, 5020, 
+                            5021, 5031, 5032, 5033, 5037);
 
 	// target isabelle version (i.e. result of "isabelle version" call)
 	public static String isaVersion; 
@@ -208,14 +210,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             result = isaRun(tclist_filtered, argv);
 
             long after = System.currentTimeMillis();
-			//addLocalErrors(Vdm2isaPlugin.getErrorCount());
 			addLocalErrors(GeneralisaPlugin.getErrorCount());
 			if (getLocalErrorCount() > 0)
 			{
 				GeneralisaPlugin.printErrors(Console.out);
 			}
 
-			//addLocalWarnings(Vdm2isaPlugin.getWarningCount());
 			addLocalWarnings(GeneralisaPlugin.getWarningCount());
 			if (getLocalWarningCount() > 0 && GeneralisaPlugin.reportVDMWarnings)
 			{
@@ -277,12 +277,15 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
             if (errors.size() >= GeneralisaPlugin.maxErrors - 1) 
             {
-				String tooMany = "Too many translation errors";
-                workspace.Diag.severe(tooMany);
-                workspace.Diag.severe(String.valueOf(errors.size()));
-                workspace.Diag.severe(errors.toString());
+				String tooMany = "Too many translation errors (> " + 
+                    GeneralisaPlugin.maxErrors + "); increase ``maxErrors'' input parameter.";
+                //TODO: @NB, how best to report this in the LSP?
+                // workspace.Diag.severe(tooMany);
+                // workspace.Diag.severe(String.valueOf(errors.size()));
+                // workspace.Diag.severe(errors.toString());
     			errors.add(new VDM2IsaError(10, tooMany, location));
-    			throw new InternalException(10, tooMany);
+    			InternalException ie = new InternalException(10, tooMany);
+                throw ie;
             }
         }
     }
