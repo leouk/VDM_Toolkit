@@ -1,0 +1,33 @@
+module RecursiveSet
+exports all
+definitions 
+values 
+    NAT_MAX: nat1 = 2;
+    NAT_SET: set of nat = {0,...,NAT_MAX-1};
+    NAT_REL: set of (nat * nat) = { mk_(x,y) | x in set NAT_SET, y in set NAT_SET };
+    --NAT_REL_FIN_SUB: set of ((set of ((nat * nat)) * set of ((nat * nat)))) = { mk_(A, B) | A in set power NAT_REL, B in set power NAT_REL /*& A psubset B */}
+functions
+    nat_term: () -> set of (nat * nat)
+    nat_term() == 
+        { mk_(m, n) | n in set NAT_SET, m in set NAT_SET & n = m+1 and n < NAT_MAX };
+
+    nat_fin_psub: () -> set of ((set of ((nat * nat)) * set of ((nat * nat))))
+    nat_fin_psub() == 
+        { mk_(A, B) | 
+            A in set power nat_term()/*NAT_REL*/, 
+            B in set power nat_term()/*NAT_REL*/ & 
+            A psubset B /*finite B and B subset nat_term()*/ }
+    post 
+        forall mk_(A,B) in set RESULT & A psubset B and B subset nat_term();
+   
+    lex_prod[@Ta, @Tb]: (set of (@Ta * @Ta)) * (set of (@Tb * @Tb)) * (set of (@Ta * @Ta)) * (set of (@Tb * @Tb)) -> (set of ((@Ta * @Tb) * (@Ta * @Tb)))
+    lex_prod(ra, rb, rabound, rbbound) == 
+        { mk_(mk_(a, b), mk_(a',b')) | mk_(a,a') in set ra, mk_(b,b') in set rbbound }
+        union
+        { mk_(mk_(a, b), mk_(a', b')) | mk_(a,a') in set rabound, mk_(b, b') in set rb & a = a'};
+
+    lex_prod_nat: (set of ((set of ((nat * nat)) * set of ((nat * nat))))) * (set of (nat * nat)) -> 
+                  set of (((set of (nat * nat)) * nat) * ((set of (nat * nat)) * nat)) 
+    lex_prod_nat(ra, rb) == lex_prod[set of (nat * nat), nat](ra, rb, nat_fin_psub(), NAT_REL);--power ra, power rb);
+
+end RecursiveSet
