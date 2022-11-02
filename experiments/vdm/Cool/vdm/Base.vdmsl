@@ -297,7 +297,8 @@ eval_expr(e, sigma) ==
 		(is_ArithExpr(e))	-> eval_AExpr(e, sigma),
 		(is_RelExpr(e))		-> eval_RExpr(e, sigma),
 		(is_Id(e))			-> lookup_Id(e, sigma),
-		(is_ScalarValue(e)) -> e
+		(is_ScalarValue(e)) -> e,
+		others				-> false
 	end; 
 
 eval_AExpr: ArithExpr * ValueMap -> int
