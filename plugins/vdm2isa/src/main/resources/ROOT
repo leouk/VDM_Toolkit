@@ -20,5 +20,6 @@ session "VDM-Examples" = "HOL-Library" +
     VDMToolkit
   theories
     RecursiveSet
+    RecursiveVDMNat
   document_files
     "root.tex"

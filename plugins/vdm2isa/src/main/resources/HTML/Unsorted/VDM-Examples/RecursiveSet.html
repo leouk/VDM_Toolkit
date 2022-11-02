@@ -41,12 +41,19 @@
 
   For example, a function that finds the zero of functions can be given as:
 ›</span></span>
-<span class="keyword1"><span class="command">function</span></span> <span class="entity">findzero</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>nat <span class="main">⇒</span> nat<span class="main">)</span> <span class="main">⇒</span> nat <span class="main">⇒</span> nat"</span></span>
+<span class="keyword1"><span class="command">function</span></span> <span class="main">(</span>domintros<span class="main">)</span> <span class="entity">findzero</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>nat <span class="main">⇒</span> nat<span class="main">)</span> <span class="main">⇒</span> nat <span class="main">⇒</span> nat"</span></span>
 <span class="keyword2"><span class="keyword">where</span></span>
 <span class="quoted"><span class="quoted">"<span class="free">findzero</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">0</span> <span class="keyword1">then</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="keyword1">else</span> <span class="free">findzero</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="main">(</span>Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">)</span><span class="main">)</span>"</span></span>
   <span class="keyword1"><span class="command">by</span></span> <span class="operator">pat_completeness</span> <span class="operator">auto</span>
 
 <span class="keyword1"><span class="command">print_theorems</span></span> 
+
+<span class="keyword1"><span class="command">term</span></span> <span class="quoted">findzero_dom</span>
+<span class="keyword1"><span class="command">term</span></span> <span class="quoted">findzero_rel</span>
+<span class="keyword1"><span class="command">thm</span></span> findzero.domintros impI
+    findzero_rel.intros
+<span class="keyword1"><span class="command">find_theorems</span></span> name<span class="main">:</span><span class="quoted">"Wellfounded.acc"</span>
+
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Various theorems are made available, such as:
 
   <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> findzero.cases<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
@@ -120,9 +127,15 @@
     second element in the relation pair. This makes the proof of well-foundedness easy for 
     <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span>, which is important in order for translated code be easier to prove. 
         ›</span></span>
-<span class="keyword1"><span class="command">definition</span></span> 
+
+<span class="keyword1"><span class="command">abbreviation</span></span> 
+  <span class="entity">sumset_wf_rel</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>VDMNat VDMSet <span class="main">×</span> VDMNat VDMSet<span class="main">)</span> set"</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">sumset_wf_rel</span> <span class="main">≡</span> <span class="main">{</span> <span class="main">(</span><span class="bound">s</span> <span class="main">-</span> <span class="main">{</span><span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span> <span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> <span class="bound">s</span><span class="main">)</span><span class="main">}</span><span class="main">,</span> <span class="bound">s</span><span class="main">)</span><span class="main">|</span> <span class="bound">s</span> <span class="main">.</span> <span class="bound">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">∧</span> pre_sumset <span class="bound">s</span> <span class="main">}</span>"</span></span>
+
+<span class="keyword1"><span class="command">definition</span></span>
   <span class="entity">sumset_term</span> <span class="main">::</span><span class="quoted"><span class="quoted">"<span class="main">(</span>VDMNat VDMSet <span class="main">×</span> VDMNat VDMSet<span class="main">)</span> set"</span></span> <span class="keyword2"><span class="keyword">where</span></span>
-  <span class="quoted"><span class="quoted">"<span class="free">sumset_term</span> <span class="main">≡</span> finite_psubset <span class="main">∩</span> <span class="main">{</span> <span class="main">(</span><span class="bound">s</span> <span class="main">-</span> <span class="main">{</span><span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span> <span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> <span class="bound">s</span><span class="main">)</span><span class="main">}</span><span class="main">,</span> <span class="bound">s</span><span class="main">)</span><span class="main">|</span> <span class="bound">s</span> <span class="main">.</span> <span class="bound">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">∧</span> pre_sumset <span class="bound">s</span> <span class="main">}</span>"</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">sumset_term</span> <span class="main">≡</span> finite_psubset <span class="main">∩</span> sumset_wf_rel"</span></span>
 
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Termination requires well-founded relation, so we prove that function sumset termination 
       relation is well-founded using <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span>.›</span></span>
@@ -136,6 +149,7 @@
       In this case, the only needed term for Isabelle to establish termination is set finiteness, 
       however, we insist on the whole precondition to ensure that the intended VDM meaning is 
       maintained.›</span></span>
+
 <span class="keyword1"><span class="command">lemma</span></span> l_pre_sumset_sumset_term<span class="main">:</span> 
   <span class="quoted"><span class="quoted">"pre_sumset <span class="free">s</span> <span class="main">⟹</span> <span class="free">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">x</span><span class="main">.</span> <span class="bound">x</span> <span class="main">∈</span> <span class="free">s</span><span class="main">)</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">s</span> <span class="main">-</span> <span class="main">{</span><span class="free">x</span><span class="main">}</span><span class="main">,</span> <span class="free">s</span><span class="main">)</span> <span class="main">∈</span> sumset_term"</span></span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sumset_def sumset_term_def<span class="main">)</span>
@@ -167,6 +181,7 @@
 <span class="keyword1"><span class="command">termination</span></span>
   <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Next, we have to discharge the termination proof, which is given as
        <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">goals</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]›</span></span>
+  <span class="keyword1"><span class="command">thm</span></span> <span class="quoted">"termination"</span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule</span> <span class="quoted">"termination"</span><span class="main"><span class="main">[</span></span><span class="operator">of</span> <span class="quoted"><span class="quoted"><span class="quoted">"sumset_term"</span></span></span><span class="main"><span class="main">]</span></span><span class="main">)</span>
   <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹We follow the strategy of using the termination relation and well formedness, which
        transforms the mysterious/abstract domain predicate into two new subgoals
@@ -177,7 +192,8 @@
   <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Finally, we show that termination relation is entailed by function precondition.›</span></span>
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_pre_sumset_sumset_term<span class="main">)</span>
 
-<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Is the sumset termination relaiton non-trivial?›</span></span>
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Is the sumset termination relaiton non-trivial? That is, we have some solutions within
+      the finite subsets representing the recursive wellfounded relation.›</span></span>
 <span class="keyword1"><span class="command">lemma</span></span> l_sumset_term_not_empty<span class="main">:</span> <span class="quoted"><span class="quoted">"sumset_term <span class="main">≠</span> <span class="main">{}</span>"</span></span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">safe</span>
   <span class="keyword1"><span class="command">find_theorems</span></span> elim
@@ -191,6 +207,14 @@
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">simp</span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule_tac</span> x<span class="main"><span class="main">=</span></span><span class="quoted"><span class="quoted">"<span class="main">{</span><span class="main">1</span><span class="main">}</span>"</span></span> <span class="keyword2"><span class="keyword"><span class="quasi_keyword">in</span></span></span> allE<span class="main">)</span>
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">auto</span> <span class="quasi_keyword">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sumset_def inv_VDMNat_def<span class="main">)</span> 
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹This is suboptimal. Let's then show it's the relation (i.e. finite subset trick to
+make wellfounded induction proof easier, does not compromise the wellfounded relation itself).›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> <span class="quoted"><span class="quoted">"sumset_term <span class="main">=</span> sumset_wf_rel"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">intro</span> equalityI subsetI<span class="main">)</span>
+   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> sumset_term_def<span class="main">)</span>
+  <span class="keyword1"><span class="command">using</span></span> l_pre_sumset_sumset_term <span class="keyword1"><span class="command">by</span></span> <span class="operator">blast</span>
+
 
 <span class="keyword2"><span class="keyword">end</span></span></pre>
 </body>

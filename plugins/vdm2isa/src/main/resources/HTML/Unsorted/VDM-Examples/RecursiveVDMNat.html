@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><link rel="stylesheet" type="text/css" href="isabelle.css"/>
+<title>Theory RecursiveVDMNat</title>
+</head>
+
+
+<body>
+<div class="head">
+<h1>Theory RecursiveVDMNat</h1>
+</div>
+
+<pre class="source"><span class="keyword1"><span class="command">theory</span></span> RecursiveVDMNat
+  <span class="keyword2"><span class="keyword">imports</span></span> <a href="VDMToolkit.html">VDMToolkit</a>
+<span class="keyword2"><span class="keyword">begin</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹VDM expressions with basic-typed (nat, int) variables (e.g. <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">x</span></span><span class="main"><span class="main">-</span></span><span class="free"><span class="free">y</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>) 
+  have specific type widening rules (e.g. if both variables are nat, the result might be int).
+  Therefore, in Isabelle VDM nats become <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="quoted">VDMNat</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>, which are just a synonym for <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℤ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>.
+
+  Isabelle recursive functions requires a proof obligation that parameters represent a 
+  constructive and compatible pattern, and that recursive calls terminate. Nevertheless,
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℤ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> in Isabelle is defined in terms of a pair of <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℕ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>, hence recursion over <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℤ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>
+  are involved. Given VDM needs to represent its nat variables as <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="quoted">VDMNat</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> this will make
+  VDM recursive functions in Isabelle involved as well.
+ 
+  To give a concrete example, we define a recursive implementation of factorial in VDM 
+  translated to Isabelle as:
+
+  \begin{vdmsl}
+    factorial: nat -&gt; nat 
+    factorial(n) == if n = 0 then 1 else n * factorial(n)
+    measure n;
+  \end{vdmsl}
+
+  For translation, we firt encode the implicit precondition of factorial that 
+  insists that the given parameter <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="free"><span class="quoted"><span class="free">n</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> is a <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="quoted">VDMNat</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>
+›</span></span>
+<span class="keyword1"><span class="command">definition</span></span> 
+  <span class="entity">pre_vdm_factorial</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹VDMNat <span class="main">⇒</span> <span class="main">𝔹</span>›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">‹<span class="free">pre_vdm_factorial</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≡</span> inv_VDMNat <span class="free"><span class="bound"><span class="entity">n</span></span></span>›</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Next, we define the factorial function through recursion, where 
+      when the precondition fails, we return <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">undefined</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>, which is 
+      a term that cannot be reasoned with in Isabelle (i.e. it's a dead end).
+      Otherwise, we define factorial pretty much as in VDM.›</span></span>
+<span class="keyword1"><span class="command">function</span></span> <span class="main">(</span>domintros<span class="main">)</span> <span class="entity">vdm_factorial</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹VDMNat <span class="main">⇒</span> VDMNat›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">‹<span class="free">vdm_factorial</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span>
+    <span class="main">(</span><span class="keyword1">if</span> pre_vdm_factorial <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="keyword1">then</span>
+      <span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">0</span> <span class="keyword1">then</span> 
+        <span class="main">1</span>
+      <span class="keyword1">else</span>
+        <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">*</span> <span class="main">(</span><span class="free">vdm_factorial</span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">-</span> <span class="main">1</span><span class="main">)</span><span class="main">)</span>
+      <span class="main">)</span>
+    <span class="keyword1">else</span>
+      undefined<span class="main">)</span>›</span></span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Pattern compatibility and completeness is discharged with the usual proof strategy in this case.
+        In the general (more complex recursive call cases, e.g., Ackerman's function for instance), the 
+        user might have goals to discharge.›</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">pat_completeness</span><span class="main"><span class="keyword3">,</span></span> <span class="operator">auto</span><span class="main">)</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Following the same strategy as before for sets, we define a relation representing 
+  the recursive and original call, respectively. The relation contains only input values 
+  that satisfy the precondition of factorial as well as the specific case which recursion occurs (e.g. <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="main"><span class="main">0</span></span> <span class="main"><span class="main">&lt;</span></span> <span class="free"><span class="free">n</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>).›</span></span>
+<span class="keyword1"><span class="command">abbreviation</span></span> 
+  <span class="entity">vdm_factorial_wf</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>VDMNat <span class="main">×</span> VDMNat<span class="main">)</span> set›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">vdm_factorial_wf</span> <span class="main">≡</span> <span class="main">{</span> <span class="main">(</span><span class="bound">n</span> <span class="main">-</span> <span class="main">1</span><span class="main">,</span> <span class="bound">n</span><span class="main">)</span> <span class="main">|</span> <span class="bound">n</span> <span class="main">.</span> <span class="main">0</span> <span class="main">&lt;</span> <span class="bound">n</span> <span class="main">∧</span> pre_vdm_factorial <span class="bound">n</span> <span class="main">}</span>"</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹To make well foundedness proof easy, we reuse an already proved well founded 
+  relation for the integers, with the relation 
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">int_ge_less_than</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display] which we start from <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">0</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>. 
+  This is quite similar to the strategy used for finite subsets with <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">finite_psubset</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display].›</span></span>
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">vdm_factorial_term</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>VDMNat <span class="main">×</span> VDMNat<span class="main">)</span> set›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">‹<span class="free">vdm_factorial_term</span> <span class="main">≡</span> <span class="main">(</span>int_ge_less_than <span class="main">0</span><span class="main">)</span> <span class="main">∩</span> vdm_factorial_wf›</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Because <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">int_ge_less_than</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> is already well founded (e.g. <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> wf_int_ge_less_than<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]),
+  the proof for our definition is trivial.›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> l_vdm_factorial_term_wf<span class="main">:</span> <span class="quoted"><span class="quoted">"wf vdm_factorial_term"</span></span> 
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> vdm_factorial_term_def wf_int_ge_less_than wf_Int1<span class="main">)</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹To mak sure our choice is valid (e.g. doesn't lead to the empty relation), we ensure
+  that indeed the termination relation is in fact the same as the well founded predicate.›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> l_vdm_factorial_term_valid<span class="main">:</span> <span class="quoted"><span class="quoted">"vdm_factorial_term <span class="main">=</span> vdm_factorial_wf"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> vdm_factorial_term_def pre_vdm_factorial_def inv_VDMNat_def<span class="main">)</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">intro</span> equalityI subsetI<span class="main">)</span>
+   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp_all</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> int_ge_less_than_def case_prod_beta<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="operator">auto</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Finally, we prove termination using the previously proved lemmas using the <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">method</span></span> relation<span class="antiquote"><span class="antiquote">}</span></span></span></span>.
+  This simplifies the goal into well formedness of termination relation and that the precondition implies it,
+  both of which are easily proved with simplification in this case.›</span></span>
+<span class="keyword1"><span class="command">termination</span></span> 
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">relation</span> <span class="quoted"><span class="quoted">‹vdm_factorial_term›</span></span><span class="main">)</span>
+   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_vdm_factorial_term_wf<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> inv_VDMNat_def pre_vdm_factorial_def vdm_factorial_term_def int_ge_less_than_def<span class="main">)</span>
+  
+<span class="keyword2"><span class="keyword">end</span></span></pre>
+</body>
+
+</html>
