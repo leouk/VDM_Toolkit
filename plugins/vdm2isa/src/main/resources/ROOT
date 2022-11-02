@@ -1,3 +1,4 @@
+(*
 session "VDM-Toolkit" = "HOL-Library" +
   description "
     VDM Mathematical Toolkit, by Leo Freitas
@@ -7,5 +8,17 @@ session "VDM-Toolkit" = "HOL-Library" +
     VDMEisbach
     VDMToolkit 
     (* run: isabelle build -D . -P ./HTML *)
+  document_files
+    "root.tex"
+*)
+session "VDM-Examples" = "HOL-Library" +
+  description "
+    VDM Toolkit examples.
+  "
+  options [document = pdf, document_output = "output", quick_and_dirty = false]
+  theories [document = false]
+    VDMToolkit
+  theories
+    RecursiveSet
   document_files
     "root.tex"

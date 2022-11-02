@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><link rel="stylesheet" type="text/css" href="isabelle.css"/>
+<title>Theory RecursiveSet</title>
+</head>
+
+
+<body>
+<div class="head">
+<h1>Theory RecursiveSet</h1>
+</div>
+
+<pre class="source"><span class="keyword1"><span class="command">theory</span></span> RecursiveSet
+  <span class="keyword2"><span class="keyword">imports</span></span> <a href="VDMToolkit.html">VDMToolkit</a>
+<span class="keyword2"><span class="keyword">begin</span></span>
+
+<span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹Recursive partial recursive functions›</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹In Isabelle, recursive functions must discharge proof obligations on:
+  \begin{enumerate}
+  \item pattern completeness: 
+
+        This relates to all patterns in a constructive type
+        being refered to (e.g., <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">0</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> and <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹Suc <span class="free"><span class="free">n</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> for <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℕ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>)).
+  
+  \item pattern compatibility:
+  
+        This relates to multiple way patterns can be constructed that boils
+        down to the pattern completeness cases (e.g., <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">n</span></span> <span class="main"><span class="main">+</span></span> <span class="numeral"><span class="numeral">2</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> being 
+        simply multiple successor calls over constructors <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹Suc <span class="main"><span class="main">(</span></span>Suc <span class="main"><span class="main">0</span></span><span class="main"><span class="main">)</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>). 
+  \end{enumerate}
+
+  That is important to ensure that recursion is well structured (i.e., recursive calls will not
+  get stuck because call constructs are not available). For example, if you miss the <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">0</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> 
+  case, eventually the <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹Suc <span class="free"><span class="free">n</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> case will reach zero and fail. 
+
+  A final proof obligation is on termination: the recursion is well-founded. This has to be
+  proved whenever properties of defined function are meant to be total. 
+
+  For example, a function that finds the zero of functions can be given as:
+›</span></span>
+<span class="keyword1"><span class="command">function</span></span> <span class="entity">findzero</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>nat <span class="main">⇒</span> nat<span class="main">)</span> <span class="main">⇒</span> nat <span class="main">⇒</span> nat"</span></span>
+<span class="keyword2"><span class="keyword">where</span></span>
+<span class="quoted"><span class="quoted">"<span class="free">findzero</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">0</span> <span class="keyword1">then</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="keyword1">else</span> <span class="free">findzero</span> <span class="free"><span class="bound"><span class="entity">f</span></span></span> <span class="main">(</span>Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">)</span><span class="main">)</span>"</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="operator">pat_completeness</span> <span class="operator">auto</span>
+
+<span class="keyword1"><span class="command">print_theorems</span></span> 
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Various theorems are made available, such as:
+
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> findzero.cases<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+  Cases analysis
+
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> findzero.pelims<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+  Elimination rules 
+
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> findzero.pinduct<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+  Induction rules
+
+  <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> findzero.psimps<span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+  Simplificaiton rules
+
+  Note the last two are partial, module a domain predicate <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">findzero_dom</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>,
+  which represents a well-founded relation that ensures termination. These p-rules
+  can be simplified into total rules that do not depend on a domain predicate, which
+  can compicate proofs.
+›</span></span>
+
+<span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹Exampe of recursive functions with non-constructive types›</span></span>
+
+<span class="keyword1"><span class="command">text</span></span><span class="quoted"><span class="plain_text">‹Recursing on non-constructive types (e.g., sets, integers, etc.) entail 
+    more involved compatibility and completeness proofs. They also usually lead to 
+    partial function definitions, given Isabelle can't tell whether termination is
+    immediatelly obvious. 
+
+    In VDM, however, recursive functions on sets (as well as map domains) are common. 
+    
+    In our vdm2isa translator, we impose various implicit VDM checks as explicit predicates
+    in Isabelle. In VDM, sets are always finite, and structural invariants are declared for types.
+
+    Our example recursive function is given a set of <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℕ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> and return their sum. In VDM,
+    because of various type widening rules (e.g., <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="main"><span class="main">0</span></span> <span class="main"><span class="main">-</span></span> <span class="main"><span class="main">(</span></span><span class="free"><span class="free">x</span></span><span class="main"><span class="main">::</span></span>nat<span class="main"><span class="main">)</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> returns an integer result, 
+    whereas in Isabelle this remains a <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℕ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>.). We encode VDM
+    corresponding type as <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="quoted">VDMNat</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>. This is represented in Isabelle as <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℤ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> in order 
+    to allow for VDM type widening rules during translation.
+
+    The function is defined in VDM as:
+
+    \begin{vdmsl}
+        sumset: set of nat -&gt; nat 
+        sumset(s) == if s = {} then 0 else let e in set s in sumset(s - {e}) + e;
+    \end{vdmsl}
+
+    It consumes the set by picking each set element and summing them to the recursive call until
+    the set is empty.
+
+    In Isabelle, the implicit VDM checks are defined as the precondition, which ensures 
+    that the given set contains only natural numbers, and is finite.›</span></span>
+
+<span class="keyword1"><span class="command">definition</span></span> 
+  <span class="entity">pre_sumset</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"VDMNat VDMSet <span class="main">⇒</span> <span class="main">𝔹</span>"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">pre_sumset</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">≡</span> inv_SetElems inv_VDMNat <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">∧</span> inv_VDMSet <span class="free"><span class="bound"><span class="entity">s</span></span></span>"</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Termination proof is achieved by establishing a well-founded relation associated with 
+      the function recursive call with respect to its declaration. 
+
+    In our case, that is the smaller set after picking <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="free"><span class="quoted"><span class="free">e</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> (<span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">s</span></span> <span class="main"><span class="main">-</span></span> <span class="main"><span class="main">{</span></span><span class="main"><span class="main">(</span></span><span class="keyword1"><span class="keyword1">SOME</span></span> <span class="bound"><span class="bound">e</span></span> <span class="main"><span class="main">.</span></span> <span class="bound"><span class="bound">e</span></span> <span class="main"><span class="main">∈</span></span> <span class="free"><span class="free">s</span></span><span class="main"><span class="main">)</span></span><span class="main"><span class="main">}</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>) 
+    and the set used at definition, leading to the pairs <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="main"><span class="main">(</span></span><span class="free"><span class="free">s</span></span> <span class="main"><span class="main">-</span></span> <span class="main"><span class="main">{</span></span><span class="main"><span class="main">(</span></span><span class="keyword1"><span class="keyword1">SOME</span></span> <span class="bound"><span class="bound">e</span></span> <span class="main"><span class="main">.</span></span> <span class="bound"><span class="bound">e</span></span> <span class="main"><span class="main">∈</span></span> <span class="free"><span class="free">s</span></span><span class="main"><span class="main">)</span></span><span class="main"><span class="main">}</span></span><span class="main"><span class="main">,</span></span> <span class="free"><span class="free">s</span></span><span class="main"><span class="main">)</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>. 
+    We ensure all the <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="free"><span class="quoted"><span class="free">s</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> involved are not empty and satisfy the function precondition (<span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">pre_sumset</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>).
+
+    Given this is a simple (non-mutual, single call-site, easy set element choice) recursion, 
+    thankfully the setup is not as complex to establish well-foundedness. We piggyback on some
+    Isabelle machinery by using the term:
+
+    <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">finite_psubset</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+
+    It establishes that a relation where the first element is strictly smaller set than the 
+    second element in the relation pair. This makes the proof of well-foundedness easy for 
+    <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span>, which is important in order for translated code be easier to prove. 
+        ›</span></span>
+<span class="keyword1"><span class="command">definition</span></span> 
+  <span class="entity">sumset_term</span> <span class="main">::</span><span class="quoted"><span class="quoted">"<span class="main">(</span>VDMNat VDMSet <span class="main">×</span> VDMNat VDMSet<span class="main">)</span> set"</span></span> <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">"<span class="free">sumset_term</span> <span class="main">≡</span> finite_psubset <span class="main">∩</span> <span class="main">{</span> <span class="main">(</span><span class="bound">s</span> <span class="main">-</span> <span class="main">{</span><span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span> <span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> <span class="bound">s</span><span class="main">)</span><span class="main">}</span><span class="main">,</span> <span class="bound">s</span><span class="main">)</span><span class="main">|</span> <span class="bound">s</span> <span class="main">.</span> <span class="bound">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">∧</span> pre_sumset <span class="bound">s</span> <span class="main">}</span>"</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Termination requires well-founded relation, so we prove that function sumset termination 
+      relation is well-founded using <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span>.›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> l_sumset_term_wf<span class="main">:</span> <span class="quoted"><span class="quoted">"wf sumset_term"</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> sumset_term_def wf_Int1<span class="main">)</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Moreover, once we establish well-foundedness, we need to get to the termination relation
+      from the filtering predicate defined through the precondition (i.e. the precondition helps
+      establish the terminating relation). 
+
+      In this case, the only needed term for Isabelle to establish termination is set finiteness, 
+      however, we insist on the whole precondition to ensure that the intended VDM meaning is 
+      maintained.›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> l_pre_sumset_sumset_term<span class="main">:</span> 
+  <span class="quoted"><span class="quoted">"pre_sumset <span class="free">s</span> <span class="main">⟹</span> <span class="free">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">⟹</span> <span class="free">x</span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">x</span><span class="main">.</span> <span class="bound">x</span> <span class="main">∈</span> <span class="free">s</span><span class="main">)</span> <span class="main">⟹</span> <span class="main">(</span><span class="free">s</span> <span class="main">-</span> <span class="main">{</span><span class="free">x</span><span class="main">}</span><span class="main">,</span> <span class="free">s</span><span class="main">)</span> <span class="main">∈</span> sumset_term"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sumset_def sumset_term_def<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> Diff_subset l_invVDMSet_finite_f member_remove psubsetI remove_def some_in_eq<span class="main">)</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Finally, we can define our recursive function in Isabelle. It checks whether the given
+      set satisfy the function precondition. If it doesn't, <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">undefined</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> is returned.
+      If it does, then each case is encoded pretty much 1-1 from VDM using Hilbert's choice operator.›</span></span>
+<span class="keyword1"><span class="command">function</span></span> <span class="main">(</span>domintros<span class="main">)</span>
+  <span class="entity">sumset</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"VDMNat VDMSet <span class="main">⇒</span> VDMNat"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span> 
+  <span class="quoted"><span class="quoted">"<span class="free">sumset</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">=</span> 
+    <span class="main">(</span><span class="keyword1">if</span> pre_sumset <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="keyword1">then</span> 
+        <span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">=</span> <span class="main">{}</span> <span class="keyword1">then</span> 
+            <span class="main">0</span> 
+         <span class="keyword1">else</span> 
+            <span class="keyword1">let</span> <span class="bound">e</span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">x</span> <span class="main">.</span> <span class="bound">x</span> <span class="main">∈</span> <span class="free"><span class="bound"><span class="entity">s</span></span></span><span class="main">)</span> <span class="keyword1">in</span> 
+              <span class="free">sumset</span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">s</span></span></span> <span class="main">-</span> <span class="main">{</span><span class="bound">e</span><span class="main">}</span><span class="main">)</span> <span class="main">+</span> <span class="bound">e</span><span class="main">)</span> 
+     <span class="keyword1">else</span> 
+        undefined
+    <span class="main">)</span>"</span></span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹The pattern completeness and compatibility goals are given as 
+        <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">goals</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+
+        We follow the ``usual'' proof strategy for this using pat completeness tactic.
+        For more general examples, if that fails, <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span> should be used.
+       ›</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">pat_completeness</span><span class="main"><span class="keyword3">,</span></span> <span class="operator">auto</span><span class="main">)</span>
+<span class="keyword1"><span class="command">termination</span></span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Next, we have to discharge the termination proof, which is given as
+       <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">goals</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]›</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule</span> <span class="quoted">"termination"</span><span class="main"><span class="main">[</span></span><span class="operator">of</span> <span class="quoted"><span class="quoted"><span class="quoted">"sumset_term"</span></span></span><span class="main"><span class="main">]</span></span><span class="main">)</span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹We follow the strategy of using the termination relation and well formedness, which
+       transforms the mysterious/abstract domain predicate into two new subgoals
+       <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">goals</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>[display]
+
+       The first goal is direclty discharged with <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">thm</span></span> l_sumset_term_wf<span class="antiquote"><span class="antiquote">}</span></span></span></span>.›</span></span>
+   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_sumset_term_wf<span class="main">)</span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Finally, we show that termination relation is entailed by function precondition.›</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_pre_sumset_sumset_term<span class="main">)</span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Is the sumset termination relaiton non-trivial?›</span></span>
+<span class="keyword1"><span class="command">lemma</span></span> l_sumset_term_not_empty<span class="main">:</span> <span class="quoted"><span class="quoted">"sumset_term <span class="main">≠</span> <span class="main">{}</span>"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">safe</span>
+  <span class="keyword1"><span class="command">find_theorems</span></span> elim
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule</span> equalityE<span class="main">)</span>
+  <span class="keyword1"><span class="command">find_theorems</span></span> <span class="quoted"><span class="quoted">"<span class="main">{}</span> <span class="main">⊆</span> <span class="main">_</span>"</span></span>
+  <span class="keyword1"><span class="command">find_theorems</span></span> <span class="quoted"><span class="quoted">"<span class="main">_</span> <span class="main">⊆</span> <span class="main">{}</span>"</span></span> elim
+  <span class="keyword1"><span class="command">find_theorems</span></span> <span class="quoted"><span class="quoted">"<span class="main">(</span><span class="main">_</span> <span class="main">⊆</span> <span class="main">_</span><span class="main">)</span> <span class="main">=</span> <span class="main">_</span>"</span></span> 
+  <span class="keyword1"><span class="command">thm</span></span> subset_iff_psubset_eq subset_eq
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> subset_eq<span class="main">)</span>
+  <span class="keyword1"><span class="command">unfolding</span></span> sumset_term_def
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">simp</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule_tac</span> x<span class="main"><span class="main">=</span></span><span class="quoted"><span class="quoted">"<span class="main">{</span><span class="main">1</span><span class="main">}</span>"</span></span> <span class="keyword2"><span class="keyword"><span class="quasi_keyword">in</span></span></span> allE<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">auto</span> <span class="quasi_keyword">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sumset_def inv_VDMNat_def<span class="main">)</span> 
+
+<span class="keyword2"><span class="keyword">end</span></span></pre>
+</body>
+
+</html>
