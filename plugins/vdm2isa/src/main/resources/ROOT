@@ -19,7 +19,8 @@ session "VDM-Examples" = "HOL-Library" +
   theories [document = false]
     VDMToolkit
   theories
-    RecursiveSet
     RecursiveVDMNat
+    RecursiveSet
+    RecursiveVDMMap
   document_files
     "root.tex"

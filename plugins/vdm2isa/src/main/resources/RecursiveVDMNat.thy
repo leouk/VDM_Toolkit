@@ -18,6 +18,7 @@ text \<open>VDM expressions with basic-typed (nat, int) variables (e.g. @{term \
   \begin{vdmsl}
     factorial: nat -> nat 
     factorial(n) == if n = 0 then 1 else n * factorial(n)
+  	--@IsaMeasure( { (n -1, n) | n : nat & n <> 0 } )
     measure n;
   \end{vdmsl}
 
@@ -28,6 +29,8 @@ definition
   pre_vdm_factorial :: \<open>VDMNat \<Rightarrow> \<bool>\<close>
   where
   \<open>pre_vdm_factorial n \<equiv> inv_VDMNat n\<close>
+
+lemmas pre_vdm_factorial_defs = pre_vdm_factorial_def inv_VDMNat_def 
 
 text \<open>Next, we define the factorial function through recursion, where 
       when the precondition fails, we return @{term undefined}, which is 
@@ -55,26 +58,22 @@ text \<open>Following the same strategy as before for sets, we define a relation
 abbreviation 
   vdm_factorial_wf :: \<open>(VDMNat \<times> VDMNat) set\<close>
   where
-  "vdm_factorial_wf \<equiv> { (n - 1, n) | n . 0 < n \<and> pre_vdm_factorial n }"
+  "vdm_factorial_wf \<equiv> { (n - 1, n) | n . n \<noteq> 0 \<and> pre_vdm_factorial n }"
 
 text \<open>To make well foundedness proof easy, we reuse an already proved well founded 
   relation for the integers, with the relation 
-  @{term int_ge_less_than}[display] which we start from @{term 0}. 
-  This is quite similar to the strategy used for finite subsets with @{term finite_psubset}[display].\<close>
-definition
-  vdm_factorial_term :: \<open>(VDMNat \<times> VDMNat) set\<close>
-  where
-  \<open>vdm_factorial_term \<equiv> (int_ge_less_than 0) \<inter> vdm_factorial_wf\<close>
+  @{term int_ge_less_than}[display] which we start from @{term 0}, as defined by @{term gen_VDMNat_term}. 
+  This is quite similar to the strategy used for finite subsets with @{term finite_psubset}[display].
 
-text \<open>Because @{term int_ge_less_than} is already well founded (e.g. @{thm wf_int_ge_less_than}[display]),
+  Because @{term int_ge_less_than} is already well founded (e.g. @{thm wf_int_ge_less_than}[display]),
   the proof for our definition is trivial.\<close>
-lemma l_vdm_factorial_term_wf: "wf vdm_factorial_term" 
-  by (simp add: vdm_factorial_term_def wf_int_ge_less_than wf_Int1)
+lemma l_vdm_factorial_term_wf: "wf (gen_VDMNat_term vdm_factorial_wf)" 
+  by (simp add: wf_int_ge_less_than wf_Int1)
 
 text \<open>To mak sure our choice is valid (e.g. doesn't lead to the empty relation), we ensure
   that indeed the termination relation is in fact the same as the well founded predicate.\<close>
-lemma l_vdm_factorial_term_valid: "vdm_factorial_term = vdm_factorial_wf"
-  apply (simp add: vdm_factorial_term_def pre_vdm_factorial_def inv_VDMNat_def)
+lemma l_vdm_factorial_term_valid: "(gen_VDMNat_term vdm_factorial_wf) = vdm_factorial_wf"
+  apply (simp add: pre_vdm_factorial_defs)
   apply (intro equalityI subsetI)
    apply (simp_all add: int_ge_less_than_def case_prod_beta)
   by auto
@@ -83,8 +82,8 @@ text \<open>Finally, we prove termination using the previously proved lemmas usi
   This simplifies the goal into well formedness of termination relation and that the precondition implies it,
   both of which are easily proved with simplification in this case.\<close>
 termination 
-  apply (relation \<open>vdm_factorial_term\<close>)
-   apply (simp add: l_vdm_factorial_term_wf)
-  by (simp add: inv_VDMNat_def pre_vdm_factorial_def vdm_factorial_term_def int_ge_less_than_def)
+  apply (relation \<open>(gen_VDMNat_term vdm_factorial_wf)\<close>)
+  using l_vdm_factorial_term_wf apply presburger
+  by (simp add: pre_vdm_factorial_defs int_ge_less_than_def)
   
 end

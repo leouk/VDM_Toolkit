@@ -1352,6 +1352,33 @@ definition
       | Some x \<Rightarrow> inv_X x)"
 
 (*========================================================================*)
+section \<open> Well founded relation useful for sets in recursive functions \<close>
+(*========================================================================*)
+definition
+  gen_set_term ::"('a VDMSet \<times> 'a VDMSet) VDMSet \<Rightarrow> ('a VDMSet \<times> 'a VDMSet) VDMSet" 
+  where
+  [simp]: "gen_set_term rel \<equiv> finite_psubset \<inter> rel"
+
+definition
+  gen_VDMInt_term :: \<open>VDMInt \<Rightarrow> (VDMInt \<times> VDMInt) set \<Rightarrow> (VDMInt \<times> VDMInt) set\<close>
+  where
+  [simp]: \<open>gen_VDMInt_term i rel \<equiv> (int_ge_less_than i) \<inter> rel\<close>
+
+definition
+  gen_VDMNat_term :: \<open>(VDMNat \<times> VDMNat) set \<Rightarrow> (VDMNat \<times> VDMNat) set\<close>
+  where
+  [simp]: \<open>gen_VDMNat_term rel \<equiv> gen_VDMInt_term 0 rel\<close>
+
+lemma l_gen_set_term_wf[simp]: "wf (gen_set_term rel)" 
+  by (simp add: wf_Int1)
+
+lemma l_gen_VDMInt_term_wf[simp]: "wf (gen_VDMInt_term d rel)" 
+  by (simp add: wf_Int1 wf_int_ge_less_than)
+
+lemma l_gen_VDMNat_term_wf[simp]: "wf (gen_VDMNat_term rel)" 
+  by (simp add: wf_Int1 wf_int_ge_less_than)
+
+(*========================================================================*)
 section \<open> Set operators lemmas \<close>
 (*========================================================================*)
 
@@ -1642,11 +1669,21 @@ lemma l_dom_r_ar_set_minus:
   unfolding dom_restr_def dom_antirestr_def restrict_map_def
   by simp
 
+lemma l_VDMMap_filtering_psubset: "d \<in> dom m \<Longrightarrow> dom ({d} -\<triangleleft> m) \<subset> dom m"
+  find_theorems \<open>(_ -\<triangleleft> _)\<close>  
+  apply (intro psubsetI f_dom_ar_subset_dom)
+  by (metis f_in_dom_ar_notelem)
+
+lemma l_VDMMap_filtering_card: "finite (dom m) \<Longrightarrow> d \<in> dom m \<Longrightarrow> card (dom ({d} -\<triangleleft> m)) < card (dom m)"
+  by (simp add: l_VDMMap_filtering_psubset psubset_card_mono)
+
+
 lemmas antirestr_simps = f_in_dom_ar_subsume f_in_dom_ar_notelem f_in_dom_ar_the_subsume
 f_in_dom_ar_apply_subsume f_in_dom_ar_apply_not_elem f_dom_ar_subset_dom
 l_dom_dom_ar l_dom_ar_accum l_dom_ar_nothing l_dom_ar_empty_lhs l_dom_ar_empty_rhs
 l_dom_ar_everything l_dom_ar_none l_dom_ar_not_in_dom l_dom_ar_not_in_dom2
-l_dom_ar_notin_dom_or l_in_dom_ar l_dom_ar_disjoint_weakening
+l_dom_ar_notin_dom_or l_in_dom_ar l_dom_ar_disjoint_weakening l_VDMMap_filtering_psubset
+l_VDMMap_filtering_card
 
 (* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 subsubsection \<open> Map override weakening lemmas [EXPERT] \<close>
