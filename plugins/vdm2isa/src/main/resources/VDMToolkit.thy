@@ -237,7 +237,7 @@ lemma vdmdiv_div_le0[simp] :
   apply (induct y) apply simp_all
   apply safe
    apply (simp add: divide_less_0_iff)
-  by (metis (no_types, hide_lams) floor_divide_of_int_eq minus_add_distrib minus_divide_right of_int_1 of_int_add of_int_minus of_int_of_nat_eq uminus_add_conv_diff)
+  by (metis (no_types) floor_divide_of_int_eq minus_add_distrib minus_divide_right of_int_1 of_int_add of_int_minus of_int_of_nat_eq uminus_add_conv_diff)
 
 lemma vdmmod_mod[simp] : 
   "x vdmmod y = x mod y"
@@ -2172,11 +2172,14 @@ lemma l_invMap_domr_absorb:
   unfolding inv_Map_def inv_VDMSet'_defs inv_VDMSet_def
   by (metis (mono_tags, lifting) domIff f_in_dom_r_apply_elem f_in_relimg_ran finiteRan l_dom_r_finite l_in_dom_dom_r)
 
-lemma l_inv_Map_on_dom: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Dom (dom m)" 
+lemma l_inv_Map_on_dom[]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Dom (dom m)" 
   unfolding inv_Map_defs by auto
 
-lemma l_inv_Map_on_ran: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Ran (ran m)" 
+lemma l_inv_Map_on_ran[]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Ran (ran m)" 
   unfolding inv_Map_defs by auto
+
+lemma l_inv_Map_finite[simp]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> finite (dom m)"
+  unfolding inv_Map_defs by simp
 
 lemma l_invMap_di_absorb:
   "undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_Map di ri m \<Longrightarrow> inv_Map inv_True ri m"
