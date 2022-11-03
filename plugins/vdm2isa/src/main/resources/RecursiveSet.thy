@@ -84,6 +84,7 @@ text\<open>Recursing on non-constructive types (e.g., sets, integers, etc.) enta
         sumset: set of nat -> nat 
         sumset(s) == if s = {} then 0 else let e in set s in sumset(s - {e}) + e
         --@IsaMeasure( { (x - { let e in set x in e }, x) | x : set of nat & x <> {} } ) 
+        --@Witness({ 1 })
         measure card s;
     \end{vdmsl}
 

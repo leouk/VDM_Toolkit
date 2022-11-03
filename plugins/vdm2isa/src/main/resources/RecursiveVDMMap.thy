@@ -9,6 +9,7 @@ text \<open>
       if m = {|->} then 0 else
         let d in set dom m in m(d) + sum_elems({d}<-:m)
 	  --@IsaMeasure( { ({d} <-: m, m) | m : map nat to nat, d: nat & m <> {} and d in set dom m } )
+    --@Witness({ 1 |-> 1 })
     measure card dom m;
   \end{vdmsl}\<close>
 
