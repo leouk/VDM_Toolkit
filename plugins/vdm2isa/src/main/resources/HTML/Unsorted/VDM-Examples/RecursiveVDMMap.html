@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><link rel="stylesheet" type="text/css" href="isabelle.css"/>
+<title>Theory RecursiveVDMMap</title>
+</head>
+
+
+<body>
+<div class="head">
+<h1>Theory RecursiveVDMMap</h1>
+</div>
+
+<pre class="source"><span class="keyword1"><span class="command">theory</span></span> RecursiveVDMMap
+<span class="keyword2"><span class="keyword">imports</span></span> <a href="VDMToolkit.html">VDMToolkit</a>
+<span class="keyword2"><span class="keyword">begin</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹
+  \begin{vdmsl}
+    sum_elems: map nat to nat -&gt; nat
+    sum_elems(m) == 
+      if m = {|-&gt;} then 0 else
+        let d in set dom m in m(d) + sum_elems({d}&lt;-:m)
+    measure card dom m;
+  \end{vdmsl}›</span></span>
+
+<span class="keyword1"><span class="command">definition</span></span> 
+  <span class="entity">pre_sum_elems</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>VDMNat <span class="main">⇀</span> VDMNat<span class="main">)</span> <span class="main">⇒</span> <span class="main">𝔹</span>›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">‹<span class="free">pre_sum_elems</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="main">≡</span> inv_Map inv_VDMNat inv_VDMNat <span class="free"><span class="bound"><span class="entity">m</span></span></span>›</span></span>
+
+<span class="keyword1"><span class="command">lemmas</span></span> pre_sum_elems_defs <span class="main">=</span> pre_sum_elems_def inv_Map_defs inv_VDMNat_def 
+
+<span class="keyword1"><span class="command">function</span></span> <span class="main">(</span>domintros<span class="main">)</span> 
+  <span class="entity">sum_elems</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>VDMNat <span class="main">⇀</span> VDMNat<span class="main">)</span> <span class="main">⇒</span> VDMNat›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="quoted"><span class="quoted">‹<span class="free">sum_elems</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="main">=</span> 
+      <span class="main">(</span><span class="keyword1">if</span> pre_sum_elems <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="keyword1">then</span>
+          <span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="main">=</span> Map.empty <span class="keyword1">then</span>
+            <span class="main">0</span>
+          <span class="keyword1">else</span>
+            <span class="keyword1">let</span> <span class="bound">d</span> <span class="main">=</span> <span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span> <span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> dom <span class="free"><span class="bound"><span class="entity">m</span></span></span><span class="main">)</span> <span class="keyword1">in</span> the<span class="main">(</span><span class="free"><span class="bound"><span class="entity">m</span></span></span> <span class="bound">d</span><span class="main">)</span> <span class="main">+</span> <span class="main">(</span><span class="free">sum_elems</span> <span class="main">(</span><span class="main">{</span><span class="bound">d</span><span class="main">}</span> <span class="main">-◃</span> <span class="free"><span class="bound"><span class="entity">m</span></span></span><span class="main">)</span><span class="main">)</span>
+          <span class="main">)</span>
+       <span class="keyword1">else</span>
+          undefined
+      <span class="main">)</span>
+  ›</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">pat_completeness</span><span class="main"><span class="keyword3">,</span></span> <span class="operator">auto</span><span class="main">)</span>
+
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">sum_elems_wf</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span><span class="main">(</span>VDMNat <span class="main">⇀</span> VDMNat<span class="main">)</span> <span class="main">×</span> <span class="main">(</span>VDMNat <span class="main">⇀</span> VDMNat<span class="main">)</span><span class="main">)</span> VDMSet›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">‹<span class="free">sum_elems_wf</span> <span class="main">≡</span> <span class="main">{</span> <span class="main">(</span><span class="main">(</span><span class="main">{</span><span class="bound">d</span><span class="main">}</span> <span class="main">-◃</span> <span class="bound">m</span><span class="main">)</span><span class="main">,</span> <span class="bound">m</span><span class="main">)</span> <span class="main">|</span> <span class="bound">m</span> <span class="bound">d</span> <span class="main">.</span> <span class="bound">m</span> <span class="main">≠</span> Map.empty <span class="main">∧</span> <span class="bound">d</span> <span class="main">∈</span> dom <span class="bound">m</span> <span class="main">∧</span> pre_sum_elems <span class="bound">m</span> <span class="main">}</span>›</span></span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_sum_elems_wf<span class="main">:</span> <span class="quoted"><span class="quoted">"wf sum_elems_wf"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">unfold</span> sum_elems_wf_def<span class="main">)</span>
+  <span class="keyword1"><span class="command">thm</span></span> wf_measure<span class="main">[</span><span class="operator">of</span> <span class="quoted"><span class="quoted">‹<span class="main">λ</span> <span class="bound">m</span> <span class="main">.</span> card <span class="main">(</span>dom <span class="bound">m</span><span class="main">)</span>›</span></span><span class="main">,</span> <span class="operator">THEN</span> wf_subset<span class="main">]</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule</span> wf_measure<span class="main"><span class="main">[</span></span><span class="operator">of</span> <span class="quoted"><span class="quoted"><span class="quoted">‹<span class="main"><span class="main">λ</span></span> <span class="bound"><span class="bound">m</span></span> <span class="main"><span class="main">.</span></span> card <span class="main"><span class="main">(</span></span>dom <span class="bound"><span class="bound">m</span></span><span class="main"><span class="main">)</span></span>›</span></span></span><span class="main"><span class="main">,</span></span> <span class="operator">THEN</span> wf_subset<span class="main"><span class="main">]</span></span><span class="main">)</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> measure_def inv_image_def less_than_def less_eq<span class="main">)</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule</span> subsetI<span class="main"><span class="keyword3">,</span></span> <span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> case_prod_beta<span class="main">)</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">elim</span> exE conjE<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_VDMMap_filtering_card pre_sum_elems_defs<span class="main">)</span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_sum_elems_wf_valid<span class="main">:</span> <span class="quoted"><span class="quoted">"sum_elems_wf <span class="main">≠</span> <span class="main">{}</span>"</span></span> 
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">safe</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule</span> equalityE<span class="main">)</span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> subset_eq<span class="main">)</span>
+  <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹This will require the user to define a @Witness in VDM.›</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">erule_tac</span> x<span class="main"><span class="main">=</span></span><span class="quoted"><span class="quoted">‹<span class="main">[</span><span class="main">1</span> <span class="main">↦</span> <span class="main">1</span><span class="main">]</span>›</span></span> <span class="keyword2"><span class="keyword"><span class="quasi_keyword">in</span></span></span> allE<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sum_elems_defs<span class="main">)</span> 
+
+<span class="keyword1"><span class="command">lemma</span></span> l_pre_sum_elems_sum_elems_wf<span class="main">:</span> 
+  <span class="quoted"><span class="quoted">"pre_sum_elems <span class="free">m</span> <span class="main">⟹</span> <span class="free">m</span> <span class="main">≠</span> Map.empty <span class="main">⟹</span> <span class="main">(</span><span class="main">{</span><span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span><span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> dom <span class="free">m</span><span class="main">)</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">m</span><span class="main">,</span> <span class="free">m</span><span class="main">)</span> <span class="main">∈</span> sum_elems_wf"</span></span>
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_sum_elems_defs<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> domIff empty_iff some_in_eq<span class="main">)</span>
+
+<span class="keyword1"><span class="command">termination</span></span>   
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">rule</span> <span class="quoted">"termination"</span><span class="main"><span class="main">[</span></span><span class="operator">OF</span> l_sum_elems_wf<span class="main"><span class="main">]</span></span><span class="main">)</span>
+  <span class="keyword1"><span class="command">using</span></span> l_pre_sum_elems_sum_elems_wf <span class="keyword1"><span class="command">by</span></span> <span class="operator">presburger</span>
+
+<span class="keyword2"><span class="keyword">end</span></span></pre>
+</body>
+
+</html>

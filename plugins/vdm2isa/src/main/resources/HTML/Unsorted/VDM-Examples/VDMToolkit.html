@@ -251,7 +251,7 @@ on the function's results. ›</span></span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">induct</span> <span class="quoted"><span class="free">y</span></span><span class="main">)</span> <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">simp_all</span>
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">safe</span>
    <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> divide_less_0_iff<span class="main">)</span>
-  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> <span class="main"><span class="main">(</span></span>no_types<span class="main"><span class="main">,</span></span> hide_lams<span class="main"><span class="main">)</span></span> floor_divide_of_int_eq minus_add_distrib minus_divide_right of_int_1 of_int_add of_int_minus of_int_of_nat_eq uminus_add_conv_diff<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> <span class="main"><span class="main">(</span></span>no_types<span class="main"><span class="main">)</span></span> floor_divide_of_int_eq minus_add_distrib minus_divide_right of_int_1 of_int_add of_int_minus of_int_of_nat_eq uminus_add_conv_diff<span class="main">)</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> vdmmod_mod<span class="main">[</span><span class="operator">simp</span><span class="main">]</span> <span class="main">:</span> 
   <span class="quoted"><span class="quoted">"<span class="free">x</span> <span class="keyword1">vdmmod</span> <span class="free">y</span> <span class="main">=</span> <span class="free">x</span> <span class="keyword1">mod</span> <span class="free">y</span>"</span></span>
@@ -1366,6 +1366,33 @@ definition
       <span class="main">|</span> Some <span class="bound">x</span> <span class="main">⇒</span> <span class="free"><span class="bound"><span class="entity">inv_X</span></span></span> <span class="bound">x</span><span class="main">)</span>"</span></span>
 
 <span class="comment1">(*========================================================================*)</span>
+<span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹ Well founded relation useful for sets in recursive functions ›</span></span>
+<span class="comment1">(*========================================================================*)</span>
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">gen_set_term</span> <span class="main">::</span><span class="quoted"><span class="quoted">"<span class="main">(</span><span class="tfree">'a</span> VDMSet <span class="main">×</span> <span class="tfree">'a</span> VDMSet<span class="main">)</span> VDMSet <span class="main">⇒</span> <span class="main">(</span><span class="tfree">'a</span> VDMSet <span class="main">×</span> <span class="tfree">'a</span> VDMSet<span class="main">)</span> VDMSet"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">gen_set_term</span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span> <span class="main">≡</span> finite_psubset <span class="main">∩</span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span>"</span></span>
+
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">gen_VDMInt_term</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹VDMInt <span class="main">⇒</span> <span class="main">(</span>VDMInt <span class="main">×</span> VDMInt<span class="main">)</span> set <span class="main">⇒</span> <span class="main">(</span>VDMInt <span class="main">×</span> VDMInt<span class="main">)</span> set›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">‹<span class="free">gen_VDMInt_term</span> <span class="free"><span class="bound"><span class="entity">i</span></span></span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span> <span class="main">≡</span> <span class="main">(</span>int_ge_less_than <span class="free"><span class="bound"><span class="entity">i</span></span></span><span class="main">)</span> <span class="main">∩</span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span>›</span></span>
+
+<span class="keyword1"><span class="command">definition</span></span>
+  <span class="entity">gen_VDMNat_term</span> <span class="main">::</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>VDMNat <span class="main">×</span> VDMNat<span class="main">)</span> set <span class="main">⇒</span> <span class="main">(</span>VDMNat <span class="main">×</span> VDMNat<span class="main">)</span> set›</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span>
+  <span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">‹<span class="free">gen_VDMNat_term</span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span> <span class="main">≡</span> gen_VDMInt_term <span class="main">0</span> <span class="free"><span class="bound"><span class="entity">rel</span></span></span>›</span></span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_gen_set_term_wf<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"wf <span class="main">(</span>gen_set_term <span class="free">rel</span><span class="main">)</span>"</span></span> 
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> wf_Int1<span class="main">)</span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_gen_VDMInt_term_wf<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"wf <span class="main">(</span>gen_VDMInt_term <span class="free">d</span> <span class="free">rel</span><span class="main">)</span>"</span></span> 
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> wf_Int1 wf_int_ge_less_than<span class="main">)</span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_gen_VDMNat_term_wf<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"wf <span class="main">(</span>gen_VDMNat_term <span class="free">rel</span><span class="main">)</span>"</span></span> 
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> wf_Int1 wf_int_ge_less_than<span class="main">)</span>
+
+<span class="comment1">(*========================================================================*)</span>
 <span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹ Set operators lemmas ›</span></span>
 <span class="comment1">(*========================================================================*)</span>
 
@@ -1656,11 +1683,21 @@ by (cases "l∈S", auto)
   <span class="keyword1"><span class="command">unfolding</span></span> dom_restr_def dom_antirestr_def restrict_map_def
   <span class="keyword1"><span class="command">by</span></span> <span class="operator">simp</span>
 
+<span class="keyword1"><span class="command">lemma</span></span> l_VDMMap_filtering_psubset<span class="main">:</span> <span class="quoted"><span class="quoted">"<span class="free">d</span> <span class="main">∈</span> dom <span class="free">m</span> <span class="main">⟹</span> dom <span class="main">(</span><span class="main">{</span><span class="free">d</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">m</span><span class="main">)</span> <span class="main">⊂</span> dom <span class="free">m</span>"</span></span>
+  <span class="keyword1"><span class="command">find_theorems</span></span> <span class="quoted"><span class="quoted">‹<span class="main">(</span><span class="main">_</span> <span class="main">-◃</span> <span class="main">_</span><span class="main">)</span>›</span></span>  
+  <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">intro</span> psubsetI f_dom_ar_subset_dom<span class="main">)</span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> f_in_dom_ar_notelem<span class="main">)</span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_VDMMap_filtering_card<span class="main">:</span> <span class="quoted"><span class="quoted">"finite <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span> <span class="main">⟹</span> <span class="free">d</span> <span class="main">∈</span> dom <span class="free">m</span> <span class="main">⟹</span> card <span class="main">(</span>dom <span class="main">(</span><span class="main">{</span><span class="free">d</span><span class="main">}</span> <span class="main">-◃</span> <span class="free">m</span><span class="main">)</span><span class="main">)</span> <span class="main">&lt;</span> card <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span>"</span></span>
+  <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> l_VDMMap_filtering_psubset psubset_card_mono<span class="main">)</span>
+
+
 <span class="keyword1"><span class="command">lemmas</span></span> antirestr_simps <span class="main">=</span> f_in_dom_ar_subsume f_in_dom_ar_notelem f_in_dom_ar_the_subsume
 f_in_dom_ar_apply_subsume f_in_dom_ar_apply_not_elem f_dom_ar_subset_dom
 l_dom_dom_ar l_dom_ar_accum l_dom_ar_nothing l_dom_ar_empty_lhs l_dom_ar_empty_rhs
 l_dom_ar_everything l_dom_ar_none l_dom_ar_not_in_dom l_dom_ar_not_in_dom2
-l_dom_ar_notin_dom_or l_in_dom_ar l_dom_ar_disjoint_weakening
+l_dom_ar_notin_dom_or l_in_dom_ar l_dom_ar_disjoint_weakening l_VDMMap_filtering_psubset
+l_VDMMap_filtering_card
 
 <span class="comment1">(* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)</span>
 <span class="keyword1"><span class="command">subsubsection</span></span> <span class="quoted"><span class="plain_text">‹ Map override weakening lemmas [EXPERT] ›</span></span>
@@ -2186,11 +2223,14 @@ foldl_Cons: "foldl f a (x # xs) = foldl f (f a x) xs"
   <span class="keyword1"><span class="command">unfolding</span></span> inv_Map_def inv_VDMSet'_defs inv_VDMSet_def
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">metis</span> <span class="main"><span class="main">(</span></span>mono_tags<span class="main"><span class="main">,</span></span> lifting<span class="main"><span class="main">)</span></span> domIff f_in_dom_r_apply_elem f_in_relimg_ran finiteRan l_dom_r_finite l_in_dom_dom_r<span class="main">)</span>
 
-<span class="keyword1"><span class="command">lemma</span></span> l_inv_Map_on_dom<span class="main">:</span> <span class="quoted"><span class="quoted">"inv_Map <span class="free">inv_Dom</span> <span class="free">inv_Ran</span> <span class="free">m</span> <span class="main">⟹</span> inv_SetElems <span class="free">inv_Dom</span> <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span>"</span></span> 
+<span class="keyword1"><span class="command">lemma</span></span> l_inv_Map_on_dom<span class="main">[</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"inv_Map <span class="free">inv_Dom</span> <span class="free">inv_Ran</span> <span class="free">m</span> <span class="main">⟹</span> inv_SetElems <span class="free">inv_Dom</span> <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span>"</span></span> 
   <span class="keyword1"><span class="command">unfolding</span></span> inv_Map_defs <span class="keyword1"><span class="command">by</span></span> <span class="operator">auto</span>
 
-<span class="keyword1"><span class="command">lemma</span></span> l_inv_Map_on_ran<span class="main">:</span> <span class="quoted"><span class="quoted">"inv_Map <span class="free">inv_Dom</span> <span class="free">inv_Ran</span> <span class="free">m</span> <span class="main">⟹</span> inv_SetElems <span class="free">inv_Ran</span> <span class="main">(</span>ran <span class="free">m</span><span class="main">)</span>"</span></span> 
+<span class="keyword1"><span class="command">lemma</span></span> l_inv_Map_on_ran<span class="main">[</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"inv_Map <span class="free">inv_Dom</span> <span class="free">inv_Ran</span> <span class="free">m</span> <span class="main">⟹</span> inv_SetElems <span class="free">inv_Ran</span> <span class="main">(</span>ran <span class="free">m</span><span class="main">)</span>"</span></span> 
   <span class="keyword1"><span class="command">unfolding</span></span> inv_Map_defs <span class="keyword1"><span class="command">by</span></span> <span class="operator">auto</span>
+
+<span class="keyword1"><span class="command">lemma</span></span> l_inv_Map_finite<span class="main">[</span><span class="operator">simp</span><span class="main">]</span><span class="main">:</span> <span class="quoted"><span class="quoted">"inv_Map <span class="free">inv_Dom</span> <span class="free">inv_Ran</span> <span class="free">m</span> <span class="main">⟹</span> finite <span class="main">(</span>dom <span class="free">m</span><span class="main">)</span>"</span></span>
+  <span class="keyword1"><span class="command">unfolding</span></span> inv_Map_defs <span class="keyword1"><span class="command">by</span></span> <span class="operator">simp</span>
 
 <span class="keyword1"><span class="command">lemma</span></span> l_invMap_di_absorb<span class="main">:</span>
   <span class="quoted"><span class="quoted">"undefined <span class="main">∉</span> dom <span class="free">m</span> <span class="main">⟹</span> undefined <span class="main">∉</span> rng <span class="free">m</span> <span class="main">⟹</span> inv_Map <span class="free">di</span> <span class="free">ri</span> <span class="free">m</span> <span class="main">⟹</span> inv_Map inv_True <span class="free">ri</span> <span class="free">m</span>"</span></span>
