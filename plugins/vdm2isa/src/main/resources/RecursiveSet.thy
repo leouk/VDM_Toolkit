@@ -149,6 +149,8 @@ abbreviation
   where
   "sumset_wf_rel \<equiv> { (s - {(SOME e . e \<in> s)}, s)| s . s \<noteq> {} \<and> pre_sumset s }"
 
+text \<open>This definition follows the strategy described in \url{https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf}.\<close>
+
 text \<open>Termination requires well-founded relation, so we prove that function @{term sumset} termination 
       relation is well-founded using @{command sledgehammer}. This is easily proved by reusing 
       a well founded relation for finite proper subsets, which are the upper bound

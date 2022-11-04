@@ -85,5 +85,5 @@ termination
   apply (relation \<open>(gen_VDMNat_term vdm_factorial_wf)\<close>)
   using l_vdm_factorial_term_wf apply presburger
   by (simp add: pre_vdm_factorial_defs int_ge_less_than_def)
-  
+
 end
