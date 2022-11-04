@@ -17,6 +17,12 @@ functions
             --@Printf("\tack(%1s, %2s): deep\n", m-1, ack(m, (n-1)))
             ack(m-1, ack(m, (n-1)))
         )
+    measure 
+        --@IsaMeasure( pair_less_VDMNat )
+        --@doc where pair_less_VDMNat = lex_prod(less_than_VDMNat, less_than_VDMNat)
+        --           less_than_VDMNat = transitive_closure({(z', z) | z' : int, z: int . 0 <= z' ∧ z' < z})
+        --           lex_prod(ra,rb)  = { ((a,b), (a', b')) | a, b, 'a, b': int & (a,a') in set ra or a = a' and (b,b') in set rb}
+        is not yet specified 
    ;
 
     --@doc see https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf

@@ -148,39 +148,34 @@ lemma total_pair_less_VDMNat [iff]: "total_on less_than_VDMNat pair_less_VDMNat"
   apply (metis (no_types, lifting) case_prodD in_mono int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq)
   by (smt (verit, best) Product_Type.Collect_case_prodD fst_conv int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than subset_iff)
 
-lemma l_pair_less_VDMNat_iff1 [simp]: "inv_VDMNat x \<Longrightarrow> ((x,y), (x,z)) \<in> pair_less_VDMNat \<longleftrightarrow> y<z"
+lemma l_pair_less_VDMNat_iff1_case1: "inv_VDMNat x \<Longrightarrow> ((x, y), x, z) \<in> pair_less_VDMNat \<Longrightarrow> y < z"
+  by (metis (no_types, lifting) CollectD case_prodD in_lex_prod int_ge_less_than_def l_less_than_VDMNat_subset_int_ge_less_than order_less_irrefl pair_less_VDMNat_def subset_iff)
+  (* 
+  proof -
+    assume "((x, y), x, z) \<in> pair_less_VDMNat"
+    then have "((x, y), x, z) \<in> less_than_VDMNat <*lex*> less_than_VDMNat"
+      using pair_less_VDMNat_def by blast
+    then show ?thesis
+      using int_ge_less_than_def l_less_than_VDMNat_subset_int_ge_less_than by auto
+  *)
+
+lemma l_pair_less_VDMNat_iff1 [simp]: "inv_VDMNat x \<Longrightarrow> inv_VDMNat y \<Longrightarrow> ((x,y), (x,z)) \<in> pair_less_VDMNat \<longleftrightarrow> y<z"
   apply (intro iffI) 
-  sledgehammer
-  unfolding less_than_VDMNat_def int_ge_less_than_def 
-  by (rule r_into_trancl, simp add: inv_VDMNat_def)
+   apply (simp add: l_pair_less_VDMNat_iff1_case1)
+  by (simp add: pair_less_VDMNat_def)
 
-lemma l_pair_less_VDMNat_I1: "inv_VDMNat a \<Longrightarrow> a < b  \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
-  sorry
-lemma l_pair_less_VDMNat_I2: "inv_VDAMNat a \<Longrightarrow> a \<le> b \<Longrightarrow> s < t \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
-  sorry
+lemma l_pair_less_VDMNat_I1: "inv_VDMNat a \<Longrightarrow> inv_VDMNat s \<Longrightarrow> a < b  \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
+  by (simp add: pair_less_VDMNat_def) 
 
-definition 
-  ack_wf_rel :: \<open>((VDMNat \<times> VDMNat) \<times> (VDMNat \<times> VDMNat)) VDMSet\<close>
-  where
-  \<open>ack_wf_rel \<equiv> 
-      { ((m-1, n+1), (m, n)) | m n . m \<noteq> 0 \<and> n = 0 \<and> pre_ack m n }
-      \<union>
-      { ((m, n-1), (m, n)) | m n . m \<noteq> 0 \<and> n \<noteq> 0 \<and> pre_ack m n }
-      \<union>
-      { ((m-1, n), (m, n)) | m n . m \<noteq> 0 \<and> n \<noteq> 0 \<and> pre_ack m n } 
-  \<close>   (* how to represent the last call site? Is this okay? *)
+lemma l_pair_less_VDMNat_I2: "inv_VDMNat a \<Longrightarrow> inv_VDMNat s \<Longrightarrow> a \<le> b \<Longrightarrow> s < t \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
+  using l_pair_less_VDMNat_I1 by force
 
-lemma l_ack_wf_rel[simp]: "wf ack_wf_rel" oops
-termination
-  apply (relation pair_less)
-  apply (rule "termination"[of \<open>ack_wf_rel\<close>])
-     apply simp
-    apply (simp add: ack_wf_rel_def)
-   apply (simp add: ack_wf_rel_def)
-   apply (simp add: ack_wf_rel_def pre_ack_defs)
-  
-  sorry
-
+termination 
+  apply (relation pair_less_VDMNat)
+  using wf_pair_less_VDMNat apply blast
+    apply (simp add: inv_VDMNat_def l_pair_less_VDMNat_I1 pre_ack_def)
+   apply (simp add: inv_VDMNat_def pre_ack_def)
+  by (simp add: inv_VDMNat_def pair_less_VDMNat_def pre_ack_def)
 
 function ack' :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
   "ack' 0 n             = Suc n"
