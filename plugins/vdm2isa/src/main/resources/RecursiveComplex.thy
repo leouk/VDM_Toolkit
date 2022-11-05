@@ -37,13 +37,14 @@ lemma l_perm_wf_rel: "wf perm_wf_rel"
    apply (erule_tac x=perm_wf_rel in allE)
    apply simp
    apply (erule impE, simp_all)
-  sledgehammer
+  
   find_theorems \<open>wf (_ \<union> _)\<close>
   thm wf_induct
   unfolding perm_wf_rel_def
   apply (intro wf_Un)
   apply (intro wfI, simp)
   apply (simp add: wf_Un)
+  sorry
 
 termination 
   apply (relation perm_wf_rel)
