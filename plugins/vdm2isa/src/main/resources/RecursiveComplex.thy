@@ -24,13 +24,31 @@ definition
   perm_wf_rel :: \<open>((VDMInt \<times> VDMInt \<times> VDMInt) \<times> (VDMInt \<times> VDMInt \<times> VDMInt)) VDMSet\<close>
   where
   \<open>perm_wf_rel \<equiv> 
-      { ((m, r-1, n), (m, r, n)) | m r n . 0 < r } 
+      { ((m, r-1, n), (m, n, r)) | m r n . 0 < r } 
       \<union>
-      { ((r, n-1, m), (m, r, n)) | m r n . \<not> 0 < r \<and> 0 < n } 
+      { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n } 
   \<close>
+                                 
+lemma l_perm_wf_rel: "wf perm_wf_rel" 
+  thm wf_induct wf_induct_rule id_def Id_def perm_wf_rel_def
+  thm wf_induct[of _ \<open>\<lambda> p . p \<in> perm_wf_rel\<close>]
+  apply (induct perm_wf_rel rule: wf_induct)
+   defer
+   apply (erule_tac x=perm_wf_rel in allE)
+   apply simp
+   apply (erule impE, simp_all)
+  sledgehammer
+  find_theorems \<open>wf (_ \<union> _)\<close>
+  thm wf_induct
+  unfolding perm_wf_rel_def
+  apply (intro wf_Un)
+  apply (intro wfI, simp)
+  apply (simp add: wf_Un)
 
 termination 
-  sorry 
+  apply (relation perm_wf_rel)
+    apply (simp add: l_perm_wf_rel)
+  by (simp add: perm_wf_rel_def)+
 
 definition
   pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close>
@@ -135,17 +153,28 @@ lemma l_call3:
   unfolding tak_m3_def tak_m2_def tak_m1_def
   by (simp add: case_prod_beta)
 
+lemma l_call4:
+  \<open>x >y \<Longrightarrow>  tak_dom (z - 1, x, y) \<Longrightarrow>
+       tak_dom (y - 1, z, x) \<Longrightarrow>
+       tak_dom (x - 1, y, z) \<Longrightarrow>
+       ((tak (x - 1) y z, tak (y - 1) z x, tak (z - 1) x y), x, y, z)
+       \<in> tak_m1 <*mlex*> tak_m2 <*mlex*> tak_m3 <*mlex*> {}\<close>
+  apply (simp add: mlex_iff)
+  apply (simp add: tak_pcorrect)
+  unfolding tak_m3_def tak_m2_def tak_m1_def min_def max_def
+  by simp
+
 termination
   apply (relation "tak_m1 <*mlex*> tak_m2 <*mlex*> tak_m3 <*mlex*> {}") 
       apply (simp add: wf_mlex)
      apply (simp add: l_call1)
      apply (simp add: l_call2)
      apply (simp add: l_call3)
-  sledgehammer
+  by (simp add: l_call4)
 (*
-     apply
-     (auto simp: mlex_iff wf_mlex tak_pcorrect tak_m1_def tak_m2_def tak_m3_def min_def max_def)
+     apply (auto simp: mlex_iff wf_mlex tak_pcorrect tak_m1_def tak_m2_def tak_m3_def min_def max_def)
 *)
+
 theorem tak_correct: "tak x y z = (if x \<le> y then y else if y \<le> z then z else x)"
   by (induction x y z rule: tak.induct) auto
 
