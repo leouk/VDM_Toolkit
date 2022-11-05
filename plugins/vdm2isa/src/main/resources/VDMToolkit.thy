@@ -1378,6 +1378,119 @@ lemma l_gen_VDMInt_term_wf[simp]: "wf (gen_VDMInt_term d rel)"
 lemma l_gen_VDMNat_term_wf[simp]: "wf (gen_VDMNat_term rel)" 
   by (simp add: wf_Int1 wf_int_ge_less_than)
 
+text \<open>Cast the well founded infrastructure from @{typ \<nat>} to @{typ VDMNat}.\<close>
+
+definition pred_VDMNat :: "(VDMNat \<times> VDMNat) set"
+  where "pred_VDMNat \<equiv> {(z, z+1) | z . inv_VDMNat z }"
+
+text \<open>Project @{term pred_VDMNat} into @{typ \<nat>} for link to well foundedness\<close>
+lemma l_pred_VDMNat_wf: \<open>wf pred_VDMNat\<close>
+proof -
+  have "pred_VDMNat \<subseteq> measure nat" 
+     by (auto simp add: pred_VDMNat_def inv_VDMNat_def)
+  then show ?thesis
+     by (rule wf_subset [OF wf_measure])
+qed
+
+lemma l_pred_VDMNat_subset_int_ge_less_than: 
+  \<open>pred_VDMNat \<subseteq> int_ge_less_than 0\<close>
+  by (simp add: int_ge_less_than_def inv_VDMNat_def pred_VDMNat_def subset_iff)
+
+definition less_than_VDMNat :: "(VDMNat \<times> VDMNat) set"
+(*  where "less_than_VDMNat \<equiv> pred_VDMNat\<^sup>+"*)
+  where \<open>less_than_VDMNat \<equiv> (int_ge_less_than 0)\<^sup>+\<close>
+
+lemma l_less_than_VDMNat_wf [iff]: "wf less_than_VDMNat"
+  by (simp add: less_than_VDMNat_def wf_int_ge_less_than wf_trancl)
+
+lemma trans_less_than_VDMNat [iff]: "trans less_than_VDMNat"
+  by (simp add: less_than_VDMNat_def)
+
+lemma l_less_than_VDMNat_irrefl: "irrefl less_than_VDMNat"
+  by (simp add: wf_imp_irrefl)
+
+lemma l_less_than_VDMNat_asym: "asym less_than_VDMNat"
+  by (meson asym_iff l_less_than_VDMNat_wf wf_not_sym)
+
+lemma less_int_rel: "(<) = (\<lambda>m n. m < (n::int))\<^sup>+\<^sup>+"
+proof (rule ext, rule ext, rule iffI)
+  fix n m :: int
+  show "(\<lambda>m n. m < (n::int))\<^sup>+\<^sup>+ m n" if "m < n"
+    using that
+  proof (induct n)
+    case base
+    then show ?case by auto
+  next
+    case (step i)
+    then show ?case 
+      by (auto intro: tranclp.trancl_into_trancl)
+  qed
+  show "m < n" if "(\<lambda>m n. m < (n::int))\<^sup>+\<^sup>+ m n"
+    using that by (induct n) (simp_all)
+qed
+
+lemma l_less_than_VDMNat_subset_int_ge_less_than:
+  "less_than_VDMNat \<subseteq> int_ge_less_than 0"
+  apply (simp add: less_than_VDMNat_def int_ge_less_than_def inv_VDMNat_def  pred_VDMNat_def subset_iff)
+  apply (intro allI impI conjI)
+  using tranclD apply fastforce 
+  by (smt (z3) case_prodD mem_Collect_eq trancl_trans_induct)
+
+lemma l_less_than_VDMNat_iff [iff]: "inv_VDMNat x \<Longrightarrow> ((x,y) \<in> less_than_VDMNat) = (x<y)"
+  apply (intro iffI)  
+  using int_ge_less_than_def l_less_than_VDMNat_subset_int_ge_less_than apply fastforce
+  unfolding less_than_VDMNat_def int_ge_less_than_def 
+  by (rule r_into_trancl, simp add: inv_VDMNat_def)
+
+lemma l_total_on_less_than_VDMNat [simp]: "total_on { x . inv_VDMNat x} less_than_VDMNat"
+  unfolding total_on_def 
+  using inv_VDMNat_def by fastforce
+
+definition
+  pair_less_VDMNat :: \<open>((VDMNat \<times> VDMNat) \<times> (VDMNat \<times> VDMNat)) VDMSet\<close>
+  where
+  "pair_less_VDMNat \<equiv> less_than_VDMNat <*lex*> less_than_VDMNat"
+
+lemma wf_pair_less_VDMNat[simp]: "wf pair_less_VDMNat"
+  by (auto simp: pair_less_VDMNat_def)
+
+lemma l_trans_pair_less_VDMNat [iff]: "trans pair_less_VDMNat"
+  by (simp add: pair_less_VDMNat_def)
+
+lemma total_pair_less_VDMNat [iff]: "total_on less_than_VDMNat pair_less_VDMNat" 
+  unfolding total_on_def pair_less_VDMNat_def lex_prod_def
+  apply safe
+  apply (metis (mono_tags, lifting) case_prodD int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq subsetD)
+  apply (metis (no_types, lifting) Product_Type.Collect_case_prodD fst_conv insert_absorb insert_subset int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than not_less_iff_gr_or_eq)
+  apply (metis (no_types, lifting) case_prodD in_mono int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq)
+  apply (metis (no_types, lifting) case_prodD int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq subsetD)
+  apply (metis (mono_tags, lifting) case_prodD in_mono int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq)
+  apply (metis (no_types, lifting) case_prodD int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq subsetD)
+  apply (metis (no_types, lifting) case_prodD in_mono int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than mem_Collect_eq not_less_iff_gr_or_eq)
+  by (smt (verit, best) Product_Type.Collect_case_prodD fst_conv int_ge_less_than_def inv_VDMNat_def l_less_than_VDMNat_iff l_less_than_VDMNat_subset_int_ge_less_than subset_iff)
+
+lemma l_pair_less_VDMNat_iff1_case1: "inv_VDMNat x \<Longrightarrow> ((x, y), x, z) \<in> pair_less_VDMNat \<Longrightarrow> y < z"
+  by (metis (no_types, lifting) CollectD case_prodD in_lex_prod int_ge_less_than_def l_less_than_VDMNat_subset_int_ge_less_than order_less_irrefl pair_less_VDMNat_def subset_iff)
+  (* 
+  proof -
+    assume "((x, y), x, z) \<in> pair_less_VDMNat"
+    then have "((x, y), x, z) \<in> less_than_VDMNat <*lex*> less_than_VDMNat"
+      using pair_less_VDMNat_def by blast
+    then show ?thesis
+      using int_ge_less_than_def l_less_than_VDMNat_subset_int_ge_less_than by auto
+  *)
+
+lemma l_pair_less_VDMNat_iff1 [simp]: "inv_VDMNat x \<Longrightarrow> inv_VDMNat y \<Longrightarrow> ((x,y), (x,z)) \<in> pair_less_VDMNat \<longleftrightarrow> y<z"
+  apply (intro iffI) 
+   apply (simp add: l_pair_less_VDMNat_iff1_case1)
+  by (simp add: pair_less_VDMNat_def)
+
+lemma l_pair_less_VDMNat_I1: "inv_VDMNat a \<Longrightarrow> inv_VDMNat s \<Longrightarrow> a < b  \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
+  by (simp add: pair_less_VDMNat_def) 
+
+lemma l_pair_less_VDMNat_I2: "inv_VDMNat a \<Longrightarrow> inv_VDMNat s \<Longrightarrow> a \<le> b \<Longrightarrow> s < t \<Longrightarrow> ((a, s), (b, t)) \<in> pair_less_VDMNat"
+  using l_pair_less_VDMNat_I1 by force
+
 (*========================================================================*)
 section \<open> Set operators lemmas \<close>
 (*========================================================================*)
