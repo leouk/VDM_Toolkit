@@ -26,17 +26,21 @@ functions
    ;
 
     --@doc see https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf
-   perm: int * int * int -> int
+   perm: int * int * int -> int --nat
    perm(m,n,r) == 
         --@Printf("perm(%1s, %2s, %3s)\n", m, n, r)
         if 0 < r then 
             perm(m, r-1, n) 
         else if 0 < n then 
             perm(r, n-1, m)
-        else
+        else --if 0 <= m then 
             m
+        --else 
+            --0
+    pre 
+        m+n+r >= 0
     measure
-        m+n+r;      
+        maxs({m+n+r, 0});      
 
     maxs: set1 of int -> int
 	maxs(s) == 

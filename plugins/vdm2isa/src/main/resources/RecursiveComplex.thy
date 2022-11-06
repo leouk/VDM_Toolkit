@@ -2,12 +2,17 @@ theory RecursiveComplex
 imports VDMToolkit
 begin
 
+section \<open>Nipkow's permutation function\<close>
+
 definition 
   pre_perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>\<close>
   where
-  \<open>pre_perm m n r \<equiv> inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r\<close>
+  \<open>pre_perm m n r \<equiv> 
+      inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r \<and> m+n+r > 0\<close>
 
-lemma l_pre_perm_trivial[simp]: "pre_perm m n r"
+lemmas pre_perm_defs = pre_perm_def inv_VDMInt_def inv_True_def
+
+lemma l_pre_perm_trivial[simp]: "(pre_perm m n r) = (m+n+r > 0)"
   unfolding pre_perm_def inv_VDMInt_def by simp
 
 function (domintros)
@@ -20,36 +25,80 @@ function (domintros)
   \<close>
   by (pat_completeness, auto)
 
+definition perm_m1 where "perm_m1 = (\<lambda>(m,n,r). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
+definition perm_m2 where "perm_m2 = (\<lambda>(m,n,r). nat (Max {m, n, r} - Min {m, n, r}))"
+definition perm_m3 where "perm_m3 = (\<lambda>(m,n,r). nat (m - Min {m, n, r}))"
+
+
 definition 
   perm_wf_rel :: \<open>((VDMInt \<times> VDMInt \<times> VDMInt) \<times> (VDMInt \<times> VDMInt \<times> VDMInt)) VDMSet\<close>
   where
   \<open>perm_wf_rel \<equiv> 
-      { ((m, r-1, n), (m, n, r)) | m r n . 0 < r } 
+      ({ ((m, r-1, n), (m, n, r)) | m r n . 0 < r \<and> pre_perm m n r} 
       \<union>
-      { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n } 
+      { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n \<and> pre_perm m n r }
+      )    
   \<close>
-                                 
+text \<open>Third set on the union needed for termination proof.\<close> 
+    (*({ ((m, r-1, n), (m, n, r)) | m r n . 0 < r \<and> pre_perm m n r} 
+      \<union>
+      { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n \<and> pre_perm m n r } 
+      )    
+     *)
+    (*      \<union>
+      { ((m, n, r), (m, n, r)) | m r n . \<not> 0 < r \<and> \<not> 0 < n \<and> pre_perm m n r }
+      *)
+
 lemma l_perm_wf_rel: "wf perm_wf_rel" 
-  thm wf_induct wf_induct_rule id_def Id_def perm_wf_rel_def
-  thm wf_induct[of _ \<open>\<lambda> p . p \<in> perm_wf_rel\<close>]
-  apply (induct perm_wf_rel rule: wf_induct)
-   defer
-   apply (erule_tac x=perm_wf_rel in allE)
-   apply simp
-   apply (erule impE, simp_all)
-  
-  find_theorems \<open>wf (_ \<union> _)\<close>
-  thm wf_induct
-  unfolding perm_wf_rel_def
-  apply (intro wf_Un)
-  apply (intro wfI, simp)
-  apply (simp add: wf_Un)
-  sorry
+proof -
+  text \<open>The Isabelle measure projection reflects the VDM measure: the sum of each parameter.
+        ending up at zero (i.e. if negative, ignore).\<close>
+  have "perm_wf_rel \<subseteq> measure (\<lambda> (m, r, n) . nat (max 0 (m+r+n)))"
+    apply (intro subsetI, case_tac x)
+    apply (simp add: perm_wf_rel_def case_prod_beta max_def)
+    apply (elim disjE conjE, simp) 
+     apply (intro impI conjI, simp_all)
+    nitpick
+    done
+  then show ?thesis
+    by (rule wf_subset [OF wf_measure])
+qed
+
+(* not wf ? 
+definition Id' :: "(VDMInt \<times> VDMInt \<times> VDMInt) rel"
+  where "Id' = {p. \<exists>m n r. p = ((m,n,r), (m,n,r)) \<and> pre_perm m n r }"
+
+lemma Id'I [intro]: "pre_perm m n r \<Longrightarrow> ((m,n,r), (m,n,r)) \<in> Id'"
+  by (simp add: Id'_def)
+
+lemma Id'E [elim!]: "p \<in> Id' \<Longrightarrow> (\<And>m n r. p = ((m,n,r), (m,n,r)) \<Longrightarrow> pre_perm m n r  \<Longrightarrow> P) \<Longrightarrow> P"
+  unfolding Id'_def by (iprover elim: CollectE)
+
+lemma pair_in_Id'_conv [iff]: "pre_perm m n r \<Longrightarrow> ((m,n,r), (m',n',r')) \<in> Id' \<longleftrightarrow> (m,n,r) = (m',n',r')"
+  unfolding Id'_def by blast
+
+lemma R_O_Id' [simp]: "(\<forall> m n r . pre_perm m n r \<longrightarrow> ((m, n, r), (m,n,r)) \<in> R) \<Longrightarrow> R O Id' = R"
+  unfolding Id'_def pre_perm_defs 
+  apply (intro equalityI subsetI, simp_all)
+  apply (case_tac x, simp_all)
+   apply (elim relcompEpair, simp)
+  apply (case_tac x, simp_all)
+  apply (simp add: relcomp.simps)
+  apply (case_tac a, simp_all)
+  oops
+*)
 
 termination 
-  apply (relation perm_wf_rel)
+(*
+  apply (relation \<open>perm_wf_rel O Id\<close>)
     apply (simp add: l_perm_wf_rel)
-  by (simp add: perm_wf_rel_def)+
+   apply (simp_all add: perm_wf_rel_def)
+  apply (intro disjI2)
+*)
+  apply (relation \<open>perm_wf_rel\<close>)
+    apply (simp add: l_perm_wf_rel)
+   apply (simp_all add: perm_wf_rel_def)  
+  oops
 
 definition
   pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close>
