@@ -38,7 +38,8 @@ functions
         --else 
             --0
     pre 
-        m+n+r >= 0
+        -- possibly could be more lenient like if not 0 < r and not 0 < n then true else m+n+r > 0
+        ((0 < r or 0 < n) => m+n+r > 0)
     measure
         maxs({m+n+r, 0});      
 

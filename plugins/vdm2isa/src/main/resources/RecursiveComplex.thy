@@ -8,11 +8,12 @@ definition
   pre_perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>\<close>
   where
   \<open>pre_perm m n r \<equiv> 
-      inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r \<and> m+n+r > 0\<close>
+      inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r \<and> 
+      ((0 < r \<or> 0 < n) \<longrightarrow> m+n+r > 0)\<close>
 
 lemmas pre_perm_defs = pre_perm_def inv_VDMInt_def inv_True_def
 
-lemma l_pre_perm_trivial[simp]: "(pre_perm m n r) = (m+n+r > 0)"
+lemma l_pre_perm_trivial[simp]: "(pre_perm m n r) = ((0 < r \<or> 0 < n) \<longrightarrow> m+n+r > 0)"
   unfolding pre_perm_def inv_VDMInt_def by simp
 
 function (domintros)
@@ -56,11 +57,13 @@ proof -
     by (rule wf_subset [OF wf_measure])
 qed
 
+text \<open>With the added precondition on @{term pre_perm} about case when sum has to be positive,
+      and the well founded proof above, the result worked well\<close>
 termination 
   apply (relation \<open>perm_wf_rel\<close>)
     apply (simp add: l_perm_wf_rel)
    apply (simp_all add: perm_wf_rel_def)  
-  oops
+  done
 
 definition perm_m1 where "perm_m1 = (\<lambda>(m::int,n::int,r::int). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
 definition perm_m2 where "perm_m2 = (\<lambda>(m::int,n::int,r::int). if pre_perm m n r then nat (Max {m, n, r}) else 0)"
