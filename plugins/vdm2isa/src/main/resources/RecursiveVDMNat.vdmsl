@@ -62,7 +62,8 @@ functions
             y
         else    
             tak(tak(x-1,y,z), tak(y-1,z,x), tak(z-1,x,y))
-    --measure
+    measure
+        is not yet specified
     --    (if x <= y then y else if y <= z then z else x)
         -- if x <= y then 
         --     0 

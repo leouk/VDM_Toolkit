@@ -19,16 +19,14 @@ function (domintros)
   perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt\<close>
   where
   \<open>perm m n r =
-    (     if 0 < r then perm m (r-1) n 
-     else if 0 < n then perm r (n-1) m
-     else m) 
+    (if pre_perm m n r then
+      (     if 0 < r then perm m (r-1) n 
+       else if 0 < n then perm r (n-1) m
+       else m) 
+    else
+      undefined)
   \<close>
   by (pat_completeness, auto)
-
-definition perm_m1 where "perm_m1 = (\<lambda>(m,n,r). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
-definition perm_m2 where "perm_m2 = (\<lambda>(m,n,r). nat (Max {m, n, r} - Min {m, n, r}))"
-definition perm_m3 where "perm_m3 = (\<lambda>(m,n,r). nat (m - Min {m, n, r}))"
-
 
 definition 
   perm_wf_rel :: \<open>((VDMInt \<times> VDMInt \<times> VDMInt) \<times> (VDMInt \<times> VDMInt \<times> VDMInt)) VDMSet\<close>
@@ -39,15 +37,6 @@ definition
       { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n \<and> pre_perm m n r }
       )    
   \<close>
-text \<open>Third set on the union needed for termination proof.\<close> 
-    (*({ ((m, r-1, n), (m, n, r)) | m r n . 0 < r \<and> pre_perm m n r} 
-      \<union>
-      { ((r, n-1, m), (m, n, r)) | m r n . \<not> 0 < r \<and> 0 < n \<and> pre_perm m n r } 
-      )    
-     *)
-    (*      \<union>
-      { ((m, n, r), (m, n, r)) | m r n . \<not> 0 < r \<and> \<not> 0 < n \<and> pre_perm m n r }
-      *)
 
 lemma l_perm_wf_rel: "wf perm_wf_rel" 
 proof -
@@ -58,47 +47,47 @@ proof -
     apply (simp add: perm_wf_rel_def case_prod_beta max_def)
     apply (elim disjE conjE, simp) 
      apply (intro impI conjI, simp_all)
+    text \<open>The setup with @{term perm_wf_rel} works here if the @{term pre_perm} 
+      specifically curbs negative sums of parameters. Yet, the termination proof fails. 
+      Tried various variations on gr or geq etc, no luck. Trying the @{term \<open>mlex_prod\<close>} style nest instead.\<close>
     nitpick
     done
   then show ?thesis
     by (rule wf_subset [OF wf_measure])
 qed
 
-(* not wf ? 
-definition Id' :: "(VDMInt \<times> VDMInt \<times> VDMInt) rel"
-  where "Id' = {p. \<exists>m n r. p = ((m,n,r), (m,n,r)) \<and> pre_perm m n r }"
-
-lemma Id'I [intro]: "pre_perm m n r \<Longrightarrow> ((m,n,r), (m,n,r)) \<in> Id'"
-  by (simp add: Id'_def)
-
-lemma Id'E [elim!]: "p \<in> Id' \<Longrightarrow> (\<And>m n r. p = ((m,n,r), (m,n,r)) \<Longrightarrow> pre_perm m n r  \<Longrightarrow> P) \<Longrightarrow> P"
-  unfolding Id'_def by (iprover elim: CollectE)
-
-lemma pair_in_Id'_conv [iff]: "pre_perm m n r \<Longrightarrow> ((m,n,r), (m',n',r')) \<in> Id' \<longleftrightarrow> (m,n,r) = (m',n',r')"
-  unfolding Id'_def by blast
-
-lemma R_O_Id' [simp]: "(\<forall> m n r . pre_perm m n r \<longrightarrow> ((m, n, r), (m,n,r)) \<in> R) \<Longrightarrow> R O Id' = R"
-  unfolding Id'_def pre_perm_defs 
-  apply (intro equalityI subsetI, simp_all)
-  apply (case_tac x, simp_all)
-   apply (elim relcompEpair, simp)
-  apply (case_tac x, simp_all)
-  apply (simp add: relcomp.simps)
-  apply (case_tac a, simp_all)
-  oops
-*)
-
 termination 
-(*
-  apply (relation \<open>perm_wf_rel O Id\<close>)
-    apply (simp add: l_perm_wf_rel)
-   apply (simp_all add: perm_wf_rel_def)
-  apply (intro disjI2)
-*)
   apply (relation \<open>perm_wf_rel\<close>)
     apply (simp add: l_perm_wf_rel)
    apply (simp_all add: perm_wf_rel_def)  
   oops
+
+definition perm_m1 where "perm_m1 = (\<lambda>(m::int,n::int,r::int). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
+definition perm_m2 where "perm_m2 = (\<lambda>(m::int,n::int,r::int). if pre_perm m n r then nat (Max {m, n, r}) else 0)"
+definition perm_m3 where "perm_m3 = (\<lambda>(m::int,n::int,r::int). nat (Max {m, n, r}))"
+
+term \<open>(perm_m1 <*mlex*> perm_m2 <*mlex*> perm_m3 <*mlex*> {})\<close>
+term \<open>(perm_m1 <*mlex*> perm_m2 <*mlex*> perm_wf_rel)\<close>
+
+lemma l_c1: " 0 < r \<Longrightarrow> ((m, r - 1, n), m, n, r) \<in> perm_m2 <*mlex*> perm_wf_rel"  
+  apply (simp add: mlex_prod_def, clarsimp) 
+  unfolding perm_m2_def perm_m3_def perm_m1_def perm_wf_rel_def
+  apply (simp split: if_splits)
+  unfolding min_def max_def 
+  apply (simp split: if_splits)
+  
+  
+
+lemma l_c2: "  \<not> 0 < r \<Longrightarrow> 0 < n \<Longrightarrow> ((r, n - 1, m), m, n, r) \<in> perm_m2 <*mlex*> perm_wf_rel"
+  sorry
+
+termination
+  apply (relation "perm_m2 <*mlex*> perm_wf_rel") 
+    apply (simp add: l_perm_wf_rel wf_mlex)
+  using l_c1 apply presburger
+  using l_c2 apply presburger
+  done
+
 
 definition
   pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close>
@@ -133,6 +122,10 @@ termination
     apply (simp add: inv_VDMNat_def l_pair_less_VDMNat_I1 pre_ack_def)
    apply (simp add: inv_VDMNat_def pre_ack_def)
   by (simp add: inv_VDMNat_def pair_less_VDMNat_def pre_ack_def)
+
+text \<open>This version of ackerman follows the one in the Isabelle examples. I used it to
+  unpick how Sledgehammer was finding the termination proof as an attempt to try and 
+  mechanise the translation of such involved recursive calls. \<close>
 
 function ack' :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
   "ack' 0 n             = Suc n"
