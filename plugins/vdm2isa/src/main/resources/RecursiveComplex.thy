@@ -65,6 +65,7 @@ termination
    apply (simp_all add: perm_wf_rel_def)  
   done
 
+text \<open>No need to go in this direction. Will commit here then delete. \<close>
 definition perm_m1 where "perm_m1 = (\<lambda>(m::int,n::int,r::int). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
 definition perm_m2 where "perm_m2 = (\<lambda>(m::int,n::int,r::int). if pre_perm m n r then nat (Max {m, n, r}) else 0)"
 definition perm_m3 where "perm_m3 = (\<lambda>(m::int,n::int,r::int). nat (Max {m, n, r}))"
