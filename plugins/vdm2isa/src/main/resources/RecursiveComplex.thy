@@ -65,33 +65,7 @@ termination
    apply (simp_all add: perm_wf_rel_def)  
   done
 
-text \<open>No need to go in this direction. Will commit here then delete. \<close>
-definition perm_m1 where "perm_m1 = (\<lambda>(m::int,n::int,r::int). if \<not> 0 < r \<and> \<not> 0 < n then 0 else 1)"
-definition perm_m2 where "perm_m2 = (\<lambda>(m::int,n::int,r::int). if pre_perm m n r then nat (Max {m, n, r}) else 0)"
-definition perm_m3 where "perm_m3 = (\<lambda>(m::int,n::int,r::int). nat (Max {m, n, r}))"
-
-term \<open>(perm_m1 <*mlex*> perm_m2 <*mlex*> perm_m3 <*mlex*> {})\<close>
-term \<open>(perm_m1 <*mlex*> perm_m2 <*mlex*> perm_wf_rel)\<close>
-
-lemma l_c1: " 0 < r \<Longrightarrow> ((m, r - 1, n), m, n, r) \<in> perm_m2 <*mlex*> perm_wf_rel"  
-  apply (simp add: mlex_prod_def, clarsimp) 
-  unfolding perm_m2_def perm_m3_def perm_m1_def perm_wf_rel_def
-  apply (simp split: if_splits)
-  unfolding min_def max_def 
-  apply (simp split: if_splits)
-  
-  
-
-lemma l_c2: "  \<not> 0 < r \<Longrightarrow> 0 < n \<Longrightarrow> ((r, n - 1, m), m, n, r) \<in> perm_m2 <*mlex*> perm_wf_rel"
-  sorry
-
-termination
-  apply (relation "perm_m2 <*mlex*> perm_wf_rel") 
-    apply (simp add: l_perm_wf_rel wf_mlex)
-  using l_c1 apply presburger
-  using l_c2 apply presburger
-  done
-
+section \<open>Ackermann's function with @{typ VDMNat}\<close>
 
 definition
   pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close>
@@ -127,18 +101,20 @@ termination
    apply (simp add: inv_VDMNat_def pre_ack_def)
   by (simp add: inv_VDMNat_def pair_less_VDMNat_def pre_ack_def)
 
+subsubsection \<open>Akermann's function with Isabelle's @{typ \<nat>}.\<close>
+
 text \<open>This version of ackerman follows the one in the Isabelle examples. I used it to
   unpick how Sledgehammer was finding the termination proof as an attempt to try and 
   mechanise the translation of such involved recursive calls. \<close>
 
-function ack' :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
+function ack' :: "\<nat> \<Rightarrow> \<nat> \<Rightarrow> \<nat>" where
   "ack' 0 n             = Suc n"
 | "ack' (Suc m) 0       = ack' m 1"
 | "ack' (Suc m) (Suc n) = ack' m (ack' (Suc m) n)"
-        apply (pat_completeness, auto) done
+  by (pat_completeness, auto) 
 termination 
+  text \<open>Through the sledgehammer version, I unpicked the various bits and pieces needed.\<close>
 (*
-  find_theorems "wf (_ \<union> _)"
   using "termination" lessI pair_lessI1 pair_less_iff1 wf_pair_less by presburger
 *)
   thm lessI pair_lessI1 pair_less_def pair_less_iff1 wf_pair_less
@@ -148,9 +124,12 @@ termination
   using lessI pair_less_iff1 apply presburger
   using lessI pair_lessI1 by presburger
 
+text \<open>Show they are indeed the same function\<close>
 theorem ack_correct: \<open>ack' m n = ack m n\<close>
   apply (induction m n rule: ack'.induct)
   by (simp add: pre_ack_defs)+
+
+section \<open>Takeuchi's function (from HOL/Examples/Functions.thy)\<close>
 
 function 
   tak :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" 
