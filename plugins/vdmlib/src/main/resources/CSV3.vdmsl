@@ -1,41 +1,177 @@
 module CSV3
-exports all
+imports 
+    from IO
+        operations 
+            printf renamed printf;
+exports 
+    types
+        struct String;
+        struct String1;
+        struct Path;
+        struct FileStatus;
+        struct Headers0;
+        struct Headers;
+        struct Header;
+        struct Line;
+        struct Col;
+        struct Row;
+        struct Header;
+        struct Data;
+        struct CSVType;
+        struct CSVTypeInv;
+        struct CSVValue; 
+    functions 
+        csv_read[@p]: Path -> bool * [@p];
+        csv_invariant: Data -> set of (Line * Col);
+    operations
+        lastError   : () ==> [String1];
+        showError   : () ==> ();
+        setCSVFile  : Path ==> ();
+        loadCSV     : () ==> ();
 definitions
 types
+    String = seq of char;
+
     String1 = seq1 of char;
 
     --@doc this is treated 
-    Path = String1;
+    Path = String1; 
 
     FileStatus = <Valid> | <DoesNotExist>; 
+
+    CSVType = <Integer> | <Float> | <String>; 
+
+    CSVValue = int | real | String1;
+
+    CSVTypeInv = CSVValue -> bool;
+
+    Header :: 
+        name: [String1]
+        type: CSVType
+        invariant: CSVTypeInv;
+
+    Headers0 = seq of Header;
+
+    Headers = Headers0
+    inv h == h <> [] and (forall mk_Header(n, -, -) in set elems h & n <> nil);
+
+    Row = seq of CSVValue;
+
+    Line = nat1;
+
+    Col = nat1;
+
+    Data :: 
+        headers: Headers0
+        data   : seq of Row
+    inv mk_Data(h, d) == 
+        --@doc if data is available, check the header's invariant
+        (h <> [] => is_Headers(h))
+        and
+        --@doc every row of data must match the expected header's length
+        (forall i in set inds d & len d(i) = len h);
 
 functions 
     file_status: Path -> FileStatus 
     file_status(f) == is not yet specified; 
 
+    -- csv_header: Path -> bool * [Header]
+    -- csv_header(path) == is not yet specified
+    -- post let mk_(b, header) = RESULT in not b => header = nil;
+
+    csv_read[@p]: Path -> bool * [@p] 
+    csv_read(path) == is not yet specified
+    post let mk_(b, data) = RESULT in not b => data = nil;
+
+    csv_invariant: Data -> set of (Line * Col)
+    csv_invariant(mk_Data(headers, data)) == 
+        if data = [] then 
+            {}
+        else
+            --@doc For all lines (l) in the data, check that each column (c) invariant 
+            --     in the header holds, for every lement i in data (e.g. each element of the row).
+            --     Returns the set of line/column numbers where invariants are broken. 
+            dunion 
+            { 
+                { mk_(l, c) | l in set inds data } 
+                | c in set inds headers
+                & 
+                --@doc for every row (i) and column (j), check the data values against
+                --     the header's expected invariant to ensure the resulting CSV load
+                --     is sound with respect to the defined Headers' invariants. 
+                forall i in set inds data & 
+                    forall j in set inds data(i) & 
+                        headers(c).invariant(data(i)(j))
+            };
+
 state CSV of 
-    file: [Path]
-    ferror: [String1]
-    data: seq of ?
+    file   : [Path]
+    ferr   : [String1]
+    data   : [Data]
+inv mk_CSV(-, ferr, data) ==
+        --@doc if there is an error, zero the information
+        (ferr <> nil => data = nil)
+        --@doc avoid it at state level for speed; check at load time
+        --and csv_invariant(data)
+init csv == csv = mk_CSV(nil, nil, nil)
 end
 
 operations 
 
-    pure
     lastError: () ==> [String1]
-    lastError() == ferror;
+    lastError() == is not yet specified;
 
     setCSVFile(f: Path) == 
-        file := f
-    ext wr file
+        (file   := f;
+         data   := nil;
+         ferr   := lastError();
+        )
+    ext wr file, data, ferr
     pre file_status(f) = <Valid>
-    post file = f and file <> nil;
+    post file = f and file <> nil and ferr = nil and data = nil;
+
+    -- installHeader: seq1 of CSVTypeInv ==> ()
+    -- installHeader(invs) ==
+    --     (headers := [])
+    -- ext wr headers;
 
     loadCSV() == 
-        (
-            skip
+        (let mk_(b, d) = csv_read[seq of Row](file) in
+            if b then 
+            (
+                let lcs: set of (Line * Col) = csv_invariant(mk_Data(data.headers, d)) in
+                    if (lcs = {}) then
+                    (
+                        data.data := d;
+                        ferr := nil;
+                    )
+                    else
+                    (
+                        --@TODO show errors on LINE * COL SET! 
+                        skip
+                    )
+            )
+            else 
+            (
+                data    := nil;
+                ferr    := lastError();
+                showError();
+            )
         )
-    ext rd ferror wr data 
-    pre file <> nil and ferror = nil;
+    ext rd file wr data, ferr
+    --@doc both file and headers have been set. 
+    pre file <> nil and data.headers <> []
+    post (data.headers = data~.headers)
+          and
+          (if ferr = nil then 
+            data.headers <> data~.headers and data.data <> data~.data 
+          else 
+            data = nil);  
+
+    showError() ==
+        (if ferr <> nil then 
+            printf("CSV error %1s", [ferr]);
+        )
+    ext rd ferr;
 
 end CSV3
