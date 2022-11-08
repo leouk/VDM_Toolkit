@@ -1,5 +1,9 @@
 module CSV3
 imports 
+    from VDMUtil 
+        functions 
+            val2seq_of_char renamed val2seq_of_char;
+    ,
     from IO
         operations 
             printf renamed printf;
@@ -22,14 +26,16 @@ exports
         struct CSVTypeInv;
         struct CSVValue; 
     functions 
-        csv_read[@p]: Path -> bool * [@p];
+        file_status         : Path -> FileStatus;
+        csv_read_headers    : Path -> bool * (seq of String1);
+        csv_read_data[@p]   : Path -> bool * [@p];
         csv_invariant_failed: Data0 -> set of (Line * Col);
     operations
-        lastError    : () ==> [String1];
-        showError    : () ==> ();
-        setCSVFile   : Path ==> ();
-        installHeader: seq1 of (CSVType * CSVTypeInv) ==> ();
-        loadCSV      : () ==> ();
+        --lastError     : () ==> [String1];
+        showError     : () ==> ();
+        setCSVFile    : Path ==> ();
+        installHeaders: seq1 of (CSVType * CSVTypeInv) ==> ();
+        loadCSV       : () ==> ();
 definitions
 types
     String = seq of char;
@@ -48,6 +54,8 @@ types
     --@doc an invariant function that checks CSVValue against
     --     corresponding types.
     CSVTypeInv = CSVValue -> bool;
+
+    Names = seq of String1; 
 
     --@doc each header contain a name, type and invariant.
     --     it represents a CSV column with (a "vertical") 
@@ -90,6 +98,7 @@ types
     --
     Data0 :: 
         headers: Headers0
+        --@todo do we need invariants per row? 
         data   : Rows
     inv mk_Data0(h, d) == 
         --@doc if data is available, check that all headers have names
@@ -111,16 +120,40 @@ types
                   d.headers(j).invariant(d.data(i)(j)));
 
 functions 
+
+    --@doc checks the full path file status.
     file_status: Path -> FileStatus 
-    file_status(f) == is not yet specified; 
+    file_status(path) == is not yet specified; 
 
-    -- csv_header: Path -> bool * [Header]
-    -- csv_header(path) == is not yet specified
-    -- post let mk_(b, header) = RESULT in not b => header = nil;
+    --@todo needed? or part of csv_read_data? Maybe yes.
+    -- csv_read_headers: Path -> bool * (seq of String1)
+    -- csv_read_headers(path) == is not yet specified
+    -- pre file_status(path) = <Valid>
+    -- post let mk_(b, headers) = RESULT in (not b => headers = []);
 
-    csv_read[@p]: Path -> bool * [@p] 
-    csv_read(path) == is not yet specified
-    post let mk_(b, data) = RESULT in not b => data = nil;
+    --@doc Reads CSV data. Usually header names are in the first line of the CSV file;
+    --     empty names is allowed (i.e anonynous headers). Such headers can have invariants.
+    --
+    --     Actual CSV data comes next as a sequence of rows (i.e. CSV matrix parser).
+    --     CSV parsing compliance is tricky, as there are many formats out there.
+    --     e.g. https://commons.apache.org/proper/commons-csv/
+    --     as well as many varied implementations
+    --          https://opencsv.sourceforge.net
+    --          https://github.com/bpoole6/quirk-csv
+    --          https://github.com/uniVocity/univocity-parsers
+    --
+    --     We want a solution that is fast, so we checked options within  
+    --     https://github.com/uniVocity/csv-parsers-comparison
+    --
+    --     We also want a solution with least dependencies, so were tempted with
+    --     Iterable stand alone version in https://stackoverflow.com/questions/6857248/fast-csv-parsing  
+    --
+    --     Other useful features might be interesting, so we considered filterd CSV from
+    --     https://stackoverflow.com/questions/61250600/univocity-csv-parser-skip-rows-based-on-conditions
+    csv_read_data: Path -> bool * Names * Rows
+    csv_read_data(path) == is not yet specified
+    pre file_status(path) = <Valid>
+    post let mk_(b, data) = RESULT in (not b => data = []);
 
     csv_invariant_failed: Data0 -> set of (Line * Col)
     csv_invariant_failed(mk_Data0(headers, data)) == 
@@ -148,37 +181,42 @@ inv mk_CSV(file, ferr, data) ==
         --@doc if there is an error, zero the information
         (ferr <> nil => data = nil)
         and 
+        --@doc if file is set, must be valid
         (file <> nil => file_status(file) = <Valid>)
-        --and
-        --@doc avoid it at state level for speed; check at load time
-        --and csv_invariant(data)
-init csv == csv = mk_CSV(nil, nil, nil)
+init csv == 
+        csv = mk_CSV(nil, nil, nil)
 end
 
 operations 
 
+    --@doc returns last IO error or nil if none.
     lastError: () ==> [String1]
     lastError() == is not yet specified;
 
+    --@doc shows the error if the state registered it
     showError() ==
         (if ferr <> nil then 
             printf("CSV error %1s", [ferr]);
         )
     ext rd ferr;
     
-    setCSVFile(f: Path) == 
-        (file   := f;
-         data   := nil;
-         ferr   := lastError();
+    --@doc sets CSV file path and zeros data, registering/showing any IO error. 
+    setCSVFile(path: Path) == 
+        (atomic
+            (file   := path;
+             data   := nil;
+             ferr   := lastError();
+            );
+         showError();
         )
     ext wr file, data, ferr
-    pre file_status(f) = <Valid>
-    post file = f and file <> nil and ferr = nil and data = nil;
+    pre file_status(path) = <Valid>
+    post file = path and file <> nil and data = nil;
 
-    installHeader(invs: seq1 of (CSVType * CSVTypeInv)) ==
+    installHeaders(invs: seq1 of (CSVType * CSVTypeInv)) ==
         (data.headers := [];
         )
-    ext wr data
+    ext rd file wr data
     pre file <> nil 
     post data.data = data~.data
          and
@@ -193,21 +231,30 @@ operations
                 let lcs: set of (Line * Col) = csv_invariant_failed(mk_Data0(data.headers, rows)) in
                     if (lcs = {}) then
                     (
-                        data.data := rows;
-                        ferr := nil;
+                        atomic (
+                            data.data := rows;
+                            ferr      := nil;
+                        );
                     )
                     else
                     (
                         --@TODO show errors on LINE * COL SET! 
-                        skip
+                        atomic (
+                            data.data := [];
+                            ferr      := "CSV invariant failure at \n\t" ^ 
+                                val2seq_of_char[set of (Line * Col)](lcs);
+                        );
                     )
             )
             else 
             (
-                data.data:= [];
-                ferr     := lastError();
-                showError();
-            )
+                atomic (
+                    data.data:= [];
+                    ferr     := lastError();
+                );
+                
+            );
+            showError();
         )
     ext rd file wr data, ferr
     pre  --@doc both file and headers have been set. 
