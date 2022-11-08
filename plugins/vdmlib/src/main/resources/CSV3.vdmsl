@@ -25,18 +25,22 @@ exports
         struct CSVType;
         struct CSVTypeInv;
         struct CSVValue; 
+        struct CSVParser;
     values 
         HEADER_INVARIANT_TRUE: CSVTypeInv;
         EMPTY_CSV: Data;
     functions 
         empty_csv            : Headers -> Data;
         file_status          : Path -> FileStatus;
-        csv_read_data        : Path * Headers0 -> bool * Data0;
+        csv_read_data        : Path * CSVParser * Headers0 -> bool * Data0;
         csv_invariants_failed: Data0 -> set of (Line * Col);
     operations
+        --@doc Loads CSV data from a given file with given parser back-end choice and
+        --     specific headers. If trivial load, no invariants and just list of header types.
+        --     Any IO (or VDM Value) erros can be shown if they occur.
         showError     : () ==> ();
-        loadCSV       : Path * Headers0 ==> ();
-        loadTrivialCSV: Path * seq1 of CSVType ==> ();
+        loadCSV       : Path * CSVParser * Headers0 ==> ();
+        loadTrivialCSV: Path * CSVParser * seq1 of CSVType ==> ();
 definitions
 types
     String = seq of char;
@@ -54,6 +58,18 @@ types
     CSVType = <Integer> | <Float> | <String>; 
 
     CSVValue = int | real | String;
+
+    --@doc CSV parser IO back-end choices. Native is a variation of an implemention as a state 
+    --     machine inspired online. Other implementations are linked below. They vary in clarity,
+    --     speed, dependenecies, and variety of CSV formats. 
+    --          Native    = https://stackoverflow.com/questions/6857248/fast-csv-parsing
+    --          Apache    = https://commons.apache.org/proper/commons-csv/
+    --          Univocity = https://github.com/uniVocity/univocity-parsers
+    --          OpenCSV   = https://opencsv.sourceforge.net
+    --          QuirkCSV  = https://github.com/bpoole6/quirk-csv
+    --     
+    --@todo is this too much? (i.e. many dependencies; presuming only <Native> for now)
+    CSVParser = <Native> | <Apache> | <Univocity> | <OpenCSV> | <QuirkCSV>; 
 
     --@doc an invariant function that checks CSVValue against
     --     corresponding types.
@@ -157,10 +173,7 @@ functions
     --     Actual CSV data comes next as a sequence of rows (i.e. CSV matrix parser).
     --     CSV parsing compliance is tricky, as there are many formats out there.
     --     e.g. https://commons.apache.org/proper/commons-csv/
-    --     as well as many varied implementations
-    --          https://opencsv.sourceforge.net
-    --          https://github.com/bpoole6/quirk-csv
-    --          https://github.com/uniVocity/univocity-parsers
+    --     as well as many varied implementations (see CSVParser type).
     --
     --     We want a solution that is fast, so we checked options within  
     --     https://github.com/uniVocity/csv-parsers-comparison
@@ -170,8 +183,8 @@ functions
     --
     --     Other useful features might be interesting, so we considered filterd CSV from
     --     https://stackoverflow.com/questions/61250600/univocity-csv-parser-skip-rows-based-on-conditions
-    csv_read_data: Path * Headers0 -> bool * Data0
-    csv_read_data(path, headers) == is not yet specified
+    csv_read_data: Path * CSVParser * Headers0 -> bool * Data0
+    csv_read_data(path, parser, headers) == is not yet specified
     pre file_status(path) = <Valid>
     post 
         --@doc if result is true, names size must be consistent for every row; otherwise, all empty
@@ -206,10 +219,11 @@ functions
 
 state CSV of 
     file    : [Path]
+    parser  : CSVParser
     ferr    : [String1]
     headersI: Headers0
     data    : [Data]
-inv mk_CSV(file, ferr, headersI, data) ==
+inv mk_CSV(file, -, ferr, headersI, data) ==
         --@doc if there is an error, zero the information
         (ferr <> nil => data = nil)
         and 
@@ -219,7 +233,7 @@ inv mk_CSV(file, ferr, headersI, data) ==
         --@doc installed headers must be consistent with read headers.
         (data <> nil => installed_read_headers_consistency(headersI, data.headers))
 init csv == 
-        csv = mk_CSV(nil, nil, [], nil)
+        csv = mk_CSV(nil, <Native>, nil, [], nil)
 end
 
 operations 
@@ -236,18 +250,19 @@ operations
     ext rd ferr;
     
     --@doc sets CSV file path and zeros data, registering/showing any IO error. 
-    setCSVFile(path: Path) == 
+    setCSVFile(path: Path, parserChoice: CSVParser) == 
         (atomic
             (file     := path;
+             parser   := parserChoice;
              data     := nil;
              headersI := [];
              ferr     := lastError();
             );
          showError();
         )
-    ext wr file, headersI, data, ferr
+    ext wr file, parser, headersI, data, ferr
     pre file_status(path) = <Valid>
-    post file = path and file <> nil and data = nil and headersI = [];
+    post file = path and file <> nil and parser = parserChoice and data = nil and headersI = [];
 
     installHeaders(invs: Headers0) ==
         (headersI := invs;
@@ -257,7 +272,7 @@ operations
         file <> nil and data = nil;
 
     loadData() == 
-        (let mk_(ok, data') = csv_read_data(file, headersI) in
+        (let mk_(ok, data') = csv_read_data(file, parser, headersI) in
             if ok then 
             (   --@doc check invariants using teh installed headers against read rows
                 let lcs: set of (Line * Col) = csv_invariants_failed(mk_Data0(headersI, data'.rows)) in
@@ -271,10 +286,9 @@ operations
                     )
                     else
                     (
-                        --@TODO show errors on LINE * COL SET! 
                         atomic (
                             data  := nil;
-                            ferr  := "CSV invariant failure at \n\t" ^ 
+                            ferr  := "CSV invariant failure at cells \n\t" ^ 
                                 val2seq_of_char[set of (Line * Col)](lcs);
                         );
                     )
@@ -289,7 +303,7 @@ operations
             );
             showError();
         )
-    ext rd file, headersI wr data, ferr
+    ext rd file, parser, headersI wr data, ferr
     pre  --@doc both file and headers have been set. 
          file <> nil and headersI <> []
     post --@doc state type invariant will ensure csv_invariants_failed is empty.              
@@ -306,13 +320,13 @@ operations
     --@doc top-level call: given a file and typed headers (possibly with invariants)
     --     loads the CSV as part of the state
     --@todo this could also be part of a function returning Data? Then no state etc?
-    loadCSV(path: Path, headersToInstall: Headers0) == 
+    loadCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0) == 
         (
             if file_status(path) <> <Valid> then 
                 showError()
             else 
             (
-                setCSVFile(path);
+                setCSVFile(path, parserChoice);
                 installHeaders(headersToInstall);
                 loadData();
             );
@@ -322,7 +336,7 @@ operations
 
     --@doc load file path with given headers and no invariants. 
     --     it insists on minimally knowking the header types. 
-    loadTrivialCSV(path: Path, headerTypes: seq1 of CSVType) ==
+    loadTrivialCSV(path: Path, parserChoice: CSVParser, headerTypes: seq1 of CSVType) ==
         (
             let headers: Headers0 = 
                 [ mk_Header(
@@ -334,7 +348,7 @@ operations
                   i in set inds headerTypes 
                 ] 
             in 
-                loadCSV(path, headers);
+                loadCSV(path, parserChoice, headers);
         )
     ext wr CSV 
     post post_loadData(CSV~, CSV);

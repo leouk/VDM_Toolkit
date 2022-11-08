@@ -1,6 +1,7 @@
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ public class CSV3 implements Serializable {
     private static final String CSVTYPE_FLOAT   = "Float";
     private static final String CSVTYPE_STRING  = "String";
 
+    public enum ParserType { Native, Apache, Univocity, OpenCSV, QuirkCSV };
+
     private static void check_line_col_size_consistency(int headersLen, int namesLen, Context ctx)
         throws ValueException
     {
@@ -53,12 +56,44 @@ public class CSV3 implements Serializable {
                 headersLen + " but expected " + namesLen, ctx);
         }        
     }
+
     protected static File getFile(Value path)
 	{
 		String adjustedPath = IO.stringOf(path).replace('/', File.separatorChar);        
 		File f = new File(adjustedPath).getAbsoluteFile();
         return f;
 	}
+
+    protected static ParserType getParserType(Value parser, Context ctx)
+        throws ValueException
+    {
+        return ParserType.valueOf(parser.quoteValue(ctx));
+    }
+
+    protected static Iterator<String[]> parse(File file, ParserType parserType)
+        throws IOException
+    {   
+        // file does not exist could occur here 
+        BufferedInputStream bufStream = new BufferedInputStream(new FileInputStream(file));
+        try
+        {
+            switch (parserType)
+            {
+                case Native: 
+                    // IOException/read could happen here
+                    Iterable<String[]> iter = CsvParser3.parseCSV(bufStream);
+                    return iter.iterator();
+                default: 
+                    throw new IOException("Not yet supported parser type " + parserType.toString());
+            }    
+        }
+        finally
+        {
+            // ensure expense resources are cleared and GC'ed
+            bufStream.close();
+            bufStream = null;
+        }
+    }
 
     /**
      * Corresponds to VDM "file_status: Path -> FileStatus"
@@ -89,7 +124,7 @@ public class CSV3 implements Serializable {
      * @return
      */
     @VDMFunction
-    public static Value csv_read_data(Value path, Value headersI)
+    public static Value csv_read_data(Value path, Value parser, Value headersI)
     {        
         // Follow NB's style from IO.freadval 
 		ValueList result = new ValueList();
@@ -103,14 +138,10 @@ public class CSV3 implements Serializable {
                     MODULE_NAME, CSVDATA_NAME, 
                     new SeqValue(), new SeqValue());
 
-            // file does not exist could occur here 
-            BufferedInputStream bufRdr = new BufferedInputStream(new FileInputStream(file));
-            
             // IO exception could occur here
-            Iterable<String[]> iter = CsvParser3.parseCSV(bufRdr);
-            Iterator<String[]> iterr=iter.iterator();
-
             Context ctx = Context.javaContext();
+            Iterator<String[]> iterr= parse(file, getParserType(parser, ctx));
+            
             SeqValue headers = (SeqValue)headersI;
 
             // read in the header
