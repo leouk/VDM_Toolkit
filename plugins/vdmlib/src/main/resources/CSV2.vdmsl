@@ -1,4 +1,6 @@
 module CSV2
+imports from IO operations printf renamed printf;
+
 -- 	VDM Toolkit implementation of CSV 
 --  --------------------------------------------
 -- File path:

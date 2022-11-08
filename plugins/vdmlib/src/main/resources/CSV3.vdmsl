@@ -9,25 +9,27 @@ exports
         struct String1;
         struct Path;
         struct FileStatus;
+        struct Header;
         struct Headers0;
         struct Headers;
-        struct Header;
         struct Line;
         struct Col;
         struct Row;
-        struct Header;
+        struct Rows;
+        struct Data0;
         struct Data;
         struct CSVType;
         struct CSVTypeInv;
         struct CSVValue; 
     functions 
         csv_read[@p]: Path -> bool * [@p];
-        csv_invariant: Data -> set of (Line * Col);
+        csv_invariant_failed: Data0 -> set of (Line * Col);
     operations
-        lastError   : () ==> [String1];
-        showError   : () ==> ();
-        setCSVFile  : Path ==> ();
-        loadCSV     : () ==> ();
+        lastError    : () ==> [String1];
+        showError    : () ==> ();
+        setCSVFile   : Path ==> ();
+        installHeader: seq1 of (CSVType * CSVTypeInv) ==> ();
+        loadCSV      : () ==> ();
 definitions
 types
     String = seq of char;
@@ -41,35 +43,72 @@ types
 
     CSVType = <Integer> | <Float> | <String>; 
 
-    CSVValue = int | real | String1;
+    CSVValue = int | real | String;
 
+    --@doc an invariant function that checks CSVValue against
+    --     corresponding types.
     CSVTypeInv = CSVValue -> bool;
 
+    --@doc each header contain a name, type and invariant.
+    --     it represents a CSV column with (a "vertical") 
+    --     invariant across all its rows for each column.  
     Header :: 
         name: [String1]
         type: CSVType
         invariant: CSVTypeInv;
 
+    --@doc Raw header list representing expected types and
+    --     their invariants (possibly empty), where names 
+    --     might be file/data dependant (i.e. will come from)
+    --     a native call.
     Headers0 = seq of Header;
 
+    --@doc Final header, where names have been loaded from 
+    --     native call. 
     Headers = Headers0
     inv h == h <> [] and (forall mk_Header(n, -, -) in set elems h & n <> nil);
 
+    --@doc A CSV row corresponds to a sequence of CSVValue. 
     Row = seq of CSVValue;
 
+    Rows = seq of Row;
+
+    --@doc CSV line
     Line = nat1;
 
+    --@doc CSV col
+    --@todo perhaps have it as a Pos :: line: nat1 col: nat1;?
     Col = nat1;
 
-    Data :: 
+    --@doc CSV data its raw headers and sequence of its rows
+    --     (i.e. effectively the CSV matrix), as in:  
+    --
+    --       H1   |   H2   ... |   Hj
+    -- R1  v(1,1) | v(1,2) ... | v(1,j)
+    -- ...
+    -- Ri  v(i,1) | v(i,2) ... | v(i,j)
+    --
+    Data0 :: 
         headers: Headers0
-        data   : seq of Row
-    inv mk_Data(h, d) == 
-        --@doc if data is available, check the header's invariant
+        data   : Rows
+    inv mk_Data0(h, d) == 
+        --@doc if data is available, check that all headers have names
         (h <> [] => is_Headers(h))
         and
         --@doc every row of data must match the expected header's length
-        (forall i in set inds d & len d(i) = len h);
+        (forall i in set inds d & len d(i) = len h)
+        ;
+    
+    Data = Data0 
+    inv d ==
+        csv_invariant_failed(d) = {}
+        and
+        --@doc bit expensive invariant check across the whole CSV data:
+        --     for all rows d(i), check all header invariants h(j) for
+        --     all cells d(i)(j)
+        (forall i in set inds d.data & 
+              forall j in set inds d.headers &     
+                  d.headers(j).invariant(d.data(i)(j)));
 
 functions 
     file_status: Path -> FileStatus 
@@ -83,34 +122,34 @@ functions
     csv_read(path) == is not yet specified
     post let mk_(b, data) = RESULT in not b => data = nil;
 
-    csv_invariant: Data -> set of (Line * Col)
-    csv_invariant(mk_Data(headers, data)) == 
-        if data = [] then 
-            {}
-        else
-            --@doc For all lines (l) in the data, check that each column (c) invariant 
-            --     in the header holds, for every lement i in data (e.g. each element of the row).
-            --     Returns the set of line/column numbers where invariants are broken. 
-            dunion 
-            { 
-                { mk_(l, c) | l in set inds data } 
-                | c in set inds headers
-                & 
-                --@doc for every row (i) and column (j), check the data values against
-                --     the header's expected invariant to ensure the resulting CSV load
-                --     is sound with respect to the defined Headers' invariants. 
-                forall i in set inds data & 
-                    forall j in set inds data(i) & 
-                        headers(c).invariant(data(i)(j))
-            };
+    csv_invariant_failed: Data0 -> set of (Line * Col)
+    csv_invariant_failed(mk_Data0(headers, data)) == 
+        --@doc For all lines (l) in the data, check that each column (c) invariant 
+        --     in the header holds, for every lement i in data (e.g. each element of the row).
+        --     Returns the set of line/column numbers where invariants are broken. 
+        { 
+            mk_(l, c) 
+            |  
+            l in set inds data, c in set inds headers
+            & 
+            len data(l) = len headers
+            and
+            --@doc for every row (l) and column (c), check the data values against
+            --     the header's expected invariant to ensure the resulting CSV load
+            --     is sound with respect to the defined Headers' invariants. 
+            not headers(c).invariant(data(l)(c))
+        };
 
 state CSV of 
     file   : [Path]
     ferr   : [String1]
     data   : [Data]
-inv mk_CSV(-, ferr, data) ==
+inv mk_CSV(file, ferr, data) ==
         --@doc if there is an error, zero the information
         (ferr <> nil => data = nil)
+        and 
+        (file <> nil => file_status(file) = <Valid>)
+        --and
         --@doc avoid it at state level for speed; check at load time
         --and csv_invariant(data)
 init csv == csv = mk_CSV(nil, nil, nil)
@@ -121,6 +160,12 @@ operations
     lastError: () ==> [String1]
     lastError() == is not yet specified;
 
+    showError() ==
+        (if ferr <> nil then 
+            printf("CSV error %1s", [ferr]);
+        )
+    ext rd ferr;
+    
     setCSVFile(f: Path) == 
         (file   := f;
          data   := nil;
@@ -130,19 +175,25 @@ operations
     pre file_status(f) = <Valid>
     post file = f and file <> nil and ferr = nil and data = nil;
 
-    -- installHeader: seq1 of CSVTypeInv ==> ()
-    -- installHeader(invs) ==
-    --     (headers := [])
-    -- ext wr headers;
+    installHeader(invs: seq1 of (CSVType * CSVTypeInv)) ==
+        (data.headers := [];
+        )
+    ext wr data
+    pre file <> nil 
+    post data.data = data~.data
+         and
+         data.headers <> data~.headers 
+         and 
+         len data.headers = len invs;
 
     loadCSV() == 
-        (let mk_(b, d) = csv_read[seq of Row](file) in
-            if b then 
+        (let mk_(ok, rows) = csv_read[Rows](file) in
+            if ok then 
             (
-                let lcs: set of (Line * Col) = csv_invariant(mk_Data(data.headers, d)) in
+                let lcs: set of (Line * Col) = csv_invariant_failed(mk_Data0(data.headers, rows)) in
                     if (lcs = {}) then
                     (
-                        data.data := d;
+                        data.data := rows;
                         ferr := nil;
                     )
                     else
@@ -153,25 +204,20 @@ operations
             )
             else 
             (
-                data    := nil;
-                ferr    := lastError();
+                data.data:= [];
+                ferr     := lastError();
                 showError();
             )
         )
     ext rd file wr data, ferr
-    --@doc both file and headers have been set. 
-    pre file <> nil and data.headers <> []
+    pre  --@doc both file and headers have been set. 
+         file <> nil and data.headers <> []
     post (data.headers = data~.headers)
-          and
-          (if ferr = nil then 
-            data.headers <> data~.headers and data.data <> data~.data 
+         and
+         --@doc state type invariant will ensure csv_invariant_failed is empty.              
+         (if ferr = nil then 
+             data.data <> data~.data 
           else 
-            data = nil);  
-
-    showError() ==
-        (if ferr <> nil then 
-            printf("CSV error %1s", [ferr]);
-        )
-    ext rd ferr;
+             data.data = []);  
 
 end CSV3
