@@ -7,7 +7,8 @@ import java.util.Iterator;
 
 public class CsvParser3 {
     
-    // Idea from 
+    // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
+    // Use input streams for speed (instead of buffered reader)
     public static Iterable<String[]> parseCSV(final InputStream stream) throws IOException {
         return new Iterable<String[]>() {
             @Override
