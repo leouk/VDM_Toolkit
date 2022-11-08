@@ -40,17 +40,17 @@ public class ASTdocAnnotation extends ASTAnnotation {
 			}
 			else
 			{
-				parseException("expecting <name> = <exp>;", eqexp.location);
+				//parseException("expecting <name> = <exp>;", eqexp.location);
 			}
 		}
 		else
 		{
-			parseException("expecting <name> = <exp>;", exp.location);
+			//parseException("expecting <name> = <exp>;", exp.location);
 		}
 		
 		if (ltr.getLast().isNot(Token.SEMICOLON))
 		{
-			parseException("missing ;", ltr.getLast().location);
+			//parseException("missing ;", ltr.getLast().location);
 		}
 		
 		return args;
