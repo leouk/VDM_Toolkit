@@ -34,23 +34,23 @@ exports
         csv_read_data        : Path * Headers0 -> bool * Data0;
         csv_invariants_failed: Data0 -> set of (Line * Col);
     operations
-        --lastError     : () ==> [String1];
         showError     : () ==> ();
-        --setCSVFile    : Path ==> ();
-        --installHeaders: Headers0 ==> ();
-        --loadData      : () ==> ();
         loadCSV       : Path * Headers0 ==> ();
+        loadTrivialCSV: Path * seq1 of CSVType ==> ();
 definitions
 types
     String = seq of char;
 
     String1 = seq1 of char;
 
-    --@doc this is treated 
+    --@doc this is treated specially by the native methods. It will be 
+    --     sensitive to '/' (Linux) and '\' (Windows) path separators
+    --     as well as absolute (/path) or relative (./path) files names. 
     Path = String1; 
 
     FileStatus = <Valid> | <DoesNotExist> | <CannotBeRead> | <CannotBeWritten> | <IsDirectory>; 
 
+    --@todo any more types needed? @AB?
     CSVType = <Integer> | <Float> | <String>; 
 
     CSVValue = int | real | String;
@@ -121,7 +121,9 @@ types
 
 values 
     HEADER_INVARIANT_TRUE: CSVTypeInv = (lambda -: CSVValue & true);
-    EMPTY_CSV: Data = mk_Data0([], []);
+    EMPTY_CSV            : Data       = mk_Data0([], []);
+    DEFAULT_HEADER_NAME  : String1    = "csvHeader";
+
 functions 
 
     --@doc every row of data must match the expected header's length
@@ -301,6 +303,9 @@ operations
           else 
              data = nil);  
 
+    --@doc top-level call: given a file and typed headers (possibly with invariants)
+    --     loads the CSV as part of the state
+    --@todo this could also be part of a function returning Data? Then no state etc?
     loadCSV(path: Path, headersToInstall: Headers0) == 
         (
             if file_status(path) <> <Valid> then 
@@ -313,6 +318,25 @@ operations
             );
         )
     ext wr CSV
+    post post_loadData(CSV~, CSV);
+
+    --@doc load file path with given headers and no invariants. 
+    --     it insists on minimally knowking the header types. 
+    loadTrivialCSV(path: Path, headerTypes: seq1 of CSVType) ==
+        (
+            let headers: Headers0 = 
+                [ mk_Header(
+                    DEFAULT_HEADER_NAME ^ val2seq_of_char[nat1](i), 
+                    headerTypes(i), 
+                    HEADER_INVARIANT_TRUE
+                  ) 
+                  | 
+                  i in set inds headerTypes 
+                ] 
+            in 
+                loadCSV(path, headers);
+        )
+    ext wr CSV 
     post post_loadData(CSV~, CSV);
 
 end CSV3
