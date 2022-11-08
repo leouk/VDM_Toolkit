@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fujitsu.vdmj.runtime.Context;
+import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.VDMFunction;
 import com.fujitsu.vdmj.runtime.VDMOperation;
 import com.fujitsu.vdmj.runtime.ValueException;
@@ -197,7 +198,8 @@ public class CSV3 implements Serializable {
             // @NB see CSV3.vdmsl csv_invariants_failed call on loadCSV operation
             //     is it better there or here? Wanted there to be "clear" from the
             //     user's perspective. 
-            csvData.checkInvariant(ctx);
+            // @NB invariant checks need the interpreter's context then? 
+            csvData.checkInvariant(Interpreter.getInstance().getInitialContext());
             result.add(csvData);
         } catch (Exception e)//IOException
         {
