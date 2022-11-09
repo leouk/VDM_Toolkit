@@ -5,9 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class CsvParser3 {
-    
-    // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
+public class NativeCSVParser {
+        // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
     // Use input streams for speed (instead of buffered reader)
     public static Iterable<String[]> parseCSV(final InputStream stream) throws IOException {
         return new Iterable<String[]>() {
@@ -75,6 +74,7 @@ public class CsvParser3 {
                                 case '"': //quote.
                                     inquote = !inquote;
                                     break;
+                                //@TODO case '#' for CSV comments till \n?
                             }
                         }
                     }
