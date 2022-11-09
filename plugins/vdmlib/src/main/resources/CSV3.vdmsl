@@ -33,6 +33,7 @@ exports
         empty_csv            : Headers -> Data;
         file_status          : Path -> FileStatus;
         csv_read_data        : Path * CSVParser * Headers0 -> bool * Data0;
+        csv_write_data       : Path * Data -> bool;
         csv_invariants_failed: Data0 -> set of (Line * Col);
     operations
         --@doc Loads CSV data from a given file with given parser back-end choice and
@@ -199,6 +200,10 @@ functions
                 data.headers = [] and data.rows = []
         ); 
 
+    csv_write_data: Path * Data -> bool
+    csv_write_data(path, data) == is not yet specified
+    pre file_status(path) in set {<Valid>, <DoesNotExist>};
+    
     csv_invariants_failed: Data0 -> set of (Line * Col)
     csv_invariants_failed(mk_Data0(headers, rows)) == 
         --@doc For all lines (l) in the rows, check that each column (c) invariant 
