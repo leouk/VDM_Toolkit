@@ -1,0 +1,60 @@
+module CSVExample
+imports from CSV3
+    types 
+        Data renamed Data;
+        Data0 renamed Data0;
+        Header renamed Header;
+        CSVTypeInv renamed CSVTypeInv;
+        CSVType renamed CSVType;
+        CSVValue renamed CSVValue;
+    functions 
+        csv_type_check renamed csv_type_check;
+        csv_filter_invalid renamed csv_filter_invalid;
+        csv_invariants_failed renamed csv_invariants_failed;
+    values 
+        HEADER_INVARIANT_TRUE renamed HEADER_INVARIANT_TRUE;
+exports 
+    values 
+        EXAMPLE_DATA: Data0;
+        VALID_DATA  : Data;
+definitions 
+
+values 
+    MIN_AGE: nat1 = 18;
+    MAX_AGE: nat1 = 60;
+    MIN_WEIGHT: real = 10.5;
+    MAX_WEIGHT: real = 100;
+    HEADER_INVARIANT_AGE: CSVTypeInv =
+        (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_AGE and v <= MAX_AGE);
+
+    HEADER_INVARIANT_WEIGHT: CSVTypeInv =
+        (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_WEIGHT and v <= MAX_WEIGHT);
+
+    -- Name,Age,Weight(Kg)
+    -- "Leo",40,58.5
+    -- "Nick",50,70.2
+    -- "Young",15,61.5
+    -- "Heavy",70,150.3 
+    --@doc make it Data0, so that the invariants won't be checked at creation time. 
+    EXAMPLE_DATA: Data0 = 
+        mk_Data0(
+            [mk_Header("Name", <String>, HEADER_INVARIANT_TRUE),
+             mk_Header("Age", <Integer>, HEADER_INVARIANT_AGE),
+             mk_Header("Weight(Kg)", <Float>, HEADER_INVARIANT_WEIGHT)
+            ],
+            --   C1    C2  C3        R0 (Header)
+            [["Leo"  , 40, 58.5], -- R1
+             ["Nick" , 50, 70.2], -- R2 
+             ["Young", 15, 61.5], -- R3    Age violation (3,2)
+             ["Heavy", 70, 150.3] -- R4    Age violation (4,2)
+                                  --    Weight violation (4,3)
+            ]
+        );
+    
+    VALID_DATA: Data = csv_filter_invalid(EXAMPLE_DATA);
+
+traces 
+    test1: csv_invariants_failed(EXAMPLE_DATA); 
+            --= {mk_(2, 2), mk_(4, 2), mk_(4, 3)};
+    
+end CSVExample
