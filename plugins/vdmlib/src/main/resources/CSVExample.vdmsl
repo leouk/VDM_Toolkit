@@ -4,19 +4,27 @@ imports from CSV3
         Data renamed Data;
         Data0 renamed Data0;
         Header renamed Header;
+        Row renamed Row;
+        Rows renamed Rows;
         CSVTypeInv renamed CSVTypeInv;
+        CSVRowInv renamed CSVRowInv;
         CSVType renamed CSVType;
+        Headers0 renamed Headers0;
         CSVValue renamed CSVValue;
     functions 
+        row_consistency renamed row_consistency;
         csv_type_check renamed csv_type_check;
         csv_filter_invalid renamed csv_filter_invalid;
         csv_invariants_failed renamed csv_invariants_failed;
+        install_row_invariant renamed install_row_invariant;
     values 
         HEADER_INVARIANT_TRUE renamed HEADER_INVARIANT_TRUE;
 exports 
+    functions
+        VALID_DATA  : [CSVRowInv] -> Data;
+        KILL_ROW_VALID_DATA: () -> Data;
     values 
         EXAMPLE_DATA: Data0;
-        VALID_DATA  : Data;
 definitions 
 
 values 
@@ -24,11 +32,32 @@ values
     MAX_AGE: nat1 = 60;
     MIN_WEIGHT: real = 10.5;
     MAX_WEIGHT: real = 100;
+    CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
     HEADER_INVARIANT_AGE: CSVTypeInv =
         (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_AGE and v <= MAX_AGE);
 
     HEADER_INVARIANT_WEIGHT: CSVTypeInv =
         (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_WEIGHT and v <= MAX_WEIGHT);
+
+    KILL_ROW_INVARIANT_EXAMPLE: CSVRowInv = 
+        (lambda h: Headers0, r: Row & 
+            --@doc all rows align with header (redundant as checked by default)
+            row_consistency(h, r)
+            and
+            --@doc if failure anywhere in the row, kill the whole row
+            (forall i in set inds h &
+                (h(i).invariant <> nil => h(i).invariant(h(i).type, r(i)))
+            )
+        );
+
+    CAPITAL_NAMES_ROW_INV: CSVRowInv = 
+        (lambda h: Headers0, r: Row & 
+            --@doc all rows align with header (redundant as checked by default)
+            row_consistency(h, r)
+            and
+            --@doc row-specific check, e.g. all names must be capitalised :-) 
+            (len r(1) > 0 => r(1)(1) in set elems CAPITAL_LETTERS)  
+        );
 
     -- Name,Age,Weight(Kg)
     -- "Leo",40,58.5
@@ -43,18 +72,39 @@ values
              mk_Header("Weight(Kg)", <Float>, HEADER_INVARIANT_WEIGHT)
             ],
             --   C1    C2  C3        R0 (Header)
-            [["Leo"  , 40, 58.5], -- R1
-             ["Nick" , 50, 70.2], -- R2 
-             ["Young", 15, 61.5], -- R3    Age violation (3,2)
-             ["Heavy", 70, 150.3] -- R4    Age violation (4,2)
-                                  --    Weight violation (4,3)
-            ]
+            mk_Rows(
+                [["Leo"  , 40, 58.5], -- R1
+                 ["Nick" , 50, 70.2], -- R2 
+                 ["Young", 15, 61.5], -- R3    Age violation (3,2)
+                 ["Heavy", 70, 150.3],-- R4    Age violation (4,2)
+                                      --    Weight violation (4,3)
+                 ["bad"  , 50, 60]    -- R5 Whole Row violation 
+                ],
+                CAPITAL_NAMES_ROW_INV                
+            )
         );
     
-    VALID_DATA: Data = csv_filter_invalid(EXAMPLE_DATA);
+functions 
 
-traces 
-    test1: csv_invariants_failed(EXAMPLE_DATA); 
-            --= {mk_(2, 2), mk_(4, 2), mk_(4, 3)};
+    VALID_DATA: [CSVRowInv] -> Data 
+    VALID_DATA(rowInv) == 
+        let d: Data0 = 
+            if (rowInv <> nil) then 
+                install_row_invariant(EXAMPLE_DATA, rowInv) 
+            else 
+                EXAMPLE_DATA 
+        in
+           csv_filter_invalid(d);
+
+    KILL_ROW_VALID_DATA: () -> Data 
+    KILL_ROW_VALID_DATA() == VALID_DATA(KILL_ROW_INVARIANT_EXAMPLE);
     
+traces 
+    --@do kills only specific cells that violate CAPITAL_LETTERS
+    test1: csv_invariants_failed(EXAMPLE_DATA); 
+            --= {mk_(3, 2), mk_(4, 2), mk_(4, 3), mk_(5, 1), mk_(5, 2), mk_(5, 3)};
+
+    --@doc kills all lines where any cell invariant is broken
+    test2: csv_invariants_failed(install_row_invariant(EXAMPLE_DATA, KILL_ROW_INVARIANT_EXAMPLE));
+            --= {mk_(3, 1), mk_(3, 2), mk_(3, 3), mk_(4, 1), mk_(4, 2), mk_(4, 3)}
 end CSVExample
