@@ -62,4 +62,12 @@ echo "Created jars/vdmtoolkit links"
 ln -sf $HOME/.m2/repository/$VDMTOOLKIT/vdmlib/$VDMTKSUITE-SNAPSHOT/vdmlib-$VDMTKSUITE-P-SNAPSHOT.jar $RESOURCES/jars/vdmj_hp/libs
 echo "Created high precision vdmtoolkit vdmlib links"
 
+if [ -z ${VDMJTK_HOME+x} ]; then 
+	echo "VDMJTK_HOME is unset, so no vdmj.properties linnk created"; 
+else 
+	echo "VDMJTK_HOME is set to '$VDMJTK_HOME'"
+	ln -sf $HOME/Local/reps/git/VDM_Toolkit/scripts/vdmj.properties $RESOURCES/vdmj.properties
+    echo "Created vdmj.properties link"
+fi
+
 echo "Done"
