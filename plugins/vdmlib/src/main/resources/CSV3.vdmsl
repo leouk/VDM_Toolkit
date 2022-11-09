@@ -24,6 +24,7 @@ exports
         struct Data;
         struct CSVType;
         struct CSVTypeInv;
+        struct CSVRowInv;
         struct CSVValue; 
         struct CSVParser;
     values 
@@ -34,6 +35,8 @@ exports
         file_status          : Path -> FileStatus;
         csv_read_data        : Path * CSVParser * Headers0 -> bool * Data0;
         csv_write_data       : Path * Data -> bool;
+        csv_type_check       : CSVType * CSVValue -> bool;
+        csv_filter_invalid   : Data0 -> Data;
         csv_invariants_failed: Data0 -> set of (Line * Col);
     operations
         --@doc Loads CSV data from a given file with given parser back-end choice and
@@ -74,7 +77,10 @@ types
 
     --@doc an invariant function that checks CSVValue against
     --     corresponding types.
-    CSVTypeInv = CSVValue -> bool;
+    CSVTypeInv = CSVType * CSVValue -> bool;
+
+    --@doc an invariant function that checks the whole row of values against the header
+    CSVRowInv = (Headers0 * Row -> bool);
 
     --@doc each header contain a name, type and invariant.
     --     it represents a CSV column with (a "vertical") 
@@ -98,13 +104,18 @@ types
     --@doc A CSV row corresponds to a sequence of CSVValue. 
     Row = seq of CSVValue;
 
+    Row' :: 
+        cells: seq of CSVValue
+        invariant: CSVRowInv;
+
     Rows = seq of Row;
+
+    Rows' = seq of Row';
 
     --@doc CSV line
     Line = nat1;
 
     --@doc CSV col
-    --@todo perhaps have it as a Pos :: line: nat1 col: nat1;?
     Col = nat1;
 
     --@doc CSV data its raw headers and sequence of its rows
@@ -117,7 +128,8 @@ types
     --
     Data0 :: 
         headers: Headers0
-        --@todo do we need invariants per row? 
+        --@NB / --@AB views? 
+        --@todo do we need invariants per row? If so, then substitute for Rows'? 
         rows   : Rows
     inv mk_Data0(h, r) == 
         --@doc if data is available, check that all headers have names
@@ -134,10 +146,10 @@ types
         --     all cells d(i)(j)
         (forall i in set inds d.rows & 
               forall j in set inds d.headers &     
-                  d.headers(j).invariant(d.rows(i)(j)));
+                  d.headers(j).invariant(d.headers(j).type, d.rows(i)(j)));
 
 values 
-    HEADER_INVARIANT_TRUE: CSVTypeInv = (lambda -: CSVValue & true);
+    HEADER_INVARIANT_TRUE: CSVTypeInv = (lambda t: CSVType, v: CSVValue & csv_type_check(t, v));
     EMPTY_CSV            : Data       = mk_Data0([], []);
     DEFAULT_HEADER_NAME  : String1    = "csvHeader";
 
@@ -203,7 +215,36 @@ functions
     csv_write_data: Path * Data -> bool
     csv_write_data(path, data) == is not yet specified
     pre file_status(path) in set {<Valid>, <DoesNotExist>};
-    
+
+    csv_type_check: CSVType * CSVValue -> bool
+    csv_type_check(t, v) == 
+        cases t: 
+            <Integer> -> is_int(v),
+            <Float>   -> is_real(v),
+            <String>  -> is_String(v),
+            others    -> false 
+        end;
+
+    csv_filter_invalid: Data0 -> Data
+    csv_filter_invalid(data) == 
+        let lcs: set of (Line * Col) = csv_invariants_failed(data) in
+            --@doc same headers but filter rows where lines fail
+            mk_Data0(
+                data.headers, 
+                [ data.rows(i) 
+                  | 
+                  i in set inds data.rows 
+                  & 
+                  not i in set { l | mk_(l, -) in set lcs }
+                ])        
+    post data.headers = RESULT.headers 
+         and 
+         elems RESULT.rows subset elems data.rows
+         --and
+         --@doc already part of Data
+         --csv_invariants_failed(RESULT) = {}
+         ;
+
     csv_invariants_failed: Data0 -> set of (Line * Col)
     csv_invariants_failed(mk_Data0(headers, rows)) == 
         --@doc For all lines (l) in the rows, check that each column (c) invariant 
@@ -219,7 +260,7 @@ functions
             --@doc for every row (l) and column (c), check the data values against
             --     the header's expected invariant to ensure the resulting CSV load
             --     is sound with respect to the defined Headers' invariants. 
-            not headers(c).invariant(rows(l)(c))
+            not headers(c).invariant(headers(c).type, rows(l)(c))
         };
 
 state CSV of 
