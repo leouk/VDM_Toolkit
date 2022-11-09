@@ -2,8 +2,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +23,8 @@ import com.fujitsu.vdmj.values.Value;
 import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
 
-import util.CsvParser3;
+import util.NativeCSVParser;
+import util.ValueFactoryHelper;
 
 /**
  * Implements a CSV loading library in conjunction with 
@@ -35,10 +38,13 @@ public class CSV3 implements Serializable {
 	private static String lastErrorStr = "";
 
     private static final String MODULE_NAME = "CSV3";
-    private static final String CSVDATA_NAME = "Data0";
+    private static final String CSVDATA_TYPE_NAME = "Data0";
+    private static final String CSVDATA_FIELD_HEADERS = "headers";
+    private static final String CSVDATA_FIELD_ROWS    = "rows";
     private static final String HEADER_TYPE_NAME = "Header";
-    private static final String HEADER_TYPE = "type";
-    private static final String HEADER_INV  = "invariant";
+    private static final String HEADER_FIELD_NAME = "name";
+    private static final String HEADER_FIELD_TYPE = "type";
+    private static final String HEADER_FIELD_INV  = "invariant";
 
     private static final String CSVTYPE_INTEGER = "Integer";
     private static final String CSVTYPE_FLOAT   = "Float";
@@ -70,6 +76,81 @@ public class CSV3 implements Serializable {
         return ParserType.valueOf(parser.quoteValue(ctx));
     }
 
+    private static String printItem(Value v, String fieldName, Context ctxt)
+        throws ValueException
+    {
+        RecordValue r = v.recordValue(ctxt);
+        Value rStr = r.fieldmap.get(fieldName);
+        if (rStr == null)
+        {
+            throw new ValueException(4999, "Invalid CSV Data value to print for " + fieldName, ctxt);
+        }
+        return rStr.stringValue(ctxt);
+    }
+    protected static void print(File file, Value data, Context ctxt)
+        throws IOException, ValueException
+    {
+        RecordValue csvData = data.recordValue(ctxt);
+        Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);
+        Value rows = csvData.fieldmap.get(CSVDATA_FIELD_ROWS);
+        if (headers == null || rows == null)
+        {
+            throw new ValueException(4999, "Invalid CSV Data record to print in file " + file.getAbsolutePath(), ctxt);
+        }
+        StringBuilder sb = new StringBuilder();
+        Iterator<Value> it = headers.seqValue(ctxt).iterator();
+        int colCount = 0; 
+        int rowCount = 0;
+        // iterate over mk_Data(header, -) where it.next: Header
+        if (it.hasNext())
+        {
+            // print name field in mk_Header(n, t, i) = it.next()
+            sb.append(printItem(it.next(), HEADER_FIELD_NAME, ctxt));
+            colCount++;
+            while (it.hasNext())
+            {
+                sb.append(",");
+                sb.append(printItem(it.next(), HEADER_FIELD_NAME, ctxt));
+                colCount++;
+            }
+        }
+        sb.append("\n");   
+        rowCount++;
+        // iterate over mk_Data(-, rows) where rows : seq of Row, row: seq of CSVType
+        for (Value row : rows.seqValue(ctxt))
+        {
+            ValueList rvl = row.seqValue(ctxt);
+            // check headers column count match row's column count
+            if (colCount != rvl.size())
+            {
+                throw new ValueException(4999, "Invalid CSV Data record: expected " + 
+                    colCount + " columns per row; actual " + rvl.size() + " at row " + 
+                    rowCount, ctxt);
+            }
+            // iterate over each cell in row, where mk_Data(-, [row1,...,rown]) rown : seq of CSVType
+            // it.next() = CSVType value
+            it = rvl.iterator();
+            if (it.hasNext())
+            {
+                // print each cell at rowCount for all columns in row
+                sb.append(it.next().stringValue(ctxt));
+                while (it.hasNext())
+                {
+                    sb.append(",");
+                    sb.append(it.next().stringValue(ctxt));
+                }    
+            }
+            sb.append("\n");
+            rowCount++;
+        } 
+        // generate output
+        PrintWriter out = new PrintWriter(file);
+		out.write(sb.toString());
+		out.close();
+        sb = null;
+        out = null;
+    } 
+
     protected static Iterator<String[]> parse(File file, ParserType parserType)
         throws IOException
     {   
@@ -81,7 +162,7 @@ public class CSV3 implements Serializable {
             {
                 case Native: 
                     // IOException/read could happen here
-                    Iterable<String[]> iter = CsvParser3.parseCSV(bufStream);
+                    Iterable<String[]> iter = NativeCSVParser.parseCSV(bufStream);
                     return iter.iterator();
                 default: 
                     throw new IOException("Not yet supported parser type " + parserType.toString());
@@ -109,8 +190,6 @@ public class CSV3 implements Serializable {
             result = ValueFactory.mkQuote("DoesNotExist");
         else if (!f.canRead())
             result = ValueFactory.mkQuote("CannotBeRead");
-        // else if (!f.canWrite())
-        //     result = new QuoteValue("CannotBeWritten");
         else if (f.isDirectory())
             result = ValueFactory.mkQuote("IsDirectory");
         else 
@@ -118,10 +197,34 @@ public class CSV3 implements Serializable {
         return result;
     }
 
+    @VDMFunction
+    public static Value csv_write_data(Value path, Value parser, Value data)
+    {        
+        File file = getFile(path);
+        Value result = ValueFactory.mkBool(true); 
+        try
+        {
+            Context ctx = Context.javaContext();
+            if (!file.canWrite())
+                throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath(), ctx);
+            
+            print(file, data, ctx);
+        }
+        catch (Exception e)
+        {
+            lastErrorStr = e.getMessage();
+            result = ValueFactory.mkBool(false);
+        }
+        return result; 
+    }
+
+
+
     /**
-     * Corresponds to VDM "csv_read[@p]: Path -> bool * [@p]"
+     * Corresponds to VDM "csv_read_data: Path * CSVParser * Headers0 -> bool * Data0"
      * @param path file path where it is expected file_status(path) = <Valid>
-     * @return
+     * @return mk_(true, mk_Data0([ mu(headersI(i), name |-> csvHeaderData) | i in set inds headersI ], csvData)) if successful 
+     *         mk_(false, mk_Data0([],[])), otherwise. The true case does a mu on every header
      */
     @VDMFunction
     public static Value csv_read_data(Value path, Value parser, Value headersI)
@@ -129,19 +232,21 @@ public class CSV3 implements Serializable {
         // Follow NB's style from IO.freadval 
 		ValueList result = new ValueList();
         File file = getFile(path);
+        //@NB this is not the right type for mk_(false, ...)
         Value emptyCSV = ValueFactory.mkNil();
         try
         {
             //@NB how to refer to CSV3`EMPTY_CSV here? e.g. mk_(false, EMPTY_CSV)
             // have here because of ValueException?
             emptyCSV = ValueFactory.mkRecord(
-                    MODULE_NAME, CSVDATA_NAME, 
+                    MODULE_NAME, CSVDATA_TYPE_NAME, 
                     new SeqValue(), new SeqValue());
 
             // IO exception could occur here
             Context ctx = Context.javaContext();
             Iterator<String[]> iterr= parse(file, getParserType(parser, ctx));
             
+            // seq of Header0
             SeqValue headers = (SeqValue)headersI;
 
             // read in the header
@@ -160,18 +265,33 @@ public class CSV3 implements Serializable {
                     String nameStr = nameStrs[i];
                     assert nameStr.length() > 0;
 
-                    //RecordValue header = headers.get(ValueFactory.mkNat1(i), ctx).recordValue(ctx);
-                    headersList.add(headers.values.get(i).recordValue(ctx));
+                    // prefer the java (0-index) access instead of VDM (1-index).
+                    // get each Header0 in headers as list of records
+                    //RecordValue headerAtI = headers.get(ValueFactory.mkNat1(i), ctx).recordValue(ctx);
+                    RecordValue headerAtI = headers.values.get(i).recordValue(ctx);
+                    headersList.add(headerAtI);
                     
-                    // header = mk_Header(nameStr, headersI(i).type, headersI(i).invariant)
-                    namedHeaders.add(
+                    // namedHeaderAtI = mk_Header(nameStr, headersAtI(i).type, headersAtI(i).invariant)
+                    RecordValue namedHeaderAtI = 
                         ValueFactory.mkRecord(
                             MODULE_NAME, HEADER_TYPE_NAME, 
-                            new SeqValue(nameStr), 
-                            headersList.get(i).fieldmap.get(HEADER_TYPE),
-                            headersList.get(i).fieldmap.get(HEADER_INV)
-                        )
-                    );
+                            ValueFactoryHelper.mkString(nameStr), 
+                            headerAtI.fieldmap.get(HEADER_FIELD_TYPE),
+                            headerAtI.fieldmap.get(HEADER_FIELD_INV)
+                        );
+                    //@NB which one is best? Seems like the Mu one? 
+                    namedHeaderAtI = 
+                        ValueFactoryHelper.muRecord(
+                            headerAtI, 
+                            ValueFactoryHelper.mkFieldMap(
+                                    Arrays.asList(HEADER_FIELD_NAME), 
+                                    ValueFactoryHelper.mkValueList(ValueFactoryHelper.mkString(nameStr)), 
+                                    Arrays.asList(true),
+                                    ctx), 
+                            ctx
+                        );
+
+                    namedHeaders.add(namedHeaderAtI);
                 }
             }
             // read in the rows by checking the invariant according to given type in headers param
@@ -195,7 +315,7 @@ public class CSV3 implements Serializable {
                     RecordValue header = headersList.get(i);
 
                     // get the header declared type
-                    String csvType = header.fieldmap.get(HEADER_TYPE).quoteValue(ctx);
+                    String csvType = header.fieldmap.get(HEADER_FIELD_TYPE).quoteValue(ctx);
 
                     // create a number
                     if (csvType.equals(CSVTYPE_INTEGER))
@@ -218,11 +338,11 @@ public class CSV3 implements Serializable {
             // reset tuple value with mk_(true, mk_Data0(headers, rows))
             result.add(new BooleanValue(true));
             RecordValue csvData = ValueFactory.mkRecord(
-                    MODULE_NAME, CSVDATA_NAME, 
+                    MODULE_NAME, CSVDATA_TYPE_NAME, 
                     new SeqValue(namedHeaders), 
                     new SeqValue(csvRows));
         
-            // check the CSVDATA_NAME invariant, which shouldn't include the
+            // check the CSVDATA_TYPE_NAME invariant, which shouldn't include the
             // dynamic invariant check. This is done later. This is important
             // to allow the loading of "invalid" data into the VDM space, so 
             // that users get a VDM invariant failure check.
