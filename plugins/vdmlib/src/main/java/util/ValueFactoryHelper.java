@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.values.FieldValue;
 import com.fujitsu.vdmj.values.NameValuePair;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
+import com.fujitsu.vdmj.values.SetValue;
 import com.fujitsu.vdmj.values.Value;
 import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
@@ -27,9 +28,30 @@ public class ValueFactoryHelper {
         return new SeqValue(s);
     }
 
+    public static Value mkEmptySeqValue()
+    {
+        //@NB ValueFactory.mkSeqValue(null) would fail?
+        //return new ValueFactory.mkSeqValue(ValueFactoryHelper.mkValueList(null)));
+        return new SeqValue();
+    }
+
+    //@NB result of seqValue as SeqValue instead of ValueList?
+    public static SeqValue seqValue(Value v, Context ctxt)
+        throws ValueException
+    {
+        //return ValueFactory.mkSeq(v.seqValue(ctxt));
+        return new SeqValue(v.seqValue(ctxt));
+    }
+
+    public static Value mkEmptySetValue()
+    {
+        return new SetValue();
+    }
+
     public static ValueList mkValueList(Value... values)
     {
-        return new ValueList(values);
+        // guards against empty list problem
+        return values == null ? new ValueList() : new ValueList(values);
     }
 
     protected static boolean fieldValueCompatible(FieldMap original, FieldValue mapped)
