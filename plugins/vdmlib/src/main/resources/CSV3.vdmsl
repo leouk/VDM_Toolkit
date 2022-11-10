@@ -140,7 +140,7 @@ types
         --@doc if data is available, check that all headers have names
         (h <> [] => is_Headers(h))
         and
-        --@todo
+        --@todo remove this as checked per row invariant always + add default value
         line_col_size_consistency(h, r);
     
     Data = Data0 
