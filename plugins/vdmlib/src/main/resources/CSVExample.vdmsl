@@ -1,9 +1,11 @@
 module CSVExample
 imports from CSV3
     types 
+        Path renamed Path;
         Data renamed Data;
         Data0 renamed Data0;
         Header renamed Header;
+        Headers renamed Headers;
         Row renamed Row;
         Rows renamed Rows;
         CSVTypeInv renamed CSVTypeInv;
@@ -19,14 +21,22 @@ imports from CSV3
         install_row_invariant renamed install_row_invariant;
     values 
         HEADER_INVARIANT_TRUE renamed HEADER_INVARIANT_TRUE;
+    operations 
+        loadCSV renamed loadCSV;
+        loadTrivialCSV renamed loadTrivialCSV;
+        printCSV renamed printCSV;
 exports 
     functions
         VALID_DATA  : [CSVRowInv] -> Data;
         KILL_ROW_VALID_DATA: () -> Data;
     values 
         EXAMPLE_DATA: Data0;
+    operations 
+        loadCSVExample       : bool ==> ();
+        loadTrivialCSVExample: () ==> ();
 definitions 
 
+--@doc tests to show the data type usage, including dynamic invariants
 values 
     MIN_AGE: nat1 = 18;
     MAX_AGE: nat1 = 60;
@@ -65,12 +75,15 @@ values
     -- "Young",15,61.5
     -- "Heavy",70,150.3 
     --@doc make it Data0, so that the invariants won't be checked at creation time. 
+    EXAMPLE_DATA_HEADERS: Headers = 
+        [mk_Header("Name"      , <String> , HEADER_INVARIANT_TRUE),
+         mk_Header("Age"       , <Integer>, HEADER_INVARIANT_AGE),
+         mk_Header("Weight(Kg)", <Float>  , HEADER_INVARIANT_WEIGHT)
+        ];
+
     EXAMPLE_DATA: Data0 = 
         mk_Data0(
-            [mk_Header("Name", <String>, HEADER_INVARIANT_TRUE),
-             mk_Header("Age", <Integer>, HEADER_INVARIANT_AGE),
-             mk_Header("Weight(Kg)", <Float>, HEADER_INVARIANT_WEIGHT)
-            ],
+            EXAMPLE_DATA_HEADERS,
             --   C1    C2  C3        R0 (Header)
             mk_Rows(
                 [["Leo"  , 40, 58.5], -- R1
@@ -107,4 +120,22 @@ traces
     --@doc kills all lines where any cell invariant is broken
     test2: csv_invariants_failed(install_row_invariant(EXAMPLE_DATA, KILL_ROW_INVARIANT_EXAMPLE));
             --= {mk_(3, 1), mk_(3, 2), mk_(3, 3), mk_(4, 1), mk_(4, 2), mk_(4, 3)}
+
+--@doc tests to show native CSV calls and CSV loaded state
+values 
+    CSV_EXAMPLE_FILE: Path = "./CSVExample.csv";
+
+operations 
+    loadCSVExample(strict: bool) ==
+        (
+         loadCSV(CSV_EXAMPLE_FILE, <Native>, EXAMPLE_DATA_HEADERS, strict);
+         printCSV(CSV_EXAMPLE_FILE ^ ".out");
+        );
+
+    loadTrivialCSVExample() ==
+        (
+         loadTrivialCSV(CSV_EXAMPLE_FILE, <Native>, [<String>, <Integer>, <Float>], false);
+         printCSV(CSV_EXAMPLE_FILE ^ ".out");
+        );
+
 end CSVExample
