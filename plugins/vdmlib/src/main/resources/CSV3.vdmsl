@@ -37,7 +37,7 @@ exports
         --@doc functions to process CSV data IO 
         file_status          : Path -> FileStatus;
         csv_read_data        : Path * CSVParser * Headers0 -> bool * Data0;
-        csv_write_data       : Path * Data -> bool;
+        csv_write_data       : Path * Data0 -> bool;
         --@doc functions on basic row and cell consistency
         row_consistency      : Headers0 * Row -> bool;
         csv_type_check       : CSVType * CSVValue -> bool;
@@ -52,8 +52,9 @@ exports
         --     specific headers. If trivial load, no invariants and just list of header types.
         --     Any IO (or VDM Value) erros can be shown if they occur.
         showError     : () ==> ();
-        loadCSV       : Path * CSVParser * Headers0 ==> ();
-        loadTrivialCSV: Path * CSVParser * seq1 of CSVType ==> ();
+        loadCSV       : Path * CSVParser * Headers0 * bool ==> ();
+        loadTrivialCSV: Path * CSVParser * seq1 of CSVType * bool ==> ();
+        printCSV      : Path ==> ();
 definitions
 types
     String = seq of char;
@@ -139,6 +140,7 @@ types
         --@doc if data is available, check that all headers have names
         (h <> [] => is_Headers(h))
         and
+        --@todo
         line_col_size_consistency(h, r);
     
     Data = Data0 
@@ -186,7 +188,8 @@ functions
 
     --@doc creates empty CSV data with expected headers
     empty_csv: Headers -> Data
-    empty_csv(headers) == mk_Data0(headers, EMPTY_ROWS);
+    empty_csv(headers) == mk_Data0(headers, EMPTY_ROWS)
+    post RESULT.headers = headers and RESULT.rows.cells = [];
         
     --@doc checks the full path file status.
     file_status: Path -> FileStatus 
@@ -225,8 +228,9 @@ functions
                 headers = [] and rows = EMPTY_ROWS
         ); 
 
-    --@doc prints the CSV data to the given file name
-    csv_write_data: Path * Data -> bool
+    --@doc prints the CSV data to the given file name; 
+    --     this allows for print with invariant failures if not is_Data(data)
+    csv_write_data: Path * Data0 -> bool
     csv_write_data(path, data) == is not yet specified
     pre file_status(path) in set {<Valid>, <DoesNotExist>}
     post (RESULT => file_status(path) = <Valid>);
@@ -329,18 +333,23 @@ state CSV of
     parser  : CSVParser
     ferr    : [String1]
     headersI: Headers0
-    data    : [Data]
-inv mk_CSV(file, -, ferr, headersI, data) ==
+    strict  : bool
+    pos     : set of (Line * Col)
+    data    : Data0
+inv mk_CSV(file, -, ferr, headersI, strict, pos, data) ==
         --@doc if there is an error, zero the information
-        (ferr <> nil => data = nil)
+        (ferr <> nil => data = empty_csv(headersI))
         and 
         --@doc if file is set, must be valid
         (file <> nil => file_status(file) = <Valid>)
         and
         --@doc installed headers must be consistent with read headers.
-        (data <> nil => installed_read_headers_consistency(headersI, data.headers))
+        installed_read_headers_consistency(headersI, data.headers)
+        and
+        --@doc if strict, must be valid data (is_Data(data)), but don't calculate pos
+        (strict => is_Data(data) and pos = {})        
 init csv == 
-        csv = mk_CSV(nil, <Native>, nil, [], nil)
+        csv = mk_CSV(nil, <Native>, nil, [], false, {}, empty_csv([]))
 end
 
 operations 
@@ -354,36 +363,39 @@ operations
         (if ferr <> nil then 
             --@todo remove to minimise dependency to IO?
             printf("CSV error %1s", [ferr]);
+         if pos <> {} then 
+         (
+            printf("CSV invariant failure at %1s cells: ", [card pos]);
+            for all mk_(l, c) in set pos do
+            (
+                printf("\n\t(%1s,%2s)", [l, c]);
+            );
+            printf("%1s", ['\n']);
+         )
         )
-    ext rd ferr;
+    ext rd ferr, pos;
     
     --@doc sets CSV file path and zeros data, registering/showing any IO error. 
-    setCSVFile(path: Path, parserChoice: CSVParser) == 
+    setupCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0, s: bool) == 
         (atomic
             (file     := path;
              parser   := parserChoice;
-             data     := nil;
-             headersI := [];
+             strict   := s;
+             pos      := {};
+             data     := empty_csv(headersToInstall);
              ferr     := lastError();
             );
          showError();
         )
-    ext wr file, parser, headersI, data, ferr
-    pre file_status(path) = <Valid>
+    ext wr file, parser, data, strict, pos, ferr
+    pre file_status(path) = <Valid> and headersToInstall <> []
     post file = path and file <> nil and 
-         parser = parserChoice and data = nil and headersI = [];
-
-    --@doc installs given headers
-    installHeaders(invs: Headers0) ==
-        (headersI := invs;
-        )
-    ext rd file, data wr headersI
-    pre --@doc file must be loaded, but no data yet
-        file <> nil and data = nil;
+         parser = parserChoice and strict = s and pos = {} and 
+         data = empty_csv(headersToInstall);
 
     --@doc loads CSV data via CSV parser + IO, returing only if valid (invariant holding) data
     loadData() == 
-        (let mk_(ok, data') = csv_read_data(file, parser, headersI) in
+        (let mk_(ok, data') = csv_read_data(file, parser, data.headers) in
             if ok then 
             (   --@doc check invariants using teh installed headers against read rows
                 let lcs: set of (Line * Col) = csv_invariants_failed(data') in
@@ -392,63 +404,58 @@ operations
                         --@doc update the headers with names as well, if successful.
                         atomic (
                             data := data';
+                            pos  := lcs;
                             ferr := nil;
                         );
                     )
                     else
                     (
+                        --@doc pick the named headers and set invariant violation positions
+                        --@doc if strict, zero the CSV; otherwise allow it.
                         atomic (
-                            data  := nil;
-                            --@todo remove to avoid dependency on VDMUtil?
-                            ferr  := "CSV invariant failure at cells \n\t" ^ 
-                                val2seq_of_char[set of (Line * Col)](lcs);
+                            data  := if strict then empty_csv(data'.headers) else data';
+                            pos   := if strict then {} else lcs;
+                            ferr  := "CSV invariant violations!";
                         );
                     )
             )
             else 
             (
                 atomic (
-                    data := nil;
+                    data := empty_csv(data.headers);
+                    pos  := {};
                     ferr := lastError();
                 );
                 
             );
             showError();
         )
-    ext rd file, parser, headersI wr data, ferr
+    ext rd file, parser, strict wr data, pos, ferr
     pre  --@doc both file and headers have been set. 
-         file <> nil and headersI <> []
+         file <> nil and data.headers <> [] and data.rows.cells = []
     post --@doc state type invariant will ensure csv_invariants_failed is empty.              
-         (if ferr = nil then 
-            data <> nil and 
-            --@todo somewhat redundant given state invariant?
-            (installed_read_headers_consistency(headersI, data.headers))
-            and
-            --@todo somewhat redundant given type invariant for Data0? 
-            line_col_size_consistency(data.headers, data.rows)
-          else 
-             data = nil);  
+         (strict => pos = {}); 
 
     --@doc top-level call: given a file and typed headers (possibly with invariants)
     --     loads the CSV as part of the state
     --@todo this could also be part of a function returning Data? Then no state etc?
-    loadCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0) == 
+    loadCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0, s: bool) == 
         (
             if file_status(path) <> <Valid> then 
                 showError()
             else 
             (
-                setCSVFile(path, parserChoice);
-                installHeaders(headersToInstall);
+                setupCSV(path, parserChoice, headersToInstall, s);
                 loadData();
             );
         )
     ext wr CSV
+    pre (file_status(path) = <Valid> => headersToInstall <> [])
     post post_loadData(CSV~, CSV);
 
     --@doc load file path with given headers and no invariants. 
     --     it insists on minimally knowking the header types. 
-    loadTrivialCSV(path: Path, parserChoice: CSVParser, headerTypes: seq1 of CSVType) ==
+    loadTrivialCSV(path: Path, parserChoice: CSVParser, headerTypes: seq1 of CSVType, s: bool) ==
         (
             let headers: Headers0 = 
                 [ mk_Header(
@@ -460,9 +467,32 @@ operations
                   i in set inds headerTypes 
                 ] 
             in 
-                loadCSV(path, parserChoice, headers);
+                loadCSV(path, parserChoice, headers, s);
         )
     ext wr CSV 
     post post_loadData(CSV~, CSV);
+
+    --@doc creates/overwrites given file path with loaded CSV data 
+    printCSV(path: Path) == 
+        (
+         let ok = csv_write_data(path, data) in 
+            if ok then
+                (
+                    printf("CSV print successful for %1s", [path]);
+                )
+            else 
+                (
+                    --@doc don't set ferr to avoid zeroing data, but warn of failure
+                    printf("CSV print failed for %1s", [path]);
+                );
+            --@doc show any invariant violations or IO errors from csv_write_data call
+            showError();
+        )
+    ext rd file, ferr, data
+    pre --@doc can only print CSV after loading, and not to same file (i.e. avoid overwrite)
+        file <> nil and ferr <> nil and file <> path
+        and
+        --@doc file must be valid or not exist 
+        pre_csv_write_data(path, data); 
 
 end CSV3
