@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.VDMFunction;
@@ -56,6 +57,17 @@ public class CSV3 implements Serializable {
 
     public enum ParserType { Native, Apache, Univocity, OpenCSV, QuirkCSV };
 
+    public static final void main(String args[])
+    {
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
+                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/IO.vdmsl",
+                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/VDMUtil.vdmsl",
+                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSVExample.vdmsl",
+                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSV3.vdmsl",
+            }
+        );
+    }
+    
     private static void check_line_col_size_consistency(int headersLen, int namesLen, int rowCount, Context ctxt)
         throws ValueException
     {
@@ -198,12 +210,21 @@ public class CSV3 implements Serializable {
     {
         QuoteValue result; 
         File f = getFile(path);
-        if (!f.exists()) 
+        if (!f.exists())
+        {
             result = ValueFactory.mkQuote("DoesNotExist");
+            lastErrorStr = "CSV file does not exist:\n\t" + f.getAbsolutePath() + "\n"; 
+        } 
         else if (!f.canRead())
+        {
             result = ValueFactory.mkQuote("CannotBeRead");
+            lastErrorStr = "CSV file does not have read permission:\n\t" + f.getAbsolutePath() + "\n"; 
+        }
         else if (f.isDirectory())
+        {
             result = ValueFactory.mkQuote("IsDirectory");
+            lastErrorStr = "CSV file is a directory:\n\t" + f.getAbsolutePath() + "\n"; 
+        }
         else 
             result = ValueFactory.mkQuote("Valid");
         return result;
@@ -401,15 +422,17 @@ public class CSV3 implements Serializable {
     }
 
     /**
-     * Corresponds to VDM "lastError: () ==> [String1]".
+     * Corresponds to VDM "lastError: () ==> [String1]". Once called, clear.
      * @return [String1]
      */
     @VDMOperation
 	public static Value lastError()
 	{
-		return lastErrorStr.isEmpty() || lastErrorStr == null ? 
+		Value result = lastErrorStr.isEmpty() || lastErrorStr == null ? 
             ValueFactory.mkNil() : 
             //@NB ValueFactory.mkSeq doesn't work well for seq of char / Strings
             new SeqValue(lastErrorStr);//ValueFactory.mkSeq(lastErrorStr);
+        lastErrorStr = "";
+        return result;
 	}
 }

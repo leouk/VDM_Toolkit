@@ -388,8 +388,8 @@ state CSV of
     data    : Data0
 inv mk_CSV(file, -, ferr, strict, pos, data) ==
         --@doc if there is an error, zero the information
-        (ferr <> nil => data = empty_csv([]))
-        and 
+        --(ferr <> nil => data = empty_csv(data.headers))
+        --and 
         --@doc if file is set, must be valid
         (file <> nil => file_status(file) = <Valid>)
         and
@@ -411,9 +411,10 @@ operations
 
     --@doc shows the error if the state registered it
     showError() ==
-        (if ferr <> nil then 
+        (ferr := lastError();
+         if ferr <> nil then 
             --@todo remove to minimise dependency to IO?
-            printf("CSV error %1s", [ferr]);
+            printf("CSV error %1s\n", [ferr]);
          if pos <> {} then 
          (
             printf("CSV invariant failure at %1s cells: ", [card pos]);
@@ -424,12 +425,8 @@ operations
             );
             printf("%1s", ['\n']);
          );
-         (dcl le: [String1] := lastError(); 
-            if le <> nil then 
-                printf("CSV last error %1s", [le])
-         );  
         )
-    ext rd ferr, pos;
+    ext rd pos wr ferr;
     
     --@doc sets CSV file path and zeros data, registering/showing any IO error. 
     setupCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0, s: bool) == 
@@ -439,11 +436,10 @@ operations
              strict   := s;
              pos      := {};
              data     := empty_csv(headersToInstall);
-             ferr     := lastError();
             );
          showError();
         )
-    ext wr file, parser, data, strict, pos, ferr
+    ext wr file, parser, data, strict, pos
     pre file_status(path) = <Valid> and headersToInstall <> []
     post file = path and file <> nil and 
          parser = parserChoice and strict = s and pos = {} and 
@@ -461,7 +457,6 @@ operations
                         atomic (
                             data := data';
                             pos  := lcs;
-                            ferr := nil;
                         );
                     )
                     else
@@ -471,7 +466,6 @@ operations
                         atomic (
                             data  := if strict then empty_csv(data'.headers) else data';
                             pos   := if strict then {} else lcs;
-                            ferr  := "CSV invariant violations!";
                         );
                     )
             )
@@ -480,13 +474,12 @@ operations
                 atomic (
                     data := empty_csv(data.headers);
                     pos  := {};
-                    ferr := lastError();
                 );
                 
             );
             showError();
         )
-    ext rd file, parser, strict wr data, pos, ferr
+    ext rd file, parser, strict wr data, pos
     pre  --@doc both file and headers have been set. 
          file <> nil and data.headers <> [] and data.matrix.cells = []
     post --@doc state type invariant will ensure csv_invariants_failed is empty.              
@@ -532,25 +525,28 @@ operations
 
     --@doc creates/overwrites given file path with loaded CSV data 
     printCSV(path: Path) == 
-        (
-         let ok = csv_write_data(path, data) in 
-            if ok then
-                (
-                    printf("CSV print successful for %1s", [path]);
-                )
-            else 
-                (
-                    --@doc don't set ferr to avoid zeroing data, but warn of failure
-                    printf("CSV print failed for %1s", [path]);
-                );
-            --@doc show any invariant violations or IO errors from csv_write_data call
-            showError();
+        (if (file = nil) then
+            printf("CSV not yet loaded %1s",['\n'])
+         else if ferr <> nil and pre_csv_write_data(path, data) then
+            if file = path then 
+                printf("Cannot print to the same CSV file loaded %1s\n", [file])
+            else
+                let ok = csv_write_data(path, data) in 
+                    if ok then
+                        (
+                            printf("CSV print successful for %1s\n", [path]);
+                        )
+                    else 
+                        (
+                            --@doc don't set ferr to avoid zeroing data, but warn of failure
+                            printf("CSV print failed for %1s\n", [path]);
+                        );
+          
+          --@doc show any invariant violations or IO errors from csv_write_data call
+          showError();
         )
     ext rd file, ferr, data
-    pre --@doc can only print CSV after loading, and not to same file (i.e. avoid overwrite)
-        file <> nil and ferr <> nil and file <> path
-        and
-        --@doc file must be valid or not exist 
-        pre_csv_write_data(path, data); 
+    pre file_status(path) in set {<Valid>, <DoesNotExist>};
+         
 
 end CSV3
