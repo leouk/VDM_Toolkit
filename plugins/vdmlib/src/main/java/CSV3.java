@@ -36,11 +36,14 @@ public class CSV3 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 	private static String lastErrorStr = "";
+    private static Context context = null;
 
     private static final String MODULE_NAME = "CSV3";
     private static final String CSVDATA_TYPE_NAME = "Data0";
     private static final String CSVDATA_FIELD_HEADERS = "headers";
     private static final String CSVDATA_FIELD_ROWS    = "rows";
+    private static final String ROWS_TYPE_NAME    = "Rows";
+    private static final String ROWS_FIELD_CELLS    = "cells";
     private static final String HEADER_TYPE_NAME = "Header";
     private static final String HEADER_FIELD_NAME = "name";
     private static final String HEADER_FIELD_TYPE = "type";
@@ -52,15 +55,27 @@ public class CSV3 implements Serializable {
 
     public enum ParserType { Native, Apache, Univocity, OpenCSV, QuirkCSV };
 
-    private static void check_line_col_size_consistency(int headersLen, int namesLen, Context ctx)
+    private static void check_line_col_size_consistency(int headersLen, int namesLen, int rowCount, Context ctxt)
         throws ValueException
     {
         // check input stream matches given headers
         if (headersLen != namesLen)
         {
-            throw new ValueException(4999, "Installed headers mismatch: given " + 
-                headersLen + " but expected " + namesLen, ctx);
+            throw new ValueException(4999, "Invalid CSV Data record: expected " + 
+                headersLen + " columns per row; found " + namesLen + " columns at row " + 
+                rowCount, ctxt);
         }        
+    }
+
+    private synchronized static Context getContext()
+    {
+        if (context == null)
+        {
+            //@NB which one to choose? Or have a boolean flag for different cases? 
+            context = Context.javaContext();
+            context = Interpreter.getInstance().getInitialContext();
+        }
+        return context;
     }
 
     protected static File getFile(Value path)
@@ -90,15 +105,15 @@ public class CSV3 implements Serializable {
     protected static void print(File file, Value data, Context ctxt)
         throws IOException, ValueException
     {
-        RecordValue csvData = data.recordValue(ctxt);
-        Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);
-        Value rows = csvData.fieldmap.get(CSVDATA_FIELD_ROWS);
+        RecordValue csvData = data.recordValue(ctxt);               // mk_Data0 ::
+        Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);//      headers: Headers0
+        Value rows = csvData.fieldmap.get(CSVDATA_FIELD_ROWS);      //      rows: Rows
         if (headers == null || rows == null)
         {
             throw new ValueException(4999, "Invalid CSV Data record to print in file " + file.getAbsolutePath(), ctxt);
         }
         StringBuilder sb = new StringBuilder();
-        Iterator<Value> it = headers.seqValue(ctxt).iterator();
+        Iterator<Value> it = headers.seqValue(ctxt).iterator();     // Headers0 = seq of Header
         int colCount = 0; 
         int rowCount = 0;
         // iterate over mk_Data(header, -) where it.next: Header
@@ -116,19 +131,15 @@ public class CSV3 implements Serializable {
         }
         sb.append("\n");   
         rowCount++;
-        // iterate over mk_Data(-, rows) where rows : seq of Row, row: seq of CSVType
-        for (Value row : rows.seqValue(ctxt))
+        RecordValue rowsRec = rows.recordValue(ctxt);        // mk_Rows:: 
+        Value cells = rowsRec.fieldmap.get(ROWS_FIELD_CELLS);//     cells: seq of Row
+        for (Value row : cells.seqValue(ctxt))               // Row = seq of CSVValue
         {
             ValueList rvl = row.seqValue(ctxt);
             // check headers column count match row's column count
-            if (colCount != rvl.size())
-            {
-                throw new ValueException(4999, "Invalid CSV Data record: expected " + 
-                    colCount + " columns per row; actual " + rvl.size() + " at row " + 
-                    rowCount, ctxt);
-            }
-            // iterate over each cell in row, where mk_Data(-, [row1,...,rown]) rown : seq of CSVType
-            // it.next() = CSVType value
+            check_line_col_size_consistency(colCount, rvl.size(), rowCount, ctxt);
+
+            // iterate over each cell in row; it.next() = CSVType value
             it = rvl.iterator();
             if (it.hasNext())
             {
@@ -204,7 +215,7 @@ public class CSV3 implements Serializable {
         Value result = ValueFactory.mkBool(true); 
         try
         {
-            Context ctx = Context.javaContext();
+            Context ctx = getContext();//javaContext?
             if (!file.canWrite())
                 throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath(), ctx);
             
@@ -234,16 +245,23 @@ public class CSV3 implements Serializable {
         File file = getFile(path);
         //@NB this is not the right type for mk_(false, ...)
         Value emptyCSV = ValueFactory.mkNil();
+
+        Context ctx = getContext();//Interpreter's context?
         try
         {
             //@NB how to refer to CSV3`EMPTY_CSV here? e.g. mk_(false, EMPTY_CSV)
             // have here because of ValueException?
             emptyCSV = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
-                    new SeqValue(), new SeqValue());
+                    new SeqValue(), // Headers0: seq of Header 
+                    ValueFactory.mkRecord(
+                        MODULE_NAME, 
+                        ROWS_TYPE_NAME, 
+                        new SeqValue(), // cells: seq of Row 
+                        ValueFactory.mkNil() // no row invariant 
+                    )
+            );
 
-            // IO exception could occur here
-            Context ctx = Context.javaContext();
             Iterator<String[]> iterr= parse(file, getParserType(parser, ctx));
             
             // seq of Header0
@@ -252,12 +270,13 @@ public class CSV3 implements Serializable {
             // read in the header
             ValueList namedHeaders = new ValueList();
             List<RecordValue> headersList = new ArrayList<>(headers.values.size()); 
+            int rowCount = 0;
             if (iterr.hasNext())
             {
                 String[] nameStrs = iterr.next();
-
+                
                 // checks the header read matches the headers expected
-                check_line_col_size_consistency(headers.values.size(), nameStrs.length, ctx);
+                check_line_col_size_consistency(headers.values.size(), nameStrs.length, rowCount, ctx);
 
                 // process the input streat 
                 for(int i = 0; i < nameStrs.length; i++)
@@ -293,7 +312,9 @@ public class CSV3 implements Serializable {
 
                     namedHeaders.add(namedHeaderAtI);
                 }
+                rowCount++;
             }
+
             // read in the rows by checking the invariant according to given type in headers param
             ValueList csvRows = new ValueList();
             ValueList cellValues = new ValueList();
@@ -302,11 +323,12 @@ public class CSV3 implements Serializable {
                 String[] row = iterr.next();
 
                 // checks the row read matches the headers given
-                check_line_col_size_consistency(headersList.size(), row.length, ctx);
+                check_line_col_size_consistency(headersList.size(), row.length, rowCount, ctx);
 
+                // clear accumulated cell values per row count
                 cellValues.clear();
 
-                // process each row
+                // process each row cell
                 for(int i = 0; i < row.length; i++)
                 {
                     String cell = row[i];
@@ -328,19 +350,26 @@ public class CSV3 implements Serializable {
                         cellValues.add(new SeqValue(cell));
                     else 
                     // invalid type
-                        new ValueException(4998, "Invalid CSV type " + csvType, ctx);
+                        throw new ValueException(4998, "Invalid CSV type " + 
+                            csvType + " at row " + rowCount + " col " + (i+1), ctx);
                 }
                 
                 // add row cell values
                 csvRows.add(new SeqValue(cellValues));
+                rowCount++;
             }
 
             // reset tuple value with mk_(true, mk_Data0(headers, rows))
             result.add(new BooleanValue(true));
             RecordValue csvData = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
-                    new SeqValue(namedHeaders), 
-                    new SeqValue(csvRows));
+                    new SeqValue(namedHeaders),
+                    ValueFactory.mkRecord(
+                        MODULE_NAME, ROWS_TYPE_NAME, 
+                        new SeqValue(csvRows),
+                        ValueFactory.mkNil()
+                    )
+            ); 
         
             // check the CSVDATA_TYPE_NAME invariant, which shouldn't include the
             // dynamic invariant check. This is done later. This is important
@@ -350,7 +379,7 @@ public class CSV3 implements Serializable {
             //     is it better there or here? Wanted there to be "clear" from the
             //     user's perspective. 
             // @NB invariant checks need the interpreter's context then? 
-            csvData.checkInvariant(Interpreter.getInstance().getInitialContext());
+            csvData.checkInvariant(ctx);//Interpretr's context?
             result.add(csvData);
         } catch (Exception e)//IOException
         {
