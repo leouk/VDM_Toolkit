@@ -41,14 +41,15 @@ public class CSV3 implements Serializable {
     private static final String MODULE_NAME = "CSV3";
     private static final String CSVDATA_TYPE_NAME = "Data0";
     private static final String CSVDATA_FIELD_HEADERS = "headers";
-    private static final String CSVDATA_FIELD_ROWS    = "rows";
-    private static final String ROWS_TYPE_NAME    = "Rows";
-    private static final String ROWS_FIELD_CELLS    = "cells";
+    private static final String CSVDATA_FIELD_MATRIX    = "matrix";
+    private static final String MATRIX_TYPE_NAME    = "Matrix";
+    private static final String MATRIX_FIELD_CELLS    = "cells";
     private static final String HEADER_TYPE_NAME = "Header";
     private static final String HEADER_FIELD_NAME = "name";
     private static final String HEADER_FIELD_TYPE = "type";
-    private static final String HEADER_FIELD_INV  = "invariant";
-
+    private static final String HEADER_FIELD_CELL_INV  = "cell_invariant";
+    private static final String HEADER_FIELD_DEFAULT_VALUE = "default";
+    private static final String HEADER_FIELD_COL_INV = "col_invariant";
     private static final String CSVTYPE_INTEGER = "Integer";
     private static final String CSVTYPE_FLOAT   = "Float";
     private static final String CSVTYPE_STRING  = "String";
@@ -107,8 +108,8 @@ public class CSV3 implements Serializable {
     {
         RecordValue csvData = data.recordValue(ctxt);               // mk_Data0 ::
         Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);//      headers: Headers0
-        Value rows = csvData.fieldmap.get(CSVDATA_FIELD_ROWS);      //      rows: Rows
-        if (headers == null || rows == null)
+        Value matrix = csvData.fieldmap.get(CSVDATA_FIELD_MATRIX);      //      matrix: Rows
+        if (headers == null || matrix == null)
         {
             throw new ValueException(4999, "Invalid CSV Data record to print in file " + file.getAbsolutePath(), ctxt);
         }
@@ -131,8 +132,8 @@ public class CSV3 implements Serializable {
         }
         sb.append("\n");   
         rowCount++;
-        RecordValue rowsRec = rows.recordValue(ctxt);        // mk_Rows:: 
-        Value cells = rowsRec.fieldmap.get(ROWS_FIELD_CELLS);//     cells: seq of Row
+        RecordValue rowsRec = matrix.recordValue(ctxt);        // mk_Rows:: 
+        Value cells = rowsRec.fieldmap.get(MATRIX_FIELD_CELLS);//     cells: seq of Row
         for (Value row : cells.seqValue(ctxt))               // Row = seq of CSVValue
         {
             ValueList rvl = row.seqValue(ctxt);
@@ -256,7 +257,7 @@ public class CSV3 implements Serializable {
                     new SeqValue(), // Headers0: seq of Header 
                     ValueFactory.mkRecord(
                         MODULE_NAME, 
-                        ROWS_TYPE_NAME, 
+                        MATRIX_TYPE_NAME, 
                         new SeqValue(), // cells: seq of Row 
                         ValueFactory.mkNil() // no row invariant 
                     )
@@ -296,9 +297,12 @@ public class CSV3 implements Serializable {
                             MODULE_NAME, HEADER_TYPE_NAME, 
                             ValueFactoryHelper.mkString(nameStr), 
                             headerAtI.fieldmap.get(HEADER_FIELD_TYPE),
-                            headerAtI.fieldmap.get(HEADER_FIELD_INV)
+                            headerAtI.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE),                            
+                            headerAtI.fieldmap.get(HEADER_FIELD_CELL_INV),
+                            headerAtI.fieldmap.get(HEADER_FIELD_COL_INV)
                         );
                     //@NB which one is best? Seems like the Mu one? 
+                    //mu seems simpler?
                     namedHeaderAtI = 
                         ValueFactoryHelper.muRecord(
                             headerAtI, 
@@ -315,8 +319,8 @@ public class CSV3 implements Serializable {
                 rowCount++;
             }
 
-            // read in the rows by checking the invariant according to given type in headers param
-            ValueList csvRows = new ValueList();
+            // read in the matrix by checking the invariant according to given type in headers param
+            ValueList csvMatrix = new ValueList();
             ValueList cellValues = new ValueList();
             while (iterr.hasNext())
             {
@@ -355,18 +359,18 @@ public class CSV3 implements Serializable {
                 }
                 
                 // add row cell values
-                csvRows.add(new SeqValue(cellValues));
+                csvMatrix.add(new SeqValue(cellValues));
                 rowCount++;
             }
 
-            // reset tuple value with mk_(true, mk_Data0(headers, rows))
+            // reset tuple value with mk_(true, mk_Data0(headers, matrix))
             result.add(new BooleanValue(true));
             RecordValue csvData = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
                     new SeqValue(namedHeaders),
                     ValueFactory.mkRecord(
-                        MODULE_NAME, ROWS_TYPE_NAME, 
-                        new SeqValue(csvRows),
+                        MODULE_NAME, MATRIX_TYPE_NAME, 
+                        new SeqValue(csvMatrix),
                         ValueFactory.mkNil()
                     )
             ); 

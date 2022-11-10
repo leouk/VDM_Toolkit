@@ -4,12 +4,13 @@ imports from CSV3
         Path renamed Path;
         Data renamed Data;
         Data0 renamed Data0;
-        Header renamed Header;
+        Header0 renamed Header0;
         Headers renamed Headers;
         Row renamed Row;
-        Rows renamed Rows;
-        CSVTypeInv renamed CSVTypeInv;
+        Matrix renamed Matrix;
+        CSVCellInv renamed CSVCellInv;
         CSVRowInv renamed CSVRowInv;
+        CSVColInv renamed CSVColInv;
         CSVType renamed CSVType;
         Headers0 renamed Headers0;
         CSVValue renamed CSVValue;
@@ -43,10 +44,10 @@ values
     MIN_WEIGHT: real = 10.5;
     MAX_WEIGHT: real = 100;
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
-    HEADER_INVARIANT_AGE: CSVTypeInv =
+    HEADER_INVARIANT_AGE: CSVCellInv =
         (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_AGE and v <= MAX_AGE);
 
-    HEADER_INVARIANT_WEIGHT: CSVTypeInv =
+    HEADER_INVARIANT_WEIGHT: CSVCellInv =
         (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_WEIGHT and v <= MAX_WEIGHT);
 
     KILL_ROW_INVARIANT_EXAMPLE: CSVRowInv = 
@@ -56,7 +57,7 @@ values
             and
             --@doc if failure anywhere in the row, kill the whole row
             (forall i in set inds h &
-                (h(i).invariant <> nil => h(i).invariant(h(i).type, r(i)))
+                (h(i).cell_invariant <> nil => h(i).cell_invariant(h(i).type, r(i)))
             )
         );
 
@@ -66,6 +67,7 @@ values
             row_consistency(h, r)
             and
             --@doc row-specific check, e.g. all names must be capitalised :-) 
+            --@todo this is more like a cell invariant 
             (len r(1) > 0 => r(1)(1) in set elems CAPITAL_LETTERS)  
         );
 
@@ -76,21 +78,22 @@ values
     -- "Heavy",70,150.3 
     --@doc make it Data0, so that the invariants won't be checked at creation time. 
     EXAMPLE_DATA_HEADERS: Headers = 
-        [mk_Header("Name"      , <String> , HEADER_INVARIANT_TRUE),
-         mk_Header("Age"       , <Integer>, HEADER_INVARIANT_AGE),
-         mk_Header("Weight(Kg)", <Float>  , HEADER_INVARIANT_WEIGHT)
+        [mk_Header0("Name"      , <String> ,      "Joe", HEADER_INVARIANT_TRUE, nil),
+         mk_Header0("Age"       , <Integer>,    MIN_AGE, HEADER_INVARIANT_AGE, nil),
+         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT, HEADER_INVARIANT_WEIGHT, nil)
         ];
 
     EXAMPLE_DATA: Data0 = 
         mk_Data0(
             EXAMPLE_DATA_HEADERS,
-            --   C1    C2  C3        R0 (Header)
-            mk_Rows(
+            --       C1    C2  C3        R0 (Header)
+            mk_Matrix(
                 [["Leo"  , 40, 58.5], -- R1
                  ["Nick" , 50, 70.2], -- R2 
                  ["Young", 15, 61.5], -- R3    Age violation (3,2)
                  ["Heavy", 70, 150.3],-- R4    Age violation (4,2)
                                       --    Weight violation (4,3)
+                --@todo put something like BMI here, as current one is silly
                  ["bad"  , 50, 60]    -- R5 Whole Row violation 
                 ],
                 CAPITAL_NAMES_ROW_INV                

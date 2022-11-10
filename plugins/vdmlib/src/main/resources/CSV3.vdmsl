@@ -13,24 +13,27 @@ exports
         struct String1;
         struct Path;
         struct FileStatus;
+        struct Header0;
         struct Header;
         struct Headers0;
         struct Headers;
         struct Line;
         struct Col;
         struct Row;
-        struct Rows;
+        struct Matrix;
         struct Data0;
         struct Data;
         struct CSVType;
-        struct CSVTypeInv;
+        struct CSVCellInv;
         struct CSVRowInv;
+        struct CSVColInv;
         struct CSVValue; 
         struct CSVParser;
     values 
-        HEADER_INVARIANT_TRUE: CSVTypeInv;
+        HEADER_INVARIANT_TRUE: CSVCellInv;
         ROW_INVARIANT_TRUE   : CSVRowInv;
-        EMPTY_ROWS           : Rows;
+        COL_INVARIANT_TRUE   : CSVColInv;
+        EMPTY_ROWS           : Matrix;
         EMPTY_CSV            : Data;
         DEFAULT_HEADER_NAME  : String1;
     functions 
@@ -41,11 +44,12 @@ exports
         --@doc functions on basic row and cell consistency
         row_consistency      : Headers0 * Row -> bool;
         csv_type_check       : CSVType * CSVValue -> bool;
+        csv_default_value    : CSVType -> CSVValue;
         --@doc functions identifying (and purging) invalid line/columns
         csv_invariants_failed: Data0 -> set of (Line * Col);
         csv_filter_invalid   : Data0 -> Data;
         --@doc construction functions for empty and updated row invariant data
-        empty_csv            : Headers -> Data;
+        empty_csv            : Headers0 -> Data;
         install_row_invariant: Data0 * CSVRowInv -> Data0;
     operations
         --@doc Loads CSV data from a given file with given parser back-end choice and
@@ -85,37 +89,59 @@ types
     --@todo is this too much? (i.e. many dependencies; presuming only <Native> for now)
     CSVParser = <Native> | <Apache> | <Univocity> | <OpenCSV> | <QuirkCSV>; 
 
-    --@doc an invariant function that checks CSVValue against
-    --     corresponding types.
-    CSVTypeInv = CSVType * CSVValue -> bool;
+    --@doc CSV cell invariants. A function that checks CSVValue against corresponding type.
+    --     minimal check is type agreement.
+    CSVCellInv = (CSVType * CSVValue -> bool);
 
-    --@doc an invariant function that checks the whole row of values against the header
+    --@doc CSV whole row invariant. A function that checks the row of values against all headers. 
+    --     minimal check is size consistency between row and header (e.g. no short rows).
+    --     A useful use case could be that value dependencies are enforced (e.g. weight+height+bmi)
     CSVRowInv = (Headers0 * Row -> bool);
+
+    --@doc CSV whole col invariant. A function that checkls the column of values against a header. 
+    --     there is no minimal check, given type agreement across column for all rows already happen at cell level.
+    --     A useful use case could be ascending order of values
+    --@doc The row parameter her corresponds to the transposed cells (i.e. column across all rows as a row).
+    CSVColInv = (Header0 * TransposedRow -> bool);
 
     --@doc each header contain a name, type and invariant.
     --     it represents a CSV column with (a "vertical") 
     --     invariant (if any) across all its rows for each column (i.e. all cells).  
-    Header :: 
+    Header0 :: 
         name: [String1]
         type: CSVType
-        invariant: [CSVTypeInv];
+        default: CSVValue
+        cell_invariant: [CSVCellInv]
+        col_invariant : [CSVColInv]
+    inv mk_Header0(-, t, d, -, -) ==
+        csv_type_check(t, d)
+        --@doc no need for the cell invariant on the default
+        --and (c <> nil => c(t, d))
+        ;
+
+    --@doc named header
+    Header = Header0 
+    inv mk_Header0(h, -, -, -, -) == h <> nil;
 
     --@doc Raw header list representing expected types and
     --     their invariants (possibly empty), where names 
     --     might be file/data dependant (i.e. will come from)
     --     a native call.
-    Headers0 = seq of Header;
+    Headers0 = seq of Header0;
 
-    --@doc Final header, where names have been loaded from 
-    --     native call. 
-    Headers = Headers0
-    inv h == h <> [] and (forall mk_Header(n, -, -) in set elems h & n <> nil);
+    --@doc Final header, where names have been loaded from native call. 
+    --Headers = Headers0
+    --inv h == h <> [] and (forall mk_Header(n, -, -) in set elems h & n <> nil);
+    Headers = seq1 of Header;
 
     --@doc a row is a sequence of values
     Row = seq of CSVValue;
 
+    --@doc synonym for a column view over all rows. 
+    TransposedRow = Row; 
+
     --@doc collection of CSV rows corresponds to a sequence of Row and a row invariant. 
-    Rows :: 
+    Matrix :: 
         cells: seq of Row
         invariant: [CSVRowInv];
 
@@ -135,27 +161,23 @@ types
     --
     Data0 :: 
         headers: Headers0
-        rows   : Rows
-    inv mk_Data0(h, r) == 
+        matrix : Matrix
+    inv mk_Data0(h, -) == 
         --@doc if data is available, check that all headers have names
-        (h <> [] => is_Headers(h))
-        and
-        --@todo remove this as checked per row invariant always + add default value
-        line_col_size_consistency(h, r);
+        (h <> [] => is_Headers(h));
     
     Data = Data0 
     inv d ==
         --@doc bit expensive invariant check across the whole CSV data:
         --     for all rows d(i), check all header invariants h(j) for
         --     all cells d(i)(j)
-        --@NB --@AB views?
-        --@todo arguably could have just row invariant, which also checks for cell invariants? 
         csv_invariants_failed(d) = {};
 
 values 
-    HEADER_INVARIANT_TRUE: CSVTypeInv = (lambda t: CSVType, v: CSVValue & csv_type_check(t, v));
+    HEADER_INVARIANT_TRUE: CSVCellInv = (lambda t: CSVType, v: CSVValue & csv_type_check(t, v));
     ROW_INVARIANT_TRUE   : CSVRowInv  = (lambda h: Headers0, r: Row & row_consistency(h, r));
-    EMPTY_ROWS           : Rows       = mk_Rows([], nil);
+    COL_INVARIANT_TRUE   : CSVColInv  = (lambda h: Header, c: TransposedRow & col_consistency(h, c));
+    EMPTY_ROWS           : Matrix       = mk_Matrix([], nil);
     EMPTY_CSV            : Data       = mk_Data0([], EMPTY_ROWS);
     DEFAULT_HEADER_NAME  : String1    = "CSVHeader";
 
@@ -163,14 +185,21 @@ functions
 
     --@doc every row of data must match the expected header's length
     --     because headers might also be just names, have the @T for either
-    line_col_size_consistency: Headers0 * Rows -> bool
-    line_col_size_consistency(headers, mk_Rows(cells, -)) == 
+    line_col_size_consistency: Headers0 * Matrix -> bool
+    line_col_size_consistency(headers, mk_Matrix(cells, -)) == 
         (forall i in set inds cells & row_consistency(headers, cells(i)));
         
     --@doc checks whether given row has the same sime as headers (e.g. no short rows) 
     row_consistency: Headers0 * Row -> bool 
     row_consistency(headers, row) ==
         len headers = len row; 
+
+    --@doc checks all rows within the column has correct type across column
+    --     somewhat redundant with the csv_type_check on cell invariant check,
+    --     but could catch 
+    col_consistency: Header0 * TransposedRow -> bool
+    col_consistency(mk_Header0(-, t, -, -, -), col) ==
+        true;--(forall i in set inds col & csv_type_check(t, col(i));
 
     --@doc checks installed (possibly nameless) headers match resulting headers
     --@private used by operations to ensure CSV IO header read doesn't change 
@@ -184,12 +213,12 @@ functions
             h(i).type = h'(i).type 
             and 
             --@Warning(5037) here just checking structural equality rather than computation.
-            (h(i).invariant = h'(i).invariant)); 
+            (h(i).cell_invariant = h'(i).cell_invariant)); 
 
     --@doc creates empty CSV data with expected headers
-    empty_csv: Headers -> Data
+    empty_csv: Headers0 -> Data
     empty_csv(headers) == mk_Data0(headers, EMPTY_ROWS)
-    post RESULT.headers = headers and RESULT.rows.cells = [];
+    post RESULT.headers = headers and RESULT.matrix.cells = [];
         
     --@doc checks the full path file status.
     file_status: Path -> FileStatus 
@@ -217,15 +246,15 @@ functions
     pre file_status(path) = <Valid>
     post 
         --@doc if result is true, names size must be consistent for every row; otherwise, all empty
-        (let mk_(b, mk_Data0(headers', rows)) = RESULT in
+        (let mk_(b, mk_Data0(headers', matrix)) = RESULT in
             if b then
                 --@doc line/col consistency with respect to given headers
                 --     (e.g. data.headers = headers + CSV header names).
-                line_col_size_consistency(headers, rows) 
+                line_col_size_consistency(headers, matrix) 
                 and
                 installed_read_headers_consistency(headers, headers')
             else 
-                headers = [] and rows = EMPTY_ROWS
+                headers = [] and matrix = EMPTY_ROWS
         ); 
 
     --@doc prints the CSV data to the given file name; 
@@ -244,8 +273,17 @@ functions
             <String>  -> is_String(v),
             others    -> false 
         end;
+    
+    csv_default_value: CSVType -> CSVValue 
+    csv_default_value(t) ==
+        cases t: 
+            <Integer> -> 0,
+            <Float>   -> 0.0,
+            <String>  -> "" 
+        end;
 
     --@doc removes rows of invariant violating cells  
+    --@todo update given col in
     csv_filter_invalid: Data0 -> Data
     csv_filter_invalid(data) == 
         --@doc avoid mk_Data0(...) on input checking invariant of Data0 at other places again
@@ -253,19 +291,19 @@ functions
             --@doc same headers but filter rows where lines fail
             mk_Data0(
                 data.headers,
-                mk_Rows(
-                    [ data.rows.cells(i) 
+                mk_Matrix(
+                    [ data.matrix.cells(i) 
                     | 
-                    i in set inds data.rows.cells 
+                    i in set inds data.matrix.cells 
                     & 
                     not i in set { l | mk_(l, -) in set lcs }
                     ], 
-                    data.rows.invariant
+                    data.matrix.invariant
                 )
             ) 
     post data.headers = RESULT.headers 
          and 
-         elems RESULT.rows.cells subset elems data.rows.cells
+         elems RESULT.matrix.cells subset elems data.matrix.cells
          --and
          --@doc already part of Data
          --csv_invariants_failed(RESULT) = {}
@@ -273,28 +311,36 @@ functions
 
     --@doc changes the Data row invariant
     install_row_invariant: Data0 * CSVRowInv -> Data0
-    install_row_invariant(mk_Data0(headers, mk_Rows(cells, -)), invariant) == 
-        mk_Data0(headers, mk_Rows(cells, invariant));
+    install_row_invariant(mk_Data0(headers, mk_Matrix(cells, -)), invariant) == 
+        mk_Data0(headers, mk_Matrix(cells, invariant));
 
     --@doc for given line checks the whole row is consistent 
     --     (i.e. no short rows wrt to header size) and invariant holds (if any)
-    row_invariant_check: Headers0 * Rows * Line -> bool
-    row_invariant_check(headers, mk_Rows(cells, invariant), line) ==
+    row_invariant_check: Headers0 * Matrix * Line -> bool
+    row_invariant_check(headers, mk_Matrix(cells, invariant), line) ==
         row_consistency(headers, cells(line))
         and 
         (invariant <> nil => invariant(headers, cells(line)))
     pre line in set inds cells;
 
+    col_invairant_check: Headers0 * Matrix * Col -> bool 
+    col_invairant_check(headers, mk_Matrix(cells, -), col) == 
+        let header: Header0       = headers(col),
+            trow  : TransposedRow = [ cells(l)(col) | l in set inds cells ]
+        in 
+            (header.col_invariant <> nil => header.col_invariant(header, trow))
+    pre col in set inds headers;
+
     --@doc for given line and column within row cells, check
     --     types confirm to declared header type and invariant holds (if any)
-    cell_invariant_check: Headers0 * Rows * Line * Col -> bool 
-    cell_invariant_check(headers, mk_Rows(cells, -), line, col) ==
+    cell_invariant_check: Headers0 * Matrix * Line * Col -> bool 
+    cell_invariant_check(headers, mk_Matrix(cells, -), line, col) ==
         let type: CSVType  = headers(col).type, 
             cell: CSVValue = cells(line)(col)
         in
             csv_type_check(type, cell)
             and
-            (headers(col).invariant <> nil => headers(col).invariant(type, cell))
+            (headers(col).cell_invariant <> nil => headers(col).cell_invariant(type, cell))
     pre line in set inds cells 
         and 
         col in set inds headers 
@@ -308,19 +354,24 @@ functions
     --     telling users where it went wrong; columns somewhat irrelevant for
     --     row filtering. 
     csv_invariants_failed: Data0 -> set of (Line * Col)
-    csv_invariants_failed(mk_Data0(headers, rows)) == 
+    csv_invariants_failed(mk_Data0(headers, matrix)) == 
         --@doc For all lines (l) in the rows, check that each column (c) invariant 
         --     in the header holds, for every lement i in rows (e.g. each element of the row).
         --     Returns the set of line/column numbers where invariants are broken. 
+        --
+        --@doc initially was creating the set directly, but then the logic of checking
+        --     what failed became confusing, given the presence of nils, so decided this instead.
         let 
             all_cells: set of (Line * Col) = 
-                { mk_(l, c) | l in set inds rows.cells, c in set inds headers },
+                { mk_(l, c) | l in set inds matrix.cells, c in set inds headers },
             checked_cells: set of (Line * Col) = 
-                { mk_(l, c) | l in set inds rows.cells, c in set inds headers
+                { mk_(l, c) | l in set inds matrix.cells, c in set inds headers
                   & 
-                  row_invariant_check(headers, rows, l)
+                  row_invariant_check(headers, matrix, l)
                   and
-                  cell_invariant_check(headers, rows, l, c)
+                  col_invairant_check(headers, matrix, c)
+                  and
+                  cell_invariant_check(headers, matrix, l, c)
                 }
         in
             all_cells \ checked_cells;
@@ -332,24 +383,24 @@ state CSV of
     file    : [Path]
     parser  : CSVParser
     ferr    : [String1]
-    headersI: Headers0
     strict  : bool
     pos     : set of (Line * Col)
     data    : Data0
-inv mk_CSV(file, -, ferr, headersI, strict, pos, data) ==
+inv mk_CSV(file, -, ferr, strict, pos, data) ==
         --@doc if there is an error, zero the information
-        (ferr <> nil => data = empty_csv(headersI))
+        (ferr <> nil => data = empty_csv([]))
         and 
         --@doc if file is set, must be valid
         (file <> nil => file_status(file) = <Valid>)
         and
-        --@doc installed headers must be consistent with read headers.
-        installed_read_headers_consistency(headersI, data.headers)
-        and
         --@doc if strict, must be valid data (is_Data(data)), but don't calculate pos
-        (strict => is_Data(data) and pos = {})        
+        (strict => is_Data(data) and pos = {})  
+        and 
+        --@doc failed positions are within the CSV matrix 
+        (pos <> {} => { l | mk_(l, -) in set pos } subset inds data.matrix.cells and 
+                      { c | mk_(-, c) in set pos } subset inds data.headers)      
 init csv == 
-        csv = mk_CSV(nil, <Native>, nil, [], false, {}, empty_csv([]))
+        csv = mk_CSV(nil, <Native>, nil, false, {}, empty_csv([]))
 end
 
 operations 
@@ -368,10 +419,15 @@ operations
             printf("CSV invariant failure at %1s cells: ", [card pos]);
             for all mk_(l, c) in set pos do
             (
+                --@todo format them nicely? 
                 printf("\n\t(%1s,%2s)", [l, c]);
             );
             printf("%1s", ['\n']);
-         )
+         );
+         (dcl le: [String1] := lastError(); 
+            if le <> nil then 
+                printf("CSV last error %1s", [le])
+         );  
         )
     ext rd ferr, pos;
     
@@ -432,7 +488,7 @@ operations
         )
     ext rd file, parser, strict wr data, pos, ferr
     pre  --@doc both file and headers have been set. 
-         file <> nil and data.headers <> [] and data.rows.cells = []
+         file <> nil and data.headers <> [] and data.matrix.cells = []
     post --@doc state type invariant will ensure csv_invariants_failed is empty.              
          (strict => pos = {}); 
 
@@ -458,10 +514,12 @@ operations
     loadTrivialCSV(path: Path, parserChoice: CSVParser, headerTypes: seq1 of CSVType, s: bool) ==
         (
             let headers: Headers0 = 
-                [ mk_Header(
+                [ mk_Header0(
                     DEFAULT_HEADER_NAME ^ val2seq_of_char[nat1](i), 
                     headerTypes(i), 
-                    HEADER_INVARIANT_TRUE
+                    csv_default_value(headerTypes(i)),
+                    HEADER_INVARIANT_TRUE,
+                    COL_INVARIANT_TRUE
                   ) 
                   | 
                   i in set inds headerTypes 
