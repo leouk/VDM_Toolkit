@@ -1,3 +1,18 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2022 
+--@v2, 11/11/2022
+--@doc Fast generic CSV processing library
+--
+--@doc REQUIREMENTS
+--     1) User-defined, granular CSV data validation
+--          1.1) Cell, row and column invariants
+--          1.2) Tolerance to failing data
+--          1.3) Useful error information for fixing it 
+--     2) Simple top-level use 
+--     3) As fast (and flexible) as possible IO
+--          3.1) Multiple CSV formats tolerated
+--          3.2) 
 module CSV3
 imports 
     from VDMUtil 
