@@ -438,7 +438,10 @@ public class CSV3 implements Serializable {
     @VDMOperation
 	public static Value lastError()
 	{
-		Value result = lastErrorStr.isEmpty() || lastErrorStr == null ? 
+		// if no errors to report, check low-level IO
+        if (lastErrorStr == null || lastErrorStr.isEmpty())
+            lastErrorStr = NativeCSVParser.lastError();     
+        Value result = lastErrorStr == null || lastErrorStr.isEmpty() ? 
             ValueFactory.mkNil() : 
             //@NB ValueFactory.mkSeq doesn't work well for seq of char / Strings
             new SeqValue(lastErrorStr);//ValueFactory.mkSeq(lastErrorStr);
