@@ -258,10 +258,29 @@ public class CSV3 implements Serializable {
             lastErrorStr = e.getMessage();
             result = ValueFactory.mkBool(false);
         }
+        result = ValueFactory.mkBool(true);
         return result; 
     }
 
-
+    private static Value processCell(int rowCount, int colCount, String csvType, String cell, Context ctx)
+        throws Exception
+    {
+        Value result;
+        // create a number
+        if (csvType.equals(CSVTYPE_INTEGER))
+            result = ValueFactory.mkInt(Integer.valueOf(cell));
+        else if (csvType.equals(CSVTYPE_FLOAT))
+        // create a float: could raise Exception if infinite or NaN etc. 
+            result = ValueFactory.mkReal(Double.valueOf(cell));
+        else if (csvType.equals(CSVTYPE_STRING))
+        // create a String
+            result = ValueFactoryHelper.mkString(cell);
+        else 
+        // invalid type
+            throw new ValueException(4998, "Invalid CSV type " + 
+                csvType + " at row " + rowCount + " col " + (colCount+1), ctx);
+        return result;
+    }
 
     /**
      * Corresponds to VDM "csv_read_data: Path * CSVParser * Headers0 -> bool * Data0"
@@ -294,11 +313,15 @@ public class CSV3 implements Serializable {
                     )
             );
 
-            Iterator<String[]> iterr= parse(file, getParserType(parser, ctx));
-            
-            // seq of Header0
-            SeqValue headers = (SeqValue)headersI;
+            Iterator<String[]> iterr = CSV3.parse(file, getParserType(parser, ctx));
+            assert bufStream != null; 
 
+            // seq of Header0
+            //@NB all params are updatable values?
+            //SeqValue headers = (SeqValue)headersI;
+            //SeqValue headers = (SeqValue)ValueFactoryHelper.deref(headersI);
+            SeqValue headers = ValueFactoryHelper.seqValue(headersI, ctx);
+                
             // read in the header
             ValueList namedHeaders = new ValueList();
             List<RecordValue> headersList = new ArrayList<>(headers.values.size()); 
@@ -323,15 +346,16 @@ public class CSV3 implements Serializable {
                     headersList.add(headerAtI);
                     
                     // namedHeaderAtI = mk_Header(nameStr, headersAtI(i).type, headersAtI(i).invariant)
-                    RecordValue namedHeaderAtI = 
-                        ValueFactory.mkRecord(
-                            MODULE_NAME, HEADER_TYPE_NAME, 
-                            ValueFactoryHelper.mkString(nameStr), 
-                            headerAtI.fieldmap.get(HEADER_FIELD_TYPE),
-                            headerAtI.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE),                            
-                            headerAtI.fieldmap.get(HEADER_FIELD_CELL_INV),
-                            headerAtI.fieldmap.get(HEADER_FIELD_COL_INV)
-                        );
+                    RecordValue namedHeaderAtI; 
+                    // namedHeaderAtI = 
+                    //     ValueFactory.mkRecord(
+                    //         MODULE_NAME, HEADER_TYPE_NAME, 
+                    //         ValueFactoryHelper.mkString(nameStr), 
+                    //         headerAtI.fieldmap.get(HEADER_FIELD_TYPE),
+                    //         headerAtI.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE),                            
+                    //         headerAtI.fieldmap.get(HEADER_FIELD_CELL_INV),
+                    //         headerAtI.fieldmap.get(HEADER_FIELD_COL_INV)
+                    //     );
                     //@NB which one is best? Seems like the Mu one? 
                     //mu seems simpler?
                     namedHeaderAtI = 
@@ -418,6 +442,8 @@ public class CSV3 implements Serializable {
             // @NB invariant checks need the interpreter's context then? 
             csvData.checkInvariant(ctx);//Interpretr's context?
             result.add(csvData);
+
+            closeStream();
         } catch (Exception e)//IOException
         {
             // on error return mk_(false, [], [])
