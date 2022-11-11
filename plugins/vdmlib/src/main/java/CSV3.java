@@ -38,6 +38,7 @@ public class CSV3 implements Serializable {
     private static final long serialVersionUID = 1L;
 	private static String lastErrorStr = "";
     private static Context context = null;
+    private static BufferedInputStream bufStream = null;
 
     private static final String MODULE_NAME = "CSV3";
     private static final String CSVDATA_TYPE_NAME = "Data0";
@@ -66,6 +67,15 @@ public class CSV3 implements Serializable {
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSV3.vdmsl",
             }
         );
+    }
+
+    private static void closeStream() throws IOException
+    {
+        if (bufStream != null)
+        { 
+            bufStream.close();
+        }
+        bufStream = null;
     }
     
     private static void check_line_col_size_consistency(int headersLen, int namesLen, int rowCount, Context ctxt)
