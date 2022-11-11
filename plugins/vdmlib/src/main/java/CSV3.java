@@ -167,11 +167,12 @@ public class CSV3 implements Serializable {
             if (it.hasNext())
             {
                 // print each cell at rowCount for all columns in row
-                sb.append(it.next().stringValue(ctxt));
+                //sb.append(it.next().stringValue(ctxt));
+                sb.append(IO.stringOf(it.next()));
                 while (it.hasNext())
                 {
                     sb.append(",");
-                    sb.append(it.next().stringValue(ctxt));
+                    sb.append(IO.stringOf(it.next()));
                 }    
             }
             sb.append("\n");
@@ -189,24 +190,16 @@ public class CSV3 implements Serializable {
         throws IOException
     {   
         // file does not exist could occur here 
-        BufferedInputStream bufStream = new BufferedInputStream(new FileInputStream(file));
-        try
+        bufStream = new BufferedInputStream(new FileInputStream(file));
+        switch (parserType)
         {
-            switch (parserType)
-            {
-                case Native: 
-                    // IOException/read could happen here
-                    Iterable<String[]> iter = NativeCSVParser.parseCSV(bufStream);
-                    return iter.iterator();
-                default: 
-                    throw new IOException("Not yet supported parser type " + parserType.toString());
-            }    
-        }
-        finally
-        {
-            // ensure expense resources are cleared and GC'ed
-            bufStream.close();
-            bufStream = null;
+            case Native: 
+                // IOException/read could happen here
+                Iterable<String[]> iter = NativeCSVParser.parseCSV(bufStream);
+                return iter.iterator();
+            default: 
+                closeStream();
+                throw new IOException("Not yet supported parser type " + parserType.toString());
         }
     }
 
