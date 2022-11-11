@@ -352,41 +352,43 @@ public class CSV3 implements Serializable {
 
             // read in the matrix by checking the invariant according to given type in headers param
             ValueList csvMatrix = new ValueList();
-            ValueList cellValues = new ValueList();
             while (iterr.hasNext())
             {
                 String[] row = iterr.next();
 
+                // cell value list has to be created uniquely
+                // otherwise a reference in JAva is used (!)
+                // (i.e. only last row would be valid for all rows)?!
+                //@NB why is that? 
+                ValueList cellValues = new ValueList();
+
                 // checks the row read matches the headers given
+                //@TODO remove this.... in vfavour for minimal 
                 check_line_col_size_consistency(headersList.size(), row.length, rowCount, ctx);
 
-                // clear accumulated cell values per row count
-                cellValues.clear();
-
                 // process each row cell
-                for(int i = 0; i < row.length; i++)
+                for(int colCount = 0; colCount < row.length; colCount++)
                 {
-                    String cell = row[i];
-                    assert cell.length() > 0;
-                    
-                    RecordValue header = headersList.get(i);
+                    String cell = row[colCount];                    
+                    RecordValue header = headersList.get(colCount);
 
                     // get the header declared type
                     String csvType = header.fieldmap.get(HEADER_FIELD_TYPE).quoteValue(ctx);
-
-                    // create a number
-                    if (csvType.equals(CSVTYPE_INTEGER))
-                        cellValues.add(ValueFactory.mkInt(Integer.valueOf(cell)));
-                    else if (csvType.equals(CSVTYPE_FLOAT))
-                    // create a float
-                        cellValues.add(ValueFactory.mkReal(Double.valueOf(cell)));
-                    else if (csvType.equals(CSVTYPE_STRING))
-                    // create a String
-                        cellValues.add(new SeqValue(cell));
-                    else 
-                    // invalid type
-                        throw new ValueException(4998, "Invalid CSV type " + 
-                            csvType + " at row " + rowCount + " col " + (i+1), ctx);
+                    if (cell == null || cell.isEmpty())
+                    {
+                        // for default values, pick the one in the header
+                        Value defaultVal = header.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE);
+                        assert defaultVal != null; 
+                        cellValues.add(defaultVal);
+                        if (Settings.verbose)
+                            Console.out.printf("CSV read @(%1s,%2s) is empty choose default [%3s: %4s]\n", rowCount, colCount+1, defaultVal.toString(), csvType);
+                    }
+                    else
+                    {
+                        cellValues.add(processCell(rowCount, colCount, csvType, cell, ctx));
+                        if (Settings.verbose)
+                            Console.out.printf("CSV read @(%1s,%2s)=[%3s: %4s]\n", rowCount, colCount+1, cell, csvType);
+                    }
                 }
                 
                 // add row cell values
