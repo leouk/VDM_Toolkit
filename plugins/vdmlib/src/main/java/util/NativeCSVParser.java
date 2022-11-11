@@ -8,7 +8,12 @@ import java.util.Iterator;
 public class NativeCSVParser {
     private static String lastErrorStr = "";
 
-        // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
+    public static final String lastError()
+    {
+        return lastErrorStr;
+    }
+
+    // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
     // Use input streams for speed (instead of buffered reader)
     public static Iterable<String[]> parseCSV(final InputStream stream) throws IOException {
         return new Iterable<String[]>() {
@@ -87,7 +92,7 @@ public class NativeCSVParser {
                             try {
                                 calculate();
                             } catch (IOException ex) {
-                                lastErrorStr = ex.getMessage();
+                                lastErrorStr = "CSV-IO: " + ex.getMessage();
                             }
                         }
                         return state == READY;
@@ -99,7 +104,7 @@ public class NativeCSVParser {
                             try {
                                 calculate();
                             } catch (IOException ex) {
-                                lastErrorStr = ex.getMessage();
+                                lastErrorStr = "CSV-IO: " + ex.getMessage();
                             }
                         }
                         state = UNCALCULATED;
