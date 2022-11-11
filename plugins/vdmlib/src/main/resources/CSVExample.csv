@@ -1,5 +1,9 @@
-Name,Age,Weight(Kg)
-"Leo",40,58.5
-"Nick",50,70.2
-"Young",15,61.5
-"Heavy",70,150.3 
+Name,Age,Weight(Kg),Height(cm),BMI
+"Okay1",40,58.5,169,20.5
+"BMICalcWrong",50,70.2,180,30
+"Young",15,61.5,170,21.3
+"OldHeavy",70,150.3,180,46.4
+"TallBMIinvalid",40,50,270,6.86
+"DefaultAge",,58.5,169,20.5
+"RepeatedName",40,58.5,169,20.5
+"RepeatedName",50,58.5,179,18.26
