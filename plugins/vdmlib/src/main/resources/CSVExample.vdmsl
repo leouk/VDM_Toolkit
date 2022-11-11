@@ -17,10 +17,10 @@ imports from CSVLib
         CSVValue renamed CSVValue;
     functions 
         row_consistency renamed row_consistency;
-        csv_type_check renamed csv_type_check;
         csv_filter_invalid renamed csv_filter_invalid;
         csv_invariants_failed renamed csv_invariants_failed;
         install_row_invariant renamed install_row_invariant;
+        install_col_invariant renamed install_col_invariant;
     values 
         HEADER_INVARIANT_TRUE renamed HEADER_INVARIANT_TRUE;
     operations 
@@ -33,8 +33,10 @@ exports
         KILL_ROW_VALID_DATA: () -> Data;
     values 
         EXAMPLE_DATA: Data0;
+        CAPITAL_NAMES_ROW_INV: CSVRowInv;
     operations 
-        loadCSVExample       : Path * bool ==> ();
+        load                 : () ==> ();
+        loadCSVExample       : Path * Headers0 * bool ==> ();
         loadTrivialCSVExample: Path ==> ();
 definitions 
 
@@ -55,16 +57,16 @@ values
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
     
     HEADER_INVARIANT_AGE: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and */ v >= MIN_AGE and v <= MAX_AGE);
+        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and */ v >= MIN_AGE and v <= MAX_AGE);
 
     HEADER_INVARIANT_WEIGHT: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_WEIGHT_KG and v <= MAX_WEIGHT_KG);
+        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_WEIGHT_KG and v <= MAX_WEIGHT_KG);
 
     HEADER_INVARIANT_HEIGHT: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_HEIGHT_CM and v <= MAX_HEIGHT_CM);
+        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_HEIGHT_CM and v <= MAX_HEIGHT_CM);
 
     HEADER_INVARIANT_BMI: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_BMI and v <= MAX_BMI);
+        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_BMI and v <= MAX_BMI);
 
     COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
         (lambda h: Header0, c: TransposedRow & h.type = <String> and card elems c = len c);
@@ -107,8 +109,8 @@ values
         [mk_Header0("Name"      , <String> ,         "Joe", HEADER_INVARIANT_TRUE, COL_INVARIANT_UNIQUE_NAME),
          mk_Header0("Age"       , <Integer>,       MIN_AGE, HEADER_INVARIANT_AGE, nil),
          mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, HEADER_INVARIANT_WEIGHT, nil),
-         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, HEADER_INVARIANT_WEIGHT, nil),
-         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, HEADER_INVARIANT_WEIGHT, nil)
+         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, HEADER_INVARIANT_HEIGHT, nil),
+         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, HEADER_INVARIANT_BMI, nil)
         ];
 
     EXAMPLE_DATA: Data0 = 
@@ -190,17 +192,17 @@ values
 operations 
     load() ==
         (
-            loadCSVExample(CSV_EXAMPLE_FILE, false);
+            loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
         );
-    loadCSVExample(path: Path, strict: bool) ==
+    loadCSVExample(path: Path, headers: Headers0, strict: bool) ==
         (
-         loadCSV(path, <Native>, EXAMPLE_DATA_HEADERS, strict);
+         loadCSV(path, <Native>, headers, strict);
          printCSV(path ^ ".out");
         );
 
     loadTrivialCSVExample(path: Path) ==
         (
-         loadTrivialCSV(path, <Native>, [<String>, <Integer>, <Float>], false);
+         loadTrivialCSV(path, <Native>, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
          printCSV(path ^ ".out");
         );
 
