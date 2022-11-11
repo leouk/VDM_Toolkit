@@ -13,7 +13,7 @@
 --     3) As fast (and flexible) as possible IO
 --          3.1) Multiple CSV formats tolerated
 --          3.2) 
-module CSV3
+module CSVLib
 imports 
     from VDMUtil 
         functions 
@@ -586,4 +586,4 @@ operations
     pre file_status(path) in set {<Valid>, <DoesNotExist>};
          
 
-end CSV3
+end CSVLib

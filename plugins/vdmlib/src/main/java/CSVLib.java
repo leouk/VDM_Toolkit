@@ -36,7 +36,7 @@ import util.ValueFactoryHelper;
  * CSV row/column should contain. 
  * @Author Leo Freitas
  */
-public class CSV3 implements Serializable {
+public class CSVLib implements Serializable {
 
     private static final long serialVersionUID = 1L;
 	private static String lastErrorStr = "";
@@ -314,7 +314,7 @@ public class CSV3 implements Serializable {
                     )
             );
 
-            Iterator<String[]> iterr = CSV3.parse(file, getParserType(parser, ctx));
+            Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx));
             assert bufStream != null; 
 
             // seq of Header0

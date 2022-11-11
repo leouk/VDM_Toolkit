@@ -1,5 +1,5 @@
 module CSVExample
-imports from CSV3
+imports from CSVLib
     types 
         Path renamed Path;
         Data renamed Data;

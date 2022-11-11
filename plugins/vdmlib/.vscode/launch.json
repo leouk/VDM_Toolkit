@@ -15,7 +15,7 @@
             "type": "java",
             "name": "Launch Native",
             "request": "launch",
-            "mainClass": "CSV3",
+            "mainClass": "CSVLib",
             "projectName": "vdmlib"
         }
     ]
