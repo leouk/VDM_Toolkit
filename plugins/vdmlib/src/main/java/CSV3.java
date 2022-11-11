@@ -249,8 +249,11 @@ public class CSV3 implements Serializable {
         {
             Context ctx = getContext();//javaContext?
             if (file.exists() && !file.canWrite())
-                throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath(), ctx);
-            
+                throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath() + "\n", ctx);
+            else if (file.isDirectory())
+                throw new ValueException(4999, "CSV print file is a directory:\n\t" + file.getAbsolutePath() + "\n", ctx); 
+
+            // file exists and can write or doesn't exists and isn't a directory, then go
             print(file, data, ctx);
         }
         catch (Exception e)
