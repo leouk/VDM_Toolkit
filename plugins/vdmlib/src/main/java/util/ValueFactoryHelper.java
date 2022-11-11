@@ -12,6 +12,7 @@ import com.fujitsu.vdmj.values.NameValuePair;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.SetValue;
+import com.fujitsu.vdmj.values.UpdatableValue;
 import com.fujitsu.vdmj.values.Value;
 import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
@@ -33,6 +34,19 @@ public class ValueFactoryHelper {
         //@NB ValueFactory.mkSeqValue(null) would fail?
         //return new ValueFactory.mkSeqValue(ValueFactoryHelper.mkValueList(null)));
         return new SeqValue();
+    }
+
+    /**
+     * UpdatableValues come in as parameters to native calls (@NB?).
+     * This gets the underlying reference if an updatable or else just
+     * the value given. 
+     * @param value
+     * @return
+     */
+    public static Value deref(Value value)
+    {
+        return (value instanceof UpdatableValue) ?
+            ((UpdatableValue)value).deref() : value;           
     }
 
     //@NB result of seqValue as SeqValue instead of ValueList?
