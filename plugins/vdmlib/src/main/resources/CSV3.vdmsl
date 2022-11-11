@@ -32,9 +32,10 @@ exports
         struct Header;
         struct Headers0;
         struct Headers;
-        struct Line;
-        struct Col;
+        struct RowNo;
+        struct ColNo;
         struct Row;
+        struct TransposedRow;
         struct Matrix;
         struct Data0;
         struct Data;
@@ -61,7 +62,7 @@ exports
         csv_type_check       : CSVType * CSVValue -> bool;
         csv_default_value    : CSVType -> CSVValue;
         --@doc functions identifying (and purging) invalid line/columns
-        csv_invariants_failed: Data0 -> set of (Line * Col);
+        csv_invariants_failed: Data0 -> set of Error;
         csv_filter_invalid   : Data0 -> Data;
         --@doc construction functions for empty and updated row invariant data
         empty_csv            : Headers0 -> Data;
@@ -161,10 +162,15 @@ types
         invariant: [CSVRowInv];
 
     --@doc CSV line
-    Line = nat1;
+    RowNo = nat1;
 
     --@doc CSV col
-    Col = nat1;
+    ColNo = nat1;
+
+    Error ::
+        row: RowNo
+        col: ColNo 
+        reason: String;
 
     --@doc CSV data its raw headers and sequence of its rows
     --     (i.e. effectively the CSV matrix), as in:  
@@ -263,13 +269,9 @@ functions
         --@doc if result is true, names size must be consistent for every row; otherwise, all empty
         (let mk_(b, mk_Data0(headers', matrix)) = RESULT in
             if b then
-                --@doc line/col consistency with respect to given headers
-                --     (e.g. data.headers = headers + CSV header names).
-                line_col_size_consistency(headers, matrix) 
-                and
                 installed_read_headers_consistency(headers, headers')
             else 
-                headers = [] and matrix = EMPTY_ROWS
+                headers' = [] and matrix = EMPTY_ROWS
         ); 
 
     --@doc prints the CSV data to the given file name; 
@@ -302,7 +304,7 @@ functions
     csv_filter_invalid: Data0 -> Data
     csv_filter_invalid(data) == 
         --@doc avoid mk_Data0(...) on input checking invariant of Data0 at other places again
-        let lcs: set of (Line * Col) = csv_invariants_failed(data) in
+        let errors: set of Error = csv_invariants_failed(data) in
             --@doc same headers but filter rows where lines fail
             mk_Data0(
                 data.headers,
@@ -311,7 +313,7 @@ functions
                     | 
                     i in set inds data.matrix.cells 
                     & 
-                    not i in set { l | mk_(l, -) in set lcs }
+                    not i in set { r | mk_Error(r, -, -) in set errors }
                     ], 
                     data.matrix.invariant
                 )
@@ -331,14 +333,14 @@ functions
 
     --@doc for given line checks the whole row is consistent 
     --     (i.e. no short rows wrt to header size) and invariant holds (if any)
-    row_invariant_check: Headers0 * Matrix * Line -> bool
+    row_invariant_check: Headers0 * Matrix * RowNo -> bool
     row_invariant_check(headers, mk_Matrix(cells, invariant), line) ==
         row_consistency(headers, cells(line))
         and 
         (invariant <> nil => invariant(headers, cells(line)))
     pre line in set inds cells;
 
-    col_invairant_check: Headers0 * Matrix * Col -> bool 
+    col_invairant_check: Headers0 * Matrix * ColNo -> bool 
     col_invairant_check(headers, mk_Matrix(cells, -), col) == 
         let header: Header0       = headers(col),
             trow  : TransposedRow = [ cells(l)(col) | l in set inds cells ]
@@ -348,7 +350,7 @@ functions
 
     --@doc for given line and column within row cells, check
     --     types confirm to declared header type and invariant holds (if any)
-    cell_invariant_check: Headers0 * Matrix * Line * Col -> bool 
+    cell_invariant_check: Headers0 * Matrix * RowNo * ColNo -> bool 
     cell_invariant_check(headers, mk_Matrix(cells, -), line, col) ==
         let type: CSVType  = headers(col).type, 
             cell: CSVValue = cells(line)(col)
@@ -365,10 +367,10 @@ functions
         --@todo redundant if not exporeted? or keep for intra-consistency?
         row_consistency(headers, cells(line));
 
-    --@doc collects the Line/Col points where invariants failed. Useful for
+    --@doc collects the RowNo/ColNo points where invariants failed. Useful for
     --     telling users where it went wrong; columns somewhat irrelevant for
     --     row filtering. 
-    csv_invariants_failed: Data0 -> set of (Line * Col)
+    csv_invariants_failed: Data0 -> set of Error
     csv_invariants_failed(mk_Data0(headers, matrix)) == 
         --@doc For all lines (l) in the rows, check that each column (c) invariant 
         --     in the header holds, for every lement i in rows (e.g. each element of the row).
@@ -376,21 +378,40 @@ functions
         --
         --@doc initially was creating the set directly, but then the logic of checking
         --     what failed became confusing, given the presence of nils, so decided this instead.
-        let 
-            all_cells: set of (Line * Col) = 
-                { mk_(l, c) | l in set inds matrix.cells, c in set inds headers },
-            checked_cells: set of (Line * Col) = 
-                { mk_(l, c) | l in set inds matrix.cells, c in set inds headers
-                  & 
-                  row_invariant_check(headers, matrix, l)
-                  and
-                  col_invairant_check(headers, matrix, c)
-                  and
-                  cell_invariant_check(headers, matrix, l, c)
-                }
+        -- let 
+        --     all_cells: set of Error = 
+        --         { mk_(l, c) | l in set inds matrix.cells, c in set inds headers },
+        --     checked_cells: set of Error = 
+        --         { mk_(l, c) | l in set inds matrix.cells, c in set inds headers
+        --           & 
+        --           row_invariant_check(headers, matrix, l)
+        --           and
+        --           col_invairant_check(headers, matrix, c)
+        --           and
+        --           cell_invariant_check(headers, matrix, l, c)
+        --         }
+        -- in
+        --     all_cells \ checked_cells;
+        let all_rows: set of RowNo = inds matrix.cells,
+            all_cols: set of ColNo = inds headers, 
+            bad_rows: set of RowNo = 
+                { r | r in set all_rows & not row_invariant_check(headers, matrix, r) },
+            bad_cols: set of ColNo = 
+                { c | c in set all_cols & not col_invairant_check(headers, matrix, c) },
+            failing_cells: set of (RowNo * ColNo) =
+                { mk_(r, c) 
+                  | r in set all_rows \ bad_rows, c in set all_cols \ bad_cols 
+                  & not cell_invariant_check(headers, matrix, r, c) 
+                },
+            bad_rows_errors: set of Error = 
+                { mk_Error(r, c, "Invalid row  invariant") | r in set bad_rows, c in set all_cols },
+            bad_cols_errors: set of Error = 
+                { mk_Error(r, c, "Invalid col  invariant") | r in set all_rows, c in set bad_cols },
+            bad_cell_errors: set of Error = 
+                { mk_Error(r, c, "Invalid cell invariant") | mk_(r, c) in set failing_cells }
         in
-            all_cells \ checked_cells;
- 
+            bad_rows_errors union bad_cols_errors union bad_cell_errors;
+            
 --@doc CSV state constains CSV file, which kind of CSV parser to use,
 --     any computation (IO and other) erros, user-defined headers, and
 --     read valid (invariant checked) CSV data.  
@@ -399,7 +420,7 @@ state CSV of
     parser  : CSVParser
     ferr    : [String1]
     strict  : bool
-    pos     : set of (Line * Col)
+    pos     : set of Error
     data    : Data0
 inv mk_CSV(file, -, ferr, strict, pos, data) ==
         --@doc if there is an error, zero the information
@@ -412,8 +433,8 @@ inv mk_CSV(file, -, ferr, strict, pos, data) ==
         (strict => is_Data(data) and pos = {})  
         and 
         --@doc failed positions are within the CSV matrix 
-        (pos <> {} => { l | mk_(l, -) in set pos } subset inds data.matrix.cells and 
-                      { c | mk_(-, c) in set pos } subset inds data.headers)      
+        (pos <> {} => { r | mk_Error(r, -, -) in set pos } subset inds data.matrix.cells and 
+                      { c | mk_Error(-, c, -) in set pos } subset inds data.headers)      
 init csv == 
         csv = mk_CSV(nil, <Native>, nil, false, {}, empty_csv([]))
 end
@@ -426,17 +447,17 @@ operations
 
     --@doc shows the error if the state registered it
     showError() ==
-        (ferr := lastError();
-         if ferr <> nil then 
-            --@todo remove to minimise dependency to IO?
+        (if ferr <> nil then 
             printf("CSV error %1s\n", [ferr]);
+         ferr := lastError();
+         if ferr <> nil then 
+            printf("CSV IO error %1s\n", [ferr]);
          if pos <> {} then 
          (
             printf("CSV invariant failure at %1s cells: ", [card pos]);
-            for all mk_(l, c) in set pos do
+            for all mk_Error(r, c, reason) in set pos do
             (
-                --@todo format them nicely? 
-                printf("\n\t(%1s,%2s)", [l, c]);
+                printf("\n\t(%1s,%2s): %3s", [r, c, reason]);
             );
             printf("%1s", ['\n']);
          );
@@ -465,7 +486,7 @@ operations
         (let mk_(ok, data') = csv_read_data(file, parser, data.headers) in
             if ok then 
             (   --@doc check invariants using teh installed headers against read rows
-                let lcs: set of (Line * Col) = csv_invariants_failed(data') in
+                let lcs: set of Error = csv_invariants_failed(data') in
                     if (lcs = {}) then
                     (
                         --@doc update the headers with names as well, if successful.
