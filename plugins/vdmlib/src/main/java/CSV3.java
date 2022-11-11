@@ -223,17 +223,17 @@ public class CSV3 implements Serializable {
         if (!f.exists())
         {
             result = ValueFactory.mkQuote("DoesNotExist");
-            lastErrorStr = "CSV file does not exist:\n\t" + f.getAbsolutePath() + "\n"; 
+            //lastErrorStr = "CSV file does not exist:\n\t" + f.getAbsolutePath() + "\n"; 
         } 
         else if (!f.canRead())
         {
             result = ValueFactory.mkQuote("CannotBeRead");
-            lastErrorStr = "CSV file does not have read permission:\n\t" + f.getAbsolutePath() + "\n"; 
+            //lastErrorStr = "CSV file does not have read permission:\n\t" + f.getAbsolutePath() + "\n"; 
         }
         else if (f.isDirectory())
         {
             result = ValueFactory.mkQuote("IsDirectory");
-            lastErrorStr = "CSV file is a directory:\n\t" + f.getAbsolutePath() + "\n"; 
+            //lastErrorStr = "CSV file is a directory:\n\t" + f.getAbsolutePath() + "\n"; 
         }
         else 
             result = ValueFactory.mkQuote("Valid");
@@ -241,14 +241,14 @@ public class CSV3 implements Serializable {
     }
 
     @VDMFunction
-    public static Value csv_write_data(Value path, Value parser, Value data)
+    public static Value csv_write_data(Value path, Value data)
     {        
         File file = getFile(path);
-        Value result = ValueFactory.mkBool(true); 
+        Value result;
         try
         {
             Context ctx = getContext();//javaContext?
-            if (!file.canWrite())
+            if (file.exists() && !file.canWrite())
                 throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath(), ctx);
             
             print(file, data, ctx);
