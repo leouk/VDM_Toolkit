@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.VDMJ;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.VDMFunction;
@@ -20,6 +22,7 @@ import com.fujitsu.vdmj.values.QuoteValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.TupleValue;
+import com.fujitsu.vdmj.values.UpdatableValue;
 import com.fujitsu.vdmj.values.Value;
 import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
@@ -46,7 +49,7 @@ public class CSV3 implements Serializable {
     private static final String CSVDATA_FIELD_MATRIX    = "matrix";
     private static final String MATRIX_TYPE_NAME    = "Matrix";
     private static final String MATRIX_FIELD_CELLS    = "cells";
-    private static final String HEADER_TYPE_NAME = "Header";
+    private static final String HEADER_TYPE_NAME = "Header0";
     private static final String HEADER_FIELD_NAME = "name";
     private static final String HEADER_FIELD_TYPE = "type";
     private static final String HEADER_FIELD_CELL_INV  = "cell_invariant";
@@ -60,7 +63,7 @@ public class CSV3 implements Serializable {
 
     public static final void main(String args[])
     {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-default", "CSVExample", "-i", 
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/IO.vdmsl",
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/VDMUtil.vdmsl",
                 "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSVExample.vdmsl",
@@ -123,8 +126,10 @@ public class CSV3 implements Serializable {
         {
             throw new ValueException(4999, "Invalid CSV Data value to print for " + fieldName, ctxt);
         }
+        // field name must be a string
         return rStr.stringValue(ctxt);
     }
+
     protected static void print(File file, Value data, Context ctxt)
         throws IOException, ValueException
     {
