@@ -7,6 +7,7 @@ imports from CSV3
         Header0 renamed Header0;
         Headers renamed Headers;
         Row renamed Row;
+        TransposedRow renamed TransposedRow;
         Matrix renamed Matrix;
         CSVCellInv renamed CSVCellInv;
         CSVRowInv renamed CSVRowInv;
@@ -33,22 +34,43 @@ exports
     values 
         EXAMPLE_DATA: Data0;
     operations 
-        loadCSVExample       : bool ==> ();
-        loadTrivialCSVExample: () ==> ();
+        loadCSVExample       : Path * bool ==> ();
+        loadTrivialCSVExample: Path ==> ();
 definitions 
 
 --@doc tests to show the data type usage, including dynamic invariants
 values 
     MIN_AGE: nat1 = 18;
     MAX_AGE: nat1 = 60;
-    MIN_WEIGHT: real = 10.5;
-    MAX_WEIGHT: real = 100;
+    MIN_BMI: nat1 = 18;
+    MAX_BMI: nat1 = 35;
+    PRECISION: nat1 = 3;
+    MIN_WEIGHT_KG: real = 10.5;
+    MAX_WEIGHT_KG: real = 100;
+    MIN_HEIGHT_CM: real = 100;
+    MAX_HEIGHT_CM: real = 250;
+    WEIGHT_ROW_INDEX: nat1 = 3;
+    HEIGHT_ROW_INDEX: nat1 = 4;
+    BMI_ROW_INDEX   : nat1 = 5;
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
+    
     HEADER_INVARIANT_AGE: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_AGE and v <= MAX_AGE);
+        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and */ v >= MIN_AGE and v <= MAX_AGE);
 
     HEADER_INVARIANT_WEIGHT: CSVCellInv =
-        (lambda t: CSVType, v: CSVValue & csv_type_check(t, v) and v >= MIN_WEIGHT and v <= MAX_WEIGHT);
+        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_WEIGHT_KG and v <= MAX_WEIGHT_KG);
+
+    HEADER_INVARIANT_HEIGHT: CSVCellInv =
+        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_HEIGHT_CM and v <= MAX_HEIGHT_CM);
+
+    HEADER_INVARIANT_BMI: CSVCellInv =
+        (lambda t: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_BMI and v <= MAX_BMI);
+
+    COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
+        (lambda h: Header0, c: TransposedRow & h.type = <String> and card elems c = len c);
+
+    ROW_INVARIANT_BMI_CONSISTENCY: CSVRowInv =
+        (lambda h: Headers0, r: Row & BMI_ROW_INDEX <= len h and row_consistency(h, r) and (let bmi: real = calculate_bmi(r) in bmi >= MIN_BMI and bmi <= MAX_BMI));
 
     KILL_ROW_INVARIANT_EXAMPLE: CSVRowInv = 
         (lambda h: Headers0, r: Row & 
@@ -71,16 +93,22 @@ values
             (len r(1) > 0 => r(1)(1) in set elems CAPITAL_LETTERS)  
         );
 
-    -- Name,Age,Weight(Kg)
-    -- "Leo",40,58.5
-    -- "Nick",50,70.2
-    -- "Young",15,61.5
-    -- "Heavy",70,150.3 
+    -- Name,Age,Weight(Kg),Height(cm),BMI
+    -- "Okay1",40,58.5,169,20.5
+    -- "BMICalcWrong",50,70.2,180,30
+    -- "Young",15,61.5,170,21.3
+    -- "OldHeavy",70,150.3,180,46.4
+    -- "TallBMIinvalid",40,50,270,6.86
+    -- "DefaultAge",,58.5,169,20.5
+    -- "RepeatedName",40,58.5,169,20.5
+    -- "RepeatedName",50,58.5,179,18.26
     --@doc make it Data0, so that the invariants won't be checked at creation time. 
     EXAMPLE_DATA_HEADERS: Headers = 
-        [mk_Header0("Name"      , <String> ,      "Joe", HEADER_INVARIANT_TRUE, nil),
-         mk_Header0("Age"       , <Integer>,    MIN_AGE, HEADER_INVARIANT_AGE, nil),
-         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT, HEADER_INVARIANT_WEIGHT, nil)
+        [mk_Header0("Name"      , <String> ,         "Joe", HEADER_INVARIANT_TRUE, COL_INVARIANT_UNIQUE_NAME),
+         mk_Header0("Age"       , <Integer>,       MIN_AGE, HEADER_INVARIANT_AGE, nil),
+         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, HEADER_INVARIANT_WEIGHT, nil),
+         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, HEADER_INVARIANT_WEIGHT, nil),
+         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, HEADER_INVARIANT_WEIGHT, nil)
         ];
 
     EXAMPLE_DATA: Data0 = 
@@ -88,19 +116,44 @@ values
             EXAMPLE_DATA_HEADERS,
             --       C1    C2  C3        R0 (Header)
             mk_Matrix(
-                [["Leo"  , 40, 58.5], -- R1
-                 ["Nick" , 50, 70.2], -- R2 
-                 ["Young", 15, 61.5], -- R3    Age violation (3,2)
-                 ["Heavy", 70, 150.3],-- R4    Age violation (4,2)
-                                      --    Weight violation (4,3)
-                --@todo put something like BMI here, as current one is silly
-                 ["bad"  , 50, 60]    -- R5 Whole Row violation 
+                [
+                   ["Okay1",40,58.5,169,20.5],
+                   ["BMICalcWrong",50,70.2,180,30],
+                   ["Young",15,61.5,170,21.3],
+                   ["OldHeavy",70,150.3,180,46.4],
+                   ["TallBMIinvalid",40,50,270,6.86],
+                   ["DefaultAge",MIN_AGE,58.5,169,20.5],
+                   ["RepeatedName",40,58.5,169,20.5],
+                   ["RepeatedName",50,58.5,179,18.26]
                 ],
-                CAPITAL_NAMES_ROW_INV                
+                -- [["Leo"  , 40, 58.5], -- R1
+                --  ["Nick" , 50, 70.2], -- R2 
+                --  ["Young", 15, 61.5], -- R3    Age violation (3,2)
+                --  ["Heavy", 70, 150.3],-- R4    Age violation (4,2)
+                --                       --    Weight violation (4,3)
+                -- --@todo put something like BMI here, as current one is silly
+                --  ["bad"  , 50, 60]    -- R5 Whole Row violation 
+                -- ],
+                ROW_INVARIANT_BMI_CONSISTENCY                
             )
         );
     
 functions 
+   	approx: real * nat -> real
+	approx(m, precision) == m * (10**precision);
+
+    calculate_bmi: Row -> real
+    calculate_bmi(r) ==
+        let 
+            --@doc get values from each row; calculate height in meters
+            --     if denominator (d) is aprox equal / negligeble to zero, adjust 
+            w: real = r(WEIGHT_ROW_INDEX),
+            h: real = r(HEIGHT_ROW_INDEX),
+            h_m: real = h / 100,
+            d: real = h_m * h_m
+        in
+            if floor(approx(d, PRECISION)) = 0 then MIN_BMI-1 else w / d 
+    pre BMI_ROW_INDEX <= len r;
 
     VALID_DATA: [CSVRowInv] -> Data 
     VALID_DATA(rowInv) == 
@@ -126,19 +179,29 @@ traces
 
 --@doc tests to show native CSV calls and CSV loaded state
 values 
-    CSV_EXAMPLE_FILE: Path = "./CSVExample.csv";
+   --This ends up in wrong place when done under debug mode! 
+   CSV_EXAMPLE_FILE: Path --= "./CSVExample.csv";
+   -- = VDMJTK_HOME/plugins/vdmlib/./CSVExample.csv
+   -- instead of 
+   -- VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.csv
+   ="/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSVExample.csv"
+    ;
 
 operations 
-    loadCSVExample(strict: bool) ==
+    load() ==
         (
-         loadCSV(CSV_EXAMPLE_FILE, <Native>, EXAMPLE_DATA_HEADERS, strict);
-         printCSV(CSV_EXAMPLE_FILE ^ ".out");
+            loadCSVExample(CSV_EXAMPLE_FILE, false);
+        );
+    loadCSVExample(path: Path, strict: bool) ==
+        (
+         loadCSV(path, <Native>, EXAMPLE_DATA_HEADERS, strict);
+         printCSV(path ^ ".out");
         );
 
-    loadTrivialCSVExample() ==
+    loadTrivialCSVExample(path: Path) ==
         (
-         loadTrivialCSV(CSV_EXAMPLE_FILE, <Native>, [<String>, <Integer>, <Float>], false);
-         printCSV(CSV_EXAMPLE_FILE ^ ".out");
+         loadTrivialCSV(path, <Native>, [<String>, <Integer>, <Float>], false);
+         printCSV(path ^ ".out");
         );
 
 end CSVExample
