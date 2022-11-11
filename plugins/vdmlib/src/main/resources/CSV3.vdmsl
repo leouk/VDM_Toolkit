@@ -527,7 +527,7 @@ operations
     printCSV(path: Path) == 
         (if (file = nil) then
             printf("CSV not yet loaded %1s",['\n'])
-         else if ferr <> nil and pre_csv_write_data(path, data) then
+         else if ferr = nil and pre_csv_write_data(path, data) then
             if file = path then 
                 printf("Cannot print to the same CSV file loaded %1s\n", [file])
             else
@@ -540,8 +540,9 @@ operations
                         (
                             --@doc don't set ferr to avoid zeroing data, but warn of failure
                             printf("CSV print failed for %1s\n", [path]);
-                        );
-          
+                        )
+          else 
+            printf("CSV write data native call precondition failure for %1s\n", [path]);
           --@doc show any invariant violations or IO errors from csv_write_data call
           showError();
         )
