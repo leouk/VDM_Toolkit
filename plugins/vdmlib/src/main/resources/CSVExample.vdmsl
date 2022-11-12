@@ -19,13 +19,10 @@ imports from CSVLib
         Headers0 renamed Headers0;
         CSVValue renamed CSVValue;
     functions 
-        row_consistency renamed row_consistency;
         csv_filter_invalid renamed csv_filter_invalid;
         csv_invariants_failed renamed csv_invariants_failed;
         install_row_invariant renamed install_row_invariant;
         install_col_invariant renamed install_col_invariant;
-    values 
-        HEADER_INVARIANT_TRUE renamed HEADER_INVARIANT_TRUE;
     operations 
         loadCSV renamed loadCSV;
         loadTrivialCSV renamed loadTrivialCSV;
@@ -59,48 +56,68 @@ values
     BMI_ROW_INDEX   : nat1 = 5;
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
     
-    HEADER_INVARIANT_AGE: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and */ v >= MIN_AGE and v <= MAX_AGE);
+    --@doc various invariants examples: if failed, return a non-empty string for a reason; nil if succeeds. 
+    ROW_INVARIANT_AGE: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_AGE then "below minimal age" else if v > MAX_AGE then "above maximal age" else nil);
 
-    HEADER_INVARIANT_WEIGHT: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_WEIGHT_KG and v <= MAX_WEIGHT_KG);
+    ROW_INVARIANT_WEIGHT: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_WEIGHT_KG then "below minimal weight" else if v > MAX_WEIGHT_KG then "above maximal weight" else nil);
 
-    HEADER_INVARIANT_HEIGHT: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_HEIGHT_CM and v <= MAX_HEIGHT_CM);
+    ROW_INVARIANT_HEIGHT: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_HEIGHT_CM then "below minimal height" else if v > MAX_HEIGHT_CM then "above maximal height" else nil);
 
-    HEADER_INVARIANT_BMI: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & /*csv_type_check(t, v) and*/ v >= MIN_BMI and v <= MAX_BMI);
+    ROW_INVARIANT_BMI: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue &  
+            if v < MIN_BMI then "below minimal BMI" else if v > MAX_BMI then "above maximal BMI" else nil);
 
     COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
-        (lambda h: Header0, c: TransposedRow & h.type = <String> and card elems c = len c);
+        (lambda h: Header0, c: TransposedRow & 
+            if h.type <> <String> then "not string typed" else if card elems c <> len c then "repeated names" else nil);
 
+    --@doc caution: expensive for large (many rows) CSV files !
     COL_INVARIANT_ORDERED: CSVColInv = 
         (lambda h: Header0, c: TransposedRow & 
-            h.type <> <String> and
-            (forall i, j in set inds c & i < j => c(i) <= c(j)));
+            if not h.type in set  {<Integer>, <Float>} then 
+                "not number typed" 
+            else if --not (forall i, j in set inds c & i < j => c(i) <= c(j))
+                          (exists i, j in set inds c & i < j and c(i) > c(j)) then 
+                "column is not in ascending order"
+            else 
+                nil
+        );
 
+    --@doc caution: expensive for wide (many columns) CSV files
     ROW_INVARIANT_BMI_CONSISTENCY: CSVRowInv =
-        (lambda h: Headers0, r: Row & BMI_ROW_INDEX <= len h and row_consistency(h, r) and (let bmi: real = calculate_bmi(r) in bmi >= MIN_BMI and bmi <= MAX_BMI));
+        (lambda h: Headers0, r: Row & 
+            if BMI_ROW_INDEX > len h then 
+                "invalid BMI header"
+            else 
+                (let bmi: real = calculated_bmi(r) in
+                    if approx_eq(r(BMI_ROW_INDEX), bmi, PRECISION) then nil else "invalid BMI for given CSV weight and height")
+        );
 
+    --@doc when failure anywhere in the row, kill the whole row
     KILL_ROW_INVARIANT_EXAMPLE: CSVRowInv = 
         (lambda h: Headers0, r: Row & 
-            --@doc all rows align with header (redundant as checked by default)
-            row_consistency(h, r)
-            and
-            --@doc if failure anywhere in the row, kill the whole row
-            (forall i in set inds h &
-                (h(i).cell_invariant <> nil => h(i).cell_invariant(h(i).type, r(i)))
-            )
+            if (exists i in set inds h & 
+                    (h(i).cell_invariant <> nil) 
+                    and 
+                    (h(i).cell_invariant(h(i).type, r(i)) <> nil)
+                ) then
+                "kill row with cell invariant violations"
+            else 
+                nil
         );
 
     CAPITAL_NAMES_ROW_INV: CSVRowInv = 
         (lambda h: Headers0, r: Row & 
-            --@doc all rows align with header (redundant as checked by default)
-            row_consistency(h, r)
-            and
             --@doc row-specific check, e.g. all names must be capitalised :-) 
-            --@todo this is more like a cell invariant 
-            (len r(1) > 0 => r(1)(1) in set elems CAPITAL_LETTERS)  
+            if len h = 0 then "empty headers" else 
+            if len r(1) = 0 then "invalid (empty) name" else 
+            if not r(1)(1) in set elems CAPITAL_LETTERS then "name not capitalised" else nil
         );
 
     -- Name,Age,Weight(Kg),Height(cm),BMI
@@ -114,11 +131,11 @@ values
     -- "RepeatedName",50,58.5,179,18.26
     --@doc make it Data0, so that the invariants won't be checked at creation time. 
     EXAMPLE_DATA_HEADERS: Headers = 
-        [mk_Header0("Name"      , <String> ,         "Joe", HEADER_INVARIANT_TRUE, COL_INVARIANT_UNIQUE_NAME),
-         mk_Header0("Age"       , <Integer>,       MIN_AGE, HEADER_INVARIANT_AGE, nil),
-         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, HEADER_INVARIANT_WEIGHT, nil),
-         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, HEADER_INVARIANT_HEIGHT, nil),
-         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, HEADER_INVARIANT_BMI, nil)
+        [mk_Header0("Name"      , <String> ,         "Joe", nil, COL_INVARIANT_UNIQUE_NAME),
+         mk_Header0("Age"       , <Integer>,       MIN_AGE, ROW_INVARIANT_AGE, nil),
+         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, ROW_INVARIANT_WEIGHT, nil),
+         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, ROW_INVARIANT_HEIGHT, nil),
+         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, ROW_INVARIANT_BMI, nil)
         ];
 
     EXAMPLE_DATA: Data0 = 
@@ -149,11 +166,20 @@ values
         );
     
 functions 
-   	approx: real * nat -> real
+   	approx: real * nat1 -> real
 	approx(m, precision) == m * (10**precision);
 
-    calculate_bmi: Row -> real
-    calculate_bmi(r) ==
+    --@doc approximate  both sides to the same precision then floor them for equality testing
+	approx_eq: real * real * nat1 -> bool
+	approx_eq(lhs, rhs, precision) == 
+		let 
+			lhs': real = approx(lhs, precision),
+			rhs': real = approx(rhs, precision)
+		 in
+		  floor(lhs') = floor(rhs');
+          
+    calculated_bmi: Row -> real
+    calculated_bmi(r) ==
         let 
             --@doc get values from each row; calculate height in meters
             --     if denominator (d) is aprox equal / negligeble to zero, adjust 
@@ -162,7 +188,7 @@ functions
             h_m: real = h / 100,
             d: real = h_m * h_m
         in
-            if floor(approx(d, PRECISION)) = 0 then MIN_BMI-1 else w / d 
+            if approx_eq(d, 0, PRECISION) then MIN_BMI-1 else w / d 
     pre BMI_ROW_INDEX <= len r;
 
     VALID_DATA: [CSVRowInv] -> Data 
@@ -182,7 +208,7 @@ functions
     change_col_inv(col_inv, colNo) == install_col_invariant(EXAMPLE_DATA, col_inv, {colNo});
     
 traces 
-    --@do kills only specific cells that violate CAPITAL_LETTERS
+    --@doc kills only specific cells that violate CAPITAL_LETTERS
     test1: csv_invariants_failed(EXAMPLE_DATA); 
             --= {mk_(3, 2), mk_(4, 2), mk_(4, 3), mk_(5, 1), mk_(5, 2), mk_(5, 3)};
 
