@@ -304,15 +304,16 @@ public class CSVLib implements Serializable {
         ValueList result = new ValueList();
         // Row number is already VDM based, so no padding
         // Column numbers are Java based, so pad +1
-        for(int colNo = givenCol; colNo < expectedCol; colNo++)
-        {
+        //for(int colNo = givenCol; colNo < expectedCol; colNo++)
+        //{
+            // only a single error, given the whole row will be filtered out
             result.add(ValueFactory.mkRecord(
                 MODULE_NAME, ERROR_TYPE_NAME, 
                 ValueFactory.mkInt(rowNo),
-                ValueFactory.mkInt(colNo+1),
-                ValueFactoryHelper.mkString("CSV row too short for header: expected " + 
-                    expectedCol + " found " + givenCol + plural(expectedCol, "column", "columns"))));
-        }
+                ValueFactory.mkInt(givenCol+1),
+                ValueFactoryHelper.mkString("CSV row " + rowNo + " is too short for header: expected " + 
+                    plural(expectedCol, "columns", "s") + " found " + plural(givenCol, "column", "s"))));
+        //}
         return result;
     }
 
@@ -463,10 +464,6 @@ public class CSVLib implements Serializable {
                 rowCount++;
             }
 
-            // reset tuple value with mk_(true, mk_Data0(headers, matrix))
-            result.add(new BooleanValue(short_row_errors.size() == 0));
-            result.add(ValueFactoryHelper.mkSet(short_row_errors));
-
             // return the CSV data with short rows filtered and the rows missing as errors.
             RecordValue csvData = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
@@ -488,6 +485,10 @@ public class CSVLib implements Serializable {
             //     user's perspective. 
             // @NB invariant checks need the interpreter's context then? 
             csvData.checkInvariant(ctx);//Interpretr's context?
+            
+            // reset tuple value with mk_(true, errors, mk_Data0(headers, matrix))
+            result.add(new BooleanValue(true));
+            result.add(ValueFactoryHelper.mkSet(short_row_errors));            
             result.add(csvData);
 
             closeStream();

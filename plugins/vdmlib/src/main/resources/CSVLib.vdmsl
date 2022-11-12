@@ -305,7 +305,7 @@ functions
                 and
                 --@doc structurally correct (possibly type violating) read
                 --     must not accept short rows outside errors ones.  
-                (line_col_size_consistency(headers', filter_errors(matrix, errors)))
+                (line_col_size_consistency(headers', matrix))--filter_errors(matrix, errors)))
             else 
                 headers' = [] and matrix = EMPTY_ROWS
         ); 
@@ -515,6 +515,8 @@ operations
              pos      := {};
              data     := empty_csv(headersToInstall);
             );
+         printf("CSV %1ssetup with %2s parser and %3s headers for %4s\n", 
+            [if s then "strict " else " ", parserChoice, len headersToInstall, path]);
          showError();
         )
     ext wr file, parser, data, strict, pos
@@ -530,33 +532,37 @@ operations
             (   
                 if short_row_errors <> {} then 
                 (
-                    atomic (
-                        data := empty_csv(data.headers);
-                        pos  := {};
-                    );
-                    printf("CSV (IO) error due to short rows failure at %1s cells: ", [card short_row_errors]);
+                    printf("CSV (IO) error: ignoring %1s short rows", [card short_row_errors]);
                     printErrors(short_row_errors);
-                )
-                else
-                    --@doc check invariants using teh installed headers against read rows
-                    let lcs: Errors = csv_invariants_failed(data') in
-                        if (lcs = {}) then
-                        (
-                            --@doc update the headers with names as well, if successful.
-                            atomic (
-                                data := data';
-                                pos  := lcs;
-                            );
-                        )
-                        else
-                        (
-                            --@doc pick the named headers and set invariant violation positions
-                            --@doc if strict, zero the CSV; otherwise allow it.
-                            atomic (
-                                data  := if strict then empty_csv(data'.headers) else data';
-                                pos   := if strict then {} else lcs;
-                            );
-                        )
+                    if strict then 
+                    (
+                        atomic (
+                            data := empty_csv(data'.headers);
+                            pos := {};
+                        );
+                        -- if strict, clear data + pos; otherwise, carry on with invariant checks
+                        return;
+                    )
+                );
+                --@doc check invariants using teh installed headers against read rows
+                let lcs: Errors = csv_invariants_failed(data') in
+                    if (lcs = {}) then
+                    (
+                        --@doc update the headers with names as well, if successful.
+                        atomic (
+                            data := data';
+                            pos  := lcs;
+                        );
+                    )
+                    else
+                    (
+                        --@doc pick the named headers and set invariant violation positions
+                        --@doc if strict, zero the CSV; otherwise allow it.
+                        atomic (
+                            data  := if strict then empty_csv(data'.headers) else data';
+                            pos   := if strict then {} else lcs;
+                        );
+                    )
             )
             else 
             (
