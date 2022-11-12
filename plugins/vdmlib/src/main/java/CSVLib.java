@@ -22,10 +22,10 @@ import com.fujitsu.vdmj.values.QuoteValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.TupleValue;
-import com.fujitsu.vdmj.values.UpdatableValue;
 import com.fujitsu.vdmj.values.Value;
 import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
+import com.fujitsu.vdmj.values.ValueSet;
 
 import util.NativeCSVParser;
 import util.ValueFactoryHelper;
@@ -43,18 +43,16 @@ public class CSVLib implements Serializable {
     private static Context context = null;
     private static BufferedInputStream bufStream = null;
 
-    private static final String MODULE_NAME = "CSV3";
+    private static final String MODULE_NAME = "CSVLib";
     private static final String CSVDATA_TYPE_NAME = "Data0";
     private static final String CSVDATA_FIELD_HEADERS = "headers";
     private static final String CSVDATA_FIELD_MATRIX    = "matrix";
     private static final String MATRIX_TYPE_NAME    = "Matrix";
     private static final String MATRIX_FIELD_CELLS    = "cells";
-    private static final String HEADER_TYPE_NAME = "Header0";
+    private static final String ERROR_TYPE_NAME = "Error";
     private static final String HEADER_FIELD_NAME = "name";
     private static final String HEADER_FIELD_TYPE = "type";
-    private static final String HEADER_FIELD_CELL_INV  = "cell_invariant";
     private static final String HEADER_FIELD_DEFAULT_VALUE = "default";
-    private static final String HEADER_FIELD_COL_INV = "col_invariant";
     private static final String CSVTYPE_INTEGER = "Integer";
     private static final String CSVTYPE_FLOAT   = "Float";
     private static final String CSVTYPE_STRING  = "String";
@@ -64,10 +62,10 @@ public class CSVLib implements Serializable {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-default", "CSVExample", "-i", 
-                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/IO.vdmsl",
-                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/lib/VDMUtil.vdmsl",
-                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSVExample.vdmsl",
-                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSV3.vdmsl",
+                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/lib/IO.vdmsl",
+                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/lib/VDMUtil.vdmsl",
+                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.vdmsl",
+                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVLib.vdmsl",
             }
         );
     }
@@ -283,6 +281,39 @@ public class CSVLib implements Serializable {
         return result;
     }
 
+    private static String plural(int n, String s, String pl)
+	{
+		return n + " " + (n != 1 ? s + pl : s);
+	}
+
+    /**
+     * 
+     * @param rowNo VDM indexed row
+     * @param expectedCol expected column size
+     * @param givenCol given column size
+     * @param reason detail
+     * @return list of errors from given to expected, assuming givenCol < expectedCol
+     * @throws ValueException
+     */
+    private static ValueList createError(int rowNo, int expectedCol, int givenCol, String reason)
+        throws ValueException
+    {
+        assert givenCol < expectedCol; 
+        ValueList result = new ValueList();
+        // Row number is already VDM based, so no padding
+        // Column numbers are Java based, so pad +1
+        for(int colNo = givenCol; colNo < expectedCol; colNo++)
+        {
+            result.add(ValueFactory.mkRecord(
+                MODULE_NAME, ERROR_TYPE_NAME, 
+                ValueFactory.mkInt(rowNo),
+                ValueFactory.mkInt(colNo+1),
+                ValueFactoryHelper.mkString("CSV row too short for header: expected " + 
+                    expectedCol + " found " + givenCol + plural(expectedCol, "column", "columns"))));
+        }
+        return result;
+    }
+
     /**
      * Corresponds to VDM "csv_read_data: Path * CSVParser * Headers0 -> bool * Data0"
      * @param path file path where it is expected file_status(path) = <Valid>
@@ -301,7 +332,7 @@ public class CSVLib implements Serializable {
         Context ctx = getContext();//Interpreter's context?
         try
         {
-            //@NB how to refer to CSV3`EMPTY_CSV here? e.g. mk_(false, EMPTY_CSV)
+            //@NB how to refer to CSVLib`EMPTY_CSV here? e.g. mk_(false, EMPTY_CSV)
             // have here because of ValueException?
             emptyCSV = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
@@ -377,19 +408,28 @@ public class CSVLib implements Serializable {
 
             // read in the matrix by checking the invariant according to given type in headers param
             ValueList csvMatrix = new ValueList();
+            ValueSet short_row_errors = new ValueSet();
             while (iterr.hasNext())
             {
                 String[] row = iterr.next();
 
+                // raise short rows as resulting (IO) errors 
+                //check_line_col_size_consistency(headersList.size(), row.length, rowCount, ctx);
+                if (headersList.size() > row.length)
+                {
+                    // stop row processing and accummulate the short row error for every column mising
+                    short_row_errors.addAll(createError(rowCount, headersList.size(), row.length,
+                        "CSV row " + rowCount + " is short: expected " + 
+                        headersList.size() + " rows but read " + row.length));
+                    // count the missing row though
+                    rowCount++;
+                    continue;
+                }
                 // cell value list has to be created uniquely
                 // otherwise a reference in JAva is used (!)
                 // (i.e. only last row would be valid for all rows)?!
                 //@NB why is that? 
                 ValueList cellValues = new ValueList();
-
-                // checks the row read matches the headers given
-                //@TODO remove this.... in vfavour for minimal 
-                check_line_col_size_consistency(headersList.size(), row.length, rowCount, ctx);
 
                 // process each row cell
                 for(int colCount = 0; colCount < row.length; colCount++)
@@ -422,7 +462,10 @@ public class CSVLib implements Serializable {
             }
 
             // reset tuple value with mk_(true, mk_Data0(headers, matrix))
-            result.add(new BooleanValue(true));
+            result.add(new BooleanValue(short_row_errors.size() == 0));
+            result.add(ValueFactoryHelper.mkSet(short_row_errors));
+
+            // return the CSV data with short rows filtered and the rows missing as errors.
             RecordValue csvData = ValueFactory.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
                     new SeqValue(namedHeaders),
@@ -433,11 +476,12 @@ public class CSVLib implements Serializable {
                     )
             ); 
         
-            // check the CSVDATA_TYPE_NAME invariant, which shouldn't include the
+            // checks Data0 invariant only (i.e. the CSVDATA_TYPE_NAME invariant), 
+            // which shouldn't include the
             // dynamic invariant check. This is done later. This is important
             // to allow the loading of "invalid" data into the VDM space, so 
-            // that users get a VDM invariant failure check.
-            // @NB see CSV3.vdmsl csv_invariants_failed call on loadCSV operation
+            // that users get a VDM invariant failure check. 
+            // @NB see CSVLib.vdmsl csv_invariants_failed call on loadCSV operation
             //     is it better there or here? Wanted there to be "clear" from the
             //     user's perspective. 
             // @NB invariant checks need the interpreter's context then? 
@@ -447,16 +491,17 @@ public class CSVLib implements Serializable {
             closeStream();
         } catch (Exception e)//IOException
         {
-            // on error return mk_(false, [], [])
+            // on error return mk_(false, {}, [])
             lastErrorStr = e.getMessage();
 
             // get the failed answer here for ValueException catch
-            // set failed tuple answer as mk_(false, mk_Data0([]], []]))
+            // set failed tuple answer as mk_(false, {}, mk_Data0([]], []]))
             result.add(new BooleanValue(false));
+            result.add(ValueFactoryHelper.mkEmptySetValue());
             result.add(emptyCSV);        
         }
-        // otherwise, return mk_(true, data)
-        assert result.size() == 2;
+        // otherwise, return mk_(true, short_row_errors, data)
+        assert result.size() == 3;
         return new TupleValue(result);
     }
 
