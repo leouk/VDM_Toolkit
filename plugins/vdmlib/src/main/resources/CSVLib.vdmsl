@@ -106,10 +106,9 @@ types
 
     FileStatus = <Valid> | <DoesNotExist> | <CannotBeRead> | <CannotBeWritten> | <IsDirectory>; 
 
-    --@todo any more types needed? @AB?
-    CSVType = <Integer> | <Float> | <String>; 
+    CSVType = <Integer> | <Float> | <String> | <Boolean>; 
 
-    CSVValue = int | real | String;
+    CSVValue = int | real | String | bool;
 
     --@doc CSV parser IO back-end choices. Native is a variation of an implemention as a state 
     --     machine inspired online. Other implementations are linked below. They vary in clarity,
@@ -324,6 +323,7 @@ functions
             <Integer> -> is_int(v),
             <Float>   -> is_real(v),
             <String>  -> is_String(v),
+            <Boolean> -> is_bool(v),
             others    -> false 
         end;
     
@@ -332,7 +332,8 @@ functions
         cases t: 
             <Integer> -> 0,
             <Float>   -> 0.0,
-            <String>  -> "" 
+            <String>  -> "",
+            <Boolean> -> false 
         end;
 
     --@doc removes rows of invariant violating cells  

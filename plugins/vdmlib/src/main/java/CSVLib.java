@@ -56,6 +56,7 @@ public class CSVLib implements Serializable {
     private static final String CSVTYPE_INTEGER = "Integer";
     private static final String CSVTYPE_FLOAT   = "Float";
     private static final String CSVTYPE_STRING  = "String";
+    private static final String CSVTYPE_BOOLEAN = "Boolean";
 
     public enum ParserType { Native, Apache, Univocity, OpenCSV, QuirkCSV };
 
@@ -276,6 +277,9 @@ public class CSVLib implements Serializable {
         else if (csvType.equals(CSVTYPE_STRING))
         // create a String
             result = ValueFactoryHelper.mkString(cell);
+        else if (csvType.equals(CSVTYPE_BOOLEAN))
+        // creates a bool
+            result = ValueFactory.mkBool(Boolean.valueOf(cell));
         else 
         // invalid type
             throw new ValueException(4998, "Invalid CSV type " + 
