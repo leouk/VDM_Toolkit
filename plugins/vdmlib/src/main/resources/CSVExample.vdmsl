@@ -4,6 +4,8 @@ imports from CSVLib
         Path renamed Path;
         Data renamed Data;
         Data0 renamed Data0;
+        ColNo renamed ColNo;
+        --@NB This import is needed for ValueFactory.mkRecord to work?!!
         Error renamed Error;
         Header0 renamed Header0;
         Headers renamed Headers;
@@ -71,6 +73,11 @@ values
 
     COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
         (lambda h: Header0, c: TransposedRow & h.type = <String> and card elems c = len c);
+
+    COL_INVARIANT_ORDERED: CSVColInv = 
+        (lambda h: Header0, c: TransposedRow & 
+            h.type <> <String> and
+            (forall i, j in set inds c & i < j => c(i) <= c(j)));
 
     ROW_INVARIANT_BMI_CONSISTENCY: CSVRowInv =
         (lambda h: Headers0, r: Row & BMI_ROW_INDEX <= len h and row_consistency(h, r) and (let bmi: real = calculate_bmi(r) in bmi >= MIN_BMI and bmi <= MAX_BMI));
@@ -170,6 +177,9 @@ functions
 
     KILL_ROW_VALID_DATA: () -> Data 
     KILL_ROW_VALID_DATA() == VALID_DATA(KILL_ROW_INVARIANT_EXAMPLE);
+
+    change_col_inv: CSVColInv * ColNo -> Data
+    change_col_inv(col_inv, colNo) == install_col_invariant(EXAMPLE_DATA, col_inv, {colNo});
     
 traces 
     --@do kills only specific cells that violate CAPITAL_LETTERS
@@ -179,6 +189,8 @@ traces
     --@doc kills all lines where any cell invariant is broken
     test2: csv_invariants_failed(install_row_invariant(EXAMPLE_DATA, KILL_ROW_INVARIANT_EXAMPLE));
             --= {mk_(3, 1), mk_(3, 2), mk_(3, 3), mk_(4, 1), mk_(4, 2), mk_(4, 3)}
+
+    test3: change_col_inv(COL_INVARIANT_ORDERED, 2);
 
 --@doc tests to show native CSV calls and CSV loaded state
 values 
@@ -193,9 +205,9 @@ values
 operations 
     load() ==
         (
-            --loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
             loadCSVExample(CSV_SHORT_ROW_FILE, EXAMPLE_DATA_HEADERS, false);
-            --loadCSVExample(CSV_INV_FAILED_FILE, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_INV_FAILED_FILE, EXAMPLE_DATA_HEADERS, false);
         );
         
     loadCSVExample(path: Path, headers: Headers0, strict: bool) ==
