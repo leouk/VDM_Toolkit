@@ -120,6 +120,7 @@ values
             if not r(1)(1) in set elems CAPITAL_LETTERS then "name not capitalised" else nil
         );
 
+    --@doc see CSVExample.csv
     -- Name,Age,Weight(Kg),Height(cm),BMI
     -- "Okay1",40,58.5,169,20.5
     -- "BMICalcWrong",50,70.2,180,30
@@ -144,6 +145,8 @@ values
             --       C1    C2  C3        R0 (Header)
             mk_Matrix(
                 [
+                   ["Quoted long string 
+across multiple lines",50,58.5,179,18.26],
                    ["Okay1",40,58.5,169,20.5],
                    ["BMICalcWrong",50,70.2,180,30],
                    ["Young",15,61.5,170,21.3],
@@ -153,14 +156,6 @@ values
                    ["RepeatedName",40,58.5,169,20.5],
                    ["RepeatedName",50,58.5,179,18.26]
                 ],
-                -- [["Leo"  , 40, 58.5], -- R1
-                --  ["Nick" , 50, 70.2], -- R2 
-                --  ["Young", 15, 61.5], -- R3    Age violation (3,2)
-                --  ["Heavy", 70, 150.3],-- R4    Age violation (4,2)
-                --                       --    Weight violation (4,3)
-                -- --@todo put something like BMI here, as current one is silly
-                --  ["bad"  , 50, 60]    -- R5 Whole Row violation 
-                -- ],
                 ROW_INVARIANT_BMI_CONSISTENCY                
             )
         );
@@ -221,12 +216,9 @@ traces
 --@doc tests to show native CSV calls and CSV loaded state
 values 
    --@doc For testing, launch.json *must* have cwd set to $VDMJTK_HOME/vdmjlib/src/main/resources !!!
-   CSV_EXAMPLE_FILE: Path =
-        "CSVExample.csv";
-   CSV_INV_FAILED_FILE: Path = 
-        "CSVInvFailedExample.csv";
-   CSV_SHORT_ROW_FILE: Path = 
-        "CSVShortRowExample.csv";
+   CSV_EXAMPLE_FILE   : Path = "CSVExample.csv";
+   CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
+   CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
 
 operations 
     load() ==
