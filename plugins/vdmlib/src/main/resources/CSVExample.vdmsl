@@ -182,11 +182,11 @@ traces
 
 --@doc tests to show native CSV calls and CSV loaded state
 values 
-   --This ends up in wrong place when done under debug mode! 
+   --@doc For testing, launch.json *must* have cwd set to $VDMJTK_HOME/vdmjlib/src/main/resources !!!
    CSV_EXAMPLE_FILE: Path =
-        "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.csv";
+        "CSVExample.csv";
    CSV_SHORT_ROW_FILE: Path = 
-        "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVShortRowExample.csv";
+        "CSVShortRowExample.csv";
 
 operations 
     load() ==
@@ -194,6 +194,7 @@ operations
             loadCSVExample(CSV_SHORT_ROW_FILE, EXAMPLE_DATA_HEADERS, false);
             loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
         );
+        
     loadCSVExample(path: Path, headers: Headers0, strict: bool) ==
         (
          loadCSV(path, <Native>, headers, strict);

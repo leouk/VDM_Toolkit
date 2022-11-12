@@ -61,11 +61,13 @@ public class CSVLib implements Serializable {
 
     public static final void main(String args[])
     {
+        // With the launch.json cwd working directory, can give relative paths
+        // DO NOT add/use $VDMJTK_HOME on file names (!!!!)
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-default", "CSVExample", "-i", 
-                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/lib/IO.vdmsl",
-                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/lib/VDMUtil.vdmsl",
-                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.vdmsl",
-                "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVLib.vdmsl",
+                "./lib/IO.vdmsl",
+                "./lib/VDMUtil.vdmsl",
+                "./CSVExample.vdmsl",
+                "./CSVLib.vdmsl",
             }
         );
     }
