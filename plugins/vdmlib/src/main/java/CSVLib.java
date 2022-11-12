@@ -118,17 +118,24 @@ public class CSVLib implements Serializable {
         return ParserType.valueOf(parser.quoteValue(ctx));
     }
 
-    private static String printItem(Value v, String fieldName, Context ctxt)
+    private static String printHeader(Value h, Context ctxt)
         throws ValueException
     {
-        RecordValue r = v.recordValue(ctxt);
-        Value rStr = r.fieldmap.get(fieldName);
-        if (rStr == null)
+        RecordValue header = h.recordValue(ctxt);
+        Value headerName = header.fieldmap.get(HEADER_FIELD_NAME);
+        if (headerName == null)
         {
-            throw new ValueException(4999, "Invalid CSV Data value to print for " + fieldName, ctxt);
+            throw new ValueException(4999, "Invalid CSV Data value to print for " + HEADER_FIELD_NAME, ctxt);
         }
         // field name must be a string
-        return rStr.stringValue(ctxt);
+        String headerNameStr = headerName.stringValue(ctxt);
+        return quoteScape(headerNameStr);
+    }
+
+    //@todo presume there will be more cases? 
+    private static String quoteScape(String s)
+    {
+        return s.indexOf(" ") != -1 || s.indexOf("\t") != -1 || s.indexOf("\n") != -1 || s.indexOf("\r") != -1 ? "\"" + s + "\"" : s;
     }
 
     protected static void print(File file, Value data, Context ctxt)
@@ -149,12 +156,12 @@ public class CSVLib implements Serializable {
         if (it.hasNext())
         {
             // print name field in mk_Header(n, t, i) = it.next()
-            sb.append(printItem(it.next(), HEADER_FIELD_NAME, ctxt));
+            sb.append(printHeader(it.next(), ctxt));
             colCount++;
             while (it.hasNext())
             {
                 sb.append(",");
-                sb.append(printItem(it.next(), HEADER_FIELD_NAME, ctxt));
+                sb.append(printHeader(it.next(), ctxt));
                 colCount++;
             }
         }
@@ -174,11 +181,11 @@ public class CSVLib implements Serializable {
             {
                 // print each cell at rowCount for all columns in row
                 //sb.append(it.next().stringValue(ctxt));
-                sb.append(IO.stringOf(it.next()));
+                sb.append(quoteScape(IO.stringOf(it.next())));
                 while (it.hasNext())
                 {
                     sb.append(",");
-                    sb.append(IO.stringOf(it.next()));
+                    sb.append(quoteScape(IO.stringOf(it.next())));
                 }    
             }
             sb.append("\n");
