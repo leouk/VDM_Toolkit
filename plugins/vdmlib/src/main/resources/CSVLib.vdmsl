@@ -13,6 +13,20 @@
 --     3) As fast (and flexible) as possible IO
 --          3.1) Multiple CSV formats tolerated
 --          3.2) 
+--
+--@doc CSV parsing
+--     CSV parsing compliance is tricky, as there are many formats out there.
+--     e.g. https://commons.apache.org/proper/commons-csv/
+--     as well as many varied implementations (see CSVParser type).
+--
+--     We want a solution that is fast, so we checked options within  
+--     https://github.com/uniVocity/csv-parsers-comparison
+--
+--     We also want a solution with least dependencies, so were tempted with
+--     Iterable stand alone version in https://stackoverflow.com/questions/6857248/fast-csv-parsing  
+--     Other useful features might be interesting, so we considered filterd CSV from
+--     https://stackoverflow.com/questions/61250600/univocity-csv-parser-skip-rows-based-on-conditions
+
 module CSVLib
 imports 
     from VDMUtil 
@@ -268,30 +282,22 @@ functions
     post RESULT.row_inv = matrix.row_inv and 
          elems RESULT.cells subset elems matrix.cells;
 
-    --@doc Reads CSV data. Usually header names are in the first line of the CSV file;
+    --@doc Reads CSV data. Presumes header names are in the first line of the CSV file;
     --     empty names is allowed (i.e anonynous headers). Such headers can have invariants.
     --     Result is Data0, so that the invariants will be checked if no violations.
     --
     --     Actual CSV data comes next as a sequence of rows (i.e. CSV matrix parser).
-    --     CSV parsing compliance is tricky, as there are many formats out there.
-    --     e.g. https://commons.apache.org/proper/commons-csv/
-    --     as well as many varied implementations (see CSVParser type).
+    --     CSV can also contain "short" rows (e.g. "X,,Z", where there is no value given 
+    --     for a column). This requires the header to have a default value for "Y". 
     --
-    --     We want a solution that is fast, so we checked options within  
-    --     https://github.com/uniVocity/csv-parsers-comparison
-    --
-    --     We also want a solution with least dependencies, so were tempted with
-    --     Iterable stand alone version in https://stackoverflow.com/questions/6857248/fast-csv-parsing  
-    --
-    --     Other useful features might be interesting, so we considered filterd CSV from
-    --     https://stackoverflow.com/questions/61250600/univocity-csv-parser-skip-rows-based-on-conditions
+    --     Result Matrix for mk_(ok, errors, data):
+    --     * not ok              = low-level IO error, must return empty data
+    --     * ok and errors <> {} = short-rows errors, returns data with full rows only
+    --     * ok and errors = {}  = no errors, returns data that might fail invariants
     csv_read_data: Path * CSVParser * Headers0 -> bool * Errors * Data0
     csv_read_data(path, parser, headers) == is not yet specified
     pre file_status(path) = <Valid>
     post 
-        --@doc ok = no IO error; errors contain data errors (e.g. short rows)
-        --     if okay, names size must be consistent for every row
-        --     if not okay, all is empty; if okay and errors, inspect returned errors further 
         (let mk_(ok, errors, mk_Data0(headers', matrix)) = RESULT in
             if ok then
                 --@doc headers update keep old header's structure
