@@ -8,14 +8,13 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ValueException;
 import com.fujitsu.vdmj.values.FieldMap;
 import com.fujitsu.vdmj.values.FieldValue;
-import com.fujitsu.vdmj.values.NameValuePair;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.SetValue;
 import com.fujitsu.vdmj.values.UpdatableValue;
 import com.fujitsu.vdmj.values.Value;
-import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
+import com.fujitsu.vdmj.values.ValueSet;
 
 public class ValueFactoryHelper {
     
@@ -55,6 +54,16 @@ public class ValueFactoryHelper {
     {
         //return ValueFactory.mkSeq(v.seqValue(ctxt));
         return new SeqValue(v.seqValue(ctxt));
+    }
+
+    public static Value mkSeq(ValueList values)
+    {
+        return new SeqValue(values);
+    }
+
+    public static Value mkSet(ValueSet values)
+    {
+        return new SetValue(values);
     }
 
     public static Value mkEmptySetValue()
