@@ -8,3 +8,6 @@ plugins/vdm2isa/java/bin
 plugins/annotationsVDMToolkit/target
 plugins/vdm2isa/src/main/resources/dump
 plugins/vdm2isa/src/main/resources/output
+plugins/vdm2isa-lsp/target
+.ci-friendly-pom.xml
+plugins/vdmlib/src/main/resources/lib
