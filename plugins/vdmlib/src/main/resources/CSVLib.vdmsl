@@ -171,10 +171,16 @@ types
     --@doc CSV col
     ColNo = nat1;
 
+    --@doc CSV error corresponding to a specific rol/col position
+    --     with an optional reason. 
     Error ::
         row: RowNo
         col: ColNo 
-        reason: String;
+        --@AB / --@NB views?
+        --@todo Equality on on rol/col? Or allow multiple reasons?
+        --reason:- String
+        reason: String
+        ;
 
     Errors = set of Error; 
 
@@ -482,10 +488,10 @@ operations
     --@doc shows the error if the state registered it
     showError() ==
         (if ferr <> nil then 
-            printf("CSV error %1s\n", [ferr]);
+            printf("CSV native call error: %1s\n", [ferr]);
          ferr := lastError();
          if ferr <> nil then 
-            printf("CSV IO error %1s\n", [ferr]);
+            printf("CSV native call IO error: %1s\n", [ferr]);
          if pos <> {} then 
          (
             printf("CSV invariant failure at %1s cells: ", [card pos]);
