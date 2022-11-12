@@ -298,7 +298,7 @@ functions
     csv_read_data(path, parser, headers) == is not yet specified
     pre file_status(path) = <Valid>
     post 
-        (let mk_(ok, errors, mk_Data0(headers', matrix)) = RESULT in
+        (let mk_(ok, -, mk_Data0(headers', matrix)) = RESULT in
             if ok then
                 --@doc headers update keep old header's structure
                 installed_read_headers_consistency(headers, headers')
