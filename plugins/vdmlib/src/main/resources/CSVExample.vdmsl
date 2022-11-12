@@ -183,16 +183,15 @@ traces
 --@doc tests to show native CSV calls and CSV loaded state
 values 
    --This ends up in wrong place when done under debug mode! 
-   CSV_EXAMPLE_FILE: Path --= "./CSVExample.csv";
-   -- = VDMJTK_HOME/plugins/vdmlib/./CSVExample.csv
-   -- instead of 
-   -- VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.csv
-   ="/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdmlib/src/main/resources/CSVExample.csv"
-    ;
+   CSV_EXAMPLE_FILE: Path =
+        "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVExample.csv";
+   CSV_SHORT_ROW_FILE: Path = 
+        "$VDMJTK_HOME/plugins/vdmlib/src/main/resources/CSVShortRowExample.csv";
 
 operations 
     load() ==
         (
+            loadCSVExample(CSV_SHORT_ROW_FILE, EXAMPLE_DATA_HEADERS, false);
             loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
         );
     loadCSVExample(path: Path, headers: Headers0, strict: bool) ==
