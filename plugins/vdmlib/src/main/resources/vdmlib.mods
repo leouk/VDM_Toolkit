@@ -13,3 +13,7 @@
 ./Stack.vdmsl
 ./Matrix_Seq.vdmsl
 ./FuzzySets.vdmsl
+./CSVLib.vdmsl 
+./CSVExample.vdmsl
+./CSV2.vdmsl
+./Ranges.vdmsl  
