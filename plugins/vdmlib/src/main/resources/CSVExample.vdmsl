@@ -5,7 +5,7 @@ imports from CSVLib
         Data renamed Data;
         Data0 renamed Data0;
         ColNo renamed ColNo;
-        --@NB This import is needed for ValueFactory.mkRecord to work?!!
+        --@NB This import is needed for ValueFactory.mkRecord to work?!! see ValueFactoryHelper.getType
         --Error renamed Error;
         Header0 renamed Header0;
         Headers renamed Headers;
@@ -224,7 +224,6 @@ values
     CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
     CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
 
-    --@Warning(5000) to be used during testing
     CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, "#");
 
 operations 
@@ -246,5 +245,10 @@ operations
          loadTrivialCSV(path, <Native>, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
          printCSV(path ^ ".out");
         );
+
+traces 
+    test4: load(nil);
+
+    test5: load(CSV_SETTINGS);
 
 end CSVExample

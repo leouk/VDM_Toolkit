@@ -4,19 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import com.fujitsu.vdmj.values.ValueList;
-
 public abstract class AbstractCSVParser implements CSVParser {
     
     protected Iterator<String[]> iterator; 
     protected String lastErrorStr;
     protected final CSVSettings settings;
-
-    private AbstractCSVParser()
-    {
-        clear();
-        this.settings = CSVSettings.DEFAULT;
-    }
 
     protected AbstractCSVParser(CSVSettings settingsGiven)
     {

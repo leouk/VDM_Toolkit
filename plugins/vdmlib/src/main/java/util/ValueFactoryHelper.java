@@ -14,7 +14,6 @@ import com.fujitsu.vdmj.tc.types.TCNamedType;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.Environment;
-import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.values.FieldMap;
 import com.fujitsu.vdmj.values.FieldValue;
 import com.fujitsu.vdmj.values.InvariantValue;
@@ -255,7 +254,7 @@ public class ValueFactoryHelper {
             }
             env = mi.getGlobalEnvironment();
             def = env.findType(tcname, module);		
-            
+
             if (def == null)
             {
                throw new ValueException(70, "Definition " + tcname.getExplicit(true) + " not found", Context.javaContext());

@@ -51,7 +51,7 @@ public class CSVLib implements Serializable {
     
     // CSVLib.vdmsl declared top-level type names *must* match
     private static final String CSVDATA_TYPE_NAME = "Data0";
-    private static final String CSVSETTINGS_TYPE_NAME = "CSVSettings";
+    //private static final String CSVSETTINGS_TYPE_NAME = "CSVSettings";
     private static final String MATRIX_TYPE_NAME    = "Matrix";
     private static final String ERROR_TYPE_NAME = "Error";
     
