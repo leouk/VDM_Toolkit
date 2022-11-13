@@ -3,11 +3,21 @@ package util;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.Interpreter;
+import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.runtime.ValueException;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.types.TCNamedType;
+import com.fujitsu.vdmj.tc.types.TCRecordType;
+import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.typechecker.Environment;
+import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.values.FieldMap;
 import com.fujitsu.vdmj.values.FieldValue;
+import com.fujitsu.vdmj.values.InvariantValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.SetValue;
@@ -172,4 +182,86 @@ public class ValueFactoryHelper {
         }        
         return result;
     }
+
+    /**
+     * VDMJ ValueFactory.getType seems to impose that a natively required type (e.g. CSVLib`Error) *must* be part of the 
+     * imported definitions of where it's used (e.g. CSVExample`loadCSV). Given the module name on the native call (CSVLib)
+     * is loaded, I think this is too strict a requirement? If module name is available, choose that, instead of default one.
+     * 
+     * Both mkRecord and mkInvariant are the save as ValueFactory, only getType differs. 
+     * @param module
+     * @param name
+     * @param args
+     * @return
+     * @throws ValueException
+     */
+    public static RecordValue mkRecord(String module, String name, Value ...args) throws ValueException
+	{
+		TCType type = getType(module, name);
+		
+		if (type instanceof TCRecordType)
+		{
+    		TCRecordType r = (TCRecordType)type;
+    		ValueList l = new ValueList();
+    		
+    		for (int a=0; a<args.length; a++)
+    		{
+    			l.add(args[a]);
+    		}
+    		
+    		return new RecordValue(r, l, Interpreter.getInstance().getInitialContext());
+		}
+		else
+		{
+			throw new ValueException(69, "Definition " + module + "`" + name +
+				" is " + type.getClass().getSimpleName() + " not TCRecordType", Context.javaContext());
+		}
+	}
+
+	public static InvariantValue mkInvariant(String module, String name, Value x) throws ValueException
+	{
+		TCType type = getType(module, name);
+		
+		if (type instanceof TCNamedType)
+		{
+			TCNamedType r = (TCNamedType)type;
+			return new InvariantValue(r, x, Interpreter.getInstance().getInitialContext());
+		}
+		else
+		{
+			throw new ValueException(69, "Definition " + module + "`" + name +
+				" is " + type.getClass().getSimpleName() + " not TCNamedType", Context.javaContext());
+		}
+	}
+    
+    private static TCType getType(String module, String name) throws ValueException
+	{
+		Interpreter i = Interpreter.getInstance();
+        Environment env = i.getGlobalEnvironment();
+		TCNameToken tcname = new TCNameToken(LexLocation.ANY, module, name);
+
+        TCDefinition def = env.findType(tcname, i.getDefaultName());
+		
+		if (def == null)
+		{
+            // attempt the given module as well as the one set to default! 
+            ModuleInterpreter mi = (ModuleInterpreter)i;
+            try
+            {
+                mi.setDefaultName(module);
+            } catch (Exception e)
+            {
+                // ignore; couldn't change module; fintType will fail
+            }
+            env = mi.getGlobalEnvironment();
+            def = env.findType(tcname, module);		
+            
+            if (def == null)
+            {
+               throw new ValueException(70, "Definition " + tcname.getExplicit(true) + " not found", Context.javaContext());
+            }
+		}
+		return def.getType();
+	}
+
 }
