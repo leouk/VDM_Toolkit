@@ -239,7 +239,8 @@ public class ValueFactoryHelper {
         Environment env = i.getGlobalEnvironment();
 		TCNameToken tcname = new TCNameToken(LexLocation.ANY, module, name);
 
-        TCDefinition def = env.findType(tcname, i.getDefaultName());
+        String defaultModule = i.getDefaultName();
+        TCDefinition def = env.findType(tcname, defaultModule);
 		
 		if (def == null)
 		{
@@ -248,13 +249,17 @@ public class ValueFactoryHelper {
             try
             {
                 mi.setDefaultName(module);
-            } catch (Exception e)
+                env = mi.getGlobalEnvironment();
+                def = env.findType(tcname, module);
+                mi.setDefaultName(defaultModule);		
+            } 
+            catch (Exception e)
             {
-                // ignore; couldn't change module; fintType will fail
+                // first default change failure? ignore as no change and def will be null.
+                // second default change shouldn't fail given it was already a known default.
+                // not ideal exception handling, but will do for now.  
+                throw new ValueException(4999, "Default module change failed", Context.javaContext());
             }
-            env = mi.getGlobalEnvironment();
-            def = env.findType(tcname, module);		
-
             if (def == null)
             {
                throw new ValueException(70, "Definition " + tcname.getExplicit(true) + " not found", Context.javaContext());

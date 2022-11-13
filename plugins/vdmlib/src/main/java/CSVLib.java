@@ -574,7 +574,7 @@ public class CSVLib implements Serializable {
         result = ValueFactory.mkBool(true);
         return result; 
     }
-    
+
     /**
      * Corresponds to VDM "lastError: () ==> [String1]". Once called, clear.
      * @return [String1]
