@@ -27,7 +27,10 @@ import com.fujitsu.vdmj.values.ValueFactory;
 import com.fujitsu.vdmj.values.ValueList;
 import com.fujitsu.vdmj.values.ValueSet;
 
+import util.CSVParser;
+import util.CSVSettings;
 import util.NativeCSVParser;
+import util.UnivocityCSVParser;
 import util.ValueFactoryHelper;
 
 /**
@@ -42,22 +45,34 @@ public class CSVLib implements Serializable {
 	private static String lastErrorStr = "";
     private static Context context = null;
     private static BufferedInputStream bufStream = null;
+    private static CSVParser parser = null;
 
     private static final String MODULE_NAME = "CSVLib";
+    
+    // CSVLib.vdmsl declared top-level type names *must* match
     private static final String CSVDATA_TYPE_NAME = "Data0";
+    private static final String CSVSETTINGS_TYPE_NAME = "CSVSettings";
+    private static final String MATRIX_TYPE_NAME    = "Matrix";
+    private static final String ERROR_TYPE_NAME = "Error";
+    
+    // CSVLib.vdmsl record types (Data0, CSVSettings, Matrix, Error) field names *must* match
     private static final String CSVDATA_FIELD_HEADERS = "headers";
     private static final String CSVDATA_FIELD_MATRIX    = "matrix";
-    private static final String MATRIX_TYPE_NAME    = "Matrix";
+    private static final String CSVDATA_FIELD_SETTINGS = "settings";
+    private static final String CSVSETTINGS_FIELD_SKIPBLANKS = "skipBlankLines";
+    private static final String CSVSETTINGS_FIELD_COMMENTSTR = "lineCommentStr";
     private static final String MATRIX_FIELD_CELLS    = "cells";
-    private static final String ERROR_TYPE_NAME = "Error";
     private static final String HEADER_FIELD_NAME = "name";
     private static final String HEADER_FIELD_TYPE = "type";
     private static final String HEADER_FIELD_DEFAULT_VALUE = "default";
+    
+    // CSVLib.vdmsl CSVType names *must* match
     private static final String CSVTYPE_INTEGER = "Integer";
     private static final String CSVTYPE_FLOAT   = "Float";
     private static final String CSVTYPE_STRING  = "String";
     private static final String CSVTYPE_BOOLEAN = "Boolean";
 
+    // CSVLib.vdmsl quote type values *must* match
     public enum ParserType { Native, Apache, Univocity, OpenCSV, QuirkCSV };
 
     public static final void main(String args[])
@@ -80,6 +95,11 @@ public class CSVLib implements Serializable {
             bufStream.close();
         }
         bufStream = null;
+        if (parser != null)
+        {
+            parser.clear();
+        }
+        parser = null;
     }
     
     private static void check_line_col_size_consistency(int headersLen, int namesLen, int rowCount, Context ctxt)
@@ -122,13 +142,13 @@ public class CSVLib implements Serializable {
         throws ValueException
     {
         RecordValue header = h.recordValue(ctxt);
-        Value headerName = header.fieldmap.get(HEADER_FIELD_NAME);
+        Value headerName = header.fieldmap.get(HEADER_FIELD_NAME); // [String1]
         if (headerName == null)
         {
             throw new ValueException(4999, "Invalid CSV Data value to print for " + HEADER_FIELD_NAME, ctxt);
         }
-        // field name must be a string
-        String headerNameStr = headerName.stringValue(ctxt);
+        // field name must be a string, as it's a Header (not Header0) at this point.
+        String headerNameStr = headerName.stringValue(ctxt);//IO.stringOf(headerName) if want to include nil case
         return quoteScape(headerNameStr);
     }
 
@@ -138,17 +158,39 @@ public class CSVLib implements Serializable {
         return s.indexOf(" ") != -1 || s.indexOf("\t") != -1 || s.indexOf("\n") != -1 || s.indexOf("\r") != -1 ? "\"" + s + "\"" : s;
     }
 
+    private static CSVSettings getCSVSettings(Value settings, Context ctxt) throws ValueException
+    {
+        RecordValue rsettings = settings.recordValue(ctxt);
+        Value skipBlanks = rsettings.fieldmap.get(CSVSETTINGS_FIELD_SKIPBLANKS); // bool
+        Value cmtStr = rsettings.fieldmap.get(CSVSETTINGS_FIELD_COMMENTSTR);     // [String1]
+        return new CSVSettings(ValueFactoryHelper.mkValueList(skipBlanks, cmtStr), ctxt);
+    }
+
     protected static void print(File file, Value data, Context ctxt)
         throws IOException, ValueException
     {
-        RecordValue csvData = data.recordValue(ctxt);               // mk_Data0 ::
-        Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);//      headers: Headers0
+        RecordValue csvData = data.recordValue(ctxt);                   // mk_Data0 ::
+        Value settings = csvData.fieldmap.get(CSVDATA_FIELD_SETTINGS);  //      settings: CSVSettings
+        Value headers = csvData.fieldmap.get(CSVDATA_FIELD_HEADERS);    //      headers: Headers0
         Value matrix = csvData.fieldmap.get(CSVDATA_FIELD_MATRIX);      //      matrix: Rows
-        if (headers == null || matrix == null)
+        if (settings == null || headers == null || matrix == null)
         {
             throw new ValueException(4999, "Invalid CSV Data record to print in file " + file.getAbsolutePath(), ctxt);
         }
         StringBuilder sb = new StringBuilder();
+
+        // process settings as a comment, if those are allowed; ignore it otherwise
+        CSVSettings csvSettings = getCSVSettings(settings, ctxt);
+        if (csvSettings.lineCommentStr != null)
+        {
+            // if comment strings are allowed
+            String skipping = csvSettings.skipBlankLines ? "with blanks skiped" : "without blanks skiped"; 
+            sb.append(csvSettings.lineCommentStr);
+            sb.append(" VDM CSVLib print " + skipping);
+            sb.append("\n");
+        }       
+
+        // process header
         Iterator<Value> it = headers.seqValue(ctxt).iterator();     // Headers0 = seq of Header
         int colCount = 0; 
         int rowCount = 0;
@@ -167,6 +209,8 @@ public class CSVLib implements Serializable {
         }
         sb.append("\n");   
         rowCount++;
+
+        // process records
         RecordValue rowsRec = matrix.recordValue(ctxt);        // mk_Rows:: 
         Value cells = rowsRec.fieldmap.get(MATRIX_FIELD_CELLS);//     cells: seq of Row
         for (Value row : cells.seqValue(ctxt))               // Row = seq of CSVValue
@@ -191,6 +235,7 @@ public class CSVLib implements Serializable {
             sb.append("\n");
             rowCount++;
         } 
+
         // generate output
         PrintWriter out = new PrintWriter(file);
 		out.write(sb.toString());
@@ -199,17 +244,20 @@ public class CSVLib implements Serializable {
         out = null;
     } 
 
-    protected static Iterator<String[]> parse(File file, ParserType parserType)
-        throws IOException
+    protected static Iterator<String[]> parse(File file, ParserType parserType, CSVSettings settings)
+        throws IOException, ValueException
     {   
         // file does not exist could occur here 
         bufStream = new BufferedInputStream(new FileInputStream(file));
         switch (parserType)
         {
+            // IOException/read could happen here
             case Native: 
-                // IOException/read could happen here
-                Iterable<String[]> iter = NativeCSVParser.parseCSV(bufStream);
-                return iter.iterator();
+                parser = new NativeCSVParser(settings);
+                return parser.parseCSV(bufStream);
+            case Univocity:
+                parser = new UnivocityCSVParser(settings);
+                return parser.parseCSV(bufStream);
             default: 
                 closeStream();
                 throw new IOException("Not yet supported parser type " + parserType.toString());
@@ -318,7 +366,7 @@ public class CSVLib implements Serializable {
         //for(int colNo = givenCol; colNo < expectedCol; colNo++)
         //{
             // only a single error, given the whole row will be filtered out
-            result.add(ValueFactory.mkRecord(
+            result.add(ValueFactoryHelper.mkRecord(
                 MODULE_NAME, ERROR_TYPE_NAME, 
                 ValueFactory.mkInt(rowNo),
                 ValueFactory.mkInt(givenCol+1),
@@ -335,7 +383,7 @@ public class CSVLib implements Serializable {
      *         mk_(false, mk_Data0([],[])), otherwise. The true case does a mu on every header
      */
     @VDMFunction
-    public static Value csv_read_data(Value path, Value parser, Value headersI)
+    public static Value csv_read_data(Value path, Value parser, Value settings, Value headersI)
     {        
         // Follow NB's style from IO.freadval 
 		ValueList result = new ValueList();
@@ -346,12 +394,19 @@ public class CSVLib implements Serializable {
         Context ctx = getContext();//Interpreter's context?
         try
         {
-            //@NB how to refer to CSVLib`EMPTY_CSV here? e.g. mk_(false, EMPTY_CSV)
+            //@NB how to refer to CSVLib`EMPTY_CSV/DEFAULT_SETTINGS here? e.g. mk_(false, EMPTY_CSV)
             // have here because of ValueException?
-            emptyCSV = ValueFactory.mkRecord(
+            emptyCSV = ValueFactoryHelper.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
+                    // ValueFactoryHelper.mkRecord(
+                    //     MODULE_NAME,
+                    //     CSVSETTINGS_TYPE_NAME,
+                    //     ValueFactory.mkBool(false), // don't skip/allow empty lines
+                    //     ValueFactory.mkNil()           // no line comment delimeter string
+                    // ),
+                    settings,
                     new SeqValue(), // Headers0: seq of Header 
-                    ValueFactory.mkRecord(
+                    ValueFactoryHelper.mkRecord(
                         MODULE_NAME, 
                         MATRIX_TYPE_NAME, 
                         new SeqValue(), // cells: seq of Row 
@@ -359,7 +414,7 @@ public class CSVLib implements Serializable {
                     )
             );
 
-            Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx));
+            Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), getCSVSettings(settings, ctx));
             assert bufStream != null; 
 
             // seq of Header0
@@ -394,7 +449,7 @@ public class CSVLib implements Serializable {
                     // namedHeaderAtI = mk_Header(nameStr, headersAtI(i).type, headersAtI(i).invariant)
                     RecordValue namedHeaderAtI; 
                     // namedHeaderAtI = 
-                    //     ValueFactory.mkRecord(
+                    //     ValueFactoryHelper.mkRecord(
                     //         MODULE_NAME, HEADER_TYPE_NAME, 
                     //         ValueFactoryHelper.mkString(nameStr), 
                     //         headerAtI.fieldmap.get(HEADER_FIELD_TYPE),
@@ -452,11 +507,11 @@ public class CSVLib implements Serializable {
                     RecordValue header = headersList.get(colCount);
 
                     // get the header declared type
-                    String csvType = header.fieldmap.get(HEADER_FIELD_TYPE).quoteValue(ctx);
+                    String csvType = header.fieldmap.get(HEADER_FIELD_TYPE).quoteValue(ctx); // CSVType
                     if (cell == null || cell.isEmpty())
                     {
                         // for default values, pick the one in the header
-                        Value defaultVal = header.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE);
+                        Value defaultVal = header.fieldmap.get(HEADER_FIELD_DEFAULT_VALUE);  // CSVValue
                         assert defaultVal != null; 
                         cellValues.add(defaultVal);
                         if (Settings.verbose)
@@ -476,10 +531,11 @@ public class CSVLib implements Serializable {
             }
 
             // return the CSV data with short rows filtered and the rows missing as errors.
-            RecordValue csvData = ValueFactory.mkRecord(
+            RecordValue csvData = ValueFactoryHelper.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
+                    settings,
                     new SeqValue(namedHeaders),
-                    ValueFactory.mkRecord(
+                    ValueFactoryHelper.mkRecord(
                         MODULE_NAME, MATRIX_TYPE_NAME, 
                         new SeqValue(csvMatrix),
                         ValueFactory.mkNil()
@@ -527,8 +583,8 @@ public class CSVLib implements Serializable {
 	public static Value lastError()
 	{
 		// if no errors to report, check low-level IO
-        if (lastErrorStr == null || lastErrorStr.isEmpty())
-            lastErrorStr = NativeCSVParser.lastError();     
+        if ((lastErrorStr == null || lastErrorStr.isEmpty()) && parser != null)
+            lastErrorStr = parser.lastError();     
         Value result = lastErrorStr == null || lastErrorStr.isEmpty() ? 
             ValueFactory.mkNil() : 
             //@NB ValueFactory.mkSeq doesn't work well for seq of char / Strings
