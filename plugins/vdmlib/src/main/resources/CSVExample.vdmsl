@@ -18,6 +18,7 @@ imports from CSVLib
         CSVType renamed CSVType;
         Headers0 renamed Headers0;
         CSVValue renamed CSVValue;
+        CSVSettings renamed CSVSettings;
     functions 
         csv_filter_invalid renamed csv_filter_invalid;
         csv_invariants_failed renamed csv_invariants_failed;
@@ -27,6 +28,8 @@ imports from CSVLib
         loadCSV renamed loadCSV;
         loadTrivialCSV renamed loadTrivialCSV;
         printCSV renamed printCSV;
+    values 
+        DEFAULT_SETTINGS renamed DEFAULT_SETTINGS;
 exports 
     functions
         VALID_DATA  : [CSVRowInv] -> Data;
@@ -35,8 +38,8 @@ exports
         EXAMPLE_DATA: Data0;
         CAPITAL_NAMES_ROW_INV: CSVRowInv;
     operations 
-        load                 : () ==> ();
-        loadCSVExample       : Path * Headers0 * bool ==> ();
+        load                 : [CSVSettings] ==> ();
+        loadCSVExample       : Path * [CSVSettings] * Headers0 * bool ==> ();
         loadTrivialCSVExample: Path ==> ();
 definitions 
 
@@ -141,6 +144,7 @@ values
 
     EXAMPLE_DATA: Data0 = 
         mk_Data0(
+            DEFAULT_SETTINGS,
             EXAMPLE_DATA_HEADERS,
             --       C1    C2  C3        R0 (Header)
             mk_Matrix(
@@ -216,21 +220,24 @@ traces
 --@doc tests to show native CSV calls and CSV loaded state
 values 
    --@doc For testing, launch.json *must* have cwd set to $VDMJTK_HOME/vdmjlib/src/main/resources !!!
-   CSV_EXAMPLE_FILE   : Path = "CSVExample.csv";
-   CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
-   CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
+    CSV_EXAMPLE_FILE   : Path = "CSVExample.csv";
+    CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
+    CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
+
+    --@Warning(5000) to be used during testing
+    CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, "#");
 
 operations 
-    load() ==
+    load(settings: [CSVSettings]) ==
         (
-            loadCSVExample(CSV_EXAMPLE_FILE, EXAMPLE_DATA_HEADERS, false);
-            loadCSVExample(CSV_SHORT_ROW_FILE, EXAMPLE_DATA_HEADERS, false);
-            loadCSVExample(CSV_INV_FAILED_FILE, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_EXAMPLE_FILE, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_SHORT_ROW_FILE, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_INV_FAILED_FILE, settings, EXAMPLE_DATA_HEADERS, false);
         );
         
-    loadCSVExample(path: Path, headers: Headers0, strict: bool) ==
+    loadCSVExample(path: Path, settings: [CSVSettings], headers: Headers0, strict: bool) ==
         (
-         loadCSV(path, <Native>, headers, strict);
+         loadCSV(path, <Univocity>, if settings = nil then DEFAULT_SETTINGS else settings, headers, strict);
          printCSV(path ^ ".out");
         );
 

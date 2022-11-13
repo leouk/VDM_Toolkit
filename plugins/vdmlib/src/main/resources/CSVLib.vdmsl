@@ -62,17 +62,19 @@ exports
         struct CSVColInv;
         struct CSVValue; 
         struct CSVParser;
+        struct CSVSettings;
     values 
         CELL_INVARIANT_DEFAULT: CSVCellInv;
         ROW_INVARIANT_DEFAULT : CSVRowInv;
         COL_INVARIANT_DEFAULT : CSVColInv;
-        EMPTY_MATRIX            : Matrix;
+        EMPTY_MATRIX          : Matrix;
         EMPTY_CSV             : Data;
+        DEFAULT_SETTINGS      : CSVSettings;
         DEFAULT_HEADER_NAME   : String1;
     functions 
         --@doc native functions to process CSV data IO 
         file_status          : Path -> FileStatus;
-        csv_read_data        : Path * CSVParser * Headers0 -> bool * Errors * Data0;
+        csv_read_data        : Path * CSVParser * CSVSettings * Headers0 -> bool * Errors * Data0;
         csv_write_data       : Path * Data0 -> bool;
         --@doc functions on basic row and cell consistency
         row_consistency      : Headers0 * Row -> bool;
@@ -85,6 +87,7 @@ exports
         csv_filter_invalid   : Data0 -> Data;
         --@doc construction functions for empty and updated row invariant data
         empty_csv            : Headers0 -> Data;
+        empty_csv'           : CSVSettings * Headers0 -> Data;
         install_row_invariant: Data0 * CSVRowInv -> Data0;
         install_col_invariant: Data0 * CSVColInv * set1 of ColNo -> Data0;
     operations
@@ -92,7 +95,7 @@ exports
         --     specific headers. If trivial load, no invariants and just list of header types.
         --     Any IO (or VDM Value) erros can be shown if they occur.
         showError     : () ==> ();
-        loadCSV       : Path * CSVParser * Headers0 * bool ==> ();
+        loadCSV       : Path * CSVParser * CSVSettings * Headers0 * bool ==> ();
         loadTrivialCSV: Path * CSVParser * seq1 of CSVType * bool ==> ();
         printCSV      : Path ==> ();
 definitions
@@ -121,8 +124,15 @@ types
     --          Univocity = https://github.com/uniVocity/univocity-parsers
     --          OpenCSV   = https://opencsv.sourceforge.net
     --          QuirkCSV  = https://github.com/bpoole6/quirk-csv
-    --@todo is this too much? (i.e. many dependencies; presuming only <Native> for now)
-    CSVParser = <Native> | <Apache> | <Univocity> | <OpenCSV> | <QuirkCSV>; 
+    --
+    --@doc only native and univocity links are implemented so far
+    CSVParser = <Native> | <Univocity> | <Apache> | <OpenCSV> | <QuirkCSV>; 
+
+    --@doc CSV format settings 
+    --@todo Univocity contains a rather rich settings; explore?
+    CSVSettings :: 
+        skipBlankLines: bool 
+        lineCommentStr: [String1];
 
     --@doc CSV cell invariants. A function that checks CSVValue against corresponding type.
     --     Minimal check is type agreement.
@@ -197,9 +207,10 @@ types
     -- Ri  v(i,1) | v(i,2) ... | v(i,j)
     --
     Data0 :: 
+        settings: CSVSettings
         headers: Headers0
         matrix : Matrix
-    inv mk_Data0(h, -) == 
+    inv mk_Data0(-, h, -) == 
         --@doc if headers are available, check that have names
         (h <> [] => is_Headers(h));
     
@@ -213,7 +224,8 @@ values
     ROW_INVARIANT_DEFAULT : CSVRowInv  = (lambda h: Headers0, r: Row & if row_consistency(h, r) then nil else "unexpected short row in CSV matrix");
     COL_INVARIANT_DEFAULT : CSVColInv  = (lambda h: Header, c: TransposedRow & if col_consistency(h, c) then nil else "unexpected column in CSV matrix");
     EMPTY_MATRIX          : Matrix     = mk_Matrix([], nil);
-    EMPTY_CSV             : Data       = mk_Data0([], EMPTY_MATRIX);
+    DEFAULT_SETTINGS      : CSVSettings= mk_CSVSettings(false, nil);
+    EMPTY_CSV             : Data       = mk_Data0(DEFAULT_SETTINGS, [], EMPTY_MATRIX);
     DEFAULT_HEADER_NAME   : String1    = "CSVHeader";
 
 functions 
@@ -245,10 +257,14 @@ functions
             (h(i).cell_invariant = h'(i).cell_invariant)); 
 
     --@doc creates empty CSV matrix with expected headers
+    empty_csv': CSVSettings * Headers0 -> Data
+    empty_csv'(settings, headers) == mk_Data0(settings, headers, EMPTY_MATRIX)
+    post RESULT.settings = settings and RESULT.headers = headers and RESULT.matrix.cells = [];
+
     empty_csv: Headers0 -> Data
-    empty_csv(headers) == mk_Data0(headers, EMPTY_MATRIX)
-    post RESULT.headers = headers and RESULT.matrix.cells = [];
-        
+    empty_csv(headers) == empty_csv'(DEFAULT_SETTINGS, headers)
+    post post_empty_csv'(DEFAULT_SETTINGS, headers, RESULT);
+    
     --@doc removes given error rows from the given matrix 
     filter_errors: Matrix * Errors -> Matrix 
     filter_errors(matrix, errors) ==
@@ -273,12 +289,15 @@ functions
     --     * not ok              = low-level IO error, must return empty matrix;
     --     * ok and errors <> {} = short-rows errors, returns matrix without short rows;
     --     * ok and errors = {}  = no errors, returns matrix that might fail invariants.
-    csv_read_data: Path * CSVParser * Headers0 -> bool * Errors * Data0
-    csv_read_data(path, parser, headers) == is not yet specified
+    csv_read_data: Path * CSVParser * CSVSettings * Headers0 -> bool * Errors * Data0
+    csv_read_data(path, parser, settings, headers) == is not yet specified
     pre file_status(path) = <Valid>
     post 
-        (let mk_(ok, -, mk_Data0(headers', matrix)) = RESULT in
+        (let mk_(ok, -, mk_Data0(settings', headers', matrix)) = RESULT in
             if ok then
+                --@doc no change in settings after CSV IO
+                settings' = settings 
+                and
                 --@doc headers update keep old header's structure
                 installed_read_headers_consistency(headers, headers')
                 and
@@ -320,8 +339,10 @@ functions
     csv_filter_invalid(data) == 
         --@doc avoid mk_Data0(...) on input checking invariant of Data0 multiple times
         let errors: Errors = csv_invariants_failed(data) in
-            mk_Data0(data.headers, filter_errors(data.matrix, errors))
-    post data.headers = RESULT.headers 
+            mk_Data0(data.settings, data.headers, filter_errors(data.matrix, errors))
+    post data.settings = RESULT.settings 
+         and 
+         data.headers = RESULT.headers 
          and 
          RESULT.matrix.row_inv = data.matrix.row_inv 
          and
@@ -329,19 +350,19 @@ functions
 
     --@doc changes the matrix row invariant
     install_row_invariant: Data0 * CSVRowInv -> Data0
-    install_row_invariant(mk_Data0(headers, mk_Matrix(cells, -)), row_inv) == 
-        mk_Data0(headers, mk_Matrix(cells, row_inv));
+    install_row_invariant(mk_Data0(settings, headers, mk_Matrix(cells, -)), row_inv) == 
+        mk_Data0(settings, headers, mk_Matrix(cells, row_inv));
 
     --@doc changes the matrix col invariant for given columns
     install_col_invariant: Data0 * CSVColInv * set1 of ColNo -> Data0
-    install_col_invariant(mk_Data0(headers, matrix), col_inv, cols) == 
+    install_col_invariant(mk_Data0(settings, headers, matrix), col_inv, cols) == 
         let headers': Headers0 =
             [ (let mk_Header0(n, t, d, cli, -) = headers(col) in 
                     mk_Header0(n, t, d, cli, col_inv))
               | 
                col in set cols 
             ] in
-            mk_Data0(headers', matrix)
+            mk_Data0(settings, headers', matrix)
     pre cols subset inds headers;
 
     --@doc concatenate / absorb error reasons 
@@ -394,7 +415,7 @@ functions
 
     --@doc Collects Errors where invariants failed. 
     csv_invariants_failed: Data0 -> Errors
-    csv_invariants_failed(mk_Data0(headers, matrix)) == 
+    csv_invariants_failed(mk_Data0(-, headers, matrix)) == 
         let all_rows: set of RowNo = inds matrix.cells,
             all_cols: set of ColNo = inds headers, 
             bad_rows: set of RowNo = 
@@ -472,13 +493,13 @@ operations
     ext rd pos wr ferr;
     
     --@doc sets CSV file path and zeros matrix, registering/showing any IO errors. 
-    setupCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0, s: bool) == 
+    setupCSV(path: Path, parserChoice: CSVParser, settings: CSVSettings, headersToInstall: Headers0, s: bool) == 
         (atomic
             (file     := path;
              parser   := parserChoice;
              strict   := s;
              pos      := {};
-             data     := empty_csv(headersToInstall);
+             data     := empty_csv'(settings, headersToInstall);
             );
          printf("CSV %1ssetup with %2s parser and %3s headers for %4s\n", 
             [if s then "strict " else " ", parserChoice, len headersToInstall, path]);
@@ -488,11 +509,11 @@ operations
     pre file_status(path) = <Valid> and headersToInstall <> []
     post file = path and file <> nil and 
          parser = parserChoice and strict = s and pos = {} and 
-         data = empty_csv(headersToInstall);
+         data = empty_csv'(settings, headersToInstall);
 
     --@doc loads CSV matrix through CSV parser IO, returing only if valid (invariant holding) data
     loadData() == 
-        (let mk_(ok, short_row_errors, data') = csv_read_data(file, parser, data.headers) in
+        (let mk_(ok, short_row_errors, data') = csv_read_data(file, parser, data.settings, data.headers) in
             if ok then 
             (   
                 if short_row_errors <> {} then 
@@ -502,7 +523,7 @@ operations
                     if strict then 
                     (
                         atomic (
-                            data := empty_csv(data'.headers);
+                            data := empty_csv'(data'.settings, data'.headers);
                             pos := {};
                         );
                         --@doc if strict, clear data + pos; otherwise, carry on with invariant checks
@@ -523,7 +544,7 @@ operations
                     (
                         --@doc pick the named headers and set invariant violation positions, zeroing matrix if stric
                         atomic (
-                            data  := if strict then empty_csv(data'.headers) else data';
+                            data  := if strict then empty_csv'(data'.settings, data'.headers) else data';
                             pos   := if strict then {} else lcs;
                         );
                     )
@@ -531,7 +552,7 @@ operations
             else 
             (
                 atomic (
-                    data := empty_csv(data.headers);
+                    data := empty_csv'(data.settings, data.headers);
                     pos  := {};
                 );
                 
@@ -546,13 +567,13 @@ operations
 
     --@doc top-level call: given a file and typed headers (possibly with invariants)
     --     loads the CSV as part of the state
-    loadCSV(path: Path, parserChoice: CSVParser, headersToInstall: Headers0, s: bool) == 
+    loadCSV(path: Path, parserChoice: CSVParser, settings: CSVSettings, headersToInstall: Headers0, s: bool) == 
         (
             if file_status(path) <> <Valid> then 
                 showError()
             else 
             (
-                setupCSV(path, parserChoice, headersToInstall, s);
+                setupCSV(path, parserChoice, settings, headersToInstall, s);
                 loadData();
             );
         )
@@ -575,7 +596,7 @@ operations
                   i in set inds headerTypes 
                 ] 
             in 
-                loadCSV(path, parserChoice, headers, s);
+                loadCSV(path, parserChoice, DEFAULT_SETTINGS, headers, s);
         )
     ext wr CSV 
     post post_loadData(CSV~, CSV);
