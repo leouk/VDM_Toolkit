@@ -40,12 +40,11 @@
 			<artifactId>stdlib</artifactId>
 			<version>${dk.au.ece.vdmj-version}</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>dk.au.ece.vdmj</groupId>
-			<artifactId>annotations</artifactId>
-			<version>${dk.au.ece.vdmj-version}</version>
-			<scope>test</scope>
-		</dependency> -->
+		<dependency>
+			<groupId>com.univocity</groupId>
+			<artifactId>univocity-parsers</artifactId>
+			<version>2.9.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
