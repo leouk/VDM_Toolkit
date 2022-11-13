@@ -60,19 +60,19 @@ values
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
     
     --@doc various invariants examples: if failed, return a non-empty string for a reason; nil if succeeds. 
-    ROW_INVARIANT_AGE: CSVCellInv =
+    CELL_INVARIANT_AGE: CSVCellInv =
         (lambda -: CSVType, v: CSVValue & 
             if v < MIN_AGE then "below minimal age" else if v > MAX_AGE then "above maximal age" else nil);
 
-    ROW_INVARIANT_WEIGHT: CSVCellInv =
+    CELL_INVARIANT_WEIGHT: CSVCellInv =
         (lambda -: CSVType, v: CSVValue & 
             if v < MIN_WEIGHT_KG then "below minimal weight" else if v > MAX_WEIGHT_KG then "above maximal weight" else nil);
 
-    ROW_INVARIANT_HEIGHT: CSVCellInv =
+    CELL_INVARIANT_HEIGHT: CSVCellInv =
         (lambda -: CSVType, v: CSVValue & 
             if v < MIN_HEIGHT_CM then "below minimal height" else if v > MAX_HEIGHT_CM then "above maximal height" else nil);
 
-    ROW_INVARIANT_BMI: CSVCellInv =
+    CELL_INVARIANT_BMI: CSVCellInv =
         (lambda -: CSVType, v: CSVValue &  
             if v < MIN_BMI then "below minimal BMI" else if v > MAX_BMI then "above maximal BMI" else nil);
 
@@ -136,10 +136,10 @@ values
     --@doc make it Data0, so that the invariants won't be checked at creation time. 
     EXAMPLE_DATA_HEADERS: Headers = 
         [mk_Header0("Name"      , <String> ,         "Joe", nil, COL_INVARIANT_UNIQUE_NAME),
-         mk_Header0("Age"       , <Integer>,       MIN_AGE, ROW_INVARIANT_AGE, nil),
-         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, ROW_INVARIANT_WEIGHT, nil),
-         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, ROW_INVARIANT_HEIGHT, nil),
-         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, ROW_INVARIANT_BMI, nil)
+         mk_Header0("Age"       , <Integer>,       MIN_AGE, CELL_INVARIANT_AGE, nil),
+         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, CELL_INVARIANT_WEIGHT, nil),
+         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, CELL_INVARIANT_HEIGHT, nil),
+         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, CELL_INVARIANT_BMI, nil)
         ];
 
     EXAMPLE_DATA: Data0 = 

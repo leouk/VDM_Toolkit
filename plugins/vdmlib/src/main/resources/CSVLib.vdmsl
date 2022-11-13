@@ -195,7 +195,7 @@ types
         --@todo Equality on on rol/col? Or allow multiple reasons?
         --reason:- Reason
         reason: Reason
-        ;
+    inv mk_Error(-,-,r) == r <> nil;
 
     Errors = set of Error; 
 
@@ -441,7 +441,7 @@ functions
 state CSV of 
     file    : [Path]
     parser  : CSVParser
-    ferr    : [String1]
+    ferr    : Reason
     strict  : bool
     pos     : Errors
     data    : Data0
@@ -462,7 +462,7 @@ end
 operations 
 
     --@doc returns last IO error or nil if none.
-    lastError: () ==> [String1]
+    lastError: () ==> Reason
     lastError() == is not yet specified;
 
     printErrors(errors: Errors) == 
