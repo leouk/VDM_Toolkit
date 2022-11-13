@@ -125,18 +125,18 @@ public class CSVLib implements Serializable {
         return context;
     }
 
-    protected static File getFile(Value path)
+    private static ParserType getParserType(Value parser, Context ctx)
+        throws ValueException
+    {
+        return ParserType.valueOf(parser.quoteValue(ctx));
+    }
+
+    private static File getFile(Value path)
 	{
 		String adjustedPath = IO.stringOf(path).replace('/', File.separatorChar);        
 		File f = new File(adjustedPath).getAbsoluteFile();
         return f;
 	}
-
-    protected static ParserType getParserType(Value parser, Context ctx)
-        throws ValueException
-    {
-        return ParserType.valueOf(parser.quoteValue(ctx));
-    }
 
     private static String printHeader(Value h, Context ctxt)
         throws ValueException
@@ -158,12 +158,89 @@ public class CSVLib implements Serializable {
         return s.indexOf(" ") != -1 || s.indexOf("\t") != -1 || s.indexOf("\n") != -1 || s.indexOf("\r") != -1 ? "\"" + s + "\"" : s;
     }
 
-    private static CSVSettings getCSVSettings(Value settings, Context ctxt) throws ValueException
+    private static Value processCell(int rowCount, int colCount, String csvType, String cell, Context ctx)
+    throws Exception
+    {
+        Value result;
+        // create a number
+        if (csvType.equals(CSVTYPE_INTEGER))
+            result = ValueFactory.mkInt(Integer.valueOf(cell));
+        else if (csvType.equals(CSVTYPE_FLOAT))
+        // create a float: could raise Exception if infinite or NaN etc. 
+            result = ValueFactory.mkReal(Double.valueOf(cell));
+        else if (csvType.equals(CSVTYPE_STRING))
+        // create a String
+            result = ValueFactoryHelper.mkString(cell);
+        else if (csvType.equals(CSVTYPE_BOOLEAN))
+        // creates a bool
+            result = ValueFactory.mkBool(Boolean.valueOf(cell));
+        else 
+        // invalid type
+            throw new ValueException(4998, "Invalid CSV type " + 
+                csvType + " at row " + rowCount + " col " + (colCount+1), ctx);
+        return result;
+    }
+
+    private static String plural(int n, String s, String pl)
+    {
+        return n + " " + (n != 1 ? s + pl : s);
+    }
+
+    /**
+     * 
+     * @param rowNo VDM indexed row
+     * @param expectedCol expected column size
+     * @param givenCol given column size
+     * @param reason detail
+     * @return list of errors from given to expected, assuming givenCol < expectedCol
+     * @throws ValueException
+     */
+    private static ValueList createError(int rowNo, int expectedCol, int givenCol, String reason)
+        throws ValueException
+    {
+        assert givenCol < expectedCol; 
+        ValueList result = new ValueList();
+        // Row number is already VDM based, so no padding
+        // Column numbers are Java based, so pad +1
+        //for(int colNo = givenCol; colNo < expectedCol; colNo++)
+        //{
+            // only a single error, given the whole row will be filtered out
+            result.add(ValueFactoryHelper.mkRecord(
+                MODULE_NAME, ERROR_TYPE_NAME, 
+                ValueFactory.mkInt(rowNo),
+                ValueFactory.mkInt(givenCol+1),
+                ValueFactoryHelper.mkString("CSV row " + rowNo + " is too short for header: expected " + 
+                    plural(expectedCol, "columns", "s") + " found " + plural(givenCol, "column", "s"))));
+        //}
+        return result;
+    }
+
+    protected static CSVSettings getCSVSettings(Value settings, Context ctxt) throws ValueException
     {
         RecordValue rsettings = settings.recordValue(ctxt);
         Value skipBlanks = rsettings.fieldmap.get(CSVSETTINGS_FIELD_SKIPBLANKS); // bool
         Value cmtStr = rsettings.fieldmap.get(CSVSETTINGS_FIELD_COMMENTSTR);     // [String1]
         return new CSVSettings(ValueFactoryHelper.mkValueList(skipBlanks, cmtStr), ctxt);
+    }
+
+    protected static Iterator<String[]> parse(File file, ParserType parserType, CSVSettings settings)
+    throws IOException, ValueException
+    {   
+        // file does not exist could occur here 
+        bufStream = new BufferedInputStream(new FileInputStream(file));
+        switch (parserType)
+        {
+            // IOException/read could happen here
+            case Native: 
+                parser = new NativeCSVParser(settings);
+                return parser.parseCSV(bufStream);
+            case Univocity:
+                parser = new UnivocityCSVParser(settings);
+                return parser.parseCSV(bufStream);
+            default: 
+                closeStream();
+                throw new IOException("Not yet supported parser type " + parserType.toString());
+        }
     }
 
     protected static void print(File file, Value data, Context ctxt)
@@ -244,26 +321,6 @@ public class CSVLib implements Serializable {
         out = null;
     } 
 
-    protected static Iterator<String[]> parse(File file, ParserType parserType, CSVSettings settings)
-        throws IOException, ValueException
-    {   
-        // file does not exist could occur here 
-        bufStream = new BufferedInputStream(new FileInputStream(file));
-        switch (parserType)
-        {
-            // IOException/read could happen here
-            case Native: 
-                parser = new NativeCSVParser(settings);
-                return parser.parseCSV(bufStream);
-            case Univocity:
-                parser = new UnivocityCSVParser(settings);
-                return parser.parseCSV(bufStream);
-            default: 
-                closeStream();
-                throw new IOException("Not yet supported parser type " + parserType.toString());
-        }
-    }
-
     /**
      * Corresponds to VDM "file_status: Path -> FileStatus"
      * @param path absolute path of the file name. File separator (e.g. '/' x '\') will be adjusted if needed. 
@@ -291,88 +348,6 @@ public class CSVLib implements Serializable {
         }
         else 
             result = ValueFactory.mkQuote("Valid");
-        return result;
-    }
-
-    @VDMFunction
-    public static Value csv_write_data(Value path, Value data)
-    {        
-        File file = getFile(path);
-        Value result;
-        try
-        {
-            Context ctx = getContext();//javaContext?
-            if (file.exists() && !file.canWrite())
-                throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath() + "\n", ctx);
-            else if (file.isDirectory())
-                throw new ValueException(4999, "CSV print file is a directory:\n\t" + file.getAbsolutePath() + "\n", ctx); 
-
-            // file exists and can write or doesn't exists and isn't a directory, then go
-            print(file, data, ctx);
-        }
-        catch (Exception e)
-        {
-            lastErrorStr = e.getMessage();
-            result = ValueFactory.mkBool(false);
-        }
-        result = ValueFactory.mkBool(true);
-        return result; 
-    }
-
-    private static Value processCell(int rowCount, int colCount, String csvType, String cell, Context ctx)
-        throws Exception
-    {
-        Value result;
-        // create a number
-        if (csvType.equals(CSVTYPE_INTEGER))
-            result = ValueFactory.mkInt(Integer.valueOf(cell));
-        else if (csvType.equals(CSVTYPE_FLOAT))
-        // create a float: could raise Exception if infinite or NaN etc. 
-            result = ValueFactory.mkReal(Double.valueOf(cell));
-        else if (csvType.equals(CSVTYPE_STRING))
-        // create a String
-            result = ValueFactoryHelper.mkString(cell);
-        else if (csvType.equals(CSVTYPE_BOOLEAN))
-        // creates a bool
-            result = ValueFactory.mkBool(Boolean.valueOf(cell));
-        else 
-        // invalid type
-            throw new ValueException(4998, "Invalid CSV type " + 
-                csvType + " at row " + rowCount + " col " + (colCount+1), ctx);
-        return result;
-    }
-
-    private static String plural(int n, String s, String pl)
-	{
-		return n + " " + (n != 1 ? s + pl : s);
-	}
-
-    /**
-     * 
-     * @param rowNo VDM indexed row
-     * @param expectedCol expected column size
-     * @param givenCol given column size
-     * @param reason detail
-     * @return list of errors from given to expected, assuming givenCol < expectedCol
-     * @throws ValueException
-     */
-    private static ValueList createError(int rowNo, int expectedCol, int givenCol, String reason)
-        throws ValueException
-    {
-        assert givenCol < expectedCol; 
-        ValueList result = new ValueList();
-        // Row number is already VDM based, so no padding
-        // Column numbers are Java based, so pad +1
-        //for(int colNo = givenCol; colNo < expectedCol; colNo++)
-        //{
-            // only a single error, given the whole row will be filtered out
-            result.add(ValueFactoryHelper.mkRecord(
-                MODULE_NAME, ERROR_TYPE_NAME, 
-                ValueFactory.mkInt(rowNo),
-                ValueFactory.mkInt(givenCol+1),
-                ValueFactoryHelper.mkString("CSV row " + rowNo + " is too short for header: expected " + 
-                    plural(expectedCol, "columns", "s") + " found " + plural(givenCol, "column", "s"))));
-        //}
         return result;
     }
 
@@ -575,6 +550,31 @@ public class CSVLib implements Serializable {
         return new TupleValue(result);
     }
 
+    @VDMFunction
+    public static Value csv_write_data(Value path, Value data)
+    {        
+        File file = getFile(path);
+        Value result;
+        try
+        {
+            Context ctx = getContext();//javaContext?
+            if (file.exists() && !file.canWrite())
+                throw new ValueException(4999, "Can't write CSV to read-only file " + file.getAbsolutePath() + "\n", ctx);
+            else if (file.isDirectory())
+                throw new ValueException(4999, "CSV print file is a directory:\n\t" + file.getAbsolutePath() + "\n", ctx); 
+
+            // file exists and can write or doesn't exists and isn't a directory, then go
+            print(file, data, ctx);
+        }
+        catch (Exception e)
+        {
+            lastErrorStr = e.getMessage();
+            result = ValueFactory.mkBool(false);
+        }
+        result = ValueFactory.mkBool(true);
+        return result; 
+    }
+    
     /**
      * Corresponds to VDM "lastError: () ==> [String1]". Once called, clear.
      * @return [String1]
