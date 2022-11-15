@@ -26,6 +26,7 @@ public class UnivocityCSVParser extends AbstractCSVParser {
     @Override
     protected Iterator<String[]> createIterator(InputStream stream) throws IOException {
         List<String[]> result = univocityParser.parseAll(stream);
+       // RecordMetaData mdata;
         return result.iterator();
     }
 }
