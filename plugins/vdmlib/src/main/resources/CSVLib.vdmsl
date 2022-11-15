@@ -75,7 +75,7 @@ exports
         --@doc native functions to process CSV data IO 
         file_status          : Path -> FileStatus;
         csv_read_data        : Path * CSVParser * CSVSettings * Headers0 -> bool * Errors * Data0;
-        csv_write_data       : Path * Data0 -> bool;
+        csv_write_data       : Path * Data0 * nat -> bool;
         --@doc functions on basic row and cell consistency
         row_consistency      : Headers0 * Row -> bool;
         col_consistency      : Header0 * TransposedRow -> bool;
@@ -97,7 +97,7 @@ exports
         showError     : () ==> ();
         loadCSV       : Path * CSVParser * CSVSettings * Headers0 * bool ==> ();
         loadTrivialCSV: Path * CSVParser * seq1 of CSVType * bool ==> ();
-        printCSV      : Path ==> ();
+        printCSV      : Path * nat ==> ();
 definitions
 types
     String = seq of char;
@@ -308,8 +308,8 @@ functions
         ); 
 
     --@doc Prints the CSV data to the given file name, allowing print with invariant failures (Data0) 
-    csv_write_data: Path * Data0 -> bool
-    csv_write_data(path, data) == is not yet specified
+    csv_write_data: Path * Data0 * nat -> bool
+    csv_write_data(path, data, precision) == is not yet specified
     pre file_status(path) in set {<Valid>, <DoesNotExist>}
     post (RESULT => file_status(path) = <Valid>);
 
@@ -602,14 +602,14 @@ operations
     post post_loadData(CSV~, CSV);
 
     --@doc creates/overwrites given file path with loaded CSV matrix
-    printCSV(path: Path) == 
+    printCSV(path: Path, precision: nat) == 
         (if (file = nil) then
             printf("CSV not yet loaded %1s",['\n'])
-         else if ferr = nil and pre_csv_write_data(path, data) then
+         else if ferr = nil and pre_csv_write_data(path, data, precision) then
             if file = path then 
                 printf("Cannot print to the same CSV file loaded %1s\n", [file])
             else
-                let ok = csv_write_data(path, data) in 
+                let ok = csv_write_data(path, data, precision) in 
                     if ok then
                         (
                             printf("CSV print successful for %1s\n", [path]);

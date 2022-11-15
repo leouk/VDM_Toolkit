@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.values.FieldMap;
 import com.fujitsu.vdmj.values.FieldValue;
 import com.fujitsu.vdmj.values.InvariantValue;
+import com.fujitsu.vdmj.values.RealValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.SetValue;
@@ -84,6 +85,12 @@ public class ValueFactoryHelper {
     {
         // guards against empty list problem
         return values == null ? new ValueList() : new ValueList(values);
+    }
+
+    public static String stringOfReal(RealValue v, long precision) 
+    {
+        assert precision >= 0;
+        return String.format("%." + String.valueOf(precision) + "f%n", v.value);
     }
 
     protected static boolean fieldValueCompatible(FieldMap original, FieldValue mapped)

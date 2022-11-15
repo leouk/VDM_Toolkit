@@ -241,13 +241,13 @@ operations
     loadCSVExample(path: Path, parser: CSVParser, settings: [CSVSettings], headers: Headers0, strict: bool) ==
         (
          loadCSV(path, parser, if settings = nil then DEFAULT_SETTINGS else settings, headers, strict);
-         printCSV(path ^ ".out");
+         printCSV(path ^ ".out", PRECISION);
         );
 
     loadTrivialCSVExample(path: Path, parser: CSVParser) ==
         (
          loadTrivialCSV(path, parser, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
-         printCSV(path ^ ".out");
+         printCSV(path ^ ".out", PRECISION);
         );
 
 traces 
