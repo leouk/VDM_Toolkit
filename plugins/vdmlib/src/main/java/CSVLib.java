@@ -164,16 +164,16 @@ public class CSVLib implements Serializable {
         Value result;
         // create a number
         if (csvType.equals(CSVTYPE_INTEGER))
-            result = ValueFactory.mkInt(Integer.valueOf(cell));
+            result = new IntegerValue(Long.valueOf(cell));//ValueFactory.mkInt(Long.valueOf(cell));
         else if (csvType.equals(CSVTYPE_FLOAT))
         // create a float: could raise Exception if infinite or NaN etc. 
-            result = ValueFactory.mkReal(Double.valueOf(cell));
+            result = new RealValue(Double.valueOf(cell));//ValueFactory.mkReal(Double.valueOf(cell));
         else if (csvType.equals(CSVTYPE_STRING))
         // create a String
-            result = ValueFactoryHelper.mkString(cell);
+            result = new SeqValue(cell);//ValueFactoryHelper.mkString(cell);
         else if (csvType.equals(CSVTYPE_BOOLEAN))
         // creates a bool
-            result = ValueFactory.mkBool(Boolean.valueOf(cell));
+            result = new BooleanValue(Boolean.valueOf(cell));//ValueFactory.mkBool(Boolean.valueOf(cell));
         else 
         // invalid type
             throw new ValueException(4998, "Invalid CSV type " + 
@@ -207,8 +207,8 @@ public class CSVLib implements Serializable {
             // only a single error, given the whole row will be filtered out
             result.add(ValueFactoryHelper.mkRecord(
                 MODULE_NAME, ERROR_TYPE_NAME, 
-                ValueFactory.mkInt(rowNo),
-                ValueFactory.mkInt(givenCol+1),
+                new IntegerValue(Long.valueOf(rowNo)),//ValueFactory.mkInt(Long.valueOf(rowNo)),
+                new IntegerValue(Long.valueOf(givenCol+1)),//ValueFactory.mkInt(Long.valueOf(givenCol+1)),
                 ValueFactoryHelper.mkString("CSV row " + rowNo + " is too short for header: expected " + 
                     plural(expectedCol, "columns", "s") + " found " + plural(givenCol, "column", "s"))));
         //}
