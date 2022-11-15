@@ -18,7 +18,9 @@ import com.fujitsu.vdmj.runtime.VDMFunction;
 import com.fujitsu.vdmj.runtime.VDMOperation;
 import com.fujitsu.vdmj.runtime.ValueException;
 import com.fujitsu.vdmj.values.BooleanValue;
+import com.fujitsu.vdmj.values.IntegerValue;
 import com.fujitsu.vdmj.values.QuoteValue;
+import com.fujitsu.vdmj.values.RealValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
 import com.fujitsu.vdmj.values.TupleValue;
@@ -152,6 +154,21 @@ public class CSVLib implements Serializable {
         return quoteScape(headerNameStr);
     }
 
+    private static String printItem(Value v, long precision)
+    {
+        String result;
+        if (v instanceof RealValue)
+        {
+            assert precision >= 0;
+            result = ValueFactoryHelper.stringOfReal((RealValue)v, precision);
+        }
+        else 
+        {
+            result = IO.stringOf(v);
+        }
+        return quoteScape(result);
+    }
+
     //@todo presume there will be more cases? 
     private static String quoteScape(String s)
     {
@@ -243,7 +260,7 @@ public class CSVLib implements Serializable {
         }
     }
 
-    protected static void print(File file, Value data, Context ctxt)
+    protected static void print(File file, Value data, Value precision, Context ctxt)
         throws IOException, ValueException
     {
         RecordValue csvData = data.recordValue(ctxt);                   // mk_Data0 ::
@@ -290,6 +307,7 @@ public class CSVLib implements Serializable {
         // process records
         RecordValue rowsRec = matrix.recordValue(ctxt);        // mk_Rows:: 
         Value cells = rowsRec.fieldmap.get(MATRIX_FIELD_CELLS);//     cells: seq of Row
+        long prec = precision.natValue(ctxt);
         for (Value row : cells.seqValue(ctxt))               // Row = seq of CSVValue
         {
             ValueList rvl = row.seqValue(ctxt);
@@ -302,11 +320,11 @@ public class CSVLib implements Serializable {
             {
                 // print each cell at rowCount for all columns in row
                 //sb.append(it.next().stringValue(ctxt));
-                sb.append(quoteScape(IO.stringOf(it.next())));
+                sb.append(printItem(it.next(), prec));
                 while (it.hasNext())
                 {
                     sb.append(",");
-                    sb.append(quoteScape(IO.stringOf(it.next())));
+                    sb.append(printItem(it.next(), prec));
                 }    
             }
             sb.append("\n");
@@ -551,7 +569,7 @@ public class CSVLib implements Serializable {
     }
 
     @VDMFunction
-    public static Value csv_write_data(Value path, Value data)
+    public static Value csv_write_data(Value path, Value data, Value precision)
     {        
         File file = getFile(path);
         Value result;
@@ -564,7 +582,7 @@ public class CSVLib implements Serializable {
                 throw new ValueException(4999, "CSV print file is a directory:\n\t" + file.getAbsolutePath() + "\n", ctx); 
 
             // file exists and can write or doesn't exists and isn't a directory, then go
-            print(file, data, ctx);
+            print(file, data, precision, ctx);
         }
         catch (Exception e)
         {
