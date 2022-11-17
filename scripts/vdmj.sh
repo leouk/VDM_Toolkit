@@ -114,7 +114,8 @@ MAIN="com.fujitsu.vdmj.VDMJ"
     check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
     VDMJ_OPTS="$VDMJ_OPTS -annotations"
     VM_OPTS="$VM_OPTS -Dvdmj.annotations.debug=true -Dvdmj.parser.merge_comments=true"
-    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$ANNOTATIONS_VDM_TOOLKIT_JAR"
+    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS_VDM_TOOLKIT_JAR"
+    #$ANNOTATIONS2_JAR:
 #fi
 
 # The dialect for vdm2isa is always VDMSL for now; is based on $0, so hard-link this file as vdmsl, vdmpp and vdmrt.
