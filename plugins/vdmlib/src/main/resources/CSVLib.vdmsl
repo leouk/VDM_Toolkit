@@ -569,6 +569,7 @@ operations
     --     loads the CSV as part of the state
     loadCSV(path: Path, parserChoice: CSVParser, settings: CSVSettings, headersToInstall: Headers0, s: bool) == 
         (
+            printf("Loading CSV file %1s\n", [path]);
             if file_status(path) <> <Valid> then 
                 showError()
             else 
