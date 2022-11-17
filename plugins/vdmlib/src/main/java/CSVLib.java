@@ -17,9 +17,6 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.VDMFunction;
 import com.fujitsu.vdmj.runtime.VDMOperation;
 import com.fujitsu.vdmj.runtime.ValueException;
-import com.fujitsu.vdmj.values.BooleanValue;
-import com.fujitsu.vdmj.values.IntegerValue;
-import com.fujitsu.vdmj.values.QuoteValue;
 import com.fujitsu.vdmj.values.RealValue;
 import com.fujitsu.vdmj.values.RecordValue;
 import com.fujitsu.vdmj.values.SeqValue;
@@ -181,16 +178,20 @@ public class CSVLib implements Serializable {
         Value result;
         // create a number
         if (csvType.equals(CSVTYPE_INTEGER))
-            result = new IntegerValue(Long.valueOf(cell));//ValueFactory.mkInt(Long.valueOf(cell));
+            result = //new IntegerValue(Long.valueOf(cell));//
+                     ValueFactory.mkInt(Long.valueOf(cell));
         else if (csvType.equals(CSVTYPE_FLOAT))
         // create a float: could raise Exception if infinite or NaN etc. 
-            result = new RealValue(Double.valueOf(cell));//ValueFactory.mkReal(Double.valueOf(cell));
+            result = //new RealValue(Double.valueOf(cell));//
+                     ValueFactory.mkReal(Double.valueOf(cell));
         else if (csvType.equals(CSVTYPE_STRING))
         // create a String
-            result = new SeqValue(cell);//ValueFactoryHelper.mkString(cell);
+            result = //new SeqValue(cell);//
+                     ValueFactoryHelper.mkString(cell);
         else if (csvType.equals(CSVTYPE_BOOLEAN))
         // creates a bool
-            result = new BooleanValue(Boolean.valueOf(cell));//ValueFactory.mkBool(Boolean.valueOf(cell));
+            result = //new BooleanValue(Boolean.valueOf(cell));//
+                     ValueFactory.mkBool(Boolean.valueOf(cell));
         else 
         // invalid type
             throw new ValueException(4998, "Invalid CSV type " + 
@@ -224,8 +225,8 @@ public class CSVLib implements Serializable {
             // only a single error, given the whole row will be filtered out
             result.add(ValueFactoryHelper.mkRecord(
                 MODULE_NAME, ERROR_TYPE_NAME, 
-                new IntegerValue(Long.valueOf(rowNo)),//ValueFactory.mkInt(Long.valueOf(rowNo)),
-                new IntegerValue(Long.valueOf(givenCol+1)),//ValueFactory.mkInt(Long.valueOf(givenCol+1)),
+                ValueFactory.mkInt(Long.valueOf(rowNo)),
+                ValueFactory.mkInt(Long.valueOf(givenCol+1)),
                 ValueFactoryHelper.mkString("CSV row " + rowNo + " is too short for header: expected " + 
                     plural(expectedCol, "columns", "s") + " found " + plural(givenCol, "column", "s"))));
         //}
@@ -347,7 +348,7 @@ public class CSVLib implements Serializable {
     @VDMFunction 
     public static Value file_status(Value path)
     {
-        QuoteValue result; 
+        Value result; 
         File f = getFile(path);
         if (!f.exists())
         {
@@ -398,11 +399,11 @@ public class CSVLib implements Serializable {
                     //     ValueFactory.mkNil()           // no line comment delimeter string
                     // ),
                     settings,
-                    new SeqValue(), // Headers0: seq of Header 
+                    ValueFactoryHelper.mkEmptySeqValue(),// Headers0: seq of Header 
                     ValueFactoryHelper.mkRecord(
                         MODULE_NAME, 
                         MATRIX_TYPE_NAME, 
-                        new SeqValue(), // cells: seq of Row 
+                        ValueFactoryHelper.mkEmptySeqValue(), // cells: seq of Row 
                         ValueFactory.mkNil() // no row invariant 
                     )
             );
@@ -519,7 +520,7 @@ public class CSVLib implements Serializable {
                 }
                 
                 // add row cell values
-                csvMatrix.add(new SeqValue(cellValues));
+                csvMatrix.add(ValueFactoryHelper.mkSeq(cellValues));
                 rowCount++;
             }
 
@@ -527,10 +528,10 @@ public class CSVLib implements Serializable {
             RecordValue csvData = ValueFactoryHelper.mkRecord(
                     MODULE_NAME, CSVDATA_TYPE_NAME, 
                     settings,
-                    new SeqValue(namedHeaders),
+                    ValueFactoryHelper.mkSeq(namedHeaders),
                     ValueFactoryHelper.mkRecord(
                         MODULE_NAME, MATRIX_TYPE_NAME, 
-                        new SeqValue(csvMatrix),
+                        ValueFactoryHelper.mkSeq(csvMatrix),
                         ValueFactory.mkNil()
                     )
             ); 
@@ -547,7 +548,7 @@ public class CSVLib implements Serializable {
             csvData.checkInvariant(ctx);//Interpretr's context?
             
             // reset tuple value with mk_(true, errors, mk_Data0(headers, matrix))
-            result.add(new BooleanValue(true));
+            result.add(ValueFactory.mkBool(true));
             result.add(ValueFactoryHelper.mkSet(short_row_errors));            
             result.add(csvData);
 
@@ -559,7 +560,7 @@ public class CSVLib implements Serializable {
 
             // get the failed answer here for ValueException catch
             // set failed tuple answer as mk_(false, {}, mk_Data0([]], []]))
-            result.add(new BooleanValue(false));
+            result.add(ValueFactory.mkBool(false));
             result.add(ValueFactoryHelper.mkEmptySetValue());
             result.add(emptyCSV);        
         }
@@ -605,8 +606,7 @@ public class CSVLib implements Serializable {
             lastErrorStr = parser.lastError();     
         Value result = lastErrorStr == null || lastErrorStr.isEmpty() ? 
             ValueFactory.mkNil() : 
-            //@NB ValueFactory.mkSeq doesn't work well for seq of char / Strings
-            new SeqValue(lastErrorStr);//ValueFactory.mkSeq(lastErrorStr);
+            ValueFactoryHelper.mkString(lastErrorStr);
         lastErrorStr = "";
         return result;
 	}
