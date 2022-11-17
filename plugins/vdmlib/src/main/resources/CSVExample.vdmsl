@@ -1,5 +1,10 @@
 module CSVExample
-imports from CSVLib
+imports 
+    from VDMUtil 
+    functions 
+        val2seq_of_char renamed val2seq_of_char;
+    ,
+    from CSVLib
     types 
         Path renamed Path;
         Data renamed Data;
@@ -51,7 +56,7 @@ values
     MAX_AGE: nat1 = 60;
     MIN_BMI: nat1 = 18;
     MAX_BMI: nat1 = 35;
-    PRECISION: nat1 = 3;
+    PRECISION: nat1 = 2;
     MIN_WEIGHT_KG: real = 10.5;
     MAX_WEIGHT_KG: real = 100;
     MIN_HEIGHT_CM: real = 100;
@@ -101,7 +106,10 @@ values
                 "invalid BMI header"
             else 
                 (let bmi: real = calculated_bmi(r) in
-                    if approx_eq(r(BMI_ROW_INDEX), bmi, PRECISION) then nil else "invalid BMI for given CSV weight and height")
+                    if floor(bmi) = floor(r(BMI_ROW_INDEX))
+                    then nil 
+                    else "invalid BMI for given CSV weight and height: expected " ^ 
+                        val2seq_of_char[real](bmi) ^"; found " ^ val2seq_of_char[real](r(BMI_ROW_INDEX)))
         );
 
     --@doc when failure anywhere in the row, kill the whole row
@@ -173,15 +181,9 @@ functions
    	approx: real * nat1 -> real
 	approx(m, precision) == m * (10**precision);
 
-    --@doc approximate  both sides to the same precision then floor them for equality testing
-	approx_eq: real * real * nat1 -> bool
-	approx_eq(lhs, rhs, precision) == 
-		let 
-			lhs': real = approx(lhs, precision),
-			rhs': real = approx(rhs, precision)
-		 in
-		  floor(lhs') = floor(rhs');
-          
+    ceil: real -> real
+    ceil(n) == - floor (- n);
+
     calculated_bmi: Row -> real
     calculated_bmi(r) ==
         let 
@@ -192,7 +194,7 @@ functions
             h_m: real = h / 100,
             d: real = h_m * h_m
         in
-            if approx_eq(d, 0, PRECISION) then MIN_BMI-1 else w / d 
+            if floor(approx(d, PRECISION)) = 0 then MIN_BMI-1 else w / d 
     pre BMI_ROW_INDEX <= len r;
 
     VALID_DATA: [CSVRowInv] -> Data 
