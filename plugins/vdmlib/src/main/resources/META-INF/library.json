@@ -13,6 +13,12 @@
 			"depends": ["VDMUtil", "Support1"]
 		},
 		{
+			"name": "CSVLib",
+			"description": "VDM Toolkit fast + specification CSV library",
+			"files": ["CSVLib.vdmsl"],
+			"depends": ["VDMUtil", "IO"]
+		},
+		{
 			"name": "FuzzySets",
 			"description": "VDM Toolkit fuzzy sets library",
 			"files": ["FuzzySets.vdmsl"],
@@ -41,6 +47,12 @@
 			"description": "VDM Toolkit partial/total ordering properties library",
 			"files": ["Ordering.vdmsl"],
 			"depends": ["Relations"]
+		},
+		{
+			"name": "Ranges",
+			"description": "VDM Toolkit fast dense ranges library",
+			"files": ["Ranges.vdmsl"],
+			"depends": ["Support1", "Relations"]
 		},
 		{
 			"name": "Relations",
