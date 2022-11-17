@@ -20,13 +20,13 @@ import com.fujitsu.vdmj.typechecker.FlatCheckedEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
-public class TCWitnessAnnotation extends TCAnnotation
+public class TCwitnessAnnotation extends TCAnnotation
 {
 	private static final long serialVersionUID = 1L;
 	private static TCDefinitionList tagDefinitions = null;
 	private TCValueDefinition myDefinition = null;
 
-	public TCWitnessAnnotation(TCIdentifierToken name, TCExpressionList args)
+	public TCwitnessAnnotation(TCIdentifierToken name, TCExpressionList args)
 	{
 		super(name, args);
 	}
@@ -34,9 +34,9 @@ public class TCWitnessAnnotation extends TCAnnotation
 	public static void doInit()
 	{
 		tagDefinitions = new TCDefinitionList();
-		for (TCAnnotation a : getInstances(TCWitnessAnnotation.class))
+		for (TCAnnotation a : getInstances(TCwitnessAnnotation.class))
 		{
-			TCWitnessAnnotation witness = (TCWitnessAnnotation)a;
+			TCwitnessAnnotation witness = (TCwitnessAnnotation)a;
 			if (witness.checkArgs())
 			{
 				tagDefinitions.add(witness.createDefinition());

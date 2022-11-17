@@ -5,6 +5,6 @@
 # annotations
 package annotations.tc to annotations.in;
 map TCTimeAnnotation{name, args} to INTimeAnnotation(name, args);
-map TCWitnessAnnotation{name, args, myDefinition} to INWitnessAnnotation(name, args, myDefinition);
+map TCwitnessAnnotation{name, args, myDefinition} to INwitnessAnnotation(name, args, myDefinition);
 map TCTheoremAnnotation{name, args} to INTheoremAnnotation(name, args);
 map TCLemmaAnnotation{name, args} to INLemmaAnnotation(name, args);

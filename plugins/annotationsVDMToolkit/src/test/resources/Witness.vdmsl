@@ -2,9 +2,9 @@ module A
 exports all
 definitions 
 types
-	--@Witness(ONE_R, mk_R(1,2))
-	--@Witness(ONE_R, mk_R(2,4))
-	--@Witness(BAD_R, mk_R(4,2))
+	--@witness(ONE_R, mk_R(1,2))
+	--@witness(ONE_R, mk_R(2,4))
+	--@witness(BAD_R, mk_R(4,2))
 	R ::
 		a : nat
 		b : nat
@@ -18,7 +18,7 @@ definitions
 
 types
 
-	--@Witness(ONE_S, mk_S(A`ONE_R, A`ONE_R))
+	--@witness(ONE_S, mk_S(A`ONE_R, A`ONE_R))
 	S ::
 		a : R
 		b : R
@@ -29,7 +29,7 @@ functions
 	f: R -> nat
 	f(rec) == rec.a + rec.b
 	post
-		--@Witness(THREE, post_f(A`ONE_R, f(A`ONE_R)))
+		--@witness(THREE, post_f(A`ONE_R, f(A`ONE_R)))
 		(RESULT > rec.a and RESULT > rec.b);
 
 end B
