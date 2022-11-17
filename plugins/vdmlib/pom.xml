@@ -28,15 +28,12 @@
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>vdmj</artifactId>
 			<version>${dk.au.ece.vdmj-version}</version>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>  <!-- exclude VDMJ from the build with dependencies assembly -->
-					<groupId>dk.au.ece.vdmj</groupId>
-					<artifactId>vdmj</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>compile</scope>
 		</dependency>
+		<!-- <dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>lsp</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>dk.au.ece.vdmj</groupId>
 			<artifactId>vdmjunit</artifactId>
