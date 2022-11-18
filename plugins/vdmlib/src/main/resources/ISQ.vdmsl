@@ -989,7 +989,13 @@ functions
 	SI_DEGREES_FARENHEIT(x) == scaleMS((x + 459.67) * 5/9, KELVIN);
 
 	SI_JOULE: () -> SI_MeasurementSystem
-	SI_JOULE() == ms_times(KILOGRAM, ms_times(/*SI_AREA()*/ms_itself_n(METRE, 2), ms_inv_n(second(SI, SI_UNIT), 2)));
+	SI_JOULE() == ms_times(KILOGRAM, ms_times(/*SI_AREA()*/ms_itself_n(METER, 2), ms_inv_n(second(SI, SI_UNIT), 2)));
+
+	SI_COLOUMB: () -> SI_MeasurementSystem 
+	SI_COLOUMB() == ms_times(AMPERE, SECOND);
+
+	SI_LUMEN: () -> SI_MeasurementSystem
+	SI_LUMEN() == ms_times(CANDELA, ms_times(ms_itself_n(METER, 2), ms_inv_n(METER, 2)));
 					 
 ------------------------------------------------------------------------------------
 --@section British Imperial measurement system setup and common conversions
@@ -1191,7 +1197,21 @@ functions
 	
 	weeks2months_wks: nat1 -> Week
 	weeks2months_wks(w) == scaleMS(w, wW2M());
-	
+
+------------------------------------------------------------------------------------
+--@section SI constants
+------------------------------------------------------------------------------------	 
+
+values
+	HERTZ			 : Hertz = SI_FREQUENCY;
+	CAESIUM_FREQUENCY: Hertz = scaleMS(9192631770, HERTZ);
+	SPEED_OF_LIGHT   : Velocity = scaleMS(299792458, SI_VELOCITY);
+	PLANK_CONSTANT   : SI_MeasurementSystem = scaleMS(6.62607015 * (1/(10**34)), ms_times(SI_JOULE(), SECOND));
+	ELEMENTARY_CHARGE: SI_MeasurementSystem = scaleMS(1.602176634 * (1/(10**19)), SI_COLOUMB());
+	AVOGRADO		 : SI_MeasurementSystem = scaleMS(6.02214076 * (10**23), ms_inv(MOLE));
+	MAX_LUMINOUS_FREQ: Hertz = scaleMS(540 * (10**12), HERTZ);
+	LUMINOUS_EFFICACY: SI_MeasurementSystem = scaleMS(683, ms_div(SI_LUMEN(), SI_WATT));
+
 ------------------------------------------------------------------------------------
 --@section Useful for testing in approximating
 ------------------------------------------------------------------------------------	 
