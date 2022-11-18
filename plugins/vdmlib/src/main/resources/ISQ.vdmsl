@@ -189,7 +189,7 @@ exports
 		hAVG_MONTH: () -> Hour;
 		hYEAR     : () -> Hour;
 		weeks2months_hrs: nat1 -> Hour;
-		n_times_day2every_x_hours: nat1 -> Hour;
+		n_times_day2every_x_hours: nat1 -> real;
 	 		
 		dWEEK: () -> Day;
 		weeks2days: nat1 -> Day;
@@ -1160,8 +1160,8 @@ functions
 	--@doc 3 times a day = DAY() / 3 = 1 times 8 hours;
 	--		 DAY()= 24hrs / 3 =  8hrs
 	--@doc don't change the dimension vector, so just scale by the inverse
-	n_times_day2every_x_hours: nat1 -> Hour
-	n_times_day2every_x_hours(times_a_day) == scaleMS(1/mag(scaleMS(times_a_day, MHOUR)), hDAY());
+	n_times_day2every_x_hours: nat1 -> real
+	n_times_day2every_x_hours(times_a_day) == mag(scaleMS(1/mag(scaleMS(times_a_day, MHOUR)), hDAY()));
 
 values
 	MDC_UNIT: UnitSystem = "MDC";
@@ -1461,5 +1461,5 @@ traces
 
 	--@doc 1000g = 2.20462 pounds
 	T4: refl_bool(mag(ms_conv(/*CGS, BIS, kilo(GRAM)*/kilo(GRAM), BIS)) = 2.2046227773803357);
-	
+
 end ISQ
