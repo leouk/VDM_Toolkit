@@ -11,3 +11,5 @@ plugins/vdm2isa/src/main/resources/output
 plugins/vdm2isa-lsp/target
 .ci-friendly-pom.xml
 plugins/vdmlib/src/main/resources/lib
+plugins/vdmlib/.generated
+plugins/vdmlib/src/main/resources/.generated
