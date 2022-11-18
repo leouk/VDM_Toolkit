@@ -419,13 +419,20 @@ types
 			= 
 			mk_MeasurementSystem(mk_Quantity(m2, -), s2, u2) 
 		  ==
+		--@todo why ignore the quantity dimension vector?
 		  m1 = m2 and s1 = s2 and u1 = u2
 	ord mk_MeasurementSystem(mk_Quantity(m1, -), s1, u1) 
 		< 
 		mk_MeasurementSystem(mk_Quantity(m2, -), s2, u2) 
 		==
 		--@OnFail(4087, "Cannot compare measurement systems: %1s(%2s) < %3s(%4s)?", u1, m1, u2, m2)
-		(m1 < m2 and s1 = s2 and u1 = u2);
+		(m1 < m2 and s1 = s2 and u1 = u2)
+	--@NB doesn't matter which way round
+	-- eq  m1 = m2 == m1.quantity.mag = m2.quantity.mag and m1.schema = m2.schema and m1.unit = m2.unit 
+	-- ord m1 < m2 == 
+	-- 	--OnFail(4087, "Cannot compare measurement systems: %1s(%2s) < %3s(%4s)?", m1.unit, m1.quantity.mag, m2.unit, m2.quantity.mag)
+	-- 	(m1.quantity.mag < m2.quantity.mag and m1.schema = m2.schema and m1.unit = m2.unit)
+	;
 
 	MeasurementSystemN0	= MeasurementSystem
 	inv ms == is_QuantityN0(ms.quantity);
