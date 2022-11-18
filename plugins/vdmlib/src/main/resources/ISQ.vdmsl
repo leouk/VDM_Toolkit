@@ -176,7 +176,7 @@ exports
 		BIS_INCH         : () -> Yard;
 		BIS_MILE         : () -> Yard;
 		BIS_ACRE         : () -> BISVolume;
-		BIS_OUNCE        : () -> Kilogram;
+		BIS_OUNCE        : () -> Pound;
 		BIS_GALLON       : () -> BISVolume;
 		BIS_PINT         : () -> BISVolume;
 		BIS_MILE_PER_HOUR: () -> BISVelocity;
@@ -1034,7 +1034,7 @@ functions
 	BIS_ACRE: () -> BISVolume
 	BIS_ACRE() == scaleMS(4840, BIS_VOLUME);
 
-	BIS_OUNCE: () -> Kilogram
+	BIS_OUNCE: () -> Pound
 	BIS_OUNCE() == scaleMS(1/12, BIS_POUND);
 	
 	--@todo inch**3 x yard**3?
