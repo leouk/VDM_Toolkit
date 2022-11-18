@@ -116,7 +116,7 @@ exports
 		scaleQ: Magnitude * Quantity -> Quantity;
 
 		scaleMS: Magnitude * MeasurementSystem -> MeasurementSystem;
-		quant_conv: ConversionSchema * DimensionVector -> MagnitudeN0;
+		quant_conv: ConversionSchema * DimensionlessVector -> MagnitudeN0;
 		conv_inv: ConversionSchema -> ConversionSchema;
 		conv_comp: ConversionSchema * ConversionSchema -> ConversionSchema;
 		ms_conv_eq: MeasurementSystem * MeasurementSystem -> bool;
@@ -334,7 +334,8 @@ types
 	DimensionlessVector = DimensionVector0
 	inv dv == 
 		--@doc needs info on all known dimensions
-		dom dv = DIMENSIONS
+		--@OnFail(4060, "Dimensionless vector missing %1s dimensions = %2s", DIMENSIONS \ dom dv, dv)
+		(dom dv = DIMENSIONS)
 		and
 		--@doc needs at least one dimension set 
 		true--rng(dv :-> {0}) <> {} 
@@ -343,7 +344,9 @@ types
 
 	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in RADIAN or STERADIAN
 	DimensionVector = DimensionlessVector
-	inv dv == rng(dv :-> {0}) <> {};
+	inv dv == 
+		--@OnFail(4060, "Dimension vector has only dimensionless (0) ranges for %1s", dom(dv :> {0}))
+		(rng(dv :-> {0}) <> {});
 	
 	--@doc The vector where only one of the base unit dimension registers 
 	--		 (i.e. only one mapping to 1, and all other mappings are to zero)
@@ -456,14 +459,17 @@ functions
 	dim_comp(d1, d2) == { d |-> d1(d) + d2(d) | d in set dom d1 inter dom d2 }
 	post	
 		--@doc if result has dimension, it must have come from either d1 or d2
-		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
-	
+		--@doc can be dimensionless for case of pure quantities (e.g. radian)
+		true--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2))
+		;
+		
 	--@doc utility for d**2 or d**3 etc (i.e. compose twice/thrice with itself)
 	dim_comp_n: DimensionlessVector * nat -> DimensionlessVector
 	dim_comp_n(di, n) == 
 		fold[DimensionlessVector](dim_comp, ONE_DV, replicate[DimensionVector](n, di)) 
 	post	
 		--@doc if result has dimension, it must have come from either d1 or d2
+		--@doc can be dimensionless for case of pure quantities (e.g. radian)
 		true--(is_DimensionVector(RESULT) <=> is_DimensionVector(di))
 	measure
 		n;
@@ -473,6 +479,7 @@ functions
 	dim_inv(di) == { d |-> -di(d) | d in set dom di }
 	post	
 		--@doc if result has dimension, it must have come from either d1 or d2
+		--@doc can be dimensionless for case of pure quantities (e.g. radian)
 		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(di));
 	
 	--@doc utility for d**-2 or d**-3 etc (i.e. compose twice/thrice with itself then invert)
@@ -728,7 +735,7 @@ functions
 	
 	--@doc to quantity convert in multiple dimensions, we must use product of the integer exponenciation on the dimensions
 	--		 for all dimensions. Those with zero dimension, will lead to 1, others will be multiplied accordingly
-	quant_conv: ConversionSchema * DimensionVector -> MagnitudeN0
+	quant_conv: ConversionSchema * DimensionlessVector -> MagnitudeN0
 	quant_conv(cs, dv) ==
 		prods_r({ cs(i)**dv(i) | i in set dom cs inter dom dv })
 	pre
