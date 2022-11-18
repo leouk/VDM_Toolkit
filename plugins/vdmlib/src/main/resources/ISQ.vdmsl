@@ -14,7 +14,6 @@ from MATH
 	functions
 		pi_f renamed pi_f;
 ,
---@todo remove any dependencies?
 from Support1
 	functions
 		fold renamed fold;
@@ -37,7 +36,7 @@ exports
 		struct SQuantityN0;
 		struct ConversionSchema;
 		
-		--@TODO make use of those
+		--@todo make use of those
 		struct Conversion;
 		struct Conversions;
 
@@ -575,25 +574,23 @@ values
 	INTENSITY: SingleDimension = ONE_DV ++ { <Intensity>   |-> 1 };
 
 	--@doc common dimension units
-  AREA        : DimensionVector = dim_comp_n(LENGTH, 2);																--L**2
-  VOLUME      : DimensionVector = dim_comp_n(LENGTH, 3);                                --L**3
-  FREQUENCY   : DimensionVector = dim_inv(TIME);                                        --T**-1
-  VELOCITY    : DimensionVector = dim_comp(LENGTH, FREQUENCY);                          --L*T**-1
-  ACCELERATION: DimensionVector = dim_comp(VELOCITY, FREQUENCY);                        --L*T**-2
-  ENERGY      : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 2)));   --L**2*M*T**-2
-  POWER       : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));   --L**2*M*T**-3
-  FORCE       : DimensionVector = dim_comp(LENGTH, dim_comp(MASS, dim_inv_n(TIME, 2))); --L*M*T**-2
-  PRESSURE    : DimensionVector = dim_comp(dim_inv(LENGTH),                             --L**-1*M*T**-2
-  																	dim_comp(MASS, dim_inv_n(TIME, 2)));                
-  CHARGE      : DimensionVector = dim_comp(INTENSITY, TIME);                            --I*T
-  PDIFFERENCE : DimensionVector = dim_comp(AREA, dim_comp(MASS, 
-  																	dim_comp(dim_inv_n(TIME, 3), dim_inv(INTENSITY)))); --L**2*M*T**-3*I**-1
-  CAPACITANCE	: DimensionVector = dim_comp(dim_inv(AREA),                               --L**-2*M**-1*T**4*I**2
-  																	dim_comp(dim_inv(MASS), 
-  																		dim_comp(dim_comp_n(TIME, 4), 
-  																						 dim_comp_n(INTENSITY, 2)))); 	
-  																						 
-  RADIAN      : DimensionlessVector = dim_comp(LENGTH, dim_inv(LENGTH)); --L*L**-1
+	AREA        : DimensionVector = dim_comp_n(LENGTH, 2);																--L**2
+	VOLUME      : DimensionVector = dim_comp_n(LENGTH, 3);                                --L**3
+	FREQUENCY   : DimensionVector = dim_inv(TIME);                                        --T**-1
+	VELOCITY    : DimensionVector = dim_comp(LENGTH, FREQUENCY);                          --L*T**-1
+	ACCELERATION: DimensionVector = dim_comp(VELOCITY, FREQUENCY);                        --L*T**-2
+	ENERGY      : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 2)));   --L**2*M*T**-2
+	POWER       : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));   --L**2*M*T**-3
+	FORCE       : DimensionVector = dim_comp(LENGTH, dim_comp(MASS, dim_inv_n(TIME, 2))); --L*M*T**-2
+	PRESSURE    : DimensionVector = dim_comp(dim_inv(LENGTH), dim_comp(MASS, dim_inv_n(TIME, 2)));  --L**-1*M*T**-2               
+	CHARGE      : DimensionVector = dim_comp(INTENSITY, TIME);                            --I*T
+	PDIFFERENCE : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_comp(dim_inv_n(TIME, 3), dim_inv(INTENSITY)))); --L**2*M*T**-3*I**-1
+	CAPACITANCE	: DimensionVector = dim_comp(dim_inv(AREA),                               --L**-2*M**-1*T**4*I**2
+																	dim_comp(dim_inv(MASS), 
+																		dim_comp(dim_comp_n(TIME, 4), 
+																							dim_comp_n(INTENSITY, 2)))); 	
+																							
+	RADIAN      : DimensionlessVector = dim_comp(LENGTH, dim_inv(LENGTH)); --L*L**-1
 	STERADIAN   : DimensionlessVector = dim_comp(AREA, dim_inv(AREA));     --L**2*L**-2
 	WATT        : DimensionVector     = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));  --L**2*M*T**-3
 	
@@ -625,22 +622,22 @@ values
 	PREFIX_NANO   : MagnitudeN0 = 1/PREFIX_GIGA;
 	PREFIX_PICO   : MagnitudeN0 = 1/PREFIX_TERA;
 
-  UNIT_AREA        : Quantity = mk_Quantity(1, AREA)         ;
-  UNIT_VOLUME      : Quantity = mk_Quantity(1, VOLUME)       ;
-  UNIT_FREQUENCY   : Quantity = mk_Quantity(1, FREQUENCY)    ;
-  UNIT_VELOCITY    : Quantity = mk_Quantity(1, VELOCITY)     ;
-  UNIT_ACCELERATION: Quantity = mk_Quantity(1, ACCELERATION) ;
-  UNIT_ENERGY      : Quantity = mk_Quantity(1, ENERGY)       ;
-  UNIT_POWER       : Quantity = mk_Quantity(1, POWER)        ;
-  UNIT_FORCE       : Quantity = mk_Quantity(1, FORCE)        ;
-  UNIT_PRESSURE    : Quantity = mk_Quantity(1, PRESSURE)     ;
-  UNIT_CHARGE      : Quantity = mk_Quantity(1, CHARGE)       ;
-  UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, PDIFFERENCE);
-  UNIT_CAPACITANCE : Quantity = mk_Quantity(1, CAPACITANCE) ;
+	UNIT_AREA        : Quantity = mk_Quantity(1, AREA)         ;
+	UNIT_VOLUME      : Quantity = mk_Quantity(1, VOLUME)       ;
+	UNIT_FREQUENCY   : Quantity = mk_Quantity(1, FREQUENCY)    ;
+	UNIT_VELOCITY    : Quantity = mk_Quantity(1, VELOCITY)     ;
+	UNIT_ACCELERATION: Quantity = mk_Quantity(1, ACCELERATION) ;
+	UNIT_ENERGY      : Quantity = mk_Quantity(1, ENERGY)       ;
+	UNIT_POWER       : Quantity = mk_Quantity(1, POWER)        ;
+	UNIT_FORCE       : Quantity = mk_Quantity(1, FORCE)        ;
+	UNIT_PRESSURE    : Quantity = mk_Quantity(1, PRESSURE)     ;
+	UNIT_CHARGE      : Quantity = mk_Quantity(1, CHARGE)       ;
+	UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, PDIFFERENCE);
+	UNIT_CAPACITANCE : Quantity = mk_Quantity(1, CAPACITANCE) ;
 
-  UNIT_RADIAN      : Quantity = mk_Quantity(1, RADIAN)       ;
-  UNIT_STERADIAN   : Quantity = mk_Quantity(1, STERADIAN)    ;
-  UNIT_WATT        : Quantity = mk_Quantity(1, WATT)         ;
+	UNIT_RADIAN      : Quantity = mk_Quantity(1, RADIAN)       ;
+	UNIT_STERADIAN   : Quantity = mk_Quantity(1, STERADIAN)    ;
+	UNIT_WATT        : Quantity = mk_Quantity(1, WATT)         ;
 	
 ------------------------------------------------------------------------------------
 --@section SI basic and derived unit types
@@ -648,10 +645,10 @@ values
 	SI_UNIT: UnitSystem = "SI";
 	
 	--@doc International Systems of Units "Systeme Internacional" base units and conversion schemas
-	SI	  : ConversionSchema     = CONV_ID;
+	SI: ConversionSchema = CONV_ID;
 
-	HOURS_PER_DAY  : nat1 = 24;
-	DAYS_PER_WEEK  : nat1 =  7;
+	HOURS_PER_DAY: nat1 = 24;
+	DAYS_PER_WEEK: nat1 =  7;
 
 types
 	--@doc an SI measurement system has an SI conversion
@@ -929,9 +926,9 @@ values
 	SI_PDIFFERENCE : PotentialDifference = mk_MeasurementSystem(UNIT_PDIFFERENCE, SI, SI_UNIT);
 	SI_CAPACITANCE : Capacitance  = mk_MeasurementSystem(UNIT_CAPACITANCE       , SI, SI_UNIT);
                                                                               
-	SI_RADIAN			 : Radian			  = mk_MeasurementSystem(UNIT_RADIAN            , SI, SI_UNIT);
+	SI_RADIAN	   : Radian	      = mk_MeasurementSystem(UNIT_RADIAN            , SI, SI_UNIT);
 	SI_STERADIAN   : Steradian    = mk_MeasurementSystem(UNIT_STERADIAN         , SI, SI_UNIT);
-	SI_WATT				 : Watt					= mk_MeasurementSystem(UNIT_WATT              , SI, SI_UNIT);
+	SI_WATT		   : Watt	      = mk_MeasurementSystem(UNIT_WATT              , SI, SI_UNIT);
 
 functions
 	
@@ -1039,10 +1036,10 @@ types
 	inv ms == ms.quantity.dim = VELOCITY;
 	
 values
-  BIS_YARD	 : Yard    = mk_MeasurementSystem(UNIT_LENGTH, BIS, BIS_UNIT);
-  BIS_POUND  : Pound   = mk_MeasurementSystem(UNIT_MASS  , BIS, BIS_UNIT);
-  BIS_RANKINE: Rankine = mk_MeasurementSystem(UNIT_TEMP  , BIS, BIS_UNIT);
-  BIS_VOLUME : BISVolume=mk_MeasurementSystem(UNIT_VOLUME, BIS, BIS_UNIT);
+	BIS_YARD   : Yard     = mk_MeasurementSystem(UNIT_LENGTH, BIS, BIS_UNIT);
+	BIS_POUND  : Pound    = mk_MeasurementSystem(UNIT_MASS  , BIS, BIS_UNIT);
+	BIS_RANKINE: Rankine  = mk_MeasurementSystem(UNIT_TEMP  , BIS, BIS_UNIT);
+	BIS_VOLUME : BISVolume= mk_MeasurementSystem(UNIT_VOLUME, BIS, BIS_UNIT);
   
 functions
 	
@@ -1068,11 +1065,10 @@ functions
 	--@todo inch**3 x yard**3?
 	BIS_GALLON: () -> BISVolume
 	BIS_GALLON() == 	
-		let
-			inch			: Yard 		  = BIS_INCH(),
+		let inch			: Yard 		  = BIS_INCH(),
 			inch_cubed: BISVolume = ms_times(inch, ms_times(inch, inch))
 		 in
-		  scaleMS(277.421, inch_cubed);
+		    scaleMS(277.421, inch_cubed);
 		  
 	BIS_PINT: () -> BISVolume
 	BIS_PINT() == scaleMS(1/8, BIS_GALLON());
@@ -1135,8 +1131,8 @@ values
 	MCELCIUS: Celcius 	= mk_MeasurementSystem(UNIT_TEMP, MHC, MHC_UNIT); --1c = -272.15k
 	--MMHG  : IntQuantity   = UNIT_????; in KILOGRAM / (METER * SECOND**2)
 
-  DAYS_PER_MONTH : map WhichMonth to HowManyDays = {1|->31, 2|->28, 3|->31, 4|->30, 5|->31, 6|->30,
-                                  			            7|->31, 8|->31, 9|->30, 10|->31, 11|->30, 12|->31};
+	DAYS_PER_MONTH : map WhichMonth to HowManyDays = {1|->31, 2|->28, 3|->31, 4|->30, 5|->31, 6|->30,
+                                 			            7|->31, 8|->31, 9|->30, 10|->31, 11|->30, 12|->31};
 
 functions
 	
@@ -1391,28 +1387,31 @@ traces
 ------------------------------------------------------------------------------------
 	--@doc 1yard ~= 0.914 metres
 	BIS_0: refl_bool(mag(metrify(BIS_YARD)) = 0.9143993);
+
 	--@doc lhs = magnitude of a BIS foot in SI,
 	--		 rhs = magnitude of 1/3 of BIS yard in SI
 	--		 test= metrify(1 foot) = metrify(1 yard) / (3 * metre)
-  BIS_1: let
-  					lhs: Magnitude = mag(metrify(BIS_FOOT())),
-  					rhs: Magnitude = mag(metrify(BIS_YARD).mag) / (3 * mag(METER))
-  				in   
-  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
-  --@doc lhs = magnitude of a BIS 70mph in SI metre per second
-  --		 rhs = magnitude of particular factor in SI metre per second
-  BIS_2: let
-  					lhs: Magnitude = mph2mps(70),
-  					rhs: Magnitude = mag(scaleMS((704087461 / 22500000), SI_MPS()))
-  				in   
-  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
-  --@doc lhs = magnitude of 1 centimetre in CGS as a BIS yard
-  --		 rhs = magnitude of BIS yard by given factor 
-  BIS_3: let
-  					lhs: Magnitude = mag(imperialise(scaleMS(1, CENTIMETRE))), 
-  					rhs: Magnitude = mag(scaleMS(100000 / 9143993, BIS_YARD))
-  				in   
-  					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+	BIS_1: let
+					lhs: Magnitude = mag(metrify(BIS_FOOT())),
+					rhs: Magnitude = mag(metrify(BIS_YARD).mag) / (3 * mag(METER))
+				in   
+					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+
+	--@doc lhs = magnitude of a BIS 70mph in SI metre per second
+	--		 rhs = magnitude of particular factor in SI metre per second
+	BIS_2: let
+					lhs: Magnitude = mph2mps(70),
+					rhs: Magnitude = mag(scaleMS((704087461 / 22500000), SI_MPS()))
+				in   
+					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
+
+	--@doc lhs = magnitude of 1 centimetre in CGS as a BIS yard
+	--		 rhs = magnitude of BIS yard by given factor 
+	BIS_3: let
+					lhs: Magnitude = mag(imperialise(scaleMS(1, CENTIMETRE))), 
+					rhs: Magnitude = mag(scaleMS(100000 / 9143993, BIS_YARD))
+				in   
+					refl_bool(approx_eq(lhs, rhs, ORDER_MAGNITUDE));
   					
 ------------------------------------------------------------------------------------
 --@subsection CGS
@@ -1423,6 +1422,7 @@ traces
 					 rhs: Magnitude = mag(scaleMS(100000, CENTIMETRE))
 				 in
 					 refl_bool((lhs = 100000) and (lhs = rhs));
+
 	--@doc 100 cm in CGS = 1 metre in SI
 	CGS_2: refl_bool(mag(metrify(scaleMS(100, CENTIMETRE))) = mag(METER));
 
@@ -1435,6 +1435,7 @@ traces
 					 rhs: MeasurementSystem = ms_div(ms_div(hWEEK(), hYEAR()), ms_div(hAVG_MONTH(), hYEAR()))
 					in
 						refl_bool(lhs = rhs);
+
 	--@doc (in weeks) 4 weeks = 0.9438202247191011 avg_month
 	MWC_1: let
 					 lhs: MeasurementSystem = weeks2months_wks(4),
@@ -1454,8 +1455,11 @@ traces
 
 	--@doc 1KM = 1093.614 yards
 	T1: refl_bool(imperialise(kilo(METER)).mag = 1093.6141355313812);
+
 	--@doc 1yard = 0.914 metres
 	T2: refl_bool(metrify(BIS_YARD).mag = 0.9143993);
+
 	--@doc 1000g = 2.20462 pounds
 	T4: refl_bool(mag(ms_conv(/*CGS, BIS, kilo(GRAM)*/kilo(GRAM), BIS)) = 2.2046227773803357);
+	
 end ISQ
