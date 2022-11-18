@@ -170,6 +170,9 @@ exports
 		SI_PINT             : () -> Volume;
 		SI_GALLON           : () -> Volume;
 		SI_DEGREES_FARENHEIT: Magnitude -> Kelvin;
+		SI_JOULE			: () -> SI_MeasurementSystem;
+		SI_COLOUMB			: () -> SI_MeasurementSystem;
+		SI_LUMEN			: () -> SI_MeasurementSystem;
 
 		imperialise: MeasurementSystem -> Quantity;
 		BIS_FOOT         : () -> Yard;
@@ -310,6 +313,14 @@ exports
 		MONTHS_PER_YEAR  : nat1;
 		DAYS_PER_MONTH   : map WhichMonth to HowManyDays;
 		
+		HERTZ			 : Hertz;
+		CAESIUM_FREQUENCY: Hertz;
+		SPEED_OF_LIGHT   : Velocity;
+		PLANK_CONSTANT   : SI_MeasurementSystem;
+		ELEMENTARY_CHARGE: SI_MeasurementSystem; 
+		AVOGRADO		 : SI_MeasurementSystem; 
+		MAX_LUMINOUS_FREQ: Hertz;
+		LUMINOUS_EFFICACY: SI_MeasurementSystem;
 definitions 
 
 ------------------------------------------------------------------------------------
