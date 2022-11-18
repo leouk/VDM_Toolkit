@@ -83,6 +83,9 @@ public class CSVLib implements Serializable {
                 "./lib/VDMUtil.vdmsl",
                 "./CSVExample.vdmsl",
                 "./CSVLib.vdmsl",
+                "./lib/MATH.vdmsl",
+                "./Support1.vdmsl",
+                "./ISQ.vdmsl"
             }
         );
     }
