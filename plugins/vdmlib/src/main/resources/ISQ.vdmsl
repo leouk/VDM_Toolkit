@@ -1263,11 +1263,11 @@ traces
 --@subsection Conversion lemmas (ISQConversion.thy)
 ------------------------------------------------------------------------------------
 
-	--@doc qconv cid x = x
-	ISQ_C_id: let ms in set MEASUREMENT_SYSTEMS() in 
-							refl_bool(ms_quant_conv(CONV_ID, ms) = ms);
+	--@doc qconv cid x = x; 32 tests
+	ISQ_C_id: let ms in set MEASUREMENT_SYSTEMS() in
+					(refl_bool(ms_quant_conv(CONV_ID, ms) = ms));
 	
-	--@doc qconv (c1 o c2) x = qconv c1 (qconv c2 x)
+	--@doc qconv (c1 o c2) x = qconv c1 (qconv c2 x); 640 tests
 	ISQ_C_comp: let ms in set MEASUREMENT_SYSTEMS() in 
 								let c1 in set CONVERSION_SCHEMAS() in
 									let c2 in set CONVERSION_SCHEMAS() \ {c1} in 
@@ -1276,7 +1276,8 @@ traces
 										= 
 										ms_quant_conv(c1, ms_quant_conv(c2, ms))
 										);
-										
+
+	--@doc qconv (1/c o c) x = x; 160 tests									
 	ISQ_C_inv: let ms in set MEASUREMENT_SYSTEMS() in 
 							 let c in set CONVERSION_SCHEMAS() in
 							 		refl_bool(
@@ -1284,7 +1285,8 @@ traces
 							 			= 
 							 			ms
 							 		);
-							 		
+
+	--@doc 1280 tests						 		
 	ISQ_C_scalQ: let ms in set MEASUREMENT_SYSTEMS() in 
 							   let c in set CONVERSION_SCHEMAS() in
 							   	 let d in set MAGNITUDES() in
