@@ -15,6 +15,8 @@ from MATH
 		pi_f renamed pi_f;
 ,
 from Support1
+	types 
+		String renamed String;
 	functions
 		fold renamed fold;
 		prods_r renamed prods_r;
@@ -502,6 +504,9 @@ functions
 		--@doc if result has dimension, it must have come from either d1 or d2
 		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
 	
+	dim_view: DimensionlessVector -> String
+	dim_view(dv) == " ";
+
 ------------------------------------------------------------------------------------
 --@section ISQ quantity operators
 ------------------------------------------------------------------------------------
