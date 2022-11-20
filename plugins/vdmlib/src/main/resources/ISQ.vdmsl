@@ -34,6 +34,7 @@ exports
 		struct Dimension;
 		struct DimensionlessVector;
 		struct DimensionVector;
+		struct DimensionView;
 		struct SingleDimension;
 		struct Magnitude;
 		struct MagnitudeN0;
@@ -110,6 +111,9 @@ exports
 		dim_inv: DimensionlessVector -> DimensionlessVector;
 		dim_inv_n: DimensionlessVector * nat1 -> DimensionlessVector;
 		dim_div: DimensionlessVector * DimensionlessVector -> DimensionlessVector;
+		dim_view: DimensionView * DimensionlessVector -> String1;
+		si_dim_view: Prefix -> String1;
+		bis_dim_view: Prefix -> String1;
 	
 		quant_dim_eq: Quantity * Quantity -> bool;
 		quant_times: Quantity * Quantity -> Quantity;
@@ -240,6 +244,9 @@ exports
 		WATT             : DimensionVector; 
 		RADIAN           : DimensionlessVector;
 		STERADIAN        : DimensionlessVector;
+
+		SI_DIM_VIEW		 : DimensionView;
+		BIS_DIM_VIEW	 : DimensionView;
 		                 
 		CONV_ID          : ConversionSchema;
 
@@ -521,14 +528,14 @@ types
 	DimensionView = map Dimension to String1
 	inv dv == dom dv = DIMENSIONS;
 
-	DimensionPrint = map Dimension to String1List 
-	inv dp == dom dp = DIMENSIONS; 
-
 values 
 	SI_DIM_VIEW: DimensionView = 
 		{<Length> |-> "m", <Mass> |-> "kg", <Time> |-> "s", <Current> |-> "A", 
 		 <Temperature> |-> "K", <Amount> |-> "mol",  <Intensity> |-> "cd" };
 
+	BIS_DIM_VIEW: DimensionView = SI_DIM_VIEW ++ 
+		{<Length> |-> "yard", <Mass> |-> "pound", <Temperature> |-> "rankine" };
+			
 functions 
 
 	print_dim: Dimension * DimensionView * DimensionVector -> String1 
@@ -588,6 +595,14 @@ functions
 			(is_Magnitude(x))         -> val2seq_of_char[Magnitude](x),
 			(is_Quantity(x))          -> dim_view(SI_DIM_VIEW, x.dim),
 			(is_MeasurementSystem(x)) -> dim_view(SI_DIM_VIEW, x.quantity.dim)
+		end;
+
+	bis_dim_view: Prefix -> String1 
+	bis_dim_view(x) == 
+		cases true:
+			(is_Magnitude(x))         -> val2seq_of_char[Magnitude](x),
+			(is_Quantity(x))          -> dim_view(BIS_DIM_VIEW, x.dim),
+			(is_MeasurementSystem(x)) -> dim_view(BIS_DIM_VIEW, x.quantity.dim)
 		end;
 
 ------------------------------------------------------------------------------------
