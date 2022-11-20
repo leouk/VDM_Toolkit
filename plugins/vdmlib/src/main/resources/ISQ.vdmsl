@@ -14,9 +14,15 @@ from MATH
 	functions
 		pi_f renamed pi_f;
 ,
+from VDMUtil
+	functions
+		val2seq_of_char renamed val2seq_of_char;
+,
 from Support1
 	types 
 		String renamed String;
+		String1 renamed String1;
+		String1List renamed String1List;
 	functions
 		fold renamed fold;
 		prods_r renamed prods_r;
@@ -332,8 +338,15 @@ types
 ------------------------------------------------------------------------------------
 --@section ISQ dimensions
 ------------------------------------------------------------------------------------
-	--@doc SI base units
-	Dimension = <Length> | <Mass> | <Time> | <Current> | <Temperature> | <Amount> | <Intensity>;
+
+	--@doc SI base units, ordered according to SI's listing
+	Dimension = <Length> | <Mass> | <Time> | <Current> | <Temperature> | <Amount> | <Intensity>
+	ord d1 < d2 == 
+		let 
+			value = { <Length> |-> 1, <Mass> |-> 2, <Time> |-> 3,  <Current> |-> 4,  
+					  <Temperature> |-> 5,  <Amount> |-> 6,  <Intensity> |-> 7 
+					}
+		 in value(d1) < value(d2);
 	
 values
 	DIMENSIONS: set1 of Dimension = {<Length>, <Mass>, <Time>, <Current>, <Temperature>, <Amount>, <Intensity>};
@@ -357,7 +370,7 @@ types
 	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in RADIAN or STERADIAN
 	DimensionVector = DimensionlessVector
 	inv dv == 
-		--@OnFail(4060, "Dimension vector has only dimensionless (0) ranges for %1s", dom(dv :> {0}))
+		--OnFail(4060, "Dimension vector has only dimensionless (0) ranges for %1s", dom(dv :> {0}))
 		(rng(dv :-> {0}) <> {});
 	
 	--@doc The vector where only one of the base unit dimension registers 
@@ -504,8 +517,78 @@ functions
 		--@doc if result has dimension, it must have come from either d1 or d2
 		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
 	
-	dim_view: DimensionlessVector -> String
-	dim_view(dv) == " ";
+types 
+	DimensionView = map Dimension to String1
+	inv dv == dom dv = DIMENSIONS;
+
+	DimensionPrint = map Dimension to String1List 
+	inv dp == dom dp = DIMENSIONS; 
+
+values 
+	SI_DIM_VIEW: DimensionView = 
+		{<Length> |-> "m", <Mass> |-> "kg", <Time> |-> "s", <Current> |-> "A", 
+		 <Temperature> |-> "K", <Amount> |-> "mol",  <Intensity> |-> "cd" };
+
+functions 
+
+	print_dim: Dimension * DimensionView * DimensionVector -> String1 
+	print_dim(d, dview, dvector) ==
+		let exp: nat1 = abs dvector(d) in
+			if exp <= 1 then 
+				dview(d)
+			else 
+				"(" ^ dview(d) ^ "**" ^ val2seq_of_char[nat1](exp) ^ ")"  
+	pre dvector(d) <> 0;
+
+	--@doc create a dimension vector print out as a sequence of number of times to print? 
+	print_dims: set of Dimension * DimensionView * DimensionVector -> String 
+	print_dims(dims, dview, dvector) ==
+		if dims = {} then 
+			""
+		else 
+			let d in set dims in
+				print_dim(d, dview, dvector) ^ " " ^ print_dims(dims \ {d}, dview, dvector)
+	pre 
+		--@doc cannot print dimensionless dimension!
+		not 0 in set rng (dims <: dvector)
+	post 
+		(card dims <> 0 => is_String1(RESULT))
+	measure
+		card dims;
+
+	parenthesise: bool * String -> String1
+	parenthesise(y, s) == if y then "( " ^ s ^ " )" else s;
+
+	dim_view: DimensionView * DimensionlessVector -> String1
+	dim_view(dview, dvector) == 
+		if not is_DimensionVector(dvector) then 
+			"1"
+		else 
+			let 
+				pos_dimensions: set of Dimension = { d | d in set dom dvector & dvector(d) > 0 },
+				neg_dimensions: set of Dimension = { d | d in set dom dvector & dvector(d) < 0 },
+				nominator  : String = print_dims(pos_dimensions, dview, dvector),
+				denominator: String = print_dims(neg_dimensions, dview, dvector)  
+			in 
+				(if pos_dimensions = {} then 
+					" 1 " 
+			     else 
+				 	parenthesise(neg_dimensions <> {} and card pos_dimensions > 1, nominator) 
+				)
+				^ 
+				(if neg_dimensions <> {} then 
+					" / " ^ parenthesise(card neg_dimensions > 1, denominator) 
+				 else 
+				    ""
+				);
+
+	si_dim_view: Prefix -> String1 
+	si_dim_view(x) == 
+		cases true:
+			(is_Magnitude(x))         -> val2seq_of_char[Magnitude](x),
+			(is_Quantity(x))          -> dim_view(SI_DIM_VIEW, x.dim),
+			(is_MeasurementSystem(x)) -> dim_view(SI_DIM_VIEW, x.quantity.dim)
+		end;
 
 ------------------------------------------------------------------------------------
 --@section ISQ quantity operators
