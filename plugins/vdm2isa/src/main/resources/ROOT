@@ -7,7 +7,7 @@ session "VDM-Toolkit" = "HOL-Library" +
   theories
     VDMEisbach
     VDMToolkit 
-    (* run: isabelle build -D . -P ./HTML *)
+    (* run: isabelle build -c -D . -P ./HTML *)
   document_files
     "root.tex"
 *)
@@ -18,9 +18,10 @@ session "VDM-Examples" = "HOL-Library" +
   options [document = pdf, document_output = "output", quick_and_dirty = false]
   theories [document = false]
     VDMToolkit
-  theories
     RecursiveVDMNat
     RecursiveSet
     RecursiveVDMMap
+  theories
+    RecursiveVDM
   document_files
     "root.tex"

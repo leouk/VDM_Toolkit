@@ -1,0 +1,12 @@
+module RecursiveVDM
+exports all
+definitions 
+functions
+   factorial: nat -> nat 
+   factorial(n) == if n = 0 then 1 else n * factorial(n - 1)
+   -- For the measure below, VDMJ produces a measure function as: 
+   -- measure_factorial: nat -> nat 
+   -- measure_factorial(n) == n
+   measure n;   
+    
+end RecursiveVDM
