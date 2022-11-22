@@ -19,18 +19,17 @@
 <span class="keyword1"><span class="command">section</span></span> <span class="quoted"><span class="plain_text">‹Recursive partial recursive functions›</span></span>
 
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹In Isabelle, recursive functions must discharge proof obligations on:
-  \begin{enumerate}
-  \item pattern completeness: 
+
+    <span class="antiquoted"><span class="antiquoted">▸</span></span>  pattern completeness: 
 
         This relates to all patterns in a constructive type
         being refered to (e.g., <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">0</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> and <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹Suc <span class="free"><span class="free">n</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> for <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℕ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>)).
   
-  \item pattern compatibility:
+    <span class="antiquoted"><span class="antiquoted">▸</span></span> pattern compatibility:
   
         This relates to multiple way patterns can be constructed that boils
         down to the pattern completeness cases (e.g., <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">n</span></span> <span class="main"><span class="main">+</span></span> <span class="numeral"><span class="numeral">2</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> being 
         simply multiple successor calls over constructors <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹Suc <span class="main"><span class="main">(</span></span>Suc <span class="main"><span class="main">0</span></span><span class="main"><span class="main">)</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>). 
-  \end{enumerate}
 
   That is important to ensure that recursion is well structured (i.e., recursive calls will not
   get stuck because call constructs are not available). For example, if you miss the <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">0</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> 
@@ -97,6 +96,8 @@
     \begin{vdmsl}
         sumset: set of nat -&gt; nat 
         sumset(s) == if s = {} then 0 else let e in set s in sumset(s - {e}) + e
+        --@IsaMeasure( { (x - { let e in set x in e }, x) | x : set of nat &amp; x &lt;&gt; {} } ) 
+        --@Witness({ 1 })
         measure card s;
     \end{vdmsl}
 
@@ -160,6 +161,8 @@
   <span class="entity">sumset_wf_rel</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">(</span>VDMNat VDMSet <span class="main">×</span> VDMNat VDMSet<span class="main">)</span> set"</span></span>
   <span class="keyword2"><span class="keyword">where</span></span>
   <span class="quoted"><span class="quoted">"<span class="free">sumset_wf_rel</span> <span class="main">≡</span> <span class="main">{</span> <span class="main">(</span><span class="bound">s</span> <span class="main">-</span> <span class="main">{</span><span class="main">(</span><span class="keyword1">SOME</span> <span class="bound">e</span> <span class="main">.</span> <span class="bound">e</span> <span class="main">∈</span> <span class="bound">s</span><span class="main">)</span><span class="main">}</span><span class="main">,</span> <span class="bound">s</span><span class="main">)</span><span class="main">|</span> <span class="bound">s</span> <span class="main">.</span> <span class="bound">s</span> <span class="main">≠</span> <span class="main">{}</span> <span class="main">∧</span> pre_sumset <span class="bound">s</span> <span class="main">}</span>"</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹This definition follows the strategy described in \url{https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf}.›</span></span>
 
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Termination requires well-founded relation, so we prove that function <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">sumset</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span> termination 
       relation is well-founded using <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">command</span></span> sledgehammer<span class="antiquote"><span class="antiquote">}</span></span></span></span>. This is easily proved by reusing 

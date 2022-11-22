@@ -16,7 +16,35 @@
   <span class="keyword2"><span class="keyword">imports</span></span> <a href="VDMToolkit.html">VDMToolkit</a>
 <span class="keyword2"><span class="keyword">begin</span></span>
 
-<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹VDM expressions with basic-typed (nat, int) variables (e.g. <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">x</span></span><span class="main"><span class="main">-</span></span><span class="free"><span class="free">y</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>) 
+<span class="comment1">(*
+primrec 
+  isafact :: "ℕ ⇒ ℕ" 
+  where 
+  "isafact n = 
+      (if n = 0 then 1 else n * (isafact (n-1)))" *)</span>
+
+<span class="keyword1"><span class="command">primrec</span></span> 
+  <span class="entity">isafact</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">ℕ</span> <span class="main">⇒</span> <span class="main">ℕ</span>"</span></span> 
+  <span class="keyword2"><span class="keyword">where</span></span> 
+  <span class="quoted"><span class="quoted">"<span class="free">isafact</span> <span class="main">0</span> <span class="main">=</span> <span class="main">1</span>"</span></span> 
+<span class="main">|</span> <span class="quoted"><span class="quoted">"<span class="free">isafact</span> <span class="main">(</span>Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">)</span> <span class="main">=</span> Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">*</span> <span class="free">isafact</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span>"</span></span>
+
+<span class="keyword1"><span class="command">print_theorems</span></span>
+
+<span class="keyword1"><span class="command">fun</span></span> <span class="entity">isafact'</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">ℕ</span> <span class="main">⇒</span> <span class="main">ℕ</span>"</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span> 
+  <span class="quoted"><span class="quoted">"<span class="free">isafact'</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span><span class="main">(</span><span class="keyword1">if</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">=</span> <span class="main">0</span> <span class="keyword1">then</span> <span class="main">1</span> <span class="keyword1">else</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">*</span> <span class="main">(</span><span class="free">isafact'</span> <span class="main">(</span><span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">-</span><span class="main">1</span><span class="main">)</span><span class="main">)</span><span class="main">)</span>"</span></span>
+
+<span class="keyword1"><span class="command">print_theorems</span></span>
+
+<span class="keyword1"><span class="command">fun</span></span> <span class="entity">isafact''</span> <span class="main">::</span> <span class="quoted"><span class="quoted">"<span class="main">ℕ</span> <span class="main">⇒</span> <span class="main">ℕ</span>"</span></span>
+  <span class="keyword2"><span class="keyword">where</span></span> 
+  <span class="quoted"><span class="quoted">"<span class="free">isafact''</span> <span class="main">0</span> <span class="main">=</span> <span class="main">1</span>"</span></span> 
+<span class="main">|</span> <span class="quoted"><span class="quoted">"<span class="free">isafact''</span> <span class="main">(</span>Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">)</span> <span class="main">=</span> Suc <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">*</span> <span class="main">(</span><span class="free">isafact''</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span><span class="main">)</span>"</span></span>
+
+<span class="keyword1"><span class="command">print_theorems</span></span>
+
+<span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹VDM expressions with basic-typed (nat, int) variables (e.g. <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">‹<span class="free"><span class="free">x</span></span><span class="main"><span class="main">-</span></span><span class="free"><span class="free">y</span></span>›</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>)
   have specific type widening rules (e.g. if both variables are nat, the result might be int).
   Therefore, in Isabelle VDM nats become <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="quoted">VDMNat</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>, which are just a synonym for <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">typ</span></span> <span class="quoted"><span class="main"><span class="quoted"><span class="main">ℤ</span></span></span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>.
 
@@ -32,6 +60,7 @@
   \begin{vdmsl}
     factorial: nat -&gt; nat 
     factorial(n) == if n = 0 then 1 else n * factorial(n)
+  	--@IsaMeasure( { (n -1, n) | n : nat &amp; n &lt;&gt; 0 } )
     measure n;
   \end{vdmsl}
 
@@ -44,6 +73,20 @@
   <span class="quoted"><span class="quoted">‹<span class="free">pre_vdm_factorial</span> <span class="free"><span class="bound"><span class="entity">n</span></span></span> <span class="main">≡</span> inv_VDMNat <span class="free"><span class="bound"><span class="entity">n</span></span></span>›</span></span>
 
 <span class="keyword1"><span class="command">lemmas</span></span> pre_vdm_factorial_defs <span class="main">=</span> pre_vdm_factorial_def inv_VDMNat_def 
+
+<span class="comment1">(*
+fun (domintros) vdm_factorial' :: ‹VDMNat ⇒ VDMNat›
+  where
+  ‹vdm_factorial' n =
+    (if pre_vdm_factorial n then
+      (if n = 0 then 
+        1
+      else
+        n * (vdm_factorial' (n - 1))
+      )
+    else
+      undefined)›
+*)</span>
 
 <span class="keyword1"><span class="command">text</span></span> <span class="quoted"><span class="plain_text">‹Next, we define the factorial function through recursion, where 
       when the precondition fails, we return <span class="antiquoted"><span class="antiquoted"><span class="antiquote"><span class="antiquote">@{</span></span><span class="operator"><span class="operator">term</span></span> <span class="quoted"><span class="quoted">undefined</span></span><span class="antiquote"><span class="antiquote">}</span></span></span></span>, which is 
@@ -98,7 +141,7 @@
   <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="main">(</span><span class="operator">relation</span> <span class="quoted"><span class="quoted">‹<span class="main">(</span>gen_VDMNat_term vdm_factorial_wf<span class="main">)</span>›</span></span><span class="main">)</span>
   <span class="keyword1"><span class="command">using</span></span> l_vdm_factorial_term_wf <span class="keyword1"><span class="command"><span class="improper"><span class="command">apply</span></span></span></span> <span class="operator">presburger</span>
   <span class="keyword1"><span class="command">by</span></span> <span class="main">(</span><span class="operator">simp</span> <span class="quasi_keyword">add</span><span class="main"><span class="main">:</span></span> pre_vdm_factorial_defs int_ge_less_than_def<span class="main">)</span>
-  
+
 <span class="keyword2"><span class="keyword">end</span></span></pre>
 </body>
 
