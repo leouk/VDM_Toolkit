@@ -121,7 +121,6 @@ types
 	--@doc sequence indeces for every mandate; this should be dense for a well-ordered mandate map
 	MandateMap = map Mandate to set of nat1;
 
---@LF functions on dense ranges
 functions
     make_dense_range: RangeType * RangeType -> DenseRange
 	make_dense_range(l, h) == mk_DenseRange0(l, h)
@@ -273,13 +272,12 @@ functions
 			others -> false
 		end;
 
-    --@AB RangeTypes from range to return a set of amount based on the range 
+    --@doc RangeTypes from range to return a set of amount based on the range 
     amounts_from_range: DenseRange0 -> set of RangeType
     amounts_from_range(mk_DenseRange0(l,h)) == {l,...,h}
     post 
         RESULT <> {};
 
---@LF functions on manadate maps; we might not use/need those.
 functions
     --@doc creates a map of indices per mandate item within the sequence, where f is the projection function
     --     to extract the mandate from @elem (i.e. a record field projection fuction. 
@@ -371,7 +369,7 @@ functions
                                                             | 
                                                             m in seq MANDATES 
                                                             &
-                                                            --@qst_lf(24) & unique_inv([ m1(i)...]^[m2(j)...]...) guaranteed by if; to avoid let here? 
+                                                            --@doc unique_inv([ m1(i)...]^[m2(j)...]...) guaranteed by if; to avoid let here? 
                                                             unique_inv(sr)
                                                         ]
                     in

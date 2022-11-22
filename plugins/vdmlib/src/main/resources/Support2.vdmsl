@@ -66,7 +66,7 @@ functions
 	check_is_either(x) == is_(x, @T1) or is_(x, @T2);
 	
 	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T
-	--@doc09 this function is needed for the CG lack of support for complex structured sequences; only allowed is seq of ?
+	--@doc this function is needed for the CG lack of support for complex structured sequences; only allowed is seq of ?
 	--			 we assume that the sequence cannot have union types like [[1,2,3], 1, 3, [[1,2],1]]... (i.e. uniform types per type layer)
 	--			 the use case: is_(xs, seq of @T), where @T is the bound type; for the CG @T has to be "basic"/primitive
 	--		   the problem: when @T is seq of @T2! We have to have a way to control the recursive call, which in VDMJ would 
@@ -128,13 +128,13 @@ functions
 			let 
 				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
 				xs' : seq of seq of ? = [ xs(i) | i in set inds narrow_(xs, seq of ?) & 
-						is_(xs(i), seq of ?) 		--@doc09 inner value is also a sequence?
+						is_(xs(i), seq of ?) 		--@doc inner value is also a sequence?
 						and 
 							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-						l > 1 									--@doc09 has the bound on @T been reached?
+						l > 1 									--@doc has the bound on @T been reached?
 						--and 
 						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-						--not is_(xs(i), seq of char) --@doc09 seq of char are treated differently by CG, so ignore then? 
+						--not is_(xs(i), seq of char) --@doc seq of char are treated differently by CG, so ignore then? 
 						]
 			in
 				if xs' = [] or is_(xs(1), seq of char) then
@@ -144,9 +144,9 @@ functions
 	;
 	
 	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-	--@doc09 checks the invariant as well, in this case presume @T can't be a sequence
+	--@doc checks the invariant as well, in this case presume @T can't be a sequence
 	--
-	--@doc09 on the invariant check case, if we end up having the need for layers etc, then the signature must agree?
+	--@doc on the invariant check case, if we end up having the need for layers etc, then the signature must agree?
 	check_is_seq_of_inv_depth[@T]: ? * nat * (seq of @T -> bool) -> bool
 	check_is_seq_of_inv_depth(xs, l, invariant) ==
 		check_is_seq_of_depth[@T](xs, l)
@@ -159,7 +159,7 @@ functions
 	--		 x
 	--	   as_seq_of_inv[MethodID, FethodIDList](select_bla[seq of ?](bla), inv_MethodIDList)
 	--
-	--@doc09 because of the complicated nature of type narrowing, particularly when l > 0, the result might not match @T
+	--@doc because of the complicated nature of type narrowing, particularly when l > 0, the result might not match @T
 	--			 ex: as_seq_of_inv_depth[MethodID]([[<NoXYZ>],[<XYZ>,<NoXYZ>]], 2, (lambda s: ? & true)) 
 	--					 should be a seq of MethodIDList, which is not @T. Because the invariant function holds, the type result is up to that!
 	--
@@ -173,7 +173,7 @@ functions
 			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
 			xs -- narrow_(xs, @TS)
 		else
-			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--@doc Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
 			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
 			undefined -- [] -- undefined?
 	--pre
@@ -211,13 +211,13 @@ functions
 			let 
 				--@todo/codegen/mods0 CG-warning/Java-Error: type narrowing needed to give CG enough type information
 				xs' : set of set of ? = { e | e in set narrow_(xs, set of ?) & 
-						is_(e, set of ?) 		--@doc09 inner value is also a setuence?
+						is_(e, set of ?) 		--@doc inner value is also a setuence?
 						and 
 							--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-						l > 1 									--@doc09 has the bound on @T been reached?
+						l > 1 									--@doc has the bound on @T been reached?
 						--and 
 						--	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-						--not is_(xs(i), set of char) --@doc09 set of char are treated differently by CG, so ignore then? 
+						--not is_(xs(i), set of char) --@doc set of char are treated differently by CG, so ignore then? 
 						}
 			in
 				if xs' = {} then
@@ -227,7 +227,7 @@ functions
 	;
 	
 	--@todo/codegen/mods0 CG-warning/?: is_T(x) for complex T with invariant
-	--@doc09 checks the invariant as well, in this case presume @T can't be a setuence
+	--@doc checks the invariant as well, in this case presume @T can't be a setuence
 	check_is_set_of_inv_depth[@T]: ? * nat * (set of @T -> bool) -> bool
 	check_is_set_of_inv_depth(xs, l, invariant) ==
 		check_is_set_of_depth[@T](xs, l)
@@ -244,7 +244,7 @@ functions
 			--																  i.e. we got lucky because of codegen use raw types VDMSeq rather than VDMSeq<T>
 			xs -- narrow_(xs, @TS)
 		else
-			--@doc09 Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
+			--@doc Error 4132: Using undefined value in 'support' (./support/support.vdmsl) at line ...
 			--			 If you reach this, it's because the check above failed: either types are wrong or invariant failed! 
 			undefined -- [] -- undefined?
 	--pre

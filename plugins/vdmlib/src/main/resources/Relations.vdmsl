@@ -572,7 +572,7 @@ traces
 			(rel_rres[nat,nat](R1, Y1) subset R1)
 		);
 	
-	--@doc (id~S) \comp R = S \dres R
+	--@doc id~S \comp R = S \dres R
 	--@doc R \comp (id~S) = R \rres S
 	T_ID_COMP_RES:
 		refl_bool(

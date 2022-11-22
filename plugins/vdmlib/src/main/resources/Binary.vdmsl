@@ -356,7 +356,7 @@ types
 	HexString = String
 	inv hs == elems hs subset HEX_CHARS;
 	
-	--@doc09 = xs:hexBinary cannonical, no a-f
+	--@doc = xs:hexBinary cannonical, no a-f
 	CannonicalHexString = HexString
 	inv chs == elems chs inter dom HEX_TOUPPER = {};
 

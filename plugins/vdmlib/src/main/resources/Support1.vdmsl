@@ -347,7 +347,7 @@ functions
   --any[@T]: () -> @T
   --any() == let x in set { i | i : @T } in x;
   
-  --@doc09 exclusive or over multiple options (i.e, only one can be true).
+  --@doc exclusive or over multiple options (i.e, only one can be true).
   xor_all: seq1 of bool -> bool
   xor_all(s) == 
 	  --@todo/codegen/mods0 CG-warning/Java-Error: function as parameters
@@ -791,7 +791,7 @@ functions
   updateAt[@T]: seq of @T * (@T -> @T) -> seq of @T
   updateAt(s, upd) == 
     [ upd(s(i)) | i in set inds s ]
-    --@doc09 very slow
+    --@doc very slow
     --cases s:
     --  []       -> [],
     --  [x]^xs -> [upd(x)]^updateAt[@T](xs, upd)
@@ -808,7 +808,7 @@ functions
   updateWith[@T,@S]: (seq of @T) * @S * (@T * @S -> @T) -> seq of @T
   updateWith(s, y, upd) == 
     [ upd(s(i), y) | i in set inds s ]
-		--@doc09 very slow
+		--@doc very slow
     --cases s:
     --  []       -> [],
     --  [x]^xs -> [upd(x, y)]^updateWith[@T,@S](xs, y, upd)
@@ -874,14 +874,14 @@ functions
 			and
 			hd result = '<' and last[char](result) = '>';
 	
-	--@doc09 removes mk_ and (...) from record name, e.g. mk_Record(field1,...,fieldn) = Record
+	--@doc removes mk_ and (...) from record name, e.g. mk_Record(field1,...,fieldn) = Record
 	record_name[@T]: @T -> String1
 	record_name(r) == 
 		let result: String1 = val2str[@T](r) in result(4,...,indexOf[char]('(', result)-1)
 	pre
 		record_typed[@T](r);
 	
-	--@doc09 poor man's version of record type test; doesn't consider tuples, e.g. mk_(x,y); minimum size mk_R()	
+	--@doc poor man's version of record type test; doesn't consider tuples, e.g. mk_(x,y); minimum size mk_R()	
 	record_typed[@T]: @T -> bool
 	record_typed(r) == 
 		let result: String1 = val2str[@T](r) in

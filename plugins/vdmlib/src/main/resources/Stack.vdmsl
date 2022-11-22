@@ -168,10 +168,10 @@ functions
 		
 	lastIndexOf[@T]: Stack -> [nat1]
 	lastIndexOf(s) == 
-		--@doc09 simple index of doesn't work because we are looking for @T not t
+		--@doc simple index of doesn't work because we are looking for @T not t
 		--			 support`indexOf[?](t, s);
 		if within_tstack[@T](s) then
-		  --@doc09 has to be the last index!
+		  --@doc has to be the last index!
 		  let i in set inds s be st type_test[@T]()(s(i)) and (forall j in set inds s \ {i} & j <= i) in i
 		else
 			nil

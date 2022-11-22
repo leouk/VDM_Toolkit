@@ -164,7 +164,7 @@ operations
 	ext 
 		rd log_trace;
 		
-	--@doc09 = tagged version of logging, if present. Useful to classify locally beyond chosen log level (e.g. Warning that is serious)
+	--@doc = tagged version of logging, if present. Useful to classify locally beyond chosen log level (e.g. Warning that is serious)
 	--			   could have been [String], but using '?' to be flexible.
 	tlog(level: LogLevel, tag: ?, msg: String) ==
 		(
@@ -182,7 +182,7 @@ operations
 		
 	tlogf(level: LogLevel, tag: ?, msg: String, params: seq of ?) ==
 		(
-		--@doc09 needed a formatf to handle this...
+		--@doc needed a formatf to handle this...
 		log_trace := log_trace ^ [make_trace(level, tag, msg, "(" ^ val2str[seq of ?](params) ^ ")")];
 		if should_log(level) then
 			printf(make_trace(level, tag, msg, ""), params);
