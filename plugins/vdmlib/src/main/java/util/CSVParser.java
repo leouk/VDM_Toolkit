@@ -1,7 +1,7 @@
 package util;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.Iterator;
 
 public interface CSVParser {
@@ -11,7 +11,7 @@ public interface CSVParser {
      * @return
      * @throws IOException
      */
-    public Iterator<String[]> parseCSV(final InputStream stream) throws IOException;
+    public Iterator<String[]> parseCSV(final Reader stream) throws IOException;
 
     public String lastError();
 

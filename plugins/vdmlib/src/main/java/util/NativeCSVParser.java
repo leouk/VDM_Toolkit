@@ -1,7 +1,7 @@
 package util;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -15,7 +15,7 @@ public class NativeCSVParser extends AbstractCSVParser {
     // Idea from https://stackoverflow.com/questions/6857248/fast-csv-parsing
     // Use input streams for speed (instead of buffered reader)
     @Override
-    protected Iterator<String[]> createIterator(final InputStream stream) throws IOException {
+    protected Iterator<String[]> createIterator(final Reader reader) throws IOException {
         return new Iterator<String[]>() {
             static final int UNCALCULATED = 0;
             static final int READY = 1;
@@ -44,7 +44,7 @@ public class NativeCSVParser extends AbstractCSVParser {
             public void calculate() throws IOException {
                 boolean inquote = false;
                 while (true) {
-                    int ch = stream.read();
+                    int ch = reader.read();
                     switch (ch) {
                         default: //regular character.
                             append(ch);

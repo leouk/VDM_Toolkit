@@ -1,7 +1,7 @@
 package util;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.Iterator;
 
 public abstract class AbstractCSVParser implements CSVParser {
@@ -17,10 +17,10 @@ public abstract class AbstractCSVParser implements CSVParser {
     }
 
     @Override
-    public final Iterator<String[]> parseCSV(final InputStream stream) throws IOException
+    public final Iterator<String[]> parseCSV(final Reader reader) throws IOException
     {
         clear();
-        iterator = createIterator(stream);
+        iterator = createIterator(reader);
         return iterator; 
     }
 
@@ -46,5 +46,5 @@ public abstract class AbstractCSVParser implements CSVParser {
         return settings;
     }
 
-    protected abstract Iterator<String[]> createIterator(final InputStream stream) throws IOException;
+    protected abstract Iterator<String[]> createIterator(final Reader stream) throws IOException;
 }

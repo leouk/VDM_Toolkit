@@ -1,8 +1,10 @@
-import java.io.BufferedInputStream;
+
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +45,7 @@ public class CSVLib implements Serializable {
     private static final long serialVersionUID = 1L;
 	private static String lastErrorStr = "";
     private static Context context = null;
-    private static BufferedInputStream bufStream = null;
+    private static Reader reader = null;
     private static CSVParser parser = null;
 
     private static final String MODULE_NAME = "CSVLib";
@@ -90,13 +92,13 @@ public class CSVLib implements Serializable {
         );
     }
 
-    private static void closeStream() throws IOException
+    private static void close() throws IOException
     {
-        if (bufStream != null)
+        if (reader != null)
         { 
-            bufStream.close();
+            reader.close();
         }
-        bufStream = null;
+        reader = null;
         if (parser != null)
         {
             parser.clear();
@@ -248,18 +250,18 @@ public class CSVLib implements Serializable {
     throws IOException, ValueException
     {   
         // file does not exist could occur here 
-        bufStream = new BufferedInputStream(new FileInputStream(file));
+        reader = new BufferedReader(new FileReader(file));
         switch (parserType)
         {
             // IOException/read could happen here
             case Native: 
                 parser = new NativeCSVParser(settings);
-                return parser.parseCSV(bufStream);
+                return parser.parseCSV(reader);
             case Univocity:
                 parser = new UnivocityCSVParser(settings);
-                return parser.parseCSV(bufStream);
+                return parser.parseCSV(reader);
             default: 
-                closeStream();
+                close();
                 throw new IOException("Not yet supported parser type " + parserType.toString());
         }
     }
@@ -412,7 +414,7 @@ public class CSVLib implements Serializable {
             );
 
             Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), getCSVSettings(settings, ctx));
-            assert bufStream != null; 
+            assert reader != null; 
 
             // seq of Header0
             //@NB all params are updatable values?
@@ -555,7 +557,7 @@ public class CSVLib implements Serializable {
             result.add(ValueFactoryHelper.mkSet(short_row_errors));            
             result.add(csvData);
 
-            closeStream();
+            close();
         } catch (Exception e)//IOException
         {
             // on error return mk_(false, {}, [])

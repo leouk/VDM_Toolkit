@@ -2,7 +2,7 @@ package util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,8 +24,8 @@ public class UnivocityCSVParser extends AbstractCSVParser {
     }
 
     @Override
-    protected Iterator<String[]> createIterator(InputStream stream) throws IOException {
-        List<String[]> result = univocityParser.parseAll(stream);
+    protected Iterator<String[]> createIterator(Reader reader) throws IOException {
+        List<String[]> result = univocityParser.parseAll(reader);
        // RecordMetaData mdata;
         return result.iterator();
     }
