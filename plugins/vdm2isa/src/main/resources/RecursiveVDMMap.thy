@@ -36,13 +36,12 @@ function (domintros)
   \<close>
   by (pat_completeness, auto)
 
-definition
+abbreviation
   sum_elems_wf :: \<open>((VDMNat \<rightharpoonup> VDMNat) \<times> (VDMNat \<rightharpoonup> VDMNat)) VDMSet\<close>
   where
-  [simp]: \<open>sum_elems_wf \<equiv> { (({d} -\<triangleleft> m), m) | m d . m \<noteq> Map.empty \<and> d \<in> dom m \<and> pre_sum_elems m }\<close>
+  \<open>sum_elems_wf \<equiv> { (({d} -\<triangleleft> m), m) | m d . m \<noteq> Map.empty \<and> d \<in> dom m \<and> pre_sum_elems m }\<close>
 
 lemma l_sum_elems_wf: "wf sum_elems_wf"
-  apply (unfold sum_elems_wf_def)
   thm wf_measure[of \<open>\<lambda> m . card (dom m)\<close>, THEN wf_subset]
   apply (rule wf_measure[of \<open>\<lambda> m . card (dom m)\<close>, THEN wf_subset])
   apply (simp add: measure_def inv_image_def less_than_def less_eq)

@@ -171,13 +171,17 @@ lemma l_call2:
   \<open>x > y \<Longrightarrow> ((y-1,z,x),(x,y,z)) \<in> tak_m1 <*mlex*> (tak_m2 <*mlex*> (tak_m3 <*mlex*> {}))\<close>
   apply (simp add: mlex_iff)
   unfolding tak_m3_def tak_m2_def tak_m1_def
-  by (simp add: case_prod_beta)
+  apply (simp add: case_prod_beta)
+  unfolding  min_def max_def
+  by simp
 
 lemma l_call3:
   \<open>x > y \<Longrightarrow> ((z-1,x,y),(x,y,z)) \<in> tak_m1 <*mlex*> (tak_m2 <*mlex*> (tak_m3 <*mlex*> {}))\<close>
   apply (simp add: mlex_iff)
   unfolding tak_m3_def tak_m2_def tak_m1_def
-  by (simp add: case_prod_beta)
+  apply (simp add: case_prod_beta)
+  unfolding  min_def max_def
+  by simp
 
 lemma l_call4:
   \<open>x >y \<Longrightarrow>  tak_dom (z - 1, x, y) \<Longrightarrow>
@@ -187,7 +191,9 @@ lemma l_call4:
        \<in> tak_m1 <*mlex*> tak_m2 <*mlex*> tak_m3 <*mlex*> {}\<close>
   apply (simp add: mlex_iff)
   apply (simp add: tak_pcorrect)
-  unfolding tak_m3_def tak_m2_def tak_m1_def min_def max_def
+  unfolding tak_m3_def tak_m2_def tak_m1_def 
+  apply (simp add: case_prod_beta)
+  unfolding  min_def max_def
   by simp
 
 termination

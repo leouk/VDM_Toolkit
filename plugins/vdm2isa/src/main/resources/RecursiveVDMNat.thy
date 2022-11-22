@@ -2,7 +2,35 @@ theory RecursiveVDMNat
   imports VDMToolkit
 begin
 
-text \<open>VDM expressions with basic-typed (nat, int) variables (e.g. @{term \<open>x-y\<close>}) 
+(*
+primrec 
+  isafact :: "\<nat> \<Rightarrow> \<nat>" 
+  where 
+  "isafact n = 
+      (if n = 0 then 1 else n * (isafact (n-1)))" *)
+
+primrec 
+  isafact :: "\<nat> \<Rightarrow> \<nat>" 
+  where 
+  "isafact 0 = 1" 
+| "isafact (Suc n) = Suc n * isafact n"
+
+print_theorems
+
+fun isafact' :: "\<nat> \<Rightarrow> \<nat>"
+  where 
+  "isafact' n =(if n = 0 then 1 else n * (isafact' (n-1)))"
+
+print_theorems
+
+fun isafact'' :: "\<nat> \<Rightarrow> \<nat>"
+  where 
+  "isafact'' 0 = 1" 
+| "isafact'' (Suc n) = Suc n * (isafact'' n)"
+
+print_theorems
+
+text \<open>VDM expressions with basic-typed (nat, int) variables (e.g. @{term \<open>x-y\<close>})
   have specific type widening rules (e.g. if both variables are nat, the result might be int).
   Therefore, in Isabelle VDM nats become @{typ VDMNat}, which are just a synonym for @{typ \<int>}.
 
@@ -31,6 +59,20 @@ definition
   \<open>pre_vdm_factorial n \<equiv> inv_VDMNat n\<close>
 
 lemmas pre_vdm_factorial_defs = pre_vdm_factorial_def inv_VDMNat_def 
+
+(*
+fun (domintros) vdm_factorial' :: \<open>VDMNat \<Rightarrow> VDMNat\<close>
+  where
+  \<open>vdm_factorial' n =
+    (if pre_vdm_factorial n then
+      (if n = 0 then 
+        1
+      else
+        n * (vdm_factorial' (n - 1))
+      )
+    else
+      undefined)\<close>
+*)
 
 text \<open>Next, we define the factorial function through recursion, where 
       when the precondition fails, we return @{term undefined}, which is 

@@ -5,18 +5,17 @@ begin
 section \<open>Recursive partial recursive functions\<close>
 
 text \<open>In Isabelle, recursive functions must discharge proof obligations on:
-  \begin{enumerate}
-  \item pattern completeness: 
+
+    \<^enum>  pattern completeness: 
 
         This relates to all patterns in a constructive type
         being refered to (e.g., @{term 0} and @{term \<open>Suc n\<close>} for @{typ \<nat>})).
   
-  \item pattern compatibility:
+    \<^enum> pattern compatibility:
   
         This relates to multiple way patterns can be constructed that boils
         down to the pattern completeness cases (e.g., @{term \<open>n + 2\<close>} being 
         simply multiple successor calls over constructors @{term \<open>Suc (Suc 0)\<close>}). 
-  \end{enumerate}
 
   That is important to ensure that recursion is well structured (i.e., recursive calls will not
   get stuck because call constructs are not available). For example, if you miss the @{term 0} 
