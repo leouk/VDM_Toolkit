@@ -10,7 +10,7 @@ imports
         Data renamed Data;
         Data0 renamed Data0;
         ColNo renamed ColNo;
-        --@NB This import is needed for ValueFactory.mkRecord to work?!! see ValueFactoryHelper.getType
+        --@doc This import is needed for ValueFactory.mkRecord to work?!! see ValueFactoryHelper.getType use instead
         --Error renamed Error;
         Header0 renamed Header0;
         Headers renamed Headers;
@@ -180,9 +180,6 @@ across multiple lines",50,58.5,179,18.26],
 functions 
    	approx: real * nat1 -> real
 	approx(m, precision) == m * (10**precision);
-
-    ceil: real -> real
-    ceil(n) == - floor (- n);
 
     calculated_bmi: Row -> real
     calculated_bmi(r) ==

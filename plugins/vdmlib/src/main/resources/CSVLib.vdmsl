@@ -191,7 +191,6 @@ types
     Error ::
         row: RowNo
         col: ColNo 
-        --@AB / --@NB views?
         --@todo Equality on on rol/col? Or allow multiple reasons?
         --reason:- Reason
         reason: Reason
