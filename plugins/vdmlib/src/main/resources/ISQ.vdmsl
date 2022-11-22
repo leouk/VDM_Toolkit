@@ -402,9 +402,9 @@ types
 	--		 (i.e. can't compare different dimension quantities directly)
 	Quantity ::
 		mag: Magnitude
-		dim: DimensionlessVector
-	eq  mk_Quantity(m1, d1) = mk_Quantity(m2, d2) == m1 = m2 and d1 = d2
-	ord mk_Quantity(m1, d1) < mk_Quantity(m2, d2) == m1 < m2 and d1 = d2;
+		dim:- DimensionlessVector
+	--eq  mk_Quantity(m1, d1) = mk_Quantity(m2, d2) == m1 = m2 --and d1 = d2
+	ord mk_Quantity(m1, -) < mk_Quantity(m2, -) == m1 < m2 ; --and d1 = d2;
 	
 	--@doc non-zero quantity in any dimension
 	QuantityN0 = Quantity
@@ -451,12 +451,11 @@ types
 		  schema: ConversionSchema
 		    unit: UnitSystem
 	inv mk_MeasurementSystem(mk_Quantity(-, d), s, -) == dom d = dom s
-	eq  mk_MeasurementSystem(mk_Quantity(m1, -), s1, u1) 
-			= 
-			mk_MeasurementSystem(mk_Quantity(m2, -), s2, u2) 
-		  ==
-		--@todo why ignore the quantity dimension vector?
-		  m1 = m2 and s1 = s2 and u1 = u2
+	eq  mk_MeasurementSystem(q1, s1, u1) 
+		= 
+		mk_MeasurementSystem(q2, s2, u2) 
+		==
+		q1 = q2 and s1 = s2 and u1 = u2
 	ord mk_MeasurementSystem(mk_Quantity(m1, -), -, -) 
 		< 
 		mk_MeasurementSystem(mk_Quantity(m2, -), -, -) 
