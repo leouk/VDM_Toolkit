@@ -21,6 +21,7 @@ imports
         CSVCellInv renamed CSVCellInv;
         CSVRowInv renamed CSVRowInv;
         CSVColInv renamed CSVColInv;
+        CSVFileInv renamed CSVFileInv;
         CSVType renamed CSVType;
         Headers0 renamed Headers0;
         CSVValue renamed CSVValue;
@@ -32,7 +33,7 @@ imports
         install_col_invariant renamed install_col_invariant;
     operations 
         loadCSV renamed loadCSV;
-        loadTrivialCSV renamed loadTrivialCSV;
+        loadSimpleHeadersCSV renamed loadSimpleHeadersCSV;
         printCSV renamed printCSV;
     values 
         DEFAULT_SETTINGS renamed DEFAULT_SETTINGS;
@@ -133,6 +134,10 @@ values
             if not r(1)(1) in set elems CAPITAL_LETTERS then "name not capitalised" else nil
         );
 
+    --@doc add here file-wide checks
+    FILE_INVARIANT_CONSISTENCY: CSVFileInv = 
+        (lambda -: Headers0, -: Matrix & nil);
+
     --@doc see CSVExample.csv
     -- Name,Age,Weight(Kg),Height(cm),BMI
     -- "Okay1",40,58.5,169,20.5
@@ -171,7 +176,8 @@ across multiple lines",50,58.5,179,18.26],
                    ["RepeatedName",50,58.5,179,18.26]
                 ],
                 ROW_INVARIANT_BMI_CONSISTENCY                
-            )
+            ),
+            FILE_INVARIANT_CONSISTENCY
         );
 
     NZ_SHORT_HEADER: seq of CSVType = [<Integer>,<String>,<Integer>,<String>, <String>, <String>, <String>, <String>, <String>, <String>];
@@ -253,7 +259,7 @@ operations
 
     loadTrivialCSVExample(path: Path, parser: CSVParser) ==
         (
-         loadTrivialCSV(path, parser, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
+         loadSimpleHeadersCSV(path, parser, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
          printCSV(path ^ ".out", PRECISION);
         );
 
@@ -263,9 +269,9 @@ traces
     test5: load(CSV_SETTINGS);
 
     --@todo this fails, as the <Native> parser gets confused a bit
-    test6: loadTrivialCSV(NZ_EXAMPLE, <Native>,  NZ_SHORT_HEADER, false);
+    test6: loadSimpleHeadersCSV(NZ_EXAMPLE, <Native>,  NZ_SHORT_HEADER, false);
 
-    test7: loadTrivialCSV(NZ_EXAMPLE, <Univocity>,  NZ_SHORT_HEADER, false);
+    test7: loadSimpleHeadersCSV(NZ_EXAMPLE, <Univocity>,  NZ_SHORT_HEADER, false);
 
 
 end CSVExample
