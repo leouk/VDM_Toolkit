@@ -22,7 +22,6 @@ from Support1
 	types 
 		String renamed String;
 		String1 renamed String1;
-		String1List renamed String1List;
 	functions
 		fold renamed fold;
 		prods_r renamed prods_r;
@@ -141,19 +140,19 @@ exports
 		ms_conv: /*ConversionSchema * ConversionSchema * MeasurementSystem*/
 						 MeasurementSystem * ConversionSchema -> MeasurementSystem;
 
-		mag: Prefix -> Magnitude;
-		deca: Prefix -> Prefix;
+		mag  : Prefix -> Magnitude;
+		deca : Prefix -> Prefix;
 		hecto: Prefix -> Prefix;
-		kilo: Prefix -> Prefix;
-		mega: Prefix -> Prefix;
-		giga: Prefix -> Prefix;
-		tera: Prefix -> Prefix;
-		deci: Prefix -> Prefix;
+		kilo : Prefix -> Prefix;
+		mega : Prefix -> Prefix;
+		giga : Prefix -> Prefix;
+		tera : Prefix -> Prefix;
+		deci : Prefix -> Prefix;
 		centi: Prefix -> Prefix;
 		milli: Prefix -> Prefix;
 		micro: Prefix -> Prefix;
-		nano: Prefix -> Prefix;
-		pico: Prefix -> Prefix;
+		nano : Prefix -> Prefix;
+		pico : Prefix -> Prefix;
 	
 		second: ConversionSchema * UnitSystem -> Second;
 		minute: ConversionSchema * UnitSystem -> Second;
@@ -220,30 +219,30 @@ exports
 		
 	values
 		DIMENSIONS 	     : set1 of Dimension;
-		ONE_DV           : DimensionlessVector;
-		LENGTH           : SingleDimension;
-		MASS             : SingleDimension;
-		TIME             : SingleDimension;
-		CURRENT          : SingleDimension;
-		TEMP             : SingleDimension;
-		AMOUNT           : SingleDimension;
-		INTENSITY        : SingleDimension;
-		                 
-		AREA             : DimensionVector; 
-		VOLUME           : DimensionVector; 
-		FREQUENCY        : DimensionVector; 
-		VELOCITY         : DimensionVector; 
-		ACCELERATION     : DimensionVector; 
-		ENERGY           : DimensionVector; 
-		POWER            : DimensionVector; 
-		FORCE            : DimensionVector; 
-		PRESSURE         : DimensionVector; 
-		CHARGE           : DimensionVector; 
-		PDIFFERENCE      : DimensionVector; 
-		CAPACITANCE	     : DimensionVector; 
-		WATT             : DimensionVector; 
-		RADIAN           : DimensionlessVector;
-		STERADIAN        : DimensionlessVector;
+		ZERO_DV          : DimensionlessVector;
+		DLENGTH          : SingleDimension;
+		DMASS            : SingleDimension;
+		DTIME            : SingleDimension;
+		DCURRENT         : SingleDimension;
+		DTEMP            : SingleDimension;
+		DAMOUNT          : SingleDimension;
+		DINTENSITY       : SingleDimension;
+		                
+		DAREA            : DimensionVector; 
+		DVOLUME          : DimensionVector; 
+		DFREQUENCY       : DimensionVector; 
+		DVELOCITY        : DimensionVector; 
+		DACCELERATION    : DimensionVector; 
+		DENERGY          : DimensionVector; 
+		DPOWER           : DimensionVector; 
+		DFORCE           : DimensionVector; 
+		DPRESSURE        : DimensionVector; 
+		DCHARGE          : DimensionVector; 
+		DPDIFFERENCE     : DimensionVector; 
+		DCAPACITANCE	 : DimensionVector; 
+		DWATT            : DimensionVector; 
+		DRADIAN          : DimensionlessVector;
+		DSTERADIAN       : DimensionlessVector;
 
 		SI_DIM_VIEW		 : DimensionView;
 		BIS_DIM_VIEW	 : DimensionView;
@@ -275,7 +274,7 @@ exports
 		UNIT_STERADIAN   : Quantity;
 		UNIT_WATT        : Quantity;
 	
-		SI  	           : ConversionSchema;   
+		SI  	         : ConversionSchema;   
 		METER            : Meter   ;
 		KILOGRAM         : Kilogram;
 		SECOND	         : Second  ;
@@ -305,7 +304,8 @@ exports
 		BIS_POUND        : Pound   ;
 		BIS_RANKINE      : Rankine ;
 		BIS_VOLUME       : BISVolume;
-                     
+        BIS_VELOCITY	 : BISVelocity;
+
 		CGS              : ConversionSchema;
 		CENTIMETRE       : Centimetre;
 		GRAM             : Gram			;
@@ -374,7 +374,7 @@ types
 		--(dunion rng dv) \ {0} <> {}
 		;
 
-	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in RADIAN or STERADIAN
+	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in DRADIAN or DSTERADIAN
 	DimensionVector = DimensionlessVector
 	inv dv == 
 		--OnFail(4060, "Dimension vector has only dimensionless (0) ranges for %1s", dom(dv :> {0}))
@@ -438,7 +438,7 @@ types
 	--@doc Conversions Source to Target unit system conversion schemas.
 	Conversion  = map UnitSystem to ConversionSchema;
 	
-	--@TODO conversions matrix could be useful for well known transformations of interest to be instantiated.
+	--@todo conversions matrix could be useful for well known transformations of interest to be instantiated.
 	Conversions = map UnitSystem to Conversion
 	--@doc It's always possible to convert to itself: crucial to allow bottoming it up 
 	inv cs == forall u in set dom cs & u in set dom cs(u); -- dom cs = dunion { dom i | i in set (rng cs) }
@@ -472,7 +472,7 @@ types
 
 values
 	--@doc the dimensionless vector is the one in the vector algebra (i.e. dimensions are added/substracted)
-	ONE_DV   : DimensionlessVector= { i |-> 0 | i in set DIMENSIONS };
+	ZERO_DV   : DimensionlessVector= { i |-> 0 | i in set DIMENSIONS };
 	
 functions			
 ------------------------------------------------------------------------------------
@@ -492,7 +492,7 @@ functions
 	--@doc utility for d**2 or d**3 etc (i.e. compose twice/thrice with itself)
 	dim_comp_n: DimensionlessVector * nat -> DimensionlessVector
 	dim_comp_n(di, n) == 
-		fold[DimensionlessVector](dim_comp, ONE_DV, replicate[DimensionVector](n, di)) 
+		fold[DimensionlessVector](dim_comp, ZERO_DV, replicate[DimensionVector](n, di)) 
 	post	
 		--@doc if result has dimension, it must have come from either d1 or d2
 		--@doc can be dimensionless for case of pure quantities (e.g. radian)
@@ -667,49 +667,49 @@ functions
 
 values
 	--@doc basic dimension vectors
-	LENGTH   : SingleDimension = ONE_DV ++ { <Length>      |-> 1 };
-	MASS     : SingleDimension = ONE_DV ++ { <Mass>        |-> 1 };
-	TIME     : SingleDimension = ONE_DV ++ { <Time>        |-> 1 };
-	CURRENT  : SingleDimension = ONE_DV ++ { <Current>     |-> 1 };
-	TEMP     : SingleDimension = ONE_DV ++ { <Temperature> |-> 1 };
-	AMOUNT   : SingleDimension = ONE_DV ++ { <Amount>      |-> 1 };
-	INTENSITY: SingleDimension = ONE_DV ++ { <Intensity>   |-> 1 };
+	DLENGTH   : SingleDimension = ZERO_DV ++ { <Length>      |-> 1 };
+	DMASS     : SingleDimension = ZERO_DV ++ { <Mass>        |-> 1 };
+	DTIME     : SingleDimension = ZERO_DV ++ { <Time>        |-> 1 };
+	DCURRENT  : SingleDimension = ZERO_DV ++ { <Current>     |-> 1 };
+	DTEMP     : SingleDimension = ZERO_DV ++ { <Temperature> |-> 1 };
+	DAMOUNT   : SingleDimension = ZERO_DV ++ { <Amount>      |-> 1 };
+	DINTENSITY: SingleDimension = ZERO_DV ++ { <Intensity>   |-> 1 };
 
 	--@doc common dimension units
-	AREA        : DimensionVector = dim_comp_n(LENGTH, 2);																--L**2
-	VOLUME      : DimensionVector = dim_comp_n(LENGTH, 3);                                --L**3
-	FREQUENCY   : DimensionVector = dim_inv(TIME);                                        --T**-1
-	VELOCITY    : DimensionVector = dim_comp(LENGTH, FREQUENCY);                          --L*T**-1
-	ACCELERATION: DimensionVector = dim_comp(VELOCITY, FREQUENCY);                        --L*T**-2
-	ENERGY      : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 2)));   --L**2*M*T**-2
-	POWER       : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));   --L**2*M*T**-3
-	FORCE       : DimensionVector = dim_comp(LENGTH, dim_comp(MASS, dim_inv_n(TIME, 2))); --L*M*T**-2
-	PRESSURE    : DimensionVector = dim_comp(dim_inv(LENGTH), dim_comp(MASS, dim_inv_n(TIME, 2)));  --L**-1*M*T**-2               
-	CHARGE      : DimensionVector = dim_comp(INTENSITY, TIME);                            --I*T
-	PDIFFERENCE : DimensionVector = dim_comp(AREA, dim_comp(MASS, dim_comp(dim_inv_n(TIME, 3), dim_inv(INTENSITY)))); --L**2*M*T**-3*I**-1
-	CAPACITANCE	: DimensionVector = dim_comp(dim_inv(AREA),                               --L**-2*M**-1*T**4*I**2
-																	dim_comp(dim_inv(MASS), 
-																		dim_comp(dim_comp_n(TIME, 4), 
-																							dim_comp_n(INTENSITY, 2)))); 	
+	DAREA        : DimensionVector = dim_comp_n(DLENGTH, 2);																--L**2
+	DVOLUME      : DimensionVector = dim_comp_n(DLENGTH, 3);                                --L**3
+	DFREQUENCY   : DimensionVector = dim_inv(DTIME);                                        --T**-1
+	DVELOCITY    : DimensionVector = dim_comp(DLENGTH, DFREQUENCY);                          --L*T**-1
+	DACCELERATION: DimensionVector = dim_comp(DVELOCITY, DFREQUENCY);                        --L*T**-2
+	DENERGY      : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 2)));   --L**2*M*T**-2
+	DPOWER       : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));   --L**2*M*T**-3
+	DFORCE       : DimensionVector = dim_comp(DLENGTH, dim_comp(DMASS, dim_inv_n(DTIME, 2))); --L*M*T**-2
+	DPRESSURE    : DimensionVector = dim_comp(dim_inv(DLENGTH), dim_comp(DMASS, dim_inv_n(DTIME, 2)));  --L**-1*M*T**-2               
+	DCHARGE      : DimensionVector = dim_comp(DINTENSITY, DTIME);                            --I*T
+	DPDIFFERENCE : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_comp(dim_inv_n(DTIME, 3), dim_inv(DINTENSITY)))); --L**2*M*T**-3*I**-1
+	DCAPACITANCE : DimensionVector = dim_comp(dim_inv(DAREA),                               --L**-2*M**-1*T**4*I**2
+																	dim_comp(dim_inv(DMASS), 
+																		dim_comp(dim_comp_n(DTIME, 4), 
+																							dim_comp_n(DINTENSITY, 2)))); 	
 																							
-	RADIAN      : DimensionlessVector = dim_comp(LENGTH, dim_inv(LENGTH)); --L*L**-1
-	STERADIAN   : DimensionlessVector = dim_comp(AREA, dim_inv(AREA));     --L**2*L**-2
-	WATT        : DimensionVector     = dim_comp(AREA, dim_comp(MASS, dim_inv_n(TIME, 3)));  --L**2*M*T**-3
+	DRADIAN      : DimensionlessVector = dim_comp(DLENGTH, dim_inv(DLENGTH)); --L*L**-1
+	DSTERADIAN   : DimensionlessVector = dim_comp(DAREA, dim_inv(DAREA));     --L**2*L**-2
+	DWATT        : DimensionVector     = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));  --L**2*M*T**-3
 	
-  --@doc identity conversion schema maps all dimensions to 1 (i.e. no conversion)																						 
-  CONV_ID     : ConversionSchema = { i |-> 1 | i in set DIMENSIONS };
+  	--@doc identity conversion schema maps all dimensions to 1 (i.e. no conversion)																						 
+  	CONV_ID     : ConversionSchema = { i |-> 1 | i in set DIMENSIONS };
   
 ------------------------------------------------------------------------------------
 --@section International Standard Units constants basic, accepted, derived, prefixes 
 ------------------------------------------------------------------------------------
 
-	UNIT_LENGTH   : IntQuantity   = mk_Quantity(1, LENGTH);
-	UNIT_MASS     : IntQuantity   = mk_Quantity(1, MASS);
-	UNIT_TIME     : IntQuantity   = mk_Quantity(1, TIME);
-	UNIT_CURRENT  : IntQuantity   = mk_Quantity(1, CURRENT);
-	UNIT_TEMP     : IntQuantity   = mk_Quantity(1, TEMP);
-	UNIT_AMOUNT   : IntQuantity   = mk_Quantity(1, AMOUNT);
-	UNIT_INTENSITY: IntQuantity   = mk_Quantity(1, INTENSITY);
+	UNIT_LENGTH   : IntQuantity   = mk_Quantity(1, DLENGTH);
+	UNIT_MASS     : IntQuantity   = mk_Quantity(1, DMASS);
+	UNIT_TIME     : IntQuantity   = mk_Quantity(1, DTIME);
+	UNIT_CURRENT  : IntQuantity   = mk_Quantity(1, DCURRENT);
+	UNIT_TEMP     : IntQuantity   = mk_Quantity(1, DTEMP);
+	UNIT_AMOUNT   : IntQuantity   = mk_Quantity(1, DAMOUNT);
+	UNIT_INTENSITY: IntQuantity   = mk_Quantity(1, DINTENSITY);
 
 	PREFIX_DECA   : MagnitudeN0 = (10**1);
 	PREFIX_HECTO  : MagnitudeN0 = (10**2)  ;
@@ -724,22 +724,22 @@ values
 	PREFIX_NANO   : MagnitudeN0 = 1/PREFIX_GIGA;
 	PREFIX_PICO   : MagnitudeN0 = 1/PREFIX_TERA;
 
-	UNIT_AREA        : Quantity = mk_Quantity(1, AREA)         ;
-	UNIT_VOLUME      : Quantity = mk_Quantity(1, VOLUME)       ;
-	UNIT_FREQUENCY   : Quantity = mk_Quantity(1, FREQUENCY)    ;
-	UNIT_VELOCITY    : Quantity = mk_Quantity(1, VELOCITY)     ;
-	UNIT_ACCELERATION: Quantity = mk_Quantity(1, ACCELERATION) ;
-	UNIT_ENERGY      : Quantity = mk_Quantity(1, ENERGY)       ;
-	UNIT_POWER       : Quantity = mk_Quantity(1, POWER)        ;
-	UNIT_FORCE       : Quantity = mk_Quantity(1, FORCE)        ;
-	UNIT_PRESSURE    : Quantity = mk_Quantity(1, PRESSURE)     ;
-	UNIT_CHARGE      : Quantity = mk_Quantity(1, CHARGE)       ;
-	UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, PDIFFERENCE);
-	UNIT_CAPACITANCE : Quantity = mk_Quantity(1, CAPACITANCE) ;
+	UNIT_AREA        : Quantity = mk_Quantity(1, DAREA)         ;
+	UNIT_VOLUME      : Quantity = mk_Quantity(1, DVOLUME)       ;
+	UNIT_FREQUENCY   : Quantity = mk_Quantity(1, DFREQUENCY)    ;
+	UNIT_VELOCITY    : Quantity = mk_Quantity(1, DVELOCITY)     ;
+	UNIT_ACCELERATION: Quantity = mk_Quantity(1, DACCELERATION) ;
+	UNIT_ENERGY      : Quantity = mk_Quantity(1, DENERGY)       ;
+	UNIT_POWER       : Quantity = mk_Quantity(1, DPOWER)        ;
+	UNIT_FORCE       : Quantity = mk_Quantity(1, DFORCE)        ;
+	UNIT_PRESSURE    : Quantity = mk_Quantity(1, DPRESSURE)     ;
+	UNIT_CHARGE      : Quantity = mk_Quantity(1, DCHARGE)       ;
+	UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, DPDIFFERENCE);
+	UNIT_CAPACITANCE : Quantity = mk_Quantity(1, DCAPACITANCE) ;
 
-	UNIT_RADIAN      : Quantity = mk_Quantity(1, RADIAN)       ;
-	UNIT_STERADIAN   : Quantity = mk_Quantity(1, STERADIAN)    ;
-	UNIT_WATT        : Quantity = mk_Quantity(1, WATT)         ;
+	UNIT_RADIAN      : Quantity = mk_Quantity(1, DRADIAN)       ;
+	UNIT_STERADIAN   : Quantity = mk_Quantity(1, DSTERADIAN)    ;
+	UNIT_WATT        : Quantity = mk_Quantity(1, DWATT)         ;
 	
 ------------------------------------------------------------------------------------
 --@section SI basic and derived unit types
@@ -759,75 +759,75 @@ types
 	
 	--@doc every standard basic dimension has an SI measurement system type
 	Meter = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = LENGTH;
+	inv ms == ms.quantity.dim = DLENGTH;
 
 	Kilogram = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = MASS;
+	inv ms == ms.quantity.dim = DMASS;
 
 	--@doc second is common between different conversion schemas, so only fix the dimension, not conversion schema
 	Second = MeasurementSystem
-	inv ms == ms.quantity.dim = TIME;
+	inv ms == ms.quantity.dim = DTIME;
 	
 	Ampere = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = CURRENT;
+	inv ms == ms.quantity.dim = DCURRENT;
 	
 	Kelvin = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = TEMP;
+	inv ms == ms.quantity.dim = DTEMP;
 	
 	Mole = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = AMOUNT;
+	inv ms == ms.quantity.dim = DAMOUNT;
 	
 	Candela = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = INTENSITY;
+	inv ms == ms.quantity.dim = DINTENSITY;
 
 	--@doc common derived SI measurement systems
 	Area = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = AREA;
+	inv ms == ms.quantity.dim = DAREA;
 	
 	Volume = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = VOLUME;
+	inv ms == ms.quantity.dim = DVOLUME;
 
 	Frequency = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = FREQUENCY;
+	inv ms == ms.quantity.dim = DFREQUENCY;
 
 	Velocity = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = VELOCITY;
+	inv ms == ms.quantity.dim = DVELOCITY;
 
 	Acceleration = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = ACCELERATION;
+	inv ms == ms.quantity.dim = DACCELERATION;
 
 	Energy = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = ENERGY;
+	inv ms == ms.quantity.dim = DENERGY;
 
 	Power = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = POWER;
+	inv ms == ms.quantity.dim = DPOWER;
 
 	Force = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = FORCE;
+	inv ms == ms.quantity.dim = DFORCE;
 
 	Pressure = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = PRESSURE;
+	inv ms == ms.quantity.dim = DPRESSURE;
 
 	Charge = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = CHARGE;
+	inv ms == ms.quantity.dim = DCHARGE;
 
 	PotentialDifference = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = PDIFFERENCE;
+	inv ms == ms.quantity.dim = DPDIFFERENCE;
     
 	Capacitance = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = CAPACITANCE;	
+	inv ms == ms.quantity.dim = DCAPACITANCE;	
 
 	--@doc some commonly derived SI measurement system dimensions types
 	Hertz = Frequency;
 	
 	Radian = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = RADIAN; 
+	inv ms == ms.quantity.dim = DRADIAN; 
 	
 	Steradian = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = STERADIAN;
+	inv ms == ms.quantity.dim = DSTERADIAN;
 	
 	Watt = SI_MeasurementSystem
-	inv ms == ms.quantity.dim = WATT;
+	inv ms == ms.quantity.dim = DWATT;
 
 functions	
 ------------------------------------------------------------------------------------
@@ -904,7 +904,7 @@ functions
 	ms_quant_conv(cs_conv, mk_MeasurementSystem(mk_Quantity(m, d), s, u)) ==
 		mk_MeasurementSystem(mk_Quantity(quant_conv(cs_conv, d) * m, d), s, u);--@todo this ought to be cs_conv unit for s?!
 		
-	--@doc (From -> To) convert(ms): 
+	--@doc From -> To convert(ms): 
 	--		 given a measurement system (ms), convert its quantity from the given conversion schema 
 	--		 to the selected conversion schema (i.e. inverting and composing schemas, then
 	--		 converting the magnitude accordingly). Avoid id conversion for speed.
@@ -1123,26 +1123,26 @@ types
 	inv ms == ms.schema = BIS and ms.unit = BIS_UNIT;
 	
 	Yard = BIS_MeasurementSystem
-	inv ms == ms.quantity.dim = LENGTH;
+	inv ms == ms.quantity.dim = DLENGTH;
 	
 	Pound = BIS_MeasurementSystem
-	inv ms == ms.quantity.dim = MASS;
+	inv ms == ms.quantity.dim = DMASS;
 	
 	Rankine = BIS_MeasurementSystem
-	inv ms == ms.quantity.dim = TEMP;
+	inv ms == ms.quantity.dim = DTEMP;
 	
 	BISVolume = BIS_MeasurementSystem
-	inv ms == ms.quantity.dim = VOLUME;
+	inv ms == ms.quantity.dim = DVOLUME;
 	
 	BISVelocity = BIS_MeasurementSystem
-	inv ms == ms.quantity.dim = VELOCITY;
+	inv ms == ms.quantity.dim = DVELOCITY;
 	
 values
-	BIS_YARD   : Yard     = mk_MeasurementSystem(UNIT_LENGTH, BIS, BIS_UNIT);
-	BIS_POUND  : Pound    = mk_MeasurementSystem(UNIT_MASS  , BIS, BIS_UNIT);
-	BIS_RANKINE: Rankine  = mk_MeasurementSystem(UNIT_TEMP  , BIS, BIS_UNIT);
-	BIS_VOLUME : BISVolume= mk_MeasurementSystem(UNIT_VOLUME, BIS, BIS_UNIT);
-  
+	BIS_YARD    : Yard       = mk_MeasurementSystem(UNIT_LENGTH  , BIS, BIS_UNIT);
+	BIS_POUND   : Pound      = mk_MeasurementSystem(UNIT_MASS    , BIS, BIS_UNIT);
+	BIS_RANKINE : Rankine    = mk_MeasurementSystem(UNIT_TEMP    , BIS, BIS_UNIT);
+	BIS_VOLUME  : BISVolume  = mk_MeasurementSystem(UNIT_VOLUME  , BIS, BIS_UNIT);
+    BIS_VELOCITY: BISVelocity= mk_MeasurementSystem(UNIT_VELOCITY, BIS, BIS_UNIT);
 functions
 	
 	--@doc transform given measurement system to the British Imperial System
@@ -1200,23 +1200,23 @@ types
 	inv ms == ms.schema = CGS and ms.unit = CGS_UNIT;
 	
 	Centimetre = CGS_MeasurementSystem
-	inv ms == ms.quantity.dim = LENGTH;
+	inv ms == ms.quantity.dim = DLENGTH;
 	
 	Gram = CGS_MeasurementSystem
-	inv ms == ms.quantity.dim = MASS;
+	inv ms == ms.quantity.dim = DMASS;
 	
 	
 	MHC_MeasurementSystem = MeasurementSystem
 	inv ms == ms.schema = MHC and ms.unit = MHC_UNIT;
 	
 	Milligram = MHC_MeasurementSystem
-	inv ms == ms.quantity.dim = MASS;
+	inv ms == ms.quantity.dim = DMASS;
 	
 	Hour = MHC_MeasurementSystem
-	inv ms == ms.quantity.dim = TIME;
+	inv ms == ms.quantity.dim = DTIME;
 	
 	Celcius = MHC_MeasurementSystem
-	inv ms == ms.quantity.dim = TEMP;
+	inv ms == ms.quantity.dim = DTEMP;
 		
 	WhichMonth = nat1
 	inv wm == wm <= MONTHS_PER_YEAR;
@@ -1277,13 +1277,13 @@ types
 	inv ms == ms.schema = MDC and ms.unit = MDC_UNIT;
 	
 	Day = MDC_MeasurementSystem
-	inv ms == ms.quantity.dim = TIME;
+	inv ms == ms.quantity.dim = DTIME;
 	
 	MWC_MeasurementSystem = MeasurementSystem
 	inv ms == ms.schema = MWC and ms.unit = MWC_UNIT;
 	
 	Week = MWC_MeasurementSystem
-	inv ms == ms.quantity.dim = TIME;
+	inv ms == ms.quantity.dim = DTIME;
 
 values
 	MDAY : Day  = mk_MeasurementSystem(UNIT_TIME, MDC, MDC_UNIT);
@@ -1373,9 +1373,9 @@ functions
 	
 	DIMENSION_VECTORS  : () -> set1 of DimensionVector  
 	DIMENSION_VECTORS() == 
-			 {LENGTH, MASS, TIME, CURRENT, TEMP, AMOUNT, INTENSITY, AREA, 
-				VOLUME, FREQUENCY, VELOCITY, ACCELERATION, ENERGY, POWER, FORCE, 
-				PRESSURE, CHARGE, PDIFFERENCE, CAPACITANCE	, WATT, RADIAN, STERADIAN 
+			 {DLENGTH, DMASS, DTIME, DCURRENT, DTEMP, DAMOUNT, DINTENSITY, DAREA, 
+				DVOLUME, DFREQUENCY, DVELOCITY, DACCELERATION, DENERGY, DPOWER, DFORCE, 
+				DPRESSURE, DCHARGE, DPDIFFERENCE, DCAPACITANCE	, DWATT, DRADIAN, DSTERADIAN 
 			 };
 			 
 	MAGNITUDES: () -> set1 of Magnitude
@@ -1538,7 +1538,7 @@ traces
 					in
 						refl_bool(lhs = rhs);
 
-	--@doc (in weeks) 4 weeks = 0.9438202247191011 avg_month
+	--@doc 4 weeks = 0.9438202247191011 avg_month
 	MWC_1: let
 					 lhs: MeasurementSystem = weeks2months_wks(4),
 					 rhs: MeasurementSystem = scaleMS(0.9438202247191011, wAVG_MONTH())
