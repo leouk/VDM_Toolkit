@@ -23,7 +23,55 @@ functions
         --           less_than_VDMNat = transitive_closure({(z', z) | z' : int, z: int . 0 <= z' ∧ z' < z})
         --           lex_prod(ra,rb)  = { ((a,b), (a', b')) | a, b, 'a, b': int & (a,a') in set ra or a = a' and (b,b') in set rb}
         is not yet specified 
-   ;
+    ;
+
+    pair_less_VDMNat: () -> set of ((nat * nat) * (nat * nat))
+    pair_less_VDMNat() == lex_prod[nat, nat](less_than_VDMNat(), less_than_VDMNat());
+
+    less_than_VDMNat: () -> set of (nat * nat)
+    less_than_VDMNat() == transitive_closure[nat]({ mk_(z', z) | z', z : nat & z' < z });
+
+    lex_prod[@A,@B]: set of (@A * @A) * set of (@B * @B) -> set of ((@A * @B) * (@A * @B))
+    lex_prod(ra,rb) == 
+        { mk_(mk_(a, b), mk_(a', b')) | a, a': @A, b, b': @B & 
+            mk_(a,a') in set ra or a = a' and mk_(b, b') in set rb };
+
+    transitive_closure[@X]: set of (@X*@X) -> set of (@X*@X)
+    transitive_closure(R) == 
+        let closed_R: set of set of (@X*@X) = { Q | Q in set power R & R subset Q and rel_comp[@X,@X,@X](Q,Q) subset Q } in
+            if closed_R = {} then {} else dinter closed_R;
+
+    --@doc First projection on the set of pairs (i.e like VDM's "dom R") 
+	rel_dom[@X,@Y]: set of (@X*@Y) -> set of @X
+	rel_dom(R) == { x.#1 | x in set R }
+	post
+		forall mk_(x,-) in set R & x in set RESULT;
+	
+	--@doc Second projection on the set of pairs (i.e like VDM's "rng R") 
+	rel_rng[@X,@Y]: set of (@X*@Y) -> set of @Y
+	rel_rng(R) == { x.#2 | x in set R }
+	post
+		forall mk_(-,y) in set R & y in set RESULT;
+	
+	--@doc Forward relational composition (i.e like sequential composition Q ;; R) 
+	rel_comp[@X,@Y,@Z]: set of (@X*@Y) * set of (@Y*@Z) -> set of (@X*@Z)
+	rel_comp(Q, R) == 
+		--@doc very slow for large relations without the let; thanks @NB!
+		let 
+			Qdom: set of @X = rel_dom[@X,@Y](Q),
+			Qrng: set of @Y = rel_rng[@X,@Y](Q),
+			Rdom: set of @Y = rel_dom[@Y,@Z](R),
+			Rrng: set of @Z = rel_rng[@Y,@Z](R),
+			QrRd: set of @Y = Qrng union Rdom
+		 in
+			{ mk_(x, z) | x in set Qdom, z in set Rrng & 
+						(exists y in set QrRd & 
+								mk_(x,y) in set Q and mk_(y, z) in set R) }
+	post
+		--@doc composition result projections is at most the same, or is smaller
+		rel_dom[@X,@Z](RESULT) subset rel_dom[@X,@Y](Q)
+		and
+		rel_rng[@X,@Z](RESULT) subset rel_rng[@Y,@Z](R);
 
     --@doc see https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf
    perm: int * int * int -> int --nat
