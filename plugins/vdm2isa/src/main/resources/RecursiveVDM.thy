@@ -123,7 +123,8 @@ properties of defined function are meant to be total.
 Isabelle function definitions can be given with either \<^term>\<open>fun\<close> or \<^term>\<open>function\<close>. The
 former attempts to automatically prove the pattern constructive and compatible proofs and finds a measure 
 for other termination proof obligations. The latter allows the user to do the proof manually, as well as provide a measure relation.
-This relation must be well-formed, which means have a well-ordered induction principle over a partially ordered relation\<^footnote>\<open>For 
+This relation must be well-formed, which means have a well-ordered induction principle over a partially ordered relation defined as
+@{thm[display,show_types] wf_def}\<^footnote>\<open>For 
 details on what that means in Isabelle, see the \<^class>\<open>wellorder\<close> theorem @{thm wf} in theory \<^verbatim>\<open>Wellfounded.thy\<close>\<close>. 
 For example, an Isabelle definition of factorial that it automatically discovers all three proofs can be given as\<close>
 (*
