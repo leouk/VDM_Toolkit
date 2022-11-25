@@ -1,5 +1,5 @@
-%\documentclass[runningheads,a4paper]{llncs}
-\documentclass[11pt,a4paper]{article}
+\documentclass[runningheads,a4paper]{llncs}
+%\documentclass[11pt,a4paper]{article}
 \usepackage{isabelle,isabellesym}
 
 % further packages required for unusual symbols (see also
@@ -23,12 +23,12 @@
   %for \<onequarter>, \<onehalf>, \<threequarters>, \<degree>, \<cent>,
   %\<currency>
 
+% urls in roman style, theory text in math-similar italics
+%\urlstyle{rm}
+\isabellestyle{tt}
+
 % this should be the last package used
 \usepackage{pdfsetup}
-
-% urls in roman style, theory text in math-similar italics
-\urlstyle{rm}
-\isabellestyle{it}
 
 % for uniform font size
 %\renewcommand{\isastyle}{\isastyleminor}
@@ -36,23 +36,24 @@
 
 \begin{document}
 
-\title{A translation strategy for VDM recursive functions in Isabelle/HOL}
-\author{Leo Freitas, Peter Gorm Larsen}
+%\title{A translation strategy for VDM recursive functions in Isabelle/HOL}
+\title{VDM recursive functions in Isabelle/HOL}
+%\author{Leo Freitas, Peter Gorm Larsen}
 %Multiple institutes are typeset as follows:
-%\author{Leo Freitas\inst{1} \and Peter Gorm Larsen\inst{2}}
+\author{Leo Freitas\inst{1} \and Peter Gorm Larsen\inst{2}}
 
 %If there are too many authors, use \authorrunning
 % \authorrunning{First Author et al.}
-%\authorrunning{ }
+\authorrunning{ }
 
-%\institute{
-%School of Computing, Newcastle University, \\
-%\email{leo.freitas@newcastle.ac.uk}
-%\and 
-%DIGIT, Aarhus University, Department of Engineering, \\
+\institute{
+School of Computing, Newcastle University, \\
+\email{leo.freitas@newcastle.ac.uk}
+\and 
+DIGIT, Aarhus University, Department of Engineering, \\
 %Finlandsgade 22, 8200 Aarhus N, Denmark\\
-%\email{pgl@ece.au.dk}
-%}
+\email{pgl@ece.au.dk}
+}
 			
 \maketitle
 \setcounter{footnote}{0} 
@@ -61,7 +62,7 @@
      It extends an ecosystem of other VDM mathematical toolkit extensions, including a translation and proof environment for VDM in Isabelle/HOL.
 \end{abstract}
 
-%\keywords{VSCode, VDM, Isabelle/HOL, Translation, Recursion}
+\keywords{VSCode, VDM, Isabelle/HOL, Translation, Recursion}
 
 %\tableofcontents
 
