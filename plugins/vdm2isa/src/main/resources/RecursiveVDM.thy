@@ -16,7 +16,7 @@ are represented in both formalisms.
 Beyond overcoming technical practicalities, which we discuss, a major objective is to create
 translation strategy templates. These templates must cover a wide variety of VDM 
 recursive definitions, as well as having their proof obligations being highly automated.
-The result is an extension to a VDM to Isabelle/HOL translation strategy and implementation 
+The result is an extension to the VDM to Isabelle/HOL translation strategy and implementation 
 as a plugin to VDMJ~@{cite Battle09} and extension to VDM-VSCode @{cite AdvancedVSCodePaper}.
 
 Isabelle uses literate programming, where formal specification, proofs and documentation are
@@ -25,7 +25,7 @@ and proofs can be found at the VDM toolkit repository at
  \<^verbatim>\<open>./plugins/vdm2isa/src/main/resources/RecursiveVDM.*\<close>\<^footnote>\<open>in~\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.
 
 In the next section, we present background on VDM and Isabelle recursion and measure relations.
-In Section~\ref{sec:VDMTypes} we briefly discuss VDM basic types translation and their
+In Section~\ref{sec:VDMTypes}, we briefly discuss VDM basic types translation and their
 consequence for recursion. Next, Section~\ref{sec:Recursion} describes how both VDM
 and Isabelle recursive definitions work and how they differ. Our translation strategy
 is then presented in Section~\ref{sec:Strategy} for basic types, sets, maps, and 
@@ -35,12 +35,11 @@ complex recursive patterns. Finally, we conclude in Section~\ref{sec:Conclusion}
 (**************************************************************************************************)
 section \<open>Background\label{sec:Background}\<close> 
 
-text \<open>The VDM to Isabelle/HOL translator caters for a wide range of the VDM AST. It copes with all kinds 
+text \<open>Our VDM to Isabelle/HOL translator caters for a wide range of the VDM AST. It copes with all kinds 
 of expressions, a variety of patterns, almost all types, imports and exports, functions and specifications,
-traces, and some of state and operations. Even though not all kinds of VDM patterns are allowed,
-the translator copes with most, and where it does not, a corresponding equivalent is possible. Among the 
-expressions, map comprehension is of note, given its complexity. Details can be found at 
-@{cite NimFull and AdvancedVSCodePaper}.
+traces, and some of state and operations @{cite NimFull and AdvancedVSCodePaper}. 
+Even though not all kinds of VDM patterns are allowed,
+the translator copes with most, and where it does not, a corresponding equivalent is possible.
 
 One particular area we want to extend translation is over recursively defined functions. 
 VDM requires the user to define a measure function to justify why recursion will 
@@ -48,7 +47,7 @@ terminate. It then generates proof obligations to ensure totality and terminatio
 
 Finally, our translation strategy follows the size-change termination (SCT) proof 
 strategy described in @{cite SCT_POPL and SCNP_POPL}. In particular, its SCP (polynomial) and SCNP (non-polynomial)
-subclass of recursive definitions within the SCT, which permits efficient termination certificate checking. 
+subclasses of recursive definitions within the SCT, which permits efficient termination checking. 
 Effectively, if every infinite computation would give rise to an infinitely decreasing value sequence 
 (according to the size-change principle), then no infinite computation is possible. Termination problems in 
 this class have a global ranking function of a certain form, which can be found using SAT solving, hence 
@@ -61,7 +60,7 @@ increasing automation.
 section \<open>VDM basic types in Isabelle\label{sec:VDMTypes}\<close>
 
 text \<open>Isabelle represents natural numbers (\<^typ>\<open>\<nat>\<close>) as a (data) type with two constructors (\<^term>\<open>0::\<nat>\<close> and \<^term>\<open>Suc n\<close>), 
-  where all numbers are projections over such constructions (\<^emph>\<open>e.g.\<close>~@{lemma "3 = (Suc (Suc (Suc 0)))" by simp}).   
+  where all numbers are projections over such constructions (\<^emph>\<open>e.g.\<close>~@{lemma "2 = (Suc (Suc 0))" by simp}).   
   Isabelle integers (\<^typ>\<open>\<int>\<close>) are defined as a quotient type involving two natural numbers. Isabelle quotient types are 
   injections into a constructively defined type. Like with integers, other
   Isabelle numeric types (\<^emph>\<open>e.g.,\<close>~rationals \<^typ>\<open>\<rat>\<close>, reals \<^typ>\<open>\<real>\<close>, \<^emph>\<open>etc\<close>.) are defined in terms of some
@@ -69,15 +68,15 @@ text \<open>Isabelle represents natural numbers (\<^typ>\<open>\<nat>\<close>) a
   between type spaces. Nevertheless, Isabelle has no implicit type widening rule for \<^typ>\<open>\<nat>\<close>; instead, it takes 
   conventions like @{lemma[show_types] \<open>(0 - x::\<nat>) = 0\<close> by simp}. For expressions involving 
 a mixutre of \<^typ>\<open>\<int>\<close> and \<^typ>\<open>\<nat>\<close> typed terms, explicit user-defined
-  type coercions are needed (\<^emph>\<open>e.g.,\<close>~@{lemma[show_types] \<open>(2::\<nat>) - (3::\<int>) = -1\<close> by simp}).
+  type coercions might be needed (\<^emph>\<open>e.g.,\<close>~@{lemma[show_types] \<open>(2::\<nat>) - (3::\<int>) = -1\<close> by simp}).
  
    VDM expressions with basic-typed (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>) variables have specific type widening rules.
   For example, even if both variables are \<^bold>\<open>nat\<close>, the result might be \<^bold>\<open>int\<close>. 
-(\<^emph>\<open>e.g.,\<close>~in VDM \<^verbatim>\<open>0 - x:nat = -x:int\<close>). Therefore, our translation 
+(\<^emph>\<open>e.g.,\<close>~in VDM, \<^verbatim>\<open>0 - x:nat = -x:int\<close>). Therefore, our translation 
   strategy considers VDM \<^bold>\<open>nat\<close> as the Isabelle type \<^typ>\<open>VDMNat\<close>, which is just a type synonym for \<^typ>\<open>\<int>\<close>. This 
   simplifies the translation process to Isabelle, such that no type coercions are necessary to encode all VDM type widenning rules. 
   On the other hand, this design decision means encoding of recursive functions over \<^bold>\<open>nat\<close> to be more complicated 
-  than expected, given VDM \<^bold>\<open>nat\<close> is represented as Isabelle's \<^typ>\<open>\<int>\<close>.
+  than expected, given VDM's \<^bold>\<open>nat\<close> is represented as Isabelle's \<^typ>\<open>\<int>\<close>.
 
   Despite this design decision over basic types and their consequences, recursion
 over VDM \<^bold>\<open>int\<close>, sets or maps will still be involved. That is because these types 
@@ -86,17 +85,14 @@ are not constructively defined in Isabelle.\<close>
 (**************************************************************************************************)
 section \<open>Recursion in VDM and in Isabelle\label{sec:Recursion}\<close>
 
-text \<open>Recursive definitions are pervasive in VDM models. 
-An important aspect of every recursive definition
+text \<open>An important aspect of every recursive definition
 is an argument that justifies its termination. Otherwise, the recursion might go on 
-in an infinite loop.
-
-In VDM, this is defined using a recursive measure:~it has the same input type signature as
+in an infinite loop. In VDM, this is defined using a recursive measure:~it has the same input type signature as
 the recursive definition, and returns a \<^bold>\<open>nat\<close>, which \<^bold>\<open>must\<close> monotonically decrease 
 at each recursive call, eventually reaching zero. This is how termination of recursive definitions 
-are justified in VDM. 
-
-A simple example of VDM recursive definition is one for calculating the factorial of a given natural number
+are justified in VDM. A simple example of a VDM recursive definition is one for calculating 
+the factorial of a given natural number
+%
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
    fact: nat -> nat 
    fact(n) == if n = 0 then 1 else n * fact(n - 1)   measure n;   
@@ -105,33 +101,33 @@ A simple example of VDM recursive definition is one for calculating the factoria
 %   -- For the measure below, VDMJ produces a measure function as: 
 %   -- measure_fact: nat -> nat
 %   -- measure_fact(n) == n
-\noindent The VDM recursive measure simply uses the \<^verbatim>\<open>n\<close> input itself. This works because the only recursive 
-call is made with a decreasing value of \<^verbatim>\<open>n\<close>, until it reaches \<^verbatim>\<open>0\<close> and terminates. VDMJ generates 
+\noindent The \<^verbatim>\<open>fact\<close> recursive measure uses the \<^verbatim>\<open>n\<close> input itself as its result. 
+This works because the only recursive call is made with a decreasing value of \<^verbatim>\<open>n\<close>, 
+until it reaches \<^verbatim>\<open>0\<close> and terminates. VDMJ generates 
 three proof obligations for the definition above.
-%
-\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
-Proof Obligation 1: (Unproved)
-fact; measure_fact: total function obligation at line 10:12
-(forall n:nat & is_(measure_fact(n), nat))
-
-Proof Obligation 2: (Unproved) fact: subtype obligation at line 6:57
-(forall n:nat & (not (n = 0) => (n - 1) >= 0))
-
-Proof Obligation 3: (Unproved) fact: recursive function obligation at line 5:4
-(forall n:nat & (not (n=0) => measure_fact(n) > measure_fact((n-1))))
-\end{vdmsl} 
-%
-\noindent They are trivial to discharge in Isabelle given the measure definition expanded is just 
+They are trivial to discharge in Isabelle given the measure definition expanded is just 
 @{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n - 1 \<ge> 0)\<close> by simp} and 
 @{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n > n - 1)\<close> by simp}.
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+Proof Obligation 1: (Unproved) fact; measure_fact: total function obligation 
+(forall n:nat & is_(measure_fact(n), nat))
 
+Proof Obligation 2: (Unproved) fact: subtype obligation 
+(forall n:nat & (not (n = 0) => (n - 1) >= 0))
+
+Proof Obligation 3: (Unproved) fact: recursive function obligation 
+(forall n:nat & (not (n=0) => measure_fact(n) > measure_fact((n-1))))
+\end{vdmsl} 
+
+%Remove?
 Moreover, even though measures over recursive type structures are impossible to define in VDM, they are 
-easily described in Isabelle. For example, it is not possible to write a measure in VDM for a 
-recursive function over a recursive record defining a linked list, such as \<^verbatim>\<open>R :: v: nat n: R\<close>. 
+easily described in Isabelle. For example, it is not possible to write a measure in VDM  
+over a recursive record defining a linked list, such as \<^verbatim>\<open>R :: v: nat n: R\<close>. 
 This is automatically generated for our representation of VDM records in Isabelle as a datatype.
 Other complex recursive patterns are hard/impossible to represent in VDM (see Section~\ref{subsec:Complex}).   
   
-In Isabelle, recursive definitions can be provided through primitive recursion over inputs are 
+In Isabelle, recursive definitions can be provided through primitive recursion over inputs that are 
 constructively defined, or more general function definitions that produces proof obligations. 
 The former insists on definition for each type constructor and only provides simplification rules; whereas
 the latter allow for more sophisticated input patterns and provides simplification, elimination and 
@@ -155,12 +151,11 @@ for the termination proof obligation. The latter requires the user to do these p
 by providing a measure relation. It is better suited for cases where \<^term>\<open>fun\<close> declarations fail, 
 which usually involve complex or ill-defined recursion. 
 
-The termination relation must be well-formed, which means have a
+The termination relation must be well-founded, which means have a
 well-ordered induction principle over a partially ordered relation defined as\<^footnote>\<open>For 
-details on what well-ordered induction means in Isabelle, see the \<^class>\<open>wellorder\<close> theorem @{thm wf} in 
-theory \<^verbatim>\<open>Wellfounded.thy\<close> within Isabelle's distribution.\<close>
+details on what well-ordered induction means see theory \<^verbatim>\<open>Wellfounded.thy\<close> within Isabelle's distribution.\<close>
 @{thm[display,show_types] wf_def}. 
-For example, an Isabelle definition of factorial that it automatically discovers all three proofs can be given as\<close>
+A definition that Isabelle discovers all three proofs is\<close>
 (*
 find_theorems name:wellorder
 print_locale! wellorder *)
@@ -180,28 +175,26 @@ termination
   sledgehammer
 *)
 
-text \<open>This Isabelle definition is pretty much 1-1 with the VDM definition. 
-Nevertheless, as mentioned above, VDM basic types widening rules 
-necessitated we translate them to \<^typ>\<open>VDMNat\<close>, which is just \<^typ>\<open>\<int>\<close>. 
+text \<open>This definition is quite similar in VDM. 
+Nevertheless, VDM basic types widening rules 
+necessitated we translate them to \<^typ>\<open>VDMNat\<close>. 
 The same version of \<^term>\<open>fact\<close> defined for \<^typ>\<open>\<int>\<close> will fail with 
 the error that ``\<^emph>\<open>Could not find lexicographic termination order\<close>''. That is, 
-Isabelle manages to discharge the pattern proofs for \<^typ>\<open>\<int>\<close>, but not the termination one. 
+Isabelle manages to discharge the pattern proofs, but not the termination one. 
 This is because the user must provide a projection relation from the \<^typ>\<open>\<int>\<close> 
 quotient type back into the constructive type \<^typ>\<open>\<nat>\<close>.
 
-Even if we could avoid these VDM basic types translation technicality, 
-the same problem would occur for VDM recursion over non constructive types, 
-such as sets or maps. That is, Isabelle only allow recursion over finite sets, 
-which are not defined constructively but inductively. 
-Similarly, Isabelle maps are defined with specialised HOL functions, 
-again with domains that are not constructively defined. The only easy 
-recursive definition translation from VDM to Isabelle are those
+Even if we could avoid this translation technicality, 
+the same problem would occur for recursion over non constructive types, 
+such as sets or maps. They require recursion over finite sets, which are
+defined inductively.
+The only easy recursive translations are those
 involving lists, given lists in Isabelle are defined constructively and VDM 
-sequences maps directly to them.      
+sequences map directly.      
 
 Therefore, defining recursive functions over non-constructive types entail 
-more involved compatibility and completeness proofs.
-They also usually lead to partial function definitions, given Isabelle cannot 
+compatibility and completeness proofs.
+They also lead to partial function definitions, given Isabelle cannot 
 tell whether termination is immediately obvious. 
 In VDM, however, recursive functions on sets (as well as map domains) are common, 
 hence the need for extending our translation strategy.\<close>
@@ -403,7 +396,7 @@ lemma l_sumset_rel_wf: \<open>wf (gen_set_term sumset_wf_rel)\<close>
 
 termination\<^marker>\<open>tag invisible\<close>
   text \<open>Next, we tackle the termination proof, with the same setup with @{method relation} again.\<close>
-  apply (rule "termination"[of "(gen_set_term sumset_wf_rel)"])\<^marker>\<open>tag invisible\<close>
+  apply (relation \<open>(gen_set_term sumset_wf_rel)\<close>)\<^marker>\<open>tag invisible\<close>
   using l_sumset_rel_wf \<^marker>\<open>tag invisible\<close> 
   apply force\<^marker>\<open>tag invisible\<close>
   text \<open>Unfortunately, using @{command sledgehammer} fails to discharge the second subgoal @{subgoals[display]}\<close>
@@ -416,7 +409,6 @@ termination\<^marker>\<open>tag invisible\<close>
   Then, Isabelle's @{command sledgehammer} can finish the proof.\<close>
 
 lemma l_pre_sumset_sumset_wf_rel: 
-
   \<open>pre_sumset s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> (s - {(\<some> x. x \<in> s)}, s) \<in> (gen_set_term sumset_wf_rel)\<close>
   unfolding gen_set_term_def \<^marker>\<open>tag invisible\<close>
   apply (simp add: pre_sumset_defs)\<^marker>\<open>tag invisible\<close>
@@ -429,7 +421,7 @@ text \<open>The intuition behind this lemma is that, elements in the measure rel
 
   With this, we can try the termination proof again, which now @{command sledgehammer} find proofs for all subgoals.\<close>
 termination\<^marker>\<open>tag invisible\<close>
-  apply (rule "termination"[of "(gen_set_term sumset_wf_rel)"])\<^marker>\<open>tag invisible\<close>
+  apply (relation \<open>(gen_set_term sumset_wf_rel)\<close>)\<^marker>\<open>tag invisible\<close>
   using l_sumset_rel_wf apply force\<^marker>\<open>tag invisible\<close>
   using l_pre_sumset_sumset_wf_rel by presburger\<^marker>\<open>tag invisible\<close>
 (*<*)
@@ -527,7 +519,9 @@ lemma l_pre_sum_elems_sum_elems_wf: \<open>\<lbrakk>pre_sum_elems m; m \<noteq> 
   by (metis domIff empty_iff some_in_eq) \<^marker>\<open>tag invisible\<close>
 
 termination  \<^marker>\<open>tag invisible\<close>
-  apply (rule "termination"[OF l_sum_elems_wf])\<^marker>\<open>tag invisible\<close>
+  apply (relation sum_elems_wf)\<^marker>\<open>tag invisible\<close>
+(*  apply (rule "termination"[OF l_sum_elems_wf])\<^marker>\<open>tag invisible\<close> *)
+  apply (simp add: l_sum_elems_wf)\<^marker>\<open>tag invisible\<close>
   using l_pre_sum_elems_sum_elems_wf by presburger\<^marker>\<open>tag invisible\<close>
 
 text \<open>Finally, we also prove that the well founded termination relation (\<^term>\<open>sum_elems_wf\<close>) is not 
@@ -635,6 +629,23 @@ fun ack'' :: \<open>\<nat> \<Rightarrow> \<nat> \<Rightarrow> \<nat>\<close> whe
 lemma l_ack''_1[simp]: \<open>ack'' 0 n = Suc n\<close> by simp
 lemma l_ack''_2[simp]: \<open>ack'' (Suc m) 0 = ack'' m 1\<close> by simp
 lemma l_ack''_3[simp]: \<open>ack'' (Suc m) (Suc n) = ack'' m (ack'' (Suc m) n)\<close> by simp
+
+function ack''' :: "\<nat> \<Rightarrow> \<nat> \<Rightarrow> \<nat>" where
+  "ack''' 0 n             = Suc n"
+| "ack''' (Suc m) 0       = ack''' m 1"
+| "ack''' (Suc m) (Suc n) = ack''' m (ack''' (Suc m) n)"
+  by (pat_completeness, auto) 
+termination 
+  text \<open>Through the sledgehammer version, I unpicked the various bits and pieces needed.\<close>
+(*
+  using "termination" lessI pair_lessI1 pair_less_iff1 wf_pair_less by presburger
+*)
+  thm lessI pair_lessI1 pair_less_def pair_less_iff1 wf_pair_less
+  apply (relation pair_less)
+     apply (simp)
+  using lessI pair_lessI1 apply presburger
+  using lessI pair_less_iff1 apply presburger
+  using lessI pair_lessI1 by presburger
 (*>*)
 
 theorem ack_correct: \<open>ack' m n = ack m n\<close>
@@ -836,6 +847,10 @@ at \<^verbatim>\<open>RecursiveVDM*.thy\<close>\<^footnote>\<open>\<^url>\<open>
 paragraph \<open>Future work.~We are implementing the translation strategy in the \<^verbatim>\<open>vdm2isa\<close> plugin,
 which should be available soon. We also want to include mutually recursive VDM functions in future.\<close>
 
+paragraph \<open>Acknowledgements.~We appreciated discussions with Stephan Merz on 
+pointers for complex well-founded recursion proofs in Isabelle, and with Nick
+Battle on limits for VDM recursive measures.\<close>
+
 (*<*)
 lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
   apply (rule wf_measure[of \<open>\<lambda> s . card s\<close>, THEN wf_subset])\<^marker>\<open>tag invisible\<close>
@@ -843,11 +858,53 @@ lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
   apply (rule subsetI, simp add: case_prod_beta)\<^marker>\<open>tag invisible\<close>
   apply (elim exE conjE)\<^marker>\<open>tag invisible\<close>
   by (metis card_Diff1_less_iff fst_conv inv_Map_defs(2) inv_Map_defs(3) pre_sumset_defs(1) snd_conv some_in_eq)\<^marker>\<open>tag invisible\<close>
-(*>*)
 
-paragraph \<open>Acknowledgements.~We appreciated discussions with Stephan Merz on 
-pointers for complex well-founded recursion proofs in Isabelle, and with Nick
-Battle on limits for VDM recursive measures.\<close>
+
+fun   even :: \<open>\<nat> \<Rightarrow> \<bool>\<close> 
+  and odd  :: \<open>\<nat> \<Rightarrow> \<bool>\<close>
+  where 
+  \<open>even 0 = True\<close>
+| \<open>odd 0 = False\<close>
+| \<open>even (Suc n) = odd n\<close>
+| \<open>odd (Suc n) = even n\<close>
+
+fun sct2_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
+and sct2_g :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
+  where
+  \<open>sct2_f i x   = (if i = [] then x else (sct2_g (tl i) x i))\<close>
+| \<open>sct2_g a b c = sct2_f a (b @ c)\<close>
+
+function sct5_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> where
+  \<open>sct5_f x y = (if y = [] then x else if x = [] then sct5_f y (tl y) else sct5_f y (tl x))\<close>
+  by (pat_completeness, auto)
+
+abbreviation sct5_f_wf_rel :: \<open>(('a list \<times> 'a list) \<times> 'a list \<times> 'a list) set\<close> where
+  \<open>sct5_f_wf_rel \<equiv>
+   { ((y, tl y), (x, y)) | x y . y \<noteq> [] \<and> x = [] } \<union> 
+   { ((y, tl x), (x, y)) | x y . y \<noteq> [] \<and> x \<noteq> [] }\<close>
+
+lemma l_sct5__wf_rel_VDM_measure: 
+  \<open>sct5_f_wf_rel \<subseteq> measure (\<lambda> (x,y) . if y = [] then 0 else if x = [] then length y else length x)\<close>
+  apply (intro subsetI, case_tac x, case_tac a)
+    apply (simp add: case_prod_beta)
+  apply (elim disjE conjE, simp)  defer
+  nitpick
+     apply (intro impI conjI, simp_all)
+  nitpick
+  sorry
+
+lemma l_sct5_f_wf: \<open>wf sct5_f_wf_rel\<close> 
+  using l_sct5__wf_rel_VDM_measure 
+  by (rule wf_subset [OF wf_measure])
+
+termination
+  apply (relation sct5_f_wf_rel)
+  using l_sct5_f_wf apply blast
+  by simp+
+(*>
+(if y = [] then x else if x = [] then (sct5_f y (tl y)) else (sct5_f y tl x))
+*)
+
 
 (*<*)
 end
