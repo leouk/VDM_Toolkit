@@ -107,7 +107,7 @@ until it reaches \<^verbatim>\<open>0\<close> and terminates. VDMJ generates
 three proof obligations for the definition above.
 They are trivial to discharge in Isabelle given the measure definition expanded is just 
 @{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n - 1 \<ge> 0)\<close> by simp} and 
-@{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n > n - 1)\<close> by simp}.
+@{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n > n - 1)\<close> by simp}. 
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
 Proof Obligation 1: (Unproved) fact; measure_fact: total function obligation 
@@ -146,10 +146,10 @@ The proof obligation for termination establishes that the recursion is well-foun
 properties of the defined function are meant to be total. 
 
 Isabelle function definitions can be given with either \<^term>\<open>fun\<close> or \<^term>\<open>function\<close> syntax. The
-former attempts to automatically prove the pattern constructive and compatible proofs and finds a measure 
-for the termination proof obligation. The latter requires the user to do these proofs manually 
-by providing a measure relation. It is better suited for cases where \<^term>\<open>fun\<close> declarations fail, 
-which usually involve complex or ill-defined recursion. 
+former attempts to automatically prove the pattern constructive and compatible proofs and 
+finds a measure for the termination proof obligation. The latter requires the user to do 
+these proofs manually by providing a measure relation. It is better suited for cases 
+where \<^term>\<open>fun\<close> declarations fail, which usually involve complex or ill-defined recursion. 
 
 The termination relation must be well-founded, which means have a
 well-ordered induction principle over a partially ordered relation defined as\<^footnote>\<open>For 
@@ -160,20 +160,6 @@ A definition that Isabelle discovers all three proofs is\<close>
 find_theorems name:wellorder
 print_locale! wellorder *)
 fun fact' :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where \<open>fact' n = (if n = 0 then 1 else n * (fact' (n - 1)))\<close> 
-(*
-fun 
-  fact'' :: \<open>\<int> \<Rightarrow> \<int>\<close>
-  where 
-  "fact'' n = (if n = 0 then 1 else n * (fact'' (n - 1)))" 
-
-function 
-  fact''' :: \<open>\<int> \<Rightarrow> \<int>\<close>
-  where 
-  "fact''' n = (if n = 0 then 1 else n * (fact''' (n - 1)))" 
-  by (pat_completeness, auto)
-termination 
-  sledgehammer
-*)
 
 text \<open>This definition is quite similar in VDM. 
 Nevertheless, VDM basic types widening rules 
@@ -202,15 +188,34 @@ hence the need for extending our translation strategy.\<close>
 (**************************************************************************************************)
 section \<open>VDM recursion translation strategy\label{sec:Strategy}\<close>
 
-text \<open>We want to identify a translation strategy that will cater for such issues described above not only 
-for basic types, but also for sets, sequences, maps, \<^emph>\<open>etc\<close>. This is important to ensure that the
-translator will cater for most commonly used VDM recursion definition patterns.   
+text \<open>We want to identify a translation strategy that will cater for such issues 
+described above not only for basic types, but also for sets, sequences, maps, \<^emph>\<open>etc\<close>. 
+This is important to ensure that the translator will cater for most commonly used 
+VDM recursion definition patterns.   
 
-As mentioned in~@{cite VDMJAnnotations and AdvancedVSCodePaper}, it is possible to define formal annotations 
-(as comments), which VDMJ will process and make available for its plugins. For our translation
-strategy, we create a new annotation called \<^verbatim>\<open>@IsaMeasure\<close>. It defines a user-provided well-founded 
-measure relation that will participate in the Isabelle proofs of termination. For example, for the 
-\<^verbatim>\<open>fact\<close> function above, the user would have to write an annotation before the VDM measure as
+The VDM AST tags all recursive functions, even those without an explicit measure. 
+All such functions will be translated using Isabelle's \<^term>\<open>fun\<close> syntax, which 
+will attempt to discover proofs for compatibility and termination. For our setup of 
+the \<^verbatim>\<open>fact\<close> example, Isabelle discovers the termination proof. 
+\<close>
+
+(*<*)
+definition pre_fact'' :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]:\<open>pre_fact'' n \<equiv> inv_VDMNat n\<close>
+fun fact'' :: \<open>VDMNat \<Rightarrow> VDMNat\<close>
+  where 
+  "fact'' n = (if pre_fact'' n then (if n = 0 then 1 else n * (fact'' (n - 1))) else undefined)" 
+(*>*)
+
+text \<open>
+If that had failed, the user could define a VDM \<^verbatim>\<open>@IsaMeasure\<close> annotation. 
+VDM annotations are comments that will be processed according to specific implementations
+@{cite VDMJAnnotations and AdvancedVSCodePaper}. If the user does not provide an
+ \<^verbatim>\<open>@IsaMeasure\<close> annotation and \<^term>\<open>fun\<close> fails, then it is up to the user to 
+figure out the necessary proof setup. 
+
+The \<^verbatim>\<open>@IsaMeasure\<close> annotation defines a well-founded measure relation that will participate in the 
+setup for Isabelle termination proof. For example, for the \<^verbatim>\<open>fact\<close> example, the 
+user would have to write an annotation before the VDM measure as
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
   --@IsaMeasure( { (n -1, n) | n : nat & n <> 0 } )
@@ -242,11 +247,12 @@ sets are always finite, and type invariants over set elements must hold for ever
 (*-------------------------------------------------------------------------------------------------*)
 subsection \<open>Recursion over VDM basic types (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>)\label{subsec:VDMNat}\<close>
 
-text \<open>Following the general translation strategy~@{cite NimFull}, we first encode the implicit precondition of 
-\<^verbatim>\<open>fact\<close>, which insists that the given parameter \<^term>\<open>n\<close> is a \<^typ>\<open>VDMNat\<close>, alongside a list of defining constants 
-that are useful for proof strategy synthesis.\<close>
+text \<open>Following the general translation strategy~@{cite NimFull}, 
+we first encode the implicit precondition of \<^verbatim>\<open>fact\<close> as a simplification rule, 
+which insists that the given parameter \<^term>\<open>n\<close> is a \<^typ>\<open>VDMNat\<close>, alongside a 
+list of defining constants that are useful for proof strategy synthesis.\<close>
 
-definition pre_fact :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where \<open>pre_fact n \<equiv> inv_VDMNat n\<close>
+definition pre_fact :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]:\<open>pre_fact n \<equiv> inv_VDMNat n\<close>
 lemmas pre_fact_defs = pre_fact_def inv_VDMNat_def 
 
 text \<open>Next, we define the \<^verbatim>\<open>fact\<close> recursively. When the precondition fails, 
@@ -313,7 +319,7 @@ termination \<^marker>\<open>tag invisible\<close>
   apply (relation \<open>(gen_VDMNat_term fact_wf)\<close>) \<^marker>\<open>tag invisible\<close>
   text \<open>This transforms the abstract domain predicate into two new subgoals as @{subgoals[display]}\<close>
   using l_fact_term_wf apply presburger \<^marker>\<open>tag invisible\<close>
-  by (simp add: pre_fact_defs int_ge_less_than_def) \<^marker>\<open>tag invisible\<close>
+  by (simp add: int_ge_less_than_def) \<^marker>\<open>tag invisible\<close>
 
 text \<open>For this simple example, these subgoals are proved with @{command sledgehammer}. In general, the user will be
   have to either find the proof, or deal with domain predicates in proofs involving the recursive call.
@@ -327,7 +333,7 @@ text \<open>To make sure our choice does not lead to the empty relation, we ensu
   This is something users might want to do, but is not part of the translation strategy. In case the measure relation 
   is empty, the recursive call simplification rules will not be useful anyhow.\<close>
 lemma l_fact_term_valid: \<open>(gen_VDMNat_term fact_wf) = fact_wf\<close>
-  apply (simp add: pre_fact_defs) \<^marker>\<open>tag invisible\<close>
+  apply (simp ) \<^marker>\<open>tag invisible\<close>
   apply (intro equalityI subsetI)\<^marker>\<open>tag invisible\<close>
    apply (simp_all add: int_ge_less_than_def case_prod_beta)\<^marker>\<open>tag invisible\<close>
   by auto\<^marker>\<open>tag invisible\<close>
@@ -658,12 +664,62 @@ the more users will have to provide further automation.\<close>
 (**************************************************************************************************)
 subsection \<open>Harder examples\label{subsec:Hard}\<close>
 
-text \<open>The next two examples are from the Isabelle 
-distribution\<^footnote>\<open>\<^url>\<open>https://isabelle.in.tum.de/library/HOL/HOL-Examples/Functions.html\<close>\<close> 
-and require an elaborate setup. Nipkow's permutation function~@{cite TermRewriting} 
+(*<*)
+
+text \<open>Other examples from @{cite SCT_POPL}. 
+Example 3 is Ackermann, example 4 is permutation. Example 5 are yet to be finished.\<close>
+
+fun sct1_rev :: \<open>'a list \<Rightarrow> 'a list\<close>
+and sct1_r1  :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> 
+where
+  \<open>sct1_rev ls = sct1_r1 ls []\<close>
+| \<open>sct1_r1 ls a = (if ls = [] then a else sct1_r1 (tl ls) ((hd ls)#a))\<close>
+
+fun sct2_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
+and sct2_g :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
+  where
+  \<open>sct2_f i x   = (if i = [] then x else (sct2_g (tl i) x i))\<close>
+| \<open>sct2_g a b c = sct2_f a (b @ c)\<close>
+
+function sct5_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> where
+  \<open>sct5_f x y = (if y = [] then x else if x = [] then sct5_f y (tl y) else sct5_f y (tl x))\<close>
+  by (pat_completeness, auto)
+
+abbreviation sct5_f_wf_rel :: \<open>(('a list \<times> 'a list) \<times> 'a list \<times> 'a list) set\<close> where
+  \<open>sct5_f_wf_rel \<equiv>
+   { ((y, tl y), (x, y)) | x y . y \<noteq> [] \<and> x = [] } \<union> 
+   { ((y, tl x), (x, y)) | x y . y \<noteq> [] \<and> x \<noteq> [] }\<close>
+
+lemma l_sct5__wf_rel_VDM_measure: 
+  \<open>sct5_f_wf_rel \<subseteq> measure (\<lambda> (x,y) . if y = [] then 0 else if x = [] then length y else length x + length y)\<close>
+  apply (intro subsetI, case_tac x, case_tac a)
+    apply (simp add: case_prod_beta)
+  apply (elim disjE conjE, simp)  
+  nitpick
+  oops
+
+(*lemma l_sct5_f_wf: \<open>wf sct5_f_wf_rel\<close> 
+  using l_sct5__wf_rel_VDM_measure 
+  by (rule wf_subset [OF wf_measure])
+
+termination
+  apply (relation sct5_f_wf_rel)
+  using l_sct5_f_wf apply blast
+  by simp+*)
+
+fun sct6_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> 
+and sct6_g :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
+where
+  \<open>sct6_f a b = (if b = [] then sct6_g a [] else sct6_f ((hd b)#a) (tl b))\<close>
+| \<open>sct6_g c d = (if c = [] then d else sct6_g (tl c) ((hd c)#d))\<close>
+
+(*>*)
+
+text \<open>The next examples are require an elaborate setup. We can handle all examples 
+from~@{cite SCT_POPL}. For example, the permutation function 
 shows permuting decreasing parameters with an involved measure. The precondition 
 was required for finishing the termination proof and shows an example why proofs over \<^typ>\<open>\<int>\<close>
-can be harder.
+can be harder.  
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     perm: int * int * int -> int 
@@ -677,13 +733,7 @@ can be harder.
     tak(x,y,z) == if x <= y then y  
                   else           tak(tak(x-1,y,z), tak(y-1,z,x), tak(z-1,x,y))
     measure is not yet specified;
-\end{vdmsl}
-%
-\noindent The Takeuchi's function is particularly challenging because it permutes 
-parameters like \<^verbatim>\<open>perm\<close>, and like Ackermann's function, have 
-inner recursive calls as part of an outer recursive call. The translation 
-strategy works for these definitions, yet stands little chance of finding proofs 
-automatically. Nipkow's permutation function follows the earlier process.\<close>
+\end{vdmsl}\<close>
 
 definition pre_perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>\<close> where
   \<open>pre_perm m n r \<equiv> inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r \<and> 
@@ -718,7 +768,6 @@ proof - \<^marker>\<open>tag invisible\<close>
     apply (simp add: perm_wf_rel_def case_prod_beta max_def)
     apply (elim disjE conjE, simp) 
      apply (intro impI conjI, simp_all)
-    nitpick
     done
 qed
 
@@ -744,18 +793,22 @@ termination \<^marker>\<open>tag invisible\<close>
    apply (simp_all add: perm_wf_rel_def)  
   done
 
-text \<open>Finally, the Takeuchi's function, which contains both permutation and inner
-recursion is defined next, where the important part is the SCNP setup using multi-sets @{cite KrausSCNP},
-given that ordered lexicographic products are not strong enough to capture these 
-type of recursion.\<close>
 
-function 
-  tak :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" 
-  where
+text \<open>Finally, the Takeuchi's 
+function\<^footnote>\<open>\<^url>\<open>https://isabelle.in.tum.de/library/HOL/HOL-Examples/Functions.html\<close>\<close>, 
+which contains both permutation and inner recursion is defined next, 
+where the important part is the SCNP setup using multi-sets @{cite KrausSCNP}, 
+given that ordered lexicographic products are not 
+strong enough to capture this type of recursion. It has not implicit precondition.
+The translation strategy works for these definitions, yet stands little chance 
+of finding proofs automatically.\<close>
+
+function (domintros) tak :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" where
   "tak x y z = (if x \<le> y then y else tak (tak (x-1) y z) (tak (y-1) z x) (tak (z-1) x y))"
   by auto
 
 (*<*)
+text \<open>Example of how one has to keep domain predicates as assumptions prior to termination proof.\<close>
 lemma tak_pcorrect:
   "tak_dom (x, y, z) \<Longrightarrow> tak x y z = (if x \<le> y then y else if y \<le> z then z else x)"
   thm tak.pinduct tak.psimps
@@ -832,6 +885,30 @@ rules are available. Then, it is possible to prove its rather simpler equivalenc
 theorem tak_correct: "tak x y z = (if x \<le> y then y else if y \<le> z then z else x)"
   by (induction x y z rule: tak.induct) auto
 
+text \<open>Finally, we also want to tackle mutual recursion. VDM little bounds to mutually recursive
+definitions. Their proof obligations refer to each others measure functions. Isabelle requires
+all related definitions to be given in a single definition, where Isabelle's 
+sum (or union) types are used in the proof setup. Users have to annotate at least one of
+the mutually recursive definitions with \<^verbatim>\<open>@IsaMutualRec\<close> listing all function names involved.  
+Where needed, termination proof setup will be involved 
+and with limited automation. Here is a simple example and its translation.
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+    --@IsaMutualRec({odd})
+    even: nat -> bool
+    even(n) == if n = 0 then true else odd(n-1) measure n;
+    
+    --@IsaMutualRec({even})
+    odd: nat -> bool
+    odd(n) == if n = 0 then false else even(n-1) measure n;
+\end{vdmsl}
+\<close>
+definition pre_even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]: \<open>pre_even n \<equiv> inv_VDMNat n\<close> 
+definition pre_odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]: \<open>pre_odd n \<equiv> inv_VDMNat n\<close> 
+fun even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> and odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where 
+  \<open>even n = (if pre_even n then (if n = 0 then True else odd (n-1)) else undefined)\<close>
+| \<open>odd  n = (if pre_odd n then (if n = 0 then False else even (n-1)) else undefined)\<close>
+
 (**************************************************************************************************)
 section \<open>Discussion and conclusion\label{sec:Conclusion}\<close>
 
@@ -845,7 +922,8 @@ sources and proofs can be found at the VDM toolkit repository
 at \<^verbatim>\<open>RecursiveVDM*.thy\<close>\<^footnote>\<open>\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.\<close>
 
 paragraph \<open>Future work.~We are implementing the translation strategy in the \<^verbatim>\<open>vdm2isa\<close> plugin,
-which should be available soon. We also want to include mutually recursive VDM functions in future.\<close>
+which should be available soon. It is possible to discover all names within mutually 
+recursive calls. This will be useful to avoid having to write \<^verbatim>\<open>@IsaMutualRec\<close> annotations.\<close>
 
 paragraph \<open>Acknowledgements.~We appreciated discussions with Stephan Merz on 
 pointers for complex well-founded recursion proofs in Isabelle, and with Nick
@@ -858,52 +936,7 @@ lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
   apply (rule subsetI, simp add: case_prod_beta)\<^marker>\<open>tag invisible\<close>
   apply (elim exE conjE)\<^marker>\<open>tag invisible\<close>
   by (metis card_Diff1_less_iff fst_conv inv_Map_defs(2) inv_Map_defs(3) pre_sumset_defs(1) snd_conv some_in_eq)\<^marker>\<open>tag invisible\<close>
-
-
-fun   even :: \<open>\<nat> \<Rightarrow> \<bool>\<close> 
-  and odd  :: \<open>\<nat> \<Rightarrow> \<bool>\<close>
-  where 
-  \<open>even 0 = True\<close>
-| \<open>odd 0 = False\<close>
-| \<open>even (Suc n) = odd n\<close>
-| \<open>odd (Suc n) = even n\<close>
-
-fun sct2_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
-and sct2_g :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close>
-  where
-  \<open>sct2_f i x   = (if i = [] then x else (sct2_g (tl i) x i))\<close>
-| \<open>sct2_g a b c = sct2_f a (b @ c)\<close>
-
-function sct5_f :: \<open>'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> where
-  \<open>sct5_f x y = (if y = [] then x else if x = [] then sct5_f y (tl y) else sct5_f y (tl x))\<close>
-  by (pat_completeness, auto)
-
-abbreviation sct5_f_wf_rel :: \<open>(('a list \<times> 'a list) \<times> 'a list \<times> 'a list) set\<close> where
-  \<open>sct5_f_wf_rel \<equiv>
-   { ((y, tl y), (x, y)) | x y . y \<noteq> [] \<and> x = [] } \<union> 
-   { ((y, tl x), (x, y)) | x y . y \<noteq> [] \<and> x \<noteq> [] }\<close>
-
-lemma l_sct5__wf_rel_VDM_measure: 
-  \<open>sct5_f_wf_rel \<subseteq> measure (\<lambda> (x,y) . if y = [] then 0 else if x = [] then length y else length x)\<close>
-  apply (intro subsetI, case_tac x, case_tac a)
-    apply (simp add: case_prod_beta)
-  apply (elim disjE conjE, simp)  defer
-  nitpick
-     apply (intro impI conjI, simp_all)
-  nitpick
-  sorry
-
-lemma l_sct5_f_wf: \<open>wf sct5_f_wf_rel\<close> 
-  using l_sct5__wf_rel_VDM_measure 
-  by (rule wf_subset [OF wf_measure])
-
-termination
-  apply (relation sct5_f_wf_rel)
-  using l_sct5_f_wf apply blast
-  by simp+
-(*>
-(if y = [] then x else if x = [] then (sct5_f y (tl y)) else (sct5_f y tl x))
-*)
+(*>*)
 
 
 (*<*)
