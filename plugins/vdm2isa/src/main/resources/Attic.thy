@@ -1,4 +1,4 @@
-theory RecursiveSet0
+theory Attic
 imports VDMToolkit
 begin
 

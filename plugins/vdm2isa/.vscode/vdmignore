@@ -1,1 +1,6 @@
 /target/
+/src/test/resources/Examples/
+/src/test/resources/output/
+/src/test/resources/document/
+/src/test/resources/dump/
+/src/test/resources/HTML/
