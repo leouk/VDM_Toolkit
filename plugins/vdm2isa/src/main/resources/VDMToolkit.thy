@@ -96,8 +96,14 @@ lemma l_inv_True_True[simp]: "r \<noteq> undefined \<Longrightarrow> inv_True r"
   by (simp add: inv_True_def)  
 *)
 
-lemma l_inv_True_True[simp]: "inv_True r"
+lemma l_inv_True_True[iff]: "inv_True r"
   by (simp add: inv_True_def)
+
+lemma l_inv_VDMNat[iff]: "inv_VDMNat n \<longleftrightarrow> n \<ge> 0"
+  by (simp add: inv_VDMNat_def)
+
+lemma l_inv_VDMNat1[iff]: "inv_VDMNat1 n \<longleftrightarrow> n > 0"
+  by (simp add: inv_VDMNat1_def)
 
 text \<open>In general, VDM narrow expressions are tricky, given they can downcast types according 
   to the user-specified type of interest. In particular, at least for \<^typ>\<open>\<real>\<close> and \<^typ>\<open>\<rat>\<close> 
