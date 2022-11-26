@@ -158,6 +158,19 @@ functions
                   set of (((set of (nat * nat)) * nat) * ((set of (nat * nat)) * nat)) 
     lex_prod_nat(ra, rb) == lex_prod'[set of (nat * nat), nat](ra, rb, nat_fin_psub(), NAT_REL);--power ra, power rb);
     
+    even: nat -> bool
+    even(n) == 
+    	--@Printf("even(%1s)\n", n)
+    	if n = 0 then true else odd(n-1)
+    measure n;
+    
+    odd: nat -> bool
+    odd(n) == 
+    	--@Printf("odd(%1s)\n", n)
+    	if n = 0 then false else even(n-1)
+    measure n;
+    
+    
     --@doc accumulating parameter
     sct1_rev: seq of nat * seq of nat -> seq of nat 
     sct1_rev(ls, a) == if ls = [] then a else sct1_rev(tl ls, [hd ls] ^ a)
@@ -190,9 +203,8 @@ functions
     measure 
     	--if x = [] then len y else len x						-- fails on sct5_f([],[2])
     	--if y = [] then 0 else if x = [] then len y else len x -- fails on sct5_f([1,2],[1,2])
-      	--if x = [] then len y else if y = [] then len x else len x + len y 
-      	if y = [] then 0 else if x = [] then len y else len x + len y
-      	--is not yet specified
+      	--if y = [] then 0 else if x = [] then len y else len x + len y -- fails on sct5_f([],[1,2])
+      	is not yet specified
     	;
      --y = [] => 0
      --y <>[] and x = [] => len y 
@@ -201,10 +213,16 @@ functions
     
     --@doc late-starting sequence of descending parameters
     sct6_f: seq of nat * seq of nat -> seq of nat 
-    sct6_f(a,b) == if b = [] then sct6_g(a, []) else sct6_f([hd b] ^ a, tl b);
+    sct6_f(a,b) == 
+    	--@Printf("sct6_f(%1s,%2s)\n", a, b)
+    	if b = [] then sct6_g(a, []) else sct6_f([hd b] ^ a, tl b)
+    measure len b;
     
     sct6_g: seq of nat * seq of nat -> seq of nat
-    sct6_g(c,d) == if c = [] then d else sct6_g(tl c, [hd c] ^ d);
+    sct6_g(c,d) == 
+	   	--@Printf("sct6_g(%1s,%2s)\n", c, d)
+    	if c = [] then d else sct6_g(tl c, [hd c] ^ d)
+    measure len c;
     
 traces 
 	t1: sct1_rev([1,2,3],[]) ;   
