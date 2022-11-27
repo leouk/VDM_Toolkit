@@ -26,7 +26,7 @@ toolkit repository at
 \<^verbatim>\<open>./plugins/vdm2isa/src/main/resources/RecursiveVDM.*\<close>\<^footnote>\<open>in~\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.
 
 In the next section, we present background on VDM and Isabelle recursion and
-measure relations. In Section~\ref{sec:VDMTypes}, we briefly discuss VDM basic
+measure relations. Section~\ref{sec:VDMTypes} briefly discuss VDM basic
 types translation and their consequence for recursion. Next,
 Section~\ref{sec:Recursion} describes how both VDM and Isabelle recursive
 definitions work and how they differ. Our translation strategy is then
@@ -115,7 +115,7 @@ factorial of a given natural number
 %   -- measure_fact(n) == n
 \noindent The \<^verbatim>\<open>fact\<close> recursive measure uses the \<^verbatim>\<open>n\<close> input itself as its
 result. This works because the only recursive call is made with a decreasing
-value of \<^verbatim>\<open>n\<close>, until it reaches \<^verbatim>\<open>0\<close> and terminates. VDMJ generates three
+value of \<^verbatim>\<open>n\<close>, until it reaches the base case \<^verbatim>\<open>0\<close> and terminates. VDMJ generates three
 proof obligations for the definition above. They are trivial to discharge in
 Isabelle given the measure definition expanded is just 
 @{lemma \<open>(\<forall> n::\<nat> . \<not> n = 0 \<longrightarrow> n - 1 \<ge> 0)\<close> by simp} and 
@@ -151,7 +151,7 @@ considerations. For the purposes of this paper, we only consider function
 definitions. Readers can find more about these differences in~@{cite
 IsaFunctionPackage}.
 
-Isabelle recursive functions require a proof obligation that its parameters
+Isabelle's recursive functions require a proof obligation that its parameters
 represent a constructive and compatible pattern, and that recursive calls
 terminate. Constructive patterns covers all constructors in the data type
 being used in the recursion inputs (\<^emph>\<open>i.e.,\<close>~one equation for each of the
@@ -167,7 +167,7 @@ fail, as no patterns for zero exist. The proof obligation for termination
 establishes that the recursion is well-founded. This has to be proved whenever
 properties of the defined function are meant to be total.
 
-Isabelle function definitions can be given with either \<^term>\<open>fun\<close> or
+Isabelle's function definitions can be given with either \<^term>\<open>fun\<close> or
 \<^term>\<open>function\<close> syntax. The former attempts to automatically prove the
 pattern constructive and compatible proofs and finds a measure for the
 termination proof obligation. The latter requires the user to do these proofs
@@ -976,7 +976,7 @@ fun (domintros) even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> and odd  :: 
 (******************************************************************************)
 section \<open>Discussion and conclusion\label{sec:Conclusion}\<close>
 
-text \<open>In this paper we present a translation strategy from VDM to Isabelle for
+text \<open>This paper has presented a translation strategy from VDM to Isabelle for
 recursive functions over basic types, sets and maps, as well as mutual
 recursion. We present how the strategy works for complex recursion.
 
@@ -990,7 +990,7 @@ at \<^verbatim>\<open>RecursiveVDM*.thy\<close>\<^footnote>\<open>\<^url>\<open>
 
 \<^bold>\<open>Acknowledgements.\<close>~We appreciated discussions with Stephan Merz on
 pointers for complex well-founded recursion proofs in Isabelle, and with Nick
-Battle on limits for VDM recursive measures.\<close>
+Battle on limits for VDM recursive measures. Peter Gorm Larsen would also like to acknowledge the Poul Due Jensen Foundation for funding the project Digital Twins for Cyber-Physical Systems (DiT4CPS).\<close>
 
 (*<*)
 lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
