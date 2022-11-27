@@ -142,7 +142,7 @@ public enum IsaToken {
 	VDMINT_NARROW(null, "vdm_narrow_real"),
 	NARROW(null/*Token.NARROW doesn't exist?*/, "vdm_narrow"),
 	ISEXPR(Token.IS, "isTest"),
-	SOME(Token.LET, "SOME"),
+	SOME(Token.LET, "\\<some>"),
 
 	EQUALSEQUALS(Token.EQUALSEQUALS, "\\<equiv>"),
 	INVERSE(Token.INVERSE, "vdm_inverse"),
