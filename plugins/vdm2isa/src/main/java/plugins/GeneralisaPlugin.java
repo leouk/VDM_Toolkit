@@ -58,7 +58,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
-                "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/VDMToolkit.vdmsl"
+            "VDMToolkit.vdmsl", "TestV2IFcns.vdmsl"
+            
+            //    "/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/VDMToolkit.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/examples/Binary/lib/VDMUtil.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/examples/Binary/Binary.vdmsl"
             //,   "/Users/nljsf/Local/reps/git/PhD/alastair/Spook/VDM-Implementation/Spook-Semantics/Spook.vdmsl"
@@ -76,7 +78,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IExprsSets.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IExprsSpecial.vdmsl"
             // ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IExprsToken.vdmsl"
-                ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IFcns.vdmsl"
+            //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IFcns.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IFcnsRecursiveComplexNat.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IFcnsRecursiveNat.vdmsl"
             //    ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/src/test/resources/TestV2IFcnsRecursiveSet.vdmsl"
