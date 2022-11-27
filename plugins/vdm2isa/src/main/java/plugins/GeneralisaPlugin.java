@@ -58,7 +58,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
-            "VDMToolkit.vdmsl", "TestV2IFcns.vdmsl"
+            "lib/VDMToolkit.vdmsl", "TestV2IFcns.vdmsl"
             
             //    "VDMToolkit.vdmsl"
             //      ,"TestV2IBindsComplex.vdmsl"
