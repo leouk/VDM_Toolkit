@@ -41,7 +41,7 @@ public final class IsaTemplates {
     private static final String ABBREVIATION = "abbreviation\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s \\<equiv> %3$s\\<close>\n";     
     private static final String DEFINITION   = "definition\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s \\<equiv> %4$s\\<close>\n";
     private static final String FUNDEF       = "definition\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s \\<equiv> (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n";
-    private static final String RFUNDEF      = "fun (domintros)\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s = (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n";
+    private static final String RFUNDEF      = "declare pre_%1$s_def [simp]\nfun (domintros)\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s = (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\ndeclare pre_%1$s_def [simp del]\n";
     private static final String RFUNCTIONDEF = "function (domintros)\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s = (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n\t%5$s\n\ttermination\n\t%6$s\n";
     private static final String TSYNONYM     = "type_synonym %1$s = \\<open>%2$s\\<close>";
     private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
