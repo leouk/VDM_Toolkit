@@ -489,11 +489,16 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
         // 4) explicit function with a body  = issue definition (i.e. user defined explicit function or pre/post)
         if (!(isImplicitFunction() && getBody() == null))
         {
-            // translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-            sb.append(IsaTemplates.translateDefinition(
-                //TODO not yet ideal, given multiple equations are possible, but okay for now. 
-                recursive ? IsaItem.FUNCTION : IsaItem.DEFINITION,
-                this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+			// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
+			if (recursive)
+			{
+				//TODO have to visit-search through all annotations to look for a IsaMeasure!  
+				sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+			}
+			else 
+			{
+				sb.append(IsaTemplates.translateNonRecFunctionDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+			}
         }
 
         String lemmasDefs = translateDefLemmas();//t.getDefLemmas().toString().replace(',', ' ').replaceAll("\\[", "").replaceAll("\\]","");

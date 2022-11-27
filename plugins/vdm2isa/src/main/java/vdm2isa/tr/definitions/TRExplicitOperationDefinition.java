@@ -212,10 +212,18 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         //This is a hack cause I need to add an extra parammeter pattern
         String fcnParams = tp();//+ IsaToken.SPACE.toString() + stateType;
 
-        sb.append(IsaTemplates.translateDefinition(
-                IsaItem.DEFINITION,
+        if (recursive)
+        {
+            sb.append(IsaTemplates.translateRecFunDefinition(
                 this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, 
                 "Empty body", isLocal()));
+        }
+        else
+        {
+            sb.append(IsaTemplates.translateNonRecFunctionDefinition(
+                this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, 
+                "Empty body", isLocal()));       
+        }
         
         return sb.toString();
     }
