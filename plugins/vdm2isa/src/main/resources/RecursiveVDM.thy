@@ -5,7 +5,7 @@ imports VDMToolkit
 begin
 (*>*)
 
-(**************************************************************************************************)
+(*****************************************************************************)
 section \<open>Introduction\label{sec:Intro}\<close>
 text \<open>This paper describes a translation strategy for a variety of recursive
 definitions from VDM to Isabelle/HOL. The strategy takes into account the
@@ -34,7 +34,7 @@ presented in Section~\ref{sec:Strategy} for basic types, sets, maps, and
 complex recursive patterns. Finally, we conclude in
 Section~\ref{sec:Conclusion}. \<close>
 
-(**************************************************************************************************)
+(******************************************************************************)
 section \<open>Background\label{sec:Background}\<close> 
 
 text \<open>Our VDM to Isabelle/HOL translator caters for a wide range of the VDM
@@ -62,7 +62,7 @@ hence increasing automation.
 \<^bold>\<open>ANYTHING ELSE? Related work?\<close>
 \<close>
 
-(**************************************************************************************************)
+(*****************************************************************************)
 section \<open>VDM basic types in Isabelle\label{sec:VDMTypes}\<close>
 
 text \<open>Isabelle represents natural numbers (\<^typ>\<open>\<nat>\<close>) as a (data) type with
@@ -95,7 +95,7 @@ terms, explicit user-defined type coercions might be needed
   recursion over VDM \<^bold>\<open>int\<close>, sets or maps will still be involved. That is
   because these types are not constructively defined in Isabelle.\<close>
 
-(**************************************************************************************************)
+(*****************************************************************************)
 section \<open>Recursion in VDM and in Isabelle\label{sec:Recursion}\<close>
 
 text \<open>An important aspect of every recursive definition is an argument that
@@ -205,7 +205,7 @@ definitions, given Isabelle cannot tell whether termination is immediately
 obvious. In VDM, however, recursive functions on sets (as well as map domains)
 are common, hence the need for extending our translation strategy.\<close>
 
-(**************************************************************************************************)
+(******************************************************************************)
 section \<open>VDM recursion translation strategy\label{sec:Strategy}\<close>
 
 text \<open>We want to identify a translation strategy that will cater for the
@@ -261,16 +261,17 @@ That is, we impose various implicit VDM checks as explicit predicates. For
 example, VDM sets are always finite, and type invariants over set, sequence
 and map elements must hold for every element.\<close>
 
-(*-------------------------------------------------------------------------------------------------*)
+(*----------------------------------------------------------------------------*)
 subsection \<open>Recursion over VDM basic types (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>)\label{subsec:VDMNat}\<close>
 
 text \<open>Following the general translation strategy~@{cite NimFull}, we first
-encode the implicit precondition as a simplification rule, which insists that
+encode the implicit precondition, which insists that
 the given parameter \<^term>\<open>n\<close> is a \<^typ>\<open>VDMNat\<close>, alongside a list of
 defining constants that are useful for proof strategy synthesis.\<close>
+(* COMMENT: make pre_XXX a simplification rule for fun declarations! *)
 
-definition pre_fact :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]:\<open>pre_fact n \<equiv> inv_VDMNat n\<close>
-lemmas pre_fact_defs = pre_fact_def inv_VDMNat_def 
+definition pre_fact :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where \<open>pre_fact n \<equiv> inv_VDMNat n\<close>
+lemmas pre_fact_defs = pre_fact_def  
 
 text \<open>Next, we define factorial recursively. When the precondition fails, we
 return \<^term>\<open>undefined\<close>, which is a term that cannot be reasoned with in
@@ -286,20 +287,15 @@ text \<open>The proof obligations for pattern compatibility and completeness are
 discharged with the usual Isabelle proof strategy for simple recursive
 patterns with the @{method pat_completeness} method. In the general case
 discussed in Section~\ref{subsec:Complex}), the user might have goals to
-discharge.\<close>
+discharge. Isabelle proves various theorems abou case analysis and
+(partial) rules for elimination, induction and simplification.\<close>
   by (pat_completeness, auto) \<^marker>\<open>tag invisible\<close>
   
-text \<open>Various theorems are made available, such as: case analysis; and
-(partial) rules for elimination, induction and simplification. %Case analysis
-@{thm fact.cases} %Elimination rules (partial) @{thm fact.pelims} %Induction
-rules (partial) @{thm fact.pinduct} %Simplification rules (partial) @{thm
-fact.psimps}
-
-Note the last two are partial, module the domain predicate @{term fact_dom},
-which represents a well-founded relation that ensures termination. That is, if
+text \<open>Partial rules require the domain predicate @{term fact_dom} as an assumption.
+It represents a well-founded relation that ensures termination. That is, if
 the user does not want (or knows how) to prove termination, such domain
-predicates will follow every application of the \<^term>\<open>fact\<close> definition,
-hence imposing users the requirement that such well-founded relation is still
+predicates will follow every application of definitions,
+hence documenting the requirement that such well-founded relation is still
 missing.
 
 If/when the termination proof is discharged, these p-rules can be simplified
@@ -309,36 +305,35 @@ user proofs, and also make proof strategy synthesis harder to automate.
 
 Termination proof is discharged by establishing a well-founded relation
 associated with the function recursive call(s) with respect to its
-declaration. In our case, the \<^verbatim>\<open>@IsaMeasure\<close> annotation is translated as an
-Isabelle abbreviation. We also implicitly add the filter that the function
+declaration. The \<^verbatim>\<open>@IsaMeasure\<close> annotation is translated as an
+Isabelle abbreviation. The filter that the function
 precondition holds:~this is important to ensure the termination proof never
 reaches the \<^term>\<open>undefined\<close> case. The other filter comes from the negated
-test in the definition if-statement. More complex definitions will have more
+test from the if-statement. More complex definitions will have more
 involved filters. We use abbreviation instead of definition to avoid needing
-to expand the defined term.\<close>
+to expand the defined term in proofs.\<close>
 
 abbreviation fact_wf :: \<open>(VDMNat \<times> VDMNat) set\<close> where
   \<open>fact_wf \<equiv> { (n - 1, n) | n . pre_fact n \<and> n \<noteq> 0 }\<close>
 
-text \<open>Given \<^term>\<open>fact\<close> is a simple (non-mutual, single call-site, easy
-measure relation choice) recursion, thankfully the setup is not as complex to
+text \<open>Given \<^verbatim>\<open>fact\<close> definition is simple (non-mutual, single call-site, easy
+measure relation choice) recursion, its setup is easy to
 establish well-foundedness. For recursions of this nature, we can piggyback on
-some Isabelle machinery to help prove well foundedness by using the terms
+Isabelle machinery to prove well foundedness by using terms
 @{term gen_VDMNat_term} and @{term int_ge_less_than}.
 
 The first term is defined in terms of the second, which is a subset of our
-well-formed relation \<^term>\<open>fact_wf\<close>. Isabelle has proofs about the term's
-well formedness of \<^term>\<open>int_ge_less_than\<close>. Thus, making the proof our
-term being well-founded trivial, and easily discovered with proof tools like
-@{command sledgehammer}. As part of the translation strategy, we then define
-(and automatically discover the proof of) the following lemma. This follows
-the strategy described in~@{cite KrausSCNP}.    
-%\url{https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf}.\<close>
+well-founded relation \<^term>\<open>fact_wf\<close>. Isabelle has proofs about the 
+well foundedness of \<^term>\<open>int_ge_less_than\<close>. Thus, making the proof our
+term being well-founded trivial for @{command sledgehammer}. 
+As part of the translation strategy, we define
+(and attempt to discover the proof of) the following lemma. This follows
+the strategy described in~@{cite KrausSCNP}.\<close>
 lemma l_fact_term_wf: \<open>wf (gen_VDMNat_term fact_wf)\<close>
   by (simp add: wf_int_ge_less_than wf_Int1) 
 
 text \<open>Finally, we prove termination using the previously proved lemma using
-the @{method relation}. This simplifies the goal into well-formedness of
+the @{method relation}. This simplifies the goal into well-foundedness of
 termination relation and that the precondition implies it, both of which are
 easily proved with simplification in this case.\<close>
 termination \<^marker>\<open>tag invisible\<close>
@@ -346,17 +341,17 @@ termination \<^marker>\<open>tag invisible\<close>
 text \<open>This transforms the abstract domain predicate into two new subgoals as
 @{subgoals[display]}\<close>
   using l_fact_term_wf apply presburger \<^marker>\<open>tag invisible\<close>
-  by (simp add: int_ge_less_than_def) \<^marker>\<open>tag invisible\<close>
+  by (simp add: pre_fact_defs int_ge_less_than_def) \<^marker>\<open>tag invisible\<close>
 
-text \<open>For this simple example, these subgoals are proved with @{command
+text \<open>For this example, subgoals are proved with @{command
 sledgehammer}. In general, the user will be have to either find the proof, or
-deal with domain predicates in proofs involving the recursive call. After the
+deal with domain predicates involving the recursive call. After the
 termination proof is discharged, Isabelle provides versions of rules for
 elimination, induction and simplification that are total and do not depend on
-the abstract domain predicate. 
+the domain predicates. 
 
 To make sure our choice does not lead to the empty relation, we ensure that
-indeed the termination relation is in fact the same as the well founded
+the termination relation is in fact the same as the well founded
 predicate by proving the next goal. This is something users might want to do,
 but is not part of the translation strategy. In case the measure relation is
 empty, the recursive call simplification rules will not be useful anyhow.\<close>
@@ -364,15 +359,14 @@ empty, the recursive call simplification rules will not be useful anyhow.\<close
 lemma l_fact_term_valid: \<open>(gen_VDMNat_term fact_wf) = fact_wf\<close>
   apply (simp ) \<^marker>\<open>tag invisible\<close>
   apply (intro equalityI subsetI)\<^marker>\<open>tag invisible\<close>
-   apply (simp_all add: int_ge_less_than_def case_prod_beta)\<^marker>\<open>tag invisible\<close>
+   apply (simp_all add: pre_fact_defs int_ge_less_than_def case_prod_beta)\<^marker>\<open>tag invisible\<close>
   by auto\<^marker>\<open>tag invisible\<close>
 
-(*-------------------------------------------------------------------------------------------------*)
+(*---------------------------------------------------------------------------*)
 subsection \<open>Recursion over VDM sets\label{subsec:VDMSet}\<close>
 
-text \<open>Next, we extend the translation strategy for basic types for VDM sets.
-For this, we will use a recursively defined VDM function over sets that sums
-the set elements as
+text \<open>Next, we extend the translation strategy for VDM sets.
+For this, we use a function that sums the elements of a set.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
   sumset: set of nat -> nat 
@@ -382,21 +376,21 @@ the set elements as
   measure card s;
 \end{vdmsl}
 %
-\noindent Like most common VDM recursion over sets, the function consumes the
-set by picking each set element and them calling the recursive call without
+\noindent Most common VDM recursion over sets, consume the
+set by picking an arbitrary set element and then recurse without
 the element picked, until the set is empty. The VDM measure states that the
 recursion is based on the cardinality of the input parameter. VDM measures are
 not suitable for Isabelle proofs, given Isabelle requires a relation;~hence,
-VDM measures are ignored during translation. They might still be useful during
+VDM measures are mostly ignored. They might still be useful during
 proofs as potential witnesses to existentially-quantified goals.
 
-In Isabelle, the implicit VDM checks are defined as the precondition, which
-ensures that the given set contains only natural numbers, and is finite, as
-defined by \<^term>\<open>inv_VDMSet'\<close>\<close>
+The implicit VDM checks are defined as the precondition, which
+ensures that the given set only contains natural numbers and is finite, as
+defined by \<^term>\<open>inv_VDMSet'\<close>.\<close>
 
 definition pre_sumset :: \<open>VDMNat VDMSet \<Rightarrow> \<bool>\<close> where
   \<open>pre_sumset s \<equiv> inv_VDMSet' inv_VDMNat s\<close>
-lemmas pre_sumset_defs = pre_sumset_def inv_VDMSet'_defs inv_VDMNat_def
+lemmas pre_sumset_defs = pre_sumset_def inv_VDMSet'_defs 
 
 text \<open>We define the VDM recursive function in Isabelle next. It checks whether
 the given set satisfy the function precondition, returning \<^term>\<open>undefined\<close>
@@ -408,28 +402,22 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
   \<open>sumset s = (if pre_sumset s then 
                    (if s = {} then 0 else let e = (\<some> x . x \<in> s) in sumset (s - {e}) + e) 
                   else undefined)\<close>
-text \<open>The pattern completeness and compatibility goals are discharged with
-the usual proof strategy of @{method pat_completeness}. For more general
-examples, if that fails, @{command sledgehammer} should be used.\<close>
   by (pat_completeness, auto) \<^marker>\<open>tag invisible\<close>
 
-text \<open>The measure relation for termination is defined with the \<^verbatim>\<open>@IsaMeasure\<close>
-annotation above as the smaller set after picking \<^term>\<open>e\<close>
-(\<^emph>\<open>e.g.,\<close>~\<^term>\<open>s - {(\<some> e . e \<in> s)}\<close>), and the set used at the entry call,
-leading to the pairs \<^term>\<open>(s - {(\<some> e . e \<in> s)}, s)\<close>. Finally, we ensure
-all the relation elements satisfy the function precondition
-(\<^term>\<open>pre_sumset\<close>), and that the if-test is negated. \<close>
+text \<open>The pattern completeness and compatibility goals are trivial.
+The measure relation defined with  \<^verbatim>\<open>@IsaMeasure\<close> is next.
+It is defined as the smaller set after picking \<^term>\<open>e\<close> and the set used 
+at the entry call, leading to the pairs \<^term>\<open>(s - {(\<some> e . e \<in> s)}, s)\<close>. 
+Finally, we ensure all the relation elements satisfy the function precondition
+and that the if-test is negated. \<close>
 abbreviation sumset_wf_rel :: \<open>(VDMNat VDMSet \<times> VDMNat VDMSet) set\<close> where
   \<open>sumset_wf_rel \<equiv> { (s - {(\<some> e . e \<in> s)}, s)| s . pre_sumset s \<and> s \<noteq> {}}\<close>
 
-text \<open>Given this is a simple (non-mutual, single call-site, easy set element
-choice) recursion, again we can piggyback on Isabelle machinery by using the
-terms @{term gen_set_term} and @{term finite_psubset}.
-
+text \<open>Given this is a simple recursion, again we can piggyback on Isabelle 
+machinery by using the terms @{term gen_set_term} and @{term finite_psubset}.
 They establishes that a relation where the first element is strictly smaller
-set than the second element in the relation pair is well-formed. This makes
-the proof of well-foundedness easy for \<^term>\<open>sumset_wf_rel\<close> through
-@{command sledgehammer}. \<close>
+set than the second in the relation pair is well-founded. This makes
+the proof of well-foundedness easy for @{command sledgehammer}.\<close>
 
 lemma l_sumset_rel_wf: \<open>wf (gen_set_term sumset_wf_rel)\<close>
   using l_gen_set_term_wf \<^marker>\<open>tag invisible\<close>
@@ -447,26 +435,22 @@ termination\<^marker>\<open>tag invisible\<close>
 
 text \<open>Fortunately, for most simple situations, this is easy to decompose in
 general. The translation strategy takes the \<^verbatim>\<open>@IsaMeasure\<close> expression and
-decompose its parts, such that the filtering predicates are assumptions, and
-the element in the relation belong to the well-formed measure chosen. For
-the concrete set example, this is defined in the next lemma, which require
-some manual intervention to tell Isabelle what definitions to unfold and
-simplify with. Then, Isabelle's @{command sledgehammer} can finish the
-proof.\<close>
-lemma l_pre_sumset_sumset_wf_rel: 
-  \<open>pre_sumset s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> (s - {(\<some> x. x \<in> s)}, s) \<in> (gen_set_term sumset_wf_rel)\<close>
+decomposes its parts, such that the filtering predicates are assumptions, and
+the element in the relation belongs to the well-founded measure chosen. This 
+is defined in the next lemma, which require some manual intervention until 
+Isabelle's @{command sledgehammer} can finish the proof.\<close>
+lemma l_pre_sumset_sumset_wf_rel: \<open>pre_sumset s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> (s - {(\<some> x. x \<in> s)}, s) \<in> (gen_set_term sumset_wf_rel)\<close>
   unfolding gen_set_term_def \<^marker>\<open>tag invisible\<close>
   apply (simp add: pre_sumset_defs)\<^marker>\<open>tag invisible\<close>
   by (metis Diff_subset member_remove psubsetI remove_def some_in_eq)\<^marker>\<open>tag invisible\<close>
 
-text \<open>The intuition behind this lemma is that, elements in the measure
-relation satisfy well-formedness under the function precondition and the
+text \<open>The intuition behind this lemma is that elements in the measure
+relation satisfy well-foundedness under the function precondition and the
 filtering case (\<^term>\<open>s \<noteq> {}\<close>) where the recursive call is made. That is,
 the precondition and filtering condition help establish the terminating
 relation. For this particular proof, the only aspect needed from the
-precondition (\<^term>\<open>pre_sumset\<close>) is that the set is finite.
-
-With this, we can try the termination proof again, which now @{command
+precondition is that the set is finite.
+With this, we try the termination proof and @{command
 sledgehammer} find proofs for all subgoals.\<close>
 termination\<^marker>\<open>tag invisible\<close>
   apply (relation \<open>(gen_set_term sumset_wf_rel)\<close>)\<^marker>\<open>tag invisible\<close>
@@ -480,35 +464,32 @@ lemma l_pre_fact_wf_rel': "pre_fact n \<Longrightarrow> n \<noteq> 0 \<Longright
 
 text \<open>Note we omit such lemma over termination and precondition for the
 \<^typ>\<open>VDMNat\<close> case in Section~\ref{subsec:VDMNat}. The translation strategy
-does define it following the same recipe:~recursive function precondition and
-filtering predicate as assumptions, and chosen termination relation element
-containment, where @{command sledgehammer} find the proof once more.\<close>
+does define it following the same recipe, where @{command sledgehammer} 
+find the proof once more.\<close>
 lemma l_pre_fact_wf_rel: \<open>\<lbrakk>pre_fact n; n \<noteq> 0\<rbrakk> \<Longrightarrow> (n - 1, n) \<in> gen_VDMNat_term fact_wf\<close>
   unfolding gen_VDMNat_term_def gen_VDMInt_term_def \<^marker>\<open>tag invisible\<close>
-  using inv_VDMNat_def l_less_than_VDMNat_subset_int_ge_less_than pre_fact_def \<^marker>\<open>tag invisible\<close>
+  using l_less_than_VDMNat_subset_int_ge_less_than pre_fact_def \<^marker>\<open>tag invisible\<close>
   by auto \<^marker>\<open>tag invisible\<close>
 
-text \<open>We also choose to show the relation finite subset trick to make
-well-founded induction proofs easier does not compromise the well founded
-relation itself.\<close>
+(*<*)
 lemma l_sumset_wf_rel_valid: \<open>gen_set_term sumset_wf_rel = sumset_wf_rel\<close>
   apply (intro equalityI subsetI, simp) \<^marker>\<open>tag invisible\<close>
   using l_pre_sumset_sumset_wf_rel by blast \<^marker>\<open>tag invisible\<close>
+(*>*)
 
 text \<open>Finally, even though this was not necessary for this proof, we encourage
 users to always provide a witness for the top recursive call. This is done by
-using the \<^verbatim>\<open>@Witness\<close> annotation~@{cite EdwardWitness and
-AdvancedVSCodePaper}:~it provides a concrete example for the function input
-parameters. This witness is useful for existentially quantified predicates
-present in more involved termination proofs (see
-Section~\ref{subsec:Complex}).\<close>
+using the \<^verbatim>\<open>@Witness\<close> annotation~@{cite AdvancedVSCodePaper}:~it provides a 
+concrete example for the function input parameters. This witness is useful 
+for existentially quantified predicates of involved termination 
+proofs (see Section~\ref{subsec:Complex}).\<close>
 
-(*-------------------------------------------------------------------------------------------------*)
+(*---------------------------------------------------------------------------*)
 subsection \<open>Recursion over VDM maps\label{subsec:VDMMap}\<close>
 
-text \<open>Recursive functions over VDM maps are a special case of VDM sets, given
+text \<open>Recursive functions over maps are a special case of sets, given
 map recursion usually iterates over the map's domain. For example, the
-function that sums the elements of the map range can be defined as
+function that sums the elements of the map's range is defined as
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
   sum_elems: map nat to nat -> nat
@@ -521,59 +502,63 @@ function that sums the elements of the map range can be defined as
 \end{vdmsl}
 %
 \noindent As with sets, it iterates over the map by picking a domain element,
-performing the necessary computation, and then recurse on the map filtered by
+performing the necessary computation, and then recursing on the map filtered by
 removing the chosen element, until the map is empty and the function
-terminates. As before, the measure relation follows the same
+terminates. The measure relation follows the same
 pattern:~recursive call site related with defining site, where both the
 if-test and the \<^verbatim>\<open>let-in-set\<close> choice is part of the filtering predicate.
 
 Following the general translation strategy for maps~@{cite NimFull}, we define
-the function precondition using \<^term>\<open>inv_Map\<close> It insists that both the map
+the function precondition using \<^term>\<open>inv_Map\<close>. It insists that both the map
 domain and range are finite, and that all domain and range elements satisfy
-their corresponding type invariant. Note that if the recursion was defined
-over sets other than the domain and range, Isabelle might require you to prove
-such set is finite. Given both domain and range sets are themselves finite,
-this should be easy enough to do, if needed.\<close>
+their corresponding type invariant. Note that, if the recursion was defined
+over sets other than the domain and range, then Isabelle require the proof
+such set is finite. Given both domain and range sets are finite,
+this should be easy, if needed.\<close>
 
 definition pre_sum_elems :: \<open>(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>\<close> where
   \<open>pre_sum_elems m \<equiv> inv_Map inv_VDMNat inv_VDMNat m\<close>
-lemmas pre_sum_elems_defs = pre_sum_elems_def inv_Map_defs inv_VDMNat_def 
+lemmas pre_sum_elems_defs = pre_sum_elems_def inv_Map_defs  
 
 text \<open>VDM maps in Isabelle (\<^typ>\<open>(VDMNat \<rightharpoonup> VDMNat)\<close>) are defined as a HOL
 function which maps to an optional result. That is, if the element is in the
-domain, the map results in a non {\texttt{\<^bold>\<open>nil\<close>}} value, whereas if the
-element does not belong to the domain, the map results in a {\texttt{\<^bold>\<open>nil\<close>}}
-value. This effectively makes all maps total, where values outside the domain
+domain, then the map results in a non {\texttt{\<^bold>\<open>nil\<close>}} value; whereas, if the
+element does not belong to the domain, then the map results in a {\texttt{\<^bold>\<open>nil\<close>}}
+value. This makes all maps total, where values outside the domain
 map to {\texttt{\<^bold>\<open>nil\<close>}}. The Isabelle translation and compatibility proof
-follows patterns used before and are given as\<close>
+follows patterns used before.\<close>
 function (domintros) sum_elems :: \<open>(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> VDMNat\<close> where
   \<open>sum_elems m = (if pre_sum_elems m then
-                      if m = Map.empty then 0 else
-           let d = (\<some> e . e \<in> dom m) in the(m d) + (sum_elems ({d} -\<triangleleft> m))
-                  else undefined)\<close>
+                           if m = Map.empty then 0 else
+               let d = (\<some> e . e \<in> dom m) in the(m d) + (sum_elems ({d} -\<triangleleft> m))
+                      else undefined)\<close>
   by (pat_completeness, auto) \<^marker>\<open>tag invisible\<close>
 
-text \<open>Similarly, the well-formed relation from \<^verbatim>\<open>@IsaMeasure\<close> is translated
-next, where the precondition is also included as part of the relation's
-filter. The \<^term>\<open>{d}-\<triangleleft>m\<close> corresponds to VDM domain anti-filtering operator
+text \<open>Similarly, the well-founded relation is translated
+next, where the precondition is included as part of the relation's
+filter. The \<^term>\<open>{d}-\<triangleleft>m\<close> corresponds to the VDM domain anti-filtering operator
 \<^verbatim>\<open>{d}<-:m\<close>.\<close>
-abbreviation sum_elems_wf :: \<open>((VDMNat \<rightharpoonup> VDMNat) \<times> (VDMNat \<rightharpoonup> VDMNat)) VDMSet\<close> where
-  \<open>sum_elems_wf \<equiv> 
+abbreviation 
+  sum_elems_wf :: \<open>((VDMNat \<rightharpoonup> VDMNat) \<times> (VDMNat \<rightharpoonup> VDMNat)) VDMSet\<close> 
+  where \<open>sum_elems_wf \<equiv> 
   { (({d} -\<triangleleft> m), m) | m d . pre_sum_elems m \<and> m \<noteq> Map.empty \<and> d \<in> dom m }\<close>
 
-text \<open>For the well-formed lemma over the recursive measure relation, there are
-no available Isabelle help, and projecting the domain element of the maps
-within the relation is awkward. Thus, we have to prove the lemma directly.
-This will not be automatic in general. This is one difference in terms of
+text \<open>For the well-founded lemma over the recursive measure relation, there is
+no Isabelle help available, and projecting the domain element of the maps
+within the relation is awkward. Thus, we have to prove the well-founded lemma 
+and this will not be automatic in general. This is one difference in terms of
 translation of VDM recursive functions over sets and maps.
 
 Fortunately, the proof strategy for such situations is somewhat known:~it
-follows a similar strategy to the proof of well formedness of the
-\<^term>\<open>finite_psubset\<close> as @{thm wf_finite_psubset}. The proof uses the VDM
-measure expression to extract the right projection of interest, then follows
-the proof for \<^term>\<open>finite_psubset\<close>. Finally, @{command sledgehammer} can
-figure out the final steps.\<close>
+follows a similar strategy to the proof of well foundedness of the
+\<^term>\<open>finite_psubset\<close>. It uses the provided VDM measure expression to extract 
+the right projection of interest, then follows the proof for
+ \<^term>\<open>finite_psubset\<close>, where @{command sledgehammer} can 
+find the final steps.
 
+The precondition subgoal and the termination proof follow the same
+patterns as before. Their proof was discovered with @{command
+sledgehammer}, yet this will not be the case in general.\<close>
 lemma l_sum_elems_wf: \<open>wf sum_elems_wf\<close>
   apply (rule wf_measure[of \<open>\<lambda> m . card (dom m)\<close>, THEN wf_subset]) \<^marker>\<open>tag invisible\<close>
   apply (simp add: measure_def inv_image_def less_than_def less_eq)\<^marker>\<open>tag invisible\<close>
@@ -581,9 +566,6 @@ lemma l_sum_elems_wf: \<open>wf sum_elems_wf\<close>
   apply (elim exE conjE)\<^marker>\<open>tag invisible\<close>
   by (simp add: l_VDMMap_filtering_card pre_sum_elems_defs)\<^marker>\<open>tag invisible\<close>
 
-text \<open>The precondition subgoal and the termination proof follow the same
-patterns as before. Again, their proof was discovered with @{command
-sledgehammer}, yet this will not be the case in general.\<close>
 lemma l_pre_sum_elems_sum_elems_wf: \<open>\<lbrakk>pre_sum_elems m; m \<noteq> Map.empty\<rbrakk> \<Longrightarrow> ({(\<some> e. e \<in> dom m)} -\<triangleleft> m, m) \<in> sum_elems_wf\<close>
   apply (simp add: pre_sum_elems_defs) \<^marker>\<open>tag invisible\<close>
   by (metis domIff empty_iff some_in_eq) \<^marker>\<open>tag invisible\<close>
@@ -594,11 +576,6 @@ termination  \<^marker>\<open>tag invisible\<close>
   apply (simp add: l_sum_elems_wf)\<^marker>\<open>tag invisible\<close>
   using l_pre_sum_elems_sum_elems_wf by presburger\<^marker>\<open>tag invisible\<close>
 
-text \<open>Finally, we also prove that the well founded termination relation
-(\<^term>\<open>sum_elems_wf\<close>) is not empty, as we did for sets and \<^bold>\<open>nat\<close>
-recursion. Note that here the \<^verbatim>\<open>@Witness\<close> annotation is useful in discharging
-the actual value to use as the witness demonstrating the relation is not
-empty.\<close>
 lemma l_sum_elems_wf_valid: \<open>sum_elems_wf \<noteq> {}\<close>
   apply safe \<^marker>\<open>tag invisible\<close>
   apply (erule equalityE)\<^marker>\<open>tag invisible\<close>
@@ -606,20 +583,24 @@ lemma l_sum_elems_wf_valid: \<open>sum_elems_wf \<noteq> {}\<close>
   apply (erule_tac x=\<open>[1 \<mapsto> 1]\<close> in allE)\<^marker>\<open>tag invisible\<close>
   by (simp add: pre_sum_elems_defs) \<^marker>\<open>tag invisible\<close>
 
-(*-------------------------------------------------------------------------------------------------*)
+text \<open>Finally, we also prove that the well founded termination relation
+is not empty, as we did for sets and \<^bold>\<open>nat\<close>
+recursion. Note that here the \<^verbatim>\<open>@Witness\<close> annotation is useful in discharging
+the actual value to use as the witness demonstrating the relation is not
+empty.\<close>
+
+(*---------------------------------------------------------------------------*)
 subsection \<open>VDM recursion involving complex measures\label{subsec:Complex}\<close>
 
-text \<open>The class of recursive examples shown so far have cover a wide range of
+text \<open>The class of recursive examples shown so far have covered a wide range of
 situations, and have a good level of automation. Nevertheless, the same
-strategy can also be applied for me complex recursive definitions. The cost
-for the VDM user is the need of a more involved \<^verbatim>\<open>@IsaMeasure\<close> definition and
+strategy can also be applied to complex recursive definitions. The cost
+for the VDM user is the need of involved \<^verbatim>\<open>@IsaMeasure\<close> definitions and
 the highly likely need for extra user-defined lemmas. These lemmas can be
-defined in VDM itself using the \<^verbatim>\<open>@Lemma\<close> annotation, which will be translated
-to Isabelle as any other boolean expression would.
-
+defined in VDM itself using the \<^verbatim>\<open>@Lemma\<close> annotation.
 To illustrate this, we define in VDM the (in)famous Ackermann
 function\<^footnote>\<open>\<^url>\<open>https://en.wikipedia.org/wiki/Ackermann_function\<close>\<close>, which is a
-staple example of complex recursion, as
+staple example of complex recursion.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     ack: nat * nat -> nat 
@@ -638,16 +619,13 @@ KrausSCNP}. It considers recursions over multiple parameters, where some might
 increase the number of calls (\<^emph>\<open>e.g.\<close>~size-change). We are not aware of a
 mechanism to define such measures in VDM.
 
-We instantiate \<^term>\<open>pair_less\<close> to \<^typ>\<open>VDMNat\<close>. It is defined as the
+We instantiate \<^term>\<open>pair_less\<close> to \<^typ>\<open>VDMNat\<close> as the
 lexicographic product over the transitive closure of a totally ordered
-relation between \<^typ>\<open>VDMNat\<close> inputs\<^footnote>\<open>Details of this definition in the
-\<^verbatim>\<open>VDMToolkit.thy\<close> file within the distribution
-in~\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>.\<close>.
-
-If VDM measures were over relations, the Ackermann measure could be defined
-defined in VDM, assuming a standard definition of transitive closure\<^footnote>\<open>The
-\<^verbatim>\<open>Relations.vdmsl\<close> provides such definition in the VDM toolkit distribution.\<close>,
-as
+relation between inputs\<^footnote>\<open>Details of this definition are in the
+\<^verbatim>\<open>VDMToolkit.thy\<close> within the distribution.\<close>.
+If VDM measures were over relations, then the Ackermann measure could be defined
+in VDM, assuming a standard definition of transitive closure\<^footnote>\<open>The
+\<^verbatim>\<open>Relations.vdmsl\<close> provides such definition in the VDM toolkit distribution.\<close>.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
 pair_less_VDMNat: () -> set of ((nat*nat) * (nat*nat))
@@ -657,17 +635,16 @@ less_than_VDMNat: () -> set of (nat*nat)
 less_than_VDMNat() == trans_closure[nat]({ mk_(z', z) | z', z : nat & z' < z });
 
 lex_prod[@A,@B]: set of (@A*@A) * set of (@B*@B) -> set of ((@A*@B) * (@A*@B))
-lex_prod(ra,rb) == 
-    { mk_(mk_(a, b), mk_(a', b')) | a, a': @A, b, b': @B & 
+lex_prod(ra,rb) == { mk_(mk_(a, b), mk_(a', b')) | a, a': @A, b, b': @B & 
         mk_(a,a') in set ra or a = a' and mk_(b, b') in set rb };
 \end{vdmsl}
 %
-That is, the lexicographic product of possibilities that are ordered in its
-parameters. The translation process is the same as above and produces\<close>
+That represents the lexicographic product of possibilities that are ordered in 
+its parameters. Translation then outputs:\<close>
 
 definition pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close> where
   \<open>pre_ack m n \<equiv> inv_VDMNat m \<and> inv_VDMNat n\<close>
-lemmas pre_ack_defs = pre_ack_def inv_VDMNat_def
+lemmas pre_ack_defs = pre_ack_def 
 
 function (domintros) ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat\<close> where
   \<open>ack m n = (if pre_ack m n then
@@ -681,17 +658,17 @@ abbreviation ack_wf :: \<open>((VDMNat \<times> VDMNat) \<times> (VDMNat \<times
   where \<open>ack_wf \<equiv> pair_less_VDMNat\<close>
 
 termination \<^marker>\<open>tag invisible\<close>
-  apply (relation ack_wf)
-  using wf_pair_less_VDMNat apply blast
-    apply (simp add: inv_VDMNat_def l_pair_less_VDMNat_I1 pre_ack_def)
-   apply (simp add: inv_VDMNat_def pre_ack_def)
-  by (simp add: inv_VDMNat_def pair_less_VDMNat_def pre_ack_def)
+  apply (relation ack_wf)\<^marker>\<open>tag invisible\<close>
+  using wf_pair_less_VDMNat \<^marker>\<open>tag invisible\<close> apply blast \<^marker>\<open>tag invisible\<close>
+    apply (simp add: l_pair_less_VDMNat_I1 pre_ack_def) \<^marker>\<open>tag invisible\<close>
+   apply (simp add:  pre_ack_def) \<^marker>\<open>tag invisible\<close>
+  by (simp add: pair_less_VDMNat_def pre_ack_def) \<^marker>\<open>tag invisible\<close>
 
-text \<open>The proofs are also similar, despite the more complex measure, because
-of available Isabelle automation. We also show that this version of Ackermann
-with \<^typ>\<open>VDMNat\<close> is equivalent to the usual Isabelle definition using
-\<^typ>\<open>\<nat>\<close>. We omit details here, but have proved that they are equivalent by
-induction\<close>
+text \<open>Compatibility and termination proofs are similar, despite the more 
+complex measure, because of available Isabelle automation. We also show that 
+this version of Ackermann with \<^typ>\<open>VDMNat\<close> is equivalent to the usual Isabelle 
+definition using \<^typ>\<open>\<nat>\<close>. We omit details here, but have proved that they are 
+equivalent by induction.\<close>
 (*<*)
 fun ack' :: \<open>\<nat> \<Rightarrow> \<nat> \<Rightarrow> \<nat>\<close> where
   "ack' 0 n             = Suc n"
@@ -727,12 +704,12 @@ termination
 theorem ack_correct: \<open>ack' m n = ack m n\<close>
   apply (induction \<open>m\<close> \<open>n\<close> rule: ack'.induct) by (simp add: pre_ack_defs)+
 
-text \<open>In general, each complex recursion function will require such a setup.
+text \<open>In general, each complex recursive function will require such a setup.
 Fortunately, Isabelle has a number of options available. Yet, in general, the
 more complex the recursion, the more users will have to provide further
 automation.\<close>
 
-(**************************************************************************************************)
+(*---------------------------------------------------------------------------*)
 subsection \<open>Harder examples\label{subsec:Hard}\<close>
 
 (*<*)
@@ -786,11 +763,12 @@ where
 
 (*>*)
 
-text \<open>The next examples are require an elaborate setup. We can handle all
-examples from~@{cite SCT_POPL}. For example, the permutation function shows
+text \<open>We can handle all examples from~@{cite SCT_POPL}. We show here some that
+require an elaborate setup. For example, the permutation function shows
 permuting decreasing parameters with an involved measure. The precondition was
 required for finishing the termination proof and shows an example why proofs
-over \<^typ>\<open>\<int>\<close> can be harder.
+over \<^typ>\<open>\<int>\<close> can be harder. This illustrated how Isabelle (failed) proofs 
+helped to improve the VDM specification. 
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     perm: int * int * int -> int 
@@ -810,8 +788,10 @@ definition pre_perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \
   \<open>pre_perm m n r \<equiv> inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r \<and> 
                     ((0 < r \<or> 0 < n) \<longrightarrow> m+n+r > 0)\<close>
 lemmas pre_perm_defs = pre_perm_def inv_VDMInt_def inv_True_def
+
 lemma l_pre_perm_trivial[simp]: "(pre_perm m n r) = ((0 < r \<or> 0 < n) \<longrightarrow> m+n+r > 0)" \<^marker>\<open>tag invisible\<close>
-  unfolding pre_perm_def inv_VDMInt_def by simp \<^marker>\<open>tag invisible\<close>
+  unfolding pre_perm_def inv_VDMInt_def \<^marker>\<open>tag invisible\<close>
+  by simp \<^marker>\<open>tag invisible\<close>
 
 function (domintros) perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt\<close> where
   \<open>perm m n r = (if pre_perm m n r then
@@ -827,9 +807,9 @@ definition \<open>perm_wf_rel \<equiv>
    { ((r, n-1, m), (m, n, r)) | m r n . pre_perm m n r \<and> \<not> 0 < r \<and> 0 < n }\<close>
 
 text \<open>Its measure relation contains elements for each recursive call, filtered
-for the corresponding if-then case. The proof of well-formedness of such
+for the corresponding if-then case. The proof of well-foundedness of such
 measure relations involving multiple recursive calls require further proof
-engineering, which is stated with the next lemma.\<close>
+engineering, which is stated in the next lemma.\<close>
 
 lemma l_perm_wf_rel_VDM_measure: 
   \<open>perm_wf_rel \<subseteq> measure (\<lambda> (m, r, n) . nat (max 0 (m+r+n)))\<close>
@@ -842,8 +822,8 @@ proof - \<^marker>\<open>tag invisible\<close>
     done
 qed
 
-text \<open>The Isabelle \<^term>\<open>measure\<close> function projects the inverse
-image\<^footnote>\<open>Inverse image is defined as @{term[display] inv_image} or @{thm
+text \<open>The Isabelle \<^term>\<open>measure\<close> definition projects the less-than ordered
+inverse image\<^footnote>\<open>That is, @{thm measure_def}. Inverse image is defined as @{thm
 inv_image_def}.\<close> of a given function as the recursive measure relation. Here
 the VDM-defined measure is given as such measure function projection. This
 highlights to the VDM user the relationship (and differences) between VDM and
@@ -855,28 +835,25 @@ proof - \<^marker>\<open>tag invisible\<close>
   by (rule wf_subset [OF wf_measure])
 qed
 
-text \<open>This enables us to establish @{term perm_wf_rel} is well formed. The
-setup works here if the @{term pre_perm} specifically curbs negative sums of
-parameters. This was not immediately obvious. With the added precondition the
-termination proof is discovered by @{command sledgehammer}.\<close>
+text \<open>The setup works here if the @{term pre_perm} specifically curbs negative
+sums of parameters. This was not immediately obvious. With the added
+precondition the termination proof is discovered with @{command sledgehammer}.\<close>
 termination \<^marker>\<open>tag invisible\<close>
-  apply (relation \<open>perm_wf_rel\<close>)
-    apply (simp add: l_perm_wf_rel)
-   apply (simp_all add: perm_wf_rel_def)  
-  done
-
+  apply (relation \<open>perm_wf_rel\<close>) \<^marker>\<open>tag invisible\<close>
+    apply (simp add: l_perm_wf_rel) \<^marker>\<open>tag invisible\<close>
+  by (simp_all add: perm_wf_rel_def)  \<^marker>\<open>tag invisible\<close>
 
 text \<open>Finally, the Takeuchi's
 function\<^footnote>\<open>\<^url>\<open>https://isabelle.in.tum.de/library/HOL/HOL-Examples/Functions.html\<close>\<close>,
 which contains both permutation and inner recursion is defined next, where the
-important part is the SCNP setup using multi-sets @{cite KrausSCNP}, given
-that ordered lexicographic products are not strong enough to capture this type
-of recursion. It has not implicit precondition. The translation strategy works
-for these definitions, yet stands little chance of finding proofs
-automatically.\<close>
+important part is the SCNP setup using multi-sets @{cite KrausSCNP}. That is
+needed because ordered lexicographic products are not strong enough to capture
+this type of recursion. It has not implicit precondition. The translation
+strategy works for these definitions, yet stands little chance of finding
+proofs automatically.\<close>
 function (domintros) tak :: "VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt" where
   "tak x y z = (if x \<le> y then y else tak (tak (x-1) y z) (tak (y-1) z x) (tak (z-1) x y))"
-  by auto
+  by auto \<^marker>\<open>tag invisible\<close>
 
 text \<open>Next is an example of how one has to keep domain predicates as 
 assumptions prior to termination proofs.\<close>
@@ -886,10 +863,10 @@ lemma tak_pcorrect:
   apply (induction x y z rule: tak.pinduct) \<^marker>\<open>tag invisible\<close>
   by (simp add: tak.psimps) \<^marker>\<open>tag invisible\<close>
 
-text \<open>Each case (including non-recursive call) is represented in the SCNP
+text \<open>Each case (including the non-recursive call) is represented in the SCNP
 setup, and then their measure-lexicographic\<^footnote>\<open>The measure-lexicographic product
-is represented as the inverse image of the lexicographic product defined as
-@{thm mlex_prod_def}.\<close> composition is used as the measure relation for the
+\<^term>\<open>f <*mlex*> R\<close> is represented as the inverse image of the lexicographic product @{thm
+mlex_prod_def}.\<close> composition is used as the measure relation for the
 termination proof.\<close>
 definition tak_m1 where "tak_m1 = (\<lambda>(x,y,z). if x \<le> y then 0 else 1)"
 definition tak_m2 where "tak_m2 = (\<lambda>(x,y,z). nat (Max {x, y, z} - Min {x, y, z}))"
@@ -944,28 +921,39 @@ text \<open>The termination proof uses the measure relation @{term \<open>tak_m1
 tak_m2 <*mlex*> tak_m3 <*mlex*> {}\<close>}. It requires user-defined lemmas for each
 of the four cases.\<close>
 termination \<^marker>\<open>tag invisible\<close>
-  apply (relation "tak_m1 <*mlex*> tak_m2 <*mlex*> tak_m3 <*mlex*> {}") 
-      apply (simp add: wf_mlex) 
-     apply (simp add: l_call1)
-     apply (simp add: l_call2)
-     apply (simp add: l_call3)
-  by (simp add: l_call4)
+  apply (relation "tak_m1 <*mlex*> tak_m2 <*mlex*> tak_m3 <*mlex*> {}") \<^marker>\<open>tag invisible\<close>
+      apply (simp add: wf_mlex) \<^marker>\<open>tag invisible\<close>
+     apply (simp add: l_call1)\<^marker>\<open>tag invisible\<close>
+     apply (simp add: l_call2)\<^marker>\<open>tag invisible\<close>
+     apply (simp add: l_call3)\<^marker>\<open>tag invisible\<close>
+  by (simp add: l_call4)\<^marker>\<open>tag invisible\<close>
 
-text \<open>After the termination proof, the total version of induction and
-simplification rules are available. Then, it is possible to prove its rather
-simpler equivalence.\<close>
+text \<open>With the total version of induction and simplification rules are
+available. Then, it is possible to prove its rather simpler equivalence.\<close>
 
 theorem tak_correct: "tak x y z = (if x \<le> y then y else if y \<le> z then z else x)"
   by (induction x y z rule: tak.induct) auto
 
-text \<open>Finally, we also want to tackle mutual recursion. VDM little bounds to
-mutually recursive definitions. Their proof obligations refer to each others
-measure functions. Isabelle requires all related definitions to be given in a
+(*---------------------------------------------------------------------------*)
+subsection \<open>Mutual recursion\label{subsec:MutualRec}\<close>
+
+text \<open>Finally, we handle mutual recursion. VDM has few bounds on mutually
+recursive definitions. We reuse the VDM type checker cyclic-measure discovery
+algorithm in order to deduce related recursive calls. Note this is not
+complete and may fail to discover involved recursive calls, such as those
+under some lambda-term result, for example. If that recursive call graph
+discovery fails, then users have to annotate at least one of the mutually
+recursive definitions with an \<^verbatim>\<open>@IsaMutualRec\<close> annotation listing all expected
+function names involved.
+
+Mutually recursive definitions proof obligations refer to each others
+measure functions. Isabelle requires all related functions to be given in a
 single definition, where Isabelle's sum (or union) types are used in the proof
-setup. Users have to annotate at least one of the mutually recursive
-definitions with \<^verbatim>\<open>@IsaMutualRec\<close> listing all function names involved. Where
-needed, termination proof setup will be involved and with limited automation.
-Here is a simple example and its translation.
+setup. Where needed, termination proof setup will be involved and with limited 
+automation. Here is a simple example and its translation, which works with
+ \<^term>\<open>fun\<close> syntax, hence has no further proof obligation needs. Note that in 
+this case using \<^term>\<open>fun\<close> syntax, we declare implicit preconditions as 
+simplification rules.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     --@IsaMutualRec({odd})
@@ -983,15 +971,16 @@ fun (domintros) even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> and odd  :: 
   \<open>even n = (if pre_even n then (if n = 0 then True else odd (n-1)) else undefined)\<close>
 | \<open>odd  n = (if pre_odd n then (if n = 0 then False else even (n-1)) else undefined)\<close>
 
-(**************************************************************************************************)
+(******************************************************************************)
 section \<open>Discussion and conclusion\label{sec:Conclusion}\<close>
 
 text \<open>In this paper we present a translation strategy from VDM to Isabelle for
-recursive function over basic types, sets and maps. We also present how the
-strategy works for more complex recursion, such as the Ackermann's function.
+recursive functions over basic types, sets and maps, as well as mutual
+recursion. We present how the strategy works for more complex recursion,
+such as the Ackermann's function.
 
-The complex recursion example also hints at possible VDM recursive measure
-extension to use a combination of measure relations and functions. The full
+The complex recursion examples hint at possible VDM recursive measure
+extensions to use a combination of measure relations and functions. The full
 VDM and Isabelle sources and proofs can be found at the VDM toolkit repository
 at \<^verbatim>\<open>RecursiveVDM*.thy\<close>\<^footnote>\<open>\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.\<close>
 
