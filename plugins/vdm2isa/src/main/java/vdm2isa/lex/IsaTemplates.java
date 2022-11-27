@@ -1,8 +1,11 @@
 package vdm2isa.lex;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -34,11 +37,13 @@ public final class IsaTemplates {
 
     //TODO could I have a Formatter.format(DEFINITION, pass some info + pass %xs for what I don't have?)
     //TODO generalise the tabbing/newlining later 
-    private static final String MODULE       = "(* VDM to Isabelle Translation @%1$s\n   Copyright 2021, Leo Freitas, leo.freitas@newcastle.ac.uk\n%2$s\n%3$s\n*)\ntheory %4$s\nimports %5$s\nbegin\n\n%6$s\nend";
-    private static final String ABBREVIATION = "abbreviation\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s \\<equiv> %3$s\"\n";     
-    private static final String DEFINITION   = "definition\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s \\<equiv> %4$s\"\n";
-    private static final String FUNCTION     = "fun\n\t%1$s :: \"%2$s\"\nwhere\n\t\"%1$s %3$s = %4$s\"\n";
-    private static final String TSYNONYM     = "type_synonym %1$s = \"%2$s\"";
+    private static final String MODULE       = "(* VDM to Isabelle Translation @%1$s\n   Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk\n%2$s\n%3$s\n*)\ntheory %4$s\nimports %5$s\nbegin\n\n%6$s\nend";
+    private static final String ABBREVIATION = "abbreviation\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s \\<equiv> %3$s\\<close>\n";     
+    private static final String DEFINITION   = "definition\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s \\<equiv> %4$s\\<close>\n";
+    private static final String FUNDEF       = "definition\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s \\<equiv> (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n";
+    private static final String RFUNDEF      = "fun (domintros)\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s = (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n";
+    private static final String RFUNCTIONDEF = "function (domintros)\n\t%1$s :: \\<open>%2$s\\<close>\nwhere\n\t\\<open>%1$s %3$s = (if (pre_%1$s %3$s) then\n\t\t %4$s \n\telse undefined)\\<close>\n\t%5$s\n\ttermination\n\t%6$s\n";
+    private static final String TSYNONYM     = "type_synonym %1$s = \\<open>%2$s\\<close>";
     private static final String LEMMAS       = "lemmas %1$s = %2$s\n";
     private static final String LEMMA        = "lemma %1$s: \\<open>%2$s\\<close> \n\t \\<comment>\\<open>Inferred proof strategy for lemma:\\<close>\n\t %3$s";
     private static final String POGLOCALE    = "locale %1$s = \n\tassumes\n\t\t%2$s\nbegin\n\t%3$s\nend";
@@ -174,7 +179,7 @@ public final class IsaTemplates {
     public static final String translateTheoremDefinition(LexLocation module, String name, String exp, String script)
     {
         assert module != null && name != null && exp != null; 
-        String result = translateDefinition(IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
+        String result = translateDefinition(IsaTemplates.DEFINITION, IsaItem.THEOREM, module, name, null, IsaToken.BOOL.toString(), "", exp, false);
         assert !theoremScripts.containsKey(name); 
         theoremScripts.put(name, script);
         return result;
@@ -295,15 +300,24 @@ public final class IsaTemplates {
     }
 
     //TODO perhaps have multiple inType and inVars params? 
-    public static final String translateDefinition(IsaItem item, LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    private static final String translateDefinition(String template, IsaItem item, LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local, String... others)
     {
         assert module != null && name != null && outType != null && inVars != null && exp != null;
         StringBuilder sb = new StringBuilder();
         // null input types leads to just the resulting type as the signature, 
         // e.g. basic type abbreviation invariants or function constants
         String signature = inType != null ? inType + IsaToken.SPACE.toString() + IsaToken.FUN.toString() + IsaToken.SPACE.toString() + outType : outType;
+
+        // process other elements (e.g. RFUNCTIONDEF has two other parameters for the proof script)
+        List<String> args = new ArrayList<String>(4+others.length);
+        args.addAll(Arrays.asList(name, signature, inVars, exp));
+        if (others.length > 0)
+        {
+            args.addAll(Arrays.asList(others));
+        }
+
         // theorems are definitions too 
-        sb.append(String.format(item.equals(IsaItem.FUNCTION) ? FUNCTION : DEFINITION, name, signature, inVars, exp));
+        sb.append(String.format(template, args.toArray()));
         // do not consider for the mapping of "known" translation local definitions, as they might
         // appear multiple times, due to the type checker having created them and sprinkled around 
         // the TRNode AST for various uses. The actual string will still be returned, so care needs 
@@ -329,7 +343,7 @@ public final class IsaTemplates {
     public static final String translateInvariantDefinition(LexLocation module, String name, String inType, String inVars, String exp, boolean local)
     {
         assert module != null && name != null && /*inType != null && */ inVars != null && exp != null;
-        return translateDefinition(IsaItem.DEFINITION, module, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
+        return translateDefinition(IsaTemplates.DEFINITION, IsaItem.DEFINITION, module, IsaToken.INV.toString() + name, inType, IsaToken.BOOL.toString(), inVars, exp, local);
     }
 
     //public static final String isabelleIdentifier(String vdmIdentifier)
@@ -337,6 +351,24 @@ public final class IsaTemplates {
         //TODO Look at LexTokenReader.startOfName for what would be useful to use.  
     //    return "reserved_" + vdmIdentifier;
     //}
+
+    public static final String translateNonRecFunctionDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    {
+        assert module != null && name != null && outType != null && inVars != null && exp != null;
+        return translateDefinition(IsaTemplates.FUNDEF, IsaItem.DFUNCTION, module, name, inType, outType, inVars, exp, local);
+    }
+
+    public static final String translateRecFunDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    {
+        assert module != null && name != null && outType != null && inVars != null && exp != null;
+        return translateDefinition(IsaTemplates.RFUNDEF, IsaItem.RFUN, module, name, inType, outType, inVars, exp, local);
+    }
+
+    public static final String translateRecFunctionDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, String patProof, String termProof, boolean local)
+    {
+        assert module != null && name != null && outType != null && inVars != null && exp != null;
+        return translateDefinition(IsaTemplates.RFUNCTIONDEF, IsaItem.RFUNCTION, module, name, inType, outType, inVars, exp, local, patProof, termProof);
+    }
 
     /**
      * VDM identifiers will not have sup/sub, so these are good substitutes for uniqueness. 
