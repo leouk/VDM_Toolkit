@@ -188,10 +188,9 @@ hence the need for extending our translation strategy.\<close>
 (**************************************************************************************************)
 section \<open>VDM recursion translation strategy\label{sec:Strategy}\<close>
 
-text \<open>We want to identify a translation strategy that will cater for such issues 
-described above not only for basic types, but also for sets, sequences, maps, \<^emph>\<open>etc\<close>. 
-This is important to ensure that the translator will cater for most commonly used 
-VDM recursion definition patterns.   
+text \<open>We want to identify a translation strategy that will cater for the issues 
+described above not only for basic types, but also for sets, sequences, maps, as
+well as mutual recursion.
 
 The VDM AST tags all recursive functions, even those without an explicit measure. 
 All such functions will be translated using Isabelle's \<^term>\<open>fun\<close> syntax, which 
@@ -216,20 +215,18 @@ figure out the necessary proof setup.
 The \<^verbatim>\<open>@IsaMeasure\<close> annotation defines a well-founded measure relation that will participate in the 
 setup for Isabelle termination proof. For example, for the \<^verbatim>\<open>fact\<close> example, the 
 user would have to write an annotation before the VDM measure as
-%
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
   --@IsaMeasure( { (n -1, n) | n : nat & n <> 0 } )
 \end{vdmsl}
-%
 \noindent This measure relation corresponds to the relationship between the recursive 
 call (\<^verbatim>\<open>fact(n-1)\<close>) and its defining equation (\<^verbatim>\<open>fact(n)\<close>), where the 
 filtering condition determines for which values of \<^verbatim>\<open>n\<close>
-should the relation refer to (\<^emph>\<open>e.g.,\<close>~non-zero values). More interesting measure 
-relation examples are defined in Section~\ref{subsec:Complex}.  
+should the relation refer to. More interesting measure 
+relations are defined in Section~\ref{subsec:Complex}.  
 
 During translation, the plugin will typecheck the \<^verbatim>\<open>@IsaMeasure\<close> annotation 
 (\<^emph>\<open>i.e.,\<close>~it is a type correct relation over the function signature).
-Next, it will translate the annotation and some automation lemmas as series of 
+Next, it will translate the annotation and some automation lemmas as a series of 
 Isabelle definitions to be used during the proof
 of termination of translated VDM recursive functions. If no annotation is provided, 
 following similar principles from Isabelle, then the plugin will try to automatically 
@@ -242,31 +239,30 @@ In what follows, we will detail the translation strategy for each relevant VDM t
 For details over the overall translation strategy, see examples in the 
 distribution\<^footnote>\<open>\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close> and~@{cite NimFull}. That 
 is, we impose various implicit VDM checks as explicit predicates. For example, VDM 
-sets are always finite, and type invariants over set elements must hold for every element.\<close>
+sets are always finite, and type invariants over set, sequence and map elements 
+must hold for every element.\<close>
 
 (*-------------------------------------------------------------------------------------------------*)
 subsection \<open>Recursion over VDM basic types (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>)\label{subsec:VDMNat}\<close>
 
 text \<open>Following the general translation strategy~@{cite NimFull}, 
-we first encode the implicit precondition of \<^verbatim>\<open>fact\<close> as a simplification rule, 
+we first encode the implicit precondition as a simplification rule, 
 which insists that the given parameter \<^term>\<open>n\<close> is a \<^typ>\<open>VDMNat\<close>, alongside a 
 list of defining constants that are useful for proof strategy synthesis.\<close>
 
 definition pre_fact :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]:\<open>pre_fact n \<equiv> inv_VDMNat n\<close>
 lemmas pre_fact_defs = pre_fact_def inv_VDMNat_def 
 
-text \<open>Next, we define the \<^verbatim>\<open>fact\<close> recursively. When the precondition fails, 
-  we return \<^term>\<open>undefined\<close>, which is a term that cannot be reasoned with in Isabelle (\<^emph>\<open>i.e.,\<close>~it is a dead end).
-
+text \<open>Next, we define factorial recursively. When the precondition fails, 
+  we return \<^term>\<open>undefined\<close>, which is a term that cannot be reasoned with in Isabelle 
 The \<^term>\<open>domintros\<close> tag tells Isabelle to generate domain predicates, in case this function is not total. 
 Domain predicates are important to our strategy because every VDM function will be undefined, when
 applied outside its precondition. It also generates domain-predicate sensitive proof rules listed below.\<close>
 function (domintros) fact :: \<open>VDMNat \<Rightarrow> VDMNat\<close> where
-  \<open>fact n = (if pre_fact n then (if n = 0 then 1 else n * (fact (n - 1)))
-                else undefined)\<close>
+\<open>fact n = (if pre_fact n then (if n = 0 then 1 else n * (fact (n - 1))) else undefined)\<close>
 
-  text \<open>The proof obligations for pattern compatibility and completeness are next.
- They are discharged with the usual Isabelle proof strategy for simple recursive patterns with the @{method pat_completeness} method.
+  text \<open>The proof obligations for pattern compatibility and completeness are 
+discharged with the usual Isabelle proof strategy for simple recursive patterns with the @{method pat_completeness} method.
   In the general case discussed in Section~\ref{subsec:Complex}), 
   the user might have goals to discharge.\<close>
   by (pat_completeness, auto) \<^marker>\<open>tag invisible\<close>
