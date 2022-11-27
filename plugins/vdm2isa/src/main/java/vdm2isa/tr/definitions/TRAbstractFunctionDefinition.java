@@ -489,15 +489,35 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
         // 4) explicit function with a body  = issue definition (i.e. user defined explicit function or pre/post)
         if (!(isImplicitFunction() && getBody() == null))
         {
-			// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
-			if (recursive)
+			switch (implicitSpecificationKind)
 			{
-				//TODO have to visit-search through all annotations to look for a IsaMeasure!  
-				sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
-			}
-			else 
-			{
-				sb.append(IsaTemplates.translateNonRecFunctionDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+				// ready; do nothing else
+				case PRE:
+				case POST:
+				case INV:
+				case EQ:
+				case ORD:
+				case MAX:
+				case MIN:
+				case MEASURE:
+				case INIT:
+					assert !recursive;
+					// non recursive function definition for specification has no gating: pre_f x = inv_T x  (no if pre_pre_f) etc.
+					sb.append(IsaTemplates.translateNonRecFunctionDefinition(IsaItem.SPECIFICATION, this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+					break;			
+				case NONE: 
+					// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
+					if (recursive)
+					{
+						//TODO have to visit-search through all annotations to look for a IsaMeasure!  
+						sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+					}
+					else 
+					{
+						// non recursive function definition that will be gated with if pre_f x then f(x) else undefined
+						sb.append(IsaTemplates.translateNonRecFunctionDefinition(IsaItem.DFUNCTION, this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+					}
+					break;
 			}
         }
 

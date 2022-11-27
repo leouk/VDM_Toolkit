@@ -220,7 +220,7 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         }
         else
         {
-            sb.append(IsaTemplates.translateNonRecFunctionDefinition(
+            sb.append(IsaTemplates.translateNonRecFunctionDefinition(IsaItem.DFUNCTION,
                 this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, 
                 "Empty body", isLocal()));       
         }

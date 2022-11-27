@@ -5,7 +5,7 @@ package vdm2isa.lex;
  * RFUN is recursive function definition with Isabelle "fun (domintros)", RFUNCTION used "function (domintros)".
  */
 public enum IsaItem {
-    ABBREVIATION, INVARIANT, DEFINITION, TYPE_SYNONYM, THEOREM,  DFUNCTION, RFUN, RFUNCTION, OPERATION, DATATYPE, LEMMA;
+    ABBREVIATION, INVARIANT, DEFINITION, TYPE_SYNONYM, THEOREM, SPECIFICATION, DFUNCTION, RFUN, RFUNCTION, OPERATION, DATATYPE, LEMMA;
 
     private IsaItem() {
     }

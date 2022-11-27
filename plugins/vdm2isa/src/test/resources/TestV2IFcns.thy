@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-11-27T13:47:06.466Z
+(* VDM to Isabelle Translation @2022-11-27T14:49:55.950Z
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
 in 'TestV2IFcns.vdmsl' at line 1:8
@@ -21,9 +21,7 @@ null\<close>
 definition
 	pre_const :: \<open>bool\<close>
 where
-	\<open>pre_const  \<equiv> (if (pre_pre_const ) then
-		 True 
-	else undefined)\<close>
+	\<open>pre_const  \<equiv> True\<close>
 
 
 \<comment>\<open>VDM source: post_const: (nat +> bool)
@@ -33,11 +31,9 @@ null\<close>
 definition
 	post_const :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_const RESULT \<equiv> (if (pre_post_const RESULT) then
-		 
+	\<open>post_const RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_const` specification.\<close>
-		((inv_VDMNat RESULT)) 
-	else undefined)\<close>
+		((inv_VDMNat RESULT))\<close>
 
 definition
 	const :: \<open>VDMNat\<close>
@@ -64,13 +60,11 @@ where
 definition
 	pre_constS :: \<open>bool\<close>
 where
-	\<open>pre_constS  \<equiv> (if (pre_pre_constS ) then
-		 
+	\<open>pre_constS  \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_constS` specification.\<close>
 		
 		\<comment>\<open>User defined body of pre_constS.\<close>
-		((10::VDMNat1) > (5::VDMNat1)) 
-	else undefined)\<close>
+		((10::VDMNat1) > (5::VDMNat1))\<close>
 
 
 \<comment>\<open>VDM source: post_constS: (nat +> bool)
@@ -80,13 +74,11 @@ where
 definition
 	post_constS :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_constS RESULT \<equiv> (if (pre_post_constS RESULT) then
-		 
+	\<open>post_constS RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_constS` specification.\<close>
 		((inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_constS.\<close>
-		(RESULT > (0::VDMNat)) 
-	else undefined)\<close>
+		(RESULT > (0::VDMNat))\<close>
 
 definition
 	constS :: \<open>VDMNat\<close>
@@ -111,11 +103,9 @@ null\<close>
 definition
 	pre_f :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
-	\<open>pre_f x   y \<equiv> (if (pre_pre_f x   y) then
-		 
+	\<open>pre_f x   y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_f` specification.\<close>
-		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)) 
-	else undefined)\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))\<close>
 
 
 \<comment>\<open>VDM source: post_f: (nat * nat1 * nat1 +> bool)
@@ -125,11 +115,9 @@ null\<close>
 definition
 	post_f :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
-	\<open>post_f x   y   RESULT \<equiv> (if (pre_post_f x   y   RESULT) then
-		 
+	\<open>post_f x   y   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_f` specification.\<close>
-		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat1 RESULT)) 
-	else undefined)\<close>
+		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat1 RESULT))\<close>
 
 definition
 	f :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1\<close>
@@ -156,13 +144,11 @@ where
 definition
 	pre_g :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
-	\<open>pre_g x   y \<equiv> (if (pre_pre_g x   y) then
-		 
+	\<open>pre_g x   y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_g` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y))  \<and> 
 		\<comment>\<open>User defined body of pre_g.\<close>
-		(x > (10::VDMNat1)) 
-	else undefined)\<close>
+		(x > (10::VDMNat1))\<close>
 
 
 \<comment>\<open>VDM source: post_g: (nat * nat1 * nat1 +> bool)
@@ -172,13 +158,11 @@ where
 definition
 	post_g :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
-	\<open>post_g x   y   RESULT \<equiv> (if (pre_post_g x   y   RESULT) then
-		 
+	\<open>post_g x   y   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_g` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat1 y)  \<and>  (inv_VDMNat1 RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_g.\<close>
-		(x < RESULT) 
-	else undefined)\<close>
+		(x < RESULT)\<close>
 
 definition
 	g :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1\<close>
@@ -205,13 +189,11 @@ pre_g(x, x)\<close>
 definition
 	pre_h :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>pre_h x \<equiv> (if (pre_pre_h x) then
-		 
+	\<open>pre_h x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_h` specification.\<close>
 		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h.\<close>
-		(pre_g x  x) 
-	else undefined)\<close>
+		(pre_g x  x)\<close>
 
 
 \<comment>\<open>VDM source: post_h: (nat * nat +> bool)
@@ -221,13 +203,11 @@ post_g(x, x, RESULT)\<close>
 definition
 	post_h :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_h x   RESULT \<equiv> (if (pre_post_h x   RESULT) then
-		 
+	\<open>post_h x   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_h` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h.\<close>
-		(post_g x  x  RESULT) 
-	else undefined)\<close>
+		(post_g x  x  RESULT)\<close>
 
 definition
 	h :: \<open>VDMNat \<Rightarrow> VDMNat\<close>
@@ -254,13 +234,11 @@ g(x, x)
 definition
 	pre_h' :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>pre_h' x \<equiv> (if (pre_pre_h' x) then
-		 
+	\<open>pre_h' x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_h'` specification.\<close>
 		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h'.\<close>
-		(x < (20::VDMNat1)) 
-	else undefined)\<close>
+		(x < (20::VDMNat1))\<close>
 
 
 \<comment>\<open>VDM source: post_h': (nat * nat +> bool)
@@ -270,13 +248,11 @@ where
 definition
 	post_h' :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_h' x   RESULT \<equiv> (if (pre_post_h' x   RESULT) then
-		 
+	\<open>post_h' x   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_h'` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h'.\<close>
-		(x > (20::VDMNat1)) 
-	else undefined)\<close>
+		(x > (20::VDMNat1))\<close>
 
 definition
 	h' :: \<open>VDMNat \<Rightarrow> VDMNat\<close>
@@ -303,13 +279,11 @@ g(x, x)
 definition
 	pre_h'' :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>pre_h'' x \<equiv> (if (pre_pre_h'' x) then
-		 
+	\<open>pre_h'' x \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_h''` specification.\<close>
 		((inv_VDMNat x))  \<and> 
 		\<comment>\<open>User defined body of pre_h''.\<close>
-		(x < (20::VDMNat1)) 
-	else undefined)\<close>
+		(x < (20::VDMNat1))\<close>
 
 
 \<comment>\<open>VDM source: post_h'': (nat * nat +> bool)
@@ -319,13 +293,11 @@ pre_g(x, RESULT)\<close>
 definition
 	post_h'' :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_h'' x   RESULT \<equiv> (if (pre_post_h'' x   RESULT) then
-		 
+	\<open>post_h'' x   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_h''` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat RESULT))  \<and> 
 		\<comment>\<open>User defined body of post_h''.\<close>
-		(pre_g x  RESULT) 
-	else undefined)\<close>
+		(pre_g x  RESULT)\<close>
 
 definition
 	h'' :: \<open>VDMNat \<Rightarrow> VDMNat\<close>
@@ -350,11 +322,9 @@ null\<close>
 definition
 	pre_curried :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>pre_curried x y \<equiv> (if (pre_pre_curried x y) then
-		 
+	\<open>pre_curried x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `pre_curried` specification.\<close>
-		((inv_VDMNat x))  \<and> ((inv_VDMNat y)) 
-	else undefined)\<close>
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))\<close>
 
 
 \<comment>\<open>VDM source: post_curried: (nat +> (nat * nat +> bool))
@@ -364,11 +334,9 @@ null\<close>
 definition
 	post_curried :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_curried x y   RESULT \<equiv> (if (pre_post_curried x y   RESULT) then
-		 
+	\<open>post_curried x y   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_curried` specification.\<close>
-		((inv_VDMNat x))  \<and> ((inv_VDMNat y)) 
-	else undefined)\<close>
+		((inv_VDMNat x))  \<and> ((inv_VDMNat y))\<close>
 
 definition
 	curried :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat\<close>
@@ -395,13 +363,11 @@ where
 definition
 	pre_curriedS :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>pre_curriedS x y \<equiv> (if (pre_pre_curriedS x y) then
-		 
+	\<open>pre_curriedS x y \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_curriedS` specification.\<close>
 		((inv_VDMNat x))  \<and> ((inv_VDMNat y))  \<and> 
 		\<comment>\<open>User defined body of pre_curriedS.\<close>
-		(x > y) 
-	else undefined)\<close>
+		(x > y)\<close>
 
 
 \<comment>\<open>VDM source: post_curriedS: (nat +> (nat * nat +> bool))
@@ -411,13 +377,11 @@ where
 definition
 	post_curriedS :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
-	\<open>post_curriedS x y   RESULT \<equiv> (if (pre_post_curriedS x y   RESULT) then
-		 
+	\<open>post_curriedS x y   RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_curriedS` specification.\<close>
 		((inv_VDMNat x))  \<and> ((inv_VDMNat y))  \<and> 
 		\<comment>\<open>User defined body of post_curriedS.\<close>
-		((x < RESULT) \<and> (y < RESULT)) 
-	else undefined)\<close>
+		((x < RESULT) \<and> (y < RESULT))\<close>
 
 definition
 	curriedS :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat\<close>
@@ -442,13 +406,11 @@ where
 definition
 	pre_implicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool\<close>
 where
-	\<open>pre_implicit x   y   z \<equiv> (if (pre_pre_implicit x   y   z) then
-		 
+	\<open>pre_implicit x   y   z \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_implicit` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z))  \<and> 
 		\<comment>\<open>User defined body of pre_implicit.\<close>
-		((x < y) \<and> (x \<in> z)) 
-	else undefined)\<close>
+		((x < y) \<and> (x \<in> z))\<close>
 
 
 \<comment>\<open>VDM source: post_implicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
@@ -458,13 +420,11 @@ where
 definition
 	post_implicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
-	\<open>post_implicit x   y   z   r \<equiv> (if (pre_post_implicit x   y   z   r) then
-		 
+	\<open>post_implicit x   y   z   r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_implicit` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z)  \<and>  (inv_VDMSeq' (inv_VDMNat) r))  \<and> 
 		\<comment>\<open>User defined body of post_implicit.\<close>
-		(x > (len r)) 
-	else undefined)\<close>
+		(x > (len r))\<close>
 
 
 	
@@ -482,13 +442,11 @@ where
 definition
 	pre_implicitexplicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool\<close>
 where
-	\<open>pre_implicitexplicit x   y   z \<equiv> (if (pre_pre_implicitexplicit x   y   z) then
-		 
+	\<open>pre_implicitexplicit x   y   z \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `pre_implicitexplicit` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z))  \<and> 
 		\<comment>\<open>User defined body of pre_implicitexplicit.\<close>
-		((x < y) \<and> (x \<in> z)) 
-	else undefined)\<close>
+		((x < y) \<and> (x \<in> z))\<close>
 
 
 \<comment>\<open>VDM source: post_implicitexplicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
@@ -498,13 +456,11 @@ where
 definition
 	post_implicitexplicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
-	\<open>post_implicitexplicit x   y   z   r \<equiv> (if (pre_post_implicitexplicit x   y   z   r) then
-		 
+	\<open>post_implicitexplicit x   y   z   r \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `post_implicitexplicit` specification.\<close>
 		((inv_VDMNat x)  \<and>  (inv_VDMNat y)  \<and>  (inv_VDMSet' (inv_VDMNat) z)  \<and>  (inv_VDMSeq' (inv_VDMNat) r))  \<and> 
 		\<comment>\<open>User defined body of post_implicitexplicit.\<close>
-		(x > (len r)) 
-	else undefined)\<close>
+		(x > (len r))\<close>
 
 definition
 	implicitexplicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq\<close>

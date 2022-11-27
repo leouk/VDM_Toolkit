@@ -352,10 +352,11 @@ public final class IsaTemplates {
     //    return "reserved_" + vdmIdentifier;
     //}
 
-    public static final String translateNonRecFunctionDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
+    public static final String translateNonRecFunctionDefinition(IsaItem item, LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
     {
-        assert module != null && name != null && outType != null && inVars != null && exp != null;
-        return translateDefinition(IsaTemplates.FUNDEF, IsaItem.DFUNCTION, module, name, inType, outType, inVars, exp, local);
+        assert module != null && name != null && outType != null && inVars != null && exp != null && (item.equals(IsaItem.DFUNCTION) || item.equals(IsaItem.SPECIFICATION));
+        // DFUNCTION for actual function f; SPECIFICATION for specification of F?
+        return translateDefinition(item.equals(IsaItem.DFUNCTION) ? IsaTemplates.FUNDEF : IsaTemplates.DEFINITION, item, module, name, inType, outType, inVars, exp, local);
     }
 
     public static final String translateRecFunDefinition(LexLocation module, String name, String inType, String outType, String inVars, String exp, boolean local)
