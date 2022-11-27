@@ -20,7 +20,7 @@ VDM to Isabelle/HOL translation strategy and implementation as a plugin to
 VDMJ~@{cite Battle09} and extension to VDM-VSCode @{cite AdvancedVSCodePaper}.
 
 Isabelle uses literate programming, where formal specification, proofs and
-documentation are all within the same environment. We omit proofs scripts
+documentation are all within the same environment. We omit proof scripts
 below; the full VDM and Isabelle sources and proofs can be found at the VDM
 toolkit repository at
 \<^verbatim>\<open>./plugins/vdm2isa/src/main/resources/RecursiveVDM.*\<close>\<^footnote>\<open>in~\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.
@@ -37,7 +37,7 @@ Section~\ref{sec:Conclusion}. \<close>
 (******************************************************************************)
 section \<open>Background\label{sec:Background}\<close> 
 
-text \<open>Our VDM to Isabelle/HOL translator caters for a wide range of the VDM
+text \<open>Our VDM to Isabelle/HOL translator caters for a wide range of the VDM-SL
 AST. It copes with all kinds of expressions, a variety of patterns, almost all
 types, imports and exports, functions and specifications, traces, and some of
 state and operations @{cite NimFull and AdvancedVSCodePaper}. Even though not
@@ -70,7 +70,7 @@ two constructors (\<^term>\<open>0::\<nat>\<close> and \<^term>\<open>Suc n\<clo
 projections over such constructions (\<^emph>\<open>e.g.\<close>~@{lemma "2 = (Suc (Suc 0))" by
 simp}). Isabelle integers (\<^typ>\<open>\<int>\<close>) are defined as a quotient type
 involving two natural numbers. Isabelle quotient types are injections into a
-constructively defined type. Like with integers, other Isabelle numeric types
+constructively defined type. As with integers, other Isabelle numeric types
 (\<^emph>\<open>e.g.,\<close>~rationals \<^typ>\<open>\<rat>\<close>, reals \<^typ>\<open>\<real>\<close>, \<^emph>\<open>etc\<close>.) are defined in
 terms of some involved natural number construction. Type conversions (or
 coercions) are then defined to allow users to jump between type spaces.
@@ -80,16 +80,16 @@ simp}. For expressions involving a mixutre of \<^typ>\<open>\<int>\<close> and \
 terms, explicit user-defined type coercions might be needed
 (\<^emph>\<open>e.g.,\<close>~@{lemma[show_types] \<open>(2::\<nat>) - (3::\<int>) = -1\<close> by simp}).
  
- VDM expressions with basic-typed (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>) variables have specific
- type widening rules. For example, even if both variables are \<^bold>\<open>nat\<close>, the
- result might be \<^bold>\<open>int\<close>. (\<^emph>\<open>e.g.,\<close>~in VDM, \<^verbatim>\<open>0 - x:nat = -x:int\<close>). Therefore,
- our translation strategy considers VDM \<^bold>\<open>nat\<close> as the Isabelle type
- \<^typ>\<open>VDMNat\<close>, which is just a type synonym for \<^typ>\<open>\<int>\<close>. This simplifies
- the translation process to Isabelle, such that no type coercions are
- necessary to encode all VDM type widenning rules. On the other hand, this
- design decision means encoding of recursive functions over \<^bold>\<open>nat\<close> to be more
- complicated than expected, given VDM's \<^bold>\<open>nat\<close> is represented as Isabelle's
- \<^typ>\<open>\<int>\<close>.
+VDM expressions with basic-typed (\<^bold>\<open>nat\<close>, \<^bold>\<open>int\<close>) variables have specific
+type widening rules. For example, even if both variables are \<^bold>\<open>nat\<close>, the
+result might be \<^bold>\<open>int\<close>. (\<^emph>\<open>e.g.,\<close>~in VDM, \<^verbatim>\<open>0 - x:nat = -x:int\<close>). Therefore,
+our translation strategy considers VDM \<^bold>\<open>nat\<close> as the Isabelle type
+\<^typ>\<open>VDMNat\<close>, which is just a type synonym for \<^typ>\<open>\<int>\<close>. This simplifies
+the translation process to Isabelle, such that no type coercions are
+necessary to encode all VDM type widenning rules. On the other hand, this
+design decision means encoding of recursive functions over \<^bold>\<open>nat\<close> to be more
+complicated than expected, given VDM's \<^bold>\<open>nat\<close> is represented as Isabelle's
+\<^typ>\<open>\<int>\<close>.
 
   Despite this design decision over basic types and their consequences,
   recursion over VDM \<^bold>\<open>int\<close>, sets or maps will still be involved. That is
@@ -99,7 +99,7 @@ terms, explicit user-defined type coercions might be needed
 section \<open>Recursion in VDM and in Isabelle\label{sec:Recursion}\<close>
 
 text \<open>An important aspect of every recursive definition is an argument that
-justifies its termination. Otherwise, the recursion might go on in an infinite
+justifies its termination. Otherwise, the recursion might go into an infinite
 loop. In VDM, this is defined using a recursive measure:~it has the same input
 type signature as the recursive definition, and returns a \<^bold>\<open>nat\<close>, which
 \<^bold>\<open>must\<close> monotonically decrease at each recursive call, eventually reaching
@@ -145,20 +145,20 @@ Section~\ref{subsec:Complex}).
   
 In Isabelle, recursive definitions can be provided through primitive recursion
 over inputs that are constructively defined, or more general function
-definitions that produces proof obligations. The former insists on definition
+definitions that produce proof obligations. The former insists on definition
 for each type constructor and only provides simplification rules; whereas the
-latter allow for more sophisticated input patterns and provides
+latter allows for more sophisticated input patterns and provides
 simplification, elimination and induction rules, as well as partial function
 considerations. For the purposes of this paper, we only consider function
 definitions. Readers can find more about these differences in~@{cite
 IsaFunctionPackage}.
 
-Isabelle recursive functions requires a proof obligation that parameters
+Isabelle recursive functions require a proof obligation that its parameters
 represent a constructive and compatible pattern, and that recursive calls
-terminate. Constructive patterns relates to all constructors in data type
-being used in the recursion inputs (\<^emph>\<open>e.g.,\<close>~one equation for each of the
+terminate. Constructive patterns covers all constructors in the data type
+being used in the recursion inputs (\<^emph>\<open>i.e.,\<close>~one equation for each of the
 constructors of \<^typ>\<open>\<nat>\<close>, hence one involving \<^term>\<open>0::\<nat>\<close> and another
-involving \<^term>\<open>Suc n\<close>). Compatible patterns relates to multiple ways
+involving \<^term>\<open>Suc n\<close>). Compatible patterns cover the multiple ways
 patterns can be constructed will boil down to the pattern completeness cases
 (\<^emph>\<open>e.g.,\<close>~\<^term>\<open>n + 2::\<nat>\<close> being simply multiple calls over defined
 constructors like \<^term>\<open>Suc (Suc n)\<close>). This is important to ensure that
@@ -186,7 +186,7 @@ Isabelle discovers all three proofs is\<close>
 fun fact' :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where \<open>fact' n = (if n = 0 then 1 else n * (fact' (n - 1)))\<close> 
 
 text \<open>This definition is quite similar in VDM. Nevertheless, VDM basic types
-widening rules necessitated we translate them to \<^typ>\<open>VDMNat\<close>. The same
+widening rules necessitate we translate them to \<^typ>\<open>VDMNat\<close>. The same
 version of \<^term>\<open>fact\<close> defined for \<^typ>\<open>\<int>\<close> will fail with the error that
 ``\<^emph>\<open>Could not find lexicographic termination order\<close>''. That is, Isabelle
 manages to discharge the pattern proofs, but not the termination one. This is
@@ -194,7 +194,7 @@ because the user must provide a projection relation from the \<^typ>\<open>\<int
 quotient type back into the constructive type \<^typ>\<open>\<nat>\<close>.
 
 Even if we could avoid this translation technicality, the same problem would
-occur for recursion over non constructive types, such as sets or maps. They
+occur for recursion over non-constructive types, such as sets or maps. They
 require recursion over finite sets, which are defined inductively. The only
 easy recursive translations are those involving lists, given lists in Isabelle
 are defined constructively and VDM sequences map directly.
@@ -208,14 +208,14 @@ are common, hence the need for extending our translation strategy.\<close>
 (******************************************************************************)
 section \<open>VDM recursion translation strategy\label{sec:Strategy}\<close>
 
-text \<open>We want to identify a translation strategy that will cater for the
+text \<open>We want to identify a translation strategy that will cater for 
 issues described above not only for basic types, but also for sets, sequences,
 maps, as well as mutual recursion.
 
-The VDM AST tags all recursive functions, even those without an explicit
+The VDM-SL AST tags all recursive functions, even those without an explicit
 measure. All such functions will be translated using Isabelle's \<^term>\<open>fun\<close>
 syntax, which will attempt to discover proofs for compatibility and
-termination. For our setup of the \<^verbatim>\<open>fact\<close> example, Isabelle discovers the
+termination. For our setup of the \<^verbatim>\<open>fact\<close> example, where Isabelle discovers the
 termination proof.\<close>
 
 (*<*)
@@ -239,26 +239,26 @@ measure as
 \end{vdmsl}
 \noindent This measure relation corresponds to the relationship between the
 recursive call (\<^verbatim>\<open>fact(n-1)\<close>) and its defining equation (\<^verbatim>\<open>fact(n)\<close>), where
-the filtering condition determines for which values of \<^verbatim>\<open>n\<close> should the
-relation refer to. More interesting measure relations are defined in
+the filtering condition determines which values of \<^verbatim>\<open>n\<close> the relation should 
+refer to. More interesting measure relations are defined in
 Section~\ref{subsec:Complex}.
 
-During translation, the plugin will typecheck the \<^verbatim>\<open>@IsaMeasure\<close> annotation
+During translation, the \<^verbatim>\<open>vdm2isa\<close> plugin will typecheck the \<^verbatim>\<open>@IsaMeasure\<close> annotation
 (\<^emph>\<open>i.e.,\<close>~it is a type correct relation over the function signature). Next, it
 will translate the annotation and some automation lemmas as a series of
 Isabelle definitions to be used during the proof of termination of translated
 VDM recursive functions. If no annotation is provided, following similar
 principles from Isabelle, then the plugin will try to automatically infer what
 the measure relation should be based on the structure of the recursive
-function definition. When this fails, then the user is informed. Still, even
-if measure-relation synthesis succeeds, the user still have to appropriately
+function definition. If this fails, then the user is informed. Still, even
+if measure-relation synthesis succeeds, the user still has to appropriately
 use it during Isabelle's termination proof.
 
 In what follows, we will detail the translation strategy for each relevant VDM
-type. For details over the overall translation strategy, see examples in the
+type. For details of the overall translation strategy, see examples in the
 distribution\<^footnote>\<open>\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close> and~@{cite NimFull}.
-That is, we impose various implicit VDM checks as explicit predicates. For
-example, VDM sets are always finite, and type invariants over set, sequence
+The translation strategy imposes various implicit VDM checks as explicit predicates. 
+For example, VDM sets are always finite, and type invariants over set, sequence
 and map elements must hold for every element.\<close>
 
 (*----------------------------------------------------------------------------*)
@@ -286,7 +286,7 @@ function (domintros) fact :: \<open>VDMNat \<Rightarrow> VDMNat\<close> where
 text \<open>The proof obligations for pattern compatibility and completeness are
 discharged with the usual Isabelle proof strategy for simple recursive
 patterns with the @{method pat_completeness} method. In the general case
-discussed in Section~\ref{subsec:Complex}), the user might have goals to
+discussed in Section~\ref{subsec:Complex}, the user might have goals to
 discharge. Isabelle proves various theorems abou case analysis and
 (partial) rules for elimination, induction and simplification.\<close>
   by (pat_completeness, auto) \<^marker>\<open>tag invisible\<close>
@@ -544,7 +544,7 @@ abbreviation
   { (({d} -\<triangleleft> m), m) | m d . pre_sum_elems m \<and> m \<noteq> Map.empty \<and> d \<in> dom m }\<close>
 
 text \<open>For the well-founded lemma over the recursive measure relation, there is
-no Isabelle help available, and projecting the domain element of the maps
+no available Isabelle help, and projecting the domain element of the maps
 within the relation is awkward. Thus, we have to prove the well-founded lemma 
 and this will not be automatic in general. This is one difference in terms of
 translation of VDM recursive functions over sets and maps.
@@ -594,7 +594,7 @@ subsection \<open>VDM recursion involving complex measures\label{subsec:Complex}
 
 text \<open>The class of recursive examples shown so far have covered a wide range of
 situations, and have a good level of automation. Nevertheless, the same
-strategy can also be applied to complex recursive definitions. The cost
+strategy can also be applied for more complex recursive definitions. The cost
 for the VDM user is the need of involved \<^verbatim>\<open>@IsaMeasure\<close> definitions and
 the highly likely need for extra user-defined lemmas. These lemmas can be
 defined in VDM itself using the \<^verbatim>\<open>@Lemma\<close> annotation.
