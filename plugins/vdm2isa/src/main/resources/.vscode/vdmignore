@@ -1,15 +1,3 @@
-output
-dump
-document
-HTML
-ROOT
-Attic.thy
-RecursiveComplex.thy
-RecursiveSet.thy
-RecursiveSet0.thy
-RecursiveVDM.thy
-RecursiveVDMMap.thy
-RecursiveVDMNat.thy
 VDMEisbach.thy
 VDMFSBPOs.thy
 VDMOrderExample.thy
