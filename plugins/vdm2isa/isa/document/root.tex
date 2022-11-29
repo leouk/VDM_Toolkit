@@ -1,0 +1,83 @@
+\documentclass[runningheads,a4paper]{llncs}
+%\documentclass[11pt,a4paper]{article}
+\usepackage{isabelle,isabellesym}
+
+% further packages required for unusual symbols (see also
+% isabellesym.sty), use only when needed
+
+%\usepackage{amssymb}
+  %for \<leadsto>, \<box>, \<diamond>, \<sqsupset>, \<mho>, \<Join>,
+  %\<lhd>, \<lesssim>, \<greatersim>, \<lessapprox>, \<greaterapprox>,
+  %\<triangleq>, \<yen>, \<lozenge>
+
+%\usepackage{eurosym}
+  %for \<euro>
+
+%\usepackage[only,bigsqcap]{stmaryrd}
+  %for \<Sqinter>
+
+%\usepackage{eufrak}
+  %for \<AA> ... \<ZZ>, \<aa> ... \<zz> (also included in amssymb)
+
+%\usepackage{textcomp}
+  %for \<onequarter>, \<onehalf>, \<threequarters>, \<degree>, \<cent>,
+  %\<currency>
+
+% urls in roman style, theory text in math-similar italics
+%\urlstyle{rm}
+\isabellestyle{it}
+
+% this should be the last package used
+\usepackage{pdfsetup}
+
+% for uniform font size
+%\renewcommand{\isastyle}{\isastyleminor}
+\usepackage[color]{vdmlisting}
+
+\begin{document}
+
+%\title{A translation strategy for VDM recursive functions in Isabelle/HOL}
+\title{VDM recursive functions in Isabelle/HOL}
+%\author{Leo Freitas, Peter Gorm Larsen}
+%Multiple institutes are typeset as follows:
+\author{Leo Freitas\inst{1} \and Peter Gorm Larsen\inst{2}}
+
+%If there are too many authors, use \authorrunning
+% \authorrunning{First Author et al.}
+\authorrunning{ }
+
+\institute{
+School of Computing, Newcastle University, \\
+\email{leo.freitas@newcastle.ac.uk}
+\and 
+DIGIT, Aarhus University, Department of Engineering, \\
+%Finlandsgade 22, 8200 Aarhus N, Denmark\\
+\email{pgl@ece.au.dk}
+}
+			
+\maketitle
+\setcounter{footnote}{0} 
+\begin{abstract}
+For recursive functions the general principles of induction needs to be applied. Instead of verifying directly in using the Vienna Development Method Specification Language (VDM-SL), we suggest a translation to Isabelle/HOL. In this paper, the challenges of such a translation for recursive functions are presented. This is an extension of an existing translation and a VDM mathematical toolbox in Isabelle/HOL enabling support for recursive functions.
+\end{abstract}
+
+\keywords{VDM, Isabelle/HOL, Translation, Recursion, VSCode}
+
+%\tableofcontents
+
+% sane default for proof documents
+\parindent 0pt\parskip 0.5ex
+
+% generated text of all theories
+\input{session}
+
+% optional bibliography
+\bibliographystyle{splncs03}
+ \bibliography{root}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,114 @@
+%% This BibTeX bibliography file was created using BibDesk.
+%% http://bibdesk.sourceforge.net/
+
+%% Created for Leo Freitas at 2022-11-27 10:02:21 +0000 
+
+
+%% Saved with string encoding Unicode (UTF-8) 
+
+
+
+@inproceedings{SCT_POPL,
+	abstract = {The "size-change termination" principle for a first-order functional language with well-founded data is: a program terminates on all inputs if every infinite call sequence (following program control flow) would cause an infinite descent in some data values.Size-change analysis is based only on local approximations to parameter size changes derivable from program syntax. The set of infinite call sequences that follow program flow and can be recognized as causing infinite descent is an ω-regular set, representable by a B\"{u}chi automaton. Algorithms for such automata can be used to decide size-change termination. We also give a direct algorithm operating on "size-change graphs" (without the passage to automata).Compared to other results in the literature, termination analysis based on the size-change principle is surprisingly simple and general: lexical orders (also called lexicographic orders), indirect function calls and permuted arguments (descent that is not in-situ) are all handled automatically and without special treatment, with no need for manually supplied argument orders, or theorem-proving methods not certain to terminate at analysis time.We establish the problem's intrinsic complexity. This turns out to be surprisingly high, complete for PSPACE, in spite of the simplicity of the principle. PSPACE hardness is proved by a reduction from Boolean program termination. An ineresting consequence: the same hardness result applies to many other analyses found in the termination and quasitermination literature.},
+	address = {New York USA},
+	annote = {POPL=Proceedings of the 28th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages
+URL=https://doi.org/10.1145/360204.360210},
+	author = {Lee, Chin Soon and Jones, Neil D. and Ben-Amram, Amir M.},
+	booktitle = {POPL},
+	date-added = {2022-11-24 11:09:52 +0000},
+	date-modified = {2022-11-27 10:01:16 +0000},
+	doi = {10.1145/360204.360210},
+	isbn = {1581133367},
+	keywords = {program analysis, partial evaluation, omega automaton, termination, PSPACE-completeness},
+	location = {London, United Kingdom},
+	numpages = {12},
+	pages = {81--92},
+	publisher = {ACM},
+	series = {POPL '01},
+	title = {The Size-Change Principle for Program Termination},
+	year = {2001},
+	bdsk-url-1 = {https://doi.org/10.1145/360204.360210}}
+
+@inproceedings{SCNP_POPL,
+	abstract = {We describe a new approach to proving termination with size change graphs. This is the first decision procedure for size change termination (SCT) which makes direct use of global ranking functions. It handles a well-defined and significant subset of SCT instances, designed to be amenable to a SAT-based solution. We have implemented the approach using a state-of-the-art Boolean satisfaction solver. Experimentation indicates that the approach is a viable alternative to the complete SCT decision procedure based on closure computation and local ranking functions. Our approach has the extra benefit of producing an explicit witness to prove termination in the form of a global ranking function.},
+	annote = {TACAS=Tools and Algorithms for the Construction and Analysis of Systems
+Editor=Ramakrishnan, C. R. and Rehof, Jakob},
+	author = {Ben-Amram, Amir M. and Codish, Michael},
+	booktitle = {TACAS},
+	date-added = {2022-11-24 11:04:02 +0000},
+	date-modified = {2022-11-27 09:59:39 +0000},
+	isbn = {978-3-540-78800-3},
+	pages = {218--232},
+	publisher = {Springer},
+	title = {A SAT-Based Approach to Size Change Termination with Global Ranking Functions},
+	year = {2008}}
+
+@mastersthesis{EdwardWitness,
+	author = {Edward Jacobs},
+	date-added = {2022-11-22 16:44:40 +0000},
+	date-modified = {2022-11-22 16:45:24 +0000},
+	school = {Computing Science, Newcastle University},
+	title = {Implementing Witness Annotations for VDMJ with Focus on Helping Prove an Existing Payment Protocol Model},
+	year = {2017}}
+
+@techreport{KrausSCNP,
+	annote = {https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf},
+	author = {Alexander Krauss and Armin Heller},
+	date-added = {2022-11-22 16:42:38 +0000},
+	date-modified = {2022-11-27 10:00:29 +0000},
+	institution = {Technical University of Munich},
+	title = {A Mechanized Proof Reconstruction for SCNP Termination},
+	year = {2012},
+	bdsk-url-1 = {https://www21.in.tum.de/~krauss/papers/scnp-wst.pdf}}
+
+@book{TermRewriting,
+	author = {Baader, Franz and Nipkow, Tobias},
+	date-added = {2022-11-22 16:40:56 +0000},
+	date-modified = {2022-11-22 16:41:03 +0000},
+	doi = {10.1017/CBO9781139172752},
+	place = {Cambridge},
+	publisher = {Cambridge University Press},
+	title = {Term Rewriting and All That},
+	year = {1998},
+	bdsk-url-1 = {https://doi.org/10.1017/CBO9781139172752}}
+
+@misc{NimFull,
+	author = {Leo Freitas},
+	date-added = {2022-11-22 16:38:58 +0000},
+	date-modified = {2022-11-27 10:00:04 +0000},
+	title = {A {VDM} translation strategy to Isabelle ({Nill Full} game)},
+	year = {2016}}
+
+@manual{VDMJAnnotations,
+	author = {Nick Battle},
+	date-added = {2022-11-22 16:37:36 +0000},
+	date-modified = {2022-11-22 16:38:25 +0000},
+	title = {VDMJ Annotaions Guide},
+	year = {2022}}
+
+@manual{IsaFunctionPackage,
+	author = {Alexander Krauss},
+	date-added = {2022-11-22 16:36:38 +0000},
+	date-modified = {2022-11-22 16:44:16 +0000},
+	organization = {Technical University of Munich},
+	title = {Defining Recursive Functions in Isabelle/HOL},
+	year = {2021}}
+
+@inproceedings{AdvancedVSCodePaper,
+	annote = {Rask, J. K. and Madsen, F. P. and Battle, N. and Freitas, L. and Macedo, H. D. and Larsen, P. G},
+	author = {Rask, J. K. and others},
+	booktitle = {20th International Overture Workshop},
+	date-added = {2022-11-22 16:36:24 +0000},
+	date-modified = {2022-11-27 10:02:18 +0000},
+	pages = {35-50},
+	title = {{Advanced VDM Support in Visual Studio Code}},
+	year = {2022}}
+
+@techreport{Battle09,
+	address = {UK},
+	author = {Nick Battle},
+	comment = {Electronic copy available PGL},
+	institution = {Fujitsu Services Ltd.},
+	key = {Battle09},
+	title = {{VDMJ User Guide}},
+	year = {2009}}
