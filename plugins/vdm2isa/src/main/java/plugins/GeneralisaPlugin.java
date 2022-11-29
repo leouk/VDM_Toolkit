@@ -237,7 +237,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		String dir = location.file.getParent();
 		if (dir == null) dir = ".";
 		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-		File outfile = new File(dir, name);
+		File outfile = new File(dir + "/.generated", name);
 		Console.out.println("Translating module " + module + " as " + outfile.getAbsolutePath());
 		PrintWriter out = new PrintWriter(outfile);
 		out.write(result);
