@@ -14,3 +14,4 @@ plugins/vdmlib/src/main/resources/lib
 plugins/vdmlib/.generated
 plugins/vdmlib/src/main/resources/.generated
 plugins/vdm2isa/src/main/resources/HTML
+plugins/AnnotationsVDMToolkit/target
