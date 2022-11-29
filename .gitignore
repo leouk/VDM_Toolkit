@@ -15,3 +15,6 @@ plugins/vdmlib/.generated
 plugins/vdmlib/src/main/resources/.generated
 plugins/vdm2isa/src/main/resources/HTML
 plugins/AnnotationsVDMToolkit/target
+plugins/vdm2isa/isa/dump
+plugins/vdm2isa/isa/HTML
+plugins/vdm2isa/isa/output/document
