@@ -1,0 +1,11 @@
+module Doc 
+exports all
+definitions
+
+types 
+    --@doc "nat2 corresponds to nat1 different from 1."
+    nat2 = nat
+    inv x == x > 1;
+
+
+end Doc 
