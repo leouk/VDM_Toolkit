@@ -13,11 +13,11 @@ import com.fujitsu.vdmj.po.definitions.POImplicitOperationDefinition;
 import com.fujitsu.vdmj.pog.POType;
 import com.fujitsu.vdmj.po.expressions.POApplyExpression;
 
-public class POwitnessAnnotation extends POAnnotation
+public class POWitnessAnnotation extends POAnnotation
 {
 	private static final long serialVersionUID = 1L;
 
-	public POwitnessAnnotation(TCIdentifierToken name, POExpressionList args)
+	public POWitnessAnnotation(TCIdentifierToken name, POExpressionList args)
 	{
 		super(name, args);
 	}

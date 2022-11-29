@@ -19,13 +19,13 @@ import com.fujitsu.vdmj.values.CPUValue;
 import com.fujitsu.vdmj.values.NameValuePairList;
 import com.fujitsu.vdmj.values.Value;
 
-public class INwitnessAnnotation extends INAnnotation
+public class INWitnessAnnotation extends INAnnotation
 {
 	private static final long serialVersionUID = 1L;
 	private static Context witnessCtxt = null;
 	private final INValueDefinition myDefinition;
 
-	public INwitnessAnnotation(TCIdentifierToken name, INExpressionList args, INValueDefinition myDefinition)
+	public INWitnessAnnotation(TCIdentifierToken name, INExpressionList args, INValueDefinition myDefinition)
 	{
 		super(name, args);
 		this.myDefinition = myDefinition;
@@ -38,7 +38,7 @@ public class INwitnessAnnotation extends INAnnotation
 		witnessCtxt.setThreadState(CPUValue.vCPU);
 		boolean retry = false;
 		List<ContextException> problems = new Vector<ContextException>();
-		List<INAnnotation> witnesses = getInstances(INwitnessAnnotation.class);
+		List<INAnnotation> witnesses = getInstances(INWitnessAnnotation.class);
 		int retries = witnesses.size();
 		do
 		{
@@ -48,7 +48,7 @@ public class INwitnessAnnotation extends INAnnotation
 			{
 				try
 				{
-					INwitnessAnnotation witness = (INwitnessAnnotation)a;
+					INWitnessAnnotation witness = (INWitnessAnnotation)a;
 					NameValuePairList nvpl = witness.myDefinition.getNamedValues(witnessCtxt);
 					witnessCtxt.putList(nvpl);
 				}
