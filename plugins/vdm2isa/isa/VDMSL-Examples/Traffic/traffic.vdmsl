@@ -1,0 +1,110 @@
+module traffic
+exports all
+definitions 
+-- Traffic light control kernel
+-- For Chapter 5 (Basic Elements)
+-- First Version: Without timing constraints
+
+types
+
+  --@idiom(isa) reodered types and functions declared before use
+  Light = <Red> | <Amber> | <Green>;
+
+  Time = real
+  inv t == t >= 0;
+
+  Path = token;
+  
+  Conflict :: path1: Path
+              path2: Path
+  inv mk_Conflict(path1,path2) == path1 <> path2;
+
+-- the kernel data structure has two components representing 
+-- 1) a mapping with the current status of the lights for each 
+-- direction and 2) an unordered collection of conflicts between 
+-- paths.
+
+  Kernel :: lights    : map Path to Light
+            conflicts : set of Conflict
+  inv mk_Kernel(ls,cs) ==
+        forall c in set cs & 
+              mk_Conflict(c.path2,c.path1) in set cs and
+              c.path1 in set dom ls and 
+	      c.path2 in set dom ls and 
+              (ls(c.path1) = <Red> or ls(c.path2) = <Red>)
+
+values
+
+-- The following value definitions are used to construct a
+-- representation of the junction shown in Figure 5.2
+
+  P1 : Path = mk_token("A1North");
+
+  P2 : Path = mk_token("A1South");
+
+  P3 : Path = mk_token("A66East");
+
+  P4 : Path = mk_token("A66West");
+
+  --@LF removed various hidden warnings
+  --   Parsed 1 module in 0.087 secs. No syntax errors
+  -- Warning 5008: conflicts at 54:3 hidden by conflicts in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 72:30
+  -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 72:23
+  -- Warning 5008: p1 at 40:3 hidden by p1 in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 76:26
+  -- Warning 5008: p2 at 42:3 hidden by p2 in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 76:29
+  -- Warning 5008: conflicts at 54:3 hidden by conflicts in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 82:28
+  -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 82:21
+  -- Warning 5008: conflicts at 54:3 hidden by conflicts in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 89:30
+  -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 89:23
+  -- Warning 5008: lights at 48:3 hidden by lights in 'traffic' (src/test/resources/Examples/Traffic/traffic.vdmsl) at line 94:12
+  -- Type checked 1 module in 0.247 secs. No type errors and 9 warnings
+  --@idiom(vdm) always remove VDM strict warnings
+  LIGHTS : map Path to Light
+         = {P1 |-> <Red>,
+            P2 |-> <Red>,
+            P3 |-> <Green>,
+            P4 |-> <Green>};
+
+  CONFLICTS : set of Conflict
+            = {mk_Conflict(P1,P3),
+               mk_Conflict(P1,P4),
+               mk_Conflict(P2,P3),
+               mk_Conflict(P2,P4),
+               mk_Conflict(P3,P1),
+               mk_Conflict(P4,P1),
+               mk_Conflict(P3,P2),
+               mk_Conflict(P4,P2)};
+
+  KERNEL : Kernel 
+         = mk_Kernel(LIGHTS,CONFLICTS)
+
+functions
+
+-- changing the light to green for a given Path
+  ChgLight: (map Path to Light) * Path * Light -> (map Path to Light)
+  ChgLight(lights,p,colour) ==
+    lights ++ {p |-> colour};
+
+  ToGreen: Path * Kernel -> Kernel
+  ToGreen(p,mk_Kernel(lights,conflicts)) ==
+    mk_Kernel(ChgLight(lights,p,<Green>),conflicts)
+  pre p in set dom lights and
+      lights(p) = <Red> and
+      forall mk_Conflict(p1,p2) in set conflicts &
+             (p = p1 => lights(p2) = <Red>);
+
+-- changing the light to red for a given path
+
+  ToRed: Path * Kernel -> Kernel
+  ToRed(p,mk_Kernel(lights,conflicts)) ==
+    mk_Kernel(ChgLight(lights,p,<Red>),conflicts)
+  pre p in set dom lights and lights(p) = <Amber>;
+
+-- changing the light to amber for a given path
+
+  ToAmber: Path * Kernel -> Kernel
+  ToAmber(p,mk_Kernel(lights,conflicts)) ==
+    mk_Kernel(ChgLight(lights,p,<Amber>),conflicts)
+  pre p in set dom lights and lights(p) = <Green>;
+
+end traffic
