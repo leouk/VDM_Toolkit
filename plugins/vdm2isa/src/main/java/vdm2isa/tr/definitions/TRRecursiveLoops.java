@@ -52,9 +52,12 @@ public class TRRecursiveLoops extends TRMappedMap<TCNameToken, TCDefinitionList,
 		return INSTANCE;
 	}
 
-	public void reset()
+	public static void reset()
 	{
-		recursiveLoops.clear();
+		if (INSTANCE != null)
+		{
+			INSTANCE.recursiveLoops.clear();
+		}
 	}
 		
 	/**
