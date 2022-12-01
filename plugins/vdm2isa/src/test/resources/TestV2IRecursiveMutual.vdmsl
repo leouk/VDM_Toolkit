@@ -1,0 +1,18 @@
+module TestV2IRecursiveMutual
+exports all
+definitions 
+
+functions 
+    even: nat -> bool
+    even(n) == 
+    	--@Printf("even(%1s)\n", n)
+    	if n = 0 then true else odd(n-1)
+    measure n;
+    
+    odd: nat -> bool
+    odd(n) == 
+    	--@Printf("odd(%1s)\n", n)
+    	if n = 0 then false else even(n-1)
+    measure n;
+
+end TestV2IRecursiveMutual
