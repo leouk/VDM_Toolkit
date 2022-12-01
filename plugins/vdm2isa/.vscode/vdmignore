@@ -4,6 +4,7 @@ doc
 .generated
 experiments
 src/main/java
+src/main/resources/templates
 src/main/resources/.generated
 src/main/resources/VDMEisbach.thy
 src/main/resources/VDMFSBPOs.thy
