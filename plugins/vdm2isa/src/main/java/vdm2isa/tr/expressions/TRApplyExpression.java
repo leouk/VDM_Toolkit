@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionListList;
+import vdm2isa.tr.definitions.TRRecursiveLoops;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
 import vdm2isa.tr.types.TRBasicType;
 import vdm2isa.tr.types.TRFunctionType;
@@ -45,6 +46,7 @@ public class TRApplyExpression extends TRExpression
 		super.setup();
 		expandApplyArguments();
 		TRNode.setup(type, root, args, argtypes, recursiveCycles); 
+		TRRecursiveLoops.getInstance().addCycle(root, recursiveCycles);
 		//depending on the root: f(x) is different from list(x). map(x) also requires attention!  
 		this.setSemanticSeparator(type instanceof TRSeqType ? IsaToken.SEQAPPLY.toString() : IsaToken.APPLY.toString());
 		//System.out.println(toString());

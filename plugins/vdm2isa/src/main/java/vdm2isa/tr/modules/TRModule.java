@@ -34,7 +34,6 @@ import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRRecursiveLoops;
-import vdm2isa.tr.definitions.TRRecursiveMap;
 import vdm2isa.tr.definitions.TRRenamedDefinition;
 
 public class TRModule extends TRNode

@@ -511,13 +511,15 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 					// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 					if (recursive)
 					{
-						//TCRecursiveLoops loops = TCRecursiveLoops.getInstance();
-						//loops.reset();
-						
-						//TCDefinitionListList result = loops.getCycles(name); 
-						//System.out.println(result.toString());
-						//TODO have to visit-search through all annotations to look for a IsaMeasure!  
-						sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+						TRDefinitionListList cycles = TRRecursiveLoops.getInstance().getCycles(name);
+						if (cycles != null && cycles.size() > 0 && cycles.get(0).size() > 0)
+						{
+							System.out.println("BINGO");
+						}
+						else 
+						{
+							sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+						}
 					}
 					else 
 					{
