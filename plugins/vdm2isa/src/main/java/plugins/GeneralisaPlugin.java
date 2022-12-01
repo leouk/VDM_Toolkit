@@ -58,8 +58,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
-            "lib/VDMToolkit.vdmsl", "TestV2IFcns.vdmsl"
-            
+            "lib/VDMToolkit.vdmsl" 
             //    "VDMToolkit.vdmsl"
             //      ,"TestV2IBindsComplex.vdmsl"
             //    ,"TestV2IErrors.vdmsl"
@@ -77,8 +76,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             // ,"TestV2IExprsToken.vdmsl"
             //    ,"TestV2IFcns.vdmsl"
             //    ,"TestV2IFcnsRecursiveComplexNat.vdmsl"
-                ,"TestV2IFcnsRecursiveNat.vdmsl"
-                ,"TestV2IFcnsRecursiveSet.vdmsl"
+            //    ,"TestV2IFcnsRecursiveNat.vdmsl"
+            //    ,"TestV2IFcnsRecursiveSet.vdmsl"
             //    ,"TestV2IModules.vdmsl"
             //    ,"TestV2ITypes.vdmsl"
             //    , "TestV2ITypesComplexRecord.vdmsl"
@@ -100,6 +99,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"Examples/CMSL/CM.vdmsl"
             //     ,"Examples/CMSL/CMISA.vdmsl"
             //     ,"Examples/CMSL/CMISA.vdmsl"
+            , "TestV2IRecursiveMutual.vdmsl"
             //      ,   "../../../../AnnotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
         });
     }

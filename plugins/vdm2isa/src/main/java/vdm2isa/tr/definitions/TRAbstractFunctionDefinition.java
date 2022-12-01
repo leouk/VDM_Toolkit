@@ -8,7 +8,9 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.tc.TCRecursiveLoops;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -509,6 +511,11 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 					// translate definition according to discovered (possibly implicit) considerations. fcnInType is null for constant functions
 					if (recursive)
 					{
+						//TCRecursiveLoops loops = TCRecursiveLoops.getInstance();
+						//loops.reset();
+						
+						//TCDefinitionListList result = loops.getCycles(name); 
+						//System.out.println(result.toString());
 						//TODO have to visit-search through all annotations to look for a IsaMeasure!  
 						sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 					}
