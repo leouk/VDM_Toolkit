@@ -1,1 +1,26 @@
-theory()
+// Isabelle theory template
+theory(utc, location, name, imports, body) ::= <<
+(* VDM to Isabelle Translation @$utc$  
+   Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
+
+   $location$
+*)
+theory $name$
+imports VDMToolkit $imports$
+begin
+$body$
+end 
+>>
+
+attributeIt(attr, expr) ::= "$if(attr)$ [$attr; separator=\", \"$]: $endif$ $expr$"
+
+innerSyntaxIt(expr) ::= "\\<open\>$expr$\\<close\>"
+defineIt(name, expr) ::= "$name$ \\<equiv\> $expr$"
+
+// Isabelle abbreviation template 
+// version with type:innerSyntaxIt() is confusing to me when multiple params?
+abbreviation(name, type, attr, expr) ::= <<
+abbreviation 
+    $name$ :: $innerSyntaxIt(type)$ where
+    $attributeIt(attr, innerSyntaxIt(defineIt(name, expr)))$
+>> 

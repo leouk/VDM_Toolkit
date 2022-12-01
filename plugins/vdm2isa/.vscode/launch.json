@@ -6,7 +6,14 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Java Program",
+            "name": "Launch ST",
+            "request": "launch",
+            "mainClass": "vdm2isa.lex.templates.IsaST",//"${file}"
+            "projectName": "vdm2isa"
+        },
+        {
+            "type": "java",
+            "name": "Launch vdm2isa",
             "request": "launch",
             "mainClass": "plugins.GeneralisaPlugin",
             "projectName": "vdm2isa",
