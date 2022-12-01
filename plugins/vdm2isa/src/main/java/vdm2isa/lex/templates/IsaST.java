@@ -15,7 +15,7 @@ public class IsaST {
     public static final String ISA_TEMPLATE_GROUPDIR = "src/main/resources/templates/";
 
     // Maybe go into this? To avoid having template injection everywehre? 
-    public static class IsaTheory {
+    public static class IsaTheory0 {
 
         public static final String TEMPLATE = "theory";
         public static final String UTC      = "utc";
@@ -27,28 +27,58 @@ public class IsaST {
 
         private final ST st; 
 
-        public IsaTheory(STGroupFile stg)
+        public IsaTheory0(STGroupFile stg)
         {
             st = stg.getInstanceOf(TEMPLATE);
             st.add(UTC, Instant.now().toString());
         }
 
-        public IsaTheory setLocation(String loc)
+        public IsaTheory0 setLocation(String loc)
         {
             st.add(LOCATION, loc);
             return this;
         }
 
-        public IsaTheory setName(String name)
+        public IsaTheory0 setName(String name)
         {
             st.add(NAME, name);
             return this;
         }
 
-        public IsaTheory setImports(String imp)
+        public IsaTheory0 setImports(String imp)
         {
             st.add(IMPORTS, imp);
             return this;
+        }
+    } 
+
+    public static class IsaTheory {
+
+        public final Instant utc;
+        public final String comment;
+        public final String location; 
+        public final String name;
+        public final String imports;
+        public final String body;
+
+        public IsaTheory(String location, String name, String imports, String body)
+        {
+            this(Instant.now(), "", location, name, imports, body);
+        }
+
+        public IsaTheory(Instant utc, String location, String name, String imports, String body)
+        {
+            this(utc, "", location, name, imports, body);
+        }
+
+        public IsaTheory(Instant utc, String comment, String loc, String name, String imports, String body)
+        {
+            this.utc = utc;
+            this.comment = comment;
+            this.location = loc;
+            this.name = name;
+            this.imports = imports;
+            this.body = body;
         }
     } 
 
@@ -57,11 +87,15 @@ public class IsaST {
         STGroup.trackCreationEvents = true;
         STGroup group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theory.stg", '$', '$');
         ST st = group.getInstanceOf("theory");
-        st.add("utc", "AGORA!");
-        st.add("location", "LOCATION!");
+        st.add("utc", "NOW!");
+        st.add("location", "HERE!");
         st.add("name", "Test");
         st.add("imports", "OtherFile");
         st.add("body", "\tnothing");
+        System.out.println(st.render());
+
+        st = group.getInstanceOf("theory2");
+        st.add("thy", new IsaTheory("HERE!", "Test", "Import", "\tnothing")); 
         System.out.println(st.render());
 
         st = group.getInstanceOf("abbreviation");

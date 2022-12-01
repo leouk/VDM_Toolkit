@@ -1,14 +1,30 @@
 // Isabelle theory template
-theory(utc, location, name, imports, body) ::= <<
+theory(utc, comment, location, name, imports, body) ::= <<
 (* VDM to Isabelle Translation @$utc$  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
-
+   
+   $comment$
    $location$
 *)
 theory $name$
 imports VDMToolkit $imports$
 begin
 $body$
+end 
+>>
+
+// Isabelle theory template
+theory2(thy) ::= <<
+(* VDM to Isabelle Translation @$thy.utc$  
+   Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
+   
+   $thy.comment$
+   $thy.location$
+*)
+theory $thy.name$
+imports VDMToolkit $thy.imports$
+begin
+$thy.body$
 end 
 >>
 
