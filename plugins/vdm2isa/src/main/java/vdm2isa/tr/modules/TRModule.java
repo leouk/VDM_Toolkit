@@ -4,7 +4,6 @@
 
 package vdm2isa.tr.modules;
 
-import com.fujitsu.vdmj.tc.TCRecursiveLoops;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
@@ -20,7 +19,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.FileList;
 
 import vdm2isa.lex.IsaTemplates;
@@ -112,15 +110,6 @@ public class TRModule extends TRNode
 		
 		// after adding definitions, figure out exports as complement of definitions for adding hide_const 
 		figureOutModuleExports();
-
-		try {
-			recursiveLoop = ClassMapper.getInstance(TRNode.MAPPINGS).convert(TCRecursiveLoops.getInstance());
-		}
-		catch (Exception e)
-		{
-			report(IsaErrorMessage.VDMSL_INVALID_RECURSIVE_MAP, name, e.toString());
-		}
-
 
 		TRNode.setup(allDefs);
 		//System.out.println(toString());

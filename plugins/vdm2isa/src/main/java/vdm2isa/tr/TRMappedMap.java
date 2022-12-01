@@ -6,8 +6,10 @@ import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedMap;
 
 abstract public class TRMappedMap<FROM_KEY extends Mappable, FROM extends Mappable,
-	TO_KEY extends Mappable, TO extends Mappable> extends MappedMap<FROM_KEY, FROM, TO_KEY, TO>
+	TO_KEY extends Mappable, TO extends MappableNode> extends MappedMap<FROM_KEY, FROM, TO_KEY, TO>
 	implements Mappable {
+
+	//TODO for now stick to Mappable rather MappableNode implementation, as this map won't be translated directly?
 
     private static final long serialVersionUID = 1L;
 
