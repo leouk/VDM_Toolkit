@@ -10,6 +10,8 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
+import vdm2isa.lex.templates.IsaTypeDecl.TypeDeclKind;
+
 public class IsaST {
     
     public static final String ISA_TEMPLATE_GROUPDIR = "src/main/resources/templates/";
@@ -52,37 +54,30 @@ public class IsaST {
         }
     } 
 
-    public static class IsaTheory {
-
-        public final Instant utc;
-        public final String comment;
-        public final String location; 
-        public final String name;
-        public final String imports;
-        public final String body;
-
-        public IsaTheory(String location, String name, String imports, String body)
-        {
-            this(Instant.now(), "", location, name, imports, body);
-        }
-
-        public IsaTheory(Instant utc, String location, String name, String imports, String body)
-        {
-            this(utc, "", location, name, imports, body);
-        }
-
-        public IsaTheory(Instant utc, String comment, String loc, String name, String imports, String body)
-        {
-            this.utc = utc;
-            this.comment = comment;
-            this.location = loc;
-            this.name = name;
-            this.imports = imports;
-            this.body = body;
-        }
-    } 
-
     public static void main(String[] args) throws IOException
+    {
+        test1();
+    }
+
+    public static void test2() 
+    {
+        STGroup.trackCreationEvents = true;
+        STGroup group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theoryobj.stg", '$', '$');
+        ST st = group.getInstanceOf("theory");
+        st.add("thy", new IsaTheory("HERE!", "Test", "Import", "\tnothing")); 
+        System.out.println(st.render());
+
+        st = group.getInstanceOf("typedecl");
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.type_synonym, "MyType", "nat"));
+        System.out.println(st.render());
+
+        st = group.getInstanceOf("typedecl");
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.datatype, "MyDType", "A | B | C"));
+        System.out.println(st.render());
+
+        st.inspect();
+    }
+    public static void test1() throws IOException
     {
         STGroup.trackCreationEvents = true;
         STGroup group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theory.stg", '$', '$');
@@ -94,16 +89,11 @@ public class IsaST {
         st.add("body", "\tnothing");
         System.out.println(st.render());
 
-        st = group.getInstanceOf("theory2");
-        st.add("thy", new IsaTheory("HERE!", "Test", "Import", "\tnothing")); 
-        System.out.println(st.render());
-
         st = group.getInstanceOf("abbreviation");
         st.add("name", "test");
         st.add("type", "VDMNat \\<Rightarrow> \\<bool>");
         st.add("expr", "True");
         System.out.println(st.render());
-
         st = group.getInstanceOf("definition");
         st.add("name", "test");
         st.add("type", "VDMNat \\<Rightarrow> \\<bool>");
@@ -111,8 +101,17 @@ public class IsaST {
         st.add("attr", "intro!");
         st.add("expr", "True");
         System.out.println(st.render());
+        //st.inspect();
 
-        st = group.getInstanceOf("tsynonym");
+        st = group.getInstanceOf("typedecl");
+        st.add("kind", "type_synonym");
+        st.add("name", "'a");
+        st.add("name", "test");
+        st.add("expr", "'a set");
+        System.out.println(st.render());
+
+        st = group.getInstanceOf("typedecl");
+        st.add("kind", "datatype");
         st.add("name", "'a");
         st.add("name", "test");
         st.add("expr", "'a set");
@@ -140,6 +139,6 @@ public class IsaST {
         st.add("expr", "True");
         System.out.println(st.render());
 
-        st.inspect();
+        //st.inspect();
     }  
 }

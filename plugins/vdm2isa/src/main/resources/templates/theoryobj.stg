@@ -1,21 +1,23 @@
+delimiters "$", "$"
+
 // Isabelle theory template
-theory(utc, comment, location, name, imports, body) ::= <<
-(* VDM to Isabelle Translation @$utc$  
+theory(thy) ::= <<
+(* VDM to Isabelle Translation @$thy.utc$  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
    
-   $comment; wrap$
-   $location; wrap$
+   $thy.comment; wrap$
+   $thy.location; wrap$
 *)
-theory $name$
-imports VDMToolkit $imports$
+theory $thy.name$
+imports VDMToolkit $thy.imports$
 begin
-$body$
+$thy.body$
 end 
 >>
 
 // Isabelle type synonym template
-typedecl(kind, name, expr) ::= <<
-$kind$ $defineIt(listIt(name, " "), innerSyntaxIt(expr), true)$
+typedecl(tdecl) ::= <<
+$tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(tdecl.expr), true)$
 >>
 
 //TODO how to pass lemma list for lemma? 
@@ -51,7 +53,6 @@ $kind$ $name$ $attribute(attr); wrap$:
 listIt(l, sep=", ") ::= "$l; separator=sep$"
 attribute(attr) ::= "$if(attr)$ [$listIt(attr)$] $endif$"
 attributeIt(attr, expr) ::= "$if(attr)$ $attribute(attr)$: $endif$ $expr$"
-
 
 // Isabelle inner syntax brackets over given expression
 // e.g. \<open> EXPR \<close>
