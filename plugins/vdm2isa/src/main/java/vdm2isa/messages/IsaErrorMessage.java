@@ -65,6 +65,8 @@ public enum IsaErrorMessage {
     "Invalid state initialisation expression: it must be a equals expression for `$1%s`"),
     VDMSL_INVALID_FIELD_NOTAGNAME_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 20,
     "Field has no tag name in record %1$s"),
+    VDMSL_INVALID_RECURSIVE_MAP(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 21,
+    "Invalid recursive map for module %1$s"),
 
     VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 50, 
     "Implicit function cannot have bodies for Isabelle Translation."),

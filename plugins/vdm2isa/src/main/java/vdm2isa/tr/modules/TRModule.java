@@ -4,6 +4,7 @@
 
 package vdm2isa.tr.modules;
 
+import com.fujitsu.vdmj.tc.TCRecursiveLoops;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.mapper.FileList;
 
 import vdm2isa.lex.IsaTemplates;
@@ -31,6 +33,8 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
+import vdm2isa.tr.definitions.TRRecursiveLoops;
+import vdm2isa.tr.definitions.TRRecursiveMap;
 import vdm2isa.tr.definitions.TRRenamedDefinition;
 
 public class TRModule extends TRNode
@@ -48,6 +52,7 @@ public class TRModule extends TRNode
 	private final Set<String> imports; 
 	private final Set<TCDefinition> defsToHide;
 	protected final TRDefinitionList allDefs;
+	protected TRRecursiveLoops recursiveLoop;
 
 	public TRModule(TCModule m, TRIsaVDMCommentList comments, TRAnnotationList annotations, TCIdentifierToken name, 
 		TRDefinitionList importdefs, TRDefinitionList exportdefs, TRDefinitionList definitions, FileList files)
@@ -61,7 +66,7 @@ public class TRModule extends TRNode
 		this.exportdefs = exportdefs;
 		this.definitions = definitions;
 		this.files = files;
-
+		this.recursiveLoop = null;
 		this.imports = new TreeSet<String>();
 		this.defsToHide = new HashSet<TCDefinition>();
 		this.allDefs = new TRDefinitionList();
@@ -108,6 +113,15 @@ public class TRModule extends TRNode
 		
 		// after adding definitions, figure out exports as complement of definitions for adding hide_const 
 		figureOutModuleExports();
+
+		try {
+			recursiveLoop = ClassMapper.getInstance(TRNode.MAPPINGS).convert(TCRecursiveLoops.getInstance());
+		}
+		catch (Exception e)
+		{
+			report(IsaErrorMessage.VDMSL_INVALID_RECURSIVE_MAP, name, e.toString());
+		}
+
 
 		TRNode.setup(allDefs);
 		//System.out.println(toString());
