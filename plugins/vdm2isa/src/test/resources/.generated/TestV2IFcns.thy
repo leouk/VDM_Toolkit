@@ -5,7 +5,7 @@ in 'TestV2IFcns.vdmsl' at line 1:8
 files = [TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns
-imports "VDMToolkit" 
+imports VDMToolkit
 begin
 
 
@@ -29,7 +29,7 @@ where
 null\<close>
 \<comment>\<open>in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 8:5\<close>
 definition
-	post_const :: \<open>VDMNat \<Rightarrow> bool\<close>
+	post_const :: \<open>VDMNat \<Rightarrow> \<bool>\<close>
 where
 	\<open>post_const RESULT \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_const` specification.\<close>
