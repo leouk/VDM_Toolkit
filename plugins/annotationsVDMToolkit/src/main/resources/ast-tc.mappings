@@ -6,7 +6,7 @@
 package annotations.ast to annotations.tc;
 
 map ASTTimeAnnotation{name, args} to TCTimeAnnotation(name, args);
-map ASTwitnessAnnotation{name, args} to TCwitnessAnnotation(name, args);
+map ASTWitnessAnnotation{name, args} to TCWitnessAnnotation(name, args);
 map ASTTheoremAnnotation{name, args} to TCTheoremAnnotation(name, args);
 map ASTLemmaAnnotation{name, args} to TCLemmaAnnotation(name, args);
 map ASTTheoremAttributeAnnotation{name, args} to TCTheoremAttributeAnnotation(name, args);
