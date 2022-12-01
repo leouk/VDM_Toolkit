@@ -1,9 +1,0 @@
-##########################################################################################
-# The class mapping definition for the VDMJ Proof Obligation Generator. See ClassMapper.
-##########################################################################################
-
-# annotations
-package annotations.tc to annotations.po;
-map TCwitnessAnnotation{name, args} to POwitnessAnnotation(name, args);
-map TCTheoremAnnotation{name, args} to POTheoremAnnotation(name, args);
-map TCLemmaAnnotation{name, args} to POLemmaAnnotation(name, args);
