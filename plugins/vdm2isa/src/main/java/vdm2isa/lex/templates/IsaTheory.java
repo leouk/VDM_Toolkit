@@ -2,7 +2,7 @@ package vdm2isa.lex.templates;
 
 import java.time.Instant;
 
-public class IsaTheory {
+public class IsaTheory extends IsaAbstractTemplate {
     
     public final Instant utc;
     public final String comment;
