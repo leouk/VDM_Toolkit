@@ -13,6 +13,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
+import vdm2isa.lex.templates.IsaIdentifier;
 import vdm2isa.messages.IsaErrorMessage;
 
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
@@ -303,8 +304,11 @@ public enum IsaToken {
 		this.vdm = vdm;
 		this.isa = isa;
 		// all but underscore, for dummy pattern in identifiers as valid 
-		if (!isa.equals("_"))
-			IsaTemplates.ALL_ISA_TOKENS.add(isa);//this);
+		if (!isa.equals("_") && !isa.isEmpty())
+		{
+			IsaTemplates.ALL_ISA_TOKENS.add(isa);
+			IsaIdentifier.addIsaToken(isa);
+		}
 	}
 
 	//TODO add infixlr notation here to know where/when to "pad" the string?
@@ -379,7 +383,7 @@ public enum IsaToken {
 			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 
 			!IsaTemplates.ALL_ISA_TOKENS.contains(identifier) &&
 			// single "_" is valid "dummy" identifier pattern! Can't have _x though. 
-			(identifier.equals(IsaToken.UNDERSCORE.toString()) ||
+			(identifier.equals(IsaToken.PLACEHOLDER.toString()) ||
 			!identifier.startsWith(IsaToken.UNDERSCORE.toString()));
     }
 
