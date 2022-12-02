@@ -20,9 +20,14 @@ typedecl(tdecl) ::= <<
 $tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(tdecl.expr), true)$
 >>
 
+// This doesn't quite work. I am still not sure how parameter passing works here.
+typedecl2(tdecl) ::= <<
+$tdecl.kind$ $tdecl.name:listIt(" "):innerSyntaxIt(tdecl.expr):defineIt(true)$
+>>
+
 //TODO how to pass lemma list for lemma? 
-lemmas(name, lemma) ::= <<
-lemmas $defineIt(name, listIt(lemma, " "), true)$
+lemmas(lms) ::= <<
+lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 >>
 
 // Isabelle abbreviation template 
