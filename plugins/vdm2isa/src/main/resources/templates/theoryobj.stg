@@ -20,6 +20,11 @@ typedecl(tdecl) ::= <<
 $tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
 >>
 
+recorddecl(rec) ::= <<
+record $rec.name$ = 
+    $rec.field.name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap; separator="\n"$
+>>
+
 //TODO how to pass lemma list for lemma? 
 lemmas(lms) ::= <<
 lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
@@ -61,11 +66,4 @@ innerSyntaxIt(expr) ::= "\\<open>$expr$\\<close>"
 // Isabelle named definitions as equality or equivalence 
 // e.g., NAME = EXPR vs NAME == EXPR 
 defineIt(name, expr, eq=false) ::= "$name$$if(eq)$ = $else$ \\<equiv> $endif$$expr$"
-
-//TODO: how to use the :XXXX tempaltes? 
-abbreviationNEW(name, type, attr, expr) ::= <<
-abbreviationNEW 
-    $name$ :: $type:innerSyntaxIt()$ where
-    $attributeIt(attr, innerSyntaxIt(defineIt(name, expr, false)))$
->> 
 
