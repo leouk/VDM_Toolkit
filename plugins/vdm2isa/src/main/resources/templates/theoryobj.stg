@@ -20,11 +20,20 @@ typedecl(tdecl) ::= <<
 $tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
 >>
 
-record2(rec) ::= <<
+record(rec) ::= <<
 record $rec.name$ = 
-    $(rec.field).name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap, separator="\n"$
+    $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
 >>
 
+$! record(rec) ::= <<
+record $rec.name$ = 
+    $rec.fieldName, rec.fieldType: { n, t | $n$ :: $innerSyntaxIt(t)$ }; wrap, separator="\n"$
+>> !$
+
+//record2(rec) ::= <<
+//record $rec.name$ = 
+//    $(rec.field).name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap, separator="\n"$
+//>>
 //record3(rec) ::= <<
 //record $rec.name$ = 
 //    $fields(rec.field)$ 
@@ -47,16 +56,18 @@ $clm.kind$ $clm.name$ $attribute(clm.attr); wrap$:
 // version with type:innerSyntaxIt() is confusing to me when multiple params?
 abbreviation(abbrv) ::= <<
 abbreviation 
-    $abbrv.name$ :: $innerSyntaxIt(abbrv.type); wrap$ where
+    $signature(abbrv)$ where
     $innerSyntaxIt(defineIt(abbrv.name, abbrv.expr, false)); wrap$
 >> 
 
 // Isabelle definition template 
 definition(def) ::= <<
 definition
-    $def.name$ :: $innerSyntaxIt(def.type); wrap$ where
+    $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
 >>
+
+signature(x) ::= "$x.name$ :: $innerSyntaxIt(x.type); wrap$"
 
 // Isabelle theorem attribute for given expression, if any
 // e.g. [simp, intro!]: EXPR 
