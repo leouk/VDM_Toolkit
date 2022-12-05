@@ -96,9 +96,10 @@ public class IsaIdentifier extends IsaAbstractTemplate {
         return new IsaIdentifier(name);
     }
 
-    public IsaIdentifier(String name)
+    protected IsaIdentifier(String name)
     {
-        this.name = name; 
+        super();
+		this.name = name; 
         if (!validIsaIdentifier(this.name))
             throw new IsaTemplateException("Invalid Isabelle identifer name " + this.name);
     }

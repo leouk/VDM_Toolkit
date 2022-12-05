@@ -2,14 +2,13 @@ package vdm2isa.lex.templates;
 
 import java.util.List;
 
-public class IsaLemmas extends IsaAbstractTemplate {
+public class IsaLemmas extends IsaNamedTemplate {
 
-    public final String name;
     public final List<String> lemma; 
 
-    public IsaLemmas(String name, String... lemma)
+    public IsaLemmas(IsaIdentifier name, String... lemma)
     {
-        this.name = name; 
+        super(name); 
         this.lemma = IsaAbstractTemplate.createList(lemma);
     }
 }

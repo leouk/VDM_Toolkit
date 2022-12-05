@@ -2,9 +2,8 @@ package vdm2isa.lex.templates;
 
 import java.util.List;
 
-public class IsaDefinition extends IsaAbstractTemplate {
+public class IsaDefinition extends IsaNamedTemplate {
     
-    public final IsaIdentifier name;
     public final String type;
     public final List<IsaAttribute> attr;
     public final String expr;
@@ -17,7 +16,7 @@ public class IsaDefinition extends IsaAbstractTemplate {
 
     public IsaDefinition(IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
     {
-        this.name = name;
+        super(name);
         this.type = type;
         this.expr = expr; 
         this.eq = eq; 
