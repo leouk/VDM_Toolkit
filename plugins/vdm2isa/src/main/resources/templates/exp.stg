@@ -1,0 +1,19 @@
+delimiters "$", "$"
+
+binexp(bexp) ::= "$bexp.lhs$ $bexp.op$ $bexp.rhs$"
+
+compexp(expr, vars, pred, ldelim="{", rdelim="}") ::= "$ldelim$ $expr$ | $vars:{ n, t | ($n$::$t$) }$ . $pred$ $rdelim$"
+
+ifexp(vdmif) ::= <<
+    (if $vdmif.test$ then 
+        $vdmif.then$
+    else 
+        $vdmif.els$
+    )
+>>
+
+iotaexp(iota) ::= "(\\<some> $iota.var$ . $iota.pred$)"
+
+maplet(m) ::= "$m.x$ \\<mapsto> $m.y$"
+
+parenthesise(x) ::= "($x$)"

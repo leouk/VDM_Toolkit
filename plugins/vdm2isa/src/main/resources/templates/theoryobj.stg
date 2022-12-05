@@ -1,5 +1,7 @@
 delimiters "$", "$"
 
+import "exp.stg"
+
 // Isabelle theory template
 theory(thy) ::= <<
 (* VDM to Isabelle Translation @$thy.utc$  
@@ -25,21 +27,6 @@ record $rec.name$ =
     $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
 >>
 
-$! record(rec) ::= <<
-record $rec.name$ = 
-    $rec.fieldName, rec.fieldType: { n, t | $n$ :: $innerSyntaxIt(t)$ }; wrap, separator="\n"$
->> !$
-
-//record2(rec) ::= <<
-//record $rec.name$ = 
-//    $(rec.field).name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap, separator="\n"$
-//>>
-//record3(rec) ::= <<
-//record $rec.name$ = 
-//    $fields(rec.field)$ 
-//>>
-//fields(f) ::= "$f.name$: $innerSyntaxIt(f.type, \" \")); wrap, separator={\n}$"
-
 lemmas(lms) ::= <<
 lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 >>
@@ -48,7 +35,7 @@ lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 // e.g. lemma XYZ[ATTRLIST]: EXPR; 
 //TODO how to filter kind = {lemma, theorem, corollary}?
 claim(clm) ::= <<
-$clm.kind$ $clm.name$ $attribute(clm.attr); wrap$:
+$clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
     $innerSyntaxIt(clm.expr); wrap$  
 >>
 
@@ -66,6 +53,19 @@ definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
 >>
+
+fundef(fdef) ::= <<
+definition
+    $signature(fdef)$ where
+    $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, fdef.eq))); wrap$
+>>
+
+fundefIt(name, expr, eq) ::= <<
+    $name$$if(eq)$ = $else$ \\<equiv> $endif$
+        $ifexp(ndefIt("pre", name), expr, "undefined"); wrap$
+>>
+
+ndefIt(prefix, name) ::= "$prefix$_$name$_def"
 
 signature(x) ::= "$x.name$ :: $innerSyntaxIt(x.type); wrap$"
 

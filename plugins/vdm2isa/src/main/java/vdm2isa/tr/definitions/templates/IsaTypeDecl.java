@@ -1,6 +1,9 @@
-package vdm2isa.lex.templates;
+package vdm2isa.tr.definitions.templates;
 
 import java.util.List;
+
+import vdm2isa.tr.templates.IsaAbstractTemplate;
+import vdm2isa.tr.templates.IsaTemplateException;
 
 public class IsaTypeDecl extends IsaAbstractTemplate {
     public static enum TypeDeclKind { type_synonym, datatype }

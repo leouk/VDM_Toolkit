@@ -6,8 +6,18 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import vdm2isa.lex.templates.IsaClaim.ClaimKind;
-import vdm2isa.lex.templates.IsaTypeDecl.TypeDeclKind;
+import vdm2isa.tr.definitions.templates.IsaAbbreviation;
+import vdm2isa.tr.definitions.templates.IsaAttribute;
+import vdm2isa.tr.definitions.templates.IsaClaim;
+import vdm2isa.tr.definitions.templates.IsaDefinition;
+import vdm2isa.tr.definitions.templates.IsaLemmas;
+import vdm2isa.tr.definitions.templates.IsaRecord;
+import vdm2isa.tr.definitions.templates.IsaRecordField;
+import vdm2isa.tr.definitions.templates.IsaTypeDecl;
+import vdm2isa.tr.definitions.templates.IsaClaim.ClaimKind;
+import vdm2isa.tr.definitions.templates.IsaTypeDecl.TypeDeclKind;
+import vdm2isa.tr.modules.templates.IsaTheory;
+import vdm2isa.tr.templates.IsaIdentifier;
 
 public class IsaST {
     
@@ -63,7 +73,11 @@ public class IsaST {
         st.add("rec", r);
         System.out.println(st.render());
 
-        st.inspect();
+        st = group.getInstanceOf("fundef");
+        st.add("fdef", new IsaDefinition(IsaIdentifier.valueOf("myFunDef"), "nat", "10", IsaAttribute.simp));
+        System.out.println(st.render());
+
+//        st.inspect();
     }
 
     public static void test1() throws IOException

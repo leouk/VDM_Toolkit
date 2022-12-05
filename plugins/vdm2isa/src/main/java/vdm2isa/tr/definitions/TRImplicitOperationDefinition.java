@@ -9,7 +9,7 @@ import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
 import vdm2isa.tr.expressions.TRExpression;
-import vdm2isa.tr.expressions.TRStatement;
+import vdm2isa.tr.statements.TRStatement;
 import vdm2isa.tr.types.TROperationType;
 import vdm2isa.tr.types.TRPatternListTypePairList;
 import vdm2isa.tr.types.TRType;

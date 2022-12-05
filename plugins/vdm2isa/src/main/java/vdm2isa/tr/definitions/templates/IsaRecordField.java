@@ -1,4 +1,7 @@
-package vdm2isa.lex.templates;
+package vdm2isa.tr.definitions.templates;
+
+import vdm2isa.tr.templates.IsaAbstractTemplate;
+import vdm2isa.tr.templates.IsaIdentifier;
 
 public class IsaRecordField extends IsaAbstractTemplate {
     

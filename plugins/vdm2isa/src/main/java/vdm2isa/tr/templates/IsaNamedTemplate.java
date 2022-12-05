@@ -1,4 +1,4 @@
-package vdm2isa.lex.templates;
+package vdm2isa.tr.templates;
 
 public abstract class IsaNamedTemplate extends IsaAbstractTemplate {
 
