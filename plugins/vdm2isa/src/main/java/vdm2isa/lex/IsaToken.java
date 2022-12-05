@@ -13,8 +13,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import plugins.GeneralisaPlugin;
 import plugins.Vdm2isaPlugin;
-import vdm2isa.lex.templates.IsaIdentifier;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.tr.templates.IsaIdentifier;
 
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
