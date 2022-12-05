@@ -7,6 +7,7 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import vdm2isa.lex.templates.IsaClaim.ClaimKind;
+import vdm2isa.lex.templates.IsaTypeDecl.TypeDeclKind;
 
 public class IsaST {
     
@@ -27,20 +28,20 @@ public class IsaST {
     {
         group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theoryobj.stg", '$', '$');
 
-        // st = group.getInstanceOf("theory");
-        // st.add("thy", new IsaTheory("HERE!", "Test", "Import", "\tnothing")); 
-        // System.out.println(st.render());
+        st = group.getInstanceOf("theory");
+        st.add("thy", new IsaTheory("HERE!", "Test", "Import", "\tnothing")); 
+        System.out.println(st.render());
 
-        // st = group.getInstanceOf("typedecl");
-        // st.add("tdecl", new IsaTypeDecl(TypeDeclKind.type_synonym, "MyType", "nat"));
-        // System.out.println(st.render());
+        st = group.getInstanceOf("typedecl");
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.type_synonym, "MyType", "nat"));
+        System.out.println(st.render());
 
-        // st = group.getInstanceOf("typedecl");
-        // st.add("tdecl", new IsaTypeDecl(TypeDeclKind.datatype, "MyDType", "A", "B", "C"));
-        // System.out.println(st.render());
+        st = group.getInstanceOf("typedecl");
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.datatype, "MyDType", "A", "B", "C"));
+        System.out.println(st.render());
 
         st = group.getInstanceOf("lemmas");
-        st.add("lms", new IsaLemmas("LemmasNames", "Lemma1", "Lemma2", "Lemma3"));
+        st.add("lms", new IsaLemmas(IsaIdentifier.valueOf("LemmasNames"), "Lemma1", "Lemma2", "Lemma3"));
         System.out.println(st.render());
 
         st = group.getInstanceOf("claim");
@@ -53,6 +54,13 @@ public class IsaST {
 
         st = group.getInstanceOf("definition");
         st.add("def", new IsaDefinition(IsaIdentifier.valueOf("myDef"), "nat", "10", IsaAttribute.simp));
+        System.out.println(st.render());
+
+        st = group.getInstanceOf("record");
+        IsaRecord r = new IsaRecord(IsaIdentifier.valueOf("myRec"), 
+                                IsaRecordField.valueOf("field1", "nat"),
+                                IsaRecordField.valueOf("field2", "int"));
+        st.add("rec", r);
         System.out.println(st.render());
 
         st.inspect();
