@@ -20,12 +20,17 @@ typedecl(tdecl) ::= <<
 $tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
 >>
 
-recorddecl(rec) ::= <<
+record2(rec) ::= <<
 record $rec.name$ = 
-    $rec.field.name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap; separator="\n"$
+    $(rec.field).name$ : $innerSyntaxIt(listIt(rec.field.type, " ")); wrap, separator="\n"$
 >>
 
-//TODO how to pass lemma list for lemma? 
+//record3(rec) ::= <<
+//record $rec.name$ = 
+//    $fields(rec.field)$ 
+//>>
+//fields(f) ::= "$f.name$: $innerSyntaxIt(f.type, \" \")); wrap, separator={\n}$"
+
 lemmas(lms) ::= <<
 lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 >>
