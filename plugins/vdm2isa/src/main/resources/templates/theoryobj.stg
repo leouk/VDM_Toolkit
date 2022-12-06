@@ -13,7 +13,7 @@ theory(thy) ::= <<
 theory $thy.name$
 imports VDMToolkit $listIt(thy.imports); wrap$
 begin
-$thy.body$
+$listIt(thy.body, "\n")$
 end 
 >>
 
@@ -77,18 +77,17 @@ definition
 //TODO refactor some of these defs into inner templates
 //don't attribute the pre_name_def, as user-defined one is likely to be different
 rfundef(fdef) ::= <<
-$fdef:{ f | $commentIt(f.comment); wrap, separator="\n"$ }$
-declare $fdef:{ f | $ndefIt("pre_", f.name, "_def")$ [simp] }; wrap, separator="\n"$
-
+$fdef: { f | $commentIt(f.comment)$ }; wrap, separator="\n"$
+declare $fdef:{ f | $declareIt(f)$ }; wrap, separator="\n\t"$
+    
 fun (domintros) 
-    $signature(fdef)$ where
-    $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, true))); wrap$    
-
-declare $fdef:{ f | $ndefIt("pre_", f.name, "_def")$ [simp del] }$
-
+    $fdef: { f | $signature(f)$ }; wrap, separator=" and\n"$ where
+    $fdef: { f | $attributeIt(f.attr, innerSyntaxIt(fundefIt(f.name, f.expr, true))); wrap$ }; wrap, separator="\n|\t"$
+        
+declare $fdef:{ f | $declareIt(f, true)$ }; wrap, separator="\n"$
 >>
 
-declareIt(fdef, del=false) ::= <%$ndefIt("pre_", fdef.name, "_def")$ [simp $if(del)$del$endif$]%>
+declareIt(fdef, del=false) ::= <%$ndefIt("pre_", fdef.name, "_def")$ [simp$if(del)$ del$endif$]%>
 
 // Inner templates. 
 //    * name can contain formal parameters; e.g. name = ["f", "x", "y"] for "f(x,y)"
@@ -101,10 +100,10 @@ fundefIt(name, expr, eq) ::= <<
 >>
 
 // name definition expansion with prefix/suffix (if any)
-ndefIt(prefix, name, suffix=" ") ::= <%$prefix$$first(name)$$suffix$%>
+ndefIt(prefix, name, suffix=" ") ::= <%$prefix$$first(name)$$suffix$ $listIt(rest(name))$%>
 
 // Isabelle type signature as "name :: \\<open>type\\<close>"
-signature(x) ::= <%$first(x.name)$ :: $innerSyntaxIt(x.type); wrap$%>
+signature(x) ::= <%$first(x.name)$ :: $innerSyntaxIt(listIt(x.type, " \\<Rightarrow> ")); wrap$%>
 
 // Separate given list with given separator with ", " as default; ST can't have " " as default?!
 listIt(l, sep=" ") ::= <%$l; separator=sep$%>
