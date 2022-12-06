@@ -34,7 +34,7 @@ lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 // Isabelle type synonym and simple data type template
 typedecl(tdecl) ::= <<
 $commentIt(tdecl.comment)$
-$tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
+$tdecl.kind$ $defineIt(tdecl.name, innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
 >>
 
 record(rec) ::= <<
