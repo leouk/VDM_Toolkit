@@ -3,6 +3,9 @@ package vdm2isa.tr.definitions.templates;
 import vdm2isa.tr.templates.IsaAbstractTemplate;
 import vdm2isa.tr.templates.IsaIdentifier;
 
+/**
+ * Represents an Isabelle record field. This is used for VDM record fields.
+ */
 public class IsaRecordField extends IsaAbstractTemplate {
     
     public final IsaIdentifier name; 

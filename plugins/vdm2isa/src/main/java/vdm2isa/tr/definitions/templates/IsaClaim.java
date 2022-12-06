@@ -16,7 +16,12 @@ public class IsaClaim extends IsaNamedTemplate {
 
     public IsaClaim(ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
     {
-        super(name);
+        this(null, kind, name, expr, attr);
+    }
+
+    public IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
+    {
+        super(comment, name);
         this.kind = kind;
         this.attr = IsaAbstractTemplate.createList(attr); 
         this.expr = expr; 

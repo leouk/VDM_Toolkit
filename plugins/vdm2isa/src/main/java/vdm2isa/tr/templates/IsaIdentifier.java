@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.stringtemplate.v4.ST;
+
 import vdm2isa.lex.IsaToken;
 
 public class IsaIdentifier extends IsaAbstractTemplate {

@@ -1,6 +1,7 @@
 package vdm2isa.tr.modules.templates;
 
 import java.time.Instant;
+import java.util.List;
 
 import vdm2isa.tr.templates.IsaAbstractTemplate;
 
@@ -10,20 +11,20 @@ public class IsaTheory extends IsaAbstractTemplate {
     public final String comment;
     public final String location; 
     public final String name;
-    public final String imports;
+    public final List<String> imports;
     public final String body;
 
-    public IsaTheory(String location, String name, String imports, String body)
+    public IsaTheory(String location, String name, String body, String... imports)
     {
-        this(Instant.now(), "", location, name, imports, body);
+        this(Instant.now(), "", location, name, body, imports);
     }
 
-    public IsaTheory(Instant utc, String location, String name, String imports, String body)
+    public IsaTheory(Instant utc, String location, String name, String body, String... imports)
     {
-        this(utc, "", location, name, imports, body);
+        this(utc, "", location, name, body, imports);
     }
 
-    public IsaTheory(Instant utc, String comment, String loc, String name, String imports, String body)
+    public IsaTheory(Instant utc, String comment, String loc, String name, String body, String... imports)
     {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Invalid Isabelle empty theory name");
@@ -32,12 +33,12 @@ public class IsaTheory extends IsaAbstractTemplate {
         this.comment = comment;
         this.location = loc;
         this.name = name;
-        this.imports = imports;
+        this.imports = IsaAbstractTemplate.createList(imports);
         this.body = body;
     }
 
     public String getUTC() 
     {
-        return utc.toString() + " OKAY!";
+        return utc.toString();
     }
 }
