@@ -11,37 +11,42 @@ theory(thy) ::= <<
    $thy.location; wrap$
 *)
 theory $thy.name$
-imports VDMToolkit $thy.imports$
+imports VDMToolkit $listIt(thy.imports, " "); wrap$
 begin
 $thy.body$
 end 
->>
-
-// Isabelle type synonym template
-typedecl(tdecl) ::= <<
-$tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
->>
-
-record(rec) ::= <<
-record $rec.name$ = 
-    $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
->>
-
-lemmas(lms) ::= <<
-lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
 >>
 
 // Isabelle named claims with possible attribute 
 // e.g. lemma XYZ[ATTRLIST]: EXPR; 
 //TODO how to filter kind = {lemma, theorem, corollary}?
 claim(clm) ::= <<
+$commentIt(clm.comment)$
 $clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
     $innerSyntaxIt(clm.expr); wrap$  
+>>
+
+lemmas(lms) ::= <<
+$commentIt(lms.comment)$
+lemmas $defineIt(lms.name, listIt(lms.lemma, " "), true)$
+>>
+
+// Isabelle type synonym and simple data type template
+typedecl(tdecl) ::= <<
+$commentIt(tdecl.comment)$
+$tdecl.kind$ $defineIt(listIt(tdecl.name, " "), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
+>>
+
+record(rec) ::= <<
+$commentIt(rec.comment)$
+record $rec.name$ = 
+    $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
 >>
 
 // Isabelle abbreviation template 
 // version with type:innerSyntaxIt() is confusing to me when multiple params?
 abbreviation(abbrv) ::= <<
+$commentIt(abbrv.comment)$
 abbreviation 
     $signature(abbrv)$ where
     $innerSyntaxIt(defineIt(abbrv.name, abbrv.expr, false)); wrap$
@@ -49,21 +54,37 @@ abbreviation
 
 // Isabelle definition template 
 definition(def) ::= <<
+$commentIt(def.comment)$
 definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
 >>
 
 fundef(fdef) ::= <<
+$commentIt(fdef.comment)$
 definition
     $signature(fdef)$ where
     $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, fdef.eq))); wrap$
+>>
+
+//TODO refactor some of these defs into inner templates
+//don't attribute the pre_name_def, as user-defined one is likely to be different
+rfundef(fdef) ::= <<
+$commentIt(fdef.comment)$
+declare $ndefIt("pre", fdef.name)$ [simp]
+
+fun (domintros) 
+    $signature(fdef)$ where
+    $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, true))); wrap$    
+
+declare $ndefIt("pre", fdef.name)$ [simp del]
 >>
 
 fundefIt(name, expr, eq) ::= <<
     $name$$if(eq)$ = $else$ \\<equiv> $endif$
         $ifexp(ndefIt("pre", name), expr, "undefined"); wrap$
 >>
+
 
 ndefIt(prefix, name) ::= "$prefix$_$name$_def"
 
@@ -83,3 +104,4 @@ innerSyntaxIt(expr) ::= "\\<open>$expr$\\<close>"
 // e.g., NAME = EXPR vs NAME == EXPR 
 defineIt(name, expr, eq=false) ::= "$name$$if(eq)$ = $else$ \\<equiv> $endif$$expr$"
 
+commentIt(cmt) ::= "$if(cmt)$\\<comment>$innerSyntaxIt(cmt); wrap$$endif$"
