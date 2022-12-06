@@ -1,22 +1,9 @@
 package vdm2isa.tr.templates;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 import org.stringtemplate.v4.ST;
-
-import vdm2isa.tr.definitions.templates.IsaAbbreviation;
-import vdm2isa.tr.definitions.templates.IsaAttribute;
-import vdm2isa.tr.definitions.templates.IsaClaim;
-import vdm2isa.tr.definitions.templates.IsaDefinition;
-import vdm2isa.tr.definitions.templates.IsaLemmas;
-import vdm2isa.tr.definitions.templates.IsaRecord;
-import vdm2isa.tr.definitions.templates.IsaRecordField;
-import vdm2isa.tr.definitions.templates.IsaTypeDecl;
-import vdm2isa.tr.definitions.templates.IsaVDMFunDef;
-import vdm2isa.tr.expressions.templates.IsaIfThenElse;
-import vdm2isa.tr.modules.templates.IsaTheory;
 
 public final class IsaTemplatesHelper {
     

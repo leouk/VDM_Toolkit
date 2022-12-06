@@ -1,10 +1,6 @@
-package vdm2isa.tr.definitions.templates;
+package vdm2isa.tr.templates;
 
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
-import vdm2isa.tr.templates.IsaIdentifier;
-import vdm2isa.tr.templates.IsaNamedTemplate;
 
 /**
  * Represents an Isabelle lemmas. This is used mostly for collecting all VDM names within a definition (e.g. pre_f_def inv_VDMNat_def etc.).

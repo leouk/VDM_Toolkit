@@ -1,11 +1,7 @@
-package vdm2isa.tr.definitions.templates;
+package vdm2isa.tr.templates;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
-import vdm2isa.tr.templates.IsaIdentifier;
-import vdm2isa.tr.templates.IsaNamedTemplate;
 
 /**
  * Represents an Isabelle record. This is used mostly for VDM record definitions.

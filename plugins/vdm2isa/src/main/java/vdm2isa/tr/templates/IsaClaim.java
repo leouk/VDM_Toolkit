@@ -1,10 +1,6 @@
-package vdm2isa.tr.definitions.templates;
+package vdm2isa.tr.templates;
 
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
-import vdm2isa.tr.templates.IsaIdentifier;
-import vdm2isa.tr.templates.IsaNamedTemplate;
 
 public class IsaClaim extends IsaNamedTemplate {
     

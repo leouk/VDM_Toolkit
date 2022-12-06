@@ -1,6 +1,4 @@
-package vdm2isa.tr.definitions.templates;
-
-import vdm2isa.tr.templates.IsaIdentifier;
+package vdm2isa.tr.templates;
 
 /**
  * Represents an Isabelle abbreviation. This is used mostly for VDM values.

@@ -1,11 +1,6 @@
-package vdm2isa.tr.definitions.templates;
+package vdm2isa.tr.templates;
 
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
-import vdm2isa.tr.templates.IsaIdentifier;
-import vdm2isa.tr.templates.IsaNamedTemplate;
-import vdm2isa.tr.templates.IsaTemplateException;
 
 /**
  * Represents an Isabelle type declaration for type syonyms and datatypes. This is used for VDM top-level type definitions (e.g. named types, quote types, etc.).

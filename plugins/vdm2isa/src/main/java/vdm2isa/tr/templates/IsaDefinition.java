@@ -1,10 +1,6 @@
-package vdm2isa.tr.definitions.templates;
+package vdm2isa.tr.templates;
 
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
-import vdm2isa.tr.templates.IsaIdentifier;
-import vdm2isa.tr.templates.IsaNamedTemplate;
 
 /**
  * Represents an Isabelle definition. This is used mostly for VDM (inv/pre/post, etc.) specifications.

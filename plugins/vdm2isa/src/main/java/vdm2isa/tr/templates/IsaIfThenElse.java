@@ -1,6 +1,4 @@
-package vdm2isa.tr.expressions.templates;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
+package vdm2isa.tr.templates;
 
 public class IsaIfThenElse extends IsaAbstractTemplate {
     

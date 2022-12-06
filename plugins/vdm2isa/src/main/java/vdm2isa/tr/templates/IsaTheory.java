@@ -1,9 +1,7 @@
-package vdm2isa.tr.modules.templates;
+package vdm2isa.tr.templates;
 
 import java.time.Instant;
 import java.util.List;
-
-import vdm2isa.tr.templates.IsaAbstractTemplate;
 
 public class IsaTheory extends IsaAbstractTemplate {
     

@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Launch ST",
             "request": "launch",
-            "mainClass": "vdm2isa.lex.templates.IsaST",//"${file}"
+            "mainClass": "vdm2isa.tr.templates.IsaST",//"${file}"
             "projectName": "vdm2isa"
         },
         {

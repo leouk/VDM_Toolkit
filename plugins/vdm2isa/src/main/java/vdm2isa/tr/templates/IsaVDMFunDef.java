@@ -1,6 +1,4 @@
-package vdm2isa.tr.definitions.templates;
-
-import vdm2isa.tr.templates.IsaIdentifier;
+package vdm2isa.tr.templates;
 
 /**
  * Represents VDM function definitions. That means, template will generate a

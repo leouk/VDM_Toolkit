@@ -1,25 +1,13 @@
-package vdm2isa.lex.templates;
+package vdm2isa.tr.templates;
 
 import java.io.IOException;
 
-import org.stringtemplate.v4.AutoIndentWriter;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import vdm2isa.tr.definitions.templates.IsaAbbreviation;
-import vdm2isa.tr.definitions.templates.IsaAttribute;
-import vdm2isa.tr.definitions.templates.IsaClaim;
-import vdm2isa.tr.definitions.templates.IsaDefinition;
-import vdm2isa.tr.definitions.templates.IsaLemmas;
-import vdm2isa.tr.definitions.templates.IsaRecord;
-import vdm2isa.tr.definitions.templates.IsaRecordField;
-import vdm2isa.tr.definitions.templates.IsaTypeDecl;
-import vdm2isa.tr.definitions.templates.IsaVDMFunDef;
-import vdm2isa.tr.definitions.templates.IsaClaim.ClaimKind;
-import vdm2isa.tr.definitions.templates.IsaTypeDecl.TypeDeclKind;
-import vdm2isa.tr.modules.templates.IsaTheory;
-import vdm2isa.tr.templates.IsaIdentifier;
+import vdm2isa.tr.templates.IsaClaim.ClaimKind;
+import vdm2isa.tr.templates.IsaTypeDecl.TypeDeclKind;
 
 public class IsaST {
     
