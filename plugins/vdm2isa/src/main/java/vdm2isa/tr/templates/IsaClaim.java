@@ -1,5 +1,6 @@
 package vdm2isa.tr.templates;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class IsaClaim extends IsaNamedTemplate {
@@ -10,14 +11,9 @@ public class IsaClaim extends IsaNamedTemplate {
     public final List<IsaAttribute> attr;
     public final String expr; 
 
-    protected IsaClaim(ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
+    protected IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, List<IsaAttribute> attr, String expr)
     {
-        this(null, kind, name, expr, attr);
-    }
-
-    protected IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
-    {
-        super(comment, name);
+        super(comment, Arrays.asList(name));
         this.kind = kind;
         this.attr = IsaAbstractTemplate.createList(attr); 
         this.expr = expr; 

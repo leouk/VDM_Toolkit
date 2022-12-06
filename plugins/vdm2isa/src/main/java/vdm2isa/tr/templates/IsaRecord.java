@@ -1,6 +1,7 @@
 package vdm2isa.tr.templates;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,15 +11,9 @@ public class IsaRecord extends IsaNamedTemplate {
 
     public final List<IsaRecordField> fields; 
 
-
-    protected IsaRecord(IsaIdentifier name, IsaRecordField... fields)
+    protected IsaRecord(String comment, IsaIdentifier name, List<IsaRecordField> fields)
     {
-        this(null, name, fields);
-    }
-
-    protected IsaRecord(String comment, IsaIdentifier name, IsaRecordField... fields)
-    {
-        super(comment, name); 
+        super(comment, Arrays.asList(name)); 
         this.fields = IsaAbstractTemplate.createList(fields);
     }
 

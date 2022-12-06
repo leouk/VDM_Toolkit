@@ -1,5 +1,6 @@
 package vdm2isa.tr.templates;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,17 +12,19 @@ public class IsaTypeDecl extends IsaNamedTemplate {
     public final TypeDeclKind kind;
     public final List<String> expr; 
 
-    protected IsaTypeDecl(TypeDeclKind kind, IsaIdentifier name, String... expr)
+    /**
+     * VDM does not have polymorphic type declarations; so no multiple identifiers here, but possibly multiple strings!
+     * @param comment
+     * @param kind
+     * @param name
+     * @param expr
+     */
+    protected IsaTypeDecl(String comment, TypeDeclKind kind, IsaIdentifier name, List<String> expr)
     {
-        this(null, kind, name, expr);
-    }
-
-    protected IsaTypeDecl(String comment, TypeDeclKind kind, IsaIdentifier name, String... expr)
-    {
-        super(comment, name);
+        super(comment, Arrays.asList(name));
+        if (kind == TypeDeclKind.type_synonym && expr.size() > 1)
+            throw new IsaTemplateException("Type synonym cannot have multiple expressions " + expr.toString());
         this.kind = kind; 
         this.expr = IsaAbstractTemplate.createList(expr);
-        if (this.kind == TypeDeclKind.type_synonym && this.expr.size() > 1)
-            throw new IsaTemplateException("Type synonym cannot have multiple expressions " + this.expr.toString());
     }
 }

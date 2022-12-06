@@ -1,6 +1,8 @@
 package vdm2isa.tr.templates;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -96,14 +98,37 @@ public class IsaIdentifier extends IsaAbstractTemplate {
         return new IsaIdentifier(name);
     }
 
-    protected IsaIdentifier(String name)
+	public static final List<IsaIdentifier> listOf(String... name)
     {
-        super();
-		this.name = name; 
-        if (!validIsaIdentifier(this.name))
-            throw new IsaTemplateException("Invalid Isabelle identifer name " + this.name);
+		return IsaIdentifier.listOf(IsaAbstractTemplate.createList(name));
     }
 
+	public static List<IsaIdentifier> listOf(List<String> name) {
+		List<IsaIdentifier> result = new ArrayList<IsaIdentifier>(name == null ? 0 : name.size());
+		// Java mapping? 
+		if (name != null && name.size() > 0)
+		{
+			for(String n : name)
+			{
+				result.add(IsaIdentifier.valueOf(n));
+			}
+		}
+		return result;
+	}
+
+
+    protected IsaIdentifier(String name)
+    {
+        super(null);
+        if (!validIsaIdentifier(name))
+            throw new IsaTemplateException("Invalid Isabelle identifer name " + name);
+		this.name = name; 
+	}
+
+	/**
+	 * Needs a getter to access the name directly (e.g. x.name -> x.getName()).
+	 * @return
+	 */
     public final String getName()
     {
         return name;

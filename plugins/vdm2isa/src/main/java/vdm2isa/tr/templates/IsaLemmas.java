@@ -1,5 +1,6 @@
 package vdm2isa.tr.templates;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -7,17 +8,11 @@ import java.util.List;
  */
 public class IsaLemmas extends IsaNamedTemplate {
 
-    public final List<String> lemma; 
+    public final List<IsaIdentifier> lemma; 
 
-    protected IsaLemmas(IsaIdentifier name, String... lemma)
+    protected IsaLemmas(String comment, IsaIdentifier name, List<IsaIdentifier> lemma)
     {
-        this(null, name, lemma);
-    }
-
-    protected IsaLemmas(String comment, IsaIdentifier name, String... lemma)
-    {
-        super(comment, name); 
+        super(comment, Arrays.asList(name)); 
         this.lemma = IsaAbstractTemplate.createList(lemma);
     }
-
 }

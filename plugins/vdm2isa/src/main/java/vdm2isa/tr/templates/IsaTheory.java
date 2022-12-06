@@ -8,31 +8,19 @@ public class IsaTheory extends IsaAbstractTemplate {
     public final Instant utc;
     public final String comment;
     public final String location; 
-    public final String name;
-    public final List<String> imports;
-    public final String body;
+    public final IsaIdentifier name;
+    public final List<IsaIdentifier> imports;
+    public final List<String> body;
 
-    protected IsaTheory(String location, String name, String body, String... imports)
+    protected IsaTheory(Instant utc, String comment, String loc, IsaIdentifier name, List<IsaIdentifier> imports, List<String> body)
     {
-        this(Instant.now(), "", location, name, body, imports);
-    }
-
-    protected IsaTheory(Instant utc, String location, String name, String body, String... imports)
-    {
-        this(utc, "", location, name, body, imports);
-    }
-
-    protected IsaTheory(Instant utc, String comment, String loc, String name, String body, String... imports)
-    {
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("Invalid Isabelle empty theory name");
-        //TODO valid identifier check if (String.i)
+        super(comment);
         this.utc = utc;
         this.comment = comment;
         this.location = loc;
         this.name = name;
         this.imports = IsaAbstractTemplate.createList(imports);
-        this.body = body;
+        this.body = IsaAbstractTemplate.createList(body);
     }
 
     public String getUTC() 

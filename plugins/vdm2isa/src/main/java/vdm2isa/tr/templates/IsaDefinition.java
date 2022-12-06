@@ -7,27 +7,19 @@ import java.util.List;
  */
 public class IsaDefinition extends IsaNamedTemplate {
     
-    public final String type;
+    public final List<String> type;
     public final List<IsaAttribute> attr;
     public final String expr;
     public final Boolean eq; 
     
-    protected IsaDefinition(IsaIdentifier name, String type, String expr, IsaAttribute... attr)
-    {
-        this(null, name, type, expr, false, attr);
-    }
-
-    protected IsaDefinition(IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
-    {
-        this(null, name, type, expr, eq, attr);
-    }
-
-    protected IsaDefinition(String comment, IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
+    protected IsaDefinition(String comment, List<IsaIdentifier> name, List<String> type, List<IsaAttribute> attr, Boolean eq, String expr)
     {
         super(comment, name);
-        this.type = type;
+        this.type = IsaAbstractTemplate.createList(type);
         this.expr = expr; 
         this.eq = eq; 
         this.attr = IsaAbstractTemplate.createList(attr);
+        if (this.type.size() != this.name.size())
+            throw new IsaTemplateException("Invalid definition signature: names=" + name.toString() + "; types=" + type.toString());
     }
 }

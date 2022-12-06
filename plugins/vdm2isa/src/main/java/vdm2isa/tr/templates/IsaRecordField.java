@@ -10,6 +10,7 @@ public class IsaRecordField extends IsaAbstractTemplate {
 
     protected IsaRecordField(IsaIdentifier name, String type)
     {
+        super(null);
         this.name = name;
         this.type = type;
     }
