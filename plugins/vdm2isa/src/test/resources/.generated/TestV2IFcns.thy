@@ -173,6 +173,8 @@ where
 	(x + y) 
 	else undefined)\<close>
 
+declare pre_g_def [simp]
+declare pre_g_def [simp  del]
 abbreviation 
     test :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where
      \<open>test x \<equiv>  True\<close>
@@ -482,6 +484,31 @@ where
 	[x , y] 
 	else undefined)\<close>
 
+\<comment>\<open>Isabelle even\<close> 
+\<comment>\<open>Isabelle odd\<close> 
+definition pre_even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where []: \<open>pre_even n \<equiv> inv_VDMNat n\<close> 
+definition pre_odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where []: \<open>pre_odd n \<equiv> inv_VDMNat n\<close> 
+declare pre_even_def [simp] 
+pre_odd_def [simp] 
+
+fun (domintros) 
+    even :: \<open>nat \<Rightarrow> bool\<close> and
+    odd :: \<open>nat \<Rightarrow> bool\<close>  where
+      []  :  \<open>even n = 
+                    (if pre_even n then 
+                        (if n = 0 then True else odd (n-1))
+                    else 
+                        undefined
+                    )\<close> 
+    |     []  :  \<open>odd n = 
+                    (if pre_odd n then 
+                        (if n = 0 then False else even (n-1))
+                    else 
+                        undefined
+                    )\<close> 
+
+declare pre_even_def [simp del] 
+pre_odd_def [simp del] 
 
 
 end
