@@ -6,12 +6,12 @@ public class IsaIfThenElse extends IsaAbstractTemplate {
     public final String then;
     public final String els; 
     
-    public IsaIfThenElse(String test, String then, String els)
+    protected IsaIfThenElse(String test, String then, String els)
     {
         this(null, test, then, els);
     }
 
-    public IsaIfThenElse(String comment, String test, String then, String els)
+    protected IsaIfThenElse(String comment, String test, String then, String els)
     {
         super(comment);
         this.test = test;

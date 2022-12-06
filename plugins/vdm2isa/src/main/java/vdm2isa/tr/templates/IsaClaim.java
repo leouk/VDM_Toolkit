@@ -10,12 +10,12 @@ public class IsaClaim extends IsaNamedTemplate {
     public final List<IsaAttribute> attr;
     public final String expr; 
 
-    public IsaClaim(ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
+    protected IsaClaim(ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
     {
         this(null, kind, name, expr, attr);
     }
 
-    public IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
+    protected IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, String expr, IsaAttribute... attr)
     {
         super(comment, name);
         this.kind = kind;

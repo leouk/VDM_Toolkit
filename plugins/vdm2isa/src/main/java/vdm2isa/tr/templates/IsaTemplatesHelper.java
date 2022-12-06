@@ -64,6 +64,16 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
+    /**
+     * Represents an Isabelle type declaration for type syonyms and datatypes. 
+     * This is used for VDM top-level type definitions (e.g. named types, quote types, etc.).
+     * @param comment
+     * @param kind
+     * @param name
+     * @param expr
+     * @return
+     */
+
     public static final ST newIsaTypeDecl(String comment, IsaTypeDecl.TypeDeclKind kind, IsaIdentifier name, String... expr)
     {
         IsaTypeDecl t = new IsaTypeDecl(comment, kind, name, expr);
@@ -73,14 +83,14 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
-    public static final IsaRecordField[] newIsaRecordFields(List<IsaIdentifier> names, List<String> types)
+    public static final IsaRecordField[] newIsaRecordFields(List<String> names, List<String> types)
     {
         if (names == null || types == null || names.size() != types.size())
             throw new IsaTemplateException("Invalid record fields: names and types must be of same size");
         IsaRecordField[] result = new IsaRecordField[names.size()];
         for(int i = 0; i < names.size(); i++)
         {
-            result[i] = new IsaRecordField(names.get(i), types.get(i));
+            result[i] = IsaRecordField.valueOf(names.get(i), types.get(i));
         }
         assert result.length == names.size();
         return result; 
@@ -95,6 +105,14 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
+    /**
+     * Represents an Isabelle abbreviation. This is used mostly for VDM values. 
+     * @param comment
+     * @param name
+     * @param type
+     * @param expr
+     * @return
+     */
     public static final ST newIsaAbbreviation(String comment, IsaIdentifier name, String type, String expr)
     {
         IsaAbbreviation t = new IsaAbbreviation(comment, name, type, expr);
@@ -104,6 +122,16 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
+    /**
+     * Represents an Isabelle definition. This is used mostly for VDM (inv/pre/post, etc.) specifications.
+     * @param comment
+     * @param name
+     * @param type
+     * @param expr
+     * @param eq
+     * @param attrs
+     * @return
+     */
     public static final ST newIsaDefinition(String comment, IsaIdentifier name, String type, String expr, boolean eq, IsaAttribute... attrs)
     {
         IsaDefinition t = new IsaDefinition(comment, name, type, expr, eq, attrs);
@@ -113,6 +141,16 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
+    /**
+     * Represents VDM function definitions. That means, template will generate a i(f pre_f x then f x else undefined) output. 
+     * @param comment
+     * @param name
+     * @param type
+     * @param expr
+     * @param eq
+     * @param attrs
+     * @return
+     */
     public static final ST newIsaVDMFunDef(String comment, IsaIdentifier name, String type, String expr, boolean eq, IsaAttribute... attrs)
     {
         IsaVDMFunDef t = new IsaVDMFunDef(comment, name, type, expr, attrs);
@@ -122,16 +160,39 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
+    /**
+     * Represents VDM recursive function definitions translated as an Isabelle fun (automatic termination proof). 
+     * That means, template will generate an Isabelle fun declaration with adequate simp sets. These can be mutually recursive.
+     * @param comment
+     * @param name
+     * @param type
+     * @param expr
+     * @param eq
+     * @param attrs
+     * @return
+     */
     public static final ST newIsaRecursiveFunDef(String comment, IsaIdentifier name, String type, String expr, boolean eq, IsaAttribute... attrs)
     {
+        // only difference is on the template used
         IsaVDMFunDef t = new IsaVDMFunDef(comment, name, type, expr, attrs);
-        assert t.isTemplateValid(IsaTemplates.fundef.name());
-        ST result = t.getTemplate(IsaTemplates.fundef.name());
-        result.add(IsaTemplates.fundef.arg, t);
+        assert t.isTemplateValid(IsaTemplates.rfundef.name());
+        ST result = t.getTemplate(IsaTemplates.rfundef.name());
+        result.add(IsaTemplates.rfundef.arg, t);
         return result; 
     }
 
-    public static final ST newIsaMutuallyRecursiveFunDef(String comment, IsaIdentifier name, String type, String expr, boolean eq, IsaAttribute... attrs)
+    /**
+     * Represents VDM recursive function definitions translated as an Isabelle function (user provided termination proof). 
+     * That means, template will generate an Isabelle function declaration with adequate simp sets.  These can be mutually recursive.
+     * @param comment
+     * @param name
+     * @param type
+     * @param expr
+     * @param eq
+     * @param attrs
+     * @return
+     */
+    public static final ST newIsaRecursiveFunctionDef(String comment, IsaIdentifier name, String type, String expr, boolean eq, IsaAttribute... attrs)
     {
         IsaVDMFunDef t = new IsaVDMFunDef(comment, name, type, expr, attrs);
         assert t.isTemplateValid(IsaTemplates.fundef.name());

@@ -6,12 +6,12 @@ package vdm2isa.tr.templates;
  */
 public class IsaVDMFunDef extends IsaDefinition {
 
-    public IsaVDMFunDef(IsaIdentifier name, String type, String expr, IsaAttribute... attr)
+    protected IsaVDMFunDef(IsaIdentifier name, String type, String expr, IsaAttribute... attr)
     {
         super(name, type, expr, false, attr);
     }
     
-    public IsaVDMFunDef(String comment, IsaIdentifier name, String type, String expr, IsaAttribute... attr)
+    protected IsaVDMFunDef(String comment, IsaIdentifier name, String type, String expr, IsaAttribute... attr)
     {
         super(comment, name, type, expr, false, attr);
     }

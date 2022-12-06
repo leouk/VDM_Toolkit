@@ -8,7 +8,7 @@ public class IsaRecordField extends IsaAbstractTemplate {
     public final IsaIdentifier name; 
     public final String type; 
 
-    public IsaRecordField(IsaIdentifier name, String type)
+    protected IsaRecordField(IsaIdentifier name, String type)
     {
         this.name = name;
         this.type = type;

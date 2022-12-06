@@ -12,17 +12,17 @@ public class IsaTheory extends IsaAbstractTemplate {
     public final List<String> imports;
     public final String body;
 
-    public IsaTheory(String location, String name, String body, String... imports)
+    protected IsaTheory(String location, String name, String body, String... imports)
     {
         this(Instant.now(), "", location, name, body, imports);
     }
 
-    public IsaTheory(Instant utc, String location, String name, String body, String... imports)
+    protected IsaTheory(Instant utc, String location, String name, String body, String... imports)
     {
         this(utc, "", location, name, body, imports);
     }
 
-    public IsaTheory(Instant utc, String comment, String loc, String name, String body, String... imports)
+    protected IsaTheory(Instant utc, String comment, String loc, String name, String body, String... imports)
     {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Invalid Isabelle empty theory name");

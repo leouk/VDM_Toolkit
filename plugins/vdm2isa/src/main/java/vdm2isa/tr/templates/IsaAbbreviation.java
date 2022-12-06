@@ -5,12 +5,12 @@ package vdm2isa.tr.templates;
  */
 public class IsaAbbreviation extends IsaDefinition {
     
-    public IsaAbbreviation(IsaIdentifier name, String type, String expr)
+    protected IsaAbbreviation(IsaIdentifier name, String type, String expr)
     {
         super(name, type, expr, false);
     }
 
-    public IsaAbbreviation(String comment, IsaIdentifier name, String type, String expr)
+    protected IsaAbbreviation(String comment, IsaIdentifier name, String type, String expr)
     {
         super(comment, name, type, expr, false);
     }

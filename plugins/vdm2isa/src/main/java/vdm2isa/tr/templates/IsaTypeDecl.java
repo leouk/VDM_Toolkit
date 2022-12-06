@@ -11,12 +11,12 @@ public class IsaTypeDecl extends IsaNamedTemplate {
     public final TypeDeclKind kind;
     public final List<String> expr; 
 
-    public IsaTypeDecl(TypeDeclKind kind, IsaIdentifier name, String... expr)
+    protected IsaTypeDecl(TypeDeclKind kind, IsaIdentifier name, String... expr)
     {
         this(null, kind, name, expr);
     }
 
-    public IsaTypeDecl(String comment, TypeDeclKind kind, IsaIdentifier name, String... expr)
+    protected IsaTypeDecl(String comment, TypeDeclKind kind, IsaIdentifier name, String... expr)
     {
         super(comment, name);
         this.kind = kind; 

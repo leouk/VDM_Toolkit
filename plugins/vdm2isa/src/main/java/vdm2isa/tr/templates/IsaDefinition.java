@@ -12,17 +12,17 @@ public class IsaDefinition extends IsaNamedTemplate {
     public final String expr;
     public final Boolean eq; 
     
-    public IsaDefinition(IsaIdentifier name, String type, String expr, IsaAttribute... attr)
+    protected IsaDefinition(IsaIdentifier name, String type, String expr, IsaAttribute... attr)
     {
         this(null, name, type, expr, false, attr);
     }
 
-    public IsaDefinition(IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
+    protected IsaDefinition(IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
     {
         this(null, name, type, expr, eq, attr);
     }
 
-    public IsaDefinition(String comment, IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
+    protected IsaDefinition(String comment, IsaIdentifier name, String type, String expr, Boolean eq, IsaAttribute... attr)
     {
         super(comment, name);
         this.type = type;

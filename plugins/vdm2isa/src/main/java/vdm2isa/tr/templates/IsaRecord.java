@@ -11,12 +11,12 @@ public class IsaRecord extends IsaNamedTemplate {
     public final List<IsaRecordField> fields; 
 
 
-    public IsaRecord(IsaIdentifier name, IsaRecordField... fields)
+    protected IsaRecord(IsaIdentifier name, IsaRecordField... fields)
     {
         this(null, name, fields);
     }
 
-    public IsaRecord(String comment, IsaIdentifier name, IsaRecordField... fields)
+    protected IsaRecord(String comment, IsaIdentifier name, IsaRecordField... fields)
     {
         super(comment, name); 
         this.fields = IsaAbstractTemplate.createList(fields);
