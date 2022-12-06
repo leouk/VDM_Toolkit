@@ -24,23 +24,27 @@ claim(clm) ::= <<
 $commentIt(clm.comment)$
 $clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
     $innerSyntaxIt(clm.expr); wrap$  
+
 >>
 
 lemmas(lms) ::= <<
 $commentIt(lms.comment)$
 lemmas $defineIt(lms.name, listIt(lms.lemma), true)$
+
 >>
 
 // Isabelle type synonym and simple data type template
 typedecl(tdecl) ::= <<
 $commentIt(tdecl.comment)$
 $tdecl.kind$ $defineIt(listIt(tdecl.name), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
+
 >>
 
 record(rec) ::= <<
 $commentIt(rec.comment)$
 record $rec.name$ = 
     $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
+
 >>
 
 // Isabelle abbreviation template 
@@ -50,6 +54,7 @@ $commentIt(abbrv.comment)$
 abbreviation 
     $signature(abbrv)$ where
     $innerSyntaxIt(defineIt(abbrv.name, abbrv.expr, false)); wrap$
+
 >> 
 
 // Isabelle definition template 
@@ -58,6 +63,7 @@ $commentIt(def.comment)$
 definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
+
 >>
 
 fundef(fdef) ::= <<
@@ -65,21 +71,24 @@ $commentIt(fdef.comment)$
 definition
     $signature(fdef)$ where
     $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, fdef.eq))); wrap$
+
 >>
 
 //TODO refactor some of these defs into inner templates
 //don't attribute the pre_name_def, as user-defined one is likely to be different
 rfundef(fdef) ::= <<
-$commentIt(fdef.comment)$
-declare $ndefIt("pre_", fdef.name, "_def")$ [simp]
+$fdef:{ f | $commentIt(f.comment); wrap, separator="\n"$ }$
+declare $fdef:{ f | $ndefIt("pre_", f.name, "_def")$ [simp] }; wrap, separator="\n"$
 
 fun (domintros) 
     $signature(fdef)$ where
     $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, true))); wrap$    
 
-declare $ndefIt("pre_", fdef.name, "_def")$ [simp del]
+declare $fdef:{ f | $ndefIt("pre_", f.name, "_def")$ [simp del] }$
+
 >>
 
+declareIt(fdef, del=false) ::= <%$ndefIt("pre_", fdef.name, "_def")$ [simp $if(del)$del$endif$]%>
 
 // Inner templates. 
 //    * name can contain formal parameters; e.g. name = ["f", "x", "y"] for "f(x,y)"
