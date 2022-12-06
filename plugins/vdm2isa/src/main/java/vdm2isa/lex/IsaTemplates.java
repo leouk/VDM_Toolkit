@@ -129,8 +129,7 @@ public final class IsaTemplates {
 
     public static final boolean isValidSemanticSeparator(String sep)
     {
-        //TODO add here a check against certain IsaToken characters only? 
-        return isValidFormatingSeparator(sep) || true;
+        return isValidFormatingSeparator(sep) || IsaToken.VALID_SEMANTIC_SEP.contains(sep.trim());
     }
 
     /**
