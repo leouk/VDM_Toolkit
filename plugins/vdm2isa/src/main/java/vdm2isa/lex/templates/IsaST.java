@@ -2,6 +2,7 @@ package vdm2isa.lex.templates;
 
 import java.io.IOException;
 
+import org.stringtemplate.v4.AutoIndentWriter;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
@@ -14,6 +15,7 @@ import vdm2isa.tr.definitions.templates.IsaLemmas;
 import vdm2isa.tr.definitions.templates.IsaRecord;
 import vdm2isa.tr.definitions.templates.IsaRecordField;
 import vdm2isa.tr.definitions.templates.IsaTypeDecl;
+import vdm2isa.tr.definitions.templates.IsaVDMFunDef;
 import vdm2isa.tr.definitions.templates.IsaClaim.ClaimKind;
 import vdm2isa.tr.definitions.templates.IsaTypeDecl.TypeDeclKind;
 import vdm2isa.tr.modules.templates.IsaTheory;
@@ -43,11 +45,11 @@ public class IsaST {
         System.out.println(st.render());
 
         st = group.getInstanceOf("typedecl");
-        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.type_synonym, "MyType", "nat"));
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.type_synonym, IsaIdentifier.valueOf("MyType"), "nat"));
         System.out.println(st.render());
 
         st = group.getInstanceOf("typedecl");
-        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.datatype, "MyDType", "A", "B", "C"));
+        st.add("tdecl", new IsaTypeDecl(TypeDeclKind.datatype, IsaIdentifier.valueOf("MyDType"), "A", "B", "C"));
         System.out.println(st.render());
 
         st = group.getInstanceOf("lemmas");
@@ -74,10 +76,14 @@ public class IsaST {
         System.out.println(st.render());
 
         st = group.getInstanceOf("fundef");
-        st.add("fdef", new IsaDefinition(IsaIdentifier.valueOf("myFunDef"), "nat", "10", IsaAttribute.simp));
+        st.add("fdef", new IsaVDMFunDef(IsaIdentifier.valueOf("myFunDef"), "nat", "10"));
         System.out.println(st.render());
 
-//        st.inspect();
+        st = group.getInstanceOf("rfundef");
+        st.add("fdef", new IsaDefinition(IsaIdentifier.valueOf("myRecFunDef"), "nat", "10", IsaAttribute.iff));
+        System.out.println(st.render());
+
+        //        st.inspect();
     }
 
     public static void test1() throws IOException
