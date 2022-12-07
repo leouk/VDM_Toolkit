@@ -74,7 +74,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"TestV2IExprsSets.vdmsl"
             //    ,"TestV2IExprsSpecial.vdmsl"
             // ,"TestV2IExprsToken.vdmsl"
-            //    ,"TestV2IFcns.vdmsl"
+                ,"TestV2IFcns.vdmsl"
             //    ,"TestV2IFcnsRecursiveComplexNat.vdmsl"
             //    ,"TestV2IFcnsRecursiveNat.vdmsl"
             //    ,"TestV2IFcnsRecursiveSet.vdmsl"
@@ -99,7 +99,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"Examples/CMSL/CM.vdmsl"
             //     ,"Examples/CMSL/CMISA.vdmsl"
             //     ,"Examples/CMSL/CMISA.vdmsl"
-            , "TestV2IRecursiveMutual.vdmsl"
+            //, "TestV2IRecursiveMutual.vdmsl"
             //      ,   "../../../../AnnotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
         });
     }

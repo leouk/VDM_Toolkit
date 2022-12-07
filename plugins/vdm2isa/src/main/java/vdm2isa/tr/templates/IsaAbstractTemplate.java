@@ -11,7 +11,20 @@ public abstract class IsaAbstractTemplate implements IsaTemplate {
 
     protected final static <T> List<T> createList(List<T> elems)
     {
-        return elems == null || elems.size() == 0 ? Collections.emptyList() : new ArrayList<T>(elems);
+        // clear all nulls
+        List<T> result;
+        if (elems == null) 
+            result = Collections.emptyList();
+        else 
+        {
+            result = new ArrayList<T>(elems != null ? elems.size() : 0);
+            for(T e : elems) 
+            {
+                if (e == null) continue;
+                result.add(e);
+            }
+        }
+        return result;
     }
 
     @SafeVarargs //Not sure about that
@@ -23,6 +36,7 @@ public abstract class IsaAbstractTemplate implements IsaTemplate {
 
     protected IsaAbstractTemplate(String comment)
     {
-        this.comment = comment; 
+        // empty comments become null ones to avoid emitting empty comments 
+        this.comment = comment != null && comment.isEmpty() ? null : comment; 
     }
 }

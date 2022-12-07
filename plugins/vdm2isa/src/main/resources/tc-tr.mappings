@@ -162,7 +162,7 @@ map TCPreOpExpression{location, exptype, opname, expression, state} to TRPreOpEx
 map TCPostOpExpression{location, exptype, opname, preexpression, postexpression, state} to TRPostOpExpression(this, location, exptype, opname, preexpression, postexpression, state);
 
 #############################################################################
-package com.fujitsu.vdmj.tc.statements to vdm2isa.tr.expressions;
+package com.fujitsu.vdmj.tc.statements to vdm2isa.tr.statements;
 #############################################################################
 
 map TCStatement{} to TRStatement();
