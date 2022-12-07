@@ -11,8 +11,9 @@ public class IsaTheory extends IsaAbstractTemplate {
     public final IsaIdentifier name;
     public final List<IsaIdentifier> imports;
     public final List<String> body;
+    public final List<IsaVDMTheoryExport> exports;
 
-    protected IsaTheory(Instant utc, String comment, String loc, IsaIdentifier name, List<IsaIdentifier> imports, List<String> body)
+    protected IsaTheory(Instant utc, String comment, String loc, IsaIdentifier name, List<IsaIdentifier> imports, List<String> body, List<IsaVDMTheoryExport> exports) 
     {
         super(comment);
         this.utc = utc;
@@ -21,6 +22,7 @@ public class IsaTheory extends IsaAbstractTemplate {
         this.name = name;
         this.imports = IsaAbstractTemplate.createList(imports);
         this.body = IsaAbstractTemplate.createList(body);
+        this.exports = IsaAbstractTemplate.createList(exports);
     }
 
     public String getUTC() 

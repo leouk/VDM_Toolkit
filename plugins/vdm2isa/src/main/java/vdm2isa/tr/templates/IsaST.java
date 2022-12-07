@@ -28,7 +28,7 @@ public class IsaST {
 
     public static void test3()
     {
-        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "MyTheory", Arrays.asList("Import"), Arrays.asList("\tnothing"));
+        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "MyTheory", Arrays.asList("Import"), Arrays.asList("\tnothing"), Arrays.asList(IsaTemplatesHelper.newIsaVDMExportStruc(null, IsaVDMTheoryExport.ExportKind.hide_const, "whichever")));
         System.out.println(st.render());
 
         st = IsaTemplatesHelper.newIsaTypeDecl("", TypeDeclKind.type_synonym, "MyType", Arrays.asList("nat"));
@@ -76,7 +76,8 @@ public class IsaST {
         group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theoryobj.stg", '$', '$');
 
         st = group.getInstanceOf("theory");
-        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList("\tnothing"))); 
+        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList("\tnothing"),
+        Arrays.asList(new IsaVDMTheoryExport(null, IsaVDMTheoryExport.ExportKind.hide_const, IsaIdentifier.valueOf("Test"))))); 
         System.out.println(st.render());
 
         st = group.getInstanceOf("typedecl");

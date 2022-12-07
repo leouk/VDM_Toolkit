@@ -172,21 +172,7 @@ where
 	\<comment>\<open>User defined body of g.\<close>
 	(x + y) 
 	else undefined)\<close>
-
-declare pre_g_def [simp]
-declare pre_g_def [simp  del]
-abbreviation 
-    test :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where
-     \<open>test x \<equiv>  True\<close>
-definition
-    test2 :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where
-      [simp, intro!] :  \<open>test2 x \<equiv>  True\<close>
-type_synonym 'a test2  =  \<open>'a set\<close>
-lemmas test  =  f_def, g_def
-lemma test  [simp, intro!] :
-    \<open>True\<close>  
-theorem test  [simp, intro!] :
-    \<open>True\<close>  	
+	
 	
 \<comment>\<open>VDM source: h: (nat -> nat)
 	h(x) ==

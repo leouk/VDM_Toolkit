@@ -11,9 +11,11 @@ theory(thy) ::= <<
    $thy.location; wrap$
 *)
 theory $thy.name$
-imports VDMToolkit $listIt(thy.imports); wrap$
+imports VDMToolkit $thy.imports:{ imp | \"$imp$\" }; wrap, separator=" "$
 begin
 $listIt(thy.body, "\n")$
+
+$thy.exports:{ exp | $hideIt(exp.kind, exp.name)$ }; wrap, separator="\n"$ 
 end 
 >>
 
@@ -88,6 +90,8 @@ declare $fdef:{ f | $declareIt(f, true)$ }; wrap, separator="\n"$
 >>
 
 declareIt(fdef, del=false) ::= <%$ndefIt("pre_", fdef.name, "_def")$ [simp$if(del)$ del$endif$]%>
+
+hideIt(kind, name) ::= <%$kind$ $innerSyntaxIt(name)$%>
 
 // Inner templates. 
 //    * name can contain formal parameters; e.g. name = ["f", "x", "y"] for "f(x,y)"

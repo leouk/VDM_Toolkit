@@ -70,14 +70,20 @@ public final class IsaTemplatesHelper {
             throw new IsaTemplateException("Unknown template name in Isabelle template group: " + name);
     }
 
-    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body)
+    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
     {
-        IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body);
+        IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
         assert isTemplateValid(IsaTemplates.theory.templateName());
         ST result = getTemplate(IsaTemplates.theory.templateName());
         //assert result.getAttributes().keySet().contains(IsaTemplates.theory.arg);?
         result.add(IsaTemplates.theory.arg, t);
         return result; 
+    }
+
+    public static final IsaVDMTheoryExport newIsaVDMExportStruc(String comment, IsaVDMTheoryExport.ExportKind kind, String name)
+    {
+        IsaVDMTheoryExport result = new IsaVDMTheoryExport(comment, kind, IsaIdentifier.valueOf(name));
+        return result;
     }
 
     public static final ST newIsaClaim(String comment, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr)
