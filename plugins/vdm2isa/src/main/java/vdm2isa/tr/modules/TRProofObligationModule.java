@@ -1,5 +1,8 @@
 package vdm2isa.tr.modules;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
@@ -63,7 +66,13 @@ public class TRProofObligationModule extends TRModule
      * Isabelle POs file imports the PO module owner's Isabelle file of the same name. 
      */
     @Override
-    public String getImports()
+    public List<String> getImports()
+	{
+		return Arrays.asList(poModuleOwner);
+	}
+
+    @Override
+    public String getOldImports()
 	{
 		return poModuleOwner;
 	}

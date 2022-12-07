@@ -13,10 +13,15 @@ import com.fujitsu.vdmj.tc.modules.TCImportFromModule;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
 import java.io.File;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.stringtemplate.v4.ST;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.FileList;
@@ -33,6 +38,8 @@ import vdm2isa.tr.definitions.TRDefinition;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRRecursiveLoops;
 import vdm2isa.tr.definitions.TRRenamedDefinition;
+import vdm2isa.tr.templates.IsaTemplatesHelper;
+import vdm2isa.tr.templates.IsaVDMTheoryExport;
 
 public class TRModule extends TRNode
 {
@@ -308,9 +315,15 @@ public class TRModule extends TRNode
 	 * (i.e. innerSyntax It if relative path; just space separated string otherwise);
 	 * @return
 	 */
-	public String getImports()
+	public List<String> getImports()
 	{
-		assert imports.contains(IsaToken.VDMTOOLKIT.toString());
+		return Arrays.asList(imports.toArray(new String[0]));
+	}
+
+	public String getOldImports()
+	{
+		//with templates there is no need for explicit adding VDMToolkit import
+		//assert imports.contains(IsaToken.VDMTOOLKIT.toString());
 		StringBuilder sb = new StringBuilder();
 		for(String i : imports)
 		{
@@ -320,7 +333,34 @@ public class TRModule extends TRNode
 		return sb.toString();
 	}
 
-	public String getExports()
+	public List<IsaVDMTheoryExport> getExports()
+	{
+		List<IsaVDMTheoryExport> result = new ArrayList<>();
+		if (!defsToHide.isEmpty())
+		{
+			String comment = IsaInfoMessage.ISA_PROCESS_VDM_EXPORTS.message;
+			for(TCDefinition d : defsToHide)
+			{
+				// synthetic definitions in PO modules don't need to be processed
+				if (TRDefinition.isSyntheticDefinition(d)) 
+				{
+					continue;
+				}
+				else
+				{
+					result.add(
+						IsaTemplatesHelper.newIsaVDMExportStruc(comment,
+							d instanceof TCTypeDefinition ? 
+								IsaVDMTheoryExport.ExportKind.hide_type : 
+								IsaVDMTheoryExport.ExportKind.hide_const, 
+							IsaToken.isabelleName(d.name)));
+				}
+			}
+		}
+		return result;
+	}
+
+	public String getOldExports()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!defsToHide.isEmpty())
@@ -363,13 +403,24 @@ public class TRModule extends TRNode
 		{ 
 			loc += "\nfiles = " + files.toString();
 		}
+		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), null, getExports());
+		return st.render();
+	}
+
+	public String oldTranslate()
+	{
+		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
+		if (files != null && !files.isEmpty())
+		{ 
+			loc += "\nfiles = " + files.toString();
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(allDefs.translate());
-		sb.append(getExports());
+		sb.append(getOldExports());
 		sb.append(getFormattingSeparator());
 		sb.append(getFormattingSeparator());
 		sb.append(getPostScript());
-		return IsaTemplates.translateModule("", loc, name.toString(), getImports(), sb.toString());
+		return IsaTemplates.translateModule("", loc, name.toString(), getOldImports(), sb.toString());
 	}
 
 	/**
