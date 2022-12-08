@@ -13,7 +13,7 @@ theory(thy) ::= <<
 theory $thy.name$
 imports VDMToolkit $thy.imports:{ imp | \"$imp$\" }; wrap, separator=" "$
 begin
-$listIt(thy.body, "\n")$
+$listIt((thy.body)(), "\n")$
 
 $thy.exports:{ exp | $hideIt(exp.kind, exp.name)$ }; wrap, separator="\n"$ 
 end 
@@ -49,19 +49,7 @@ record $rec.name$ =
 
 >>
 
-// Isabelle definition/abbreviation template 
-defdecl(def, abbrv) ::= <<
-$commentIt(def.comment)$
-$if(abbrv)$abbreviation$else$definition$endif$
-    $signature(def)$ where
-    $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
-
->>
-
-abbreviation(def) ::= defdecl(def, false)
-definition(def)   ::= defdecl(def, true)
-
-$! abbreviation(def) ::= <<
+abbreviation(def) ::= <<
 $commentIt(def.comment)$
 abbreviation 
     $signature(def)$ where
@@ -76,7 +64,7 @@ definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
 
->> !$
+>>
 
 fundef(fdef) ::= <<
 $commentIt(fdef.comment)$
