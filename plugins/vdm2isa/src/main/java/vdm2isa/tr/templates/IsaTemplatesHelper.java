@@ -16,7 +16,8 @@ public final class IsaTemplatesHelper {
         theory("thy", "Isabelle theory file"), 
         claim("clm", "Claim (e.g. lemma, theorem, etc.)"),
         lemmas("lms", "Named lemmas group"),
-        typedecl("tdecl", "Type declaration (e.g. type synonym or datatype)"),
+        typesynonym("tsym", "Type synonym declaration"),
+        datatype("dtype", "Datatype declaration"),
         record("rec", "Record declaration"),
         abbreviation("def", "Abbreviation (e.g. VDM values)"),
         definition("def", "Definition (e.g. VDM specification, inv/pre/post)"),
@@ -75,7 +76,7 @@ public final class IsaTemplatesHelper {
             throw new IsaTemplateException("Unknown template name in Isabelle template group: " + name);
     }
 
-    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<ST> body, List<IsaVDMTheoryExport> exports)
+    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
     {
         IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
         assert isTemplateValid(IsaTemplates.theory.templateName());
@@ -91,9 +92,9 @@ public final class IsaTemplatesHelper {
         return result;
     }
 
-    public static final ST newIsaClaim(String comment, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr)
+    public static final ST newIsaClaim(String comment, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr, List<String> proof)
     {
-        IsaClaim t = new IsaClaim(comment, kind, IsaIdentifier.valueOf(name), attrs, expr);
+        IsaClaim t = new IsaClaim(comment, kind, IsaIdentifier.valueOf(name), attrs, expr, proof);
         assert isTemplateValid(IsaTemplates.claim.templateName());
         ST result = getTemplate(IsaTemplates.claim.templateName());
         result.add(IsaTemplates.claim.arg, t);
@@ -119,12 +120,21 @@ public final class IsaTemplatesHelper {
      * @return
      */
 
-    public static final ST newIsaTypeDecl(String comment, IsaTypeDecl.TypeDeclKind kind, String name, List<String> expr)
+    public static final ST newIsaTypeSynonym(String comment, String name, String expr)
     {
-        IsaTypeDecl t = new IsaTypeDecl(comment, kind, IsaIdentifier.valueOf(name), expr);
-        assert isTemplateValid(IsaTemplates.typedecl.templateName());
-        ST result = getTemplate(IsaTemplates.typedecl.templateName());
-        result.add(IsaTemplates.typedecl.arg, t);
+        IsaTypeSynonym t = new IsaTypeSynonym(comment, IsaIdentifier.valueOf(name), expr);
+        assert isTemplateValid(IsaTemplates.typesynonym.templateName());
+        ST result = getTemplate(IsaTemplates.typesynonym.templateName());
+        result.add(IsaTemplates.typesynonym.arg, t);
+        return result; 
+    }
+
+    public static final ST newIsaDatatype(String comment, String name, List<String> expr)
+    {
+        IsaDatatype t = new IsaDatatype(comment, IsaIdentifier.valueOf(name), expr);
+        assert isTemplateValid(IsaTemplates.datatype.templateName());
+        ST result = getTemplate(IsaTemplates.datatype.templateName());
+        result.add(IsaTemplates.datatype.arg, t);
         return result; 
     }
 
