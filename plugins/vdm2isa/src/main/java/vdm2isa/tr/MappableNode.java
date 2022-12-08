@@ -1,7 +1,5 @@
 package vdm2isa.tr;
 
-import org.stringtemplate.v4.ST;
-
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 

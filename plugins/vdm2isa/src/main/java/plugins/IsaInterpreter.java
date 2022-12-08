@@ -1,12 +1,10 @@
 package plugins;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fujitsu.vdmj.in.modules.INModule;
 import com.fujitsu.vdmj.in.modules.INModuleList;
 import com.fujitsu.vdmj.mapper.ClassMapper;
-import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.types.TCType;
 

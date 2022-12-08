@@ -1,6 +1,5 @@
 package vdm2isa.tr.templates;
 
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
