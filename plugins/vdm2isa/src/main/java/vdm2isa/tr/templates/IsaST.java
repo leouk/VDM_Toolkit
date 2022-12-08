@@ -2,7 +2,9 @@ package vdm2isa.tr.templates;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -17,6 +19,8 @@ public class IsaST {
 
     private static STGroup group; 
     private static ST st;
+    private static List<ST> sts;
+
     
     public static void main(String[] args) throws IOException
     {
@@ -28,35 +32,45 @@ public class IsaST {
 
     public static void test3()
     {
-        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "MyTheory", Arrays.asList("Import"), Arrays.asList("\tnothing"), Arrays.asList(IsaTemplatesHelper.newIsaVDMExportStruc(null, IsaVDMTheoryExport.ExportKind.hide_const, "whichever")));
-        System.out.println(st.render());
-
+        sts = new ArrayList<ST>();
+        
         st = IsaTemplatesHelper.newIsaTypeDecl("", TypeDeclKind.type_synonym, "MyType", Arrays.asList("nat"));
         System.out.println(st.render());
-        
+        sts.add(st);
+
         st = IsaTemplatesHelper.newIsaTypeDecl("", TypeDeclKind.datatype, "MyDType", Arrays.asList("A", "B", "C"));
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaLemmas(null, "LemmasNames", Arrays.asList("Lemma1", "Lemma2", "Lemma3"));
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaClaim(null, ClaimKind.theorem, "test", Arrays.asList(IsaAttribute.simp, IsaAttribute.elim), "x > 0");
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaAbbreviation("", Arrays.asList("abbrev"), Arrays.asList("nat"), "10");
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaDefinition("", Arrays.asList("geqDef", "x"), Arrays.asList("nat", "bool"), Arrays.asList(IsaAttribute.simp),false, "x > 1");
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaRecord("", "myRec", 
             IsaTemplatesHelper.newIsaRecordFields(Arrays.asList("field1", "field2"), Arrays.asList("nat", "int")));
         System.out.println(st.render());
+        sts.add(st);
 
         st = IsaTemplatesHelper.newIsaRecord("", "myRec", 
            Arrays.asList(IsaRecordField.valueOf("field1", "nat"), IsaRecordField.valueOf("field2", "int")));
         System.out.println(st.render());
-        
+        sts.add(st);
+
+        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "MyTheory", Arrays.asList("Import"), /*Arrays.asList("\tnothing")*/sts, Arrays.asList(IsaTemplatesHelper.newIsaVDMExportStruc(null, IsaVDMTheoryExport.ExportKind.hide_const, "whichever")));
+        System.out.println(st.render());
+
         st = IsaTemplatesHelper.newIsaVDMFunDef("VDM function definition", Arrays.asList("myFunDef", "x", "y"), Arrays.asList("nat", "nat", "bool"), Arrays.asList(), false, "x+y > 10");
         System.out.println(st.render());
 
@@ -76,7 +90,7 @@ public class IsaST {
         group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theoryobj.stg", '$', '$');
 
         st = group.getInstanceOf("theory");
-        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList("\tnothing"),
+        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList(),
         Arrays.asList(new IsaVDMTheoryExport(null, IsaVDMTheoryExport.ExportKind.hide_const, IsaIdentifier.valueOf("Test"))))); 
         System.out.println(st.render());
 
@@ -97,7 +111,7 @@ public class IsaST {
         System.out.println(st.render());
 
         st = group.getInstanceOf("abbreviation");
-        st.add("abbrv", new IsaAbbreviation("", IsaIdentifier.listOf("abbrev"), Arrays.asList("nat"), "10"));
+        st.add("def", new IsaAbbreviation("", IsaIdentifier.listOf("abbrev"), Arrays.asList("nat"), "10"));
         System.out.println(st.render());
 
         st = group.getInstanceOf("definition");

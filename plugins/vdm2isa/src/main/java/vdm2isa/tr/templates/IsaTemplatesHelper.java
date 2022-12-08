@@ -1,5 +1,6 @@
 package vdm2isa.tr.templates;
 
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public final class IsaTemplatesHelper {
             throw new IsaTemplateException("Unknown template name in Isabelle template group: " + name);
     }
 
-    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
+    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<ST> body, List<IsaVDMTheoryExport> exports)
     {
         IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
         assert isTemplateValid(IsaTemplates.theory.templateName());
