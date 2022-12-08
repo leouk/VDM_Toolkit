@@ -49,13 +49,23 @@ record $rec.name$ =
 
 >>
 
-// Isabelle abbreviation template 
-// version with type:innerSyntaxIt() is confusing to me when multiple params?
-abbreviation(abbrv) ::= <<
-$commentIt(abbrv.comment)$
+// Isabelle definition/abbreviation template 
+defdecl(def, abbrv) ::= <<
+$commentIt(def.comment)$
+$if(abbrv)$abbreviation$else$definition$endif$
+    $signature(def)$ where
+    $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
+
+>>
+
+abbreviation(def) ::= defdecl(def, false)
+definition(def)   ::= defdecl(def, true)
+
+$! abbreviation(def) ::= <<
+$commentIt(def.comment)$
 abbreviation 
-    $signature(abbrv)$ where
-    $innerSyntaxIt(defineIt(abbrv.name, abbrv.expr, false)); wrap$
+    $signature(def)$ where
+    $innerSyntaxIt(defineIt(def.name, def.expr, false)); wrap$
 
 >> 
 
@@ -66,7 +76,7 @@ definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
 
->>
+>> !$
 
 fundef(fdef) ::= <<
 $commentIt(fdef.comment)$
