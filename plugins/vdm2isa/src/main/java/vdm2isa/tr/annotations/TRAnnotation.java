@@ -39,7 +39,7 @@ public abstract class TRAnnotation extends TRNode {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         return "null";
     }
     
