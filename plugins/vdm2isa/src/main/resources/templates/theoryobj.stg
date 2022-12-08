@@ -11,11 +11,12 @@ theory(thy) ::= <<
    $thy.location; wrap$
 *)
 theory $thy.name$
-imports VDMToolkit $thy.imports:{ imp | \"$imp$\" }; wrap, separator=" "$
+imports VDMToolkit $thy.imports:{ imp | "$imp$" }; wrap, separator=" "$
 begin
-$listIt((thy.body)(), "\n")$
 
+$listIt(thy.body, "\n")$
 $thy.exports:{ exp | $hideIt(exp.kind, exp.name)$ }; wrap, separator="\n"$ 
+
 end 
 >>
 
