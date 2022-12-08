@@ -133,9 +133,9 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
     }
 
     @Override 
-    public String translate()
+    public String oldtranslate()
     {
-        return super.translate() + recordType.translateTypeTLD() + 
+        return super.oldtranslate() + recordType.translateTypeTLD() + 
         recordType.translateSpecTLD() + translateInit();
     }
 
@@ -179,7 +179,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
                 result
             );
             
-            return ninitdef.translate();
+            return ninitdef.oldtranslate();
         } else {
             return "";
         }

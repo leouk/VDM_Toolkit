@@ -117,7 +117,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 					{
 						moduleName = module.name.getName();
 						workingAt = "translating module " + moduleName;
-						outputModule(module.getLocation(), moduleName, module.translate());  
+						outputModule(module.getLocation(), moduleName, module.oldtranslate());  
 						mcount++;
 					}
 					// only successful output calls

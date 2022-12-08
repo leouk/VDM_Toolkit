@@ -103,8 +103,8 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     }
 
     @Override
-    public String translate() {
-        return getInnerType().translate() + getSemanticSeparator() + isaToken().toString();
+    public String oldtranslate() {
+        return getInnerType().oldtranslate() + getSemanticSeparator() + isaToken().toString();
     }
 
 	@Override

@@ -397,8 +397,8 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	{
 		assert this.contains(t);
 		return t instanceof TRQuoteType ? 
-			t.translate() : 
-			TRTypeSet.prefixTranslate(t.translate().trim(), prefixed, getName());
+			t.oldtranslate() : 
+			TRTypeSet.prefixTranslate(t.oldtranslate().trim(), prefixed, getName());
 	}
 
 	protected String typeTranslate(TRType t)
@@ -411,7 +411,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		{
 			// add inner syntax tokens even if spurious to cope with structured union types
 			// e.g. U = set of nat | real | seq of int => "VDMNat VDMSet" | "VDMReal" | "VDMInt VDMSeq"
-			sb.append(IsaToken.innerSyntaxIt(t.translate()));
+			sb.append(IsaToken.innerSyntaxIt(t.oldtranslate()));
 		}
 
 		return sb.toString();
@@ -436,7 +436,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
@@ -510,7 +510,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(IsaToken.comment(IsaInfoMessage.ISA_UNION_TYPE_COERCIONS.toString(), getFormattingSeparator()));
 		// if there is a context, follow it; otherwise, ready to translate the body
-		String bodyStr = innerContext == null ? body.translate() : 
+		String bodyStr = innerContext == null ? body.oldtranslate() : 
 			getFormattingSeparator() + innerContext.unionTypesTranslate(body, innerContext.getNextUnionContext());
 		sb.append(bodyStr);
 		return sb.toString();

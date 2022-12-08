@@ -336,24 +336,24 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
     protected abstract String translateParametersPatternContext();
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		
 		// add any comments and annotations
-		sb.append(super.translate());
+		sb.append(super.oldtranslate());
 		
 		// translate the precondition
 		if (predef != null) 
 		{
-			sb.append(predef.translate());
+			sb.append(predef.oldtranslate());
 			sb.append("\n");
 		}
 
 		// translate the postcondition
 		if (postdef != null)
 		{
-			sb.append(postdef.translate());
+			sb.append(postdef.oldtranslate());
 			sb.append("\n");
 		}
 
@@ -365,8 +365,8 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		// translate the explicit function definition taking into consideration TRSpecificationKind
 		// constant functions are translated as constant definitions (not abbreviations) with null inType string.		
 		String fcnName     = name.getName();
-		String fcnInType   = isConstantFunction() ? null : type.parameters.translate();
-		String fcnOutType  = type.getResultType().translate();
+		String fcnInType   = isConstantFunction() ? null : type.parameters.oldtranslate();
+		String fcnOutType  = type.getResultType().oldtranslate();
 		
         String fcnParams = translateParameters();
 
@@ -426,7 +426,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			else
 			{
                 assert body != null;
-				String bodyStr = body.translate();
+				String bodyStr = body.oldtranslate();
 				if (hasTypeParameters())
 				{
 					//TODO should this be added everywhere? Not for now. 

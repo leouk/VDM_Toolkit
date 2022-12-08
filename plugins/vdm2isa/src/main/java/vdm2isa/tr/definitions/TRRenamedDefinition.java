@@ -38,7 +38,7 @@ public class TRRenamedDefinition extends TRImportedDefinition {
     }        
 
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         StringBuilder sb = new StringBuilder();
         String newName = IsaToken.isabelleName(name);
@@ -49,7 +49,7 @@ public class TRRenamedDefinition extends TRImportedDefinition {
             IsaToken.EQUALSEQUALS.toString() + 
             IsaToken.SPACE.toString() + 
             oldName;
-        sb.append(super.translate());
+        sb.append(super.oldtranslate());
         sb.append(IsaToken.comment(IsaInfoMessage.VDM_RENAMED_IMPORT_3P.format(def.name.getModule(), oldName, newName), getFormattingSeparator()));
         sb.append(isaToken());
         sb.append(IsaToken.SPACE.toString());

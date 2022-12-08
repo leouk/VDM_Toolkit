@@ -160,7 +160,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	}
 
 	@Override
-	public abstract String translate();
+	public abstract String oldtranslate();
 
 	protected abstract String getInvTypeString();
 

@@ -68,13 +68,13 @@ public class TRMapType extends TRAbstractInnerTypedType
     }	
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
-        sb.append(from.translate());
+        sb.append(from.oldtranslate());
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(getFormattingSeparator());
-        sb.append(getToType().translate());
+        sb.append(getToType().oldtranslate());
         return IsaToken.parenthesise(sb.toString());
     }
 

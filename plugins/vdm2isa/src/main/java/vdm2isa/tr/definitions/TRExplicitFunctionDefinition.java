@@ -499,7 +499,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 		// even for union pattern translate, we can "abosrb" the parameter name within the union case selection
 		// i.e. parameter name can be the same as the selected union parameter name without capturing it. 
 		boolean oldFreshness = paramPatternList.setDummyFreshness(false, true);
-		String fcnParams   = paramPatternList.translate();
+		String fcnParams   = paramPatternList.oldtranslate();
 		paramPatternList.setDummyFreshness(false,true);//oldFreshness, true);
 		return fcnParams;
 	}

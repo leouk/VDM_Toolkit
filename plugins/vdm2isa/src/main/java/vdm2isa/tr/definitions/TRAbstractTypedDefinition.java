@@ -79,7 +79,7 @@ public abstract class TRAbstractTypedDefinition extends TRDefinition {
             typeStr = type.getName();
         else
             // other types, translate it directly
-            typeStr = type.translate();
+            typeStr = type.oldtranslate();
         return typeStr;
     }
 

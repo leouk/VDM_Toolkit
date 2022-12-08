@@ -38,11 +38,11 @@ public class TRMkBasicExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());
-        sb.append(arg.translate());
+        sb.append(arg.oldtranslate());
         return IsaToken.parenthesise(sb.toString());
     }
 }

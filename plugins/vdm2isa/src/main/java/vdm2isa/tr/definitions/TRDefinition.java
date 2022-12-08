@@ -112,7 +112,7 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 
 		if (comments != null)
 		{
-			sb.append(comments.translate());
+			sb.append(comments.oldtranslate());
 		}
 
 		if (annotations != null && annotations.size() > 0)
@@ -161,7 +161,7 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
     }
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		return translatePreamble();
 	}

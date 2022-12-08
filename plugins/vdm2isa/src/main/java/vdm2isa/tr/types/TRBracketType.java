@@ -49,8 +49,8 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     }
 
     @Override
-    public String translate() {
-        return IsaToken.parenthesise(this.getInnerType().translate());
+    public String oldtranslate() {
+        return IsaToken.parenthesise(this.getInnerType().oldtranslate());
     }
 
     @Override

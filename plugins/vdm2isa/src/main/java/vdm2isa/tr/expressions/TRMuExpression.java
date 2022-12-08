@@ -55,9 +55,9 @@ public class TRMuExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
-        return IsaToken.parenthesise(record.translate()) + 
-            IsaToken.bracketit(IsaToken.LRECORD, modifiers.translate(), IsaToken.RRECORD);
+    public String oldtranslate() {
+        return IsaToken.parenthesise(record.oldtranslate()) + 
+            IsaToken.bracketit(IsaToken.LRECORD, modifiers.oldtranslate(), IsaToken.RRECORD);
     }
 
 	@Override

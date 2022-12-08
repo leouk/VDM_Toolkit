@@ -35,8 +35,8 @@ public class TRProofScriptDefinition extends TRDefinition {
     }
 
     @Override
-    public String translate() {
-        return poScript.translate();
+    public String oldtranslate() {
+        return poScript.oldtranslate();
     }
 
     @Override

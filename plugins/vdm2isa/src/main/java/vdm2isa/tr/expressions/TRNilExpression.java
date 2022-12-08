@@ -22,7 +22,7 @@ public class TRNilExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         return isaToken().toString();
     }
     

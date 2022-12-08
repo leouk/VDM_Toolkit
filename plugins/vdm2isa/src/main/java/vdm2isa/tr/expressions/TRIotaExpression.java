@@ -42,12 +42,12 @@ public class TRIotaExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
         sb.append(isaToken().toString());
         sb.append(getFormattingSeparator());
         // don't translate the bind, but the pattern within; bind translate is after 
-        sb.append(bind.plist.get(0).translate());//sb.append(bind.translate());
+        sb.append(bind.plist.get(0).oldtranslate());//sb.append(bind.translate());
         sb.append(IsaToken.POINT.toString());
         sb.append(getFormattingSeparator());
         StringBuilder predStr = new StringBuilder();

@@ -202,9 +202,9 @@ public class TRUnionType extends TRType implements TRDataType {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
-		sb.append(types.translate());
+		sb.append(types.oldtranslate());
 		return sb.toString();
     }
 

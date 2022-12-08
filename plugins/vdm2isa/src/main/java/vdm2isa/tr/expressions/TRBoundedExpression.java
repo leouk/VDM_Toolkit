@@ -120,7 +120,7 @@ public class TRBoundedExpression extends TRExpression {
      * and might need extra type invariant checks (e.g., type binds require check about it's invariant).
      */
     @Override
-    public String translate() {
+    public String oldtranslate() {
         // return IsaToken.parenthesise(isaToken().toString() + " " + 
         // bindList.translate() + IsaToken.POINT + " " + predicate.translate());
         StringBuilder sb = new StringBuilder();
@@ -138,7 +138,7 @@ public class TRBoundedExpression extends TRExpression {
             
             //spurious now with getParenthesise() in type bind always returning true, but leave for clarity
             bindList.setParenthesise(true);
-            sb.append(boundedPatternsTranslate(bindList.translate()));
+            sb.append(boundedPatternsTranslate(bindList.oldtranslate()));
         }
         // if mixed binds, then will have multiple quantifiers, e.g. x:nat, y in set S => ! x::VDMNat . ! y : S
         else 

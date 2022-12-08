@@ -165,7 +165,7 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
 		{
             //System.out.println(predef.toString());
             //System.out.println(precondition.toString());
-			sb.append(predef.translate());
+			sb.append(predef.oldtranslate());
 			sb.append("\n");
         }
 		// } else {
@@ -194,18 +194,18 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
 		// translate the postcondition
 		if (postdef != null)
 		{
-			sb.append(postdef.translate());
+			sb.append(postdef.oldtranslate());
 			sb.append("\n");
 		}
 
-        sb.append(super.translate());
+        sb.append(super.oldtranslate());
         
         //@JK
         // Replaces with newly definied parameters and parameter patterns that have the state included?
         String fcnName     = name.getName();
         String stateType = state.name.toString();
-		String fcnInType   = type.parameters.translate();
-		String fcnOutType  = type.getResultType().translate();
+		String fcnInType   = type.parameters.oldtranslate();
+		String fcnOutType  = type.getResultType().oldtranslate();
         //(type.getResultType() instanceof TRVoidType) ? type.getResultType() : type.getResultType().translate() + IsaToken.SPACE.toString() + IsaToken.TFUN.toString() + IsaToken.SPACE.toString() + stateType;
 		
         //@JK
@@ -235,7 +235,7 @@ public class TRExplicitOperationDefinition extends TRExplicitFunctionDefinition 
         // TRPatternListList parameters = TRPatternListList.newPatternListList(parameterPatterns, TRPatternList.newPatternList(TRBasicPattern.dummyPattern(location, false)));
         // paramPatternList.setSemanticSeparator(IsaToken.SPACE.toString());
         boolean oldFreshness = paramPatternList.setDummyFreshness(false, true);
-        String fcnParams = paramPatternList.translate();
+        String fcnParams = paramPatternList.oldtranslate();
 		paramPatternList.setDummyFreshness(false,true);//oldFreshness, true);
 		return fcnParams;
 	}

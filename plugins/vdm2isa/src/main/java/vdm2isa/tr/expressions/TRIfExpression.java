@@ -72,22 +72,22 @@ public class TRIfExpression extends TRExpression
 	}
 	
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattingSeparator());
 		sb.append(isaToken().toString());
 		sb.append(" ");
-		sb.append(IsaToken.parenthesise(ifExp.translate()));
+		sb.append(IsaToken.parenthesise(ifExp.oldtranslate()));
 		sb.append(" ");
 		sb.append(IsaToken.THEN.toString());
 		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.parenthesise(thenExp.translate()));
-		sb.append(elseList.translate());
+		sb.append(IsaToken.parenthesise(thenExp.oldtranslate()));
+		sb.append(elseList.oldtranslate());
 		sb.append(getFormattingSeparator());
 		sb.append(IsaToken.ELSE.toString());
 		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.parenthesise(elseExp.translate()));
+		sb.append(IsaToken.parenthesise(elseExp.oldtranslate()));
 		return IsaToken.parenthesise(sb.toString());
 	}
 

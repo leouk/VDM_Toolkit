@@ -33,7 +33,7 @@ public class TRProofScriptStepDefinition extends TRDefinition {
     }
 
     @Override
-	public String translate()
+	public String oldtranslate()
 	{
         StringBuilder sb = new StringBuilder();
 		sb.append(translatePreamble());

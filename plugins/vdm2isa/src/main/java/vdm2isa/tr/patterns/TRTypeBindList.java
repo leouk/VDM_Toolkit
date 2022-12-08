@@ -68,6 +68,6 @@ public class TRTypeBindList extends TRMappedList<TCTypeBind, TRMultipleTypeBind>
 		TRTypeBindList result = new TRTypeBindList();
 		result.addAll(Arrays.asList(args));
 		TRNode.setup(result);
-		return result.translate();	
+		return result.oldtranslate();	
 	}
 }

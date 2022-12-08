@@ -139,14 +139,14 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(parameters.translate());
+		sb.append(parameters.oldtranslate());
 		sb.append(IsaToken.SPACE.toString());
 		sb.append(isaToken().toString());
 		sb.append(IsaToken.SPACE.toString());
-		sb.append(getResultType().translate());
+		sb.append(getResultType().oldtranslate());
 		return sb.toString();
 	}
 	

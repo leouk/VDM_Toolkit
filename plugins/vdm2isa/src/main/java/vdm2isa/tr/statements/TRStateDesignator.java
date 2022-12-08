@@ -20,7 +20,7 @@ public abstract class TRStateDesignator extends TRExpression{
         return visitor.caseTRStateDesignator(this, arg);
     }
 
-    public abstract String translate();
+    public abstract String oldtranslate();
 
     public IsaToken isaToken() {
         return IsaToken.EOF;

@@ -90,7 +90,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
     }
     
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         return translateNamedType();
     }
@@ -123,7 +123,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
             TRDataType dtype = (TRDataType)type.ultimateType();
             if (dtype.isEnumerated())
             {
-                sb.append(body.translate());
+                sb.append(body.oldtranslate());
             }
             else
             {
@@ -140,7 +140,7 @@ public class TRLocalDefinition extends TRAbstractTypedDefinition {
         }
         else 
         {
-            sb.append(body.translate());
+            sb.append(body.oldtranslate());
         }
         return sb.toString();
 	}

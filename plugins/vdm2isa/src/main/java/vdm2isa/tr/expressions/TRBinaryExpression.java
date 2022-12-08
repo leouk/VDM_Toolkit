@@ -364,7 +364,7 @@ public class TRBinaryExpression extends TRExpression
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		return tokenise(isaToken(), location, left, right);
 	}

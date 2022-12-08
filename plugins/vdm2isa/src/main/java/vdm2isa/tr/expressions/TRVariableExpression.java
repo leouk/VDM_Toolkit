@@ -77,7 +77,7 @@ public class TRVariableExpression extends TRExpression
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		// for quote literals, don't get the VDM name but the prefixed Isabelle one! 
@@ -85,7 +85,7 @@ public class TRVariableExpression extends TRExpression
 		if (t instanceof TRQuoteType)
 		{
 			TRQuoteType qt = (TRQuoteType)t;
-			sb.append(qt.translate());
+			sb.append(qt.oldtranslate());
 		}
 		else 
 		{

@@ -45,7 +45,7 @@ public class TRStatementList extends TRMappedList<TCStatement, TRStatement> {
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())

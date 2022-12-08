@@ -109,46 +109,46 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
         switch (isaToken())
         {
             case SET:
-                pattern = IsaToken.bracketit(IsaToken.SET_OPEN, plist.translate(), IsaToken.SET_CLOSE);
+                pattern = IsaToken.bracketit(IsaToken.SET_OPEN, plist.oldtranslate(), IsaToken.SET_CLOSE);
                 break;
             case SEQ: 
-                pattern = IsaToken.bracketit(IsaToken.SEQ_OPEN, plist.translate(), IsaToken.SEQ_CLOSE);
+                pattern = IsaToken.bracketit(IsaToken.SEQ_OPEN, plist.oldtranslate(), IsaToken.SEQ_CLOSE);
                 break;
             case CROSSPROD: 
-                pattern = IsaToken.parenthesise(plist.translate());
+                pattern = IsaToken.parenthesise(plist.oldtranslate());
                 break;
             case CONCATENATE: 
                 assert plist.size() == 2; //left+right
                 pattern = IsaToken.parenthesise(
-                    IsaToken.parenthesise(plist.get(0).translate()) + 
+                    IsaToken.parenthesise(plist.get(0).oldtranslate()) + 
                     IsaToken.CONCATENATE.toString() + 
-                    IsaToken.parenthesise(plist.get(1).translate()));
+                    IsaToken.parenthesise(plist.get(1).oldtranslate()));
                 break;
             case MAPLET:
                 assert plist.size() == 2; //from+to
-                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                pattern = IsaToken.parenthesise(plist.get(0).oldtranslate() + 
                     IsaToken.SPACE.toString() + IsaToken.MAPLET.toString() +
-                    IsaToken.SPACE.toString() + plist.get(1).translate()); 
+                    IsaToken.SPACE.toString() + plist.get(1).oldtranslate()); 
                 break;
             case UNION:
                 assert plist.size() == 2; //left+right
-                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                pattern = IsaToken.parenthesise(plist.get(0).oldtranslate() + 
                     IsaToken.SPACE.toString() + IsaToken.UNION.toString() + 
-                    IsaToken.SPACE.toString() + plist.get(1).translate());
+                    IsaToken.SPACE.toString() + plist.get(1).oldtranslate());
                 break;
             case MUNION: 
                 assert plist.size() == 2; //left+right
-                pattern = IsaToken.parenthesise(plist.get(0).translate() + 
+                pattern = IsaToken.parenthesise(plist.get(0).oldtranslate() + 
                     IsaToken.SPACE.toString() + IsaToken.MUNION.toString() + 
-                    IsaToken.SPACE.toString() + plist.get(1).translate());
+                    IsaToken.SPACE.toString() + plist.get(1).oldtranslate());
                 break;
             case MAP:
-                pattern = IsaToken.bracketit(IsaToken.MAP_OPEN, plist.translate(), IsaToken.MAP_CLOSE);
+                pattern = IsaToken.bracketit(IsaToken.MAP_OPEN, plist.oldtranslate(), IsaToken.MAP_CLOSE);
                 break;
             case LPAREN: 
                 assert exp != null;
                 TRNode.setup(exp);
-                pattern = IsaToken.parenthesise(exp.translate());
+                pattern = IsaToken.parenthesise(exp.oldtranslate());
                 break;
             default:
                 pattern = "null";

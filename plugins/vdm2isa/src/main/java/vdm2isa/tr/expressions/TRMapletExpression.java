@@ -58,9 +58,9 @@ public class TRMapletExpression extends TRExpression
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         //@todo add spacing control on the Isa token?
-        return left.translate() + isaToken().toString() + right.translate();
+        return left.oldtranslate() + isaToken().toString() + right.oldtranslate();
     }
 
 	@Override

@@ -107,12 +107,12 @@ public class TRTokenType extends TRBasicType {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
         figureOutInnerTokenType();
         if (innerTokenType != null)
         {
-            sb.append(innerTokenType.translate());
+            sb.append(innerTokenType.oldtranslate());
             sb.append(IsaToken.SPACE.toString());    
         }
         else
@@ -120,7 +120,7 @@ public class TRTokenType extends TRBasicType {
             // if not set, there will be a ISabelle type error for missing type parameter! 
             report(IsaErrorMessage.PLUGIN_INVALID_INNER_TOKEN_TYPE);
         }
-        sb.append(super.translate());
+        sb.append(super.oldtranslate());
         return sb.toString();
     }
 

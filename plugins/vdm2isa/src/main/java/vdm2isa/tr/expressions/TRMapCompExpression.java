@@ -164,7 +164,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             if (!allBoundPatterns.uniqueNames())
             {
                 // non unique names
-                report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDINGS_DUPLUCATE_1P, bindings.translate()); 
+                report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDINGS_DUPLUCATE_1P, bindings.oldtranslate()); 
             }
             TCNameList boundV = allBoundPatterns.getNamesInPatternListList();
 
@@ -291,13 +291,13 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     }
 
     @Override
-    public String translate() 
+    public String oldtranslate() 
     {
         StringBuilder sb = new StringBuilder();
         if (isTrivial())
         {
             assert mapComp != null;
-            sb.append(mapComp.translate());
+            sb.append(mapComp.oldtranslate());
         }
         else
         {
@@ -308,10 +308,10 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             sb.append(isaToken().toString());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(domainSet.translate());
+            sb.append(domainSet.oldtranslate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(rangeSet.translate());
+            sb.append(rangeSet.oldtranslate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
             sb.append(getMapletExpr().left.getType().invTranslate());
@@ -320,13 +320,13 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             sb.append(getMapletExpr().right.getType().invTranslate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(domLambda.translate());
+            sb.append(domLambda.oldtranslate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(rangeLambda.translate());
+            sb.append(rangeLambda.oldtranslate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(predLambda.translate());
+            sb.append(predLambda.oldtranslate());
         }
         return IsaToken.parenthesise(sb.toString());
     }
@@ -507,7 +507,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
             TRMultipleBind lambdaBinding = lambdaBindings.get(kind.equals(TRMapCompExprKind.DOMAIN) ? 0 : 1);
             assert lambdaBinding.plist.size() == 1 && lambdaBinding.getRHSType().compatible(expression.getType());
             // dummyD = x+y  
-            lambdaResult = TRVariableExpression.newVariableExpr(expression.location, lambdaBinding.plist.translate(), lambdaBinding.getRHSType());
+            lambdaResult = TRVariableExpression.newVariableExpr(expression.location, lambdaBinding.plist.oldtranslate(), lambdaBinding.getRHSType());
             lambdaBindingsEqualLambdaExistential = 
                 TRBinaryExpression.newBinaryExpression(
                     lambdaResult, 
@@ -651,7 +651,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
         // whatever happens, make sure it's properly figured out (i.e. nor smaller, nor bigger)
         if (lambdaBindings.size() != TRMapCompExpression.MAX_BINDINGS_ALLOWED)
         {
-            lambdaBindings.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_2P, "dummies", lambdaBindings.translate());
+            lambdaBindings.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_2P, "dummies", lambdaBindings.oldtranslate());
         }
         TRNode.setup(lambdaBindings, domBindings, rngBindings, prdBindings);
 
@@ -668,7 +668,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
     {
         if (created.size() != expected.size() || !created.getPatternListList().getNamesInPatternListList().containsAll(expected))
         {
-            created.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_2P, expected.toString(), created.translate()); 
+            created.report(IsaErrorMessage.ISA_INVALID_MAP_COMP_BINDING_2P, expected.toString(), created.oldtranslate()); 
         }
     }
 }

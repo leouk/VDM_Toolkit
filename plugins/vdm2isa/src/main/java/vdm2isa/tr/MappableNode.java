@@ -1,5 +1,7 @@
 package vdm2isa.tr;
 
+import org.stringtemplate.v4.ST;
+
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 
@@ -29,7 +31,9 @@ public interface MappableNode extends Mappable {
 	 * Top-level translation associated with this TRNode. 
 	 * @return Isabelle YXML string.
 	 */
-	public String translate();
+	public String oldtranslate();
+
+	//public ST translate();
 
 	/**
 	 * Top-level (implicit) invariant-related translation associated with this TRNode. TRNodes with contextual

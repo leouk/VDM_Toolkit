@@ -33,8 +33,8 @@ public class TRPostOpExpression extends TRExpression{
     }
 
     @Override
-    public String translate() {
-        return postexpression.translate();
+    public String oldtranslate() {
+        return postexpression.oldtranslate();
     }
 
     @Override

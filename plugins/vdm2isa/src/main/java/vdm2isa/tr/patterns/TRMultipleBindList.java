@@ -382,7 +382,7 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		// if a result is found, then dwell on whether to warn or not
 		if (result != null && !getPatternListList().uniqueNames())
 		{
-			warning(IsaWarningMessage.VDMSL_FIND_BINDING_OF_DUPLICATE_PATTERN_NAME_2P, result.translate(), name.toString());
+			warning(IsaWarningMessage.VDMSL_FIND_BINDING_OF_DUPLICATE_PATTERN_NAME_2P, result.oldtranslate(), name.toString());
 		}
 		return result; 
 	}
@@ -403,6 +403,6 @@ public class TRMultipleBindList extends TRMappedList<TCMultipleBind, TRMultipleB
 		TRMultipleBindList result = new TRMultipleBindList();
 		result.addAll(Arrays.asList(args));
 		TRNode.setup(result);
-		return result.translate();	
+		return result.oldtranslate();	
 	}
 }

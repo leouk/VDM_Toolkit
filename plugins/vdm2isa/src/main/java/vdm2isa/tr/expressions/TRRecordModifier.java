@@ -68,9 +68,9 @@ public class TRRecordModifier extends TRExpression
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         return IsaTemplates.isabelleRecordFieldName(recordType.getName(), tag.toString()) + 
-            " " + isaToken().toString() + " " + value.translate();
+            " " + isaToken().toString() + " " + value.oldtranslate();
     }
 
 	@Override

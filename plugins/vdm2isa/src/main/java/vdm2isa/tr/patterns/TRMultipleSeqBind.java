@@ -71,23 +71,23 @@ public class TRMultipleSeqBind extends TRMultipleBind
     public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(plist.translate());
+        sb.append(plist.oldtranslate());
         if (!vdmPatternsOnly)
         {
             // translate the bind within comprehension
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.SEQBIND.toString());
             sb.append(getFormattingSeparator());
-            sb.append(seq.translate());
+            sb.append(seq.oldtranslate());
         } 
         return sb.toString();
     }
     
     @Override
     public String boundExpressionTranslate(int index, boolean invTr) {
-        String rhsStr = IsaToken.parenthesise(IsaToken.ELEMS.toString() + getFormattingSeparator() + getRHS().translate()); 
+        String rhsStr = IsaToken.parenthesise(IsaToken.ELEMS.toString() + getFormattingSeparator() + getRHS().oldtranslate()); 
         return invTr ? 
-                IsaToken.parenthesise(plist.get(index).translate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SeqElems ?
+                IsaToken.parenthesise(plist.get(index).oldtranslate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SeqElems ?
                 : rhsStr;
     }
 

@@ -120,7 +120,7 @@ public class TRQuoteType extends TRType
     // }
     
     @Override
-    public String translate() 
+    public String oldtranslate() 
     {
        return TRTypeSet.prefixTranslate(value, true, getInferredNamedForType());
     }
@@ -167,6 +167,6 @@ public class TRQuoteType extends TRType
     {
         assert qtype.value.equals(String.valueOf(exp));  
         qtype.figureOutTypeName();
-        return qtype.translate();
+        return qtype.oldtranslate();
     }
 }

@@ -76,9 +76,9 @@ public class TRField extends TRAbstractInnerTypedType {
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         return getIsabelleTagName() + " " + IsaToken.TYPEOF.toString() + " " + 
-            "\"" + this.getInnerType().translate() + "\"";
+            "\"" + this.getInnerType().oldtranslate() + "\"";
     }
 
     @Override

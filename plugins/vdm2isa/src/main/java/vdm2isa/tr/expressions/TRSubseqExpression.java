@@ -42,10 +42,10 @@ public class TRSubseqExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
-        return "(" + seq.translate() + IsaToken.APPLY.toString() + 
-            IsaToken.SET_OPEN.toString() + from.translate() + IsaToken.SUBSEQ.toString() + 
-            to.translate() + IsaToken.SET_CLOSE.toString() + ")";
+    public String oldtranslate() {
+        return "(" + seq.oldtranslate() + IsaToken.APPLY.toString() + 
+            IsaToken.SET_OPEN.toString() + from.oldtranslate() + IsaToken.SUBSEQ.toString() + 
+            to.oldtranslate() + IsaToken.SET_CLOSE.toString() + ")";
     }
 
 	@Override

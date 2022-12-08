@@ -81,7 +81,7 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
        return IsaToken.SOME;
     }
 
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
@@ -89,11 +89,11 @@ public class TRLetBeStExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(IsaToken.parenthesise(
             IsaToken.dummyVarNames(1, false, location) +
             IsaToken.TYPEOF.toString() +
-            getType().translate()));
+            getType().oldtranslate()));
         sb.append(IsaToken.SPACE);
         sb.append(IsaToken.POINT);
         //TODO someone has to call the inner binds record translate? 
-        sb.append(this.vInSetS.translate());
+        sb.append(this.vInSetS.oldtranslate());
         return IsaToken.parenthesise(sb.toString());
     }
 

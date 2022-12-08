@@ -129,7 +129,8 @@ public class TRModule extends TRNode
 	 */
 	private void figureOutModuleImports()
 	{
-		this.imports.add(IsaToken.VDMTOOLKIT.toString());
+		//TODO remove this line given use of string templates?
+		//this.imports.add(IsaToken.VDMTOOLKIT.toString());
 		if (module.imports != null && module.imports.imports != null)
 		{
 			for(TCImportFromModule i : module.imports.imports)
@@ -395,19 +396,20 @@ public class TRModule extends TRNode
 	// 			!IsaToken.validIsaIdentifier(importName); 
 	// }
 
-	@Override
-	public String translate()
+	//@Override
+	public ST translate()
 	{
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
 		if (files != null && !files.isEmpty())
 		{ 
 			loc += "\nfiles = " + files.toString();
 		}
-		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), null, getExports());
-		return st.render();
+		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), /*allDefs.translate()*/null, 	getExports());
+		return st;
 	}
 
-	public String oldTranslate()
+	@Override
+	public String oldtranslate()
 	{
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
 		if (files != null && !files.isEmpty())
@@ -415,7 +417,7 @@ public class TRModule extends TRNode
 			loc += "\nfiles = " + files.toString();
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(allDefs.translate());
+		sb.append(allDefs.oldtranslate());
 		sb.append(getOldExports());
 		sb.append(getFormattingSeparator());
 		sb.append(getFormattingSeparator());

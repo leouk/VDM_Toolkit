@@ -129,7 +129,7 @@ public abstract class TRInvariantType extends TRType
         StringBuilder sb = new StringBuilder();
         if (invdef != null)
         {
-            sb.append(invdef.translate());
+            sb.append(invdef.oldtranslate());
             sb.append(getFormattingSeparator());
             sb.append("\n");
         }
@@ -141,14 +141,14 @@ public abstract class TRInvariantType extends TRType
 
         if (eqdef != null)
         {
-            sb.append(eqdef.translate());
+            sb.append(eqdef.oldtranslate());
             sb.append(getFormattingSeparator());
             sb.append("\n");
         }
         
         if (orddef != null)
         {
-            sb.append(orddef.translate());
+            sb.append(orddef.oldtranslate());
             sb.append(getFormattingSeparator());
             sb.append("\n");
         }

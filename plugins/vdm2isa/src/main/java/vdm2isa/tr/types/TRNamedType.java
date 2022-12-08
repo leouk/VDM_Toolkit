@@ -109,7 +109,7 @@ public class TRNamedType extends TRInvariantType
      * Depending on the context where this is called, you will want just the RHS; so only return the RHS, and use the typename for LHS where needed.
      */
     @Override
-    public String translate() {
+    public String oldtranslate() {
         StringBuilder sb = new StringBuilder();
         type.setInferredNamedForType(typename);
         // Hide LHS

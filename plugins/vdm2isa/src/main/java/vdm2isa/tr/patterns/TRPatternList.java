@@ -202,7 +202,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 			result = new Vector<String>(size());
 			for (TRPattern p : this)
 			{
-				result.add(p.translate());
+				result.add(p.oldtranslate());
 			}
 		}
 		else
@@ -221,7 +221,7 @@ public class TRPatternList extends TRMappedList<TCPattern, TRPattern> implements
 		TRPatternList result = new TRPatternList();
 		result.addAll(Arrays.asList(args));
 		TRNode.setup(result);
-		return result.translate();	
+		return result.oldtranslate();	
 	}
 
 	/**

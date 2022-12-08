@@ -21,7 +21,7 @@ public class TRVoidType extends TRType{
 	}
     
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         return "()";
     }

@@ -29,8 +29,8 @@ public abstract class TRStatement extends TRExpression {
         return visitor.caseStatement(this, arg);
     }
 
-    public String translate(){
-        return comments.translate();// + TRStateDefinition.state.recordType.getInvDef().getParameters().patternContextTranslate(null) + "\n\t";
+    public String oldtranslate(){
+        return comments.oldtranslate();// + TRStateDefinition.state.recordType.getInvDef().getParameters().patternContextTranslate(null) + "\n\t";
     }
 
     public IsaToken isaToken() {

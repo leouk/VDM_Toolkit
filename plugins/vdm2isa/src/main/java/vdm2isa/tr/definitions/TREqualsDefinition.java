@@ -79,7 +79,7 @@ public class TREqualsDefinition extends TRValueDefinition {
         else 
         {
             assert typebind != null && typebind.plist.size() == 1;
-            result = typebind.plist.translate();
+            result = typebind.plist.oldtranslate();
         }
         return result;
     }

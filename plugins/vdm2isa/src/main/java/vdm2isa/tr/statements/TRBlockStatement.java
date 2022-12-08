@@ -26,9 +26,9 @@ public class TRBlockStatement extends TRSimpleBlockStatement
     }
 
     @Override
-    public String translate()
+    public String oldtranslate()
     {
-        return assignmentDefs.translate() + super.translate();
+        return assignmentDefs.oldtranslate() + super.oldtranslate();
     }
 
     public <R, S> R apply(TRExpressionVisitor<R, S> visitor, S arg) 

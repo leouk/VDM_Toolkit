@@ -68,8 +68,8 @@ public class TRSeqType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public String translate() {
-        return getInnerType().translate() + " " + isaToken().toString();
+    public String oldtranslate() {
+        return getInnerType().oldtranslate() + " " + isaToken().toString();
     }
 
     @Override

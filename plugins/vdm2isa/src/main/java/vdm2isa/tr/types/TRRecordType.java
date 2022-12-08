@@ -99,7 +99,7 @@ public class TRRecordType extends TRInvariantType
     protected String getInvTypeString()
     {
         // definition for a reference to record, i.e. variable of its type
-        return IsaToken.INV.toString() + translate();
+        return IsaToken.INV.toString() + oldtranslate();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class TRRecordType extends TRInvariantType
             if (atTopLevelDefinition())
             {
                 sb.append(IsaToken.INV.toString());
-                sb.append(translate());
+                sb.append(oldtranslate());
                 sb.append(getSemanticSeparator() + varName);
             }
             else
@@ -151,12 +151,12 @@ public class TRRecordType extends TRInvariantType
         // translate record definition 
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString()); 
-        sb.append(translate());
+        sb.append(oldtranslate());
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(getFormattingSeparator());
-        sb.append(getFields().translate());
+        sb.append(getFields().oldtranslate());
         sb.append(getFormattingSeparator());
         sb.append("\n");
         
@@ -164,7 +164,7 @@ public class TRRecordType extends TRInvariantType
     }
 
     @Override
-    public String translate() {
+    public String oldtranslate() {
         return getName(); 
     }
 

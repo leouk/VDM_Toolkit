@@ -134,7 +134,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
 	public abstract <R, S> R apply(TRPatternVisitor<R, S> visitor, S arg);
 
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         return typeAware(patternTranslate());
     }
@@ -154,7 +154,7 @@ public abstract class TRPattern extends TRNode implements TRPatternContext {
     @Override 
     public String patternContextTranslate(String varName)
     {
-        return translate();
+        return oldtranslate();
     }
 
     public TRDefinitionList getDefinitions(TRType type, NameScope scope) 

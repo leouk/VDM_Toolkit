@@ -31,7 +31,7 @@ public class TRBasicProofScriptStepDefinition extends TRDefinition {
     }
 
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         return isaToken().toString() + getFormattingSeparator();
     }

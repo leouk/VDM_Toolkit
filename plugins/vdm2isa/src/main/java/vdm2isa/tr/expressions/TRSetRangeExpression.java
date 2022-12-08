@@ -33,7 +33,7 @@ public class TRSetRangeExpression extends TRExpression {
         if (!first.getType().isLinearlyOrdered() || !last.getType().isLinearlyOrdered())
         {
             report(IsaErrorMessage.ISA_INVALID_SET_RANGE_TYPE_1P, 
-                first.getType().isLinearlyOrdered() ? last.getType().translate() : first.getType().translate());
+                first.getType().isLinearlyOrdered() ? last.getType().oldtranslate() : first.getType().oldtranslate());
         }
     }
 
@@ -52,8 +52,8 @@ public class TRSetRangeExpression extends TRExpression {
     }
 
     @Override
-    public String translate() {
-        return IsaToken.SET_OPEN.toString() + first.translate() + IsaToken.RANGE.toString() + last.translate() + IsaToken.SET_CLOSE.toString();
+    public String oldtranslate() {
+        return IsaToken.SET_OPEN.toString() + first.oldtranslate() + IsaToken.RANGE.toString() + last.oldtranslate() + IsaToken.SET_CLOSE.toString();
     }
 
 	@Override

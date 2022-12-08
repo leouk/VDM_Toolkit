@@ -34,7 +34,7 @@ public class TRIsaVDMCommentList extends TRMappedList<LexComment, TRIsaVDMCommen
     }
 
     @Override
-    public String translate()
+    public String oldtranslate()
     {
         StringBuilder sb = new StringBuilder();
         // add final formatting separator to separate the last comment in the list from the remaining associated definitions
