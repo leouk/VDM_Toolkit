@@ -11,7 +11,6 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import vdm2isa.tr.templates.IsaClaim.ClaimKind;
-import vdm2isa.tr.templates.IsaTypeDecl.TypeDeclKind;
 
 public class IsaST {
     
@@ -19,70 +18,73 @@ public class IsaST {
 
     private static STGroup group; 
     private static ST st;
-    private static List<ST> sts;
+    private static List<String> sts;
+    private static boolean debug;
 
     
     public static void main(String[] args) throws IOException
     {
         //STGroup.verbose = true;
         STGroup.trackCreationEvents = true;
+        debug = true;
         
         test3();
     }
 
+    private static void processST(ST st)
+    {
+        String s = st.render();
+        sts.add(s);
+        if (debug) System.out.println(s);
+    }
+
     public static void test3()
     {
-        sts = new ArrayList<ST>();
+        sts = new ArrayList<>();
         
-        st = IsaTemplatesHelper.newIsaTypeDecl("", TypeDeclKind.type_synonym, "MyType", Arrays.asList("nat"));
-        System.out.println(st.render());
-        sts.add(st);
-
-        st = IsaTemplatesHelper.newIsaTypeDecl("", TypeDeclKind.datatype, "MyDType", Arrays.asList("A", "B", "C"));
-        System.out.println(st.render());
-        sts.add(st);
+        st = IsaTemplatesHelper.newIsaTypeSynonym("", "MyType", "nat");
+        processST(st);
+        
+        st = IsaTemplatesHelper.newIsaDatatype("", "MyDType", Arrays.asList("A", "B", "C"));
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaLemmas(null, "LemmasNames", Arrays.asList("Lemma1", "Lemma2", "Lemma3"));
-        System.out.println(st.render());
-        sts.add(st);
+        processST(st);
 
-        st = IsaTemplatesHelper.newIsaClaim(null, ClaimKind.theorem, "test", Arrays.asList(IsaAttribute.simp, IsaAttribute.elim), "x > 0");
-        System.out.println(st.render());
-        sts.add(st);
+        st = IsaTemplatesHelper.newIsaClaim(null, ClaimKind.theorem, "test", Arrays.asList(IsaAttribute.simp, IsaAttribute.elim), "x > 0", Arrays.asList());
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaAbbreviation("", Arrays.asList("abbrev"), Arrays.asList("nat"), "10");
-        System.out.println(st.render());
-        sts.add(st);
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaDefinition("", Arrays.asList("geqDef", "x"), Arrays.asList("nat", "bool"), Arrays.asList(IsaAttribute.simp),false, "x > 1");
-        System.out.println(st.render());
-        sts.add(st);
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaRecord("", "myRec", 
             IsaTemplatesHelper.newIsaRecordFields(Arrays.asList("field1", "field2"), Arrays.asList("nat", "int")));
-        System.out.println(st.render());
-        sts.add(st);
+        processST(st);
 
-        st = IsaTemplatesHelper.newIsaRecord("", "myRec", 
+        st = IsaTemplatesHelper.newIsaRecord("", "myRec2", 
            Arrays.asList(IsaRecordField.valueOf("field1", "nat"), IsaRecordField.valueOf("field2", "int")));
-        System.out.println(st.render());
-        sts.add(st);
-
-        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "MyTheory", Arrays.asList("Import"), /*Arrays.asList("\tnothing")*/sts, Arrays.asList(IsaTemplatesHelper.newIsaVDMExportStruc(null, IsaVDMTheoryExport.ExportKind.hide_const, "whichever")));
-        System.out.println(st.render());
-
+        processST(st);
+        
         st = IsaTemplatesHelper.newIsaVDMFunDef("VDM function definition", Arrays.asList("myFunDef", "x", "y"), Arrays.asList("nat", "nat", "bool"), Arrays.asList(), false, "x+y > 10");
-        System.out.println(st.render());
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaRecursiveFunDef("Isabelle automatic recursive definition", Arrays.asList("fact", "n"), Arrays.asList("nat", "nat"), Arrays.asList(IsaAttribute.iff), false, "(if n = 0 then 1 else n*fact(n-1))");
-        System.out.println(st.render());
+        processST(st);
 
         st = IsaTemplatesHelper.newIsaMutuallyRecursiveFunDef(
             Arrays.asList(IsaTemplatesHelper.newIsaDefinitionStruc("Isabelle even", Arrays.asList("even", "n"), 
                                 Arrays.asList("nat", "bool"), Arrays.asList(), true, "(if n = 0 then True else odd (n-1))"),
                            IsaTemplatesHelper.newIsaDefinitionStruc("Isabelle odd", Arrays.asList("odd", "n"), Arrays.asList("nat", "bool"), 
                                 Arrays.asList(), true, "(if n = 0 then False else even (n-1))")));
-        System.out.println(st.render());
+        processST(st);
+
+        st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "Comment", "Location", "TemplateTheory", Arrays.asList("Import"), sts, Arrays.asList(IsaTemplatesHelper.newIsaVDMExportStruc(null, IsaVDMTheoryExport.ExportKind.hide_const, "whichever")));
+        processST(st);
+
+        sts.clear();
     }
 
     public static void test2() 
@@ -90,16 +92,16 @@ public class IsaST {
         group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + "theoryobj.stg", '$', '$');
 
         st = group.getInstanceOf("theory");
-        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList(),
+        st.add("thy", new IsaTheory(Instant.now(), "Comment", "Location", IsaIdentifier.valueOf("MyTheory"), IsaIdentifier.listOf("Import"), Arrays.asList("\tnothing"),
         Arrays.asList(new IsaVDMTheoryExport(null, IsaVDMTheoryExport.ExportKind.hide_const, IsaIdentifier.valueOf("Test"))))); 
         System.out.println(st.render());
 
-        st = group.getInstanceOf("typedecl");
-        st.add("tdecl", new IsaTypeDecl("", TypeDeclKind.type_synonym, IsaIdentifier.valueOf("MyType"), Arrays.asList("nat")));
+        st = group.getInstanceOf("typesynonym");
+        st.add("tsym", new IsaTypeSynonym("", IsaIdentifier.valueOf("MyType"), "nat"));
         System.out.println(st.render());
 
-        st = group.getInstanceOf("typedecl");
-        st.add("tdecl", new IsaTypeDecl("", TypeDeclKind.datatype, IsaIdentifier.valueOf("MyDType"), Arrays.asList("A", "B", "C")));
+        st = group.getInstanceOf("datatype");
+        st.add("dtype", new IsaDatatype("", IsaIdentifier.valueOf("MyDType"), Arrays.asList("A", "B", "C")));
         System.out.println(st.render());
 
         st = group.getInstanceOf("lemmas");
@@ -107,7 +109,7 @@ public class IsaST {
         System.out.println(st.render());
 
         st = group.getInstanceOf("claim");
-        st.add("clm", new IsaClaim(null, ClaimKind.theorem, IsaIdentifier.valueOf("test"), Arrays.asList(IsaAttribute.simp, IsaAttribute.elim), "x > 0"));
+        st.add("clm", new IsaClaim(null, ClaimKind.theorem, IsaIdentifier.valueOf("test"), Arrays.asList(IsaAttribute.simp, IsaAttribute.elim), "x > 0", Arrays.asList()));
         System.out.println(st.render());
 
         st = group.getInstanceOf("abbreviation");
