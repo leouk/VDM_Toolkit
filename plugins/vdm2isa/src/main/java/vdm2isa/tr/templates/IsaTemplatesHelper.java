@@ -17,7 +17,7 @@ public final class IsaTemplatesHelper {
         lemmas("lms", "Named lemmas group"),
         typedecl("tdecl", "Type declaration (e.g. type synonym or datatype)"),
         record("rec", "Record declaration"),
-        abbreviation("abbrv", "Abbreviation (e.g. VDM values)"),
+        abbreviation("def", "Abbreviation (e.g. VDM values)"),
         definition("def", "Definition (e.g. VDM specification, inv/pre/post)"),
         fundef("fdef", "VDM function definition (e.g. body of VDM function)"),
         rfundef("fdef", "VDM (possibly mutually) recursive function as Isabelle fun"),
@@ -53,8 +53,12 @@ public final class IsaTemplatesHelper {
 
     static {
         ISA_TEMPLATE_MAIN = "theoryobj.stg";
-        ISA_TEMPLATE_GROUPDIR = "src/main/resources/templates/";
-        group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN, '$', '$');//new STGroupDir(ISA_TEMPLATE_GROUPDIR, '$', '$');
+        // src/main/resources is on the classpath, and rules seem to just require the extra /templates/ path *with* the leading "/"!
+        ISA_TEMPLATE_GROUPDIR = "/templates/";
+        //ISA_TEMPLATE_GROUPDIR = "src/main/resources/templates/";
+        //group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN, '$', 
+        // https://stackoverflow.com/questions/16374235/resources-and-config-loading-in-maven-project
+        group = new STGroupFile(IsaTemplatesHelper.class.getResource(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN), "UTF-8", '$', '$');//new STGroupDir(ISA_TEMPLATE_GROUPDIR, '$', '$');
     }
 
     private static final boolean isTemplateValid(String name)
