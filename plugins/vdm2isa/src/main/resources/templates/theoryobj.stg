@@ -26,6 +26,7 @@ claim(clm) ::= <<
 $commentIt(clm.comment)$
 $clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
     $innerSyntaxIt(clm.expr); wrap$  
+    $if(clm.proof)$$clm.proof$$else$oops$endif$
 
 >>
 
