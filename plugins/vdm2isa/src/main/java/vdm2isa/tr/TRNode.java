@@ -176,7 +176,7 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	 * @return Isabelle YXML string.
 	 */
 	@Override
-	public abstract String translate();
+	public abstract String oldtranslate();
 
 	/**
 	 * Top-level (implicit) invariant-related translation associated with this TRNode. TRNodes with contextual

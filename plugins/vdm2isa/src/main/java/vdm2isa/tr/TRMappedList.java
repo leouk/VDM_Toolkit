@@ -236,11 +236,11 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	protected String translateElement(int index)
 	{
 		assert index >= 0 && index < size();
-		return get(index).translate();
+		return get(index).oldtranslate();
 	}
 
 	@Override
-	public String translate()
+	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
 		if (!isEmpty())
@@ -357,7 +357,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 													((TCBind)t).location : LexLocation.ANY;
 	}
 	
-	public static <FROM extends Mappable, TO extends MappableNode> void setupElements(TRMappedList<FROM, TO> list)
+	public static <FROM extends Mappable, TO extends MappableNode> void setupElements(MappedList<FROM, TO> list)
 	{
 		for(TO t : list)
 		{
