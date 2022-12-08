@@ -37,9 +37,14 @@ lemmas $defineIt(lms.name, listIt(lms.lemma), true)$
 >>
 
 // Isabelle type synonym and simple data type template
-typedecl(tdecl) ::= <<
-$commentIt(tdecl.comment)$
-$tdecl.kind$ $defineIt(listIt(tdecl.name), innerSyntaxIt(listIt(tdecl.expr, " | ")), true)$
+typesynonym(tsym) ::= << 
+type_synonym $defineIt(listIt(tsym.name), innerSyntaxIt(listIt(tsym.expr)), true)$
+
+>>
+
+datatype(dtype) ::= <<
+$commentIt(dtype.comment)$
+datatype $listIt(dtype.name)$ = $dtype.expr: { e | $innerSyntaxIt(e)$ }; wrap, separator=" | "$
 
 >>
 
