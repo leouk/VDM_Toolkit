@@ -123,7 +123,7 @@ public class TRValueDefinition extends TRLocalDefinition
     protected String getDeclaredName()
     {
 		assert getPattern() != null; 
-		return getPattern().oldtranslate();
+		return getPattern().translate();
     }
 
 	@Override
@@ -163,7 +163,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		//String identifier;// = localName.getName();//localName.toString(): no type parameters!
 		if (pattern instanceof TRBasicPattern)
 		{
-			result = TRBasicPattern.identifier(localName.getLocation(), pattern.oldtranslate());
+			result = TRBasicPattern.identifier(localName.getLocation(), pattern.translate());
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern name projection", "complex value definition");
 		}
 		else if (pattern instanceof TRRecordPattern)
@@ -183,7 +183,7 @@ public class TRValueDefinition extends TRLocalDefinition
 		}
 		else if (pattern instanceof TRPatternBind)
 		{
-			result = TRBasicPattern.identifier(localName.getLocation(), pattern.oldtranslate());			
+			result = TRBasicPattern.identifier(localName.getLocation(), pattern.translate());			
 			warning(IsaWarningMessage.PLUGIN_NYI_2P, "pattern bind name projection", "complex value definition");
 		}
 		else 
@@ -213,7 +213,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	private String figureOutExpression(int index, TRType localType)
 	{
 		assert index >= 0 && index < getDefs().size();
-		String result = exp.oldtranslate();
+		String result = exp.translate();
 		// if (pattern instanceof TRBasicPattern)
 		// {
 		// 	warning(IsaWarningMessage.PLUGIN_NYI_2P, "basic pattern expression projection", "complex value definition");
@@ -379,7 +379,7 @@ public class TRValueDefinition extends TRLocalDefinition
 	}
 
 	@Override
-	public String oldtranslate()
+	public String translate()
 	{
 		// translate the "v: T = e" as an abbreviation or definition
 		StringBuilder sb = new StringBuilder();
@@ -442,7 +442,7 @@ public class TRValueDefinition extends TRLocalDefinition
 							IsaInfoMessage.ISA_PATTERN_CONTEXT_1P.format(
 									isLocal() ? "let-bind definition" : "value definition"), getFormattingSeparator()));
 				}
-				sb.append(super.oldtranslate());
+				sb.append(super.translate());
 				sb.append(IsaToken.SPACE.toString());
 				sb.append(IsaToken.EQUALS.toString());
 				sb.append(IsaToken.SPACE.toString());
@@ -458,7 +458,7 @@ public class TRValueDefinition extends TRLocalDefinition
 				// presume things have been flattened out whilst figuring defs out 
 				assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition() ;//&& vdef.getPattern() instanceof TRBasicPattern;
 
-				sb.append(vdef.oldtranslate());
+				sb.append(vdef.translate());
 				for(int i = 1; i < defList.size(); i++)
 				{
 					sb.append(getSemanticSeparator());
@@ -469,7 +469,7 @@ public class TRValueDefinition extends TRLocalDefinition
 					// presume things have been flattened out whilst figuring defs out 
 					assert vdef.getDefs().size() == 1 && vdef.getDefs().allAreLocalDefinition();// && vdef.getPattern() instanceof TRBasicPattern;
 
-					sb.append(vdef.oldtranslate());
+					sb.append(vdef.translate());
 				}
 			}
 		}
@@ -522,7 +522,7 @@ public class TRValueDefinition extends TRLocalDefinition
 			}
 			else 
 			{
-				report(IsaErrorMessage.ISA_INVALID_TOKENEXPR_1P, exp.oldtranslate());
+				report(IsaErrorMessage.ISA_INVALID_TOKENEXPR_1P, exp.translate());
 			}
 		}
 	}

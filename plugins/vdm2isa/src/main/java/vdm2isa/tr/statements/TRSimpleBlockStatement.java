@@ -24,8 +24,8 @@ public abstract class TRSimpleBlockStatement extends TRStatement {
     }
 
     @Override
-    public String oldtranslate()
+    public String translate()
     {
-        return statements.oldtranslate();
+        return statements.translate();
     }
 }

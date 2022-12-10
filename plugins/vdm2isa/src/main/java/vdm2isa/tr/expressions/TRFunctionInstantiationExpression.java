@@ -67,8 +67,8 @@ public class TRFunctionInstantiationExpression extends TRExpression {
      * parameters to add as input parameters for corresponding parameteric type invariant checking.
      */
     @Override
-    public String oldtranslate() {
-        return function.oldtranslate();
+    public String translate() {
+        return function.translate();
     }
     
 }

@@ -50,16 +50,16 @@ public class TRElseIfExpression extends TRExpression {
     }
     
     @Override
-    public String oldtranslate() {
+    public String translate() {
 		StringBuilder sb = new StringBuilder();
         sb.append(getFormattingSeparator());
 		sb.append(isaToken().toString());
 		sb.append(" ");
-		sb.append(IsaToken.parenthesise(elseIfExp.oldtranslate()));
+		sb.append(IsaToken.parenthesise(elseIfExp.translate()));
 		sb.append(" ");
 		sb.append(IsaToken.THEN.toString());
 		sb.append(getFormattingSeparator());
-		sb.append(IsaToken.parenthesise(thenExp.oldtranslate()));
+		sb.append(IsaToken.parenthesise(thenExp.translate()));
 		return sb.toString();
     }
 

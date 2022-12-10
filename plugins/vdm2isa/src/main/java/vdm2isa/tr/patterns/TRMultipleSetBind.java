@@ -99,13 +99,13 @@ public class TRMultipleSetBind extends TRMultipleBind
     public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(plist.oldtranslate());
+        sb.append(plist.translate());
         // for seq comprehension with ordered seq bind, we need the extra SETSEQBIND mapping
         // whenever it's not just for the patterns, which should never be the case any how.  
         if (!vdmPatternsOnly && seqBind)
         { 
             // On type checked VDM values the underlying type is ordered; but possibly with an ord_ clause, which might not work for Isabelle 
-            String trStr = oldtranslate();
+            String trStr = translate();
             if (!linearOrderedType())
             {
                 warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, trStr);
@@ -113,16 +113,16 @@ public class TRMultipleSetBind extends TRMultipleBind
             sb.append(getFormattingSeparator());
             sb.append(IsaToken.SETSEQBIND);
             sb.append(getFormattingSeparator());
-            sb.append(IsaToken.parenthesise(set.oldtranslate()));
+            sb.append(IsaToken.parenthesise(set.translate()));
         }
         return sb.toString();
     }
     
     @Override
     public String boundExpressionTranslate(int index, boolean invTr) {
-        String rhsStr = getRHS().oldtranslate(); 
+        String rhsStr = getRHS().translate(); 
         return invTr ? 
-                IsaToken.parenthesise(plist.get(index).oldtranslate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SetElems ?
+                IsaToken.parenthesise(plist.get(index).translate() + getFormattingSeparator() + isaToken().toString() + rhsStr)//if invTr issues a inv_SetElems ?
                 : rhsStr;
     }
 

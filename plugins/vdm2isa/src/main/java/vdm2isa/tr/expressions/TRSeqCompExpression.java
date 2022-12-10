@@ -61,7 +61,7 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
      * Sequence comprehension in Isabelle 
      */
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(IsaToken.SEQ_OPEN.toString());
@@ -113,9 +113,9 @@ public class TRSeqCompExpression extends TRAbstractCompExpression {
             assert !bindings.isEmpty();
             sb.append("\n\t");//getFormattingSeparator());
             sb.append(IsaToken.comment(IsaInfoMessage.VDM_SEQCOMP_BIND_PROBLEM_3P.format(
-                IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindings.oldtranslate()),
+                IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P.format(bindings.translate()),
                 getFormattingSeparator(),
-                IsaToken.antiquotation(IsaToken.ISAR_TERM, bindings.getRHS().oldtranslate())), getFormattingSeparator()));
+                IsaToken.antiquotation(IsaToken.ISAR_TERM, bindings.getRHS().translate())), getFormattingSeparator()));
             //warning(IsaWarningMessage.ISA_SEQCOMP_LINEAR_TYPEBIND_1P, bindStr);
         }
         return sb.toString();

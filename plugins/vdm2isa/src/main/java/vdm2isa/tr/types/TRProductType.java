@@ -224,8 +224,8 @@ public class TRProductType extends TRType {
     }
 
     @Override
-    public String oldtranslate() {
-        return IsaToken.parenthesise(this.types.oldtranslate());
+    public String translate() {
+        return IsaToken.parenthesise(this.types.translate());
     }
 
 	@Override

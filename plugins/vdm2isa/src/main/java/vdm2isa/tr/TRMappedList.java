@@ -3,6 +3,7 @@
  ******************************************************************************/
 package vdm2isa.tr;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -236,10 +237,25 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	protected String translateElement(int index)
 	{
 		assert index >= 0 && index < size();
-		return get(index).oldtranslate();
+		return get(index).translate();
 	}
 
-	@Override
+	public List<String> translateList()
+	{
+		List<String> result = new ArrayList<String>();
+		for(TO t : this)
+		{
+			result.add(t.translate());
+		}
+		return result;
+	}
+
+	public String translate()
+	{
+		return oldtranslate(); 
+	}
+
+	//@Override
 	public String oldtranslate()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -315,19 +331,6 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	public void warning(IsaWarningMessage warning)
 	{
 		GeneralisaPlugin.warning(warning, getLocation(), (Object[])null);
-	}
-
-	//TODO remove
-	//@Override
-	public void report(int number, String message)
-	{
-		GeneralisaPlugin.report(number, message, getLocation());
-	}
-
-	//@Override
-	public void warning(int number, String warning)
-	{
-		GeneralisaPlugin.warning(number, warning, getLocation());
 	}
 
 	public static <T extends Mappable/*Node!*/>  LexLocation figureOutLocation(List<T> list)

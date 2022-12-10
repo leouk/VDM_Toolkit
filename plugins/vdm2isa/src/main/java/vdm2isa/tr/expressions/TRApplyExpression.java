@@ -140,12 +140,12 @@ public class TRApplyExpression extends TRExpression
 	}
 
 	@Override
-	public String oldtranslate()
+	public String translate()
 	{
 		StringBuilder call = new StringBuilder();
-		call.append(root.oldtranslate());
+		call.append(root.translate());
 		call.append(getSemanticSeparator());
-		call.append(args.oldtranslate());
+		call.append(args.translate());
 		return IsaToken.parenthesise(translateTheResult(call.toString()));
 	}
 

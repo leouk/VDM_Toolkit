@@ -114,7 +114,7 @@ public abstract class TRAbstractContextualPattern extends TRPattern {
     public String patternContextTranslate(String varName)
     {
         StringBuilder sb = new StringBuilder();
-        String dummyName = varName == null ? oldtranslate() : varName;
+        String dummyName = varName == null ? translate() : varName;
 		if (!plist.isEmpty())
 		{
             sb.append(indexedPatternTranslate(0, dummyName));

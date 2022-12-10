@@ -124,7 +124,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         // let x: T1 = v1, y: T2 = v2 in exp(x, y)
         // =
@@ -136,7 +136,7 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(IsaToken.SPACE.toString());
         String old = localDefs.setFormattingSeparator(getFormattingSeparator());
         checkLocalDefsPatternDependencies();        
-        sb.append(localDefs.oldtranslate());
+        sb.append(localDefs.translate());
         sb.append(getFormattingSeparator());
         sb.append(IsaToken.IN.toString());
         sb.append(getFormattingSeparator() + "\t");

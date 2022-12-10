@@ -13,6 +13,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
+import vdm2isa.tr.templates.IsaTemplatesHelper;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRRecordType extends TRInvariantType
@@ -99,7 +100,7 @@ public class TRRecordType extends TRInvariantType
     protected String getInvTypeString()
     {
         // definition for a reference to record, i.e. variable of its type
-        return IsaToken.INV.toString() + oldtranslate();
+        return IsaToken.INV.toString() + translate();
     }
 
     @Override
@@ -116,7 +117,7 @@ public class TRRecordType extends TRInvariantType
             if (atTopLevelDefinition())
             {
                 sb.append(IsaToken.INV.toString());
-                sb.append(oldtranslate());
+                sb.append(translate());
                 sb.append(getSemanticSeparator() + varName);
             }
             else
@@ -151,12 +152,12 @@ public class TRRecordType extends TRInvariantType
         // translate record definition 
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString()); 
-        sb.append(oldtranslate());
+        sb.append(translate());
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.EQUALS.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(getFormattingSeparator());
-        sb.append(getFields().oldtranslate());
+        sb.append(getFields().translate());
         sb.append(getFormattingSeparator());
         sb.append("\n");
         
@@ -164,7 +165,7 @@ public class TRRecordType extends TRInvariantType
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         return getName(); 
     }
 

@@ -46,11 +46,11 @@ public class TRMapEnumExpression extends TRExpression
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         return members.size() == 0 ? 
             IsaToken.MAP_EMPTY.toString() 
             : 
-            leftBracket().toString() + members.oldtranslate() + rightBracket().toString(); 
+            leftBracket().toString() + members.translate() + rightBracket().toString(); 
     }
 
 	@Override

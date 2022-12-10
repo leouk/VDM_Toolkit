@@ -32,11 +32,11 @@ public class TRPatternListTypePair extends TRNode
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
-        sb.append(patterns.oldtranslate());
+        sb.append(patterns.translate());
         sb.append(isaToken().toString());
-        sb.append(type.oldtranslate());
+        sb.append(type.translate());
         return IsaToken.parenthesise(sb.toString());
     }    
 

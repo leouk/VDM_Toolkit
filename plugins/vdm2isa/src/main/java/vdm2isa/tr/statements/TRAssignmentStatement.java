@@ -34,14 +34,14 @@ public class TRAssignmentStatement extends TRStatement {
         return visitor.caseAssignmentStatement(this, arg);
     }
 
-    public String oldtranslate()
+    public String translate()
     {
         TRPatternListList patternContextProjection = TRPatternListList.newPatternListList(TRRecordPattern.RecordPatternGenerator(TRStateDefinition.state.recordType,TRStateDefinition.state.recordType.location));
         // Check Parattern context is the correct dummy?
         String StateParamName = "dummy0";
 
         StringBuilder sb = new StringBuilder();
-        sb.append(super.oldtranslate());
+        sb.append(super.translate());
         sb.append(IsaToken.LET.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(StateParamName);
@@ -50,9 +50,9 @@ public class TRAssignmentStatement extends TRStatement {
         sb.append(IsaToken.SPACE.toString());
         sb.append(StateParamName);
         sb.append(IsaToken.LRECORD.toString());
-        sb.append(target.oldtranslate());
+        sb.append(target.translate());
         sb.append(IsaToken.RECORD_MODIFIER.toString() );
-        sb.append(exp.oldtranslate());
+        sb.append(exp.translate());
         sb.append(IsaToken.RRECORD.toString());
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.IN.toString());

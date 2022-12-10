@@ -126,7 +126,7 @@ public class TRBasicPattern extends TRPattern {
 
     @Override
     public String invTranslate() {
-        return oldtranslate();
+        return translate();
     }
 
     @Override

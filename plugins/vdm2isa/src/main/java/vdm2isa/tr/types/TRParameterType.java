@@ -66,7 +66,7 @@ public class TRParameterType extends TRType {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         return isaToken().toString() + name.toString();
     }
 

@@ -54,8 +54,8 @@ public class TRPatternBind extends TRPattern {
     }
 
     @Override
-    public String oldtranslate() {
-        return (pattern != null ? pattern.oldtranslate() : (bind != null ? bind.oldtranslate() : ""));
+    public String translate() {
+        return (pattern != null ? pattern.translate() : (bind != null ? bind.translate() : ""));
     }
 
     @Override

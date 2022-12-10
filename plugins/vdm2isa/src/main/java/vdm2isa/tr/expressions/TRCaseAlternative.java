@@ -72,9 +72,9 @@ public class TRCaseAlternative extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
-        sb.append(pattern.oldtranslate());
+        sb.append(pattern.translate());
         sb.append(IsaToken.SPACE.toString());
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());

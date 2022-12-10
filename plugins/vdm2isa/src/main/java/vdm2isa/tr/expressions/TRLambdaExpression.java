@@ -107,7 +107,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         // lambda x: nat, y: nat1 & x + y
         // =
@@ -121,7 +121,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());
-        sb.append(bindList.oldtranslate());
+        sb.append(bindList.translate());
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.POINT.toString());
         String old = paramPatterns.setFormattingSeparator(getFormattingSeparator());
@@ -150,7 +150,7 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
             sb.append(bindList.invTranslate());
             sb.append(getInvTranslateSeparator());
             // check the result expression inv_Translate
-            sb.append(this.expression.getType().invTranslate(expression.oldtranslate()));
+            sb.append(this.expression.getType().invTranslate(expression.translate()));
         }
         // map comprehension lambdas require similar input/output type invariant checks
         // but in the context of an existential mapping between maplet "from" and the 
@@ -251,8 +251,8 @@ public class TRLambdaExpression extends TRVDMLocalDefinitionListExpression {
         {
             // if VDM unused variable warning (5000) is observed, then this warning doesn't happen
             result.warning(IsaWarningMessage.VDMSL_INVALID_EXPR_TYPE_2P, "map comprehension", 
-                first.oldtranslate(), bindings.getPatternListList().getFlatPatternList().size(),
-                patterns.oldtranslate());    
+                first.translate(), bindings.getPatternListList().getFlatPatternList().size(),
+                patterns.translate());    
         }
         return result;
     }

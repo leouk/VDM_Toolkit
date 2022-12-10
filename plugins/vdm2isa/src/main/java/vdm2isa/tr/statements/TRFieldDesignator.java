@@ -23,7 +23,7 @@ public class TRFieldDesignator extends TRStateDesignator {
         return visitor.caseFieldDesignator(this, arg);
     }
 
-    public String oldtranslate(){
+    public String translate(){
         // TODO
         return "Designator Field";
     }

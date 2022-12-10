@@ -76,15 +76,14 @@ public class TRField extends TRAbstractInnerTypedType {
     }
 
     @Override
-    public String oldtranslate() {
-        return getIsabelleTagName() + " " + IsaToken.TYPEOF.toString() + " " + 
-            "\"" + this.getInnerType().oldtranslate() + "\"";
+    public String translate() {
+        return getIsabelleTagName() + IsaToken.SPACE.toString() + IsaToken.TYPEOF.toString() + IsaToken.SPACE.toString() + IsaToken.innerSyntaxIt(this.getInnerType().translate());
     }
 
     @Override
     public String invTranslate(String varName) {
         String fieldName = varName == null ? varName : 
-            IsaToken.parenthesise(getIsabelleTagName() + " " + varName);
+            IsaToken.parenthesise(getIsabelleTagName() + IsaToken.SPACE.toString() + varName);
         return IsaToken.parenthesise(getInnerType().invTranslate(fieldName));
     }
 

@@ -95,7 +95,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
       * patterns in Isabelle.
      */
      @Override
-    public String oldtranslate() {
+    public String translate() {
          return IsaToken.dummyVarNames(1, getDummyFreshness(), location);
     }
 

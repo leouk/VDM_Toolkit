@@ -63,7 +63,7 @@ public class TRUnknownType extends TRType {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         // unknown type assume polymorphic one
         return isaToken().toString();
     }    

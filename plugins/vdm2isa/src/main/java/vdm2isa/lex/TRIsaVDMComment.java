@@ -31,7 +31,7 @@ public class TRIsaVDMComment extends TRNode {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         // only print comments if desired and if sensible
         if (Vdm2isaPlugin.printVDMComments && comment.comment != null && comment.comment.length() > 0) 
@@ -65,7 +65,7 @@ public class TRIsaVDMComment extends TRNode {
 
     @Override
     public String invTranslate() {
-        return oldtranslate();
+        return translate();
     }
 
     public static final TRIsaVDMComment newIsaVDMComment(LexComment comment)

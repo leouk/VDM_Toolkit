@@ -53,7 +53,7 @@ public class TRImportedDefinition extends TRDefinition
     }        
 
     @Override
-    public String oldtranslate()
+    public String translate()
     {
         return IsaToken.comment(IsaInfoMessage.VDM_NORMAL_NOT_TRANSLATED_2P.format(IsaToken.isabelleName(name), IsaToken.isabelleName(def.name)), getFormattingSeparator());
     }

@@ -22,7 +22,7 @@ public class TRIdentifierDesignator extends TRStateDesignator {
         return visitor.caseIdentifierDesignator(this, arg);
     }
 
-    public String oldtranslate()
+    public String translate()
     {
         return TRStateDefinition.state.recordType.findField(name.toString()).getIsabelleTagName();
     }

@@ -75,7 +75,7 @@ public class TRFieldExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         // inner fields must have record type!
         //object instanceof TRFieldExpression => object.exptype instanceof TRRecordType!
         assert !(object instanceof TRFieldExpression) || (object.exptype instanceof TRRecordType);

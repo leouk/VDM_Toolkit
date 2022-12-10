@@ -35,7 +35,7 @@ public class TRFieldNumberExpression extends TRExpression {
     {
         super.setup();
         if (!(type instanceof TRProductType))
-            report(IsaErrorMessage.VDMSL_INVALID_TUPLE_TYPE_3P, tuple.oldtranslate(), field.toString(), type.getClass().getSimpleName());
+            report(IsaErrorMessage.VDMSL_INVALID_TUPLE_TYPE_3P, tuple.translate(), field.toString(), type.getClass().getSimpleName());
         else if (this.field.value <= 0 || this.field.value > getProductType().types.size())
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_PROJECTION_3P, field.value, getProductType().types.size());
         TRNode.setup(tuple, type);
@@ -72,11 +72,11 @@ public class TRFieldNumberExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         assert field.value > 0 && field.value <= getProductType().types.size();
         // field value is adjusted to the tuple 0-based index (i.e. f.#n = n'th - 1 index within types)
         return TRProductType.fieldProjection(field.value - 1, getProductType().types.size(), 
-            IsaToken.parenthesise(tuple.oldtranslate()));
+            IsaToken.parenthesise(tuple.translate()));
     }
 
 	@Override

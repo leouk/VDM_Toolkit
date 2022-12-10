@@ -49,9 +49,9 @@ public class TRNarrowExpression extends TRVDMTestExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
-        String testStr = IsaToken.parenthesise(test.oldtranslate());
+        String testStr = IsaToken.parenthesise(test.translate());
         if (isBasicTyped())
         {
             switch (basictype.isaToken())
@@ -79,7 +79,7 @@ public class TRNarrowExpression extends TRVDMTestExpression {
         } 
         else if (isNameTyped())
         { 
-            String typeDefStr = typedef.oldtranslate();
+            String typeDefStr = typedef.translate();
             warning(IsaWarningMessage.ISA_TYPED_NARROW_1P, typeDefStr);
             sb.append(IsaToken.comment(IsaWarningMessage.ISA_TYPED_NARROW_1P.format(typeDefStr), getFormattingSeparator()));
             sb.append(IsaToken.parenthesise(testStr + IsaToken.TYPEOF.toString() + typename.toString()));              

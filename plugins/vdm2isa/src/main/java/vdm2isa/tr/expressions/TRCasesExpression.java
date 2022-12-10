@@ -72,7 +72,7 @@ public class TRCasesExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         TRType eType = exp.getType();
         sb.append(getFormattingSeparator());
@@ -81,13 +81,13 @@ public class TRCasesExpression extends TRExpression {
             // for boolean cases, every case *must* be is_expr, so create a chain of conjoined implications, ignoring exp
             sb.append(IsaToken.comment(IsaInfoMessage.VDM_CASES_TRUE_CONVERSION.toString(), getFormattingSeparator()));
             boolean old = cases.setCasesTrueAlternative(true);
-            sb.append(cases.oldtranslate());
+            sb.append(cases.translate());
             cases.setCasesTrueAlternative(old);
             if (others != null)
             {
                 sb.append (getFormattingSeparator());
                 sb.append(IsaToken.SPACE.toString() + IsaToken.OR.toString() + IsaToken.SPACE.toString());
-                sb.append(others.oldtranslate());
+                sb.append(others.translate());
             }
         }
         else if (eType.isDataType())
@@ -96,16 +96,16 @@ public class TRCasesExpression extends TRExpression {
             //assert dt.getDataTypeConstructors().size() == cases.size(); 
             sb.append(isaToken().toString());
             sb.append(IsaToken.SPACE.toString());
-            sb.append(exp.oldtranslate());
+            sb.append(exp.translate());
             sb.append(IsaToken.SPACE.toString());
             sb.append(IsaToken.OF.toString());
             sb.append(IsaToken.SPACE.toString());
             sb.append(getFormattingSeparator());
-            sb.append(cases.oldtranslate());    
+            sb.append(cases.translate());    
         }
         else
         {
-            String typeStr = eType.oldtranslate();
+            String typeStr = eType.translate();
             report(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P, typeStr);
             sb.append(IsaToken.comment(IsaErrorMessage.ISA_CASES_PATTERN_LIMITATION_1P.format(typeStr)));
         }        

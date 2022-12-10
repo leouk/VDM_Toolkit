@@ -384,7 +384,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
     }
 
     @Override 
-    public String oldtranslate()
+    public String translate()
     {
         StringBuilder sb = new StringBuilder();
         if (nameDefKind.equals(TRNamedTypeDefinitionKind.UNKNOWN) || nameDefKind == null)
@@ -393,7 +393,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             warning(IsaWarningMessage.ISA_USE_BEFORE_DECL_2P, name.toString(), nameDefKind.name());
         }
         TRType t = getType();
-        sb.append(super.oldtranslate());
+        sb.append(super.translate());
         // TLD for records
         if (t instanceof TRRecordType)
         {
@@ -415,24 +415,24 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                 case SEQ:
                 case SET:
                 case MAP:
-                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.oldtranslate()));
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.translate()));
                     break;
                 // get the inner type name for the synonym translation; TBasic2 = TBasic; TBasic = nat;
                 case RENAMED:
                     assert trtype.type instanceof TRNamedType; 
                     //trtype = (TRNamedType)trtype.type;
-                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.oldtranslate()));
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.translate()));
                     break;
                 // re-named record (e.g. TRecord' = TRecord inv r == ...; for TRecord :: ...;) requires some thinking
                 case RENAMEDRECORD:
                     assert trtype.type instanceof TRRecordType;// && invdef != null; 
                     //trtype = (TRNamedType)trtype.type;
-                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.oldtranslate()));
+                    sb.append(IsaTemplates.translateTypeSynonymDefinition(location, name.toString(), trtype.type.translate()));
                 break;
                 case QUOTE:
                 case UNION:
                     // at TLD do not set the union type name yet, but at inv_T time the TRNamedType.translate will do that for the union.
-                    sb.append(IsaTemplates.translateDatatypeDefinition(location, name.toString(), trtype.type.oldtranslate()));
+                    sb.append(IsaTemplates.translateDatatypeDefinition(location, name.toString(), trtype.type.translate()));
                 break;
                 case RECORD:
                 case UNKNOWN:
@@ -459,14 +459,14 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             TRType ultimate = type.ultimateType();
             if (mindef != null && !(ultimate instanceof TRRecordType))
             {
-                sb.append(mindef.oldtranslate());
+                sb.append(mindef.translate());
                 sb.append(getFormattingSeparator());
                 sb.append("\n");
             }
 
             if (maxdef != null && !(ultimate instanceof TRRecordType))
             {
-                sb.append(maxdef.oldtranslate());
+                sb.append(maxdef.translate());
                 sb.append(getFormattingSeparator());
                 sb.append("\n");
             }

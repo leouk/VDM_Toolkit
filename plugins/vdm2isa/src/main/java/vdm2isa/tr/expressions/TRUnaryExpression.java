@@ -310,7 +310,7 @@ public class TRUnaryExpression extends TRExpression {
 	}
 
     @Override
-    public String oldtranslate() 
+    public String translate() 
     {
         return tokenise(isaToken(), location, exp);
     }

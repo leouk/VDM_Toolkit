@@ -54,7 +54,7 @@ public class TRQualifiedDefinition extends TRDefinition {
     }
 
     @Override
-    public String oldtranslate()
+    public String translate()
     {
         StringBuilder sb = new StringBuilder();
         sb.append("//TODO");

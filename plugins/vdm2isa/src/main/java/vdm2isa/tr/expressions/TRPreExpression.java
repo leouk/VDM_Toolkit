@@ -46,15 +46,15 @@ public class TRPreExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         sb.append(isaToken().toString());
         sb.append(IsaToken.UNDERSCORE.toString());
         sb.append(IsaToken.LPAREN.toString());
-        sb.append(function.oldtranslate());
+        sb.append(function.translate());
         sb.append(args.getSemanticSeparator());
         sb.append(args.getFormattingSeparator());
-        sb.append(args.oldtranslate());
+        sb.append(args.translate());
         sb.append(IsaToken.RPAREN.toString());
         report(IsaErrorMessage.PLUGIN_NYI_2P, "translation", "function pre expression");
         return sb.toString();

@@ -65,7 +65,7 @@ public class TRExpressionList extends TRMappedList<TCExpression, TRExpression>
 
 	public static final String translate(TRExpression... args)
 	{
-		return TRExpressionList.newExpressionList(args).oldtranslate();	
+		return TRExpressionList.newExpressionList(args).translate();	
 	}
 
 	public static final TRExpressionList newExpressionList(TRExpression... args)

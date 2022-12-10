@@ -104,7 +104,7 @@ public class TRLiteralExpression extends TRExpression
 	}
 
 	@Override
-	public String oldtranslate()
+	public String translate()
 	{
 		TRType t = getType();
 		// no casting needed for real, string, quote literals
@@ -122,7 +122,7 @@ public class TRLiteralExpression extends TRExpression
 	public String invTranslate()
 	{
 		TRType t = getType();
-		String varName = oldtranslate();
+		String varName = translate();
 		return t.invTranslate(varName);
 	}
 

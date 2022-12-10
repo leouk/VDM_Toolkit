@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.FileList;
@@ -396,16 +397,16 @@ public class TRModule extends TRNode
 	// 			!IsaToken.validIsaIdentifier(importName); 
 	// }
 
-	//@Override
-	public ST translate()
+	@Override
+	public String translate()
 	{
 		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
 		if (files != null && !files.isEmpty())
 		{ 
 			loc += "\nfiles = " + files.toString();
 		}
-		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), /*allDefs.translate()*/null, 	getExports());
-		return st;
+		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), allDefs.translateList(), 	getExports());
+		return st.render();
 	}
 
 	@Override
@@ -417,7 +418,7 @@ public class TRModule extends TRNode
 			loc += "\nfiles = " + files.toString();
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(allDefs.oldtranslate());
+		sb.append(allDefs.translate());
 		sb.append(getOldExports());
 		sb.append(getFormattingSeparator());
 		sb.append(getFormattingSeparator());

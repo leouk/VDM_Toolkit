@@ -208,7 +208,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                                 workingAt = "processing POs Isabelle file for " + moduleName;
                                 addLocalPOS(module.definitions.size(), getUntranslatedPOSFor(notTranslatedPOS, pmodule).size());
                                 StringBuilder sb = new StringBuilder();
-                                sb.append(module.oldtranslate());
+                                sb.append(module.translate());
                                 sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
                                 outputModule(module.getLocation(), moduleName, sb.toString());    
                             }

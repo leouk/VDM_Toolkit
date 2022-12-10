@@ -83,11 +83,11 @@ public class TRMultipleTypeBind extends TRMultipleBind {
     public String compTranslate(boolean vdmPatternsOnly)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(plist.oldtranslate());
+        sb.append(plist.translate());
         sb.append(getFormattingSeparator());
         sb.append(isaToken().toString());
         sb.append(getFormattingSeparator());
-        sb.append(getRHS().oldtranslate());
+        sb.append(getRHS().translate());
         return IsaToken.parenthesise(sb.toString());
     }
 
@@ -96,7 +96,7 @@ public class TRMultipleTypeBind extends TRMultipleBind {
         assert index >= 0 && index < plist.size();
         // for bounded typed expressions, make sure we use the "inv_T" (atTLD) instead of its parts! 
         boolean old = type.setAtTopLevelDefinition(true, true);
-        String result = invTr ? IsaToken.parenthesise(type.invTranslate(plist.get(index).oldtranslate())) : type.oldtranslate();
+        String result = invTr ? IsaToken.parenthesise(type.invTranslate(plist.get(index).translate())) : type.translate();
         type.setAtTopLevelDefinition(old, true);
         return result;
     }

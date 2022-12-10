@@ -215,7 +215,7 @@ public abstract class TRExpression extends TRNode
         TRExpression tawareExpr = innerExpr != null ? innerExpr : this;
         assert tawareExpr != null && targetType != null;
 
-        String exprStr = tawareExpr.oldtranslate();
+        String exprStr = tawareExpr.translate();
         // the expression being translated requires "the" when it is landing on a type that also requires it (i.e. not a map or optional)
         if (TRExpression.requiresTheOperator(tawareExpr) && TRExpression.requiresTheOperator(targetType))
         {
@@ -263,7 +263,7 @@ public abstract class TRExpression extends TRNode
         }
         // could have a "context.needsPatternContext() ? IsaToken.parenthesise(context.patternContextTranslate(null) + expr.translate()) : expr.translate()"
         // but kept it explicitly for clarity. 
-        sb.append(oldtranslate());
+        sb.append(translate());
         if (hasPatternContext)
         {
             sb.append(IsaToken.RPAREN.toString());
@@ -281,7 +281,7 @@ public abstract class TRExpression extends TRNode
         sb.append(IsaToken.SPACE.toString());
         sb.append(IsaToken.THEN.toString());
         sb.append(getFormattingSeparator() + "\t");
-        sb.append(oldtranslate());        
+        sb.append(translate());        
         sb.append(getFormattingSeparator() + IsaToken.SPACE.toString());
         sb.append(IsaToken.ELSE.toString());
         sb.append(getFormattingSeparator() + "\t");
@@ -311,7 +311,7 @@ public abstract class TRExpression extends TRNode
             sb.append(IsaToken.comment(
                         lt ? IsaInfoMessage.VDM_EXPLICIT_ORDER_PRED_1P.format(typeName) :
                             IsaInfoMessage.VDM_EXPLICIT_REVERSED_ORDER_PRED_1P.format(typeName), "\n\t"));         
-            sb.append(aexpr.oldtranslate());
+            sb.append(aexpr.translate());
             return sb.toString();
         }
         else
@@ -336,8 +336,8 @@ public abstract class TRExpression extends TRNode
             sb.append(IsaToken.comment(
                         eq ? IsaInfoMessage.VDM_EXPLICIT_EQ_PRED_1P.format(typeName) :
                              IsaInfoMessage.VDM_EXPLICIT_NOT_EQ_PRED_1P.format(typeName), "\n\t"));         
-            sb.append(eq ? aexpr.oldtranslate() : 
-                           TRUnaryExpression.newUnaryExpression(IsaToken.NOT, aexpr).oldtranslate());
+            sb.append(eq ? aexpr.translate() : 
+                           TRUnaryExpression.newUnaryExpression(IsaToken.NOT, aexpr).translate());
             return sb.toString();
         }
         else
@@ -378,11 +378,11 @@ public abstract class TRExpression extends TRNode
     {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.LPAREN.toString());
-        sb.append(left.oldtranslate());
+        sb.append(left.translate());
         sb.append(getSemanticSeparator());
         sb.append(op.toString());
         sb.append(getSemanticSeparator());
-        sb.append(right.oldtranslate());
+        sb.append(right.translate());
         sb.append(IsaToken.RPAREN.toString());
         return sb.toString();
     } 
@@ -426,7 +426,7 @@ public abstract class TRExpression extends TRNode
                     sb.append(IsaToken.LPAREN.toString());
                     sb.append(token.toString());
                     sb.append(getSemanticSeparator());
-                    sb.append(args[0].oldtranslate());
+                    sb.append(args[0].translate());
                     sb.append(IsaToken.RPAREN.toString());
                 }
                 break;
@@ -434,7 +434,7 @@ public abstract class TRExpression extends TRNode
                 if (args.length != 1)
                     report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, getClass().getSimpleName(), token.toString(), args.length, TRExpressionList.translate(args));
                 else
-                    sb.append(args[0].oldtranslate());
+                    sb.append(args[0].translate());
                 break;
             
             // Binary Operators

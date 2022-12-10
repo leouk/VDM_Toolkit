@@ -29,7 +29,7 @@ public interface MappableNode extends Mappable {
 	 * Top-level translation associated with this TRNode. 
 	 * @return Isabelle YXML string.
 	 */
-	public String oldtranslate();
+	public String translate();
 
 	//public ST translate();
 

@@ -215,7 +215,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		TRTypeList result = new TRTypeList();
 		result.addAll(Arrays.asList(args));
 		TRNode.setup(result);
-		return result.oldtranslate();	
+		return result.translate();	
 	}
 
 	public static final String invTranslate(List<String> varNames, String formattingSeparator, TRType... args)

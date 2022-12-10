@@ -39,8 +39,8 @@ public class TRAnnotatedExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
-        return expression.oldtranslate();
+    public String translate() {
+        return expression.translate();
     }
     
 }

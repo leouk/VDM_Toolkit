@@ -124,7 +124,7 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
-	public String oldtranslate()
+	public String translate()
 	{
 		// \<bool> isn't allowed in some contexts as a name, so use bool instead. 
 		return isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : getName();
@@ -134,7 +134,7 @@ public class TRBasicType extends TRType
 	protected String getInvTypeString()
 	{
 		// there is no "inv_bool" in the translation; add inv_bool for completeness. 
-		String typeStr = isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : oldtranslate();
+		String typeStr = isaToken().equals(IsaToken.BOOL) ? IsaToken.BOOL.vdmToken().toString() : translate();
 		return IsaToken.INV.toString() + typeStr;
 	}
 

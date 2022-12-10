@@ -122,7 +122,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
      * @param owner
      * @return
      */
-    public final String oldtranslate()
+    public final String translate()
     {
         StringBuilder sb = new StringBuilder();
         if (plist.isEmpty())
@@ -186,7 +186,7 @@ public abstract class TRMultipleBind extends TRNode implements TRPatternContext
         }
         else
         {
-            sb.append(plist.get(index).oldtranslate());
+            sb.append(plist.get(index).translate());
             sb.append(getFormattingSeparator());
             sb.append(isaToken().toString());
             sb.append(getFormattingSeparator());

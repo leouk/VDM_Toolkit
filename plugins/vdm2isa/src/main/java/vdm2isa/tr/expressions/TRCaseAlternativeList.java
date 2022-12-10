@@ -72,6 +72,6 @@ public class TRCaseAlternativeList extends TRMappedList<TCCaseAlternative, TRCas
 		TRCaseAlternativeList result = new TRCaseAlternativeList();
         result.addAll(Arrays.asList(args));
         TRNode.setup(result);
-		return result.oldtranslate();	
+		return result.translate();	
 	}
 }

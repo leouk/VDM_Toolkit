@@ -22,7 +22,7 @@ public class TRNotYetSpecifiedExpression extends TRExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         return isaToken().toString();
     }
 

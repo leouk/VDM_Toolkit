@@ -36,11 +36,11 @@ public class TRIsExpression extends TRVDMTestExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
         sb.append(isaToken().toString());
         sb.append(IsaToken.SPACE.toString());
-        sb.append(IsaToken.parenthesise(test.oldtranslate()));
+        sb.append(IsaToken.parenthesise(test.translate()));
         sb.append(IsaToken.SPACE.toString());
         if (getTestType().compatible(test.getType()))
         {

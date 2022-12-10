@@ -54,7 +54,7 @@ public class TRElseIfExpressionList extends TRMappedList<TCElseIfExpression, TRE
 
 	public static final String translate(TRElseIfExpression... args)
 	{
-		return TRElseIfExpressionList.newElseIfExpressionList(args).oldtranslate();	
+		return TRElseIfExpressionList.newElseIfExpressionList(args).translate();	
 	}
 
     public static final TRElseIfExpressionList newElseIfExpressionList(TRElseIfExpression... args)

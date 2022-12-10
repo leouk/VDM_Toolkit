@@ -82,7 +82,7 @@ public class TRMkTypeExpression extends TRExpression {
             if (uinter == null || !utypeset.contains(uinter))
             {
                 report(IsaErrorMessage.VDMSL_FIELD_INCOMPATIBLE_UNION_TYPE_4P, 
-                    typename.toString(), index, utype.oldtranslate(), argtype.oldtranslate());
+                    typename.toString(), index, utype.translate(), argtype.translate());
             }
             else 
             {
@@ -91,13 +91,13 @@ public class TRMkTypeExpression extends TRExpression {
         }
         else
         {
-            sb.append(arg.oldtranslate());
+            sb.append(arg.translate());
         }
         return sb.toString();
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         assert this.fields.size() == this.args.size();
         String separator = IsaToken.COMMA.toString() + " ";
         StringBuilder sb = new StringBuilder();

@@ -113,11 +113,11 @@ public class TRProofObligationDefinition extends TRDefinition {
     }
 
     @Override
-	public String oldtranslate()
+	public String translate()
     {   
         StringBuilder sb = new StringBuilder();
         // get comments etc.
-        sb.append(super.oldtranslate());
+        sb.append(super.translate());
         sb.append(sb.length() > 0 ? "\n" : "");
         sb.append(tldIsaComment());
         sb.append(sb.length() > 0 ? "\n" : "");
@@ -136,9 +136,9 @@ public class TRProofObligationDefinition extends TRDefinition {
             IsaToken.UNDERSCORE.toString() + po.kind.name();
 
         // replace all names with "$" signs as Isabelle doesn't like them.
-        String poExprStr = poExpr.oldtranslate().replaceAll("\\$", "dollar"); 
+        String poExprStr = poExpr.translate().replaceAll("\\$", "dollar"); 
         
-        String poScriptStr = poScripts.oldtranslate();
+        String poScriptStr = poScripts.translate();
         sb.append(IsaTemplates.translateTheoremDefinition(getLocation(), poNameStr, 
             poExprStr, poScriptStr));
         sb.append(getFormattingSeparator());
@@ -169,10 +169,10 @@ public class TRProofObligationDefinition extends TRDefinition {
 	{
 		StringBuilder sb = new StringBuilder();
         // get comments etc.
-        sb.append(super.oldtranslate());
+        sb.append(super.translate());
 
         // replace all names with "$" signs as Isabelle doesn't like them.
-        String poExprStr = poExpr.oldtranslate().replaceAll("\\$", "dollar");
+        String poExprStr = poExpr.translate().replaceAll("\\$", "dollar");
         // Some PO names are "Gateway; rest_p" etc; fix those to be proper identifiers
         String poNameStr = po.name.replaceAll("; ", IsaToken.UNDERSCORE.toString()).replaceAll(", ", IsaToken.UNDERSCORE.toString());
 
@@ -199,7 +199,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         {
             // translate the proof script as well
             sb.append(getFormattingSeparator());
-            sb.append(poScripts.oldtranslate());
+            sb.append(poScripts.translate());
         }
         else
         {

@@ -96,12 +96,12 @@ public class TRSetCompExpression extends TRAbstractCompExpression {
     }
 
     @Override
-    public String oldtranslate() {
+    public String translate() {
         StringBuilder sb = new StringBuilder();
 
         if (trivialComp != null)
         {
-            sb.append(trivialComp.oldtranslate());
+            sb.append(trivialComp.translate());
         }
         else
         {
