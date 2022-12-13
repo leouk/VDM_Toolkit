@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class IsaAbstractTemplate implements IsaTemplate {
  
-    public final String comment;
+    public final List<String> comment;
 
     protected final static <T> List<T> createList(List<T> elems)
     {
@@ -20,7 +20,10 @@ public abstract class IsaAbstractTemplate implements IsaTemplate {
             result = new ArrayList<T>(elems != null ? elems.size() : 0);
             for(T e : elems) 
             {
+                // remove null
                 if (e == null) continue;
+                // remove empty strings 
+                if ((e instanceof String) && ((String)e).isEmpty()) continue;
                 result.add(e);
             }
         }
@@ -31,12 +34,12 @@ public abstract class IsaAbstractTemplate implements IsaTemplate {
     @SuppressWarnings("varargs")
     protected final static <T> List<T> createList(T... elems)
     {
-        return elems == null || elems.length == 0 ? Collections.emptyList() : Arrays.asList(elems);
+        return elems == null || elems.length == 0 ? Collections.emptyList() : createList(Arrays.asList(elems));
     }
 
-    protected IsaAbstractTemplate(String comment)
+    protected IsaAbstractTemplate(List<String> comment)
     {
         // empty comments become null ones to avoid emitting empty comments 
-        this.comment = comment != null && comment.isEmpty() ? null : comment; 
+        this.comment = comment != null && comment.isEmpty() ? null : createList(comment); 
     }
 }

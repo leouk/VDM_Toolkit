@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class IsaAbbreviation extends IsaDefinition {
     
-    protected IsaAbbreviation(String comment, List<IsaIdentifier> name, List<String> type, String expr)
+    protected IsaAbbreviation(List<String> comment, IsaVDMSource source, List<IsaIdentifier> name, List<String> type, String expr)
     {
-        super(comment, name, type, null, false, expr);
+        super(comment, source, name, type, null, false, expr);
     }
 }

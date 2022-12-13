@@ -12,9 +12,9 @@ public class IsaDefinition extends IsaNamedTemplate {
     public final String expr;
     public final Boolean eq; 
     
-    protected IsaDefinition(String comment, List<IsaIdentifier> name, List<String> type, List<IsaAttribute> attr, Boolean eq, String expr)
+    protected IsaDefinition(List<String> comment, IsaVDMSource source, List<IsaIdentifier> name, List<String> type, List<IsaAttribute> attr, Boolean eq, String expr)
     {
-        super(comment, name);
+        super(comment, source, name);
         this.type = IsaAbstractTemplate.createList(type);
         this.expr = expr; 
         this.eq = eq; 

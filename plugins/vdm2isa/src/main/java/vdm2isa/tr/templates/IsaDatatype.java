@@ -17,9 +17,9 @@ public class IsaDatatype extends IsaNamedTemplate {
      * @param name
      * @param expr
      */
-    protected IsaDatatype(String comment, IsaIdentifier name, List<String> expr)
+    protected IsaDatatype(List<String> comment, IsaVDMSource source, IsaIdentifier name, List<String> expr)
     {
-        super(comment, Arrays.asList(name));
+        super(comment, source, Arrays.asList(name));
         this.expr = IsaAbstractTemplate.createList(expr);
     }
 }

@@ -10,9 +10,9 @@ public class IsaLemmas extends IsaNamedTemplate {
 
     public final List<IsaIdentifier> lemma; 
 
-    protected IsaLemmas(String comment, IsaIdentifier name, List<IsaIdentifier> lemma)
+    protected IsaLemmas(List<String> comment, IsaVDMSource source, IsaIdentifier name, List<IsaIdentifier> lemma)
     {
-        super(comment, Arrays.asList(name)); 
+        super(comment, source, Arrays.asList(name)); 
         this.lemma = IsaAbstractTemplate.createList(lemma);
     }
 }

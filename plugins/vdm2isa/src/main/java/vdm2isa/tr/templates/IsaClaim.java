@@ -12,9 +12,9 @@ public class IsaClaim extends IsaNamedTemplate {
     public final String expr; 
     public final List<String> proof;
 
-    protected IsaClaim(String comment, ClaimKind kind, IsaIdentifier name, List<IsaAttribute> attr, String expr, List<String> proof)
+    protected IsaClaim(List<String> comment, IsaVDMSource source, ClaimKind kind, IsaIdentifier name, List<IsaAttribute> attr, String expr, List<String> proof)
     {
-        super(comment, Arrays.asList(name));
+        super(comment, source, Arrays.asList(name));
         this.kind = kind;
         this.attr = IsaAbstractTemplate.createList(attr); 
         this.expr = expr; 
