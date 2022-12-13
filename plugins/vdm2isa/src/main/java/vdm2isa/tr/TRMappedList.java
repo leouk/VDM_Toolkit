@@ -250,6 +250,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		return result;
 	}
 
+	@Override
 	public String translate()
 	{
 		return oldtranslate(); 

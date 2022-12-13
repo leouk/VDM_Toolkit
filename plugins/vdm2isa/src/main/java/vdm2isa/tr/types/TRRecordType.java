@@ -13,7 +13,6 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinitionList;
 import vdm2isa.tr.definitions.TRExplicitFunctionDefinition;
-import vdm2isa.tr.templates.IsaTemplatesHelper;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
 
 public class TRRecordType extends TRInvariantType
