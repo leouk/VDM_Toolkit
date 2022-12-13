@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.stringtemplate.v4.ST;
-import org.stringtemplate.v4.STGroup;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.FileList;
@@ -350,8 +349,10 @@ public class TRModule extends TRNode
 				}
 				else
 				{
+					//TODO no user defined comment? and no source either for now?
 					result.add(
-						IsaTemplatesHelper.newIsaVDMExportStruc(comment,
+						IsaTemplatesHelper.newIsaVDMExportStruc(Arrays.asList(comment),
+							null,
 							d instanceof TCTypeDefinition ? 
 								IsaVDMTheoryExport.ExportKind.hide_type : 
 								IsaVDMTheoryExport.ExportKind.hide_const, 
