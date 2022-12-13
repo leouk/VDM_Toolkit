@@ -110,7 +110,7 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (comments != null)
+		if (comments != null && comments.size() > 0)
 		{
 			sb.append(comments.translate());
 		}
