@@ -8,6 +8,8 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 public final class IsaTemplatesHelper {
     
     public enum IsaTemplates 
@@ -75,6 +77,16 @@ public final class IsaTemplatesHelper {
             throw new IsaTemplateException("Unknown template name in Isabelle template group: " + name);
     }
 
+    public static final IsaVDMSource newIsaVDMSource(String source, LexLocation location)
+    {
+        return new IsaVDMSource(source, location);
+    } 
+
+    public static final IsaVDMTheoryExport newIsaVDMExportStruc(List<String> comment, IsaVDMSource source, IsaVDMTheoryExport.ExportKind kind, String name)
+    {
+        return new IsaVDMTheoryExport(comment, source, kind, IsaIdentifier.valueOf(name));
+    }
+
     public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
     {
         IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
@@ -85,24 +97,18 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
-    public static final IsaVDMTheoryExport newIsaVDMExportStruc(String comment, IsaVDMTheoryExport.ExportKind kind, String name)
+    public static final ST newIsaClaim(List<String> comment, IsaVDMSource source, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr, List<String> proof)
     {
-        IsaVDMTheoryExport result = new IsaVDMTheoryExport(comment, kind, IsaIdentifier.valueOf(name));
-        return result;
-    }
-
-    public static final ST newIsaClaim(String comment, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr, List<String> proof)
-    {
-        IsaClaim t = new IsaClaim(comment, kind, IsaIdentifier.valueOf(name), attrs, expr, proof);
+        IsaClaim t = new IsaClaim(comment, source, kind, IsaIdentifier.valueOf(name), attrs, expr, proof);
         assert isTemplateValid(IsaTemplates.claim.templateName());
         ST result = getTemplate(IsaTemplates.claim.templateName());
         result.add(IsaTemplates.claim.arg, t);
         return result; 
     }
 
-    public static final ST newIsaLemmas(String comment, String name, List<String> lemmas)
+    public static final ST newIsaLemmas(List<String> comment, IsaVDMSource source, String name, List<String> lemmas)
     {
-        IsaLemmas t = new IsaLemmas(comment, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(lemmas));
+        IsaLemmas t = new IsaLemmas(comment, source, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(lemmas));
         assert isTemplateValid(IsaTemplates.lemmas.templateName());
         ST result = getTemplate(IsaTemplates.lemmas.templateName());
         result.add(IsaTemplates.lemmas.arg, t);
@@ -119,18 +125,18 @@ public final class IsaTemplatesHelper {
      * @return
      */
 
-    public static final ST newIsaTypeSynonym(String comment, String name, String expr)
+    public static final ST newIsaTypeSynonym(List<String> comment, IsaVDMSource source, String name, String expr)
     {
-        IsaTypeSynonym t = new IsaTypeSynonym(comment, IsaIdentifier.valueOf(name), expr);
+        IsaTypeSynonym t = new IsaTypeSynonym(comment, source, IsaIdentifier.valueOf(name), expr);
         assert isTemplateValid(IsaTemplates.typesynonym.templateName());
         ST result = getTemplate(IsaTemplates.typesynonym.templateName());
         result.add(IsaTemplates.typesynonym.arg, t);
         return result; 
     }
 
-    public static final ST newIsaDatatype(String comment, String name, List<String> expr)
+    public static final ST newIsaDatatype(List<String> comment, IsaVDMSource source, String name, List<String> expr)
     {
-        IsaDatatype t = new IsaDatatype(comment, IsaIdentifier.valueOf(name), expr);
+        IsaDatatype t = new IsaDatatype(comment, source, IsaIdentifier.valueOf(name), expr);
         assert isTemplateValid(IsaTemplates.datatype.templateName());
         ST result = getTemplate(IsaTemplates.datatype.templateName());
         result.add(IsaTemplates.datatype.arg, t);
@@ -150,9 +156,9 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
-    public static final ST newIsaRecord(String comment, String name, List<IsaRecordField> fields)
+    public static final ST newIsaRecord(List<String> comment, IsaVDMSource source, String name, List<IsaRecordField> fields)
     {
-        IsaRecord t = new IsaRecord(comment, IsaIdentifier.valueOf(name), fields);
+        IsaRecord t = new IsaRecord(comment, source, IsaIdentifier.valueOf(name), fields);
         assert isTemplateValid(IsaTemplates.record.templateName());
         ST result = getTemplate(IsaTemplates.record.templateName());
         result.add(IsaTemplates.record.arg, t);
@@ -167,9 +173,9 @@ public final class IsaTemplatesHelper {
      * @param expr
      * @return
      */
-    public static final ST newIsaAbbreviation(String comment, List<String> name, List<String> type, String expr)
+    public static final ST newIsaAbbreviation(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, String expr)
     {
-        IsaAbbreviation t = new IsaAbbreviation(comment, IsaIdentifier.listOf(name), type, expr);
+        IsaAbbreviation t = new IsaAbbreviation(comment, source, IsaIdentifier.listOf(name), type, expr);
         assert isTemplateValid(IsaTemplates.abbreviation.templateName());
         ST result = getTemplate(IsaTemplates.abbreviation.templateName());
         result.add(IsaTemplates.abbreviation.arg, t);
@@ -186,9 +192,9 @@ public final class IsaTemplatesHelper {
      * @param attrs
      * @return
      */
-    public static final ST newIsaDefinition(String comment, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final ST newIsaDefinition(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, name, type, attrs, eq, expr);
+        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, source, name, type, attrs, eq, expr);
         assert isTemplateValid(IsaTemplates.definition.templateName());
         ST result = getTemplate(IsaTemplates.definition.templateName());
         result.add(IsaTemplates.definition.arg, t);
@@ -205,9 +211,9 @@ public final class IsaTemplatesHelper {
      * @param expr
      * @return
      */
-    public static final IsaDefinition newIsaDefinitionStruc(String comment, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final IsaDefinition newIsaDefinitionStruc(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        return new IsaDefinition(comment, IsaIdentifier.listOf(name), type, attrs, eq, expr);
+        return new IsaDefinition(comment, source, IsaIdentifier.listOf(name), type, attrs, eq, expr);
     }
 
     /**
@@ -220,9 +226,9 @@ public final class IsaTemplatesHelper {
      * @param attrs
      * @return
      */
-    public static final ST newIsaVDMFunDef(String comment, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final ST newIsaVDMFunDef(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, name, type, attrs, false, expr);
+        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, source, name, type, attrs, false, expr);
         assert isTemplateValid(IsaTemplates.fundef.templateName());
         ST result = getTemplate(IsaTemplates.fundef.templateName());
         result.add(IsaTemplates.fundef.arg, t);
@@ -240,9 +246,9 @@ public final class IsaTemplatesHelper {
      * @param attrs
      * @return
      */
-    public static final ST newIsaRecursiveFunDef(String comment, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final ST newIsaRecursiveFunDef(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, name, type, attrs, true, expr);
+        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, source, name, type, attrs, true, expr);
         assert isTemplateValid(IsaTemplates.rfundef.templateName());
         ST result = getTemplate(IsaTemplates.rfundef.templateName());
         result.add(IsaTemplates.rfundef.arg, t);
@@ -260,9 +266,9 @@ public final class IsaTemplatesHelper {
      * @param attrs
      * @return
      */
-    public static final ST newIsaRecursiveFunctionDef(String comment, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final ST newIsaRecursiveFunctionDef(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, name, type, attrs, true, expr);
+        IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, source, name, type, attrs, true, expr);
         assert isTemplateValid(IsaTemplates.fundef.templateName());
         ST result = getTemplate(IsaTemplates.fundef.templateName());
         result.add(IsaTemplates.fundef.arg, t);
@@ -289,7 +295,7 @@ public final class IsaTemplatesHelper {
         return result; 
     }
 
-    public static final ST newIsaIfThenElse(String comment, String test, String then, String els)
+    public static final ST newIsaIfThenElse(List<String> comment, String test, String then, String els)
     {
         IsaIfThenElse t = new IsaIfThenElse(comment, test, then, els);
         assert isTemplateValid(IsaTemplates.ifexp.templateName());
