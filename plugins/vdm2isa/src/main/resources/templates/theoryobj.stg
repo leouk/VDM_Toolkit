@@ -24,7 +24,8 @@ end
 // e.g. lemma XYZ[ATTRLIST]: EXPR; 
 //TODO how to filter kind = {lemma, theorem, corollary}?
 claim(clm) ::= <<
-$commentIt(clm.comment)$
+$vdmsourceIt(clm.source)$
+$comments(clm.comment)$
 $clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
     $innerSyntaxIt(clm.expr); wrap$  
     $if(clm.proof)$$clm.proof$$else$oops$endif$
@@ -32,32 +33,37 @@ $clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
 >>
 
 lemmas(lms) ::= <<
-$commentIt(lms.comment)$
+$comments(lms.comment)$
 lemmas $defineIt(lms.name, listIt(lms.lemma), true)$
 
 >>
 
 // Isabelle type synonym and simple data type template
 typesynonym(tsym) ::= << 
+$vdmsourceIt(tsym.source)$
+$comment(tsym.comment)$
 type_synonym $defineIt(listIt(tsym.name), innerSyntaxIt(listIt(tsym.expr)), true)$
 
 >>
 
 datatype(dtype) ::= <<
-$commentIt(dtype.comment)$
+$vdmsourceIt(dtype.source)$
+$comments(dtype.comment)$
 datatype $listIt(dtype.name)$ = $dtype.expr: { e | $innerSyntaxIt(e)$ }; wrap, separator=" | "$
 
 >>
 
 record(rec) ::= <<
-$commentIt(rec.comment)$
+$vdmsourceIt(rec.source)$
+$comments(rec.comment)$
 record $rec.name$ = 
     $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
 
 >>
 
 abbreviation(def) ::= <<
-$commentIt(def.comment)$
+$vdmsourceIt(def.source)$
+$comments(def.comment)$
 abbreviation 
     $signature(def)$ where
     $innerSyntaxIt(defineIt(def.name, def.expr, false)); wrap$
@@ -66,7 +72,8 @@ abbreviation
 
 // Isabelle definition template 
 definition(def) ::= <<
-$commentIt(def.comment)$
+$vdmsourceIt(def.source)$
+$comments(def.comment)$
 definition
     $signature(def)$ where
     $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
@@ -74,7 +81,8 @@ definition
 >>
 
 fundef(fdef) ::= <<
-$commentIt(fdef.comment)$
+$vdmsourceIt(fdef.source)$
+$comments(fdef.comment)$
 definition
     $signature(fdef)$ where
     $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, fdef.eq))); wrap$
@@ -84,7 +92,8 @@ definition
 //TODO refactor some of these defs into inner templates
 //don't attribute the pre_name_def, as user-defined one is likely to be different
 rfundef(fdef) ::= <<
-$fdef: { f | $commentIt(f.comment)$ }; wrap, separator="\n"$
+$fdef: { f | $vdmsourceIt(f.source)$ }; wrap, separator="\n"$
+$fdef: { f | $comments(f.comment)$ }; wrap, separator="\n"$
 declare $fdef:{ f | $declareIt(f)$ }; wrap, separator="\n\t"$
     
 fun (domintros) 
@@ -128,5 +137,14 @@ innerSyntaxIt(expr) ::= <%\\<open>$expr$\\<close>%>
 // e.g., NAME = EXPR vs NAME == EXPR 
 defineIt(name, expr, eq=false) ::= <%$listIt(name)$ $if(eq)$ = $else$ \\<equiv> $endif$$expr$%>
 
-// Isabelle comment, if any
+// Isabelle comment(s), if any; should we have VDM source + loc as Object? 
+comments(cmt) ::= <%$cmt: { c | $commentIt(c)$ }; wrap, separator="\n"$%>
 commentIt(cmt) ::= <%$if(cmt)$\\<comment>$innerSyntaxIt(cmt); wrap$$endif$%>
+
+vdmsource(source, location) ::= <<
+    VDMS source:
+    $source$
+    $if(location)$$location$$endif$
+>>
+
+vdmsourceIt(v) ::= <%$if(v)$$vdmsource(v.source, v.location)$$endif$%>
