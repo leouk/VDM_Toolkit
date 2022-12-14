@@ -7,6 +7,7 @@ package vdm2isa.tr.modules;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCExport;
 import com.fujitsu.vdmj.tc.modules.TCExportAll;
 import com.fujitsu.vdmj.tc.modules.TCImportFromModule;
@@ -445,6 +446,23 @@ public class TRModule extends TRNode
 		report(IsaErrorMessage.ISA_INVALID_INVTR_2P, getClass().getSimpleName(), name.toString());
         return "";
     }
+
+	/**
+	 * This is the same as TCModuleList.findDefinition, which is private. We push it up to TRModule as we want to find definition within single module.
+	 * @param sought
+	 * @return
+	 */
+	public TRDefinition findDefinition(TCNameToken sought)
+	{
+		for (TRDefinition def : definitions)
+		{
+			if (def.name != null && def.name.equals(sought))
+			{
+				return def;
+			}
+		}
+		return null;
+	}
 
 	public static FileList asFileList(File... args)
 	{

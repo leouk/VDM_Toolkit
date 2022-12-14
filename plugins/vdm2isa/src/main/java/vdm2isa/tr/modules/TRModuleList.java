@@ -49,19 +49,12 @@ public class TRModuleList extends TRMappedList<TCModule, TRModule>
 		return list.contains(null) ? null : list;	// Usually local func definitions
 	}
 
-	private TRDefinition findDefinition(TCNameToken sought)
+	public TRDefinition findDefinition(TCNameToken sought)
 	{
 		for (TRModule module: this)
 		{
-			for (TRDefinition def: module.definitions)
-			{
-				if (def.name != null && def.name.equals(sought))
-				{
-					return def;
-				}
-			}
+			return module.findDefinition(sought);
 		}
-		
 		return null;
 	}
 }
