@@ -158,12 +158,14 @@ functions
                   set of (((set of (nat * nat)) * nat) * ((set of (nat * nat)) * nat)) 
     lex_prod_nat(ra, rb) == lex_prod'[set of (nat * nat), nat](ra, rb, nat_fin_psub(), NAT_REL);--power ra, power rb);
     
+    --@IsaMutualRec({odd})
     even: nat -> bool
     even(n) == 
     	--@Printf("even(%1s)\n", n)
     	if n = 0 then true else odd(n-1)
     measure n;
     
+    --@IsaMutualRec({even})
     odd: nat -> bool
     odd(n) == 
     	--@Printf("odd(%1s)\n", n)
