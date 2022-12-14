@@ -1,7 +1,16 @@
 package plugins;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
@@ -14,7 +23,9 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.util.DependencyOrder;
 
+import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRSpecificationKind;
 import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
@@ -22,7 +33,68 @@ import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 public class ExuPlugin extends GeneralisaPlugin {
 
     // accepts invariant checks over compatible/equal types as unnecessary
-    public static boolean linientInvCheck; 
+    public static boolean linientInvCheck;
+    
+    private static class ExuOrder extends DependencyOrder
+    {
+        public ExuOrder()
+        {
+            super();
+        }
+
+        Map<String, File> getNameToFile() { return nameToFile; }
+        Map<String, Set<String>> getUses() { return uses; }
+        Map<String, Set<String>> getUsedBy() { return usedBy; }
+
+        // public void graphOf(File filename) throws IOException
+        // {
+        //     Map<String, Set<String>> map = uses;
+            
+        //     FileWriter fw = new FileWriter(filename); 
+        //     StringBuilder sb = new StringBuilder();
+        //     sb.append("digraph G {\n");
+    
+        //     for (String key: map.keySet())
+        //     {
+        //         Set<String> nextSet = map.get(key);
+                
+        //         for (String next: nextSet)
+        //         {
+        //             sb.append("\t");
+        //             sb.append(key);
+        //             sb.append(" -> ");
+        //             sb.append(next);
+        //             sb.append(";\n");
+        //         }
+        //     }
+            
+        //     sb.append("}\n");
+        //     fw.write(sb.toString());
+        //     fw.close();
+        // }
+
+        public void graphIt(TCModule m)
+        {
+            graphIt(m, "");
+        }
+
+        public void graphIt(TCModule m, String namePrefix)
+        {
+            try {
+                if (m.files.size() > 0)
+                {
+                    String name = namePrefix + m.name.getName();//m.files.get(0).getName();
+                    String parent = m.files.get(0).getParent();
+                    File depFile = new File(parent, name + ".dot");
+                    graphOf(depFile);
+                    Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath());
+                } 
+            } catch (IOException e) {
+                Console.err.println("I/O error whilst attempting to write dependency graph");
+                e.printStackTrace();
+            }    
+        }
+    }
     
 	public ExuPlugin(Interpreter interpreter)
 	{
@@ -37,7 +109,7 @@ public class ExuPlugin extends GeneralisaPlugin {
             Console.out.println("Calling Exu VDM analyser...");
 
             checkModules(tclist);
-            
+
             result = true;
         }
         return result;
@@ -148,16 +220,42 @@ public class ExuPlugin extends GeneralisaPlugin {
         // Check for let-def case? 
     }
 
+    public TCDefinition findDefinition(TCModule m, TCNameToken sought)
+	{
+		for (TCDefinition def : m.defs)
+		{
+			if (def.name != null && def.name.equals(sought))
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+
     protected void checkModules(TCModuleList tclist) 
     {
         int mcount = 0;
         for(TCModule m : tclist)
-        {
+        {         
             for(TCDefinition d : m.defs)
             {
                 checkSpecificationDependencies(d, tclist);
                 checkPatterns(d);
             }
+            ExuOrder order = new ExuOrder();
+            order.definitionOrder(m.defs);
+            List<String> sp = order.getStartpoints();
+            List<String> ts = order.topologicalSort(sp); 
+            Collections.reverse(ts);
+
+            // for(String s : ts)
+            // {
+            //     TCNameToken n = IsaToken.newNameToken(LexLocation.ANY, m.name.getName(), s);
+            //     TCDefinition d = findDefinition(m, n);
+            //     if (d instanceof TCTypeDefinition)
+            // }
+            Console.out.println("Sorted points = " + ts.toString());
+            //m.defs.indexOf(tclist)
             mcount++;
         }
         addLocalModules(mcount);
