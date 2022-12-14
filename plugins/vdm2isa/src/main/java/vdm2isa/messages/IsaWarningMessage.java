@@ -30,7 +30,7 @@ public enum IsaWarningMessage {
     VDMSL_EXU_MISSING_SPECCALL_3P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 50,
     "Definition of `%1$s` %2$s depends on `%3$s` yet does not call `pre_%3$s`."),
     VDMSL_EXU_MISSING_INVCALL_3P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 51,
-    "Definition of `%1$s` %2$s depends on `%3$s` yet `%1$s` does not check type invariants for `%3$s`."),
+    "Definition of `%1$s` %2$s depends on `%3$s` yet `%1$s` does not check input type invariants for `%3$s`. Better to define and call `pre_%3$s` in `%1$s` definition."),
     VDMSL_EXU_MISSING_TYPEDEF_SPEC_1P(VDM2IsaWarning.ISABELLE_W_VDMSL_BASE + 52,
     "Type definition for type `%1$s` requires both eq and ord specifications; otherwise, it will require Isabelle `ord` type class instantiation!"),
 

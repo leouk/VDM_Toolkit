@@ -6,6 +6,7 @@ package vdm2isa.tr.definitions;
 
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
@@ -193,6 +194,13 @@ public class TRDefinitionList extends TRMappedList<TCDefinition, TRDefinition> i
 			currentUnionContext++;
 			result = get(currentUnionContext);
 		}	
+		return result;
+	}
+
+	@Override 
+	public List<String> translateList()
+	{
+		List<String> result = super.translateList();
 		return result;
 	}
 
