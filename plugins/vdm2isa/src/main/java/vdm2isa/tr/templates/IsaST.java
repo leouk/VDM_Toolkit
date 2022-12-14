@@ -57,7 +57,7 @@ public class IsaST {
         st = IsaTemplatesHelper.newIsaAbbreviation(null, null, Arrays.asList("abbrev"), Arrays.asList("nat"), "10");
         processST(st);
 
-        st = IsaTemplatesHelper.newIsaDefinition(null, null, Arrays.asList("geqDef", "x"), Arrays.asList("nat", "bool"), Arrays.asList(IsaAttribute.simp),false, "x > 1");
+        st = IsaTemplatesHelper.newIsaVDMSpecification(null, null, Arrays.asList("geqDef", "x"), Arrays.asList("nat", "bool"), Arrays.asList(IsaAttribute.simp),false, "x > 1");
         processST(st);
 
         st = IsaTemplatesHelper.newIsaRecord(null, null, "myRec", 

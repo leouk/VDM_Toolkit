@@ -87,6 +87,21 @@ public final class IsaTemplatesHelper {
         return new IsaVDMTheoryExport(comment, source, kind, IsaIdentifier.valueOf(name));
     }
 
+    /**
+     * Creates an IsaDefinition structure, which is useful for various Isabelle definition templates.
+     * @param comment
+     * @param name
+     * @param type
+     * @param attrs
+     * @param eq
+     * @param expr
+     * @return
+     */
+    public static final IsaDefinition newIsaDefinitionStruc(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    {
+        return new IsaDefinition(comment, source, IsaIdentifier.listOf(name), type, attrs, eq, expr);
+    }
+
     public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
     {
         IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
@@ -192,28 +207,13 @@ public final class IsaTemplatesHelper {
      * @param attrs
      * @return
      */
-    public static final ST newIsaDefinition(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
+    public static final ST newIsaVDMSpecification(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
         IsaDefinition t = IsaTemplatesHelper.newIsaDefinitionStruc(comment, source, name, type, attrs, eq, expr);
         assert isTemplateValid(IsaTemplates.definition.templateName());
         ST result = getTemplate(IsaTemplates.definition.templateName());
         result.add(IsaTemplates.definition.arg, t);
         return result; 
-    }
-
-    /**
-     * Creates an IsaDefinition structure, which is useful for various Isabelle definition templates.
-     * @param comment
-     * @param name
-     * @param type
-     * @param attrs
-     * @param eq
-     * @param expr
-     * @return
-     */
-    public static final IsaDefinition newIsaDefinitionStruc(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
-    {
-        return new IsaDefinition(comment, source, IsaIdentifier.listOf(name), type, attrs, eq, expr);
     }
 
     /**
