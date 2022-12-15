@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,16 +17,16 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
-import com.fujitsu.vdmj.util.DependencyOrder;
 
-import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.definitions.TRSpecificationKind;
 import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
@@ -37,41 +38,80 @@ public class ExuPlugin extends GeneralisaPlugin {
     
     private static class ExuOrder extends DependencyOrder
     {
-        public ExuOrder()
+        public ExuOrder(boolean debug)
         {
-            super();
+            super(debug);
         }
 
-        Map<String, File> getNameToFile() { return nameToFile; }
-        Map<String, Set<String>> getUses() { return uses; }
-        Map<String, Set<String>> getUsedBy() { return usedBy; }
+        final static String defListString(TCDefinitionList s) 
+        {
+            StringBuilder sb = new StringBuilder();
+            Iterator<TCDefinition> it = s.iterator();
+            TCDefinition d;
+            if (it.hasNext())
+            {
+                d = it.next();
+                sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+            }
+            while (it.hasNext())
+            {
+                d = it.next();
+                sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+            }
+            return sb.toString();
+        }
 
-        // public void graphOf(File filename) throws IOException
-        // {
-        //     Map<String, Set<String>> map = uses;
-            
-        //     FileWriter fw = new FileWriter(filename); 
-        //     StringBuilder sb = new StringBuilder();
-        //     sb.append("digraph G {\n");
-    
-        //     for (String key: map.keySet())
-        //     {
-        //         Set<String> nextSet = map.get(key);
-                
-        //         for (String next: nextSet)
-        //         {
-        //             sb.append("\t");
-        //             sb.append(key);
-        //             sb.append(" -> ");
-        //             sb.append(next);
-        //             sb.append(";\n");
-        //         }
-        //     }
-            
-        //     sb.append("}\n");
-        //     fw.write(sb.toString());
-        //     fw.close();
-        // }
+        final static String defSetString(TCDefinitionSet s) 
+        {
+            StringBuilder sb = new StringBuilder();
+            Iterator<TCDefinition> it = s.iterator();
+            TCDefinition d;
+            if (it.hasNext())
+            {
+                d = it.next();
+                sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+            }
+            while (it.hasNext())
+            {
+                d = it.next();
+                sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+            }
+            return sb.toString();
+        }
+
+        final static String defMapString(Map<TCNameToken, TCDefinitionSet> m)
+        {
+            StringBuilder sb = new StringBuilder();
+            Iterator<TCNameToken> it = m.keySet().iterator();
+            TCNameToken d;
+            while (it.hasNext())
+            {
+                d = it.next();
+                sb.append(String.format("\n%1$s \t\t={%2$s}", d.getName(), defSetString(m.get(d))));
+            }
+            return sb.toString();
+        }
+
+        @Override
+        public String toString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\nName locations:");
+            for(Map.Entry<TCNameToken, LexLocation> e : nameToLoc.entrySet())
+            {
+                sb.append(String.format("\n%1$s \t\t@ %2$s[L%3$s,C%4$s]", e.getKey().getName(), e.getKey().getModule(), e.getValue().startLine, e.getValue().startPos));
+            }
+            sb.append("\n\nUses map:");
+            sb.append(defMapString(uses));
+            sb.append("\n\nUsed by map:");
+            sb.append(defMapString(usedBy));
+            sb.append("\n\nStart points:");
+            for(TCNameToken n : getStartpoints())
+            {
+                sb.append(String.format("\n%1$s", n.getName()));
+            }
+            return sb.toString();
+        }
 
         public void graphIt(TCModule m)
         {
@@ -232,6 +272,27 @@ public class ExuPlugin extends GeneralisaPlugin {
 		return null;
 	}
 
+    protected void sortModule(TCModule m)
+    {
+        ExuOrder order = new ExuOrder(true);
+        order.definitionOrder(m.defs);
+
+        if (order.debug)
+        {
+            Console.out.println(order.toString());
+        }
+
+        TCNameList ts = order.topologicalSort(); 
+        
+        if (order.debug)
+        {
+            Console.out.println("Original order = " + ExuOrder.defListString(m.defs));
+            Console.out.println("Sorted names   = " + ts.toString());
+        }
+
+        m.defs.size();
+    }
+
     protected void checkModules(TCModuleList tclist) 
     {
         int mcount = 0;
@@ -242,20 +303,7 @@ public class ExuPlugin extends GeneralisaPlugin {
                 checkSpecificationDependencies(d, tclist);
                 checkPatterns(d);
             }
-            ExuOrder order = new ExuOrder();
-            order.definitionOrder(m.defs);
-            List<String> sp = order.getStartpoints();
-            List<String> ts = order.topologicalSort(sp); 
-            Collections.reverse(ts);
-
-            // for(String s : ts)
-            // {
-            //     TCNameToken n = IsaToken.newNameToken(LexLocation.ANY, m.name.getName(), s);
-            //     TCDefinition d = findDefinition(m, n);
-            //     if (d instanceof TCTypeDefinition)
-            // }
-            Console.out.println("Sorted points = " + ts.toString());
-            //m.defs.indexOf(tclist)
+            sortModule(m);
             mcount++;
         }
         addLocalModules(mcount);
