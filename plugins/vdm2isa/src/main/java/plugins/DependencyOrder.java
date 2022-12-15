@@ -139,18 +139,70 @@ public class DependencyOrder
 	{
         modules = null;
         singleDefs = definitions.singleDefinitions();
+        TCDefinitionList needsImplicitInvDef = new TCDefinitionList();
 		for (TCDefinition def: singleDefs)
 		{
-	    	String myname = def.name.getName();
-	    	nameToLoc.put(myname, def.location);
+	    	//String myname = def.name.getName();
+	    	nameToLoc.put(def.name, def.location);
 
 			TCNameSet freevars = def.getFreeVariables();
-	    	
+
+            // ignore recursive calls; recursion will be handled differently
+            freevars.remove(def.name);
+
+            Environment globals = new FlatEnvironment(new TCDefinitionList());
+    		Environment empty = new FlatEnvironment(new TCDefinitionList());
+			TCNameSet freevarsDep = def.getDependencies(globals, empty, new AtomicBoolean(false));
+
+            //TLD-type definition dependencies
+            processImplicitDependencies(def, freevarsDep);
+            
+            // see if need to add implicit type invariants
+            if (def instanceof TCTypeDefinition)
+            {
+                TCTypeDefinition tdef = (TCTypeDefinition)def;
+                TCNameToken tdefInv = tdef.name.getInvName(tdef.location);
+                TCDefinition tInv = findDefinition(tdefInv); 
+                if (tInv == null)
+                {
+                    needsImplicitInvDef.add(tdef);
+                }
+                else 
+                {
+                    freevarsDep.add(tdefInv);
+                }
+            } 
+
+            // combine both dependencies
+            freevars.addAll(freevarsDep);
 	    	for (TCNameToken dep: freevars)
 	    	{
-                add(myname, dep.getName());
+                add(def.name, dep);
 	    	}
-	    }		
+	    }
+        // update the singleDefs with the synthetic inv_T to help topological sorting 
+        for(TCDefinition def : needsImplicitInvDef)
+        {
+            assert def instanceof TCTypeDefinition;
+            
+            TCTypeDefinition tdef = (TCTypeDefinition)def;
+            tdef.type.getFunction();
+            //TCFunctionType invDefType = tdef.type.getInvariantType()
+            // T = Expr inv x == P(x)
+            // inv_T: Expr +> bool 
+            // inv_T(t) == true
+            // new TCExplicitFunctionDefinition(null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     null, 
+            //     false, 
+            //     null)
+        }   
 	}
 	
     /**
