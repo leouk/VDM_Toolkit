@@ -6,27 +6,28 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import java.util.Iterator;
+
 import com.fujitsu.vdmj.lex.LexLocation;
-import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
-import com.fujitsu.vdmj.tc.definitions.TCClassList;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
+import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
-import com.fujitsu.vdmj.tc.modules.TCImportFromModule;
-import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
+import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 /**
@@ -35,18 +36,21 @@ import com.fujitsu.vdmj.typechecker.NameScope;
 public class DependencyOrder
 {
 	private boolean sortCalled;
-    private TCDefinitionList singleDefs;
-    private TCModuleList modules;
+    public boolean debug;
     private final Stack<TCNameToken> stack;
-	private final Map<String, LexLocation> nameToLoc;
-	private final Map<TCNameToken, TCDefinitionSet> uses;
-	private final Map<TCNameToken, TCDefinitionSet> usedBy;
-    private final LexLocationComparator locationComparator;
+    
+    protected TCDefinitionList singleDefs;
+    protected TCModuleList modules;
+    // these might end up being TCIdentifierToken x TCNameToken dependeing on module or definition order? 
+	protected final Map<TCNameToken, LexLocation> nameToLoc;
+	protected final Map<TCNameToken, TCDefinitionSet> uses;
+	protected final Map<TCNameToken, TCDefinitionSet> usedBy;
+    protected final LexLocationComparator locationComparator;
 
-    private final class LexLocationComparator implements Comparator<String> 
+    private final class LexLocationComparator implements Comparator<TCNameToken> 
     {
         @Override
-        public int compare(String o1, String o2) 
+        public int compare(TCNameToken o1, TCNameToken o2) 
         {
             assert DependencyOrder.this.nameToLoc.containsKey(o1) && DependencyOrder.this.nameToLoc.containsKey(o2);
             LexLocation l1 = DependencyOrder.this.nameToLoc.get(o1);
@@ -55,16 +59,17 @@ public class DependencyOrder
         }
     } 
 	
-	public DependencyOrder()
+	public DependencyOrder(boolean debug)
 	{
-		sortCalled = false;
-        singleDefs = null;
-        modules = null;
-        stack = new Stack<TCNameToken>();
-        nameToLoc = new HashMap<String, LexLocation>();
-        uses = new HashMap<TCNameToken, TCDefinitionSet>();
-        usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
-        locationComparator = new LexLocationComparator();
+		this.sortCalled = false;
+        this.debug = debug;
+        this.singleDefs = null;
+        this.modules = null;
+        this.stack = new Stack<TCNameToken>();
+        this.nameToLoc = new HashMap<TCNameToken, LexLocation>();
+        this.uses = new HashMap<TCNameToken, TCDefinitionSet>();
+        this.usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
+        this.locationComparator = new LexLocationComparator();
 	}
 
 	// public void moduleOrder(TCModuleList moduleList)
@@ -108,30 +113,24 @@ public class DependencyOrder
             while (it.hasNext())
             {
                 dep = it.next();
-                d =
+                d = findDefinition(dep);
+                if (d instanceof TCTypeDefinition)
+                {
+                    invN = dep.getInvName(dep.getLocation());
+                    d = findDefinition(invN);
+                    if (d != null)
+                    {
+                        if (debug)
+                        {
+                            Console.out.println("Adding implicit dependency " + invN.getName());
+                        }
+                        // remove current dep and add invN instead
+                        invDep.add(invN);
+                        it.remove();
+                    }
+                }                
             }
-            // for(TCNameToken dep: freevarsDep)
-            // {
-            //     d = findDefinition(dep);
-            //     if (d instanceof TCTypeDefinition)
-            //     {
-            //         invN = dep.getInvName(dep.getLocation());
-            //         d = findDefinition(invN);
-            //         if (d != null)
-            //         {
-            //             if (debug)
-            //             {
-            //                 Console.out.println("Adding implicit dependency " + invN.getName());
-            //             }
-            //             invDep.add(dep);
-            //         }
-            //     }
-            // }
-            // for(TCNameToken dep: invDep)
-            // {
-            //     freevarsDep.remove(dep);
-            //     freevarsDep.add(dep.getInvName(dep.getLocation()));
-            // }
+            freevarsDep.addAll(invDep);
         }
     }
 	
@@ -211,20 +210,20 @@ public class DependencyOrder
      */
     public void graphOf(File filename) throws IOException
 	{
-    	Map<String, TCDefinitionSet> map = uses;
+    	Map<TCNameToken, TCDefinitionSet> map = uses;
     	
 		FileWriter fw = new FileWriter(filename); 
 		StringBuilder sb = new StringBuilder();
 		sb.append("digraph G {\n");
 
-		for (String key: map.keySet())
+		for (TCNameToken key: map.keySet())
 		{
 			TCDefinitionSet nextSet = map.get(key);
 			
 			for (TCDefinition next: nextSet)
 			{
 				sb.append("\t");
-				sb.append(key);
+				sb.append(key.getName());
 				sb.append(" -> ");
 				sb.append(next.name.getName());
 				sb.append(";\n");
@@ -236,15 +235,15 @@ public class DependencyOrder
 		fw.close();
 	}
     
-    public List<String> getStartpoints()
+    public TCNameList getStartpoints()
     {
 		/*
 		 * The startpoints are where there are no incoming links to a node. So
 		 * the usedBy entry is blank (removed cycles) or null.
 		 */
-		List<String> startpoints = new Vector<String>();
+		TCNameList startpoints = new TCNameList();
 
-		for (String name: nameToLoc.keySet())
+		for (TCNameToken name: nameToLoc.keySet())
 		{
 			if (usedBy.get(name) == null || usedBy.get(name).isEmpty())
 			{
@@ -261,12 +260,12 @@ public class DependencyOrder
      * Note that the graph must be acyclic!
      * @return the initialization order of the names
      */
-    public List<String> topologicalSort()
+    public TCNameList topologicalSort()
     {
     	return topologicalSort(getStartpoints());
     }
     
-    public List<String> topologicalSort(List<String> startpoints)
+    public TCNameList topologicalSort(TCNameList startpoints)
     {
     	if (sortCalled)
     	{
@@ -291,11 +290,11 @@ public class DependencyOrder
 		//	else 
 		//	    return L   (a topologically sorted order)
 
-		List<String> ordering = new Vector<String>();
+        TCNameList ordering = new TCNameList();
 
 		while (!startpoints.isEmpty())
 		{
-		    String n = startpoints.remove(0);
+		    TCNameToken n = startpoints.remove(0);
 		    ordering.add(n);
 		    TCDefinitionSet usesSet = uses.get(n);
 	    	
@@ -306,9 +305,9 @@ public class DependencyOrder
 		    	
 		    	for (TCDefinition m: copy)
 		    	{	
-	    			if (delete(n, m.name.getName()) == 0)
+	    			if (delete(n, m.name) == 0)
 			    	{
-						startpoints.add(m.name.getName());
+						startpoints.add(m.name);
 				    }
 		    	}
 		    }
@@ -343,25 +342,45 @@ public class DependencyOrder
 		return count;
 	}
 
-    protected void addToDefSet(TCDefinitionSet s, String name)
+    protected TCDefinition findDefinition(TCNameToken name)
     {
-        if (modules != null)
+        // if (modules != null)
+        // {
+        //     assert singleDefs == null;
+        //     stack.clear();
+        //     stack.push(name);
+        //     modules.findDefinitions(stack);
+        // }
+        //else 
+        if (singleDefs != null) 
         {
-            assert singleDefs == null;
-            stack.clear();
-            stack.push(name);
-            modules.findDefinitions(stack);
-        }
-        else if (singleDefs != null) 
-        {
-            assert modules == null;
-            singleDefs.findName(name, NameScope.ANYTHING);
+            //assert modules == null;
+            TCDefinition d = singleDefs.findName(name, NameScope.ANYTHING);
+            if (d == null) 
+            {
+                d = singleDefs.findType(name, name.getModule());
+            }
+            return d;
         }
         else
-            throw new IllegalStateException("Invalid dependency ordering: call moduleOrder or definitionOrder first");
+             throw new IllegalStateException("Invalid dependency ordering: call moduleOrder or definitionOrder first");
     }
 
-	protected void add(String from, String to)
+    protected boolean updateSet(TCDefinitionSet s, TCNameToken name, boolean add)
+    {
+        TCDefinition d = findDefinition(name);
+        if (d != null)
+        {
+            if (add) 
+                return s.add(d); 
+            else 
+                return s.remove(d);
+        }
+        else 
+            throw new IllegalStateException("Could not find linked definition " + name.toString());
+    }
+
+	protected void add(TCNameToken from, TCNameToken to)
     {
     	if (!from.equals(to))
     	{
@@ -373,7 +392,7 @@ public class DependencyOrder
 	    		uses.put(from, set);
 	    	}
 	    	
-            addToDefSet(set, to);
+            updateSet(set, to, true);
     		set = usedBy.get(to);
 	    	
 	    	if (set == null)
@@ -382,14 +401,14 @@ public class DependencyOrder
 	    		usedBy.put(to, set);
 	    	}
 	    	
-            addToDefSet(set, from);
+            updateSet(set, from, true);
     	}
     }
 	
-	protected int delete(String from, String to)
+	protected int delete(TCNameToken from, TCNameToken to)
 	{
-    	uses.get(from).remove(to);
-    	usedBy.get(to).remove(from);
+    	updateSet(uses.get(from), to, false);   // uses.get(from).remove(to);
+        updateSet(usedBy.get(to), from, false); // usedBy.get(to).remove(from);
     	return usedBy.get(to).size();	// remaining size
 	}
 }
