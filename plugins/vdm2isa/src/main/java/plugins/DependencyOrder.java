@@ -90,6 +90,50 @@ public class DependencyOrder
 	// 		}
 	//     }
     // }
+
+    private void processImplicitDependencies(TCDefinition def, TCNameSet freevarsDep)
+    {
+        // for named types, chase dependent invariants
+        if (!freevarsDep.isEmpty())
+        {
+            if (debug)
+            {
+                Console.out.println(def.name.getName() + " dep on " + freevarsDep.toString());
+            }
+            TCDefinition d;
+            TCNameSet invDep = new TCNameSet();
+            TCNameToken invN;
+            TCNameToken dep;
+            Iterator<TCNameToken> it = freevarsDep.iterator();
+            while (it.hasNext())
+            {
+                dep = it.next();
+                d =
+            }
+            // for(TCNameToken dep: freevarsDep)
+            // {
+            //     d = findDefinition(dep);
+            //     if (d instanceof TCTypeDefinition)
+            //     {
+            //         invN = dep.getInvName(dep.getLocation());
+            //         d = findDefinition(invN);
+            //         if (d != null)
+            //         {
+            //             if (debug)
+            //             {
+            //                 Console.out.println("Adding implicit dependency " + invN.getName());
+            //             }
+            //             invDep.add(dep);
+            //         }
+            //     }
+            // }
+            // for(TCNameToken dep: invDep)
+            // {
+            //     freevarsDep.remove(dep);
+            //     freevarsDep.add(dep.getInvName(dep.getLocation()));
+            // }
+        }
+    }
 	
 	public void definitionOrder(TCDefinitionList definitions)
 	{
