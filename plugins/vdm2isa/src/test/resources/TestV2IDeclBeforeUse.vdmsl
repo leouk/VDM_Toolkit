@@ -15,25 +15,19 @@ functions
 
 types
 	
-	--@todo: add case where there is no explicit inv_T!
-	--T = seq1 of nat; R = T inv r == P(r)! 
-
-	--@doc declare sum_elems and head before using them
-	T = seq1 of nat 
-	--inv t == sum_elems(t) < 10 
-	;
-	
-	R = T
-	inv r == sum_elems(r) < 5;
-	
-	
-	--@doc uses type S and function sum_elems before declaring them.
-	R = S 
-	inv r == sum_elems(r) < 5;
+	--@doc implicit inv_T needed
+	T = seq1 of nat;
 	
 	--@doc uses type T and function tail before declaring them.
 	S = T 
 	inv s == len tail(s) > 0;
 	
-		
+	--@doc uses type S and function sum_elems before declaring them.
+	R = S 
+	inv r == sum_elems(r) < 5;
+	
+	Rec :: 
+		s: S t: T r: R
+	inv mk_Rec(s,t,-) == sum_elems(s) > sum_elems(t);
+			
 end TestV2IDeclBeforeUse
