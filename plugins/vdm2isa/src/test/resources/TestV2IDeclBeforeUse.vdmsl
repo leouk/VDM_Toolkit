@@ -2,8 +2,9 @@ module TestV2IDeclBeforeUse
 exports all
 definitions 
 functions
-	head: seq1 of nat -> nat 
-	head(s) == hd s;
+	head: seq of nat -> nat 
+	head(s) == hd s
+	pre len s > 0;
 
 	tail: seq1 of nat -> seq of nat
 	tail(s) == tl s;
@@ -13,12 +14,26 @@ functions
 	measure len s; 
 
 types
+	
+	--@todo: add case where there is no explicit inv_T!
+	--T = seq1 of nat; R = T inv r == P(r)! 
 
 	--@doc declare sum_elems and head before using them
 	T = seq1 of nat 
-	inv t == sum_elems(t) < 10 and head(t) > 0;
+	--inv t == sum_elems(t) < 10 
+	;
 	
 	R = T
-	inv r == len r > 2 and head(r) > 10;
+	inv r == sum_elems(r) < 5;
+	
+	
+	--@doc uses type S and function sum_elems before declaring them.
+	R = S 
+	inv r == sum_elems(r) < 5;
+	
+	--@doc uses type T and function tail before declaring them.
+	S = T 
+	inv s == len tail(s) > 0;
+	
 		
 end TestV2IDeclBeforeUse

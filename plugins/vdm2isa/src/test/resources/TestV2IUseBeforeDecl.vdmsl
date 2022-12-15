@@ -2,12 +2,16 @@ module TestV2IUseBeforeDecl
 exports all
 definitions 
 types
-	R = T 
-	inv r == len r > 2 and head(r) > 5;
+	--@doc uses type S and function sum_elems before declaring them.
+	R = S 
+	inv r == sum_elems(r) < 5;
 	
-	--@doc uses sum_elems and head before declaring them.
-	T = seq1 of nat 
-	inv t == sum_elems(t) < 10 and head(t) > 0;
+	--@doc uses type T and function tail before declaring them.
+	S = T 
+	inv s == len tail(s) > 0;
+	
+	--@doc implicit inv_T needed
+	T = seq1 of nat;
 	
 functions
 	tail: seq1 of nat -> seq of nat
@@ -17,7 +21,8 @@ functions
 	sum_elems(s) == if s = [] then 0 else head(s) + sum_elems(tail(s))
 	measure len s; 
 
-	head: seq1 of nat -> nat 
-	head(s) == hd s;
+	head: seq of nat -> nat 
+	head(s) == hd s
+	pre len s > 0;
 	
 end TestV2IUseBeforeDecl
