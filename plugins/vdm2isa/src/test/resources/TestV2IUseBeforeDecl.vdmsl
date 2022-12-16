@@ -5,7 +5,7 @@ types
 
 	Rec :: 
 		s: S t: T r: R
-	inv mk_Rec(s,t,r) == sum_elems(s) > sum_elems(t);
+	inv mk_Rec(s,t,-) == sum_elems(s) > sum_elems(t);
 
 	--@doc uses type S and function sum_elems before declaring them.
 	R = S 
