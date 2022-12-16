@@ -6,11 +6,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import java.util.Iterator;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
@@ -23,11 +22,16 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
+import com.fujitsu.vdmj.tc.patterns.TCPatternList;
+import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
+import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
-import com.fujitsu.vdmj.tc.types.TCType;
+import com.fujitsu.vdmj.tc.types.TCNamedType;
+import com.fujitsu.vdmj.tc.types.TCRecordType;
+import com.fujitsu.vdmj.tc.types.TCTypeList;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
-import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 /**
@@ -157,6 +161,7 @@ public class DependencyOrder
             processImplicitDependencies(def, freevarsDep);
             
             // see if need to add implicit type invariants
+            // if tdefInv isn't define, has to include it later in singleDefs
             if (def instanceof TCTypeDefinition)
             {
                 TCTypeDefinition tdef = (TCTypeDefinition)def;
@@ -164,6 +169,10 @@ public class DependencyOrder
                 TCDefinition tInv = findDefinition(tdefInv); 
                 if (tInv == null)
                 {
+                    if (debug)
+                    {
+                        Console.out.println("Adding implicit invariant definition " + tdefInv.getName());
+                    }
                     needsImplicitInvDef.add(tdef);
                 }
                 else 
@@ -179,28 +188,49 @@ public class DependencyOrder
                 add(def.name, dep);
 	    	}
 	    }
+        
         // update the singleDefs with the synthetic inv_T to help topological sorting 
         for(TCDefinition def : needsImplicitInvDef)
         {
             assert def instanceof TCTypeDefinition;
             
             TCTypeDefinition tdef = (TCTypeDefinition)def;
-            tdef.type.getFunction();
-            //TCFunctionType invDefType = tdef.type.getInvariantType()
+            TCNameToken invDefName = tdef.name.getInvName(tdef.location);
+            TCFunctionType invFunType;
+            TCPatternListList params = new TCPatternListList();
+            TCPatternList param = new TCPatternList();
+            params.add(param);
+            param.add(new TCIdentifierPattern(
+                new TCNameToken(tdef.name.getLocation(), tdef.name.getModule(), tdef.name.getName().toLowerCase())));
+            if (tdef.type instanceof TCNamedType)
+            {
+                TCNamedType tnamed = (TCNamedType)tdef.type;
+                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tnamed.type), false, new TCBooleanType(tdef.location));
+            }
+            else if (tdef.type instanceof TCRecordType)
+            {
+                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tdef.type), false, new TCBooleanType(tdef.location));                
+            }
+            else 
+                throw new IllegalStateException("Invalid type definition kind? " + tdef.getClass().getSimpleName());
             // T = Expr inv x == P(x)
             // inv_T: Expr +> bool 
             // inv_T(t) == true
-            // new TCExplicitFunctionDefinition(null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     null, 
-            //     false, 
-            //     null)
+            TCExplicitFunctionDefinition invDef = new TCExplicitFunctionDefinition(null, 
+                tdef.accessSpecifier, 
+                invDefName, 
+                null, 
+                invFunType, 
+                params, 
+                null, 
+                null, 
+                null, 
+                true, 
+                null);
+
+            // the invDefName dependency has to be transitive! Oh no.  
+            singleDefs.add(invDef);
+            add(def.name, invDefName);
         }   
 	}
 	
