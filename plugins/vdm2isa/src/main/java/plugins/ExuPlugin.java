@@ -1,23 +1,12 @@
 package plugins;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
-import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
-import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
@@ -36,107 +25,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     // accepts invariant checks over compatible/equal types as unnecessary
     public static boolean linientInvCheck;
     
-    private static class ExuOrder extends DependencyOrder
-    {
-        public ExuOrder(boolean debug)
-        {
-            super(debug);
-        }
-
-        final static String defListString(TCDefinitionList s) 
-        {
-            StringBuilder sb = new StringBuilder();
-            Iterator<TCDefinition> it = s.iterator();
-            TCDefinition d;
-            if (it.hasNext())
-            {
-                d = it.next();
-                sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
-            }
-            while (it.hasNext())
-            {
-                d = it.next();
-                sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
-            }
-            return sb.toString();
-        }
-
-        final static String defSetString(TCDefinitionSet s) 
-        {
-            StringBuilder sb = new StringBuilder();
-            Iterator<TCDefinition> it = s.iterator();
-            TCDefinition d;
-            if (it.hasNext())
-            {
-                d = it.next();
-                sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
-            }
-            while (it.hasNext())
-            {
-                d = it.next();
-                sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
-            }
-            return sb.toString();
-        }
-
-        final static String defMapString(Map<TCNameToken, TCDefinitionSet> m)
-        {
-            StringBuilder sb = new StringBuilder();
-            Iterator<TCNameToken> it = m.keySet().iterator();
-            TCNameToken d;
-            while (it.hasNext())
-            {
-                d = it.next();
-                sb.append(String.format("\n%1$s \t\t={%2$s}", d.getName(), defSetString(m.get(d))));
-            }
-            return sb.toString();
-        }
-
-        @Override
-        public String toString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.append("\nName locations:");
-            for(Map.Entry<TCNameToken, LexLocation> e : nameToLoc.entrySet())
-            {
-                sb.append(String.format("\n%1$s \t\t@ %2$s[L%3$s,C%4$s]", e.getKey().getName(), e.getKey().getModule(), e.getValue().startLine, e.getValue().startPos));
-            }
-            sb.append("\n\nUses map:");
-            sb.append(defMapString(uses));
-            sb.append("\n\nUsed by map:");
-            sb.append(defMapString(usedBy));
-            sb.append("\n\nStart points:");
-            for(TCNameToken n : getStartpoints())
-            {
-                sb.append(String.format("\n%1$s", n.getName()));
-            }
-            return sb.toString();
-        }
-
-        public void graphIt(TCModule m)
-        {
-            graphIt(m, "");
-        }
-
-        public void graphIt(TCModule m, String namePrefix)
-        {
-            try {
-                if (m.files.size() > 0)
-                {
-                    String name = namePrefix + m.name.getName();//m.files.get(0).getName();
-                    String parent = m.files.get(0).getParent();
-                    File depFile = new File(parent, name + ".dot");
-                    graphOf(depFile);
-                    Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath());
-                } 
-            } catch (IOException e) {
-                Console.err.println("I/O error whilst attempting to write dependency graph");
-                e.printStackTrace();
-            }    
-        }
-    }
-    
-	public ExuPlugin(Interpreter interpreter)
+    public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 	}
@@ -275,22 +164,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     protected void sortModule(TCModule m)
     {
         ExuOrder order = new ExuOrder(true);
-        order.definitionOrder(m.defs);
-
-        if (order.debug)
-        {
-            Console.out.println(order.toString());
-        }
-
-        TCNameList ts = order.topologicalSort(); 
-        
-        if (order.debug)
-        {
-            Console.out.println("Original order = " + ExuOrder.defListString(m.defs));
-            Console.out.println("Sorted names   = " + ts.toString());
-        }
-
-        m.defs.size();
+        TCNameList ts = order.definitionOrder(m);
     }
 
     protected void checkModules(TCModuleList tclist) 

@@ -1,0 +1,24 @@
+delimiters "$", "$"
+
+exuOrder(locs, uses, usedBy, original, start, sorted) ::= <<
+Named locations:
+$printLocs(locs)$
+
+Uses map:
+$printMap(uses)$
+
+Used by map:
+$printMap(usedBy)$
+
+Original names: $printList(original)$
+Start points  : $printList(start)$
+Sorted names  : $printList(sorted)$
+
+>>
+
+// l.file$[L$l.line$,C$l.col$] }
+printLocs(locs) ::= <%$locs:{ m | $m.key$ @ $m.value$}; separator="\n"$%>
+
+printMap(map) ::= <%$map:{ m | $m.key$ = $printList(m.value)$}; separator="\n"$%>
+
+printList(list) ::= <%$list:{ l | $l.name$}; separator=", "$%>
