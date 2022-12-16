@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
@@ -18,6 +19,7 @@ import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
+import com.fujitsu.vdmj.tc.expressions.TCBooleanLiteralExpression;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
@@ -29,17 +31,19 @@ import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCNamedType;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
+import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
+import com.fujitsu.vdmj.values.ValueFactory;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
  */
 public class DependencyOrder
 {
-	private boolean sortCalled;
+	protected boolean sortCalled;
     public boolean debug;
     private final Stack<TCNameToken> stack;
     
@@ -100,30 +104,55 @@ public class DependencyOrder
 	//     }
     // }
 
-    private void processImplicitDependencies(TCDefinition def, TCNameSet freevarsDep)
+    private void processImplicitDependencies(TCDefinition def, TCNameSet freevarsDepForDef, TCDefinitionSet needsImplicitInvDefForDef)
     {
-        // for named types, chase dependent invariants
-        if (!freevarsDep.isEmpty())
+        TCNameToken tdefInv;
+        // see if need to add implicit type invariants
+        // if tdefInv isn't define, has to include it later in singleDefs
+        if (def instanceof TCTypeDefinition)
+        {
+            TCTypeDefinition tdef = (TCTypeDefinition)def;
+            tdefInv = tdef.name.getInvName(tdef.location);
+            TCDefinition tInv = findDefinition(tdefInv); 
+            if (tInv == null)
+            {
+                if (debug)
+                {
+                    Console.out.println("Adding implicit invariant definition " + tdefInv.getName());
+                }
+                needsImplicitInvDefForDef.add(tdef);
+            }
+            else 
+            {
+                freevarsDepForDef.add(tdefInv);
+            }
+        }
+
+        // for named types, chase dependent invariants, avoiding the one just added 
+        if (!freevarsDepForDef.isEmpty())
         {
             if (debug)
             {
-                Console.out.println(def.name.getName() + " dep on " + freevarsDep.toString());
+                Console.out.println(def.name.getName() + " dep on " + freevarsDepForDef.toString());
             }
             TCDefinition d;
             TCNameSet invDep = new TCNameSet();
             TCNameToken invN;
             TCNameToken dep;
-            Iterator<TCNameToken> it = freevarsDep.iterator();
+            Iterator<TCNameToken> it = freevarsDepForDef.iterator();
             while (it.hasNext())
             {
                 dep = it.next();
                 d = findDefinition(dep);
+                // for tInvDef above, won't find it or won't be type definition, so okay.
                 if (d instanceof TCTypeDefinition)
                 {
                     invN = dep.getInvName(dep.getLocation());
-                    d = findDefinition(invN);
-                    if (d != null)
+                    TCDefinition invDef = findDefinition(invN);
+                    if (invDef != null)
                     {
+                        if (!(invDef instanceof TCExplicitFunctionDefinition) || !((TCExplicitFunctionDefinition)invDef).isTypeInvariant)
+                            throw new IllegalStateException("Implicit dependency discovered is not an invariant definition " + invDef.name.getName());
                         if (debug)
                         {
                             Console.out.println("Adding implicit dependency " + invN.getName());
@@ -132,107 +161,137 @@ public class DependencyOrder
                         invDep.add(invN);
                         it.remove();
                     }
+                    // add implicit invariant def here
+                    else 
+                    {
+                        needsImplicitInvDefForDef.add(d);
+                    }
                 }                
             }
-            freevarsDep.addAll(invDep);
+            freevarsDepForDef.addAll(invDep);
         }
+    }
+
+    private TCExplicitFunctionDefinition createImplicitInvariantSpecification(TCDefinition def)
+    {
+        if (!(def instanceof TCTypeDefinition))
+            throw new IllegalStateException("Invalid definition to create implicit invariant specification " + def.name.getName());
+        TCTypeDefinition tdef = (TCTypeDefinition)def;
+        TCNameToken invDefName = tdef.name.getInvName(tdef.location);
+        TCFunctionType invFunType;
+        TCPatternListList params = new TCPatternListList();
+        TCPatternList param = new TCPatternList();
+        params.add(param);
+        param.add(new TCIdentifierPattern(
+            new TCNameToken(tdef.name.getLocation(), tdef.name.getModule(), tdef.name.getName().toLowerCase())));
+        if (tdef.type instanceof TCNamedType)
+        {
+            TCNamedType tnamed = (TCNamedType)tdef.type;
+            invFunType = new TCFunctionType(tdef.location, new TCTypeList(tnamed.type), false, new TCBooleanType(tdef.location));
+        }
+        else if (tdef.type instanceof TCRecordType)
+        {
+            invFunType = new TCFunctionType(tdef.location, new TCTypeList(tdef.type), false, new TCBooleanType(tdef.location));                
+        }
+        else 
+            throw new IllegalStateException("Invalid type definition kind? " + tdef.getClass().getSimpleName());
+        // T = Expr inv x == P(x)
+        // inv_T: Expr +> bool 
+        // inv_T(t) == true
+        TCExplicitFunctionDefinition invDef = new TCExplicitFunctionDefinition(null, 
+            tdef.accessSpecifier, 
+            invDefName, 
+            null, 
+            invFunType, 
+            params, 
+            new TCBooleanLiteralExpression(new LexBooleanToken(true, tdef.location)), 
+            null, 
+            null, 
+            true, 
+            null);
+        return invDef;
     }
 	
 	public void definitionOrder(TCDefinitionList definitions)
 	{
+        // extract flat definitions from list
         modules = null;
         singleDefs = definitions.singleDefinitions();
-        TCDefinitionList needsImplicitInvDef = new TCDefinitionList();
-		for (TCDefinition def: singleDefs)
-		{
-	    	//String myname = def.name.getName();
+        Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
+
+        // algorithm require three passes: 
+        //  1. TLD-type dependencies
+        //      * identify type dependencies (def.getDependencies)
+        //      * possibly create implicit inv_T checks
+        //      * link them 
+        //  2. update single definitions to consider implicit inv_T dependencies 
+        //  3. TLD-function dependencies
+        //      * identify named dependencies (def.getFreeVariables)
+        //      * ignore recursive calls
+        //      * link them
+
+        // 1. because TLD-type dependencies can/will affect other types or functions, have to loop twice
+        for(TCDefinition def: singleDefs)
+        {
 	    	nameToLoc.put(def.name, def.location);
+
+            //TLD-type definition dependencies only
+            if (!(def instanceof TCTypeDefinition))
+                continue;
+
+            Environment globals = new FlatEnvironment(new TCDefinitionList());
+    		Environment empty = new FlatEnvironment(new TCDefinitionList());
+			TCNameSet freevarsDepForDef = def.getDependencies(globals, empty, new AtomicBoolean(false));
+            TCDefinitionSet typeDefNeedingImplicitInvDefForGivenDef = new TCDefinitionSet(); 
+            
+            processImplicitDependencies(def, freevarsDepForDef, typeDefNeedingImplicitInvDefForGivenDef);
+
+            // collect all the implicit dependencies needs.
+            TCDefinitionSet implicitInvariantDefs = new TCDefinitionSet();
+            needsImplicitInvDef.put(def.name, implicitInvariantDefs);
+
+            // create implicit invariant specifications
+            for(TCDefinition idef : typeDefNeedingImplicitInvDefForGivenDef)
+            {
+                implicitInvariantDefs.add(createImplicitInvariantSpecification(idef));
+            }
+
+            // link dependencies 
+            for (TCNameToken dep: freevarsDepForDef)
+	    	{
+                add(def.name, dep);
+	    	}
+        }
+
+        // 2. update the singleDefs with the synthetic inv_T to help topological sorting 
+        for(TCNameToken tldDefName : needsImplicitInvDef.keySet())
+        {
+            for(TCDefinition invDef: needsImplicitInvDef.get(tldDefName))
+            {
+                assert invDef instanceof TCExplicitFunctionDefinition;
+
+                // the implicit invariant dependency transitively, so check if already done before!.  
+                if (!singleDefs.contains(invDef))
+                    singleDefs.add(invDef);
+                add(tldDefName, invDef.name);
+            }              
+        }   
+
+        // 3. chase named dependencies
+        for (TCDefinition def: singleDefs)
+		{
 
 			TCNameSet freevars = def.getFreeVariables();
 
             // ignore recursive calls; recursion will be handled differently
             freevars.remove(def.name);
 
-            Environment globals = new FlatEnvironment(new TCDefinitionList());
-    		Environment empty = new FlatEnvironment(new TCDefinitionList());
-			TCNameSet freevarsDep = def.getDependencies(globals, empty, new AtomicBoolean(false));
-
-            //TLD-type definition dependencies
-            processImplicitDependencies(def, freevarsDep);
-            
-            // see if need to add implicit type invariants
-            // if tdefInv isn't define, has to include it later in singleDefs
-            if (def instanceof TCTypeDefinition)
-            {
-                TCTypeDefinition tdef = (TCTypeDefinition)def;
-                TCNameToken tdefInv = tdef.name.getInvName(tdef.location);
-                TCDefinition tInv = findDefinition(tdefInv); 
-                if (tInv == null)
-                {
-                    if (debug)
-                    {
-                        Console.out.println("Adding implicit invariant definition " + tdefInv.getName());
-                    }
-                    needsImplicitInvDef.add(tdef);
-                }
-                else 
-                {
-                    freevarsDep.add(tdefInv);
-                }
-            } 
-
-            // combine both dependencies
-            freevars.addAll(freevarsDep);
-	    	for (TCNameToken dep: freevars)
+            for (TCNameToken dep: freevars)
 	    	{
                 add(def.name, dep);
 	    	}
 	    }
-        
-        // update the singleDefs with the synthetic inv_T to help topological sorting 
-        for(TCDefinition def : needsImplicitInvDef)
-        {
-            assert def instanceof TCTypeDefinition;
-            
-            TCTypeDefinition tdef = (TCTypeDefinition)def;
-            TCNameToken invDefName = tdef.name.getInvName(tdef.location);
-            TCFunctionType invFunType;
-            TCPatternListList params = new TCPatternListList();
-            TCPatternList param = new TCPatternList();
-            params.add(param);
-            param.add(new TCIdentifierPattern(
-                new TCNameToken(tdef.name.getLocation(), tdef.name.getModule(), tdef.name.getName().toLowerCase())));
-            if (tdef.type instanceof TCNamedType)
-            {
-                TCNamedType tnamed = (TCNamedType)tdef.type;
-                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tnamed.type), false, new TCBooleanType(tdef.location));
-            }
-            else if (tdef.type instanceof TCRecordType)
-            {
-                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tdef.type), false, new TCBooleanType(tdef.location));                
-            }
-            else 
-                throw new IllegalStateException("Invalid type definition kind? " + tdef.getClass().getSimpleName());
-            // T = Expr inv x == P(x)
-            // inv_T: Expr +> bool 
-            // inv_T(t) == true
-            TCExplicitFunctionDefinition invDef = new TCExplicitFunctionDefinition(null, 
-                tdef.accessSpecifier, 
-                invDefName, 
-                null, 
-                invFunType, 
-                params, 
-                null, 
-                null, 
-                null, 
-                true, 
-                null);
-
-            // the invDefName dependency has to be transitive! Oh no.  
-            singleDefs.add(invDef);
-            add(def.name, invDefName);
-        }   
-	}
+    }
 	
     /**
      * Create a "dot" language version of the graph for the graphviz tool.
