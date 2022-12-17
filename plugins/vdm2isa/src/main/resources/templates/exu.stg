@@ -1,6 +1,6 @@
 delimiters "$", "$"
 
-exuOrder(locs, uses, usedBy, original, start, sorted) ::= <<
+exuOrder(locs, uses, usedBy) ::= <<
 Named locations:
 $printLocs(locs)$
 
@@ -10,6 +10,9 @@ $printMap(uses)$
 Used by map:
 $printMap(usedBy)$
 
+>>
+
+exuResult(original, start, sorted) ::= <<
 Original names: $printList(original)$
 Start points  : $printList(start)$
 Sorted names  : $printList(sorted)$

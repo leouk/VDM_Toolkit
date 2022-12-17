@@ -140,7 +140,6 @@ public class ExuOrder extends DependencyOrder
             st.add("original", savedModuleDefs);
             st.add("start", savedStartPoints);
             st.add("sorted", savedTopologicalSort);
-            st.inspect();
             sb.append(st.render());
         }
         return sb.toString();
