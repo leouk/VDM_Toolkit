@@ -1,0 +1,146 @@
+package plugins;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import com.fujitsu.vdmj.ExitStatus;
+import com.fujitsu.vdmj.messages.Console;
+import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
+import com.fujitsu.vdmj.tc.modules.TCModule;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.typechecker.ModuleTypeChecker;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
+
+/**
+ * Brings into the module typechecker what VDMSL.java does in its typeCheck method. 
+ * This is needed so as to typecheck reordered modules. 
+ */
+public class ExuTypeChecker {
+    
+    private final boolean warnings; 
+    private TCModuleList sorted_list;
+
+    // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
+    //     Arrays.asList(VDMSpecificationKind.MEASURE, VDMSpecificationKind.PRE,
+    //         VDMSpecificationKind.POST, VDMSpecificationKind.);
+    
+    public ExuTypeChecker(boolean warnings)
+    {
+        super();
+        this.warnings = warnings; 
+        this.sorted_list = null;
+    }
+
+    private TCNameList organise(TCNameList ts)
+    {
+        Iterator<TCNameToken> it = ts.iterator();
+        while (it.hasNext())
+        {
+            TCNameToken n = it.next();
+            VDMSpecificationKind kind = VDMSpecificationKind.figureOutSpecificationKind(n);
+            switch (kind)
+            {
+                
+                case INV: 
+                case NONE: 
+                default: 
+                    it.remove();  
+            }
+        }
+        for(TCNameToken n : ts)
+        {
+
+        }
+        return null;
+    }
+
+    protected TCModule sortModule(TCModule m)
+    {
+        ExuOrder order = new ExuOrder(true);
+        // Original: Rec, R, S, T, tail, sum_elems, head
+        // Sorted  : tail, head, inv_T, sum_elems, inv_S, T, inv_R, inv_Rec, pre_head, measure_sum_elems, S, R, Rec
+        // Organised: tail, head, T, sum_elems, S, R, Rec 
+        TCNameList ts = order.definitionOrder(m);
+        TCNameList original = order.getOriginalDefNames();
+        TCNameList organised = organise(ts);
+
+        // topological sorting must contain all original
+        // set-view of organised must equal original (just their order is different)  
+        assert ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised);
+        
+        //m.defs = null;
+        return null;
+    }
+
+    protected void sortModules(TCModuleList tclist)
+    {
+        sorted_list = new TCModuleList();
+        for(TCModule m : tclist)
+        {
+            TCModule sorted_m = sortModule(m);
+            sorted_list.add(sorted_m);
+        }
+    }
+
+    public TCModuleList getSortedModules()
+    {
+        if (sorted_list == null)
+            throw new IllegalStateException("Cannot get sorted modules; call typeCheck first!");
+        return sorted_list;       
+    }
+
+    /**
+     * (Mostly) reproduces what VDMSL.typeCheck does. 
+     * @param tclist
+     * @return
+     */
+    public ExitStatus typeCheck(TCModuleList tclist)
+    {
+        long before = System.currentTimeMillis();
+
+        int terrs = 0;
+        sortModules(tclist);
+        TypeChecker.clearErrors();
+        TypeChecker mtc = new ModuleTypeChecker(sorted_list);
+   		try
+   		{
+   			mtc.typeCheck();
+   		}
+		catch (InternalException e)
+		{
+			Console.out.println(e.toString());
+		}
+		catch (Throwable e)
+		{
+			Console.out.println(e.toString());
+			terrs++;
+		}
+
+   		long after = System.currentTimeMillis();
+		terrs += TypeChecker.getErrorCount();
+
+		if (terrs > 0)
+		{
+            TypeChecker.printErrors(Console.out);
+		}
+
+  		int twarn = TypeChecker.getWarningCount();
+
+		if (twarn > 0 && warnings)
+		{
+			TypeChecker.printWarnings(Console.out);
+		}
+        
+        Console.out.print("Exu re-type checked sorted " + ExuPlugin.plural(sorted_list.size(), "module", "s") +
+        " in " + (double)(after-before)/1000 + " secs. ");
+        Console.out.print(terrs == 0 ? "No type errors" :
+            "Found " + ExuPlugin.plural(terrs, "type error", "s"));
+        Console.out.println(twarn == 0 ? "" : " and " +
+            (warnings ? "" : "suppressed ") + ExuPlugin.plural(twarn, "warning", "s"));
+    
+        return terrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
+    }
+}
