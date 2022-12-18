@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.GeneralisaPlugin;
+import plugins.VDMSpecificationKind;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -134,7 +135,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 	} 
 
 	@Override
-	protected TRExplicitFunctionDefinition createUndeclaredSpecification(TRSpecificationKind kind)
+	protected TRExplicitFunctionDefinition createUndeclaredSpecification(VDMSpecificationKind kind)
 	{
 		return TRExplicitFunctionDefinition.createUndeclaredSpecification(name, nameScope, used, excluded, typeParams,
 		 			type, isCurried, paramPatternList, paramDefinitionList, kind); 
@@ -248,7 +249,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 		return result;
 	}
 
-	protected static TRFunctionType createUndeclaredSpecificationFunctionType(TRFunctionType type, boolean isCurried, TRSpecificationKind kind)
+	protected static TRFunctionType createUndeclaredSpecificationFunctionType(TRFunctionType type, boolean isCurried, VDMSpecificationKind kind)
 	{
 		TRFunctionType result = null;
 		switch (kind)
@@ -289,10 +290,10 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 		return result;
 	}
 
-	protected static TRPatternListList createUndeclaredSpecificationParameters(TCNameToken name, TRPatternListList parameters, TRSpecificationKind kind)
+	protected static TRPatternListList createUndeclaredSpecificationParameters(TCNameToken name, TRPatternListList parameters, VDMSpecificationKind kind)
 	{
 		TRPatternListList result = parameters.copy();
-		if (kind == TRSpecificationKind.POST)
+		if (kind == VDMSpecificationKind.POST)
 		{
 			// add synthetic RESULT extra parameter to the last patternList
 			// e.g., uncurried(x,y)== x + y, will lead to [[x,y]] then [[x,y,RESULT]]
@@ -314,7 +315,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 	protected static TRExplicitFunctionDefinition createUndeclaredSpecification(
 		TCNameToken name, NameScope nameScope, boolean used, boolean excluded, TCNameList typeParams, 
 		TRFunctionType type, boolean isCurried, TRPatternListList parameters, 
-		TRDefinitionListList paramDefinitionList, TRSpecificationKind kind)
+		TRDefinitionListList paramDefinitionList, VDMSpecificationKind kind)
 	{
 		TCNameToken undeclaredName = null;
 		switch (kind)
@@ -393,13 +394,13 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 	} 
 	
 	@Override
-	protected String paramsInvTranslate(TRSpecificationKind kind)
+	protected String paramsInvTranslate(VDMSpecificationKind kind)
 	{
 		StringBuilder paramsStr = new StringBuilder();
 
 		// will this alone sort out renamed typesm but has to be copied
 		//type.parameters.setAtTopLevelDefinition(!kind.equals(TRSpecificationKind.INV));
-		TRTypeList parameterscp = type.parameters.copy(!kind.equals(TRSpecificationKind.INV));
+		TRTypeList parameterscp = type.parameters.copy(!kind.equals(VDMSpecificationKind.INV));
 		 
 		if (isCurried)
 		{
@@ -421,7 +422,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 				{
 					// copy it for the case where we have to remove RESULT; remove RESULT from parameters as it will be treated in the next.result 
 					varNames = new Vector<String>(iter.next());
-					if (kind == TRSpecificationKind.POST)
+					if (kind == VDMSpecificationKind.POST)
 					{
 						String resultName = name.getResultName(location).toString();
 						boolean removed = varNames.remove(resultName);
@@ -436,7 +437,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 					next = ((TRFunctionType)next).getResultType();
 				}
 
-				if (kind == TRSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+				if (kind == VDMSpecificationKind.POST && Vdm2isaPlugin.linientPost)
 				{
 					warning(IsaWarningMessage.PLUGIN_NYI_2P, "linient post condition for curried definitions", name.toString());
 				}
@@ -452,7 +453,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 			// if not curried flat list and translate
 			List<String> varNames = paramPatternList.flatVarNameTranslate();
 
-			if (kind.equals(TRSpecificationKind.MIN) || kind.equals(TRSpecificationKind.MAX))
+			if (kind.equals(VDMSpecificationKind.MIN) || kind.equals(VDMSpecificationKind.MAX))
 			{
 				paramsStr.append(IsaToken.LPAREN.toString());
 				paramsStr.append(IsaToken.IF.toString());
@@ -463,13 +464,13 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 			// rather than explicitly redefining inv_R! Fix parameterscp in TRTypeDEfinition.
 			paramsStr.append(parameterscp.invTranslate(varNames));
 
-			if (kind.equals(TRSpecificationKind.MIN) || kind.equals(TRSpecificationKind.MAX))
+			if (kind.equals(VDMSpecificationKind.MIN) || kind.equals(VDMSpecificationKind.MAX))
 			{
 				paramsStr.append(IsaToken.SPACE.toString());
 				paramsStr.append(IsaToken.THEN.toString());
 				paramsStr.append(getFormattingSeparator()+"\t");
 			}
-			else if (kind.equals(TRSpecificationKind.POST) && Vdm2isaPlugin.linientPost)
+			else if (kind.equals(VDMSpecificationKind.POST) && Vdm2isaPlugin.linientPost)
 			{
 				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
 				assert name.getName().startsWith("post_");

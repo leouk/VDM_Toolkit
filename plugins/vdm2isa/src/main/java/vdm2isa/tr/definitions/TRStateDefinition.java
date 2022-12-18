@@ -6,6 +6,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.VDMSpecificationKind;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
@@ -93,7 +94,7 @@ public class TRStateDefinition extends TRAbstractTypedDefinition {
             
             recordType.setInvariantDefinition(TRExplicitFunctionDefinition.createUndeclaredSpecification(
                 name, nameScope, used, excluded, null, invType, false , parameters, 
-                new TRDefinitionListList(), TRSpecificationKind.INV
+                new TRDefinitionListList(), VDMSpecificationKind.INV
             ));
 
         }

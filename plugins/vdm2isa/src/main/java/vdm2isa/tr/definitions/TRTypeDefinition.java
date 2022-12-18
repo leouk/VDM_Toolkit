@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.VDMSpecificationKind;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
@@ -137,7 +138,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
                     //TRDefinitionListList paramDefinitionList, TRSpecificationKind kind)
                     name, nameScope, used, excluded, null /*type parameters*/,
                     invType, false, parameters, 
-                    /*paramDefinitionList*/new TRDefinitionListList(), TRSpecificationKind.INV); 
+                    /*paramDefinitionList*/new TRDefinitionListList(), VDMSpecificationKind.INV); 
     
                 // TRInvariantType translateTLD() takes care of the rest! 
                 this.getInvariantType().setInvariantDefinition(this.invdef);
@@ -501,10 +502,10 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 	}
 
     @Override
-	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	public Map<VDMSpecificationKind, TCNameSet> getCallMap()
 	{
 		TRFunctionCallFinder finder = new TRFunctionCallFinder();
-		Map<TRSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
+		Map<VDMSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
         //@TODO refactor this and getCallMap elsewhere
 		if (invdef != null && !invdef.isImplicitlyGeneratedUndeclaredSpecification())
 		{
@@ -512,7 +513,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(invdef.getBody().apply(finder, null));
             if (!foundPerKind.isEmpty())
-                found.put(TRSpecificationKind.INV, foundPerKind);
+                found.put(VDMSpecificationKind.INV, foundPerKind);
 		}
 
         if (eqdef != null && !eqdef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -521,7 +522,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(eqdef.getBody().apply(finder, null));
             if (!foundPerKind.isEmpty())
-                found.put(TRSpecificationKind.EQ, foundPerKind);
+                found.put(VDMSpecificationKind.EQ, foundPerKind);
 		}
 
 		if (orddef != null && !orddef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -530,7 +531,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(orddef.getBody().apply(finder, null));
             if (!foundPerKind.isEmpty())
-                found.put(TRSpecificationKind.ORD, foundPerKind);
+                found.put(VDMSpecificationKind.ORD, foundPerKind);
 		}
 
 		return found;
