@@ -14,6 +14,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.VDMSpecificationKind;
 import vdm2isa.lex.IsaItem;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -46,15 +47,15 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 * about record equality.   
 	 */
 	//TODO should this be extended to other bits? Probably not! 
-	protected static final Set<TRSpecificationKind> 
-		VALID_IMPLICITLY_GENERATED_SPEC_KIND = new HashSet<TRSpecificationKind>( 
-			Arrays.asList(TRSpecificationKind.PRE, 
-						TRSpecificationKind.POST, 
-						TRSpecificationKind.INV, 
-						TRSpecificationKind.EQ,
-						TRSpecificationKind.ORD,
-						TRSpecificationKind.MIN,
-						TRSpecificationKind.MAX));
+	protected static final Set<VDMSpecificationKind> 
+		VALID_IMPLICITLY_GENERATED_SPEC_KIND = new HashSet<VDMSpecificationKind>( 
+			Arrays.asList(VDMSpecificationKind.PRE, 
+						VDMSpecificationKind.POST, 
+						VDMSpecificationKind.INV, 
+						VDMSpecificationKind.EQ,
+						VDMSpecificationKind.ORD,
+						VDMSpecificationKind.MIN,
+						VDMSpecificationKind.MAX));
 
 	//private final TCNameToken name;
 	protected final TCNameList typeParams;
@@ -72,7 +73,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 
 	protected TRExplicitFunctionDefinition predef;
 	protected TRExplicitFunctionDefinition postdef;
-	protected TRSpecificationKind implicitSpecificationKind;
+	protected VDMSpecificationKind implicitSpecificationKind;
 
 	protected TRAbstractFunctionDefinition(TCDefinition definition, 
 			TRIsaVDMCommentList comments,
@@ -113,19 +114,19 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		this.isUndefined = isUndefined;
 		this.actualResult = actualResult;
 		//this.expectedResult = expectedResult;
-		this.implicitSpecificationKind = TRSpecificationKind.NONE;
+		this.implicitSpecificationKind = VDMSpecificationKind.NONE;
 		//setLocal(false); //Leave to name scope? // LetDefExpression to set this to true if/when needed
     }
 
     protected abstract TRExplicitFunctionDefinition 
-        createUndeclaredSpecification(TRSpecificationKind kind);
+        createUndeclaredSpecification(VDMSpecificationKind kind);
 
 	@Override
 	public void setup()
 	{
 		super.setup();
 		assert this.type != null && this.name != null ; //&& this.paramPatternList != null; 
-		this.implicitSpecificationKind = impliSpecificationDefinition();
+		this.implicitSpecificationKind = VDMSpecificationKind.figureOutSpecificationKind(name);
 
 		// check stuff is consistent to expectations
 		if ((precondition != null && predef == null) || (precondition == null && predef != null))
@@ -152,9 +153,9 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		{
 			// user defined pre/posts will have TRExplicitFunctionDefinitions with precondition==null and prefef==null and body !=null!
 			if (this.precondition == null && this.predef == null)
-				this.predef = createUndeclaredSpecification(TRSpecificationKind.PRE); 
+				this.predef = createUndeclaredSpecification(VDMSpecificationKind.PRE); 
 			if (postcondition == null && postcondition == null)
-				this.postdef = createUndeclaredSpecification(TRSpecificationKind.POST); 
+				this.postdef = createUndeclaredSpecification(VDMSpecificationKind.POST); 
 		}
 		
 		// updates specification for any generic parameters
@@ -167,15 +168,15 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		
 		// if (implicitSpecificationKind in {PRE,POST,NONE} => local) then print (i.e. no top-level print please)
 		if (!Arrays.asList(
-				TRSpecificationKind.PRE 
-				,TRSpecificationKind.POST
-				,TRSpecificationKind.NONE
-				,TRSpecificationKind.INV
-				,TRSpecificationKind.EQ
-				,TRSpecificationKind.ORD
-				,TRSpecificationKind.MAX
-				,TRSpecificationKind.MIN
-				,TRSpecificationKind.MEASURE
+				VDMSpecificationKind.PRE 
+				,VDMSpecificationKind.POST
+				,VDMSpecificationKind.NONE
+				,VDMSpecificationKind.INV
+				,VDMSpecificationKind.EQ
+				,VDMSpecificationKind.ORD
+				,VDMSpecificationKind.MAX
+				,VDMSpecificationKind.MIN
+				,VDMSpecificationKind.MEASURE
 			).contains(implicitSpecificationKind)
 			|| isLocal()
 			//|| true
@@ -193,42 +194,6 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 * each of the involved generic parameters. 
 	 */
 	protected abstract void updateSpecificationGenericParameters();
-
-	/**
-	 * Determines wether this TRExplicitFunctionDefinition is one of those constructed by the typechecker.
-	 * Depending on which kind (if any), then translation has to take into account different considerations. 
-	 * Decision is based on VDM naming conventions (e.g., pre_, post_, inv_, ord_, eq_, etc.).
-	 * @return the kind of implicit specification associated with this definition
-	 */
-	protected final TRSpecificationKind impliSpecificationDefinition()
-	{
-		TRSpecificationKind result = TRSpecificationKind.NONE;
-
-		// presumes Settings.release = VDM_10 and dialect = VDMSL. This is checked by GeneralisaPlugin.run anyhow
-		if (name.isReserved())
-		{
-			String fcnName = name.getName();
-			if (fcnName.startsWith("pre_")) 
-				result = TRSpecificationKind.PRE;
-			else if (fcnName.startsWith("post_"))
-				result = TRSpecificationKind.POST;
-			else if (fcnName.startsWith("inv_"))
-				result = TRSpecificationKind.INV;
-			else if (fcnName.startsWith("init_"))
-				result = TRSpecificationKind.INIT;
-			else if (fcnName.startsWith("measure_"))
-				result = TRSpecificationKind.MEASURE;
-			else if (fcnName.startsWith("eq_"))
-				result = TRSpecificationKind.EQ;
-			else if (fcnName.startsWith("ord_"))
-				result = TRSpecificationKind.ORD;
-			else if (fcnName.startsWith("min_"))
-				result = TRSpecificationKind.MIN;
-			else if (fcnName.startsWith("max_"))	
-				result = TRSpecificationKind.MAX;
-		}
-		return result;
-	} 
 
 	/**
 	 * VDM constant functions (e.g., f:() -> nat) are translated as Isabelle constants.  
@@ -265,10 +230,10 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 */
 	protected boolean isSpecificationDefinition()
 	{
-		return implicitSpecificationKind != TRSpecificationKind.NONE;
+		return implicitSpecificationKind != VDMSpecificationKind.NONE;
 	}
 
-	protected abstract String paramsInvTranslate(TRSpecificationKind kind);
+	protected abstract String paramsInvTranslate(VDMSpecificationKind kind);
 
 	/**
 	 * Implicit checks for pre/post. They are similar with minor differences, so parameterised here to avoid repetition
@@ -278,12 +243,12 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	 */
 	//TODO should/could this be pushed to say TRType tree for the implicitly defined checks belonging there? Would be more elegant,
 	//	   but would demand an extra TRExplicitFunctionDefinition? Hum... Not sure.
-	protected String translateImplicitChecks(TRSpecificationKind kind)
+	protected String translateImplicitChecks(VDMSpecificationKind kind)
 	{
 		StringBuilder fcnBody = new StringBuilder();
 		
 		// constant function without explicit pre gets just True
-		if (kind == TRSpecificationKind.PRE && isConstantFunction() && isImplicitlyGeneratedUndeclaredSpecification())
+		if (kind == VDMSpecificationKind.PRE && isConstantFunction() && isImplicitlyGeneratedUndeclaredSpecification())
 		{
 			// undeclared pre of constant functions get "True" 
 			fcnBody.append(IsaToken.TRUE.toString());
@@ -310,7 +275,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 
 			// if there is a user defined body, add the missing conjunction for it, so long as not pre of constant function! 
 			if (!isConstantFunction() && !isImplicitlyGeneratedUndeclaredSpecification() &&
-				!kind.equals(TRSpecificationKind.MIN) && !kind.equals(TRSpecificationKind.MAX))
+				!kind.equals(VDMSpecificationKind.MIN) && !kind.equals(VDMSpecificationKind.MAX))
 			{
 				// " \<and>"
 				fcnBody.append(type.parameters.getFormattingSeparator());
@@ -542,9 +507,9 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 		StringBuilder sb = new StringBuilder();
 
    		// add lemmas statement!
-		Map<TRSpecificationKind, TCNameSet> callMap = this.getCallMap();
+		Map<VDMSpecificationKind, TCNameSet> callMap = this.getCallMap();
 		List<String> lemmaNames = new Vector<String>(3);//NONE+PRE+POST vs INV+EQ+ORD?
-		for(Map.Entry<TRSpecificationKind, TCNameSet> entry : callMap.entrySet())
+		for(Map.Entry<VDMSpecificationKind, TCNameSet> entry : callMap.entrySet())
 		{
             // sb.append(s);
 			// // add "_def" to all strings without it. 
@@ -624,17 +589,17 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 	public abstract String unionTypesTranslate(TRExpression unionBody, TRUnionContext innerContext);
 
 	@Override
-	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	public Map<VDMSpecificationKind, TCNameSet> getCallMap()
 	{
 		TRFunctionCallFinder finder = new TRFunctionCallFinder();
-		Map<TRSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
+		Map<VDMSpecificationKind, TCNameSet> found = super.getCallMap();//new HashMap<TRSpecificationKind, TCNameSet>();
 
 		if (body != null)
 		{
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(body.apply(finder, null));
 			if (!foundPerKind.isEmpty())
-				found.put(TRSpecificationKind.NONE, foundPerKind);
+				found.put(VDMSpecificationKind.NONE, foundPerKind);
 		}
 		
 		if (predef != null && !predef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -643,7 +608,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(predef.getBody().apply(finder, null));
 			if (!foundPerKind.isEmpty())
-				found.put(TRSpecificationKind.PRE, foundPerKind);
+				found.put(VDMSpecificationKind.PRE, foundPerKind);
 		}
 		
 		if (postdef != null && !postdef.isImplicitlyGeneratedUndeclaredSpecification())
@@ -652,7 +617,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(postdef.getBody().apply(finder, null));
 			if (!foundPerKind.isEmpty())
-				found.put(TRSpecificationKind.POST, foundPerKind);
+				found.put(VDMSpecificationKind.POST, foundPerKind);
 		}
 
 		if (measureExp != null)
@@ -660,7 +625,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			TCNameSet foundPerKind = new TCNameSet();
 			foundPerKind.addAll(measureExp.apply(finder, null));
 			if (!foundPerKind.isEmpty())
-				found.put(TRSpecificationKind.MEASURE, foundPerKind);
+				found.put(VDMSpecificationKind.MEASURE, foundPerKind);
 		}
 
 		return found;

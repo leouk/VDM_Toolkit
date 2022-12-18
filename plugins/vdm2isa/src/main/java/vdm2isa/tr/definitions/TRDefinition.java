@@ -15,6 +15,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnknownType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.VDMSpecificationKind;
 import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
@@ -187,9 +188,9 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 		return null;
 	}
 
-	public Map<TRSpecificationKind, TCNameSet> getCallMap()
+	public Map<VDMSpecificationKind, TCNameSet> getCallMap()
 	{
-		return new HashMap<TRSpecificationKind, TCNameSet>();
+		return new HashMap<VDMSpecificationKind, TCNameSet>();
 	}
 
 	/**
