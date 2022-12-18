@@ -13,6 +13,7 @@ import org.stringtemplate.v4.STGroupFile;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
+import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
@@ -173,6 +174,24 @@ public class ExuOrder extends DependencyOrder
         super.definitionOrder(definitions);
     }
 
+    public TCNameList getOriginalDefNames()
+    {
+        if (savedModuleDefs == null)
+            throw new IllegalStateException("You must call definitionOrder first");
+        TCNameList result = new TCNameList();
+        for (TCDefinition d : savedModuleDefs)
+        {
+            result.add(d.name);
+        }
+        assert result.size() == savedModuleDefs.size();
+        return result;
+    }
+
+    /**
+     * Must include specification starting points, in case of dependencies there.
+     * Later, these specification names will be removed, as they get processed 
+     * separately by the vdm2isa plugin itself. 
+     */
     @Override 
     public TCNameList getStartpoints()
     {
