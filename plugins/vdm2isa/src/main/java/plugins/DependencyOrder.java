@@ -431,7 +431,7 @@ public class DependencyOrder
 		return count;
 	}
 
-    protected TCDefinition findDefinition(TCNameToken name)
+    public TCDefinition findDefinition(TCNameToken name)
     {
         // if (modules != null)
         // {

@@ -7,6 +7,7 @@ import java.util.List;
 import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
@@ -21,40 +22,61 @@ import com.fujitsu.vdmj.typechecker.TypeChecker;
 public class ExuTypeChecker {
     
     private final boolean warnings; 
+    public boolean debug;
     private TCModuleList sorted_list;
 
     // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
     //     Arrays.asList(VDMSpecificationKind.MEASURE, VDMSpecificationKind.PRE,
     //         VDMSpecificationKind.POST, VDMSpecificationKind.);
     
-    public ExuTypeChecker(boolean warnings)
+    public ExuTypeChecker(boolean debug, boolean warnings)
     {
         super();
         this.warnings = warnings; 
+        this.debug = debug;
         this.sorted_list = null;
+    }
+
+    private TCNameToken find(TCNameList list, String name)
+    {
+        for(TCNameToken n : list)
+        {
+            if (n.getName().equals(name))
+                return n;
+        }
+        return null;
     }
 
     private TCNameList organise(TCNameList ts)
     {
         Iterator<TCNameToken> it = ts.iterator();
-        while (it.hasNext())
+        TCNameList result = new TCNameList();
+        for(TCNameToken n : ts)
         {
-            TCNameToken n = it.next();
             VDMSpecificationKind kind = VDMSpecificationKind.figureOutSpecificationKind(n);
             switch (kind)
             {
-                
-                case INV: 
+                // get the T from inv_T
+                case INV:
+                    String name = n.getName().substring(kind.name().length()+1);
+                    TCNameToken type = find(ts, name);
+                    if (type == null)
+                        throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n.getName());
+                    else
+                        result.add(type);
+                    break;
+
+                // get normal names
                 case NONE: 
+                    result.add(n);
+                    break;
+
+                // ignore other specifications (pre/post/measure/min/max/ord/eq)
                 default: 
-                    it.remove();  
+                    break;                    
             }
         }
-        for(TCNameToken n : ts)
-        {
-
-        }
-        return null;
+        return result;
     }
 
     protected TCModule sortModule(TCModule m)
@@ -66,13 +88,22 @@ public class ExuTypeChecker {
         TCNameList ts = order.definitionOrder(m);
         TCNameList original = order.getOriginalDefNames();
         TCNameList organised = organise(ts);
+        if (debug)
+            Console.out.println("Organised names: " + organised.toString());
 
         // topological sorting must contain all original
         // set-view of organised must equal original (just their order is different)  
         assert ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised);
-        
-        //m.defs = null;
-        return null;
+
+        // reorder module definition according to organised name list order
+        TCDefinitionList moduleDefs = new TCDefinitionList();
+        for(TCNameToken n : organised)
+        {
+            moduleDefs.add(order.findDefinition(n));
+        }
+        TCModule result = new TCModule(m.annotations, m.name, 
+            m.imports, m.exports, moduleDefs, m.files, m.isFlat);
+        return result;
     }
 
     protected void sortModules(TCModuleList tclist)
