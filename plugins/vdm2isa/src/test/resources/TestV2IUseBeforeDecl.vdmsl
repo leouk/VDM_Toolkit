@@ -7,18 +7,21 @@ types
 	Rec :: 
 		s: S t: T r: R
 	--inv mk_Rec(s,t,-) == sum_elems(s) > sum_elems(t);
-	inv mk_Rec(s,t,r) == sum_elems(s) > sum_elems(t) and len r > 1;
+	inv mk_Rec(s,t,r) == 
+		inv_S(s) and inv_T(t) and inv_R(r) 
+		and
+		sum_elems(s) > sum_elems(t) and len r > 1;
 
 	--@doc uses type S and function sum_elems before declaring them.
 	R = S 
-	inv r == sum_elems(r) < 5;
+	inv r == inv_S(r) and sum_elems(r) < 5;
 	
 	--@doc uses type T and function tail before declaring them.
 	S = T 
-	inv s == len tail(s) > 0;
+	inv s == inv_T(s) and len tail(s) > 0;
 	
 	--@doc implicit inv_T needed
-	T = seq1 of nat;
+	T = seq1 of nat inv t == true;
 	
 functions
 	tail: seq1 of nat -> seq of nat
