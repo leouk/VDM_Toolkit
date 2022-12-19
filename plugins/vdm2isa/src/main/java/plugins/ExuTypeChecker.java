@@ -49,7 +49,6 @@ public class ExuTypeChecker {
 
     private TCNameList organise(TCNameList ts)
     {
-        Iterator<TCNameToken> it = ts.iterator();
         TCNameList result = new TCNameList();
         for(TCNameToken n : ts)
         {
@@ -62,13 +61,14 @@ public class ExuTypeChecker {
                     TCNameToken type = find(ts, name);
                     if (type == null)
                         throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n.getName());
-                    else
+                    else if (!result.contains(type))
                         result.add(type);
                     break;
 
                 // get normal names
                 case NONE: 
-                    result.add(n);
+                    if (!result.contains(n))
+                       result.add(n);
                     break;
 
                 // ignore other specifications (pre/post/measure/min/max/ord/eq)
@@ -89,7 +89,9 @@ public class ExuTypeChecker {
         TCNameList original = order.getOriginalDefNames();
         TCNameList organised = organise(ts);
         if (debug)
+        {
             Console.out.println("Organised names: " + organised.toString());
+        }
 
         // topological sorting must contain all original
         // set-view of organised must equal original (just their order is different)  
@@ -101,12 +103,20 @@ public class ExuTypeChecker {
         {
             moduleDefs.add(order.findDefinition(n));
         }
+
+        // recreate the module with the ordered definitions; set TC calculated fields to avoid retypechecking
         TCModule result = new TCModule(m.annotations, m.name, 
             m.imports, m.exports, moduleDefs, m.files, m.isFlat);
+        result.comments = (m.comments);
+        result.importdefs = (m.importdefs);
+        result.exportdefs = (m.exportdefs);
+        // result.comments.addAll(m.comments);
+        // result.importdefs.addAll(m.importdefs);
+        // result.exportdefs.addAll(m.exportdefs);
         return result;
     }
 
-    protected void sortModules(TCModuleList tclist)
+    public void sortModules(TCModuleList tclist)
     {
         sorted_list = new TCModuleList();
         for(TCModule m : tclist)
@@ -133,7 +143,6 @@ public class ExuTypeChecker {
         long before = System.currentTimeMillis();
 
         int terrs = 0;
-        sortModules(tclist);
         TypeChecker.clearErrors();
         TypeChecker mtc = new ModuleTypeChecker(sorted_list);
    		try

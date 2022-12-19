@@ -31,12 +31,10 @@ import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCFunctionType;
 import com.fujitsu.vdmj.tc.types.TCNamedType;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
-import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
-import com.fujitsu.vdmj.values.ValueFactory;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
@@ -222,8 +220,8 @@ public class DependencyOrder
         // algorithm require three passes: 
         //  1. TLD-type dependencies
         //      * identify type dependencies (def.getDependencies)
-        //      * possibly create implicit inv_T checks
-        //      * link them 
+        //      * possibly create implicit inv_T checks (if user hasn’t declared them; this “merges” the two name+type spaces)
+        //      * link them (i.e. uses / used by) 
         //  2. update single definitions to consider implicit inv_T dependencies 
         //  3. TLD-function dependencies
         //      * identify named dependencies (def.getFreeVariables)

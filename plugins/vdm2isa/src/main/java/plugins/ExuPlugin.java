@@ -26,6 +26,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     // accepts invariant checks over compatible/equal types as unnecessary
     public static boolean linientInvCheck;
     public static boolean debug;
+    public static boolean retypecheck;
     
     public ExuPlugin(Interpreter interpreter)
 	{
@@ -34,15 +35,20 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     @Override
     public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception {
-        boolean result = false;
+        boolean result = true;
         if (interpreter instanceof ModuleInterpreter)
 		{
             Console.out.println("Calling Exu VDM analyser...");
 
             debug = true;
+            retypecheck = false;
             ExuTypeChecker etc = new ExuTypeChecker(debug, true);
-            ExitStatus status = etc.typeCheck(tclist);
-            result = status == ExitStatus.EXIT_OK;
+            etc.sortModules(tclist);
+            if (retypecheck)
+            {
+                ExitStatus status = etc.typeCheck(tclist);
+                result = status == ExitStatus.EXIT_OK;    
+            }
             if (result)
             {
                 // update the tclist with the topological sorted list now typechecked
@@ -206,5 +212,6 @@ public class ExuPlugin extends GeneralisaPlugin {
         GeneralisaPlugin.setupProperties();
         ExuPlugin.linientInvCheck = true;
         ExuPlugin.debug = true;
+        ExuPlugin.retypecheck = false;
     }
 }
