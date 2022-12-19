@@ -5,20 +5,20 @@ digraph G {
 	sum_elems -> head;
 	sum_elems -> tail;
 	T -> inv_T;
-	S -> T;
 	S -> inv_S;
 	S -> inv_T;
 	S -> tail;
-	Rec -> T;
 	Rec -> inv_R;
 	Rec -> inv_Rec;
 	Rec -> inv_S;
 	Rec -> inv_T;
 	Rec -> sum_elems;
+	inv_Rec -> inv_R;
+	inv_Rec -> inv_S;
+	inv_Rec -> inv_T;
 	inv_Rec -> sum_elems;
+	inv_R -> inv_S;
 	inv_R -> sum_elems;
+	inv_S -> inv_T;
 	inv_S -> tail;
-	Map -> inv_Map;
-	Map -> inv_Rec;
-	Map -> inv_S;
 }
