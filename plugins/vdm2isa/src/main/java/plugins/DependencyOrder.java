@@ -321,7 +321,6 @@ public class DependencyOrder
 
                         for (TCNameToken freevar: initdeps)
                         {
-                            //TCDefinition fdef = globals.findName(freevar, NameScope.ANYTHING);
                             TCDefinition fdef = findDefinition(freevar);
                             
                             if (fdef != null && fdef.name != null &&
@@ -494,14 +493,14 @@ public class DependencyOrder
         {
             assert moduleEnvironment != null; 
             //assert modules == null;
-            TCDefinition d = singleDefs.findName(name, NameScope.ANYTHING);
+            TCDefinition d = singleDefs.findName(name, NameScope.NAMES);
             if (d == null) 
             {
                 d = singleDefs.findType(name, name.getModule());
                 if (d == null)
                 {
                     //TODO probably irrelevant? i.e. just use moduleEnvironment?  
-                    d = moduleEnvironment.findName(name, NameScope.ANYTHING);
+                    d = moduleEnvironment.findName(name, NameScope.NAMES);
                     if (d == null)
                     {
                         d = moduleEnvironment.findType(name, name.getModule());
