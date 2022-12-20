@@ -2,8 +2,6 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -14,7 +12,6 @@ import org.stringtemplate.v4.STGroupFile;
 import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
-import com.fujitsu.vdmj.scheduler.Resource;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;

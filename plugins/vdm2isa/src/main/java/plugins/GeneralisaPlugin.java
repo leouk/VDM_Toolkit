@@ -19,7 +19,6 @@ import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
-import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -46,6 +45,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private int localWarnings;
     private int localModules;
     protected List<String> commands;
+    protected TCModuleList tclist;
 
     public static final void main(String args[])
     {
@@ -99,9 +99,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         });
     }
 
-    public GeneralisaPlugin(Interpreter interpreter) {
+    public GeneralisaPlugin(ModuleInterpreter interpreter) {
         super(interpreter);
         commands = new ArrayList<String>();
+        tclist = new TCModuleList();
         localReset();
     }
 
@@ -111,6 +112,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localWarnings = 0;
         localModules = 0;
         commands.clear();
+        ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
+        tclist = minterpreter.getTC();			
     }
 
     public abstract boolean isaRun(TCModuleList tclist) throws Exception;
@@ -321,9 +324,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
         // VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
         GeneralisaPlugin.processVDMWarnings();
-
-        ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-        TCModuleList tclist = minterpreter.getTC();			
 
         TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist);
 

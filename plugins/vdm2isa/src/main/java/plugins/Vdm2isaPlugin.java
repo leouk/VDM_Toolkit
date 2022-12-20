@@ -9,9 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
-import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
-import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
@@ -25,7 +23,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	//TODO consider extending ExuPlugin?
 	private ExuPlugin exu;
 
-	public Vdm2isaPlugin(Interpreter interpreter)
+	public Vdm2isaPlugin(ModuleInterpreter interpreter)
 	{
 		super(interpreter);
 		this.exu = new ExuPlugin(interpreter);

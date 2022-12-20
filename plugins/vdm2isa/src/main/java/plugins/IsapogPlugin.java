@@ -12,7 +12,6 @@ import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMErrorsException;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.pog.ProofObligationList;
-import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.syntax.ParserException;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
@@ -40,7 +39,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     private int localPOCountMissed;
     private final Vdm2isaPlugin vdm2isa;
 
-    public IsapogPlugin(Interpreter interpreter) {
+    public IsapogPlugin(ModuleInterpreter interpreter) {
         super(interpreter);
         // consider extending? 
         vdm2isa = new Vdm2isaPlugin(interpreter);    
