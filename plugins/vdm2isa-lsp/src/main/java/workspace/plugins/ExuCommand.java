@@ -19,7 +19,7 @@ public class ExuCommand extends Command
 		}
 		else
 		{
-			throw new IllegalArgumentException(USAGE);
+			throw new IllegalArgumentException("USAGE");
 		}	
 	}
 

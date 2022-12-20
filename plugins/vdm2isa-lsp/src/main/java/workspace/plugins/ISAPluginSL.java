@@ -63,103 +63,104 @@ public class ISAPluginSL extends ISAPlugin
 	@Override
 	public RPCMessageList analyse(RPCRequest request)
 	{
-		try
-		{
-			GeneralisaPlugin.reset();
+// 		try
+// 		{
+// 			GeneralisaPlugin.reset();
 
-			JSONObject params = request.get("params");
-			File saveUri = Utils.uriToFile(params.get("saveUri"));
+// 			JSONObject params = request.get("params");
+// 			File saveUri = Utils.uriToFile(params.get("saveUri"));
 
-			JSONObject options = params.get("options");
+// 			JSONObject options = params.get("options");
 
-			// get all properties in position
-			ExuPlugin.setupProperties();
-			Vdm2isaPlugin.setupProperties();
-			IsapogPlugin.setupProperties();
+// 			// get all properties in position
+// 			ExuPlugin.setupProperties();
+// 			Vdm2isaPlugin.setupProperties();
+// 			IsapogPlugin.setupProperties();
 
-			if (options != null)
-			{
-				//IsaProofStrategy x = IsaProofStrategy.SURRENDER;
-				try {
-					Diag.fine("Setting up Isabelle translation plugin properties");
-					Diag.fine("Options JSON = " + options.toString());
-					GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
-					GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? ((long)options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
-					GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
-					ExuPlugin.linientInvCheck = options.get("linientInvCheck") != null ? options.get("linientInvCheck") : ExuPlugin.linientInvCheck; 
-					Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
-					Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
-					Vdm2isaPlugin.printIsaComments = options.get("printIsaComments") != null ? options.get("printIsaComments") : Vdm2isaPlugin.printIsaComments;
-					Vdm2isaPlugin.runExu = options.get("runExu") != null ? options.get("runExu") : Vdm2isaPlugin.runExu;
-					Vdm2isaPlugin.valueAsAbbreviation = options.get("valueAsAbbreviation") != null ? options.get("valueAsAbbreviation") : Vdm2isaPlugin.valueAsAbbreviation;
-					Vdm2isaPlugin.translateTypeDefMinMax = options.get("translateTypeDefMinMax") != null ? options.get("translateTypeDefMinMax") : Vdm2isaPlugin.translateTypeDefMinMax;
-					Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
-					Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
-					runIsapog = options.get("runIsapog") != null ? options.get("runIsapog") : runIsapog;
-					//TODO further parameters about whether to use locale or definition strategies for POs 
-					Diag.fine("Proof strategy " + options.get("proofStrategy").getClass().getName());
-					IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
-					 	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
-				}
-				catch (Throwable e)
-				{
-					// String.valueOf was generating a peculiar exception, hence the code below. Perhaps remove. 
-					Diag.error("Error: " + e.getMessage());
-					StringWriter out = new StringWriter();
-					PrintWriter writer = new PrintWriter(out);
-					e.printStackTrace(writer);
-					writer.flush();
-					Diag.error("Trace: " + out.toString());
-				}
-			}
-			else
-			{
-				Diag.severe("Could not retrieve Isabelle translation plugin options");
-			}
+// 			if (options != null)
+// 			{
+// 				//IsaProofStrategy x = IsaProofStrategy.SURRENDER;
+// 				try {
+// 					Diag.fine("Setting up Isabelle translation plugin properties");
+// 					Diag.fine("Options JSON = " + options.toString());
+// 					GeneralisaPlugin.strict = options.get("strict") != null ? options.get("strict") : GeneralisaPlugin.strict;
+// 					GeneralisaPlugin.maxErrors = options.get("maxErrors") != null ? ((long)options.get("maxErrors")) : GeneralisaPlugin.maxErrors;
+// 					GeneralisaPlugin.reportVDMWarnings = options.get("reportVDMWarnings") != null ? options.get("reportVDMWarnings") : GeneralisaPlugin.reportVDMWarnings;
+// 					ExuPlugin.linientInvCheck = options.get("linientInvCheck") != null ? options.get("linientInvCheck") : ExuPlugin.linientInvCheck; 
+// 					Vdm2isaPlugin.linientPost = options.get("linientPost") != null ? options.get("linientPost") : Vdm2isaPlugin.linientPost;
+// 					Vdm2isaPlugin.printVDMComments = options.get("printVDMComments") != null ? options.get("printVDMComments") : Vdm2isaPlugin.printVDMComments;
+// 					Vdm2isaPlugin.printIsaComments = options.get("printIsaComments") != null ? options.get("printIsaComments") : Vdm2isaPlugin.printIsaComments;
+// 					Vdm2isaPlugin.runExu = options.get("runExu") != null ? options.get("runExu") : Vdm2isaPlugin.runExu;
+// 					Vdm2isaPlugin.valueAsAbbreviation = options.get("valueAsAbbreviation") != null ? options.get("valueAsAbbreviation") : Vdm2isaPlugin.valueAsAbbreviation;
+// 					Vdm2isaPlugin.translateTypeDefMinMax = options.get("translateTypeDefMinMax") != null ? options.get("translateTypeDefMinMax") : Vdm2isaPlugin.translateTypeDefMinMax;
+// 					Vdm2isaPlugin.printVDMSource = options.get("printVDMSource") != null ? options.get("printVDMSource") : Vdm2isaPlugin.printVDMSource; 
+// 					Vdm2isaPlugin.printLocations = options.get("printLocations") != null ? options.get("printLocations") : Vdm2isaPlugin.printLocations;
+// 					runIsapog = options.get("runIsapog") != null ? options.get("runIsapog") : runIsapog;
+// 					//TODO further parameters about whether to use locale or definition strategies for POs 
+// 					Diag.fine("Proof strategy " + options.get("proofStrategy").getClass().getName());
+// 					IsapogPlugin.strategy = options.get("proofStrategy") != null ? 
+// 					 	IsaProofStrategy.valueOf(((String)options.get("proofStrategy")).toUpperCase()) : IsapogPlugin.strategy;	
+// 				}
+// 				catch (Throwable e)
+// 				{
+// 					// String.valueOf was generating a peculiar exception, hence the code below. Perhaps remove. 
+// 					Diag.error("Error: " + e.getMessage());
+// 					StringWriter out = new StringWriter();
+// 					PrintWriter writer = new PrintWriter(out);
+// 					e.printStackTrace(writer);
+// 					writer.flush();
+// 					Diag.error("Trace: " + out.toString());
+// 				}
+// 			}
+// 			else
+// 			{
+// 				Diag.severe("Could not retrieve Isabelle translation plugin options");
+// 			}
 			
-			TCPlugin tc = PluginRegistry.getInstance().getPlugin("TC");
-			TCModuleList tclist = tc.getTC();
+// 			TCPlugin tc = PluginRegistry.getInstance().getPlugin("TC");
+// 			TCModuleList tclist = tc.getTC();
 			
-			if (tclist == null || tclist.isEmpty())
-			{
-				return new RPCMessageList(request, RPCErrors.InvalidRequest, "Specification is not checked");
-			}
+// 			if (tclist == null || tclist.isEmpty())
+// 			{
+// 				return new RPCMessageList(request, RPCErrors.InvalidRequest, "Specification is not checked");
+// 			}
 			
-//			for (TCModule module: tclist)
-//			{
-//				File outfile = new File(saveUri, module.name.getName() + ".thy");
-//				PrintWriter out = new PrintWriter(outfile);
-//				out.write("Isabelle output...\n");
-//				out.close();
-//			}
-			//GeneralisaPlugin.checkVDMSettings();
+// //			for (TCModule module: tclist)
+// //			{
+// //				File outfile = new File(saveUri, module.name.getName() + ".thy");
+// //				PrintWriter out = new PrintWriter(outfile);
+// //				out.write("Isabelle output...\n");
+// //				out.close();
+// //			}
+// 			//GeneralisaPlugin.checkVDMSettings();
 
-			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-			//GeneralisaPlugin.processVDMWarnings();
+// 			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
+// 			//GeneralisaPlugin.processVDMWarnings();
 
-			TCModuleList filtered_tclist = GeneralisaPlugin.filterModuleList(tclist);
-			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(filtered_tclist);
-			trModules.setup();
-			for (TRModule module: trModules)
-			{
-				File outfile = new File(saveUri, module.name.getName() + ".thy");
-				PrintWriter out = new PrintWriter(outfile);
-				String s = module.translate();
-				Diag.finest(s);
-				out.write(s);
-				out.close();
-			}
+// 			TCModuleList filtered_tclist = GeneralisaPlugin.filterModuleList(tclist);
+// 			TRModuleList trModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(filtered_tclist);
+// 			trModules.setup();
+// 			for (TRModule module: trModules)
+// 			{
+// 				File outfile = new File(saveUri, module.name.getName() + ".thy");
+// 				PrintWriter out = new PrintWriter(outfile);
+// 				String s = module.translate();
+// 				Diag.finest(s);
+// 				out.write(s);
+// 				out.close();
+// 			}
 
-			// if it reaches here without exceptions, then also generate the VDMToolkit on the saveURI
-			ResourceUtil.save(VDM_TOOLKIT, new File(saveUri, VDM_TOOLKIT));                
+// 			// if it reaches here without exceptions, then also generate the VDMToolkit on the saveURI
+// 			ResourceUtil.save(VDM_TOOLKIT, new File(saveUri, VDM_TOOLKIT));                
 			
-			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
-		}
-		catch (Exception e)
-		{
-			Diag.error("is it here?");
-			Diag.error(e);
-			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
-		}
-	}
+// 			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
+// 		}
+// 		catch (Exception e)
+// 		{
+// 			Diag.error("is it here?");
+// 			Diag.error(e);
+// 			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
+// 		}
+		return null;
+ 	}
 }
