@@ -1,24 +1,33 @@
 digraph G {
-	R -> inv_R;
-	R -> inv_S;
-	R -> sum_elems;
-	sum_elems -> head;
-	sum_elems -> tail;
-	T -> inv_T;
-	S -> T;
-	S -> inv_S;
-	S -> inv_T;
-	S -> tail;
-	Rec -> T;
-	Rec -> inv_R;
-	Rec -> inv_Rec;
-	Rec -> inv_S;
-	Rec -> inv_T;
-	Rec -> sum_elems;
-	inv_Rec -> sum_elems;
-	inv_R -> sum_elems;
-	inv_S -> tail;
-	Map -> inv_Map;
-	Map -> inv_Rec;
-	Map -> inv_S;
+	 R [label="R @ L30"]
+	 R -> inv_R;
+	 R -> inv_S;
+	 R -> sum_elems;
+	 sum_elems [label="sum_elems @ L12"]
+	 sum_elems -> head;
+	 sum_elems -> tail;
+	 T [label="T @ L19"]
+	 T -> inv_T;
+	 S [label="S @ L24"]
+	 S -> T;
+	 S -> inv_S;
+	 S -> inv_T;
+	 S -> tail;
+	 Rec [label="Rec @ L36"]
+	 Rec -> T;
+	 Rec -> inv_R;
+	 Rec -> inv_Rec;
+	 Rec -> inv_S;
+	 Rec -> inv_T;
+	 Rec -> sum_elems;
+	 inv_Rec [label="inv_Rec @ L41"]
+	 inv_Rec -> sum_elems;
+	 inv_R [label="inv_R @ L33"]
+	 inv_R -> sum_elems;
+	 inv_S [label="inv_S @ L27"]
+	 inv_S -> tail;
+	 Map [label="Map @ L43"]
+	 Map -> inv_Map;
+	 Map -> inv_Rec;
+	 Map -> inv_S;
 }

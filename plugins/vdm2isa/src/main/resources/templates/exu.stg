@@ -13,10 +13,16 @@ $printMap(usedBy)$
 >>
 
 exuResult(original, start, sorted) ::= <<
-Original names: $printList(original)$
-Start points  : $printList(start)$
-Sorted names  : $printList(sorted)$
+Original names : $printList(original)$
+Start points   : $printList(start)$
+Sorted names   : $printList(sorted)$
 
+>>
+
+graphIt() ::= <<
+digraph G {
+
+}
 >>
 
 // l.file$[L$l.line$,C$l.col$] }

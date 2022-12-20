@@ -62,8 +62,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
             //    ,
-            "TestV2IUseBeforeDecl.vdmsl"
-            ,"TestV2IDeclBeforeUse.vdmsl"
+            // "TestV2IUseBeforeDecl.vdmsl"
+            // ,"TestV2IDeclBeforeUse.vdmsl"
             //    ,"TestV2IErrors.vdmsl"
             //    ,"TestV2IErrorsToken.vdmsl"            
             //    ,"TestV2IErrorsUnionQuotes.vdmsl"            
@@ -104,7 +104,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"Examples/CMSL/CMISA.vdmsl"
             //    ,"TestV2IRecursiveMutual.vdmsl"
             //    ,"../../../../annotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
-            //    ,"../../../isa/FMI/Clocks.vdmsl"
+            //    ,
+            "../../../isa/FMI/Clocks.vdmsl"
         });
     }
 
