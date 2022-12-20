@@ -37,9 +37,12 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private int localPOCountMissed;
+    private final Vdm2isaPlugin vdm2isa;
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
+        // consider extending? 
+        vdm2isa = new Vdm2isaPlugin(interpreter);    
     }
 
     @Override
@@ -48,7 +51,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
-        IsaProperties.isapog_defalut_strategy = IsaProofStrategy.SURRENDER;
     }
 
     public int getLocalPOCount()
@@ -94,7 +96,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
         boolean result = false;
         if (interpreter instanceof ModuleInterpreter)
         {
-            Vdm2isaPlugin vdm2isa = new Vdm2isaPlugin(interpreter);
             result = vdm2isa.isaRun(tclist, argv);  
             if (result)
             {
@@ -294,5 +295,45 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override
     public String help() {
         return "isapog - translate VDM pog results for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")";
+    }
+
+    @Override 
+    protected String pluginName()
+    {
+        return "isapog";
+    }
+
+    @Override
+    protected String commandsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        // sb.append("graph: generates definition dependency graphs per module\n");
+        // sb.append("sort: topological sort enforces declaration before use of definitions\n");
+        // sb.append("check: structural check for compliance to translation rules");
+        return sb.toString();
+    }
+
+    @Override
+    protected String defaultCommands()
+    {
+        return "";
+    }
+
+    @Override 
+    protected String defaultOptions()
+    {
+        return vdm2isa.defaultOptions() + 
+            (" -ps " + IsaProperties.isapog_defalut_strategy.toString().toLowerCase()) +
+            (IsaProperties.isapog_create_pog_locale_interpretation_lemmas ? " -li" : ""); 
+    }
+
+    @Override
+    protected String optionsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(vdm2isa.optionsHelp());
+        sb.append("-ps <name>: chooses specific proof strategy names among " + IsaProofStrategy.values().toString().toLowerCase());
+        sb.append("-li: creates locale interpretation and lemmas for translated POs");
+        return sb.toString();
     }
 }

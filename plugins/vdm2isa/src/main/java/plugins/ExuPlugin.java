@@ -195,6 +195,47 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     @Override
     public String help() {
-        return "exu - because the devil is in the detail; it will analyse all loaded VDM modules for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ") translation";
+        // because the devil is in the detail; 
+        return "exu - it analyses loaded VDM modules for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ") translation";
+    }
+
+    @Override 
+    protected String pluginName()
+    {
+        return "exu";
+    }
+
+    @Override
+    protected String commandsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("graph: generates definition dependency graphs per module\n");
+        sb.append("sort: topological sort enforces declaration before use of definitions\n");
+        sb.append("check: structural check for compliance to translation rules");
+        return sb.toString();
+    }
+
+    @Override
+    protected String defaultCommands()
+    {
+        return "graph; sort; check";
+    }
+
+    @Override 
+    protected String defaultOptions()
+    {
+        return super.defaultOptions() + 
+            (IsaProperties.exu_linient_inv_check ? " -linv" : "") +
+            (IsaProperties.exu_retypecheck ? " -rtc" : ""); 
+    }
+
+    @Override
+    protected String optionsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.optionsHelp());
+        sb.append("-linv: linient check on (sub-)type invariant chain");
+        sb.append("-rtc: re-typecheck modules if topological sort is needed");
+        return sb.toString();
     }
 }

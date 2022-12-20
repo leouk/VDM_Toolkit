@@ -117,6 +117,46 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return "Translated ";
     }
 
+    protected void usage(String msg)
+    {
+        StringBuilder sb = new StringBuilder();    
+        sb.append(String.format("%1$s: %2$s\nUsage: %1$s [<cmds>] [<options>]\n", pluginName(), msg));
+        sb.append("Commands:\n");
+        sb.append(commandsHelp());
+        sb.append("\nOptions:\n");
+        sb.append(optionsHelp());
+        sb.append("\nDefault:\n");
+        sb.append(defaultCommands());
+        sb.append(" ");
+        sb.append(defaultOptions());
+        sb.append("\n");
+        Console.err.println(sb.toString());
+    }
+
+    protected abstract String pluginName();
+    protected abstract String commandsHelp();
+    protected abstract String defaultCommands();
+
+    protected String defaultOptions()
+    {
+        return (IsaProperties.general_strict ? "-strict" : "") +
+            (" -me " + IsaProperties.general_max_errors) +
+            //(" -isa_version " + IsaProperties.general_isa_version) +
+            (IsaProperties.general_report_vdm_warnings ? " -w" : "") +
+            (IsaProperties.general_debug ? " -debug" : "");
+    }
+
+    protected String optionsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-strict: no translation output in case of errors\n");
+        sb.append("-me <num>: maximum number of errors before stop processing\b");
+        //sb.append("-isa_version: translation target Isabelle version\n");
+        sb.append("-w: reports (or supresses) warnings\n");
+        sb.append("-debug: runs in debug mode\n");
+        return sb.toString();   
+    }
+
     public void summarise(long execTimeMs, int modSize) {
         Console.out.println(getSummaryPrefix() + 
             plural(getLocalModuleCount(), "module", "s") +
@@ -161,22 +201,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         assert toadd >= 0;
         localModules += toadd;
     }
-
-    protected static final TCModuleList filterModuleList(TCModuleList tclist)
-    {
-        TCModuleList result = new TCModuleList(); 
-        result.addAll(tclist);
-        Iterator<TCModule> mi = result.iterator();
-        while (mi.hasNext())
-        {
-            if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
-            {
-                mi.remove();
-                break;
-            }
-        } 
-        return result;
-    } 
 
     @Override
     public final boolean run(String[] argv) throws Exception {
@@ -236,6 +260,22 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		out.write(result);
 		out.close();
 	}
+
+    protected static final TCModuleList filterModuleList(TCModuleList tclist)
+    {
+        TCModuleList result = new TCModuleList(); 
+        result.addAll(tclist);
+        Iterator<TCModule> mi = result.iterator();
+        while (mi.hasNext())
+        {
+            if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
+            {
+                mi.remove();
+                break;
+            }
+        } 
+        return result;
+    } 
 
     public static final void checkVDMSettings()
     {

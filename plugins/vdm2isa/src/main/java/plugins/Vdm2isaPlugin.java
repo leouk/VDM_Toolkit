@@ -18,10 +18,13 @@ import vdm2isa.tr.modules.TRModuleList;
 public class Vdm2isaPlugin extends GeneralisaPlugin
 {
 	private TRModuleList translatedModules;
+	//TODO consider extending ExuPlugin?
+	private ExuPlugin exu;
 
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
+		this.exu = new ExuPlugin(interpreter);
 		this.translatedModules = new TRModuleList();
 	}
 
@@ -50,7 +53,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		{
 			if (IsaProperties.vdm2isa_run_exu)
 			{
-				ExuPlugin exu = new ExuPlugin(interpreter);
 				// plugin run worked if exu's run works
 				result = exu.isaRun(tclist, argv);
 
@@ -118,4 +120,52 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		return "vdm2isa - translate all loaded VDM modules to Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")";
 	}
 
+	@Override 
+    protected String pluginName()
+    {
+        return "vdm2isa";
+    }
+
+    @Override
+    protected String commandsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("exu: runs the exu plugin before translation\n");
+        sb.append("translate: translates all VDM modules to Isabelle\n");
+        return sb.toString();
+    }
+
+    @Override
+    protected String defaultCommands()
+    {
+        return (IsaProperties.vdm2isa_run_exu ? "exu; " : "") + "translate";
+    }
+
+    @Override 
+    protected String defaultOptions()
+    {
+        return (IsaProperties.vdm2isa_run_exu ? exu.defaultOptions() : super.defaultOptions()) +	
+            (IsaProperties.vdm2isa_linient_post ? " -lpost" : "") +
+            (IsaProperties.vdm2isa_print_vdm_comments ? " -cvdm" : "") +
+            (IsaProperties.vdm2isa_print_isa_comments ? " -cisa" : "") +
+            (IsaProperties.vdm2isa_print_vdm_source ? " -src" : "") +
+			(IsaProperties.vdm2isa_print_locations ? " -loc" : "") +
+            (IsaProperties.vdm2isa_value_as_abbreviation ? " -va" : "") +
+            (IsaProperties.vdm2isa_translate_typedef_min_max ? " -tm" : "");
+    }
+
+    @Override
+    protected String optionsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.optionsHelp());
+        sb.append("-lpost: linient postcondition as pre_f => post_f");
+        sb.append("-cvdm: translated user-defined VDM comments");
+		sb.append("-cisa: outputs translator process comments");
+        sb.append("-src: VDM source as an Isabelle comment above translation");
+        sb.append("-loc: VDM source location as an Isabelle comment above translation");
+		sb.append("-va: translates VDM values as Isabelle abbreviations");
+		sb.append("-tm: translates VDM type definition min/max predicates");
+        return sb.toString();
+    }
 }
