@@ -14,6 +14,7 @@ import org.stringtemplate.v4.STGroupFile;
 import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
+import com.fujitsu.vdmj.scheduler.Resource;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
@@ -44,7 +45,7 @@ public class ExuOrder extends DependencyOrder
         }
     }
 
-    private final static STGroup group = new STGroupFile(ExuOrder.class.getResource("/templates/exu.stg"), "UTF-8", '$', '$');
+    private final static STGroup group = new STGroupFile(ResourceUtil.loadURL("templates/exu.stg"), ResourceUtil.DEFAULT_ENCODING, '$', '$');
 
     final static String defListString(TCDefinitionList s) 
     {
