@@ -22,7 +22,7 @@
  *
  ******************************************************************************/
 
-package plugins;
+package workspace.plugins;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -33,6 +33,12 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import json.JSONObject;
 import lsp.Utils;
+import plugins.ExuPlugin;
+import plugins.GeneralisaPlugin;
+import plugins.IsaProofStrategy;
+import plugins.IsapogPlugin;
+import plugins.ResourceUtil;
+import plugins.Vdm2isaPlugin;
 import rpc.RPCErrors;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;

@@ -22,7 +22,7 @@
  *
  ******************************************************************************/
 
-package plugins;
+package workspace.plugins;
 
 import com.fujitsu.vdmj.lex.Dialect;
 
@@ -37,7 +37,6 @@ import workspace.EventHub;
 import workspace.EventListener;
 import workspace.events.LSPEvent;
 import workspace.events.UnknownTranslationEvent;
-import workspace.plugins.AnalysisPlugin;
 
 public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 {
@@ -115,7 +114,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	{
 		if (line.startsWith("isa"))
 		{
-			return new ISACommand(line);
+			return new ExuCommand(line);
 		}
 		else
 		{
