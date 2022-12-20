@@ -45,9 +45,9 @@ public class DependencyOrder
 {
 	protected boolean sortCalled;
     public boolean debug;
-    private final Stack<TCNameToken> stack;
     
     protected TCDefinitionList singleDefs;
+    protected ModuleEnvironment moduleEnvironment;
     protected TCModuleList modules;
     // these might end up being TCIdentifierToken x TCNameToken dependeing on module or definition order? 
 	protected final Map<TCNameToken, LexLocation> nameToLoc;
@@ -73,7 +73,7 @@ public class DependencyOrder
         this.debug = debug;
         this.singleDefs = null;
         this.modules = null;
-        this.stack = new Stack<TCNameToken>();
+        this.moduleEnvironment = null;
         this.nameToLoc = new HashMap<TCNameToken, LexLocation>();
         this.uses = new HashMap<TCNameToken, TCDefinitionSet>();
         this.usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
@@ -116,7 +116,7 @@ public class DependencyOrder
             TCDefinition tInv = findDefinition(tdefInv); 
             if (tInv == null)
             {
-                if (debug)
+                if (Settings.verbose)
                 {
                     Console.out.println("Adding implicit invariant definition " + tdefInv.getName());
                 }
@@ -131,7 +131,7 @@ public class DependencyOrder
         // for named types, chase dependent invariants, avoiding the one just added 
         if (!freevarsDepForDef.isEmpty())
         {
-            if (debug)
+            if (Settings.verbose)
             {
                 Console.out.println(def.name.getName() + " dep on " + freevarsDepForDef.toString());
             }
@@ -153,7 +153,7 @@ public class DependencyOrder
                     {
                         if (!(invDef instanceof TCExplicitFunctionDefinition) || !((TCExplicitFunctionDefinition)invDef).isTypeInvariant)
                             throw new IllegalStateException("Implicit dependency discovered is not an invariant definition " + invDef.name.getName());
-                        if (debug)
+                        if (Settings.verbose)
                         {
                             Console.out.println("Adding implicit dependency " + invN.getName());
                         }
