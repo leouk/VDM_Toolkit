@@ -78,37 +78,41 @@ public class ExuTypeChecker {
     protected TCModule sortModule(TCModule m)
     {
         ExuOrder order = new ExuOrder(true);
+        TCModule result = m;
         // Original: Rec, R, S, T, tail, sum_elems, head
         // Sorted  : tail, head, inv_T, sum_elems, inv_S, T, inv_R, inv_Rec, pre_head, measure_sum_elems, S, R, Rec
         // Organised: tail, head, T, sum_elems, S, R, Rec 
-        TCNameList ts = order.definitionOrder(m);
-        TCNameList original = order.getOriginalDefNames();
-        TCNameList organised = organise(ts);
-        if (debug)
+        TCNameList ts = order.processModule(m);
+        if (ts != null)
         {
-            Console.out.println("Organised names: " + organised.toString());
+            TCNameList original = order.getOriginalDefNames();
+            TCNameList organised = organise(ts);
+            if (debug)
+            {
+                Console.out.println("Organised names : " + organised.toString() + "\n");
+            }
+    
+            // topological sorting must contain all original
+            // set-view of organised must equal original (just their order is different)  
+            assert ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised);
+    
+            // reorder module definition according to organised name list order
+            TCDefinitionList moduleDefs = new TCDefinitionList();
+            for(TCNameToken n : organised)
+            {
+                moduleDefs.add(order.findDefinition(n));
+            }
+    
+            // recreate the module with the ordered definitions; set TC calculated fields to avoid retypechecking
+            result = new TCModule(m.annotations, m.name, 
+                m.imports, m.exports, moduleDefs, m.files, m.isFlat);
+            result.comments = (m.comments);
+            result.importdefs = (m.importdefs);
+            result.exportdefs = (m.exportdefs);
+            // result.comments.addAll(m.comments);
+            // result.importdefs.addAll(m.importdefs);
+            // result.exportdefs.addAll(m.exportdefs);    
         }
-
-        // topological sorting must contain all original
-        // set-view of organised must equal original (just their order is different)  
-        assert ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised);
-
-        // reorder module definition according to organised name list order
-        TCDefinitionList moduleDefs = new TCDefinitionList();
-        for(TCNameToken n : organised)
-        {
-            moduleDefs.add(order.findDefinition(n));
-        }
-
-        // recreate the module with the ordered definitions; set TC calculated fields to avoid retypechecking
-        TCModule result = new TCModule(m.annotations, m.name, 
-            m.imports, m.exports, moduleDefs, m.files, m.isFlat);
-        result.comments = (m.comments);
-        result.importdefs = (m.importdefs);
-        result.exportdefs = (m.exportdefs);
-        // result.comments.addAll(m.comments);
-        // result.importdefs.addAll(m.importdefs);
-        // result.exportdefs.addAll(m.exportdefs);
         return result;
     }
 
