@@ -116,14 +116,17 @@ public class ExuTypeChecker {
         return result;
     }
 
-    public void sortModules(TCModuleList tclist)
+    public boolean sortModules(TCModuleList tclist)
     {
+        boolean result = false;
         sorted_list = new TCModuleList();
         for(TCModule m : tclist)
         {
             TCModule sorted_m = sortModule(m);
+            result = sorted_m != m;
             sorted_list.add(sorted_m);
         }
+        return result;
     }
 
     public TCModuleList getSortedModules()
