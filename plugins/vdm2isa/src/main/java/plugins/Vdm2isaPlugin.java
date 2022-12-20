@@ -53,11 +53,12 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     public boolean isaRun(TCModuleList tclist) throws Exception 
 	{
 		boolean result = false;
-		if (interpreter instanceof ModuleInterpreter)
+		if (!commands.isEmpty())
 		{
-			if (IsaProperties.vdm2isa_run_exu)
+			if (commands.contains("exu"))
 			{
 				// plugin run worked if exu's run works
+				exu.prompt();
 				result = exu.isaRun(tclist);
 
 				// clear error messages to avoid duplication
@@ -71,11 +72,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				// plugin run worked
 				result = true;
 			}
-
-			Console.out.println("Starting Isabelle to VDM translation.");
-
-			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-			//Vdm2isaPlugin.processVDMWarnings();
 
 			String workingAt = "";
 			try
@@ -208,9 +204,9 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	}
 
     @Override 
-    protected String defaultOptions()
+    protected String options()
     {
-		return (IsaProperties.vdm2isa_run_exu ? exu.defaultOptions() : super.defaultOptions()) +	 
+		return (IsaProperties.vdm2isa_run_exu ? exu.options() : super.options()) +	 
 			String.format(" lpost=%1$s cvdm=%2$s cisa=%3$s src=%4$s loc=%5$s va=%6$s tm=%7$s", 
 				IsaProperties.vdm2isa_linient_post, IsaProperties.vdm2isa_print_vdm_comments,
 				IsaProperties.vdm2isa_print_isa_comments, IsaProperties.vdm2isa_print_vdm_source,

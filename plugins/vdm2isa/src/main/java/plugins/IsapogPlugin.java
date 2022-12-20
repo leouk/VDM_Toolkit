@@ -95,9 +95,10 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override
     public boolean isaRun(TCModuleList tclist) throws Exception {
         boolean result = false;
-        if (interpreter instanceof ModuleInterpreter)
+        if (!commands.isEmpty())
         {
-            result = vdm2isa.isaRun(tclist);  
+            if (commands.contains("vdm2isa"))
+                result = vdm2isa.isaRun(tclist);  
             if (result)
             {
                 Console.out.println("Starting Isabelle VDM Proof Obligation generation.");            
@@ -243,6 +244,10 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     processException(t, workingAt, true);
                 }
             }
+            else 
+            {
+                Console.out.println("Could not generate Isabelle POs because of translation errors");
+            }
         }
         return result;
     }
@@ -347,13 +352,13 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override
     protected List<String> defaultCommands()
     {
-        return Arrays.asList();
+        return Arrays.asList("vdm2isa", "isapog");
     }
 
     @Override 
-    protected String defaultOptions()
+    protected String options()
     {
-        return vdm2isa.defaultOptions() + 
+        return vdm2isa.options() + 
             String.format(" ps=%1$s li=%2$s", 
                 IsaProperties.isapog_defalut_strategy.toString().toLowerCase(), 
                 IsaProperties.isapog_create_pog_locale_interpretation_lemmas); 

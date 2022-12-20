@@ -224,7 +224,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         sb.append("\n\tDefault commands: ");
         sb.append(defaultCommands());
         sb.append("\n\tDefault options : ");
-        sb.append(defaultOptions());
+        sb.append(options());
         sb.append("\n");
         Console.err.println(sb.toString());
     }
@@ -239,9 +239,14 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return sb.toString();
     }
 
+    protected void prompt()
+    {
+        Console.out.println(pluginName() + "plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
+    }
+
     protected abstract List<String> defaultCommands();
 
-    protected String defaultOptions()
+    protected String options()
     {
         return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s", 
             IsaProperties.general_strict, IsaProperties.general_max_errors, 
@@ -308,40 +313,41 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     @Override
     public final boolean run(String[] argv) throws Exception {
         boolean result = false;
-        if (interpreter instanceof ModuleInterpreter)
-		{
-			long before = System.currentTimeMillis();
-            
-			GeneralisaPlugin.fullReset(this);
-            GeneralisaPlugin.checkVDMSettings();
+        
+        long before = System.currentTimeMillis();
+        
+        GeneralisaPlugin.fullReset(this);
+        GeneralisaPlugin.checkVDMSettings();
 
-			// VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-			GeneralisaPlugin.processVDMWarnings();
+        // VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
+        GeneralisaPlugin.processVDMWarnings();
 
-            ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-			TCModuleList tclist = minterpreter.getTC();			
+        ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
+        TCModuleList tclist = minterpreter.getTC();			
 
-            TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist);
+        TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist);
 
-            //if (argv != null && argv.length > 0)
-            //    Console.out.println("Params = " + Arrays.asList(argv).toString());
-            processArguments(argv);
-            result = isaRun(tclist_filtered);
+        //if (argv != null && argv.length > 0)
+        //    Console.out.println("Params = " + Arrays.asList(argv).toString());
+        processArguments(argv);
+        if (!commands.isEmpty())
+            prompt();
+        result = isaRun(tclist_filtered);
 
-            long after = System.currentTimeMillis();
-			addLocalErrors(GeneralisaPlugin.getErrorCount());
-			if (getLocalErrorCount() > 0)
-			{
-				GeneralisaPlugin.printErrors(Console.out);
-			}
-
-			addLocalWarnings(GeneralisaPlugin.getWarningCount());
-			if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
-			{
-				GeneralisaPlugin.printWarnings(Console.out);
-			}
-            summarise(after-before, tclist_filtered.size());
+        long after = System.currentTimeMillis();
+        addLocalErrors(GeneralisaPlugin.getErrorCount());
+        if (getLocalErrorCount() > 0)
+        {
+            GeneralisaPlugin.printErrors(Console.out);
         }
+
+        addLocalWarnings(GeneralisaPlugin.getWarningCount());
+        if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
+        {
+            GeneralisaPlugin.printWarnings(Console.out);
+        }
+        summarise(after-before, tclist_filtered.size());
+        
         return result;
     }
 
@@ -365,7 +371,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		out.close();
 	}
 
-    protected static final TCModuleList filterModuleList(TCModuleList tclist)
+    public static final TCModuleList filterModuleList(TCModuleList tclist)
     {
         TCModuleList result = new TCModuleList(); 
         result.addAll(tclist);

@@ -32,10 +32,8 @@ public class ExuPlugin extends GeneralisaPlugin {
     @Override
     public boolean isaRun(TCModuleList tclist) throws Exception {
         boolean result = true;
-        if (interpreter instanceof ModuleInterpreter && !commands.isEmpty())
+        if (!commands.isEmpty())
 		{
-            Console.out.println("Calling Exu VDM analyser...");
-
             ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
                 IsaProperties.general_report_vdm_warnings, commands.contains("graph"), commands.contains("sort"));
 
@@ -261,9 +259,9 @@ public class ExuPlugin extends GeneralisaPlugin {
     }
 
     @Override 
-    protected String defaultOptions()
+    protected String options()
     {
-        return super.defaultOptions() + 
+        return super.options() + 
             String.format(" linv=%1$s rtc=%2$s", 
             IsaProperties.exu_linient_inv_check, IsaProperties.exu_retypecheck);
     }
