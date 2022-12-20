@@ -2,6 +2,8 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -246,7 +248,10 @@ public class ExuOrder extends DependencyOrder
             {
                 String name = namePrefix + m.name.getName();//m.files.get(0).getName();
                 String parent = m.files.get(0).getParent();
+                File depParent = new File(parent + "./generated/");
+                if (!depParent.exists()) depParent.mkdir();
                 File depFile = new File(parent, ".generated/" +name + ".dot");
+                if (!depFile.exists()) depFile.createNewFile();
                 graphOf(depFile);
                 Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath() + "\n");
             } 
