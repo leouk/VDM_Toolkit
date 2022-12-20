@@ -2,16 +2,14 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.stringtemplate.v4.AutoIndentWriter;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
+import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
@@ -132,7 +130,6 @@ public class ExuOrder extends DependencyOrder
             st.add("locs", nameToLoc.entrySet());
             st.add("uses", uses.entrySet());
             st.add("usedBy", usedBy.entrySet());
-            AutoIndentWriter w;
             sb.append(st.render());
             sb.append("\n");
         }

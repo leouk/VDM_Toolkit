@@ -1,9 +1,5 @@
 package plugins;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
