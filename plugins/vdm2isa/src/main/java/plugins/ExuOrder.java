@@ -144,33 +144,38 @@ public class ExuOrder extends DependencyOrder
         return sb.toString();
     }
 
-    public TCNameList definitionOrder(TCModule m)
+    public TCNameList processModule(TCModule m)
     {
-        TCNameList result;
+        TCNameList result = null;
         if (debug)
         {
-            Console.out.println(String.format("Calculating module `%1$s` definitions topological order...", m.name.getName()));
+            Console.out.println(String.format("Calculating declaration dependencies for module `%1$s`...", m.name.getName()));
         }
-        this.definitionOrder(m.defs);
-        if (debug)
+        this.definitionOrder(m);
+        if (Settings.verbose)
         {
             Console.out.println(toString(true, false));
             this.graphIt(m);
         }
-        result = topologicalSort(); 
-        if (debug)
+        int outOrderCount = this.needsSorting();
+        if (outOrderCount > 0)
         {
-            Console.out.println(toString(false, true));
+            result = topologicalSort(); 
+            if (debug)
+            {
+                Console.out.println("Found " + outOrderCount + " definition use before declaration. Topological sorted required.");
+                Console.out.println(toString(false, true));
+            }    
         }
         return result;
     }
 
     @Override
-    public void definitionOrder(TCDefinitionList definitions)
+    public void definitionOrder(TCModule m)
     {
         savedModuleDefs = new TCDefinitionList();
-        savedModuleDefs.addAll(definitions);
-        super.definitionOrder(definitions);
+        savedModuleDefs.addAll(m.defs);
+        super.definitionOrder(m);
     }
 
     public TCNameList getOriginalDefNames()
@@ -221,7 +226,7 @@ public class ExuOrder extends DependencyOrder
         sb.append(defMapString(uses));
         sb.append("\n\nUsed by map:");
         sb.append(defMapString(usedBy));
-        sb.append("\n\nStart points:");
+        sb.append("\n\nStart points :");
         for(TCNameToken n : getStartpoints())
         {
             sb.append(String.format("\n%1$s", n.getName()));
@@ -243,7 +248,7 @@ public class ExuOrder extends DependencyOrder
                 String parent = m.files.get(0).getParent();
                 File depFile = new File(parent, ".generated/" +name + ".dot");
                 graphOf(depFile);
-                Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath());
+                Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath() + "\n");
             } 
         } catch (IOException e) {
             Console.err.println("I/O error whilst attempting to write dependency graph");
