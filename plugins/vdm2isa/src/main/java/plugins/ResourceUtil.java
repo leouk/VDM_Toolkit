@@ -31,7 +31,7 @@ public class ResourceUtil
 		// src/main/resources is on the classpath, and rules seem to just require the extra /templates/ path *with* the leading "/"!
         // https://stackoverflow.com/questions/16374235/resources-and-config-loading-in-maven-project
 		assert found(resourceURI);
-		URL result = ResourceUtil.class.getResource(resourceURI);
+		URL result = ResourceUtil.class.getResource("/" + resourceURI);
 		return result;
 	}
 
