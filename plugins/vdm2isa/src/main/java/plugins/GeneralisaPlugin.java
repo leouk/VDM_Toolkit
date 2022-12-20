@@ -3,6 +3,7 @@ package plugins;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -12,7 +13,6 @@ import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.commands.CommandPlugin;
-import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.Console;
@@ -45,10 +45,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private int localErrors;
     private int localWarnings;
     private int localModules;
+    protected List<String> commands;
 
     public static final void main(String args[])
     {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", "-verbose" 
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
             //    ,"TestV2IEmpty.vdmsl"
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
@@ -100,6 +101,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     public GeneralisaPlugin(Interpreter interpreter) {
         super(interpreter);
+        commands = new ArrayList<String>();
         localReset();
     }
 
@@ -108,9 +110,101 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localErrors = 0;
         localWarnings = 0;
         localModules = 0;
+        commands.clear();
     }
 
-    public abstract boolean isaRun(TCModuleList tclist, String[] argv) throws Exception;
+    public abstract boolean isaRun(TCModuleList tclist) throws Exception;
+
+    protected void processArguments(String[] args)
+    {
+        IsaProperties.init();
+        List<String> largs = Arrays.asList(args);
+        Iterator<String> i = largs.iterator();
+        assert largs.size() > 0 && largs.get(0).equals(pluginName()); 
+        i.next(); // first argument is plugin name itself.
+        if (!i.hasNext())
+        {
+            i = defaultCommands().iterator();
+            processArgument0(i);
+        }
+        else
+        {
+            processArgument0(i);
+        }
+    }
+
+    private void processArgument0(Iterator<String> i)
+    {
+        while (i.hasNext())
+        {
+            String arg = i.next();
+            processArgument(arg, i);
+        }
+    }
+
+    protected void mergeCommands(GeneralisaPlugin other)
+    {
+        for(String cmd : other.commands)
+        {
+            if (!commands.contains(cmd))
+                commands.add(cmd);
+        }
+    }
+
+    protected void processArgument(String arg, Iterator<String> i)
+    {
+        if (arg.equals("set"))
+        {
+            if (!i.hasNext())
+            {
+                // set defaults
+            }
+            else 
+            {
+                String prop = i.next();
+                if (i.hasNext())
+                {
+                    String val = i.next();
+                    doSet(prop, val);
+                }
+                else 
+                    usage("Set command requires two arguments");
+            }
+        }
+        else if (arg.equals("help"))
+        {
+            usage("");
+        }
+    }
+
+    protected void doSet(String prop, String val)
+    {
+        if (prop.equals("strict"))
+        {
+            IsaProperties.general_strict = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("me"))
+        {
+            try
+            {
+                IsaProperties.general_max_errors = Long.parseLong(val);
+            }
+            catch (NumberFormatException e)
+            {
+                usage("me property expects a number - " + val);
+            }
+        }
+        else if (prop.equals("w"))
+        {
+            IsaProperties.general_report_vdm_warnings = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("debug"))
+        {
+            IsaProperties.general_debug = Boolean.parseBoolean(val);
+        }
+        else 
+            usage("Invalid property to set - " + prop);
+    }
 
     protected String getSummaryPrefix()
     {
@@ -120,40 +214,49 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected void usage(String msg)
     {
         StringBuilder sb = new StringBuilder();    
-        sb.append(String.format("%1$s: %2$s\nUsage: %1$s [<cmds>] [<options>]\n", pluginName(), msg));
-        sb.append("Commands:\n");
+        if (!(msg == null || msg.isEmpty()))
+            sb.append(String.format("%1$s: %2$s\n", pluginName(), msg));
+        sb.append(String.format("Usage: %1$s [<cmds>] [<options>]\n", pluginName()));
+        sb.append("\tCommands:\n");
         sb.append(commandsHelp());
-        sb.append("\nOptions:\n");
+        sb.append("\n\tOptions:\n");
         sb.append(optionsHelp());
-        sb.append("\nDefault:\n");
+        sb.append("\n\tDefault commands: ");
         sb.append(defaultCommands());
-        sb.append(" ");
+        sb.append("\n\tDefault options : ");
         sb.append(defaultOptions());
         sb.append("\n");
         Console.err.println(sb.toString());
     }
 
     protected abstract String pluginName();
-    protected abstract String commandsHelp();
-    protected abstract String defaultCommands();
+
+    protected String commandsHelp()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\tset  : sets available options, e.g. \"set [<opt> <val>]\"\n");
+        sb.append("\thelp : shows usage help\n");
+        return sb.toString();
+    }
+
+    protected abstract List<String> defaultCommands();
 
     protected String defaultOptions()
     {
-        return (IsaProperties.general_strict ? "-strict" : "") +
-            (" -me " + IsaProperties.general_max_errors) +
-            //(" -isa_version " + IsaProperties.general_isa_version) +
-            (IsaProperties.general_report_vdm_warnings ? " -w" : "") +
-            (IsaProperties.general_debug ? " -debug" : "");
+        return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s", 
+            IsaProperties.general_strict, IsaProperties.general_max_errors, 
+            IsaProperties.general_isa_version, IsaProperties.general_report_vdm_warnings, 
+            IsaProperties.general_debug);
     }
 
     protected String optionsHelp()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("-strict: no translation output in case of errors\n");
-        sb.append("-me <num>: maximum number of errors before stop processing\b");
-        //sb.append("-isa_version: translation target Isabelle version\n");
-        sb.append("-w: reports (or supresses) warnings\n");
-        sb.append("-debug: runs in debug mode\n");
+        sb.append("\tstrict  : no translation output in case of errors\n");
+        sb.append("\tme <num>: maximum number of errors before stop processing\n");
+        //sb.append("\tisa <name>: translation target Isabelle version\n");
+        sb.append("\tw       : reports (or supresses) warnings\n");
+        sb.append("\tdebug   : runs in debug mode\n");
         return sb.toString();   
     }
 
@@ -222,7 +325,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
             //if (argv != null && argv.length > 0)
             //    Console.out.println("Params = " + Arrays.asList(argv).toString());
-            result = isaRun(tclist_filtered, argv);
+            processArguments(argv);
+            result = isaRun(tclist_filtered);
 
             long after = System.currentTimeMillis();
 			addLocalErrors(GeneralisaPlugin.getErrorCount());
@@ -411,8 +515,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     }
 
     protected static void reset() {
-        // read properties file if any
-        IsaProperties.init();
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
     }

@@ -1,5 +1,6 @@
 package plugins;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -92,11 +93,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception {
+    public boolean isaRun(TCModuleList tclist) throws Exception {
         boolean result = false;
         if (interpreter instanceof ModuleInterpreter)
         {
-            result = vdm2isa.isaRun(tclist, argv);  
+            result = vdm2isa.isaRun(tclist);  
             if (result)
             {
                 Console.out.println("Starting Isabelle VDM Proof Obligation generation.");            
@@ -104,11 +105,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 try
                 {
                     // get user declared strategy
-                    if (argv != null && argv.length > 1)
-                    {
-                        workingAt = "user chosen proof strategy = " + argv[1];
-                        IsaProperties.isapog_defalut_strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
-                    }
+                    // if (argv != null && argv.length > 1)
+                    // {
+                    //     workingAt = "user chosen proof strategy = " + argv[1];
+                    //     IsaProperties.isapog_defalut_strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
+                    // }
 
                     // create an isabelle module interpreter 
                     workingAt = "creating isa interpreter";
@@ -226,7 +227,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 {
                     if (workingAt.equals("user chosen proof strategy"))
                     {
-                        report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, argv[1]);
+                        //report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, argv[1]);
                     }
                     else
                     {
@@ -307,6 +308,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     protected String commandsHelp()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(super.commandsHelp());
         // sb.append("graph: generates definition dependency graphs per module\n");
         // sb.append("sort: topological sort enforces declaration before use of definitions\n");
         // sb.append("check: structural check for compliance to translation rules");
@@ -314,17 +316,47 @@ public class IsapogPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    protected String defaultCommands()
+    protected void processArgument(String arg, Iterator<String> i)
     {
-        return "";
+        vdm2isa.processArgument(arg, i);
+        mergeCommands(vdm2isa);
+    }    
+
+    @Override
+    protected void doSet(String prop, String val)
+    {
+        if (prop.equals("ps"))
+        {
+            try 
+            {
+                IsaProperties.isapog_defalut_strategy = IsaProofStrategy.valueOf(val);
+            }
+            catch (IllegalArgumentException e)
+            {
+                usage("ps property does not know given strategy - " + val);
+            }
+        }
+        else if (prop.equals("li"))
+        {
+            IsaProperties.isapog_create_pog_locale_interpretation_lemmas = Boolean.parseBoolean(val);
+        }
+		else
+            vdm2isa.doSet(prop, val);
+    }
+
+    @Override
+    protected List<String> defaultCommands()
+    {
+        return Arrays.asList();
     }
 
     @Override 
     protected String defaultOptions()
     {
         return vdm2isa.defaultOptions() + 
-            (" -ps " + IsaProperties.isapog_defalut_strategy.toString().toLowerCase()) +
-            (IsaProperties.isapog_create_pog_locale_interpretation_lemmas ? " -li" : ""); 
+            String.format(" ps=%1$s li=%2$s", 
+                IsaProperties.isapog_defalut_strategy.toString().toLowerCase(), 
+                IsaProperties.isapog_create_pog_locale_interpretation_lemmas); 
     }
 
     @Override
@@ -332,8 +364,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
     {
         StringBuilder sb = new StringBuilder();
         sb.append(vdm2isa.optionsHelp());
-        sb.append("-ps <name>: chooses specific proof strategy names among " + IsaProofStrategy.values().toString().toLowerCase());
-        sb.append("-li: creates locale interpretation and lemmas for translated POs");
+        sb.append("\tps <name>: chooses specific proof strategy names among " + IsaProofStrategy.values().toString().toLowerCase() + "\n");
+        sb.append("\tli       : creates locale interpretation and lemmas for translated POs\n");
         return sb.toString();
     }
 }

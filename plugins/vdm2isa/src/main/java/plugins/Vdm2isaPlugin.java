@@ -4,6 +4,10 @@
 
 package plugins;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
@@ -46,7 +50,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     @Override
 	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
 	//TODO add plugin option about raising warnings? or just raise them 
-    public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception 
+    public boolean isaRun(TCModuleList tclist) throws Exception 
 	{
 		boolean result = false;
 		if (interpreter instanceof ModuleInterpreter)
@@ -54,7 +58,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 			if (IsaProperties.vdm2isa_run_exu)
 			{
 				// plugin run worked if exu's run works
-				result = exu.isaRun(tclist, argv);
+				result = exu.isaRun(tclist);
 
 				// clear error messages to avoid duplication
 				if (result)
@@ -126,32 +130,92 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
         return "vdm2isa";
     }
 
+	@Override
+    protected void processArgument(String arg, Iterator<String> i)
+    {
+        if (arg.equals("exu") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else if (arg.equals("translate") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else if (IsaProperties.vdm2isa_run_exu)
+		{
+			exu.processArgument(arg, i);
+			mergeCommands(exu);
+		}
+		else
+            super.processArgument(arg, i);
+    }
+
+
     @Override
+    protected void doSet(String prop, String val)
+    {
+        if (prop.equals("lpost"))
+        {
+            IsaProperties.vdm2isa_linient_post = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("cvdm"))
+        {
+            IsaProperties.vdm2isa_print_vdm_comments = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("cisa"))
+        {
+            IsaProperties.vdm2isa_print_isa_comments = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("src"))
+        {
+            IsaProperties.vdm2isa_print_vdm_source = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("loc"))
+        {
+            IsaProperties.vdm2isa_print_locations = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("va"))
+        {
+            IsaProperties.vdm2isa_value_as_abbreviation = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("tm"))
+        {
+            IsaProperties.vdm2isa_translate_typedef_min_max = Boolean.parseBoolean(val);
+        }
+        else if (IsaProperties.vdm2isa_run_exu)
+			exu.doSet(prop, val);
+		else
+            super.doSet(prop, val);
+    }
+	
+	@Override
     protected String commandsHelp()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("exu: runs the exu plugin before translation\n");
-        sb.append("translate: translates all VDM modules to Isabelle\n");
+		sb.append(super.commandsHelp());
+        sb.append("\texu      : runs the exu plugin before translation\n");
+        sb.append("\ttranslate: translates all VDM modules to Isabelle\n");
         return sb.toString();
     }
 
     @Override
-    protected String defaultCommands()
+    protected List<String> defaultCommands()
     {
-        return (IsaProperties.vdm2isa_run_exu ? "exu; " : "") + "translate";
-    }
+        List<String> result = Arrays.asList("exu", "translate");
+		if (!IsaProperties.vdm2isa_run_exu)
+			result.remove("exu"); 
+		return result;
+	}
 
     @Override 
     protected String defaultOptions()
     {
-        return (IsaProperties.vdm2isa_run_exu ? exu.defaultOptions() : super.defaultOptions()) +	
-            (IsaProperties.vdm2isa_linient_post ? " -lpost" : "") +
-            (IsaProperties.vdm2isa_print_vdm_comments ? " -cvdm" : "") +
-            (IsaProperties.vdm2isa_print_isa_comments ? " -cisa" : "") +
-            (IsaProperties.vdm2isa_print_vdm_source ? " -src" : "") +
-			(IsaProperties.vdm2isa_print_locations ? " -loc" : "") +
-            (IsaProperties.vdm2isa_value_as_abbreviation ? " -va" : "") +
-            (IsaProperties.vdm2isa_translate_typedef_min_max ? " -tm" : "");
+		return (IsaProperties.vdm2isa_run_exu ? exu.defaultOptions() : super.defaultOptions()) +	 
+			String.format(" lpost=%1$s cvdm=%2$s cisa=%3$s src=%4$s loc=%5$s va=%6$s tm=%7$s", 
+				IsaProperties.vdm2isa_linient_post, IsaProperties.vdm2isa_print_vdm_comments,
+				IsaProperties.vdm2isa_print_isa_comments, IsaProperties.vdm2isa_print_vdm_source,
+				IsaProperties.vdm2isa_print_locations, IsaProperties.vdm2isa_value_as_abbreviation,
+				IsaProperties.vdm2isa_translate_typedef_min_max);
     }
 
     @Override
@@ -159,13 +223,13 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.optionsHelp());
-        sb.append("-lpost: linient postcondition as pre_f => post_f");
-        sb.append("-cvdm: translated user-defined VDM comments");
-		sb.append("-cisa: outputs translator process comments");
-        sb.append("-src: VDM source as an Isabelle comment above translation");
-        sb.append("-loc: VDM source location as an Isabelle comment above translation");
-		sb.append("-va: translates VDM values as Isabelle abbreviations");
-		sb.append("-tm: translates VDM type definition min/max predicates");
+        sb.append("\tlpost: linient postcondition as pre_f => post_f\n");
+        sb.append("\tcvdm : translated user-defined VDM comments\n");
+		sb.append("\tcisa : outputs translator process comments\n");
+        sb.append("\tsrc  : VDM source as an Isabelle comment above translation\n");
+        sb.append("\tloc  : VDM source location as an Isabelle comment above translation\n");
+		sb.append("\tva   : translates VDM values as Isabelle abbreviations\n");
+		sb.append("\ttm   : translates VDM type definition min/max predicates\n");
         return sb.toString();
     }
 }
