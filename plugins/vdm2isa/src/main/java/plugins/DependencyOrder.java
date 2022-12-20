@@ -292,6 +292,54 @@ public class DependencyOrder
 	    	}
 	    }
     }
+
+    protected int needsSorting()
+    {
+        if (singleDefs != null)
+        {
+            int result = 0;
+            Map<TCNameToken, TCNameSet> dependencies = new HashMap<TCNameToken, TCNameSet>();
+            Environment globals = new FlatEnvironment(singleDefs, null);
+    
+            for (TCDefinition def: singleDefs)
+            {
+                Environment empty = new FlatEnvironment(new TCDefinitionList());
+                TCNameSet initdeps = def.getDependencies(globals, empty, new AtomicBoolean(false));
+                
+                if (!initdeps.isEmpty())
+                {
+                    for (TCNameToken name: def.getVariableNames())
+                    {
+                        dependencies.put(name.getExplicit(true), initdeps);
+                        
+                        if (Settings.verbose)
+                        {
+                            Console.out.println(name.getExplicit(true) + " => " + initdeps);
+                        }
+
+                        for (TCNameToken freevar: initdeps)
+                        {
+                            //TCDefinition fdef = globals.findName(freevar, NameScope.ANYTHING);
+                            TCDefinition fdef = findDefinition(freevar);
+                            
+                            if (fdef != null && fdef.name != null &&
+                                name.getLocation().isLater(fdef.name.getLocation()))
+                            {
+                                if (debug)
+                                {
+                                    Console.out.println(freevar + " declared after " + name);
+                                }
+                                result++;
+                            }
+                        }
+                    }
+                }                
+            }
+            return result;
+        }
+        else
+            throw new IllegalStateException("Invalid dependency ordering: call definitionOrder first");
+    }
 	
     /**
      * Create a "dot" language version of the graph for the graphviz tool.
