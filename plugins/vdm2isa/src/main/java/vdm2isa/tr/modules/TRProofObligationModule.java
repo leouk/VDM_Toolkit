@@ -6,7 +6,7 @@ import java.util.List;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
-import plugins.IsapogPlugin;
+import plugins.IsaProperties;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRDefinition;
@@ -97,7 +97,7 @@ public class TRProofObligationModule extends TRModule
         sb.append(getFormattingSeparator());
         String interpretation = null;
         String script = null;//null=defaultScript; IsaToken.ISAR_OOPS.toString();
-        sb.append(IsaTemplates.translatePOGLocaleInterpreation(getLocation(), IsapogPlugin.createPOGLocaleInterpretationLemmas, interpretation, script));
+        sb.append(IsaTemplates.translatePOGLocaleInterpreation(getLocation(), IsaProperties.isapog_create_pog_locale_interpretation_lemmas, interpretation, script));
         return sb.toString();
     }
 

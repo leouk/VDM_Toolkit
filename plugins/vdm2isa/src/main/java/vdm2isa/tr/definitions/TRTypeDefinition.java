@@ -8,8 +8,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
-import plugins.Vdm2isaPlugin;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.annotations.TRAnnotationList;
 import vdm2isa.tr.definitions.visitors.TRDefinitionVisitor;
@@ -172,7 +172,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             }
 
             // handle min/max
-            if (Vdm2isaPlugin.translateTypeDefMinMax)
+            if (IsaProperties.vdm2isa_translate_typedef_min_max)
             {
                 TRType ultimate = type.ultimateType();
                  if ((mindef != null || maxdef != null) && 
@@ -455,7 +455,7 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
             sb.append(getInvariantType().translateSpecTLD());
         }
 
-        if (Vdm2isaPlugin.translateTypeDefMinMax)
+        if (IsaProperties.vdm2isa_translate_typedef_min_max)
         {
             TRType ultimate = type.ultimateType();
             if (mindef != null && !(ultimate instanceof TRRecordType))

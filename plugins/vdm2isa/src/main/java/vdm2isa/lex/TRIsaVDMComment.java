@@ -3,7 +3,7 @@ package vdm2isa.lex;
 import com.fujitsu.vdmj.ast.lex.LexComment;
 import com.fujitsu.vdmj.lex.LexLocation;
 
-import plugins.Vdm2isaPlugin;
+import plugins.IsaProperties;
 import vdm2isa.tr.TRNode;
 
 public class TRIsaVDMComment extends TRNode {
@@ -34,7 +34,7 @@ public class TRIsaVDMComment extends TRNode {
     public String translate() {
         StringBuilder sb = new StringBuilder();
         // only print comments if desired and if sensible
-        if (Vdm2isaPlugin.printVDMComments && comment.comment != null && comment.comment.length() > 0) 
+        if (IsaProperties.vdm2isa_print_vdm_comments && comment.comment != null && comment.comment.length() > 0) 
 		{
             if (comment.block)
             {

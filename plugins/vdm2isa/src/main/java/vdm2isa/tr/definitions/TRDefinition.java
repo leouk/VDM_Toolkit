@@ -15,8 +15,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCUnknownType;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
-import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
@@ -143,8 +143,8 @@ public abstract class TRDefinition extends TRNode implements TRUnionContext//, C
 	public String tldLocationTranslate()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(Vdm2isaPlugin.printVDMSource ? IsaToken.comment(IsaInfoMessage.VDM_SOURCE_1P.format(getVDMDefinition().toString()), "\n") : "");
-		sb.append(Vdm2isaPlugin.printLocations ? 
+		sb.append(IsaProperties.vdm2isa_print_vdm_source ? IsaToken.comment(IsaInfoMessage.VDM_SOURCE_1P.format(getVDMDefinition().toString()), "\n") : "");
+		sb.append(IsaProperties.vdm2isa_print_locations ? 
 			(getLocation() != null && !LexLocation.ANY.equals(getLocation()) ? IsaToken.comment(String.valueOf(getLocation()), "\n") : "") : "");
 		return sb.toString();
 	}

@@ -20,11 +20,6 @@ import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
-
-    // accepts invariant checks over compatible/equal types as unnecessary
-    public static boolean linientInvCheck;
-    public static boolean debug;
-    public static boolean retypecheck;
     
     public ExuPlugin(Interpreter interpreter)
 	{
@@ -38,25 +33,24 @@ public class ExuPlugin extends GeneralisaPlugin {
 		{
             Console.out.println("Calling Exu VDM analyser...");
 
-            debug = true;
-            retypecheck = false;
-            ExuTypeChecker etc = new ExuTypeChecker(debug, true);
-            etc.sortModules(tclist);
-            if (retypecheck)
+            IsaProperties.general_debug = true;
+            IsaProperties.exu_retypecheck = false;
+            ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, true);
+            boolean neddedSorting = etc.sortModules(tclist);
+            if (neddedSorting && IsaProperties.exu_retypecheck)
             {
                 ExitStatus status = etc.typeCheck(tclist);
                 result = status == ExitStatus.EXIT_OK;    
             }
-            if (result)
+            if (neddedSorting && result)
             {
                 // update the tclist with the topological sorted list now typechecked
                 tclist.clear();
                 tclist.addAll(etc.getSortedModules());
-                
-                checkModules(tclist);
             }
             else 
                 Console.out.println("Module list topological sorting threw type errors!");
+            checkModules(tclist);
         }
         return result;
     }
@@ -77,7 +71,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         if (spec != null)
         {
-            TCRFunctionCallFinder finder = new TCRFunctionCallFinder(ExuPlugin.linientInvCheck);
+            TCRFunctionCallFinder finder = new TCRFunctionCallFinder(IsaProperties.exu_linient_inv_check);
             TCNameSet found = new TCNameSet();
             found.addAll(spec.body.apply(finder, null));
             if (spec.predef != null)
@@ -188,7 +182,6 @@ public class ExuPlugin extends GeneralisaPlugin {
                 checkSpecificationDependencies(d, tclist);
                 checkPatterns(d);
             }
-  //          sortModule(m);
             mcount++;
         }
         addLocalModules(mcount);
@@ -202,14 +195,6 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     @Override
     public String help() {
-        return "exu - because the devil is in the detail; it will analyse all loaded VDM modules for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ") translation";
-    }
-
-    public static final void setupProperties()
-    {
-        GeneralisaPlugin.setupProperties();
-        ExuPlugin.linientInvCheck = true;
-        ExuPlugin.debug = true;
-        ExuPlugin.retypecheck = false;
+        return "exu - because the devil is in the detail; it will analyse all loaded VDM modules for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ") translation";
     }
 }

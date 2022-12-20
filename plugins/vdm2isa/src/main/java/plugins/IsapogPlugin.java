@@ -37,8 +37,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private int localPOCountMissed;
-    public static IsaProofStrategy strategy;
-    public static boolean createPOGLocaleInterpretationLemmas;
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
@@ -50,7 +48,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
-        strategy = IsaProofStrategy.SURRENDER;
+        IsaProperties.isapog_defalut_strategy = IsaProofStrategy.SURRENDER;
     }
 
     public int getLocalPOCount()
@@ -72,7 +70,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     protected TRProofScriptDefinition chooseProofScript(ProofObligation po, TRExpression poExpr)
     {
-        switch (strategy)
+        switch (IsaProperties.isapog_defalut_strategy)
         {
             case HOPEFUL    : return TRProofScriptDefinition.hopeful(po.location);
             case OPTIMISTIC : return TRProofScriptDefinition.optimistic(po.location);
@@ -88,7 +86,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         return "Translated " + 
             plural(getLocalPOCount(), "PO", "s") + 
             " (of " + (getLocalPOCount()+getLocalPONotTranslatedCount()) + ")" +
-            " with " + IsapogPlugin.strategy.name().toLowerCase() + " proof strategy for ";
+            " with " + IsaProperties.isapog_defalut_strategy.name().toLowerCase() + " proof strategy for ";
     }
 
     @Override
@@ -97,7 +95,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
         if (interpreter instanceof ModuleInterpreter)
         {
             Vdm2isaPlugin vdm2isa = new Vdm2isaPlugin(interpreter);
-            IsapogPlugin.setupProperties();
             result = vdm2isa.isaRun(tclist, argv);  
             if (result)
             {
@@ -109,7 +106,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     if (argv != null && argv.length > 1)
                     {
                         workingAt = "user chosen proof strategy = " + argv[1];
-                        strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
+                        IsaProperties.isapog_defalut_strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
                     }
 
                     // create an isabelle module interpreter 
@@ -192,7 +189,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
                     // be strict on translation output
                     // strict => AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0
-                    if (!GeneralisaPlugin.strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
+                    if (!IsaProperties.general_strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
                     {
                         // output POs per module
                         workingAt = "creating POs Isabelle file";
@@ -296,13 +293,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     @Override
     public String help() {
-        return "isapog - translate VDM pog results for Isabelle/HOL (v. " + GeneralisaPlugin.isaVersion + ")";
-    }
-
-    public static final void setupProperties()
-	{
-        Vdm2isaPlugin.setupProperties();
-        IsapogPlugin.strategy = IsaProofStrategy.SURRENDER;
-        IsapogPlugin.createPOGLocaleInterpretationLemmas = true;
+        return "isapog - translate VDM pog results for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")";
     }
 }

@@ -17,8 +17,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.GeneralisaPlugin;
+import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
-import plugins.Vdm2isaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
@@ -437,7 +437,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 					next = ((TRFunctionType)next).getResultType();
 				}
 
-				if (kind == VDMSpecificationKind.POST && Vdm2isaPlugin.linientPost)
+				if (kind == VDMSpecificationKind.POST && IsaProperties.vdm2isa_linient_post)
 				{
 					warning(IsaWarningMessage.PLUGIN_NYI_2P, "linient post condition for curried definitions", name.toString());
 				}
@@ -470,7 +470,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 				paramsStr.append(IsaToken.THEN.toString());
 				paramsStr.append(getFormattingSeparator()+"\t");
 			}
-			else if (kind.equals(VDMSpecificationKind.POST) && Vdm2isaPlugin.linientPost)
+			else if (kind.equals(VDMSpecificationKind.POST) && IsaProperties.vdm2isa_linient_post)
 			{
 				// include "pre_f x =>" within post (i.e. ignore RESULT from varNames) 
 				assert name.getName().startsWith("post_");

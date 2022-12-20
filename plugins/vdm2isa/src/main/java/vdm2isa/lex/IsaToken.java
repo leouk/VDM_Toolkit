@@ -12,7 +12,7 @@ import com.fujitsu.vdmj.lex.Token;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
 import plugins.GeneralisaPlugin;
-import plugins.Vdm2isaPlugin;
+import plugins.IsaProperties;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.templates.IsaIdentifier;
 
@@ -344,7 +344,7 @@ public enum IsaToken {
 
 	public static final String comment(String s, String formattingSeparator)
 	{
-		if (Vdm2isaPlugin.printIsaComments)
+		if (IsaProperties.vdm2isa_print_isa_comments)
 			return IsaToken.COMMENT.toString() + 
 				IsaToken.bracketit(IsaToken.ISA_OPEN, s, IsaToken.ISA_CLOSE) + formattingSeparator;
 		else

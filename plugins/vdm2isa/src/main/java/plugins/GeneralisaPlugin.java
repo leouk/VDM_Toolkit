@@ -42,28 +42,18 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
 
-	// target isabelle version (i.e. result of "isabelle version" call)
-	public static String isaVersion; 
-	// assuming max translation errors equals max type errors for now
-	public static long maxErrors;
-	// strict handling of errors (e.g. print output or not etc.)
-	public static boolean strict;	
-    // whether to report or hide warnings
-	public static boolean reportVDMWarnings;
-
     private int localErrors;
     private int localWarnings;
     private int localModules;
 
     public static final void main(String args[])
     {
-		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", 
-            //"TestV2IEmpty.vdmsl"
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i", "-verbose" 
+            //    ,"TestV2IEmpty.vdmsl"
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
-            //    ,
-            // "TestV2IUseBeforeDecl.vdmsl"
-            // ,"TestV2IDeclBeforeUse.vdmsl"
+            //    ,"TestV2IUseBeforeDecl.vdmsl"
+            //    ,"TestV2IDeclBeforeUse.vdmsl"
             //    ,"TestV2IErrors.vdmsl"
             //    ,"TestV2IErrorsToken.vdmsl"            
             //    ,"TestV2IErrorsUnionQuotes.vdmsl"            
@@ -104,8 +94,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"Examples/CMSL/CMISA.vdmsl"
             //    ,"TestV2IRecursiveMutual.vdmsl"
             //    ,"../../../../annotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
-            //    ,
-            "../../../isa/FMI/Clocks.vdmsl"
+                ,"../../../isa/FMI/Clocks.vdmsl"
         });
     }
 
@@ -136,7 +125,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         Console.out.print(getLocalErrorCount() == 0 ? "No issues" :
             "Found " + plural(getLocalErrorCount(), "issues", "s"));
         Console.out.print(getLocalWarningCount() == 0 ? "" : " and " +
-            (GeneralisaPlugin.reportVDMWarnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
+            (IsaProperties.general_report_vdm_warnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
         Console.out.println(getLocalErrorCount() > 0 ? " Proceeding with translation with remaining issues may lead to Isabelle errors!" : "");
     }
 
@@ -196,7 +185,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		{
 			long before = System.currentTimeMillis();
             
-            GeneralisaPlugin.setupProperties();
 			GeneralisaPlugin.fullReset(this);
             GeneralisaPlugin.checkVDMSettings();
 
@@ -220,7 +208,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 			}
 
 			addLocalWarnings(GeneralisaPlugin.getWarningCount());
-			if (getLocalWarningCount() > 0 && GeneralisaPlugin.reportVDMWarnings)
+			if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
 			{
 				GeneralisaPlugin.printWarnings(Console.out);
 			}
@@ -278,10 +266,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         if (!errors.contains(error)) {
             errors.add(error);
 
-            if (errors.size() >= GeneralisaPlugin.maxErrors - 1) 
+            if (errors.size() >= IsaProperties.general_max_errors - 1) 
             {
 				String tooMany = "Too many translation errors (> " + 
-                    GeneralisaPlugin.maxErrors + "); increase ``maxErrors'' input parameter.";
+                    IsaProperties.general_max_errors + "); increase ``maxErrors'' input parameter.";
                 //TODO: @NB, how best to report this in the LSP?
                 // workspace.Diag.severe(tooMany);
                 // workspace.Diag.severe(String.valueOf(errors.size()));
@@ -383,14 +371,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     }
 
     protected static void reset() {
+        // read properties file if any
+        IsaProperties.init();
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
-    }
-
-    public static void setupProperties() {
-        GeneralisaPlugin.strict = false;
-        GeneralisaPlugin.maxErrors = Properties.tc_max_errors > 0 ? 2 * Properties.tc_max_errors : 100;
-        GeneralisaPlugin.isaVersion = "Isabelle2021: February 2021";
-        GeneralisaPlugin.reportVDMWarnings = true;
     }
 }
