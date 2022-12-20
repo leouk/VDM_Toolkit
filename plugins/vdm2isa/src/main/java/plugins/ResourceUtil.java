@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URL;
 
 public class ResourceUtil
 {
@@ -17,7 +18,7 @@ public class ResourceUtil
         return ResourceUtil.class.getResource("/" + resourceURI) != null;
     }
 
-	public static InputStreamReader load(String resourceURI) throws IOException
+	public static InputStreamReader loadStream(String resourceURI) throws IOException
 	{
         assert found(resourceURI);
 		InputStream in = ResourceUtil.class.getResourceAsStream("/" + resourceURI);
@@ -25,9 +26,18 @@ public class ResourceUtil
         return isr;
     }
 
+	public static URL loadURL(String resourceURI)  
+	{
+		// src/main/resources is on the classpath, and rules seem to just require the extra /templates/ path *with* the leading "/"!
+        // https://stackoverflow.com/questions/16374235/resources-and-config-loading-in-maven-project
+		assert found(resourceURI);
+		URL result = ResourceUtil.class.getResource(resourceURI);
+		return result;
+	}
+
     public static void save(String resourceURI, File targetFile) throws IOException 
     {
-        InputStreamReader isr = load(resourceURI);
+        InputStreamReader isr = loadStream(resourceURI);
 		OutputStream out = new FileOutputStream(targetFile);
 		// given the output is in YXML, UTF-8 is fine. 
 		OutputStreamWriter osr = new OutputStreamWriter(out, DEFAULT_ENCODING);

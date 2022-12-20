@@ -10,6 +10,8 @@ import org.stringtemplate.v4.STGroupFile;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
+import plugins.ResourceUtil;
+
 public final class IsaTemplatesHelper {
     
     public enum IsaTemplates 
@@ -50,18 +52,12 @@ public final class IsaTemplatesHelper {
         }
     } 
 
-    public static final String ISA_TEMPLATE_GROUPDIR;
-    public static final String ISA_TEMPLATE_MAIN;
     protected static final STGroup group;
 
     static {
-        ISA_TEMPLATE_MAIN = "theoryobj.stg";
-        // src/main/resources is on the classpath, and rules seem to just require the extra /templates/ path *with* the leading "/"!
-        ISA_TEMPLATE_GROUPDIR = "/templates/";
         //ISA_TEMPLATE_GROUPDIR = "src/main/resources/templates/";
-        //group = new STGroupFile(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN, '$', 
-        // https://stackoverflow.com/questions/16374235/resources-and-config-loading-in-maven-project
-        group = new STGroupFile(IsaTemplatesHelper.class.getResource(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN), "UTF-8", '$', '$');//new STGroupDir(ISA_TEMPLATE_GROUPDIR, '$', '$');
+        group = new STGroupFile(ResourceUtil.loadURL("templates/theoryobj.stg"), ResourceUtil.DEFAULT_ENCODING, '$', '$');
+        //group = new STGroupFile(IsaTemplatesHelper.class.getResource(ISA_TEMPLATE_GROUPDIR + ISA_TEMPLATE_MAIN), "UTF-8", '$', '$');//new STGroupDir(ISA_TEMPLATE_GROUPDIR, '$', '$');
     }
 
     private static final boolean isTemplateValid(String name)
