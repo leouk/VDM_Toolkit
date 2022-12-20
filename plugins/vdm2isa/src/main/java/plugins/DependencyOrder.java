@@ -212,11 +212,13 @@ public class DependencyOrder
         return invDef;
     }
 	
-	public void definitionOrder(TCDefinitionList definitions)
-	{
+	//public void definitionOrder(TCDefinitionList definitions)
+	public void definitionOrder(TCModule m)
+    {
         // extract flat definitions from list
         modules = null;
-        singleDefs = definitions.singleDefinitions();
+        singleDefs = m.defs.singleDefinitions();
+        moduleEnvironment = new ModuleEnvironment(m);
         Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
 
         // algorithm require three passes: 
@@ -478,7 +480,7 @@ public class DependencyOrder
 		return count;
 	}
 
-    public TCDefinition findDefinition(TCNameToken name)
+    protected TCDefinition findDefinition(TCNameToken name)
     {
         // if (modules != null)
         // {
@@ -490,16 +492,26 @@ public class DependencyOrder
         //else 
         if (singleDefs != null) 
         {
+            assert moduleEnvironment != null; 
             //assert modules == null;
             TCDefinition d = singleDefs.findName(name, NameScope.ANYTHING);
             if (d == null) 
             {
                 d = singleDefs.findType(name, name.getModule());
+                if (d == null)
+                {
+                    //TODO probably irrelevant? i.e. just use moduleEnvironment?  
+                    d = moduleEnvironment.findName(name, NameScope.ANYTHING);
+                    if (d == null)
+                    {
+                        d = moduleEnvironment.findType(name, name.getModule());
+                    }
+                }
             }
             return d;
         }
         else
-             throw new IllegalStateException("Invalid dependency ordering: call moduleOrder or definitionOrder first");
+             throw new IllegalStateException("Invalid dependency ordering: call definitionOrder first");
     }
 
     protected boolean updateSet(TCDefinitionSet s, TCNameToken name, boolean add)
@@ -513,7 +525,7 @@ public class DependencyOrder
                 return s.remove(d);
         }
         else 
-            throw new IllegalStateException("Could not find linked definition " + name.toString());
+            throw new IllegalStateException("Could not find linked definition " + name.toString() + " at " + name.getLocation());
     }
 
 	protected void add(TCNameToken from, TCNameToken to)
