@@ -108,13 +108,17 @@ public class ExuOrder extends DependencyOrder
     private TCNameList savedStartPoints;
     private TCNameList savedTopologicalSort;
     private TCDefinitionList savedModuleDefs;
+    private final boolean graph;
+    private final boolean sort;
 
-    public ExuOrder(boolean debug)
+    public ExuOrder(boolean debug, boolean graph, boolean sort)
     {
         super(debug);
         savedStartPoints = null;
         savedTopologicalSort = null;
         savedModuleDefs = null;
+        this.graph = graph;
+        this.sort = sort;
     }
 
     @Override
@@ -158,17 +162,30 @@ public class ExuOrder extends DependencyOrder
         if (Settings.verbose)
         {
             Console.out.println(toString(true, false));
-            this.graphIt(m);
         }
+        if (graph) 
+            this.graphIt(m);
         int outOrderCount = this.needsSorting();
         if (outOrderCount > 0)
         {
-            result = topologicalSort(); 
-            if (debug)
+            if (sort)
             {
-                Console.out.println("Found " + outOrderCount + " definition use before declaration. Topological sorted required.");
-                Console.out.println(toString(false, true));
-            }    
+                result = topologicalSort(); 
+                if (debug)
+                {
+                    Console.out.println("Found " + outOrderCount + " definition use before declaration. Topological sorted required.");
+                    Console.out.println(toString(false, true));
+                }    
+            }
+            else 
+            {
+                Console.out.println("Module " + m.name.getName() + " requires definition sorting!");
+            }
+        }
+        else 
+        {
+            if (debug) 
+                Console.out.println("No definitions sorting required for " + m.name.getName());
         }
         return result;
     }

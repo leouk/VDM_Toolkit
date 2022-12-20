@@ -1,5 +1,8 @@
 package plugins;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import com.fujitsu.vdmj.ExitStatus;
@@ -27,15 +30,15 @@ public class ExuPlugin extends GeneralisaPlugin {
 	}
 
     @Override
-    public boolean isaRun(TCModuleList tclist, String[] argv) throws Exception {
+    public boolean isaRun(TCModuleList tclist) throws Exception {
         boolean result = true;
-        if (interpreter instanceof ModuleInterpreter)
+        if (interpreter instanceof ModuleInterpreter && !commands.isEmpty())
 		{
             Console.out.println("Calling Exu VDM analyser...");
 
-            IsaProperties.general_debug = true;
-            IsaProperties.exu_retypecheck = false;
-            ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, true);
+            ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
+                IsaProperties.general_report_vdm_warnings, commands.contains("graph"), commands.contains("sort"));
+
             boolean neddedSorting = etc.sortModules(tclist);
             if (neddedSorting && IsaProperties.exu_retypecheck)
             {
@@ -48,9 +51,10 @@ public class ExuPlugin extends GeneralisaPlugin {
                 tclist.clear();
                 tclist.addAll(etc.getSortedModules());
             }
-            else 
+            else if (!result)
                 Console.out.println("Module list topological sorting threw type errors!");
-            checkModules(tclist);
+            if (commands.contains("check"))
+                checkModules(tclist);
         }
         return result;
     }
@@ -199,6 +203,40 @@ public class ExuPlugin extends GeneralisaPlugin {
         return "exu - it analyses loaded VDM modules for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ") translation";
     }
 
+    @Override
+    protected void processArgument(String arg, Iterator<String> i)
+    {
+        if (arg.equals("graph") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else if (arg.equals("sort") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else if (arg.equals("check") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else 
+            super.processArgument(arg, i);
+    }
+
+    @Override
+    protected void doSet(String prop, String val)
+    {
+        if (prop.equals("linv"))
+        {
+            IsaProperties.exu_linient_inv_check = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("rtc"))
+        {
+            IsaProperties.exu_retypecheck = Boolean.parseBoolean(val);
+        }
+        else 
+            super.doSet(prop, val);
+    }
+
     @Override 
     protected String pluginName()
     {
@@ -209,24 +247,25 @@ public class ExuPlugin extends GeneralisaPlugin {
     protected String commandsHelp()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("graph: generates definition dependency graphs per module\n");
-        sb.append("sort: topological sort enforces declaration before use of definitions\n");
-        sb.append("check: structural check for compliance to translation rules");
+        sb.append(super.commandsHelp());
+        sb.append("\tgraph: generates definition dependency graphs per module\n");
+        sb.append("\tsort : topological sort enforces declaration before use of definitions\n");
+        sb.append("\tcheck: structural check for compliance to translation rules\n");
         return sb.toString();
     }
 
     @Override
-    protected String defaultCommands()
+    protected List<String> defaultCommands()
     {
-        return "graph; sort; check";
+        return Arrays.asList("graph", "sort", "check");
     }
 
     @Override 
     protected String defaultOptions()
     {
         return super.defaultOptions() + 
-            (IsaProperties.exu_linient_inv_check ? " -linv" : "") +
-            (IsaProperties.exu_retypecheck ? " -rtc" : ""); 
+            String.format(" linv=%1$s rtc=%2$s", 
+            IsaProperties.exu_linient_inv_check, IsaProperties.exu_retypecheck);
     }
 
     @Override
@@ -234,8 +273,8 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.optionsHelp());
-        sb.append("-linv: linient check on (sub-)type invariant chain");
-        sb.append("-rtc: re-typecheck modules if topological sort is needed");
+        sb.append("\tlinv    : linient check on (sub-)type invariant chain\n");
+        sb.append("\trtc     : re-typecheck modules if topological sort is needed\n");
         return sb.toString();
     }
 }

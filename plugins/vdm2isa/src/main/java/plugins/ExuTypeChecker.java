@@ -18,19 +18,23 @@ import com.fujitsu.vdmj.typechecker.TypeChecker;
 public class ExuTypeChecker {
     
     private final boolean warnings; 
-    public boolean debug;
+    private final boolean debug;
+    private final boolean sort;
+    private final boolean graph;
     private TCModuleList sorted_list;
 
     // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
     //     Arrays.asList(VDMSpecificationKind.MEASURE, VDMSpecificationKind.PRE,
     //         VDMSpecificationKind.POST, VDMSpecificationKind.);
     
-    public ExuTypeChecker(boolean debug, boolean warnings)
+    public ExuTypeChecker(boolean debug, boolean warnings, boolean graph, boolean sort)
     {
         super();
         this.warnings = warnings; 
         this.debug = debug;
         this.sorted_list = null;
+        this.graph = graph;
+        this.sort = sort;
     }
 
     private TCNameToken find(TCNameList list, String name)
@@ -77,7 +81,7 @@ public class ExuTypeChecker {
 
     protected TCModule sortModule(TCModule m)
     {
-        ExuOrder order = new ExuOrder(true);
+        ExuOrder order = new ExuOrder(debug, graph, sort);
         TCModule result = m;
         // Original: Rec, R, S, T, tail, sum_elems, head
         // Sorted  : tail, head, inv_T, sum_elems, inv_S, T, inv_R, inv_Rec, pre_head, measure_sum_elems, S, R, Rec
