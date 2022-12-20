@@ -356,14 +356,13 @@ public class DependencyOrder
 		for (TCNameToken key: map.keySet())
 		{
 			TCDefinitionSet nextSet = map.get(key);
-			
+            String kname = key.getName();
+			sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\"]\n", kname, key.getLocation().startLine));
+				
 			for (TCDefinition next: nextSet)
 			{
-				sb.append("\t");
-				sb.append(key.getName());
-				sb.append(" -> ");
-				sb.append(next.name.getName());
-				sb.append(";\n");
+                String tvalue = next.name.getName();
+                sb.append(String.format("\t %1$s -> %2$s;\n", kname, tvalue));
 			}
 		}
 		
