@@ -90,6 +90,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return inferredNameForType != null ? inferredNameForType.toString() : null;
 	}
 
+	/**
+	 * Sets atTLD flag at top-level and possibly deeply within type structure. 
+	 * @param b
+	 * @param deep
+	 * @return
+	 */
 	public boolean setAtTopLevelDefinition(boolean b, boolean deep)
     {
 		boolean result = atTLD;
@@ -97,9 +103,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		return result;
     }
 
+	/**
+	 * Sets atTLD flag at top-level type only (i.e. not deep).
+	 */
 	public boolean setAtTopLevelDefinition(boolean b)
     {
-		return setAtTopLevelDefinition(b, true);
+		return setAtTopLevelDefinition(b, false);
     }
 
     public boolean atTopLevelDefinition()
