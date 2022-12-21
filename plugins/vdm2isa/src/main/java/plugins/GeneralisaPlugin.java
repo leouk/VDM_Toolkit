@@ -2,10 +2,15 @@ package plugins;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.Iterator;
 
@@ -48,9 +53,13 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected List<String> commands;
     protected TCModuleList tclist;
 
+    protected final static Set<String> modulesToProcess = new HashSet<String>();
+    private static boolean firstCall = false;
+
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
+            , "./lvl0/TestV2IEmpty.vdmsl"
             //    ,"TestV2IEmpty.vdmsl"
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
@@ -83,7 +92,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"TestV2ITypesOrdering.vdmsl"
             //    ,"TestV2ITypesRecordOrdering.vdmsl"
             //    ,"TestV2ITypesRecords.vdmsl"
-                ,"TestV2ITypesStructured.vdmsl"
+            //    ,"TestV2ITypesStructured.vdmsl"
             //    ,"TestV2ITypesUnion.vdmsl"
             //    ,"TestV2IWarnings.vdmsl"
             //    ,"TestV2IState.vdmsl"
@@ -122,31 +131,35 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     public abstract boolean isaRun(TCModuleList tclist) throws Exception;
 
-    protected void processArguments(String[] args)
+    protected boolean processArguments(String[] args)
     {
         IsaProperties.init();
         List<String> largs = Arrays.asList(args);
         Iterator<String> i = largs.iterator();
+        boolean cont_ = true;
         assert largs.size() > 0 && largs.get(0).equals(pluginName()); 
         i.next(); // first argument is plugin name itself.
         if (!i.hasNext())
         {
             i = defaultCommands().iterator();
-            processArgument0(i);
+            cont_ = processArgument0(i);
         }
         else
         {
-            processArgument0(i);
+            cont_ = processArgument0(i);
         }
+        return cont_;
     }
 
-    private void processArgument0(Iterator<String> i)
+    protected boolean processArgument0(Iterator<String> i)
     {
+        boolean cont_ = true;
         while (i.hasNext())
         {
             String arg = i.next();
-            processArgument(arg, i);
+            cont_ = processArgument(arg, i);
         }
+        return cont_;
     }
 
     protected void mergeCommands(List<String> cmds)
@@ -163,13 +176,33 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         mergeCommands(other.commands);
     }
 
-    protected void processArgument(String arg, Iterator<String> i)
+    protected void printFlag(String name, String val)
+	{
+		Console.out.println(String.format("%1$s flag is %2$s", name, val));
+	}
+
+	protected void printFlag(String name, boolean flag)
+	{
+		Console.out.println(String.format("%1$s flag is %2$s", name, flag ? "enabled" : "disabled"));
+	}
+
+    protected void printOptionDefaults()
+    {
+        printFlag("Isabelle version", IsaProperties.general_isa_version); 
+        printFlag("max errors", String.valueOf(IsaProperties.general_max_errors));
+        printFlag("strict", IsaProperties.general_strict);	
+        printFlag("report warnings", IsaProperties.general_report_vdm_warnings);
+        printFlag("debug", IsaProperties.general_debug);
+        printFlag("modules to process", GeneralisaPlugin.modulesToProcess.isEmpty() ? "all" : GeneralisaPlugin.modulesToProcess.toString());
+    }
+
+    protected boolean processArgument(String arg, Iterator<String> i)
     {
         if (arg.equals("set"))
         {
             if (!i.hasNext())
             {
-                // set defaults
+                printOptionDefaults();
             }
             else 
             {
@@ -187,6 +220,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         {
             usage("");
         }
+        else 
+            usage("Unknown command " + arg);
+        return false; // don't continue if hit here.
     }
 
     protected void doSet(String prop, String val)
@@ -213,6 +249,18 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         else if (prop.equals("debug"))
         {
             IsaProperties.general_debug = Boolean.parseBoolean(val);
+        }
+        else if (prop.equals("ml"))
+        {
+            if ("all".equals(val))
+                GeneralisaPlugin.modulesToProcess.clear();
+            else 
+            {
+                String[] mods = val.split(",|;|:|\\|");
+                GeneralisaPlugin.modulesToProcess.clear();
+                GeneralisaPlugin.modulesToProcess.addAll(Arrays.asList(mods));    
+            }
+   
         }
         else 
             usage("Invalid property to set - " + prop);
@@ -260,10 +308,10 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     protected String options()
     {
-        return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s", 
+        return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s ml=%6$s", 
             IsaProperties.general_strict, IsaProperties.general_max_errors, 
             IsaProperties.general_isa_version, IsaProperties.general_report_vdm_warnings, 
-            IsaProperties.general_debug);
+            IsaProperties.general_debug, GeneralisaPlugin.modulesToProcess.isEmpty() ? "all" : GeneralisaPlugin.modulesToProcess.toString());
     }
 
     protected String optionsHelp()
@@ -274,19 +322,31 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         //sb.append("\tisa <name>: translation target Isabelle version\n");
         sb.append("\tw       : reports (or supresses) warnings\n");
         sb.append("\tdebug   : runs in debug mode\n");
+        sb.append("\tml <lst>: comma-separated list of modules to process, or `all`; all modules if not set\n");
         return sb.toString();   
     }
 
-    public void summarise(long execTimeMs, int modSize) {
+    public void summarise(boolean result, long execTimeMs, int modSize) {
         Console.out.println(getSummaryPrefix() + 
             plural(getLocalModuleCount(), "module", "s") +
             " (of " + modSize + ")" +
             " in " + (double)(execTimeMs/1000) + " secs. ");
-        Console.out.print(getLocalErrorCount() == 0 ? "No issues" :
-            "Found " + plural(getLocalErrorCount(), "issues", "s"));
-        Console.out.print(getLocalWarningCount() == 0 ? "" : " and " +
+        int errCnt = getLocalErrorCount(); 
+        if (errCnt == 0)
+        {
+            Console.out.print("No issues were found.");
+        }
+        else 
+        {
+            Console.out.println("Found " + plural(errCnt, "issues", "s"));
+        }
+        Console.out.println(getLocalWarningCount() == 0 ? "" : " and " +
             (IsaProperties.general_report_vdm_warnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
-        Console.out.println(getLocalErrorCount() > 0 ? " Proceeding with translation with remaining issues may lead to Isabelle errors!" : "");
+        
+        if (errCnt > 0 && result)
+            Console.out.println("Proceeding with translation with remaining issues may lead to Isabelle errors!");
+        if (!result)
+            Console.out.println(pluginName() + " plugin execution failed"); 
     }
 
     public int getLocalErrorCount()
@@ -324,39 +384,47 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     @Override
     public final boolean run(String[] argv) throws Exception {
-        boolean result = false;
+        boolean result = true;
         
         long before = System.currentTimeMillis();
         
-        GeneralisaPlugin.fullReset(this);
+        if (GeneralisaPlugin.firstCall)
+        {
+            GeneralisaPlugin.fullReset(this);
+            GeneralisaPlugin.firstCall = false;    
+        }
         GeneralisaPlugin.checkVDMSettings();
-
-        // VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-        GeneralisaPlugin.processVDMWarnings();
-
-        TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist);
 
         //if (argv != null && argv.length > 0)
         //    Console.out.println("Params = " + Arrays.asList(argv).toString());
-        processArguments(argv);
+        boolean cont_ = processArguments(argv);
         if (!commands.isEmpty())
             prompt();
-        result = isaRun(tclist_filtered);
 
-        long after = System.currentTimeMillis();
-        addLocalErrors(GeneralisaPlugin.getErrorCount());
-        if (getLocalErrorCount() > 0)
-        {
-            GeneralisaPlugin.printErrors(Console.out);
-        }
+        TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist, GeneralisaPlugin.modulesToProcess);        
 
-        addLocalWarnings(GeneralisaPlugin.getWarningCount());
-        if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
+        if (tclist_filtered.isEmpty())
         {
-            GeneralisaPlugin.printWarnings(Console.out);
+            Console.out.println("No modules to process; call `" + pluginName() + " set` to check!");
         }
-        summarise(after-before, tclist_filtered.size());
-        
+        else if (cont_)
+        {
+            result = isaRun(tclist_filtered);
+            long after = System.currentTimeMillis();
+            addLocalErrors(GeneralisaPlugin.getErrorCount());
+            if (getLocalErrorCount() > 0)
+            {
+                GeneralisaPlugin.printErrors(Console.out);
+                result = false;
+            }
+    
+            addLocalWarnings(GeneralisaPlugin.getWarningCount());
+            if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
+            {
+                GeneralisaPlugin.printWarnings(Console.out);
+            }
+            summarise(result, after-before, tclist_filtered.size());            
+        }       
         return result;
     }
 
@@ -368,29 +436,32 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         addLocalErrors(1);
     }
     
-    protected /* static */ void outputModule(LexLocation location, String module, String result) throws FileNotFoundException
+    protected /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, FileNotFoundException
 	{
 		String dir = location.file.getParent();
 		if (dir == null) dir = ".";
 		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-		File outfile = new File(dir + "/.generated", name);
+		File outfile = new File(dir + File.separator + ".generated", name);
+        Files.createDirectories(Paths.get(dir + File.separator + ".generated"));
 		Console.out.println("Translating module " + module + " as " + outfile.getAbsolutePath());
 		PrintWriter out = new PrintWriter(outfile);
 		out.write(result);
 		out.close();
 	}
 
-    public static final TCModuleList filterModuleList(TCModuleList tclist)
+    public static final TCModuleList filterModuleList(TCModuleList tclist, Set<String> modules)
     {
         TCModuleList result = new TCModuleList(); 
         result.addAll(tclist);
         Iterator<TCModule> mi = result.iterator();
         while (mi.hasNext())
         {
-            if (mi.next().name.getName().equals(IsaToken.VDMTOOLKIT.toString()))
+            TCModule m = mi.next();
+            String name = m.name.getName();
+            if (name.equals(IsaToken.VDMTOOLKIT.toString()) || 
+               (!modules.isEmpty() && !modules.contains(name)))
             {
                 mi.remove();
-                break;
             }
         } 
         return result;
@@ -446,9 +517,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    public static final void processVDMWarnings()
+    public static final void processVDMWarnings(List<VDMWarning> vdmWarnings)
 	{
-		List<VDMWarning> vdmWarnings = TypeChecker.getWarnings();
 		int warnings2raiseCount = 0;
 		// tad inneficient, but fine (for now) as I want to "warn" user of this first
 		for (int i = 0; i < vdmWarnings.size(); i++)
@@ -526,6 +596,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected static void fullReset(GeneralisaPlugin g)
     {
         GeneralisaPlugin.reset();
+        GeneralisaPlugin.modulesToProcess.clear();
         g.localReset();
     }
 
