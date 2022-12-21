@@ -3,6 +3,7 @@ package plugins;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -350,7 +351,7 @@ public class DependencyOrder
 	{
     	Map<TCNameToken, TCDefinitionSet> map = uses;
     	
-		FileWriter fw = new FileWriter(filename); 
+		PrintWriter fw = new PrintWriter(filename); 
 		StringBuilder sb = new StringBuilder();
 		sb.append("digraph G {\n");
 
