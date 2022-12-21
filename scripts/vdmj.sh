@@ -10,6 +10,8 @@ MVERSION="4.5.0-SNAPSHOT"  #$VDMJ_VERSION
 PVERSION="4.5.0-P-SNAPSHOT"
 
 VTVERSION="1.2.0-SNAPSHOT" #VDMJTK_VERSION
+STVERSION="4.3.5-SNAPSHOT"
+ANTLRVERSION="3.5.3"
 
 # Preferred VDMJ options
 VDMJ_OPTS="-strict"
@@ -17,6 +19,7 @@ VDMJ_OPTS="-strict"
 # The Maven repository directory containing VDMJ and VDM_Toolkit jars
 VDMJMAVENREPO=~/.m2/repository/dk/au/ece/vdmj
 VDMTOOLKITMAVENREPO=~/.m2/repository/vdmtoolkit
+STMAVENREPO=~/.m2/repository/org/antlr
 
 # Location of the vdmj.properties file, if any. Override with -D.
 PROPDIR="$HOME/lib"
@@ -41,6 +44,27 @@ function check()
 	echo "Cannot read $1"
 	exit 1
     fi
+}
+
+function latest()
+{
+	# Warn if a later version is available in Maven
+	BASEVER=$(echo $1 | sed -e "s/\(^[0-9]*\.[0-9]*\.[0-9]*\(-P\)\{0,1\}\).*$/\1/")
+	
+	if [ -e $MAVENREPO/vdmj/$BASEVER ]
+	then
+		LATEST=$BASEVER
+	elif [[ $1 == *-P* ]]
+	then
+		LATEST=$(ls $MAVENREPO/vdmj | grep "^[0-9]*\.[0-9]*\.[0-9]*" | grep -- "-P" | tail -1)
+	else
+		LATEST=$(ls $MAVENREPO/vdmj | grep "^[0-9]*\.[0-9]*\.[0-9]*" | grep -v -- "-P" | tail -1)
+	fi
+	
+	if [ "$1" != "$LATEST" ]
+	then
+	    echo "WARNING: Latest VDMJ version is $LATEST, not $1"
+	fi
 }
 
 # Just warn if a later version is available in Maven
@@ -94,12 +118,17 @@ STDLIB_JAR=$VDMJMAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
 PLUGINS_JAR=$VDMJMAVENREPO/cmd-plugins/${VERSION}/cmd-plugins-${VERSION}.jar
 VDMTOOLKIT_LIB_JAR=$VDMTOOLKITMAVENREPO/vdmlib/${VTVERSION}/vdmlib-${VTVERSION}.jar
 VDMTOOLKIT_PLUGIN_JAR=$VDMTOOLKITMAVENREPO/vdm2isa/${VTVERSION}/vdm2isa-${VTVERSION}.jar
+ST_JAR=$STMAVENREPO/ST4/${STVERSION}/ST4-${STVERSION}.jar
+ANTLR_JAR=$STMAVENREPO/antlr-runtime/${ANTLRVERSION}/antlr-runtime-${ANTLRVERSION}.jar
+
 check "$VDMJ_JAR"
 check "$STDLIB_JAR"
 check "$PLUGINS_JAR"
 check "$VDMTOOLKIT_LIB_JAR"
 check "$VDMTOOLKIT_PLUGIN_JAR"
-CLASSPATH="$VDMJ_JAR:$PLUGINS_JAR:$VDMTOOLKIT_PLUGIN_JAR:$STDLIB_JAR:$VDMTOOLKIT_LIB_JAR:$PROPDIR"
+check "$ST_JAR"
+check "$ANTLR_JAR"
+CLASSPATH="$VDMJ_JAR:$PLUGINS_JAR:$VDMTOOLKIT_PLUGIN_JAR:$STDLIB_JAR:$VDMTOOLKIT_LIB_JAR:$ST_JAR:$ANTLR_JAR"
 MAIN="com.fujitsu.vdmj.VDMJ"
 
 #always keep them on for now 
