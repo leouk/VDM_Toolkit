@@ -19,6 +19,7 @@ import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.ConsoleWriter;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
+import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -53,7 +54,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"TestV2IEmpty.vdmsl"
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
-            //    ,"TestV2IUseBeforeDecl.vdmsl"
+                ,"TestV2IUseBeforeDecl.vdmsl"
             //    ,"TestV2IDeclBeforeUse.vdmsl"
             //    ,"TestV2IErrors.vdmsl"
             //    ,"TestV2IErrorsToken.vdmsl"            
@@ -95,12 +96,15 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"Examples/CMSL/CMISA.vdmsl"
             //    ,"TestV2IRecursiveMutual.vdmsl"
             //    ,"../../../../annotationsVDMToolkit/src/test/resources/MinimalTheorem.vdmsl"
-                ,"../../../isa/FMI/Clocks.vdmsl"
+            //    ,"../../../isa/FMI/Clocks.vdmsl"
         });
     }
 
-    public GeneralisaPlugin(ModuleInterpreter interpreter) {
+    public GeneralisaPlugin(Interpreter interpreter) {
         super(interpreter);
+        // allow null for the reuse of the plugin for a VSCode command/plugin? 
+        if (interpreter != null && !(interpreter instanceof ModuleInterpreter))
+            throw new IllegalArgumentException("Plugin interpreter must be a module interpreter");
         commands = new ArrayList<String>();
         tclist = new TCModuleList();
         localReset();
@@ -145,13 +149,18 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    protected void mergeCommands(GeneralisaPlugin other)
+    protected void mergeCommands(List<String> cmds)
     {
-        for(String cmd : other.commands)
+        for(String cmd : cmds)
         {
             if (!commands.contains(cmd))
                 commands.add(cmd);
         }
+    }
+
+    protected void mergeCommands(GeneralisaPlugin other)
+    {
+        mergeCommands(other.commands);
     }
 
     protected void processArgument(String arg, Iterator<String> i)

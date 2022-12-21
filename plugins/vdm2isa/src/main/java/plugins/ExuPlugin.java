@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
-import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
@@ -23,7 +23,7 @@ import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
     
-    public ExuPlugin(ModuleInterpreter interpreter)
+    public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 	}

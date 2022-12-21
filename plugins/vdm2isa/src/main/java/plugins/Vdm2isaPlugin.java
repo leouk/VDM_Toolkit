@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.InternalException;
-import com.fujitsu.vdmj.runtime.ModuleInterpreter;
+import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import vdm2isa.tr.TRNode;
@@ -23,7 +23,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	//TODO consider extending ExuPlugin?
 	private ExuPlugin exu;
 
-	public Vdm2isaPlugin(ModuleInterpreter interpreter)
+	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 		this.exu = new ExuPlugin(interpreter);
@@ -46,9 +46,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 
 
     @Override
-	//TODO add plugin property about using abbreviations or definitions for TRValueDefinition  
-	//TODO add plugin option about raising warnings? or just raise them 
-    public boolean isaRun(TCModuleList tclist) throws Exception 
+	public boolean isaRun(TCModuleList tclist) throws Exception 
 	{
 		boolean result = false;
 		if (!commands.isEmpty())
@@ -57,6 +55,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 			{
 				// plugin run worked if exu's run works
 				exu.prompt();
+				exu.mergeCommands(exu.defaultCommands());
 				result = exu.isaRun(tclist);
 
 				// clear error messages to avoid duplication
