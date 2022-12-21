@@ -1000,29 +1000,29 @@ text \<open>
  needs to know more (lemmas) about the new operators. \<close>
   
 definition
-  inv_Map :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow>\<bool>"
+  inv_VDMMap :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow>\<bool>"
 where
   [intro!]: 
-  "inv_Map inv_Dom inv_Rng m \<equiv> 
+  "inv_VDMMap inv_Dom inv_Rng m \<equiv> 
       inv_VDMSet' inv_Dom (dom m) \<and> 
       inv_VDMSet' inv_Rng (ran m)"
   
 definition
-  inv_Map1 :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>"
+  inv_VDMMap1 :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>"
   where
-  [intro!]: "inv_Map1 inv_Dom inv_Ran m \<equiv> 
-    inv_Map inv_Dom inv_Ran m \<and> m \<noteq> Map.empty"
+  [intro!]: "inv_VDMMap1 inv_Dom inv_Ran m \<equiv> 
+    inv_VDMMap inv_Dom inv_Ran m \<and> m \<noteq> Map.empty"
   (*vdm_card (dom m) > 0 \<and> is worst more complicated for nothing*)
 
 definition
-  inv_Inmap :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>"
+  inv_VDMInmap :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b) \<Rightarrow> \<bool>"
   where
-  [intro!]: "inv_Inmap inv_Dom inv_Ran m \<equiv> 
-    inv_Map inv_Dom inv_Ran m \<and> inj m"
+  [intro!]: "inv_VDMInmap inv_Dom inv_Ran m \<equiv> 
+    inv_VDMMap inv_Dom inv_Ran m \<and> inj m"
 
-lemmas inv_Map_defs = inv_Map_def inv_VDMSet'_defs
-lemmas inv_Map1_defs = inv_Map1_def inv_Map_defs
-lemmas inv_Inmap_defs = inv_Inmap_def inv_Map_defs inj_def
+lemmas inv_VDMMap_defs = inv_VDMMap_def inv_VDMSet'_defs
+lemmas inv_VDMMap1_defs = inv_VDMMap1_def inv_VDMMap_defs
+lemmas inv_VDMInmap_defs = inv_VDMInmap_def inv_VDMMap_defs inj_def
 
 definition
   rng :: "('a \<rightharpoonup> 'b) \<Rightarrow> 'b VDMSet" 
@@ -2319,27 +2319,27 @@ lemma l_ranE_frule':
   "e \<in> ran f \<Longrightarrow> \<exists> x . e = the(f x)"
   by (metis l_ranE_frule option.sel)
 
-lemma l_inv_MapTrue: 
-  "finite (dom m) \<Longrightarrow> undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_Map inv_True inv_True m"
-  by (simp add: finite_ran inv_Map_def inv_VDMSet'_def rng_def)  
+lemma l_inv_VDMMapTrue: 
+  "finite (dom m) \<Longrightarrow> undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_VDMMap inv_True inv_True m"
+  by (simp add: finite_ran inv_VDMMap_def inv_VDMSet'_def rng_def)  
 
 lemma l_invMap_domr_absorb:   
-  "inv_Map di ri m \<Longrightarrow> inv_Map di ri (S \<triangleleft> m)"
-  unfolding inv_Map_def inv_VDMSet'_defs inv_VDMSet_def
+  "inv_VDMMap di ri m \<Longrightarrow> inv_VDMMap di ri (S \<triangleleft> m)"
+  unfolding inv_VDMMap_def inv_VDMSet'_defs inv_VDMSet_def
   by (metis (mono_tags, lifting) domIff f_in_dom_r_apply_elem f_in_relimg_ran finiteRan l_dom_r_finite l_in_dom_dom_r)
 
-lemma l_inv_Map_on_dom[]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Dom (dom m)" 
-  unfolding inv_Map_defs by auto
+lemma l_inv_VDMMap_on_dom[]: "inv_VDMMap inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Dom (dom m)" 
+  unfolding inv_VDMMap_defs by auto
 
-lemma l_inv_Map_on_ran[]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Ran (ran m)" 
-  unfolding inv_Map_defs by auto
+lemma l_inv_VDMMap_on_ran[]: "inv_VDMMap inv_Dom inv_Ran m \<Longrightarrow> inv_SetElems inv_Ran (ran m)" 
+  unfolding inv_VDMMap_defs by auto
 
-lemma l_inv_Map_finite[simp]: "inv_Map inv_Dom inv_Ran m \<Longrightarrow> finite (dom m)"
-  unfolding inv_Map_defs by simp
+lemma l_inv_VDMMap_finite[simp]: "inv_VDMMap inv_Dom inv_Ran m \<Longrightarrow> finite (dom m)"
+  unfolding inv_VDMMap_defs by simp
 
-lemma l_invMap_di_absorb:
-  "undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_Map di ri m \<Longrightarrow> inv_Map inv_True ri m"
-  by (simp add: inv_Map_def inv_VDMSet'_def)
+lemma l_inv_VDMMap_di_absorb:
+  "undefined \<notin> dom m \<Longrightarrow> undefined \<notin> rng m \<Longrightarrow> inv_VDMMap di ri m \<Longrightarrow> inv_VDMMap inv_True ri m"
+  by (simp add: inv_VDMMap_def inv_VDMSet'_def)
 
 section \<open>To tidy up or remove\<close>
 
@@ -2579,7 +2579,7 @@ lemmas [VDM_seq_spec_post_1]  = post_len_def post_elems_def post_inds_def post_h
 lemmas [VDM_seq_spec_post_2]  = post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
 lemmas [VDM_seq_spec_post_3]  = post_applyVDMSeq_def post_applyVDMSubseq_def 
 
-lemmas [VDM_map_defs]         = inv_Option_def inv_Map1_def inv_Map_def inv_Inmap_def
+lemmas [VDM_map_defs]         = inv_Option_def inv_VDMMap1_def inv_VDMMap_def inv_VDMInmap_def
 lemmas [VDM_map_fcns_1]       = rng_def dagger_def munion_def 
 lemmas [VDM_map_fcns_2]       = dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def
 lemmas [VDM_map_fcns_3]       = vdm_merge_def vdm_inverse_def map_subset_def 
