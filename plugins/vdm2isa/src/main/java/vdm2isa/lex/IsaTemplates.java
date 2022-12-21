@@ -147,15 +147,15 @@ public final class IsaTemplates {
         boolean result = false;
 		if (sep == null)
             // null sep is not okay
-			GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "null", kind.toString().toLowerCase());
+			GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "null", "null", kind.toString().toLowerCase());
 		else if (!sep.isEmpty()) 
         {
             if (kind == IsaSeparator.FORMATING && !IsaTemplates.isValidFormatingSeparator(sep))
                 // non white space formatting sep is not okay
-                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "formatting", "white space");
+                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "formatting", sep, "white space");
            else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
                 // non valid isatoken sep is not okay 
-                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_2P, location, "semantic", "Isabelle tokens or white space");
+                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "semantic", sep, "Isabelle tokens or white space");
             else
                 // validated sep is okay
                 result = true;

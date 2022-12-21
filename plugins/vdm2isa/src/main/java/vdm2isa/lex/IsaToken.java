@@ -235,7 +235,7 @@ public enum IsaToken {
 	protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
 
 	protected static final Set<String> VALID_SEMANTIC_SEP = new TreeSet<String>(
-		Arrays.asList(" ", "$", ",", ",", ";", "\\<and>", "|", "\\<Rightarrow>", "\\<times>", "\\<mapsto>"));
+		Arrays.asList(" ", "$", ",", ",", ";", "\\<and>", "|", "\\<Rightarrow>", "\\<times>", "\\<mapsto>", "\\<longrightarrow>"));
 
 	private static final Set<String> INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
         Arrays.asList(
