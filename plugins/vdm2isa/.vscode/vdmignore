@@ -6,6 +6,7 @@ experiments
 src/main/java
 src/main/resources/templates
 src/main/resources/.generated
+src/main/resources/generated
 src/main/resources/VDMEisbach.thy
 src/main/resources/VDMFSBPOs.thy
 src/main/resources/VDMOrderExample.thy
@@ -21,7 +22,12 @@ src/main/resources/modules-mappings-todo.txt
 src/main/resources/tc-tr.mappings
 src/main/resources/type-mappings-todo.txt
 src/test/java
+src/test/resources/generated
+src/main/resources/lvl0/generated
+src/main/resources/lvl1/generated
 src/test/resources/.generated
+src/main/resources/lvl0/.generated
+src/main/resources/lvl1/.generated
 src/test/resources/VDMTools4VDMToolkit.opt
 src/test/resources/VDMTools4VDMToolkit.prj
 src/test/resources/VDMTools4VDMToolkit.wgm
