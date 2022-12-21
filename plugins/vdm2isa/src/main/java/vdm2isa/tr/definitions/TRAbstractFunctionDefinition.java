@@ -477,11 +477,11 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 						TRDefinitionListList cycles = TRRecursiveLoops.getInstance().getCycles(name);
 						if (cycles != null && cycles.size() > 0 && cycles.get(0).size() > 0)
 						{
-							System.out.println("BINGO");
+							sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
 						}
 						else 
 						{
-							sb.append(IsaTemplates.translateRecFunDefinition(this.getLocation(), fcnName, fcnInType, fcnOutType, fcnParams, fcnBody.toString(), isLocal()));
+							System.out.println("Recursive definition without cycles?");
 						}
 					}
 					else 
