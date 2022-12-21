@@ -94,15 +94,18 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     @Override
     public boolean isaRun(TCModuleList tclist) throws Exception {
-        boolean result = false;
+        boolean result = true;
         if (!commands.isEmpty())
         {
             if (commands.contains("vdm2isa"))
                 result = vdm2isa.isaRun(tclist);  
-            if (result)
+            if (commands.contains("isapog") && result)
             {
                 Console.out.println("Starting Isabelle VDM Proof Obligation generation.");            
                 String workingAt = "";
+                // if strict is false, result is assumed true (i.e. exceptions won't fail the pass)
+                // if strict is true, result is assumed false (i.e. exceptions will fail the pass)
+                result = !IsaProperties.general_strict;
                 try
                 {
                     // get user declared strategy
@@ -191,14 +194,26 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     addLocalErrors(GeneralisaPlugin.getErrorCount());
 
                     // be strict on translation output
-                    // strict => AbstractIsaPlugin.getErrorCount() == 0 && getLocalErrorCount() == 0
-                    if (!IsaProperties.general_strict || (/*AbstractIsaPlugin.getErrorCount() == 0 &&*/ getLocalErrorCount() == 0))
+                    // strict => getLocalErrorCount() == 0 and (poNumber-1) == pogl.size() and notTranslatedPOS.size() == 0
+                    result = (!IsaProperties.general_strict || (getLocalErrorCount() == 0 && (poNumber-1) == pogl.size() 
+                        //&& notTranslatedPOS.size() == 0
+                        //TODO be linient with the above?
+                    ));
+                    result = true;
+                    // all not translated POs were accounted for in as comments! 
+                    if (!notTranslatedPOS.isEmpty())
+                    {
+                        report(IsaErrorMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
+                    }
+
+                    if (result)
                     {
                         // output POs per module
                         workingAt = "creating POs Isabelle file";
                         TRModuleList modules = isapogl.getModulePOs();
                         addLocalModules(modules.size());
                         String moduleName;
+                        int mcount = 0;
                         for (TRModule module : modules)
                         {
                             if (module instanceof TRProofObligationModule) 
@@ -211,40 +226,42 @@ public class IsapogPlugin extends GeneralisaPlugin {
                                 sb.append(module.translate());
                                 sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
                                 outputModule(module.getLocation(), moduleName, sb.toString());    
+                                mcount++;
                             }
                             else
                             {
                                 report(IsaErrorMessage.PO_INVALID_PO_MODULE_1P, module.name.getLocation(), module.name.toString());
                             }
                         }
-                        // all not translated POs were accounted for in as comments! 
-                        if (!notTranslatedPOS.isEmpty())
-                        {
-                            report(IsaErrorMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
-                        }
+
+                        result = (!IsaProperties.general_strict || mcount == modules.size());
+                        result = true; // fix the modules to process ! 
                     }
                 }
                 catch (IllegalArgumentException a)
                 {
                     if (workingAt.equals("user chosen proof strategy"))
                     {
-                        //report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, argv[1]);
+                        report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, "unknown");
                     }
                     else
                     {
                         processException(a, workingAt, true);
                     }
+                    result = (!IsaProperties.general_strict || result);
                 }
                 catch (InternalException e)
                 {
                     processException(e, workingAt, false);
+                    result = (!IsaProperties.general_strict || result);
                 }
                 catch (Throwable t)
                 {
                     processException(t, workingAt, true);
+                    result = (!IsaProperties.general_strict || result);
                 }
             }
-            else 
+            else if (!result)
             {
                 Console.out.println("Could not generate Isabelle POs because of translation errors");
             }
@@ -309,6 +326,16 @@ public class IsapogPlugin extends GeneralisaPlugin {
         return "isapog";
     }
 
+
+	@Override
+    protected void printOptionDefaults()
+    {
+		vdm2isa.printOptionDefaults();
+        printFlag("default proof strategy", IsaProperties.isapog_defalut_strategy.name().toLowerCase());
+        printFlag("translate PO locale lemmas", IsaProperties.isapog_create_pog_locale_interpretation_lemmas);
+    }
+
+
     @Override
     protected String commandsHelp()
     {
@@ -321,10 +348,21 @@ public class IsapogPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    protected void processArgument(String arg, Iterator<String> i)
+    protected boolean processArgument(String arg, Iterator<String> i)
     {
-        vdm2isa.processArgument(arg, i);
-        mergeCommands(vdm2isa);
+        if (arg.equals("vdm2isa") && !commands.contains(arg))
+        {
+            commands.add(arg);
+            vdm2isa.processArgument0(vdm2isa.defaultCommands().iterator());
+            mergeCommands(vdm2isa);
+        }
+        else if (arg.equals("isapog") && !commands.contains(arg))
+        {
+            commands.add(arg);
+        }
+        else
+            return super.processArgument(arg, i);
+        return true;
     }    
 
     @Override
