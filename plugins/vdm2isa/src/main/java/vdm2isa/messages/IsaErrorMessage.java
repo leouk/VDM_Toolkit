@@ -149,7 +149,7 @@ public enum IsaErrorMessage {
     PO_INVALID_POEXPR_2P(VDM2IsaError.ISABELLE_E_PO_BASE + 3, 
     "Invalid proof obligation expression: %1$s = %2$s."),
     PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P(VDM2IsaError.ISABELLE_E_PO_BASE + 4,
-    "PO conversion failed, yet remaining unprocessed POs were not converted to Isabelle as comments?! \n\t%1$s"),    
+    "PO conversion failed because of an unexpected VDMJ error. They were converted to Isabelle as comments. \n\t%1$s"),    
     PO_INVALID_PROOF_STRATEGY_1P(VDM2IsaError.ISABELLE_E_PO_BASE + 5,
     "Invalid user defined proof strategy %1$s; availabe ones are = " + IsaProofStrategy.values().toString())
     ;
