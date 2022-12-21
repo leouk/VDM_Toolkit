@@ -53,13 +53,16 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	@Override
 	public void setup()
 	{
-		super.setup();
-		setFormattingSeparator("\n\t");
-		this.getInnerType().definitions = definitions;
+		// result stands also for the inner type type, so set it up before super call!
 		assert result != null;
 		// presume that all function types will be curried
 		TRNode.setup(parameters, result); 
 		parameters.setCurried(true);
+		setInnerType(result);
+		
+		super.setup();
+		setFormattingSeparator("\n\t");
+		this.getInnerType().definitions = definitions;
 		//System.out.println(toString());
 	}
 

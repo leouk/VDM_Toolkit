@@ -74,8 +74,8 @@ public enum IsaErrorMessage {
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
     "Invalid IsaItem %1$s: %2$s has already been defined in module %3$s"), 
-    ISA_SEP_ERROR_2P        (VDM2IsaError.ISABELLE_E_ISA_BASE + 1,
-    "Invalid %1$s separator: only %2$s characters are allowed separator"),
+    ISA_SEP_ERROR_3P        (VDM2IsaError.ISABELLE_E_ISA_BASE + 1,
+    "Invalid %1$s separator `%2$s`: only %3$s characters are allowed separator"),
     ISA_TOKEN_ERROR_1P      (VDM2IsaError.ISABELLE_E_ISA_BASE + 2,
     "Unsupported VDM SL token %1$s"),
     ISA_DUMMYNAME_ERROR_1P  (VDM2IsaError.ISABELLE_E_ISA_BASE + 3,
