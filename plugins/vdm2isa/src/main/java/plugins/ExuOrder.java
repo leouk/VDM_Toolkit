@@ -2,6 +2,8 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.stringtemplate.v4.ST;
@@ -257,21 +259,22 @@ public class ExuOrder extends DependencyOrder
 
     public void graphIt(TCModule m, String namePrefix)
     {
-        try {
-            if (m.files.size() > 0)
+        if (m.files.size() > 0)
+        {
+            String dir = m.files.get(0).getParent();
+    		if (dir == null) dir = ".";
+    		String name = namePrefix + m.name.getName() + ".dot";
+            File outfile = new File(dir + File.separator + ".generated", name);
+            try 
             {
-                String name = namePrefix + m.name.getName();//m.files.get(0).getName();
-                String parent = m.files.get(0).getParent();
-                File depParent = new File(parent + "./generated/");
-                if (!depParent.exists()) depParent.mkdir();
-                File depFile = new File(parent, ".generated/" +name + ".dot");
-                if (!depFile.exists()) depFile.createNewFile();
-                graphOf(depFile);
-                Console.out.println("Printed dependencies for module " + name + " at " + depFile.getAbsolutePath() + "\n");
+                Files.createDirectories(Paths.get(dir + File.separator + ".generated"));
+                graphOf(outfile);
+                Console.out.println("Printed dependencies for module " + name + " at " + outfile.getAbsolutePath() + "\n");
             } 
-        } catch (IOException e) {
-            Console.err.println("I/O error whilst attempting to write dependency graph");
-            e.printStackTrace();
+            catch (IOException e) {
+                Console.err.println("I/O error whilst attempting to write dependency graph for " + outfile.getAbsolutePath());
+                e.printStackTrace();
+            }
         }    
     }
 }
