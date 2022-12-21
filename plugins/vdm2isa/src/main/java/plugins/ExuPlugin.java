@@ -17,12 +17,13 @@ import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
-    
+   
     public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
@@ -32,7 +33,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     public boolean isaRun(TCModuleList tclist) throws Exception {
         boolean result = true;
         if (!commands.isEmpty())
-		{
+		{    
             ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
                 IsaProperties.general_report_vdm_warnings, commands.contains("graph"), commands.contains("sort"));
 
@@ -50,8 +51,12 @@ public class ExuPlugin extends GeneralisaPlugin {
             }
             else if (!result)
                 Console.out.println("Module list topological sorting threw type errors!");
-            if (commands.contains("check"))
+            
+            result = (!IsaProperties.general_strict || result);
+            if (commands.contains("check") && result)
                 checkModules(tclist);
+
+            result = (!IsaProperties.general_strict || getLocalErrorCount() == 0);
         }
         return result;
     }
@@ -201,7 +206,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    protected void processArgument(String arg, Iterator<String> i)
+    protected boolean processArgument(String arg, Iterator<String> i)
     {
         if (arg.equals("graph") && !commands.contains(arg))
         {
@@ -215,8 +220,13 @@ public class ExuPlugin extends GeneralisaPlugin {
         {
             commands.add(arg);
         }
+        else if (!commands.contains(arg))
+        {
+            return super.processArgument(arg, i);
+        }
         else 
-            super.processArgument(arg, i);
+            return false;
+        return true;
     }
 
     @Override
@@ -238,6 +248,14 @@ public class ExuPlugin extends GeneralisaPlugin {
     protected String pluginName()
     {
         return "exu";
+    }
+
+    @Override
+    protected void printOptionDefaults()
+    {
+        super.printOptionDefaults();
+        printFlag("linient invariant", IsaProperties.exu_linient_inv_check);
+        printFlag("re-type check", IsaProperties.exu_retypecheck);
     }
 
     @Override
