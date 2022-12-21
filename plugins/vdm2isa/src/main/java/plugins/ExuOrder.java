@@ -2,7 +2,6 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.stringtemplate.v4.ST;
@@ -46,60 +45,60 @@ public class ExuOrder extends DependencyOrder
 
     final static String defListString(TCDefinitionList s) 
     {
-        // ST st = new ST(ExuTemplate.printList.name());
-        // st.add(ExuTemplate.printList.arg, s);
-        // return st.render();
-        StringBuilder sb = new StringBuilder();
-        Iterator<TCDefinition> it = s.iterator();
-        TCDefinition d;
-        if (it.hasNext())
-        {
-            d = it.next();
-            sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
-        }
-        while (it.hasNext())
-        {
-            d = it.next();
-            sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
-        }
-        return sb.toString();
+        ST st = new ST(ExuTemplate.printList.name());
+        st.add(ExuTemplate.printList.arg, s);
+        return st.render();
+        // StringBuilder sb = new StringBuilder();
+        // Iterator<TCDefinition> it = s.iterator();
+        // TCDefinition d;
+        // if (it.hasNext())
+        // {
+        //     d = it.next();
+        //     sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+        // }
+        // while (it.hasNext())
+        // {
+        //     d = it.next();
+        //     sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+        // }
+        // return sb.toString();
     }
 
     final static String defSetString(TCDefinitionSet s) 
     {
-        // ST st = group.getInstanceOf(ExuTemplate.printList.name());
-        // st.add(ExuTemplate.printList.arg, s);
-        // return st.render();
-        StringBuilder sb = new StringBuilder();
-        Iterator<TCDefinition> it = s.iterator();
-        TCDefinition d;
-        if (it.hasNext())
-        {
-            d = it.next();
-            sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
-        }
-        while (it.hasNext())
-        {
-            d = it.next();
-            sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
-        }
-        return sb.toString();
+        ST st = group.getInstanceOf(ExuTemplate.printList.name());
+        st.add(ExuTemplate.printList.arg, s);
+        return st.render();
+        // StringBuilder sb = new StringBuilder();
+        // Iterator<TCDefinition> it = s.iterator();
+        // TCDefinition d;
+        // if (it.hasNext())
+        // {
+        //     d = it.next();
+        //     sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+        // }
+        // while (it.hasNext())
+        // {
+        //     d = it.next();
+        //     sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+        // }
+        // return sb.toString();
     }
 
     final static String defMapString(Map<TCNameToken, TCDefinitionSet> m)
     {
-        // ST st = group.getInstanceOf(ExuTemplate.printMap.name());
-        // st.add(ExuTemplate.printMap.arg, m.entrySet());
-        // return st.render();
-        StringBuilder sb = new StringBuilder();
-        Iterator<TCNameToken> it = m.keySet().iterator();
-        TCNameToken d;
-        while (it.hasNext())
-        {
-            d = it.next();
-            sb.append(String.format("\n%1$s \t\t={%2$s}", d.getName(), defSetString(m.get(d))));
-        }
-        return sb.toString();
+        ST st = group.getInstanceOf(ExuTemplate.printMap.name());
+        st.add(ExuTemplate.printMap.arg, m.entrySet());
+        return st.render();
+        // StringBuilder sb = new StringBuilder();
+        // Iterator<TCNameToken> it = m.keySet().iterator();
+        // TCNameToken d;
+        // while (it.hasNext())
+        // {
+        //     d = it.next();
+        //     sb.append(String.format("\n%1$s \t\t={%2$s}", d.getName(), defSetString(m.get(d))));
+        // }
+        // return sb.toString();
     }
 
     private TCNameList savedStartPoints;
