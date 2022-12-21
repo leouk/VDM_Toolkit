@@ -7,7 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fujitsu.vdmj.commands.CommandPlugin;
+import com.fujitsu.vdmj.config.Properties;
+import com.fujitsu.vdmj.runtime.Interpreter;
 
 public class ResourceUtil
 {
@@ -26,6 +33,11 @@ public class ResourceUtil
         return isr;
     }
 
+	/**
+	 * Loads a given string as an URL that is known within the class path. 
+	 * @param resourceURI
+	 * @return
+	 */
 	public static URL loadURL(String resourceURI)  
 	{
 		// src/main/resources is on the classpath, and rules seem to just require the extra /templates/ path *with* the leading "/"!
@@ -53,4 +65,71 @@ public class ResourceUtil
 		isr.close();
 		osr.close();		
 	}    
+
+	/** The cache of loaded plugin instances */
+	private static final Map<String, CommandPlugin> plugins = new HashMap<String, CommandPlugin>();
+
+	public static GeneralisaPlugin getPlugin(String name)
+	{
+		CommandPlugin result = plugins.get(name);
+		if (result != null && result instanceof GeneralisaPlugin)
+			return (GeneralisaPlugin)result;
+		else 
+			return null;
+	}
+
+	/**
+	 * Mimics CommandReader's use plugin method: looks for plugins within the right paths
+	 * using naming convention, then runs then. Useful for jUnit testing. 
+	 * @param line
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean runPlugin(String line, Interpreter interpreter) throws Exception
+	{
+		if (line == null || line.isEmpty())
+			throw new IllegalArgumentException("Plugin line cannot be empty");
+		String[] argv = line.split("\\s+");
+		if (argv.length == 0)
+			throw new IllegalArgumentException("Plugin line cannot be empty");
+		CommandPlugin cmd = plugins.get(argv[0]);
+		
+		if (cmd != null)
+		{
+			return cmd.run(argv);
+		}
+		
+		String plugin = Character.toUpperCase(argv[0].charAt(0)) + argv[0].substring(1).toLowerCase() + "Plugin";
+		String[] packages = Properties.cmd_plugin_packages.split(";|:");
+		
+		for (String pack: packages)
+		{
+			try
+			{
+				Class<?> clazz = Class.forName(pack + "." + plugin);
+
+				if (CommandPlugin.class.isAssignableFrom(clazz))
+				{
+					Constructor<?> ctor = clazz.getConstructor(Interpreter.class);
+					cmd = (CommandPlugin)ctor.newInstance(interpreter);
+					plugins.put(argv[0], cmd);
+					return cmd.run(argv);
+				}
+			}
+			catch (ClassNotFoundException e)
+			{
+				// Try next package
+			}
+			catch (InstantiationException e)
+			{
+				// Try next package
+			}
+			catch (IllegalAccessException e)
+			{
+				// Try next package
+			}
+		}
+
+		return false;
+	}
 }

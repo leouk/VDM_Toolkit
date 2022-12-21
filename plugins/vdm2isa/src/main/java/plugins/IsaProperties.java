@@ -46,6 +46,7 @@ public class IsaProperties {
     // creates POG locale lemmas template
     public static boolean isapog_create_pog_locale_interpretation_lemmas;
 
+	
     /**
 	 * When the class is initialized, which uses the vdmj.properties file, and any System
 	 * properties, to set the static fields above.
