@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,11 +70,12 @@ public class ResourceUtil
 	/** The cache of loaded plugin instances */
 	private static final Map<String, CommandPlugin> plugins = new HashMap<String, CommandPlugin>();
 
-	public static GeneralisaPlugin getPlugin(String name)
+	@SuppressWarnings("unchecked")
+	public static <T extends CommandPlugin> T getPlugin(String name)
 	{
-		CommandPlugin result = plugins.get(name);
-		if (result != null && result instanceof GeneralisaPlugin)
-			return (GeneralisaPlugin)result;
+		CommandPlugin c = plugins.get(name);
+		if (c != null) 
+			return (T)c; 
 		else 
 			return null;
 	}
@@ -85,21 +87,17 @@ public class ResourceUtil
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean runPlugin(String line, Interpreter interpreter) throws Exception
+	@SuppressWarnings("unchecked")
+	public static <T extends CommandPlugin> T createPlugin(String name, Interpreter interpreter) throws NoSuchMethodException, InvocationTargetException, ClassCastException
 	{
-		if (line == null || line.isEmpty())
-			throw new IllegalArgumentException("Plugin line cannot be empty");
-		String[] argv = line.split("\\s+");
-		if (argv.length == 0)
-			throw new IllegalArgumentException("Plugin line cannot be empty");
-		CommandPlugin cmd = plugins.get(argv[0]);
+		T cmd = getPlugin(name);
 		
 		if (cmd != null)
 		{
-			return cmd.run(argv);
+			return cmd;
 		}
 		
-		String plugin = Character.toUpperCase(argv[0].charAt(0)) + argv[0].substring(1).toLowerCase() + "Plugin";
+		String plugin = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase() + "Plugin";
 		String[] packages = Properties.cmd_plugin_packages.split(";|:");
 		
 		for (String pack: packages)
@@ -111,9 +109,9 @@ public class ResourceUtil
 				if (CommandPlugin.class.isAssignableFrom(clazz))
 				{
 					Constructor<?> ctor = clazz.getConstructor(Interpreter.class);
-					cmd = (CommandPlugin)ctor.newInstance(interpreter);
-					plugins.put(argv[0], cmd);
-					return cmd.run(argv);
+					cmd = (T)ctor.newInstance(interpreter);
+					plugins.put(name, cmd);
+					return cmd;
 				}
 			}
 			catch (ClassNotFoundException e)
@@ -130,6 +128,18 @@ public class ResourceUtil
 			}
 		}
 
-		return false;
+		return null;
+	}
+
+	public static boolean runPlugin(String name, String args) throws Exception
+	{
+		if (name == null || name.isEmpty())
+			throw new IllegalArgumentException("Plugin name cannot be empty");
+		CommandPlugin cmd = getPlugin(name);
+		if (cmd == null)
+			throw new IllegalArgumentException("Plugin " + name + " needs to be created first");
+		
+		String[] argv = (args == null || args.length() == 0) ? new String[0] : args.split("\\s+");
+		return cmd.run(argv);
 	}
 }
