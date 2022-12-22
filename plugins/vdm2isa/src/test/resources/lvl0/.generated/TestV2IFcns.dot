@@ -1,0 +1,17 @@
+digraph G {
+	 pre_h [label="pre_h @ L30"]
+	 pre_h -> pre_g;
+	 h' [label="h' @ L34"]
+	 h' -> g;
+	 post_h'' [label="post_h'' @ L43"]
+	 post_h'' -> pre_g;
+	 h'' [label="h'' @ L40"]
+	 h'' -> g;
+	 h'' -> pre_g;
+	 post_h [label="post_h @ L31"]
+	 post_h -> post_g;
+	 h [label="h @ L28"]
+	 h -> g;
+	 h -> post_g;
+	 h -> pre_g;
+}

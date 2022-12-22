@@ -24,7 +24,7 @@ types
 	S = T 
 	inv s == 
 		--inv_T(s) and 
-		len tail(s) > 0;
+		len head(s) > 0;
 	
 	--@doc uses type S and function sum_elems before declaring them.
 	R = S 

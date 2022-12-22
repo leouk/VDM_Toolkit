@@ -1,0 +1,33 @@
+digraph G {
+	 T [label="T @ L30"]
+	 T -> inv_T;
+	 S [label="S @ L24"]
+	 S -> T;
+	 S -> inv_S;
+	 S -> inv_T;
+	 S -> tail;
+	 sum_elems [label="sum_elems @ L38"]
+	 sum_elems -> head;
+	 sum_elems -> tail;
+	 Map [label="Map @ L6"]
+	 Map -> inv_Map;
+	 Map -> inv_Rec;
+	 Map -> inv_S;
+	 inv_R [label="inv_R @ L21"]
+	 inv_R -> sum_elems;
+	 R [label="R @ L18"]
+	 R -> inv_R;
+	 R -> inv_S;
+	 R -> sum_elems;
+	 inv_S [label="inv_S @ L27"]
+	 inv_S -> tail;
+	 Rec [label="Rec @ L10"]
+	 Rec -> T;
+	 Rec -> inv_R;
+	 Rec -> inv_Rec;
+	 Rec -> inv_S;
+	 Rec -> inv_T;
+	 Rec -> sum_elems;
+	 inv_Rec [label="inv_Rec @ L15"]
+	 inv_Rec -> sum_elems;
+}
