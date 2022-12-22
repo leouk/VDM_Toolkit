@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
 
@@ -23,8 +24,8 @@ public class TRRecordType extends TRInvariantType
     private final TRFieldList fields;
     private final boolean composed; 
 
-    private static final Map<TCNameToken, TRRecordType> recordMap = new HashMap<TCNameToken, TRRecordType>(); 
-
+    public static final Map<String, Map<TCNameToken, TRRecordType>> recordMap = new HashMap<String, Map<TCNameToken, TRRecordType>>(); 
+    
     private TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef, boolean copying)
     {
         super(vdmType, name, definitions, invdef, eqdef, orddef);
@@ -33,7 +34,7 @@ public class TRRecordType extends TRInvariantType
         this.composed = composed;
         // should this be in setup? 
         if (!copying && name != null)
-            recordMap.put(name, this); 
+            TRRecordType.addRecord(name, this);
     }
 
     public TRRecordType(TCRecordType vdmType, TCNameToken name, TRDefinitionList definitions, TRFieldList fields, boolean composed, TRExplicitFunctionDefinition invdef, TRExplicitFunctionDefinition eqdef, TRExplicitFunctionDefinition orddef)
@@ -74,11 +75,6 @@ public class TRRecordType extends TRInvariantType
         TRNode.setup(result);
         result.setAtTopLevelDefinition(atTLD);
         return result;
-    }
-
-    public static final void reset()
-    {
-        recordMap.clear();
     }
 
     @Override 
@@ -190,10 +186,40 @@ public class TRRecordType extends TRInvariantType
 		return null;
 	}
 
+    /**
+     * Records TRRecordType instances for field search. Has to be module-dependant to avoid duplicate names across modules confusing
+     * the map keys! i.e. two TCNameTokens called Rec in two different modules might not be at the same location (and be different)!
+     * @param name
+     * @param r
+     */
+    private static final void addRecord(TCNameToken name, TRRecordType r)
+    {
+        assert name != null && name.getLocation() != null;
+        LexLocation loc = name.getLocation();
+        Map<TCNameToken, TRRecordType> rmap;
+        if (recordMap.containsKey(loc.module))
+        {
+            rmap = recordMap.get(loc.module);
+        }
+        else 
+        {
+            rmap = new HashMap<TCNameToken, TRRecordType>();
+            recordMap.put(loc.module, rmap);
+        }
+        rmap.put(name, r);
+    }
+
+    public static final void reset()
+    {
+        recordMap.clear();
+    }
 
     public static final TRRecordType recordTypeFor(TCNameToken recordName)
     {
-        TRRecordType result = recordMap.get(recordName); 
+        Map<TCNameToken, TRRecordType> map = recordMap.get(recordName.getLocation().module);
+        TRRecordType result = null; 
+        if (map != null)
+            result = map.get(recordName);
         if (result == null)
             GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_RECORDNAME_1P, recordName.getLocation(), recordName.toString());
         return result;

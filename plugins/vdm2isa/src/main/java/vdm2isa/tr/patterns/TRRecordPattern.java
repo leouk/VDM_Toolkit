@@ -117,7 +117,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
         {
             // if can't find the fields, then fall back and report error
             fieldName = plist.get(index).invTranslate();
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.toString());
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.getVDMType().toString());
         }
 
         // project the field out so it's available
