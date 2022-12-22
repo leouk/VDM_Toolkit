@@ -31,8 +31,8 @@ public class ExuPlugin extends GeneralisaPlugin {
 
     @Override
     public boolean isaRun(TCModuleList tclist) throws Exception {
-        boolean result = true;
-        if (!commands.isEmpty())
+        boolean result = !commands.isEmpty() && !tclist.isEmpty();
+        if (result)
 		{    
             ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
                 IsaProperties.general_report_vdm_warnings, commands.contains("graph"), commands.contains("sort"));
@@ -208,25 +208,28 @@ public class ExuPlugin extends GeneralisaPlugin {
     @Override
     protected boolean processArgument(String arg, Iterator<String> i)
     {
+        boolean result;
         if (arg.equals("graph") && !commands.contains(arg))
         {
-            commands.add(arg);
+            result = commands.add(arg);
         }
         else if (arg.equals("sort") && !commands.contains(arg))
         {
-            commands.add(arg);
+            result = commands.add(arg);
         }
         else if (arg.equals("check") && !commands.contains(arg))
         {
-            commands.add(arg);
+            result = commands.add(arg);
         }
         else if (!commands.contains(arg))
         {
-            return super.processArgument(arg, i);
+            result = super.processArgument(arg, i);
         }
         else 
-            return false;
-        return true;
+        {
+            result = commands.contains(arg);
+        }
+        return result;
     }
 
     @Override
