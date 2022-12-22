@@ -52,7 +52,7 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
         GeneralisaPlugin cmd = ResourceUtil.createPlugin(name, interpreter);
         // choose specific module to allow for test granualirty
         //TODO would be better to have one TestCase per file? 
-        boolean result = cmd.run(new String[] { name, "set ml " + module });
+        boolean result = cmd.run(new String[] { name, "set", "ml", module });
         if (!result)
         Assert.fail(name + " plugin could not set modules " + module);
         // every run does a reset of local + global errors
@@ -62,6 +62,7 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
         if (!result || (IsaProperties.general_strict && GeneralisaPlugin.getErrorCount() > 0))
         {
             printMessages(GeneralisaPlugin.getErrors());
+            
             Assert.fail(name + " plugin failed. Found " + GeneralisaPlugin.getErrorCount() + " errors for module " + module);
         }
     }
