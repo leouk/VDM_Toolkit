@@ -120,17 +120,21 @@ public class ExuTypeChecker {
         return result;
     }
 
+    /**
+     * Returns whether the resulting computation entailed sorting occured.
+     * That is, given list is different to sorted one, then sorting occurred.  
+     * @param tclist
+     * @return
+     */
     public boolean sortModules(TCModuleList tclist)
     {
-        boolean result = false;
         sorted_list = new TCModuleList();
         for(TCModule m : tclist)
         {
             TCModule sorted_m = sortModule(m);
-            result = sorted_m != m;
             sorted_list.add(sorted_m);
         }
-        return result;
+        return !tclist.equals(sorted_list);
     }
 
     public TCModuleList getSortedModules()
