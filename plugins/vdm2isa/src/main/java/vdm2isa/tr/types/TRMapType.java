@@ -93,6 +93,7 @@ public class TRMapType extends TRAbstractInnerTypedType
     {
         StringBuilder sb = new StringBuilder();
         sb.append(IsaToken.INV.toString());
+        sb.append("VDM");//for inv_VDMMap rather than just inv_Map
         // transform "map" => "Map" for inv_Map call
         //          "inmap"=> "Inmap" for inv_Inmap call
         int i = sb.length();

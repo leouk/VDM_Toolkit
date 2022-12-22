@@ -52,8 +52,10 @@ public enum IsaWarningMessage {
     "Map comprehension with type bindings will generate difficult map finiteness proof."),
     ISA_INVALID_MODULE_NAME_2P(VDM2IsaError.ISABELLE_W_ISA_BASE + 8, 
     "Module `%1$s` translation will be saved in a file with the same name instead of the one in \n\tFiles = %2$s"),
-    
-    PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0, 
+
+    PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P(VDM2IsaError.ISABELLE_W_PO_BASE + 0,
+    "PO conversion failed because of an unexpected VDMJ error. They were converted to Isabelle as comments. \n\t%1$s"),    
+    PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 1, 
     "Attempting to create proof step with definition %1$s.");
 
     public final int number;
