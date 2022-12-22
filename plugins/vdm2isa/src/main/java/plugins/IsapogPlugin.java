@@ -33,6 +33,7 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 import vdm2isa.tr.modules.TRProofObligationModule;
+import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 /**
@@ -98,7 +99,9 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     protected TRExpression map2isa(TCExpression tcexpr) throws Exception
     {
-        return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
+        // don't reinitialise! 
+        //return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
+        return ClassMapper.getInstance(TRNode.MAPPINGS).convert(tcexpr);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         {
             if (commands.contains("vdm2isa"))
                 result = vdm2isa.internalRun(tclist);
-
+            
             if (commands.contains("isapog") && result)
             {
                 String workingAt = "";
