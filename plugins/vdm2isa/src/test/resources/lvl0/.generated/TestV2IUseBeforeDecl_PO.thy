@@ -183,7 +183,7 @@ where
 definition
 	PO_26_Map_TOTAL :: \<open>\<bool>\<close>
 where
-	\<open>PO_26_Map_TOTAL  \<equiv> (\<forall> (m :: (S \<rightharpoonup> Rec))  . ((((inv_Map inv_S inv_Rec  m))) \<longrightarrow> isTest ((inv_Map m)) (inv_bool)))\<close>
+	\<open>PO_26_Map_TOTAL  \<equiv> (\<forall> (m :: (S \<rightharpoonup> Rec))  . ((((inv_VDMMap inv_S inv_Rec  m))) \<longrightarrow> isTest ((inv_Map m)) (inv_bool)))\<close>
 
 	
 
@@ -195,7 +195,7 @@ where
 definition
 	PO_27_Map_INV_SATISFIABILITY :: \<open>\<bool>\<close>
 where
-	\<open>PO_27_Map_INV_SATISFIABILITY  \<equiv> (\<exists> (m :: (S \<rightharpoonup> Rec))  . ((((inv_Map inv_S inv_Rec  m))) \<longrightarrow> ((dom m) = {})))\<close>
+	\<open>PO_27_Map_INV_SATISFIABILITY  \<equiv> (\<exists> (m :: (S \<rightharpoonup> Rec))  . ((((inv_VDMMap inv_S inv_Rec  m))) \<longrightarrow> ((dom m) = {})))\<close>
 
 	
  
