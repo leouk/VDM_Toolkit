@@ -63,6 +63,10 @@ public class ISAPluginSL extends ISAPlugin
 	@Override
 	public RPCMessageList analyse(RPCRequest request)
 	{
+		Diag.info("BINGO");
+		Diag.info(request.toString());
+		return new RPCMessageList(request, RPCErrors.InvalidRequest, "Specification is not checked");
+
 // 		try
 // 		{
 // 			GeneralisaPlugin.reset();
@@ -161,6 +165,6 @@ public class ISAPluginSL extends ISAPlugin
 // 			Diag.error(e);
 // 			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
 // 		}
-		return null;
+//		return null;
  	}
 }

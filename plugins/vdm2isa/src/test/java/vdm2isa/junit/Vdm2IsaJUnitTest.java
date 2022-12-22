@@ -2,6 +2,7 @@ package vdm2isa.junit;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -45,13 +46,20 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     protected void runPlugin(String line, boolean result) throws Exception
     {
         if (!result) Assert.fail(line + " plugin call raised errors (see stdout)");
-        result = ResourceUtil.runPlugin(line, interpreter);
+        //result = ResourceUtil.runPlugin(line, interpreter);
         if (!result) Assert.fail(line + " plugin call raised errors (see stdout)");
     }
     
     protected void runPlugin(String name, String module) throws Exception
     {
-        runPlugin(name + " set ml " + module, true);
-        runPlugin(name, true);
+        GeneralisaPlugin cmd = ResourceUtil.createPlugin(name, interpreter);
+        boolean result = cmd.run(new String[] { "set ml " + module });
+        if (!result)
+            Assert.fail(name + " plugin could not set modules " + module);
+        result = cmd.run(new String[] {});
+        if (!result)
+        {
+            printMessages(cmd.getErrors());
+        }
     }
 }
