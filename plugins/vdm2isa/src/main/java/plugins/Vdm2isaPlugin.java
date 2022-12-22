@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fujitsu.vdmj.mapper.ClassMapper;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -45,27 +46,25 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 			translatedModules.clear();
 	}
 
+	@Override
+    protected void prompt()
+    {
+        Console.out.println("Calling VDM to " + IsaProperties.general_isa_version + " translator...");
+        super.prompt();
+    }
 
     @Override
 	public boolean isaRun(TCModuleList tclist) throws Exception 
 	{
-		boolean result = true;
-		if (!commands.isEmpty())
+        boolean result = !commands.isEmpty() && !tclist.isEmpty();
+		if (result)
 		{
-	        // VDM errors don't pass VDMJ; some VDM warnings have to be raised as errors to avoid translation issues
-			GeneralisaPlugin.processVDMWarnings(TypeChecker.getWarnings());
+	        // VDM errors don't pass VDMJ typechecker; 
+			// some VDM warnings have to be raised as errors to avoid translation issues
+			Vdm2isaPlugin.processVDMWarnings(TypeChecker.getWarnings(), true);
 			if (commands.contains("exu"))
 			{
-				// plugin run worked if exu's run works
-				exu.prompt();
-				result = exu.isaRun(tclist);
-
-				// clear error messages to avoid duplication
-				if (result)
-				{	
-					GeneralisaPlugin.reset();
-					exu.localReset();
-				}
+				result = exu.internalRun(tclist);
 			}
 			
 			// if not strict, then absorb bad exu results
@@ -109,10 +108,12 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				catch (InternalException e)
 				{
 					processException(e, workingAt, false);
+					result = false;
 				}
 				catch (Throwable t)
 				{
 					processException(t, workingAt, true);
+					result = false;
 				}
 			}
 		}
@@ -151,19 +152,25 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	@Override
     protected boolean processArgument(String arg, Iterator<String> i)
     {
+		boolean result;
         if (arg.equals("exu") && !commands.contains(arg) && IsaProperties.vdm2isa_run_exu)
         {
-            commands.add(arg);
-			exu.processArgument0(exu.defaultCommands().iterator());
-			mergeCommands(exu);
+            result = commands.add(arg);
+			if (result)
+			{
+				result = exu.processArgument0(exu.defaultCommands().iterator());
+				mergeCommands(exu);
+			}
         }
         else if (arg.equals("translate") && !commands.contains(arg))
         {
-            commands.add(arg);
+            result = commands.add(arg);
         }
-        else
-            return super.processArgument(arg, i);
-		return true;
+        else if (!commands.contains(arg))
+            result = super.processArgument(arg, i);
+		else 
+			result = commands.contains(arg);
+		return result;
     }
 
 
@@ -198,10 +205,12 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
         {
             IsaProperties.vdm2isa_translate_typedef_min_max = Boolean.parseBoolean(val);
         }
-        else if (IsaProperties.vdm2isa_run_exu)
-			exu.doSet(prop, val);
-		else
-            super.doSet(prop, val);
+        else 
+		{
+			if (IsaProperties.vdm2isa_run_exu)
+				exu.doSet(prop, val);
+			super.doSet(prop, val);
+		}
     }
 	
 	@Override

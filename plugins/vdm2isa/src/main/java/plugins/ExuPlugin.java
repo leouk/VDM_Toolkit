@@ -34,6 +34,10 @@ public class ExuPlugin extends GeneralisaPlugin {
         boolean result = !commands.isEmpty() && !tclist.isEmpty();
         if (result)
 		{    
+            // VDM errors don't pass VDMJ typechecker; 
+			// some VDM warnings have to be raised as Exu warnings or errors depending on strictness
+            GeneralisaPlugin.processVDMWarnings(TypeChecker.getWarnings(), IsaProperties.general_strict);
+
             ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
                 IsaProperties.general_report_vdm_warnings, commands.contains("graph"), commands.contains("sort"));
 
@@ -59,6 +63,13 @@ public class ExuPlugin extends GeneralisaPlugin {
             result = (!IsaProperties.general_strict || getLocalErrorCount() == 0);
         }
         return result;
+    }
+
+    @Override
+    protected void prompt()
+    {
+        Console.out.println("Calling Exu VDM analyser...");
+        super.prompt();
     }
 
     protected void checkInvariantTypeSpecificationConsistency(TCTypeDefinition d, TCModuleList tclist)

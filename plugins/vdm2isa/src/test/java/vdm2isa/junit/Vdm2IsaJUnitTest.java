@@ -2,7 +2,6 @@ package vdm2isa.junit;
 
 import org.junit.Assert;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -13,6 +12,7 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmjunit.VDMJUnitTestSL;
 
 import plugins.GeneralisaPlugin;
+import plugins.IsaProperties;
 import plugins.ResourceUtil;
 
 public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
@@ -29,9 +29,6 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     public void setUp()
 	{
 		Vdm2IsaJUnitTest.init();
-        //TODO Will this already raise an exception if errors found? 
-        GeneralisaPlugin.processVDMWarnings(Vdm2IsaJUnitTest.reader.getWarnings());
-
         tclist = interpreter.getTC();
 	}
 
@@ -53,13 +50,19 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     protected void runPlugin(String name, String module) throws Exception
     {
         GeneralisaPlugin cmd = ResourceUtil.createPlugin(name, interpreter);
+        // choose specific module to allow for test granualirty
+        //TODO would be better to have one TestCase per file? 
         boolean result = cmd.run(new String[] { "set ml " + module });
         if (!result)
-            Assert.fail(name + " plugin could not set modules " + module);
+        Assert.fail(name + " plugin could not set modules " + module);
+        // every run does a reset of local + global errors
         result = cmd.run(new String[] {});
-        if (!result)
+        printMessages(GeneralisaPlugin.getWarnings());
+        // if plugin run failed or if strictly reporting errors, then fail
+        if (!result || (IsaProperties.general_strict && GeneralisaPlugin.getErrorCount() > 0))
         {
-            printMessages(cmd.getErrors());
+            printMessages(GeneralisaPlugin.getErrors());
+            Assert.fail(name + " plugin failed. Found " + GeneralisaPlugin.getErrorCount() + " errors for module " + module);
         }
     }
 }

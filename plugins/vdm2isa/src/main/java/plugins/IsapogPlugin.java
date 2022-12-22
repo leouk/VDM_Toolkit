@@ -199,11 +199,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         //&& notTranslatedPOS.size() == 0
                         //TODO be linient with the above?
                     ));
-                    result = true;
+
                     // all not translated POs were accounted for in as comments! 
                     if (!notTranslatedPOS.isEmpty())
                     {
-                        report(IsaErrorMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
+                        warning(IsaWarningMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
                     }
 
                     if (result)
@@ -235,7 +235,6 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         }
 
                         result = (!IsaProperties.general_strict || mcount == modules.size());
-                        result = true; // fix the modules to process ! 
                     }
                 }
                 catch (IllegalArgumentException a)
@@ -248,8 +247,9 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     {
                         processException(a, workingAt, true);
                     }
-                    result = (!IsaProperties.general_strict || result);
+                    result = false;
                 }
+                // VDMJ exception, then allow strictness
                 catch (InternalException e)
                 {
                     processException(e, workingAt, false);
@@ -258,7 +258,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                 catch (Throwable t)
                 {
                     processException(t, workingAt, true);
-                    result = (!IsaProperties.general_strict || result);
+                    result = false;
                 }
             }
             else if (!result)
@@ -267,6 +267,13 @@ public class IsapogPlugin extends GeneralisaPlugin {
             }
         }
         return result;
+    }
+
+    @Override
+    protected void prompt()
+    {
+        Console.out.println("Calling VDM POs to " + IsaProperties.general_isa_version + "...");
+        super.prompt();
     }
 
     /**
@@ -350,19 +357,25 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override
     protected boolean processArgument(String arg, Iterator<String> i)
     {
+        boolean result;
         if (arg.equals("vdm2isa") && !commands.contains(arg))
         {
-            commands.add(arg);
-            vdm2isa.processArgument0(vdm2isa.defaultCommands().iterator());
-            mergeCommands(vdm2isa);
+            result = commands.add(arg);
+            if (result) 
+            {
+                result = vdm2isa.processArgument0(vdm2isa.defaultCommands().iterator());
+                mergeCommands(vdm2isa);
+            }
         }
         else if (arg.equals("isapog") && !commands.contains(arg))
         {
-            commands.add(arg);
+            result = commands.add(arg);
         }
-        else
-            return super.processArgument(arg, i);
-        return true;
+        else if (!commands.contains(arg))
+            result = super.processArgument(arg, i);
+        else 
+            result = commands.contains(arg);
+        return result;
     }    
 
     @Override
@@ -384,7 +397,10 @@ public class IsapogPlugin extends GeneralisaPlugin {
             IsaProperties.isapog_create_pog_locale_interpretation_lemmas = Boolean.parseBoolean(val);
         }
 		else
+        {
             vdm2isa.doSet(prop, val);
+            super.doSet(prop, val);
+        }
     }
 
     @Override

@@ -28,7 +28,6 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -38,29 +37,23 @@ import vdm2isa.messages.VDM2IsaWarning;
 
 public abstract class GeneralisaPlugin extends CommandPlugin {
 
+    /** 
+     * These lists *must* be static to allow TRNode tree to report
+     */
     private static final List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
     private static final List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
 
     // list of VDM warning numbers to raise as errors
-    private static final List<Integer> vdmWarningOfInterest = 
+    protected static final List<Integer> vdmWarningOfInterest = 
         Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
 
+    // Settings are initialised only once per class load
     static {
         IsaProperties.init();
     }
 
-    private int localErrors;
-    private int localWarnings;
-    private int localModules;
-    protected List<String> commands;
-    protected TCModuleList tclist;
-    protected final Set<String> modulesToProcess; 
-
-    private static boolean firstCall = false;
-
-    protected int called;
     protected static int created = 0;
 
     public static final void main(String args[])
@@ -117,6 +110,19 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         });
     }
 
+    /**
+     * These are errors/warnings created by the plugin itself, rather than TRNode tree
+     */
+    private int localErrors;
+    private int localWarnings;
+    private int localModules;
+    private int called;
+
+    protected final List<String> commands;
+    protected TCModuleList tclist;
+    protected final Set<String> modulesToProcess; 
+
+
     public GeneralisaPlugin(Interpreter interpreter) {
         super(interpreter);
         // allow null for the reuse of the plugin for a VSCode command/plugin? 
@@ -124,6 +130,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             throw new IllegalArgumentException("Plugin interpreter must be a module interpreter");
         commands = new ArrayList<String>();
         tclist = new TCModuleList();
+        modulesToProcess = new HashSet<String>();
+        called = 0;
+        created++;
         localReset();
     }
 
@@ -133,14 +142,17 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localWarnings = 0;
         localModules = 0;
         commands.clear();
+        //leave it a set ml all!
+        //modulesToProcess.clear();
         ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
         tclist = minterpreter.getTC();			
     }
 
-    public abstract boolean isaRun(TCModuleList tclist) throws Exception;
+    protected abstract boolean isaRun(TCModuleList tclist) throws Exception;
 
     protected boolean processArguments(String[] args)
     {
+        assert args != null && args.length > 0;
         List<String> largs = Arrays.asList(args);
         Iterator<String> i = largs.iterator();
         boolean cont_ = true;
@@ -161,7 +173,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected boolean processArgument0(Iterator<String> i)
     {
         boolean cont_ = true;
-        while (i.hasNext())
+        while (i.hasNext() && cont_)
         {
             String arg = i.next();
             cont_ = processArgument(arg, i);
@@ -200,7 +212,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         printFlag("strict", IsaProperties.general_strict);	
         printFlag("report warnings", IsaProperties.general_report_vdm_warnings);
         printFlag("debug", IsaProperties.general_debug);
-        printFlag("modules to process", GeneralisaPlugin.modulesToProcess.isEmpty() ? "all" : GeneralisaPlugin.modulesToProcess.toString());
+        printFlag("modules to process", modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString());
     }
 
     protected boolean processArgument(String arg, Iterator<String> i)
@@ -260,12 +272,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         else if (prop.equals("ml"))
         {
             if ("all".equals(val))
-                GeneralisaPlugin.modulesToProcess.clear();
+                modulesToProcess.clear();
             else 
             {
                 String[] mods = val.split(",|;|:|\\|");
-                GeneralisaPlugin.modulesToProcess.clear();
-                GeneralisaPlugin.modulesToProcess.addAll(Arrays.asList(mods));    
+                modulesToProcess.clear();
+                modulesToProcess.addAll(Arrays.asList(mods));    
             }
    
         }
@@ -308,7 +320,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     protected void prompt()
     {
-        Console.out.println(pluginName() + "plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
+        if (IsaProperties.general_debug)
+            Console.out.println(pluginName() + " plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
     }
 
     protected abstract List<String> defaultCommands();
@@ -318,7 +331,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s ml=%6$s", 
             IsaProperties.general_strict, IsaProperties.general_max_errors, 
             IsaProperties.general_isa_version, IsaProperties.general_report_vdm_warnings, 
-            IsaProperties.general_debug, GeneralisaPlugin.modulesToProcess.isEmpty() ? "all" : GeneralisaPlugin.modulesToProcess.toString());
+            IsaProperties.general_debug, modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString());
     }
 
     protected String optionsHelp()
@@ -395,27 +408,22 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         
         long before = System.currentTimeMillis();
         
-        if (GeneralisaPlugin.firstCall)
-        {
-            GeneralisaPlugin.fullReset(this);
-            GeneralisaPlugin.firstCall = false;    
-        }
+        called++;
+        if (IsaProperties.general_debug)    
+            Console.out.println("***" + pluginName() + " CREATED = " + created + "; RUN = " + called + "; errCnt = " + getErrorCount());
+
+        GeneralisaPlugin.fullReset(this);
         GeneralisaPlugin.checkVDMSettings();
 
-        //if (argv != null && argv.length > 0)
-        //    Console.out.println("Params = " + Arrays.asList(argv).toString());
         boolean cont_ = processArguments(argv);
-        if (!commands.isEmpty())
-            prompt();
-
-        TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist, GeneralisaPlugin.modulesToProcess);        
-
+        TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist, modulesToProcess);        
         if (tclist_filtered.isEmpty())
         {
             Console.out.println("No modules to process; call `" + pluginName() + " set` to check!");
         }
-        else if (cont_)
+        else if (cont_ && !commands.isEmpty())
         {
+            prompt();
             result = isaRun(tclist_filtered);
             long after = System.currentTimeMillis();
             addLocalErrors(GeneralisaPlugin.getErrorCount());
@@ -432,6 +440,27 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             }
             summarise(result, after-before, tclist_filtered.size());            
         }       
+        return result;
+    }
+
+    /**
+     * Useful for plugins calling other plugins and don't need other processing but just run+reset
+     * @param tclist
+     * @return
+     * @throws Exception
+     */
+    protected final boolean internalRun(TCModuleList tclist) throws Exception
+    {
+        boolean result; 
+        // plugin run worked if exu's run works
+        prompt();
+        result = isaRun(tclist);
+
+        // clear error messages to avoid duplication
+        if (result)
+        {	
+            GeneralisaPlugin.fullReset(this);
+        }
         return result;
     }
 
@@ -518,31 +547,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    public static final void reportAsError(VDMWarning w) {
-        if (GeneralisaPlugin.vdmWarningOfInterest.contains(w.number)) {
-            report(/*VDM2IsaWarning.ISABELLE_WARNING_BASE +*/ w.number, w.message, w.location);
-        }
-    }
-
-    public static final void processVDMWarnings(List<VDMWarning> vdmWarnings)
-	{
-		int warnings2raiseCount = 0;
-		// tad inneficient, but fine (for now) as I want to "warn" user of this first
-		for (int i = 0; i < vdmWarnings.size(); i++)
-		{
-			if (vdmWarningOfInterest.contains(vdmWarnings.get(i).number))
-				warnings2raiseCount++;
-		}
-		if (warnings2raiseCount > 0)
-		{
-			Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
-			for(VDMWarning w : vdmWarnings)
-			{
-				reportAsError(w);
-			}
-		}
-	}
-
 	public static final void warning(IsaWarningMessage message, LexLocation location)
 	{
 		warning(message, location, (Object[])null);
@@ -603,7 +607,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected static void fullReset(GeneralisaPlugin g)
     {
         GeneralisaPlugin.reset();
-        GeneralisaPlugin.modulesToProcess.clear();
         g.localReset();
     }
 
@@ -611,4 +614,32 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
     }
+
+    public static final void reportAsError(VDMWarning w) {
+        if (GeneralisaPlugin.vdmWarningOfInterest.contains(w.number)) {
+            report(/*VDM2IsaWarning.ISABELLE_WARNING_BASE +*/ w.number, w.message, w.location);
+        }
+    }
+
+    public static final void processVDMWarnings(List<VDMWarning> vdmWarnings, boolean reportFoundAsError)
+	{
+		int warnings2raiseCount = 0;
+		// tad inneficient, but fine (for now) as I want to "warn" user of this first
+		for (int i = 0; i < vdmWarnings.size(); i++)
+		{
+			if (GeneralisaPlugin.vdmWarningOfInterest.contains(vdmWarnings.get(i).number))
+				warnings2raiseCount++;
+		}
+		if (warnings2raiseCount > 0)
+		{
+			Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
+			for(VDMWarning w : vdmWarnings)
+			{
+                if (reportFoundAsError)
+    				reportAsError(w);
+                else 
+                    warning(w.number, w.message, w.location);
+			}
+		}
+	}
 }
