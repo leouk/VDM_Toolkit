@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T13:08:50.388Z  
+(* VDM to Isabelle Translation @2022-12-22T14:19:22.798Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IDeclBeforeUse
@@ -111,8 +111,7 @@ where
 		\<comment>\<open>Implicitly defined type invariant checks for undeclared `post_sum_elems` specification.\<close>
 		((inv_VDMSeq' (inv_VDMNat) s)  \<and>  (inv_VDMNat RESULT))\<close>
 
-lemmas pre_sum_elems_defs = pre_sum_elems_def inv_VDMSeq1'_defs head_def pre_head_def pre_tail_def tail_def
-declare pre_sum_elems_defs [simp]
+declare pre_sum_elems_def [simp]
 fun (domintros)
 	sum_elems :: \<open>VDMNat VDMSeq \<Rightarrow> VDMNat\<close>
 where
@@ -125,7 +124,7 @@ where
 		else
 		(((head s) + (sum_elems (tail s))))) 
 	else undefined)\<close>
-declare pre_sum_elems_defs [simp del]
+declare pre_sum_elems_def [simp del]
 
 
 \<comment>\<open>VDM source: T = seq1 of (nat)\<close>
@@ -244,7 +243,7 @@ where
 		((dom m) = {})\<close>
 
 		 
-lemmas inv_Map_defs = inv_Map_def inv_VDMMap_defs inv_R_def inv_Rec_def inv_S_def inv_T_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
+lemmas inv_Map_defs = inv_Map_def inv_R_def inv_Rec_def inv_S_def inv_T_def inv_VDMMap_defs inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs 
 
 
  
