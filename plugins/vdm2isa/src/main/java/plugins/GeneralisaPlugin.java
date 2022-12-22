@@ -47,28 +47,37 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
 
+    static {
+        IsaProperties.init();
+    }
+
     private int localErrors;
     private int localWarnings;
     private int localModules;
     protected List<String> commands;
     protected TCModuleList tclist;
+    protected final Set<String> modulesToProcess; 
 
-    protected final static Set<String> modulesToProcess = new HashSet<String>();
     private static boolean firstCall = false;
+
+    protected int called;
+    protected static int created = 0;
 
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
-            , "./lvl0/TestV2IEmpty.vdmsl"
+            , "./lvl0"
             //    ,"TestV2IEmpty.vdmsl"
-            //    ,"lib/VDMToolkit.vdmsl" 
-            //    ,"TestV2IBindsComplex.vdmsl"
+            //    ,"TestV2IExprs.vdmsl"
             //    ,"TestV2IUseBeforeDecl.vdmsl"
             //    ,"TestV2IDeclBeforeUse.vdmsl"
+            //    ,"TestV2IFcns.vdmsl"
+
+            //    ,"lib/VDMToolkit.vdmsl" 
+            //    ,"TestV2IBindsComplex.vdmsl"
             //    ,"TestV2IErrors.vdmsl"
             //    ,"TestV2IErrorsToken.vdmsl"            
             //    ,"TestV2IErrorsUnionQuotes.vdmsl"            
-            //    ,"TestV2IExprs.vdmsl"
             //    ,"TestV2IExprsComplex.vdmsl"
             //    ,"TestV2IExprsComplexMaps.vdmsl"
             //    ,"TestV2IExprsIs.vdmsl"
@@ -78,7 +87,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"TestV2IExprsSets.vdmsl"
             //    ,"TestV2IExprsSpecial.vdmsl"
             //    ,"TestV2IExprsToken.vdmsl"
-            //    ,"TestV2IFcns.vdmsl"
             //    ,"TestV2IFcnsRecursiveComplexNat.vdmsl"
             //    ,"TestV2IFcnsRecursiveNat.vdmsl"
             //    ,"TestV2IFcnsRecursiveSet.vdmsl"
@@ -133,7 +141,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     protected boolean processArguments(String[] args)
     {
-        IsaProperties.init();
         List<String> largs = Arrays.asList(args);
         Iterator<String> i = largs.iterator();
         boolean cont_ = true;
