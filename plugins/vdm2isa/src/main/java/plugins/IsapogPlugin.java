@@ -5,8 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import com.fujitsu.vdmj.in.modules.INModuleList;
 import com.fujitsu.vdmj.lex.LexException;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMErrorsException;
@@ -22,7 +24,9 @@ import com.fujitsu.vdmj.typechecker.TypeCheckException;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
+import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.pog.IsaProofObligationList;
+import vdm2isa.tr.TRNode;
 import vdm2isa.tr.definitions.TRProofObligationDefinition;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.tr.expressions.TRExpression;
@@ -92,16 +96,21 @@ public class IsapogPlugin extends GeneralisaPlugin {
             " with " + IsaProperties.isapog_defalut_strategy.name().toLowerCase() + " proof strategy for ";
     }
 
+    protected TRExpression map2isa(TCExpression tcexpr) throws Exception
+    {
+        return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
+    }
+
     @Override
     public boolean isaRun(TCModuleList tclist) throws Exception {
-        boolean result = true;
-        if (!commands.isEmpty())
+        boolean result = !commands.isEmpty() && !tclist.isEmpty();
+        if (result)
         {
             if (commands.contains("vdm2isa"))
-                result = vdm2isa.isaRun(tclist);  
+                result = vdm2isa.internalRun(tclist);
+
             if (commands.contains("isapog") && result)
             {
-                Console.out.println("Starting Isabelle VDM Proof Obligation generation.");            
                 String workingAt = "";
                 // if strict is false, result is assumed true (i.e. exceptions won't fail the pass)
                 // if strict is true, result is assumed false (i.e. exceptions will fail the pass)
@@ -116,13 +125,12 @@ public class IsapogPlugin extends GeneralisaPlugin {
                     // }
 
                     // create an isabelle module interpreter 
-                    workingAt = "creating isa interpreter";
-                    ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-                    IsaInterpreter isaInterpreter = new IsaInterpreter(minterpreter);
+                    workingAt = "creating filtered interpreter";
+                    ModuleInterpreter minterpreter = new ModuleInterpreter(new INModuleList(), tclist);
 
                     // get the POG and create a corresponding TRModuleList with its PO definitions 
                     workingAt = "getting isa interpreter PO list";
-                    ProofObligationList pogl = isaInterpreter.getProofObligations();
+                    ProofObligationList pogl = minterpreter.getProofObligations();
                     IsaProofObligationList isapogl = new IsaProofObligationList();
                     int poNumber = 1;
                     List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
@@ -141,9 +149,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
                             TCExpression potcExpr = po.getCheckedExpression();
 
                             // translate the PO back to TR world
-                            //Pair<TRExpression, TRType> mpair = isaInterpreter.map2isa(pair);
                             workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
-                            TRExpression potrExpr = isaInterpreter.map2isa(potcExpr);
+                            TRExpression potrExpr = map2isa(potcExpr);
 
                             workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
                             TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
