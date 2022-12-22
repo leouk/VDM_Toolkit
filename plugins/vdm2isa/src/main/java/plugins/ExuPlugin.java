@@ -147,6 +147,11 @@ public class ExuPlugin extends GeneralisaPlugin {
         if (d instanceof TCTypeDefinition)
         {
             TCTypeDefinition tdef = (TCTypeDefinition)d;
+
+            // if (tdef.eqdef == null && tdef.orddef != null || tdef.eqdef != null && tdef.orddef == null)
+            // {
+            //     report(IsaErrorMessage.ISA_INVALID_INVTYP_2P, getName(), "must define both eq and ord specificaition");
+            // }
             checkSpecificationCallsConsistency(tclist, VDMSpecificationKind.INV, tdef.invdef);
             checkSpecificationCallsConsistency(tclist, VDMSpecificationKind.EQ, tdef.eqdef);
             checkSpecificationCallsConsistency(tclist, VDMSpecificationKind.ORD, tdef.eqdef);
