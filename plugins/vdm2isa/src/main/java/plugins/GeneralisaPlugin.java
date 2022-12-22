@@ -59,12 +59,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
-            , "./lvl0"
-            //    ,"TestV2IEmpty.vdmsl"
-            //    ,"TestV2IExprs.vdmsl"
-            //    ,"TestV2IUseBeforeDecl.vdmsl"
-            //    ,"TestV2IDeclBeforeUse.vdmsl"
-            //    ,"TestV2IFcns.vdmsl"
+            //, "./lvl0"
+            //    ,"./lvl0/TestV2IEmpty.vdmsl"
+            //    ,"./lvl0/TestV2IExprs.vdmsl"
+                ,"./lvl0/TestV2IUseBeforeDecl.vdmsl"
+                ,"./lvl0/TestV2IDeclBeforeUse.vdmsl"
+            //    ,"./lvl0/TestV2IFcns.vdmsl"
 
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"TestV2IBindsComplex.vdmsl"
