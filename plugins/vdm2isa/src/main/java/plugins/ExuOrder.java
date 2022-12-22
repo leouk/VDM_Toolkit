@@ -269,7 +269,7 @@ public class ExuOrder extends DependencyOrder
             {
                 Files.createDirectories(Paths.get(dir + File.separator + ".generated"));
                 graphOf(outfile);
-                Console.out.println("Printed dependencies for module " + name + " at " + outfile.getAbsolutePath() + "\n");
+                Console.out.println("Printed dependencies for module " + name + " at " + outfile.getPath());
             } 
             catch (IOException e) {
                 Console.err.println("I/O error whilst attempting to write dependency graph for " + outfile.getAbsolutePath());

@@ -116,6 +116,8 @@ public class ExuTypeChecker {
             // result.comments.addAll(m.comments);
             // result.importdefs.addAll(m.importdefs);
             // result.exportdefs.addAll(m.exportdefs);    
+
+            Console.out.println("Exu successfully sorted module " + m.name.getName() + " definitions");
         }
         return result;
     }

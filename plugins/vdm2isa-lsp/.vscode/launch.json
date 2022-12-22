@@ -1,0 +1,11 @@
+{
+    "configurations": [
+    {
+        "type": "java",
+        "name": "Attach to Remote Program",
+        "request": "attach",
+        "hostName": "<The host name or ip address of remote debuggee>",
+        "port": "<debug port of remote debuggee>"
+    }
+    ]
+}
