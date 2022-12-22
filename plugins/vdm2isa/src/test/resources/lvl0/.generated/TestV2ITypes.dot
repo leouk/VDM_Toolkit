@@ -1,0 +1,6 @@
+digraph G {
+	 TBasic2 [label="TBasic2 @ L14"]
+	 TBasic2 -> inv_TBasic2;
+	 TBasic1 [label="TBasic1 @ L11"]
+	 TBasic1 -> inv_TBasic1;
+}

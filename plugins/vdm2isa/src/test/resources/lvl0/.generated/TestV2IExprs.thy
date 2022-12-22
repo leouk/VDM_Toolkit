@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T13:08:50.337Z  
+(* VDM to Isabelle Translation @2022-12-22T16:13:15.753Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IExprs
@@ -200,7 +200,7 @@ where
 	definition
 	inv_t14 :: \<open>\<bool>\<close>
 where
-	\<open>inv_t14  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t14)\<close>
+	\<open>inv_t14  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) t14)\<close>
 
 	
 
@@ -214,7 +214,7 @@ where
 	definition
 	inv_t15 :: \<open>\<bool>\<close>
 where
-	\<open>inv_t15  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) t15)\<close>
+	\<open>inv_t15  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) t15)\<close>
 
 	
 
@@ -479,7 +479,7 @@ where
 	definition
 	inv_v19 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v19  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v19)\<close>
+	\<open>inv_v19  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v19)\<close>
 
 	
 
@@ -521,7 +521,7 @@ where
 	definition
 	inv_v22 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v22  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v22)\<close>
+	\<open>inv_v22  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v22)\<close>
 
 	
 
@@ -733,7 +733,7 @@ where
 	definition
 	inv_v39 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v39  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v39)\<close>
+	\<open>inv_v39  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v39)\<close>
 
 	
 
@@ -747,7 +747,7 @@ where
 	definition
 	inv_v40 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v40  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v40)\<close>
+	\<open>inv_v40  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v40)\<close>
 
 	
 
@@ -761,7 +761,7 @@ where
 	definition
 	inv_v41 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v41  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v41)\<close>
+	\<open>inv_v41  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v41)\<close>
 
 	
 
@@ -775,7 +775,7 @@ where
 	definition
 	inv_v42 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v42  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v42)\<close>
+	\<open>inv_v42  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v42)\<close>
 
 	
 
@@ -789,7 +789,7 @@ where
 	definition
 	inv_v43 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v43  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v43)\<close>
+	\<open>inv_v43  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v43)\<close>
 
 	
 
@@ -803,7 +803,7 @@ where
 	definition
 	inv_v44 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v44  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v44)\<close>
+	\<open>inv_v44  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v44)\<close>
 
 	
 
@@ -817,7 +817,7 @@ where
 	definition
 	inv_v45 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v45  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v45)\<close>
+	\<open>inv_v45  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v45)\<close>
 
 	
 
@@ -1041,7 +1041,7 @@ where
 	definition
 	inv_v61 :: \<open>\<bool>\<close>
 where
-	\<open>inv_v61  \<equiv> (inv_Map (inv_VDMNat1) (inv_VDMNat1) v61)\<close>
+	\<open>inv_v61  \<equiv> (inv_VDMMap (inv_VDMNat1) (inv_VDMNat1) v61)\<close>
 
 	
 

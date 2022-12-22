@@ -18,7 +18,8 @@ types
 	ord o1 < o2 == o1 < o2
 	;
 
-	TRenamedPOrdered = TOrder1 
+	TRenamedPOrdered = TOrder1
+	eq o1 = o2 == o1 = o2 
 	ord o1 < o2 == o1 > o2;
 	
 end TestV2ITypesOrdering

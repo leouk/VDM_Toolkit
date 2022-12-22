@@ -1,0 +1,6 @@
+digraph G {
+	 g [label="g @ L17"]
+	 g -> f;
+	 h [label="h @ L21"]
+	 h -> f;
+}

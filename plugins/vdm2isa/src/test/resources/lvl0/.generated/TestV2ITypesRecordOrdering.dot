@@ -1,0 +1,4 @@
+digraph G {
+	 Time' [label="Time' @ L7"]
+	 Time' -> inv_Time';
+}

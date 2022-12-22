@@ -11,7 +11,6 @@ public class TRLevel0Vdm2isaTest extends Vdm2IsaJUnitTest
 		readSpecification("lvl0");
 	}
     
-    //TODO pick at CZT's to get a test suite per file in the directory
     @Test
     public void test0() throws Exception
 	{
@@ -40,5 +39,59 @@ public class TRLevel0Vdm2isaTest extends Vdm2IsaJUnitTest
     public void test4() throws Exception
 	{
         runPlugin("vdm2isa", "TestV2IUseBeforeDecl");
+	}
+
+    @Test
+    public void test5() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2IUseBeforeDecl");
+	}
+
+    @Test
+    public void test6() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypes");
+	}
+
+    @Test
+    public void test7() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesOrdering");
+	}
+
+    @Test
+    public void test8() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesStructured");
+	}
+
+    // @Test
+    // public void test9() throws Exception
+	// {
+    //     runPlugin("vdm2isa", "TestV2ITypesRecordOrdering");
+	// }
+
+    @Test
+    public void test10() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesGeneric");
+	}
+
+    @Test
+    public void test11() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesNamed");
+	}
+
+    @Test
+    public void test12() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesOptional");
+	}
+
+    @Test
+    public void test13() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesRecords");
 	}
 }
