@@ -18,3 +18,5 @@ plugins/AnnotationsVDMToolkit/target
 plugins/vdm2isa/isa/dump
 plugins/vdm2isa/isa/HTML
 plugins/vdm2isa/isa/output/document
+plugins/vdm2isa/pub/recursion/HTML
+plugins/vdm2isa/pub/recursion/output/document

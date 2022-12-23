@@ -517,8 +517,8 @@ such set is finite. Given both domain and range sets are finite,
 this should be easy, if needed.\<close>
 
 definition pre_sum_elems :: \<open>(VDMNat \<rightharpoonup> VDMNat) \<Rightarrow> \<bool>\<close> where
-  \<open>pre_sum_elems m \<equiv> inv_Map inv_VDMNat inv_VDMNat m\<close>
-lemmas pre_sum_elems_defs = pre_sum_elems_def inv_Map_defs  
+  \<open>pre_sum_elems m \<equiv> inv_VDMMap inv_VDMNat inv_VDMNat m\<close>
+lemmas pre_sum_elems_defs = pre_sum_elems_def inv_VDMMap_defs  
 
 text \<open>VDM maps in Isabelle (\<^typ>\<open>(VDMNat \<rightharpoonup> VDMNat)\<close>) are defined as a HOL
 function which maps to an optional result. That is, if the element is in the
@@ -988,9 +988,11 @@ at \<^verbatim>\<open>RecursiveVDM*.thy\<close>\<^footnote>\<open>\<^url>\<open>
 \<^bold>\<open>Future work.\<close>~We are implementing the translation strategy in the
 \<^verbatim>\<open>vdm2isa\<close> plugin, which should be available soon.
 
-\<^bold>\<open>Acknowledgements.\<close>~We appreciated discussions with Stephan Merz on
-pointers for complex well-founded recursion proofs in Isabelle, and with Nick
-Battle on limits for VDM recursive measures. Peter Gorm Larsen would also like to acknowledge the Poul Due Jensen Foundation for funding the project Digital Twins for Cyber-Physical Systems (DiT4CPS).\<close>
+\<^bold>\<open>Acknowledgements.\<close>~We appreciated discussions with Stephan Merz on pointers
+for complex well-founded recursion proofs in Isabelle, and with Nick Battle on
+limits for VDM recursive measures. Peter Gorm Larsen would also like to
+acknowledge the Poul Due Jensen Foundation for funding the project Digital
+Twins for Cyber-Physical Systems (DiT4CPS).\<close>
 
 (*<*)
 lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
@@ -998,7 +1000,7 @@ lemma l_sumset_rel_wf': \<open>wf sumset_wf_rel\<close>
   apply (simp add: measure_def inv_image_def less_than_def less_eq)\<^marker>\<open>tag invisible\<close>
   apply (rule subsetI, simp add: case_prod_beta)\<^marker>\<open>tag invisible\<close>
   apply (elim exE conjE)\<^marker>\<open>tag invisible\<close>
-  by (metis card_Diff1_less_iff fst_conv inv_Map_defs(2) inv_Map_defs(3) 
+  by (metis card_Diff1_less_iff fst_conv inv_VDMMap_defs(2) inv_VDMMap_defs(3) 
         pre_sumset_defs(1) snd_conv some_in_eq)\<^marker>\<open>tag invisible\<close>
 (*>*)
 
