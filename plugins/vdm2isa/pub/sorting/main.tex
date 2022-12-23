@@ -1,0 +1,337 @@
+%!TEX-program=pdflatexmk
+%"runningheads" enables:
+%  - page number on page 2 onwards
+%  - title/authors on even/odd pages
+%This is good for other readers to enable proper archiving among other papers and pointing to content.
+%Even if the title page states the title, when printed and stored in a folder, when blindly opening the folder, one could hit not the title page, but an arbitrary page. Therefore, it is good to have title printed on the pages, too.
+\documentclass[runningheads,a4paper]{llncs}
+
+%Even though `american`, `english` and `USenglish` are synonyms for babel package (according to https://tex.stackexchange.com/questions/12775/babel-english-american-usenglish), the llncs document class is prepared to avoid the overriding of certain names (such as "Abstract." -> "Abstract" or "Fig." -> "Figure") when using `english`, but not when using the other 2.
+\usepackage[english]{babel}
+
+% See http://texdoc.net/texmf-dist/doc/latex/booktabs/booktabs.pdf and 
+% chktex/chktex/chktexrc rules (!)
+\usepackage{booktabs}
+
+%better font, similar to the default springer font
+%cfr-lm is preferred over lmodern. Reasoning at http://tex.stackexchange.com/a/247543/9075
+\usepackage[%
+rm={oldstyle=false,proportional=true},%
+sf={oldstyle=false,proportional=true},%
+tt={oldstyle=false,proportional=true,variable=true},%
+qt=false%
+]{cfr-lm}
+%
+%if more space is needed, exchange cfr-lm by mathptmx
+%\usepackage{mathptmx}
+
+\usepackage{graphicx}
+
+%extended enumerate, such as \begin{compactenum}
+\usepackage{paralist}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+%put figures inside a text
+%\usepackage{picins}
+%use
+%\piccaptioninside
+%\piccaption{...}
+%\parpic[r]{\includegraphics ...}
+%Text...
+
+%Sorts the citations in the brackets
+%It also allows \cite{refa, refb}. Otherwise, the document does not compile.
+%  Error message: "White space in argument"
+\usepackage{cite}
+
+\usepackage[T1]{fontenc}
+
+%for demonstration purposes only
+\usepackage[math]{blindtext}
+
+%for easy quotations: \enquote{text}
+\usepackage{csquotes}
+
+%enable margin kerning
+\usepackage{microtype}
+
+%tweak \url{...}
+\usepackage{url}
+\urlstyle{same}
+%improve wrapping of URLs - hint by http://tex.stackexchange.com/a/10419/9075
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+%nicer // - solution by http://tex.stackexchange.com/a/98470/9075
+%DO NOT ACTIVATE -> prevents line breaks
+%\makeatletter
+%\def\Url@twoslashes{\mathchar`\/\@ifnextchar/{\kern-.2em}{}}
+%\g@addto@macro\UrlSpecials{\do\/{\Url@twoslashes}}
+%\makeatother
+
+%diagonal lines in a table - http://tex.stackexchange.com/questions/17745/diagonal-lines-in-table-cell
+%slashbox is not available in texlive (due to licensing) and also gives bad results. This, we use diagbox
+%\usepackage{diagbox}
+
+%required for pdfcomment later
+\usepackage[table,xcdraw]{xcolor}
+
+% new packages BEFORE hyperref
+% See also http://tex.stackexchange.com/questions/1863/which-packages-should-be-loaded-after-hyperref-instead-of-before
+
+%enable hyperref without colors and without bookmarks
+\usepackage[
+%pdfauthor={},
+%pdfsubject={},
+%pdftitle={},
+%pdfkeywords={},
+bookmarks=false,
+breaklinks=true,
+colorlinks=true,
+linkcolor=black,
+citecolor=black,
+urlcolor=black,
+%pdfstartpage=19,
+pdfpagelayout=SinglePage,
+pdfstartview=Fit
+]{hyperref}
+%enables correct jumping to figures when referencing
+\usepackage[all]{hypcap}
+
+%enable nice comments
+%\usepackage{pdfcomment}
+%\newcommand{\commentontext}[2]{\colorbox{yellow!60}{#1}\pdfcomment[color={0.234 0.867 0.211},hoffset=-6pt,voffset=10pt,opacity=0.5]{#2}}
+%\newcommand{\commentatside}[1]{\pdfcomment[color={0.045 0.278 0.643},icon=Note]{#1}}
+
+%compatibality with TODO package
+%\newcommand{\todo}[1]{\commentatside{#1}}
+\usepackage{todonotes}
+
+\usepackage{xspace}
+%\newcommand{\eg}{e.\,g.\xspace}
+%\newcommand{\ie}{i.\,e.\xspace}
+\newcommand{\eg}{{\em e.\,g.,\/}}
+\newcommand{\ie}{{\em i.\,e.,\/}}
+
+\newcommand{\lfcomment}[1]{LF:~\textcolor{red}{#1}}
+
+%introduce \powerset - hint by http://matheplanet.com/matheplanet/nuke/html/viewtopic.php?topic=136492&post_id=997377
+\DeclareFontFamily{U}{MnSymbolC}{}
+\DeclareSymbolFont{MnSyC}{U}{MnSymbolC}{m}{n}
+\DeclareFontShape{U}{MnSymbolC}{m}{n}{
+    <-6>  MnSymbolC5
+   <6-7>  MnSymbolC6
+   <7-8>  MnSymbolC7
+   <8-9>  MnSymbolC8
+   <9-10> MnSymbolC9
+  <10-12> MnSymbolC10
+  <12->   MnSymbolC12%
+}{}
+\DeclareMathSymbol{\powerset}{\mathord}{MnSyC}{180}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+%%%%%%%%%%%%%%%%%%%%%%% CUSTOM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Highlighting
+\usepackage{soul}
+
+% Glossaries and Acronyms
+\usepackage[acronym]{glossaries} 
+\input{acronyms}
+% \makeglossaries   % Include to be able to print a glossary list
+% \usepackage{acronym}
+% \input{acronyms}
+% \usepackage[color]{vdmlisting}
+\usepackage{chngcntr}
+
+%enable \cref{...} and \Cref{...} instead of \ref: Type of reference included in the link
+\usepackage[capitalise,nameinlink]{cleveref}
+%Nice formats for \cref
+\crefname{section}{Sect.}{Sect.}
+\Crefname{section}{Section}{Sections}
+\crefname{lstlisting}{Listing}{Listing}
+\Crefname{lstlisting}{Listing}{Listing}
+
+% Code listings
+\usepackage{listings} % Define the listing package
+\usepackage{times}    % Prettier text in listings
+
+% Code listing formatting for JSON
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\small, 
+    numbers=left,
+    stepnumber=1,
+    numbersep=8pt,
+    breaklines=true,
+    frame=single,
+    xleftmargin=.11\textwidth, 
+    xrightmargin=.11\textwidth
+}
+
+\usepackage{vdmlisting}
+
+\newcommand{\jkr}[1]{{\scriptsize\textcolor{orange}{JKR:~#1}}}  %
+\newcommand{\fpm}[1]{{\scriptsize\textcolor{purple}{FPM:~#1}}}  %
+\newcommand{\hdm}[1]{{\scriptsize\textcolor{blue}{HDM:~#1}}}  %
+\newcommand{\nb}[1]{{\scriptsize\textcolor{magenta}{NB:~#1}}}  %
+
+%%%%%%%%%%%%%%%%%%%%%%% Begin document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+% \counterwithout{lstlisting}{section}
+%Works on MiKTeX only
+%hint by http://goemonx.blogspot.de/2012/01/pdflatex-ligaturen-und-copynpaste.html
+%also http://tex.stackexchange.com/questions/4397/make-ligatures-in-linux-libertine-copyable-and-searchable
+%This allows a copy'n'paste of the text from the paper
+%\input glyphtounicode.tex
+\pdfgentounicode=1
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Topologically sorting VDM-SL definitions for Isabelle/HOL translation}
+%TODO needs a better title!
+%If Title is too long, use \titlerunning
+%\titlerunning{Short Title}
+
+%Multiple institutes are typeset as follows:
+\author{Leo Freitas\inst{1} \and Nick Battle
+}
+%If there are too many authors, use \authorrunning
+% \authorrunning{First Author et al.}
+\authorrunning{ }
+
+\institute{
+%DIGIT, Aarhus University, Department of Engineering, \\
+%Finlandsgade 22, 8200 Aarhus N, Denmark\\
+%\email{\{jkr, fpm, hdm, pgl\}@ece.au.dk}
+%\and
+%Independent, \email{nick.battle@acm.org}
+%\and
+School of Computing, Newcastle University, \\
+\email{leo.freitas@newcastle.ac.uk}
+}
+			
+\maketitle
+\setcounter{footnote}{0} 
+\begin{abstract}
+    There is an ecosystem of VDM libraries and extensions that includes a translation and proof environment for VDM in Isabelle~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. Translation works for a large subset of VDM-SL and
+    further constructs are being added on demand. A key impediment for novice users is the fact Isabelle/HOL requires 
+    all definitions to be declared before they are used, where (mutually) recursive definitions \textbf{must} be defined in tandem. In this paper, we describe a solution to this problem, which will enable wider access to the translator plugin to novice users as well real models.   
+\end{abstract}
+
+\keywords{VSCode, VDM, Sorting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:intro}
+
+The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains of the fields of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. 
+
+VDM also has an \gls{vscode} IDE with multiple features, including a translation strategy to Isabelle/HOL~\cite{AdvancedVSCodePaper}. Nevertheless, the user needs to follow a strict and specific specification style. Otherwise, translation will either fail or be impossible. For example, every Isabelle/HOL theory \textbf{must} be written within a file of the same name, whereas VDM files might be moduleless or have multiple modules. Translation of such VDM modules will have to impose the required Isabelle style. Thus, users have to be aware of such issues, or else translation will fail.   
+
+There are various such issues, which are listed in various example files in the distribution, and explained in detail in~\cite{NimFull}. These VDM ``idioms'' are important not only to enable translation, but also to ensure proofs will be manageable and proof strategies will be easier to identify. 
+
+Nevertheless, a major impediment for use is the fact VDM specification \textbf{must} be ordered (\ie have declarations defined before they are used). This is rather unnatural to most VDM users, which tend to write specifications top-down, from larger/complex concepts to simpler/easier definitions. Also, it makes translation of legacy models hard because they were not written with such order requirement in mind. Manual rearrangement is not difficult, yet it is laborious and error prone, hence creating a barrier to entry for the translator. 
+
+Solving this specific order requirement is the key contribution of this paper. We present the solution following the style by Naur's N-Queens algorithm~\cite{NQueens}:~we provide a historical account to how various developments within the VDM tools eventually led to the possibility of module sorting.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Background}~\label{sec:background}
+
+VDM translation is performed by traversing its abstract syntax tree (AST) and issuing corresponding Isabelle/HOL, for every part of the VDM concrete syntax that are compatible for translation. For example, VDM union types are quite expressive. They even allow some wacky definitions like this cross union selection example.
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+types
+    TUnion1 = int | nat
+    inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
+
+    TUnion2 = seq of nat | set of real;
+
+functions 
+    f: TUnion2 * TUnion1 -> bool
+	f(u2, u1) ==
+		(is_int(u2) => 
+			((is_(u1, seq of nat) => u2 in set elems u1)
+			 and
+			 (is_(u1, set of real) => u2 in set u1)
+			)
+		)
+		and
+		(is_nat(u2) => 
+			((is_(u1, seq of nat) => not u2 in set elems u1)
+			 and
+			 (is_(u1, set of real) => not u2 in set u1)
+			)
+		);
+\end{vdmsl}
+%
+VDM union types will create a maximal type set over the united types, where invariants are preserved. This can create quite complex (and confusing) selection and invariant checking processes. Of course, rarely such specifications are written. Yet, from a translation point of view, these are some of the challenges around VDM's expressivity with respect to how they can be translated to Isabelle. 
+
+That means the translator caters for the subset of VDM that is ``tamer'' (and mostly used). The translator has a VDM analysis tool (named \texttt{exu}\footnote{The name stems from the Yoruba divinity \textit{\`{E}\v{s}\`{u}} that was the gate keeper (and messenger) between mortals and deities.}), which checks for various such syntactic conondrums and limitations, telling users what to do and where problems are. Fixing such errors and warnings is important to ensure that translations are possible and without type errors for the user to solve on their own.  
+
+\texttt{exu} also provides support to prepare users for translation (\eg~there are over \(50\) kinds of ``error'' and \(20\) ``warnings'' the translator can issue). For example, it checks that any function call within a function definition ought to include that function's precondition, if one exist. Yet, one key hindrance remained:~ordering of module definitions and their dependencies. This hindrance will be addressed in this paper and have recently been implemented in the latest versoin of the translator. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Important Historical Developments}\label{sec:history}
+
+Before getting to our solution, it is important to identify key (unrelated) extensions to the main VDM tools. They were the stepping stones that eventually enabled \texttt{exu} to sort definitions for translation. We highlight the motivation for such extensions, as well as how they are implemented in the main VDM tools below.
+
+\subsection{Load time problems}
+
+When working with large VDM models~\cite{emv2} (\eg~\(150\)+ modules, \(60\)+ KLOC), typecheck time (\eg~\(2-4\) minutes) can become a hindrance, whereas initialisation time (\eg~\(15\)+ minutes) can compromise further development. 
+
+Such long loading times occured because the VDM typechecker performs multiple passes through the AST in order to establishes whether all modules are 
+consistent. The number of passes depends on the number of module inter dependencies (\ie~\texttt{module A} imports \texttt{module B} and vice-versa), order of declarations within modules (\ie~using definitions before defining them), \textit{etc.}. \lfcomment{Nick, any more here?}. 
+
+Users of large models would have to keep track of dependencies by carefully checking import chains. For example, we had to carefully craft dependencies and keep their documentation explicitly. This was error prone and hard to maintain. 
+
+\paragraph*{Verbose output.}
+%
+To address this, an extension was added to VDMJ that would track top-level type dependencies across modules. A simple and easy solution was for the typechecker to issue verbose output about every top-level definition dependencies as it traversed the VDM AST.\@ This required a tree visitor looking for dependencies and a mechanism for discovering free variables throughout the AST.\@ This verbose output enabled users to know how many passes have taken place, and whether cyclic dependencies existed and where. Users would then go and fix them manually. This meant one could use the verbose output to minimise passes by lowering dependencies, hence minimising load time.   
+
+\paragraph*{Dependency and free variable visitors.}
+%
+In VDMJ~\cite{Battle09}, visitors are used to make specialised traversals over the AST.\@ For identifying module ordering, there are two visitors. The dependency visitor traverses the tree \lfcomment{Nick, explain here what the dependencies and free variable visitors do?}. 
+
+\paragraph*{Topological sort of module dependencies.}
+%
+With the information gathered about dependencies, it was possible to create a topological sort of module names, where the result would be a list of module names with the fewest passes possible. This effectively solved (in most cases) the dependency warnings from the verbose output, hence giving the end user the ordered list of module names to load. This could then ge given to VDMJ at load time directly. This was enabled output of a acyclic directed graph view of module dependencies as a \texttt{dot} file.    
+
+\subsection{Recursive cycles detection}
+
+\lfcomment{Nick, maybe comment here the issues about mutual recursion and recursive type dependencies? And the tools / functionality they created?}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exu ordering}\label{sec:exu}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Applications and Examples}\label{sec:Examples}
+
+
+Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. They show various ISQ measurement systems in practical use.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results and discussion}\label{sec:Results}
+
+In this paper, we presented .
+
+\paragraph*{Future work.}~
+%
+Future.
+
+\paragraph*{Acknowledgements.}~
+%
+Acks.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{splncs03}
+%\bibliography{refs.bib,au.bib,isq.bib}
+\bibliography{order.bib}
+
+% All links were last followed on November 13, 2022.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
