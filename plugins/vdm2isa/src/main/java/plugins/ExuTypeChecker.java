@@ -1,5 +1,8 @@
 package plugins;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
@@ -19,22 +22,20 @@ public class ExuTypeChecker {
     
     private final boolean warnings; 
     private final boolean debug;
-    private final boolean sort;
-    private final boolean graph;
     private TCModuleList sorted_list;
+    private final Map<String, ExuOrder> exuMap;
 
     // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
     //     Arrays.asList(VDMSpecificationKind.MEASURE, VDMSpecificationKind.PRE,
     //         VDMSpecificationKind.POST, VDMSpecificationKind.);
     
-    public ExuTypeChecker(boolean debug, boolean warnings, boolean graph, boolean sort)
+    public ExuTypeChecker(boolean debug, boolean warnings)
     {
         super();
+        this.exuMap = new HashMap<String, ExuOrder>();
+        this.sorted_list = null;
         this.warnings = warnings; 
         this.debug = debug;
-        this.sorted_list = null;
-        this.graph = graph;
-        this.sort = sort;
     }
 
     private TCNameToken find(TCNameList list, String name)
@@ -79,14 +80,44 @@ public class ExuTypeChecker {
         return result;
     }
 
+    protected ExuOrder processModule(TCModule m)
+    {
+        ExuOrder result;
+        if (!exuMap.containsKey(m.name.getName()))
+        {
+            result = new ExuOrder(m, debug);
+            exuMap.put(m.name.getName(), result);
+        }
+        else 
+            result = exuMap.get(m.name.getName());
+        return result;
+    }
+
+    public void processModules(TCModuleList tclist)
+    {
+        for(TCModule m : tclist)
+        {
+            processModule(m);
+        }
+    } 
+
+    public void graphModules(TCModuleList tclist)
+    {
+        for(TCModule m : tclist)
+        {
+            ExuOrder order = processModule(m);
+            order.graphModule();
+        }
+    }
+
     protected TCModule sortModule(TCModule m)
     {
-        ExuOrder order = new ExuOrder(debug, graph, sort);
+        ExuOrder order = processModule(m);
         TCModule result = m;
+        TCNameList ts = order.sortModule();
         // Original: Rec, R, S, T, tail, sum_elems, head
         // Sorted  : tail, head, inv_T, sum_elems, inv_S, T, inv_R, inv_Rec, pre_head, measure_sum_elems, S, R, Rec
         // Organised: tail, head, T, sum_elems, S, R, Rec 
-        TCNameList ts = order.processModule(m);
         if (ts != null)
         {
             TCNameList original = order.getOriginalDefNames();
@@ -142,7 +173,7 @@ public class ExuTypeChecker {
     public TCModuleList getSortedModules()
     {
         if (sorted_list == null)
-            throw new IllegalStateException("Cannot get sorted modules; call typeCheck first!");
+            throw new IllegalStateException("Cannot get sorted modules; call sortModules first!");
         return sorted_list;       
     }
 

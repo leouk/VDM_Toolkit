@@ -24,7 +24,6 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
-import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.tc.patterns.TCIdentifierPattern;
 import com.fujitsu.vdmj.tc.patterns.TCPatternList;
 import com.fujitsu.vdmj.tc.patterns.TCPatternListList;
@@ -47,8 +46,8 @@ public class DependencyOrder
     public boolean debug;
     
     protected TCDefinitionList singleDefs;
+    protected final TCModule module;
     protected ModuleEnvironment moduleEnvironment;
-    protected TCModuleList modules;
     // these might end up being TCIdentifierToken x TCNameToken dependeing on module or definition order? 
 	protected final Map<TCNameToken, LexLocation> nameToLoc;
 	protected final Map<TCNameToken, TCDefinitionSet> uses;
@@ -67,13 +66,13 @@ public class DependencyOrder
         }
     } 
 	
-	public DependencyOrder(boolean debug)
+	public DependencyOrder(TCModule m, boolean debug)
 	{
 		this.sortCalled = false;
         this.debug = debug;
         this.singleDefs = null;
-        this.modules = null;
         this.moduleEnvironment = null;
+        this.module = m; 
         this.nameToLoc = new HashMap<TCNameToken, LexLocation>();
         this.uses = new HashMap<TCNameToken, TCDefinitionSet>();
         this.usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
@@ -212,13 +211,11 @@ public class DependencyOrder
         return invDef;
     }
 	
-	//public void definitionOrder(TCDefinitionList definitions)
-	public void definitionOrder(TCModule m)
+	protected void definitionOrder()
     {
         // extract flat definitions from list
-        modules = null;
-        singleDefs = m.defs.singleDefinitions();
-        moduleEnvironment = new ModuleEnvironment(m);
+        singleDefs = module.defs.singleDefinitions();
+        moduleEnvironment = new ModuleEnvironment(module);
         Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
 
         // algorithm require three passes: 
@@ -346,7 +343,7 @@ public class DependencyOrder
      * Create a "dot" language version of the graph for the graphviz tool.
      * @throws IOException 
      */
-    public void graphOf(File filename) throws IOException
+    protected void graphOf(File filename) throws IOException
 	{
     	Map<TCNameToken, TCDefinitionSet> map = uses;
     	
@@ -372,7 +369,7 @@ public class DependencyOrder
 		fw.close();
 	}
     
-    public TCNameList getStartpoints()
+    protected TCNameList getStartpoints()
     {
 		/*
 		 * The startpoints are where there are no incoming links to a node. So
@@ -392,17 +389,8 @@ public class DependencyOrder
 
 		return startpoints;
     }
-    
-    /**
-     * Note that the graph must be acyclic!
-     * @return the initialization order of the names
-     */
-    public TCNameList topologicalSort()
-    {
-    	return topologicalSort(getStartpoints());
-    }
-    
-    public TCNameList topologicalSort(TCNameList startpoints)
+        
+    protected TCNameList topologicalSort(TCNameList startpoints)
     {
     	if (sortCalled)
     	{
@@ -492,7 +480,6 @@ public class DependencyOrder
         if (singleDefs != null) 
         {
             assert moduleEnvironment != null; 
-            //assert modules == null;
             TCDefinition d = singleDefs.findName(name, NameScope.NAMES);
             if (d == null) 
             {
