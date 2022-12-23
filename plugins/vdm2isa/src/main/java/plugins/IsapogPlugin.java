@@ -33,7 +33,6 @@ import vdm2isa.tr.expressions.TRExpression;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
 import vdm2isa.tr.modules.TRProofObligationModule;
-import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 
 /**
@@ -102,6 +101,18 @@ public class IsapogPlugin extends GeneralisaPlugin {
         // don't reinitialise! 
         //return ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tcexpr);
         return ClassMapper.getInstance(TRNode.MAPPINGS).convert(tcexpr);
+    }
+
+    @Override 
+    protected boolean setup()
+    {
+        return false;
+    }
+
+    @Override 
+    protected boolean runCommand(String name, TCModuleList tclist)
+    {
+        return false;
     }
 
     @Override

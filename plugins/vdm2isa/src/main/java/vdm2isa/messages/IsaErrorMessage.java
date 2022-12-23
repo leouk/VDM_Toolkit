@@ -20,6 +20,8 @@ public enum IsaErrorMessage {
     "Token type inner type must be set before translation"),
     PLUGIN_UNEXPECTED_HIT_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 4,
     "Unexpected hit %1$s for %2$s"),
+    PLUGIN_UNKNOWN_COMMAND_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 5,
+    "Unexpected command %1$s for plugin %2$s"),
 
     
     //VDM messages relate to ill formed ASTs; properly (VDMJ) typechecked ASts should never raise those

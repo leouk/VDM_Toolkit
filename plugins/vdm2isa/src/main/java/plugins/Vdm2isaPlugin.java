@@ -53,6 +53,18 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
         super.prompt();
     }
 
+    @Override 
+    protected boolean setup()
+    {
+        return false;
+    }
+
+	@Override 
+    protected boolean runCommand(String name, TCModuleList tclist)
+    {
+        return false;
+    }
+
     @Override
 	public boolean isaRun(TCModuleList tclist) throws Exception 
 	{

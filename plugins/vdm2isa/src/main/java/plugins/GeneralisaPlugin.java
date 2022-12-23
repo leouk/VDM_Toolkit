@@ -122,6 +122,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private int localModules;
     private int called;
 
+    private boolean setup;
     protected final List<String> commands;
     protected TCModuleList tclist;
     protected final Set<String> modulesToProcess; 
@@ -137,6 +138,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         modulesToProcess = new HashSet<String>();
         called = 0;
         created++;
+        setup = false;
         localReset();
     }
 
@@ -145,14 +147,13 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localErrors = 0;
         localWarnings = 0;
         localModules = 0;
+        setup = false;
         commands.clear();
         //leave it a set ml all!
         //modulesToProcess.clear();
         ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
         tclist = minterpreter.getTC();			
     }
-
-    protected abstract boolean isaRun(TCModuleList tclist) throws Exception;
 
     protected boolean processArguments(String[] args)
     {
@@ -425,25 +426,55 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         {
             Console.out.println("No modules to process; call `" + pluginName() + " set` to check!");
         }
-        else if (cont_ && !commands.isEmpty())
+        else if (cont_)
         {
-            prompt();
-            result = isaRun(tclist_filtered);
-            long after = System.currentTimeMillis();
-            addLocalErrors(GeneralisaPlugin.getErrorCount());
-            if (getLocalErrorCount() > 0)
+            if (!commands.isEmpty())
             {
-                GeneralisaPlugin.printErrors(Console.out);
+                prompt();
+                Iterator<String> it = commands.iterator();
+                List<String> validCmds = defaultCommands();
+                while (it.hasNext() && result)
+                {
+                    String cmd = it.next();
+                    result = validCmds.contains(cmd);
+                    if (result)
+                    {
+                        if (!setupDone())
+                        {
+                            // perform any initial setup  
+                            result = setup(); 
+                            setup = true;
+                        }
+                    }
+                    else 
+                        GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNKNOWN_COMMAND_2P, LexLocation.ANY, cmd, pluginName());
+                    if (result)
+                        result = runCommand(cmd, tclist_filtered);
+                }
+
+                result = isaRun(tclist_filtered);
+                
+                long after = System.currentTimeMillis();
+                addLocalErrors(GeneralisaPlugin.getErrorCount());
+                if (getLocalErrorCount() > 0)
+                {
+                    GeneralisaPlugin.printErrors(Console.out);
+                    result = false;
+                }
+        
+                addLocalWarnings(GeneralisaPlugin.getWarningCount());
+                if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
+                {
+                    GeneralisaPlugin.printWarnings(Console.out);
+                }
+                summarise(result, after-before, tclist_filtered.size());            
+            }
+            else 
+            {
+                Console.out.println("No command to run?");
                 result = false;
             }
-    
-            addLocalWarnings(GeneralisaPlugin.getWarningCount());
-            if (getLocalWarningCount() > 0 && IsaProperties.general_report_vdm_warnings)
-            {
-                GeneralisaPlugin.printWarnings(Console.out);
-            }
-            summarise(result, after-before, tclist_filtered.size());            
-        }       
+        }      
         return result;
     }
 
@@ -466,6 +497,25 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             GeneralisaPlugin.fullReset(this);
         }
         return result;
+    }
+
+    /**
+     * Each plugin extension will have various commands they can execute. Settings are passed/made before running, so no parameters
+     * This is useful so that both VDMJ Command, LSP Command, and LSP Plugin behaviours will be the same over the given TCModuleList, 
+     * regardless of where they originated from. 
+     * @param name command to run
+     * @param tclist type checked list to run command through 
+     * @return whether the command run succeeded. 
+     */
+    protected abstract boolean runCommand(String name, TCModuleList tclist);
+
+    protected abstract boolean isaRun(TCModuleList tclist) throws Exception;
+
+    protected abstract boolean setup();
+
+    protected final boolean setupDone()
+    {
+        return setup;
     }
 
     public final void processException(Throwable t, String workingAt, boolean printStackTrace)
