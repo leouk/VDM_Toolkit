@@ -16,7 +16,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     
     public TROptionalType(TCOptionalType vdmType, TRDefinitionList definitions, TRType type)
     {
-        super(vdmType, definitions, type);
+        super(vdmType, definitions, type) ; 
         dataTypeConstructors = null;
     }
 

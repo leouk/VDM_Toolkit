@@ -65,11 +65,11 @@ public class TRLevel0Vdm2isaTest extends Vdm2IsaJUnitTest
         runPlugin("vdm2isa", "TestV2ITypesStructured");
 	}
 
-    // @Test
-    // public void test9() throws Exception
-	// {
-    //     runPlugin("vdm2isa", "TestV2ITypesRecordOrdering");
-	// }
+    @Test
+    public void test9() throws Exception
+	{
+        runPlugin("vdm2isa", "TestV2ITypesRecordOrdering");
+	}
 
     @Test
     public void test10() throws Exception
