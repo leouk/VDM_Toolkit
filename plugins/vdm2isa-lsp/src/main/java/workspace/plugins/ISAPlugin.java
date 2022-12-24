@@ -25,8 +25,13 @@
 package workspace.plugins;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
+import com.fujitsu.vdmj.messages.VDMMessage;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import json.JSONArray;
 import json.JSONObject;
@@ -37,6 +42,7 @@ import plugins.ResourceUtil;
 import plugins.Vdm2isaPlugin;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
+import vdm2isa.messages.VDM2IsaError;
 import vdmj.commands.Command;
 import vdmj.commands.ExuCommand;
 import vdmj.commands.HelpList;
@@ -88,27 +94,39 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		//this.exu = ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()) ;
 		// this.exu = new ExuPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 		// this.vdm2isa = new Vdm2isaPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
-		this.isapog = new IsapogPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
+		//this.isapog = new IsapogPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 	}
 
 	protected void preCheck(CheckPrepareEvent ev)
 	{
-		GeneralisaPlugin.fullReset(isapog);
+		//this.isapog = new IsapogPlugin(null);
 	}
 
 	
 	@Override
 	public RPCMessageList handleEvent(LSPEvent event) throws Exception
 	{
+		RPCMessageList result;
 		if (event instanceof CheckPrepareEvent)
 		{
 			preCheck((CheckPrepareEvent)event);
-			return new RPCMessageList();
+			result = new RPCMessageList();
 		}
 		else if (event instanceof CheckCompleteEvent)
 		{
-			//return new RPCMessageList();
-			//call exu sort / check? not graph.
+			CheckCompleteEvent ev = (CheckCompleteEvent)event;
+			TCPlugin tcp = registry.getPlugin("TC");
+			TCModuleList mlist = tcp.getTC();
+			this.isapog = new IsapogPlugin(mlist);
+			//TODO @NB Do I need to get the interpreter again here? 
+			boolean exuresult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check" });
+			List<VDMMessage> list = new ArrayList<VDMMessage>();
+			list.addAll(GeneralisaPlugin.getErrors());
+			ev.addErrs(list);
+			list.clear();
+			list.addAll(GeneralisaPlugin.getWarnings());
+			ev.addWarns(list);
+			result = new RPCMessageList();
 		}
 		else if (event instanceof UnknownTranslationEvent)
 		{
@@ -116,11 +134,17 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			
 			if (ute.languageId.equals("isabelle"))
 			{
-				return analyse(event.request);
+				result = analyse(event.request);
 			}
+			else 
+				result = null;
 		}
-		
-		return null;	// Not handled
+		else
+		{
+			Diag.error("Unhandled %s event %s", getName(), event);
+			result = null; // not handled
+		}		
+		return result;	
 	}
 	
 	abstract public RPCMessageList analyse(RPCRequest request);
