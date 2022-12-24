@@ -1,0 +1,40 @@
+/**
+ * Model of the N-Queens problem.
+ */
+types
+	Pos = nat * nat;
+	Board = set of Pos;
+
+functions
+	run: () -> [Board]
+	run() ==
+		solve({}, 1);
+
+	solve: Board * nat1 -> [Board]
+	solve(board, Q) ==
+		if Q = 9
+		then board
+		else
+			let possible = { mk_(r, c) | r, c in set {0, ..., 7} & allowed(r, c, board) } in
+				try(possible, board, Q)
+	measure 64 - card board;
+
+	try: set of Pos * Board * nat1 -> [Board]
+	try(possible, board, Q) ==
+		if possible = {}
+		then nil
+		else
+			let p in set possible in
+			let solution = solve(board union {p}, Q + 1) in
+				if solution = nil
+				then try(possible \ {p}, board, Q)
+				else solution
+	;--measure card possible;
+
+	allowed: nat * nat * Board +> bool
+	allowed(r, c, board) ==
+		mk_(r, c) not in set board
+		and not exists mk_(r', c') in set board &
+			r = r'
+			or c = c'
+			or abs (r - r') = abs (c - c');
