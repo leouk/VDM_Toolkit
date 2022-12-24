@@ -46,8 +46,11 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
-        // consider extending? 
-        vdm2isa = new Vdm2isaPlugin(interpreter);   
+        // consider extending?
+        if (Vdm2isaPlugin.getInstance() == null)
+           vdm2isa = new Vdm2isaPlugin(interpreter); 
+        else 
+            vdm2isa = Vdm2isaPlugin.getInstance();  
         //vdm2isa = Vdm2isaPlugin.getInstance(interpreter); 
     }
 

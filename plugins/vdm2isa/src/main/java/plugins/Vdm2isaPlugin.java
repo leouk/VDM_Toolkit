@@ -23,9 +23,9 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 {
 	private TRModuleList translatedModules;
 	//TODO consider extending ExuPlugin?
-	private ExuPlugin exu;
+	private final ExuPlugin exu;
 
-	// private static Vdm2isaPlugin INSTANCE = null;
+	private static Vdm2isaPlugin INSTANCE = null;
 	
 	// public static final Vdm2isaPlugin getInstance(Interpreter interpreter)
     // {
@@ -36,11 +36,18 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     //     return INSTANCE; 
     // }	
 
+	public static Vdm2isaPlugin getInstance()
+	{
+		return INSTANCE;
+	}
+
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
-		this.exu = new ExuPlugin(interpreter);
-		//this.exu = ExuPlugin.getInstance(interpreter);
+		if (ExuPlugin.getInstance() == null)
+			this.exu = new ExuPlugin(interpreter);
+		else 
+			this.exu = ExuPlugin.getInstance();
 		this.translatedModules = new TRModuleList();
 	}
 

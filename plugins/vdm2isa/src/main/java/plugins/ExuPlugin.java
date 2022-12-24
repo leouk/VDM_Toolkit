@@ -27,7 +27,7 @@ public class ExuPlugin extends GeneralisaPlugin {
    
     private ExuTypeChecker etc;
 
-    // private static ExuPlugin INSTANCE = null;
+    private static ExuPlugin INSTANCE = null;
 
     // public static final ExuPlugin getInstance(Interpreter interpreter)
     // {
@@ -38,10 +38,16 @@ public class ExuPlugin extends GeneralisaPlugin {
     //     return INSTANCE; 
     // }
 
+    public static final ExuPlugin getInstance()
+    {
+        return INSTANCE; 
+    }
+    
     public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
         etc = null;
+        INSTANCE = this;
 	}
 
     @Override
