@@ -30,7 +30,11 @@ import com.fujitsu.vdmj.lex.Dialect;
 
 import json.JSONArray;
 import json.JSONObject;
+import plugins.ExuPlugin;
+import plugins.GeneralisaPlugin;
+import plugins.IsapogPlugin;
 import plugins.ResourceUtil;
+import plugins.Vdm2isaPlugin;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdmj.commands.Command;
@@ -40,6 +44,8 @@ import workspace.DAPWorkspaceManager;
 import workspace.Diag;
 import workspace.EventHub;
 import workspace.EventListener;
+import workspace.events.CheckCompleteEvent;
+import workspace.events.CheckPrepareEvent;
 import workspace.events.LSPEvent;
 import workspace.events.UnknownTranslationEvent;
 
@@ -58,6 +64,10 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		}
 	}
 
+	// private ExuPlugin exu;
+	// private Vdm2isaPlugin vdm2isa; 
+	private IsapogPlugin isapog;
+
 	protected ISAPlugin()
 	{
 		super();
@@ -72,13 +82,35 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public void init()
 	{
+		EventHub.getInstance().register(CheckPrepareEvent.class, this);
+		EventHub.getInstance().register(CheckCompleteEvent.class, this);
 		EventHub.getInstance().register(UnknownTranslationEvent.class, this);
+		//this.exu = ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()) ;
+		// this.exu = new ExuPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
+		// this.vdm2isa = new Vdm2isaPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
+		this.isapog = new IsapogPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 	}
+
+	protected void preCheck(CheckPrepareEvent ev)
+	{
+		GeneralisaPlugin.fullReset(isapog);
+	}
+
 	
 	@Override
 	public RPCMessageList handleEvent(LSPEvent event) throws Exception
 	{
-		if (event instanceof UnknownTranslationEvent)
+		if (event instanceof CheckPrepareEvent)
+		{
+			preCheck((CheckPrepareEvent)event);
+			return new RPCMessageList();
+		}
+		else if (event instanceof CheckCompleteEvent)
+		{
+			//return new RPCMessageList();
+			//call exu sort / check? not graph.
+		}
+		else if (event instanceof UnknownTranslationEvent)
 		{
 			UnknownTranslationEvent ute = (UnknownTranslationEvent)event;
 			
@@ -144,6 +176,9 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public HelpList getCommandHelp()
 	{
-		return new HelpList("isa - Example plugin command");
+		//TODO make this nicer in ExuPlugin usage? Or leave for now. 
+		return new HelpList(
+			ExuCommand.HELP
+		);
 	}
 }
