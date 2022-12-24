@@ -20,22 +20,36 @@ public class ExuCommand extends Command
 	public ExuCommand(String line, ExuPlugin exu)
 	{
 		this.exu = exu;
-		String[] parts = line.split("\\s+", 2);
-		if (parts.length == 2 && parts[0].equals("exu"))
+		this.args = line.split("\\s+");
+		if (args.length > 0 && args[0].equals("exu"))
 		{
-			this.args = parts[1].split("\\s+");
 		}
 		else
 		{
+			exu.usage("Invalid args " + line);
 			//TODO have to curb Console.out! Diag? 
-			throw new IllegalArgumentException(USAGE);//exu.usage());
+			throw new IllegalArgumentException();
 		}	
 	}
 
 	@Override
 	public DAPMessageList run(DAPRequest request)
 	{
-		return new DAPMessageList(request, new JSONObject("result", "You typed: " + args));
+		JSONObject r;
+		boolean result;
+		try
+		{
+			result = exu.run(args);
+		}
+		catch (Exception e)
+		{
+			result = false;
+		}
+		if (result)
+			r = new JSONObject("result", "Exu run succeeded");
+		else 	
+			r = new JSONObject("result", "Exu run failed");
+		return new DAPMessageList(request, r);
 	}
 
 	@Override
