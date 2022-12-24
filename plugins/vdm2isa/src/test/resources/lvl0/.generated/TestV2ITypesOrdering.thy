@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T16:13:15.464Z  
+(* VDM to Isabelle Translation @2022-12-24T08:19:59.335Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2ITypesOrdering
@@ -233,6 +233,7 @@ lemmas inv_TRenamedOrdered_defs = inv_TOrder1_def inv_TRenamedOrdered_def inv_VD
 
 
 \<comment>\<open>VDM source: TRenamedPOrdered = TOrder1
+	eq o1 = o2 == (o1 = o2)
 	ord o1 < o2 == (o1 > o2)\<close>
 \<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 21:5\<close>
 type_synonym TRenamedPOrdered = \<open>TOrder1\<close>
@@ -249,10 +250,25 @@ where
 		((inv_TOrder1 dummy0))\<close>
 
 		 
+\<comment>\<open>VDM source: eq_TRenamedPOrdered: (TOrder1 * TOrder1 +> bool)
+	eq_TRenamedPOrdered(o1, o2) ==
+(o1 = o2)\<close>
+\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 22:8\<close>
+definition
+	eq_TRenamedPOrdered :: \<open>TRenamedPOrdered \<Rightarrow> TRenamedPOrdered \<Rightarrow> bool\<close>
+where
+	\<open>eq_TRenamedPOrdered o1   o2 \<equiv> 
+		\<comment>\<open>Implicitly defined type invariant checks for  `eq_TRenamedPOrdered` specification.\<close>
+		((inv_TRenamedPOrdered o1)  \<and>  (inv_TRenamedPOrdered o2))  \<and> 
+		\<comment>\<open>User defined body of eq_TRenamedPOrdered.\<close>
+		\<comment>\<open>Transform a VDM `=` expression into an `eq_TOrder1` call\<close>
+	(eq_TOrder1 o1  o2)\<close>
+
+		 
 \<comment>\<open>VDM source: ord_TRenamedPOrdered: (TOrder1 * TOrder1 +> bool)
 	ord_TRenamedPOrdered(o1, o2) ==
 (o1 > o2)\<close>
-\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 22:9\<close>
+\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 23:9\<close>
 definition
 	ord_TRenamedPOrdered :: \<open>TRenamedPOrdered \<Rightarrow> TRenamedPOrdered \<Rightarrow> bool\<close>
 where
@@ -269,7 +285,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 22:9\<close>
+\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 23:9\<close>
 definition
 	min_TRenamedPOrdered :: \<open>TRenamedPOrdered \<Rightarrow> TRenamedPOrdered \<Rightarrow> TRenamedPOrdered\<close>
 where
@@ -280,7 +296,8 @@ where
 		\<comment>\<open>User defined body of min_TRenamedPOrdered.\<close>
 		(
 		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TRenamedPOrdered` call\<close>
-	(ord_TRenamedPOrdered a  b) \<or> (a = b))) then
+	(ord_TRenamedPOrdered a  b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TRenamedPOrdered` call\<close>
+	(eq_TRenamedPOrdered a  b))) then
 		(a)
 		else
 		(b))
@@ -293,7 +310,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 22:9\<close>
+\<comment>\<open>in 'TestV2ITypesOrdering' (./lvl0/TestV2ITypesOrdering.vdmsl) at line 23:9\<close>
 definition
 	max_TRenamedPOrdered :: \<open>TRenamedPOrdered \<Rightarrow> TRenamedPOrdered \<Rightarrow> TRenamedPOrdered\<close>
 where
@@ -304,7 +321,8 @@ where
 		\<comment>\<open>User defined body of max_TRenamedPOrdered.\<close>
 		(
 		if ((\<comment>\<open>Transform a VDM `<` expression into an `ord_TRenamedPOrdered` call\<close>
-	(ord_TRenamedPOrdered a  b) \<or> (a = b))) then
+	(ord_TRenamedPOrdered a  b) \<or> \<comment>\<open>Transform a VDM `=` expression into an `eq_TRenamedPOrdered` call\<close>
+	(eq_TRenamedPOrdered a  b))) then
 		(b)
 		else
 		(a))

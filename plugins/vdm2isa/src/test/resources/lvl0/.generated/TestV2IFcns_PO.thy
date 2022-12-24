@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T13:22:48.843Z  
+(* VDM to Isabelle Translation @2022-12-24T08:20:03.148Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IFcns_PO
@@ -15,9 +15,9 @@ begin
 
 
 definition
-	PO_43_constS_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_104_constS_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_43_constS_FUNC_POST_CONDITION  \<equiv> ((pre_constS ) \<longrightarrow> (post_constS (10::VDMNat1)))\<close>
+	\<open>PO_104_constS_FUNC_POST_CONDITION  \<equiv> ((pre_constS ) \<longrightarrow> (post_constS (10::VDMNat1)))\<close>
 
 	
 
@@ -27,9 +27,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_44_g_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_105_g_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_44_g_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat1)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat1 y))) \<longrightarrow> ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y)))))\<close>
+	\<open>PO_105_g_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat1)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat1 y))) \<longrightarrow> ((pre_g x  y) \<longrightarrow> (post_g x  y  (x + y)))))\<close>
 
 	
 
@@ -39,9 +39,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_45_h_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_106_h_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_45_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> (x > (0::VDMNat))))\<close>
+	\<open>PO_106_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> (x > (0::VDMNat))))\<close>
 
 	
 
@@ -51,9 +51,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_46_h_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_107_h_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_46_h_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (post_h x  (g x  x)))))\<close>
+	\<open>PO_107_h_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (post_h x  (g x  x)))))\<close>
 
 	
 
@@ -63,9 +63,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_47_h_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_108_h_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_47_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (
+	\<open>PO_108_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (
 		let (RESULT::VDMNat) = (g x  x)
 		in
 			
@@ -84,9 +84,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_48_h_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_109_h_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_48_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (
+	\<open>PO_109_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (
 		let (RESULT::VDMNat) = (g x  x)
 		in
 			
@@ -105,9 +105,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_49_h_FUNC_APPLY :: \<open>\<bool>\<close>
+	PO_110_h_FUNC_APPLY :: \<open>\<bool>\<close>
 where
-	\<open>PO_49_h_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (pre_g x  x))))\<close>
+	\<open>PO_110_h_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (pre_g x  x))))\<close>
 
 	
 
@@ -117,9 +117,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_50_h_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_111_h_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_50_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
+	\<open>PO_111_h_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
 
 	
 
@@ -129,9 +129,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_51_h'_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_112_h'_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_51_h'_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (post_h' x  (g x  x)))))\<close>
+	\<open>PO_112_h'_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (post_h' x  (g x  x)))))\<close>
 
 	
 
@@ -141,9 +141,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_52_h'_FUNC_APPLY :: \<open>\<bool>\<close>
+	PO_113_h'_FUNC_APPLY :: \<open>\<bool>\<close>
 where
-	\<open>PO_52_h'_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (pre_g x  x))))\<close>
+	\<open>PO_113_h'_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (pre_g x  x))))\<close>
 
 	
 
@@ -153,9 +153,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_53_h'_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_114_h'_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_53_h'_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
+	\<open>PO_114_h'_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h' x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
 
 	
 
@@ -165,9 +165,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_54_h''_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_115_h''_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_54_h''_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (post_h'' x  (g x  x)))))\<close>
+	\<open>PO_115_h''_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (post_h'' x  (g x  x)))))\<close>
 
 	
 
@@ -177,9 +177,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_55_h''_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_116_h''_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_55_h''_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (
+	\<open>PO_116_h''_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (
 		let (RESULT::VDMNat) = (g x  x)
 		in
 			
@@ -198,9 +198,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_56_h''_FUNC_APPLY :: \<open>\<bool>\<close>
+	PO_117_h''_FUNC_APPLY :: \<open>\<bool>\<close>
 where
-	\<open>PO_56_h''_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (pre_g x  x))))\<close>
+	\<open>PO_117_h''_FUNC_APPLY  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (pre_g x  x))))\<close>
 
 	
 
@@ -210,9 +210,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_57_h''_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_118_h''_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_57_h''_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
+	\<open>PO_118_h''_SUB_TYPE  \<equiv> (\<forall> (x :: VDMNat)  . ((((inv_VDMNat x))) \<longrightarrow> ((pre_h'' x) \<longrightarrow> (x > (0::VDMNat)))))\<close>
 
 	
 
@@ -222,9 +222,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_58_curriedS_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_119_curriedS_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_58_curriedS_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y))) \<longrightarrow> (((pre_curriedS x) y) \<longrightarrow> ((post_curriedS x) y  (x + y)))))\<close>
+	\<open>PO_119_curriedS_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y))) \<longrightarrow> (((pre_curriedS x) y) \<longrightarrow> ((post_curriedS x) y  (x + y)))))\<close>
 
 	
 
@@ -234,9 +234,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_59_implicit_TOTAL :: \<open>\<bool>\<close>
+	PO_120_implicit_TOTAL :: \<open>\<bool>\<close>
 where
-	\<open>PO_59_implicit_TOTAL  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> isTest ((pre_implicit x  y  z)) (inv_bool)))\<close>
+	\<open>PO_120_implicit_TOTAL  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> isTest ((pre_implicit x  y  z)) (inv_bool)))\<close>
 
 	
 
@@ -246,9 +246,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_60_implicit_FUNC_SATISFIABILITY :: \<open>\<bool>\<close>
+	PO_121_implicit_FUNC_SATISFIABILITY :: \<open>\<bool>\<close>
 where
-	\<open>PO_60_implicit_FUNC_SATISFIABILITY  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> ((pre_implicit x  y  z) \<longrightarrow> (\<exists> (r :: VDMNat VDMSeq)  . ((((inv_VDMSeq' (inv_VDMNat) r))) \<longrightarrow> (post_implicit x  y  z  r))))))\<close>
+	\<open>PO_121_implicit_FUNC_SATISFIABILITY  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> ((pre_implicit x  y  z) \<longrightarrow> (\<exists> (r :: VDMNat VDMSeq)  . ((((inv_VDMSeq' (inv_VDMNat) r))) \<longrightarrow> (post_implicit x  y  z  r))))))\<close>
 
 	
 
@@ -258,9 +258,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_61_implicitexplicit_TOTAL :: \<open>\<bool>\<close>
+	PO_122_implicitexplicit_TOTAL :: \<open>\<bool>\<close>
 where
-	\<open>PO_61_implicitexplicit_TOTAL  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> isTest ((pre_implicitexplicit x  y  z)) (inv_bool)))\<close>
+	\<open>PO_122_implicitexplicit_TOTAL  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> isTest ((pre_implicitexplicit x  y  z)) (inv_bool)))\<close>
 
 	
 
@@ -270,9 +270,9 @@ where
 \<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
 	
 definition
-	PO_62_implicitexplicit_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
+	PO_123_implicitexplicit_FUNC_POST_CONDITION :: \<open>\<bool>\<close>
 where
-	\<open>PO_62_implicitexplicit_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> ((pre_implicitexplicit x  y  z) \<longrightarrow> (post_implicitexplicit x  y  z  [x , y]))))\<close>
+	\<open>PO_123_implicitexplicit_FUNC_POST_CONDITION  \<equiv> (\<forall> (x :: VDMNat)   (y :: VDMNat)   (z :: VDMNat VDMSet)  . ((((inv_VDMNat x)))  \<and>  (((inv_VDMNat y)))  \<and>  (((inv_VDMSet' (inv_VDMNat) z))) \<longrightarrow> ((pre_implicitexplicit x  y  z) \<longrightarrow> (post_implicitexplicit x  y  z  [x , y]))))\<close>
 
 	
  

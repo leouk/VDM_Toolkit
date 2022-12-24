@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T13:22:46.760Z  
+(* VDM to Isabelle Translation @2022-12-24T08:20:03.139Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IExprs_PO
@@ -15,9 +15,9 @@ begin
 
 
 definition
-	PO_01_t11_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_56_t11_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_01_t11_SUB_TYPE  \<equiv> (({(1::VDMNat1)..(5::VDMNat1)} \<noteq> {}) \<and> isTest ({(1::VDMNat1)..(5::VDMNat1)}) (inv_VDMSet1' (inv_VDMNat1)))\<close>
+	\<open>PO_56_t11_SUB_TYPE  \<equiv> (({(1::VDMNat1)..(5::VDMNat1)} \<noteq> {}) \<and> isTest ({(1::VDMNat1)..(5::VDMNat1)}) (inv_VDMSet1' (inv_VDMNat1)))\<close>
 
 	
 
@@ -26,9 +26,9 @@ where
 
 
 definition
-	PO_02_t14_MAP_SEQ_OF_COMPATIBLE :: \<open>\<bool>\<close>
+	PO_57_t14_MAP_SEQ_OF_COMPATIBLE :: \<open>\<bool>\<close>
 where
-	\<open>PO_02_t14_MAP_SEQ_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
+	\<open>PO_57_t14_MAP_SEQ_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(1::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
 
 	
 
@@ -37,9 +37,9 @@ where
 
 
 definition
-	PO_03_v9_NON_EMPTY_SET :: \<open>\<bool>\<close>
+	PO_58_v9_NON_EMPTY_SET :: \<open>\<bool>\<close>
 where
-	\<open>PO_03_v9_NON_EMPTY_SET  \<equiv> (t12 \<noteq> {})\<close>
+	\<open>PO_58_v9_NON_EMPTY_SET  \<equiv> (t12 \<noteq> {})\<close>
 
 	
 
@@ -48,9 +48,9 @@ where
 
 
 definition
-	PO_04_v19_MAP_SET_OF_COMPATIBLE :: \<open>\<bool>\<close>
+	PO_59_v19_MAP_SET_OF_COMPATIBLE :: \<open>\<bool>\<close>
 where
-	\<open>PO_04_v19_MAP_SET_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {t14 , t15}  . (\<forall> m2 \<in> {t14 , t15}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
+	\<open>PO_59_v19_MAP_SET_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {t14 , t15}  . (\<forall> m2 \<in> {t14 , t15}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
 
 	
 
@@ -59,9 +59,9 @@ where
 
 
 definition
-	PO_05_v22_INVARIANT :: \<open>\<bool>\<close>
+	PO_60_v22_INVARIANT :: \<open>\<bool>\<close>
 where
-	\<open>PO_05_v22_INVARIANT  \<equiv> isTest (t14) (inv_Inmap (inv_VDMNat1) (inv_VDMNat1))\<close>
+	\<open>PO_60_v22_INVARIANT  \<equiv> isTest (t14) (inv_VDMInmap (inv_VDMNat1) (inv_VDMNat1))\<close>
 
 	
 
@@ -70,9 +70,9 @@ where
 
 
 definition
-	PO_06_v44_MAP_COMPATIBLE :: \<open>\<bool>\<close>
+	PO_61_v44_MAP_COMPATIBLE :: \<open>\<bool>\<close>
 where
-	\<open>PO_06_v44_MAP_COMPATIBLE  \<equiv> (\<forall> ldom1 \<in> (dom t14)  . (\<forall> rdom2 \<in> (dom t15)  . ((ldom1 = rdom2) \<longrightarrow> (((the(t14 ldom1))) = ((the(t15 rdom2)))))))\<close>
+	\<open>PO_61_v44_MAP_COMPATIBLE  \<equiv> (\<forall> ldom1 \<in> (dom t14)  . (\<forall> rdom2 \<in> (dom t15)  . ((ldom1 = rdom2) \<longrightarrow> (((the(t14 ldom1))) = ((the(t15 rdom2)))))))\<close>
 
 	
 
@@ -81,9 +81,9 @@ where
 
 
 definition
-	PO_07_v45_MAP_COMPOSE :: \<open>\<bool>\<close>
+	PO_62_v45_MAP_COMPOSE :: \<open>\<bool>\<close>
 where
-	\<open>PO_07_v45_MAP_COMPOSE  \<equiv> ((rng t15) \<subseteq> (dom t14))\<close>
+	\<open>PO_62_v45_MAP_COMPOSE  \<equiv> ((rng t15) \<subseteq> (dom t14))\<close>
 
 	
 
@@ -92,9 +92,9 @@ where
 
 
 definition
-	PO_08_v61_MAP_SEQ_OF_COMPATIBLE :: \<open>\<bool>\<close>
+	PO_63_v61_MAP_SEQ_OF_COMPATIBLE :: \<open>\<bool>\<close>
 where
-	\<open>PO_08_v61_MAP_SEQ_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
+	\<open>PO_63_v61_MAP_SEQ_OF_COMPATIBLE  \<equiv> (\<forall> m1 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> m2 \<in> {[(1::VDMNat1)\<mapsto>(2::VDMNat1)] , [(2::VDMNat1)\<mapsto>(3::VDMNat1)]}  . (\<forall> d3 \<in> (dom m1)  . (\<forall> d4 \<in> (dom m2)  . ((d3 = d4) \<longrightarrow> (((the(m1 d3))) = ((the(m2 d4)))))))))\<close>
 
 	
 
@@ -103,9 +103,9 @@ where
 
 
 definition
-	PO_09_v722_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_64_v722_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_09_v722_SUB_TYPE  \<equiv> (
+	\<open>PO_64_v722_SUB_TYPE  \<equiv> (
 		let (r::VDMReal) = (4.0)
 		in
 			
@@ -123,9 +123,9 @@ where
 
 
 definition
-	PO_10_v723_SUB_TYPE :: \<open>\<bool>\<close>
+	PO_65_v723_SUB_TYPE :: \<open>\<bool>\<close>
 where
-	\<open>PO_10_v723_SUB_TYPE  \<equiv> isTest (((6::VDMNat1) / (2::VDMNat1))) (inv_VDMNat1)\<close>
+	\<open>PO_65_v723_SUB_TYPE  \<equiv> isTest (((6::VDMNat1) / (2::VDMNat1))) (inv_VDMNat1)\<close>
 
 	
 
@@ -134,9 +134,9 @@ where
 
 
 definition
-	PO_11_v73_UNIQUE_EXISTENCE :: \<open>\<bool>\<close>
+	PO_66_v73_UNIQUE_EXISTENCE :: \<open>\<bool>\<close>
 where
-	\<open>PO_11_v73_UNIQUE_EXISTENCE  \<equiv> (\<exists>! var \<in> t9  . (var < (2::VDMNat1)))\<close>
+	\<open>PO_66_v73_UNIQUE_EXISTENCE  \<equiv> (\<exists>! var \<in> t9  . (var < (2::VDMNat1)))\<close>
 
 	
 
@@ -145,9 +145,9 @@ where
 
 
 definition
-	PO_12_v80_LET_BE_EXISTS :: \<open>\<bool>\<close>
+	PO_67_v80_LET_BE_EXISTS :: \<open>\<bool>\<close>
 where
-	\<open>PO_12_v80_LET_BE_EXISTS  \<equiv> (\<exists> x \<in> t9  . (\<exists> y \<in> t9  . ((x > (2::VDMNat1)) \<and> (y < x))))\<close>
+	\<open>PO_67_v80_LET_BE_EXISTS  \<equiv> (\<exists> x \<in> t9  . (\<exists> y \<in> t9  . ((x > (2::VDMNat1)) \<and> (y < x))))\<close>
 
 	
  

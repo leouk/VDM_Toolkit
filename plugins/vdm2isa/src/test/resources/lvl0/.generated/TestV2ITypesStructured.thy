@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-22T16:13:15.652Z  
+(* VDM to Isabelle Translation @2022-12-24T08:19:59.719Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2ITypesStructured
