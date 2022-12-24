@@ -49,7 +49,15 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		else 
 			this.exu = ExuPlugin.getInstance();
 		this.translatedModules = new TRModuleList();
+		INSTANCE = this;
 	}
+
+	public Vdm2isaPlugin(TCModuleList vscodeModuleList) {
+        super(vscodeModuleList);
+		this.exu = new ExuPlugin(vscodeModuleList);
+		this.translatedModules = new TRModuleList();
+		INSTANCE = this;
+    }
 
 	public TRModuleList getTranslatedModules()
 	{
@@ -60,7 +68,8 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	protected void localReset()
 	{
 		super.localReset();
-		exu.localReset();
+		if (exu != null) 
+			exu.localReset();
 		// no need to clear before construction; already empty
 		if (translatedModules != null)
 			translatedModules.clear();

@@ -36,13 +36,20 @@ import vdm2isa.tr.modules.TRProofObligationModule;
 import vdm2isa.tr.types.TRType;
 
 /**
- * VDM POs to Isabelle. Cannot be called "pog2isa" as "pog" is already a command! 
+ * VDM POs to Isabelle. Class cannot be called "pog2isa" as "pog" is already a command! 
  */
 public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private int localPOCountMissed;
     public final Vdm2isaPlugin vdm2isa;
+
+    private static IsapogPlugin INSTANCE = null; 
+
+    public static IsapogPlugin getInstance()
+    {
+        return INSTANCE; 
+    }
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
@@ -51,7 +58,13 @@ public class IsapogPlugin extends GeneralisaPlugin {
            vdm2isa = new Vdm2isaPlugin(interpreter); 
         else 
             vdm2isa = Vdm2isaPlugin.getInstance();  
-        //vdm2isa = Vdm2isaPlugin.getInstance(interpreter); 
+        INSTANCE = this; 
+    }
+
+    public IsapogPlugin(TCModuleList vscodeModuleList) {
+        super(vscodeModuleList);
+        vdm2isa = new Vdm2isaPlugin(vscodeModuleList); 
+        INSTANCE = this;
     }
 
     @Override
@@ -60,7 +73,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
-        vdm2isa.localReset();
+        if (vdm2isa != null)
+            vdm2isa.localReset();
     }
 
     public int getLocalPOCount()

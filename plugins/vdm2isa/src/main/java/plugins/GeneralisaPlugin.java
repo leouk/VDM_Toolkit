@@ -124,22 +124,56 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     private boolean setup;
     protected final List<String> commands;
-    protected TCModuleList tclist;
+    protected final TCModuleList tclist;
+    protected final TCModuleList source;
+
     protected final Set<String> modulesToProcess; 
 
-
-    public GeneralisaPlugin(Interpreter interpreter) {
-        super(interpreter);
-        // allow null for the reuse of the plugin for a VSCode command/plugin? 
-        if (interpreter != null && !(interpreter instanceof ModuleInterpreter))
+    public GeneralisaPlugin(Interpreter i) {
+        super(i);
+        if (i != null && !(i instanceof ModuleInterpreter))
             throw new IllegalArgumentException("Plugin interpreter must be a module interpreter");
-        commands = new ArrayList<String>();
-        tclist = new TCModuleList();
-        modulesToProcess = new HashSet<String>();
-        called = 0;
+        this.commands = new ArrayList<String>();
+        this.tclist = new TCModuleList();
+        this.modulesToProcess = new HashSet<String>();
+        this.called = 0;
         created++;
-        setup = false;
-        localReset();
+        this.setup = false;
+        this.source = null;
+        this.localReset();
+    }
+
+    public GeneralisaPlugin(TCModuleList vscodeModuleList)
+    {
+        super(null);
+        this.commands = new ArrayList<String>();
+        this.tclist = new TCModuleList();
+        this.source = vscodeModuleList;
+        this.modulesToProcess = new HashSet<String>();
+        this.called = 0;
+        created++;
+        this.setup = false;
+        this.localReset();
+    }
+
+    protected boolean calledFromVDMJ()
+    {
+        return interpreter != null; 
+    } 
+
+    protected TCModuleList getTC()
+    {
+        if (calledFromVDMJ())
+        {
+            assert interpreter != null;
+            ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
+            return minterpreter.getTC();			
+        }
+        else 
+        {
+            assert source != null;
+            return source;
+        }
     }
 
     protected void localReset()
@@ -153,8 +187,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         commands.clear();
         //leave it a set ml all!
         //modulesToProcess.clear();
-        ModuleInterpreter minterpreter = (ModuleInterpreter)interpreter;
-        tclist = minterpreter.getTC();			
+
+        tclist.clear();
+        tclist.addAll(getTC());
     }
 
     protected boolean processArguments(String[] args)

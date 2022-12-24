@@ -49,6 +49,13 @@ public class ExuPlugin extends GeneralisaPlugin {
         INSTANCE = this;
 	}
 
+    public ExuPlugin(TCModuleList vscodeModuleList)
+    {
+        super(vscodeModuleList);
+        etc = null; 
+        INSTANCE = this; 
+    }
+
     @Override
     protected boolean setup()
     {
