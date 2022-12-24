@@ -25,10 +25,22 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	//TODO consider extending ExuPlugin?
 	private ExuPlugin exu;
 
+	// private static Vdm2isaPlugin INSTANCE = null;
+	
+	// public static final Vdm2isaPlugin getInstance(Interpreter interpreter)
+    // {
+    //     if (INSTANCE == null)
+    //     {
+    //         INSTANCE = new Vdm2isaPlugin(interpreter);
+    //     }
+    //     return INSTANCE; 
+    // }	
+
 	public Vdm2isaPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
 		this.exu = new ExuPlugin(interpreter);
+		//this.exu = ExuPlugin.getInstance(interpreter);
 		this.translatedModules = new TRModuleList();
 	}
 
@@ -56,78 +68,80 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     @Override 
     protected boolean setup()
     {
-        return false;
+		// VDM errors don't pass VDMJ typechecker; 
+		// some VDM warnings have to be raised as errors to avoid translation issues
+		Vdm2isaPlugin.processVDMWarnings(TypeChecker.getWarnings(), true);
+		
+        return true;
     }
 
 	@Override 
     protected boolean runCommand(String name, TCModuleList tclist)
     {
-        return false;
-    }
-
-    @Override
-	public boolean isaRun(TCModuleList tclist) throws Exception 
-	{
-        boolean result = !commands.isEmpty() && !tclist.isEmpty();
-		if (result)
+        boolean result;
+		if (name.equals("exu"))
 		{
-	        // VDM errors don't pass VDMJ typechecker; 
-			// some VDM warnings have to be raised as errors to avoid translation issues
-			Vdm2isaPlugin.processVDMWarnings(TypeChecker.getWarnings(), true);
-			if (commands.contains("exu"))
-			{
-				result = exu.internalRun(tclist);
-			}
-			
+			result = exu.internalRun(tclist);			
+		}
+		else if (name.equals("translate"))
+		{
+			result = doTranslate(tclist);
 			// if not strict, then absorb bad exu results
 			// strict => result
 			result = (!IsaProperties.general_strict || result);
+		}
+		else 
+		{
+			result = false; 
+		}
+		return result;
+    }
+
+	protected boolean doTranslate(TCModuleList tclist)
+	{
+		boolean result;
+		String workingAt = "";
+		try
+		{
+			// class map TC -> TR trees + set them up
+			workingAt = "TC nodes class mapping";
+			translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
+			workingAt = "TR nodes setup";
+			translatedModules.setup();
+
+			//TODO issue "lemma finiteness" of involved dom/rng set for map comp at TLD! As a search through!
+			//TODO issue "lemmas XYZ"
+
+			// be strict on translation output
+			// strict => GeneralisaPlugin.getErrorCount() == 0
+			result = (!IsaProperties.general_strict || GeneralisaPlugin.getErrorCount() == 0);
 			if (result)
 			{
-				String workingAt = "";
-				try
+				int mcount = 0;
+				String moduleName;
+				for (TRModule module : translatedModules)
 				{
-					// class map TC -> TR trees + set them up
-					workingAt = "TC nodes class mapping";
-					translatedModules = ClassMapper.getInstance(TRNode.MAPPINGS).init().convert(tclist);
-					workingAt = "TR nodes setup";
-					translatedModules.setup();
-
-					//TODO issue "lemma finiteness" of involved dom/rng set for map comp at TLD! As a search through!
-					//TODO issue "lemmas XYZ"
-
-					// be strict on translation output
-					// strict => GeneralisaPlugin.getErrorCount() == 0
-					result = (!IsaProperties.general_strict || GeneralisaPlugin.getErrorCount() == 0);
-					if (result)
-					{
-						int mcount = 0;
-						String moduleName;
-						for (TRModule module : translatedModules)
-						{
-							moduleName = module.name.getName();
-							workingAt = "translating module " + moduleName;
-							outputModule(module.getLocation(), moduleName, module.translate());  
-							mcount++;
-						}
-						// only successful output calls
-						addLocalModules(mcount);//translatedModules.size());
-
-						// strict => must have translated (mcount) same as modules known
-						result = (!IsaProperties.general_strict || mcount == translatedModules.size());
-					}
+					moduleName = module.name.getName();
+					workingAt = "translating module " + moduleName;
+					outputModule(module.getLocation(), moduleName, module.translate());  
+					mcount++;
 				}
-				catch (InternalException e)
-				{
-					processException(e, workingAt, false);
-					result = false;
-				}
-				catch (Throwable t)
-				{
-					processException(t, workingAt, true);
-					result = false;
-				}
+				// only successful output calls
+				addLocalModules(mcount);//translatedModules.size());
+
+				// strict => must have translated (mcount) same as modules known
+				result = (!IsaProperties.general_strict || mcount == translatedModules.size());
 			}
+		}
+		catch (InternalException e)
+		{
+			processException(e, workingAt, false);
+			result = false;
+		}
+		catch (Throwable t)
+		{
+			processException(t, workingAt, true);
+			result = false;
 		}
 		return result;
 	}
@@ -170,8 +184,8 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
             result = commands.add(arg);
 			if (result)
 			{
-				result = exu.processArgument0(exu.defaultCommands().iterator());
-				mergeCommands(exu);
+				result = exu.processArgument0(exu.validCommands().iterator());
+				//mergeCommands(exu);
 			}
         }
         else if (arg.equals("translate") && !commands.contains(arg))
@@ -236,7 +250,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     }
 
     @Override
-    protected List<String> defaultCommands()
+    protected List<String> validCommands()
     {
         List<String> result = Arrays.asList("exu", "translate");
 		if (!IsaProperties.vdm2isa_run_exu)

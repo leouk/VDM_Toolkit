@@ -86,6 +86,7 @@ public class ExuTypeChecker {
         if (!exuMap.containsKey(m.name.getName()))
         {
             result = new ExuOrder(m, debug);
+            result.processModule();
             exuMap.put(m.name.getName(), result);
         }
         else 

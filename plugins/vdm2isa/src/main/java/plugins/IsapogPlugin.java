@@ -47,7 +47,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
         // consider extending? 
-        vdm2isa = new Vdm2isaPlugin(interpreter);    
+        vdm2isa = new Vdm2isaPlugin(interpreter);   
+        //vdm2isa = Vdm2isaPlugin.getInstance(interpreter); 
     }
 
     @Override
@@ -106,186 +107,172 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override 
     protected boolean setup()
     {
-        return false;
+        return true;
     }
 
     @Override 
     protected boolean runCommand(String name, TCModuleList tclist)
     {
-        return false;
+        boolean result;
+        if (name.equals("vdm2isa"))
+        {
+            result = vdm2isa.internalRun(tclist);    
+        }
+        else if (name.equals("isapog"))
+        {
+            result = doTranslate(tclist);
+        }
+        else 
+            result = false; 
+        return result; 
     }
 
-    @Override
-    public boolean isaRun(TCModuleList tclist) throws Exception {
-        boolean result = !commands.isEmpty() && !tclist.isEmpty();
-        if (result)
+    protected boolean doTranslate(TCModuleList tclist)
+    {
+        String workingAt = "";
+        // if strict is false, result is assumed true (i.e. exceptions won't fail the pass)
+        // if strict is true, result is assumed false (i.e. exceptions will fail the pass)
+        boolean result = !IsaProperties.general_strict;
+        try
         {
-            if (commands.contains("vdm2isa"))
-                result = vdm2isa.internalRun(tclist);
-            
-            if (commands.contains("isapog") && result)
+            // create an isabelle module interpreter 
+            workingAt = "creating filtered interpreter";
+            ModuleInterpreter minterpreter = new ModuleInterpreter(new INModuleList(), tclist);
+
+            // get the POG and create a corresponding TRModuleList with its PO definitions 
+            workingAt = "getting isa interpreter PO list";
+            ProofObligationList pogl = minterpreter.getProofObligations();
+            IsaProofObligationList isapogl = new IsaProofObligationList();
+            int poNumber = 1;
+            List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
+            for(ProofObligation po : pogl)
             {
-                String workingAt = "";
-                // if strict is false, result is assumed true (i.e. exceptions won't fail the pass)
-                // if strict is true, result is assumed false (i.e. exceptions will fail the pass)
-                result = !IsaProperties.general_strict;
-                try
+                // do not process VDMToolkit.vdmsl POs
+                if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())) 
+                    continue;
+                workingAt = "processing PO " + poNumber + " for " + po.location.module;
+                try 
                 {
-                    // get user declared strategy
-                    // if (argv != null && argv.length > 1)
-                    // {
-                    //     workingAt = "user chosen proof strategy = " + argv[1];
-                    //     IsaProperties.isapog_defalut_strategy = IsaProofStrategy.valueOf(argv[1].toUpperCase());
-                    // }
+                    TCExpression potcExpr = po.getCheckedExpression();
 
-                    // create an isabelle module interpreter 
-                    workingAt = "creating filtered interpreter";
-                    ModuleInterpreter minterpreter = new ModuleInterpreter(new INModuleList(), tclist);
+                    // translate the PO back to TR world
+                    workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
+                    TRExpression potrExpr = map2isa(potcExpr);
 
-                    // get the POG and create a corresponding TRModuleList with its PO definitions 
-                    workingAt = "getting isa interpreter PO list";
-                    ProofObligationList pogl = minterpreter.getProofObligations();
-                    IsaProofObligationList isapogl = new IsaProofObligationList();
-                    int poNumber = 1;
-                    List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
-                    for(ProofObligation po : pogl)
-                    {
-                        // do not process VDMToolkit.vdmsl POs
-                        if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())) continue;
-                        workingAt = "processing PO " + poNumber + " for " + po.location.module;
-                        try 
-                        {
-                            // type check PO as an TC AST
-                            
-                            //Pair<TCExpression, TCType> pair  = isaInterpreter.typeCheck(po.value, po.location.module);
-                            //TODO check pair.value is type okay; for VDM POGs should always be fine, but there will be "mine" as well ;-)
-
-                            TCExpression potcExpr = po.getCheckedExpression();
-
-                            // translate the PO back to TR world
-                            workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
-                            TRExpression potrExpr = map2isa(potcExpr);
-
-                            workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
-                            TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
-                            TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
-                            TRType poType = potrExpr.getType();
-                            TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poNumber, poScript);
-                            isapogl.add(poe);
-                            poNumber++;
-                        }
-                        // added those after the problem with post_constS(,10)! for constS: ()->nat constS()==10 post RESULT <= 10;
-                        // because these are "console" (not within the file) location info is mostly pointless? Except perhaps for VDMErrorsException
-                        catch(LexException le)
-                        {
-                            // POs shouldn't fail to parse? VDMJ error?
-                            GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "lexing", le.toString());//le.location
-                            notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
-                        }
-                        catch(ParserException pe) 
-                        {
-                            // POs shouldn't fail to parse? VDMJ error?
-                            GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "parsing", pe.toString());//pe.location
-                            notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, pe));
-                        }
-                        catch(TypeCheckException te)
-                        {
-                            // POs shouldn't fail to type check, but if they do...
-                            //TODO consider any related context
-                            GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "type checking", te.toString());//te.location
-                            notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, te));
-                        }
-                        catch(VDMErrorsException ve)
-                        {
-                            // POs shouldn't fail to type check, but if they do...
-                            //TODO consider any related context
-                            GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location, 
-                                po.number, po.name, "type checking", ve.toString());
-                            notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, ve));
-                        }
-                        catch(Exception e)
-                        {
-                            // This is something quite bad, so stop
-                            GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "class mapping / unexpected", e.toString());
-                            // in case we decide to comment the throw?
-                            notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, e));
-                            throw e;
-                        }
-                    }
-                    addLocalErrors(GeneralisaPlugin.getErrorCount());
-
-                    // be strict on translation output
-                    // strict => getLocalErrorCount() == 0 and (poNumber-1) == pogl.size() and notTranslatedPOS.size() == 0
-                    result = (!IsaProperties.general_strict || (getLocalErrorCount() == 0 && (poNumber-1) == pogl.size() 
-                        //&& notTranslatedPOS.size() == 0
-                        //TODO be linient with the above?
-                    ));
-
-                    // all not translated POs were accounted for in as comments! 
-                    if (!notTranslatedPOS.isEmpty())
-                    {
-                        warning(IsaWarningMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
-                    }
-
-                    if (result)
-                    {
-                        // output POs per module
-                        workingAt = "creating POs Isabelle file";
-                        TRModuleList modules = isapogl.getModulePOs();
-                        addLocalModules(modules.size());
-                        String moduleName;
-                        int mcount = 0;
-                        for (TRModule module : modules)
-                        {
-                            if (module instanceof TRProofObligationModule) 
-                            {
-                                TRProofObligationModule pmodule = (TRProofObligationModule)module;
-                                moduleName = module.name.toString();
-                                workingAt = "processing POs Isabelle file for " + moduleName;
-                                addLocalPOS(module.definitions.size(), getUntranslatedPOSFor(notTranslatedPOS, pmodule).size());
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(module.translate());
-                                sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
-                                outputModule(module.getLocation(), moduleName, sb.toString());    
-                                mcount++;
-                            }
-                            else
-                            {
-                                report(IsaErrorMessage.PO_INVALID_PO_MODULE_1P, module.name.getLocation(), module.name.toString());
-                            }
-                        }
-
-                        result = (!IsaProperties.general_strict || mcount == modules.size());
-                    }
+                    workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
+                    TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
+                    TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
+                    TRType poType = potrExpr.getType();
+                    TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poNumber, poScript);
+                    isapogl.add(poe);
+                    poNumber++;
                 }
-                catch (IllegalArgumentException a)
+                // added those after the problem with post_constS(,10)! for constS: ()->nat constS()==10 post RESULT <= 10;
+                // because these are "console" (not within the file) location info is mostly pointless? Except perhaps for VDMErrorsException
+                catch(LexException le)
                 {
-                    if (workingAt.equals("user chosen proof strategy"))
+                    // POs shouldn't fail to parse? VDMJ error?
+                    GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "lexing", le.toString());//le.location
+                    notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, le));
+                }
+                catch(ParserException pe) 
+                {
+                    // POs shouldn't fail to parse? VDMJ error?
+                    GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "parsing", pe.toString());//pe.location
+                    notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, pe));
+                }
+                catch(TypeCheckException te)
+                {
+                    // POs shouldn't fail to type check, but if they do...
+                    //TODO consider any related context
+                    GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "type checking", te.toString());//te.location
+                    notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, te));
+                }
+                catch(VDMErrorsException ve)
+                {
+                    // POs shouldn't fail to type check, but if they do...
+                    //TODO consider any related context
+                    GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, ve.errors.isEmpty() ? LexLocation.ANY : ve.errors.get(0).location, 
+                        po.number, po.name, "type checking", ve.toString());
+                    notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, ve));
+                }
+                catch(Exception e)
+                {
+                    // This is something quite bad, so stop
+                    GeneralisaPlugin.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, LexLocation.ANY, po.number, po.name, "class mapping / unexpected", e.toString());
+                    // in case we decide to comment the throw?
+                    notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, e));
+                    throw e;
+                }
+            }
+            addLocalErrors(GeneralisaPlugin.getErrorCount());
+
+            // be strict on translation output
+            // strict => getLocalErrorCount() == 0 and (poNumber-1) == pogl.size() and notTranslatedPOS.size() == 0
+            result = (!IsaProperties.general_strict || (getLocalErrorCount() == 0 && (poNumber-1) == pogl.size() 
+                //&& notTranslatedPOS.size() == 0
+                //TODO be linient with the above?
+            ));
+
+            // all not translated POs were accounted for in as comments! 
+            if (!notTranslatedPOS.isEmpty())
+            {
+                warning(IsaWarningMessage.PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P, LexLocation.ANY, getUntranslatedPOSAsComments(notTranslatedPOS, null));
+            }
+
+            if (result)
+            {
+                // output POs per module
+                workingAt = "creating POs Isabelle file";
+                TRModuleList modules = isapogl.getModulePOs();
+                addLocalModules(modules.size());
+                String moduleName;
+                int mcount = 0;
+                for (TRModule module : modules)
+                {
+                    if (module instanceof TRProofObligationModule) 
                     {
-                        report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, "unknown");
+                        TRProofObligationModule pmodule = (TRProofObligationModule)module;
+                        moduleName = module.name.toString();
+                        workingAt = "processing POs Isabelle file for " + moduleName;
+                        addLocalPOS(module.definitions.size(), getUntranslatedPOSFor(notTranslatedPOS, pmodule).size());
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(module.translate());
+                        sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
+                        outputModule(module.getLocation(), moduleName, sb.toString());    
+                        mcount++;
                     }
                     else
                     {
-                        processException(a, workingAt, true);
+                        report(IsaErrorMessage.PO_INVALID_PO_MODULE_1P, module.name.getLocation(), module.name.toString());
                     }
-                    result = false;
                 }
-                // VDMJ exception, then allow strictness
-                catch (InternalException e)
-                {
-                    processException(e, workingAt, false);
-                    result = (!IsaProperties.general_strict || result);
-                }
-                catch (Throwable t)
-                {
-                    processException(t, workingAt, true);
-                    result = false;
-                }
+
+                result = (!IsaProperties.general_strict || mcount == modules.size());
             }
-            else if (!result)
+        }
+        catch (IllegalArgumentException a)
+        {
+            if (workingAt.equals("user chosen proof strategy"))
             {
-                Console.out.println("Could not generate Isabelle POs because of translation errors");
+                report(IsaErrorMessage.PO_INVALID_PROOF_STRATEGY_1P, LexLocation.ANY, "unknown");
             }
+            else
+            {
+                processException(a, workingAt, true);
+            }
+            result = false;
+        }
+        // VDMJ exception, then allow strictness
+        catch (InternalException e)
+        {
+            processException(e, workingAt, false);
+            result = (!IsaProperties.general_strict || result);
+        }
+        catch (Throwable t)
+        {
+            processException(t, workingAt, true);
+            result = false;
         }
         return result;
     }
@@ -384,8 +371,8 @@ public class IsapogPlugin extends GeneralisaPlugin {
             result = commands.add(arg);
             if (result) 
             {
-                result = vdm2isa.processArgument0(vdm2isa.defaultCommands().iterator());
-                mergeCommands(vdm2isa);
+                result = vdm2isa.processArgument0(vdm2isa.validCommands().iterator());
+                //mergeCommands(vdm2isa);
             }
         }
         else if (arg.equals("isapog") && !commands.contains(arg))
@@ -425,7 +412,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    protected List<String> defaultCommands()
+    protected List<String> validCommands()
     {
         return Arrays.asList("vdm2isa", "isapog");
     }

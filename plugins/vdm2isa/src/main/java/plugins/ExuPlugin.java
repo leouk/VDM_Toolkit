@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Stack;
 
 import com.fujitsu.vdmj.ExitStatus;
+import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
@@ -26,6 +27,17 @@ public class ExuPlugin extends GeneralisaPlugin {
    
     private ExuTypeChecker etc;
 
+    // private static ExuPlugin INSTANCE = null;
+
+    // public static final ExuPlugin getInstance(Interpreter interpreter)
+    // {
+    //     if (INSTANCE == null)
+    //     {
+    //         INSTANCE = new ExuPlugin(interpreter);
+    //     }
+    //     return INSTANCE; 
+    // }
+
     public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
@@ -41,8 +53,7 @@ public class ExuPlugin extends GeneralisaPlugin {
         // some VDM warnings have to be raised as Exu warnings or errors depending on strictness
         GeneralisaPlugin.processVDMWarnings(TypeChecker.getWarnings(), IsaProperties.general_strict);
 
-        etc = new ExuTypeChecker(IsaProperties.general_debug, 
-            IsaProperties.general_report_vdm_warnings);
+        etc = new ExuTypeChecker(IsaProperties.general_debug, IsaProperties.general_report_vdm_warnings);
 
         // once-only (per [re-]load) call definitionOrder on all modules
         etc.processModules(tclist);
@@ -89,43 +100,6 @@ public class ExuPlugin extends GeneralisaPlugin {
         else 
         {
             result = false;
-        }
-        return result;
-    }
-
-    @Override
-    public boolean isaRun(TCModuleList tclist) throws Exception {
-        boolean result = !commands.isEmpty() && !tclist.isEmpty();
-        if (result)
-		{    
-            // VDM errors don't pass VDMJ typechecker; 
-			// some VDM warnings have to be raised as Exu warnings or errors depending on strictness
-            GeneralisaPlugin.processVDMWarnings(TypeChecker.getWarnings(), IsaProperties.general_strict);
-
-            ExuTypeChecker etc = new ExuTypeChecker(IsaProperties.general_debug, 
-                IsaProperties.general_report_vdm_warnings);
-
-
-            boolean neddedSorting = etc.sortModules(tclist);
-            if (neddedSorting && IsaProperties.exu_retypecheck)
-            {
-                ExitStatus status = etc.typeCheck(tclist);
-                result = status == ExitStatus.EXIT_OK;    
-            }
-            if (neddedSorting && result)
-            {
-                // update the tclist with the topological sorted list now typechecked
-                tclist.clear();
-                tclist.addAll(etc.getSortedModules());
-            }
-            else if (!result)
-                Console.out.println("Module list topological sorting threw type errors!");
-            
-            result = (!IsaProperties.general_strict || result);
-            if (commands.contains("check") && result)
-                checkModules(tclist);
-
-            result = (!IsaProperties.general_strict || getLocalErrorCount() == 0);
         }
         return result;
     }
@@ -354,7 +328,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     }
 
     @Override
-    protected List<String> defaultCommands()
+    protected List<String> validCommands()
     {
         return Arrays.asList("graph", "sort", "check");
     }

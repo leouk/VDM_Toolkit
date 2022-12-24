@@ -147,7 +147,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         localErrors = 0;
         localWarnings = 0;
         localModules = 0;
-        setup = false;
+        //No need for setup multiple times per run over the same module list
+        //only reset that per creation (i.e. per reload)
+        //setup = false;
         commands.clear();
         //leave it a set ml all!
         //modulesToProcess.clear();
@@ -165,7 +167,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         i.next(); // first argument is plugin name itself.
         if (!i.hasNext())
         {
-            i = defaultCommands().iterator();
+            i = validCommands().iterator();
             cont_ = processArgument0(i);
         }
         else
@@ -306,7 +308,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         sb.append("\n\tOptions:\n");
         sb.append(optionsHelp());
         sb.append("\n\tDefault commands: ");
-        sb.append(defaultCommands());
+        sb.append(validCommands());
         sb.append("\n\tDefault options : ");
         sb.append(options());
         sb.append("\n");
@@ -329,7 +331,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             Console.out.println(pluginName() + " plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
     }
 
-    protected abstract List<String> defaultCommands();
+    protected abstract List<String> validCommands();
 
     protected String options()
     {
@@ -357,17 +359,27 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             " (of " + modSize + ")" +
             " in " + (double)(execTimeMs/1000) + " secs. ");
         int errCnt = getLocalErrorCount(); 
+        int wrnCnt = getLocalWarningCount();
         if (errCnt == 0)
         {
-            Console.out.print("No issues were found.");
+            Console.out.print("No errors were found.");
+            if (wrnCnt > 0)
+                Console.out.println(" Found " + 
+                    (IsaProperties.general_report_vdm_warnings ? "" : "(and suppressed) ") +
+                    plural(wrnCnt, "warning", "s") + ".");
+            else 
+                Console.out.print("\n");
         }
         else 
         {
-            Console.out.println("Found " + plural(errCnt, "issues", "s"));
+            Console.out.print("Found " + plural(errCnt, "error", "s"));
+            if (wrnCnt > 0)
+                Console.out.println(" and " + 
+                (IsaProperties.general_report_vdm_warnings ? "" : "suppressed ") +
+                plural(wrnCnt, "warning", "s") + ".");
+            else 
+                Console.out.print(".\n");
         }
-        Console.out.println(getLocalWarningCount() == 0 ? "" : " and " +
-            (IsaProperties.general_report_vdm_warnings ? "" : "suppressed ") + plural(getLocalWarningCount(), "warning", "s") + ".");
-        
         if (errCnt > 0 && result)
             Console.out.println("Proceeding with translation with remaining issues may lead to Isabelle errors!");
         if (!result)
@@ -430,36 +442,14 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         {
             if (!commands.isEmpty())
             {
-                prompt();
-                Iterator<String> it = commands.iterator();
-                List<String> validCmds = defaultCommands();
-                while (it.hasNext() && result)
-                {
-                    String cmd = it.next();
-                    result = validCmds.contains(cmd);
-                    if (result)
-                    {
-                        if (!setupDone())
-                        {
-                            // perform any initial setup  
-                            result = setup(); 
-                            setup = true;
-                        }
-                    }
-                    else 
-                        GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNKNOWN_COMMAND_2P, LexLocation.ANY, cmd, pluginName());
-                    if (result)
-                        result = runCommand(cmd, tclist_filtered);
-                }
-
-                result = isaRun(tclist_filtered);
+                result = doCommands(tclist_filtered);
                 
                 long after = System.currentTimeMillis();
                 addLocalErrors(GeneralisaPlugin.getErrorCount());
                 if (getLocalErrorCount() > 0)
                 {
                     GeneralisaPlugin.printErrors(Console.out);
-                    result = false;
+                    result = !IsaProperties.general_strict;
                 }
         
                 addLocalWarnings(GeneralisaPlugin.getWarningCount());
@@ -478,18 +468,43 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return result;
     }
 
+    private boolean doCommands(TCModuleList tclist)
+    {
+        prompt();
+        
+        boolean result = true;
+        Iterator<String> it = commands.iterator();
+        List<String> validCmds = validCommands();
+        while (it.hasNext() && result)
+        {
+            String cmd = it.next();
+            result = validCmds.contains(cmd);
+            if (result)
+            {
+                if (!setupDone())
+                {
+                    // perform any initial setup  
+                    result = setup(); 
+                    setup = true;
+                }
+            }
+            else 
+                GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNKNOWN_COMMAND_2P, LexLocation.ANY, cmd, pluginName());
+            if (result)
+                result = runCommand(cmd, tclist);
+        }
+        return result;
+    }
+
     /**
      * Useful for plugins calling other plugins and don't need other processing but just run+reset
      * @param tclist
      * @return
      * @throws Exception
      */
-    protected final boolean internalRun(TCModuleList tclist) throws Exception
+    protected final boolean internalRun(TCModuleList tclist) 
     {
-        boolean result; 
-        // plugin run worked if exu's run works
-        prompt();
-        result = isaRun(tclist);
+        boolean result = doCommands(tclist);
 
         // clear error messages to avoid duplication
         if (result)
@@ -509,8 +524,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
      */
     protected abstract boolean runCommand(String name, TCModuleList tclist);
 
-    protected abstract boolean isaRun(TCModuleList tclist) throws Exception;
-
+    /**
+     * Method called before running commands, to setup the plugin. 
+     * If called multiple times, will only be exeucted once, until setup done flag is reset.
+     * @return
+     */
     protected abstract boolean setup();
 
     protected final boolean setupDone()
@@ -686,7 +704,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		}
 		if (warnings2raiseCount > 0)
 		{
-			Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
+			if (reportFoundAsError)
+                Console.out.println("Some VDM warnings are not tolerated: raising " + warnings2raiseCount + " warnings as errors.");
 			for(VDMWarning w : vdmWarnings)
 			{
                 if (reportFoundAsError)
