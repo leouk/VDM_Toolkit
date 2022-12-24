@@ -31,6 +31,7 @@ import json.JSONObject;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdmj.commands.Command;
+import vdmj.commands.ExuCommand;
 import vdmj.commands.HelpList;
 import workspace.Diag;
 import workspace.EventHub;
@@ -112,7 +113,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public Command getCommand(String line)
 	{
-		if (line.startsWith("isa"))
+		if (line.startsWith("exu"))
 		{
 			return new ExuCommand(line);
 		}
