@@ -676,13 +676,13 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return n + " " + (n != 1 ? s + pl : s);
     }
 
-    protected static void fullReset(GeneralisaPlugin g)
+    public static void fullReset(GeneralisaPlugin g)
     {
         GeneralisaPlugin.reset();
         g.localReset();
     }
 
-    protected static void reset() {
+    public static void reset() {
         // reset internal tables in case of restranslation
         GeneralisaPlugin.clearErrors();
     }

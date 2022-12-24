@@ -23,7 +23,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 {
 	private TRModuleList translatedModules;
 	//TODO consider extending ExuPlugin?
-	private final ExuPlugin exu;
+	public final ExuPlugin exu;
 
 	private static Vdm2isaPlugin INSTANCE = null;
 	
@@ -60,6 +60,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 	protected void localReset()
 	{
 		super.localReset();
+		exu.localReset();
 		// no need to clear before construction; already empty
 		if (translatedModules != null)
 			translatedModules.clear();

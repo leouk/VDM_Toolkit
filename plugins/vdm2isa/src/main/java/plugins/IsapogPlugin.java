@@ -42,7 +42,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
 
     private int localPOCount;
     private int localPOCountMissed;
-    private final Vdm2isaPlugin vdm2isa;
+    public final Vdm2isaPlugin vdm2isa;
 
     public IsapogPlugin(Interpreter interpreter) {
         super(interpreter);
@@ -60,6 +60,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         super.localReset();
         localPOCount = 0;
         localPOCountMissed = 0;
+        vdm2isa.localReset();
     }
 
     public int getLocalPOCount()

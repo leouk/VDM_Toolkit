@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Stack;
 
 import com.fujitsu.vdmj.ExitStatus;
-import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
@@ -42,7 +41,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         return INSTANCE; 
     }
-    
+
     public ExuPlugin(Interpreter interpreter)
 	{
 		super(interpreter);
