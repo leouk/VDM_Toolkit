@@ -297,7 +297,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         return "Translated ";
     }
 
-    protected void usage(String msg)
+    public void usage(String msg)
     {
         StringBuilder sb = new StringBuilder();    
         if (!(msg == null || msg.isEmpty()))

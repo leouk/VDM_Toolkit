@@ -24,15 +24,19 @@
 
 package workspace.plugins;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.fujitsu.vdmj.lex.Dialect;
 
 import json.JSONArray;
 import json.JSONObject;
+import plugins.ResourceUtil;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdmj.commands.Command;
 import vdmj.commands.ExuCommand;
 import vdmj.commands.HelpList;
+import workspace.DAPWorkspaceManager;
 import workspace.Diag;
 import workspace.EventHub;
 import workspace.EventListener;
@@ -115,7 +119,21 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	{
 		if (line.startsWith("exu"))
 		{
-			return new ExuCommand(line);
+			ExuCommand exu = null;
+			try
+			{
+				exu = new ExuCommand(line, 
+					ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()));	
+			}
+			catch (NoSuchMethodException e)
+			{
+				//throw new IllegalArgumentException("Could not find Exu plugin?");
+			}
+			catch (InvocationTargetException e)
+			{
+				//throw new IllegalArgumentException("Could not find Exu plugin?");
+			}
+			return exu;
 		}
 		else
 		{

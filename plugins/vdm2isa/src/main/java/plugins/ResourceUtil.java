@@ -70,6 +70,11 @@ public class ResourceUtil
 	/** The cache of loaded plugin instances */
 	private static final Map<String, CommandPlugin> plugins = new HashMap<String, CommandPlugin>();
 
+	public static void clearPlugins()
+	{
+		plugins.clear();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T extends CommandPlugin> T getPlugin(String name)
 	{
