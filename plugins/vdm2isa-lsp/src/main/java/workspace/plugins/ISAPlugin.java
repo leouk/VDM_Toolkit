@@ -24,6 +24,8 @@
 
 package workspace.plugins;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +33,19 @@ import java.util.List;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
-import com.fujitsu.vdmj.typechecker.TypeChecker;
 
 import json.JSONArray;
 import json.JSONObject;
-import plugins.ExuPlugin;
 import plugins.GeneralisaPlugin;
+import plugins.IsaProperties;
 import plugins.IsapogPlugin;
 import plugins.ResourceUtil;
-import plugins.Vdm2isaPlugin;
+import rpc.RPCErrors;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
-import vdm2isa.messages.VDM2IsaError;
 import vdmj.commands.Command;
-import vdmj.commands.ExuCommand;
 import vdmj.commands.HelpList;
+import vdmj.commands.IsaCommand;
 import workspace.DAPWorkspaceManager;
 import workspace.Diag;
 import workspace.EventHub;
@@ -70,13 +70,14 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		}
 	}
 
-	// private ExuPlugin exu;
-	// private Vdm2isaPlugin vdm2isa; 
-	private IsapogPlugin isapog;
+	public static final String VDM2ISA_PROPERTIES = ".vscode/vdm2isa.properties";
+
+	protected IsapogPlugin isapog;
 
 	protected ISAPlugin()
 	{
 		super();
+		IsaProperties.init(VDM2ISA_PROPERTIES);
 	}
 	
 	@Override
@@ -91,26 +92,25 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		EventHub.getInstance().register(CheckPrepareEvent.class, this);
 		EventHub.getInstance().register(CheckCompleteEvent.class, this);
 		EventHub.getInstance().register(UnknownTranslationEvent.class, this);
+		IsaProperties.init();
 		//this.exu = ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()) ;
 		// this.exu = new ExuPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 		// this.vdm2isa = new Vdm2isaPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 		//this.isapog = new IsapogPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 	}
 
-	protected void preCheck(CheckPrepareEvent ev)
+	protected RPCMessageList preCheck(CheckPrepareEvent ev)
 	{
-		//this.isapog = new IsapogPlugin(null);
+		return new RPCMessageList();
 	}
 
-	
 	@Override
 	public RPCMessageList handleEvent(LSPEvent event) throws Exception
 	{
 		RPCMessageList result;
 		if (event instanceof CheckPrepareEvent)
 		{
-			preCheck((CheckPrepareEvent)event);
-			result = new RPCMessageList();
+			result = preCheck((CheckPrepareEvent)event);
 		}
 		else if (event instanceof CheckCompleteEvent)
 		{
@@ -120,6 +120,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			this.isapog = new IsapogPlugin(mlist);
 			//TODO @NB Do I need to get the interpreter again here? 
 			boolean exuresult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check" });
+			Diag.info("Exu run " + (exuresult ? "succeeded" : "failed"));
 			List<VDMMessage> list = new ArrayList<VDMMessage>();
 			list.addAll(GeneralisaPlugin.getErrors());
 			ev.addErrs(list);
@@ -135,6 +136,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			if (ute.languageId.equals("isabelle"))
 			{
 				result = analyse(event.request);
+				
 			}
 			else 
 				result = null;
@@ -146,8 +148,66 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		}		
 		return result;	
 	}
+
+	protected RPCMessageList setProperties(RPCRequest request)
+	{
+		try
+		{
+			JSONObject params = request.get("params");
+			if (params != null)
+			{
+				// File saveUri = Utils.uriToFile(params.get("saveUri"));
+				JSONObject options = params.get("options");
+
+				if (options != null)
+				{
+					try {
+						Diag.fine("Setting up Isabelle translation plugin properties");
+						Diag.fine("Options JSON = " + options.toString());
+						IsaProperties.setValues(options);
+						return new RPCMessageList();
+					}
+					catch (Throwable e)
+					{
+						// String.valueOf was generating a peculiar exception, hence the code below. Perhaps remove. 
+						Diag.error("ISA plugin settings error: " + e.getMessage());
+						StringWriter out = new StringWriter();
+						PrintWriter writer = new PrintWriter(out);
+						e.printStackTrace(writer);
+						writer.flush();
+						Diag.error("Trace: " + out.toString());
+						return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
+					}
+				}
+				else
+				{
+					String d = "Could not retrieve Isabelle translation plugin params options";
+					Diag.severe(d);
+					return new RPCMessageList(request, RPCErrors.InvalidParams, d);
+				}
+			}
+			else
+			{
+				String d = "Could not retrieve Isabelle translation plugin params";
+				Diag.severe(d);
+				return new RPCMessageList(request, RPCErrors.InvalidParams, d);
+			}
+		}
+		catch (Exception e)
+		{
+			Diag.error(e);
+			return new RPCMessageList(request, RPCErrors.InternalError, e.getMessage());
+		}
+	} 
 	
-	abstract public RPCMessageList analyse(RPCRequest request);
+	protected abstract RPCMessageList doAnalyse(RPCRequest request);
+
+	public final RPCMessageList analyse(RPCRequest request)
+	{
+		RPCMessageList result = setProperties(request);
+		result.addAll(doAnalyse(request));
+		return result;
+	}
 
 	@Override
 	public void setServerCapabilities(JSONObject capabilities)
@@ -173,13 +233,14 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public Command getCommand(String line)
 	{
-		if (line.startsWith("exu"))
+		String[] args = IsaCommand.isLineValid(line);
+		IsaCommand result = null;
+		if (args != null)
 		{
-			ExuCommand exu = null;
 			try
 			{
-				exu = new ExuCommand(line, 
-					ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()));	
+				result = new IsaCommand(line, 
+					ResourceUtil.createPlugin(args[0], DAPWorkspaceManager.getInstance().getInterpreter()));	
 			}
 			catch (NoSuchMethodException e)
 			{
@@ -189,12 +250,8 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			{
 				//throw new IllegalArgumentException("Could not find Exu plugin?");
 			}
-			return exu;
 		}
-		else
-		{
-			return null;
-		}
+		return result;
 	}
 	
 	@Override
@@ -202,7 +259,9 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	{
 		//TODO make this nicer in ExuPlugin usage? Or leave for now. 
 		return new HelpList(
-			ExuCommand.HELP
+			IsaCommand.ExuHELP,
+			IsaCommand.Vdm2IsaHELP,
+			IsaCommand.IsapogHELP
 		);
 	}
 }
