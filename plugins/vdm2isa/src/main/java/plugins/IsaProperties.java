@@ -5,6 +5,9 @@ import java.io.InputStream;
 
 import com.fujitsu.vdmj.config.Properties;
 
+import json.JSONObject;
+import workspace.Diag;
+
 import java.io.FileInputStream;
 
 public class IsaProperties {
@@ -45,7 +48,8 @@ public class IsaProperties {
     public static IsaProofStrategy isapog_defalut_strategy;
     // creates POG locale lemmas template
     public static boolean isapog_create_pog_locale_interpretation_lemmas;
-
+	// whether or not to run isapog within VSCode
+	public static boolean isapog_run_isapog;
 	
     /**
 	 * When the class is initialized, which uses the vdmj.properties file, and any System
@@ -100,6 +104,42 @@ public class IsaProperties {
 		}
 	}
 
+	public static void setValues(JSONObject isa)
+	{
+		// Keys are as per vdm-vscode/package.json
+		// vdm-vscode.translate.isabelle.XXXX properties
+		//TODO align package.json wrt to the properties names? 
+        general_strict = get(isa, "strict", false);
+        general_max_errors = get(isa, "maxErrors", Properties.tc_max_errors > 0 ? 2 * Properties.tc_max_errors : 100);
+        general_isa_version = get(isa, "isaVersion", "Isabelle2022");
+        general_report_vdm_warnings = get(isa, "reportVDMWarnings", true);
+        general_debug = get(isa, "debug", false);
+
+        exu_linient_inv_check = get(isa, "linientInvCheck", true);
+        exu_retypecheck = get(isa, "retypecheck", false);
+
+        vdm2isa_linient_post 	= get(isa, "linientPost", false);
+		vdm2isa_print_vdm_comments = get(isa, "printVDMComments	", true);
+		vdm2isa_print_isa_comments = get(isa, "printIsaComments", true);
+		vdm2isa_run_exu			= get(isa, "runExu", true);
+		vdm2isa_value_as_abbreviation = get(isa, "valueAsAbbreviation", true);
+		vdm2isa_translate_typedef_min_max = get(isa, "translateTypeDefMinMax", true);
+		vdm2isa_print_vdm_source = get(isa, "printVDMSource", true); 
+		vdm2isa_print_locations = get(isa, "printLocations", true);
+
+		isapog_run_isapog = get(isa, "runIsapog", true);
+        try 
+        {
+            // if properties file has invalid proof strategy, get default.
+            isapog_defalut_strategy = IsaProofStrategy.valueOf(get(isa, "proofStrategy", IsaProofStrategy.SURRENDER.name()).toUpperCase());
+        }
+        catch (IllegalArgumentException e)
+        {
+            isapog_defalut_strategy = IsaProofStrategy.SURRENDER;
+        }
+        isapog_create_pog_locale_interpretation_lemmas = get(isa, "createPogLocaleLemmas", true);		
+	}
+
 	private static void setValues(java.util.Properties isa)
 	{
         general_strict = get(isa, "isa.general.strict", false);
@@ -120,10 +160,11 @@ public class IsaProperties {
 		vdm2isa_print_vdm_source = get(isa, "isa.vdm2isa.print_vdm_source", true); 
 		vdm2isa_print_locations = get(isa, "isa.vdm2isa.print_locations", true);
 
+		isapog_run_isapog = get(isa, "isa.isapog.run_isapog", true);
         try 
         {
             // if properties file has invalid proof strategy, get default.
-            isapog_defalut_strategy = IsaProofStrategy.valueOf(get(isa, "isa.isapog.default_strategy", IsaProofStrategy.SURRENDER.name()));
+            isapog_defalut_strategy = IsaProofStrategy.valueOf(get(isa, "isa.isapog.default_strategy", IsaProofStrategy.SURRENDER.name()).toUpperCase());
         }
         catch (IllegalArgumentException e)
         {
@@ -131,7 +172,7 @@ public class IsaProperties {
         }
         isapog_create_pog_locale_interpretation_lemmas = get(isa, "isa.isapog.create_pog_locale_interpretation_lemmas", true);
 	}
-	
+
 	private static int get(java.util.Properties local, String key, int def)
 	{
 		Integer value = Integer.getInteger(key);
@@ -180,7 +221,7 @@ public class IsaProperties {
 		return value;
 	}
 
-    private static String get(java.util.Properties local, String key, String def)
+	private static String get(java.util.Properties local, String key, String def)
 	{
 		String value = System.getProperty(key);
 		
@@ -194,6 +235,73 @@ public class IsaProperties {
 			{
 				value = def;
 			}
+		}
+		
+		return value;
+	}
+
+    private static String get(JSONObject local, String key, String def)
+	{
+		String value = System.getProperty(key);
+		
+		if (value == null)
+		{
+			if (local.containsKey(key))
+			{
+				value = local.getPath(key);
+			}
+			else
+			{
+				value = def;
+			}
+		}
+		
+		return value;
+	}
+	
+	private static int get(JSONObject local, String key, int def)
+	{
+		Integer value = Integer.getInteger(key);
+		
+		if (value == null)
+		{
+			if (local.containsKey(key))
+			{
+				try
+				{
+					String p = local.getPath(key);
+					value = Integer.parseInt(p);
+				}
+				catch (NumberFormatException e)
+				{
+					Diag.error("Could not parse vdm2isa integer property " + key + ": " + e.getMessage());
+					value = def;
+				}
+			}
+			else
+			{
+				value = def;
+			}
+		}
+		
+		return value;
+	}
+	
+	private static boolean get(JSONObject local, String key, boolean def)
+	{
+		String svalue = System.getProperty(key);
+		boolean value = def;
+		
+		if (svalue == null)
+		{
+			if (local.containsKey(key))
+			{
+				value = Boolean.parseBoolean(local.getPath(key));
+			}
+		}
+		else
+		{
+			value = Boolean.parseBoolean(svalue);
 		}
 		
 		return value;
