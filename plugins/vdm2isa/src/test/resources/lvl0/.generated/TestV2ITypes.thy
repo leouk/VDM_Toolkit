@@ -1,9 +1,9 @@
-(* VDM to Isabelle Translation @2022-12-24T08:19:59.900Z  
+(* VDM to Isabelle Translation @2022-12-26T10:40:31.381Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2ITypes
-   in './lvl0/TestV2ITypes.vdmsl' at line 1:8
-   files = [./lvl0/TestV2ITypes.vdmsl]
+   in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl' at line 1:8
+   files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl]
 *)
 theory TestV2ITypes
 imports VDMToolkit 
@@ -11,13 +11,13 @@ begin
 
 
 \<comment>\<open>VDM source: TBasic1 = nat1\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 11:5\<close>
 type_synonym TBasic1 = \<open>VDMNat1\<close>
 	
 \<comment>\<open>VDM source: inv_TBasic1: (TBasic1 +> bool)
 	inv_TBasic1(dummy0) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 11:5\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 11:5\<close>
 definition
 	inv_TBasic1 :: \<open>TBasic1 \<Rightarrow> bool\<close>
 where
@@ -34,13 +34,13 @@ lemmas inv_TBasic1_defs = inv_TBasic1_def inv_VDMNat1_def
 	inv t == (t > 10)
 	eq t1 = t2 == (t1 = t2)
 	ord t1 < t2 == (t1 < t2)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 14:5\<close>
 type_synonym TBasic2 = \<open>VDMNat1\<close>
 	
 \<comment>\<open>VDM source: inv_TBasic2: (nat1 +> bool)
 	inv_TBasic2(t) ==
 (t > 10)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 15:22\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 15:22\<close>
 definition
 	inv_TBasic2 :: \<open>TBasic2 \<Rightarrow> bool\<close>
 where
@@ -54,7 +54,7 @@ where
 \<comment>\<open>VDM source: eq_TBasic2: (nat1 * nat1 +> bool)
 	eq_TBasic2(t1, t2) ==
 (t1 = t2)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 16:9\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 16:9\<close>
 definition
 	eq_TBasic2 :: \<open>TBasic2 \<Rightarrow> TBasic2 \<Rightarrow> bool\<close>
 where
@@ -68,7 +68,7 @@ where
 \<comment>\<open>VDM source: ord_TBasic2: (nat1 * nat1 +> bool)
 	ord_TBasic2(t1, t2) ==
 (t1 < t2)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
 definition
 	ord_TBasic2 :: \<open>TBasic2 \<Rightarrow> TBasic2 \<Rightarrow> bool\<close>
 where
@@ -84,7 +84,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
 definition
 	min_TBasic2 :: \<open>TBasic2 \<Rightarrow> TBasic2 \<Rightarrow> TBasic2\<close>
 where
@@ -109,7 +109,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypes' (./lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
+\<comment>\<open>in 'TestV2ITypes' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypes.vdmsl) at line 17:9\<close>
 definition
 	max_TBasic2 :: \<open>TBasic2 \<Rightarrow> TBasic2 \<Rightarrow> TBasic2\<close>
 where

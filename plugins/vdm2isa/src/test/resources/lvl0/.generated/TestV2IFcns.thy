@@ -1,9 +1,9 @@
-(* VDM to Isabelle Translation @2022-12-24T08:19:59.950Z  
+(* VDM to Isabelle Translation @2022-12-26T10:40:31.204Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IFcns
-   in './lvl0/TestV2IFcns.vdmsl' at line 1:8
-   files = [./lvl0/TestV2IFcns.vdmsl]
+   in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl' at line 1:8
+   files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns
 imports VDMToolkit 
@@ -13,11 +13,11 @@ begin
 \<comment>\<open>VDM source: const: (() -> nat)
 	const() ==
 10\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
 \<comment>\<open>VDM source: pre_const: (() +> bool)
 	pre_const() ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
 definition
 	pre_const :: \<open>bool\<close>
 where
@@ -26,7 +26,7 @@ where
 \<comment>\<open>VDM source: post_const: (nat +> bool)
 	post_const(RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 8:5\<close>
 definition
 	post_const :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
@@ -49,11 +49,11 @@ where
 10
 	pre (10 > 5)
 	post (RESULT > 0)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 12:5\<close>
 \<comment>\<open>VDM source: pre_constS: (() +> bool)
 	pre_constS() ==
 (10 > 5)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 14:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 14:12\<close>
 definition
 	pre_constS :: \<open>bool\<close>
 where
@@ -66,7 +66,7 @@ where
 \<comment>\<open>VDM source: post_constS: (nat +> bool)
 	post_constS(RESULT) ==
 (RESULT > 0)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 15:17\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 15:17\<close>
 definition
 	post_constS :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
@@ -89,11 +89,11 @@ where
 \<comment>\<open>VDM source: f: (nat * nat1 -> nat1)
 	f(x, y) ==
 (x + y)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
 \<comment>\<open>VDM source: pre_f: (nat * nat1 +> bool)
 	pre_f(x, y) ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
 definition
 	pre_f :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
@@ -104,7 +104,7 @@ where
 \<comment>\<open>VDM source: post_f: (nat * nat1 * nat1 +> bool)
 	post_f(x, y, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 18:5\<close>
 definition
 	post_f :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
@@ -127,11 +127,11 @@ where
 (x + y)
 	pre (x > 10)
 	post (x < RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 22:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 22:5\<close>
 \<comment>\<open>VDM source: pre_g: (nat * nat1 +> bool)
 	pre_g(x, y) ==
 (x > 10)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 24:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 24:11\<close>
 definition
 	pre_g :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
@@ -144,7 +144,7 @@ where
 \<comment>\<open>VDM source: post_g: (nat * nat1 * nat1 +> bool)
 	post_g(x, y, RESULT) ==
 (x < RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 25:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 25:12\<close>
 definition
 	post_g :: \<open>VDMNat \<Rightarrow> VDMNat1 \<Rightarrow> VDMNat1 \<Rightarrow> bool\<close>
 where
@@ -169,11 +169,11 @@ where
 g(x, x)
 	pre pre_g(x, x)
 	post post_g(x, x, RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 28:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 28:5\<close>
 \<comment>\<open>VDM source: pre_h: (nat +> bool)
 	pre_h(x) ==
 pre_g(x, x)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 30:9\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 30:9\<close>
 definition
 	pre_h :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
@@ -186,7 +186,7 @@ where
 \<comment>\<open>VDM source: post_h: (nat * nat +> bool)
 	post_h(x, RESULT) ==
 post_g(x, x, RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 31:10\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 31:10\<close>
 definition
 	post_h :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -211,11 +211,11 @@ where
 g(x, x)
 	pre (x < 20)
 	post (x > 20)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 34:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 34:5\<close>
 \<comment>\<open>VDM source: pre_h': (nat +> bool)
 	pre_h'(x) ==
 (x < 20)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 36:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 36:11\<close>
 definition
 	pre_h' :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
@@ -228,7 +228,7 @@ where
 \<comment>\<open>VDM source: post_h': (nat * nat +> bool)
 	post_h'(x, RESULT) ==
 (x > 20)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 37:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 37:12\<close>
 definition
 	post_h' :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -253,11 +253,11 @@ where
 g(x, x)
 	pre (x < 20)
 	post pre_g(x, RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 40:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 40:5\<close>
 \<comment>\<open>VDM source: pre_h'': (nat +> bool)
 	pre_h''(x) ==
 (x < 20)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 42:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 42:11\<close>
 definition
 	pre_h'' :: \<open>VDMNat \<Rightarrow> bool\<close>
 where
@@ -270,7 +270,7 @@ where
 \<comment>\<open>VDM source: post_h'': (nat * nat +> bool)
 	post_h''(x, RESULT) ==
 pre_g(x, RESULT)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 43:10\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 43:10\<close>
 definition
 	post_h'' :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -293,11 +293,11 @@ where
 \<comment>\<open>VDM source: curried: (nat -> (nat -> nat))
 	curried(x)(y) ==
 (x + y)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
 \<comment>\<open>VDM source: pre_curried: (nat +> (nat +> bool))
 	pre_curried(x)(y) ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
 definition
 	pre_curried :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -308,7 +308,7 @@ where
 \<comment>\<open>VDM source: post_curried: (nat +> (nat * nat +> bool))
 	post_curried(x)(y, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 46:5\<close>
 definition
 	post_curried :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -331,11 +331,11 @@ where
 (x + y)
 	pre (x > y)
 	post ((x < RESULT) and (y < RESULT))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 50:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 50:5\<close>
 \<comment>\<open>VDM source: pre_curriedS: (nat +> (nat +> bool))
 	pre_curriedS(x)(y) ==
 (x > y)\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 52:11\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 52:11\<close>
 definition
 	pre_curriedS :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -348,7 +348,7 @@ where
 \<comment>\<open>VDM source: post_curriedS: (nat +> (nat * nat +> bool))
 	post_curriedS(x)(y, RESULT) ==
 ((x < RESULT) and (y < RESULT))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 53:21\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 53:21\<close>
 definition
 	post_curriedS :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -370,11 +370,11 @@ where
 \<comment>\<open>VDM source: implicit((x, y:nat), (z:set of (nat)))r:seq of (nat)
 	pre ((x < y) and (x in set z))
 	post (x > (len r))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 55:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 55:5\<close>
 \<comment>\<open>VDM source: pre_implicit: (nat * nat * set of (nat) +> bool)
 	pre_implicit(x, y, z) ==
 ((x < y) and (x in set z))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 56:15\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 56:15\<close>
 definition
 	pre_implicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool\<close>
 where
@@ -387,7 +387,7 @@ where
 \<comment>\<open>VDM source: post_implicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
 	post_implicit(x, y, z, r) ==
 (x > (len r))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 57:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 57:12\<close>
 definition
 	post_implicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
@@ -402,11 +402,11 @@ where
 	[x, y]
 	pre ((x < y) and (x in set z))
 	post (x > (len r))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 59:5\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 59:5\<close>
 \<comment>\<open>VDM source: pre_implicitexplicit: (nat * nat * set of (nat) +> bool)
 	pre_implicitexplicit(x, y, z) ==
 ((x < y) and (x in set z))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 61:15\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 61:15\<close>
 definition
 	pre_implicitexplicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> bool\<close>
 where
@@ -419,7 +419,7 @@ where
 \<comment>\<open>VDM source: post_implicitexplicit: (nat * nat * set of (nat) * seq of (nat) +> bool)
 	post_implicitexplicit(x, y, z, r) ==
 (x > (len r))\<close>
-\<comment>\<open>in 'TestV2IFcns' (./lvl0/TestV2IFcns.vdmsl) at line 62:12\<close>
+\<comment>\<open>in 'TestV2IFcns' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IFcns.vdmsl) at line 62:12\<close>
 definition
 	post_implicitexplicit :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat VDMSet \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool\<close>
 where

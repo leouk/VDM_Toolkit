@@ -1,9 +1,9 @@
-(* VDM to Isabelle Translation @2022-12-24T08:19:59.941Z  
+(* VDM to Isabelle Translation @2022-12-26T10:40:31.237Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IDeclBeforeUse
-   in './lvl0/TestV2IDeclBeforeUse.vdmsl' at line 1:8
-   files = [./lvl0/TestV2IDeclBeforeUse.vdmsl]
+   in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl' at line 1:8
+   files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl]
 *)
 theory TestV2IDeclBeforeUse
 imports VDMToolkit 
@@ -13,11 +13,11 @@ begin
 	head(s) ==
 (hd s)
 	pre ((len s) > 0)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 5:5\<close>
 \<comment>\<open>VDM source: pre_head: (seq of (nat) +> bool)
 	pre_head(s) ==
 ((len s) > 0)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 7:15\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 7:15\<close>
 definition
 	pre_head :: \<open>VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
@@ -30,7 +30,7 @@ where
 \<comment>\<open>VDM source: post_head: (seq of (nat) * nat +> bool)
 	post_head(s, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 5:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 5:5\<close>
 definition
 	post_head :: \<open>VDMNat VDMSeq \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -50,11 +50,11 @@ where
 \<comment>\<open>VDM source: tail: (seq1 of (nat) -> seq of (nat))
 	tail(s) ==
 (tl s)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
 \<comment>\<open>VDM source: pre_tail: (seq1 of (nat) +> bool)
 	pre_tail(s) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
 definition
 	pre_tail :: \<open>VDMNat VDMSeq1 \<Rightarrow> bool\<close>
 where
@@ -65,7 +65,7 @@ where
 \<comment>\<open>VDM source: post_tail: (seq1 of (nat) * seq of (nat) +> bool)
 	post_tail(s, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 9:5\<close>
 definition
 	post_tail :: \<open>VDMNat VDMSeq1 \<Rightarrow> VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
@@ -88,11 +88,11 @@ where
 then 0
 else (head(s) + sum_elems(tail(s))))
 	measure (len s)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
 \<comment>\<open>VDM source: pre_sum_elems: (seq of (nat) +> bool)
 	pre_sum_elems(s) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
 definition
 	pre_sum_elems :: \<open>VDMNat VDMSeq \<Rightarrow> bool\<close>
 where
@@ -103,7 +103,7 @@ where
 \<comment>\<open>VDM source: post_sum_elems: (seq of (nat) * nat +> bool)
 	post_sum_elems(s, RESULT) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 12:5\<close>
 definition
 	post_sum_elems :: \<open>VDMNat VDMSeq \<Rightarrow> VDMNat \<Rightarrow> bool\<close>
 where
@@ -128,13 +128,13 @@ declare pre_sum_elems_def [simp del]
 
 
 \<comment>\<open>VDM source: T = seq1 of (nat)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 19:5\<close>
 type_synonym T = \<open>VDMNat VDMSeq1\<close>
 	
 \<comment>\<open>VDM source: inv_T: (T +> bool)
 	inv_T(dummy0) ==
 null\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 19:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 19:5\<close>
 definition
 	inv_T :: \<open>T \<Rightarrow> bool\<close>
 where
@@ -148,13 +148,13 @@ lemmas inv_T_defs = inv_T_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMSeq1'_defs
 
 \<comment>\<open>VDM source: S = T
 	inv s == ((len tail(s)) > 0)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 24:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 24:5\<close>
 type_synonym S = \<open>T\<close>
 	
 \<comment>\<open>VDM source: inv_S: (T +> bool)
 	inv_S(s) ==
 ((len tail(s)) > 0)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 27:21\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 27:21\<close>
 definition
 	inv_S :: \<open>S \<Rightarrow> bool\<close>
 where
@@ -170,13 +170,13 @@ lemmas inv_S_defs = inv_S_def inv_T_def inv_VDMNat_def inv_VDMSeq1'_def inv_VDMS
 
 \<comment>\<open>VDM source: R = S
 	inv r == (sum_elems(r) < 5)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 30:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 30:5\<close>
 type_synonym R = \<open>S\<close>
 	
 \<comment>\<open>VDM source: inv_R: (S +> bool)
 	inv_R(r) ==
 (sum_elems(r) < 5)\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 33:22\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 33:22\<close>
 definition
 	inv_R :: \<open>R \<Rightarrow> bool\<close>
 where
@@ -193,7 +193,7 @@ lemmas inv_R_defs = inv_R_def inv_S_def inv_T_def inv_VDMNat_def inv_VDMSeq1'_de
 
 \<comment>\<open>VDM source: Rec = compose Rec of s:S, t:T, r:R end
 	inv mk_Rec(s, t, r) == ((sum_elems(s) > sum_elems(t)) and ((len r) > 1))\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 36:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 36:5\<close>
 record Rec = 
 		s\<^sub>R\<^sub>e\<^sub>c :: "S"
 		 
@@ -204,7 +204,7 @@ record Rec =
 \<comment>\<open>VDM source: inv_Rec: (Rec +> bool)
 	inv_Rec(mk_Rec(s, t, r)) ==
 ((sum_elems(s) > sum_elems(t)) and ((len r) > 1))\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 41:37\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 41:37\<close>
 definition
 	inv_Rec :: \<open>Rec \<Rightarrow> bool\<close>
 where
@@ -226,13 +226,13 @@ lemmas inv_Rec_defs = inv_R_def inv_Rec_def inv_S_def inv_T_def inv_VDMNat_def i
 
 \<comment>\<open>VDM source: Map = map (S) to (Rec)
 	inv m == ((dom m) = {})\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 43:5\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 43:5\<close>
 type_synonym Map = \<open>(S \<rightharpoonup> Rec)\<close>
 	
 \<comment>\<open>VDM source: inv_Map: (map (S) to (Rec) +> bool)
 	inv_Map(m) ==
 ((dom m) = {})\<close>
-\<comment>\<open>in 'TestV2IDeclBeforeUse' (./lvl0/TestV2IDeclBeforeUse.vdmsl) at line 44:20\<close>
+\<comment>\<open>in 'TestV2IDeclBeforeUse' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2IDeclBeforeUse.vdmsl) at line 44:20\<close>
 definition
 	inv_Map :: \<open>Map \<Rightarrow> bool\<close>
 where

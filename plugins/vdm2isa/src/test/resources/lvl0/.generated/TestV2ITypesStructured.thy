@@ -1,9 +1,9 @@
-(* VDM to Isabelle Translation @2022-12-24T08:19:59.719Z  
+(* VDM to Isabelle Translation @2022-12-26T10:40:31.497Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2ITypesStructured
-   in './lvl0/TestV2ITypesStructured.vdmsl' at line 1:8
-   files = [./lvl0/TestV2ITypesStructured.vdmsl]
+   in '/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl' at line 1:8
+   files = [/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl]
 *)
 theory TestV2ITypesStructured
 imports VDMToolkit 
@@ -12,13 +12,13 @@ begin
 
 \<comment>\<open>VDM source: G2 = (int * int)
 	inv mk_(l, r) == (l < r)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 10:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 10:5\<close>
 type_synonym G2 = \<open>(VDMInt \<times> VDMInt)\<close>
 	
 \<comment>\<open>VDM source: inv_G2: ((int * int) +> bool)
 	inv_G2(mk_(l, r)) ==
 (l < r)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 11:23\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 11:23\<close>
 definition
 	inv_G2 :: \<open>G2 \<Rightarrow> bool\<close>
 where
@@ -42,13 +42,13 @@ lemmas inv_G2_defs = inv_G2_def inv_VDMInt_def
 
 \<comment>\<open>VDM source: G2' = (int * int)
 	inv g == ((g.#1) < (g.#2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 14:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 14:5\<close>
 type_synonym G2' = \<open>(VDMInt \<times> VDMInt)\<close>
 	
 \<comment>\<open>VDM source: inv_G2': ((int * int) +> bool)
 	inv_G2'(g) ==
 ((g.#1) < (g.#2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 15:19\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 15:19\<close>
 definition
 	inv_G2' :: \<open>G2' \<Rightarrow> bool\<close>
 where
@@ -69,13 +69,13 @@ lemmas inv_G2'_defs = inv_G2'_def inv_VDMInt_def
 	inv s == (s <> {})
 	eq s1 = s2 == (s1 subset s2)
 	ord s1 < s2 == ((card s1) < (card s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 17:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 17:5\<close>
 type_synonym TSet = \<open>VDMNat1 VDMSet\<close>
 	
 \<comment>\<open>VDM source: inv_TSet: (set of (nat1) +> bool)
 	inv_TSet(s) ==
 (s <> {})\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 18:22\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 18:22\<close>
 definition
 	inv_TSet :: \<open>TSet \<Rightarrow> bool\<close>
 where
@@ -88,7 +88,7 @@ where
 \<comment>\<open>VDM source: eq_TSet: (set of (nat1) * set of (nat1) +> bool)
 	eq_TSet(s1, s2) ==
 (s1 subset s2)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 19:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 19:9\<close>
 definition
 	eq_TSet :: \<open>TSet \<Rightarrow> TSet \<Rightarrow> bool\<close>
 where
@@ -101,7 +101,7 @@ where
 \<comment>\<open>VDM source: ord_TSet: (set of (nat1) * set of (nat1) +> bool)
 	ord_TSet(s1, s2) ==
 ((card s1) < (card s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
 	ord_TSet :: \<open>TSet \<Rightarrow> TSet \<Rightarrow> bool\<close>
 where
@@ -116,7 +116,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
 	min_TSet :: \<open>TSet \<Rightarrow> TSet \<Rightarrow> TSet\<close>
 where
@@ -141,7 +141,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 20:9\<close>
 definition
 	max_TSet :: \<open>TSet \<Rightarrow> TSet \<Rightarrow> TSet\<close>
 where
@@ -166,13 +166,13 @@ lemmas inv_TSet_defs = inv_TSet_def inv_VDMNat1_def inv_VDMSet'_def inv_VDMSet'_
 
 \<comment>\<open>VDM source: TSet2 = TSet
 	inv s == ((card s) > 10)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 23:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 23:5\<close>
 type_synonym TSet2 = \<open>TSet\<close>
 	
 \<comment>\<open>VDM source: inv_TSet2: (TSet +> bool)
 	inv_TSet2(s) ==
 ((card s) > 10)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 24:21\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 24:21\<close>
 definition
 	inv_TSet2 :: \<open>TSet2 \<Rightarrow> bool\<close>
 where
@@ -187,13 +187,13 @@ lemmas inv_TSet2_defs = inv_TSet_def inv_TSet2_def inv_VDMNat1_def inv_VDMSet'_d
 
 
 \<comment>\<open>VDM source: TSet3 = set of (TSet)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
 type_synonym TSet3 = \<open>TSet VDMSet\<close>
 	
 \<comment>\<open>VDM source: inv_TSet3: (TSet3 +> bool)
 	inv_TSet3(dummy0) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 26:5\<close>
 definition
 	inv_TSet3 :: \<open>TSet3 \<Rightarrow> bool\<close>
 where
@@ -207,13 +207,13 @@ lemmas inv_TSet3_defs = inv_TSet_def inv_TSet3_def inv_VDMNat1_def inv_VDMSet'_d
 
 \<comment>\<open>VDM source: TSet4 = set of (TSet3)
 	inv s == ((card s) > 20)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 28:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 28:5\<close>
 type_synonym TSet4 = \<open>TSet3 VDMSet\<close>
 	
 \<comment>\<open>VDM source: inv_TSet4: (set of (TSet3) +> bool)
 	inv_TSet4(s) ==
 ((card s) > 20)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 29:21\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 29:21\<close>
 definition
 	inv_TSet4 :: \<open>TSet4 \<Rightarrow> bool\<close>
 where
@@ -231,13 +231,13 @@ lemmas inv_TSet4_defs = inv_TSet_def inv_TSet3_def inv_TSet4_def inv_VDMNat1_def
 	inv s == ((card (elems s)) = (len s))
 	eq s1 = s2 == ((elems s1) = (elems s2))
 	ord s1 < s2 == ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 31:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 31:5\<close>
 type_synonym TSeq = \<open>VDMNat1 VDMSeq1\<close>
 	
 \<comment>\<open>VDM source: inv_TSeq: (seq1 of (nat1) +> bool)
 	inv_TSeq(s) ==
 ((card (elems s)) = (len s))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 32:33\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 32:33\<close>
 definition
 	inv_TSeq :: \<open>TSeq \<Rightarrow> bool\<close>
 where
@@ -251,7 +251,7 @@ where
 \<comment>\<open>VDM source: eq_TSeq: (seq1 of (nat1) * seq1 of (nat1) +> bool)
 	eq_TSeq(s1, s2) ==
 ((elems s1) = (elems s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 33:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 33:9\<close>
 definition
 	eq_TSeq :: \<open>TSeq \<Rightarrow> TSeq \<Rightarrow> bool\<close>
 where
@@ -265,7 +265,7 @@ where
 \<comment>\<open>VDM source: ord_TSeq: (seq1 of (nat1) * seq1 of (nat1) +> bool)
 	ord_TSeq(s1, s2) ==
 ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
 	ord_TSeq :: \<open>TSeq \<Rightarrow> TSeq \<Rightarrow> bool\<close>
 where
@@ -281,7 +281,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
 	min_TSeq :: \<open>TSeq \<Rightarrow> TSeq \<Rightarrow> TSeq\<close>
 where
@@ -306,7 +306,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 34:9\<close>
 definition
 	max_TSeq :: \<open>TSeq \<Rightarrow> TSeq \<Rightarrow> TSeq\<close>
 where
@@ -334,13 +334,13 @@ lemmas inv_TSeq_defs = inv_TSeq_def inv_VDMNat1_def inv_VDMSeq1'_def inv_VDMSeq1
 	inv s == ((card (elems s)) = (len s))
 	eq s1 = s2 == ((elems s1) = (elems s2))
 	ord s1 < s2 == ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 37:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 37:5\<close>
 type_synonym TSeq2 = \<open>TSet VDMSeq1\<close>
 	
 \<comment>\<open>VDM source: inv_TSeq2: (seq1 of (TSet) +> bool)
 	inv_TSeq2(s) ==
 ((card (elems s)) = (len s))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 38:33\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 38:33\<close>
 definition
 	inv_TSeq2 :: \<open>TSeq2 \<Rightarrow> bool\<close>
 where
@@ -354,7 +354,7 @@ where
 \<comment>\<open>VDM source: eq_TSeq2: (seq1 of (TSet) * seq1 of (TSet) +> bool)
 	eq_TSeq2(s1, s2) ==
 ((elems s1) = (elems s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 39:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 39:9\<close>
 definition
 	eq_TSeq2 :: \<open>TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> bool\<close>
 where
@@ -368,7 +368,7 @@ where
 \<comment>\<open>VDM source: ord_TSeq2: (seq1 of (TSet) * seq1 of (TSet) +> bool)
 	ord_TSeq2(s1, s2) ==
 ((len s1) < (len s2))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
 	ord_TSeq2 :: \<open>TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> bool\<close>
 where
@@ -384,7 +384,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
 	min_TSeq2 :: \<open>TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> TSeq2\<close>
 where
@@ -409,7 +409,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 40:9\<close>
 definition
 	max_TSeq2 :: \<open>TSeq2 \<Rightarrow> TSeq2 \<Rightarrow> TSeq2\<close>
 where
@@ -437,13 +437,13 @@ lemmas inv_TSeq2_defs = inv_TSeq2_def inv_TSet_def inv_VDMNat1_def inv_VDMSeq1'_
 	inv m == ((dom m) <> {})
 	eq m1 = m2 == (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) = m2(x))))
 	ord m1 < m2 == (((dom m1) subset (dom m2)) or (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) < m2(x)))))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 43:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 43:5\<close>
 type_synonym TMap = \<open>(VDMNat1 \<rightharpoonup> VDMNat1)\<close>
 	
 \<comment>\<open>VDM source: inv_TMap: (map (nat1) to (nat1) +> bool)
 	inv_TMap(m) ==
 ((dom m) <> {})\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 44:20\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 44:20\<close>
 definition
 	inv_TMap :: \<open>TMap \<Rightarrow> bool\<close>
 where
@@ -457,7 +457,7 @@ where
 \<comment>\<open>VDM source: eq_TMap: (map (nat1) to (nat1) * map (nat1) to (nat1) +> bool)
 	eq_TMap(m1, m2) ==
 (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) = m2(x))))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 45:8\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 45:8\<close>
 definition
 	eq_TMap :: \<open>TMap \<Rightarrow> TMap \<Rightarrow> bool\<close>
 where
@@ -471,7 +471,7 @@ where
 \<comment>\<open>VDM source: ord_TMap: (map (nat1) to (nat1) * map (nat1) to (nat1) +> bool)
 	ord_TMap(m1, m2) ==
 (((dom m1) subset (dom m2)) or (((dom m1) = (dom m2)) and (forall x in set (dom m1) & (m1(x) < m2(x)))))\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
 	ord_TMap :: \<open>TMap \<Rightarrow> TMap \<Rightarrow> bool\<close>
 where
@@ -487,7 +487,7 @@ where
 (if ((a < b) or (a = b))
 then a
 else b)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
 	min_TMap :: \<open>TMap \<Rightarrow> TMap \<Rightarrow> TMap\<close>
 where
@@ -512,7 +512,7 @@ where
 (if ((a < b) or (a = b))
 then b
 else a)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 46:9\<close>
 definition
 	max_TMap :: \<open>TMap \<Rightarrow> TMap \<Rightarrow> TMap\<close>
 where
@@ -536,13 +536,13 @@ lemmas inv_TMap_defs = inv_TMap_def inv_VDMMap_defs inv_VDMNat1_def
 
 
 \<comment>\<open>VDM source: TMap2 = map (TSet4) to (TSeq2)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
 type_synonym TMap2 = \<open>(TSet4 \<rightharpoonup> TSeq2)\<close>
 	
 \<comment>\<open>VDM source: inv_TMap2: (TMap2 +> bool)
 	inv_TMap2(dummy0) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 52:5\<close>
 definition
 	inv_TMap2 :: \<open>TMap2 \<Rightarrow> bool\<close>
 where
@@ -555,13 +555,13 @@ lemmas inv_TMap2_defs = inv_TMap2_def inv_TSeq2_def inv_TSet_def inv_TSet3_def i
 
 
 \<comment>\<open>VDM source: TMap3 = map (TMap2) to (TMap)\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
 type_synonym TMap3 = \<open>(TMap2 \<rightharpoonup> TMap)\<close>
 	
 \<comment>\<open>VDM source: inv_TMap3: (TMap3 +> bool)
 	inv_TMap3(dummy0) ==
 null\<close>
-\<comment>\<open>in 'TestV2ITypesStructured' (./lvl0/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
+\<comment>\<open>in 'TestV2ITypesStructured' (/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/target/test-classes/lvl0/TestV2ITypesStructured.vdmsl) at line 54:5\<close>
 definition
 	inv_TMap3 :: \<open>TMap3 \<Rightarrow> bool\<close>
 where
