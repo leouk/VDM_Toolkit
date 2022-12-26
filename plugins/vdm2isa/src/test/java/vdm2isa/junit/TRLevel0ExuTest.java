@@ -11,6 +11,12 @@ public class TRLevel0ExuTest extends Vdm2IsaJUnitTest
 		readSpecification("lvl0");
 	}
     
+    @Override
+    protected String getOutputPath()
+    {
+        return "./src/test/resources/lvl0/.generated";
+    }
+
     @Test
     public void test0() throws Exception
 	{

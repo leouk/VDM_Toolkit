@@ -64,10 +64,15 @@ public class ISAPluginSL extends ISAPlugin
 			}
 
 			// here we call the plugin 
-			boolean r = this.isapog.run(new String[] { "isapog" });
+			boolean r = this.isapog.run(
+				new String[] { "isapog", "set", "o", saveUri.toPath().toString()});
+			if (r)
+			{
+				r = this.isapog.run(new String[] { "isapog" });
+			}
 			
 			//TODO @NB, how can I add the plugin errors within this event? 
-			
+
 // //			for (TCModule module: tclist)
 // //			{
 // //				File outfile = new File(saveUri, module.name.getName() + ".thy");

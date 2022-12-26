@@ -21,16 +21,21 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 	{
 		VDMJUnitTestSL.init();
         VDMJUnitTestSL.setRelease(Release.VDM_10);
+        IsaProperties.init();
 	}
 
     protected TCModuleList tclist;
+    protected String outputPath;
 
 	@Before
     public void setUp()
 	{
 		Vdm2IsaJUnitTest.init();
         tclist = interpreter.getTC();
+        outputPath = getOutputPath();
 	}
+
+    protected abstract String getOutputPath();
 
     protected void printMessages(List<? extends VDMMessage> messages)
 	{
@@ -38,13 +43,6 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 		{
 			System.out.println(message);
 		}
-    }
-
-    protected void runPlugin(String line, boolean result) throws Exception
-    {
-        if (!result) Assert.fail(line + " plugin call raised errors (see stdout)");
-        //result = ResourceUtil.runPlugin(line, interpreter);
-        if (!result) Assert.fail(line + " plugin call raised errors (see stdout)");
     }
     
     protected void runPlugin(String name, String module) throws Exception
@@ -54,7 +52,10 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
         //TODO would be better to have one TestCase per file? 
         boolean result = cmd.run(new String[] { name, "set", "ml", module });
         if (!result)
-        Assert.fail(name + " plugin could not set modules " + module);
+            Assert.fail(name + " plugin could not set modules " + module);
+        result = cmd.run(new String[] { name, "set", "o", outputPath });
+        if (!result)
+            Assert.fail(name + " plugin could not set output path " + module); 
         // every run does a reset of local + global errors
         result = cmd.run(new String[] { name });
         printMessages(GeneralisaPlugin.getWarnings());
