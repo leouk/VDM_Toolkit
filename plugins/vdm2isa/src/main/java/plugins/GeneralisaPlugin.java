@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
+import lsp.Utils;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
@@ -48,6 +51,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
+
+    public static final String DEFAULT_SAVEURI = "./.generated"; 
 
     // Settings are initialised only once per class load
     static {
@@ -126,6 +131,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected final List<String> commands;
     protected final TCModuleList tclist;
     protected final TCModuleList source;
+    protected File saveURI; 
 
     protected final Set<String> modulesToProcess; 
 
@@ -137,6 +143,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         this.tclist = new TCModuleList();
         this.modulesToProcess = new HashSet<String>();
         this.called = 0;
+        this.saveURI = null;
         created++;
         this.setup = false;
         this.source = null;
@@ -255,6 +262,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         printFlag("report warnings", IsaProperties.general_report_vdm_warnings);
         printFlag("debug", IsaProperties.general_debug);
         printFlag("modules to process", modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString());
+        printFlag("URI to save translation", saveURI == null ? GeneralisaPlugin.DEFAULT_SAVEURI : saveURI.toURI().toString());
     }
 
     protected boolean processArgument(String arg, Iterator<String> i)
@@ -323,6 +331,33 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             }
    
         }
+        else if (prop.equals("o"))
+        {
+            saveURI = null; // default = GeneralisaPlugin.DEFAULT_SAVEURI
+            try
+            {
+                File f = new File(val);
+                if (f.isDirectory())
+                {
+                    saveURI = f;
+                }
+                else if (!f.exists())
+                {
+                    Path p = createOutputDirectory(f, pluginName());
+                    saveURI = p.toFile();
+                }
+
+                if (saveURI == null || !saveURI.isDirectory())
+                {
+                    usage("Save location must be a directory: " + val);
+                    saveURI = null;
+                }
+            }
+            catch (IOException e)
+            {
+                usage("Could not create directory " + val);
+            }
+        }
         else 
             usage("Invalid property to set - " + prop);
     }
@@ -370,10 +405,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     protected String options()
     {
-        return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s ml=%6$s", 
+        return String.format("strict=%1$s me=%2$s isa=%3$s w=%4$s debug=%5$s ml=%6$s o=%7$s", 
             IsaProperties.general_strict, IsaProperties.general_max_errors, 
             IsaProperties.general_isa_version, IsaProperties.general_report_vdm_warnings, 
-            IsaProperties.general_debug, modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString());
+            IsaProperties.general_debug, modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString(), 
+            saveURI == null ? GeneralisaPlugin.DEFAULT_SAVEURI : saveURI.toURI().toString());
     }
 
     protected String optionsHelp()
@@ -385,6 +421,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         sb.append("\tw       : reports (or supresses) warnings\n");
         sb.append("\tdebug   : runs in debug mode\n");
         sb.append("\tml <lst>: comma-separated list of modules to process, or `all`; all modules if not set\n");
+        sb.append("\to <dir> : valid directory to save Isabelle files\n");
         return sb.toString();   
     }
 
@@ -578,15 +615,36 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             t.printStackTrace();
         addLocalErrors(1);
     }
+
+    protected static Path createOutputDirectory(File f, String plugin) throws IOException
+    {
+        String dir; 
+		// if no saveURI is set, then use the "default" 
+		if (f == null)
+		{
+			dir = GeneralisaPlugin.DEFAULT_SAVEURI; 
+		}
+		else 
+		{
+			dir = f.getPath();     		
+		}
+		try 
+		{
+            return Files.createDirectories(Paths.get(dir));            
+		}         
+        catch (IOException e)
+        {
+            GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_INVALID_SAVE_URI_3P, LexLocation.ANY, plugin, dir, e.getMessage());
+            throw e;
+        }
+    }
     
     protected /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, FileNotFoundException
 	{
-		String dir = location.file.getParent();
-		if (dir == null) dir = ".";
+        Path dir = createOutputDirectory(saveURI, pluginName());
 		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
-		File outfile = new File(dir + File.separator + ".generated", name);
-        Files.createDirectories(Paths.get(dir + File.separator + ".generated"));
-		Console.out.println("Translating module " + module + " as " + outfile.getAbsolutePath());
+		File outfile = new File(dir.toFile(), name);
+        Console.out.println("Translating module " + module + " as " + outfile.getAbsolutePath());
 		PrintWriter out = new PrintWriter(outfile);
 		out.write(result);
 		out.close();

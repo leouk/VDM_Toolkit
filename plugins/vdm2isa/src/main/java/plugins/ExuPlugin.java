@@ -65,7 +65,7 @@ public class ExuPlugin extends GeneralisaPlugin {
         // some VDM warnings have to be raised as Exu warnings or errors depending on strictness
         GeneralisaPlugin.processVDMWarnings(TypeChecker.getWarnings(), IsaProperties.general_strict);
 
-        etc = new ExuTypeChecker(IsaProperties.general_debug, IsaProperties.general_report_vdm_warnings);
+        etc = new ExuTypeChecker(IsaProperties.general_debug, IsaProperties.general_report_vdm_warnings, this.saveURI);
 
         // once-only (per [re-]load) call definitionOrder on all modules
         etc.processModules(tclist);

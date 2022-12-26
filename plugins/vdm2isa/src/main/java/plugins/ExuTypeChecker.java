@@ -1,5 +1,6 @@
 package plugins;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,18 +25,20 @@ public class ExuTypeChecker {
     private final boolean debug;
     private TCModuleList sorted_list;
     private final Map<String, ExuOrder> exuMap;
+    private final File saveURI;
 
     // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
     //     Arrays.asList(VDMSpecificationKind.MEASURE, VDMSpecificationKind.PRE,
     //         VDMSpecificationKind.POST, VDMSpecificationKind.);
     
-    public ExuTypeChecker(boolean debug, boolean warnings)
+    public ExuTypeChecker(boolean debug, boolean warnings, File saveURI)
     {
         super();
         this.exuMap = new HashMap<String, ExuOrder>();
         this.sorted_list = null;
         this.warnings = warnings; 
         this.debug = debug;
+        this.saveURI = saveURI;
     }
 
     private TCNameToken find(TCNameList list, String name)
@@ -85,7 +88,7 @@ public class ExuTypeChecker {
         ExuOrder result;
         if (!exuMap.containsKey(m.name.getName()))
         {
-            result = new ExuOrder(m, debug);
+            result = new ExuOrder(m, saveURI, debug);
             result.processModule();
             exuMap.put(m.name.getName(), result);
         }

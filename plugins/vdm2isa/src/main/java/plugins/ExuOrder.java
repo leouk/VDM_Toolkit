@@ -3,6 +3,7 @@ package plugins;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -109,14 +110,16 @@ public class ExuOrder extends DependencyOrder
     private TCDefinitionList savedModuleDefs;
     private final TCModule module;
     private ExuState state; 
+    private final File saveURI;
 
-    public ExuOrder(TCModule m, boolean debug)
+    public ExuOrder(TCModule m, File saveURI, boolean debug)
     {
         super(m, debug);
         savedStartPoints = null;
         savedTopologicalSort = null;
         savedModuleDefs = null;
         module = m;
+        this.saveURI = saveURI;
         state = ExuState.CREATED; 
     }
 
@@ -166,23 +169,20 @@ public class ExuOrder extends DependencyOrder
 
     protected void graphIt(String namePrefix)
     {
-        if (module.files.size() > 0)
+        // if no saveURI is set, then use the "default" 
+        try 
         {
-            String dir = module.files.get(0).getParent();
-    		if (dir == null) dir = ".";
-    		String name = namePrefix + module.name.getName() + ".dot";
-            File outfile = new File(dir + File.separator + ".generated", name);
-            try 
-            {
-                Files.createDirectories(Paths.get(dir + File.separator + ".generated"));
-                graphOf(outfile);
-                Console.out.println("Printed dependencies for module " + name + " at " + outfile.getPath());
-            } 
-            catch (IOException e) {
-                Console.err.println("I/O error whilst attempting to write dependency graph for " + outfile.getAbsolutePath());
-                e.printStackTrace();
-            }
-        }    
+            Path dir = GeneralisaPlugin.createOutputDirectory(saveURI, "exu"); 
+            String name = namePrefix + module.name.getName() + ".dot";
+            File outfile = new File(dir.toFile(), name);
+            graphOf(outfile);
+            Console.out.println("Printed dependencies for module " + name + " at " + outfile.getPath());
+        } 
+        catch (IOException e) {
+            Console.err.println("I/O error whilst attempting to write dependency graph for " + e.getMessage());
+            //e.printStackTrace();
+            
+        }   
     }
 
     public void graphModule()
