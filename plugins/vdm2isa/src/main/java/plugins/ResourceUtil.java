@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,9 +50,16 @@ public class ResourceUtil
 		return result;
 	}
 
-    public static void save(String resourceURI, File targetFile) throws IOException 
+	/**
+	 * Looks for the given resource URI to be loaded from the class path (class.getResource),
+	 * saving the result on the given target file output. If effectively copies the file
+	 * @param fromResourceURI
+	 * @param targetFile
+	 * @throws IOException
+	 */
+    public static void copyTo(String fromResourceURI, File targetFile) throws IOException 
     {
-        InputStreamReader isr = loadStream(resourceURI);
+        InputStreamReader isr = loadStream(fromResourceURI);
 		OutputStream out = new FileOutputStream(targetFile);
 		// given the output is in YXML, UTF-8 is fine. 
 		OutputStreamWriter osr = new OutputStreamWriter(out, DEFAULT_ENCODING);
@@ -65,7 +74,29 @@ public class ResourceUtil
 	    
 		isr.close();
 		osr.close();		
-	}    
+	}   
+	
+	public static void saveTo(String fromResourceName, File targetDirectory) 
+	{
+		// String dir; 
+		// // if no saveURI is set, then use the "default" 
+		// if (this.saveURI == null)
+		// {
+		// 	dir = module.files.get(0).getParent();
+		// 	if (dir == null) 
+		// 		dir = ".";
+		// 	dir = dir + File.separator + GeneralisaPlugin.DEFAULT_SAVEURI; 
+		// }
+		// else 
+		// {
+		// 	dir = saveURI.toURI().toString();     		
+		// }
+		// File outfile = new File(targetDirectory, fromResourceName);
+		// try 
+		// {
+		// 	Files.createDirectories(Paths.get(targetDirectory.toURI()));
+		// } 		
+	}
 
 	/** The cache of loaded plugin instances */
 	private static final Map<String, CommandPlugin> plugins = new HashMap<String, CommandPlugin>();
@@ -74,7 +105,7 @@ public class ResourceUtil
 	{
 		plugins.clear();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T extends CommandPlugin> T getPlugin(String name)
 	{

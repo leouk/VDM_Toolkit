@@ -22,6 +22,8 @@ public enum IsaErrorMessage {
     "Unexpected hit %1$s for %2$s"),
     PLUGIN_UNKNOWN_COMMAND_2P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 5,
     "Unexpected command %1$s for plugin %2$s"),
+    PLUGIN_INVALID_SAVE_URI_3P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 6,
+    "%1$s plugin could not create directory to save results: %2$s\n%3$s"),
 
     
     //VDM messages relate to ill formed ASTs; properly (VDMJ) typechecked ASts should never raise those
