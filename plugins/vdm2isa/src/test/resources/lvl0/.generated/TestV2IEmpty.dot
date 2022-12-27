@@ -1,4 +1,2 @@
 digraph G {
-	 x [label="x @ L4"]
-	 x -> inv_x;
 }
