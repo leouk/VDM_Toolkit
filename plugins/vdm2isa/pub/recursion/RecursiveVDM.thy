@@ -967,8 +967,8 @@ simplification rules.
     odd(n) == if n = 0 then false else even(n-1) measure n;
 \end{vdmsl}
 \<close>
-definition pre_even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]: \<open>pre_even n \<equiv> inv_VDMNat n\<close> 
-definition pre_odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [simp]: \<open>pre_odd n \<equiv> inv_VDMNat n\<close> 
+definition pre_even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [termination_simp]: \<open>pre_even n \<equiv> inv_VDMNat n\<close> 
+definition pre_odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where [termination_simp]: \<open>pre_odd n \<equiv> inv_VDMNat n\<close> 
 fun (domintros) even :: \<open>VDMNat \<Rightarrow> \<bool>\<close> and odd  :: \<open>VDMNat \<Rightarrow> \<bool>\<close> where 
   \<open>even n = (if pre_even n then (if n = 0 then True else odd (n-1)) else undefined)\<close>
 | \<open>odd  n = (if pre_odd n then (if n = 0 then False else even (n-1)) else undefined)\<close>

@@ -1,37 +1,50 @@
 /**
  * Model of the N-Queens problem.
  */
+values 
+	-- N * N board, can never be less than 1x1 grid
+	BOARD_SIZE: nat1 = 8;
+	
+	MAX_QUEENS: nat1 = BOARD_SIZE + 1;
+	
 types
-	Pos = nat * nat;
-	Board = set of Pos;
+	Queens = nat1 
+	inv q == q <= MAX_QUEENS; 
+	
+	--@doc positions starting from 0
+	Pos = nat
+	inv p == p < BOARD_SIZE;
+	
+	Coord = Pos * Pos;
+	Board = set of Coord;	
 
 functions
 	run: () -> [Board]
 	run() ==
 		solve({}, 1);
 
-	solve: Board * nat1 -> [Board]
+	solve: Board * Queens -> [Board]
 	solve(board, Q) ==
-		if Q = 9
+		if Q = MAX_QUEENS
 		then board
 		else
-			let possible = { mk_(r, c) | r, c in set {0, ..., 7} & allowed(r, c, board) } in
-				try(possible, board, Q)
-	measure 64 - card board;
+			let Coordsible = { mk_(r, c) | r, c in set {0, ..., BOARD_SIZE-1} & allowed(r, c, board) } in
+				try(Coordsible, board, Q)
+	measure (BOARD_SIZE * BOARD_SIZE) - card board;
 
-	try: set of Pos * Board * nat1 -> [Board]
-	try(possible, board, Q) ==
-		if possible = {}
+	try: set of Coord * Board * Queens -> [Board]
+	try(Coordsible, board, Q) ==
+		if Coordsible = {}
 		then nil
 		else
-			let p in set possible in
+			let p in set Coordsible in
 			let solution = solve(board union {p}, Q + 1) in
 				if solution = nil
-				then try(possible \ {p}, board, Q)
+				then try(Coordsible \ {p}, board, Q)
 				else solution
-	;--measure card possible;
+	;--measure card Coordsible;
 
-	allowed: nat * nat * Board +> bool
+	allowed: Pos * Pos * Board +> bool
 	allowed(r, c, board) ==
 		mk_(r, c) not in set board
 		and not exists mk_(r', c') in set board &
