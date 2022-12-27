@@ -173,9 +173,9 @@ public class IsaProperties {
         isapog_create_pog_locale_interpretation_lemmas = get(isa, "isa.isapog.create_pog_locale_interpretation_lemmas", true);
 	}
 
-	private static int get(java.util.Properties local, String key, int def)
+	private static long get(java.util.Properties local, String key, long def)
 	{
-		Integer value = Integer.getInteger(key);
+		Long value = Long.getLong(key);
 		
 		if (value == null)
 		{
@@ -183,8 +183,7 @@ public class IsaProperties {
 			{
 				try
 				{
-					String p = local.getProperty(key);
-					value = Integer.parseInt(p);
+					value = Long.parseLong(local.getProperty(key));
 				}
 				catch (NumberFormatException e)
 				{
@@ -259,9 +258,9 @@ public class IsaProperties {
 		return value;
 	}
 	
-	private static int get(JSONObject local, String key, int def)
+	private static long get(JSONObject local, String key, long def)
 	{
-		Integer value = Integer.getInteger(key);
+		Long value = Long.getLong(key);
 		
 		if (value == null)
 		{
@@ -269,8 +268,7 @@ public class IsaProperties {
 			{
 				try
 				{
-					String p = local.getPath(key);
-					value = Integer.parseInt(p);
+					value = local.getPath(key);
 				}
 				catch (NumberFormatException e)
 				{
@@ -290,13 +288,13 @@ public class IsaProperties {
 	private static boolean get(JSONObject local, String key, boolean def)
 	{
 		String svalue = System.getProperty(key);
-		boolean value = def;
+		Boolean value = def;
 		
 		if (svalue == null)
 		{
 			if (local.containsKey(key))
 			{
-				value = Boolean.parseBoolean(local.getPath(key));
+				value = local.getPath(key);
 			}
 		}
 		else
