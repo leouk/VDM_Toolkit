@@ -15,6 +15,8 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.ModuleTypeChecker;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import vdm2isa.messages.IsaErrorMessage;
+
 /**
  * Brings into the module typechecker what VDMSL.java does in its typeCheck method. 
  * This is needed so as to typecheck reordered modules. 
@@ -128,12 +130,16 @@ public class ExuTypeChecker {
             TCNameList organised = organise(ts);
             if (debug)
             {
-                Console.out.println("Organised names : " + organised.toString() + "\n");
+                Console.out.println("Organised names: " + organised.toString() + "\n");
             }
     
             // topological sorting must contain all original
             // set-view of organised must equal original (just their order is different)  
-            assert ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised);
+            if (!(ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised)))
+            {
+                GeneralisaPlugin.report(IsaErrorMessage.VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P, m.name.getLocation(), 
+                    original, organised, ts);
+            }
     
             // reorder module definition according to organised name list order
             TCDefinitionList moduleDefs = new TCDefinitionList();
