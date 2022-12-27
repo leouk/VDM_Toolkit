@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-26T10:40:29.649Z  
+(* VDM to Isabelle Translation @2022-12-27T12:31:49.609Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IDeclBeforeUse_PO

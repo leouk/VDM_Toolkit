@@ -1,4 +1,4 @@
-(* VDM to Isabelle Translation @2022-12-26T10:40:29.405Z  
+(* VDM to Isabelle Translation @2022-12-27T12:31:49.577Z  
    Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
 
    VDM translation of module TestV2IFcns_PO
