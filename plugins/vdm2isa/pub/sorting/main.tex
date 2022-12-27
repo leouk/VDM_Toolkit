@@ -113,8 +113,9 @@ pdfstartview=Fit
 %\newcommand{\ie}{i.\,e.\xspace}
 \newcommand{\eg}{{\em e.\,g.,\/}}
 \newcommand{\ie}{{\em i.\,e.,\/}}
+\newcommand{\etc}{{\em etc.\/}}
 
-\newcommand{\lfcomment}[1]{LF:~\textcolor{red}{#1}}
+\newcommand{\lfcomment}[1]{{\scriptsize\textcolor{red}{LF:~#1}}} 
 
 %introduce \powerset - hint by http://matheplanet.com/matheplanet/nuke/html/viewtopic.php?topic=136492&post_id=997377
 \DeclareFontFamily{U}{MnSymbolC}{}
@@ -171,11 +172,6 @@ pdfstartview=Fit
 }
 
 \usepackage{vdmlisting}
-
-\newcommand{\jkr}[1]{{\scriptsize\textcolor{orange}{JKR:~#1}}}  %
-\newcommand{\fpm}[1]{{\scriptsize\textcolor{purple}{FPM:~#1}}}  %
-\newcommand{\hdm}[1]{{\scriptsize\textcolor{blue}{HDM:~#1}}}  %
-\newcommand{\nb}[1]{{\scriptsize\textcolor{magenta}{NB:~#1}}}  %
 
 %%%%%%%%%%%%%%%%%%%%%%% Begin document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -242,35 +238,45 @@ Solving this specific order requirement is the key contribution of this paper. W
 VDM translation is performed by traversing its abstract syntax tree (AST) and issuing corresponding Isabelle/HOL, for every part of the VDM concrete syntax that are compatible for translation. For example, VDM union types are quite expressive. They even allow some wacky definitions like this cross union selection example.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
-types
-    TUnion1 = int | nat
-    inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
+    types
+        TUnion1 = int | nat
+        inv u == (is_nat(u) => u > 0) and (is_int(u) => u < 0);
 
-    TUnion2 = seq of nat | set of real;
+        TUnion2 = seq of nat | set of real;
 
-functions 
-    f: TUnion2 * TUnion1 -> bool
-	f(u2, u1) ==
-		(is_int(u2) => 
-			((is_(u1, seq of nat) => u2 in set elems u1)
-			 and
-			 (is_(u1, set of real) => u2 in set u1)
-			)
-		)
-		and
-		(is_nat(u2) => 
-			((is_(u1, seq of nat) => not u2 in set elems u1)
-			 and
-			 (is_(u1, set of real) => not u2 in set u1)
-			)
-		);
+    functions 
+        f: TUnion2 * TUnion1 -> bool
+        f(u2, u1) ==
+            (is_int(u2) => 
+                ((is_(u1, seq of nat) => u2 in set elems u1)
+                  and
+                 (is_(u1, set of real) => u2 in set u1))
+            )
+            and
+            (is_nat(u2) => 
+                ((is_(u1, seq of nat) => not u2 in set elems u1)
+                  and
+                 (is_(u1, set of real) => not u2 in set u1))
+            );
 \end{vdmsl}
 %
 VDM union types will create a maximal type set over the united types, where invariants are preserved. This can create quite complex (and confusing) selection and invariant checking processes. Of course, rarely such specifications are written. Yet, from a translation point of view, these are some of the challenges around VDM's expressivity with respect to how they can be translated to Isabelle. 
 
+Another rather complex definition space in VDM are those for values and patterns. For example, one could define some pretty involved patterns in values and types like:
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+    types
+        T = set of nat inv {a,b,c} == a < b and b < c;
+    values 
+        [i,j]: seq of nat = [1,2];
+        {k,m}: set of nat = {2,1};
+\end{vdmsl}
+%
+The type definition states it is an ordered set of explicitly three \verb'nat' values, whereas the values definitions bind each name to its corresponding value (\ie~\verb'i=1', \verb'j=2', where \verb'k' and \verb'm' will be a random choice within the set!). This poses various challenges for translation, given that Isabelle requires a stricter bindings between names, types and values. Practically, such examples are rerely an impediment (or rarely written), yet have to be handled by the sorting algorithm as well. In particular, value definitions like those of \verb'[i,j]' effectively create two separate value definitions for both \verb'i' and \verb'j'.   
+
 That means the translator caters for the subset of VDM that is ``tamer'' (and mostly used). The translator has a VDM analysis tool (named \texttt{exu}\footnote{The name stems from the Yoruba divinity \textit{\`{E}\v{s}\`{u}} that was the gate keeper (and messenger) between mortals and deities.}), which checks for various such syntactic conondrums and limitations, telling users what to do and where problems are. Fixing such errors and warnings is important to ensure that translations are possible and without type errors for the user to solve on their own.  
 
-\texttt{exu} also provides support to prepare users for translation (\eg~there are over \(50\) kinds of ``error'' and \(20\) ``warnings'' the translator can issue). For example, it checks that any function call within a function definition ought to include that function's precondition, if one exist. Yet, one key hindrance remained:~ordering of module definitions and their dependencies. This hindrance will be addressed in this paper and have recently been implemented in the latest versoin of the translator. 
+\texttt{exu} also provides support to prepare users for translation (\eg~there are over \(50\) kinds of ``error'' and \(20\) ``warnings'' the translator can issue). For example, it checks that any function call within a function definition ought to include that function's precondition, if one exist. Yet, one key hindrance remained:~ordering of module definitions and their dependencies. This hindrance will be addressed in this paper and have recently been implemented in the latest versoin of the translator (see Section~\ref{sec:integration}). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -299,13 +305,118 @@ In VDMJ~\cite{Battle09}, visitors are used to make specialised traversals over t
 %
 With the information gathered about dependencies, it was possible to create a topological sort of module names, where the result would be a list of module names with the fewest passes possible. This effectively solved (in most cases) the dependency warnings from the verbose output, hence giving the end user the ordered list of module names to load. This could then ge given to VDMJ at load time directly. This was enabled output of a acyclic directed graph view of module dependencies as a \texttt{dot} file.    
 
-\subsection{Recursive cycles detection}
+\subsection{Recursive cycles detection and removal.}
 
 \lfcomment{Nick, maybe comment here the issues about mutual recursion and recursive type dependencies? And the tools / functionality they created?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exu ordering}\label{sec:exu}
 
+Topological sort of dependencies worked inter modules and resolved the long load time issues. Nevertheless, it did not consider definitions within module themselves. Moreover, module dependency search did not consider local (\eg~\texttt{let-in} definitions) and funciton name spaces, where type name spaces were not checked. It was also related to top-level definition (\ie~types, values, functions, \etc) names rather than their structure.      
+
+This required a different topological sort algorithm than the one available for module dependencies. The new algorithm consisted in five stages: 
+%
+\begin{enumerate} 
+    \item Collect all named definitions
+    \item Process non-function space dependenceies
+        \begin{itemize}
+            \item visit all definition dependencies 
+            \item create any missing \verb'inv_T'
+            \item link type with definition space  
+        \end{itemize}
+    \item Process function definition name-space dependencies 
+        \begin{itemize}
+            \item visit name-space dependencies 
+            \item ignore recursive calls
+            \item link named dependencies  
+        \end{itemize}
+    \item Topological sort
+        \begin{itemize}
+            \item Checks whether topological sorting is needed  
+            \item Kahn's algorithm DAG sorting of top-level names 
+         \end{itemize}
+    \item Module reconstruction
+         \begin{itemize}
+             \item Organise top-level names to separate type from function name-spaces  
+             \item Reorder module definitions 
+             \item Optionally re-typechecks module 
+          \end{itemize}
+\end{enumerate}  
+%
+The first stage effectively flattens the module top-level definitions into a single list of everything being defined within the module. For example, explicit functions might define pre/postconditions as well as measures, whereas types might define invariant, equality or order predicates. Each of these definitions are explicit function themselves. 
+
+The second stage seaches for top-level definition dependencies, where it creates invariant function definitions for all types that do not have them explicitly declared. This is important to ensure that every type \verb'T' without explicitly state invariants still depend on the function \verb'inv_T'. This effecitvely creates a function-space dependency between user-declared types, values and functions. Such synthetic constructs are structurally equivalent to what the typechecker would create had the user written something like \verb'inv_T = true' explicitly. This caters for the way both records and named typed invariant functions are constructed. For example, records create a function from the record name to boolean, whereas a named type \verb'S = RHS' creates a function from the \verb'RHS' type to boolean. Next, for declared values, there are no implicit functions to create, yet the named (type) dependency link is noted. This deeply process values, which can have multiple local definitions, as described in the examples above in Section~\ref{sec:background}.    
+
+The third stage searches for free-variable dependencies across all top-level declarions, taking into account local contexts, such as function parameters or locally bound variables (\eg~quantified variables, let-def constructs, \etc). This search also finds recursive, as well as mutually recursive, function calls. The former are ignored/removed, given they are treated differently by the translator. The latter must be resolved, otherwise the topological search stage will fails, given it requires a directed acyclic graph (DAG). \lfcomment{Nick, could you add/say (or correct) here what other differences there are between TCDefinitionDependencies and TCFreeVariableVisitor?}    
+
+The fourth stage is the actual topological sort algorithm used by VDMJ to sort module names described above. It is a variation of Kahn's DAG sort algorithm\footnote{\url{https://en.wikipedia.org/wiki/Topological_sorting\#Kahn's_algorithm}}. The DAG sort algorithm also looks for (and doe snot tolerate) cyclic dependencies within the given graph. Such cyclic dependencies have to be resolved earlier. In the case of definitions, cyclic dependencies can only occur between mutually recursive type of function definitions. Fortunately, VDMJ already has a mechanism for removing cyclic dependencies, which we apply here as well. This works well in practice. In the general case, however, this might fail, depending on the complexity of the mutual recursion(s) involved. \lfcomment{Nick, anything to add here?}
+
+The first three stages are considered as the module definition processing phase. They create all the necessary structures and implicit definitions needed for sorting. Nevertheless, before the sorting itself, it is important to provide two sources of information. First, the sort has to be made based on so-called graph start points:~nodes without incoming links. Second, sorting is only to be attempted if the module does contain use of definitions before their declaration. That is because if you sort an already sorted module you can get an inconsistent result (\ie~a sorting order that does not prevent use before declaration). Thus, we ensure that Kahn's algorithm is only run when necessary. Whether it will be necessary is discovered based on a variation of VDMJ's verbose output warning for cyclic dependencis check. \lfcomment{Nick, anything else to say here regarding non-stability?}    
+
+Finally, for the fitfh stage, if module sorting is not required, then the topological sorting is skipped and the module is not modified. Otherwise, if the sorting is requireed, then it is necessary to reorganise the topologically sorted list of names to take into account the two separate names spaces for types and functions at a module top-level definitions (prior to flattening definitions in the first stage). 
+
+For example, consider the module \verb'M' below. It defines types and functions top-down, in use before declaration fashion, where some definitions do not have explicitly defined invariants. 
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize,numbers=left,stepnumber=1]
+    module M 
+    exports all
+    definitions 
+    types 
+        --@doc uses types S and T before their declaration; implicit inv_Rec needed
+        Rec:: s: S t:T;
+        
+        --@doc uses type T and function tail before declaring them.
+        S = T inv s == head(s) > 0 and len tail(s) > 0;
+        
+        --@doc implicit inv_T needed
+        T = seq1 of nat;
+
+    functions
+        tail: seq1 of nat -> seq of nat
+        tail(s) == tl s;
+
+        head: seq1 of nat -> nat
+        head(s) == hd s;
+    end M
+\end{vdmsl}
+%
+If you run \verb'exu' (with the \verb'debug' flag set) on this module you get this output. 
+%
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+    Calling Exu VDM analyser...
+    Calculating declaration dependencies for module `M`...
+    Printed dependencies for module M.dot at ./M.dot
+    M`T declared after Rec
+    M`S declared after Rec
+    M`T declared after S
+    tail declared after S
+    tail declared after inv_S
+    Found 5 definition use before declaration. Topological sorted required.
+    Original names : Rec, S, T, tail, head
+    Start points   : Rec, S
+    Sorted names   : tail, head, inv_T, inv_S, T, inv_Rec, S, Rec
+    Organised names: tail, head, T, S, Rec
+    Exu successfully sorted module M definitions
+\end{vdmsl}
+%
+The original names are the user defined top-level names in declaration order, which are available after the first stage. The start points are those names at the top of the graph (\ie~with no incoming links), which are available after the third stage as a sorted list of names by their declared location. The sorted names are the names after the fourth stage. Notice that it includes dependencies over (implicitily declared) type invariants for \verb'R' and \verb'T'. Finally, the organised names are those with both name-spaces consolidated containing only names within the originally declared set. 
+
+Furthermore, notice that the order between functions \verb'head' and \verb'tail' and type \verb'T' is ``unstable'' (\ie~they are incomparable in this case). That is, whatever order they are declared is valid, so long as they are declared before \verb'S', which has to be declared before \verb'Rec'. It is these kinds of incomparibility between certain names that makes sorting modules where all names are declared before use can give irrelevant sorts. We try to minimise this by sorting the starting points by declaration order, but that cannot enterily prevent irrelevant sorts.  
+
+The algorithm satisfies the invariant that the original and organised name sets are equal, and that the sorted names list contains all organised names. This way, all names are accounted and no implicitly created names (\eg~\verb'inv_T') are part of the result.     
+
+Exu also produces a \texttt{dot} file view of the dependencies, which is similar to VDMJ's order plugin output for module name dependencies (see Figure~\ref{fig:Mdot}). It depicts the user declared dependencies before sorting. It includes corresponding source line locations, where starting nodes are tagged red with an inverted triangle shape, implicitly create invariants are double circles, and (terminal) nodes without outgoing links are shaped as a triangle.  
+%
+\begin{figure}[htbp]
+    \centering
+        \includegraphics[width=\textwidth,scale=0.4]{figures/M.png}
+    \caption{\texttt{M.vdmsl} definition dependencies.}\label{fig:Mdot}
+ \end{figure}
+%
+For complex (and large) modules, such visualisation ``clues'' can be invaluable to figure out what tweaks to make in case unstable sorts produce results that are not entirely declaration before use and might generate Isabelle errors. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{VDM-VSCode integration}\label{sec:integration}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applications and Examples}\label{sec:Examples}
