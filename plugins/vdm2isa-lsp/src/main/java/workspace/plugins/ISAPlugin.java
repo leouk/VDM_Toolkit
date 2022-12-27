@@ -106,11 +106,11 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		return new RPCMessageList();
 	}
 
-	protected void reportErrors(CheckCompleteEvent ev, String pluginName, boolean result)
+	protected void reportErrors(CheckCompleteEvent ev, GeneralisaPlugin plugin, boolean result)
 	{
-		Diag.info("%1$s run %2$s", pluginName, (result ? "succeeded" : "failed"));
-		Diag.info("Reporting %1$s errors and %2$s warnings", GeneralisaPlugin.getErrorCount(), 
-			GeneralisaPlugin.getWarningCount());
+		Diag.info("%1$s run %2$s", plugin.pluginName(), (result ? "succeeded" : "failed"));
+		Diag.info("Reporting %1$s errors and %2$s warnings", plugin.getLocalErrorCount(), 
+			plugin.getLocalWarningCount());
 		List<VDMMessage> list = new ArrayList<VDMMessage>();
 		list.addAll(GeneralisaPlugin.getErrors());
 		ev.addErrs(list);
@@ -137,16 +137,21 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			this.isapog = new IsapogPlugin(mlist);
 			//TODO @NB Do I need to get the interpreter again here? 
 			boolean pluginResult = true; 
-			// if (IsaProperties.vdm2isa_run_exu)
-			// {
-			// 	pluginResult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check" });
-			// 	reportErrors(ev, this.isapog.vdm2isa.exu.pluginName(), pluginResult);
-			// } 
-			//boolean re = IsaProperties.vdm2isa_run_exu;
-			//IsaProperties.vdm2isa_run_exu = false;
-			pluginResult = this.isapog.run(new String[] { "isapog", "isapog" });
-			reportErrors(ev, this.isapog.pluginName(), pluginResult);
-			//IsaProperties.vdm2isa_run_exu = re;
+			if (IsaProperties.vdm2isa_run_exu)
+			{
+				pluginResult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check", "sort" });
+				reportErrors(ev, this.isapog.vdm2isa.exu, pluginResult);
+			} 
+			if (pluginResult)
+			{
+				pluginResult = this.isapog.vdm2isa.run(new String[] { "vdm2isa", "translate" });
+				reportErrors(ev, this.isapog.vdm2isa, pluginResult);
+			}
+			if (pluginResult)
+			{
+				pluginResult = this.isapog.run(new String[] { "isapog", "isapog" });
+				reportErrors(ev, this.isapog, pluginResult);	
+			}
 			result = new RPCMessageList();
 			long after = System.currentTimeMillis();
 			Diag.info("ISAPlugin.checkCompleteEvent time = %1$s ms", (after-before));
