@@ -83,7 +83,7 @@ public class ISAPluginSL extends ISAPlugin
 			
 
 			// if it reaches here without exceptions, then also generate the VDMToolkit on the saveURI
-			ResourceUtil.save(VDM_TOOLKIT, new File(saveUri, VDM_TOOLKIT));                
+			ResourceUtil.copyTo(VDM_TOOLKIT, new File(saveUri, VDM_TOOLKIT));                
 			
 			return new RPCMessageList(request, new JSONObject("uri", saveUri.toURI().toString()));
 		}

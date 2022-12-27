@@ -43,6 +43,7 @@ import plugins.ResourceUtil;
 import rpc.RPCErrors;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
+import vdm2isa.lex.IsaTemplates;
 import vdmj.commands.Command;
 import vdmj.commands.HelpList;
 import vdmj.commands.IsaCommand;
@@ -105,6 +106,19 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		return new RPCMessageList();
 	}
 
+	protected void reportErrors(CheckCompleteEvent ev, String pluginName, boolean result)
+	{
+		Diag.info("%1$s run %2$s", pluginName, (result ? "succeeded" : "failed"));
+		Diag.info("Reporting %1$s errors and %2$s warnings", GeneralisaPlugin.getErrorCount(), 
+			GeneralisaPlugin.getWarningCount());
+		List<VDMMessage> list = new ArrayList<VDMMessage>();
+		list.addAll(GeneralisaPlugin.getErrors());
+		ev.addErrs(list);
+		list.clear();
+		list.addAll(GeneralisaPlugin.getWarnings());
+		ev.addWarns(list);	
+	}
+
 	@Override
 	public RPCMessageList handleEvent(LSPEvent event) throws Exception
 	{
@@ -115,21 +129,27 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		}
 		else if (event instanceof CheckCompleteEvent)
 		{
+			long before = System.currentTimeMillis();
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
 			IsaTemplates.reset();
 			TCPlugin tcp = registry.getPlugin("TC");
 			TCModuleList mlist = tcp.getTC();
 			this.isapog = new IsapogPlugin(mlist);
 			//TODO @NB Do I need to get the interpreter again here? 
-			boolean exuresult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check" });
-			Diag.info("Exu run " + (exuresult ? "succeeded" : "failed"));
-			List<VDMMessage> list = new ArrayList<VDMMessage>();
-			list.addAll(GeneralisaPlugin.getErrors());
-			ev.addErrs(list);
-			list.clear();
-			list.addAll(GeneralisaPlugin.getWarnings());
-			ev.addWarns(list);
+			boolean pluginResult = true; 
+			// if (IsaProperties.vdm2isa_run_exu)
+			// {
+			// 	pluginResult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check" });
+			// 	reportErrors(ev, this.isapog.vdm2isa.exu.pluginName(), pluginResult);
+			// } 
+			//boolean re = IsaProperties.vdm2isa_run_exu;
+			//IsaProperties.vdm2isa_run_exu = false;
+			pluginResult = this.isapog.run(new String[] { "isapog", "isapog" });
+			reportErrors(ev, this.isapog.pluginName(), pluginResult);
+			//IsaProperties.vdm2isa_run_exu = re;
 			result = new RPCMessageList();
+			long after = System.currentTimeMillis();
+			Diag.info("ISAPlugin.checkCompleteEvent time = %1$s ms", (after-before));
 		}
 		else if (event instanceof UnknownTranslationEvent)
 		{
