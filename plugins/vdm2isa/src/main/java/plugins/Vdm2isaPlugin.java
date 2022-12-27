@@ -116,22 +116,6 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		return result;
     }
 
-	private void processOutput(TRModule module) throws IOException, FileNotFoundException
-	{
-		String result = module.translate();
-		// only consider generating output if no errors when strict, or with errors when not strict
-		// strict => errorCount = 0
-		if (!IsaProperties.general_strict || getLocalErrorCount() == 0)
-		{
-			// if no saveURI was given, only output if called from VDMJ 
-			// that is, if called from LSP, and have no saveURI set, then it's just at 
-			// analysis time, and result of translation doesn't need to be output. 
-			// saveURI == null => calledFromVDMJ
-			if (saveURI != null || calledFromVDMJ())
-				outputModule(module.getLocation(), module.name.getName(), result);  
-		}
-	}
-
 	protected boolean doTranslate(TCModuleList tclist)
 	{
 		boolean result;
@@ -158,7 +142,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 				{
 					moduleName = module.name.getName();
 					workingAt = "translating module " + moduleName;
-					processOutput(module);
+					processOutput(module.getLocation(), moduleName, module.translate());
 					mcount++;
 				}
 				// only successful output calls

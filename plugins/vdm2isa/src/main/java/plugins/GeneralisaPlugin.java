@@ -35,6 +35,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
+import vdm2isa.tr.modules.TRModule;
 
 public abstract class GeneralisaPlugin extends CommandPlugin {
 
@@ -636,8 +637,23 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             throw e;
         }
     }
+
+    protected void processOutput(LexLocation location, String moduleName, String output) throws IOException, FileNotFoundException
+	{
+		// only consider generating output if no errors when strict, or with errors when not strict
+		// strict => errorCount = 0
+		if (!IsaProperties.general_strict || getLocalErrorCount() == 0)
+		{
+			// if no saveURI was given, only output if called from VDMJ 
+			// that is, if called from LSP, and have no saveURI set, then it's just at 
+			// analysis time, and result of translation doesn't need to be output. 
+			// saveURI == null => calledFromVDMJ
+			if (saveURI != null || calledFromVDMJ())
+				outputModule(location, moduleName, output);  
+		}
+	}
     
-    protected /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, FileNotFoundException
+    private /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, FileNotFoundException
 	{
         Path dir = createOutputDirectory(saveURI, pluginName());
 		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";

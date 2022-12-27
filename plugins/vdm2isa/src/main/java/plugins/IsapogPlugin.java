@@ -257,7 +257,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
                         StringBuilder sb = new StringBuilder();
                         sb.append(module.translate());
                         sb.append(getUntranslatedPOSAsComments(notTranslatedPOS, pmodule));
-                        outputModule(module.getLocation(), moduleName, sb.toString());    
+                        processOutput(pmodule.getLocation(), moduleName, sb.toString());    
                         mcount++;
                     }
                     else
