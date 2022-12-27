@@ -94,6 +94,7 @@ public class TRModule extends TRNode
 		}
 		else 
 		{
+			// Isabelle file names do not allow dashes (e.g. My-Mod, or Mod')
 			boolean found = false;
 			String fileName;
 			for(int i = 0; i < files.size() && !found; i++)

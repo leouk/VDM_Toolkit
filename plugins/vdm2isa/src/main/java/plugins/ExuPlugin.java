@@ -315,7 +315,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     }
 
     @Override 
-    protected String pluginName()
+    public String pluginName()
     {
         return "exu";
     }

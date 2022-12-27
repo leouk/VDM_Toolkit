@@ -354,7 +354,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     }
 
     @Override 
-    protected String pluginName()
+    public String pluginName()
     {
         return "isapog";
     }

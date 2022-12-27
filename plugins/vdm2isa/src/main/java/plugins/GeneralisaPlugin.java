@@ -35,7 +35,6 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 import vdm2isa.messages.VDM2IsaError;
 import vdm2isa.messages.VDM2IsaWarning;
-import vdm2isa.tr.modules.TRModule;
 
 public abstract class GeneralisaPlugin extends CommandPlugin {
 
@@ -384,7 +383,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         Console.err.println(sb.toString());
     }
 
-    protected abstract String pluginName();
+    public abstract String pluginName();
 
     protected String commandsHelp()
     {
