@@ -235,8 +235,8 @@ public class DependencyOrder
 	    	nameToLoc.put(def.name, def.location);
 
             //TLD-type definition dependencies only
-            if (!(def instanceof TCTypeDefinition))
-                continue;
+            // if (!(def instanceof TCTypeDefinition))
+            //     continue;
 
             Environment globals = new FlatEnvironment(new TCDefinitionList());
     		Environment empty = new FlatEnvironment(new TCDefinitionList());

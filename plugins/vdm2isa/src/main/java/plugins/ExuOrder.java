@@ -14,9 +14,19 @@ import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionSet;
+import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCExplicitOperationDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCImplicitOperationDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCLocalDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCStateDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
+import com.fujitsu.vdmj.tc.definitions.TCValueDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
+
+import vdm2isa.messages.IsaErrorMessage;
 
 public class ExuOrder extends DependencyOrder
 {
@@ -257,9 +267,40 @@ public class ExuOrder extends DependencyOrder
         TCNameList result = new TCNameList();
         for (TCDefinition d : savedModuleDefs)
         {
-            result.add(d.name);
+            if (d instanceof TCTypeDefinition || 
+                d instanceof TCExplicitFunctionDefinition || 
+                d instanceof TCImplicitFunctionDefinition ||
+                d instanceof TCExplicitOperationDefinition ||
+                d instanceof TCImplicitOperationDefinition ||
+                d instanceof TCStateDefinition)
+            {
+                assert d.name != null;
+                result.add(d.name);
+            }
+            else if (d instanceof TCValueDefinition)
+            {
+                TCValueDefinition vdef = (TCValueDefinition)d;
+                for(TCDefinition vd : vdef.getDefinitions())
+                {
+                    if (vd instanceof TCLocalDefinition)
+                    {
+                        TCLocalDefinition ldef = (TCLocalDefinition)vd;
+                        assert ldef.name != null; 
+                        result.add(ldef.name);
+                    }
+                    else 
+                    {
+                        GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, vd.location, "value", "definitions", "must all be local definitions after typecheck?");
+                    }
+                }
+            }
+            else 
+            {
+                GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, d.location, "sorting for", d.getClass().getName());
+            }
         }
-        assert result.size() == savedModuleDefs.size();
+        // value definitions might have more than one
+        assert result.size() >= savedModuleDefs.size();
         return result;
     }
 

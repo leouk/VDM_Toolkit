@@ -13,7 +13,6 @@ values
 	t7 : real = 4.5;					--TCRealType,TCRealLiteralExpression
 	t8 : rat = 4.5;					--TCRationalType
 	 
-	t9 : set1 of nat1 = {1,2,3};					--TCSetType
 	t10: seq1 of nat1 = [1,2,3];					--TCSeqType, TCSeq1Type
 	t11: set1 of nat1 = {1,...,5};				--TCSet1Type
 	t12: set of set of nat1 = {{1,2},{2,4}};
@@ -28,6 +27,7 @@ values
 	v4 = -4; 						--TCUnaryMinusExpression
 	v5 = +5;						--TCUnaryPlusExpression	
 	v6 = card t9;					--TCCardinalityExpression
+	t9 : set1 of nat1 = {1,2,3};					--TCSetType
 	v7 = power {1,2};				--TCPowerSetExpression
 	v8 = dunion t12;				--TCDistUnionExpression	
 	v9 = dinter t12;				--TCDistIntersectExpression
