@@ -93,6 +93,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		EventHub.getInstance().register(CheckCompleteEvent.class, this);
 		EventHub.getInstance().register(UnknownTranslationEvent.class, this);
 		IsaProperties.init();
+		IsaTemplates.reset();
 		//this.exu = ResourceUtil.createPlugin("exu", DAPWorkspaceManager.getInstance().getInterpreter()) ;
 		// this.exu = new ExuPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
 		// this.vdm2isa = new Vdm2isaPlugin(DAPWorkspaceManager.getInstance().getInterpreter());
@@ -115,6 +116,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		else if (event instanceof CheckCompleteEvent)
 		{
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
+			IsaTemplates.reset();
 			TCPlugin tcp = registry.getPlugin("TC");
 			TCModuleList mlist = tcp.getTC();
 			this.isapog = new IsapogPlugin(mlist);
