@@ -20,3 +20,6 @@ plugins/vdm2isa/isa/HTML
 plugins/vdm2isa/isa/output/document
 plugins/vdm2isa/pub/recursion/HTML
 plugins/vdm2isa/pub/recursion/output/document
+plugins/vdm2isa/pub/sorting/main.bbl
+plugins/vdm2isa/pub/sorting/main.blg
+plugins/vdm2isa/pub/sorting/main.log

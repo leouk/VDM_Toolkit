@@ -416,11 +416,27 @@ Exu also produces a \texttt{dot} file view of the dependencies, which is similar
 For complex (and large) modules, such visualisation ``clues'' can be invaluable to figure out what tweaks to make in case unstable sorts produce results that are not entirely declaration before use and might generate Isabelle errors. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{VDM-VSCode integration}\label{sec:integration}
+\section{VDMJ and VDM-VSCode integration}\label{sec:integration}
+
+Our plugin infrastructure follows the Linux principle of strict separation between command line operations and their corresponding GUI outputs. The plugin architecture starts with a VDMJ \texttt{CommandPlugin} extension. This enables VDMJ console execution of the \texttt{exu} plugin via the command line. This plugin in setup, such that it will be used by all interfaces. 
+
+For the VDMJ console interface, it follows the VDMJ convention that plugin classes are named according to the plugin call. The exposes functionality to the VDMJ debugging console like a call to a C/Java program \texttt{main} function with user-provided arguments.   
+
+For the VDM-VSCode interface, it follows the LSP convetion that the plugin class incapsulates both GUI-editor reactive functionality as well as DAP command line debugging. For the DAP VDM debugging session, it offers the same VDMJ console plugin commands, where any issues or errors are reported to the DAP output console itself, as opposed to any GUI visualisations of such errors. This is mostly for debugging and low-level application purposes only. Users are encouraged to go via the GUI visualisation process instead. 
+
+For the GUI visualisation process, the \texttt{ISA} LSP plugin reacts to two LSP events:~\textt{CompleteCheckEvent} and \texttt{UnknownTranslateEvent}. The former occurs after VDMJ has typechecked all loaded VDM-SL modules within a VDM-VSCode project, whereas the latter occurs when the user explicitly chooses the project pop-up menu for \verb'VDM->Translate to Isabelle'. 
+
+For the \texttt{CompleteCheckEvent}, the plugin performs a staggered execution of aspects of the various plugins, including execution of \texttt{exu} for checking and sorting, \textit{vdm2isa} for translation, and \textit{isapog} for proof obligation translations. The result is the output of module definition dependency graphs, translation of both VDM source and proof obligations to Isabelle, as well as any errors and warnings that might have occurred during this process. 
+
+For the \texttt{UnknonwnTranslateEvent}, VDM-VSCode-wide translation options are taken into account and the same process of processing modules for translation is performed. This is somawhat wasteful in the sense that translation happens both at right after typechecking time, and when the user explicit requests are made. This is a compromise on speed and usability:~if done  
+For the \texttt{UnknonwnTranslateEvent}, VDM-VSCode-wide translation options are taken into account and the same process of processing modules for translation is performed. This is somawhat wasteful in the sense that translation happens both at right after typechecking time, and when the user explicit requests are made. This is a compromise on speed and usability:~the analysis for a successful translation is tightly couppled with what the translated output is supposed to be. Thankfully the ``lag'' time is reasonable on avrage and can be switcched off by the user (\ie~translation only occurs if the user asks via the \texttt{UnknownTranslateEvent} pop-up menu click). 
+
+The trafe off for this use case is that errors are handled in tandem and only after a translation request has happened. If the \texttt{CheckCompleteEvent} processing is fast for the loaded project, then that is a preferred route for translation, as it will keep the user informed as the model is developed. Otherwise, translation can take place at the user's request and any remaining issues can be reported and dealt with accordingly.  
+
+For the VDM-VSCode integration, we have strived to keep all three use cases (\ie~VDMJ console, VDM-VSCode DAP console, and VDM-VSCode LSP GUI-reactivity) as independent as possible, as well as as reusable as possible. This is important so that each functionality does not need to be re-encoded in ever slightly different ways. This has been achieved through the use of he Linux principle of argument-based command-line execution of the plugin as a the bottom-line for all kinds of interfaces, regardless.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applications and Examples}\label{sec:Examples}
-
 
 Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. They show various ISQ measurement systems in practical use.
 
