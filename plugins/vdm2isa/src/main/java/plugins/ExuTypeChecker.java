@@ -159,6 +159,12 @@ public class ExuTypeChecker {
             // result.exportdefs.addAll(m.exportdefs);    
 
             Console.out.println("Exu successfully sorted module " + m.name.getName() + " definitions");
+            if (IsaProperties.exu_print_sorted_graph)
+            {
+                order = new ExuOrder(result, saveURI, debug);
+                order.processModule();
+                order.graphIt("sorted");
+            }
         }
         return result;
     }

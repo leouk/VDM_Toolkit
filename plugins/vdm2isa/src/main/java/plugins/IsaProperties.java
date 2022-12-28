@@ -26,6 +26,8 @@ public class IsaProperties {
     public static boolean exu_linient_inv_check;
     // retypecheck after topological sort
     public static boolean exu_retypecheck;
+	// print graph of sorted module after sorting
+	public static boolean exu_print_sorted_graph;
 
     // determines whether to add "pre_f =>" on post condition definitions
 	public static boolean vdm2isa_linient_post;
@@ -117,6 +119,7 @@ public class IsaProperties {
 
         exu_linient_inv_check = get(isa, "linientInvCheck", true);
         exu_retypecheck = get(isa, "retypecheck", false);
+		exu_print_sorted_graph = get(isa, "printSortedGraph", false);
 
         vdm2isa_linient_post 	= get(isa, "linientPost", false);
 		vdm2isa_print_vdm_comments = get(isa, "printVDMComments	", true);
@@ -150,6 +153,7 @@ public class IsaProperties {
 
         exu_linient_inv_check = get(isa, "isa.exu.linient_inv_check", true);
         exu_retypecheck = get(isa, "isa.exu.retypecheck", false);
+		exu_print_sorted_graph = get(isa, "isa.exu.print_sorted_graph", false);
 
         vdm2isa_linient_post 	= get(isa, "isa.vdm2isa.linient_post", false);
 		vdm2isa_print_vdm_comments = get(isa, "isa.vdm2isa.print_vdm_comments", true);

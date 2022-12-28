@@ -310,8 +310,14 @@ public class ExuPlugin extends GeneralisaPlugin {
         {
             IsaProperties.exu_retypecheck = Boolean.parseBoolean(val);
         }
+        else if (prop.equals("gs"))
+        {
+            IsaProperties.exu_print_sorted_graph = Boolean.parseBoolean(val);
+        }
         else 
+        {
             super.doSet(prop, val);
+        }
     }
 
     @Override 
@@ -326,6 +332,7 @@ public class ExuPlugin extends GeneralisaPlugin {
         super.printOptionDefaults();
         printFlag("linient invariant", IsaProperties.exu_linient_inv_check);
         printFlag("re-type check", IsaProperties.exu_retypecheck);
+        printFlag("print sorted dependency graph", IsaProperties.exu_print_sorted_graph);
     }
 
     @Override
@@ -349,8 +356,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     protected String options()
     {
         return super.options() + 
-            String.format(" linv=%1$s rtc=%2$s", 
-            IsaProperties.exu_linient_inv_check, IsaProperties.exu_retypecheck);
+            String.format(" linv=%1$s rtc=%2$s gs=%3$s", IsaProperties.exu_linient_inv_check, IsaProperties.exu_retypecheck, IsaProperties.exu_print_sorted_graph);
     }
 
     @Override
@@ -360,6 +366,7 @@ public class ExuPlugin extends GeneralisaPlugin {
         sb.append(super.optionsHelp());
         sb.append("\tlinv    : linient check on (sub-)type invariant chain\n");
         sb.append("\trtc     : re-typecheck modules if topological sort is needed\n");
+        sb.append("\tgs      : generate graph of sorted module\n");
         return sb.toString();
     }
 }
