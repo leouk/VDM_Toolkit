@@ -53,6 +53,7 @@ public class DependencyOrder
 	protected final Map<TCNameToken, TCDefinitionSet> uses;
 	protected final Map<TCNameToken, TCDefinitionSet> usedBy;
     protected final LexLocationComparator locationComparator;
+    protected final Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef;
 
     private final class LexLocationComparator implements Comparator<TCNameToken> 
     {
@@ -77,6 +78,7 @@ public class DependencyOrder
         this.uses = new HashMap<TCNameToken, TCDefinitionSet>();
         this.usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
         this.locationComparator = new LexLocationComparator();
+        this.needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
 	}
 
 	// public void moduleOrder(TCModuleList moduleList)
@@ -216,7 +218,7 @@ public class DependencyOrder
         // extract flat definitions from list
         singleDefs = module.defs.singleDefinitions();
         moduleEnvironment = new ModuleEnvironment(module);
-        Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
+        this.needsImplicitInvDef.clear();
 
         // algorithm require three passes: 
         //  1. TLD-type dependencies
@@ -338,6 +340,17 @@ public class DependencyOrder
         else
             throw new IllegalStateException("Invalid dependency ordering: call definitionOrder first");
     }
+
+    protected static boolean foundName(Iterable<TCNameToken> it, String name)
+    {
+        for(TCNameToken n : it)
+        {
+            if (n.getName().equals(name))
+                return true;
+        }
+        return false;
+    }
+
 	
     /**
      * Create a "dot" language version of the graph for the graphviz tool.
@@ -346,20 +359,35 @@ public class DependencyOrder
     protected void graphOf(File filename) throws IOException
 	{
     	Map<TCNameToken, TCDefinitionSet> map = uses;
+        TCNameList sp = getStartpoints();
     	
 		PrintWriter fw = new PrintWriter(filename); 
 		StringBuilder sb = new StringBuilder();
 		sb.append("digraph G {\n");
-
-		for (TCNameToken key: map.keySet())
+        TCNameSet mapUsedSet = new TCNameSet();
+        mapUsedSet.addAll(map.keySet());
+		for (TCNameToken key: mapUsedSet)
 		{
 			TCDefinitionSet nextSet = map.get(key);
             String kname = key.getName();
-			sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\"]\n", kname, key.getLocation().startLine));
+            // starting node is inverted red triangle 
+            if (DependencyOrder.foundName(sp, kname))
+                sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\", shape=invtriangle, color=red]\n", kname, key.getLocation().startLine));
+            // implicitly created invariant def is double circled blue
+	        else if (DependencyOrder.foundName(needsImplicitInvDef.keySet(), kname))
+                sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\", shape=doublecircle, color=blue]\n", kname, key.getLocation().startLine));
+            // everything else is ellipsis 
+            else 
+    			sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\"]\n", kname, key.getLocation().startLine));
 				
 			for (TCDefinition next: nextSet)
 			{
                 String tvalue = next.name.getName();
+                if (!DependencyOrder.foundName(sp, tvalue) && 
+                    !DependencyOrder.foundName(mapUsedSet, tvalue))
+                {
+                    sb.append(String.format("\t%1$s [shape=triangle]", tvalue));
+                }
                 sb.append(String.format("\t %1$s -> %2$s;\n", kname, tvalue));
 			}
 		}
