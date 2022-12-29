@@ -424,7 +424,7 @@ For the VDMJ console interface, it follows the VDMJ convention that plugin class
 
 For the VDM-VSCode interface, it follows the LSP convetion that the plugin class incapsulates both GUI-editor reactive functionality as well as DAP command line debugging. For the DAP VDM debugging session, it offers the same VDMJ console plugin commands, where any issues or errors are reported to the DAP output console itself, as opposed to any GUI visualisations of such errors. This is mostly for debugging and low-level application purposes only. Users are encouraged to go via the GUI visualisation process instead. 
 
-For the GUI visualisation process, the \texttt{ISA} LSP plugin reacts to two LSP events:~\textt{CompleteCheckEvent} and \texttt{UnknownTranslateEvent}. The former occurs after VDMJ has typechecked all loaded VDM-SL modules within a VDM-VSCode project, whereas the latter occurs when the user explicitly chooses the project pop-up menu for \verb'VDM->Translate to Isabelle'. 
+For the GUI visualisation process, the \texttt{ISA} LSP plugin reacts to two LSP events:~\textt{CompleteCheckEvent} and \texttt{UnknownTranslateEvent}. The former occurs after VDMJ has typechecked all loaded VDM-SL modules within a VDM-VSCode project, whereas the latter occurs when the user explicitly chooses the project pop-up menu associated with VDM as {\verb'VDM->Translate to Isabelle'}. 
 
 For the \texttt{CompleteCheckEvent}, the plugin performs a staggered execution of aspects of the various plugins, including execution of \texttt{exu} for checking and sorting, \textit{vdm2isa} for translation, and \textit{isapog} for proof obligation translations. The result is the output of module definition dependency graphs, translation of both VDM source and proof obligations to Isabelle, as well as any errors and warnings that might have occurred during this process. 
 
@@ -438,10 +438,22 @@ For the VDM-VSCode integration, we have strived to keep all three use cases (\ie
 In practice, this means each plugin responds to specific commands. This is similar to other Linux commands (\eg~)\texttt{git} has commands like \texttt{push}, \textt{pull}, \etc). Various default options are in place, and can be changed by a properties file. The property read and set process is close to VDMJ's own properties file. For VDM-VSCode, the GUI also exposes these properties through its settings interface. Ultimately, the VDM-VSCode plugin makes specific command calls to specific plugins, depending on whether it is part of the LSP's reactive behaviour  (\eg~setting yellow/red squiggles on code locations to show warnings/errors), or part of the DAP's interactive behaviour (\eg~calling specific DAP plugins on the debug console). Correspondingly, the same functionality is available through the VDMJ console via the command line. Output of translation is saved to \texttt{./.generated/isabelle} by default, yet users can set it to any directory of their choice. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Applications and Examples}\label{sec:Examples}
+\section{Results and Limitations}\label{sec:Examples}
 
+With the module definition sorting, we have overcome the major impediment for VDM users to using the translator. Nevertheless, there are still both VDM language restrictions of use that must be observed, such as the way certain union types of value declarations are made. Moreover, some VDM constructs are yet to be supported, such as multiple record patterns within the parameters of various declarations (\eg~declaration of invariants of explicit function signatures). This is because of the need for local contexts for record translations. We envisage that some of these restrictions will be available in future. 
 
-Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. They show various ISQ measurement systems in practical use.
+Moreover, even though there is a translation stragegy for various VDM statements~\cite{NimFull}, support for them is quite limited. This is mostly because their implicit specifications (\eg~the implicit updates to state as statements execute) is quite complex~\cite{PJPhD}. Thus, support for VDM state and operations is quite limited. State is translated as just a special kind of record, operation signatures are available, as well as some statements (\eg~if-statements, assignments, state designators, \etc.). Many other statements are missing.      
+
+We have worked through a large subset of the VDM-SL examples, and over \(100\) test modules involving various (sometimes exotic) VDM consturcts. The complete set of examples can be found at the \texttt{VDM\_Toolkit} github page\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdm2isa/src/test/resources}}.
+
+Such excursions through the VDM-SL AST have help find corner cases missing from the VDM tools. For example, multiple type binds within map comprehension expressions like:
+% 
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
+    values 
+        v = { 1|-> 5 | x in set {<A>,<B>,<C>}, x in set {1,2,3} & x = <A> }
+\end{vdmsl}
+%
+The type for \(x\) here ended up being the set of the union of each set's type. This is now a type error:~it should not be possible to have such implicit type union within VDM comprehensions. \lfcomment{Nick, anything else to say about such weird cases?} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}\label{sec:Results}
@@ -450,11 +462,11 @@ In this paper, we presented .
 
 \paragraph*{Future work.}~
 %
-Future.
+We plan a tighter integration between the VDMJ console plugins and VDM-VSCode GUI through the use of Code Lenses. These are user GUI-actions that trigger specific plugin events. For instance, \texttt{jUnit} testing creates a green/red circle to the left of each Java method defined as a test case (\ie~annotated with the \texttt{@Test} mark). Users can click on that to either run, debug or go to specific tests. We envisage similar code lenses for translation and different proof script strategies for VDM modules.     
 
 \paragraph*{Acknowledgements.}~
 %
-Acks.
+We would like to thank discussions with Peter Gorm Larsen and various of his students on different aspects (and impact of limitations) of the translator and for his encouragements on pushing various parts of tool to the surface to end users.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{splncs03}
