@@ -5,27 +5,40 @@ values
 	-- N * N board, can never be less than 1x1 grid
 	BOARD_SIZE: nat1 = 8;
 	
-	MAX_QUEENS: nat1 = BOARD_SIZE + 1;
+	MAX_QUEENS: nat1 = BOARD_SIZE;
 	
 types
 	Queens = nat1 
-	inv q == q <= MAX_QUEENS; 
+	inv q == q <= MAX_QUEENS + 1; 
 	
 	--@doc positions starting from 0
 	Pos = nat
 	inv p == p < BOARD_SIZE;
 	
 	Coord = Pos * Pos;
-	Board = set of Coord;	
+	
+	Board = set of Coord
+	inv b == card b <= BOARD_SIZE * BOARD_SIZE;	
 
 functions
 	run: () -> [Board]
 	run() ==
 		solve({}, 1);
+		
+	run': () -> seq of char
+	run'() ==
+		print(run());
+
+	print: Board -> seq of char
+	print(board) ==
+		let BOARD = [0,1,2,3,4,5,6,7] in conc
+		[
+			[ if mk_(r, c) in set board then 'Q' else '.' | c in seq BOARD ] ^ "\n" | r in seq BOARD
+		];
 
 	solve: Board * Queens -> [Board]
 	solve(board, Q) ==
-		if Q = MAX_QUEENS
+		if Q = MAX_QUEENS + 1
 		then board
 		else
 			let possible = { mk_(r, c) | r, c in set {0, ..., BOARD_SIZE-1} & allowed(r, c, board) } in
