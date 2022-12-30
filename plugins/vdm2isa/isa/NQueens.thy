@@ -153,7 +153,8 @@ lemma l_possible_finite: "finite { (r, c) | r c . 0 \<le> r \<and> r \<le> 7 \<a
   find_theorems "_ \<Longrightarrow> finite _"
   apply (cut_tac subset_eq_atLeast0_atMost_finite)
   thm finite_subset
-  apply (rule Finite_Set.finite_subset_induct) oops
+   apply (rule Finite_Set.finite_subset_induct) sorry
+
 lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Longrightarrow> 
   possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) } \<Longrightarrow> 
   pre_trys possible board q\<close>  
@@ -165,18 +166,45 @@ lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Lo
   apply (simp)+
   done
 
+lemma l_inv_VDMSet_remove_x: 
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet' inv_T (S - {x})\<close> 
+  unfolding inv_VDMSet'_defs
+  by simp
+
+lemma l_inv_VDMSet_add_x:
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_T x \<Longrightarrow> inv_VDMSet' inv_T ({x} \<union> S)\<close> 
+  sorry 
+
+lemma l_inv_VDMSet_some:
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> v \<in> S  \<Longrightarrow> inv_T (SOME x . x \<in> S)\<close> 
+  sorry 
+
+lemma l_inv_Board_extend:
+  "possible \<noteq> {} \<Longrightarrow> inv_VDMSet' inv_Coord possible \<Longrightarrow> inv_Board board \<Longrightarrow> inv_Board ({SOME x. x \<in> possible} \<union> board)"
+  unfolding inv_Board_def
+  apply (simp, safe)
+   apply (insert l_inv_VDMSet_add_x[of inv_Coord board  \<open>SOME x. x \<in> possible\<close>])
+   apply (insert l_inv_VDMSet_some[of inv_Coord board \<open>SOME x. x \<in> possible\<close>],simp)
+
+  sorry
+
 lemma l_solve_possible: \<open>pre_trys possible board q \<Longrightarrow> q \<noteq> MAX_QUEENS \<Longrightarrow> possible \<noteq> {}  \<Longrightarrow>    
   pre_solve ({SOME x. x \<in> possible} \<union> board) (q + 1)\<close> 
   unfolding pre_solve_def pre_trys_def
-  apply (simp add: case_prod_beta, safe)
-   defer
+  apply (simp add: case_prod_beta)
+  apply (elim conjE, intro conjI)
+  apply (insert l_inv_Board_extend[of possible board], simp)
   unfolding inv_Queens_def inv_VDMNat1_def
   apply simp
-  sorry
+  done
+
 
 lemma l_try_try_possible: \<open>pre_trys possible board q \<Longrightarrow> 
   possible \<noteq> {} \<Longrightarrow>
-  pre_trys (possible - {SOME x. x \<in> possible}) board q\<close> sorry
+  pre_trys (possible - {SOME x. x \<in> possible}) board q\<close> 
+  unfolding pre_trys_def 
+  apply (simp add: l_invVDMSet_remove_x)
+  done
 
 termination 
   apply (relation \<open>solve_try_wf\<close>)
