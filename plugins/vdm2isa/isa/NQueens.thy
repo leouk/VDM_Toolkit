@@ -107,12 +107,15 @@ function (domintros)
        if possible = {} then
           None 
        else 
-          let p = (\<some> x . x \<in> possible);
-              solution = solve (board \<union> {p}) (Q+1) in 
-            if solution = None then 
-              (trys (possible - {p}) board Q)
-            else
-              solution 
+          let p = (\<some> x . x \<in> possible) in
+            if pre_solve (board \<union> {p}) (Q+1) then
+              let solution = solve (board \<union> {p}) (Q+1) in 
+                if solution = None then 
+                  (trys (possible - {p}) board Q)
+                else
+                  solution 
+            else 
+              undefined
      else
       undefined
     )
@@ -135,8 +138,9 @@ definition
       possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) }    
   }
 \<union> { (Inl(board', q'), Inr(possible, board, q)) | possible board q board' q' .
-     pre_trys possible board q \<and> pre_solve board' q' \<and>  
-     possible \<noteq> {} \<and> board' = (board \<union> {(\<some> x . x \<in> possible)}) \<and> q' = q+1 } 
+     pre_trys possible board q \<and> pre_solve board' q' \<and> q \<noteq> MAX_QUEENS \<and>
+     possible \<noteq> {} \<and> board' = (board \<union> {(\<some> x . x \<in> possible)}) \<and> q' = q+1 \<and>
+     pre_solve board' q' } 
 \<union> { (Inr(possible', board, q), Inr(possible, board, q)) | possible possible' board q .
      pre_trys possible board q \<and> pre_trys possible' board q \<and> 
      possible \<noteq> {} \<and> possible' = possible - {(\<some> x . x \<in> possible)}  
@@ -144,8 +148,12 @@ definition
 
 lemma wf_solve_try: "wf solve_try_wf" sorry
 
-lemma l_possible_finite: "finite { (r, c) | r c . 0 \<le> r \<and> r \<le> 7 \<and> 0 \<le> c \<and> c \<le> 7 }" sorry
-
+lemma l_possible_finite: "finite { (r, c) | r c . 0 \<le> r \<and> r \<le> 7 \<and> 0 \<le> c \<and> c \<le> 7 }" 
+  find_theorems name:fin name:induc
+  find_theorems "_ \<Longrightarrow> finite _"
+  apply (cut_tac subset_eq_atLeast0_atMost_finite)
+  thm finite_subset
+  apply (rule Finite_Set.finite_subset_induct) oops
 lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Longrightarrow> 
   possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) } \<Longrightarrow> 
   pre_trys possible board q\<close>  
@@ -157,10 +165,13 @@ lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Lo
   apply (simp)+
   done
 
-lemma l_solve_possible: \<open>pre_trys possible board q \<Longrightarrow> possible \<noteq> {}  \<Longrightarrow>    
+lemma l_solve_possible: \<open>pre_trys possible board q \<Longrightarrow> q \<noteq> MAX_QUEENS \<Longrightarrow> possible \<noteq> {}  \<Longrightarrow>    
   pre_solve ({SOME x. x \<in> possible} \<union> board) (q + 1)\<close> 
-  unfolding pre_solve_defs inv_Board_defs 
+  unfolding pre_solve_def pre_trys_def
   apply (simp add: case_prod_beta, safe)
+   defer
+  unfolding inv_Queens_def inv_VDMNat1_def
+  apply simp
   sorry
 
 lemma l_try_try_possible: \<open>pre_trys possible board q \<Longrightarrow> 
@@ -173,7 +184,8 @@ termination
     apply (simp add: solve_try_wf_def l_try_possible)
    apply (simp add: solve_try_wf_def)
   using l_solve_possible apply auto[1]
-  apply (simp add: solve_try_wf_def l_try_try_possible)
+  unfolding pre_solve_def inv_Queens_defs apply simp
+   apply (simp add: solve_try_wf_def l_try_try_possible)
   done
 
 termination 
