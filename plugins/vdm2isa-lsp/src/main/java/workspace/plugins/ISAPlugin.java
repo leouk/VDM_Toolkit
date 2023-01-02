@@ -51,6 +51,7 @@ import workspace.DAPWorkspaceManager;
 import workspace.Diag;
 import workspace.EventHub;
 import workspace.EventListener;
+import workspace.MessageHub;
 import workspace.events.CheckCompleteEvent;
 import workspace.events.CheckPrepareEvent;
 import workspace.events.LSPEvent;
@@ -103,6 +104,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 
 	protected RPCMessageList preCheck(CheckPrepareEvent ev)
 	{
+		MessageHub.getInstance().clearPluginMessages(this);
 		return new RPCMessageList();
 	}
 
@@ -112,11 +114,14 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		Diag.info("Reporting %1$s errors and %2$s warnings", plugin.getLocalErrorCount(), 
 			plugin.getLocalWarningCount());
 		List<VDMMessage> list = new ArrayList<VDMMessage>();
+		
 		list.addAll(GeneralisaPlugin.getErrors());
-		ev.addErrs(list);
+		MessageHub.getInstance().addPluginMessages(this, list);
+		if (!list.isEmpty()) ev.setErrors();
+		
 		list.clear();
 		list.addAll(GeneralisaPlugin.getWarnings());
-		ev.addWarns(list);	
+		MessageHub.getInstance().addPluginMessages(this, list);
 	}
 
 	@Override
