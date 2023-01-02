@@ -1,6 +1,6 @@
 digraph G {
-	 g [label="g @ L17"]
-	 g -> f;
-	 h [label="h @ L21"]
-	 h -> f;
+	 g [label="g @ L17", shape=invtriangle, color=red]
+	f [shape=triangle]	 g -> f;
+	 h [label="h @ L21", shape=invtriangle, color=red]
+	f [shape=triangle]	 h -> f;
 }

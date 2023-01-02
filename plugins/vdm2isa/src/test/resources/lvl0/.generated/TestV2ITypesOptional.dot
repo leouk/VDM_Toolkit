@@ -1,4 +1,4 @@
 digraph G {
-	 TOptional [label="TOptional @ L6"]
-	 TOptional -> inv_TOptional;
+	 TOptional [label="TOptional @ L6", shape=invtriangle, color=red]
+	inv_TOptional [shape=triangle]	 TOptional -> inv_TOptional;
 }

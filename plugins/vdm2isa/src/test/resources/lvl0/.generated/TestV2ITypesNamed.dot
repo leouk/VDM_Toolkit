@@ -1,15 +1,15 @@
 digraph G {
-	 TBasic4 [label="TBasic4 @ L25"]
+	 TBasic4 [label="TBasic4 @ L25", shape=invtriangle, color=red]
 	 TBasic4 -> TBasic3;
-	 TBasic4 -> inv_TBasic3;
-	 TBasic4 -> inv_TBasic4;
-	 TBasic3 [label="TBasic3 @ L22"]
-	 TBasic3 -> inv_TBasic2;
-	 TBasic3 -> inv_TBasic3;
-	 TBasic2 [label="TBasic2 @ L15"]
+	inv_TBasic3 [shape=triangle]	 TBasic4 -> inv_TBasic3;
+	inv_TBasic4 [shape=triangle]	 TBasic4 -> inv_TBasic4;
+	 TBasic3 [label="TBasic3 @ L22", shape=doublecircle, color=blue]
+	inv_TBasic2 [shape=triangle]	 TBasic3 -> inv_TBasic2;
+	inv_TBasic3 [shape=triangle]	 TBasic3 -> inv_TBasic3;
+	 TBasic2 [label="TBasic2 @ L15", shape=invtriangle, color=red]
 	 TBasic2 -> TBasic1;
-	 TBasic2 -> inv_TBasic1;
-	 TBasic2 -> inv_TBasic2;
-	 TBasic1 [label="TBasic1 @ L11"]
-	 TBasic1 -> inv_TBasic1;
+	inv_TBasic1 [shape=triangle]	 TBasic2 -> inv_TBasic1;
+	inv_TBasic2 [shape=triangle]	 TBasic2 -> inv_TBasic2;
+	 TBasic1 [label="TBasic1 @ L11", shape=doublecircle, color=blue]
+	inv_TBasic1 [shape=triangle]	 TBasic1 -> inv_TBasic1;
 }

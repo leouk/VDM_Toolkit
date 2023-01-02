@@ -1,33 +1,33 @@
 digraph G {
-	 R [label="R @ L30"]
+	 R [label="R @ L30", shape=invtriangle, color=red]
 	 R -> inv_R;
 	 R -> inv_S;
 	 R -> sum_elems;
-	 sum_elems [label="sum_elems @ L12"]
-	 sum_elems -> head;
-	 sum_elems -> tail;
-	 T [label="T @ L19"]
-	 T -> inv_T;
-	 S [label="S @ L24"]
+	 sum_elems [label="sum_elems @ L12", shape=doublecircle, color=blue]
+	head [shape=triangle]	 sum_elems -> head;
+	tail [shape=triangle]	 sum_elems -> tail;
+	 T [label="T @ L19", shape=doublecircle, color=blue]
+	inv_T [shape=triangle]	 T -> inv_T;
+	 S [label="S @ L24", shape=invtriangle, color=red]
 	 S -> T;
 	 S -> inv_S;
-	 S -> inv_T;
-	 S -> tail;
-	 Rec [label="Rec @ L36"]
+	inv_T [shape=triangle]	 S -> inv_T;
+	tail [shape=triangle]	 S -> tail;
+	 Rec [label="Rec @ L36", shape=invtriangle, color=red]
 	 Rec -> T;
 	 Rec -> inv_R;
 	 Rec -> inv_Rec;
 	 Rec -> inv_S;
-	 Rec -> inv_T;
+	inv_T [shape=triangle]	 Rec -> inv_T;
 	 Rec -> sum_elems;
-	 inv_Rec [label="inv_Rec @ L41"]
+	 inv_Rec [label="inv_Rec @ L41", shape=doublecircle, color=blue]
 	 inv_Rec -> sum_elems;
-	 inv_R [label="inv_R @ L33"]
+	 inv_R [label="inv_R @ L33", shape=doublecircle, color=blue]
 	 inv_R -> sum_elems;
-	 inv_S [label="inv_S @ L27"]
-	 inv_S -> tail;
-	 Map [label="Map @ L43"]
-	 Map -> inv_Map;
+	 inv_S [label="inv_S @ L27", shape=doublecircle, color=blue]
+	tail [shape=triangle]	 inv_S -> tail;
+	 Map [label="Map @ L43", shape=invtriangle, color=red]
+	inv_Map [shape=triangle]	 Map -> inv_Map;
 	 Map -> inv_Rec;
 	 Map -> inv_S;
 }

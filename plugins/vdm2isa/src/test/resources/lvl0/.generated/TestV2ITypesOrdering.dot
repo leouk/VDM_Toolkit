@@ -1,13 +1,13 @@
 digraph G {
-	 TRenamedOrdered [label="TRenamedOrdered @ L16"]
-	 TRenamedOrdered -> inv_TOrder1;
-	 TRenamedOrdered -> inv_TRenamedOrdered;
-	 TRenamed [label="TRenamed @ L13"]
-	 TRenamed -> inv_TOrder1;
-	 TRenamed -> inv_TRenamed;
-	 TOrder1 [label="TOrder1 @ L7"]
-	 TOrder1 -> inv_TOrder1;
-	 TRenamedPOrdered [label="TRenamedPOrdered @ L21"]
-	 TRenamedPOrdered -> inv_TOrder1;
-	 TRenamedPOrdered -> inv_TRenamedPOrdered;
+	 TRenamedOrdered [label="TRenamedOrdered @ L16", shape=invtriangle, color=red]
+	inv_TOrder1 [shape=triangle]	 TRenamedOrdered -> inv_TOrder1;
+	inv_TRenamedOrdered [shape=triangle]	 TRenamedOrdered -> inv_TRenamedOrdered;
+	 TRenamed [label="TRenamed @ L13", shape=invtriangle, color=red]
+	inv_TOrder1 [shape=triangle]	 TRenamed -> inv_TOrder1;
+	inv_TRenamed [shape=triangle]	 TRenamed -> inv_TRenamed;
+	 TOrder1 [label="TOrder1 @ L7", shape=invtriangle, color=red]
+	inv_TOrder1 [shape=triangle]	 TOrder1 -> inv_TOrder1;
+	 TRenamedPOrdered [label="TRenamedPOrdered @ L21", shape=invtriangle, color=red]
+	inv_TOrder1 [shape=triangle]	 TRenamedPOrdered -> inv_TOrder1;
+	inv_TRenamedPOrdered [shape=triangle]	 TRenamedPOrdered -> inv_TRenamedPOrdered;
 }
