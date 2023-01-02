@@ -168,24 +168,28 @@ lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Lo
 
 lemma l_inv_VDMSet_remove_x: 
   \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet' inv_T (S - {x})\<close> 
-  unfolding inv_VDMSet'_defs
-  by simp
+  unfolding inv_VDMSet'_defs by simp
 
 lemma l_inv_VDMSet_add_x:
   \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_T x \<Longrightarrow> inv_VDMSet' inv_T ({x} \<union> S)\<close> 
-  sorry 
+  unfolding inv_VDMSet'_defs by simp 
 
 lemma l_inv_VDMSet_some:
   \<open>inv_VDMSet' inv_T S \<Longrightarrow> v \<in> S  \<Longrightarrow> inv_T (SOME x . x \<in> S)\<close> 
-  sorry 
+  unfolding inv_VDMSet'_defs 
+  apply safe
+  thm ballE
+  apply (erule ballE[of S _ \<open>(SOME x . x \<in> S)\<close>])
+  apply simp
+  by (simp add: some_in_eq)
 
 lemma l_inv_Board_extend:
   "possible \<noteq> {} \<Longrightarrow> inv_VDMSet' inv_Coord possible \<Longrightarrow> inv_Board board \<Longrightarrow> inv_Board ({SOME x. x \<in> possible} \<union> board)"
   unfolding inv_Board_def
   apply (simp, safe)
    apply (insert l_inv_VDMSet_add_x[of inv_Coord board  \<open>SOME x. x \<in> possible\<close>])
-   apply (insert l_inv_VDMSet_some[of inv_Coord board \<open>SOME x. x \<in> possible\<close>],simp)
-
+  apply (simp add: l_inv_VDMSet_some)
+  
   sorry
 
 lemma l_solve_possible: \<open>pre_trys possible board q \<Longrightarrow> q \<noteq> MAX_QUEENS \<Longrightarrow> possible \<noteq> {}  \<Longrightarrow>    
