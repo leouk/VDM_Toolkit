@@ -10,14 +10,14 @@ abbreviation
 abbreviation
   MAX_QUEENS :: \<open>VDMNat1\<close>
   where
-  "MAX_QUEENS \<equiv> BOARD_SIZE + 1"
+  "MAX_QUEENS \<equiv> BOARD_SIZE"
 
 type_synonym Queens = "VDMNat1" 
 
 definition 
   inv_Queens :: \<open>VDMNat1 \<Rightarrow> \<bool>\<close>
   where
-  \<open>inv_Queens q \<equiv> inv_VDMNat1 q \<and> q \<le> MAX_QUEENS\<close>
+  \<open>inv_Queens q \<equiv> inv_VDMNat1 q \<and> q \<le> MAX_QUEENS + 1\<close>
 
 lemmas inv_Queens_defs = inv_Queens_def inv_VDMNat1_def
 
@@ -73,14 +73,35 @@ definition
 lemmas allowed_defs = allowed_def vdm_abs_def
 
 definition 
+  pre_possible :: \<open>Board \<Rightarrow> \<bool>\<close>
+  where
+  \<open>pre_possible board \<equiv> inv_Board board \<close>
+  (*\<and> (\<forall> (r, c) \<in> board . pre_allowed r c board) *)
+
+definition 
+  post_possible :: \<open>Board \<Rightarrow> Board \<Rightarrow> \<bool>\<close>
+  where 
+  \<open>post_possible board RESULT \<equiv> inv_Board RESULT \<and> RESULT \<inter> board = {}\<close>
+
+definition 
+  possible :: \<open>Board \<Rightarrow> Board\<close>
+  where 
+  \<open>possible board \<equiv> { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) }\<close>
+
+definition 
   pre_solve :: \<open>Board \<Rightarrow> Queens \<Rightarrow> \<bool>\<close>
   where
-\<open>pre_solve board Q \<equiv> inv_Board board \<and> inv_Queens Q\<close>
+\<open>pre_solve board Q \<equiv> inv_Board board \<and> inv_Queens Q \<and> pre_possible board \<and> post_possible board (possible board) \<and>
+    (Q < MAX_QUEENS \<and> possible board \<noteq> {} \<longrightarrow> vdm_card board < BOARD_SIZE * BOARD_SIZE)\<close>
 
+text \<open>Interestingly, what would happen if we had a mutually recursive dependency between 
+both functions' preconditions?\<close>
 definition 
   pre_trys :: \<open>Coord VDMSet \<Rightarrow> Board \<Rightarrow> VDMNat1 \<Rightarrow> \<bool>\<close>
   where
-\<open>pre_trys possible board Q \<equiv> inv_VDMSet' inv_Coord possible \<and> inv_Board board \<and> inv_Queens Q\<close>
+\<open>pre_trys possible' board Q \<equiv> 
+    inv_VDMSet' inv_Coord possible' \<and> inv_Board board \<and> inv_Queens Q \<and>  
+    Q \<le> MAX_QUEENS \<and> (\<forall> p \<in> possible' . pre_solve (board \<union> {p}) (Q+1))\<close>
 
 lemmas pre_solve_defs = pre_solve_def inv_Board_defs inv_Queens_defs 
 lemmas pre_trys_defs  = pre_trys_def inv_VDMSet'_def inv_Coord_defs inv_Board_defs inv_VDMNat1_def
@@ -93,29 +114,26 @@ function (domintros)
   where 
   \<open>solve board Q = 
       (if pre_solve board Q then 
-          (if Q = MAX_QUEENS then 
+          (if Q = MAX_QUEENS + 1 then 
             Some board 
           else 
-            (let possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) } in
-                (trys possible board Q))
+            (let possible' = possible board in
+                (trys possible' board Q))
           )
        else 
           undefined)
   \<close>
-| \<open>trys possible board Q = 
-    (if pre_trys possible board Q then 
-       if possible = {} then
+| \<open>trys possible' board Q = 
+    (if pre_trys possible' board Q then 
+       if possible' = {} then
           None 
        else 
-          let p = (\<some> x . x \<in> possible) in
-            if pre_solve (board \<union> {p}) (Q+1) then
+          let p = (\<some> x . x \<in> possible') in
               let solution = solve (board \<union> {p}) (Q+1) in 
                 if solution = None then 
-                  (trys (possible - {p}) board Q)
+                  (trys (possible' - {p}) board Q)
                 else
                   solution 
-            else 
-              undefined
      else
       undefined
     )
@@ -133,31 +151,43 @@ their corresponding filtering conditions for the call to work. \<close>
 definition   
   solve_try_wf ::"(((Board \<times> Queens) + ((Coord VDMSet) \<times> Board \<times> Queens)) \<times> ((Board \<times> Queens) + ((Coord VDMSet) \<times> Board \<times> Queens))) set" where
   "solve_try_wf \<equiv>
-  { (Inr(possible, board, q),Inl(board, q)) | possible board q . 
-      pre_trys possible board q \<and> pre_solve board q \<and> q \<noteq> MAX_QUEENS \<and>
-      possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) }    
+  { (Inr(possible', board, q),Inl(board, q)) | possible' board q . 
+      pre_solve board q \<and> 
+      pre_trys possible' board q \<and> 
+      q \<noteq> MAX_QUEENS + 1 \<and>
+      possible' = (possible board)    
   }
-\<union> { (Inl(board', q'), Inr(possible, board, q)) | possible board q board' q' .
-     pre_trys possible board q \<and> pre_solve board' q' \<and> q \<noteq> MAX_QUEENS \<and>
-     possible \<noteq> {} \<and> board' = (board \<union> {(\<some> x . x \<in> possible)}) \<and> q' = q+1 \<and>
-     pre_solve board' q' } 
-\<union> { (Inr(possible', board, q), Inr(possible, board, q)) | possible possible' board q .
-     pre_trys possible board q \<and> pre_trys possible' board q \<and> 
-     possible \<noteq> {} \<and> possible' = possible - {(\<some> x . x \<in> possible)}  
+\<union> { (Inl(board', q'), Inr(possible', board, q)) | possible' board q board' q' .
+     pre_trys possible' board q \<and> 
+     possible' \<noteq> {} \<and>
+     pre_solve board' q' \<and>
+     board' = (board \<union> {(\<some> x . x \<in> possible')}) \<and> 
+     q' = q+1 
+  } 
+\<union> { (Inr(possibleCall, board, q), Inr(possibleEntry, board, q)) | possibleEntry p board' q' possibleCall board q .
+     pre_trys possibleEntry board q \<and> 
+     pre_trys possibleCall board q \<and> 
+     possibleEntry \<noteq> {} \<and> 
+     p = (\<some> x . x \<in> possibleEntry) \<and> 
+     pre_solve board' q' \<and> 
+     possibleCall = possibleEntry - {p} \<and>
+     board' = board \<union> {p} \<and> 
+     q' = q+1 \<and> 
+     solve board' q' = None
   }"
 
 lemma wf_solve_try: "wf solve_try_wf" sorry
 
+(*
 lemma l_possible_finite: "finite { (r, c) | r c . 0 \<le> r \<and> r \<le> 7 \<and> 0 \<le> c \<and> c \<le> 7 }" 
   find_theorems name:fin name:induc
   find_theorems "_ \<Longrightarrow> finite _"
   apply (cut_tac subset_eq_atLeast0_atMost_finite)
   thm finite_subset
    apply (rule Finite_Set.finite_subset_induct) sorry
-
-lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Longrightarrow> 
-  possible = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) } \<Longrightarrow> 
-  pre_trys possible board q\<close>  
+lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS + 1 \<Longrightarrow> 
+  possible' = { (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} \<and> (allowed r c board) } \<Longrightarrow> 
+  pre_trys possible' board q\<close>  
   unfolding vdm_card_def pre_trys_defs pre_solve_defs
   apply (simp, safe)
    apply (rule finite_subset[of _ \<open>{ (r, c) | r c . r \<in> {(0::VDMNat)..BOARD_SIZE-1} \<and> c \<in> {0..BOARD_SIZE-1} }\<close>])
@@ -165,8 +195,10 @@ lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS \<Lo
   apply (insert l_possible_finite)
   apply (simp)+
   done
+  sorry 
+*)
 
-lemma l_inv_VDMSet_remove_x: 
+lemma l_inv_VDMSet_remove_x:
   \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet' inv_T (S - {x})\<close> 
   unfolding inv_VDMSet'_defs by simp
 
@@ -183,41 +215,52 @@ lemma l_inv_VDMSet_some:
   apply simp
   by (simp add: some_in_eq)
 
-lemma l_inv_Board_extend:
-  "possible \<noteq> {} \<Longrightarrow> inv_VDMSet' inv_Coord possible \<Longrightarrow> inv_Board board \<Longrightarrow> inv_Board ({SOME x. x \<in> possible} \<union> board)"
-  unfolding inv_Board_def
-  apply (simp, safe)
-   apply (insert l_inv_VDMSet_add_x[of inv_Coord board  \<open>SOME x. x \<in> possible\<close>])
-  apply (simp add: l_inv_VDMSet_some)
-  
-  sorry
+lemma l_inv_VDMSet_frule: 
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet S\<close>
+  unfolding inv_VDMSet'_def by simp
 
-lemma l_solve_possible: \<open>pre_trys possible board q \<Longrightarrow> q \<noteq> MAX_QUEENS \<Longrightarrow> possible \<noteq> {}  \<Longrightarrow>    
-  pre_solve ({SOME x. x \<in> possible} \<union> board) (q + 1)\<close> 
+lemma l_try_solve: \<open>
+  pre_trys possible' board q \<Longrightarrow> 
+  possible' \<noteq> {}  \<Longrightarrow>    
+  pre_solve ({SOME x. x \<in> possible'} \<union> board) (q + 1)\<close> 
   unfolding pre_solve_def pre_trys_def
   apply (simp add: case_prod_beta)
   apply (elim conjE, intro conjI)
-  apply (insert l_inv_Board_extend[of possible board], simp)
-  unfolding inv_Queens_def inv_VDMNat1_def
+    apply (erule_tac x=\<open>SOME x. x \<in> possible'\<close> in ballE)
   apply simp
+  using some_in_eq apply blast
+    apply fastforce  
+  using some_in_eq apply blast+
   done
 
-
-lemma l_try_try_possible: \<open>pre_trys possible board q \<Longrightarrow> 
-  possible \<noteq> {} \<Longrightarrow>
-  pre_trys (possible - {SOME x. x \<in> possible}) board q\<close> 
+lemma l_try_try: \<open>pre_trys possible' board q \<Longrightarrow> 
+  pre_trys (possible' - {SOME x. x \<in> possible'}) board q\<close> 
   unfolding pre_trys_def 
-  apply (simp add: l_invVDMSet_remove_x)
+  apply (simp add: l_inv_VDMSet_remove_x)
   done
+
+lemma l_pre_solve_pre_try: \<open>pre_solve board Q \<Longrightarrow>
+       Q \<noteq> 9 \<Longrightarrow> pre_trys (possible board) board Q\<close> 
+  unfolding pre_trys_def pre_solve_def pre_possible_def
+  apply (simp, elim conjE, intro conjI, simp_all)
+  unfolding post_possible_def inv_Board_def
+    apply simp
+  unfolding inv_Queens_def apply simp sorry
+  
+
+lemma l_pre_try_pre_solve: \<open>
+  pre_trys possible' board Q \<Longrightarrow> possible' \<noteq> {} \<Longrightarrow> 
+  pre_solve ({SOME x. x \<in> possible'} \<union> board) (Q + 1)\<close> 
+  unfolding pre_trys_def
+  by (simp add: some_in_eq)
 
 termination 
   apply (relation \<open>solve_try_wf\<close>)
      apply (simp add: wf_solve_try)
-    apply (simp add: solve_try_wf_def l_try_possible)
+    apply (simp add: solve_try_wf_def l_pre_solve_pre_try)
    apply (simp add: solve_try_wf_def)
-  using l_solve_possible apply auto[1]
-  unfolding pre_solve_def inv_Queens_defs apply simp
-   apply (simp add: solve_try_wf_def l_try_try_possible)
+  using l_pre_try_pre_solve apply auto[1]
+   apply (simp add: solve_try_wf_def)
   done
 
 termination 

@@ -35,17 +35,24 @@ functions
 		[
 			[ if mk_(r, c) in set board then 'Q' else '.' | c in seq BOARD ] ^ "\n" | r in seq BOARD
 		];
+		
+	possible: Board -> Board 
+	possible(board) == { mk_(r, c) | r, c in set {0, ..., BOARD_SIZE-1} & allowed(r, c, board) }
+	post 
+		RESULT inter board = {};
 
 	solve: Board * Queens -> [Board]
 	solve(board, Q) ==
 		if Q = MAX_QUEENS + 1
 		then board
 		else
-			let possible = { mk_(r, c) | r, c in set {0, ..., BOARD_SIZE-1} & allowed(r, c, board) } in
-				try(possible, board, Q)
+			let possible': Board = possible(board) in
+				try(possible', board, Q)
+	pre 
+		Q < MAX_QUEENS and possible(board) <> {} => card board < 64
 	measure (BOARD_SIZE * BOARD_SIZE) - card board;
 
-	try: set of Coord * Board * Queens -> [Board]
+	try: Board * Board * Queens -> [Board]
 	try(possible, board, Q) ==
 		if possible = {}
 		then nil
@@ -55,6 +62,8 @@ functions
 				if solution = nil
 				then try(possible \ {p}, board, Q)
 				else solution
+	pre 
+		Q <= MAX_QUEENS and (forall p in set possible & pre_solve(board union {p}, Q+1))
 	;--measure card possible;
 
 	allowed: Pos * Pos * Board +> bool
