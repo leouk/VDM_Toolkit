@@ -117,7 +117,6 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		
 		list.addAll(GeneralisaPlugin.getErrors());
 		MessageHub.getInstance().addPluginMessages(this, list);
-		if (!list.isEmpty()) ev.setErrors();
 		
 		list.clear();
 		list.addAll(GeneralisaPlugin.getWarnings());
