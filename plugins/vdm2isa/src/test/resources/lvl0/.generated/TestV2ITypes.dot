@@ -1,6 +1,0 @@
-digraph G {
-	 TBasic2 [label="TBasic2 @ L14", shape=invtriangle, color=red]
-	inv_TBasic2 [shape=triangle]	 TBasic2 -> inv_TBasic2;
-	 TBasic1 [label="TBasic1 @ L11", shape=invtriangle, color=red]
-	inv_TBasic1 [shape=triangle]	 TBasic1 -> inv_TBasic1;
-}
