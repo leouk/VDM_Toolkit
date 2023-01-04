@@ -14,7 +14,7 @@ public class TRLevel0Vdm2isaTest extends Vdm2IsaJUnitTest
     @Override
     protected String getOutputPath()
     {
-        return "./src/test/resources/lvl0/.generated";
+        return "./src/test/resources/lvl0/.generated/isabelle";
     }
 
     @Test
