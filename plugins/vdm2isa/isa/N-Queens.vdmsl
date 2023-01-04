@@ -47,6 +47,7 @@ functions
 		then board
 		else
 			let possible': Board = possible(board) in
+				--@Printf("solve_try(p, b, q) = %1$s, %2$s, %3$s\n", card possible', card board, Q)
 				try(possible', board, Q)
 	pre 
 		Q < MAX_QUEENS and possible(board) <> {} => card board < 64
@@ -60,7 +61,9 @@ functions
 			let p in set possible in
 			let solution = solve(board union {p}, Q + 1) in
 				if solution = nil
-				then try(possible \ {p}, board, Q)
+				then 
+					--@Printf("  try_try(p, b, q) = %1$s, %2$s, %3$s\n", card possible - 1, card board, Q)
+					try(possible \ {p}, board, Q)
 				else solution
 	pre 
 		Q <= MAX_QUEENS and (forall p in set possible & pre_solve(board union {p}, Q+1))

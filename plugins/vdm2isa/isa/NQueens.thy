@@ -176,7 +176,22 @@ definition
      solve board' q' = None
   }"
 
-lemma wf_solve_try: "wf solve_try_wf" sorry
+definition 
+  solve_try_measure :: \<open>(Board \<times> Queens) + ((Coord VDMSet) \<times> Board \<times> Queens) \<Rightarrow> \<nat>\<close>
+  where
+  \<open>solve_try_measure x \<equiv> 
+      case x of 
+        Inl (board, Q) \<Rightarrow> if Q = MAX_QUEENS+1 then 0 else nat((BOARD_SIZE * BOARD_SIZE) - (vdm_card board))
+      | Inr (possible', board, Q) \<Rightarrow> if possible' = {} then 0 else 0 
+  \<close>
+
+lemma wf_solve_try: "wf (solve_try_wf)" 
+  unfolding solve_try_wf_def
+  apply simp
+  thm wf_measure wf_subset wf_measure [THEN wf_subset]
+    apply (intro wf_measure [THEN wf_subset] subsetI, simp, safe, simp_all)
+  apply (simp add: measure_def inv_image_def less_than_def less_eq)
+  sorry 
 
 (*
 lemma l_possible_finite: "finite { (r, c) | r c . 0 \<le> r \<and> r \<le> 7 \<and> 0 \<le> c \<and> c \<le> 7 }" 
@@ -198,26 +213,7 @@ lemma l_try_possible: \<open>pre_solve board q \<and> q \<noteq> MAX_QUEENS + 1 
   sorry 
 *)
 
-lemma l_inv_VDMSet_remove_x:
-  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet' inv_T (S - {x})\<close> 
-  unfolding inv_VDMSet'_defs by simp
 
-lemma l_inv_VDMSet_add_x:
-  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_T x \<Longrightarrow> inv_VDMSet' inv_T ({x} \<union> S)\<close> 
-  unfolding inv_VDMSet'_defs by simp 
-
-lemma l_inv_VDMSet_some:
-  \<open>inv_VDMSet' inv_T S \<Longrightarrow> v \<in> S  \<Longrightarrow> inv_T (SOME x . x \<in> S)\<close> 
-  unfolding inv_VDMSet'_defs 
-  apply safe
-  thm ballE
-  apply (erule ballE[of S _ \<open>(SOME x . x \<in> S)\<close>])
-  apply simp
-  by (simp add: some_in_eq)
-
-lemma l_inv_VDMSet_frule: 
-  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet S\<close>
-  unfolding inv_VDMSet'_def by simp
 
 lemma l_try_solve: \<open>
   pre_trys possible' board q \<Longrightarrow> 
@@ -261,15 +257,11 @@ termination
    apply (simp add: solve_try_wf_def)
   using l_pre_try_pre_solve apply auto[1]
    apply (simp add: solve_try_wf_def)
-  done
+  oops
 
 termination 
-  apply (relation \<open>
-      measure (\<lambda> x . 
-                case x of 
-                    Inl (board, Q) \<Rightarrow> if Q = MAX_QUEENS then 0 else nat ((BOARD_SIZE*BOARD_SIZE) - (vdm_card board))
-                  | Inr (possible, board, Q) \<Rightarrow> if possible = {} then 0 else nat (Q+1) )\<close>)
-     apply simp
+  apply (relation \<open>measure solve_try_measure\<close>)
+     apply simp_all
   oops
 
 definition
