@@ -487,6 +487,27 @@ definition
 lemmas inv_VDMSeq'_defs  = inv_VDMSeq'_def  inv_SeqElems_def
 lemmas inv_VDMSeq1'_defs = inv_VDMSeq1'_def inv_VDMSeq'_defs inv_VDMSeq1_def 
 
+lemma l_inv_VDMSet_remove_x:
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet' inv_T (S - {x})\<close> 
+  unfolding inv_VDMSet'_defs by simp
+
+lemma l_inv_VDMSet_add_x:
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_T x \<Longrightarrow> inv_VDMSet' inv_T ({x} \<union> S)\<close> 
+  unfolding inv_VDMSet'_defs by simp 
+
+lemma l_inv_VDMSet_some:
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> v \<in> S  \<Longrightarrow> inv_T (SOME x . x \<in> S)\<close> 
+  unfolding inv_VDMSet'_defs 
+  apply safe
+  thm ballE
+  apply (erule ballE[of S _ \<open>(SOME x . x \<in> S)\<close>])
+  apply simp
+  by (simp add: some_in_eq)
+
+lemma l_inv_VDMSet_frule: 
+  \<open>inv_VDMSet' inv_T S \<Longrightarrow> inv_VDMSet S\<close>
+  unfolding inv_VDMSet'_def by simp
+
 (*****************************************************************)
 subsection \<open> Sequence operators specification \<close>  
 
