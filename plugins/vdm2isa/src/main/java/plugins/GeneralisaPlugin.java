@@ -50,7 +50,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
 
-    public static final String DEFAULT_SAVEURI = "./.generated"; 
+    public static final String DEFAULT_SAVEURI = "./.generated/isabelle"; 
 
     // Settings are initialised only once per class load
     static {
