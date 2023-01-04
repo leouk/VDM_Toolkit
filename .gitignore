@@ -24,3 +24,4 @@ plugins/vdm2isa/pub/sorting/main.bbl
 plugins/vdm2isa/pub/sorting/main.blg
 plugins/vdm2isa/pub/sorting/main.log
 plugins/vdm2isa/src/test/resources/lvl0/.generated
+plugins/vdm2isa/src/test/resources/.generated/isabelle
