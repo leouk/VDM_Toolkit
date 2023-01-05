@@ -192,27 +192,24 @@ pdfstartview=Fit
 %\titlerunning{Short Title}
 
 %Multiple institutes are typeset as follows:
-\author{Leo Freitas\inst{1} \and Nick Battle
+\author{Leo Freitas\inst{1} \and Nick Battle\inst{2}
 }
 %If there are too many authors, use \authorrunning
 % \authorrunning{First Author et al.}
 \authorrunning{ }
 
 \institute{
-%DIGIT, Aarhus University, Department of Engineering, \\
-%Finlandsgade 22, 8200 Aarhus N, Denmark\\
-%\email{\{jkr, fpm, hdm, pgl\}@ece.au.dk}
-%\and
-%Independent, \email{nick.battle@acm.org}
-%\and
-School of Computing, Newcastle University, \\
+School of Computing, Newcastle University, 
 \email{leo.freitas@newcastle.ac.uk}
+\and
+Independent, \email{nick.battle@acm.org}
+%\and
 }
 			
 \maketitle
 \setcounter{footnote}{0} 
 \begin{abstract}
-    There is an ecosystem of VDM libraries and extensions that includes a translation and proof environment for VDM in Isabelle~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. Translation works for a large subset of VDM-SL and
+    There is an ecosystem of VDM libraries and extensions that includes a translation and proof environment for VDM in Isabelle. Translation works for a large subset of VDM-SL and
     further constructs are being added on demand. A key impediment for novice users is the fact Isabelle/HOL requires 
     all definitions to be declared before they are used, where (mutually) recursive definitions \textbf{must} be defined in tandem. In this paper, we describe a solution to this problem, which will enable wider access to the translator plugin for novice users as well real models.   
 \end{abstract}
