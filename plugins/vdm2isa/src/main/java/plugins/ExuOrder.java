@@ -152,7 +152,7 @@ public class ExuOrder extends DependencyOrder
         switch (state)
         {
             case CREATED: 
-                if (debug)
+                if (IsaProperties.general_debug)
                 {
                     Console.out.println(String.format("Calculating declaration dependencies for module `%1$s`...", module.name.getName()));
                 }
@@ -167,7 +167,7 @@ public class ExuOrder extends DependencyOrder
                 break;
             case PROCESSED:
             case SORTED:
-                if (debug) 
+                if (IsaProperties.general_debug) 
                     Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name.getName());
                 break;
             default:
@@ -232,7 +232,7 @@ public class ExuOrder extends DependencyOrder
                 if (outOrderCount > 0)
                 {
                     result = topologicalSort(getStartpoints()); 
-                    if (debug)
+                    if (IsaProperties.general_debug)
                     {
                         Console.out.println("Found " + outOrderCount + " definition use before declaration. Topological sorted required.");
                         Console.out.println(toString(false, true));
@@ -241,13 +241,13 @@ public class ExuOrder extends DependencyOrder
                 else 
                 {
                     result = null;
-                    if (debug) 
+                    if (IsaProperties.general_debug) 
                         Console.out.println("No definitions sorting required for " + module.name.getName());
                 }
                 state = ExuState.SORTED;
                 break; 
             case SORTED: 
-                if (debug) 
+                if (IsaProperties.general_debug) 
                     Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name.getName());
                 // if sorting wasn't needed, then savedTopologicalSort will be null  
                 result = savedTopologicalSort;
@@ -360,7 +360,7 @@ public class ExuOrder extends DependencyOrder
                 else 
                 {
                     result = savedTopologicalSort;
-                    if (debug)
+                    if (IsaProperties.general_debug)
                         Console.out.println("Exu has already called topological sort for module " + module.name.getName());
                 }
                 break; 

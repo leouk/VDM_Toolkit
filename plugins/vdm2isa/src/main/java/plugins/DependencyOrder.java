@@ -45,7 +45,6 @@ import com.fujitsu.vdmj.util.Utils;
 public class DependencyOrder
 {
 	protected boolean sortCalled;
-    public boolean debug;
     
     protected TCDefinitionList singleDefs;
     protected final TCModule module;
@@ -69,10 +68,9 @@ public class DependencyOrder
         }
     } 
 	
-	public DependencyOrder(TCModule m, boolean debug)
+	public DependencyOrder(TCModule m)
 	{
 		this.sortCalled = false;
-        this.debug = debug;
         this.singleDefs = null;
         this.moduleEnvironment = null;
         this.module = m; 
@@ -327,7 +325,7 @@ public class DependencyOrder
                             if (fdef != null && fdef.name != null &&
                                 name.getLocation().isLater(fdef.name.getLocation()))
                             {
-                                if (debug)
+                                if (IsaProperties.general_debug)
                                 {
                                     Console.out.println(freevar + " declared after " + name);
                                 }

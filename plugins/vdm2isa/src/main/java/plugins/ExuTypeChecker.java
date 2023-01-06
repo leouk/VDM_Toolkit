@@ -90,7 +90,7 @@ public class ExuTypeChecker {
         ExuOrder result;
         if (!exuMap.containsKey(m.name.getName()))
         {
-            result = new ExuOrder(m, saveURI, debug);
+            result = new ExuOrder(m, saveURI);
             result.processModule();
             exuMap.put(m.name.getName(), result);
         }
@@ -161,7 +161,7 @@ public class ExuTypeChecker {
             Console.out.println("Exu successfully sorted module " + m.name.getName() + " definitions");
             if (IsaProperties.exu_print_sorted_graph)
             {
-                order = new ExuOrder(result, saveURI, debug);
+                order = new ExuOrder(result, saveURI);
                 order.processModule();
                 order.graphIt("sorted");
             }
