@@ -65,7 +65,7 @@ types
 	Terminal' = Terminal * [FmiModelDescription]
 	inv mk_(t, fmd) == allOf
 	([
-		inv_Terminals'(mk_(t.terminal, fmd)),		-- RECURSIVE!!
+		--inv_Terminals'(mk_(t.terminal, fmd)),		-- RECURSIVE!!
 		inv_Annotations'(t.annotations),
 
 		-- Rules are defined in Terminals.adoc
