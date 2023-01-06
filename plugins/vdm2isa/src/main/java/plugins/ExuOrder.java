@@ -2,6 +2,7 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -185,11 +186,14 @@ public class ExuOrder extends DependencyOrder
             File outfile = new File(dir.toFile(), name);
             graphOf(outfile);
             Console.out.println("Printed dependencies for module " + name + " at " + outfile.getPath());
+        }
+        catch (URISyntaxException e)
+        {
+            Console.err.println("Save URI syntax error whilst attempting to write dependency graph for " + e.getMessage());            
         } 
         catch (IOException e) {
             Console.err.println("I/O error whilst attempting to write dependency graph for " + e.getMessage());
-            //e.printStackTrace();
-            
+            //e.printStackTrace();            
         }   
     }
 
@@ -408,6 +412,31 @@ public class ExuOrder extends DependencyOrder
         }
         return sb.toString();
     }
+
+    protected int edgeCount()
+	{
+		int count = 0;
+		
+		for (TCDefinitionSet set: uses.values())
+		{
+			count += set.size();
+            if (IsaProperties.general_debug && set.size() > 0)
+            {
+                Console.out.println("Cycle on uses edge: " + defSetString(set));
+            }
+		}
+		
+		for (TCDefinitionSet set: usedBy.values())
+		{
+			count += set.size();	// include reverse links too?
+            if (IsaProperties.general_debug && set.size() > 0)
+            {
+                Console.out.println("Cycle on usedBy edge: " + defSetString(set));
+            }
+		}
+		
+		return count;
+	}
 
     // private String oldToString()
     // {
