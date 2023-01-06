@@ -125,6 +125,7 @@ map TCFieldExpression{object, field, exptype} to TRFieldExpression(this, object,
 map TCNotYetSpecifiedExpression{location, exptype} to TRNotYetSpecifiedExpression(location, this, exptype);
 map TCNarrowExpression{location, typename, basictype, test, typedef, testtype, exptype} to TRNarrowExpression(location, this, typename, basictype, test, typedef, testtype, exptype);
 map TCIsExpression{location, typename, basictype, test, typedef, exptype} to TRIsExpression(location, this, typename, basictype, test, typedef, exptype);
+map TCUndefinedExpression{location, exptype} to TRUndefinedExpression(location, this, exptype);
 
 map TCIotaExpression{location, bind, predicate, exptype} to TRIotaExpression(location, this, bind, predicate, exptype);
 map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, bind, predicate, exptype);

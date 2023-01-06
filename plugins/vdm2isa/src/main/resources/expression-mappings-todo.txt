@@ -64,7 +64,7 @@
 -TCSelfExpression
 -TCThreadIdExpression
 -TCTimeExpression
--TCUndefinedExpression
+*TCUndefinedExpression
 -TCMapExpression
 -TCNewExpression
 *TCMapEnumExpression

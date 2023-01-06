@@ -44,6 +44,7 @@ import vdm2isa.tr.expressions.TRStateInitExpression;
 import vdm2isa.tr.expressions.TRSubseqExpression;
 import vdm2isa.tr.expressions.TRTupleExpression;
 import vdm2isa.tr.expressions.TRUnaryExpression;
+import vdm2isa.tr.expressions.TRUndefinedExpression;
 import vdm2isa.tr.expressions.TRVDMLocalDefinitionListExpression;
 import vdm2isa.tr.expressions.TRVDMTestExpression;
 import vdm2isa.tr.expressions.TRVariableExpression;
@@ -298,4 +299,8 @@ public abstract class TRExpressionVisitor<R, S>
 	public R caseIdentifierDesignator(TRIdentifierDesignator node, S arg) {
 		return caseTRStateDesignator(node, arg);
 	}
+
+    public R caseUndefinedExpression(TRUndefinedExpression node, S arg) {
+        return caseExpression(node, arg);
+    }
 }
