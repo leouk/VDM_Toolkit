@@ -14,7 +14,7 @@ public class TROperationType extends TRFunctionType {
 
     private static final long serialVersionUID = 1L;
 	// public TRTypeList parameters;
-	public boolean pure;
+	public final boolean pure;
 
 	public TROperationType(TCOperationType vdmType, TRDefinitionList definitions, TRTypeList parameters, TRType result, boolean pure)
 	{

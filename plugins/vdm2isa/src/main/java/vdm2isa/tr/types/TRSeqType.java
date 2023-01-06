@@ -45,6 +45,17 @@ public class TRSeqType extends TRAbstractInnerTypedType
     }
 
     @Override
+    public void setup()
+    {
+        // this needs to be set otherwise, the inner type will be null!
+        //TODO perhaps remove the abstract type hierarchy and mimic the VDMJ AST to avoid confusion. 
+        //TODO not sure this might create trouble elsewhere.,,, Hum...
+        TRNode.setup(seqof);
+        this.setInnerType(seqof);
+        super.setup();
+    }
+
+    @Override
     public TRType copy(boolean atTLD)
     {
         TRType result = this;

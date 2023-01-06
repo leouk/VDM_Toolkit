@@ -44,6 +44,14 @@ public class TRSetType extends TRAbstractInnerTypedType
         this(owner, definitions, setof, true);
     }
 
+    @Override 
+    public void setup()
+    {
+        TRNode.setup(setof);
+        this.setInnerType(setof);
+        super.setup();
+    }
+
     @Override
     public TRType copy(boolean atTLD)
     {
