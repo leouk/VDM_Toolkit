@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
@@ -36,6 +37,7 @@ import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
+import com.fujitsu.vdmj.util.Utils;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
@@ -351,6 +353,15 @@ public class DependencyOrder
         return false;
     }
 
+    private static final Pattern DOT_DASH = Pattern.compile("'");
+
+    protected String makeValidDOTNodeName(String name)
+    {
+        //Quite slow... so generalise 
+        //String result = name.replaceAll("'", "DASH");
+        String result = DOT_DASH.matcher(name).replaceAll("DASH");
+        return result;
+    }
 	
     /**
      * Create a "dot" language version of the graph for the graphviz tool.
@@ -369,26 +380,30 @@ public class DependencyOrder
 		for (TCNameToken key: mapUsedSet)
 		{
 			TCDefinitionSet nextSet = map.get(key);
-            String kname = key.getName();
+            // DOT file node names cannot have dashes etc; the VDM search name can.
+            // So use label for DOT display + VDM search, and adjusted kname for DOT file format compliance
+            String klabel = key.getName();
+            String kname = makeValidDOTNodeName(klabel); 
             // starting node is inverted red triangle 
-            if (DependencyOrder.foundName(sp, kname))
-                sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\", shape=invtriangle, color=red]\n", kname, key.getLocation().startLine));
+            if (DependencyOrder.foundName(sp, klabel))
+                sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\", shape=invtriangle, color=red]\n", kname, klabel, key.getLocation().startLine));
             // implicitly created invariant def is double circled blue
-	        else if (DependencyOrder.foundName(needsImplicitInvDef.keySet(), kname))
-                sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\", shape=doublecircle, color=blue]\n", kname, key.getLocation().startLine));
+	        else if (DependencyOrder.foundName(needsImplicitInvDef.keySet(), klabel))
+                sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\", shape=doublecircle, color=blue]\n", kname, klabel, key.getLocation().startLine));
             // everything else is ellipsis 
             else 
-    			sb.append(String.format("\t %1$s [label=\"%1$s @ L%2$s\"]\n", kname, key.getLocation().startLine));
+    			sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\"]\n", kname, klabel, key.getLocation().startLine));
 				
 			for (TCDefinition next: nextSet)
 			{
-                String tvalue = next.name.getName();
-                if (!DependencyOrder.foundName(sp, tvalue) && 
-                    !DependencyOrder.foundName(mapUsedSet, tvalue))
+                String tlabel = next.name.getName();
+                String tname = makeValidDOTNodeName(tlabel);
+                if (!DependencyOrder.foundName(sp, tlabel) && 
+                    !DependencyOrder.foundName(mapUsedSet, tlabel))
                 {
-                    sb.append(String.format("\t%1$s [shape=triangle]", tvalue));
+                    sb.append(String.format("\t%1$s [shape=triangle]", tname));
                 }
-                sb.append(String.format("\t %1$s -> %2$s;\n", kname, tvalue));
+                sb.append(String.format("\t %1$s -> %2$s;\n", kname, tname));
 			}
 		}
 		
@@ -466,9 +481,10 @@ public class DependencyOrder
 		    }
 		}
 		
-		if (edgeCount() > 0)
+        int cycles = edgeCount();
+		if (cycles > 0)
 		{
-			throw new IllegalStateException("Dependency graph has cycles");
+			throw new IllegalStateException("Dependency graph has " + cycles + " cycles; switch debug mode on for details.");
 		}
 		else
 		{
@@ -478,7 +494,7 @@ public class DependencyOrder
 		}
     }
 
-	private int edgeCount()
+	protected int edgeCount()
 	{
 		int count = 0;
 		
