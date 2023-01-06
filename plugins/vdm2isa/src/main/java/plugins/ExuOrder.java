@@ -120,15 +120,17 @@ public class ExuOrder extends DependencyOrder
     private final TCModule module;
     private ExuState state; 
     private final File saveURI;
+    private boolean printEdgeCount;
 
-    public ExuOrder(TCModule m, File saveURI, boolean debug)
+    public ExuOrder(TCModule m, File saveURI)
     {
-        super(m, debug);
+        super(m);
         savedStartPoints = null;
         savedTopologicalSort = null;
         savedModuleDefs = null;
         module = m;
         this.saveURI = saveURI;
+        this.printEdgeCount = true;
         state = ExuState.CREATED; 
     }
 
@@ -415,26 +417,19 @@ public class ExuOrder extends DependencyOrder
 
     protected int edgeCount()
 	{
-		int count = 0;
-		
-		for (TCDefinitionSet set: uses.values())
-		{
-			count += set.size();
-            if (IsaProperties.general_debug && set.size() > 0)
+		int count = super.edgeCount();
+        if (printEdgeCount)
+        {
+            if (IsaProperties.general_debug && this.cyclicUsesEdges.size() > 0)
             {
-                Console.out.println("Cycle on uses edge: " + defSetString(set));
+                Console.out.println("Cycle on uses edge: " + defSetString(this.cyclicUsesEdges));
             }
-		}
-		
-		for (TCDefinitionSet set: usedBy.values())
-		{
-			count += set.size();	// include reverse links too?
-            if (IsaProperties.general_debug && set.size() > 0)
+            if (IsaProperties.general_debug && this.cyclicUsedByEdges.size() > 0)
             {
-                Console.out.println("Cycle on usedBy edge: " + defSetString(set));
+                Console.out.println("Cycle on usedBy edge: " + defSetString(this.cyclicUsedByEdges));
             }
-		}
-		
+            printEdgeCount = false;
+        }
 		return count;
 	}
 

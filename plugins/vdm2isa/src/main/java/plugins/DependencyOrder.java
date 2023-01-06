@@ -37,7 +37,6 @@ import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
-import com.fujitsu.vdmj.util.Utils;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
@@ -55,6 +54,8 @@ public class DependencyOrder
 	protected final Map<TCNameToken, TCDefinitionSet> usedBy;
     protected final LexLocationComparator locationComparator;
     protected final Map<TCNameToken, TCDefinitionSet> needsImplicitInvDef;
+    protected final TCDefinitionSet cyclicUsesEdges;
+    protected final TCDefinitionSet cyclicUsedByEdges;
 
     private final class LexLocationComparator implements Comparator<TCNameToken> 
     {
@@ -79,6 +80,8 @@ public class DependencyOrder
         this.usedBy = new HashMap<TCNameToken, TCDefinitionSet>();
         this.locationComparator = new LexLocationComparator();
         this.needsImplicitInvDef = new HashMap<TCNameToken, TCDefinitionSet>();
+        this.cyclicUsesEdges = new TCDefinitionSet();
+        this.cyclicUsedByEdges = new TCDefinitionSet();
 	}
 
 	// public void moduleOrder(TCModuleList moduleList)
@@ -495,15 +498,16 @@ public class DependencyOrder
 	protected int edgeCount()
 	{
 		int count = 0;
-		
 		for (TCDefinitionSet set: uses.values())
 		{
 			count += set.size();
+            cyclicUsesEdges.addAll(set);
 		}
 		
 		for (TCDefinitionSet set: usedBy.values())
 		{
 			count += set.size();	// include reverse links too?
+            cyclicUsedByEdges.addAll(set);
 		}
 		
 		return count;
