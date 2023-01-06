@@ -151,6 +151,8 @@ MAIN="com.fujitsu.vdmj.VDMJ"
 #DIALECT=$(basename $0)
 DIALECT=vdmsl
 
+#echo "$CLASSPATH"
+
 # Check whether RLWRAP exists calling without it if not
 if which rlwrap >/dev/null 2>&1
 then
