@@ -16,10 +16,14 @@ import java.util.Map;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.runtime.Interpreter;
+import com.fujitsu.vdmj.tc.modules.TCModule;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 public class ResourceUtil
 {
     public static final String DEFAULT_ENCODING = "UTF-8";//UTF-8-Isabelle";
+
+	public static final String DEFAULT_SAVEURI = "./.generated/isabelle"; 
 
     public static boolean found(String resourceURI)
     {
@@ -176,4 +180,27 @@ public class ResourceUtil
 		String[] argv = (args == null || args.length() == 0) ? new String[0] : args.split("\\s+");
 		return cmd.run(argv);
 	}
+
+    public static File getParentFile(TCModuleList modulelist) {
+        File result = null;
+		if (modulelist != null && modulelist.size() > 0)
+		{
+			result = getParentFile(modulelist.get(0));
+		}
+		return result;
+    }
+
+	public static File getParentFile(TCModule module)
+	{
+		File result = null; 
+		if (module != null && module.files.size() > 0)
+		{
+			result = module.files.get(0).getParentFile();
+		}
+		return result;
+	}
+
+    public static File defaultSaveURI(File parentFile) {
+        return new File(parentFile, ResourceUtil.DEFAULT_SAVEURI);
+    }
 }

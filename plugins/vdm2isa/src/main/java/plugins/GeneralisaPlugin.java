@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +30,7 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.util.Utils;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -49,8 +51,6 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
                             5012, 5013, 5016, 5017, 5018, 5019, 5020, 
                             5021, 5031, 5032, 5033, 5037);
-
-    public static final String DEFAULT_SAVEURI = "./.generated/isabelle"; 
 
     // Settings are initialised only once per class load
     static {
@@ -140,11 +140,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         this.commands = new ArrayList<String>();
         this.tclist = new TCModuleList();
         this.modulesToProcess = new HashSet<String>();
-        this.called = 0;
-        this.saveURI = null;
-        created++;
-        this.setup = false;
         this.source = null;
+        this.setup = false;
+        this.saveURI = ResourceUtil.defaultSaveURI(ResourceUtil.getParentFile(getTC()));
+        this.called = 0;
+        created++;
         this.localReset();
     }
 
@@ -153,11 +153,12 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         super(null);
         this.commands = new ArrayList<String>();
         this.tclist = new TCModuleList();
-        this.source = vscodeModuleList;
         this.modulesToProcess = new HashSet<String>();
+        this.source = vscodeModuleList;
+        this.setup = false;
+        this.saveURI = ResourceUtil.defaultSaveURI(ResourceUtil.getParentFile(vscodeModuleList));
         this.called = 0;
         created++;
-        this.setup = false;
         this.localReset();
     }
 
@@ -260,7 +261,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         printFlag("report warnings", IsaProperties.general_report_vdm_warnings);
         printFlag("debug", IsaProperties.general_debug);
         printFlag("modules to process", modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString());
-        printFlag("URI to save translation", saveURI == null ? GeneralisaPlugin.DEFAULT_SAVEURI : saveURI.toURI().toString());
+        printFlag("URI to save translation", saveURI == null ? ResourceUtil.DEFAULT_SAVEURI : saveURI.toURI().toString());
     }
 
     protected boolean processArgument(String arg, Iterator<String> i)
@@ -331,7 +332,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
         else if (prop.equals("o"))
         {
-            saveURI = null; // default = GeneralisaPlugin.DEFAULT_SAVEURI
+            //saveURI = null; // default = ResourceUtil.DEFAULT_SAVEURI
             try
             {
                 File f = new File(val);
@@ -341,14 +342,21 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                 }
                 else if (!f.exists())
                 {
-                    Path p = createOutputDirectory(f, pluginName());
-                    saveURI = p.toFile();
+                    try
+                    {
+                        Path p = createOutputDirectory(f, pluginName());
+                        saveURI = p.toFile();
+                    }
+                    catch (URISyntaxException e)
+                    {
+                        throw new IllegalArgumentException("Invalid save URI " + f.getAbsolutePath() + " for " + pluginName() + "\n\t" + e.getMessage());
+                    }
                 }
 
                 if (saveURI == null || !saveURI.isDirectory())
                 {
                     usage("Save location must be a directory: " + val);
-                    saveURI = null;
+                    //saveURI = new File(ResourceUtil.DEFAULT_SAVEURI);
                 }
             }
             catch (IOException e)
@@ -407,7 +415,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             IsaProperties.general_strict, IsaProperties.general_max_errors, 
             IsaProperties.general_isa_version, IsaProperties.general_report_vdm_warnings, 
             IsaProperties.general_debug, modulesToProcess.isEmpty() ? "all" : modulesToProcess.toString(), 
-            saveURI == null ? GeneralisaPlugin.DEFAULT_SAVEURI : saveURI.toURI().toString());
+            saveURI == null ? ResourceUtil.DEFAULT_SAVEURI : saveURI.toURI().toString());
     }
 
     protected String optionsHelp()
@@ -614,22 +622,26 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         addLocalErrors(1);
     }
 
-    protected static Path createOutputDirectory(File f, String plugin) throws IOException
+    protected static Path createOutputDirectory(File f, String plugin) throws IOException, URISyntaxException
     {
         String dir; 
-		// if no saveURI is set, then use the "default" 
-		if (f == null)
-		{
-			dir = GeneralisaPlugin.DEFAULT_SAVEURI; 
-		}
-		else 
-		{
-			dir = f.getPath();     		
-		}
+        // if no saveURI is set, then use the "default" 
+        if (f == null)
+        {
+            dir = ResourceUtil.DEFAULT_SAVEURI; 
+        }
+        else 
+        {
+            dir = f.getAbsolutePath();//f.getPath() 		
+        }
 		try 
 		{
             return Files.createDirectories(Paths.get(dir));            
 		}         
+        // catch (URISyntaxException e)
+        // {
+        //      throw e;
+        // }
         catch (IOException e)
         {
             GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_INVALID_SAVE_URI_3P, LexLocation.ANY, plugin, dir, e.getMessage());
@@ -637,7 +649,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         }
     }
 
-    protected void processOutput(LexLocation location, String moduleName, String output) throws IOException, FileNotFoundException
+    protected void processOutput(LexLocation location, String moduleName, String output) throws IOException, URISyntaxException, FileNotFoundException
 	{
 		// only consider generating output if no errors when strict, or with errors when not strict
 		// strict => errorCount = 0
@@ -652,7 +664,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 		}
 	}
     
-    private /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, FileNotFoundException
+    private /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, URISyntaxException, FileNotFoundException
 	{
         Path dir = createOutputDirectory(saveURI, pluginName());
 		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
