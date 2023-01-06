@@ -1,0 +1,260 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+functions
+    /**
+     * Test the basic operation of the fmi3 instantiate functions.
+     */
+     testInstantiateModelExchange: fmi3String * fmi3String -> [fmi3Instance]
+     testInstantiateModelExchange(name, id) ==
+        fmi3InstantiateModelExchange(
+            name,
+            id,
+            "",
+            false,
+            true,
+            mk_fmi3InstanceEnvironment(
+				modelExchangeFMU,
+				mk_SolverData([]),
+				nil,
+				nullCalculateValues,
+				nullCalculateDoStep,
+				nullCalculateEvents
+			),
+            fmi3Logger);
+
+     testInstantiateCoSimulation: seq of fmi3ValueReference * fmi3Boolean -> [fmi3Instance]
+     testInstantiateCoSimulation(requiredIntermediateVariables, eventModeRequired) ==
+        fmi3InstantiateCoSimulation(
+            "CS",
+            "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}",
+            "",
+            false,
+            true,
+            eventModeRequired,
+            requiredIntermediateVariables,
+            len requiredIntermediateVariables,
+            mk_fmi3InstanceEnvironment(
+				basicCosimulationFMU,
+				mk_SolverData([]),
+				nil,
+				nullCalculateValues,
+				nullCalculateDoStep,
+				nullCalculateEvents
+			),
+            fmi3Logger,
+            nil);
+
+     testInstantiateScheduledExecution: seq of fmi3ValueReference -> [fmi3Instance]
+     testInstantiateScheduledExecution(requiredIntermediateVariables) ==
+        fmi3InstantiateScheduledExecution(
+            "SE",
+            "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}",
+            "",
+            false,
+            true,
+            requiredIntermediateVariables,
+            len requiredIntermediateVariables,
+            mk_fmi3InstanceEnvironment(
+				scheduledExecutionFMU,
+				mk_SolverData([]),
+				nil,
+				nullCalculateValues,
+				nullCalculateDoStep,
+				nullCalculateEvents
+			),
+            fmi3Logger,
+            nil,
+            preemptionVoid,
+            preemptionVoid);
+
+	preemptionVoid: () -> <VOID>
+	preemptionVoid() == <VOID>;
+
+	testSetDebugLogging: seq of fmi3String -> bool
+	testSetDebugLogging(cats) ==
+		let instance = testInstantiateModelExchange("name", "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}"),
+			mk_(s, -) = fmi3SetDebugLogging(instance, true, len cats, cats)
+		in
+			s = <fmi3OK>;
+
+	testReset: () -> bool
+	testReset() ==
+		let instance = testInstantiateModelExchange("name", "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}"),
+			mk_(s, -) = fmi3Reset(instance)
+		in
+			s = <fmi3OK>;
+
+	testFreeInstance: () -> bool
+	testFreeInstance() ==
+		fmi3FreeInstance(testInstantiateModelExchange("name", "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}")) = <VOID> and
+		fmi3FreeInstance(nil) = <VOID>;
+
+	testGetVersion: () -> bool
+	testGetVersion() ==
+		fmi3GetVersion() = "3.0";
+
+	testGetAPI: () -> bool
+	testGetAPI() ==
+        let instance = fmi3InstantiateCoSimulation(
+            "VariableTypes", "", "", false, true, false, [], 0,
+            mk_fmi3InstanceEnvironment(
+				variableTypesFMU,
+				mk_SolverData([]),
+				nil,
+				nullCalculateValues,
+				nullCalculateDoStep,
+				nullCalculateEvents
+			),
+            fmi3Logger, nil),
+            F64 = 2, F32 = 1, I8 = 3, UI8 = 4, I16 = 5, UI16 = 6, I32 = 7, UI32 = 8, I64 = 9, UI64 = 10,
+            BOOL = 11, STRING = 12, BINARY = 13
+		in
+			( let f64 = fmi3GetFloat64(instance, [F64], 1, 7) in
+				f64 = mk_(<fmi3OK>, [NEGATIVE_INFINITY, -1.79769E308, -2.22507E-308, NOT_A_NUMBER, 2.22507E-308, 1.79769E308, POSITIVE_INFINITY]))
+			and
+			( let f32 = fmi3GetFloat32(instance, [F32], 1, 7) in
+				f32 = mk_(<fmi3OK>, [NEGATIVE_INFINITY, -3.402823e+38, -1.175494e-38, NOT_A_NUMBER, 1.175494e-38, 3.402823e+38, POSITIVE_INFINITY]))
+			and
+			( let i64 = fmi3GetInt64(instance, [I64], 1, 2) in
+				i64 = mk_(<fmi3OK>, [-9223372036854775808, 9223372036854775807]) )
+			and
+			( let i32 = fmi3GetInt32(instance, [I32], 1, 2) in
+				i32 = mk_(<fmi3OK>, [-2147483648, 2147483647]) )
+			and
+			( let i16 = fmi3GetInt16(instance, [I16], 1, 2) in
+				i16 = mk_(<fmi3OK>, [-32768, 32767]) )
+			and
+			( let i8 = fmi3GetInt8(instance, [I8], 1, 2) in
+				i8 = mk_(<fmi3OK>, [-128, 127]) )
+			and
+			( let ui64 = fmi3GetUInt64(instance, [UI64], 1, 2) in
+				ui64 = mk_(<fmi3OK>, [0, 18446744073709551615]) )
+			and
+			( let ui32 = fmi3GetUInt32(instance, [UI32], 1, 2) in
+				ui32 = mk_(<fmi3OK>, [0, 4294967295]) )
+			and
+			( let ui16 = fmi3GetUInt16(instance, [UI16], 1, 2) in
+				ui16 = mk_(<fmi3OK>, [0, 65535]) )
+			and
+			( let ui8 = fmi3GetUInt8(instance, [UI8], 1, 2) in
+				ui8 = mk_(<fmi3OK>, [0, 255]) )
+			and
+			( let b = fmi3GetBoolean(instance, [BOOL], 1, 4) in
+				b = mk_(<fmi3OK>, [true, false, true, false]) )
+			and
+			( let str = fmi3GetString(instance, [STRING], 1, 2) in
+				str = mk_(<fmi3OK>, ["foo", "bar"]) )
+			and
+			( let bin = fmi3GetBinary(instance, [BINARY], 1, 2) in
+				bin = mk_(<fmi3OK>, [[0x3c, 0x3f], [0x68, 0x65, 0x72]]) );
+
+
+	testSetAPI: () -> bool
+	testSetAPI() ==
+        let instance = fmi3InstantiateCoSimulation(
+            "VariableTypes", "", "", false, true, false, [], 0,
+            mk_fmi3InstanceEnvironment(
+				variableTypesFMU,
+				mk_SolverData([]),
+				nil,
+				nullCalculateValues,
+				nullCalculateDoStep,
+				nullCalculateEvents
+			),
+            fmi3Logger, nil),
+            F64 = 2, F32 = 1, I8 = 3, UI8 = 4, I16 = 5, UI16 = 6, I32 = 7, UI32 = 8, I64 = 9, UI64 = 10,
+            BOOL = 11, STRING = 12, BINARY = 13
+		in
+			( let mk_(s, c) = fmi3SetFloat64(instance, [F64], 1, [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetFloat32(instance, [F32], 1, [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetInt64(instance, [I64], 1, [12345, -12345]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetInt32(instance, [I32], 1, [12345, -12345]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetInt16(instance, [I16], 1, [1234, -1234]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetInt8(instance, [I8], 1, [127, -128]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetUInt64(instance, [UI64], 1, [12345, 54321]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetUInt32(instance, [UI32], 1, [12345, 54321]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetUInt16(instance, [UI16], 1, [1234, 43321]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetUInt8(instance, [UI8], 1, [255, 255]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetBoolean(instance, [BOOL], 1, [true, false, true, false]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetString(instance, [STRING], 1, ["Hello", "World"]) in
+				s = <fmi3OK> and c <> nil )
+			and
+			( let mk_(s, c) = fmi3SetBinary(instance, [BINARY], 1, [[0xff, 0xfe], [0x12, 0x34]]) in
+				s = <fmi3OK> and c <> nil );
+
+	/**
+	 * Run all tests.
+	 */
+	tests: () -> seq of bool
+	tests() ==
+	[
+		testInstantiateModelExchange("ME", "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}") <> nil,
+		testInstantiateModelExchange("", "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}") = nil,
+		testInstantiateModelExchange("ME", "wrong") = nil,
+
+		testInstantiateCoSimulation([], false) <> nil,
+		testInstantiateCoSimulation([999], false) = nil,
+
+		testInstantiateScheduledExecution([]) <> nil,
+		testInstantiateScheduledExecution([999]) = nil,
+
+		testSetDebugLogging(["Full", "Terse"]),
+		testSetDebugLogging(["Wrong"]) = false,
+
+		testReset(),
+		testFreeInstance(),
+		testGetVersion(),
+
+		testGetAPI(),
+		testSetAPI()
+	]
+	post elems RESULT = {true};

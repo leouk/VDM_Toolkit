@@ -1,0 +1,7 @@
+.generated
+pom.xml
+ls-bus-model/pom.xml
+rule-model/Tests/generateTest.sh
+rule-model/Tests/generateTests.sh
+rule-model/Tests/TestXML
+vdmcheck

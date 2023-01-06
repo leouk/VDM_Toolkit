@@ -1,0 +1,182 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+/**
+ * 3.2.3 State Machine for Model Exchange
+ * 4.2.8 State Machine for Co-Simulation
+ * 5.2.3 State Machine for Scheduled Co-Simulation
+ *
+ * These functions implement the "notes" in the API matrix that lists which API functions
+ * can be called in which states in which modes. The functions all assume that the basic
+ * argument validation has been performed and that the valueReferences passed do exist.
+ */
+functions
+	-- Note 1: 3.2.3.3 - The variables that can be retrieved by fmi3Get{VariableType}
+	-- calls are (1) defined in the XML file as elements <ModelStructure><InitialUnknown> and
+	-- (2) variables with causality = output
+	note1: fmi3Instance * seq of fmi3ValueReference +> bool
+	note1(c, vrs) ==
+		forall vr in seq vrs &
+			vr in set c.initialUnknowns
+			or let v = lookup(c.eModelVariables, vr) in
+				v.causality = <output>;
+
+
+	-- Note 2: 3.2.3.7 - output variables can be retrieved with fmi3Get{VariableType}
+	-- interchangeably according to the model structure defined under element
+	-- <ModelStructure> in the XML file
+	note2: fmi3Instance * seq of fmi3ValueReference +> bool
+	note2(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.causality = <output>;
+
+
+	-- Note 3: 3.2.3.3 - Variables with initial = exact and variability ≠ constant, as well as
+	-- variables with causality = input can be set, or causality = parameter and variability = tunable.
+	note3: fmi3Instance * seq of fmi3ValueReference +> bool
+	note3(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				(v.initial = <exact> and v.variability <> <constant>)
+				or v.causality = <input>
+			 	or ((v.causality = <parameter> or v.causality = <structuralParameter>)
+				 	and v.variability = <tunable>);
+
+
+	-- Note 4: 3.2.3.1 - start and guess values (= variables that have initial = exact or
+	-- approx) set and variability ≠ constant can be set
+	note4: fmi3Instance * seq of fmi3ValueReference +> bool
+	note4(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.initial = <exact> or v.initial = <approx>
+				or v.variability <> <constant>;
+
+
+	-- Note 5: 3.2.3.2 - structural parameters with variability = fixed or
+	-- variability = tunable can be changed
+	note5: fmi3Instance * seq of fmi3ValueReference +> bool
+	note5(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.causality = <structuralParameter>
+				and (v.variability = <fixed> or v.variability = <tunable>);
+
+
+	-- Note 6: 3.2.3.6 - structural parameters with variability = tunable can be changed
+	note6: fmi3Instance * seq of fmi3ValueReference +> bool
+	note6(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v <> nil and
+				v.causality = <structuralParameter>
+				and v.variability = <tunable>;
+
+
+	-- Note 7: 4.2.3.4 - For variables with variability ≠ constant and for which
+	-- initial = exact or approx.
+	note7: fmi3Instance * seq of fmi3ValueReference +> bool
+	note7(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.variability <> <constant>
+				and (v.initial = <exact> or v.initial = <approx>);
+
+
+	-- Note 8: 4.2.3.5 - For variables with: variability ≠ constant that have
+	-- initial = exact, or causality = input, or causality = parameter and variability = tunable
+	note8: fmi3Instance * seq of fmi3ValueReference +> bool
+	note8(c, vrs) ==
+		note3(c, vrs);	-- Same note?
+
+
+	-- Note 9: 4.2.3.6 - For variables with: causality = input, or causality = parameter
+	-- and variability = tunable
+	note9: fmi3Instance * seq of fmi3ValueReference +> bool
+	note9(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.causality = <input>
+				or (v.causality = <parameter> or
+					v.causality = <structuralParameter> or
+					v.variability = <tunable>);
+
+
+	-- Note 10: 4.2.3.7 - If intermediateVariableSetAllowed == fmi3True, the value of intermediate
+	-- variables can be set. If intermediateVariableGetAllowed == fmi3True, the value of
+	-- intermediate variables can be retrieved.
+	note10g: fmi3Instance * seq of fmi3ValueReference +> bool
+	note10g(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				nilBool(v.intermediateUpdate) => c.intermediateAccessGetAllowed;	-- Getters
+
+	note10s: fmi3Instance * seq of fmi3ValueReference +> bool
+	note10s(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				nilBool(v.intermediateUpdate) => c.intermediateAccessSetAllowed;	-- Setters
+
+
+	-- Note 11: 4.2.3.10 - Only for variables with causality = structuralParameter
+	-- and variability = tunable.
+	note11: fmi3Instance * seq of fmi3ValueReference +> bool
+	note11(c, vrs) ==
+		note6(c, vrs);	-- Same note?
+
+
+	-- Note 12: 4.2.3.5 - For variables with causality = output or continuous-time
+	-- states or state derivatives.
+	note12: fmi3Instance * seq of fmi3ValueReference +> bool
+	note12(c, vrs) ==
+		forall vr in seq vrs &
+			let v = lookup(c.eModelVariables, vr) in
+				v.causality = <output>
+				or vr in set elems c.continuousTimeStates
+				or vr in set c.stateDerivatives;
+
+
+	-- Note 13: 6.2.3.5 - Also intermediate variable access is allowed as defined
+	-- in Section 4.2.3.7
+	note13g: fmi3Instance * seq of fmi3ValueReference +> bool
+	note13g(c, vrs) ==
+		note10g(c, vrs);
+
+	note13s: fmi3Instance * seq of fmi3ValueReference +> bool
+	note13s(c, vrs) ==
+		note10s(c, vrs);
+
+
+	-- Note 14: 6.2.3.6 - Only for variables with causality = structuralParameter and
+	-- variability = tunable.
+	note14: fmi3Instance * seq of fmi3ValueReference +> bool
+	note14(c, vrs) ==
+		note6(c, vrs);
+
