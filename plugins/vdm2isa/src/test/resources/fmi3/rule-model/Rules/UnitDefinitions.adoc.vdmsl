@@ -1,15 +1,7 @@
-// This adds the "functions" section header for VDM only
-ifdef::hidden[]
-// {vdm}
+--
+-- Document created from UnitDefinitions.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
 functions
-// {vdm}
-endif::[]
-
-==== A.{section}.{counter:subsection} UnitDefinition Rules
-:!typerule:
-===== A.{section}.{subsection}.{counter:typerule} Rule: validUnitNames
-[[validUnitNames]]
-// {vdm}
 ----
 validUnitNames: UnitDefinitions +> bool
 validUnitNames(units) ==
@@ -17,13 +9,6 @@ validUnitNames(units) ==
 	( let names = [ u.name | u in seq units ] in
 		len names = card elems names );
 ----
-// {vdm}
-- See <<_physical_units>>.
-- See <<uniqueNameAttribute>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validDisplayUnitNames
-[[validDisplayUnitNames]]
-// {vdm}
 ----
 validDisplayUnitNames: Unit +> bool
 validDisplayUnitNames(unit) ==
@@ -33,25 +18,12 @@ validDisplayUnitNames(unit) ==
 		( let names = [ u.name | u in seq unit.displayUnit ] in
 			len names = card elems names );
 ----
-// {vdm}
-- See <<figure-schema-DisplayUnit>>.
-- See <<uniqueNameAttribute>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validInverseAndOffset
-[[validInverseAndOffset]]
-// {vdm}
 ----
 validInverseAndOffset: DisplayUnit +> bool
 validInverseAndOffset(dunit) ==
 	-- @OnFail("%NAME: inverse is only allowed if offset = 0 at %s", loc2str(dunit.location))
 	( dunit.$inverse => dunit.offset = 0 )
 ----
-// {vdm}
-See <<figure-schema-DisplayUnit>>.
-
-// This adds the docrefs for VDM only
-ifdef::hidden[]
-// {vdm}
 values
 	UnitDefinitions_refs : ReferenceMap =
 	{
@@ -72,10 +44,3 @@ values
 			"<FMI3_STANDARD>#figure-schema-DisplayUnit"
 		]
 	};
-// {vdm}
-endif::[]
-
-
-
-
-

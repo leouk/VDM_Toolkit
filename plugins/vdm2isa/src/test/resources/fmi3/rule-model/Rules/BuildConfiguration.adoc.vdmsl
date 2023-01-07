@@ -1,27 +1,13 @@
-// This adds the "functions" section header for VDM only
-ifdef::hidden[]
-// {vdm}
+--
+-- Document created from BuildConfiguration.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
 functions
-// {vdm}
-endif::[]
-
-==== A.{section}.{counter:subsection} SourceFileSet Rules
-:!typerule:
-===== A.{section}.{subsection}.{counter:typerule} Rule: validCompilerOptions
-[[validCompilerOptions]]
-// {vdm}
 ----
 validCompilerOptions: SourceFileSet +> bool
 validCompilerOptions(sfs) ==
 	-- @OnFail("%NAME: Compiler options set without compiler at %s", loc2str(sfs.location))
 	( sfs.compilerOptions <> nil => sfs.compiler <> nil );
 ----
-// {vdm}
-See <<table-SourceFileSet-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validSourceFileNames
-[[validSourceFileNames]]
-// {vdm}
 ----
 validSourceFileNames: SourceFileSet +> bool
 validSourceFileNames(sfs) ==
@@ -31,12 +17,6 @@ validSourceFileNames(sfs) ==
 		--	{ files(a) | a, b in set inds names & a <> b and files(a) = files(b) })
 		( card elems names = len names );
 ----
-// {vdm}
-See <<table-SourceFile-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validPreprocessorDefinitionNames
-[[validPreprocessorDefinitionNames]]
-// {vdm}
 ----
 validPreprocessorDefinitionNames: SourceFileSet +> bool
 validPreprocessorDefinitionNames(sfs) ==
@@ -47,12 +27,6 @@ validPreprocessorDefinitionNames(sfs) ==
 			--	{ names(a) | a, b in set inds names & a <> b and names(a) = names(b) })
 			( card elems names = len names );
 ----
-// {vdm}
-See <<table-ProcessorDefinition-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validIncludeDirectoryNames
-[[validIncludeDirectoryNames]]
-// {vdm}
 ----
 validIncludeDirectoryNames: SourceFileSet +> bool
 validIncludeDirectoryNames(sfs) ==
@@ -63,12 +37,6 @@ validIncludeDirectoryNames(sfs) ==
 			--	{ names(a) | a, b in set inds names & a <> b and names(a) = names(b) })
 			( card elems names = len names );
 ----
-// {vdm}
-See <<table-IncludeDirectory-details>>.
-
-// This adds the docrefs for VDM only
-ifdef::hidden[]
-// {vdm}
 values
 	BuildConfiguration_refs : ReferenceMap =
 	{
@@ -92,5 +60,3 @@ values
 			"<FMI3_STANDARD>#table-IncludeDirectory-details"
 		]
 	};
-// {vdm}
-endif::[]

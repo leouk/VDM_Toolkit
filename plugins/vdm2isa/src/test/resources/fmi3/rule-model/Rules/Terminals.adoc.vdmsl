@@ -1,15 +1,7 @@
-// This adds the "functions" section header for VDM only
-ifdef::hidden[]
-// {vdm}
+--
+-- Document created from Terminals.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
 functions
-// {vdm}
-endif::[]
-
-==== A.{section}.{counter:subsection} Terminals Rules
-:!typerule:
-===== A.{section}.{subsection}.{counter:typerule} Rule: validCoordinateSystem
-[[validCoordinateSystem]]
-// {vdm}
 ----
 validCoordinateSystem: CoordinateSystem +> bool
 validCoordinateSystem(cs) == allOf
@@ -22,24 +14,12 @@ validCoordinateSystem(cs) == allOf
 		( isBLtoTR(cs.x1, cs.y1, cs.x2, cs.y2) )
 	]);
 ----
-// {vdm}
-See <<_coordinatesystem>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validIcon
-[[validIcon]]
-// {vdm}
 ----
 validIcon: Icon +> bool
 validIcon(icon) ==
 	-- @OnFail("%NAME: Icon has zero area at %s", loc2str(icon.location))
 	( icon.x1 <> icon.x2 and icon.y1 <> icon.y2 );
 ----
-// {vdm}
-See <<_icon>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTerminalMemberVariables
-[[validTerminalMemberVariables]]
-// {vdm}
 ----
 validTerminalMemberVariables: Terminal * [FmiModelDescription] +> bool
 validTerminalMemberVariables(terminal, fmd) ==
@@ -54,12 +34,6 @@ validTerminalMemberVariables(terminal, fmd) ==
 		| tmv in seq tmvs
 	]);
 ----
-// {vdm}
-See <<section-terminalvars>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTerminalStreamMemberVariables
-[[validTerminalStreamMemberVariables]]
-// {vdm}
 ----
 validTerminalStreamMemberVariables: Terminal * [FmiModelDescription] +> bool
 validTerminalStreamMemberVariables(terminal, fmd) ==
@@ -82,12 +56,6 @@ validTerminalStreamMemberVariables(terminal, fmd) ==
 		| tsmv in seq tsmvs
 	]);
 ----
-// {vdm}
-See <<_terminal_stream_member_variable>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTerminalGraphicalRepresentation
-[[validTerminalGraphicalRepresentation]]
-// {vdm}
 ----
 validTerminalGraphicalRepresentation: Terminal +> bool
 validTerminalGraphicalRepresentation(terminal) ==
@@ -108,12 +76,6 @@ validTerminalGraphicalRepresentation(terminal) ==
 			tgr.defaultConnectionStrokeSize > 0 )
 	]);
 ----
-// {vdm}
-See <<_terminal_graphical_representation>>.
-
-// This adds the docrefs for VDM only
-ifdef::hidden[]
-// {vdm}
 values
 	Terminals_refs : ReferenceMap =
 	{
@@ -142,10 +104,3 @@ values
 			"<FMI3_STANDARD>#_terminal_stream_member_variable"
 		]
 	};
-// {vdm}
-endif::[]
-
-
-
-
-

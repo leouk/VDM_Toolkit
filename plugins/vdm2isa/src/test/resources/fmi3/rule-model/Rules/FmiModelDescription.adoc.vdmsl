@@ -1,30 +1,13 @@
-// This adds the "functions" section header for VDM only
-ifdef::hidden[]
-// {vdm}
+--
+-- Document created from FmiModelDescription.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
 functions
-// {vdm}
-endif::[]
-
-==== A.{section}.{counter:subsection} FmiModelDescription Rules
-:!typerule:
-===== A.{section}.{subsection}.{counter:typerule} Effective Model Variables
-Note that  ModelVariables are passed to some of the rules in this section, in addition to the FmiModelDescription. The ModelVariables passed are _effective ModuleVariables_, whose fields have been set to default values or inherited from the _declaredType_ of the variable. The calculation of effective ModelVariables is defined by a function called _effectiveVariables_.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validModelTypes
-[[validModelTypes]]
-// {vdm}
 ----
 validModelTypes: FmiModelDescription +> bool
 validModelTypes(fmd) ==
 	-- @OnFail("%NAME: At least one of ModelExchange, CoSimulation or ScheduledExecution must be set")
 	( fmd.modelExchange <> nil or fmd.coSimulation <> nil or fmd.scheduledExecution <> nil );
 ----
-// {vdm}
-See <<table-schema-fmiModelDescription>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validGenerationDateAndTime
-[[validGenerationDateAndTime]]
-// {vdm}
 ----
 validGenerationDateAndTime: FmiModelDescription +> bool
 validGenerationDateAndTime(fmd) ==
@@ -32,12 +15,6 @@ validGenerationDateAndTime(fmd) ==
 	-- loc2str(fmd.location))
 	( fmd.generationDateAndTime <> nil => iso8601(fmd.generationDateAndTime) );
 ----
-// {vdm}
-See <<table-schema-fmiModelDescription-attributes>>.
-	
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTypeUnits
-[[validTypeUnits]]
-// {vdm}
 ----
 validTypeUnits: FmiModelDescription +> bool
 validTypeUnits(fmd) ==
@@ -52,12 +29,6 @@ validTypeUnits(fmd) ==
 		| tdef in seq fmd.typeDefinitions & isFloat(tdef)
 	]);
 ----
-// {vdm}
-See <<table-type-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validVariableTypes
-[[validVariableTypes]]
-// {vdm}
 ----
 validVariableTypes: FmiModelDescription +> bool
 validVariableTypes(fmd) == allOf
@@ -75,13 +46,6 @@ validVariableTypes(fmd) == allOf
 		| mv in seq fmd.modelVariables
 	]);
 ----
-// {vdm}
-- See <<ModelVariables>>.
-- See <<definition-of-types>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTypeNames
-[[validTypeNames]]
-// {vdm}
 ----
 validTypeNames: FmiModelDescription +> bool
 validTypeNames(fmd) == fmd.typeDefinitions <> nil => allOf
@@ -93,12 +57,6 @@ validTypeNames(fmd) == fmd.typeDefinitions <> nil => allOf
 		| tdef in seq fmd.typeDefinitions
 	]);
 ----
-// {vdm}
-See <<table-type-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validVariableNames
-[[validVariableNames]]
-// {vdm}
 ----
 validVariableNames: FmiModelDescription +> bool
 validVariableNames(fmd) ==
@@ -115,12 +73,6 @@ validVariableNames(fmd) ==
 		| mv in seq fmd.modelVariables
 	]);
 ----
-// {vdm}
-See <<ModelVariables>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validStart
-[[validStart]]
-// {vdm}
 ----
 validStart: FmiModelDescription * ModelVariables +> bool
 validStart(-, evs) == allOf
@@ -141,12 +93,6 @@ validStart(-, evs) == allOf
 		| ev in seq evs & is_NumericKind(kindOf(ev))
 	]);
 ----
-// {vdm}
-See <<table-type-attributes>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validMinMax
-[[validMinMax]]
-// {vdm}
 ----
 validMinMax: FmiModelDescription * ModelVariables +> bool
 validMinMax(-, evs) == allOf
@@ -166,12 +112,6 @@ validMinMax(-, evs) == allOf
 		| ev in seq evs & is_NumericKind(kindOf(ev))
 	]);
 ----
-// {vdm}
-See <<table-type-attributes>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validMultipleSets
-[[validMultipleSets]]
-// {vdm}
 ----
 validMultipleSets: FmiModelDescription * ModelVariables +> bool
 validMultipleSets(fmd, evs) == allOf
@@ -184,12 +124,6 @@ validMultipleSets(fmd, evs) == allOf
 		| ev in seq evs
 	]);
 ----
-// {vdm}
-See <<table-variableBase-attributes>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validReinits
-[[validReinits]]
-// {vdm}
 ----
 validReinits: FmiModelDescription +> bool
 validReinits(fmd) == allOf
@@ -202,12 +136,6 @@ validReinits(fmd) == allOf
 		| mv in seq fmd.modelVariables
 	]);
 ----
-// {vdm}
-See <<ModelVariables>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validCSEventMode
-[[validCSEventMode]]
-// {vdm}
 ----
 validCSEventMode: FmiModelDescription +> bool
 validCSEventMode(fmd) ==
@@ -217,13 +145,6 @@ validCSEventMode(fmd) ==
 		( let hasClocks = exists mv in seq fmd.modelVariables & is_Clock(mv) in
 			hasClocks => fmd.coSimulation.hasEventMode = true );
 ----
-// {vdm}
-- See <<table-CoSimulation-details>>.
-
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validOutput
-[[validOutput]]
-// {vdm}
 ----
 validOutput: FmiModelDescription * ModelVariables +> bool
 validOutput(fmd, evs) ==
@@ -246,12 +167,6 @@ validOutput(fmd, evs) ==
 			-- loc2str(fmd.modelStructure.location))
 			( structRefs = {} );
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validStateDerivatives
-[[validStateDerivatives]]
-// {vdm}
 ----
 validStateDerivatives: FmiModelDescription * ModelVariables +> bool
 validStateDerivatives(fmd, evs) ==
@@ -274,12 +189,6 @@ validStateDerivatives(fmd, evs) ==
 						(fmd.modelStructure.continuousStateDerivative, [])
 	]);
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validInitialUnknowns
-[[validInitialUnknowns]]
-// {vdm}
 ----
 validInitialUnknowns: FmiModelDescription * ModelVariables +> bool
 validInitialUnknowns(fmd, evs) ==
@@ -330,12 +239,6 @@ validInitialUnknowns(fmd, evs) ==
 			]
 		]);
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validEventIndicators
-[[validEventIndicators]]
-// {vdm}
 ----
 validEventIndicators: FmiModelDescription * ModelVariables +> bool
 validEventIndicators(fmd, evs) ==
@@ -348,12 +251,6 @@ validEventIndicators(fmd, evs) ==
 		| ei in seq fmd.modelStructure.eventIndicator
 	]);
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validOutputReferences
-[[validOutputReferences]]
-// {vdm}
 ----
 validOutputReferences: FmiModelDescription * ModelVariables +> bool
 validOutputReferences(fmd, evs) ==
@@ -367,12 +264,6 @@ validOutputReferences(fmd, evs) ==
 		| ei in seq fmd.modelStructure.output
 	]);
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validUnknownDependencies
-[[validUnknownDependencies]]
-// {vdm}
 ----
 validUnknownDependencies: FmiModelDescription * ModelVariables +> bool
 validUnknownDependencies(fmd, evs) ==
@@ -397,12 +288,6 @@ validUnknownDependencies(fmd, evs) ==
 			| unk in seq allUnknowns
 		]);
 ----
-// {vdm}
-See <<ModelStructure>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validClockPriorities
-[[validClockPriorities]]
-// {vdm}
 ----
 validClockPriorities: FmiModelDescription * ModelVariables +> bool
 validClockPriorities(fmd, evs) == allOf
@@ -429,12 +314,6 @@ validClockPriorities(fmd, evs) == allOf
 		| ev in seq evs & is_Clock(ev)
 	]);
 ----
-// {vdm}
-See <<table-type-details>>.
-
-// This adds the docrefs for VDM only
-ifdef::hidden[]
-// {vdm}
 values
 	FmiModelDescription_refs : ReferenceMap =
 	{
@@ -529,5 +408,3 @@ values
 			"<FMI3_STANDARD>#table-type-details"
 		]
 	};
-// {vdm}
-endif::[]

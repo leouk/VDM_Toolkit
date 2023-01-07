@@ -1,0 +1,20 @@
+--
+-- Document created from ModelStructure.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
+functions
+----
+validDependencyKinds: Output | ContinuousStateDerivative | ClockedState |
+                      InitialUnknown | EventIndicator +> bool
+validDependencyKinds(entry) ==
+	entry.dependenciesKind <> nil =>
+		-- @OnFail("%NAME: dependencies do not match dependenciesKind at %s", loc2str(entry.location))
+		( entry.dependencies <> nil and len entry.dependenciesKind = len entry.dependencies );
+----
+values
+	ModelStructure_refs : ReferenceMap =
+	{
+		"validDependencyKinds" |->
+		[
+			"<FMI3_STANDARD>#modelStructure"
+		]
+	};

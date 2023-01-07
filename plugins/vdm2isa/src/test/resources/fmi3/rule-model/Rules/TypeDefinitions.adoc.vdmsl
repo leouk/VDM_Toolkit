@@ -1,15 +1,7 @@
-// This adds the "functions" section header for VDM only
-ifdef::hidden[]
-// {vdm}
+--
+-- Document created from TypeDefinitions.adoc at Thu Jan 05 13:40:36 GMT 2023
+--
 functions
-// {vdm}
-endif::[]
-
-==== A.{section}.{counter:subsection} TypeDefinitions Rules
-:!typerule:
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTypeDefinitionNames
-[[validTypeDefinitionNames]]
-// {vdm}
 ----
 validTypeDefinitionNames: [TypeDefinitions] +> bool
 validTypeDefinitionNames(tdefs) ==
@@ -18,13 +10,6 @@ validTypeDefinitionNames(tdefs) ==
 		( let names = [ td.name | td in seq tdefs ] in
 			len names = card elems names );
 ----
-// {vdm}
-- See <<definition-of-types>>.
-- See <<table-type-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTypeMinMax
-[[validTypeMinMax]]
-// {vdm}
 ----
 validTypeMinMax: fmi3TypeDefinition +> bool
 validTypeMinMax(tdef) ==
@@ -40,24 +25,12 @@ validTypeMinMax(tdef) ==
 		( tdef.min <> nil and tdef.max <> nil => tdef.max >= tdef.min )
 	]);
 ----
-// {vdm}
-See <<table-type-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validTypeDisplayUnit
-[[validTypeDisplayUnit]]
-// {vdm}
 ----
 validTypeDisplayUnit: fmi3TypeDefinition +> bool
 validTypeDisplayUnit(tdef) ==
 	-- @OnFail("%NAME: Type %s, unit must be defined for displayUnit %s", tdef.name, tdef.displayUnit)
 	( tdef.displayUnit <> nil => tdef.unit <> nil );
 ----
-// {vdm}
-See <<table-type-details>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validEnumerationTypeBijection
-[[validEnumerationTypeBijection]]
-// {vdm}
 ----
 validEnumerationTypeBijection: EnumerationType +> bool
 validEnumerationTypeBijection(tdef) ==
@@ -67,12 +40,6 @@ validEnumerationTypeBijection(tdef) ==
 		and	card { i.value | i in seq tdef.item } = len tdef.item
 	);
 ----
-// {vdm}
-See <<figure-schema-EnumerationType>>.
-
-===== A.{section}.{subsection}.{counter:typerule} Rule: validClockType
-[[validClockType]]
-// {vdm}
 ----
 validClockType: ClockType +> bool
 validClockType(tdef) ==
@@ -95,12 +62,6 @@ validClockType(tdef) ==
 		( tdef.shiftCounter <> nil => tdef.intervalCounter <> nil )
 	]);
 ----
-// {vdm}
-See <<figure-schema-ClockType>>.
-
-// This adds the docrefs for VDM only
-ifdef::hidden[]
-// {vdm}
 values
 	TypeDefinitions_refs : ReferenceMap =
 	{
@@ -130,12 +91,3 @@ values
 			"<FMI3_STANDARD>#figure-schema-ClockType"
 		]
 	};
-// {vdm}
-endif::[]
-
-
-
-
-
-
-
