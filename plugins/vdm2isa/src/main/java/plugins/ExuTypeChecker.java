@@ -116,6 +116,13 @@ public class ExuTypeChecker {
         }
     }
 
+    private final TCNameList duplicate(TCNameList l)
+    {
+        TCNameList result = new TCNameList();
+        result.addAll(l);
+        return result;
+    }
+
     protected TCModule sortModule(TCModule m)
     {
         ExuOrder order = processModule(m);
@@ -132,15 +139,7 @@ public class ExuTypeChecker {
             {
                 Console.out.println("Organised names: " + organised.toString() + "\n");
             }
-    
-            // topological sorting must contain all original
-            // set-view of organised must equal original (just their order is different)  
-            if (!(ts.containsAll(original) && organised.containsAll(original) && original.containsAll(organised)))
-            {
-                GeneralisaPlugin.report(IsaErrorMessage.VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P, m.name.getLocation(), 
-                    original, organised, ts);
-            }
-    
+        
             // reorder module definition according to organised name list order
             TCDefinitionList moduleDefs = new TCDefinitionList();
             for(TCNameToken n : organised)
@@ -148,6 +147,26 @@ public class ExuTypeChecker {
                 moduleDefs.add(order.findDefinition(n));
             }
     
+            // topological sorting must contain all original
+            // set-view of organised must equal original (just their order is different)  
+            boolean originalSubsetOrganised = organised.containsAll(original);//original  subset organised
+            boolean organisedSubsetOriginal = original.containsAll(organised);//organised subset original
+            boolean originalSubsetSorted    = ts.containsAll(original);       //original  subset sorted
+            if (!(originalSubsetSorted && originalSubsetOrganised && organisedSubsetOriginal))
+            {                
+                TCNameList originalToPrint = originalSubsetOrganised ? new TCNameList() : duplicate(original);
+                originalToPrint.removeAll(organised); 
+                TCNameList organisedToPrint = organisedSubsetOriginal ? new TCNameList() : duplicate(organised);
+                organisedToPrint.removeAll(original);
+                TCNameList sortedToPrint = originalSubsetSorted ? new TCNameList() : duplicate(ts);
+                sortedToPrint.removeAll(ts);
+                GeneralisaPlugin.report(IsaErrorMessage.VDMSL_EXU_INVALID_SORTING_6P, m.name.getLocation(), 
+                    (originalSubsetOrganised ? "" : "not ") + "O subset G",
+                    (organisedSubsetOriginal ? "" : "not ") + "G subset O",
+                    (originalSubsetSorted ? "" : "not ") + "O subset S",                     
+                    originalToPrint, organisedToPrint, sortedToPrint);
+            }
+
             // recreate the module with the ordered definitions; set TC calculated fields to avoid retypechecking
             result = new TCModule(m.annotations, m.name, 
                 m.imports, m.exports, moduleDefs, m.files, m.isFlat);

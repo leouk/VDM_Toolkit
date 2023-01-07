@@ -73,9 +73,9 @@ public enum IsaErrorMessage {
     "Invalid mutually recursive call. Could not find function name for apply expr root %1$s"),
 
     VDMSL_EXU_IMPLICIT_FUNCTION_BODY_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 50, 
-    "Implicit function cannot have bodies for Isabelle Translation."),
-    VDMSL_EXU_INVALID_SORTING_3P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 51, 
-    "Original names (%1$s) differ from organised names (%2$s) after sorting (%3$s)."),
+    "Implicit function `%1$s` cannot have bodies for Isabelle Translation."),
+    VDMSL_EXU_INVALID_SORTING_6P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 51, 
+    "Original names differ from orGanised names after Sorting. %1$s; %2$s; %3$s. Offending names are:\n\tOriginal : %4$s\n\tOrganised: %5$s\n\tSorted   : %6$s"),
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
