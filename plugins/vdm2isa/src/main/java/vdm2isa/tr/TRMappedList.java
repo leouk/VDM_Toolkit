@@ -92,7 +92,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 
 	public final TRMappedList<FROM, TO> copy(boolean atTLD)
 	{
-		setup();
+		//setup();
 		return doCopy(atTLD);
 	}
 

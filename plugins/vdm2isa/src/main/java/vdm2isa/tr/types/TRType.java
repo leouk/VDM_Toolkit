@@ -7,12 +7,16 @@ package vdm2isa.tr.types;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.Settings;
+import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCBooleanType;
 import com.fujitsu.vdmj.tc.types.TCTokenType;
 import com.fujitsu.vdmj.tc.types.TCType;
 
+import plugins.IsaProperties;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -86,7 +90,10 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 */
 	public final TRType copy(boolean atTLD)
 	{
-		//System.out.println(String.format("Copying %1$s setup done? %2$s %3$s", atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", getVDMType().toString()));
+		if (Settings.verbose && IsaProperties.general_debug)
+		{
+			Console.out.println(String.format("Copying %1$s setup done? %2$s %3$s", atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", getVDMType().toString()));
+		}
 		//setup();
 		return doCopy(atTLD);
 	}
