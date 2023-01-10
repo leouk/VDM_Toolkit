@@ -38,8 +38,6 @@ import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
-import vdm2isa.lex.IsaToken;
-
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
  */

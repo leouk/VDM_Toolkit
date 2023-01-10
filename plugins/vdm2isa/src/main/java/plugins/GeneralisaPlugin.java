@@ -10,9 +10,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.Iterator;
 
@@ -30,7 +33,6 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
-import com.fujitsu.vdmj.util.Utils;
 
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -133,7 +135,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     protected final TCModuleList tclist;
     protected final TCModuleList source;
     protected File saveURI; 
-
+    private final Map<String, Long> timings;
     protected final Set<String> modulesToProcess; 
 
     public GeneralisaPlugin(Interpreter i) {
@@ -146,6 +148,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         this.source = null;
         this.setup = false;
         this.saveURI = ResourceUtil.defaultSaveURI(ResourceUtil.getParentFile(getTC()));
+        this.timings = new TreeMap<String, Long>(); 
         this.called = 0;
         created++;
         this.localReset();
@@ -160,9 +163,15 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         this.source = vscodeModuleList;
         this.setup = false;
         this.saveURI = ResourceUtil.defaultSaveURI(ResourceUtil.getParentFile(vscodeModuleList));
+        this.timings = new TreeMap<String, Long>(); 
         this.called = 0;
         created++;
         this.localReset();
+    }
+
+    protected void registerTime(String name, long time)
+    {
+        timings.put(timings.size() + "_" + name, time);
     }
 
     protected boolean calledFromVDMJ()
@@ -196,6 +205,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         commands.clear();
         //leave it a set ml all!
         //modulesToProcess.clear();
+
+        timings.clear();
 
         tclist.clear();
         tclist.addAll(getTC());
@@ -515,6 +526,8 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
         boolean cont_ = processArguments(argv);
         TCModuleList tclist_filtered = GeneralisaPlugin.filterModuleList(tclist, modulesToProcess);        
+        long procArgs = System.currentTimeMillis();
+        registerTime("args", procArgs - before);
         if (tclist_filtered.isEmpty())
         {
             Console.out.println("No modules to process; call `" + pluginName() + " set` to check!");
@@ -538,7 +551,14 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                 {
                     GeneralisaPlugin.printWarnings(Console.out);
                 }
-                summarise(result, after-before, tclist_filtered.size());            
+                long procMsgs = System.currentTimeMillis();
+                registerTime("report", procMsgs - after);
+                registerTime("overall", after - before);
+                summarise(result, after-before, tclist_filtered.size());
+                if (IsaProperties.general_debug)
+                {
+                    Console.out.println("Profiling = " + timings.toString());
+                }            
             }
             else 
             {
@@ -556,9 +576,11 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         boolean result = true;
         Iterator<String> it = commands.iterator();
         List<String> validCmds = validCommands();
+        long before = 0, cmdSetup = -1, after = 0;
         while (it.hasNext() && result)
         {
             String cmd = it.next();
+            before = System.currentTimeMillis();
             result = validCmds.contains(cmd);
             if (result)
             {
@@ -567,12 +589,16 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                     // perform any initial setup  
                     result = setup(); 
                     setup = true;
+                    cmdSetup = System.currentTimeMillis();
+                    registerTime("setup", cmdSetup-before);
                 }
             }
             else 
                 GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNKNOWN_COMMAND_2P, LexLocation.ANY, cmd, pluginName());
             if (result)
                 result = runCommand(cmd, tclist);
+            after = System.currentTimeMillis();
+            registerTime(cmd, cmdSetup == -1 ? after - before : after - cmdSetup);
         }
         return result;
     }
