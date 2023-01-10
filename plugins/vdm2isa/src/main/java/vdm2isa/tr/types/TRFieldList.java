@@ -40,7 +40,7 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 	}
 
 	@Override
-	protected TRMappedList<TCField, TRField> doCopy(boolean atTLD)
+	protected TRFieldList doCopy(boolean atTLD)
 	{
 		TRFieldList result = new TRFieldList();
 		for(TRField f : this)

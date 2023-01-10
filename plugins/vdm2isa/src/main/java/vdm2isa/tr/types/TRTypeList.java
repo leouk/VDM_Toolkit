@@ -179,7 +179,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 	}
 
 	@Override
-	protected TRMappedList<TCType, TRType> doCopy(boolean atTLD)
+	protected TRTypeList doCopy(boolean atTLD)
 	{
 		TRTypeList result = new TRTypeList();
 		for(TRType t : this)

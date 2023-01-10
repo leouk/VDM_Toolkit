@@ -158,6 +158,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		return partial ? IsaToken.FUN : IsaToken.TFUN;
 	}
 
+	@Override
 	public TRType getInnerType()
 	{
 		return result;

@@ -34,15 +34,6 @@ public class TRPatternListTypePairList extends TRMappedList<TCPatternListTypePai
 		setFormattingSeparator(IsaToken.SPACE.toString());
 	}
 
-    @Override 
-    protected TRMappedList<TCPatternListTypePair, TRPatternListTypePair> doCopy(boolean atTLD)
-    {
-        TRPatternListTypePairList result = new TRPatternListTypePairList();
-        
-        TRNode.setup(result);
-        return result;
-    }
-
     /**
      * Transforms a TRPattenrListTypePairList into a TRPatternListList
      * @return
