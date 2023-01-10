@@ -50,8 +50,8 @@ public class TRSeqType extends TRAbstractInnerTypedType
         // this needs to be set otherwise, the inner type will be null!
         //TODO perhaps remove the abstract type hierarchy and mimic the VDMJ AST to avoid confusion. 
         //TODO not sure this might create trouble elsewhere.,,, Hum...
-        TRNode.setup(seqof);
         this.setInnerType(seqof);
+        TRNode.setup(seqof);
         super.setup();
     }
 
