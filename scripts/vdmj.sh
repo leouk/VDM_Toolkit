@@ -151,7 +151,7 @@ MAIN="com.fujitsu.vdmj.VDMJ"
 #DIALECT=$(basename $0)
 DIALECT=vdmsl
 
-#echo "$CLASSPATH"
+echo "\"$JAVA64\" $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS \"$@\""
 
 # Check whether RLWRAP exists calling without it if not
 if which rlwrap >/dev/null 2>&1
