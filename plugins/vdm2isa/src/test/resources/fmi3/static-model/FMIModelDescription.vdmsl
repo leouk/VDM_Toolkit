@@ -200,7 +200,7 @@ functions
 									( isStateDerivative(sv) ),
 
 									/* @OnFail(1027, "2.4.9 Derivative must be continuous at %s", loc2str(uk.location)) */
-									( uk.dependencies <> nil => sv.variability = <continuous> )
+									( uk.dependencies <> nil => sv.variability = <vcontinuous> )
 								}
 								= {true}
 

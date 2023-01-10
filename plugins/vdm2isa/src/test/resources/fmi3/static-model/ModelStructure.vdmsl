@@ -71,7 +71,7 @@ functions
 						( cv.valueReference in set allcvpvs ),
 
 						-- @OnFail(1507, "2.4.8 ClockState reference %s not 'discrete' at %s", cv.valueReference, loc2str(ms.location))
-						( cv.variability = <discrete> )
+						( cv.variability = <vdiscrete> )
 					} = {true}
 			 } = {true} ),
 
@@ -86,7 +86,7 @@ functions
 				forall iu in seq ms.initialUnknown &
 					iu.dependenciesKind <> nil =>
 						forall dk in seq iu.dependenciesKind &
-							 dk in set { <dependent>, <constant>, nil }
+							 dk in set { <dkdependent>, <dkconstant>, nil }
 		)
 	} = {true};
 

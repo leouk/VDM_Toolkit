@@ -88,11 +88,11 @@ functions
 	orderOf: Variability +> fmi3ValueReference
 	orderOf(value) ==
 		cases value:
-			<constant>   -> 1,
-			<fixed>      -> 2,
-			<tunable>    -> 3,
-			<discrete>   -> 4,
-			<continuous> -> 5
+			<vconstant>   -> 1,
+			<vfixed>      -> 2,
+			<vtunable>    -> 3,
+			<vdiscrete>   -> 4,
+			<vcontinuous> -> 5
 		end;
 
 	/**
@@ -225,24 +225,24 @@ functions
 			(
 				cases eCausality:
 					<structuralParameter> ->
-						eVariability in set {<fixed>, <tunable>}
+						eVariability in set {<vfixed>, <vtunable>}
 						and eInitial = <exact>,	-- (A)
 
 					<parameter> ->
-						eVariability in set {<fixed>, <tunable>}
+						eVariability in set {<vfixed>, <vtunable>}
 						and eInitial = <exact>,	-- (A)
 
 					<calculatedParameter> ->
-						eVariability in set {<fixed>, <tunable>}
+						eVariability in set {<vfixed>, <vtunable>}
 						and eInitial in set {<approx>, <calculated>},	-- (B)
 
 					<input> ->
-						(eVariability in set {<discrete>, <continuous>}
+						(eVariability in set {<vdiscrete>, <vcontinuous>}
 						 -- and eInitial = nil
 						 and not is_Clock(sv) => sv.start <> nil),	-- (D)
 
 					<independent> ->
-						eVariability = <continuous>
+						eVariability = <vcontinuous>
 						and eInitial = nil		-- (D)
 						and sv.start = nil
 						-- @OnFail(1461, "2.4.7 Independent variable must be Float at %s", loc2str(sv.location))
@@ -250,11 +250,11 @@ functions
 
 					<output> ->
 						cases eVariability:
-							<constant> ->
+							<vconstant> ->
 								eInitial in set {<exact>},	-- (A)
 
-							<discrete>,
-							<continuous> ->
+							<vdiscrete>,
+							<vcontinuous> ->
 								eInitial in set { <exact>, <approx>, <calculated> }, -- (C)
 
 							others -> false
@@ -262,15 +262,15 @@ functions
 
 					<local> ->
 						cases eVariability:
-							<constant> ->
+							<vconstant> ->
 								eInitial = <exact>,	-- (A)
 
-							<fixed>,
-							<tunable> ->
+							<vfixed>,
+							<vtunable> ->
 								eInitial in set { <calculated>, <approx> },	-- (B)
 
-							<discrete>,
-							<continuous> ->
+							<vdiscrete>,
+							<vcontinuous> ->
 								eInitial in set { <exact>, <approx>, <calculated> }, -- (C)
 
 							others -> false
@@ -282,16 +282,16 @@ functions
 				sv.name, eVariability, eCausality, loc2str(sv.location)) */
 			(
 				cases eVariability:
-					<constant> ->
+					<vconstant> ->
 						eCausality in set {<output>, <local>},
 
-					<fixed>, <tunable> ->
+					<vfixed>, <vtunable> ->
 						eCausality in set {<structuralParameter>, <parameter>, <calculatedParameter>, <local>},
 
-					<discrete> ->
+					<vdiscrete> ->
 						eCausality in set {<input>, <output>, <local>},
 
-					<continuous> ->
+					<vcontinuous> ->
 						eCausality in set {<input>, <output>, <local>, <independent>}
 						-- @OnFail(1463, "2.4.7 Continuous variable must be Real at %s", loc2str(sv.location))
 						and (is_Float64(sv) or is_Float32(sv))
@@ -315,11 +315,11 @@ functions
 
 					<approx> ->
 						(not is_Clock(sv) => sv.start <> nil)
-						and eVariability <> <constant>,
+						and eVariability <> <vconstant>,
 
 					<calculated> ->
 						(not is_Clock(sv) => sv.start = nil)
-						and eVariability <> <constant>,
+						and eVariability <> <vconstant>,
 
 					nil ->		-- Note that eInitial can be nil
 						true	-- Tests on eInitial above are sufficient
@@ -335,7 +335,7 @@ functions
 		{
 			sv.clocks <> nil =>
 				-- @OnFail(1466, "Clocked vars can only be discrete or tunable at %s", loc2str(sv.location))
-				( sv.variability = <discrete> or sv.variability = <tunable> ),
+				( sv.variability = <vdiscrete> or sv.variability = <vtunable> ),
 
 			not is_Clock(sv) and sv.previous <> nil =>
 				let p = lookup(svs, sv.previous) in
@@ -385,7 +385,7 @@ functions
 							exists r in seq vars &
 								isInteger(r) and
 								r.valueReference = dim.valueReference
-								and ( r.causality = <structuralParameter> or r.variability = <constant> )
+								and ( r.causality = <structuralParameter> or r.variability = <vconstant> )
 								and r.start <> nil and len r.start = 1 and r.start(1) >= 0 ),
 
 				-- @OnFail(1474, "2.4.7 Structural parameter %s cannot have Dimension", v.name)
@@ -434,7 +434,7 @@ functions
 
 				mk_Clock(-, -, -, -, -, -, -, -, -, -, -, intervalVariability, -, -,
 					supportsFraction, resolution, intervalCounter, shiftCounter, -, -) ->
-					let periodic = intervalVariability in set {<constant>, <fixed>, <tunable>} in
+					let periodic = intervalVariability in set {<ivconstant>, <ivfixed>, <ivtunable>} in
 					{
 						--@OnFail(1478, "2.4.4 resolution can only be used with periodic clocks")
 						( resolution <> nil => periodic ),
@@ -542,46 +542,46 @@ functions
 		else cases eCausality:
 				<structuralParameter> ->
 					cases eVariability:
-						<fixed>, <tunable> -> <exact>,
+						<vfixed>, <vtunable> -> <exact>,
 						others -> nil
 					end,
 
 				<parameter> ->
 					cases eVariability:
-						<fixed>, <tunable> -> <exact>,
+						<vfixed>, <vtunable> -> <exact>,
 						others -> nil
 					end,
 
 				<calculatedParameter> ->
 					cases eVariability:
-						<fixed>, <tunable> -> <calculated>,
+						<vfixed>, <vtunable> -> <calculated>,
 						others -> nil
 					end,
 
 				<input> ->
 					cases eVariability:
-						<discrete>, <continuous> -> nil,
+						<vdiscrete>, <vcontinuous> -> nil,
 						others -> nil
 					end,
 
 				<output> ->
 					cases eVariability:
-						<constant> -> <exact>,
-						<discrete>, <continuous> -> <calculated>,
+						<vconstant> -> <exact>,
+						<vdiscrete>, <vcontinuous> -> <calculated>,
 						others -> nil
 					end,
 
 				<local> ->
 					cases eVariability:
-						<constant> -> <exact>,
-						<fixed>, <tunable> -> <calculated>,
-						<discrete>, <continuous> -> <calculated>,
+						<vconstant> -> <exact>,
+						<vfixed>, <vtunable> -> <calculated>,
+						<vdiscrete>, <vcontinuous> -> <calculated>,
 						others -> nil
 					end,
 
 				<independent> ->
 					cases eVariability:
-						<continuous> -> nil,
+						<vcontinuous> -> nil,
 						others -> nil
 					end
 			end;
@@ -595,7 +595,7 @@ functions
 	effectiveVariability: Variable -> Variability
 	effectiveVariability(v) ==
 		if v.variability = nil
-		then if isReal(v) then <continuous> else <discrete>
+		then if isReal(v) then <vcontinuous> else <vdiscrete>
 		else v.variability;
 
 	/**
@@ -624,7 +624,7 @@ functions
 							let vr in set {1, ..., len evs + 1} be st vr not in set allvrs in vr,
 						"Implicit independent time variable",
 						<independent>,
-						<continuous>,
+						<vcontinuous>,
 						nil,
 						nil,
 						nil,
@@ -744,11 +744,11 @@ functions
 	 */
 	isSettable: Variable +> bool
 	isSettable(sv) ==
-		sv.variability <> <constant> and sv.initial in set { <exact>, <approx> }
+		sv.variability <> <vconstant> and sv.initial in set { <exact>, <approx> }
 		or
 		sv.causality = <input>
 		or
-		sv.causality = <parameter> and sv.variability = <tunable>;
+		sv.causality = <parameter> and sv.variability = <vtunable>;
 
 	/**
 	 * Return the Variables from a list which are continuous-time states, defined to be
@@ -764,7 +764,7 @@ functions
 	isContinuousTimeState: nat1 * seq of Variable +> bool
 	isContinuousTimeState(i, svs) ==
 		isReal(svs(i))
-		and svs(i).variability = <continuous> 
+		and svs(i).variability = <vcontinuous> 
 		and exists j in seq svs &
 			isReal(j) and j.derivative = svs(i).valueReference;
 

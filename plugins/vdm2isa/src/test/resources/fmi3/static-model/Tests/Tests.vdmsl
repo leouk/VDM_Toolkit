@@ -184,83 +184,83 @@ functions
 					(cases causality:
 						<structuralParameter> ->
 							cases variability:
-								<fixed>, <tunable> ->
+								<vfixed>, <vtunable> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)),
 
-								<constant>, <discrete>, <continuous> ->
+								<vconstant>, <vdiscrete>, <vcontinuous> ->
 									forall initial : Initial &
 										not isValidVariableAttributes(mkVariable(causality, variability, initial, nilv))
 							end,
 
 						<parameter> ->
 							cases variability:
-								<fixed>, <tunable> ->
+								<vfixed>, <vtunable> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)),
 
-								<constant>, <discrete>, <continuous> ->
+								<vconstant>, <vdiscrete>, <vcontinuous> ->
 									forall initial : Initial &
 										not isValidVariableAttributes(mkVariable(causality, variability, initial, nilv))
 							end,
 
 						<calculatedParameter> ->
 							cases variability:
-								<fixed>, <tunable> ->
+								<vfixed>, <vtunable> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <exact>, nilv)),
 
-								<constant>, <discrete>, <continuous> ->
+								<vconstant>, <vdiscrete>, <vcontinuous> ->
 									forall initial : Initial &
 										not isValidVariableAttributes(mkVariable(causality, variability, initial, nilv))
 							end,
 
 						<input> ->
 							cases variability:
-								<discrete>, <continuous> ->
+								<vdiscrete>, <vcontinuous> ->
 									isValidVariableAttributes(mkVariable(causality, variability, nil, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									-- not isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <exact>, nilv)),
 
-								<constant>, <fixed>, <tunable> ->
+								<vconstant>, <vfixed>, <vtunable> ->
 									forall initial : Initial &
 										not isValidVariableAttributes(mkVariable(causality, variability, initial, nilv))
 							end,
 
 						<output> ->
 							cases variability:
-								<constant> ->
+								<vconstant> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)),
 
-								<discrete>, <continuous> ->
+								<vdiscrete>, <vcontinuous> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv))
 									and isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)),
 
-								<fixed>, <tunable> ->
+								<vfixed>, <vtunable> ->
 									forall initial : Initial &
 										not isValidVariableAttributes(mkVariable(causality, variability, initial, nilv))
 							end,
 
 						<local> ->
 							cases variability:
-								<constant> ->
+								<vconstant> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)),
 
-								<fixed>, <tunable> ->
+								<vfixed>, <vtunable> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									not isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv)),
 
-								<discrete>, <continuous> ->
+								<vdiscrete>, <vcontinuous> ->
 									isValidVariableAttributes(mkVariable(causality, variability, <calculated>, nilv)) and
 									isValidVariableAttributes(mkVariable(causality, variability, <approx>, startv)) and
 									isValidVariableAttributes(mkVariable(causality, variability, <exact>, startv))

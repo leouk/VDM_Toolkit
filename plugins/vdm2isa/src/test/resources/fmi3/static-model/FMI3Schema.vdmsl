@@ -306,7 +306,11 @@ ClockType ::
     annotations          : [Annotations]
 ;
 
-IntervalVariability = <constant> | <fixed> | <tunable> | <changing> | <countdown> | <triggered>;
+--@isadoc quote types have to unique. Isabelle does support quote names reuse, yet requires fully qualified type name
+--        VDM does not, so if <constant> appears in various places and belongs to different quote type, it is not straightforward
+--        to infer which quote type name is needed for the fully qualified name, 
+--        e.g. IntervalVariability.constant x Variability.constant 
+IntervalVariability = <ivconstant> | <ivfixed> | <ivtunable> | <ivchanging> | <ivcountdown> | <ivtriggered>;
 
 fmi3TypeDefinition = Float32Type | Float64Type | Int8Type | UInt8Type | Int16Type | UInt16Type | Int32Type | UInt32Type | Int64Type | UInt64Type | BooleanType | StringType | BinaryType | EnumerationType | ClockType;
 
@@ -361,7 +365,7 @@ Float32 ::
 
 Causality = <parameter> | <calculatedParameter> | <input> | <output> | <local> | <independent> | <structuralParameter>;
 
-Variability = <constant> | <fixed> | <tunable> | <discrete> | <continuous>;
+Variability = <vconstant> | <vfixed> | <vtunable> | <vdiscrete> | <vcontinuous>;
 
 Dimension ::
     location        : Location
@@ -708,7 +712,7 @@ Output ::
     annotations       : [Annotations]
 ;
 
-DependenciesKind = <dependent> | <constant> | <fixed> | <tunable> | <discrete>;
+DependenciesKind = <dkdependent> | <dkconstant> | <dkfixed> | <dktunable> | <dkdiscrete>;
 
 ContinuousStateDerivative ::
     location          : Location
