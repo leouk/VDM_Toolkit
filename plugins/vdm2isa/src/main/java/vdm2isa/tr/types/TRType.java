@@ -87,7 +87,7 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	public final TRType copy(boolean atTLD)
 	{
 		System.out.println(String.format("Copying %1$s setup done? %2$s %3$s", atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", getVDMType().toString()));
-		setup();
+		//setup();
 		return doCopy(atTLD);
 	}
 
