@@ -61,7 +61,7 @@ values
                 0,  -- valueReference
                 nil,  -- description
                 <input>,  -- causality
-                <discrete>,  -- variability
+                <vdiscrete>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 -- clocks
                 [
@@ -96,7 +96,7 @@ values
                 1,  -- valueReference
                 nil,  -- description
                 <input>,  -- causality
-                <discrete>,  -- variability
+                <vdiscrete>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 -- clocks
                 [
@@ -131,7 +131,7 @@ values
                 2,  -- valueReference
                 nil,  -- description
                 <output>,  -- causality
-                <discrete>,  -- variability
+                <vdiscrete>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 -- clocks
                 [
@@ -163,7 +163,7 @@ values
                 3,  -- valueReference
                 nil,  -- description
                 <input>,  -- causality
-                <discrete>,  -- variability
+                <vdiscrete>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 -- clocks
                 [
@@ -198,7 +198,7 @@ values
                 4,  -- valueReference
                 nil,  -- description
                 <output>,  -- causality
-                <discrete>,  -- variability
+                <vdiscrete>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 -- clocks
                 [

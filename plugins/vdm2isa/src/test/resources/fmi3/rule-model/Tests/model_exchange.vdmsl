@@ -212,7 +212,7 @@ values
                 1073741824,  -- valueReference
                 "Moment of load inertia",  -- description
                 <parameter>,  -- causality
-                <fixed>,  -- variability
+                <vfixed>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 nil,  -- clocks
                 nil,  -- intermediateUpdate

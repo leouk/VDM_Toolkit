@@ -56,7 +56,7 @@ validVariableDimensions(mvs) ==
 						exists r in seq mvs &
 							r.valueReference = dim.valueReference
 							and is_IntegerKind(kindOf(r))
-							and ( r.causality = <structuralParameter> or r.variability = <constant> )
+							and ( r.causality = <structuralParameter> or r.variability = <vconstant> )
 							and r.start <> nil and len r.start = 1 and r.start(1) >= 0 ),
 
 			-- @OnFail("%NAME: Structural parameter %s cannot have Dimension", mv.name)

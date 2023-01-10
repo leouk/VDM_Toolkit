@@ -840,8 +840,8 @@ functions
 		then variability
 		else
 			cases kind:
-				<Float64>, <Float32> -> <continuous>,
-				others -> <discrete>
+				<Float64>, <Float32> -> <vcontinuous>,
+				others -> <vdiscrete>
 			end;
 
 	effectiveInitial: [Causality] * [Variability] * [Initial] * Kind +> [Initial]
@@ -856,58 +856,58 @@ functions
 				cases eCausality:
 					<structuralParameter> ->
 						cases eVariability:
-							<constant>		-> nil,
-							<fixed>			-> <exact>,
-							<tunable>		-> <exact>,
-							<discrete>		-> nil,
-							<continuous>	-> nil
+							<vconstant>		-> nil,
+							<vfixed>			-> <exact>,
+							<vtunable>		-> <exact>,
+							<vdiscrete>		-> nil,
+							<vcontinuous>	-> nil
 						end,
 					<parameter> ->
 						cases eVariability:
-							<constant>		-> nil,
-							<fixed>			-> <exact>,
-							<tunable>		-> <exact>,
-							<discrete>		-> nil,
-							<continuous>	-> nil
+							<vconstant>		-> nil,
+							<vfixed>			-> <exact>,
+							<vtunable>		-> <exact>,
+							<vdiscrete>		-> nil,
+							<vcontinuous>	-> nil
 						end,
 					<calculatedParameter> ->
 						cases eVariability:
-							<constant>		-> nil,
-							<fixed>			-> <calculated>,
-							<tunable>		-> <calculated>,
-							<discrete>		-> nil,
-							<continuous>	-> nil
+							<vconstant>		-> nil,
+							<vfixed>			-> <calculated>,
+							<vtunable>		-> <calculated>,
+							<vdiscrete>		-> nil,
+							<vcontinuous>	-> nil
 						end,
 					<input> ->
 						cases eVariability:
-							<constant>		-> nil,
-							<fixed>			-> nil,
-							<tunable>		-> nil,
-							<discrete>		-> <exact>,
-							<continuous>	-> <exact>
+							<vconstant>		-> nil,
+							<vfixed>			-> nil,
+							<vtunable>		-> nil,
+							<vdiscrete>		-> <exact>,
+							<vcontinuous>	-> <exact>
 						end,
 					<output> ->
 						cases eVariability:
-							<constant>		-> <exact>,
-							<fixed>			-> nil,
-							<tunable>		-> nil,
-							<discrete>		-> <calculated>,
-							<continuous>	-> <calculated>
+							<vconstant>		-> <exact>,
+							<vfixed>			-> nil,
+							<vtunable>		-> nil,
+							<vdiscrete>		-> <calculated>,
+							<vcontinuous>	-> <calculated>
 						end,
 					<local> ->
 						cases eVariability:
-							<constant>		-> <exact>,
-							<fixed>			-> <calculated>,
-							<tunable>		-> <calculated>,
-							<discrete>		-> <calculated>,
-							<continuous>	-> <calculated>
+							<vconstant>		-> <exact>,
+							<vfixed>			-> <calculated>,
+							<vtunable>		-> <calculated>,
+							<vdiscrete>		-> <calculated>,
+							<vcontinuous>	-> <calculated>
 						end,
 					<independent> ->
 						cases eVariability:
-							<constant>		-> nil,
-							<fixed>			-> nil,
-							<tunable>		-> nil,
-							<discrete>		-> nil,
-							<continuous>	-> nil
+							<vconstant>		-> nil,
+							<vfixed>			-> nil,
+							<vtunable>		-> nil,
+							<vdiscrete>		-> nil,
+							<vcontinuous>	-> nil
 						end
 				end;

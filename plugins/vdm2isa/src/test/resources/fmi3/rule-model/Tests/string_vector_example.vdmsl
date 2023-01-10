@@ -54,7 +54,7 @@ values
                 1,  -- valueReference
                 nil,  -- description
                 <parameter>,  -- causality
-                <tunable>,  -- variability
+                <vtunable>,  -- variability
                 nil,  -- canHandleMultipleSetPerTimeInstant
                 nil,  -- clocks
                 nil,  -- intermediateUpdate

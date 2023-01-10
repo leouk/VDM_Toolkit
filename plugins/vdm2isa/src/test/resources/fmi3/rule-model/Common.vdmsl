@@ -78,6 +78,7 @@ functions
 	/**
 	 * The min/max limits (inclusive) for each numeric type.
 	 */
+#ifdef HIGH_PRECISION
 	minMaxOfKind: Kind -> real * real
 	minMaxOfKind(kind) ==
 		cases kind:
@@ -95,6 +96,25 @@ functions
 
 			others			-> undefined
 		end;
+#else 
+	minMaxOfKind: Kind -> real * real
+	minMaxOfKind(kind) ==
+		cases kind:
+			<Float32> 		-> mk_(-3.402823466385288598e+3, 3.402823466385288598e+3),
+			<Float64>		-> mk_(-1.797693134862315708e+6, 1.797693134862315708e+6),
+			<Int8>			-> mk_(-128, 127),
+			<UInt8>			-> mk_(0, 255),
+			<Int16>			-> mk_(-32768, 32767),
+			<UInt16>		-> mk_(0, 65535),
+			<Int32>			-> mk_(-2147483648, 2147483647),
+			<UInt32>		-> mk_(0, 4294967295),
+			<Int64>			-> mk_(-9.223372036854775808e+15, 9.223372036854775807e+15),
+			<UInt64>		-> mk_(0, 1.8446744073709551615e+15),
+			<Enumeration>	-> mk_(-9.223372036854775808e+15, 9.223372036854775807e+15), -- xs:long = Int64
+
+			others			-> undefined
+		end;
+#endif
 
 	/**
 	 * Turn a Variable or Type into a Kind.
@@ -176,7 +196,7 @@ functions
 	isContinuousTimeState: fmi3Variable * seq of fmi3Variable +> bool
 	isContinuousTimeState(mv, mvs) ==
 		isFloat(mv)
-		and ( mv.variability = <continuous> or mv.variability = nil )
+		and ( mv.variability = <vcontinuous> or mv.variability = nil )
 		and exists dv in seq mvs &
 			isFloat(dv) and dv.derivative = mv.valueReference;
 

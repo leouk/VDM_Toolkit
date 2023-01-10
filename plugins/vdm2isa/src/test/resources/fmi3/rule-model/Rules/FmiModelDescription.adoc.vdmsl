@@ -182,7 +182,7 @@ validStateDerivatives(fmd, evs) ==
 				( isStateDerivative(ev) ),
 
 				-- @OnFail("%NAME: Derivative must be continuous at %s", loc2str(uk.location))
-				( uk.dependencies <> nil => ev.variability = <continuous> )
+				( uk.dependencies <> nil => ev.variability = <vcontinuous> )
 			])
 
 		| uk in seq default[seq of ContinuousStateDerivative]

@@ -361,7 +361,7 @@ Float32 ::
 
 Causality = <parameter> | <calculatedParameter> | <input> | <output> | <local> | <independent> | <structuralParameter>;
 
-Variability = <constant> | <fixed> | <tunable> | <discrete> | <continuous>;
+Variability = <vconstant> | <vfixed> | <vtunable> | <vdiscrete> | <vcontinuous>;
 
 Dimension ::
     location        : Location
