@@ -192,6 +192,7 @@ public enum IsaToken {
 	OPTIONAL_SOME(null, "Some"),
 
 	VDMTOOLKIT(null, "VDMToolkit"),
+	VDMDEFAULT(null, "DEFAULT"),
 	ISAR_TYPEPARAM(null, "'"),
 	ISAR_THEOREM(null, "theorem"),
 	ISAR_LEMMA(null, "lemma"),

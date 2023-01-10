@@ -38,6 +38,8 @@ import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
+import vdm2isa.lex.IsaToken;
+
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
  */
@@ -384,16 +386,23 @@ public class DependencyOrder
             // DOT file node names cannot have dashes etc; the VDM search name can.
             // So use label for DOT display + VDM search, and adjusted kname for DOT file format compliance
             String klabel = key.getName();
-            String kname = makeValidDOTNodeName(klabel); 
+            String kname = makeValidDOTNodeName(klabel);
+            LexLocation loc = key.getLocation();
+            String locString;
+            if (!loc.module.equals("DEFAULT"))
+                locString = String.format("\n@ M=%1$s L%2$s", loc.module, loc.startLine);
+            else 
+                locString = String.format("\n@ M=`DEFAULT` F=%1$s L%2$s", loc.file.getName(), loc.startLine);
+
             // starting node is inverted red triangle 
             if (DependencyOrder.foundName(sp, klabel))
-                sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\", shape=invtriangle, color=red]\n", kname, klabel, key.getLocation().startLine));
+                sb.append(String.format("\t %1$s [label=\"%2$s %3$s\", shape=invtriangle, color=red]\n", kname, klabel, locString));
             // implicitly created invariant def is double circled blue
 	        else if (DependencyOrder.foundName(needsImplicitInvDef.keySet(), klabel))
-                sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\", shape=doublecircle, color=blue]\n", kname, klabel, key.getLocation().startLine));
+                sb.append(String.format("\t %1$s [label=\"%2$s %3$s\", shape=doublecircle, color=blue]\n", kname, klabel, locString));
             // everything else is ellipsis 
             else 
-    			sb.append(String.format("\t %1$s [label=\"%2$s @ L%3$s\"]\n", kname, klabel, key.getLocation().startLine));
+    			sb.append(String.format("\t %1$s [label=\"%2$s %3$s\"]\n", kname, klabel, locString));
 				
 			for (TCDefinition next: nextSet)
 			{
@@ -402,7 +411,7 @@ public class DependencyOrder
                 if (!DependencyOrder.foundName(sp, tlabel) && 
                     !DependencyOrder.foundName(mapUsedSet, tlabel))
                 {
-                    sb.append(String.format("\t%1$s [shape=triangle]", tname));
+                    sb.append(String.format("\t%1$s [label=\"%2$s %3$s\", shape=triangle]", tname, tlabel, locString));
                 }
                 sb.append(String.format("\t %1$s -> %2$s;\n", kname, tname));
 			}
