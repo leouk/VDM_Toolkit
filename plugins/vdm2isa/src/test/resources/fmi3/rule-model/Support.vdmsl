@@ -37,7 +37,7 @@ functions
 	 * Provide a simple field default if the value is nil. Used in effective functions.
 	 */
 	default[@T]: [@T] * @T +> @T
-	--@isadoc value is a reserved word 
+	--@doc value is a reserved word 
 	default(dvalue, ifnil) ==
 		if dvalue = nil then ifnil else dvalue;
 

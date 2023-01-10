@@ -306,7 +306,7 @@ ClockType ::
     annotations          : [Annotations]
 ;
 
---@isadoc quote types have to unique. Isabelle does support quote names reuse, yet requires fully qualified type name
+--@doc quote types have to unique. Isabelle does support quote names reuse, yet requires fully qualified type name
 --        VDM does not, so if <constant> appears in various places and belongs to different quote type, it is not straightforward
 --        to infer which quote type name is needed for the fully qualified name, 
 --        e.g. IntervalVariability.constant x Variability.constant 
