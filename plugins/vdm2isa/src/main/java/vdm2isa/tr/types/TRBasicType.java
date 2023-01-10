@@ -94,7 +94,7 @@ public class TRBasicType extends TRType
 	}
 
 	@Override
-	public TRType copy(boolean atTLD)
+	protected TRType doCopy(boolean atTLD)
 	{
 		TRType result = new TRBasicType(getVDMType(), definitions, token);
 		TRNode.setup(result);

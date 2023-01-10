@@ -69,7 +69,7 @@ public class TRRecordType extends TRInvariantType
     // }	
 
     @Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
         TRType result = new TRRecordType((TCRecordType)getVDMType(), typename, definitions, fields.copy(true), composed, getInvDef(), getEqDef(), getOrdDef(), true);
         TRNode.setup(result);

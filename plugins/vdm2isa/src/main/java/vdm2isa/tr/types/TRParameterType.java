@@ -36,7 +36,7 @@ public class TRParameterType extends TRType {
     }
 
     @Override
-    public TRType copy(boolean atTLD) {
+    protected TRType doCopy(boolean atTLD) {
         TRType result = new TRParameterType((TCParameterType)getVDMType(), definitions, name, paramdef);
         TRNode.setup(result);
         result.setAtTopLevelDefinition(atTLD);    

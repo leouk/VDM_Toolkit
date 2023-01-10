@@ -54,7 +54,7 @@ public class TRNamedType extends TRInvariantType
     }	
 
     @Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
         TRType result = this;
         if (type == null)

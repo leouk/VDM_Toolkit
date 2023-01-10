@@ -29,7 +29,7 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
     }
 
     @Override
-	public TRType copy(boolean atTLD)
+	protected TRType doCopy(boolean atTLD)
 	{
         TRType result = this;
         if (getInnerType() == null)

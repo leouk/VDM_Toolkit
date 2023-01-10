@@ -39,7 +39,7 @@ public class TRVoidType extends TRType{
 
 
     @Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
         //TODO need to actually implement this deep copy
         return this;

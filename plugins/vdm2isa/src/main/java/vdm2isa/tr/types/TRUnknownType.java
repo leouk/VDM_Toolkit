@@ -28,7 +28,7 @@ public class TRUnknownType extends TRType {
     }
 
     @Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
         TRType result = new TRUnknownType(location, definitions);
         TRNode.setup(result);

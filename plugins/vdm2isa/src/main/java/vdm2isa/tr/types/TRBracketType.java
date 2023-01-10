@@ -15,7 +15,7 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     }    
 
     @Override
-	public TRType copy(boolean atTLD)
+	protected TRType doCopy(boolean atTLD)
 	{
         TRType result = this;
         if (getInnerType() == null)

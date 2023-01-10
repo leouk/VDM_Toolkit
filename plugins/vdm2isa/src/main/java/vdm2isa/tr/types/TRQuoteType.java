@@ -104,7 +104,7 @@ public class TRQuoteType extends TRType
     }
     
     @Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
         TRType result = new TRQuoteType((TCQuoteType)getVDMType(), definitions, value);
         TRNode.setup(result);

@@ -59,7 +59,7 @@ public class TRTokenType extends TRBasicType {
     }
 
 	@Override
-	public TRType copy(boolean atTLD)
+	protected TRType doCopy(boolean atTLD)
 	{
 		TRTokenType result = new TRTokenType((TCTokenType)getVDMType(), definitions, argtypes.copy(true));
 		TRNode.setup(result);

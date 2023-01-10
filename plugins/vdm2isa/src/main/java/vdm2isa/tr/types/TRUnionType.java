@@ -86,7 +86,7 @@ public class TRUnionType extends TRType implements TRDataType {
     }	
 
 	@Override
-    public TRType copy(boolean atTLD)
+    protected TRType doCopy(boolean atTLD)
     {
 		TRType result = this;
         if (types == null)
