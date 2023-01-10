@@ -78,7 +78,18 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 * @param atTLD
 	 * @return
 	 */
-	public abstract TRType copy(boolean atTLD);
+	protected abstract TRType doCopy(boolean atTLD);
+
+	/**
+	 * Copying necessitates setup being done properly first. In some deeply nested situations, one might get an inner type
+	 * which hasn't been fully setup being copied, which can generate errors, hence the layered approach to copying. 
+	 */
+	public final TRType copy(boolean atTLD)
+	{
+		System.out.println(String.format("Copying %1$s setup done? %2$s %3$s", atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", getVDMType().toString()));
+		setup();
+		return doCopy(atTLD);
+	}
 
 	protected void setInferredNamedForType(TCNameToken tn)
 	{
