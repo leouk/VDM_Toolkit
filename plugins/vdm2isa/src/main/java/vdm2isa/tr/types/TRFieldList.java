@@ -39,7 +39,8 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 		setInvTranslateSeparator(IsaToken.SPACE.toString() + IsaToken.AND.toString() + IsaToken.SPACE.toString());
 	}
 
-	public TRFieldList copy(boolean atTLD)
+	@Override
+	protected TRMappedList<TCField, TRField> doCopy(boolean atTLD)
 	{
 		TRFieldList result = new TRFieldList();
 		for(TRField f : this)
@@ -51,7 +52,7 @@ public class TRFieldList extends TRMappedList<TCField, TRField>
 		result.setAtTopLevelDefinition(atTLD);
 		return result;
 	}
-
+	
 	public void setRecordType(TRRecordType rtype)
 	{
 		for (TRField f : this)

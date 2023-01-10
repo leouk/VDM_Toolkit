@@ -400,7 +400,7 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 
 		// will this alone sort out renamed typesm but has to be copied
 		//type.parameters.setAtTopLevelDefinition(!kind.equals(TRSpecificationKind.INV));
-		TRTypeList parameterscp = type.parameters.copy(!kind.equals(VDMSpecificationKind.INV));
+		TRTypeList parameterscp = (TRTypeList)type.parameters.copy(!kind.equals(VDMSpecificationKind.INV));
 		 
 		if (isCurried)
 		{

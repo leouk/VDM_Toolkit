@@ -178,7 +178,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		return sb.toString();	
 	}
 
-	public TRTypeList copy(boolean atTLD)
+	@Override
+	protected TRMappedList<TCType, TRType> doCopy(boolean atTLD)
 	{
 		TRTypeList result = new TRTypeList();
 		for(TRType t : this)
@@ -186,6 +187,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 			result.add(t.copy(atTLD));
 		}
 		TRNode.setup(result);
+		result.setAtTopLevelDefinition(atTLD, false);
 		return result;
 	}
 

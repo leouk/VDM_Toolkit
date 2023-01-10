@@ -53,7 +53,7 @@ public class TRProductType extends TRType {
         }
         else
         {
-            result = new TRProductType((TCProductType)getVDMType(), definitions, types.copy(atTLD));
+            result = new TRProductType((TCProductType)getVDMType(), definitions, (TRTypeList)types.copy(atTLD));
             TRNode.setup(result);
 		    result.setAtTopLevelDefinition(atTLD);
         }

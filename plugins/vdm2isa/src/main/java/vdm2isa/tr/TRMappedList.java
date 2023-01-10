@@ -85,6 +85,17 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 		this.alreadySetup = false;
 	}
 
+	protected TRMappedList<FROM, TO> doCopy(boolean atTLD)
+	{
+		throw new UnsupportedOperationException("Cannot copy mapped list " + getClass().getSimpleName());
+	}
+
+	public final TRMappedList<FROM, TO> copy(boolean atTLD)
+	{
+		setup();
+		return doCopy(atTLD);
+	}
+
 	/**
 	 * Set up of basic parameters (separators etc) for the list. This cannot rely on fields being set on super calls!
 	 */

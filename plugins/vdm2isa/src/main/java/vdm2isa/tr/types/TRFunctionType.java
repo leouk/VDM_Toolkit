@@ -104,7 +104,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 		else
         {
 			//TODO should the call be parameters.copy(true)?
-			result = new TRFunctionType(getVDMFunctionType(), definitions, parameters.copy(atTLD), partial, getInnerType().copy(true), false);
+			result = new TRFunctionType(getVDMFunctionType(), definitions, (TRTypeList)parameters.copy(atTLD), partial, getInnerType().copy(true), false);
 			TRNode.setup(result);
 			result.setAtTopLevelDefinition(atTLD);
 		}
@@ -306,7 +306,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 
 	public TRFunctionType getPostType()
 	{
-		TRTypeList inSig = parameters.copy(atTopLevelDefinition());
+		TRTypeList inSig = (TRTypeList)parameters.copy(atTopLevelDefinition());
 		inSig.add(getResultType());
 		return TRFunctionType.newFunctionType(getVDMFunctionPostType(), definitions, inSig, false, TRBasicType.boolType(location));
 	}
@@ -330,14 +330,14 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	}
 
     public TRFunctionType getComparisonType() {
-		TRTypeList params = parameters.copy(atTopLevelDefinition());
+		TRTypeList params = (TRTypeList)parameters.copy(atTopLevelDefinition());
 		params.addAll(parameters.copy(atTopLevelDefinition()));
 		return TRFunctionType.newFunctionType(TRBasicType.boolType(location), params, partial);
     }
 
     public TRFunctionType getMeasureType(boolean isCurried, TRType actual) {
 		assert actual.isNumericType() || actual.isProductType();
-		TRTypeList params = parameters.copy(atTopLevelDefinition());
+		TRTypeList params = (TRTypeList)parameters.copy(atTopLevelDefinition());
 		if (isCurried)
 		{
 			TRFunctionType ft = this;

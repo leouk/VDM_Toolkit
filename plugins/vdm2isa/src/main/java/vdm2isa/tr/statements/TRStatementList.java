@@ -30,7 +30,8 @@ public class TRStatementList extends TRMappedList<TCStatement, TRStatement> {
 		super(list);
 	}
 
-    public TRStatementList copy()
+	@Override
+    protected TRMappedList<TCStatement, TRStatement> doCopy(boolean atTLD)
 	{
 		TRStatementList result = new TRStatementList(this); 
 		TRNode.setup(result);

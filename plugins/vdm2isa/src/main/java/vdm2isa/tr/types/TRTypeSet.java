@@ -131,7 +131,7 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 		}
     }	
 
-	public TRTypeSet copy(boolean atTLD)
+	public final TRTypeSet copy(boolean atTLD)
 	{
 		TRTypeSet result = new TRTypeSet();
 		for(TRType t : this)
