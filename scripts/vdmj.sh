@@ -26,7 +26,7 @@ PROPDIR="$HOME/lib"
 
 # Details for 64-bit Java
 JAVA64="/usr/bin/java"
-VM_OPTS="-Xmx3000m -Xss1m -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000"
+VM_OPTS="-Xmx3000m -Xss1m -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10"
 
 function help()
 {
