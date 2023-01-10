@@ -48,7 +48,7 @@ public class TRSetType extends TRAbstractInnerTypedType
     public void setup()
     {
         this.setInnerType(setof);
-        TRNode.setup(setof);
+        //TRNode.setup(setof);
         super.setup();
     }
 
