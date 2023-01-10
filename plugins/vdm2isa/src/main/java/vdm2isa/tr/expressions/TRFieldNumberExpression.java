@@ -34,11 +34,12 @@ public class TRFieldNumberExpression extends TRExpression {
     public void setup()
     {
         super.setup();
+        //TODO put setup before reporting in case it could fix it? SetRange was already like that
+        TRNode.setup(tuple, type);
         if (!(type instanceof TRProductType))
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_TYPE_3P, tuple.translate(), field.toString(), type.getClass().getSimpleName());
         else if (this.field.value <= 0 || this.field.value > getProductType().types.size())
             report(IsaErrorMessage.VDMSL_INVALID_TUPLE_PROJECTION_3P, field.value, getProductType().types.size());
-        TRNode.setup(tuple, type);
     }
 
     /**

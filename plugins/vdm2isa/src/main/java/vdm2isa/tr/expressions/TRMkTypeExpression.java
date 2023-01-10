@@ -37,13 +37,14 @@ public class TRMkTypeExpression extends TRExpression {
         super.setup();
         assert typename != null;
         this.fields = TRRecordType.fieldsOf(typename);
+        //TODO put setup before reporting in case it could fix it? SetRange was already like that
+        TRNode.setup(fields, args);
         if (this.fields == null)
             report(IsaErrorMessage.ISA_RECORD_EARLYUSE_1P, typename.toString());
         else if (this.fields.size() != this.args.size())
             report(IsaErrorMessage.VDMSL_INVALID_MKARGS_3P, typename.toString(), args.size(), fields.size()); 
         else if (this.args.size() == 0)
             report(IsaErrorMessage.ISA_NO_EMPTYRECORD_1P, typename.toString());
-        TRNode.setup(fields, args);
     }
 
     @Override 

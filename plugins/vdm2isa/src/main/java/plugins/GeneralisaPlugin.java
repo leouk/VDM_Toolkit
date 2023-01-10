@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +79,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"./lvl0/TestV2ITypesGeneric.vdmsl"
             //    ,"./lvl0/TestV2ITypesNamed.vdmsl"
             //    ,"./lvl0/TestV2ITypesOptional.vdmsl"
+            //    ,"./lvl0/TestV2ITypesQualifiedOptional.vdmsl"
             //    ,"./lvl0/TestV2ITypesOrdering.vdmsl"
             //    ,"./lvl0/TestV2ITypesRecordOrdering.vdmsl"
             //    ,"./lvl0/TestV2ITypesRecords.vdmsl"

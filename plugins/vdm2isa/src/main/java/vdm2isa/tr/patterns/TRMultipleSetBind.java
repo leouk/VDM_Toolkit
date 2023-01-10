@@ -55,14 +55,16 @@ public class TRMultipleSetBind extends TRMultipleBind
     public void setup()
     {
         super.setup();
+        //TODO put setup before reporting in case it could fix it? SetRange was already like that
+        TRNode.setup(set);
+
         // If this set bind is part of a sequence bind or not; to be set by the TRSeqCompExpression
         this.seqBind = false;
         if (this.set == null || !(this.set.getType().ultimateType() instanceof TRSetType))
             report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
                 "set bind",
-                (this.set == null ? "null" : this.set.getType().getClass().getSimpleName()),
+                (this.set == null ? "null" : this.set.getType().getVDMType().toString()),
                 "1", "expected set type");
-        TRNode.setup(set);
     }
 
     @Override

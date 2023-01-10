@@ -156,6 +156,7 @@ public class TRStructuredPattern extends TRAbstractContextualPattern {
         }
         plist.setSemanticSeparator(old);
         assert pattern != null;
+        //TRNode.setup(exp);
     }
 
     @Override
