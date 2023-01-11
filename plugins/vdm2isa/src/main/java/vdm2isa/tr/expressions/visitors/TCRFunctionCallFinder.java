@@ -7,12 +7,11 @@ import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCFunctionCallFinder;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.types.TCBracketType;
+import com.fujitsu.vdmj.tc.types.TCMapType;
+import com.fujitsu.vdmj.tc.types.TCNamedType;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.typechecker.TypeComparator;
-
-import vdm2isa.tr.types.TRMapType;
-import vdm2isa.tr.types.TRType;
-import vdm2isa.tr.types.TRTypeComparator;
 
 /**
  * Just like VDMJ's call finder, but filtering out map calls
@@ -27,6 +26,24 @@ public class TCRFunctionCallFinder extends TCFunctionCallFinder {
         this.linientInvCheck = linientInvCheck;
     }
 
+    private final TCType ultimateType(TCType type)
+    {
+        TCType result = type;
+        if (result instanceof TCBracketType)
+        {
+            result = ultimateType(((TCBracketType)result).type);
+        }
+        else if (result instanceof TCNamedType)
+        {
+            result = ultimateType(((TCNamedType)result).type);
+            // while (result instanceof TCNamedType)
+            // {
+            //     result = ((TCNamedType)result).type;
+            // }    
+        }
+        return result;
+    }
+
 	@Override
 	public TCNameList caseApplyExpression(TCApplyExpression node, Object arg)
 	{
@@ -37,8 +54,10 @@ public class TCRFunctionCallFinder extends TCFunctionCallFinder {
             
             // map calls don't need to be considered given they don't have pre/post conditions
             //TODO lambda term/typed calls? They don't have pre/post either.  
-            TRType type = (TRType)TRTypeComparator.classMap(node.type.location, node.type);
-            if (type.ultimateType() instanceof TRMapType)
+            // DO NOT JUMP BETWEEN TC and TR trees!!!!
+            //TRType type = (TRType)TRTypeComparator.classMap(node.type.location, node.type);
+            TCType type = ultimateType(node.type);
+            if (type instanceof TCMapType)
 			{
                 // remove the call if a map
                 result.remove(vexp.name);  
