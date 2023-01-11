@@ -56,7 +56,14 @@ public class TRBracketType extends TRAbstractInnerTypedType {
     @Override
 	public TRType ultimateType()
 	{
-		return getInnerType();
+        TRType result = getInnerType();
+        while (result instanceof TRBracketType)
+        {
+            result = ((TRBracketType)result).getInnerType();
+        }
+        // if (result instanceof TRBracketType)
+        //     result = ((TRBracketType)result).ultimateType();
+        return result;
 	}
 
     @Override
