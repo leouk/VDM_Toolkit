@@ -100,4 +100,10 @@ public class TRLevel0ExuTest extends Vdm2IsaJUnitTest
 	{
         runPlugin("exu", "TestV2ITypesRecords");
 	}
+
+    @Test
+    public void test14() throws Exception
+	{
+        runPlugin("exu", "TestV2ITypesQualifiedOptional");
+	}
 }

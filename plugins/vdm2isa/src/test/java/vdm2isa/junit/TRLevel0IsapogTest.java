@@ -100,4 +100,10 @@ public class TRLevel0IsapogTest extends Vdm2IsaJUnitTest
 	{
         runPlugin("isapog", "TestV2ITypesRecords");
 	}
+
+    @Test
+    public void test14() throws Exception
+	{
+        runPlugin("isapog", "TestV2ITypesQualifiedOptional");
+	}
 }
