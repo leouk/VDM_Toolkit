@@ -1,0 +1,8 @@
+module TestV2ITypesOptionalRecursive
+exports all
+definitions
+
+types	
+	TOR :: s : [seq of TOR];
+	
+end TestV2ITypesOptionalRecursive
