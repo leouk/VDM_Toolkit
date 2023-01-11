@@ -8,6 +8,7 @@ import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
+import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
@@ -26,7 +27,7 @@ public class ExuTypeChecker {
     private final boolean warnings; 
     private final boolean debug;
     private TCModuleList sorted_list;
-    private final Map<String, ExuOrder> exuMap;
+    private final Map<TCIdentifierToken, ExuOrder> exuMap;
     private final File saveURI;
 
     // private static final List<VDMSpecificationKind> IGNORE_KINDS = 
@@ -36,7 +37,7 @@ public class ExuTypeChecker {
     public ExuTypeChecker(boolean debug, boolean warnings, File saveURI)
     {
         super();
-        this.exuMap = new HashMap<String, ExuOrder>();
+        this.exuMap = new HashMap<TCIdentifierToken, ExuOrder>();
         this.sorted_list = null;
         this.warnings = warnings; 
         this.debug = debug;
@@ -88,14 +89,14 @@ public class ExuTypeChecker {
     protected ExuOrder processModule(TCModule m)
     {
         ExuOrder result;
-        if (!exuMap.containsKey(m.name.getName()))
+        if (!exuMap.containsKey(m.name))
         {
             result = new ExuOrder(m, saveURI);
             result.processModule();
-            exuMap.put(m.name.getName(), result);
+            exuMap.put(m.name, result);
         }
         else 
-            result = exuMap.get(m.name.getName());
+            result = exuMap.get(m.name);
         return result;
     }
 

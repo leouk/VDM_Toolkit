@@ -67,12 +67,12 @@ public class ExuOrder extends DependencyOrder
         // if (it.hasNext())
         // {
         //     d = it.next();
-        //     sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+        //     sb.append(String.format("%1$s", d.name));//d.nameScope
         // }
         // while (it.hasNext())
         // {
         //     d = it.next();
-        //     sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+        //     sb.append(String.format(", %1$s", d.name));//d.nameScope
         // }
         // return sb.toString();
     }
@@ -88,12 +88,12 @@ public class ExuOrder extends DependencyOrder
         // if (it.hasNext())
         // {
         //     d = it.next();
-        //     sb.append(String.format("%1$s", d.name.getName()));//d.nameScope
+        //     sb.append(String.format("%1$s", d.name));//d.nameScope
         // }
         // while (it.hasNext())
         // {
         //     d = it.next();
-        //     sb.append(String.format(", %1$s", d.name.getName()));//d.nameScope
+        //     sb.append(String.format(", %1$s", d.name));//d.nameScope
         // }
         // return sb.toString();
     }

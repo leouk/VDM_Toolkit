@@ -84,30 +84,6 @@ public class DependencyOrder
         this.cyclicUsedByEdges = new TCDefinitionSet();
 	}
 
-	// public void moduleOrder(TCModuleList moduleList)
-    // {
-    //     modules = moduleList;
-    //     singleDefs = null;
-	// 	for (TCModule m: modules)
-	// 	{
-    //         TCNameToken t;
-	//     	String myname = m.name.getName();
-	//     	nameToLoc.put(myname, m.name.getLocation());
-			
-	// 		if (m.imports != null)
-	// 		{
-	// 	    	for (TCImportFromModule ifm: m.imports.imports)
-	// 	    	{
-    //                 add(myname, ifm.name.getName());
-	// 	    	}
-	// 		}
-	// 		else
-	// 		{
-	// 			uses.put(myname, new TCDefinitionSet());
-	// 		}
-	//     }
-    // }
-
     private void processImplicitDependencies(TCDefinition def, TCNameSet freevarsDepForDef, TCDefinitionSet needsImplicitInvDefForDef)
     {
         TCNameToken tdefInv;
@@ -122,7 +98,7 @@ public class DependencyOrder
             {
                 if (Settings.verbose)
                 {
-                    Console.out.println("Adding implicit invariant definition " + tdefInv.getName());
+                    Console.out.println("Adding implicit invariant definition " + tdefInv);
                 }
                 needsImplicitInvDefForDef.add(tdef);
             }
@@ -137,7 +113,7 @@ public class DependencyOrder
         {
             if (Settings.verbose)
             {
-                Console.out.println(def.name.getName() + " dep on " + freevarsDepForDef.toString());
+                Console.out.println(def.name + " dep on " + freevarsDepForDef.toString());
             }
             TCDefinition d;
             TCNameSet invDep = new TCNameSet();
@@ -156,10 +132,10 @@ public class DependencyOrder
                     if (invDef != null)
                     {
                         if (!(invDef instanceof TCExplicitFunctionDefinition) || !((TCExplicitFunctionDefinition)invDef).isTypeInvariant)
-                            throw new IllegalStateException("Implicit dependency discovered is not an invariant definition " + invDef.name.getName());
+                            throw new IllegalStateException("Implicit dependency discovered is not an invariant definition " + invDef.name);
                         if (Settings.verbose)
                         {
-                            Console.out.println("Adding implicit dependency " + invN.getName());
+                            Console.out.println("Adding implicit dependency " + invN);
                         }
                         // remove current dep and add invN instead
                         invDep.add(invN);
@@ -179,7 +155,7 @@ public class DependencyOrder
     private TCExplicitFunctionDefinition createImplicitInvariantSpecification(TCDefinition def)
     {
         if (!(def instanceof TCTypeDefinition))
-            throw new IllegalStateException("Invalid definition to create implicit invariant specification " + def.name.getName());
+            throw new IllegalStateException("Invalid definition to create implicit invariant specification " + def.name);
         TCTypeDefinition tdef = (TCTypeDefinition)def;
         TCNameToken invDefName = tdef.name.getInvName(tdef.location);
         TCFunctionType invFunType;
@@ -404,7 +380,7 @@ public class DependencyOrder
 				
 			for (TCDefinition next: nextSet)
 			{
-                String tlabel = next.name.getName();
+                String tlabel = next.name.toString();//getName()
                 String tname = makeValidDOTNodeName(tlabel);
                 if (!DependencyOrder.foundName(sp, tlabel) && 
                     !DependencyOrder.foundName(mapUsedSet, tlabel))
