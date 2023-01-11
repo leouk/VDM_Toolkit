@@ -57,7 +57,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
     private final TRExplicitFunctionDefinition mindef;
     private final TRExplicitFunctionDefinition maxdef;
     
-    private boolean infinite; 
 	private TRDefinitionList composeDefinitions;
 
     public enum TRNamedTypeDefinitionKind {
@@ -86,7 +85,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         TRExplicitFunctionDefinition orddef,
         TRExplicitFunctionDefinition mindef,
         TRExplicitFunctionDefinition maxdef,
-        boolean infinite,
         TRDefinitionList composeDefinitions
         )
     {        
@@ -104,7 +102,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         this.orddef = orddef;
         this.mindef = mindef;
         this.maxdef = maxdef;
-        this.infinite = infinite;
         this.composeDefinitions = composeDefinitions;
         this.nameDefKind = TRNamedTypeDefinitionKind.UNKNOWN;
     }
@@ -322,7 +319,6 @@ public class TRTypeDefinition extends TRAbstractTypedDefinition {
         " \n\tkind        = " + nameDefKind + 
         " \n\tused	      = " + used + 
         " \n\texcluded    = " + excluded + 
-        " \n\tinfinite    = " + infinite +
         " \n\tnamescope	  = " + (nameScope != null ? nameScope.name() : "?") +
         " \n\ttype        = " + String.valueOf(getType()) + //(getType() != null ? getType().translate() : "null") + 
         " \n\tinvPattern  = " + (invPattern != null ? invPattern.getClass().getSimpleName() + ": " + invPattern.toString() : "null") +
