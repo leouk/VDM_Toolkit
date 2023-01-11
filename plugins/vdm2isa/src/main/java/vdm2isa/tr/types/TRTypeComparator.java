@@ -42,7 +42,7 @@ public class TRTypeComparator {
     //TODO checkComposeTypes....?
 
     @SuppressWarnings("unchecked")
-    public static final <FROM extends Mappable, TO extends MappableNode> TO classMap(LexLocation location, FROM from)
+    private static final <FROM extends Mappable, TO extends MappableNode> TO classMap(LexLocation location, FROM from)
     {
         TO result;
         ClassMapper mapper = ClassMapper.getInstance(TRNode.MAPPINGS);
