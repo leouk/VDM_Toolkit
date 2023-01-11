@@ -109,7 +109,7 @@ public class ExuOrder extends DependencyOrder
         // while (it.hasNext())
         // {
         //     d = it.next();
-        //     sb.append(String.format("\n%1$s \t\t={%2$s}", d.getName(), defSetString(m.get(d))));
+        //     sb.append(String.format("\n%1$s \t\t={%2$s}", d, defSetString(m.get(d))));
         // }
         // return sb.toString();
     }
@@ -139,13 +139,13 @@ public class ExuOrder extends DependencyOrder
         switch (state)
         {
             case CREATED:
-                throw new IllegalStateException("Exu needs to process modules first for module " + module.name.getName());
+                throw new IllegalStateException("Exu needs to process modules first for module " + module.name);
             case PROCESSED:
-                throw new IllegalStateException("Exu has already processed module " + module.name.getName());
+                throw new IllegalStateException("Exu has already processed module " + module.name);
             case SORTED: 
-                throw new IllegalStateException("Exu has already sorted module " + module.name.getName());
+                throw new IllegalStateException("Exu has already sorted module " + module.name);
             default: 
-                throw new IllegalStateException("Invalid Exu state " + state.name().toLowerCase() + " for module " + module.name.getName());
+                throw new IllegalStateException("Invalid Exu state " + state.name().toLowerCase() + " for module " + module.name);
         }
     }
 
@@ -156,7 +156,7 @@ public class ExuOrder extends DependencyOrder
             case CREATED: 
                 if (IsaProperties.general_debug)
                 {
-                    Console.out.println(String.format("Calculating declaration dependencies for module `%1$s`...", module.name.getName()));
+                    Console.out.println(String.format("Calculating declaration dependencies for module `%1$s`...", module.name));
                 }
                 savedModuleDefs = new TCDefinitionList();
                 savedModuleDefs.addAll(module.defs);
@@ -170,7 +170,7 @@ public class ExuOrder extends DependencyOrder
             case PROCESSED:
             case SORTED:
                 if (IsaProperties.general_debug) 
-                    Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name.getName());
+                    Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name);
                 break;
             default:
                 fail();
@@ -184,7 +184,7 @@ public class ExuOrder extends DependencyOrder
         try 
         {
             Path dir = GeneralisaPlugin.createOutputDirectory(saveURI, "exu"); 
-            String name = namePrefix + module.name.getName() + ".dot";
+            String name = namePrefix + module.name + ".dot";
             File outfile = new File(dir.toFile(), name);
             graphOf(outfile);
             Console.out.println("Printed dependencies for module " + name + " at " + outfile.getPath());
@@ -244,13 +244,13 @@ public class ExuOrder extends DependencyOrder
                 {
                     result = null;
                     if (IsaProperties.general_debug) 
-                        Console.out.println("No definitions sorting required for " + module.name.getName());
+                        Console.out.println("No definitions sorting required for " + module.name);
                 }
                 state = ExuState.SORTED;
                 break; 
             case SORTED: 
                 if (IsaProperties.general_debug) 
-                    Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name.getName());
+                    Console.out.println("Exu has already " + state.name().toLowerCase() + " module " + module.name);
                 // if sorting wasn't needed, then savedTopologicalSort will be null  
                 result = savedTopologicalSort;
                 break;
@@ -269,7 +269,7 @@ public class ExuOrder extends DependencyOrder
     protected TCNameList getOriginalDefNames()
     {
         if (savedModuleDefs == null)
-            throw new IllegalStateException("You must call processModule first for " + module.name.getName());
+            throw new IllegalStateException("You must call processModule first for " + module.name);
         TCNameList result = new TCNameList();
         for (TCDefinition d : savedModuleDefs)
         {
@@ -302,7 +302,7 @@ public class ExuOrder extends DependencyOrder
             }
             else 
             {
-                GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, d.location, "sorting for", d.getClass().getName());
+                GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, d.location, "sorting for", d.getClass());
             }
         }
         // value definitions might have more than one
@@ -363,7 +363,7 @@ public class ExuOrder extends DependencyOrder
                 {
                     result = savedTopologicalSort;
                     if (IsaProperties.general_debug)
-                        Console.out.println("Exu has already called topological sort for module " + module.name.getName());
+                        Console.out.println("Exu has already called topological sort for module " + module.name);
                 }
                 break; 
             case SORTED:    
@@ -439,7 +439,7 @@ public class ExuOrder extends DependencyOrder
     //     sb.append("\nName locations:");
     //     for(Map.Entry<TCNameToken, LexLocation> e : nameToLoc.entrySet())
     //     {
-    //         sb.append(String.format("\n%1$s \t\t@ %2$s[L%3$s,C%4$s]", e.getKey().getName(), e.getKey().getModule(), e.getValue().startLine, e.getValue().startPos));
+    //         sb.append(String.format("\n%1$s \t\t@ %2$s[L%3$s,C%4$s]", e.getKey(), e.getKey().getModule(), e.getValue().startLine, e.getValue().startPos));
     //     }
     //     sb.append("\n\nUses map:");
     //     sb.append(defMapString(uses));
@@ -448,7 +448,7 @@ public class ExuOrder extends DependencyOrder
     //     sb.append("\n\nStart points :");
     //     for(TCNameToken n : getStartpoints())
     //     {
-    //         sb.append(String.format("\n%1$s", n.getName()));
+    //         sb.append(String.format("\n%1$s", n));
     //     }
     //     return sb.toString();
     // }

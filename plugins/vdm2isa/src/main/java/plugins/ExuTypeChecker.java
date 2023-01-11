@@ -48,6 +48,7 @@ public class ExuTypeChecker {
     {
         for(TCNameToken n : list)
         {
+            // use getName (not toString) here given the string name passed is not module sensitive
             if (n.getName().equals(name))
                 return n;
         }
@@ -67,7 +68,7 @@ public class ExuTypeChecker {
                     String name = n.getName().substring(kind.name().length()+1);
                     TCNameToken type = find(ts, name);
                     if (type == null)
-                        throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n.getName());
+                        throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n);
                     else if (!result.contains(type))
                         result.add(type);
                     break;
@@ -178,7 +179,7 @@ public class ExuTypeChecker {
             // result.importdefs.addAll(m.importdefs);
             // result.exportdefs.addAll(m.exportdefs);    
 
-            Console.out.println("Exu successfully sorted module " + m.name.getName() + " definitions");
+            Console.out.println("Exu successfully sorted module " + m.name + " definitions");
             if (IsaProperties.exu_print_sorted_graph)
             {
                 order = new ExuOrder(result, saveURI);

@@ -697,7 +697,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     private /* static */ void outputModule(LexLocation location, String module, String result) throws IOException, URISyntaxException, FileNotFoundException
 	{
         Path dir = createOutputDirectory(saveURI, pluginName());
-		String name = module + ".thy";//module.name.getName().substring(0, module.name.getName().lastIndexOf('.')) + ".thy";
+		String name = module + ".thy";//module.name.toString().substring(0, module.name.toString().lastIndexOf('.')) + ".thy";
 		File outfile = new File(dir.toFile(), name);
         Console.out.println("Translating module " + module + " as " + outfile.getAbsolutePath());
 		PrintWriter out = new PrintWriter(outfile);
@@ -713,7 +713,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
         while (mi.hasNext())
         {
             TCModule m = mi.next();
-            String name = m.name.getName();
+            String name = m.name.toString();
             if (name.equals(IsaToken.VDMTOOLKIT.toString()) || 
                (!modules.isEmpty() && !modules.contains(name)))
             {
