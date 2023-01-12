@@ -55,33 +55,40 @@ public class ExuTypeChecker {
         return null;
     }
 
-    private TCNameList organise(TCNameList ts)
+    private TCNameList organise(TCModule m, TCNameList ts)
     {
         TCNameList result = new TCNameList();
+        String currentModuleNameToConsider = m.name.getName();
         for(TCNameToken n : ts)
         {
-            VDMSpecificationKind kind = VDMSpecificationKind.figureOutSpecificationKind(n);
-            switch (kind)
+            // if n is not in the same module, then it must be a quoted import, like B`n within module A
+            // so ignore that name for A given you can't reorganise it in A itself.
+            // So only add if within the same module name
+            if (n.getModule().equals(currentModuleNameToConsider))
             {
-                // get the T from inv_T
-                case INV:
-                    String name = n.getName().substring(kind.name().length()+1);
-                    TCNameToken type = find(ts, name);
-                    if (type == null)
-                        throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n);
-                    else if (!result.contains(type))
-                        result.add(type);
-                    break;
-
-                // get normal names
-                case NONE: 
-                    if (!result.contains(n))
-                       result.add(n);
-                    break;
-
-                // ignore other specifications (pre/post/measure/min/max/ord/eq)
-                default: 
-                    break;                    
+                VDMSpecificationKind kind = VDMSpecificationKind.figureOutSpecificationKind(n);
+                switch (kind)
+                {
+                    // get the T from inv_T
+                    case INV:
+                        String name = n.getName().substring(kind.name().length()+1);
+                        TCNameToken type = find(ts, name);
+                        if (type == null)
+                            throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n);
+                        else if (!result.contains(type))
+                            result.add(type);
+                        break;
+    
+                    // get normal names
+                    case NONE: 
+                        if (!result.contains(n))
+                            result.add(n);
+                        break;
+    
+                    // ignore other specifications (pre/post/measure/min/max/ord/eq)
+                    default: 
+                        break;                    
+                }
             }
         }
         return result;
@@ -136,7 +143,7 @@ public class ExuTypeChecker {
         if (ts != null)
         {
             TCNameList original = order.getOriginalDefNames();
-            TCNameList organised = organise(ts);
+            TCNameList organised = organise(m, ts);
             if (debug)
             {
                 Console.out.println("Organised names: " + organised.toString() + "\n");
