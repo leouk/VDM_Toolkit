@@ -213,7 +213,7 @@ School of Computing, Newcastle University, \\
 \maketitle
 \setcounter{footnote}{0} 
 \begin{abstract}
-    The \gls{ISQ} standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There has been such accidents in space missions (NASA's Mars Climite Orbiter), medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{Fast}, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, including a translation and proof environment for VDM in Isabelle~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
+    The \gls{ISQ} standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There has been such accidents in space missions, medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{F}ast, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which include a translation and proof environment for VDM in Isabelle~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
 \end{abstract}
 
 \keywords{VSCode, VDM, ISQ, Measurement, Libraries}
@@ -225,13 +225,15 @@ The International System of Quantities (ISQ) standard\footnote{\url{https://en.w
 
 The standard comprises an elegant, minimal and coherent system of units of measurement, with the following seven base unit dimensions of length (in metres, \textbf{m}), mass (in kilograms, \textbf{kg}), time (in seconds, \textbf{s}), electric current (in amperes, \textbf{A}), thermodynamic temperature (in kelvins, \textbf{K}), amount of substance (in mols, \textbf{mol}) and luminous intensity (in candelas, \textbf{cd}). From these base units, the system can accomodiate for an unlimited number of aditional (combined and converted) quantities (see~\Cref{tbl:SI}). 
 
-Unit combinations are known as coherent derived units (or measurement systems) and can be represented as products of powers of other units. For instance, one can combine length and time to create units of velocity (\(\frac{m}{s}\)) and acceleration (\(\frac{m}{s^2}\));~and one can convert between units to create alternative interpretations of units like velocity in kilometers or miles per hour. Importantly, these combinations give rise to new units, and convertions give rise to (mostly bijective) unit correspondencess. 
+Unit combinations are known as coherent derived units (or measurement systems) and can be represented as products of powers of other units. For instance, one can combine length and time to create units of velocity (\(\frac{m}{s}\)) and acceleration (\(\frac{m}{s^2}\));~and one can convert between units to create alternative interpretations of units like velocity in kilometers or miles per hour. Importantly, these combinations give rise to new units, and conversions give rise to (mostly bijective) unit correspondencess. 
 
-Over twenty such coherent derived units are standard, named and routinely used. Further new (unamed) units can still be created (\textit{e.g.}~velocity as centimeter per year).This expressivity gives rise to multiple prefixes (\textit{e.g.}~kilo, centi, \textit{etc.}) and industry-standard conversion and combination schemes (\textit{e.g.}~\(\frac{km}{h}\) in \(\frac{miles}{h}\)).           
+Over twenty such coherent derived units are standard, named and routinely used. Further new (unamed) units can still be created (\textit{e.g.}~velocity as centimeter per year).This expressivity gives rise to multiple prefixes (\textit{e.g.}~kilo, centi, \textit{etc.}) and industry-standard conversion and combination schemes (\textit{e.g.}~\(\frac{km}{h}\) in \(\frac{miles}{h}\)). Thus, representing those notions formally is particularly important. 
 
-The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains of the fields of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
+For example, Functional Mock-up Interfaces, which are used by various critical industries, have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. That community would benefit from having ISQ units formalised.         
 
-We were inspired to develop the \texttt{ISQ.vdmsl} library due to the frustration repetead error-prone (and tediuos) calculations involving unit use and conversions. The \texttt{ISQ} VDM library has been used in various industrial applications, such as embedded control systems, medical devices, chemical quantities composition (in drug dosage computation), complex scheduling time-scales, \textit{etc}.     
+The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains fields, such as of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, \textit{etc}. We extend VDM specification support with a suite of tools and mathematical libraries~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
+
+We were inspired to develop the \texttt{ISQ.vdmsl} library due to the frustration repetead error-prone (and tediuos) calculations involving unit use and conversions. The \texttt{ISQ} VDM library has been used in various industrial applications, such as embedded control systems, medical devices, chemical quantities composition (in drug dosage computation), complex scheduling time-scales, \textit{etc}. See the VDM\_Toolkit site for such examples.     
 
 In this paper, we report on the recent extension of the VDM toolkit to support ISQ standard, various conversion schemes, approximate precision, all base and derived representations, \textit{etc.}. We illustrate its use with a variety of scenarios frequently seen in practical applications of ISQ\@.    
 
@@ -257,9 +259,9 @@ In this paper, we report on the recent extension of the VDM toolkit to support I
     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SI}
 \end{table} 
 
-\gls{ISQ} unit convertions and combinations are notosrioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications relying on such units conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
+\gls{ISQ} unit conversions and combinations are notosrioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications that rely on such units conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
 
-The \texttt{ISQ} VDM library is heavily inspired by similar work provided for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. We integrate this library within the VDM VSCode extension~(\url{https://marketplace.visualstudio.com/items?itemName=overturetool.vdm-vscode}), as well as VDMJ~\cite{Battle09}.
+The \texttt{ISQ} VDM library is heavily inspired by similar work provided for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. We integrate this library within the VDM VSCode extension~\footnote{\url{https://marketplace.visualstudio.com/items?itemName=overturetool.vdm-vscode})}, as well as VDMJ~\cite{Battle09}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -268,7 +270,7 @@ The \texttt{ISQ} VDM library is heavily inspired by similar work provided for th
 Our VDM ISQ library has four core design principles:
 
 	\begin{enumerate}
-		\item \textbf{S}imple:~ease of use is crucial, given ISQ units combination and convertion are pervasive and rather menial, albeit error prone, task;
+		\item \textbf{S}imple:~ease of use is crucial, given ISQ unit combination and conversion are pervasive and rather menial, albeit error prone, task;
 		 
 		\item \textbf{A}ccurate:~ISQ conversion errors account for a considerable amount of modelling process inaccuracies; hence, we wanted a solution where multiple units and correspondences were possible;
 		 
@@ -282,12 +284,12 @@ These \textbf{SAFE} principles underpin the overall library design goals. Its ar
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Library architecture}\label{sec:architecture}
 
-Next, we present how the library architecture. User models have to import \texttt{ISQ.vdmsl}, which provides various functionalities divided in six parts: 
+Next, we present the library architecture. User models have to import \texttt{ISQ.vdmsl}, which provides various functionalities divided in six parts: 
 %
 \begin{enumerate}
-    \item Dimensions (\textit{e.g.} length), dimension vectors (\textit{e.g.}~pressure as \(\frac{k}{ms^s}\)), and operators;
-    \item Quantities and operators;
-    \item Measurement systems and operators; 
+    \item Dimensions (\textit{e.g.} length), dimension vectors (\textit{e.g.}~pressure as \(\frac{kg}{ms^s}\)), and operators;
+    \item Quantities and operators (\textit{e.g.}~dimension amounts like \(20\frac{kg}{ms^s}\));
+    \item Measurement systems and operators (\texti{e.g.}~group of dimensions like BSI or SI); 
     \item Base and derived units;
     \item Scaling and conversion over quantities and measurement systems;
     \item Common prefixes (\textit{e.g.}~alternative names); and 
@@ -320,7 +322,20 @@ These base unit combinations are captured in a so-called dimension vector, which
 %
 \noindent This dimension mapping enables the representation of a wide variety of base and derived units with many dimensions. To make conversion operations (see below) homogeneous and compositional, dimension vectors must describe all base unit dimensions. In the example above, all remaining base units are mapped to zero.
 
-There are twenty two predefined dimension vectors:~seven for each of the base units mentioned; and fifteen for other so-called coherent derived units. These derived units combine one or more of the base units and are for:~area (\(L^2\)), volume (\(L^3\)), frequency (\(\frac{1}{T}\)), velocity (\(\frac{L}{T}\)), acceleration (\(\frac{L}{T^2}\)), energy (\(\frac{L^2M}{T^2}\)), power (\(\frac{L^2M}{T^3}\)), force (\(\frac{LM}{T^2}\)), pressure (\(\frac{M}{LT^2}\)), charge (\(IT\)), potential difference (\(\frac{L^2M}{T^3I}\)), capacitance (\(\frac{T^4I^2}{L^2M}\)), radian (\(\frac{L}{L}\)), steradian (\(\frac{L^2}{L^2}\)) and wattage (\(\frac{L^2M}{T^3}\)). Each of these derived units has a corresponding dimension vector as a VDM map constant. 
+There are twenty two predefined dimension vectors:~seven for each of the base units mentioned; and fifteen for other so-called coherent derived units. These derived units combine one or more of the base units and are for:
+%
+% \begin{table}[htbp]
+%     \centering
+%     \begin{tabular}{lc}
+%         \toprule 
+%         \textbf{Names} & \textbf{Combined dimensions}  \\ \hline 
+%         Area & \(L^2\) \\
+%         \bottomrule
+%     \end{tabular}
+%     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SICombined}
+% \end{table} 
+
+area (\(L^2\)), volume (\(L^3\)), frequency (\(\frac{1}{T}\)), velocity (\(\frac{L}{T}\)), acceleration (\(\frac{L}{T^2}\)), energy (\(\frac{L^2M}{T^2}\)), power (\(\frac{L^2M}{T^3}\)), force (\(\frac{LM}{T^2}\)), pressure (\(\frac{M}{LT^2}\)), charge (\(IT\)), potential difference (\(\frac{L^2M}{T^3I}\)), capacitance (\(\frac{T^4I^2}{L^2M}\)), radian (\(\frac{L}{L}\)), steradian (\(\frac{L^2}{L^2}\)) and wattage (\(\frac{L^2M}{T^3}\)). Each of these derived units has a corresponding dimension vector as a VDM map constant. 
 
 It is also possible to define dimensionless vectors for so-called bare or pure quantities, such as radians. Even though they are non-SI units, such quantities are useful for various applications. These are dimension vectors where all dimensions map to zero. Single quantities like meter or seconds, have dimension vectors with all other dimensions mapped to zero, but the one dimension in question that is mapped to one.  
 
