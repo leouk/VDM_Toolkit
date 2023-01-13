@@ -166,10 +166,8 @@ pdfstartview=Fit
 
 \usepackage{vdmlisting}
 
-\newcommand{\jkr}[1]{{\scriptsize\textcolor{orange}{JKR:~#1}}}  %
-\newcommand{\fpm}[1]{{\scriptsize\textcolor{purple}{FPM:~#1}}}  %
-\newcommand{\hdm}[1]{{\scriptsize\textcolor{blue}{HDM:~#1}}}  %
-\newcommand{\nb}[1]{{\scriptsize\textcolor{magenta}{NB:~#1}}}  %
+\newcommand{\abcomment}[1]{{\scriptsize\textcolor{blue}{AB:~#1}}}  %
+\newcommand{\lfcomment}[1]{{\scriptsize\textcolor{red}{LF:~#1}}}  %
 
 %%%%%%%%%%%%%%%%%%%%%%% Begin document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -340,6 +338,8 @@ For the \texttt{Age} header above, users could define \texttt{cell\_inv} (L1--3)
 %
 Row invariants are useful for checking dependencies/redundancies across the row cells. If the CSV file had three extra \texttt{<Float>} headers for weight, height and BMI (Body Mass Index), there are interesting checks possible. For instance, given age type range (\texttt{\{18\ldots 65\}}) it is possible to presume some minimum height expected (\textit{i.e.}~row dependency invariant); and given BMI's formulae (\(\frac{height}{weight^2}\)), its cell value can be calculated (\textit{i.e.}~row redundancy invariant).     
 
+\lfcomment{Add here some example of ile invariant? }
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{CSV VDM native calls}\label{subsec:VDMnative}
 
@@ -432,6 +432,11 @@ There are three operations for end users. The \texttt{loadSimpleHeadersCSV} oper
 Finally, the operation \texttt{printCSV} prints out the loaded CSV to the given file path. This presumes loading has taken place successfully, and that the given path is not the same as the CSV file path itself to avoid data overwriting, and a corresponding CSV file will have been created (or overwrriten).  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation}\label{sec:Evaluation}
+
+\lfcomment{Add stuff here about the performance checks}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}\label{sec:Examples}
 
 Next ,we illustrate the intended use of our library through a few examples. First, users have to provide information about CSV headers. In our example, we have a list of names with their corresponding age, weight (in kg), height (in cm), and BMI. We then create the corresponding VDM header as:
@@ -462,12 +467,16 @@ For the given row, the user-defined function \texttt{calculate\_bmi} calculates 
 
 Other examples are provided in the \texttt{CSVLib.vdmsl} distribution (\texttt{CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
 
+\lfcomment{Add here the error report output?}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}\label{sec:Results}
 
 In this paper, we presented a formally defined CSV library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality and ultimately near-trivial user-interface access points. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariants and other structural and data validation checks, such as detection of short rows and cell value type consistency with respect to declared headers. It is \textbf{F}ast, as the architecture layout allows for plug-and-play of different CSV-IO parsing. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around CSV format handling, CSV settings, errors handling, and so on.   
 
 CSV processing is an important part of the computation involving multiple application domains. The area is plagued with subtle errors and inconsistencies, which would ultimately invalidate the systems associated with the data. When that represents system architecture itself (\textit{e.g.}~dialyser state machine representation~\cite{scp-dialyser}), as opposed to system data, consequences can be catastrophic. For system architecture CSV files, tools like VDMJ's \texttt{CSVReader} or bespoke tools like those in~\cite{egleUG,alastairMSc,emv2} are suited; whereas for general data manipuation, varied CSV dialects, and IO speed, \texttt{CSVLib} library is better suited.     
+
+\lfcomment{Add here a sentence that this is being used for organ preservation machine log processing?}
 
 \paragraph*{Future Work.}~
 %
