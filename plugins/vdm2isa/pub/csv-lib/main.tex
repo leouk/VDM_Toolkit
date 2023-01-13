@@ -205,7 +205,8 @@ School of Computing, Newcastle University, \\
 }
 			
 \maketitle
-\setcounter{footnote}{0} 
+\setcounter{footnote}{0}
+ \abcomment{There is $^{1}$ next to your name but it doesnt link to anything}
 \begin{abstract}
 CSV is a widely used format for data representing systems control, information exchange and processing, logging, \textit{etc}. Nevertheless, the format is riddled with tricky corner cases and inconsistencies, which can lead input data unreliable. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-CSV VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{Fast}, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which also includes a translation and proof environment for VDM in Isabelle. 
 \end{abstract}
@@ -434,7 +435,19 @@ Finally, the operation \texttt{printCSV} prints out the loaded CSV to the given 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluation}\label{sec:Evaluation}
 
-\lfcomment{Add stuff here about the performance checks}
+The performance of the SAFE-CSV is a core design principle for this library. For this analysis, several CSV files ranging from 100 to 35,000 rows were used to compare the performance of this library against the CSV library packaged with VDM.
+
+Due to the limitation of the VDM CSV library, the scope of the performance testing was limited to largest subset of features allowed by the default CSV library. SAFE-CSV provides a richer approach to data validation than VDM CSV, however these features were not used for this section to maintain parity between the two libraries. 
+
+As SAFE-CSV also has the ability to use multiple different parsers, the library was tested using its Native parser and, the faster, Univocity parser\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}}.
+
+\begin{figure}[htbp]
+    \centering
+        \includegraphics[width=\textwidth]{figures/CSVPerformanceChart.jpg}
+    \caption{VDM CSV and SAFE-CSV library performance comparison}\label{fig:CSVPerformanceChart}
+ \end{figure}
+
+ Figure \ref{fig:CSVPerformanceChart} shows the performance of the libraries using the same input data. The SAFE-CSV parsers performed significantly better than the standard library showing a speed-up of $\sim$1.5x. The Univocity parser performed even better with larger datsets averaging a higher speed-up rate even compared to the Native parser.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}\label{sec:Examples}
@@ -474,9 +487,15 @@ Other examples are provided in the \texttt{CSVLib.vdmsl} distribution (\texttt{C
 
 In this paper, we presented a formally defined CSV library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality and ultimately near-trivial user-interface access points. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariants and other structural and data validation checks, such as detection of short rows and cell value type consistency with respect to declared headers. It is \textbf{F}ast, as the architecture layout allows for plug-and-play of different CSV-IO parsing. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around CSV format handling, CSV settings, errors handling, and so on.   
 
-CSV processing is an important part of the computation involving multiple application domains. The area is plagued with subtle errors and inconsistencies, which would ultimately invalidate the systems associated with the data. When that represents system architecture itself (\textit{e.g.}~dialyser state machine representation~\cite{scp-dialyser}), as opposed to system data, consequences can be catastrophic. For system architecture CSV files, tools like VDMJ's \texttt{CSVReader} or bespoke tools like those in~\cite{egleUG,alastairMSc,emv2} are suited; whereas for general data manipuation, varied CSV dialects, and IO speed, \texttt{CSVLib} library is better suited.     
+\abcomment{Added this here Leo to further drive home the performance benefits seen}
+Compared to the packaged CSV library, SAFE-CSV performed much better, yielding over a 50\% increase in speed. Whilst the more robust invariant system of the SAFE-CSV library was not used for performance analysis, the infrastructure for its execution and in-built type-checking are still present throughout.  
+
+CSV processing is an important part of the computation involving multiple application domains. The area is plagued with subtle errors and inconsistencies, which would ultimately invalidate the systems associated with the data. When that represents system architecture itself (\textit{e.g.}~dialyser state machine representation~\cite{scp-dialyser}), as opposed to system data, consequences can be catastrophic. For system architecture CSV files, tools like VDMJ's \texttt{CSVReader} or bespoke tools like those in~\cite{egleUG,alastairMSc,emv2} are suited; whereas for general data manipuation, varied CSV dialects, and IO speed, \texttt{CSVLib} library is better suited.
 
 \lfcomment{Add here a sentence that this is being used for organ preservation machine log processing?}
+\abcomment{Something Like this?}
+A key motivation for this work was the need for a more robust data import facility for organ preservation data produced by a medical device. The standard VDM library proved to be too limited in the format of the CSV data it can import. Additionally it provides no data validation capabilities which are necessary for safety critical applications. 
+
 
 \paragraph*{Future Work.}~
 %
