@@ -19,14 +19,6 @@
             "mainClass": "CSVLib",
             "projectName": "vdmlib",
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}main${pathSeparator}resources"
-        },
-        {
-            "name": "Lens config: Debug TimeTestCSV`loadTestCSVLib",
-            "type": "vdm",
-            "request": "launch",
-            "noDebug": false,
-            "defaultName": "TimeTestCSV",
-            "command": "p loadTestCSVLib(1)"
         }
     ]
 }

@@ -90,7 +90,7 @@ public class CSVLib implements Serializable {
                 "./lib/MATH.vdmsl",
                 "./Support1.vdmsl",
                 "./ISQ.vdmsl",
-                "./performance/TimeTestCSV.vdmsl",
+                "./performance/TimeTestCSV.vdmsl"
             }
         );
     }
