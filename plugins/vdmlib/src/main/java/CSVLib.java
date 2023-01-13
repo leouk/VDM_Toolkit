@@ -61,6 +61,7 @@ public class CSVLib implements Serializable {
     private static final String CSVDATA_FIELD_MATRIX    = "matrix";
     private static final String CSVDATA_FIELD_SETTINGS = "settings";
     private static final String CSVSETTINGS_FIELD_SKIPBLANKS = "skipBlankLines";
+    private static final String CSVSETTINGS_FIELD_NAMEDHEADERS = "nameHeaders";
     private static final String CSVSETTINGS_FIELD_COMMENTSTR = "lineCommentStr";
     private static final String MATRIX_FIELD_CELLS    = "cells";
     private static final String HEADER_FIELD_NAME = "name";
@@ -244,8 +245,9 @@ public class CSVLib implements Serializable {
     {
         RecordValue rsettings = settings.recordValue(ctxt);
         Value skipBlanks = rsettings.fieldmap.get(CSVSETTINGS_FIELD_SKIPBLANKS); // bool
+        Value nameHeaders = rsettings.fieldmap.get(CSVSETTINGS_FIELD_NAMEDHEADERS); // bool
         Value cmtStr = rsettings.fieldmap.get(CSVSETTINGS_FIELD_COMMENTSTR);     // [String1]
-        return new CSVSettings(ValueFactoryHelper.mkValueList(skipBlanks, cmtStr), ctxt);
+        return new CSVSettings(ValueFactoryHelper.mkValueList(skipBlanks, nameHeaders, cmtStr), ctxt);
     }
 
     protected static Iterator<String[]> parse(File file, ParserType parserType, CSVSettings settings)
@@ -415,8 +417,11 @@ public class CSVLib implements Serializable {
                     ),
                     ValueFactory.mkNil()//@AB: nil File invariant
             );
+            
+            //get the csv settings
+            CSVSettings csvSettings = getCSVSettings(settings, ctx);
 
-            Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), getCSVSettings(settings, ctx));
+            Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), csvSettings);
             assert reader != null; 
 
             // seq of Header0
@@ -429,7 +434,7 @@ public class CSVLib implements Serializable {
             ValueList namedHeaders = new ValueList();
             List<RecordValue> headersList = new ArrayList<>(headers.values.size()); 
             int rowCount = 0;
-            if (iterr.hasNext())
+            if (csvSettings.namedHeaders && iterr.hasNext())
             {
                 String[] nameStrs = iterr.next();
                 
@@ -475,6 +480,34 @@ public class CSVLib implements Serializable {
                     namedHeaders.add(namedHeaderAtI);
                 }
                 rowCount++;
+            }
+            else 
+            {
+                for(int i = 0; i < headers.values.size() ; i++)
+                {
+                    // prefer the java (0-index) access instead of VDM (1-index).
+                    // get each Header0 in headers as list of records
+                    //RecordValue headerAtI = headers.get(ValueFactory.mkNat1(i), ctx).recordValue(ctx);
+                    RecordValue headerAtI = headers.values.get(i).recordValue(ctx);
+                    headersList.add(headerAtI);
+
+                    String headerName =headerAtI.fieldmap.get(HEADER_FIELD_NAME).toString();
+                    
+                    RecordValue namedHeaderAtI; 
+
+                    namedHeaderAtI = 
+                        ValueFactoryHelper.muRecord(
+                            headerAtI, 
+                            ValueFactoryHelper.mkFieldMap(
+                                    Arrays.asList(HEADER_FIELD_NAME), 
+                                    ValueFactoryHelper.mkValueList(ValueFactoryHelper.mkString(headerName)), 
+                                    Arrays.asList(true),
+                                    ctx), 
+                            ctx
+                        );
+
+                    namedHeaders.add(namedHeaderAtI);
+                }
             }
 
             // read in the matrix by checking the invariant according to given type in headers param

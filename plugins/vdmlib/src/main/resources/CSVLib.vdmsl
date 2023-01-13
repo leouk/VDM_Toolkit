@@ -133,6 +133,7 @@ types
     --@todo Univocity contains a rather rich settings; explore?
     CSVSettings :: 
         skipBlankLines: bool 
+        namedHeaders: bool
         lineCommentStr: [String1];
 
     --@doc CSV cell invariants. A function that checks CSVValue against corresponding type.
@@ -227,7 +228,7 @@ values
     ROW_INVARIANT_DEFAULT : CSVRowInv  = (lambda h: Headers0, r: Row & if row_consistency(h, r) then nil else "unexpected short row in CSV matrix");
     COL_INVARIANT_DEFAULT : CSVColInv  = (lambda h: Header, c: TransposedRow & if col_consistency(h, c) then nil else "unexpected column in CSV matrix");
     EMPTY_MATRIX          : Matrix     = mk_Matrix([], nil);
-    DEFAULT_SETTINGS      : CSVSettings= mk_CSVSettings(false, nil);
+    DEFAULT_SETTINGS      : CSVSettings= mk_CSVSettings(false, true, nil);
     EMPTY_CSV             : Data       = mk_Data0(DEFAULT_SETTINGS, [], EMPTY_MATRIX, nil);
     DEFAULT_HEADER_NAME   : String1    = "CSVHeader";
 

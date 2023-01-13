@@ -234,7 +234,7 @@ values
     CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
     CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
 
-    CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, "#");
+    CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, true, "#");
 
 operations 
     load(settings: [CSVSettings]) ==
