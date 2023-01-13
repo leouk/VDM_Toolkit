@@ -411,7 +411,7 @@ public class CSVLib implements Serializable {
                         ValueFactoryHelper.mkEmptySeqValue(), // cells: seq of Row 
                         ValueFactory.mkNil() // no row invariant 
                     ),
-                    ValueFactory.mkNil()//@AB: File invariant
+                    ValueFactory.mkNil()//@AB: nil File invariant
             );
 
             Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), getCSVSettings(settings, ctx));
@@ -539,7 +539,8 @@ public class CSVLib implements Serializable {
                         MODULE_NAME, MATRIX_TYPE_NAME, 
                         ValueFactoryHelper.mkSeq(csvMatrix),
                         ValueFactory.mkNil()
-                    )
+                    ),
+                    ValueFactory.mkNil()//@AB: nil File invariant
             ); 
         
             // checks Data0 invariant only (i.e. the CSVDATA_TYPE_NAME invariant), 

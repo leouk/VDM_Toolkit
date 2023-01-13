@@ -1,4 +1,3 @@
-# VDM CSVLib print with blanks skiped
 Name,Age,Weight(Kg),Height(cm),BMI
 Okay1,40,58.5,169.0,20.5
 BMICalcWrong,50,70.2,180.0,30.0

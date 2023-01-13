@@ -1,4 +1,3 @@
-# VDM CSVLib print with blanks skiped
 Name,Age,Weight(Kg),Height(cm),BMI
 "Quoted long string
 across multiple lines",50,58.5,179.0,18.26
