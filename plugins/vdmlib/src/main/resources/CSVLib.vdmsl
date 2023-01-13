@@ -543,7 +543,8 @@ operations
                 let lcs: Errors = csv_invariants_failed(data') in
                     if (lcs = {}) then
                     (
-                        if file_invaraint_check(data') <> nil then
+                        --@AB Changed <> to = as it seems that nil is a desired result. If there is a reason then there was an invariant failure
+                        if file_invaraint_check(data') = nil then
                             --@doc update the headers with names as well, if successful.
                             atomic (
                                 data := data';
