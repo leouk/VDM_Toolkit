@@ -10,8 +10,6 @@
             "request": "launch",
             "noDebug": false,
             "defaultName": "CSVExample",
-            // This starts the Java debug session inside ./src/main/resources
-            // useful to avoid VDMJ Copying new versions of library files on workspace folder
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}main${pathSeparator}resources"
         },
         {
@@ -20,9 +18,15 @@
             "request": "launch",
             "mainClass": "CSVLib",
             "projectName": "vdmlib",
-            // This starts the Java debug session inside ./src/main/resources
-            // useful to avoid VDMJ Copying new versions of library files on workspace folder
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}main${pathSeparator}resources"
+        },
+        {
+            "name": "Lens config: Debug TimeTestCSV`loadTestCSVLib",
+            "type": "vdm",
+            "request": "launch",
+            "noDebug": false,
+            "defaultName": "TimeTestCSV",
+            "command": "p loadTestCSVLib(1)"
         }
     ]
 }

@@ -82,12 +82,14 @@ public class CSVLib implements Serializable {
         // DO NOT add/use $VDMJTK_HOME on file names (!!!!)
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-default", "CSVExample", "-i", 
                 "./lib/IO.vdmsl",
+                "./lib/CSV.vdmsl",
                 "./lib/VDMUtil.vdmsl",
                 "./CSVExample.vdmsl",
                 "./CSVLib.vdmsl",
                 "./lib/MATH.vdmsl",
                 "./Support1.vdmsl",
-                "./ISQ.vdmsl"
+                "./ISQ.vdmsl",
+                "./performance/TimeTestCSV.vdmsl",
             }
         );
     }
