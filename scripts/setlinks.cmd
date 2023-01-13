@@ -31,7 +31,7 @@ set RESOURCES=extensions\overturetool.vdm-vscode-%VERSION%\resources
 setlocal enableDelayedExpansion 
 
 for %%x in (jars\vdmj, jars\vdmj_hp, jars\plugins) do (
-	echo "Jars already saved, cleaning %x..."
+	echo "Jars already saved, cleaning %%x..."
 	del %RESOURCES%\%%x\vdmj*.jar 
 	del %RESOURCES%\%%x\lsp*.jar 
 	del %RESOURCES%\%%x\annotations*.jar 
@@ -53,13 +53,15 @@ mklink %RESOURCES%\jars\plugins\vdm2isa-%SUITE%-SNAPSHOT.jar  %UserProfile%\.m2\
 mklink %RESOURCES%\jars\vdmj\libs\vdmlib-%SUITE%-SNAPSHOT.jar %UserProfile%\.m2\repository\vdmtoolkit\vdmlib\%SUITE%-SNAPSHOT\vdmlib-%SUITE%-SNAPSHOT.jar 
 echo "Created jar links"
 
-mklink %RESOURCES%\jars\vdmj_hp\annotations-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\com\fujitsu\annotations\%SUITE%-P-SNAPSHOT\annotations-%SUITE%-P-SNAPSHOT.jar 
-mklink %RESOURCES%\jars\vdmj_hp\annotations2-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\annotations2\%SUITE%-P-SNAPSHOT\annotations2-%SUITE%-P-SNAPSHOT.jar 
-mklink %RESOURCES%\jars\vdmj_hp\vdmj-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\com\fujitsu\vdmj\%SUITE%-P-SNAPSHOT\vdmj-%SUITE%-P-SNAPSHOT.jar 
-mklink %RESOURCES%\jars\vdmj_hp\lsp-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\lsp\%SUITE%-P-SNAPSHOT\lsp-%SUITE%-P-SNAPSHOT.jar 
-mklink %RESOURCES%\jars\vdmj_hp\libs\stdlib-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\stdlib\%SUITE%-P-SNAPSHOT\stdlib-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj_hp\annotations-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\com\fujitsu\annotations\%SUITE%-P-SNAPSHOT\annotations-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj_hp\annotations2-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\annotations2\%SUITE%-P-SNAPSHOT\annotations2-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj_hp\vdmj-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\com\fujitsu\vdmj\%SUITE%-P-SNAPSHOT\vdmj-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj_hp\lsp-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\lsp\%SUITE%-P-SNAPSHOT\lsp-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj_hp\libs\stdlib-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\stdlib\%SUITE%-P-SNAPSHOT\stdlib-%SUITE%-P-SNAPSHOT.jar 
 
-mklink %RESOURCES%\jars\vdmj_hp\libs\vdmlib-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\vdmtoolkit\vdmlib\%SUITE%-SNAPSHOT\vdmlib-%SUITE%-P-SNAPSHOT.jar 
-echo "Created high precision links"
+::mklink %RESOURCES%\jars\vdmj_hp\libs\vdmlib-%SUITE%-P-SNAPSHOT.jar  %UserProfile%\.m2\repository\vdmtoolkit\vdmlib\%SUITE%-SNAPSHOT\vdmlib-%SUITE%-P-SNAPSHOT.jar 
+::mklink %RESOURCES%\jars\vdmj\libs\stdlib-%SUITE%-P-SNAPSHOT.jar %UserProfile%\.m2\repository\com\fujitsu\stdlib\%SUITE%-SNAPSHOT\stdlib-%SUITE%-P-SNAPSHOT.jar 
+
+::echo "Created high precision links"
 
 echo "Done"
