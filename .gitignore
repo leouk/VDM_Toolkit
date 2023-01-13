@@ -29,3 +29,7 @@ plugins/vdm2isa/src/test/resources/fmi3/ls-bus-model/.generated
 plugins/vdm2isa/src/test/resources/fmi3/rule-model/.generated
 plugins/vdm2isa/src/test/resources/fmi3/static-model/.generated
 plugins/vdm2isa/src/test/resources/fmi3/vdmcheck/target
+plugins/vdm2isa/pub/csv-lib/main.bbl
+plugins/vdm2isa/pub/csv-lib/main.blg
+plugins/vdm2isa/pub/csv-lib/main.log
+main.log
