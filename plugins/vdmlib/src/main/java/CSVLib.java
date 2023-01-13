@@ -410,7 +410,8 @@ public class CSVLib implements Serializable {
                         MATRIX_TYPE_NAME, 
                         ValueFactoryHelper.mkEmptySeqValue(), // cells: seq of Row 
                         ValueFactory.mkNil() // no row invariant 
-                    )
+                    ),
+                    ValueFactory.mkNil()//@AB: File invariant
             );
 
             Iterator<String[]> iterr = CSVLib.parse(file, getParserType(parser, ctx), getCSVSettings(settings, ctx));
