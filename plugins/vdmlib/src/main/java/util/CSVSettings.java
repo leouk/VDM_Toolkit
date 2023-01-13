@@ -12,7 +12,7 @@ public final class CSVSettings {
 
     public static final CSVSettings DEFAULT = new CSVSettings(false, true, null);
     private static final int CSVSETTINGS_SKIPBLANKS_IDX = 0; 
-    private static final int CSVSETTINGS_NAMEDHEADERS_IDX = 0; 
+    private static final int CSVSETTINGS_NAMEDHEADERS_IDX = 1; 
     private static final int CSVSETTINGS_COMMENTSTR_IDX = 2;
 
     protected CSVSettings(boolean skip, boolean headers, String cmtStr)

@@ -61,7 +61,7 @@ public class CSVLib implements Serializable {
     private static final String CSVDATA_FIELD_MATRIX    = "matrix";
     private static final String CSVDATA_FIELD_SETTINGS = "settings";
     private static final String CSVSETTINGS_FIELD_SKIPBLANKS = "skipBlankLines";
-    private static final String CSVSETTINGS_FIELD_NAMEDHEADERS = "nameHeaders";
+    private static final String CSVSETTINGS_FIELD_NAMEDHEADERS = "namedHeaders";
     private static final String CSVSETTINGS_FIELD_COMMENTSTR = "lineCommentStr";
     private static final String MATRIX_FIELD_CELLS    = "cells";
     private static final String HEADER_FIELD_NAME = "name";

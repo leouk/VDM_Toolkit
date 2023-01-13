@@ -9,8 +9,11 @@ imports
     ,from CSVLib 
         types
             CSVType renamed CSVType;
+            CSVSettings renamed CSVSettings;
+            Headers0 renamed Headers0;
+            Header0 renamed Header0;
         operations
-            loadSimpleHeadersCSV renamed loadSimpleHeadersCSV;
+            loadCSV renamed loadCSVLib;
             printCSV renamed printCSV;
     ,from IO 
         operations  
@@ -26,6 +29,19 @@ definitions
         String1 = seq1 of char;
     values  
         files: set of nat = {1,100,500,1000,5000,10000,15000,20000,25000,30000,35000};
+
+        CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, false, nil);
+
+        CSV_HEADERS: Headers0 = [ mk_Header0(
+                    "Digit" ^ val2seq_of_char[nat1](i), 
+                    <Integer>, 
+                    0,
+                    nil,
+                    nil
+                  ) 
+                  | 
+                  i in set {1, ..., 4}
+                ] ;
     operations 
 
          showError: () ==> ()
@@ -73,10 +89,9 @@ definitions
         loadTestCSVLib(count) == (
             if count in set files then (
                 dcl filename: String1 := val2seq_of_char[nat](count) ^ ".csv";
-                dcl headers: seq1 of CSVType := [<Integer>,<Integer>,<Integer>,<Integer> ];
                 --@Time("CSVLib %2s \n", count)
-                 loadSimpleHeadersCSV("performance/CSVs/" ^ filename, <Native>, headers, false);
-                 --printCSV("CSVs/print_" ^ filename,0);
+                 loadCSVLib("performance/CSVs/" ^ filename, <Native>, CSV_SETTINGS, CSV_HEADERS, false);
+                 printCSV("performance/CSVs/print_" ^ filename,0);
                 return;
             )
             else 
