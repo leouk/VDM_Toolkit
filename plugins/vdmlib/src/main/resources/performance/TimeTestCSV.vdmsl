@@ -85,13 +85,28 @@ definitions
         );
 
 
-        loadTestCSVLib: (nat) ==> ()
-        loadTestCSVLib(count) == (
+        loadTestCSVLib1: (nat) ==> ()
+        loadTestCSVLib1(count) == (
             if count in set files then (
                 dcl filename: String1 := val2seq_of_char[nat](count) ^ ".csv";
                 --@Time("CSVLib %2s \n", count)
                  loadCSVLib("performance/CSVs/" ^ filename, <Native>, CSV_SETTINGS, CSV_HEADERS, false);
-                 printCSV("performance/CSVs/print_" ^ filename,0);
+                 --printCSV("performance/CSVs/print_" ^ filename,0);
+                return;
+            )
+            else 
+            (
+                printf("Invalid file name: %1s",[count]);
+            )
+        );
+
+        loadTestCSVLib2: (nat) ==> ()
+        loadTestCSVLib2(count) == (
+            if count in set files then (
+                dcl filename: String1 := val2seq_of_char[nat](count) ^ ".csv";
+                --@Time("CSVLib %2s \n", count)
+                 loadCSVLib("performance/CSVs/" ^ filename, <Univocity>, CSV_SETTINGS, CSV_HEADERS, false);
+                 --printCSV("performance/CSVs/print_" ^ filename,0);
                 return;
             )
             else 
