@@ -289,7 +289,7 @@ Next, we present the library architecture. User models have to import \texttt{IS
 \begin{enumerate}
     \item Dimensions (\textit{e.g.} length), dimension vectors (\textit{e.g.}~pressure as \(\frac{kg}{ms^s}\)), and operators;
     \item Quantities and operators (\textit{e.g.}~dimension amounts like \(20\frac{kg}{ms^s}\));
-    \item Measurement systems and operators (\texti{e.g.}~group of dimensions like BSI or SI); 
+    \item Measurement systems and operators (\textit{e.g.}~group of dimensions like BIS or SI); 
     \item Base and derived units;
     \item Scaling and conversion over quantities and measurement systems;
     \item Common prefixes (\textit{e.g.}~alternative names); and 
@@ -330,12 +330,28 @@ There are twenty two predefined dimension vectors:~seven for each of the base un
 %         \toprule 
 %         \textbf{Names} & \textbf{Combined dimensions}  \\ \hline 
 %         Area & \(L^2\) \\
+%         volume & \(L^3\) \\
+%         frequency & \(\frac{1}{T}\) \\
+%         velocity & \(\frac{L}{T}\) \\
+%         acceleration & \(\frac{L}{T^2}\) \\
+%         energy & \(\frac{L^2M}{T^2}\) \\
+%         power & \(\frac{L^2M}{T^3}\) \\
+%         force & \(\frac{LM}{T^2}\) \\
+%         pressure & \(\frac{M}{LT^2}\) \\
+%         charge & \(IT\) \\
+%         potential difference & \(\frac{L^2M}{T^3I}\) \\
+%         capacitance & \(\frac{T^4I^2}{L^2M}\) \\
+%         radian & \(\frac{L}{L}\) \\
+%         steradian & \(\frac{L^2}{L^2}\)   \\
+%         wattage & \(\frac{L^2M}{T^3}\) \\
 %         \bottomrule
 %     \end{tabular}
-%     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SICombined}
+%     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SICombinedUnits}
 % \end{table} 
-
-area (\(L^2\)), volume (\(L^3\)), frequency (\(\frac{1}{T}\)), velocity (\(\frac{L}{T}\)), acceleration (\(\frac{L}{T^2}\)), energy (\(\frac{L^2M}{T^2}\)), power (\(\frac{L^2M}{T^3}\)), force (\(\frac{LM}{T^2}\)), pressure (\(\frac{M}{LT^2}\)), charge (\(IT\)), potential difference (\(\frac{L^2M}{T^3I}\)), capacitance (\(\frac{T^4I^2}{L^2M}\)), radian (\(\frac{L}{L}\)), steradian (\(\frac{L^2}{L^2}\)) and wattage (\(\frac{L^2M}{T^3}\)). Each of these derived units has a corresponding dimension vector as a VDM map constant. 
+%
+area (\(L^2\)), volume (\(L^3\)), frequency (\(\frac{1}{T}\)), velocity (\(\frac{L}{T}\)), acceleration (\(\frac{L}{T^2}\)), energy (\(\frac{L^2M}{T^2}\)), power (\(\frac{L^2M}{T^3}\)), force (\(\frac{LM}{T^2}\)), pressure (\(\frac{M}{LT^2}\)), charge (\(IT\)), potential difference (\(\frac{L^2M}{T^3I}\)), capacitance (\(\frac{T^4I^2}{L^2M}\)), radian (\(\frac{L}{L}\)), steradian (\(\frac{L^2}{L^2}\)) and wattage (\(\frac{L^2M}{T^3}\)). 
+%
+Each of these derived units has a corresponding dimension vector as a VDM map constant. 
 
 It is also possible to define dimensionless vectors for so-called bare or pure quantities, such as radians. Even though they are non-SI units, such quantities are useful for various applications. These are dimension vectors where all dimensions map to zero. Single quantities like meter or seconds, have dimension vectors with all other dimensions mapped to zero, but the one dimension in question that is mapped to one.  
 
@@ -369,7 +385,7 @@ Operators between quantities include (but are not limited to): multiplication, r
 An ISQ measurement system represents a named quantity with a corresponding dimension vector conversion schema. A conversion schema defines (non-zero magnitude) factors to convert between other named measurement systems, for all base dimensions. 
 
 Like demension vectors, conversion schemas are VDM maps from all dimensions to a non-zero (real-valued) magnitude.    
-They represent a mapping determining how each dimension magnitude is to be viewed within another measurement system. For example, the standard ISQ conversion schema (\texttt{SI}) is simply the identity map of all dimensions (\textit{e.g.}~one metter corresponds to one meter). More interestingly, the conversion schema for the British Imperial System (\textit{e.g.}~mile, yard, foot, \textit{etc.}) is named \texttt{BIS}. The measurement system representing yards in \texttt{BIS} is defined as     
+They represent a mapping determining how each dimension magnitude is to be viewed within another measurement system. For example, the standard ISQ conversion schema (\texttt{SI}) is simply the identity map of all dimensions (\textit{e.g.}~one metre corresponds to one metre). More interestingly, the conversion schema for the British Imperial System (\textit{e.g.}~mile, yard, foot, \textit{etc.}) is named \texttt{BIS}. The measurement system representing yards in \texttt{BIS} is defined as     
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
   BIS  = { <Length> |-> 0.9143993, <Mass> |-> 0.453592338, <Temp> |-> 5/9, ... };
@@ -397,7 +413,7 @@ For each of the base and derived dimensions and quantities, we define a correspo
 
 These type extensions are performed for every base and derived dimentions. Furthermore, we define constants for the basic instance of such types (\textit{i.e.}~unit version of area within the \texttt{SI} standard measurement system). This in turn, enable the measurement system conversions described above, where the \texttt{SI} standard measurement system is the baseline.   
 
-Further useful measurements are created to illustrate the flexibility of the framework. For instance, the functions below perfom necessary conversions between \texttt{BSI} and \texttt{SI} measurement systems by scaling.   
+Further useful measurements are created to illustrate the flexibility of the framework. For instance, the functions below perfom necessary conversions between \texttt{BIS} and \texttt{SI} measurement systems by scaling.   
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     METRE: Metre = mk_MeasurementSystem(UNIT_LENGTH, SI, SI_UNIT);
@@ -450,7 +466,7 @@ Given a target onversion schema (\texttt{cs\_conv}) and a measurement system, we
         mk_MeasurementSystem(mk_Quantity(quant_conv(cs_conv, d) * m, d), s, u);
 \end{vdmsl}
 %
-\noindent This is why the defaults for conversion schema and dimension version dimensions are \(1\) and \(0\), respectively. Those dimension vector dimensions with zero dimension, will lead to \(1\) given the exponentiation; others dimensions will be multiplied accordingly to the conversion schema provided conversion mangnitude (\texttt{cs(i)}).
+\noindent This is why the defaults for conversion schema and dimension version dimensions are \(1\) and \(0\), respectively. Those dimension vectors with zero dimension, will lead to \(1\) given the exponentiation; others dimensions will be multiplied accordingly to the conversion schema provided conversion mangnitude (\texttt{cs(i)}).
 
 The resulting set of magnitudes is then multiplied together, now that their conversion has taken place. The function \texttt{quant\_conv} is at the heart of how the whole conversion process works:~it takes into account the conversion schema for all dimensions, ignoring zero dimensions, with the resulting product being the right magnitude in the right dimension vector.   
 
@@ -465,9 +481,9 @@ Finally, an important aspect of unit conversion is the guarantee that the target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{ISQ common prefixes}
 
-Given that magnitude, quantity and measurement systems are to be used semeinglessly by the user (\textit{i.e.}~\(10\frac{km}{h}\) as the magnitude \(10\), quantity \(10\) of a particular dimension for velocity (\(\frac{L}{T}\)), or as the quantity within a measurement system of kilometers per hour), these types are known as a \texttt{Prefix}. 
+Given that magnitude, quantity and measurement systems are to be used seamlessly by the user (\textit{i.e.}~\(10\frac{km}{h}\) as the magnitude \(10\), quantity \(10\) of a particular dimension for velocity (\(\frac{L}{T}\)), or as the quantity within a measurement system of kilometers per hour), these types are known as a \texttt{Prefix}. 
 
-Prefixes allow users to perform various operations over notions of magnitude, quantity of measurement systems without concern as to whether they are given a magnitude, a quantity or a measurement system parameter. In practice, this use VDM union types to make the library ``natural'' to use than having multiple versions of the same computation for slightly different projections of various types involved. 
+Prefixes allow users to perform various operations over notions of magnitude, quantity of measurement systems without concern as to whether they are given a magnitude, a quantity or a measurement system parameter. In practice, this uses VDM union types to make the library ``natural'' to use rather than having multiple versions of the same computation for slightly different projections of various types involved. 
 
 For example, the prefix for \texttt{kilo} is defined as the \(10^3\) magnitude of any given prefix. Then, the scaling of a magnitude for any kind of kilo can be defined as
 %
@@ -507,14 +523,14 @@ We define various narrowing types and conversion functions between other (non-de
 
 Users can easily follow the examples to explore other exotic measurement systems they might be interested in representing, where the combination and conversion operators will be straightfoward (and hopefully intuitive) computations. 
 
-The library contains \(32\) defined measurement systems:~\texttt{SI} \(22\) basic an derived units; and \texttt{BIS} \(5\) units for length (yards), mass (pound), temperature (rankine), volume (\(yard^3\)), and velocity (\(\frac{yard}{s}\)). Also, definitions of the \texttt{CGS} measurement system of units for length (centimeter), and mass (gram); and the \texttt{MHC} measurement system of units for mass (miligrams), time (hour), and temperature (celcius). These allows for further derived units like foot, inches, square foot, day, week, year, \textit{etc}. 
+The library contains \(32\) defined measurement systems:~\texttt{SI} \(22\) basic and derived units; and \texttt{BIS} \(5\) units for length (yards), mass (pound), temperature (rankine), volume (\(yard^3\)), and velocity (\(\frac{yard}{s}\)). Also, definitions of the \texttt{CGS} (Centimetre Gram Second) measurement system of units for length (centimeter), and mass (gram); and the \texttt{MHC} (Miligram Hour Celcius) measurement system of units for mass (miligrams), time (hour), and temperature (celcius). These allows for further derived units like foot, inches, square foot, day, week, year, \textit{etc}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{\texttt{ISQ} use and other definitions}
 
-We ported the most important theorems from Isabelle/HOL ISQ library~\cite{Physical_Quantities-AFP} and wrote them as VDM traces. We also added various expected equivalences between important measurement systems to hold as part of the library. These are defined through \(23\) VDM trace specifications, which lead to a total of \(2132\) trace tests run for nearly all defined measurement systems and their extensiosn. This is useful to ensure computations are working as expected, and also to show users how to use the various library features in practice. 
+We ported the most important theorems from Isabelle/HOL ISQ library~\cite{Physical_Quantities-AFP} and wrote them as VDM traces. We also added various expected equivalences between important measurement systems to hold as part of the library. These are defined through \(23\) VDM trace specifications, which lead to a total of \(2132\) trace tests run for nearly all defined measurement systems and their extension. This is useful to ensure computations are working as expected, and also to show users how to use the various library features in practice. 
 
-We also define some \texttt{SI} common constants, such as the ceaseium frequency, speed of light, plakt constant, \textit{etc}. These also come from the Isabelle/HOL version of this library~\cite{Physical_Quantities-AFP}. Notice that non derived measurement systems are not defined as constants (\textit{e.g.}~\texttt{SI\_WATT}) but as constant functions (\textit{e.g.}~\texttt{SI\_JOULE()}). This is so that they are not computed at initialisation time.  
+We also define some \texttt{SI} common constants, such as the ceaseium frequency, speed of light, \textit{Planck} constant, \textit{etc}. These also come from the Isabelle/HOL version of this library~\cite{Physical_Quantities-AFP}. Notice that non derived measurement systems are not defined as constants (\textit{e.g.}~\texttt{SI\_WATT}) but as constant functions (\textit{e.g.}~\texttt{SI\_JOULE()}). This is so that they are not computed at initialisation time.  
 
 When dealing with (potentially high precision) real-valued operations, it is important to consider approximations. We provide approximation functions for given orders of magnitude, as well as approximate equality module such order of magnitude (\textit{e.g.} \texttt{approx\_eq(pi, 3.14, 2) = true}). Another useful function we add that is not available in VDM is ceiling of a real value (\(\lceil r \rceil\)). 
 
@@ -572,7 +588,7 @@ Finally, the general \texttt{dim\_view} function expects an input that maps dime
 
 \paragraph*{New measurement systems.}~
 %
-We created a new measurement system and conversion schema to cater for a ``miligram-hour-celcius'' measurement system (\texttt{MHC}). It is justs like the \texttt{SI} measurement system, yet views mass, time and temperature with these other corresponding units.
+We created a new measurement system and conversion schema to cater for the  \texttt{MHC} measurement system. It is justs like the \texttt{SI} measurement system, yet views mass, time and temperature with these other corresponding units.
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     MHC: ConversionSchema = CONV_ID ++ 
