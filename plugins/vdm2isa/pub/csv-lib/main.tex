@@ -331,7 +331,7 @@ For the \texttt{Age} header above, users could define \texttt{cell\_inv} (L1--3)
 %
 Row invariants are useful for checking dependencies/redundancies across the row cells. If the CSV file had three extra \texttt{<Float>} headers for weight, height and BMI (Body Mass Index), there are interesting checks possible. For instance, given age type range (\texttt{\{18\ldots 65\}}) it is possible to presume some minimum height expected (\textit{i.e.}~row dependency invariant); and given BMI's formulae (\(\frac{height}{weight^2}\)), its cell value can be calculated (\textit{i.e.}~row redundancy invariant).     
 
-\lfcomment{Add here some example of ile invariant? }
+%\lfcomment{Add here some example of ile invariant? }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{CSV VDM native calls}\label{subsec:VDMnative}
@@ -429,9 +429,8 @@ Finally, the operation \texttt{printCSV} prints out the loaded CSV to the given 
 
 The high-performance of our SAFE-CSV library is a core design principle. To demonstrate this, several CSV files, ranging from \(100\) to \(35,000\) rows were used to compare the performance of our library against the standard CSV library in VDM.
 
-\lfcomment{Which limitations?}\abcomment{Does this provide more clarity?}
+The VDM CSV library provides limited features in terms of the variety of formats it can accept for the CSV input, its low-level IO mechanism (\textit{i.e.,}~read line by line) and the fact there are no data validation capabilities available. The scope of the performance testing was limited to largest subset of features allowed by the standard CSV library. SAFE-CSV provides a richer approach to data validation than VDM CSV;~however, these features were not used for this section to maintain parity between the two libraries during the performance test. 
 
-The VDM CSV library provides limited features in terms of the variety of formats its can accept for the CSV input and the data validation capabilities available. The scope of the performance testing was limited to largest subset of features allowed by the standard CSV library. SAFE-CSV provides a richer approach to data validation than VDM CSV;~however, these features were not used for this section to maintain parity between the two libraries during the performance test. 
 
 As SAFE-CSV also has the ability to use multiple different parsers, the library was tested using its Native parser and, the faster, Univocity parser\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}}.
 
@@ -474,7 +473,7 @@ For the given row, the user-defined function \texttt{calculate\_bmi} calculates 
 
 Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{\scriptsize CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
 
-\lfcomment{Add here the error report output?}
+%\lfcomment{Add here the error report output?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}\label{sec:Results}
