@@ -8,8 +8,10 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
+import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFieldList;
+import vdm2isa.tr.types.TROptionalType;
 import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRType;
 import vdm2isa.tr.types.TRTypeComparator;
@@ -58,6 +60,17 @@ public class TRMkTypeExpression extends TRExpression {
         return IsaToken.RECORD;
     }
 
+    private TRUnionType getUnionType(TRType type)
+    {
+        TRUnionType result = null;
+        TRType ultimateType = type.ultimateType();
+        if (ultimateType instanceof TRUnionType)
+            result = (TRUnionType)ultimateType;
+        else if (ultimateType instanceof TROptionalType)
+            result = getUnionType(((TROptionalType)ultimateType).getInnerType());       
+        return result;  
+    }
+
     protected String translateField(int index)
     {
         assert index >= 0 && index < fields.size() && index < args.size(); 
@@ -71,23 +84,35 @@ public class TRMkTypeExpression extends TRExpression {
         // if field is a union, but argument isn't, then add union tag
         if (field.isUnion())
         {
-            // field is indeed a union compatible with given argument
-            assert field.getInnerType().ultimateType() instanceof TRUnionType;
-            TRUnionType utype = (TRUnionType)field.getInnerType().ultimateType(); 
-            TRType argtype = arg.getType();
-            assert utype.compatible(argtype);
-
-            // calculate their class mapped TRType intersection (if any), then translate the prefix
-            TRType uinter = TRTypeComparator.intersect(utype, argtype);
-            TRTypeSet utypeset = utype.getDataTypeConstructors();
-            if (uinter == null || !utypeset.contains(uinter))
+            TRUnionType unionType = getUnionType(field.getInnerType());
+            if (unionType == null)
             {
-                report(IsaErrorMessage.VDMSL_FIELD_INCOMPATIBLE_UNION_TYPE_4P, 
-                    typename.toString(), index, utype.translate(), argtype.translate());
+                TRType ultimateType = field.getInnerType().ultimateType();
+                report(IsaErrorMessage.ISA_INVALID_FIELD_UNIONTYPE_2P, ultimateType.getVDMType().toString(), ultimateType.getClass().getSimpleName());
             }
             else 
             {
-                sb.append(utypeset.prefixTranslate(uinter));
+                TRType argtype = arg.getType();
+                if (unionType.compatible(argtype))
+                {
+                    // calculate their class mapped TRType intersection (if any), then translate the prefix
+                    TRType uinter = TRTypeComparator.intersect(unionType, argtype);
+                    TRTypeSet utypeset = unionType.getDataTypeConstructors();
+                    if (uinter == null || !utypeset.contains(uinter))
+                    {
+                        report(IsaErrorMessage.VDMSL_FIELD_INCOMPATIBLE_UNION_TYPE_4P, 
+                            typename.toString(), index, unionType.translate(), argtype.translate());
+                    }
+                    else 
+                    {
+                        sb.append(utypeset.prefixTranslate(uinter));
+                    }
+                }
+                else 
+                {
+                    report(IsaErrorMessage.ISA_INVALID_FIELD_UNIONTYPE_INCOMPATIBLE_3P, 
+                        unionType.getVDMType().toString(), arg.getVDMExpr().toString(), argtype.getVDMType().toString());
+                }
             }
         }
         else
