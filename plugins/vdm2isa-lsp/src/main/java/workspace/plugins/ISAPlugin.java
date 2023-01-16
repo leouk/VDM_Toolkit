@@ -146,16 +146,16 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 				pluginResult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check", "sort" });
 				reportErrors(ev, this.isapog.vdm2isa.exu, pluginResult);
 			} 
-			if (pluginResult)
-			{
-				pluginResult = this.isapog.vdm2isa.run(new String[] { "vdm2isa", "translate" });
-				reportErrors(ev, this.isapog.vdm2isa, pluginResult);
-			}
-			if (pluginResult)
-			{
-				pluginResult = this.isapog.run(new String[] { "isapog", "isapog" });
-				reportErrors(ev, this.isapog, pluginResult);	
-			}
+			// if (pluginResult)
+			// {
+			// 	pluginResult = this.isapog.vdm2isa.run(new String[] { "vdm2isa", "translate" });
+			// 	reportErrors(ev, this.isapog.vdm2isa, pluginResult);
+			// }
+			// if (pluginResult)
+			// {
+			// 	pluginResult = this.isapog.run(new String[] { "isapog", "isapog" });
+			// 	reportErrors(ev, this.isapog, pluginResult);	
+			// }
 			result = new RPCMessageList();
 			long after = System.currentTimeMillis();
 			Diag.info("ISAPlugin.checkCompleteEvent time = %1$s ms", (after-before));
