@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
@@ -15,9 +16,11 @@ import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
+import vdm2isa.tr.templates.IsaTemplateException;
 
 public class Vdm2isaPlugin extends GeneralisaPlugin
 {
@@ -152,11 +155,19 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		}
 		catch (InternalException e)
 		{
-			processException(e, workingAt, false);
+			// only print stack if debugging
+			processException(e, workingAt, IsaProperties.general_debug);
+			result = false;
+		}
+		catch (IsaTemplateException t)
+		{
+			GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, LexLocation.ANY, "from Isabelle templates", " ", t.getMessage());
+			processException(t, workingAt, true);//IsaProperties.general_debug);
 			result = false;
 		}
 		catch (Throwable t)
 		{
+			GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, LexLocation.ANY, "while translating", " ", t.getMessage());
 			processException(t, workingAt, true);
 			result = false;
 		}

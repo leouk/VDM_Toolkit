@@ -646,7 +646,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
 
     public final void processException(Throwable t, String workingAt, boolean printStackTrace)
     {
-        Console.out.println("Uncaught exception whilst working at `" + workingAt + "`: " + t.toString());
+        Console.err.println("Uncaught exception whilst working at `" + workingAt + "`: " + t.toString());
         if (printStackTrace)
             t.printStackTrace();
         addLocalErrors(1);
