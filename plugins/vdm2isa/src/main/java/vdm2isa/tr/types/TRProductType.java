@@ -162,7 +162,7 @@ public class TRProductType extends TRType {
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    public Set<String> doGetDefLemmas()
     {
         return types.getDefLemmas();
     }

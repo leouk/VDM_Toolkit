@@ -60,7 +60,7 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		TreeSet<String> result = new TreeSet<String>();
 		for(TRType t : this)
 		{
-			result.addAll(t.getDefLemmas());
+			result.addAll(t.doGetDefLemmas());
 		}
 		return result;
 	}

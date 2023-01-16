@@ -79,12 +79,12 @@ public class TRMapType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    public Set<String> doGetDefLemmas()
     {
         TreeSet<String> result = new TreeSet<String>();
         result.add(getInvTypeString() + IsaToken.ISAR_LEMMAS_DEFS.toString());
-        result.addAll(from.getDefLemmas());
-        result.addAll(getToType().getDefLemmas());
+        result.addAll(from.doGetDefLemmas());
+        result.addAll(getToType().doGetDefLemmas());
         return result;
     }
 

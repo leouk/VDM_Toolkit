@@ -38,9 +38,9 @@ public abstract class TRAbstractInnerTypedType extends TRType {
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    protected Set<String> doGetDefLemmas()
     {
-        Set<String> result = super.getDefLemmas();
+        Set<String> result = super.doGetDefLemmas();
         result.addAll(getInnerType().getDefLemmas());
         return result;
     }
