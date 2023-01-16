@@ -9,6 +9,7 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.mapper.FileList;
 
 import plugins.ResourceUtil;
 
@@ -70,7 +71,12 @@ public final class IsaTemplatesHelper {
         if (isTemplateValid(name))
             return group.getInstanceOf(name);
         else 
-            throw new IsaTemplateException("Unknown template name in Isabelle template group: " + name);
+            throw new IsaTemplateException(LexLocation.ANY, "Unknown template name in Isabelle template group: " + name);
+    }
+
+    public static final IsaVDMSource newIsaVDMSourceANY()
+    {
+        return newIsaVDMSource("ANY", LexLocation.ANY);
     }
 
     public static final IsaVDMSource newIsaVDMSource(String source, LexLocation location)
@@ -80,7 +86,7 @@ public final class IsaTemplatesHelper {
 
     public static final IsaVDMTheoryExport newIsaVDMExportStruc(List<String> comment, IsaVDMSource source, IsaVDMTheoryExport.ExportKind kind, String name)
     {
-        return new IsaVDMTheoryExport(comment, source, kind, IsaIdentifier.valueOf(name));
+        return new IsaVDMTheoryExport(comment, source, kind, IsaIdentifier.valueOf(source.location, name));
     }
 
     /**
@@ -95,12 +101,12 @@ public final class IsaTemplatesHelper {
      */
     public static final IsaDefinition newIsaDefinitionStruc(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, List<IsaAttribute> attrs, boolean eq, String expr)
     {
-        return new IsaDefinition(comment, source, IsaIdentifier.listOf(name), type, attrs, eq, expr);
+        return new IsaDefinition(comment, source, IsaIdentifier.listOf(source.location, name), type, attrs, eq, expr);
     }
 
-    public static final ST newIsaTheory(Instant utc, String comment, String loc, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
+    public static final ST newIsaTheory(Instant utc, String comment, LexLocation loc, FileList files, String name, List<String> imports, List<String> body, List<IsaVDMTheoryExport> exports)
     {
-        IsaTheory t = new IsaTheory(utc, comment, loc, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(imports), body, exports);
+        IsaTheory t = new IsaTheory(utc, comment, loc, files, IsaIdentifier.valueOf(loc, name), IsaIdentifier.listOf(LexLocation.ANY, imports), body, exports);
         assert isTemplateValid(IsaTemplates.theory.templateName());
         ST result = getTemplate(IsaTemplates.theory.templateName());
         //assert result.getAttributes().keySet().contains(IsaTemplates.theory.arg);?
@@ -110,7 +116,7 @@ public final class IsaTemplatesHelper {
 
     public static final ST newIsaClaim(List<String> comment, IsaVDMSource source, IsaClaim.ClaimKind kind, String name, List<IsaAttribute> attrs, String expr, List<String> proof)
     {
-        IsaClaim t = new IsaClaim(comment, source, kind, IsaIdentifier.valueOf(name), attrs, expr, proof);
+        IsaClaim t = new IsaClaim(comment, source, kind, IsaIdentifier.valueOf(source.location, name), attrs, expr, proof);
         assert isTemplateValid(IsaTemplates.claim.templateName());
         ST result = getTemplate(IsaTemplates.claim.templateName());
         result.add(IsaTemplates.claim.arg, t);
@@ -119,7 +125,7 @@ public final class IsaTemplatesHelper {
 
     public static final ST newIsaLemmas(List<String> comment, IsaVDMSource source, String name, List<String> lemmas)
     {
-        IsaLemmas t = new IsaLemmas(comment, source, IsaIdentifier.valueOf(name), IsaIdentifier.listOf(lemmas));
+        IsaLemmas t = new IsaLemmas(comment, source, IsaIdentifier.valueOf(source.location, name), IsaIdentifier.listOf(source.location, lemmas));
         assert isTemplateValid(IsaTemplates.lemmas.templateName());
         ST result = getTemplate(IsaTemplates.lemmas.templateName());
         result.add(IsaTemplates.lemmas.arg, t);
@@ -138,7 +144,7 @@ public final class IsaTemplatesHelper {
 
     public static final ST newIsaTypeSynonym(List<String> comment, IsaVDMSource source, String name, String expr)
     {
-        IsaTypeSynonym t = new IsaTypeSynonym(comment, source, IsaIdentifier.valueOf(name), expr);
+        IsaTypeSynonym t = new IsaTypeSynonym(comment, source, IsaIdentifier.valueOf(source.location, name), expr);
         assert isTemplateValid(IsaTemplates.typesynonym.templateName());
         ST result = getTemplate(IsaTemplates.typesynonym.templateName());
         result.add(IsaTemplates.typesynonym.arg, t);
@@ -147,21 +153,21 @@ public final class IsaTemplatesHelper {
 
     public static final ST newIsaDatatype(List<String> comment, IsaVDMSource source, String name, List<String> expr)
     {
-        IsaDatatype t = new IsaDatatype(comment, source, IsaIdentifier.valueOf(name), expr);
+        IsaDatatype t = new IsaDatatype(comment, source, IsaIdentifier.valueOf(source.location, name), expr);
         assert isTemplateValid(IsaTemplates.datatype.templateName());
         ST result = getTemplate(IsaTemplates.datatype.templateName());
         result.add(IsaTemplates.datatype.arg, t);
         return result; 
     }
 
-    public static final List<IsaRecordField> newIsaRecordFields(List<String> names, List<String> types)
+    public static final List<IsaRecordField> newIsaRecordFields(LexLocation location, List<String> names, List<String> types)
     {
         if (names == null || types == null || names.size() != types.size())
-            throw new IsaTemplateException("Invalid record fields: names and types must be of same size");
+            throw new IsaTemplateException(LexLocation.ANY, "Invalid record fields: names and types must be of same size");
         List<IsaRecordField> result = new ArrayList<IsaRecordField>(names.size());
         for(int i = 0; i < names.size(); i++)
         {
-            result.add(IsaRecordField.valueOf(names.get(i), types.get(i)));
+            result.add(IsaRecordField.valueOf(location, names.get(i), types.get(i)));
         }
         assert result.size() == names.size();
         return result; 
@@ -169,7 +175,7 @@ public final class IsaTemplatesHelper {
 
     public static final ST newIsaRecord(List<String> comment, IsaVDMSource source, String name, List<IsaRecordField> fields)
     {
-        IsaRecord t = new IsaRecord(comment, source, IsaIdentifier.valueOf(name), fields);
+        IsaRecord t = new IsaRecord(comment, source, IsaIdentifier.valueOf(source.location, name), fields);
         assert isTemplateValid(IsaTemplates.record.templateName());
         ST result = getTemplate(IsaTemplates.record.templateName());
         result.add(IsaTemplates.record.arg, t);
@@ -186,7 +192,7 @@ public final class IsaTemplatesHelper {
      */
     public static final ST newIsaAbbreviation(List<String> comment, IsaVDMSource source, List<String> name, List<String> type, String expr)
     {
-        IsaAbbreviation t = new IsaAbbreviation(comment, source, IsaIdentifier.listOf(name), type, expr);
+        IsaAbbreviation t = new IsaAbbreviation(comment, source, IsaIdentifier.listOf(source.location, name), type, expr);
         assert isTemplateValid(IsaTemplates.abbreviation.templateName());
         ST result = getTemplate(IsaTemplates.abbreviation.templateName());
         result.add(IsaTemplates.abbreviation.arg, t);
@@ -274,7 +280,7 @@ public final class IsaTemplatesHelper {
     public static final ST newIsaMutuallyRecursiveFunDef(List<IsaDefinition> fdefs)
     {
         if (fdefs == null || fdefs.size() == 0)
-            throw new IsaTemplateException("Invalid mutually recursive fun definition: empty definitions");
+            throw new IsaTemplateException(LexLocation.ANY, "Invalid mutually recursive fun definition: empty definitions");
         assert isTemplateValid(IsaTemplates.rfundef.templateName());
         ST result = getTemplate(IsaTemplates.rfundef.templateName());
         result.add(IsaTemplates.rfundef.arg, fdefs);
@@ -284,7 +290,7 @@ public final class IsaTemplatesHelper {
     public static final ST newIsaMutuallyRecursiveFunctionDef(List<IsaDefinition> fdefs)
     {
         if (fdefs == null || fdefs.size() == 0)
-            throw new IsaTemplateException("Invalid mutually recursive function definition: empty definitions");
+            throw new IsaTemplateException(LexLocation.ANY, "Invalid mutually recursive function definition: empty definitions");
         assert isTemplateValid(IsaTemplates.rfunctiondef.templateName());
         ST result = getTemplate(IsaTemplates.rfunctiondef.templateName());
         result.add(IsaTemplates.rfunctiondef.arg, fdefs);

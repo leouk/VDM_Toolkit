@@ -5,6 +5,7 @@ theory(utc, comment, location, name, imports, body) ::= <<
    
    $comment; wrap$
    $location; wrap$
+   $files; wrap$
 *)
 theory $name$
 imports VDMToolkit $imports$

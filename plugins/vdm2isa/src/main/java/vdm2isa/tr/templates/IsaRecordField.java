@@ -1,5 +1,7 @@
 package vdm2isa.tr.templates;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 /**
  * Represents an Isabelle record field. This is used for VDM record fields.
  */
@@ -15,8 +17,8 @@ public class IsaRecordField extends IsaAbstractTemplate {
         this.type = type;
     }
 
-    public static final IsaRecordField valueOf(String name, String type) 
+    public static final IsaRecordField valueOf(LexLocation location, String name, String type) 
     {
-        return new IsaRecordField(IsaIdentifier.valueOf(name), type);
+        return new IsaRecordField(IsaIdentifier.valueOf(location, name), type);
     }
 }

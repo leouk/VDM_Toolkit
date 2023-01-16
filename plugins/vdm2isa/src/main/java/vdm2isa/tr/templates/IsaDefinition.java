@@ -2,6 +2,8 @@ package vdm2isa.tr.templates;
 
 import java.util.List;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
 /**
  * Represents an Isabelle definition. This is used mostly for VDM (inv/pre/post, etc.) specifications.
  */
@@ -20,6 +22,6 @@ public class IsaDefinition extends IsaNamedTemplate {
         this.eq = eq; 
         this.attr = IsaAbstractTemplate.createList(attr);
         if (this.type.size() != this.name.size())
-            throw new IsaTemplateException("Invalid definition signature: names=" + name.toString() + "; types=" + type.toString());
+            throw new IsaTemplateException(LexLocation.ANY, "Invalid definition signature: names=" + name.toString() + "; types=" + type.toString());
     }
 }
