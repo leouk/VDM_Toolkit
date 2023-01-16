@@ -16,8 +16,12 @@ import plugins.IsaProperties;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.templates.IsaIdentifier;
 
+// to ensure IsaTemplates is loaded before IsaToken
+import static vdm2isa.lex.IsaTemplates.ALL_ISA_TOKENS;
+
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
+	
 	// Basic types; use VDMToolkit names 
 	BOOL(Token.BOOL, "\\<bool>"),
 	NAT(Token.NAT, "VDMNat"),
@@ -44,7 +48,7 @@ public enum IsaToken {
 	TRUE(Token.TRUE, "True"),
 	FALSE(Token.FALSE, "False"),
 	NIL(Token.NIL, "None"),
-	UNKNOWN(null, "'UNKNOWN"),
+	UNKNOWN(Token.QMARK, "'WILDCARD"),
 	DASH(null, "'"),
 	TYPEOF(null, "::"),
 	PLACEHOLDER(null, "_"),
@@ -131,7 +135,8 @@ public enum IsaToken {
 	INV(null, "inv_"),
 	PRE(Token.PRE, "pre"),
 	POST(Token.POST, "post"),
-	IDENTIFIER(Token.IDENTIFIER, "identifier"),
+	//TODO this must be the proper fules for VDM identifiers!!!!
+	IDENTIFIER(Token.IDENTIFIER, "identifierPROPERRULESPLEASESOSILLYNAMEFORNOW"),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),
 	ISACHAR(null, "CHR"),
@@ -234,18 +239,16 @@ public enum IsaToken {
 	private final String isa;
 
 	protected static long dummyCount;
-	protected static final Set<String> ALL_ISA_TOKENS;
 	protected static final Set<String> VALID_SEMANTIC_SEP;
 	private static final Set<String> INVALID_ISA_IDENTIFIERS;
 
 	static {
 		try
-		{
-		
+		{		
+			assert ALL_ISA_TOKENS != null;
+			
 			dummyCount = 0;
-	
-			ALL_ISA_TOKENS = new TreeSet<String>();
-	
+		
 			VALID_SEMANTIC_SEP = new TreeSet<String>(
 				Arrays.asList(" ", "$", ",", ",", ";", "\\<and>", "|", "\\<Rightarrow>", "\\<times>", "\\<mapsto>", "\\<longrightarrow>"));
 	
@@ -318,7 +321,7 @@ public enum IsaToken {
 			throw t;
 		}
 	}
-	
+
 	private IsaToken(Token vdm, String isa)
 	{
 		assert isa != null; 
@@ -329,7 +332,8 @@ public enum IsaToken {
 		// all but underscore, for dummy pattern in identifiers as valid 
 		if (!isa.equals("_") && !isa.isEmpty())
 		{
-			IsaTemplates.ALL_ISA_TOKENS.add(isa);
+			//IsaTemplates.ALL_ISA_TOKENS.add(isa);
+			ALL_ISA_TOKENS.add(isa);
 			IsaIdentifier.addIsaToken(isa);
 		}
 	}
