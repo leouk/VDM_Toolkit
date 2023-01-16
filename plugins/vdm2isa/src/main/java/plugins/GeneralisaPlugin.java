@@ -461,7 +461,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
                     (IsaProperties.general_report_vdm_warnings ? "" : "(and suppressed) ") +
                     plural(wrnCnt, "warning", "s") + ".");
             else 
-                Console.out.print("\n");
+                Console.out.println(" No warnings were found.");
         }
         else 
         {
