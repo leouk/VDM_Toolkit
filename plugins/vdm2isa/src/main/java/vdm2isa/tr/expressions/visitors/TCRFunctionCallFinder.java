@@ -4,9 +4,11 @@ import java.util.Iterator;
 
 import com.fujitsu.vdmj.tc.expressions.TCApplyExpression;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
+import com.fujitsu.vdmj.tc.expressions.TCFuncInstantiationExpression;
 import com.fujitsu.vdmj.tc.expressions.TCVariableExpression;
 import com.fujitsu.vdmj.tc.expressions.visitors.TCFunctionCallFinder;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
+import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCBracketType;
 import com.fujitsu.vdmj.tc.types.TCMapType;
 import com.fujitsu.vdmj.tc.types.TCNamedType;
@@ -44,14 +46,28 @@ public class TCRFunctionCallFinder extends TCFunctionCallFinder {
         return result;
     }
 
+    private TCNameToken getFunctionName(TCExpression e)
+    {
+        TCNameToken result = null;
+        if (e instanceof TCVariableExpression)
+        {
+            result = ((TCVariableExpression)e).name;
+        }
+        else if (e instanceof TCFuncInstantiationExpression)
+        {
+            result = getFunctionName(((TCFuncInstantiationExpression)e).function);
+        }
+        return result;
+    }
+
 	@Override
 	public TCNameList caseApplyExpression(TCApplyExpression node, Object arg)
 	{
         TCNameList result = super.caseApplyExpression(node, arg);
-        if (node.root instanceof TCVariableExpression)//&& node.type instanceof TCMapType))
-        {
-            TCVariableExpression vexp = (TCVariableExpression)node.root;
-            
+        // function names occur in variable and function instantiation expressions
+        TCNameToken functionName = getFunctionName(node.root);
+        if (functionName != null)
+        {           
             // map calls don't need to be considered given they don't have pre/post conditions
             //TODO lambda term/typed calls? They don't have pre/post either.  
             // DO NOT JUMP BETWEEN TC and TR trees!!!!
@@ -60,7 +76,7 @@ public class TCRFunctionCallFinder extends TCFunctionCallFinder {
             if (type instanceof TCMapType)
 			{
                 // remove the call if a map
-                result.remove(vexp.name);  
+                result.remove(functionName);  
                 //TODO warn about being inside the domain?       
             }
             // linient invariant checks allow compatible/equal/narrowest types
@@ -93,7 +109,7 @@ public class TCRFunctionCallFinder extends TCFunctionCallFinder {
                 }    
                 if (remove)
                 {
-                    result.remove(vexp.name);    
+                    result.remove(functionName);    
                 }
             }
 
