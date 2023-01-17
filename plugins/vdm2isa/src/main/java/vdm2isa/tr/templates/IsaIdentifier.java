@@ -89,6 +89,7 @@ public class IsaIdentifier extends IsaAbstractTemplate {
     
     public static final boolean validIsaIdentifier(String identifier)
     {
+		// For valid VDM identifiers, see LexTokenReader.rdName, startOfName, restofName!
         return identifier != null && identifier.length() > 0 && 
 			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 
 			!ALL_ISA_TOKENS.contains(identifier) &&
