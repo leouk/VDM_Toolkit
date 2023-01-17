@@ -126,6 +126,8 @@ public class IsaIdentifier extends IsaAbstractTemplate {
         super(null);
         if (!validIsaIdentifier(name))
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
+		else 
+			IsaIdentifier.addIsaToken(name);
 		this.name = name; 
 	}
 

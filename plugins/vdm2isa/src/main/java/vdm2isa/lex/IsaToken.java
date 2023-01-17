@@ -136,7 +136,7 @@ public enum IsaToken {
 	PRE(Token.PRE, "pre"),
 	POST(Token.POST, "post"),
 	//TODO this must be the proper fules for VDM identifiers!!!!
-	IDENTIFIER(Token.IDENTIFIER, "identifierPROPERRULESPLEASESOSILLYNAMEFORNOW"),
+	IDENTIFIER(Token.IDENTIFIER, "__"),//IsaToken.IDENTIFIER_TAG),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),
 	ISACHAR(null, "CHR"),
@@ -238,6 +238,9 @@ public enum IsaToken {
 	private final Token  vdm;
 	private final String isa;
 
+	private static final String IDENTIFIER_TAG;
+	private static long idCount;
+
 	protected static long dummyCount;
 	protected static final Set<String> VALID_SEMANTIC_SEP;
 	private static final Set<String> INVALID_ISA_IDENTIFIERS;
@@ -247,6 +250,9 @@ public enum IsaToken {
 		{		
 			assert ALL_ISA_TOKENS != null;
 			
+			IDENTIFIER_TAG = "__";
+			idCount = 0;
+
 			dummyCount = 0;
 		
 			VALID_SEMANTIC_SEP = new TreeSet<String>(
@@ -328,7 +334,10 @@ public enum IsaToken {
 		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
-		this.isa = isa;
+		// if (isa.equals("__"))
+		// 	this.isa = createNewId();
+		// else
+			this.isa = isa;
 		// all but underscore, for dummy pattern in identifiers as valid 
 		if (!isa.equals("_") && !isa.isEmpty())
 		{
@@ -337,6 +346,13 @@ public enum IsaToken {
 			IsaIdentifier.addIsaToken(isa);
 		}
 	}
+
+	// private static final String createNewId()
+	// {
+	// 	String result = "id" + idCount;
+	// 	idCount++;
+	// 	return result;
+	// }
 
 	//TODO add infixlr notation here to know where/when to "pad" the string?
 	@Override
