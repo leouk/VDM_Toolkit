@@ -354,7 +354,7 @@ public class TRModule extends TRNode
 					//TODO no user defined comment? and no source either for now?
 					result.add(
 						IsaTemplatesHelper.newIsaVDMExportStruc(Arrays.asList(comment),
-							null,
+							IsaTemplatesHelper.newIsaVDMSource(this.name.toString(), this.location),
 							d instanceof TCTypeDefinition ? 
 								IsaVDMTheoryExport.ExportKind.hide_type : 
 								IsaVDMTheoryExport.ExportKind.hide_const, 
@@ -403,12 +403,7 @@ public class TRModule extends TRNode
 	@Override
 	public String translate()
 	{
-		String loc = name.getLocation() != null ? name.getLocation().toString() : "";
-		if (files != null && !files.isEmpty())
-		{ 
-			loc += "\nfiles = " + files.toString();
-		}
-		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), loc, name.toString(), getImports(), allDefs.translateList(), 	getExports());
+		ST st = IsaTemplatesHelper.newIsaTheory(Instant.now(), "VDM translation of module " + name.getName(), getLocation(), files, name.toString(), getImports(), allDefs.translateList(), 	getExports());
 		return st.render();
 	}
 

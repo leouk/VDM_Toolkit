@@ -9,6 +9,7 @@ theory(thy) ::= <<
    
    $thy.comment; wrap$
    $thy.location; wrap$
+   $thy.files; wrap$ 
 *)
 theory $thy.name$
 imports VDMToolkit $thy.imports:{ imp | "$imp$" }; wrap, separator=" "$

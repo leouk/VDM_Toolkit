@@ -216,7 +216,7 @@ public class TRUnionType extends TRType implements TRDataType {
     }
 
 	@Override
-	public Set<String> getDefLemmas()
+	public Set<String> doGetDefLemmas()
 	{
 		return types.getDefLemmas();
 	}

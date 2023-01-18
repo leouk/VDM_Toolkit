@@ -83,18 +83,37 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 */
 	protected abstract TRType doCopy(boolean atTLD);
 
+	private boolean firstTimeCopy = true;
 	/**
 	 * Copying necessitates setup being done properly first. In some deeply nested situations, one might get an inner type
 	 * which hasn't been fully setup being copied, which can generate errors, hence the layered approach to copying. 
 	 */
 	public final TRType copy(boolean atTLD)
 	{
+		TRType result;
+		boolean recursive = getVDMType().isRecursive();
 		if (Settings.verbose && IsaProperties.general_debug)
 		{
-			Console.out.println(String.format("Copying %1$s setup done? %2$s %3$s", atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", getVDMType().toString()));
+			Console.out.println(String.format("Copying %1$s setup done? %2$s recursive? %3$s infinite? %4$s first time? %5$s %6$s", 
+				atTLD ? "@TLD" : "@LOC", setupDone() ? "Y" : "N", recursive ? "Y":"N", getVDMType().isInfinite() ? "Y":"N", 
+				firstTimeCopy?"Y":"N", getVDMType().toString()));
 		}
-		setup();
-		return doCopy(atTLD);
+		if (firstTimeCopy)
+		{
+			firstTimeCopy = false;
+			setup();
+		}
+		// if not recursive, always copy if recursvive, copy only if first time
+		//TODO what about atTLD? for now will do.
+		// recursive => firstTime
+		if (!recursive || firstTimeCopy)
+			result = doCopy(atTLD);
+		else 
+		{
+			result = this;
+			result.setAtTopLevelDefinition(atTLD);
+		}
+		return result;
 	}
 
 	protected void setInferredNamedForType(TCNameToken tn)
@@ -190,6 +209,8 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 
 	protected abstract String getInvTypeString();
 
+	private Set<String> firstTimeDefLemmas = null;
+
 	/**
 	 * Every type definition will have invariant checks. We declare a "lemmas" statement collecting the set of all
 	 * defining invariants involved in a type, so that they can all be expanded at once, or individually. 
@@ -198,7 +219,26 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 	 * by TRTypeDefinition. 
 	 * @return
 	 */
-	public Set<String> getDefLemmas()
+	public final Set<String> getDefLemmas()
+	{
+		Set<String> result;
+		boolean recursive = getVDMType().isRecursive(); 
+		// if not recursive, always copy if recursvive, copy only if first time
+		//TODO what about atTLD? for now will do.
+		// recursive => firstTime
+		if (!recursive || firstTimeDefLemmas == null)
+			result = doGetDefLemmas();
+		else 
+		{
+			assert firstTimeDefLemmas != null;
+			result = firstTimeDefLemmas;
+			// can be called multiple times, but must stop at the recursive call.
+			firstTimeDefLemmas = null;
+		}
+		return result;
+	}
+
+	protected Set<String> doGetDefLemmas()
 	{
 		TreeSet<String> result = new TreeSet<String>();
 		//TODO use this as a mechanism to "fixing" the messy parenthesise calls (i.e. too many around)
@@ -209,6 +249,12 @@ abstract public class TRType extends TRNode implements Comparable<TRType>
 		// assert invStr.indexOf(IsaToken.INV.toString()) == invStr.lastIndexOf(IsaToken.INV.toString());
 		// result.add(invStr.trim());
 		result.add(getInvTypeString());
+		//TODO or just firstTimeDefLemmas = result;?  
+		if (firstTimeDefLemmas == null)
+		{
+			firstTimeDefLemmas = new TreeSet<String>();
+			firstTimeDefLemmas.addAll(result);
+		}
 		return result;
 	}
 

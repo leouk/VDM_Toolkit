@@ -2,3 +2,5 @@ types
 	LFReferenceURL = seq1 of char;
 	LFRuleName = seq1 of char;
 	LFReferenceMap = map LFRuleName to seq1 of LFReferenceURL;
+values 
+	lfm: LFReferenceMap = {|->};

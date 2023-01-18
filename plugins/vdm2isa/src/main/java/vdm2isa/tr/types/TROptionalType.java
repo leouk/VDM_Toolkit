@@ -28,6 +28,13 @@ public class TROptionalType extends TRAbstractInnerTypedType implements TRDataTy
         TRNode.setup(dataTypeConstructors);
     }
 
+    //TODO should ultimateType return the innerType? Probably not, or else never will know what's optional?
+    @Override
+    public TRType ultimateType()
+    {
+        return super.ultimateType();
+    }
+
     @Override
 	protected TRType doCopy(boolean atTLD)
 	{

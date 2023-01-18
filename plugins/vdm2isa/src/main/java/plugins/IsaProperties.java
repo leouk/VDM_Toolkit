@@ -112,7 +112,7 @@ public class IsaProperties {
 		// vdm-vscode.translate.isabelle.XXXX properties
 		//TODO align package.json wrt to the properties names? 
         general_strict = get(isa, "strict", false);
-        general_max_errors = get(isa, "maxErrors", Properties.tc_max_errors > 0 ? 2 * Properties.tc_max_errors : 100);
+        general_max_errors = get(isa, "maxErrors", Properties.tc_max_errors > 0 ? 10 * Properties.tc_max_errors : 1000);
         general_isa_version = get(isa, "isaVersion", "Isabelle2022");
         general_report_vdm_warnings = get(isa, "reportVDMWarnings", true);
         general_debug = get(isa, "debug", false);
@@ -146,7 +146,7 @@ public class IsaProperties {
 	private static void setValues(java.util.Properties isa)
 	{
         general_strict = get(isa, "isa.general.strict", false);
-        general_max_errors = get(isa, "isa.general.max_errors", Properties.tc_max_errors > 0 ? 2 * Properties.tc_max_errors : 100);
+        general_max_errors = get(isa, "isa.general.max_errors", Properties.tc_max_errors > 0 ? 10 * Properties.tc_max_errors : 1000);
         general_isa_version = get(isa, "isa.general.isa_version", "Isabelle2022");
         general_report_vdm_warnings = get(isa, "isa.general.report_vdm_warnings", true);
         general_debug = get(isa, "isa.general.debug", false);

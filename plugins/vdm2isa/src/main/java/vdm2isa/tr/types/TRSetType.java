@@ -93,9 +93,9 @@ public class TRSetType extends TRAbstractInnerTypedType
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    public Set<String> doGetDefLemmas()
     {
-        Set<String> result = super.getDefLemmas();
+        Set<String> result = super.doGetDefLemmas();
         result.add(getInvTypeString() + IsaToken.ISAR_LEMMAS_DEFS.toString());
         return result;
     }

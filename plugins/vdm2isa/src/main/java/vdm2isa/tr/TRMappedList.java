@@ -61,8 +61,9 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Throwable t)
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_2P, 
+				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, 
 					figureOutLocation(from), 
+					"when converting",
 					from.getClass().getSimpleName(), 
 					t.toString());
 				t.printStackTrace();

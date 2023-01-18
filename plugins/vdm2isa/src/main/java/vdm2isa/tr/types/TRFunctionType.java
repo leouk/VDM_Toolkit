@@ -214,7 +214,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
     }
 
 	@Override 
-	public Set<String> getDefLemmas()
+	public Set<String> doGetDefLemmas()
 	{
 		TreeSet<String> result = new TreeSet<String>();
 		if (!isParametricInvariantType())
@@ -222,7 +222,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 			result.add(getInvTypeString());
 		}
 		result.addAll(parameters.getDefLemmas());
-		result.addAll(getResultType().getDefLemmas());
+		result.addAll(getResultType().doGetDefLemmas());
 		return result;
 	}
 

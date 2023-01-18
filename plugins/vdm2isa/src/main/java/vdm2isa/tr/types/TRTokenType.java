@@ -75,14 +75,14 @@ public class TRTokenType extends TRBasicType {
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    public Set<String> doGetDefLemmas()
     {
-        Set<String> result = super.getDefLemmas();
+        Set<String> result = super.doGetDefLemmas();
         // this is already called by super?
         result.add(getInvTypeString());// + IsaToken.ISAR_LEMMAS_DEFS.toString());
         if (innerTokenType != null)
         {
-            result.addAll(innerTokenType.getDefLemmas());
+            result.addAll(innerTokenType.doGetDefLemmas());
         }
         return result;
     }

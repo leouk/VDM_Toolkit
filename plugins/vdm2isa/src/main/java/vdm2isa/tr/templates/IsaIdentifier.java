@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.lex.LexLocation;
+
+import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
+import vdm2isa.messages.IsaErrorMessage;
 
 public class IsaIdentifier extends IsaAbstractTemplate {
 
@@ -85,6 +89,7 @@ public class IsaIdentifier extends IsaAbstractTemplate {
     
     public static final boolean validIsaIdentifier(String identifier)
     {
+		// For valid VDM identifiers, see LexTokenReader.rdName, startOfName, restofName!
         return identifier != null && identifier.length() > 0 && 
 			!INVALID_ISA_IDENTIFIERS.contains(identifier) && 
 			!ALL_ISA_TOKENS.contains(identifier) &&
@@ -93,35 +98,37 @@ public class IsaIdentifier extends IsaAbstractTemplate {
             !identifier.startsWith(IsaToken.UNDERSCORE.toString()));
     }
 
-    public static final IsaIdentifier valueOf(String name)
+    public static final IsaIdentifier valueOf(LexLocation location, String name)
     {
-        return new IsaIdentifier(name);
+        return new IsaIdentifier(location, name);
     }
 
-	public static final List<IsaIdentifier> listOf(String... name)
+	public static final List<IsaIdentifier> listOf(LexLocation location, String... name)
     {
-		return IsaIdentifier.listOf(IsaAbstractTemplate.createList(name));
+		return IsaIdentifier.listOf(location, IsaAbstractTemplate.createList(name));
     }
 
-	public static List<IsaIdentifier> listOf(List<String> name) {
+	public static List<IsaIdentifier> listOf(LexLocation location, List<String> name) {
 		List<IsaIdentifier> result = new ArrayList<IsaIdentifier>(name == null ? 0 : name.size());
 		// Java mapping? 
 		if (name != null && name.size() > 0)
 		{
 			for(String n : name)
 			{
-				result.add(IsaIdentifier.valueOf(n));
+				result.add(IsaIdentifier.valueOf(location, n));
 			}
 		}
 		return result;
 	}
 
 
-    protected IsaIdentifier(String name)
+    protected IsaIdentifier(LexLocation location, String name)
     {
         super(null);
         if (!validIsaIdentifier(name))
-            throw new IsaTemplateException("Invalid Isabelle identifer name " + name);
+			GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
+		else 
+			IsaIdentifier.addIsaToken(name);
 		this.name = name; 
 	}
 

@@ -78,23 +78,26 @@ public class TRFieldExpression extends TRExpression {
     public String translate() {
         // inner fields must have record type!
         //object instanceof TRFieldExpression => object.exptype instanceof TRRecordType!
-        assert !(object instanceof TRFieldExpression) || (object.exptype instanceof TRRecordType);
-
+        if (!(!(object instanceof TRFieldExpression) || (object.exptype instanceof TRRecordType)))
+        {
+            //TODO: the optionality within records will screwup the getRecordType / doGetRecordType stuff to. Report for now.
+            report(IsaErrorMessage.ISA_INVALID_FIELD_PROJECTION_3P, object.getVDMExpr().toString(), object.exptype.getVDMType().toString(), object.exptype.getVDMType().getClass().getSimpleName());
+        }
         // attempt to get underlying object record type name to change record field name according to TRRecordType TLD considerations 
         return IsaToken.parenthesise(
-                    IsaTemplates.isabelleRecordFieldName(
-                        // for nested fields, be careful: the type name of the outer fields is already 
-                        // known: must be a record type of course, so get that name. 
-                        // A::a:int; B::b:A; C::c:B inv x == x.c.b.a > 10 =isa> (a_A (b_B (c_C x))),
-                        // i.e. only chase the record type for when handling the "final" field in the chain 
-                        (object instanceof TRFieldExpression ? 
-                            object.getType().getName() : 
-                            object.getRecordType().getName()), field.getName()) 
-                    + 
-                    IsaToken.SPACE.toString() 
-                    +
-                    typeConvertTranslate(object, object.getType())
-                );
+            IsaTemplates.isabelleRecordFieldName(
+                // for nested fields, be careful: the type name of the outer fields is already 
+                // known: must be a record type of course, so get that name. 
+                // A::a:int; B::b:A; C::c:B inv x == x.c.b.a > 10 =isa> (a_A (b_B (c_C x))),
+                // i.e. only chase the record type for when handling the "final" field in the chain 
+                (object instanceof TRFieldExpression ? 
+                    object.getType().getName() : 
+                    object.getRecordType().getName()), field.getName()) 
+            + 
+            IsaToken.SPACE.toString() 
+            +
+            typeConvertTranslate(object, object.getType())
+        );
     }
 
 	@Override

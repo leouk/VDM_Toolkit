@@ -16,8 +16,12 @@ import plugins.IsaProperties;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.templates.IsaIdentifier;
 
+// to ensure IsaTemplates is loaded before IsaToken
+import static vdm2isa.lex.IsaTemplates.ALL_ISA_TOKENS;
+
 //@todo Look in CZT for the kind of info needed like parenthesis, left/right assoc, etc. ? 
 public enum IsaToken {
+	
 	// Basic types; use VDMToolkit names 
 	BOOL(Token.BOOL, "\\<bool>"),
 	NAT(Token.NAT, "VDMNat"),
@@ -44,7 +48,7 @@ public enum IsaToken {
 	TRUE(Token.TRUE, "True"),
 	FALSE(Token.FALSE, "False"),
 	NIL(Token.NIL, "None"),
-	UNKNOWN(null, "'UNKNOWN"),
+	UNKNOWN(Token.QMARK, "'WILDCARD"),
 	DASH(null, "'"),
 	TYPEOF(null, "::"),
 	PLACEHOLDER(null, "_"),
@@ -131,7 +135,8 @@ public enum IsaToken {
 	INV(null, "inv_"),
 	PRE(Token.PRE, "pre"),
 	POST(Token.POST, "post"),
-	IDENTIFIER(Token.IDENTIFIER, "identifier"),
+	//TODO this must be the proper fules for VDM identifiers!!!!
+	IDENTIFIER(Token.IDENTIFIER, "__"),//IsaToken.IDENTIFIER_TAG),
 	RECORD(Token.COLONCOLON, "record"),
 	UNDEFINED(Token.UNDEFINED, "undefined"),
 	ISACHAR(null, "CHR"),
@@ -233,87 +238,121 @@ public enum IsaToken {
 	private final Token  vdm;
 	private final String isa;
 
-	protected static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
+	private static final String IDENTIFIER_TAG;
+	private static long idCount;
 
-	protected static final Set<String> VALID_SEMANTIC_SEP = new TreeSet<String>(
-		Arrays.asList(" ", "$", ",", ",", ";", "\\<and>", "|", "\\<Rightarrow>", "\\<times>", "\\<mapsto>", "\\<longrightarrow>"));
+	protected static long dummyCount;
+	protected static final Set<String> VALID_SEMANTIC_SEP;
+	private static final Set<String> INVALID_ISA_IDENTIFIERS;
 
-	private static final Set<String> INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
-        Arrays.asList(
-			// Commonly ued inner syntax names? Or all Tokens? 
-			"o", "SOME", "THE", "let", "in", "case", "if",
-			// output of print_commands:
-			// keywords
-			"abbrevs", "and", "assumes", "begin", "binder", "checking",
-			"class_instance", "class_relation", "code_module", "constant", "constrains", "datatypes",
-			"defines", "export_files", "export_prefix", "external_files", "file", "file_prefix", "fixes", "for",
-			"functions", "if", "imports", "in", "includes", "infix", "infixl", "infixr", "is", "keywords",
-			"module_name", "monos", "morphisms", "notes", "obtains", "open", "opening", "output", "overloaded",
-			"parametric", "pervasive", "premises", "private", "qualified", "rewrites", "shows", "structure",
-			"type_class", "type_constructor", "unchecked", "when", "where",
-			// commands
-			"ML", "ML_command", "ML_export", "ML_file", "ML_file_debug", "ML_file_no_debug", "ML_prf",
-			"ML_val", "ROOTS_file", "SML_export", "SML_file", "SML_file_debug", "SML_file_no_debug",
-			"SML_import", "abbreviation", "alias", "also", "apply", "apply_end", "assume", 
-			"attribute_setup", "axiomatization", "back", "bibtex_file", "bnf", "bundle", "by", 
-			"case", "chapter", "class", "class_deps", "codatatype", "code_datatype", "code_deps",
-			"code_identifier", "code_monad", "code_pred", "code_printing", "code_reflect", 
-			"code_reserved", "code_thms", "coinductive", "coinductive_set", "compile_generated_files", 
-			"consider", "consts", "context", "copy_bnf", "corollary", 
-			"datatype", "datatype_compat", "declaration", "declare", "default_sort", "defer", 
-			"define", "definition", "done", "end", "experiment", "export_code", 
-			"export_generated_files", "external_file", "extract", "extract_type", "finally", 
-			"find_consts", "find_theorems", "find_unused_assms", "fix", "free_constructors", 
-			"from", "full_prf", "fun", "fun_cases", "function", "functor", "generate_file", 
-			"global_interpretation", "guess", "have", "help", "hence", "hide_class", "hide_const", 
-			"hide_fact", "hide_type", "include", "including", "inductive", "inductive_cases", 
-			"inductive_set", "inductive_simps", "instance", "instantiation", "interpret", 
-			"interpretation", "judgment", "lemma", "lemmas", "let", "lift_bnf", "lift_definition",
-			"lifting_forget", "lifting_update", "local_setup", "locale", "locale_deps", 
-			"method_setup", "moreover", "named_theorems", "next", "nitpick", "nitpick_params", 
-			"no_notation", "no_syntax", "no_translations", "no_type_notation", "nonterminal", 
-			"notation", "note", "notepad", "nunchaku", "nunchaku_params", "obtain", 
-			"old_rep_datatype", "oops", "oracle", "overloading", "paragraph", "parse_ast_translation", 
-			"parse_translation", "partial_function", "prefer", "presume", 
-			"prf", "primcorec", "primcorecursive", "primrec", "print_ML_antiquotations", 
-			"print_abbrevs", "print_antiquotations", "print_ast_translation", "print_attributes",
-			"print_bnfs", "print_bundles", "print_case_translations", "print_cases", "print_claset", 
-			"print_classes", "print_codeproc", "print_codesetup", "print_coercions", 
-			"print_commands", "print_context", "print_definitions", "print_defn_rules", "print_facts", 
-			"print_induct_rules", "print_inductives", "print_interps", "print_locale", 
-			"print_locales", "print_methods", "print_options", "print_orders", "print_quot_maps", 
-			"print_quotconsts", "print_quotients", "print_quotientsQ3", "print_quotmapsQ3", 
-			"print_record", "print_rules", "print_simpset", "print_state", "print_statement", 
-			"print_syntax", "print_term_bindings", "print_theorems", "print_theory", 
-			"print_trans_rules", "print_translation", "proof", "prop", "proposition", "qed", 
-			"quickcheck", "quickcheck_generator", "quickcheck_params", "quotient_definition", 
-			"quotient_type", "realizability", "realizers", "record", "schematic_goal", "section",
-			"setup", "setup_lifting", "show", "simproc_setup", "sledgehammer", "sledgehammer_params", 
-			"smt_status", "solve_direct", "sorry", "specification", "subclass",
-			"subgoal", "sublocale", "subparagraph", "subsection", "subsubsection", "supply", "syntax",
-			"syntax_declaration", "term", "termination", "text", "text_raw", "then", 
-			"theorem", "theory", "thm", "thm_deps", "thm_oracles", "thus", "thy_deps", "translations", 
-			"try", "try0", "txt", "typ", "type_alias", "type_notation", 
-			"type_synonym", "typed_print_translation", "typedecl", "typedef", "ultimately", "unbundle", 
-			"unfolding", "unused_thms", "using", "value", "values", "welcome", "with", 
-			"write"
-		)        
-    );
+	static {
+		try
+		{		
+			assert ALL_ISA_TOKENS != null;
+			
+			IDENTIFIER_TAG = "__";
+			idCount = 0;
+
+			dummyCount = 0;
+		
+			VALID_SEMANTIC_SEP = new TreeSet<String>(
+				Arrays.asList(" ", "$", ",", ",", ";", "\\<and>", "|", "\\<Rightarrow>", "\\<times>", "\\<mapsto>", "\\<longrightarrow>"));
 	
+			INVALID_ISA_IDENTIFIERS = new TreeSet<String>(
+				Arrays.asList(
+					// Commonly ued inner syntax names? Or all Tokens? 
+					"o", "SOME", "THE", "let", "in", "case", "if",
+					// output of print_commands:
+					// keywords
+					"abbrevs", "and", "assumes", "begin", "binder", "checking",
+					"class_instance", "class_relation", "code_module", "constant", "constrains", "datatypes",
+					"defines", "export_files", "export_prefix", "external_files", "file", "file_prefix", "fixes", "for",
+					"functions", "if", "imports", "in", "includes", "infix", "infixl", "infixr", "is", "keywords",
+					"module_name", "monos", "morphisms", "notes", "obtains", "open", "opening", "output", "overloaded",
+					"parametric", "pervasive", "premises", "private", "qualified", "rewrites", "shows", "structure",
+					"type_class", "type_constructor", "unchecked", "when", "where",
+					// commands
+					"ML", "ML_command", "ML_export", "ML_file", "ML_file_debug", "ML_file_no_debug", "ML_prf",
+					"ML_val", "ROOTS_file", "SML_export", "SML_file", "SML_file_debug", "SML_file_no_debug",
+					"SML_import", "abbreviation", "alias", "also", "apply", "apply_end", "assume", 
+					"attribute_setup", "axiomatization", "back", "bibtex_file", "bnf", "bundle", "by", 
+					"case", "chapter", "class", "class_deps", "codatatype", "code_datatype", "code_deps",
+					"code_identifier", "code_monad", "code_pred", "code_printing", "code_reflect", 
+					"code_reserved", "code_thms", "coinductive", "coinductive_set", "compile_generated_files", 
+					"consider", "consts", "context", "copy_bnf", "corollary", 
+					"datatype", "datatype_compat", "declaration", "declare", "default_sort", "defer", 
+					"define", "definition", "done", "end", "experiment", "export_code", 
+					"export_generated_files", "external_file", "extract", "extract_type", "finally", 
+					"find_consts", "find_theorems", "find_unused_assms", "fix", "free_constructors", 
+					"from", "full_prf", "fun", "fun_cases", "function", "functor", "generate_file", 
+					"global_interpretation", "guess", "have", "help", "hence", "hide_class", "hide_const", 
+					"hide_fact", "hide_type", "include", "including", "inductive", "inductive_cases", 
+					"inductive_set", "inductive_simps", "instance", "instantiation", "interpret", 
+					"interpretation", "judgment", "lemma", "lemmas", "let", "lift_bnf", "lift_definition",
+					"lifting_forget", "lifting_update", "local_setup", "locale", "locale_deps", 
+					"method_setup", "moreover", "named_theorems", "next", "nitpick", "nitpick_params", 
+					"no_notation", "no_syntax", "no_translations", "no_type_notation", "nonterminal", 
+					"notation", "note", "notepad", "nunchaku", "nunchaku_params", "obtain", 
+					"old_rep_datatype", "oops", "oracle", "overloading", "paragraph", "parse_ast_translation", 
+					"parse_translation", "partial_function", "prefer", "presume", 
+					"prf", "primcorec", "primcorecursive", "primrec", "print_ML_antiquotations", 
+					"print_abbrevs", "print_antiquotations", "print_ast_translation", "print_attributes",
+					"print_bnfs", "print_bundles", "print_case_translations", "print_cases", "print_claset", 
+					"print_classes", "print_codeproc", "print_codesetup", "print_coercions", 
+					"print_commands", "print_context", "print_definitions", "print_defn_rules", "print_facts", 
+					"print_induct_rules", "print_inductives", "print_interps", "print_locale", 
+					"print_locales", "print_methods", "print_options", "print_orders", "print_quot_maps", 
+					"print_quotconsts", "print_quotients", "print_quotientsQ3", "print_quotmapsQ3", 
+					"print_record", "print_rules", "print_simpset", "print_state", "print_statement", 
+					"print_syntax", "print_term_bindings", "print_theorems", "print_theory", 
+					"print_trans_rules", "print_translation", "proof", "prop", "proposition", "qed", 
+					"quickcheck", "quickcheck_generator", "quickcheck_params", "quotient_definition", 
+					"quotient_type", "realizability", "realizers", "record", "schematic_goal", "section",
+					"setup", "setup_lifting", "show", "simproc_setup", "sledgehammer", "sledgehammer_params", 
+					"smt_status", "solve_direct", "sorry", "specification", "subclass",
+					"subgoal", "sublocale", "subparagraph", "subsection", "subsubsection", "supply", "syntax",
+					"syntax_declaration", "term", "termination", "text", "text_raw", "then", 
+					"theorem", "theory", "thm", "thm_deps", "thm_oracles", "thus", "thy_deps", "translations", 
+					"try", "try0", "txt", "typ", "type_alias", "type_notation", 
+					"type_synonym", "typed_print_translation", "typedecl", "typedef", "ultimately", "unbundle", 
+					"unfolding", "unused_thms", "using", "value", "values", "welcome", "with", 
+					"write"
+				)        
+			);	
+		}
+		catch (Throwable t)
+		{
+			System.err.println("IsaToken class loading error?! " + t.getMessage());
+			t.printStackTrace();
+			throw t;
+		}
+	}
+
 	private IsaToken(Token vdm, String isa)
 	{
 		assert isa != null; 
 		if (vdm != null && !vdm.getDialects().contains(Dialect.VDM_SL)) 
 			GeneralisaPlugin.report(IsaErrorMessage.ISA_TOKEN_ERROR_1P, LexLocation.ANY, vdm.name());
 		this.vdm = vdm;
-		this.isa = isa;
+		// if (isa.equals("__"))
+		// 	this.isa = createNewId();
+		// else
+			this.isa = isa;
 		// all but underscore, for dummy pattern in identifiers as valid 
 		if (!isa.equals("_") && !isa.isEmpty())
 		{
-			IsaTemplates.ALL_ISA_TOKENS.add(isa);
+			//IsaTemplates.ALL_ISA_TOKENS.add(isa);
+			ALL_ISA_TOKENS.add(isa);
 			IsaIdentifier.addIsaToken(isa);
 		}
 	}
+
+	// private static final String createNewId()
+	// {
+	// 	String result = "id" + idCount;
+	// 	idCount++;
+	// 	return result;
+	// }
 
 	//TODO add infixlr notation here to know where/when to "pad" the string?
 	@Override
@@ -390,8 +429,6 @@ public enum IsaToken {
 			(identifier.equals(IsaToken.PLACEHOLDER.toString()) ||
 			!identifier.startsWith(IsaToken.UNDERSCORE.toString()));
     }
-
-	protected static long dummyCount = 0;
 
 	private static final String dummyName(int idx, boolean requiresFreshness)
 	{

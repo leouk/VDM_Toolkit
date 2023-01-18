@@ -84,9 +84,9 @@ public class TRRecordType extends TRInvariantType
     }
 
     @Override
-    public Set<String> getDefLemmas()
+    public Set<String> doGetDefLemmas()
     {
-        Set<String> result = super.getDefLemmas();
+        Set<String> result = super.doGetDefLemmas();
         result.addAll(fields.getDefLemmas());
         return result;
     }
