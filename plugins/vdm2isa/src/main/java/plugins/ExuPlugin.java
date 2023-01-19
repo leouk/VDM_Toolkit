@@ -14,14 +14,13 @@ import com.fujitsu.vdmj.tc.definitions.TCExplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCTypeDefinition;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
-import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.visitors.exu.TCExuFunctionCallFinder;
 import vdm2isa.messages.IsaWarningMessage;
-import vdm2isa.tr.expressions.visitors.TCRFunctionCallFinder;
 
 public class ExuPlugin extends GeneralisaPlugin {
    
@@ -140,7 +139,7 @@ public class ExuPlugin extends GeneralisaPlugin {
     {
         if (spec != null)
         {
-            TCRFunctionCallFinder finder = new TCRFunctionCallFinder(IsaProperties.exu_linient_inv_check);
+            TCExuFunctionCallFinder finder = new TCExuFunctionCallFinder(IsaProperties.exu_linient_inv_check);
             // use a list instead of set to get warnings at every call, not just the first! 
             TCNameList found = new TCNameList();
             found.addAll(spec.body.apply(finder, null));
@@ -229,6 +228,11 @@ public class ExuPlugin extends GeneralisaPlugin {
         }
     }
 
+    protected void checkFieldExpressionTypes(TCDefinition d)
+    {
+        d.getFreeVariables();
+    }
+
     protected void checkPatterns(TCDefinition d)
     {
         // Check for duplicated structured/record pattern in d
@@ -247,16 +251,21 @@ public class ExuPlugin extends GeneralisaPlugin {
 		return null;
 	}
 
+    protected void checkModule(TCModule module)
+    {
+        for(TCDefinition d : module.defs)
+        {
+            checkSpecificationDependencies(d, tclist);
+            checkPatterns(d);
+        }
+    }
+
     protected void checkModules(TCModuleList tclist) 
     {
         int mcount = 0;
         for(TCModule m : tclist)
         {         
-            for(TCDefinition d : m.defs)
-            {
-                checkSpecificationDependencies(d, tclist);
-                checkPatterns(d);
-            }
+            checkModule(m);
             mcount++;
         }
         addLocalModules(mcount);

@@ -20,6 +20,7 @@ import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.modules.TRModule;
 import vdm2isa.tr.modules.TRModuleList;
+import vdm2isa.tr.templates.IsaIdentifier;
 import vdm2isa.tr.templates.IsaTemplateException;
 
 public class Vdm2isaPlugin extends GeneralisaPlugin
@@ -76,6 +77,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
 		// no need to clear before construction; already empty
 		if (translatedModules != null)
 			translatedModules.clear();
+		IsaIdentifier.reset();
 	}
 
 	@Override
