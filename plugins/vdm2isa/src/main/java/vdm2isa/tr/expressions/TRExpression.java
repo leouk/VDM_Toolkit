@@ -24,10 +24,13 @@ import vdm2isa.tr.types.TRRecordType;
 import vdm2isa.tr.types.TRSeqType;
 import vdm2isa.tr.types.TRSetType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeSet;
+import vdm2isa.tr.types.TRUnionType;
 import vdm2isa.tr.types.TRUnknownType;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.fujitsu.vdmj.lex.LexLocation;
@@ -537,9 +540,25 @@ public abstract class TRExpression extends TRNode
     public final TRType getRecordType()
     {
         TRType result = doGetRecordType();
-        if (!(result.ultimateType() instanceof TRRecordType))
+        TRType utype = result.ultimateType();
+        if (utype instanceof TRUnionType)
         {
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), result.getClass().getSimpleName());            
+            TRUnionType unionType = (TRUnionType)utype;
+            TRTypeSet utset = unionType.getDataTypeConstructors();
+            Iterator<TRType> utsetit = utset.iterator();
+            while (utsetit.hasNext())
+            {
+                TRType t = utsetit.next();
+                if (!(t instanceof TRRecordType))
+                {
+                    warning(IsaWarningMessage.ISA_INVALID_FIELD_PROJECTION_4P, 
+                        getVDMExpr(), unionType.getVDMType(), t.getVDMType(), t.getVDMType().getClass().getSimpleName());
+                }
+            } 
+        }
+        else if (!(utype instanceof TRRecordType))
+        {
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_3P, getVDMExpr(), utype.getVDMType(), utype.getClass().getSimpleName());            
         }
         return result;
     }
@@ -646,7 +665,7 @@ public abstract class TRExpression extends TRNode
         // //TODO missing various cases, like iota, mu, if, etc.!!!!
         // if (!okay)
         // {
-        //     report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, getClass().getSimpleName(), "???");            
+        //     report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_3P, getVDMExpr(), "???", "???");            
         // }
     }
 
