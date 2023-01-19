@@ -1,4 +1,4 @@
-package vdm2isa.tr.definitions.visitors;
+package plugins.visitors.exu;
 
 import java.util.Collection;
 

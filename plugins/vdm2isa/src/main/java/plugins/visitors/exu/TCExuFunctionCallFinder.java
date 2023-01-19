@@ -1,4 +1,4 @@
-package vdm2isa.tr.expressions.visitors;
+package plugins.visitors.exu;
 
 import java.util.Iterator;
 
@@ -18,11 +18,11 @@ import com.fujitsu.vdmj.typechecker.TypeComparator;
 /**
  * Just like VDMJ's call finder, but filtering out map calls
  */
-public class TCRFunctionCallFinder extends TCFunctionCallFinder {
+public class TCExuFunctionCallFinder extends TCFunctionCallFinder {
 
     private final boolean linientInvCheck;
 
-    public TCRFunctionCallFinder(boolean linientInvCheck)
+    public TCExuFunctionCallFinder(boolean linientInvCheck)
     {
         super();
         this.linientInvCheck = linientInvCheck;
