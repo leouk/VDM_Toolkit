@@ -81,6 +81,11 @@ public class IsaIdentifier extends IsaAbstractTemplate {
     // Has to be here and not in IsaToken, because cannot be in Enum initialiser + constructor
     private static final Set<String> ALL_ISA_TOKENS = new TreeSet<String>();
 
+	public static final void reset()
+	{
+		ALL_ISA_TOKENS.clear();
+	}
+	
     public static final void addIsaToken(String token)
     {
         assert token != null && !token.isEmpty();

@@ -17,6 +17,7 @@ public class VDM2IsaMessage extends VDMMessage {
     public static final int ISABELLE_W_ISA_BASE        = VDM2IsaMessage.ISABELLE_WARNING_BASE + 200;
     public static final int ISABELLE_W_PO_BASE         = VDM2IsaMessage.ISABELLE_WARNING_BASE + 300;
 
+    public static final int VDMJ_OTHER_MESSAGE_BASE    = 12000;
     public static final int VDMJ_MESSAGE_NUMBER_MAX    = 6999;//9999;
     
     public VDM2IsaMessage(int number, String message, LexLocation location) 

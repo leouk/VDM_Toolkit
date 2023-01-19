@@ -37,7 +37,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
         {
             if (t.getNameToken() == null)
             {
-                record.report(IsaErrorMessage.VDMSL_INVALID_FIELD_NOTAGNAME_1P, record.getName());
+                record.report(IsaErrorMessage.VDMSL_INVALID_FIELD_NOTAGNAME_2P, t.getNameToken(), record.getName());
             }
             else
             {
@@ -117,7 +117,7 @@ public class TRRecordPattern extends TRAbstractContextualPattern {
         {
             // if can't find the fields, then fall back and report error
             fieldName = plist.get(index).invTranslate();
-            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_2P, this.typename, type.getVDMType().toString());
+            report(IsaErrorMessage.ISA_FIELDEXPR_RECORDNAME_3P, this.getVDMPattern(), type.getVDMType(), type.getClass().getSimpleName());
         }
 
         // project the field out so it's available

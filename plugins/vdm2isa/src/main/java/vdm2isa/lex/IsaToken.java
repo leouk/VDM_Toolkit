@@ -343,7 +343,8 @@ public enum IsaToken {
 		{
 			//IsaTemplates.ALL_ISA_TOKENS.add(isa);
 			ALL_ISA_TOKENS.add(isa);
-			IsaIdentifier.addIsaToken(isa);
+			if (isa.equals("__"))
+				IsaIdentifier.addIsaToken(isa);
 		}
 	}
 

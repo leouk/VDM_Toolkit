@@ -48,12 +48,17 @@ public enum IsaWarningMessage {
     "Result of the power operator is context dependenant on second argument type being nat or real."),
     ISA_USE_BEFORE_DECL_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 6,
     "Type `%1$s` used before being defined might generate translation errors; managed to figure out it is a `%2$s` type."),
-    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaError.ISABELLE_W_ISA_BASE + 7,
+    ISA_MAP_COMP_TYPE_BINDINGS(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 7,
     "Map comprehension with type bindings will generate difficult map finiteness proof."),
-    ISA_INVALID_MODULE_NAME_2P(VDM2IsaError.ISABELLE_W_ISA_BASE + 8, 
+    ISA_INVALID_MODULE_NAME_2P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 8, 
     "Module `%1$s` translation will be saved in a file with the same name instead of the one in \n\tFiles = %2$s"),
+    ISA_INVALID_FIELD_PROJECTION_4P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 9, 
+    "Field expression `%1$s` record type is (`%2$s`); type `%3$s` (`%4$s`) is not a record type! This will lead to an `undefined` value"),
+    ISA_INVALID_FIELD_UNKOWN_PROJECTION_3P(VDM2IsaWarning.ISABELLE_W_ISA_BASE + 10,
+    "Field expression `%1$s` record type (`%2$s`) does not have field name `%3$s`! This will lead to an `undefined` value"),                
 
-    PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P(VDM2IsaError.ISABELLE_W_PO_BASE + 0,
+
+    PO_NOT_TRANSLATED_POS_LEFT_UNPROCESSED_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 0,
     "PO conversion failed because of an unexpected VDMJ error. They were converted to Isabelle as comments. \n\t%1$s"),    
     PO_UNEXPECTED_PROOFSTEP_1P(VDM2IsaWarning.ISABELLE_W_PO_BASE + 1, 
     "Attempting to create proof step with definition %1$s.");
@@ -63,7 +68,7 @@ public enum IsaWarningMessage {
 
     private IsaWarningMessage(int number, String message)
     {
-        assert number >= VDM2IsaError.ISABELLE_WARNING_BASE;
+        assert number >= VDM2IsaMessage.ISABELLE_WARNING_BASE && number < VDM2IsaMessage.VDMJ_OTHER_MESSAGE_BASE;
         this.number = number;
         this.message = message;
     }    

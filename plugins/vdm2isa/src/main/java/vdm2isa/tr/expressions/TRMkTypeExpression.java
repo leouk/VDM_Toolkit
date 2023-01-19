@@ -8,7 +8,6 @@ import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
 import vdm2isa.tr.expressions.visitors.TRExpressionVisitor;
-import vdm2isa.tr.types.TRAbstractInnerTypedType;
 import vdm2isa.tr.types.TRField;
 import vdm2isa.tr.types.TRFieldList;
 import vdm2isa.tr.types.TROptionalType;

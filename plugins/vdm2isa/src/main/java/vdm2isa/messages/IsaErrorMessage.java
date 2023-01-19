@@ -67,8 +67,8 @@ public enum IsaErrorMessage {
     "Incompatible field (%2$s) type in `mk_%1$s` expression: expected `%3$s` but found `%4$s`."),
     VDMSL_INVALID_STATE_INIT_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 19, 
     "Invalid state initialisation expression: it must be a equals expression for `$1%s`"),
-    VDMSL_INVALID_FIELD_NOTAGNAME_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 20,
-    "Field has no tag name in record %1$s"),
+    VDMSL_INVALID_FIELD_NOTAGNAME_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 20,
+    "Field has no tag name in record `%1$s`"),
     VDMSL_INVALID_MUTUALLY_RECURSIVE_CYCLE(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 21,
     "Invalid mutually recursive call. Could not find function name for apply expr root %1$s"),
 
@@ -112,8 +112,8 @@ public enum IsaErrorMessage {
     "Invalid invariant type for %1$s : %2$s."),
     ISA_INVALID_TYPEINVARIANT_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 16, 
     "Could not figure out invariant specification for type definition %1$s"),
-    ISA_FIELDEXPR_RECORDNAME_2P(VDM2IsaError.ISABELLE_E_ISA_BASE + 17, 
-    "Could not retrieve record type in field expression for %1$s; found %2$s type"),
+    ISA_FIELDEXPR_RECORDNAME_3P(VDM2IsaError.ISABELLE_E_ISA_BASE + 17, 
+    "Could not retrieve record type in field expression for `%1$s`; found `%2$s` type (`%3$s`)"),
     ISA_INVALID_OPTION_CASE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 18, 
     "VDM cases other clause for option type expression `%1$s` is not allowed in Isabelle."),
     ISA_INVALID_EXPRCHAIN_TYPE_1P(VDM2IsaError.ISABELLE_E_ISA_BASE + 19,
@@ -169,7 +169,7 @@ public enum IsaErrorMessage {
 
     private IsaErrorMessage(int number, String message)
     {
-        assert number >= VDM2IsaError.ISABELLE_E_PLUGIN_BASE;
+        assert number >= VDM2IsaMessage.ISABELLE_E_PLUGIN_BASE && number < VDM2IsaMessage.ISABELLE_WARNING_BASE;
         this.number = number;
         this.message = message;
     } 
