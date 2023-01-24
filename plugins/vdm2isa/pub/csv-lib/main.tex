@@ -473,6 +473,26 @@ For the given row, the user-defined function \texttt{calculate\_bmi} calculates 
 
 Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{\scriptsize CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
 
+\begin{lstlisting}[]
+CSV (IO) error: ignoring 1 short rows from "CSVExample.csv"
+    (1, 5): "CSV row 1 is too short for header: 
+                expected 5 columns found 4 columns"
+CSV invariants failed for "CSVExample.csv": 
+                14CSV invariant failure at 14 cells: 
+    ...
+
+    (3, 2): "Invalid cell invariant: below minimal age"
+    (4, 1): "Invalid col  invariant: repeated names"
+    (4, 2): "Invalid cell invariant: above maximal age"
+    (4, 3): "Invalid cell invariant: above maximal weight"
+    (4, 5): "Invalid cell invariant: above maximal BMI"
+    ...  
+\end{lstlisting}
+
+Output generated due to an import issue displays the violating cell in as a row/column tuple to aid the user in identifying and correcting the issue. Error output due to a custom invariant provides the user defined message as well the type of invariant it is (cell, row, column, file). Implicit failure such as short rows provided a standardised output.
+
+
+
 %\lfcomment{Add here the error report output?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
