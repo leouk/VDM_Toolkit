@@ -329,7 +329,10 @@ For the \texttt{Age} header above, users could define \texttt{cell\_inv} (L1--3)
 %         "column is not in ascending order"
 % else nil);
 %
-Row invariants are useful for checking dependencies/redundancies across the row cells. If the CSV file had three extra \texttt{<Float>} headers for weight, height and BMI (Body Mass Index), there are interesting checks possible. For instance, given age type range (\texttt{\{18\ldots 65\}}) it is possible to presume some minimum height expected (\textit{i.e.}~row dependency invariant); and given BMI's formulae (\(\frac{height}{weight^2}\)), its cell value can be calculated (\textit{i.e.}~row redundancy invariant).     
+Row invariants are useful for checking dependencies/redundancies across the row cells. If the CSV file had three extra \texttt{<Float>} headers for weight, height and BMI (Body Mass Index), there are interesting checks possible. For instance, given age type range (\texttt{\{18\ldots 65\}}) it is possible to presume some minimum height expected (\textit{i.e.}~row dependency invariant); and given BMI's formulae (\(\frac{height}{weight^2}\)), its cell value can be calculated (\textit{i.e.}~row redundancy invariant).    
+
+\abcomment{Not sure if this a good example for file invariant}
+File invariants acts upon on the whole dataset. This might be useful when certain properties needs to be correlated across multiple rows and columns. An example of this would the importation of end of year financial records, where tax calculations individual taxes are calculated for each row and their summation is correlated to some previously established value. 
 
 %\lfcomment{Add here some example of ile invariant? }
 
