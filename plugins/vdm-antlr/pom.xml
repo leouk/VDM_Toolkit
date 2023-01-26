@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>vdmtoolkit</groupId>
+		<artifactId>VDMToolkit-suite</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<!-- ANTLR version, which percolates to all dependent POMs -->	
+		<org.antlr.antlr-version>4.11.2-SNAPSHOT</org.antlr.antlr-version>
+	</properties>
+
+
+	<artifactId>vdm-antlr</artifactId>
+	<name>vdm-antlr</name>
+	<description>VDM-SL ANTLR parser</description>
+
+	<developers>
+		<developer>
+			<id>leouk</id>
+			<name>Leo Freitas</name>
+			<email>leo.york@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>vdmj</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency>
+		<dependency> 
+		    <groupId>org.antlr</groupId> 
+		    <artifactId>antlr4</artifactId> 
+		    <version>${org.antlr.antlr-version}</version> 
+		</dependency> 
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+					<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/test/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
+								</resource>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
+									<include>ROOT</include>
+									<include>VDMJ-class-mapping.md</include>
+								</resource>
+								<resource>
+									<directory>.</directory>
+									<filtering>false</filtering>
+									<include>LICENCE</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
