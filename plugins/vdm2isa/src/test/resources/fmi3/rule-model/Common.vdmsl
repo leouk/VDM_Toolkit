@@ -155,7 +155,7 @@ functions
 		if tdefs = nil or name = nil
 		then nil
 		elseif exists tdef in seq tdefs & tdef.name = name
-		then let tdef in seq tdefs be st tdef.name = name in tdef	-- Pick any type
+		then nil--let tdef in seq tdefs be st tdef.name = name in tdef	-- Pick any type
 		else nil
 	post RESULT <> nil => RESULT.name = name;
 
