@@ -11,7 +11,7 @@
 
 	<properties>
 		<!-- ANTLR version, which percolates to all dependent POMs -->	
-		<org.antlr.antlr-version>4.11.2-SNAPSHOT</org.antlr.antlr-version>
+		<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>
 	</properties>
 
 

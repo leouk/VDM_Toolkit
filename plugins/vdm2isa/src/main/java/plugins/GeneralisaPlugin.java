@@ -63,9 +63,9 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
-            // ,"./fmi3/rule-model" 
-            // ,"./fmi3/rule-model/Rules"
-            // ,"./fmi3/rule-model/Tests"
+             ,"./fmi3/rule-model" 
+             ,"./fmi3/rule-model/Rules"
+             ,"./fmi3/rule-model/Tests"
             //, "./lvl0"
             //    ,"./lvl0/TestV2IEmpty.vdmsl"
             //    ,"./lvl0/TestV2IExprs.vdmsl"
@@ -85,7 +85,7 @@ public abstract class GeneralisaPlugin extends CommandPlugin {
             //    ,"./lvl0/TestV2ITypesRecordOrdering.vdmsl"
             //    ,"./lvl0/TestV2ITypesRecords.vdmsl"
             //    ,"./lvl0/TestV2ITypesStructured.vdmsl"
-            , "./lvl0/TestV2ITypesFieldOfUnion.vdmsl" 
+            //, "./lvl0/TestV2ITypesFieldOfUnion.vdmsl" 
 
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"./lvl0/TestV2IBindsComplex.vdmsl"
