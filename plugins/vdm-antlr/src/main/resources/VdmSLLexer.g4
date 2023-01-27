@@ -55,118 +55,128 @@ lexer grammar VdmSLLexer;
 //------------------------
 	
 //------------------------
-// Keywords (case sensitive); added all for simplicity
+// Keywords (case sensitive); add PP/RT?
 //------------------------
-SL_KEYWORD:
-	  'abs' 
-	| 'and' 
-	| 'as' 
-	| 'be' 
-	| 'bool' 
-	| 'by' 
-	| 'card' 
-	| 'cases' 
-	| 'char' 
-	| 'comp' 
-	| 'compose' 
-	| 'conc' 
-	| 'dcl' 
-	| 'def' 
-	| 'definitions' 
-	| 'dinter' 
-	| 'div' 
-	| 'do'
-	| 'dom' 
-	| 'dunion' 
-	| 'elems' 
-	| 'else' 
-	| 'elseif' 
-	| 'end' 
-	| 'eq' 
-	| 'error' 
-	| 'errs' 
-	| 'exists' 
-	| 'exists1' 
-	| 'exit' 
-	| 'exports' 
-	| 'ext' 
-	| 'false' 
-	| 'floor'
-	| 'for' 
-	| 'forall' 
-	| 'from' 
-	| 'functions' 
-	| 'hd' 
-	| 'if' 
-	| 'in' 
-	| 'inds' 
-	| 'inmap' 
-	| 'int' 
-	| 'inter'
-	| 'imports' 
-	| 'init' 
-	| 'inv' 
-	| 'inverse' 
-	| 'iota' 
-	| 'is'
-	| 'lambda' 
-	| 'len' 
-	| 'let'
-	| 'map' 
-	| 'measure' 
-	| 'merge' 
-	| 'mod' 
-	| 'module' 
-	| 'mu' 
-	| 'munion' 
-	| 'nat' 
-	| 'nat1' 
-	| 'nil' 
-	| 'not' 
-	| 'of' 
-	| 'operations' 
-	| 'or' 
-	| 'ord' 
-	| 'others' 
-	| 'post' 
-	| 'power' 
-	| 'pre' 
-	| 'pure' 
-	| 'rat' 
-	| 'rd' 
-	| 'real' 
-	| 'rem' 
-	| 'renamed' 
-	| 'return' 
-	| 'reverse' 
-	| 'rng'
-	| 'seq' 
-	| 'seq1'
-	| 'set' 
-	| 'set1' 
-	| 'skip' 
-	| 'specified' 
-	| 'st' 
-	| 'state' 
-	| 'subset' 
-	| 'then' 
-	| 'tixe'
-	| 'tl' 
-	| 'to' 
-	| 'token' 
-	| 'traces' 
-	| 'trap' 
-	| 'true' 
-	| 'types' 
-	| 'undefined' 
-	| 'union' 
-	| 'variables' 
-	| 'values'
-	| 'while' 
-	| 'wr' 
-	| 'yet' 
-	| 'RESULT' ;
+SLK_abs        : 'abs';
+SLK_all		   : 'all';
+SLK_and        : 'and';
+SLK_as         : 'as';
+SLK_be         : 'be';
+SLK_bool       : 'bool';
+SLK_by         : 'by'; 
+SLK_card       : 'card';
+SLK_cases      : 'cases';
+SLK_char       : 'char';
+SLK_compose    : 'compose';
+SLK_comp       : 'comp';
+SLK_conc       : 'conc';
+SLK_dcl        : 'dcl';
+SLK_def        : 'def';
+SLK_definitions: 'definitions';
+SLK_dinter     :'dinter';
+SLK_div        : 'div';
+SLK_do         : 'do';
+SLK_dom        : 'dom';
+SLK_dunion     : 'dunion';
+SLK_elems      : 'elems';
+SLK_else       : 'else';
+SLK_elseif     : 'elseif';
+SLK_end        : 'end';
+SLK_eq         : 'eq';
+SLK_error 	  : 'error';
+SLK_errs 	  : 'errs' ;
+SLK_exists 	  : 'exists' ;
+SLK_exists1   : 'exists1' ;
+SLK_exit 	  : 'exit' ;
+SLK_exports   : 'exports' ;
+SLK_ext 	  : 'ext' ;
+SLK_false	  : 'false' ;
+SLK_floor	  : 'floor';
+SLK_for 	  : 'for' ;
+SLK_forall 	  : 'forall' ;
+SLK_from      : 'from' ;
+SLK_functions : 'functions'; 
+SLK_hd        : 'hd' ;
+SLK_if        : 'if' ;
+SLK_in        : 'in' ;
+SLK_inds      : 'inds' ;
+SLK_inmap     : 'inmap' ;
+SLK_int       : 'int' ;
+SLK_inter	  : 'inter';
+SLK_imports   : 'imports' ;
+SLK_init      : 'init' ;
+SLK_inv       : 'inv' ;
+SLK_inverse   : 'inverse' ;
+SLK_iota      : 'iota' ;
+SLK_is	      : 'is';
+SLK_lambda    : 'lambda' ;
+SLK_len       : 'len' ;
+SLK_let 	  : 'let';
+SLK_map       : 'map' ;
+SLK_measure   : 'measure' ;
+SLK_merge     : 'merge' ;
+SLK_mod       : 'mod' ;
+SLK_module    : 'module' ;
+SLK_mu        : 'mu' ;
+SLK_munion    : 'munion' ;
+SLK_nat       : 'nat' ;
+SLK_nat1      : 'nat1' ;
+SLK_nil       : 'nil' ;
+SLK_not       : 'not' ;
+SLK_of        : 'of' ;
+SLK_operations: 'operations'; 
+SLK_or        : 'or' ;
+SLK_ord       : 'ord' ;
+SLK_others    : 'others' ;
+SLK_post      : 'post' ;
+SLK_power     : 'power' ;
+SLK_pre       : 'pre' ;
+SLK_pure      : 'pure' ;
+SLK_rat       : 'rat' ;
+SLK_rd        : 'rd' ;
+SLK_real      : 'real' ;
+SLK_rem       : 'rem' ;
+SLK_renamed   : 'renamed' ;
+SLK_return    : 'return' ;
+SLK_reverse   : 'reverse' ;
+SLK_rng	      : 'rng';
+SLK_seq       : 'seq' ;
+SLK_seq1	  : 'seq1';
+SLK_set       : 'set' ;
+SLK_set1      : 'set1' ;
+SLK_skip      : 'skip' ;
+SLK_specified : 'specified'; 
+SLK_st        : 'st' ;
+SLK_state     : 'state' ;
+SLK_struct	  : 'struct';
+SLK_subset    : 'subset' ;
+SLK_then      : 'then' ;
+SLK_tixe	  : 'tixe';
+SLK_tl        : 'tl' ;
+SLK_to        : 'to' ;
+SLK_token     : 'token' ;
+SLK_traces    : 'traces' ;
+SLK_trap      : 'trap' ;
+SLK_true      : 'true' ;
+SLK_types     : 'types' ;
+SLK_undefined : 'undefined'; 
+SLK_union     : 'union' ;
+SLK_variables : 'variables'; 
+SLK_values    : 'values';
+SLK_while     : 'while' ;
+SLK_wr        : 'wr' ;
+SLK_yet       : 'yet' ;
+SLK_RESULT    : 'RESULT'  ;
 
+PPK_access    : 'access';
+PPK_class	  : 'class';
+PPK_private   : 'private';
+PPK_protected : 'protected';
+PPK_public    : 'public';
+PPK_subclass  : 'subclass';
+RTK_system    : 'system';
+
+/* 
 PP_KEYWORD:
 	  'class'
 	| 'instance' 
@@ -181,7 +191,6 @@ PP_KEYWORD:
 	| 'samebaseclass' 
 	| 'sameclass' 
 	| 'self' 
-	| 'struct' 
 	| 'subclass' 
 	| 'uselib' 
 	| 'with' ;
@@ -212,11 +221,7 @@ RT_KEYWORD:
 	| 'thread' 
 	| 'threadid' 
 	| 'time';
-
-KEYWORD:
-	  SL_KEYWORD 
-	| PP_KEYWORD
-	| RT_KEYWORD;
+*/
 
 EXPONENT: ('E' | 'e') ('+' | '-')? NUMERAL; 
 DECIMAL_LITERAL: NUMERAL ('.' NUMERAL)? (EXPONENT)?;
@@ -253,22 +258,22 @@ SYMBOLIC_LITERAL:
 //    operator precedence are tricky! 
 O_IFF: '<=>';
 O_IMPLIES: '=>' ;
-O_NOT: 'not';
-O_AND: 'and';
-O_OR: 'or';
 O_NOT_EQUAL: '<>';
 O_LT: '<' ;
 O_GT: '>' ;
-O_EQUAL: '=';
-O_COMMA: ',';
-O_SUCH_THAT: '|';
-O_COLON: ':';
-O_SEMICOLON: ';';
 O_DIV: '/';
 O_TIMES: '*';
 O_PLUS: '+';
 O_MINUS: '-';
 O_EXP: '**';
+
+SEP_comma: ',';
+SEP_colon: ':';
+SEP_scolon:';';
+SEP_bar  : '|';
+SEP_equal: '=';
+SEP_pfcn: '->';
+SEP_tfcn: '+>';
 
 PAREN_L: '(';
 PAREN_R: ')';
@@ -278,6 +283,8 @@ BRACE_L: '{';
 BRACE_R: '}';
 
 IDENTIFIER: INITIAL_LETTER FOLLOWING_LETTER*;
+
+TYPE_VARIABLE_IDENTIFIER: '@' IDENTIFIER;
 
 //------------------------
 // Fragments necessary for the lexer that we choose not to tokenize individually
