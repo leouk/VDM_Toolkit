@@ -173,6 +173,7 @@ PPK_class	  : 'class';
 PPK_private   : 'private';
 PPK_protected : 'protected';
 PPK_public    : 'public';
+PPK_static    : 'static';
 PPK_subclass  : 'subclass';
 RTK_system    : 'system';
 
