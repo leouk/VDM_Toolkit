@@ -1,6 +1,5 @@
 experiments/Games/ConwayGL/target
 experiments/Games/ConwayGL/bin
-experiments/Games/ConwayNB/bin
 plugins/vdm2isa/java/.generated
 plugins/vdm2isa/.ci-friendly-pom.xml
 plugins/vdm2isa/java/src/main/resources/.generated
