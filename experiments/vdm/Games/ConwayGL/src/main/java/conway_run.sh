@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rlwrap java -cp /usr/local/lib/vdmj-4.4.4-SNAPSHOT.jar:./ConwayGL-1.0.jar com.fujitsu.vdmj.VDMJ -vdmsl -i Conway.vdmsl Graphics.vdmsl
+rlwrap java -cp ~/.m2/repository/dk/au/ece/vdmj/vdmj/4.5.0-SNAPSHOT/vdmj-4.5.0-SNAPSHOT.jar:~/.m2/repository/com/github/vdm_toolkit/ConwayGL/1.0-SNAPSHOT/ConwayGL-1.0-SNAPSHOT.jar com.fujitsu.vdmj.VDMJ -vdmsl -i Conway.vdmsl Graphics.vdmsl

@@ -36,3 +36,4 @@ plugins/vdm2isa/pub/isq-lib/main.bbl
 plugins/vdm2isa/pub/isq-lib/main.blg
 plugins/vdm-antlr/target
 plugins/vdm-antlr/src/main/resources/.antlr
+experiments/vdm/Games/ConwayGL/target
