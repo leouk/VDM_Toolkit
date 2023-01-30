@@ -1,6 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "workbench.view.alwaysShowHeaderActions": true,
     "workbench.tree.renderIndentGuides": false,
     "files.exclude": {
         "**/.git": true,
@@ -23,6 +21,7 @@
         "**/*.log": true,
         "**/.vscode": true
     },
+    "workbench.view.alwaysShowHeaderActions": true,
     "[pvs]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}|;:'\",.<>/"
     }

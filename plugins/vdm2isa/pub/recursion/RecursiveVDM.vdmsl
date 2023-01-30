@@ -9,7 +9,21 @@ functions
    -- measure_factorial(n) == n
    measure n;   
    
-       ack: nat * nat -> nat 
+   --@LF attempt at getting PVS's ackerman measure, but they use Cantor's normal form for ordinals!
+--     add: nat * nat * seq of nat -> (seq of nat )
+--     add(x, n, s) == [ s(i) | i in set {1,...,n}]
+
+--    ackmeasure: nat * nat -> nat 
+--    ackmeasure(m,n) ==
+--         (if m = 0 then 
+--             0 
+--          else if n = 0 then 
+--             add(m, add(1, 0, []), [])
+--         else 
+--             add(m, add(1, 0, []), add(n, 0, []))
+--         );
+
+    ack: nat * nat -> nat 
     ack(m,n) ==
         --@Printf("ack(%1s, %2s): +=%3s, *=%4s, *'=%5s, £=%6s, $=%7s\n", 
         --          m, n, m+n, m*10+n, (m+2)*10-(n+1),
