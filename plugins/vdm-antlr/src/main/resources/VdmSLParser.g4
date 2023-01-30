@@ -47,6 +47,14 @@ import VdmSLLexer;
 
 //------------------------
 // Parser Rules (ATTN: in antlr, all parser rules start with a small letter)
+//
+// To test it: 
+// * download antlr4 tools: pip3 install antlr4-tools
+// * switch to java 11 if necessary (ANTLR *must* compile to Java 11)
+// * run parser on grammar: antlr4 VdmSLParser.g4
+// * run visualisation    : antlr4-parse VdmSLParser.g4 sl_document -gui
+// * type the program of interest followed by Control-D
+// * you get the GUI for the current grammar.
 //------------------------
 
 //------------------------
@@ -61,10 +69,10 @@ sl_document
 // A.1.1 Module, imports and exports 
 //------------------------
 module
-    : SLK_module IDENTIFIER interface module_body? SLK_end IDENTIFIER
+    : SLK_module IDENTIFIER sl_interface module_body? SLK_end IDENTIFIER
     ;
 
-interface
+sl_interface
     : import_definition_list export_definition;
 
 import_definition_list 
@@ -175,7 +183,7 @@ module_body
 //------------------------
 
 rt_document
-    : (class | system)+
+    : (pp_class | system)+
     ;
 
 //------------------------
@@ -194,7 +202,7 @@ rt_class_body
 // A.3.1 Classes  
 //------------------------
 
-class 
+pp_class
     : PPK_class IDENTIFIER inheritance_clause? class_body? SLK_end IDENTIFIER
     ;
 
@@ -276,19 +284,19 @@ type_specification
     ;
 
 type 
-    : bracketed_type    #BracketedType  
-    | basic_type        #BasicType
-    | quote_type        #QuoteType
-    | composite_type    #CompositeType
-    | union_type        #UnionType
-    | product_type      #ProductType
-    | optional_type     #OptionalType
-    | set_type          #SetType
-    | seq_type          #SeqType
-    | map_type          #MapType
-    | function_type     #FunctionType
-    | type_name         #TypeName
-    | type_variable     #TypeVariable
+    : bracketed_type    #TLDBracketedType  
+    | basic_type        #TLDBasicType
+    | quote_type        #TLDQuoteType
+    | composite_type    #TLDCompositeType
+//    | union_type        #TLDUnionType
+//    | product_type      #TLDProductType
+    | optional_type     #TLDOptionalType
+    | set_type          #TLDSetType
+    | seq_type          #TLDSeqType
+    | map_type          #TLDMapType
+//    | function_type     #TLDFunctionType
+    | type_name         #TLDTypeName
+    | type_variable     #TLDTypeVariable
     ;
 
 bracketed_type 
