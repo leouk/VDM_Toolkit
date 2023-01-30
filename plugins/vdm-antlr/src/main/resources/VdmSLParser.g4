@@ -219,7 +219,7 @@ rt_definition_block
 
 //TODO    
 pp_definition_block 
-    : ESC
+    : 'porrs' 
     //   pp_type_definitions
     // | state_definition 
     // | value_definitions 
@@ -231,11 +231,11 @@ pp_definition_block
 
 sl_definition_block
     : type_definitions
-    | state_definition 
-    | value_definitions 
-    | function_definitions
-    | operation_definitions
-    | traces_definitions
+    // | state_definition 
+    // | value_definitions 
+    // | function_definitions
+    // | operation_definitions
+    // | traces_definitions
     ;
 
 //------------------------
@@ -276,19 +276,19 @@ type_specification
     ;
 
 type 
-    : bracketed_type 
-    | basic_type 
-    | quote_type 
-    | composite_type
-    | union_type 
-    | product_type
-    | optional_type 
-    | set_type
-    | seq_type
-    | map_type
-    | function_type 
-    | type_name 
-    | type_variable
+    : bracketed_type    #BracketedType  
+    | basic_type        #BasicType
+    | quote_type        #QuoteType
+    | composite_type    #CompositeType
+    | union_type        #UnionType
+    | product_type      #ProductType
+    | optional_type     #OptionalType
+    | set_type          #SetType
+    | seq_type          #SeqType
+    | map_type          #MapType
+    | function_type     #FunctionType
+    | type_name         #TypeName
+    | type_variable     #TypeVariable
     ;
 
 bracketed_type 
@@ -314,11 +314,11 @@ field
     ;
 
 union_type 
-    : type ('|' type)+
+    : type ('|' type)+ #UnionType
     ;
 
 product_type 
-    : type ('*' type)+
+    : type ('*' type)+ #ProductType
     ;
 
 optional_type 
@@ -376,8 +376,8 @@ total_function_type
     ;
 
 discretionary_type 
-    : '(' ')'
-    | type
+    : '(' ')'   #VoidType
+    | type      #FunctionType
     ;
 
 type_name
@@ -397,7 +397,7 @@ eq_clause
     ;
 
 ord_clause
-    : SLK_ord pattern SEP_lt invariant_initial_function
+    : SLK_ord pattern O_LT invariant_initial_function
     ;
 
 //@NB refactored this one given equivalence
@@ -409,7 +409,8 @@ invariant_initial_function
 // A.4.1 VDM-SL state definition
 //------------------------
 
-state_definition 
+//state_definition 
+
 
 
 //------------------------
@@ -422,3 +423,7 @@ name: IDENTIFIER;
 //------------------------
 // Module 
 //------------------------
+pattern : 'pat';
+expression : 'exp';
+type_variable_list: 'tpvarlist';
+operation_type: 'optype';
