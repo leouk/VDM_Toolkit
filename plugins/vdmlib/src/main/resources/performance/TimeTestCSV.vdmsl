@@ -8,13 +8,13 @@ imports
             ferror renamed ferror;
     ,from CSVLib 
         types
-            CSVType renamed CSVType;
+            --CSVType renamed CSVType;
             CSVSettings renamed CSVSettings;
             Headers0 renamed Headers0;
             Header0 renamed Header0;
         operations
             loadCSV renamed loadCSVLib;
-            printCSV renamed printCSV;
+            --printCSV renamed printCSV;
     ,from IO 
         operations  
             printf renamed printf;
@@ -75,6 +75,7 @@ definitions
             if count in set files then (
                 dcl filename: String1 := val2seq_of_char[nat](count) ^ ".csv";
                 --@Time("CSV %2s \n", count)
+                --@Warning(5000)
                 dcl data: seq of ? := loadCSV("CSVs/" ^ filename);
                 return;
             )
