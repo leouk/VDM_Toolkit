@@ -59,6 +59,10 @@ lexer grammar VDMLex;
 //------------------------
 SLK_inys       : SLK_is SLK_not SLK_yet SLK_specified;
 SLK_best       : SLK_be SLK_st;
+SLK_ninset     : SLK_not SLK_in SLK_set;
+SLK_ninseq     : SLK_not SLK_in SLK_seq;
+SLK_inset      : SLK_in SLK_set;
+SLK_inseq      : SLK_in SLK_seq;
 SLK_abs        : 'abs';
 SLK_all		   : 'all';
 SLK_and        : 'and';
@@ -259,22 +263,32 @@ SYMBOLIC_LITERAL:
 //@LF Paolo prefers to lex operators separaterly, as ANTLR rules for
 //    operator precedence are tricky! 
 O_IFF: '<=>';
+O_NEQ: '<>';
+O_LEQ: O_LT O_EQUAL;//<=
+O_GEQ: O_GT O_EQUAL;//>=
 O_IMPLIES: '=>' ;
-O_NOT_EQUAL: '<>';
+O_EXP: '**';
+O_NDRES: '<-:';
+O_DRES: '<:';
+O_NRRES: ':->';
+O_RRES: ':>';
+O_OVERRIDE: '++';
 O_LT: '<' ;
 O_GT: '>' ;
 O_DIV: '/';
+O_DIFF: '\\';
 O_TIMES: '*';
 O_PLUS: '+';
 O_MINUS: '-';
-O_EXP: '**';
+O_CONCAT: '^';
+O_EQUAL: '=';
 
 SEP_parallel: SEP_bar SEP_bar;
 SEP_comma: ',';
 SEP_colon: ':';
 SEP_scolon:';';
 SEP_bar  : '|';
-SEP_equal: '=';
+SEP_def  : '==';
 SEP_pfcn: '->';
 SEP_tfcn: '+>';
 SEP_qm  : '?';

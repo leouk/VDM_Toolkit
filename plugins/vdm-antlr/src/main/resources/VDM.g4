@@ -294,23 +294,23 @@ type
     | quote_type        #QuoteType
     | composite_type    #CompositeType
     // | union_type        #UnionType
-    | type ('|' type)+ #UnionType
+    | type (SEP_bar type)+ #UnionType
     // | product_type      #ProductType
-    | type ('*' type)+ #ProductType
+    | type (O_TINMES type)+ #ProductType
     | optional_type     #OptionalType
     | set_type          #SetType
     | seq_type          #SeqType
     | map_type          #MapType
     // | function_type     #FunctionType
-    |<assoc=right> void_function_type #VoidFunctionType
-    |<assoc=right> type SEP_pfcn type #PartialFunctionType
-    |<assoc=right> type SEP_tfcn type #PartialFunctionType
+    | void_function_type #VoidFunctionType
+    | type SEP_pfcn<assoc=right> type #PartialFunctionType
+    | type SEP_tfcn<assoc=right> type #PartialFunctionType
     | type_name         #TypeName
     | type_variable     #TypeVariable
     ;
 
 void_function_type
-    : '(' ')' (SEP_pfcn | SEP_tfcn) type
+    : '(' ')' (SEP_pfcn<assoc=right> | SEP_tfcn<assoc=right>) type
     ;
 
 bracketed_type 
@@ -336,11 +336,11 @@ field
     ;
 
 union_type 
-    : type ('|' type)+ 
+    : type (SEP_bar type)+ 
     ;
 
 product_type 
-    : type ('*' type)+ 
+    : type (O_TIMES type)+ 
     ;
 
 optional_type 
@@ -390,11 +390,11 @@ function_type
     ;
 
 partial_function_type 
-    : discretionary_type SEP_pfcn type 
+    : discretionary_type SEP_pfcn<assoc=right> type 
     ;
 
 total_function_type 
-    : discretionary_type SEP_tfcn type
+    : discretionary_type SEP_tfcn<assoc=right> type
     ;
 
 discretionary_type 
@@ -486,7 +486,7 @@ explicit_function_definition
     : IDENTIFIER type_variable_list? ':' 
       function_type
       IDENTIFIER parameters+ 
-      '==' function_body 
+      SEP_def function_body 
       pre_expression?
       post_expression?
       //@TODO should we have different productions for when measures are aorund? 
@@ -602,7 +602,7 @@ operation_definition
 explicit_operation_definition 
     : IDENTIFIER ':' operation_type 
       IDENTIFIER parameters
-      '==' operation_body
+      SEP_def operation_body
       pre_expression?
       post_expression?
     ;
@@ -624,7 +624,7 @@ implicit_operation_body
 extended_explicit_operation_definition 
     : IDENTIFIER parameter_types
       identifier_type_pair_list?
-      '==' operation_body 
+      SEP_def operation_body 
       externals? 
       pre_expression?
       post_expression?
@@ -659,7 +659,8 @@ exceptions
     ;
 
 error 
-    : IDENTIFIER ':' expression SEP_pfcn expression 
+    //@NB arguably here the "token" is not the one for partial function but actually a different kind of '->'?
+    : IDENTIFIER ':' expression /*SEP_pfcn*/'->' expression 
     ;
 
 //------------------------
@@ -753,9 +754,243 @@ trace_bracketed_expression
     ;
 
 //------------------------
-// A.4.1 Type definitions  
+// A.5 Expressions
 //------------------------
 
+expression_list 
+    : expression (',' expression)*
+    ;
+
+expression 
+    : bracketed_expression 
+    | let_expression
+    | let_be_expression
+    | def_expression
+    | if_expression
+    | cases_expression 
+    | unary_expression 
+    | binary_expression 
+    | quantified_expression 
+    | iota_expression
+    | set_enumeration
+    | set_comprehension
+    | set_range_expression
+    | sequence_enumeration
+    | sequence_comprehension
+    | subsequence
+    | map_enumeration
+    | map_comprehension
+    | tuple_constructor
+    | record_constructor
+    | record_modifier
+    | apply
+    | field_select
+    | tuple_select
+    | function_type_instantiation
+    | lambda_expression
+    | narrow_expression
+    //TODO
+    //| new_expression
+    //| self_expression
+    //| threadid_expression
+    | general_is_expression
+    | undefined_expression
+    | precondition_expression
+    //| isofbaseclass_expression
+    //| isofclass_expression
+    //| samebaseclass_expression
+    //| sameclass_expression
+    //| act_expression
+    //| fin_expression
+    //| active_expression
+    //| req_expression
+    //| waiting_expression
+    //| time_expression
+    | name
+    | old_name
+    | symbolic_literal 
+    ;
+
+//------------------------
+// A.5.1 Bracketed Expression  
+//------------------------
+
+bracketed_expression
+    : '(' expression ')'
+    ;
+
+//------------------------
+// A.5.2 Local Binding Expressions  
+//------------------------
+
+let_expression 
+    : SLK_let local_definition_list 
+      SLK_in expression 
+    ;
+
+let_be_expression
+    : SLK_let multiple_bind (SLK_best expression)? 
+      SLK_in expression 
+    ;
+
+def_expression 
+    : SLK_def pattern_bind '=' expression 
+      (';' pattern_bind '=' expression)* ';'?
+      SLK_in expression
+    ;
+
+//------------------------
+// A.5.3 Conditional Expressions  
+//------------------------
+
+if_expression
+    : SLK_if expression SLK_then expression 
+      elseif_expression*
+      SLK_else expression
+    ;
+
+elseif_expression 
+    : SLK_elseif expression SLK_then expression
+    ;
+
+cases_expression
+    : SLK_cases expression ':'
+      cases_expression_alternatives
+      (',' others_expression)? SLK_end
+    ;
+
+cases_expression_alternatives
+    : cases_expression_alternative (',' cases_expression_alternative)*
+    ;
+
+cases_expression_alternative
+    //@NB arguably here the "token" is not the one for partial function but actually a different kind of '->'?
+    : pattern_list /*SEP_pfcn*/'->' expression 
+    ;
+
+others_expression
+    : SLK_others /*SEP_pfcn*/'->' expression
+    ;    
+
+//------------------------
+// A.5.4 Unary Expressions  
+//------------------------
+
+// Have the unary expression product with identifying rules for ease of listener/visitor traversals
+// Unary appearing before binary makes them bind tigher (stronger) than binary, which is desirable. 
+unary_expression 
+    : O_PLUS       expression  #UnaryPlusExpr
+    | O_MINUS      expression  #UnaryMinusExpr
+    | SLK_abs      expression  #AbsoluteExpr
+    | SLK_floor    expression  #FloorExpr
+    | SLK_not      expression  #NotExpr
+    | SLK_card     expression  #CardExpr
+    | SLK_power    expression  #PowerExpr
+    | SLK_dunion   expression  #DunionExpr
+    | SLK_dinter   expression  #DinterExpr
+    | SLK_hd       expression  #HdExpr
+    | SLK_tl       expression  #TlExpr
+    | SLK_len      expression  #LenExpr
+    | SLK_elems    expression  #ElemsExpr
+    | SLK_inds     expression  #IndsExpr
+    | SLK_reverse  expression  #ReverseExpr
+    | SLK_conc     expression  #ConcExpr
+    | SLK_dom      expression  #DomExpr
+    | SLK_rng      expression  #RngExpr
+    | SLK_merge    expression  #MergeExpr
+    | SLK_inverse  expression  #MapInverseExpr
+    ;
+    
+/* 
+unary_expression 
+    : prefix_expression 
+    //@NB why the need for map_inverse and not just have it as another kind of binary operator? 
+    | map_inverse
+    ;
+
+prefix_expression 
+    : unary_operator expression
+    ;
+
+//TODO have this a lex rule? 
+unary_operator
+    : O_PLUS
+    | O_MINUS
+    | SLK_abs
+    | SLK_floor
+    | SLK_not 
+    | SLK_card
+    | SLK_power
+    | SLK_dunion
+    | SLK_dinter 
+    | SLK_hd
+    | SLK_tl
+    | SLK_len
+    | SLK_elems
+    | SLK_inds
+    | SLK_reverse
+    | SLK_conc
+    | SLK_dom
+    | SLK_rng
+    | SLK_merge
+    ;
+
+map_inverse 
+    : SLK_inverse expression;
+*/
+
+//------------------------
+// A.5.5 Binary Expressions  
+//------------------------
+
+// Binary expressions will entail left-recursive rules, which require explicit labelling.
+// Their order determine their binding power. I rearranged the VDM list of binary operators according to expected binding powers.
+// See ANTLR4 Definitive guide section 5.4.
+//@NB is this the right binding power order? 
+
+binary_expression
+    : expression O_EXP       expression #IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?
+    | expression O_TIMES     expression #ArithmeticMultiplicationExpr    
+    | expression O_DIV       expression #ArithmeticDivideExpr    
+    | expression SLK_div     expression #ArithmeticIntegerDivisionExpr    
+    | expression SLK_rem     expression #ArithmeticReminderExpr    
+    | expression SLK_mod     expression #ArithmeticModuloExpr    
+    | expression O_PLUS      expression #ArithmeticPlusExpr
+    | expression O_MINUS     expression #ArithmeticMinusExpr    
+  
+    | expression O_LEQ       expression #RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
+    | expression O_LT        expression #RelationalLessThanExpr    
+    | expression O_GEQ       expression #RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
+    | expression O_GT        expression #RelationalGreaterThanExpr  
+    | expression O_EQUAL     expression #RelationalEqualExpr    
+    | expression O_NEQ       expression #RelationalNotEqualExpr
+
+    | expression SLK_and     expression #LogicalAndExpr
+    | expression SLK_or      expression #LogicalOrExpr
+    | expression O_IMPLIES   expression #LogicalImpliesExpr
+    | expression O_IFF       expression #LogicalIffExpr
+
+    | expression SLK_ninset  expression #SetNotMemberExpr
+    | expression SLK_inset   expression #SetMemberExpr
+    | expression SLK_subset  expression #SetSubsetExpr
+    | expression SLK_psubset expression #SetPSubsetExpr
+    | expression O_DIFF      expression #SetDiffExpr                          
+    | expression SLK_union   expression #SetUnionExpr
+    | expression SLK_inter   expression #SetInterExpr
+
+    | expression SLK_ninseq  expression #SeqNotMemberExpr
+    | expression SLK_inseq   expression #SeqMemberExpr
+    | expression O_CONCAT    expression #SeqConcatExpr
+    | expression O_OVERRIDE  expression #MapSeqOverrideExpr
+
+    | expression SLK_merge   expression #MapMergeExpr
+    | expression O_NDRES     expression #MapDomFilterExpr
+    | expression O_DRES      expression #MapDomRestricExpr
+    | expression O_NRRES     expression #MapRngFilterExpr
+    | expression O_RRES      expression #MapRngRestrictExpr
+    | expression SLK_comp    expression #MapCompositionExpr
+    ;
+    
 //------------------------
 // A.4.1 Type definitions  
 //------------------------
@@ -767,7 +1002,7 @@ name: IDENTIFIER;
 // Module 
 //------------------------
 pattern : 'pat';
-expression : 'exp';
+pattern_bind: 'pbind';
 pattern_list : 'patlist';
 multiple_bind: 'mb';
 statement: 'stmt';
