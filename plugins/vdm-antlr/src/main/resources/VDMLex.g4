@@ -123,8 +123,10 @@ SLK_measure   : 'measure' ;
 SLK_merge     : 'merge' ;
 SLK_mod       : 'mod' ;
 SLK_module    : 'module' ;
+SLK_mk        : 'mk_';
 SLK_mu        : 'mu' ;
 SLK_munion    : 'munion' ;
+SLK_narrow    : 'narrow_';
 SLK_nat       : 'nat' ;
 SLK_nat1      : 'nat1' ;
 SLK_nil       : 'nil' ;
@@ -177,39 +179,39 @@ SLK_RESULT    : 'RESULT'  ;
 
 PPK_isr       : SLK_is PPK_subclass PPK_responsibility;
 PPK_access    : 'access';
+PPK_ibc       : 'isofbaseclass';
+PPK_ioc       : 'isofclass';
 PPK_class	  : 'class';
+PPK_new       : 'new';
 PPK_private   : 'private';
 PPK_protected : 'protected';
 PPK_public    : 'public';
+PPK_sbc       : 'samebaseclass';
+PPK_sc        : 'sameclass';
+PPK_self      : 'self';
 PPK_static    : 'static';
 PPK_subclass  : 'subclass';
 PPK_responsibility: 'responsibility';
 
-RTK_system    : 'system';
+RTK_active    : '#active';
+RTK_act       : '#act';
+RTK_fin       : '#fin';
+RTK_req       : '#req';
+RTK_waiting   : '#waiting';
 RTK_async     : 'async';
+RTK_system    : 'system';
+RTK_time      : 'time';
+RTK_threadid  : 'threadid';
 
 /* 
 PP_KEYWORD:
 	| 'instance' 
-	| 'isofbaseclass' 
-	| 'isofclass' 
-	| 'new' 
-	| 'samebaseclass' 
-	| 'sameclass' 
-	| 'self' 
-	| 'subclass' 
 	| 'uselib' 
 	| 'with' ;
 
 RT_KEYWORD:
-	  '#act' 
-	| '#active' 
-	| '#fin' 
-	| '#req' 
-	| '#waiting' 
 	| 'all' 
 	| 'always' 
-	| 'async' 
 	| 'atomic' 
 	| 'cycles' 
 	| 'dlmodule' 
@@ -223,9 +225,7 @@ RT_KEYWORD:
 	| 'stop' 
 	| 'stoplist'
 	| 'sync'
-	| 'system' 
 	| 'thread' 
-	| 'threadid' 
 	| 'time';
 */
 
@@ -284,14 +284,18 @@ O_CONCAT: '^';
 O_EQUAL: '=';
 
 SEP_parallel: SEP_bar SEP_bar;
+SEP_range: '...';
+SEP_maplet: '|->';
+SEP_def  : '==';
+SEP_tsel: '.#';
+SEP_pfcn: '->';
+SEP_tfcn: '+>';
 SEP_comma: ',';
 SEP_colon: ':';
 SEP_scolon:';';
 SEP_bar  : '|';
-SEP_def  : '==';
-SEP_pfcn: '->';
-SEP_tfcn: '+>';
 SEP_qm  : '?';
+SEP_amp : '&';
 
 PAREN_L: '(';
 PAREN_R: ')';
@@ -308,6 +312,9 @@ TYPE_VARIABLE_IDENTIFIER: '@' IDENTIFIER;
 TRACE_REPEAT_PATTERN
     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
     ;
+
+NUMERAL: DIGIT+;
+
 //------------------------
 // Fragments necessary for the lexer that we choose not to tokenize individually
 //------------------------
@@ -347,7 +354,6 @@ fragment INITIAL_LETTER: LETTER | DIGIT; //@NB help :-)
 fragment FOLLOWING_LETTER: LETTER | DIGIT | '_'; 
 fragment CHARACTER: LETTER | DIGIT | '_';//@NB how best to complete this list? 
 
-fragment NUMERAL: DIGIT+;
 fragment OCTAL_DIGIT: [0-7];
 fragment HEXADECIMAL_DIGIT: DIGIT | [a-fA-F];
 fragment ESC: 

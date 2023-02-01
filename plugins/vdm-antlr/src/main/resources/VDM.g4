@@ -58,6 +58,12 @@ import VDMLex;
 //------------------------
 
 //------------------------
+// * switch to java11
+// * Generate parser : antlr4 VDM.g4 VDMLex.g4 -listener -visitor -o ./output
+//                     antlr4-pare VDM.g4 sl_document -gui GIVE_OUTPUT CTRL+D
+// * Play with parser: grun VDM -tree / -gui
+
+//------------------------
 // A.1 VDM-SL document
 //------------------------
 sl_document 
@@ -296,21 +302,21 @@ type
     // | union_type        #UnionType
     | type (SEP_bar type)+ #UnionType
     // | product_type      #ProductType
-    | type (O_TINMES type)+ #ProductType
+    | type (O_TIMES type)+ #ProductType
     | optional_type     #OptionalType
     | set_type          #SetType
     | seq_type          #SeqType
     | map_type          #MapType
     // | function_type     #FunctionType
     | void_function_type #VoidFunctionType
-    | type SEP_pfcn<assoc=right> type #PartialFunctionType
-    | type SEP_tfcn<assoc=right> type #PartialFunctionType
+    |<assoc=right> type SEP_pfcn type #PartialFunctionType
+    |<assoc=right> type SEP_tfcn type #PartialFunctionType
     | type_name         #TypeName
     | type_variable     #TypeVariable
     ;
 
 void_function_type
-    : '(' ')' (SEP_pfcn<assoc=right> | SEP_tfcn<assoc=right>) type
+    :<assoc=right> '(' ')' (SEP_pfcn | SEP_tfcn) type
     ;
 
 bracketed_type 
@@ -390,11 +396,11 @@ function_type
     ;
 
 partial_function_type 
-    : discretionary_type SEP_pfcn<assoc=right> type 
+    :<assoc=right> discretionary_type SEP_pfcn type 
     ;
 
 total_function_type 
-    : discretionary_type SEP_tfcn<assoc=right> type
+    :<assoc=right> discretionary_type SEP_tfcn type
     ;
 
 discretionary_type 
@@ -415,7 +421,7 @@ invariant
     ;
 
 eq_clause
-    : SLK_eq pattern SEP_equal invariant_initial_function
+    : SLK_eq pattern O_EQUAL invariant_initial_function
     ;
 
 ord_clause
@@ -424,7 +430,7 @@ ord_clause
 
 //@NB refactored this one given equivalence
 invariant_initial_function 
-    : pattern SEP_equal SEP_equal expression
+    : pattern SEP_def expression
     ;
 
 //------------------------
@@ -761,55 +767,152 @@ expression_list
     : expression (',' expression)*
     ;
 
+// We must eliminate left-recursion, so have to have the whole tree in one place with labelled attributes :-( for now. 
 expression 
-    : bracketed_expression 
-    | let_expression
-    | let_be_expression
-    | def_expression
-    | if_expression
-    | cases_expression 
-    | unary_expression 
-    | binary_expression 
-    | quantified_expression 
-    | iota_expression
-    | set_enumeration
-    | set_comprehension
-    | set_range_expression
-    | sequence_enumeration
-    | sequence_comprehension
-    | subsequence
-    | map_enumeration
-    | map_comprehension
-    | tuple_constructor
-    | record_constructor
-    | record_modifier
-    | apply
-    | field_select
-    | tuple_select
-    | function_type_instantiation
-    | lambda_expression
-    | narrow_expression
+    : bracketed_expression      #BracketedExpr
+    | let_expression            #LetExpr
+    | let_be_expression         #LetBestExpr
+    | def_expression            #DefExpr
+    | if_expression             #IfExpr
+    | cases_expression          #CasesExpr
+    | unary_expression          #UnaryExpr
+//    | binary_expression         #BinaryExpr
+    | expression O_EXP       expression #IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?
+    | expression O_TIMES     expression #ArithmeticMultiplicationExpr    
+    | expression O_DIV       expression #ArithmeticDivideExpr    
+    | expression SLK_div     expression #ArithmeticIntegerDivisionExpr    
+    | expression SLK_rem     expression #ArithmeticReminderExpr    
+    | expression SLK_mod     expression #ArithmeticModuloExpr    
+    | expression O_PLUS      expression #ArithmeticPlusExpr
+    | expression O_MINUS     expression #ArithmeticMinusExpr    
+  
+    | expression O_LEQ       expression #RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
+    | expression O_LT        expression #RelationalLessThanExpr    
+    | expression O_GEQ       expression #RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
+    | expression O_GT        expression #RelationalGreaterThanExpr  
+    | expression O_EQUAL     expression #RelationalEqualExpr    
+    | expression O_NEQ       expression #RelationalNotEqualExpr
+
+    | expression SLK_and     expression #LogicalAndExpr
+    | expression SLK_or      expression #LogicalOrExpr
+    | expression O_IMPLIES   expression #LogicalImpliesExpr
+    | expression O_IFF       expression #LogicalIffExpr
+
+    | expression SLK_ninset  expression #SetNotMemberExpr
+    | expression SLK_inset   expression #SetMemberExpr
+    | expression SLK_subset  expression #SetSubsetExpr
+    | expression SLK_psubset expression #SetPSubsetExpr
+    | expression O_DIFF      expression #SetDiffExpr                          
+    | expression SLK_union   expression #SetUnionExpr
+    | expression SLK_inter   expression #SetInterExpr
+
+    | expression SLK_ninseq  expression #SeqNotMemberExpr
+    | expression SLK_inseq   expression #SeqMemberExpr
+    | expression O_CONCAT    expression #SeqConcatExpr
+    | expression O_OVERRIDE  expression #MapSeqOverrideExpr
+
+    | expression SLK_merge   expression #MapMergeExpr
+    | expression O_NDRES     expression #MapDomFilterExpr
+    | expression O_DRES      expression #MapDomRestricExpr
+    | expression O_NRRES     expression #MapRngFilterExpr
+    | expression O_RRES      expression #MapRngRestrictExpr
+    | expression SLK_comp    expression #MapCompositionExpr
+
+    | quantified_expression     #QuantifiedExpr
+    | iota_expression           #IotaExpr
+    | set_enumeration           #SetEnumExpr
+    | set_comprehension         #SetCompExpr
+    | set_range_expression      #SetRangeExpr
+    | sequence_enumeration      #SeqEnumExpr
+    | sequence_comprehension    #SeqCompExpr
+//    | subsequence               #SubSeqExpr
+    | expression '(' expression SEP_comma SEP_range SEP_comma expression ')' #SubSeqExpr
+
+    | map_enumeration               #MapEnumExpr
+    | map_comprehension             #MapCompExpr
+    | tuple_constructor             #TupleMkExpr
+    | record_constructor            #RecordMkExpr
+    | record_modifier               #RecordMuExpr
+//    | apply                         #ApplyExpr
+    | expression '(' expression_list? ')' #ApplyExpr
+//    | field_select                  #FieldSelExpr
+    | expression '.' IDENTIFIER     #FieldSelExpr
+//    | tuple_select                  #TupleSelExpr
+    | expression SEP_tsel NUMERAL   #TupleSelExpr
+    | function_type_instantiation   #FunctionTypeInstExpr
+    | lambda_expression             #LambdaExpr
+    | narrow_expression             #NarrowExpr
     //TODO
     //| new_expression
     //| self_expression
     //| threadid_expression
-    | general_is_expression
-    | undefined_expression
-    | precondition_expression
-    //| isofbaseclass_expression
-    //| isofclass_expression
-    //| samebaseclass_expression
-    //| sameclass_expression
-    //| act_expression
-    //| fin_expression
-    //| active_expression
-    //| req_expression
-    //| waiting_expression
-    //| time_expression
-    | name
-    | old_name
-    | symbolic_literal 
+    | general_is_expression         #GeneralIsExpr
+    | undefined_expression          #UndefinedExpr
+    | precondition_expression       #PreconditionExpr
+    // //| isofbaseclass_expression
+    // //| isofclass_expression
+    // //| samebaseclass_expression
+    // //| sameclass_expression
+    // //| act_expression
+    // //| fin_expression
+    // //| active_expression
+    // //| req_expression
+    // //| waiting_expression
+    // //| time_expression
+    | name                          #NameExpr
+    | old_name                      #OldNameExpr
+    | SYMBOLIC_LITERAL              #SymbolicLitExpr
     ;
+
+// expression 
+//     : bracketed_expression      #BracketedExpr
+//     | let_expression            #LetExpr
+//     | let_be_expression         #LetBestExpr
+//     | def_expression            #DefExpr
+//     | if_expression             #IfExpr
+//     | cases_expression          #CasesExpr
+//     | unary_expression          #UnaryExpr
+//     | binary_expression         #BinaryExpr
+//     | quantified_expression     #QuantifiedExpr
+//     | iota_expression           #IotaExpr
+//     | set_enumeration           #SetEnumExpr
+//     | set_comprehension         #SetCompExpr
+//     | set_range_expression      #SetRangeExpr
+//     | sequence_enumeration      #SeqEnumExpr
+//     | sequence_comprehension    #SeqCompExpr
+//     | subsequence               #SubSeqExpr
+//     // | map_enumeration
+//     // | map_comprehension
+//     // | tuple_constructor
+//     // | record_constructor
+//     // | record_modifier
+//     // | apply
+//     // | field_select
+//     // | tuple_select
+//     // | function_type_instantiation
+//     // | lambda_expression
+//     // | narrow_expression
+//     // //TODO
+//     // //| new_expression
+//     // //| self_expression
+//     // //| threadid_expression
+//     // | general_is_expression
+//     // | undefined_expression
+//     // | precondition_expression
+//     // //| isofbaseclass_expression
+//     // //| isofclass_expression
+//     // //| samebaseclass_expression
+//     // //| sameclass_expression
+//     // //| act_expression
+//     // //| fin_expression
+//     // //| active_expression
+//     // //| req_expression
+//     // //| waiting_expression
+//     // //| time_expression
+//     // | name
+//     // | old_name
+//     // | symbolic_literal 
+//     ;
 
 //------------------------
 // A.5.1 Bracketed Expression  
@@ -948,56 +1051,355 @@ map_inverse
 // See ANTLR4 Definitive guide section 5.4.
 //@NB is this the right binding power order? 
 
-binary_expression
-    : expression O_EXP       expression #IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?
-    | expression O_TIMES     expression #ArithmeticMultiplicationExpr    
-    | expression O_DIV       expression #ArithmeticDivideExpr    
-    | expression SLK_div     expression #ArithmeticIntegerDivisionExpr    
-    | expression SLK_rem     expression #ArithmeticReminderExpr    
-    | expression SLK_mod     expression #ArithmeticModuloExpr    
-    | expression O_PLUS      expression #ArithmeticPlusExpr
-    | expression O_MINUS     expression #ArithmeticMinusExpr    
-  
-    | expression O_LEQ       expression #RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
-    | expression O_LT        expression #RelationalLessThanExpr    
-    | expression O_GEQ       expression #RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
-    | expression O_GT        expression #RelationalGreaterThanExpr  
-    | expression O_EQUAL     expression #RelationalEqualExpr    
-    | expression O_NEQ       expression #RelationalNotEqualExpr
+// binary_expression
+//     : expression O_EXP       expression //#IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?//
+//     | expression O_TIMES     expression //#ArithmeticMultiplicationExpr    
+//     | expression O_DIV       expression //#ArithmeticDivideExpr    
+//     | expression SLK_div     expression //#ArithmeticIntegerDivisionExpr    
+//     | expression SLK_rem     expression //#ArithmeticReminderExpr    
+//     | expression SLK_mod     expression //#ArithmeticModuloExpr    
+//     | expression O_PLUS      expression //#ArithmeticPlusExpr
+//     | expression O_MINUS     expression //#ArithmeticMinusExpr    
+//   //
+//     | expression O_LEQ       expression //#RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
+//     | expression O_LT        expression //#RelationalLessThanExpr    
+//     | expression O_GEQ       expression //#RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
+//     | expression O_GT        expression //#RelationalGreaterThanExpr  
+//     | expression O_EQUAL     expression //#RelationalEqualExpr    
+//     | expression O_NEQ       expression //#RelationalNotEqualExpr
+// //
+//     | expression SLK_and     expression //#LogicalAndExpr
+//     | expression SLK_or      expression //#LogicalOrExpr
+//     | expression O_IMPLIES   expression //#LogicalImpliesExpr
+//     | expression O_IFF       expression //#LogicalIffExpr
+// //
+//     | expression SLK_ninset  expression //#SetNotMemberExpr
+//     | expression SLK_inset   expression //#SetMemberExpr
+//     | expression SLK_subset  expression //#SetSubsetExpr
+//     | expression SLK_psubset expression //#SetPSubsetExpr
+//     | expression O_DIFF      expression //#SetDiffExpr                          
+//     | expression SLK_union   expression //#SetUnionExpr
+//     | expression SLK_inter   expression //#SetInterExpr
+// //
+//     | expression SLK_ninseq  expression //#SeqNotMemberExpr
+//     | expression SLK_inseq   expression //#SeqMemberExpr
+//     | expression O_CONCAT    expression //#SeqConcatExpr
+//     | expression O_OVERRIDE  expression //#MapSeqOverrideExpr
+// //
+//     | expression SLK_merge   expression //#MapMergeExpr
+//     | expression O_NDRES     expression //#MapDomFilterExpr
+//     | expression O_DRES      expression //#MapDomRestricExpr
+//     | expression O_NRRES     expression //#MapRngFilterExpr
+//     | expression O_RRES      expression //#MapRngRestrictExpr
+//     | expression SLK_comp    expression //#MapCompositionExpr
+//     ;
 
-    | expression SLK_and     expression #LogicalAndExpr
-    | expression SLK_or      expression #LogicalOrExpr
-    | expression O_IMPLIES   expression #LogicalImpliesExpr
-    | expression O_IFF       expression #LogicalIffExpr
+//------------------------
+// A.5.6 Quantified Expressions  
+//------------------------
 
-    | expression SLK_ninset  expression #SetNotMemberExpr
-    | expression SLK_inset   expression #SetMemberExpr
-    | expression SLK_subset  expression #SetSubsetExpr
-    | expression SLK_psubset expression #SetPSubsetExpr
-    | expression O_DIFF      expression #SetDiffExpr                          
-    | expression SLK_union   expression #SetUnionExpr
-    | expression SLK_inter   expression #SetInterExpr
+quantified_expression 
+    : all_expression 
+    | exists_expression 
+    | exists_unique_expression 
+    ;
 
-    | expression SLK_ninseq  expression #SeqNotMemberExpr
-    | expression SLK_inseq   expression #SeqMemberExpr
-    | expression O_CONCAT    expression #SeqConcatExpr
-    | expression O_OVERRIDE  expression #MapSeqOverrideExpr
+all_expression
+    : SLK_forall bind_list SEP_amp expression
+    ;
 
-    | expression SLK_merge   expression #MapMergeExpr
-    | expression O_NDRES     expression #MapDomFilterExpr
-    | expression O_DRES      expression #MapDomRestricExpr
-    | expression O_NRRES     expression #MapRngFilterExpr
-    | expression O_RRES      expression #MapRngRestrictExpr
-    | expression SLK_comp    expression #MapCompositionExpr
+exists_expression
+    : SLK_exists bind_list SEP_amp expression
+    ;
+
+exists_unique_expression
+    : SLK_exists1 bind SEP_amp expression
+    ;
+
+//------------------------
+// A.5.7 Iota Expressions  
+//------------------------
+
+iota_expression 
+    : SLK_iota bind SEP_amp expression
+    ;
+
+//------------------------
+// A.5.8 Set Expressions  
+//------------------------
+
+set_enumeration 
+    : BRACE_L expression_list BRACE_R
+    ;
+
+set_comprehension
+    : BRACE_L expression SEP_bar bind_list (SEP_amp expression)? BRACE_R 
+    ;
+
+set_range_expression
+    : BRACE_L expression SEP_comma SEP_range SEP_comma expression BRACE_R
+    ;
+
+//------------------------
+// A.5.9 Seq Expressions  
+//------------------------
+
+sequence_enumeration 
+    : BRACKET_L expression_list BRACKET_R
+    ;
+
+sequence_comprehension
+    : BRACKET_L expression SEP_bar bind_list (SEP_amp expression)? BRACKET_R 
+    ;
+
+subsequence
+    : expression '(' expression SEP_comma SEP_range SEP_comma expression ')'
+    ;
+
+//------------------------
+// A.5.10 Map Expressions  
+//------------------------
+
+map_enumeration 
+    : BRACE_L maplet (',' maplet) BRACE_R
+    | BRACE_L SEP_maplet BRACE_R
+    ;
+
+maplet
+    : expression SEP_maplet expression
+    ;
+
+map_comprehension
+    : BRACE_L maplet SEP_bar bind_list (SEP_amp expression)? BRACE_R
+    ;
+
+//------------------------
+// A.5.11 Tuple Constructor Expressions  
+//------------------------
+
+tuple_constructor
+    : SLK_mk '(' expression ',' expression_list ')'
+    ;
+
+//------------------------
+// A.5.12 Record Expressions  
+//------------------------
+
+//TODO how to enforce no delimiter between SLK_mk and name? 
+record_constructor
+    : SLK_mk name '(' expression_list? ')'
+    ;
+
+record_modifier
+    : SLK_mu '(' expression ',' record_modification (',' record_modification)* ')'
+    ;
+
+record_modification
+    : IDENTIFIER SEP_maplet expression
+    ;
+
+//------------------------
+// A.5.13 Apply Expressions  
+//------------------------
+
+apply 
+    : expression '(' expression_list? ')'
+    ;
+
+field_select 
+    : expression '.' IDENTIFIER
+    ;
+
+tuple_select 
+    : expression SEP_tsel NUMERAL
+    ;
+
+function_type_instantiation 
+    : name BRACE_L type (',' type)* BRACE_R
+    ;
+
+//------------------------
+// A.5.14 Lambda Expressions  
+//------------------------
+
+lambda_expression 
+    : SLK_lambda type_bind_list SEP_amp expression 
+    ;
+
+//------------------------
+// A.5.15 Narrow Expressions  
+//------------------------
+
+narrow_expression
+    : SLK_narrow '(' expression ',' type ')'
+    ;
+
+//------------------------
+// A.5.16 New Expressions  
+//------------------------
+
+new_expression
+    : PPK_new name '(' expression_list? ')'
+    ;
+
+//------------------------
+// A.5.17 Self Expressions  
+//------------------------
+
+self_expression
+    : PPK_self
+    ;
+
+//------------------------
+// A.5.18 Threadid Expressions  
+//------------------------
+
+threadid_expression
+    : RTK_threadid
+    ;
+
+//------------------------
+// A.5.19 Is Expressions  
+//------------------------
+
+general_is_expression 
+    : is_expression 
+    | type_judgement
+    ;
+
+//TODO no space between SLK_is and name/type
+is_expression 
+    : SLK_is '_' (name | basic_type) '(' expression ')'
+    ;
+
+type_judgement
+    : SLK_is '_' '(' expression ',' type ')'
+    ;
+
+//------------------------
+// A.5.20 Undefined Expressions  
+//------------------------
+
+undefined_expression
+    : SLK_undefined
+    ;
+
+//------------------------
+// A.5.21 Precondition Expressions  
+//------------------------
+
+precondition_expression 
+    : SLK_pre '_' '(' expression_list ')'
+    ;
+
+//------------------------
+// A.5.22 Base class membership Expressions  
+//------------------------
+
+isofbaseclass_expression
+    : PPK_ibc '(' name ',' expression ')'
+    ;
+
+//------------------------
+// A.5.23 Class membership Expressions  
+//------------------------
+
+isofclass_expression
+    : PPK_ioc '(' name ',' expression ')'
+    ;
+
+//------------------------
+// A.5.24 Same base class membership Expressions  
+//------------------------
+
+samebaseclass_expression
+    : PPK_sbc '(' name ',' expression ')'
+    ;
+
+//------------------------
+// A.5.25 Same class membership Expressions  
+//------------------------
+
+sameclass_expression
+    : PPK_sc '(' name ',' expression ')'
+    ;
+
+//------------------------
+// A.5.26 History Expressions  
+//------------------------
+
+act_expression
+    : RTK_act '(' name_list ')'
+    ;
+
+fin_expression
+    : RTK_fin '(' name_list ')'
     ;
     
+active_expression
+    : RTK_active '(' name_list ')'
+    ;
+    
+req_expression
+    : RTK_req '(' name_list ')'
+    ;
+    
+waiting_expression
+    : RTK_waiting '(' name_list ')'
+    ;
+
+//------------------------
+// A.5.27 Time Expressions  
+//------------------------
+
+time_expression
+    : RTK_time
+    ;
+
+//------------------------
+// A.5.28 Names  
+//------------------------
+
+name_list
+    : name (',' name)*
+    ;
+
+name
+    : IDENTIFIER ('`' IDENTIFIER)?
+    ;
+
+old_name
+    : IDENTIFIER '~'
+    ;
+
+//------------------------
+// A.6 State Designators  
+//------------------------
+
+//@NB these are kind of expression names no? 
+
+// Left-recursion requires inlining + labelling; order gives priority/precedence
+state_designator
+    : state_designator '.' IDENTIFIER      #FieldReferenceDesignator
+    | state_designator '(' expression ')'  #MapSeqDesignator
+    | name                                 #NameDesignator
+    //: name
+    //| field_reference               
+    //| map_seq_reference
+    ;
+
+field_reference
+    : state_designator '.' IDENTIFIER
+    ;
+
+map_seq_reference
+    : state_designator '(' expression ')'
+    ;
+
 //------------------------
 // A.4.1 Type definitions  
 //------------------------
 
-name_list: name (',' name)*;
-
-name: IDENTIFIER;
 //------------------------
 // Module 
 //------------------------
@@ -1008,3 +1410,6 @@ multiple_bind: 'mb';
 statement: 'stmt';
 call_statement: 'cstmt';
 local_definition: 'letdef';
+bind_list: bind (',' bind)*;
+bind: 'bind';
+type_bind_list: 'tb;';
