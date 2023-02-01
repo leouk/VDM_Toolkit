@@ -284,19 +284,21 @@ type_specification
     ;
 
 type 
-    : bracketed_type    #TLDBracketedType  
-    | basic_type        #TLDBasicType
-    | quote_type        #TLDQuoteType
-    | composite_type    #TLDCompositeType
-//    | union_type        #TLDUnionType
-//    | product_type      #TLDProductType
-    | optional_type     #TLDOptionalType
-    | set_type          #TLDSetType
-    | seq_type          #TLDSeqType
-    | map_type          #TLDMapType
-//    | function_type     #TLDFunctionType
-    | type_name         #TLDTypeName
-    | type_variable     #TLDTypeVariable
+    : bracketed_type    #BracketedType  
+    | basic_type        #BasicType
+    | quote_type        #QuoteType
+    | composite_type    #CompositeType
+    // | union_type        #UnionType
+    | type ('|' type)+ #UnionType
+    // | product_type      #ProductType
+    | type ('*' type)+ #ProductType
+    | optional_type     #OptionalType
+    | set_type          #SetType
+    | seq_type          #SeqType
+    | map_type          #MapType
+//    | function_type     #FunctionType
+    | type_name         #TypeName
+    | type_variable     #TypeVariable
     ;
 
 bracketed_type 
