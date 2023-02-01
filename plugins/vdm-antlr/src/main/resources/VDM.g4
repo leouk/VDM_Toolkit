@@ -42,8 +42,8 @@
  * TERMINATION OF THIS AGREEMENT.
  */
  
-grammar VdmSLParser;
-import VdmSLLexer;
+grammar VDM;
+import VDMLex;
 
 //------------------------
 // Parser Rules (ATTN: in antlr, all parser rules start with a small letter)
@@ -227,23 +227,22 @@ rt_definition_block
 
 //TODO    
 pp_definition_block 
-    : 'porrs' 
-    //   pp_type_definitions
-    // | state_definition 
-    // | value_definitions 
-    // | function_definitions
-    // | operation_definitions
-    // | traces_definitions
+    : pp_type_definitions
+    //| state_definition 
+    | pp_value_definitions 
+    | pp_function_definitions
+    | pp_operation_definitions
+    | traces_definitions
     // | instance_variable_definitions 
     ;
 
 sl_definition_block
-    : type_definitions
-    // | state_definition 
-    // | value_definitions 
-    // | function_definitions
-    // | operation_definitions
-    // | traces_definitions
+    : sl_type_definitions
+    | state_definition 
+    | sl_value_definitions 
+    | sl_function_definitions
+    | sl_operation_definitions
+    | traces_definitions
     ;
 
 //------------------------
@@ -256,14 +255,14 @@ pp_type_definitions
     ;
 
 access_type_definition
-    : (PPK_static? | access?) | (access? | PPK_static?) type_definitions
+    : (PPK_static? | access?) | (access? | PPK_static?) type_definition
     ;
 
 access 
     : PPK_public | PPK_private | PPK_protected
     ;
 
-type_definitions 
+sl_type_definitions 
     : SLK_types type_definition 
     ;
 
@@ -283,6 +282,12 @@ type_specification
     : invariant? eq_clause? ord_clause?
     ;
 
+// ANTLR4 allows left-recursive productions, so long as they have uniquely named 
+// productions within the same rule. Thus, we cannot have union_type production 
+// separately, but defined here directly.  
+//
+//@TODO This generates entry/exit for both entryQuoteType and entryQuote_type (!)
+//      might want to remove the singleton productions? 
 type 
     : bracketed_type    #BracketedType  
     | basic_type        #BasicType
@@ -296,9 +301,16 @@ type
     | set_type          #SetType
     | seq_type          #SeqType
     | map_type          #MapType
-//    | function_type     #FunctionType
+    // | function_type     #FunctionType
+    |<assoc=right> void_function_type #VoidFunctionType
+    |<assoc=right> type SEP_pfcn type #PartialFunctionType
+    |<assoc=right> type SEP_tfcn type #PartialFunctionType
     | type_name         #TypeName
     | type_variable     #TypeVariable
+    ;
+
+void_function_type
+    : '(' ')' (SEP_pfcn | SEP_tfcn) type
     ;
 
 bracketed_type 
@@ -324,11 +336,11 @@ field
     ;
 
 union_type 
-    : type ('|' type)+ #UnionType
+    : type ('|' type)+ 
     ;
 
 product_type 
-    : type ('*' type)+ #ProductType
+    : type ('*' type)+ 
     ;
 
 optional_type 
@@ -416,12 +428,333 @@ invariant_initial_function
     ;
 
 //------------------------
-// A.4.1 VDM-SL state definition
+// A.4.2 VDM-SL state definition
 //------------------------
 
-//state_definition 
+state_definition 
+    : SLK_state IDENTIFIER SLK_of field+ invariant? initialisation? SLK_end ';'
+    ;
 
+initialisation 
+    : SLK_init invariant_initial_function
+    ;
 
+//------------------------
+// A.4.3 Value definitions
+//------------------------
+
+sl_value_definitions 
+    : SLK_values value_definition
+    ;
+
+//@NB will stop completing PP + RT for now. 
+pp_value_definitions 
+    : SLK_values access_value_definition
+    ;
+
+access_value_definition
+    : access? value_definition
+    ;
+
+value_definition 
+    : pattern (':' type) '=' expression
+    ;
+
+//------------------------
+// A.4.4 Function Definitions  
+//------------------------
+
+sl_function_definitions 
+    : SLK_functions function_definition 
+    ;
+
+pp_function_definitions 
+    : SLK_functions access_function_definition
+    ;
+
+access_function_definition 
+    : access? function_definition
+    ;
+
+function_definition 
+    : explicit_function_definition 
+    | implicit_function_definition 
+    | extended_explicit_function_definition
+    ;
+
+explicit_function_definition 
+    : IDENTIFIER type_variable_list? ':' 
+      function_type
+      IDENTIFIER parameters+ 
+      '==' function_body 
+      pre_expression?
+      post_expression?
+      //@TODO should we have different productions for when measures are aorund? 
+      measure_definition?
+    ;
+
+pre_expression 
+    : SLK_pre expression
+    ;
+
+post_expression 
+    : SLK_post expression
+    ;
+
+measure_definition 
+    : SLK_measure measure_body
+    ;
+
+implicit_function_definition 
+    : IDENTIFIER type_variable_list? 
+      parameter_types
+      identifier_type_pair_list 
+      pre_expression?
+      post_expression
+    ;
+
+extended_explicit_function_definition 
+    : IDENTIFIER type_variable_list? 
+      parameter_types 
+      identifier_type_pair_list 
+      pre_expression? 
+      post_expression?
+      measure_definition?
+    ; 
+
+//TODO should these comma separated lists be parameterised?
+type_variable_list 
+    : '[' TYPE_VARIABLE_IDENTIFIER (',' TYPE_VARIABLE_IDENTIFIER)* ']'
+    ;
+
+parameter_types 
+    : '(' pattern_type_pair_list ')'
+    ;
+
+pattern_type_pair_list
+    : pattern_list ':' type (',' pattern_list ':' type)*
+    ;
+
+identifier_type_pair_list
+    : identifier_type_pair (',' identifier_type_pair)*
+    ;
+
+identifier_type_pair 
+    : IDENTIFIER ':' type 
+    ;
+
+// parameters_list 
+//     : parameters+ 
+//     ;
+
+parameters
+    : '(' pattern_list? ')'
+    ;
+
+function_body 
+    : expression 
+    //TODO PPK_isr;
+    | SLK_inys
+    ;
+
+measure_body
+    : expression 
+    | SLK_inys
+    ;
+
+//------------------------
+// A.4.5 Operation Definitions  
+//------------------------
+
+sl_operation_definitions 
+    : SLK_operations sl_access_operation_definition
+    ;
+
+sl_access_operation_definition
+    : SLK_pure? operation_definition
+    ;
+
+pp_operation_definitions
+    : SLK_operations pp_access_operation_definition
+    ;
+
+//@NB what happens if you reuse the same access muiltiple times like pure pure? 
+//    was confused with the access_operation_definition rule given its multiple (kinds) but single 
+//    use of access modifiers. (e.g. pure pure is bad, but public pure is okay)?  
+pp_access_operation_definition 
+    : (SLK_pure | access | PPK_static)? operation_definition
+    ;
+
+rt_operation_definitions
+    : SLK_operations rt_access_operation_definition
+    ;
+
+rt_access_operation_definition 
+    : (SLK_pure | RTK_async | access | PPK_static)? operation_definition
+    ;
+
+operation_definition 
+    : explicit_operation_definition
+    | implicit_operation_definition
+    | extended_explicit_operation_definition
+    ;
+
+explicit_operation_definition 
+    : IDENTIFIER ':' operation_type 
+      IDENTIFIER parameters
+      '==' operation_body
+      pre_expression?
+      post_expression?
+    ;
+
+implicit_operation_definition 
+    : IDENTIFIER parameter_types
+      identifier_type_pair_list?
+      //@NB this is only needed beyond operations in RT's specification statement right? 
+      implicit_operation_body
+    ; 
+
+implicit_operation_body 
+    : externals?
+      pre_expression?
+      post_expression
+      exceptions?
+    ;
+
+extended_explicit_operation_definition 
+    : IDENTIFIER parameter_types
+      identifier_type_pair_list?
+      '==' operation_body 
+      externals? 
+      pre_expression?
+      post_expression?
+      exceptions?
+    ;
+
+operation_type
+    : discretionary_type '==>' discretionary_type
+    ;
+
+operation_body 
+    : statement 
+    | SLK_inys
+    //TODO | PPK_isr
+    ;
+
+externals 
+    : SLK_ext var_information+
+    ;
+
+var_information
+    : vdmmode name_list (':' type)?
+    ;
+
+// 'mode' is an ANTLR reserved word 
+vdmmode
+    : SLK_rd | SLK_wr
+    ;
+    
+exceptions 
+    : SLK_errs error+
+    ;
+
+error 
+    : IDENTIFIER ':' expression SEP_pfcn expression 
+    ;
+
+//------------------------
+// A.4.6 Instance Variable Definitions  
+//------------------------
+
+//TODO
+
+//------------------------
+// A.4.7 Synchronisation Definitions  
+//------------------------
+
+//TODO
+
+//------------------------
+// A.4.8.Thread Definitions  
+//------------------------
+
+//TODO
+
+//------------------------
+// A.4.9.Traces Definitions  
+//------------------------
+
+traces_definitions 
+    : SLK_traces named_trace_list*
+    ;
+
+named_trace_list 
+    : named_trace (';' named_trace)*
+    ;
+
+named_trace 
+    : IDENTIFIER ('/' IDENTIFIER)* ':' trace_definition_list
+    ;
+
+trace_definition_list 
+    : trace_definition_term (';' trace_definition_term)*
+    ;
+
+trace_definition_term 
+    : trace_definition ('|' trace_definition)*
+    ;
+
+trace_definition 
+    : trace_binding_definition
+    | trace_repeat_definition
+    ;
+
+trace_binding_definition
+    : trace_let_def_binding
+    | trace_let_best_binding
+    ;
+
+//TODO make this parameterised? 
+trace_let_def_binding
+    : SLK_let local_definition_list 
+      SLK_in trace_definition 
+    ;
+
+trace_let_best_binding
+    : SLK_let multiple_bind (SLK_best expression)? 
+      SLK_in trace_definition 
+    ;
+
+local_definition_list
+    : local_definition (',' local_definition)*
+    ;
+
+trace_repeat_definition
+    : trace_core_definition TRACE_REPEAT_PATTERN?;
+
+trace_core_definition 
+    : trace_apply_expression
+    | trace_concurrent_expression
+    | trace_bracketed_expression
+    ;
+
+trace_apply_expression 
+    : call_statement
+    ;
+
+trace_concurrent_expression
+    : SEP_parallel '(' trace_definition 
+      ',' trace_definition 
+      (',' trace_definition)* ')'
+    ;
+
+trace_bracketed_expression
+    : '(' trace_definition_list ')'
+    ;
+
+//------------------------
+// A.4.1 Type definitions  
+//------------------------
 
 //------------------------
 // A.4.1 Type definitions  
@@ -435,5 +768,8 @@ name: IDENTIFIER;
 //------------------------
 pattern : 'pat';
 expression : 'exp';
-type_variable_list: 'tpvarlist';
-operation_type: 'optype';
+pattern_list : 'patlist';
+multiple_bind: 'mb';
+statement: 'stmt';
+call_statement: 'cstmt';
+local_definition: 'letdef';

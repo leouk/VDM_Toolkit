@@ -42,7 +42,7 @@
  * TERMINATION OF THIS AGREEMENT.
  */
  
-lexer grammar VdmSLLexer;
+lexer grammar VDMLex;
 
 //------------------------
 // Lexer Rules
@@ -57,6 +57,8 @@ lexer grammar VdmSLLexer;
 //------------------------
 // Keywords (case sensitive); add PP/RT?
 //------------------------
+SLK_inys       : SLK_is SLK_not SLK_yet SLK_specified;
+SLK_best       : SLK_be SLK_st;
 SLK_abs        : 'abs';
 SLK_all		   : 'all';
 SLK_and        : 'and';
@@ -132,6 +134,7 @@ SLK_post      : 'post' ;
 SLK_power     : 'power' ;
 SLK_pre       : 'pre' ;
 SLK_pure      : 'pure' ;
+SLK_psubset   : 'psubset';
 SLK_rat       : 'rat' ;
 SLK_rd        : 'rd' ;
 SLK_real      : 'real' ;
@@ -168,6 +171,7 @@ SLK_wr        : 'wr' ;
 SLK_yet       : 'yet' ;
 SLK_RESULT    : 'RESULT'  ;
 
+PPK_isr       : SLK_is PPK_subclass PPK_responsibility;
 PPK_access    : 'access';
 PPK_class	  : 'class';
 PPK_private   : 'private';
@@ -175,20 +179,17 @@ PPK_protected : 'protected';
 PPK_public    : 'public';
 PPK_static    : 'static';
 PPK_subclass  : 'subclass';
+PPK_responsibility: 'responsibility';
+
 RTK_system    : 'system';
+RTK_async     : 'async';
 
 /* 
 PP_KEYWORD:
-	  'class'
 	| 'instance' 
 	| 'isofbaseclass' 
 	| 'isofclass' 
 	| 'new' 
-	| 'private' 
-	| 'protected' 
-	| 'psubset'
-	| 'public' 
-	| 'responsibility' 
 	| 'samebaseclass' 
 	| 'sameclass' 
 	| 'self' 
@@ -268,6 +269,7 @@ O_PLUS: '+';
 O_MINUS: '-';
 O_EXP: '**';
 
+SEP_parallel: SEP_bar SEP_bar;
 SEP_comma: ',';
 SEP_colon: ':';
 SEP_scolon:';';
@@ -275,6 +277,7 @@ SEP_bar  : '|';
 SEP_equal: '=';
 SEP_pfcn: '->';
 SEP_tfcn: '+>';
+SEP_qm  : '?';
 
 PAREN_L: '(';
 PAREN_R: ')';
@@ -287,6 +290,10 @@ IDENTIFIER: INITIAL_LETTER FOLLOWING_LETTER*;
 
 TYPE_VARIABLE_IDENTIFIER: '@' IDENTIFIER;
 
+//@NB is this numerical literal repeat correct? 
+TRACE_REPEAT_PATTERN
+    : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
+    ;
 //------------------------
 // Fragments necessary for the lexer that we choose not to tokenize individually
 //------------------------
