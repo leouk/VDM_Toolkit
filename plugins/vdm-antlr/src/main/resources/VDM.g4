@@ -469,12 +469,12 @@ initialisation
 //------------------------
 
 sl_value_definitions 
-    : SLK_values value_definition
+    : SLK_values (value_definition (';' value_definition)* ';'? )?
     ;
 
 //@NB will stop completing PP + RT for now. 
 pp_value_definitions 
-    : SLK_values access_value_definition
+    : SLK_values (access_value_definition (';' access_value_definition)* ';'? )?
     ;
 
 access_value_definition
