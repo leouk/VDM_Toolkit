@@ -44,6 +44,11 @@
  
 lexer grammar VDMLex;
 
+// options 
+// {
+//     superClass = VDMLexBase;
+// }
+
 //------------------------
 // Lexer Rules
 // NOTES:
@@ -65,8 +70,10 @@ SLK_inset      : SLK_in SLK_set;
 SLK_inseq      : SLK_in SLK_seq;
 SLK_abs        : 'abs';
 SLK_all		   : 'all';
+SLK_always     : 'always';
 SLK_and        : 'and';
 SLK_as         : 'as';
+SLK_atomic     : 'atomic';
 SLK_be         : 'be';
 SLK_bool       : 'bool';
 SLK_by         : 'by'; 
@@ -89,153 +96,160 @@ SLK_else       : 'else';
 SLK_elseif     : 'elseif';
 SLK_end        : 'end';
 SLK_eq         : 'eq';
-SLK_error 	  : 'error';
-SLK_errs 	  : 'errs' ;
-SLK_exists 	  : 'exists' ;
-SLK_exists1   : 'exists1' ;
-SLK_exit 	  : 'exit' ;
-SLK_exports   : 'exports' ;
-SLK_ext 	  : 'ext' ;
-SLK_false	  : 'false' ;
-SLK_floor	  : 'floor';
-SLK_for 	  : 'for' ;
-SLK_forall 	  : 'forall' ;
-SLK_from      : 'from' ;
-SLK_functions : 'functions'; 
-SLK_hd        : 'hd' ;
-SLK_if        : 'if' ;
-SLK_in        : 'in' ;
-SLK_inds      : 'inds' ;
-SLK_inmap     : 'inmap' ;
-SLK_int       : 'int' ;
-SLK_inter	  : 'inter';
-SLK_imports   : 'imports' ;
-SLK_init      : 'init' ;
-SLK_inv       : 'inv' ;
-SLK_inverse   : 'inverse' ;
-SLK_iota      : 'iota' ;
-SLK_is	      : 'is';
-SLK_lambda    : 'lambda' ;
-SLK_len       : 'len' ;
-SLK_let 	  : 'let';
-SLK_map       : 'map' ;
-SLK_measure   : 'measure' ;
-SLK_merge     : 'merge' ;
-SLK_mod       : 'mod' ;
-SLK_module    : 'module' ;
-SLK_mk        : 'mk_';
-SLK_mu        : 'mu' ;
-SLK_munion    : 'munion' ;
-SLK_narrow    : 'narrow_';
-SLK_nat       : 'nat' ;
-SLK_nat1      : 'nat1' ;
-SLK_nil       : 'nil' ;
-SLK_not       : 'not' ;
-SLK_of        : 'of' ;
-SLK_operations: 'operations'; 
-SLK_or        : 'or' ;
-SLK_ord       : 'ord' ;
-SLK_others    : 'others' ;
-SLK_post      : 'post' ;
-SLK_power     : 'power' ;
-SLK_pre       : 'pre' ;
-SLK_pure      : 'pure' ;
-SLK_psubset   : 'psubset';
-SLK_rat       : 'rat' ;
-SLK_rd        : 'rd' ;
-SLK_real      : 'real' ;
-SLK_rem       : 'rem' ;
-SLK_renamed   : 'renamed' ;
-SLK_return    : 'return' ;
-SLK_reverse   : 'reverse' ;
-SLK_rng	      : 'rng';
-SLK_seq       : 'seq' ;
-SLK_seq1	  : 'seq1';
-SLK_set       : 'set' ;
-SLK_set1      : 'set1' ;
-SLK_skip      : 'skip' ;
-SLK_specified : 'specified'; 
-SLK_st        : 'st' ;
-SLK_state     : 'state' ;
-SLK_struct	  : 'struct';
-SLK_subset    : 'subset' ;
-SLK_then      : 'then' ;
-SLK_tixe	  : 'tixe';
-SLK_tl        : 'tl' ;
-SLK_to        : 'to' ;
-SLK_token     : 'token' ;
-SLK_traces    : 'traces' ;
-SLK_trap      : 'trap' ;
-SLK_true      : 'true' ;
-SLK_types     : 'types' ;
-SLK_undefined : 'undefined'; 
-SLK_union     : 'union' ;
-SLK_variables : 'variables'; 
-SLK_values    : 'values';
-SLK_while     : 'while' ;
-SLK_wr        : 'wr' ;
-SLK_yet       : 'yet' ;
-SLK_RESULT    : 'RESULT'  ;
+SLK_error 	   : 'error';
+SLK_errs 	   : 'errs' ;
+SLK_exists 	   : 'exists' ;
+SLK_exists1    : 'exists1' ;
+SLK_exit 	   : 'exit' ;
+SLK_exports    : 'exports' ;
+SLK_ext 	   : 'ext' ;
+SLK_false	   : 'false' ;
+SLK_floor	   : 'floor';
+SLK_for 	   : 'for' ;
+SLK_forall 	   : 'forall' ;
+SLK_from       : 'from' ;
+SLK_functions  : 'functions'; 
+SLK_hd         : 'hd' ;
+SLK_if         : 'if' ;
+SLK_in         : 'in' ;
+SLK_inds       : 'inds' ;
+SLK_inmap      : 'inmap' ;
+SLK_int        : 'int' ;
+SLK_inter	   : 'inter';
+SLK_imports    : 'imports' ;
+SLK_init       : 'init' ;
+SLK_inv        : 'inv' ;
+SLK_inverse    : 'inverse' ;
+SLK_iota       : 'iota' ;
+SLK_is	       : 'is';
+SLK_lambda     : 'lambda' ;
+SLK_len        : 'len' ;
+SLK_let 	   : 'let';
+SLK_map        : 'map' ;
+SLK_measure    : 'measure' ;
+SLK_merge      : 'merge' ;
+SLK_mod        : 'mod' ;
+SLK_module     : 'module' ;
+SLK_mk         : 'mk_';
+SLK_mu         : 'mu' ;
+SLK_munion     : 'munion' ;
+SLK_narrow     : 'narrow_';
+SLK_nat        : 'nat' ;
+SLK_nat1       : 'nat1' ;
+SLK_nil        : 'nil' ;
+SLK_not        : 'not' ;
+SLK_of         : 'of' ;
+SLK_operations : 'operations'; 
+SLK_or         : 'or' ;
+SLK_ord        : 'ord' ;
+SLK_others     : 'others' ;
+SLK_post       : 'post' ;
+SLK_power      : 'power' ;
+SLK_pre        : 'pre' ;
+SLK_pure       : 'pure' ;
+SLK_psubset    : 'psubset';
+SLK_rat        : 'rat' ;
+SLK_rd         : 'rd' ;
+SLK_real       : 'real' ;
+SLK_rem        : 'rem' ;
+SLK_renamed    : 'renamed' ;
+SLK_return     : 'return' ;
+SLK_reverse    : 'reverse' ;
+SLK_rng	       : 'rng';
+SLK_seq        : 'seq' ;
+SLK_seq1	   : 'seq1';
+SLK_set        : 'set' ;
+SLK_set1       : 'set1' ;
+SLK_skip       : 'skip' ;
+SLK_specified  : 'specified'; 
+SLK_st         : 'st' ;
+SLK_state      : 'state' ;
+SLK_struct	   : 'struct';
+SLK_subset     : 'subset' ;
+SLK_then       : 'then' ;
+SLK_tixe	   : 'tixe';
+SLK_tl         : 'tl' ;
+SLK_to         : 'to' ;
+SLK_token      : 'token' ;
+SLK_traces     : 'traces' ;
+SLK_trap       : 'trap' ;
+SLK_true       : 'true' ;
+SLK_types      : 'types' ;
+SLK_undefined  : 'undefined'; 
+SLK_union      : 'union' ;
+SLK_values     : 'values';
+SLK_with       : 'with';
+SLK_while      : 'while' ;
+SLK_wr         : 'wr' ;
+SLK_yet        : 'yet' ;
+SLK_RESULT     : 'RESULT';
 
-PPK_isr       : SLK_is PPK_subclass PPK_responsibility;
-PPK_access    : 'access';
-PPK_ibc       : 'isofbaseclass';
-PPK_ioc       : 'isofclass';
-PPK_class	  : 'class';
-PPK_new       : 'new';
-PPK_private   : 'private';
-PPK_protected : 'protected';
-PPK_public    : 'public';
-PPK_sbc       : 'samebaseclass';
-PPK_sc        : 'sameclass';
-PPK_self      : 'self';
-PPK_static    : 'static';
-PPK_subclass  : 'subclass';
+PPK_isr        : SLK_is PPK_subclass PPK_responsibility;
+PPK_access     : 'access';
+PPK_instance   : 'instance';
+PPK_ibc        : 'isofbaseclass';
+PPK_ioc        : 'isofclass';
+PPK_class	   : 'class';
+PPK_new        : 'new';
+PPK_obj        : 'obj_';
+PPK_private    : 'private';
+PPK_protected  : 'protected';
+PPK_public     : 'public';
+PPK_sbc        : 'samebaseclass';
+PPK_sc         : 'sameclass';
+PPK_self       : 'self';
+PPK_static     : 'static';
+PPK_subclass   : 'subclass';
 PPK_responsibility: 'responsibility';
+PPK_variables  : 'variables';
 
-RTK_active    : '#active';
-RTK_act       : '#act';
-RTK_fin       : '#fin';
-RTK_req       : '#req';
-RTK_waiting   : '#waiting';
-RTK_async     : 'async';
-RTK_system    : 'system';
-RTK_time      : 'time';
-RTK_threadid  : 'threadid';
+RTK_active     : '#active';
+RTK_act        : '#act';
+RTK_fin        : '#fin';
+RTK_req        : '#req';
+RTK_waiting    : '#waiting';
+RTK_async      : 'async';
+RTK_cycles     : 'cycles';
+RTK_duration   : 'duration';
+RTK_periodic   : 'periodic';
+RTK_per        : 'per';
+RTK_mutex      : 'mutex';
+RTK_sporadic   : 'sporadic';
+RTK_start      : 'start';
+RTK_startlist  : 'startlist';
+RTK_stop       : 'stop';
+RTK_stoplist   : 'stoplist';
+RTK_sync       : 'sync';
+RTK_system     : 'system';
+RTK_time       : 'time';
+RTK_threadid   : 'threadid';
+RTK_thread     : 'thread';
 
+//@NB where are these keywords used? 
 /* 
 PP_KEYWORD:
-	| 'instance' 
 	| 'uselib' 
-	| 'with' ;
 
 RT_KEYWORD:
-	| 'all' 
-	| 'always' 
-	| 'atomic' 
-	| 'cycles' 
 	| 'dlmodule' 
-	| 'duration' 
-	| 'mutex' 
-	| 'per' 
-	| 'periodic' 
-	| 'sporadic' 
-	| 'start' 
-	| 'startlist' 
-	| 'stop' 
-	| 'stoplist'
-	| 'sync'
-	| 'thread' 
-	| 'time';
 */
 
-EXPONENT: ('E' | 'e') ('+' | '-')? NUMERAL; 
-DECIMAL_LITERAL: NUMERAL ('.' NUMERAL)? (EXPONENT)?;
-HEXADECIMAL_LITERAL: ('0x' | '0X') HEXADECIMAL_DIGIT+;
+EXPONENT          
+    : ('E' | 'e') ('+' | '-')? NUMERAL
+    ;
 
-NUMERIC_LITERAL: 
-	  DECIMAL_LITERAL 
-	| HEXADECIMAL_LITERAL;
+DECIMAL_LITERAL
+    : NUMERAL ('.' NUMERAL)? (EXPONENT)?
+    ;
+
+HEXADECIMAL_LITERAL
+    : ('0x' | '0X') HEXADECIMAL_DIGIT+
+    ;
+
+NUMERIC_LITERAL
+    : DECIMAL_LITERAL 
+	| HEXADECIMAL_LITERAL
+    ;
 
 //@NB these are already keywords? 
 // BOOLEAN_LITERAL: 
@@ -244,76 +258,100 @@ NUMERIC_LITERAL:
 //
 // NIL_LITERAL: 'nil';
 
-CHARACTER_LITERAL: '\'' (CHARACTER | ESC) '\'';
+CHARACTER_LITERAL
+    : '\'' (CHARACTER | ESC) '\''
+    ;
 
 //@LF Paolo what's '.' here? 
 //@NB why have the duplicate \" given it's already in escape sequence? 
-TEXT_LITERAL: '"' (CHARACTER | ESC | .)*? '"';
+TEXT_LITERAL
+    : '"' (CHARACTER | ESC | .)*? '"'
+    ;
 
-QUOTE_LITERAL: '<' IDENTIFIER '>';
+QUOTE_LITERAL
+    : '<' IDENTIFIER '>'
+    ;
 
-SYMBOLIC_LITERAL:
-	  NUMERIC_LITERAL
+SYMBOLIC_LITERAL
+    : NUMERIC_LITERAL
 	//| BOOLEAN_LITERAL
 	//| NIL_LITERAL 
 	| CHARACTER_LITERAL 
 	| TEXT_LITERAL
-	| QUOTE_LITERAL;
+	| QUOTE_LITERAL
+    ;
 
 //@LF Paolo prefers to lex operators separaterly, as ANTLR rules for
 //    operator precedence are tricky! 
-O_IFF: '<=>';
-O_NEQ: '<>';
-O_LEQ: O_LT O_EQUAL;//<=
-O_GEQ: O_GT O_EQUAL;//>=
-O_IMPLIES: '=>' ;
-O_EXP: '**';
-O_NDRES: '<-:';
-O_DRES: '<:';
-O_NRRES: ':->';
-O_RRES: ':>';
+O_IFF     : '<=>';
+O_NEQ     : '<>';
+O_LEQ     : '<=';//O_LT O_EQUAL; //@LF would allow white space between '<' and '='?
+O_GEQ     : '>=';//O_GT O_EQUAL;
+O_IMPLIES : '=>';
+O_EXP     : '**';
+O_NDRES   : '<-:';
+O_DRES    : '<:';
+O_NRRES   : ':->';
+O_RRES    : ':>';
 O_OVERRIDE: '++';
-O_LT: '<' ;
-O_GT: '>' ;
-O_DIV: '/';
-O_DIFF: '\\';
-O_TIMES: '*';
-O_PLUS: '+';
-O_MINUS: '-';
-O_CONCAT: '^';
-O_EQUAL: '=';
+O_LT      : '<' ;
+O_GT      : '>' ;
+O_DIV     : '/';
+O_DIFF    : '\\';
+O_TIMES   : '*';
+O_PLUS    : '+';
+O_MINUS   : '-';
+O_CONCAT  : '^';
+O_EQUAL   : '=';
 
-SEP_parallel: SEP_bar SEP_bar;
-SEP_range: '...';
+//@NB what about multiple line comment annotations? '/* @Warning(5000) */' is valid?
+//@NB see the VDM.g4 production for annotations
+SEP_ann   : '--@';
+//@LF don't use SEP_bar SEP_bar as would allow white space! 
+SEP_parallel: '||';
+SEP_optype: '==>';
+SEP_assign: ':=';
+SEP_rec   : '::';
+SEP_range : '...';
 SEP_maplet: '|->';
-SEP_def  : '==';
-SEP_tsel: '.#';
-SEP_pfcn: '->';
-SEP_tfcn: '+>';
-SEP_comma: ',';
-SEP_colon: ':';
-SEP_scolon:';';
-SEP_bar  : '|';
-SEP_qm  : '?';
-SEP_amp : '&';
+SEP_def   : '==';
+SEP_tsel  : '.#';
+SEP_pfcn  : '->';
+SEP_tfcn  : '+>';
+SEP_comma : ',';
+SEP_dot   : '.';
+SEP_colon : ':';
+SEP_scolon: ';';
+SEP_bar   : '|';
+SEP_qm    : '?';
+SEP_amp   : '&';
+SEP_tick  : '`';
+SEP_old   : '~';
+SEP_underscore: UNDERSCORE;
 
-PAREN_L: '(';
-PAREN_R: ')';
-BRACKET_L: '[';
-BRACKET_R: ']';
-BRACE_L: '{';
-BRACE_R: '}';
+PAREN_L   : '(';
+PAREN_R   : ')';
+BRACKET_L : '[';
+BRACKET_R : ']';
+BRACE_L   : '{';
+BRACE_R   : '}';
 
-IDENTIFIER: INITIAL_LETTER FOLLOWING_LETTER*;
+IDENTIFIER 
+    : INITIAL_LETTER FOLLOWING_LETTER*
+    ;
 
-TYPE_VARIABLE_IDENTIFIER: '@' IDENTIFIER;
+TYPE_VARIABLE_IDENTIFIER
+    : '@' IDENTIFIER
+    ;
 
 //@NB is this numerical literal repeat correct? 
 TRACE_REPEAT_PATTERN
     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
     ;
 
-NUMERAL: DIGIT+;
+NUMERAL
+    : DIGIT+
+    ;
 
 //------------------------
 // Fragments necessary for the lexer that we choose not to tokenize individually
@@ -321,10 +359,11 @@ NUMERAL: DIGIT+;
 fragment NameChar
    : NameStartChar
    | '0'..'9'
-   | '_'
+   | UNDERSCORE
    | '\u00B7'
    | '\u0300'..'\u036F'
    | '\u203F'..'\u2040'
+   //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
    ;
    
 fragment NameStartChar
@@ -344,15 +383,17 @@ fragment NameStartChar
 fragment IDCHAR
 	: LETTER
 	| DIGIT
-	| '_'
+	| UNDERSCORE
 	;
+
+fragment UNDERSCORE: '_';
 
 fragment LETTER: [a-zA-Z];
 fragment DIGIT: [0-9];
 fragment NZDIGIT: [1-9];
 fragment INITIAL_LETTER: LETTER | DIGIT; //@NB help :-)
-fragment FOLLOWING_LETTER: LETTER | DIGIT | '_'; 
-fragment CHARACTER: LETTER | DIGIT | '_';//@NB how best to complete this list? 
+fragment FOLLOWING_LETTER: LETTER | DIGIT | UNDERSCORE; 
+fragment CHARACTER: LETTER | DIGIT | UNDERSCORE;//@NB how best to complete this list? 
 
 fragment OCTAL_DIGIT: [0-7];
 fragment HEXADECIMAL_DIGIT: DIGIT | [a-fA-F];
@@ -366,12 +407,24 @@ fragment ESC:
 	| '\\\'' // \' escape quote
 	; 
 
+fragment NL
+    : [\r\n\u000C]
+    ;
+
+fragment NNL
+    : ~[\r\n\u000C]
+    ;
+
 //------------------------
 // Whitespace and comments
 //------------------------
 SPACE: [ ]+ -> channel(1);
 TAB: [\t]+ -> channel(2);
-CR: [\r\n\u000C]+ -> channel(3);
-SINGLE_LINE_COMMENT: '--' ~[\r\n]* -> channel(4);
-MULTIPLE_LINE_COMMENT: '/*' CHARACTER '*/' -> channel(4);
+CR: NL+ -> channel(3);
+SINGLE_LINE_COMMENT: '--' NNL* -> channel(4);
+MULTIPLE_LINE_COMMENT: '/*' .*? '*/' -> channel(5);
 UnrecognizedChar: .;
+
+//TODO add lexing mode or type for --@ annotations?
+
+//TODO add VDMLexBase check rule for inv_/pre_/post_/eq_/min_/max_/init_/is_/mk_/obj_?
