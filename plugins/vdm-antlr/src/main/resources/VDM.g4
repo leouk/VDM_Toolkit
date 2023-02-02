@@ -61,11 +61,26 @@ import VDMLex;
 // * you get the GUI for the current grammar.
 //------------------------
 
-//------------------------
+//--- Playing with the grammar:
 // * switch to java11
-// * Generate parser : antlr4 VDM.g4 VDMLex.g4 -listener -visitor -o ./output
-//                     antlr4-pare VDM.g4 sl_document -gui GIVE_OUTPUT CTRL+D
-// * Play with parser: grun VDM -tree / -gui
+// * generate output to separate directory as you will want to "clear" it
+// * compile the output, possibly also the ATN dot files
+// * go to the inner directory, then debug grammar with grun
+//
+//--- Concretely:
+// * Generate parser to './output' directory with visitors and ATNs with log file too 
+//   antlr4 VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./output
+// * Compile java code: 
+//   javac ./output/*.java
+// * Play with parser, which you must run from './output', can start at any parser rule
+//   cd ./output
+//   grun VDM sl_document -tree -gui VDM-TEST-FILE.vdmsl
+//
+//--- ANTLR4 tools 
+// * Alternatively, if antlr4-tools is installed (e.g. pip3 install antlr4-tools)
+// * to figure out how antlr4-parse works, call 'pip3 show antlr4-tools' to see how things work
+// * Generate and play with parser: antlr4-parse VDM.g4 sl_document -gui GIVE_OUTPUT CTRL+D
+//
 
 //------------------------
 // A.1 VDM-SL document
