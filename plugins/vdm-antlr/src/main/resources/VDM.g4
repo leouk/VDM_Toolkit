@@ -98,7 +98,7 @@ module
     ;
 
 sl_interface
-    : import_definition_list export_definition;
+    : import_definition_list? export_definition;
 
 import_definition_list 
     : SLK_imports import_definition (',' import_definition)*
