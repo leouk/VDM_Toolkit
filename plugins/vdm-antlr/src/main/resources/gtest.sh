@@ -15,13 +15,13 @@ START_PRODUCTION=sl_document
 if [[ "$#" -gt 1 ]]; then
     START_PRODUCTION=$1
     # gets the second arguments onwards
-    FILES=../"${@:2}"   
+    ARGS=../"${@:2}"   
 else 
     # gets all arguments
-    FILES=../"${@}"
+    ARGS=../"${@}"
 fi
-echo 'Parsing from ' $START_PRODUCTION ' for file ' $FILES
-java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.gui.TestRig VDM $START_PRODUCTION -tree -gui $FILES
+echo 'Parsing from ' $START_PRODUCTION ' for file ' $ARGS
+java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.gui.TestRig VDM $START_PRODUCTION -tokens -gui $ARGS
 
 echo 'Restoring default java version'
 cd ..
