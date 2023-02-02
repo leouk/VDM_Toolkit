@@ -1,0 +1,6 @@
+pom.xml
+target
+src/main/resources/VDM.g4 
+src/main/resources/VDMLex.g4 
+src/main/resources/*.log
+src/main/resources/gbuild.sh
