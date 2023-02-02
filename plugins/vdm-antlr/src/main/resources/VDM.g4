@@ -44,6 +44,10 @@
  
 grammar VDM;
 import VDMLex;
+// options 
+// {
+//     tokenVocab = VDMLex;
+// }
 
 //------------------------
 // Parser Rules (ATTN: in antlr, all parser rules start with a small letter)
@@ -227,8 +231,8 @@ class_body
 //TODO
 rt_definition_block 
     : pp_definition_block 
-   // | synchronisation_definitions
-   // | thread_definitions 
+    | synchronization_definitions
+    | thread_definitions 
     ;
 
 //TODO    
@@ -239,7 +243,7 @@ pp_definition_block
     | pp_function_definitions
     | pp_operation_definitions
     | traces_definitions
-    // | instance_variable_definitions 
+    | instance_variable_definitions 
     ;
 
 sl_definition_block
@@ -280,7 +284,7 @@ type_definition
 
 invariant_type_definition
     : '=' type type_specification
-    | '::' field+ type_specification
+    | SEP_rec field+ type_specification
     ;
 
 //@LF will this generate empty production and potential conflict? 
@@ -638,7 +642,7 @@ extended_explicit_operation_definition
     ;
 
 operation_type
-    : discretionary_type '==>' discretionary_type
+    : discretionary_type SEP_optype discretionary_type
     ;
 
 operation_body 
@@ -673,19 +677,77 @@ error
 // A.4.6 Instance Variable Definitions  
 //------------------------
 
-//TODO
+instance_variable_definitions
+    : PPK_instance PPK_variables 
+      (instance_variable_definition (';' instance_variable_definition)*)?
+    ;
+
+instance_variable_definition
+    : access_assignment_definition 
+    | invariant_definition
+    ;
+
+access_assignment_definition
+    : ((access? PPK_static?) | (PPK_static? access?))
+      assignment_definition
+    ;
+
+invariant_definition
+    : SLK_inv expression
+    ;
 
 //------------------------
 // A.4.7 Synchronisation Definitions  
 //------------------------
 
-//TODO
+synchronization_definitions
+    : RTK_sync synchronization?
+    ;
+
+//@NB why the rule here if defined by another one but never used elsewhere?
+synchronization
+    : permission_predicates
+    ;
+
+permission_predicates
+    : RTK_per name '=>' expression
+    | mutex_predicate
+    ;
+
+mutex_predicate
+    : RTK_mutex '(' SLK_all | name_list ')'
+    ; 
 
 //------------------------
 // A.4.8.Thread Definitions  
 //------------------------
 
-//TODO
+thread_definitions 
+    : RTK_thread thread_definition?
+    ;
+
+thread_definition
+    : periodic_thread_definition
+    | procedural_thread_definition
+    ;
+
+periodic_thread_definition
+    : periodic_obligation
+    | sporadic_obligation
+    ;
+
+//@NB no separators between expressions? From examples there seems to be a comma? Grammar is wrong?
+periodic_obligation
+    : RTK_periodic '(' expression ',' expression ',' expression ',' expression ')' '(' name ')'
+    ;
+
+sporadic_obligation
+    : RTK_sporadic '(' expression ',' expression ',' expression ',' expression ')' '(' name ')'
+    ;
+
+procedural_thread_definition
+    : statement
+    ;
 
 //------------------------
 // A.4.9.Traces Definitions  
@@ -732,10 +794,6 @@ trace_let_best_binding
       SLK_in trace_definition 
     ;
 
-local_definition_list
-    : local_definition (',' local_definition)*
-    ;
-
 trace_repeat_definition
     : trace_core_definition TRACE_REPEAT_PATTERN?;
 
@@ -757,6 +815,15 @@ trace_concurrent_expression
 
 trace_bracketed_expression
     : '(' trace_definition_list ')'
+    ;
+
+//------------------------
+// A.4.10 Annotation definitions
+//------------------------
+
+//TODO this is not quite right: no separation between --@ID etc. 
+annotations 
+    : SEP_ann IDENTIFIER '(' . ')' CR
     ;
 
 //------------------------
@@ -836,7 +903,7 @@ expression
 //    | apply                         #ApplyExpr
     | expression '(' expression_list? ')' #ApplyExpr
 //    | field_select                  #FieldSelExpr
-    | expression '.' IDENTIFIER     #FieldSelExpr
+    | expression SEP_dot IDENTIFIER     #FieldSelExpr
 //    | tuple_select                  #TupleSelExpr
     | expression SEP_tsel NUMERAL   #TupleSelExpr
     | function_type_instantiation   #FunctionTypeInstExpr
@@ -1269,11 +1336,11 @@ general_is_expression
 
 //TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_is '_' (name | basic_type) '(' expression ')'
+    : SLK_is SEP_underscore (name | basic_type) '(' expression ')'
     ;
 
 type_judgement
-    : SLK_is '_' '(' expression ',' type ')'
+    : SLK_is SEP_underscore '(' expression ',' type ')'
     ;
 
 //------------------------
@@ -1289,7 +1356,7 @@ undefined_expression
 //------------------------
 
 precondition_expression 
-    : SLK_pre '_' '(' expression_list ')'
+    : SLK_pre SEP_underscore '(' expression_list ')'
     ;
 
 //------------------------
@@ -1297,7 +1364,7 @@ precondition_expression
 //------------------------
 
 isofbaseclass_expression
-    : PPK_ibc '(' name ',' expression ')'
+    : PPK_ibc SEP_underscore '(' name ',' expression ')'
     ;
 
 //------------------------
@@ -1365,11 +1432,11 @@ name_list
     ;
 
 name
-    : IDENTIFIER ('`' IDENTIFIER)?
+    : IDENTIFIER (SEP_tick IDENTIFIER)?
     ;
 
 old_name
-    : IDENTIFIER '~'
+    : IDENTIFIER SEP_old
     ;
 
 //------------------------
@@ -1397,19 +1464,450 @@ map_seq_reference
     ;
 
 //------------------------
-// A.4.1 Type definitions  
+// A.7 Statements  
+//------------------------
+
+statement 
+    : let_statement
+    | let_be_statement
+    | def_statement
+    | block_statement
+    | general_assignment_statement
+    | if_statement
+    | cases_statement
+    | sequence_for_loop
+    | set_for_loop
+    | index_for_loop
+    | while_loop
+    | nondeterministic_statement
+    | call_statement
+    | specification_statement
+    | start_statement
+    | start_list_statement
+    | stop_statement
+    | stop_list_statement
+    | duration_statement
+    | cycles_statement
+    | return_statement
+    | always_statement
+    | trap_statement
+    | recursive_trap_statement
+    | exit_statement
+    | error_statement
+    | identity_statement
+    ;
+
+//------------------------
+// A.7.1 Local bindings statements  
+//------------------------
+
+let_statement 
+    : SLK_let local_definition_list 
+      SLK_in statement 
+    ;
+
+local_definition_list
+    : local_definition (',' local_definition)*
+    ;
+
+local_definition 
+    : value_definition
+    | function_definition
+    ;
+
+let_be_statement
+    : SLK_let multiple_bind (SLK_best expression)? 
+      SLK_in statement 
+    ;
+
+def_statement 
+    : SLK_def equals_definition_list ';'?
+      SLK_in statement
+    ;
+
+equals_definition_list 
+    : equals_definition (';' equals_definition)*
+    ;
+
+equals_definition 
+    : pattern_bind '=' expression
+    ;
+
+//------------------------
+// A.7.2 Block and Assignment Statements  
+//------------------------
+
+block_statement 
+    : '(' dcl_statement*
+      statement (';' statement)* ';'? ')'
+      ;
+
+dcl_statement 
+    : SLK_dcl assignment_definition 
+      (',' assignment_definition)* ';'
+    ;
+
+assignment_definition 
+    : IDENTIFIER ':' type (SEP_assign expression)?
+    ;
+
+general_assignment_statement
+    : assignment_statement
+    | multiple_assign_statement
+    ;
+
+assignment_statement
+    : state_designator SEP_assign expression
+    ;
+
+//@NB VDMJ tolerates dangling ';' as in atomic(x := nil; y := {};) [last semi shouldn't be allowed according to grammar? ]
+multiple_assign_statement
+    : SLK_atomic '(' assignment_statement ';' 
+      assignment_statement 
+      (';' assignment_statement)* 
+      ';'? ')'
+    ;
+
+//------------------------
+// A.7.3 Conditional Statements  
+//------------------------
+
+if_statement
+    : SLK_if expression SLK_then statement 
+      elseif_statement*
+      SLK_else statement
+    ;
+
+elseif_statement 
+    : SLK_elseif expression SLK_then statement
+    ;
+
+cases_statement
+    : SLK_cases expression ':'
+      cases_statement_alternatives
+      (',' others_statement)? SLK_end
+    ;
+
+cases_statement_alternatives
+    : cases_statement_alternative (',' cases_statement_alternative)*
+    ;
+
+cases_statement_alternative
+    //@NB arguably here the "token" is not the one for partial function but actually a different kind of '->'?
+    : pattern_list /*SEP_pfcn*/'->' statement 
+    ;
+
+others_statement
+    : SLK_others /*SEP_pfcn*/'->' statement
+    ;    
+
+//------------------------
+// A.7.4 Loop statements
+//------------------------
+
+sequence_for_loop
+    : SLK_for pattern_bind SLK_in
+      expression SLK_do statement
+    ;
+
+set_for_loop
+    : SLK_for SLK_all pattern SLK_inset expression
+      SLK_do statement
+    ;
+
+index_for_loop
+    : SLK_for IDENTIFIER '=' expression SLK_to expression
+      (SLK_by expression)?
+      SLK_do statement
+    ;
+
+//@NB while loops would benefit from something like a @LoopInvariant annotation
+while_loop
+    : SLK_while expression SLK_do statement
+    ;
+
+//------------------------
+// A.7.5 Nondeterministic statement
+//------------------------
+
+nondeterministic_statement
+    : SEP_parallel '(' statement (',' statement)* ')'
+    ;
+
+//------------------------
+// A.7.6 Call and Return statements
+//------------------------
+
+call_statement 
+    : name '(' expression_list? ')'
+    ;
+
+return_statement
+    : SLK_return expression?
+    ;
+
+// PP + RT only 
+pp_call_statement
+    : (object_designator '.')?
+      call_statement
+    ;
+
+// left recursive rules embedded and rearrange for precedence
+//@NB are there prececedence rules for these?
+object_designator
+    : 
+    // object_apply                              #ObjApplyDesignator
+      object_designator '(' expression_list? ')' #ObjApplyDesignator
+    //| object_field_reference                   #ObjFieldRefDesignator
+    | object_designator '.' IDENTIFIER           #ObjFieldRefDesignator
+    | self_expression                            #ObjSelfExprDesignator
+    | new_expression                             #ObjNewExprDesignator
+    | name                                       #ObjNameDesignator
+    ;
+
+object_field_reference
+    : object_designator '.' IDENTIFIER
+    ;
+
+object_apply
+    : object_designator '(' expression_list? ')'
+    ;
+
+//------------------------
+// A.7.7 Specification statement
+//------------------------
+
+specification_statement 
+    : BRACKET_L implicit_operation_body BRACE_R
+    ;
+
+//------------------------
+// A.7.8 Start and start list statements
+//------------------------
+
+start_statement 
+    : RTK_start '(' expression ')'
+    ;
+
+start_list_statement 
+    : RTK_startlist '(' expression ')'
+    ;
+
+
+//------------------------
+// A.7.9 Stop and stop list statements
+//------------------------
+
+stop_statement 
+    : RTK_stop '(' expression ')'
+    ;
+
+stop_list_statement 
+    : RTK_stoplist '(' expression ')'
+    ;
+
+//------------------------
+// A.7.10 Duration and Cycles list statements
+//------------------------
+
+duration_statement 
+    : RTK_duration '(' expression ')'
+      statement
+    ;
+
+cycles_statement
+    : RTK_cycles '(' expression ')'
+      statement
+    ;
+
+//------------------------
+// A.7.11 Exception handling statements
+//------------------------
+
+always_statement
+    : SLK_always statement SLK_in statement
+    ;
+
+trap_statement
+    : SLK_trap pattern_bind SLK_with statement
+      SLK_in statement
+    ;
+
+recursive_trap_statement
+    : SLK_tixe traps SLK_in statement
+    ;
+
+traps
+    : BRACE_L pattern_bind SEP_maplet statement
+      (',' pattern_bind SEP_maplet statement)* BRACE_R
+    ;
+
+exit_statement
+    : SLK_exit expression?
+    ;
+
+//------------------------
+// A.7.12 Error statement
+//------------------------
+
+error_statement
+    : SLK_error
+    ;
+
+//------------------------
+// A.7.13 Skip statement
+//------------------------
+
+identity_statement
+    : SLK_skip
+    ;
+
+//------------------------
+// A.7.9 Stop and stop list statement
 //------------------------
 
 //------------------------
-// Module 
+// A.8 Patterns and Bindings
 //------------------------
-pattern : 'pat';
-pattern_bind: 'pbind';
-pattern_list : 'patlist';
-multiple_bind: 'mb';
-statement: 'stmt';
-call_statement: 'cstmt';
-local_definition: 'letdef';
-bind_list: bind (',' bind)*;
-bind: 'bind';
-type_bind_list: 'tb;';
+
+//------------------------
+// A.8.1 Patterns
+//------------------------
+
+pattern
+    : pattern_identifier            #IdPattern
+    | match_value                   #MatchValuePattern
+    | set_enum_pattern              #SetEnumPattern
+    //| set_union_pattern           #SetUnionPattern
+    | pattern SLK_union pattern     #SetUnionPattern
+    | seq_enum_pattern              #SeqEnumPattern
+    //| seq_conc_pattern            #SeqConcPattern
+    | pattern O_CONCAT pattern      #SeqConcPattern
+    | map_enum_pattern              #MapEnumPattern
+    //| map_union_pattern           #MapUnionPattern
+    | pattern SLK_munion pattern    #MapUnionPattern
+    | tupple_pattern                #TupplePattern
+    //object_pattern PP/RT only     #ObjectPattern //PP only
+    | record_pattern                #RecordPattern
+    ;
+
+pattern_identifier 
+    : IDENTIFIER | '-'
+    ;
+
+match_value
+    : '(' expression ')'
+    | SYMBOLIC_LITERAL
+    ;
+
+set_enum_pattern
+    : BRACE_L pattern_list? BRACE_R
+    ;
+
+set_union_pattern 
+    : pattern SLK_union pattern
+    ;
+
+seq_enum_pattern 
+    : BRACKET_L pattern_list? BRACKET_R
+    ;
+
+seq_conc_pattern
+    : pattern O_CONCAT pattern
+    ;
+
+map_enum_pattern 
+    : BRACE_L maplet_pattern_list BRACE_R
+    | BRACE_L SEP_maplet BRACE_R
+    ;
+
+maplet_pattern_list 
+    : maplet_pattern (',' maplet_pattern)*
+    ;
+
+maplet_pattern
+    : pattern SEP_maplet pattern
+    ;
+
+map_union_pattern 
+    : pattern SLK_munion pattern
+    ;
+
+tupple_pattern 
+    : SLK_mk '(' pattern ',' pattern_list ')'
+    ;
+
+//TODO no space between SLK_mk and name!
+record_pattern 
+    : SLK_mk name '(' pattern_list ')'
+    ;
+
+pp_object_pattern 
+    : PPK_obj IDENTIFIER '(' field_pattern_list ')'
+    ;
+
+field_pattern_list 
+    : field_pattern (',' field_pattern)*
+    ;
+
+field_pattern
+    : IDENTIFIER SEP_maplet pattern 
+    ;
+
+pattern_list 
+    : pattern (',' pattern)*
+    ;
+
+//------------------------
+// A.8.2 Bindings
+//------------------------
+
+//@LF why doesn't this get left-recursive problems on pattern + set_bind (pattern on both sides)?
+pattern_bind 
+    : pattern 
+    | bind
+    ;
+
+bind 
+    : set_bind
+    | seq_bind
+    | type_bind
+    ;
+
+set_bind
+    : pattern SLK_inset expression
+    ;
+
+seq_bind
+    : pattern SLK_inseq expression
+    ;
+
+type_bind
+    : pattern ':' type
+    ;
+
+bind_list
+    : multiple_bind (',' multiple_bind)*
+    ;
+
+multiple_bind
+    : multiple_set_bind
+    | multiple_seq_bind
+    | multiple_type_bind
+    ;
+
+multiple_set_bind
+    : pattern_list SLK_inset expression
+    ;
+
+multiple_seq_bind
+    : pattern_list SLK_inseq expression
+    ;
+
+multiple_type_bind
+    : pattern_list ':' type
+    ;
+
+type_bind_list
+    : type_bind (',' type_bind)
+    ;
