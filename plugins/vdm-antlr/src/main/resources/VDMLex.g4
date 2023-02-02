@@ -58,7 +58,61 @@ lexer grammar VDMLex;
 //     Keyword begin (followed by a nonletter) is also an identifier, at least lexically, so the lexer can match b-e-g-i-n to either rule.
 //     Because of this, it is important to place all keywords before the identifiers
 //------------------------
-	
+
+// This has to appear first, otherwise lexer gets confused between keywords (SLK_true), identifiers (true) and symbolic literal (true)!
+SYMBOLIC_LITERAL
+    : NUMERIC_LITERAL
+	| BOOLEAN_LITERAL
+	| NIL_LITERAL 
+	| CHARACTER_LITERAL 
+	| TEXT_LITERAL
+	| QUOTE_LITERAL
+    ;
+
+NUMERIC_LITERAL
+    : DECIMAL_LITERAL 
+	| HEXADECIMAL_LITERAL
+    ;
+
+BOOLEAN_LITERAL
+    : SLK_true
+ 	| SLK_false
+    ;
+
+NIL_LITERAL
+    : SLK_nil
+    ;
+
+CHARACTER_LITERAL
+    : '\'' (NameChar | ESC) '\''
+    ;
+
+//@LF Paolo what's '.' here? 
+//@NB why have the duplicate \" given it's already in escape sequence? 
+TEXT_LITERAL
+    : '"' (NameChar | ESC | .)*? '"'
+    ;
+
+QUOTE_LITERAL
+    : '<' IDENTIFIER '>'
+    ;
+
+DECIMAL_LITERAL
+    : NUMERAL ('.' NUMERAL)? (EXPONENT)?
+    ;
+
+fragment EXPONENT          
+    : ('E' | 'e') ('+' | '-')? NUMERAL
+    ;
+
+HEXADECIMAL_LITERAL
+    : ('0x' | '0X') HEXADECIMAL_DIGIT+
+    ;
+
+TYPE_VARIABLE_IDENTIFIER
+    : '@' IDENTIFIER
+    ;
+
 //------------------------
 // Keywords (case sensitive); add PP/RT?
 //------------------------
@@ -234,52 +288,6 @@ RT_KEYWORD:
 	| 'dlmodule' 
 */
 
-EXPONENT          
-    : ('E' | 'e') ('+' | '-')? NUMERAL
-    ;
-
-DECIMAL_LITERAL
-    : NUMERAL ('.' NUMERAL)? (EXPONENT)?
-    ;
-
-HEXADECIMAL_LITERAL
-    : ('0x' | '0X') HEXADECIMAL_DIGIT+
-    ;
-
-NUMERIC_LITERAL
-    : DECIMAL_LITERAL 
-	| HEXADECIMAL_LITERAL
-    ;
-
-//@NB these are already keywords? 
-// BOOLEAN_LITERAL: 
-// 	  'true'
-// 	| 'false';
-//
-// NIL_LITERAL: 'nil';
-
-CHARACTER_LITERAL
-    : '\'' (CHARACTER | ESC) '\''
-    ;
-
-//@LF Paolo what's '.' here? 
-//@NB why have the duplicate \" given it's already in escape sequence? 
-TEXT_LITERAL
-    : '"' (CHARACTER | ESC | .)*? '"'
-    ;
-
-QUOTE_LITERAL
-    : '<' IDENTIFIER '>'
-    ;
-
-SYMBOLIC_LITERAL
-    : NUMERIC_LITERAL
-	//| BOOLEAN_LITERAL
-	//| NIL_LITERAL 
-	| CHARACTER_LITERAL 
-	| TEXT_LITERAL
-	| QUOTE_LITERAL
-    ;
 
 //@LF Paolo prefers to lex operators separaterly, as ANTLR rules for
 //    operator precedence are tricky! 
@@ -336,26 +344,23 @@ BRACKET_R : ']';
 BRACE_L   : '{';
 BRACE_R   : '}';
 
-IDENTIFIER 
-    : INITIAL_LETTER FOLLOWING_LETTER*
-    ;
-
-TYPE_VARIABLE_IDENTIFIER
-    : '@' IDENTIFIER
-    ;
-
 //@NB is this numerical literal repeat correct? 
 TRACE_REPEAT_PATTERN
     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
     ;
 
-NUMERAL
-    : DIGIT+
+// Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
+IDENTIFIER 
+    : NameStartChar NameChar*
     ;
 
 //------------------------
 // Fragments necessary for the lexer that we choose not to tokenize individually
 //------------------------
+NUMERAL
+    : DIGIT+
+    ;
+
 fragment NameChar
    : NameStartChar
    | '0'..'9'
@@ -367,7 +372,8 @@ fragment NameChar
    ;
    
 fragment NameStartChar
-   : 'A'..'Z' | 'a'..'z'
+   : 'A'..'Z' 
+   | 'a'..'z'
    | '\u00C0'..'\u00D6'
    | '\u00D8'..'\u00F6'
    | '\u00F8'..'\u02FF'
@@ -391,9 +397,6 @@ fragment UNDERSCORE: '_';
 fragment LETTER: [a-zA-Z];
 fragment DIGIT: [0-9];
 fragment NZDIGIT: [1-9];
-fragment INITIAL_LETTER: LETTER | DIGIT; //@NB help :-)
-fragment FOLLOWING_LETTER: LETTER | DIGIT | UNDERSCORE; 
-fragment CHARACTER: LETTER | DIGIT | UNDERSCORE;//@NB how best to complete this list? 
 
 fragment OCTAL_DIGIT: [0-7];
 fragment HEXADECIMAL_DIGIT: DIGIT | [a-fA-F];
