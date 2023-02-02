@@ -42,6 +42,7 @@
  * TERMINATION OF THIS AGREEMENT.
  */
  
+//parser 
 grammar VDM;
 import VDMLex;
 // options 
@@ -81,6 +82,19 @@ import VDMLex;
 // * to figure out how antlr4-parse works, call 'pip3 show antlr4-tools' to see how things work
 // * Generate and play with parser: antlr4-parse VDM.g4 sl_document -gui GIVE_OUTPUT CTRL+D
 //
+
+//--- Building + testing scripts:
+// * Build and tests from PRODUCTION_NAME the given FILE_NAME
+//   ./gbuild.sh [PRODUCTION_NAME] [FILE_NAMES]
+// * Examples: tests list of expressions from exprs versus test sl_document from TestV2IExprs.vdmsl 
+//   ./gbuild.sh expression_list exprs 
+//   ./gbuild.sh TestV2IExprs.vdmsl 
+//
+// * Test rig only; assumes build is on ./ouput and FILE_NAMES are relative to ../ 
+//   ./gtest.sh [PRODUCTION_NAME] [FILE_NAMES]
+//
+// * If PRODUCTION_NAME is ommitted, then sl_document is the start production
+// * If FILE_NAMES are ommitted, then you can type it directly on STDIN finishing by EOF (e.g. Ctrl+D on Linux/Mac or Ctrl+Z on Windows)
 
 //------------------------
 // A.1 VDM-SL document
@@ -941,9 +955,9 @@ expression
     // //| req_expression
     // //| waiting_expression
     // //| time_expression
-    | name                          #NameExpr
-    | old_name                      #OldNameExpr
     | SYMBOLIC_LITERAL              #SymbolicLitExpr
+    | old_name                      #OldNameExpr
+    | name                          #NameExpr
     ;
 
 // expression 
