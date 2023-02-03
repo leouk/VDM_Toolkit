@@ -279,15 +279,9 @@ RTK_time       : 'time';
 RTK_threadid   : 'threadid';
 RTK_thread     : 'thread';
 
-//@NB where are these keywords used? 
-/* 
-PP_KEYWORD:
-	| 'uselib' 
-
-RT_KEYWORD:
-	| 'dlmodule' 
-*/
-
+// Unused keywords
+//RTK_uselib : 'uselib';
+//RTK_keyword: 'dlmodule';
 
 //@LF Paolo prefers to lex operators separaterly, as ANTLR rules for
 //    operator precedence are tricky! 
@@ -312,8 +306,7 @@ O_MINUS   : '-';
 O_CONCAT  : '^';
 O_EQUAL   : '=';
 
-//@NB what about multiple line comment annotations? '/* @Warning(5000) */' is valid?
-//@NB see the VDM.g4 production for annotations
+//TODO multiple comment line annotations
 SEP_ann   : '--@';
 //@LF don't use SEP_bar SEP_bar as would allow white space! 
 SEP_parallel: '||';
@@ -361,31 +354,62 @@ NUMERAL
     : DIGIT+
     ;
 
-fragment NameChar
-   : NameStartChar
-   | '0'..'9'
-   | UNDERSCORE
-   | '\u00B7'
-   | '\u0300'..'\u036F'
-   | '\u203F'..'\u2040'
-   //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
-   ;
+fragment NameChar 
+    : NameStartChar
+    | [\p{Nd}]  // Unicode Decimal Digit Number: [0..9]
+    | '\u005F'  // Unicode underscore          : [_]
+    | '\u0027'  // Uhicode apostrophe          : [']
+    | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}]
+    ;
+
+fragment NameStartChar 
+    : [\p{Ll}]  // Unicode Lowercase Letter : [a..z] and others
+    | [\p{Lm}]  // Unicode Modifier Letter  :
+    | [\p{Lo}]  // Unicode Other Letter     :
+    | [\p{Lt}]  // Unicode Titlecase Letter :
+    | [\p{Lu}]  // Unicode Uppercase Letter : [A..Z] and others
+    | '\u0024'  // Unicode dollar sign      : [$]
+    //| ~InvalidStartChar
+    | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}\p{Nd}\p{Pc}]
+    ;
+
+fragment InvalidStartChar
+    : [\p{Cc}]  // Unicode Control
+    | [\p{Zl}]  // Unicode Line separator
+    | [\p{Zp}]  // Unicode Paragraph separator 
+    | [\p{Zs}]  // Unicode Space separator
+    | [\p{Cs}]  // Unicode Surrogate
+    | [\p{Cn}]  // Unicode Unassigned
+    | [\p{Nd}]  // Unicode Decimal Digit Number
+    | [\p{Pc}]  // Unicode Connector Punctuation
+    ;
+
+// fragment NameChar
+//    : NameStartChar
+//    | '0'..'9'
+//    | UNDERSCORE
+//    | '\u00B7'
+//    | '\u0300'..'\u036F'
+//    | '\u203F'..'\u2040'
+//    //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
+//    ;
    
-fragment NameStartChar
-   : 'A'..'Z' 
-   | 'a'..'z'
-   | '\u00C0'..'\u00D6'
-   | '\u00D8'..'\u00F6'
-   | '\u00F8'..'\u02FF'
-   | '\u0370'..'\u037D'
-   | '\u037F'..'\u1FFF'
-   | '\u200C'..'\u200D'
-   | '\u2070'..'\u218F'
-   | '\u2C00'..'\u2FEF'
-   | '\u3001'..'\uD7FF'
-   | '\uF900'..'\uFDCF'
-   | '\uFDF0'..'\uFFFD'
-   ;
+// fragment NameStartChar
+//    : 'A'..'Z' 
+//    | 'a'..'z'
+//    | '\u00C0'..'\u00D6'
+//    | '\u00D8'..'\u00F6'
+//    | '\u00F8'..'\u02FF'
+//    | '\u0370'..'\u037D'
+//    | '\u037F'..'\u1FFF'
+//    | '\u200C'..'\u200D'
+//    | '\u2070'..'\u218F'
+//    | '\u2C00'..'\u2FEF'
+//    | '\u3001'..'\uD7FF'
+//    | '\uF900'..'\uFDCF'
+//    | '\uFDF0'..'\uFFFD'
+//    ;
+
 fragment IDCHAR
 	: LETTER
 	| DIGIT
@@ -401,10 +425,11 @@ fragment NZDIGIT: [1-9];
 fragment OCTAL_DIGIT: [0-7];
 fragment HEXADECIMAL_DIGIT: DIGIT | [a-fA-F];
 fragment ESC: 
-	'\\' [rntfea"\\] // \r \n \t etc; //@NB: no \b?...
+    // No \b escape character for VDM
+ 	  '\\' [rntfea"\\] // \r \n \t etc; 
 	| '\\x' HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT
 	| '\\u' HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT
-	| '\\c' LETTER //@NB where to get the complete list? 
+	| '\\c' LETTER  
 	| '\\' OCTAL_DIGIT OCTAL_DIGIT OCTAL_DIGIT
 	| '\\"'  // \" escape double quote
 	| '\\\'' // \' escape quote
