@@ -41,7 +41,11 @@
  * REMEDY FOR ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL
  * TERMINATION OF THIS AGREEMENT.
  */
- 
+
+// See https://github.com/mike-lischke/vscode-antlr4/blob/master/doc/sentence-generation.md for ruleMatching 
+// VDMLex.json contains rule matching choices for sentence generation for VDMLex.g4 grammar
+// VDM.json contains rule matching choices for sentence generation for VDM.g4 grammar
+
 lexer grammar VDMLex;
 
 // options 
@@ -50,7 +54,7 @@ lexer grammar VDMLex;
 // }
 
 //------------------------
-// Lexer Rules
+// Lexer Rules:
 // NOTES:
 //  - in antlr, all lexer rules and constants start with a Capital letter
 //  -  ANTLR resolves lexical ambiguities by matching the input string to the rule specified first in the grammar

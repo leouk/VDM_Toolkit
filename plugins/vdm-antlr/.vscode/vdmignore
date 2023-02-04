@@ -1,7 +1,6 @@
 pom.xml
+doc
 target
-src/main/resources/exprs
-src/main/resources/VDM.g4 
-src/main/resources/VDMLex.g4 
-src/main/resources/*.log
-src/main/resources/gbuild.sh
+src/main
+src/test/resources/exprScenario
+src/test/resources/idScenario
