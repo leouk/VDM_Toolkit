@@ -18,7 +18,8 @@ export JAVA_HOME=$(/usr/libexec/java_home -v11)
 # call ANTLR to generate parser
 # antlr4 VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./output
 echo 'Calling ANTLR4 parser generator'
-java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -package vdmantlr -o ./output
+# -package vdmantlr
+java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./output
 
 # compile output files
 echo 'Compiling generarted parser'
@@ -42,4 +43,4 @@ source gtest.sh "$@"
 # cd ..
 # export JAVA_HOME=$OLD_JAVA_HOME
 
-echo 'Done'
+#echo 'Done'
