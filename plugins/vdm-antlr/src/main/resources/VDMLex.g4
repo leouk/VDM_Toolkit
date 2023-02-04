@@ -74,22 +74,20 @@ NUMERIC_LITERAL
 	| HEXADECIMAL_LITERAL
     ;
 
-BOOLEAN_LITERAL
+fragment BOOLEAN_LITERAL
     : SLK_true
  	| SLK_false
     ;
 
-NIL_LITERAL
+fragment NIL_LITERAL
     : SLK_nil
     ;
 
-CHARACTER_LITERAL
+fragment CHARACTER_LITERAL
     : '\'' (NameChar | ESC) '\''
     ;
 
-//@LF Paolo what's '.' here? 
-//@NB why have the duplicate \" given it's already in escape sequence? 
-TEXT_LITERAL
+fragment TEXT_LITERAL
     : '"' (NameChar | ESC | .)*? '"'
     ;
 
@@ -97,7 +95,7 @@ QUOTE_LITERAL
     : '<' IDENTIFIER '>'
     ;
 
-DECIMAL_LITERAL
+fragment DECIMAL_LITERAL
     : NUMERAL ('.' NUMERAL)? (EXPONENT)?
     ;
 
@@ -105,7 +103,7 @@ fragment EXPONENT
     : ('E' | 'e') ('+' | '-')? NUMERAL
     ;
 
-HEXADECIMAL_LITERAL
+fragment HEXADECIMAL_LITERAL
     : ('0x' | '0X') HEXADECIMAL_DIGIT+
     ;
 
