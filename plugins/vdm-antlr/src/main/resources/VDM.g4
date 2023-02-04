@@ -824,7 +824,7 @@ trace_let_best_binding
     ;
 
 trace_repeat_definition
-    : trace_core_definition TRACE_REPEAT_PATTERN?;
+    : trace_core_definition (O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}')?;
 
 trace_core_definition 
     : trace_apply_expression

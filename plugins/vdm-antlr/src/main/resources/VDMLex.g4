@@ -335,10 +335,9 @@ BRACKET_R : ']';
 BRACE_L   : '{';
 BRACE_R   : '}';
 
-//@NB is this numerical literal repeat correct? 
-TRACE_REPEAT_PATTERN
-    : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
-    ;
+// TRACE_REPEAT_PATTERN
+//     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
+//     ;
 
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 
