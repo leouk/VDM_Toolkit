@@ -115,7 +115,7 @@ sl_interface
     : import_definition_list? export_definition;
 
 import_definition_list 
-    : SLK_imports import_definition (',' import_definition)*
+    : SLK_imports import_definition (SEP_comma import_definition)*
     ;
 
 import_definition
@@ -135,7 +135,7 @@ import_signature
     ;
 
 import_types_signature
-    : SLK_types type_import (';' type_import)* ';'?
+    : SLK_types type_import (SEP_scolon type_import)* SEP_scolon?
     ;
 
 type_import
@@ -144,27 +144,27 @@ type_import
     ;
 
 import_values_signature
-    : SLK_values value_import (';' value_import)* ';'?
+    : SLK_values value_import (SEP_scolon value_import)* SEP_scolon?
     ;
 
 value_import 
-    : name (':' type)? (SLK_renamed name)?
+    : name (SEP_colon type)? (SLK_renamed name)?
     ;
 
 import_functions_signature
-    : SLK_functions function_import (';' function_import)* ';'?
+    : SLK_functions function_import (SEP_scolon function_import)* SEP_scolon?
     ;
 
 function_import     
-    : name (type_variable_list? ':' function_type)? (SLK_renamed name)?
+    : name (type_variable_list? SEP_colon function_type)? (SLK_renamed name)?
     ;
 
 import_operations_signature 
-    : SLK_operations operation_import (';' operation_import)* ';'?
+    : SLK_operations operation_import (SEP_scolon operation_import)* SEP_scolon?
     ;
 
 operation_import 
-    : name (':' operation_type)? (SLK_renamed name)?
+    : name (SEP_colon operation_type)? (SLK_renamed name)?
     ;
 
 export_definition 
@@ -184,33 +184,33 @@ export_signature
     ;
 
 export_types_signature 
-    : SLK_types type_export (';' type_export)* ';'?
+    : SLK_types type_export (SEP_scolon type_export)* SEP_scolon?
     ;
 
 type_export 
     : SLK_struct? name;
 
 export_values_signature
-    : SLK_values value_signature (';' value_signature)* ';'?
+    : SLK_values value_signature (SEP_scolon value_signature)* SEP_scolon?
     ;
 
 value_signature 
-    : name_list ':' type
+    : name_list SEP_colon type
     ;
 
 export_functions_signature 
-    : SLK_functions function_signature (';' function_signature)* ';'?
+    : SLK_functions function_signature (SEP_scolon function_signature)* SEP_scolon?
     ;
 
 function_signature
-    : name_list type_variable_list? ':' function_type
+    : name_list type_variable_list? SEP_colon function_type
     ;
 
 export_operations_signature 
-    : SLK_operations operation_signature (';' operation_signature)* ';';
+    : SLK_operations operation_signature (SEP_scolon operation_signature)* SEP_scolon;
 
 operation_signature 
-    : name_list ':' operation_type
+    : name_list SEP_colon operation_type
     ;
 
 module_body 
@@ -246,7 +246,7 @@ pp_class
     ;
 
 inheritance_clause 
-    : SLK_is PPK_subclass SLK_of IDENTIFIER (',' IDENTIFIER)*
+    : SLK_is PPK_subclass SLK_of IDENTIFIER (SEP_comma IDENTIFIER)*
     ;
 
 class_body 
@@ -306,13 +306,13 @@ sl_type_definitions
     ;
 
 //@NB here added extra production to make parser faster; otherwise you will get
-//    a look ahead on the identifier until the '=' or '::' to disambiguate. 
+//    a look ahead on the identifier until the O_EQUAL or '::' to disambiguate. 
 type_definition 
     : IDENTIFIER invariant_type_definition 
     ;
 
 invariant_type_definition
-    : '=' type type_specification
+    : O_EQUAL type type_specification
     | SEP_rec field+ type_specification
     ;
 
@@ -349,11 +349,11 @@ type
     ;
 
 void_function_type
-    :<assoc=right> '(' ')' (SEP_pfcn | SEP_tfcn) type
+    :<assoc=right> PAREN_L PAREN_R (SEP_pfcn | SEP_tfcn) type
     ;
 
 bracketed_type 
-    : '(' type ')'
+    : PAREN_L type PAREN_R
     ;
 
 basic_type 
@@ -371,7 +371,7 @@ composite_type
 //@NB here I am making the rule more efficient again without change to meaning 
 field 
     : type 
-    | (IDENTIFIER ':' '-'?) type
+    | (IDENTIFIER SEP_colon O_MINUS?) type
     ;
 
 union_type 
@@ -383,7 +383,7 @@ product_type
     ;
 
 optional_type 
-    : '[' type ']'
+    : BRACKET_L type BRACKET_R
     ;
 
 set_type 
@@ -437,7 +437,7 @@ total_function_type
     ;
 
 discretionary_type 
-    : '(' ')'   #VoidType
+    : PAREN_L PAREN_R   #VoidType
     | type      #FunctionType
     ;
 
@@ -471,7 +471,7 @@ invariant_initial_function
 //------------------------
 
 state_definition 
-    : SLK_state IDENTIFIER SLK_of field+ invariant? initialisation? SLK_end ';'
+    : SLK_state IDENTIFIER SLK_of field+ invariant? initialisation? SLK_end SEP_scolon
     ;
 
 initialisation 
@@ -483,12 +483,12 @@ initialisation
 //------------------------
 
 sl_value_definitions 
-    : SLK_values (value_definition (';' value_definition)* ';'? )?
+    : SLK_values (value_definition (SEP_scolon value_definition)* SEP_scolon? )?
     ;
 
 //@NB will stop completing PP + RT for now. 
 pp_value_definitions 
-    : SLK_values (access_value_definition (';' access_value_definition)* ';'? )?
+    : SLK_values (access_value_definition (SEP_scolon access_value_definition)* SEP_scolon? )?
     ;
 
 access_value_definition
@@ -496,7 +496,7 @@ access_value_definition
     ;
 
 value_definition 
-    : pattern (':' type) '=' expression
+    : pattern (SEP_colon type) O_EQUAL expression
     ;
 
 //------------------------
@@ -522,7 +522,7 @@ function_definition
     ;
 
 explicit_function_definition 
-    : IDENTIFIER type_variable_list? ':' 
+    : IDENTIFIER type_variable_list? SEP_colon 
       function_type
       IDENTIFIER parameters+ 
       SEP_def function_body 
@@ -563,23 +563,23 @@ extended_explicit_function_definition
 
 //TODO should these comma separated lists be parameterised?
 type_variable_list 
-    : '[' TYPE_VARIABLE_IDENTIFIER (',' TYPE_VARIABLE_IDENTIFIER)* ']'
+    : BRACKET_L TYPE_VARIABLE_IDENTIFIER (SEP_comma TYPE_VARIABLE_IDENTIFIER)* BRACKET_R
     ;
 
 parameter_types 
-    : '(' pattern_type_pair_list ')'
+    : PAREN_L pattern_type_pair_list PAREN_R
     ;
 
 pattern_type_pair_list
-    : pattern_list ':' type (',' pattern_list ':' type)*
+    : pattern_list SEP_colon type (SEP_comma pattern_list SEP_colon type)*
     ;
 
 identifier_type_pair_list
-    : identifier_type_pair (',' identifier_type_pair)*
+    : identifier_type_pair (SEP_comma identifier_type_pair)*
     ;
 
 identifier_type_pair 
-    : IDENTIFIER ':' type 
+    : IDENTIFIER SEP_colon type 
     ;
 
 // parameters_list 
@@ -587,7 +587,7 @@ identifier_type_pair
 //     ;
 
 parameters
-    : '(' pattern_list? ')'
+    : PAREN_L pattern_list? PAREN_R
     ;
 
 function_body 
@@ -639,7 +639,7 @@ operation_definition
     ;
 
 explicit_operation_definition 
-    : IDENTIFIER ':' operation_type 
+    : IDENTIFIER SEP_colon operation_type 
       IDENTIFIER parameters
       SEP_def operation_body
       pre_expression?
@@ -685,7 +685,7 @@ externals
     ;
 
 var_information
-    : vdmmode name_list (':' type)?
+    : vdmmode name_list (SEP_colon type)?
     ;
 
 // 'mode' is an ANTLR reserved word 
@@ -699,7 +699,7 @@ exceptions
 
 error 
     //@NB arguably here the "token" is not the one for partial function but actually a different kind of '->'?
-    : IDENTIFIER ':' expression /*SEP_pfcn*/'->' expression 
+    : IDENTIFIER SEP_colon expression /*SEP_pfcn*/'->' expression 
     ;
 
 //------------------------
@@ -708,7 +708,7 @@ error
 
 instance_variable_definitions
     : PPK_instance PPK_variables 
-      (instance_variable_definition (';' instance_variable_definition)*)?
+      (instance_variable_definition (SEP_scolon instance_variable_definition)*)?
     ;
 
 instance_variable_definition
@@ -744,7 +744,7 @@ permission_predicates
     ;
 
 mutex_predicate
-    : RTK_mutex '(' SLK_all | name_list ')'
+    : RTK_mutex PAREN_L SLK_all | name_list PAREN_R
     ; 
 
 //------------------------
@@ -767,11 +767,11 @@ periodic_thread_definition
 
 //@NB no separators between expressions? From examples there seems to be a comma? Grammar is wrong?
 periodic_obligation
-    : RTK_periodic '(' expression ',' expression ',' expression ',' expression ')' '(' name ')'
+    : RTK_periodic PAREN_L expression SEP_comma expression SEP_comma expression SEP_comma expression PAREN_R PAREN_L name PAREN_R
     ;
 
 sporadic_obligation
-    : RTK_sporadic '(' expression ',' expression ',' expression ',' expression ')' '(' name ')'
+    : RTK_sporadic PAREN_L expression SEP_comma expression SEP_comma expression SEP_comma expression PAREN_R PAREN_L name PAREN_R
     ;
 
 procedural_thread_definition
@@ -787,19 +787,19 @@ traces_definitions
     ;
 
 named_trace_list 
-    : named_trace (';' named_trace)*
+    : named_trace (SEP_scolon named_trace)*
     ;
 
 named_trace 
-    : IDENTIFIER ('/' IDENTIFIER)* ':' trace_definition_list
+    : IDENTIFIER ('/' IDENTIFIER)* SEP_colon trace_definition_list
     ;
 
 trace_definition_list 
-    : trace_definition_term (';' trace_definition_term)*
+    : trace_definition_term (SEP_scolon trace_definition_term)*
     ;
 
 trace_definition_term 
-    : trace_definition ('|' trace_definition)*
+    : trace_definition (SEP_bar trace_definition)*
     ;
 
 trace_definition 
@@ -837,13 +837,13 @@ trace_apply_expression
     ;
 
 trace_concurrent_expression
-    : SEP_parallel '(' trace_definition 
-      ',' trace_definition 
-      (',' trace_definition)* ')'
+    : SEP_parallel PAREN_L trace_definition 
+      SEP_comma trace_definition 
+      (SEP_comma trace_definition)* PAREN_R
     ;
 
 trace_bracketed_expression
-    : '(' trace_definition_list ')'
+    : PAREN_L trace_definition_list PAREN_R
     ;
 
 //------------------------
@@ -852,7 +852,7 @@ trace_bracketed_expression
 
 //TODO this is not quite right: no separation between --@ID etc. 
 annotations 
-    : SEP_ann IDENTIFIER '(' . ')' CR
+    : SEP_ann IDENTIFIER PAREN_L . PAREN_R CR
     ;
 
 //------------------------
@@ -860,7 +860,7 @@ annotations
 //------------------------
 
 expression_list 
-    : expression (',' expression)*
+    : expression (SEP_comma expression)*
     ;
 
 // We must eliminate left-recursion, so have to have the whole tree in one place with labelled attributes :-( for now. 
@@ -922,7 +922,7 @@ expression
     | sequence_enumeration      #SeqEnumExpr
     | sequence_comprehension    #SeqCompExpr
 //    | subsequence               #SubSeqExpr
-    | expression '(' expression SEP_comma SEP_range SEP_comma expression ')' #SubSeqExpr
+    | expression PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R #SubSeqExpr
 
     | map_enumeration               #MapEnumExpr
     | map_comprehension             #MapCompExpr
@@ -930,7 +930,7 @@ expression
     | record_constructor            #RecordMkExpr
     | record_modifier               #RecordMuExpr
 //    | apply                         #ApplyExpr
-    | expression '(' expression_list? ')' #ApplyExpr
+    | expression PAREN_L expression_list? PAREN_R #ApplyExpr
 //    | field_select                  #FieldSelExpr
     | expression SEP_dot IDENTIFIER     #FieldSelExpr
 //    | tuple_select                  #TupleSelExpr
@@ -1015,7 +1015,7 @@ expression
 //------------------------
 
 bracketed_expression
-    : '(' expression ')'
+    : PAREN_L expression PAREN_R
     ;
 
 //------------------------
@@ -1033,8 +1033,8 @@ let_be_expression
     ;
 
 def_expression 
-    : SLK_def pattern_bind '=' expression 
-      (';' pattern_bind '=' expression)* ';'?
+    : SLK_def pattern_bind O_EQUAL expression 
+      (SEP_scolon pattern_bind O_EQUAL expression)* SEP_scolon?
       SLK_in expression
     ;
 
@@ -1053,13 +1053,13 @@ elseif_expression
     ;
 
 cases_expression
-    : SLK_cases expression ':'
+    : SLK_cases expression SEP_colon
       cases_expression_alternatives
-      (',' others_expression)? SLK_end
+      (SEP_comma others_expression)? SLK_end
     ;
 
 cases_expression_alternatives
-    : cases_expression_alternative (',' cases_expression_alternative)*
+    : cases_expression_alternative (SEP_comma cases_expression_alternative)*
     ;
 
 cases_expression_alternative
@@ -1249,7 +1249,7 @@ sequence_comprehension
     ;
 
 subsequence
-    : expression '(' expression SEP_comma SEP_range SEP_comma expression ')'
+    : expression PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1274,7 +1274,7 @@ map_comprehension
 //------------------------
 
 tuple_constructor
-    : SLK_mk '(' expression ',' expression_list ')'
+    : SLK_mk PAREN_L expression SEP_comma expression_list PAREN_R
     ;
 
 //------------------------
@@ -1283,11 +1283,11 @@ tuple_constructor
 
 //TODO how to enforce no delimiter between SLK_mk and name? 
 record_constructor
-    : SLK_mk name '(' expression_list? ')'
+    : SLK_mk name PAREN_L expression_list? PAREN_R
     ;
 
 record_modifier
-    : SLK_mu '(' expression ',' record_modification (',' record_modification)* ')'
+    : SLK_mu PAREN_L expression SEP_comma record_modification (SEP_comma record_modification)* PAREN_R
     ;
 
 record_modification
@@ -1299,11 +1299,11 @@ record_modification
 //------------------------
 
 apply 
-    : expression '(' expression_list? ')'
+    : expression PAREN_L expression_list? PAREN_R
     ;
 
 field_select 
-    : expression '.' IDENTIFIER
+    : expression SEP_dot IDENTIFIER
     ;
 
 tuple_select 
@@ -1311,7 +1311,7 @@ tuple_select
     ;
 
 function_type_instantiation 
-    : name BRACE_L type (',' type)* BRACE_R
+    : name BRACE_L type (SEP_comma type)* BRACE_R
     ;
 
 //------------------------
@@ -1327,7 +1327,7 @@ lambda_expression
 //------------------------
 
 narrow_expression
-    : SLK_narrow '(' expression ',' type ')'
+    : SLK_narrow PAREN_L expression SEP_comma type PAREN_R
     ;
 
 //------------------------
@@ -1335,7 +1335,7 @@ narrow_expression
 //------------------------
 
 new_expression
-    : PPK_new name '(' expression_list? ')'
+    : PPK_new name PAREN_L expression_list? PAREN_R
     ;
 
 //------------------------
@@ -1365,11 +1365,11 @@ general_is_expression
 
 //TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_is SEP_underscore (name | basic_type) '(' expression ')'
+    : SLK_is SEP_underscore (name | basic_type) PAREN_L expression PAREN_R
     ;
 
 type_judgement
-    : SLK_is SEP_underscore '(' expression ',' type ')'
+    : SLK_is SEP_underscore PAREN_L expression SEP_comma type PAREN_R
     ;
 
 //------------------------
@@ -1385,7 +1385,7 @@ undefined_expression
 //------------------------
 
 precondition_expression 
-    : SLK_pre SEP_underscore '(' expression_list ')'
+    : SLK_pre SEP_underscore PAREN_L expression_list PAREN_R
     ;
 
 //------------------------
@@ -1393,7 +1393,7 @@ precondition_expression
 //------------------------
 
 isofbaseclass_expression
-    : PPK_ibc SEP_underscore '(' name ',' expression ')'
+    : PPK_ibc SEP_underscore PAREN_L name SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1401,7 +1401,7 @@ isofbaseclass_expression
 //------------------------
 
 isofclass_expression
-    : PPK_ioc '(' name ',' expression ')'
+    : PPK_ioc PAREN_L name SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1409,7 +1409,7 @@ isofclass_expression
 //------------------------
 
 samebaseclass_expression
-    : PPK_sbc '(' name ',' expression ')'
+    : PPK_sbc PAREN_L name SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1417,7 +1417,7 @@ samebaseclass_expression
 //------------------------
 
 sameclass_expression
-    : PPK_sc '(' name ',' expression ')'
+    : PPK_sc PAREN_L name SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1425,23 +1425,23 @@ sameclass_expression
 //------------------------
 
 act_expression
-    : RTK_act '(' name_list ')'
+    : RTK_act PAREN_L name_list PAREN_R
     ;
 
 fin_expression
-    : RTK_fin '(' name_list ')'
+    : RTK_fin PAREN_L name_list PAREN_R
     ;
     
 active_expression
-    : RTK_active '(' name_list ')'
+    : RTK_active PAREN_L name_list PAREN_R
     ;
     
 req_expression
-    : RTK_req '(' name_list ')'
+    : RTK_req PAREN_L name_list PAREN_R
     ;
     
 waiting_expression
-    : RTK_waiting '(' name_list ')'
+    : RTK_waiting PAREN_L name_list PAREN_R
     ;
 
 //------------------------
@@ -1457,7 +1457,7 @@ time_expression
 //------------------------
 
 name_list
-    : name (',' name)*
+    : name (SEP_comma name)*
     ;
 
 name
@@ -1476,8 +1476,8 @@ old_name
 
 // Left-recursion requires inlining + labelling; order gives priority/precedence
 state_designator
-    : state_designator '.' IDENTIFIER      #FieldReferenceDesignator
-    | state_designator '(' expression ')'  #MapSeqDesignator
+    : state_designator SEP_dot IDENTIFIER      #FieldReferenceDesignator
+    | state_designator PAREN_L expression PAREN_R  #MapSeqDesignator
     | name                                 #NameDesignator
     //: name
     //| field_reference               
@@ -1485,11 +1485,11 @@ state_designator
     ;
 
 field_reference
-    : state_designator '.' IDENTIFIER
+    : state_designator SEP_dot IDENTIFIER
     ;
 
 map_seq_reference
-    : state_designator '(' expression ')'
+    : state_designator PAREN_L expression PAREN_R
     ;
 
 //------------------------
@@ -1536,7 +1536,7 @@ let_statement
     ;
 
 local_definition_list
-    : local_definition (',' local_definition)*
+    : local_definition (SEP_comma local_definition)*
     ;
 
 local_definition 
@@ -1550,16 +1550,16 @@ let_be_statement
     ;
 
 def_statement 
-    : SLK_def equals_definition_list ';'?
+    : SLK_def equals_definition_list SEP_scolon?
       SLK_in statement
     ;
 
 equals_definition_list 
-    : equals_definition (';' equals_definition)*
+    : equals_definition (SEP_scolon equals_definition)*
     ;
 
 equals_definition 
-    : pattern_bind '=' expression
+    : pattern_bind O_EQUAL expression
     ;
 
 //------------------------
@@ -1567,17 +1567,17 @@ equals_definition
 //------------------------
 
 block_statement 
-    : '(' dcl_statement*
-      statement (';' statement)* ';'? ')'
+    : PAREN_L dcl_statement*
+      statement (SEP_scolon statement)* SEP_scolon? PAREN_R
       ;
 
 dcl_statement 
     : SLK_dcl assignment_definition 
-      (',' assignment_definition)* ';'
+      (SEP_comma assignment_definition)* SEP_scolon
     ;
 
 assignment_definition 
-    : IDENTIFIER ':' type (SEP_assign expression)?
+    : IDENTIFIER SEP_colon type (SEP_assign expression)?
     ;
 
 general_assignment_statement
@@ -1589,12 +1589,12 @@ assignment_statement
     : state_designator SEP_assign expression
     ;
 
-//@NB VDMJ tolerates dangling ';' as in atomic(x := nil; y := {};) [last semi shouldn't be allowed according to grammar? ]
+//@NB VDMJ tolerates dangling SEP_scolon as in atomic(x := nil; y := {};) [last semi shouldn't be allowed according to grammar? ]
 multiple_assign_statement
-    : SLK_atomic '(' assignment_statement ';' 
+    : SLK_atomic PAREN_L assignment_statement SEP_scolon 
       assignment_statement 
-      (';' assignment_statement)* 
-      ';'? ')'
+      (SEP_scolon assignment_statement)* 
+      SEP_scolon? PAREN_R
     ;
 
 //------------------------
@@ -1612,13 +1612,13 @@ elseif_statement
     ;
 
 cases_statement
-    : SLK_cases expression ':'
+    : SLK_cases expression SEP_colon
       cases_statement_alternatives
-      (',' others_statement)? SLK_end
+      (SEP_comma others_statement)? SLK_end
     ;
 
 cases_statement_alternatives
-    : cases_statement_alternative (',' cases_statement_alternative)*
+    : cases_statement_alternative (SEP_comma cases_statement_alternative)*
     ;
 
 cases_statement_alternative
@@ -1645,7 +1645,7 @@ set_for_loop
     ;
 
 index_for_loop
-    : SLK_for IDENTIFIER '=' expression SLK_to expression
+    : SLK_for IDENTIFIER O_EQUAL expression SLK_to expression
       (SLK_by expression)?
       SLK_do statement
     ;
@@ -1660,7 +1660,7 @@ while_loop
 //------------------------
 
 nondeterministic_statement
-    : SEP_parallel '(' statement (',' statement)* ')'
+    : SEP_parallel PAREN_L statement (SEP_comma statement)* PAREN_R
     ;
 
 //------------------------
@@ -1668,7 +1668,7 @@ nondeterministic_statement
 //------------------------
 
 call_statement 
-    : name '(' expression_list? ')'
+    : name PAREN_L expression_list? PAREN_R
     ;
 
 return_statement
@@ -1677,7 +1677,7 @@ return_statement
 
 // PP + RT only 
 pp_call_statement
-    : (object_designator '.')?
+    : (object_designator SEP_dot)?
       call_statement
     ;
 
@@ -1686,20 +1686,20 @@ pp_call_statement
 object_designator
     : 
     // object_apply                              #ObjApplyDesignator
-      object_designator '(' expression_list? ')' #ObjApplyDesignator
+      object_designator PAREN_L expression_list? PAREN_R #ObjApplyDesignator
     //| object_field_reference                   #ObjFieldRefDesignator
-    | object_designator '.' IDENTIFIER           #ObjFieldRefDesignator
+    | object_designator SEP_dot IDENTIFIER           #ObjFieldRefDesignator
     | self_expression                            #ObjSelfExprDesignator
     | new_expression                             #ObjNewExprDesignator
     | name                                       #ObjNameDesignator
     ;
 
 object_field_reference
-    : object_designator '.' IDENTIFIER
+    : object_designator SEP_dot IDENTIFIER
     ;
 
 object_apply
-    : object_designator '(' expression_list? ')'
+    : object_designator PAREN_L expression_list? PAREN_R
     ;
 
 //------------------------
@@ -1715,11 +1715,11 @@ specification_statement
 //------------------------
 
 start_statement 
-    : RTK_start '(' expression ')'
+    : RTK_start PAREN_L expression PAREN_R
     ;
 
 start_list_statement 
-    : RTK_startlist '(' expression ')'
+    : RTK_startlist PAREN_L expression PAREN_R
     ;
 
 
@@ -1728,11 +1728,11 @@ start_list_statement
 //------------------------
 
 stop_statement 
-    : RTK_stop '(' expression ')'
+    : RTK_stop PAREN_L expression PAREN_R
     ;
 
 stop_list_statement 
-    : RTK_stoplist '(' expression ')'
+    : RTK_stoplist PAREN_L expression PAREN_R
     ;
 
 //------------------------
@@ -1740,12 +1740,12 @@ stop_list_statement
 //------------------------
 
 duration_statement 
-    : RTK_duration '(' expression ')'
+    : RTK_duration PAREN_L expression PAREN_R
       statement
     ;
 
 cycles_statement
-    : RTK_cycles '(' expression ')'
+    : RTK_cycles PAREN_L expression PAREN_R
       statement
     ;
 
@@ -1768,7 +1768,7 @@ recursive_trap_statement
 
 traps
     : BRACE_L pattern_bind SEP_maplet statement
-      (',' pattern_bind SEP_maplet statement)* BRACE_R
+      (SEP_comma pattern_bind SEP_maplet statement)* BRACE_R
     ;
 
 exit_statement
@@ -1821,11 +1821,11 @@ pattern
     ;
 
 pattern_identifier 
-    : IDENTIFIER | '-'
+    : IDENTIFIER | O_MINUS
     ;
 
 match_value
-    : '(' expression ')'
+    : PAREN_L expression PAREN_R
     | SYMBOLIC_LITERAL
     ;
 
@@ -1851,7 +1851,7 @@ map_enum_pattern
     ;
 
 maplet_pattern_list 
-    : maplet_pattern (',' maplet_pattern)*
+    : maplet_pattern (SEP_comma maplet_pattern)*
     ;
 
 maplet_pattern
@@ -1863,20 +1863,20 @@ map_union_pattern
     ;
 
 tupple_pattern 
-    : SLK_mk '(' pattern ',' pattern_list ')'
+    : SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R
     ;
 
 //TODO no space between SLK_mk and name!
 record_pattern 
-    : SLK_mk name '(' pattern_list ')'
+    : SLK_mk name PAREN_L pattern_list PAREN_R
     ;
 
 pp_object_pattern 
-    : PPK_obj IDENTIFIER '(' field_pattern_list ')'
+    : PPK_obj IDENTIFIER PAREN_L field_pattern_list PAREN_R
     ;
 
 field_pattern_list 
-    : field_pattern (',' field_pattern)*
+    : field_pattern (SEP_comma field_pattern)*
     ;
 
 field_pattern
@@ -1884,7 +1884,7 @@ field_pattern
     ;
 
 pattern_list 
-    : pattern (',' pattern)*
+    : pattern (SEP_comma pattern)*
     ;
 
 //------------------------
@@ -1912,11 +1912,11 @@ seq_bind
     ;
 
 type_bind
-    : pattern ':' type
+    : pattern SEP_colon type
     ;
 
 bind_list
-    : multiple_bind (',' multiple_bind)*
+    : multiple_bind (SEP_comma multiple_bind)*
     ;
 
 multiple_bind
@@ -1934,9 +1934,9 @@ multiple_seq_bind
     ;
 
 multiple_type_bind
-    : pattern_list ':' type
+    : pattern_list SEP_colon type
     ;
 
 type_bind_list
-    : type_bind (',' type_bind)
+    : type_bind (SEP_comma type_bind)
     ;
