@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "name": "Debug ANTLR4 grammar",
+            "type": "antlr-debug",
+            "request": "launch",
+            "input": "${file}",
+            "grammar": "src/main/antlr4/VDM.g4",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "sl_document",
+            "printParseTree": true,
+            "visualParseTree": true
+        }
+    ]
+}
