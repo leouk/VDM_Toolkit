@@ -12,6 +12,7 @@
 	<properties>
 		<!-- ANTLR version, which percolates to all dependent POMs -->	
 		<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>
+		<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version>
 	</properties>
 
 
@@ -49,7 +50,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-					<plugin>
+			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 				<executions>
@@ -93,6 +94,78 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${org.antlr.antlr-version}</version>
+				<!-- See org.antlr.mojo.antlr4.Antlr4Mojo @Parameters for options 
+					 See https://www.antlr.org/api/maven-plugin/latest/examples/simple.html for package setup
+				-->
+				<configuration>
+					<!--
+					<sourceDirectory>${basedir}</sourceDirectory>
+					<includes>
+					   <include>Java9Lexer.g4</include>
+					   <include>Java9Parser.g4</include>
+					</includes>
+					-->
+					<visitor>true</visitor>
+					<listener>true</listener>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+						<!--<libDirectory>src/main/antlr4_imports</libDirectory>-->
+					</execution>
+				</executions>
+			</plugin>
+			<!-- See https://github.com/antlr/antlr4test-maven-plugin/blob/master/src/main/java/com/khubla/antlr/antlr4test/GrammarTestMojo.java for configuration parameters + package setup -->
+			<plugin>
+				<groupId>com.khubla.antlr</groupId>
+				<artifactId>antlr4test-maven-plugin</artifactId>
+				<version>${antlr4test-maven-plugin.version}</version>
+				<configuration>
+					<scenarios>
+						<scenario>
+							<scenarioName>Expressions</scenarioName>
+							<verbose>true</verbose>
+							<showTree>false</showTree>
+							<entryPoint>expression_list</entryPoint>
+							<grammarName>VDM</grammarName>
+							<!--<packageName>dummy</packageName>-->
+							<testFileExtension>.expr</testFileExtension>
+							<exampleFiles>src/test/resources/exprScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>Identifiers</scenarioName>
+							<verbose>true</verbose>
+							<showTree>true</showTree>
+							<entryPoint>name_list</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.id</testFileExtension>
+							<exampleFiles>src/test/resources/idScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>VDM-SL</scenarioName>
+							<verbose>true</verbose>
+							<showTree>false</showTree>
+							<entryPoint>sl_document</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.vdmsl</testFileExtension>
+							<exampleFiles>src/test/resources/vdmslScenario/</exampleFiles>
+						</scenario>
+					</scenarios>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
