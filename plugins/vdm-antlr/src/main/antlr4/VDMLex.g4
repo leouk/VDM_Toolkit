@@ -352,6 +352,8 @@ NUMERAL
     ;
 
 //@LF This didn;t work :-(. Caused almost everything to be an identifier :-(
+//TODO try using sentence generation 
+//TODO see grammars-v4/sql grammars ids? 
 // fragment NameChar 
 //     : NameStartChar
 //     | [\p{Nd}]  // Unicode Decimal Digit Number: [0..9]

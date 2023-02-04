@@ -41,7 +41,14 @@
  * REMEDY FOR ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL
  * TERMINATION OF THIS AGREEMENT.
  */
- 
+
+// See vscode-antlr4 documentation at https://github.com/mike-lischke/vscode-antlr4/tree/master/doc 
+// $antlr-format on
+
+// Particularly useful documentation for debugging and (amazingly) sentence generation (!) is at
+// https://github.com/mike-lischke/vscode-antlr4/blob/master/doc/grammar-debugging.md
+// https://github.com/mike-lischke/vscode-antlr4/blob/master/doc/sentence-generation.md
+
 //parser 
 grammar VDM;
 import VDMLex;
