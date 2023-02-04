@@ -1257,7 +1257,7 @@ subsequence
 //------------------------
 
 map_enumeration 
-    : BRACE_L maplet (',' maplet) BRACE_R
+    : BRACE_L maplet (SEP_comma maplet)? BRACE_R
     | BRACE_L SEP_maplet BRACE_R
     ;
 
