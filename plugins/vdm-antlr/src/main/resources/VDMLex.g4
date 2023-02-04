@@ -351,61 +351,62 @@ NUMERAL
     : DIGIT+
     ;
 
-fragment NameChar 
-    : NameStartChar
-    | [\p{Nd}]  // Unicode Decimal Digit Number: [0..9]
-    | '\u005F'  // Unicode underscore          : [_]
-    | '\u0027'  // Uhicode apostrophe          : [']
-    | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}]
-    ;
+//@LF This didn;t work :-(. Caused almost everything to be an identifier :-(
+// fragment NameChar 
+//     : NameStartChar
+//     | [\p{Nd}]  // Unicode Decimal Digit Number: [0..9]
+//     | '\u005F'  // Unicode underscore          : [_]
+//     | '\u0027'  // Uhicode apostrophe          : [']
+//     | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}]
+//     ;
 
-fragment NameStartChar 
-    : [\p{Ll}]  // Unicode Lowercase Letter : [a..z] and others
-    | [\p{Lm}]  // Unicode Modifier Letter  :
-    | [\p{Lo}]  // Unicode Other Letter     :
-    | [\p{Lt}]  // Unicode Titlecase Letter :
-    | [\p{Lu}]  // Unicode Uppercase Letter : [A..Z] and others
-    | '\u0024'  // Unicode dollar sign      : [$]
-    //| ~InvalidStartChar
-    | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}\p{Nd}\p{Pc}]
-    ;
+// fragment NameStartChar 
+//     : [\p{Ll}]  // Unicode Lowercase Letter : [a..z] and others
+//     | [\p{Lm}]  // Unicode Modifier Letter  :
+//     | [\p{Lo}]  // Unicode Other Letter     :
+//     | [\p{Lt}]  // Unicode Titlecase Letter :
+//     | [\p{Lu}]  // Unicode Uppercase Letter : [A..Z] and others
+//     | '\u0024'  // Unicode dollar sign      : [$]
+//     //| ~InvalidStartChar
+//     | ~[\p{Cc}\p{Zl}\p{Zp}\p{Zs}\p{Cs}\p{Cn}\p{Nd}\p{Pc}]
+//     ;
 
-fragment InvalidStartChar
-    : [\p{Cc}]  // Unicode Control
-    | [\p{Zl}]  // Unicode Line separator
-    | [\p{Zp}]  // Unicode Paragraph separator 
-    | [\p{Zs}]  // Unicode Space separator
-    | [\p{Cs}]  // Unicode Surrogate
-    | [\p{Cn}]  // Unicode Unassigned
-    | [\p{Nd}]  // Unicode Decimal Digit Number
-    | [\p{Pc}]  // Unicode Connector Punctuation
-    ;
+// fragment InvalidStartChar
+//     : [\p{Cc}]  // Unicode Control
+//     | [\p{Zl}]  // Unicode Line separator
+//     | [\p{Zp}]  // Unicode Paragraph separator 
+//     | [\p{Zs}]  // Unicode Space separator
+//     | [\p{Cs}]  // Unicode Surrogate
+//     | [\p{Cn}]  // Unicode Unassigned
+//     | [\p{Nd}]  // Unicode Decimal Digit Number
+//     | [\p{Pc}]  // Unicode Connector Punctuation
+//     ;
 
-// fragment NameChar
-//    : NameStartChar
-//    | '0'..'9'
-//    | UNDERSCORE
-//    | '\u00B7'
-//    | '\u0300'..'\u036F'
-//    | '\u203F'..'\u2040'
-//    //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
-//    ;
+fragment NameChar
+   : NameStartChar
+   | '0'..'9'
+   | UNDERSCORE
+   | '\u00B7'
+   | '\u0300'..'\u036F'
+   | '\u203F'..'\u2040'
+   //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
+   ;
    
-// fragment NameStartChar
-//    : 'A'..'Z' 
-//    | 'a'..'z'
-//    | '\u00C0'..'\u00D6'
-//    | '\u00D8'..'\u00F6'
-//    | '\u00F8'..'\u02FF'
-//    | '\u0370'..'\u037D'
-//    | '\u037F'..'\u1FFF'
-//    | '\u200C'..'\u200D'
-//    | '\u2070'..'\u218F'
-//    | '\u2C00'..'\u2FEF'
-//    | '\u3001'..'\uD7FF'
-//    | '\uF900'..'\uFDCF'
-//    | '\uFDF0'..'\uFFFD'
-//    ;
+fragment NameStartChar
+   : 'A'..'Z' 
+   | 'a'..'z'
+   | '\u00C0'..'\u00D6'
+   | '\u00D8'..'\u00F6'
+   | '\u00F8'..'\u02FF'
+   | '\u0370'..'\u037D'
+   | '\u037F'..'\u1FFF'
+   | '\u200C'..'\u200D'
+   | '\u2070'..'\u218F'
+   | '\u2C00'..'\u2FEF'
+   | '\u3001'..'\uD7FF'
+   | '\uF900'..'\uFDCF'
+   | '\uFDF0'..'\uFFFD'
+   ;
 
 fragment IDCHAR
 	: LETTER
