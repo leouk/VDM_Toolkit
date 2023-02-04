@@ -40,3 +40,4 @@ experiments/vdm/Games/ConwayGL/target
 experiments/vdm/Games/ConwayNB/target
 experiments/vdm/IsaGenOverture/target
 plugins/vdm-antlr/src/main/resources/output
+plugins/vdm-antlr/src/main/antlr4/.antlr
