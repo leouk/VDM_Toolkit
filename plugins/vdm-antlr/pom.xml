@@ -131,8 +131,10 @@
 					<scenarios>
 						<scenario>
 							<scenarioName>Expressions</scenarioName>
-							<verbose>true</verbose>
-							<showTree>false</showTree>
+							<!-- Verbose is the same as -tokens for ANTLR (i.e. tokenising intput) -->
+							<verbose>false</verbose>
+							<!-- Useful for copy-paste tree to tree file for checking later in case grammar fails! -->
+							<showTree>true</showTree>
 							<entryPoint>expression_list</entryPoint>
 							<grammarName>VDM</grammarName>
 							<!--<packageName>dummy</packageName>-->
@@ -141,7 +143,7 @@
 						</scenario>
 						<scenario>
 							<scenarioName>Identifiers</scenarioName>
-							<verbose>true</verbose>
+							<verbose>false</verbose>
 							<showTree>true</showTree>
 							<entryPoint>name_list</entryPoint>
 							<grammarName>VDM</grammarName>
@@ -150,8 +152,8 @@
 						</scenario>
 						<scenario>
 							<scenarioName>VDM-SL</scenarioName>
-							<verbose>true</verbose>
-							<showTree>false</showTree>
+							<verbose>false</verbose>
+							<showTree>true</showTree>
 							<entryPoint>sl_document</entryPoint>
 							<grammarName>VDM</grammarName>
 							<testFileExtension>.vdmsl</testFileExtension>
