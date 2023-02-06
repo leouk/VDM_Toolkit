@@ -975,12 +975,12 @@ expression
     | tuple_constructor             #TupleMkExpr
     | record_constructor            #RecordMkExpr
     | record_modifier               #RecordMuExpr
-//    | apply                         #ApplyExpr
-    | expression SEP_dot IDENTIFIER     #FieldSelExpr       // has to be before field select
 //    | tuple_select                  #TupleSelExpr
-    | expression PAREN_L expression_list? PAREN_R #ApplyExpr
+//    | expression SEP_tsel NUMERAL   #TupleSelExpr
 //    | field_select                  #FieldSelExpr
-    | expression SEP_tsel NUMERAL   #TupleSelExpr
+//    | expression SEP_dot IDENTIFIER     #FieldSelExpr       // has to be before field select
+//    | apply                         #ApplyExpr
+    | expression PAREN_L expression_list? PAREN_R #ApplyExpr
     | function_type_instantiation   #FunctionTypeInstExpr
     | lambda_expression             #LambdaExpr
     | narrow_expression             #NarrowExpr
