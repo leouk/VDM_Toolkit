@@ -1190,48 +1190,47 @@ map_inverse
 // See ANTLR4 Definitive guide section 5.4.
 //@NB is this the right binding power order? 
 
-// binary_expression
-//     : expression O_EXP       expression //#IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?//
-//     | expression O_TIMES     expression //#ArithmeticMultiplicationExpr    
-//     | expression O_DIV       expression //#ArithmeticDivideExpr    
-//     | expression SLK_div     expression //#ArithmeticIntegerDivisionExpr    
-//     | expression SLK_rem     expression //#ArithmeticReminderExpr    
-//     | expression SLK_mod     expression //#ArithmeticModuloExpr    
-//     | expression O_PLUS      expression //#ArithmeticPlusExpr
-//     | expression O_MINUS     expression //#ArithmeticMinusExpr    
-//   //
-//     | expression O_LEQ       expression //#RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
-//     | expression O_LT        expression //#RelationalLessThanExpr    
-//     | expression O_GEQ       expression //#RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
-//     | expression O_GT        expression //#RelationalGreaterThanExpr  
-//     | expression O_EQUAL     expression //#RelationalEqualExpr    
-//     | expression O_NEQ       expression //#RelationalNotEqualExpr
-// //
-//     | expression SLK_and     expression //#LogicalAndExpr
-//     | expression SLK_or      expression //#LogicalOrExpr
-//     | expression O_IMPLIES   expression //#LogicalImpliesExpr
-//     | expression O_IFF       expression //#LogicalIffExpr
-// //
-//     | expression SLK_ninset  expression //#SetNotMemberExpr
-//     | expression SLK_inset   expression //#SetMemberExpr
-//     | expression SLK_subset  expression //#SetSubsetExpr
-//     | expression SLK_psubset expression //#SetPSubsetExpr
-//     | expression O_DIFF      expression //#SetDiffExpr                          
-//     | expression SLK_union   expression //#SetUnionExpr
-//     | expression SLK_inter   expression //#SetInterExpr
-// //
-//     | expression SLK_ninseq  expression //#SeqNotMemberExpr
-//     | expression SLK_inseq   expression //#SeqMemberExpr
-//     | expression O_CONCAT    expression //#SeqConcatExpr
-//     | expression O_OVERRIDE  expression //#MapSeqOverrideExpr
-// //
-//     | expression SLK_merge   expression //#MapMergeExpr
-//     | expression O_NDRES     expression //#MapDomFilterExpr
-//     | expression O_DRES      expression //#MapDomRestricExpr
-//     | expression O_NRRES     expression //#MapRngFilterExpr
-//     | expression O_RRES      expression //#MapRngRestrictExpr
-//     | expression SLK_comp    expression //#MapCompositionExpr
-//     ;
+binary_expression
+    : expression O_EXP       expression //#IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?//
+    | expression O_TIMES     expression //#ArithmeticMultiplicationExpr    
+    | expression O_DIV       expression //#ArithmeticDivideExpr    
+    | expression SLK_div     expression //#ArithmeticIntegerDivisionExpr    
+    | expression SLK_rem     expression //#ArithmeticReminderExpr    
+    | expression SLK_mod     expression //#ArithmeticModuloExpr    
+    | expression O_PLUS      expression //#ArithmeticPlusExpr
+    | expression O_MINUS     expression //#ArithmeticMinusExpr    
+  //
+    | expression O_LEQ       expression //#RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
+    | expression O_LT        expression //#RelationalLessThanExpr    
+    | expression O_GEQ       expression //#RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
+    | expression O_GT        expression //#RelationalGreaterThanExpr  
+    | expression O_EQUAL     expression //#RelationalEqualExpr    
+    | expression O_NEQ       expression //#RelationalNotEqualExpr
+//
+    | expression SLK_and     expression //#LogicalAndExpr
+    | expression SLK_or      expression //#LogicalOrExpr
+    | expression O_IMPLIES   expression //#LogicalImpliesExpr
+    | expression O_IFF       expression //#LogicalIffExpr
+//
+    | expression SLK_ninset  expression //#SetNotMemberExpr
+    | expression SLK_inset   expression //#SetMemberExpr
+    | expression SLK_subset  expression //#SetSubsetExpr
+    | expression SLK_psubset expression //#SetPSubsetExpr
+    | expression O_DIFF      expression //#SetDiffExpr                          
+    | expression SLK_union   expression //#SetUnionExpr
+    | expression SLK_inter   expression //#SetInterExpr
+//
+    | expression SLK_inseq   expression //#SeqMemberExpr
+    | expression O_CONCAT    expression //#SeqConcatExpr
+    | expression O_OVERRIDE  expression //#MapSeqOverrideExpr
+//
+    | expression SLK_munion  expression //#MapUnionExpr
+    | expression O_NDRES     expression //#MapDomFilterExpr
+    | expression O_DRES      expression //#MapDomRestricExpr
+    | expression O_NRRES     expression //#MapRngFilterExpr
+    | expression O_RRES      expression //#MapRngRestrictExpr
+    | expression SLK_comp    expression //#MapCompositionExpr
+    ;
 
 //------------------------
 // A.5.6 Quantified Expressions  
