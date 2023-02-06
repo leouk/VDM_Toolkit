@@ -893,30 +893,8 @@ expression
     | def_expression            #DefExpr                                        //4
     | if_expression             #IfExpr                                         //5
     | cases_expression          #CasesExpr                                      //6
-//--------------------------------------------------------------------------    //7
-//    | unary_expression          #UnaryExpr                                      
-    | O_PLUS       expression  #ArithmeticUnaryPlusExpr                         //1   prefix_expression
-    | O_MINUS      expression  #ArithmeticUnaryMinusExpr                        //2
-    | SLK_abs      expression  #ArithmeticAbsoluteExpr                          //3
-    | SLK_floor    expression  #ArithmeticFloorExpr                             //4
-    | SLK_not      expression  #LogicNotExpr                                    //5
-    | SLK_card     expression  #SetCardExpr                                     //6
-    | SLK_power    expression  #PowerExpr                                       //7
-    | SLK_dunion   expression  #SetDunionExpr                                   //8
-    | SLK_dinter   expression  #SetDinterExpr                                   //9
-    | SLK_hd       expression  #SeqHdExpr                                       //10
-    | SLK_tl       expression  #SeqTlExpr                                       //11
-    | SLK_len      expression  #SeqLenExpr                                      //12
-    | SLK_elems    expression  #SeqElemsExpr                                    //13
-    | SLK_inds     expression  #SeqIndsExpr                                     //14
-    | SLK_reverse  expression  #SeqReverseExpr                                  //15
-    | SLK_conc     expression  #SeqDConcExpr                                    //16
-    | SLK_dom      expression  #MapDomExpr                                      //17
-    | SLK_rng      expression  #MapRngExpr                                      //18
-    | SLK_merge    expression  #MapMergeExpr                                    //19
-    | SLK_inverse  expression  #MapInverseExpr                                  //1   suffix_expression 
-    // | expression SEP_tsel NUMERAL   #TupleSelExpr                               //2
-    // | expression SEP_dot IDENTIFIER     #FieldSelExpr       // has to be before field select
+    | unary_expression          #UnaryExpr                                      //7
+    | suffix_expression         #SuffixExpr                              //not there
 
 //--------------------------------------------------------------------------    //8
 //    | binary_expression         #BinaryExpr
@@ -1184,6 +1162,12 @@ unary_operator
 map_inverse 
     : SLK_inverse expression;
 */
+
+suffix_expression
+    : SLK_inverse  expression   #MapInverseExpr                        
+    | SEP_tsel NUMERAL          #TupleSelExpr                             
+    | SEP_dot IDENTIFIER        #FieldSelExpr       
+    ;
 
 //------------------------
 // A.5.5 Binary Expressions  
