@@ -920,6 +920,7 @@ expression
     | expression O_NRRES     expression #MapRngFilterExpr
     | expression O_RRES      expression #MapRngRestrictExpr
     | expression SLK_comp    expression #MapCompositionExpr
+    | expression SLK_munion  expression #MapUnionExpr                           //28
 
     | quantified_expression     #QuantifiedExpr
     | iota_expression           #IotaExpr
