@@ -873,57 +873,65 @@ expression_list
     : expression (SEP_comma expression)*
     ;
 
-// We must eliminate left-recursion, so have to have the whole tree in one place with labelled attributes :-( for now. 
+// We must eliminate left-recursion, so have to have the whole tree in one place with labelled attributes. 
+// See ANTLR4 reference guide section 5.2 on left recursion elimination.
+// 
+// Left recursion use (implicitly defined) semantic predicates to induce a priority grammar 
+// (e.g. precedence defined according to order of definition of productions). This works well for 
+// left recursion where all (or most) productions participate (e.g. ^, *, /, +, -, ID expressions). 
+// 
+// ANTLR4 identifies productions with left recursion first; they get highest priority according to their
+// placement in the grammar (i.e. earlier production has higher precedence). All other (non-left recursive)
+// productions are considered primary and can be declared *in any order*.   
 expression 
-    : bracketed_expression      #BracketedExpr
-    | let_expression            #LetExpr
-    | let_be_expression         #LetBestExpr
-    | def_expression            #DefExpr
-    | if_expression             #IfExpr
-    | cases_expression          #CasesExpr
-    | unary_expression          #UnaryExpr
+    : bracketed_expression      #BracketedExpr                                  //1
+    | let_expression            #LetExpr                                        //2
+    | let_be_expression         #LetBestExpr                                    //3
+    | def_expression            #DefExpr                                        //4
+    | if_expression             #IfExpr                                         //5
+    | cases_expression          #CasesExpr                                      //6
+    | unary_expression          #UnaryExpr                                      //7
+//--------------------------------------------------------------------------    //8
 //    | binary_expression         #BinaryExpr
-    | expression O_EXP       expression #IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?
-    | expression O_TIMES     expression #ArithmeticMultiplicationExpr    
-    | expression O_DIV       expression #ArithmeticDivideExpr    
-    | expression SLK_div     expression #ArithmeticIntegerDivisionExpr    
-    | expression SLK_rem     expression #ArithmeticReminderExpr    
-    | expression SLK_mod     expression #ArithmeticModuloExpr    
-    | expression O_PLUS      expression #ArithmeticPlusExpr
-    | expression O_MINUS     expression #ArithmeticMinusExpr    
+    | expression O_EXP       expression #IterateExpr                            //34                  
+    | expression O_TIMES     expression #ArithmeticMultiplicationExpr           //3
+    | expression O_DIV       expression #ArithmeticDivideExpr                   //4
+    | expression SLK_div     expression #ArithmeticIntegerDivisionExpr          //5
+    | expression SLK_rem     expression #ArithmeticReminderExpr                 //6
+    | expression SLK_mod     expression #ArithmeticModuloExpr                   //7
+    | expression O_PLUS      expression #ArithmeticPlusExpr                     //1
+    | expression O_MINUS     expression #ArithmeticMinusExpr                    //2
   
-    | expression O_LEQ       expression #RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
-    | expression O_LT        expression #RelationalLessThanExpr    
-    | expression O_GEQ       expression #RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
-    | expression O_GT        expression #RelationalGreaterThanExpr  
-    | expression O_EQUAL     expression #RelationalEqualExpr    
-    | expression O_NEQ       expression #RelationalNotEqualExpr
+    | expression O_LT        expression #RelationalLessThanExpr                 //8
+    | expression O_LEQ       expression #RelationalLessThanEqualExpr            //9   
+    | expression O_GT        expression #RelationalGreaterThanExpr              //10
+    | expression O_GEQ       expression #RelationalGreaterThanEqualExpr         //11     
+    | expression O_EQUAL     expression #RelationalEqualExpr                    //12
+    | expression O_NEQ       expression #RelationalNotEqualExpr                 //13
 
-    | expression SLK_and     expression #LogicalAndExpr
-    | expression SLK_or      expression #LogicalOrExpr
-    | expression O_IMPLIES   expression #LogicalImpliesExpr
-    | expression O_IFF       expression #LogicalIffExpr
+    | expression SLK_and     expression #LogicalAndExpr                         //15
+    | expression SLK_or      expression #LogicalOrExpr                          //14
+    | expression O_IMPLIES   expression #LogicalImpliesExpr                     //16
+    | expression O_IFF       expression #LogicalIffExpr                         //17
 
-    | expression SLK_ninset  expression #SetNotMemberExpr
-    | expression SLK_inset   expression #SetMemberExpr
-    | expression SLK_subset  expression #SetSubsetExpr
-    | expression SLK_psubset expression #SetPSubsetExpr
-    | expression O_DIFF      expression #SetDiffExpr                          
-    | expression SLK_union   expression #SetUnionExpr
-    | expression SLK_inter   expression #SetInterExpr
+    | expression SLK_ninset  expression #SetNotMemberExpr                       //19
+    | expression SLK_inset   expression #SetMemberExpr                          //18
+    | expression SLK_subset  expression #SetSubsetExpr                          //20
+    | expression SLK_psubset expression #SetPSubsetExpr                         //21
+    | expression O_DIFF      expression #SetDiffExpr                            //23
+    | expression SLK_union   expression #SetUnionExpr                           //24
+    | expression SLK_inter   expression #SetInterExpr                           //25
 
-    | expression SLK_ninseq  expression #SeqNotMemberExpr
-    | expression SLK_inseq   expression #SeqMemberExpr
-    | expression O_CONCAT    expression #SeqConcatExpr
-    | expression O_OVERRIDE  expression #MapSeqOverrideExpr
+    | expression O_CONCAT    expression #SeqConcatExpr                          //26
+    | expression O_OVERRIDE  expression #MapSeqOverrideExpr                     //27
 
-    | expression SLK_merge   expression #MapMergeExpr
-    | expression O_NDRES     expression #MapDomFilterExpr
-    | expression O_DRES      expression #MapDomRestricExpr
-    | expression O_NRRES     expression #MapRngFilterExpr
-    | expression O_RRES      expression #MapRngRestrictExpr
-    | expression SLK_comp    expression #MapCompositionExpr
     | expression SLK_munion  expression #MapUnionExpr                           //28
+    | expression O_NDRES     expression #MapDomFilterExpr                       //29
+    | expression O_DRES      expression #MapDomRestricExpr                      //30
+    | expression O_NRRES     expression #MapRngFilterExpr                       //31
+    | expression O_RRES      expression #MapRngRestrictExpr                     //32
+    | expression SLK_comp    expression #MapCompositionExpr                     //33
+//--------------------------------------------------------------------------
 
     | quantified_expression     #QuantifiedExpr
     | iota_expression           #IotaExpr
