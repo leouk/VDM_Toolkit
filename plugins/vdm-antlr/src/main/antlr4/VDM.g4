@@ -253,7 +253,7 @@ pp_class
     ;
 
 inheritance_clause 
-    : SLK_is PPK_subclass SLK_of IDENTIFIER (SEP_comma IDENTIFIER)*
+    : PPK_isc IDENTIFIER (SEP_comma IDENTIFIER)*
     ;
 
 class_body 
@@ -398,11 +398,11 @@ set_type
     ;
 
 set0_type
-    : SLK_set SLK_of type
+    : SLK_setof type
     ; 
 
 set1_type
-    : SLK_set1 SLK_of type
+    : SLK_set1of type
     ; 
 
 seq_type 
@@ -410,11 +410,11 @@ seq_type
     ;
 
 seq0_type
-    : SLK_seq SLK_of type
+    : SLK_seqof type
     ; 
 
 seq1_type
-    : SLK_seq1 SLK_of type
+    : SLK_seq1of type
     ; 
 
 map_type
@@ -1288,7 +1288,6 @@ tuple_constructor
 // A.5.12 Record Expressions  
 //------------------------
 
-//TODO how to enforce no delimiter between SLK_mk and name? 
 record_constructor
     : SLK_mk name PAREN_L expression_list? PAREN_R
     ;
@@ -1372,11 +1371,11 @@ general_is_expression
 
 //TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_is SEP_underscore (name | basic_type) PAREN_L expression PAREN_R
+    : SLK_istest (name | basic_type) PAREN_L expression PAREN_R
     ;
 
 type_judgement
-    : SLK_is SEP_underscore PAREN_L expression SEP_comma type PAREN_R
+    : SLK_istest PAREN_L expression SEP_comma type PAREN_R
     ;
 
 //------------------------
@@ -1873,7 +1872,6 @@ tupple_pattern
     : SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R
     ;
 
-//TODO no space between SLK_mk and name!
 record_pattern 
     : SLK_mk name PAREN_L pattern_list PAREN_R
     ;
