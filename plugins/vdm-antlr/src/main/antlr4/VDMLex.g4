@@ -397,9 +397,9 @@ fragment NameChar
    : NameStartChar
    | '0'..'9'
    | UNDERSCORE
-//    | '\u00B7'
-//    | '\u0300'..'\u036F' //Combining Diacritical Marks 
-//    | '\u203F'..'\u2040' //General punctuation
+   | '\u00B7'
+   | '\u0300'..'\u036F' //Combining Diacritical Marks 
+   | '\u203F'..'\u2040' //General punctuation
    //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
    ;
 
@@ -407,17 +407,17 @@ fragment NameChar
 fragment NameStartChar
    : 'A'..'Z' 
    | 'a'..'z'
-//    | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
-//    | '\u00D8'..'\u00F6' //Latin1-supplement
-//    | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
-//    | '\u0370'..'\u037D' //Latin1-supplement
-//    | '\u037F'..'\u1FFF'
-//    | '\u200C'..'\u200D'
-//    | '\u2070'..'\u218F'
-//    | '\u2C00'..'\u2FEF'
-//    | '\u3001'..'\uD7FF'
-//    | '\uF900'..'\uFDCF'
-//    | '\uFDF0'..'\uFFFD'
+   | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
+   | '\u00D8'..'\u00F6' //Latin1-supplement
+   | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
+   | '\u0370'..'\u037D' //Latin1-supplement
+   | '\u037F'..'\u1FFF'
+   | '\u200C'..'\u200D'
+   | '\u2070'..'\u218F'
+   | '\u2C00'..'\u2FEF'
+   | '\u3001'..'\uD7FF'
+   | '\uF900'..'\uFDCF'
+   | '\uFDF0'..'\uFFFD'
    ;
 
 fragment IDCHAR
