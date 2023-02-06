@@ -49,13 +49,12 @@
 // https://github.com/mike-lischke/vscode-antlr4/blob/master/doc/grammar-debugging.md
 // https://github.com/mike-lischke/vscode-antlr4/blob/master/doc/sentence-generation.md
 
-//parser 
-grammar VDM;
-import VDMLex;
-// options 
-// {
-//     tokenVocab = VDMLex;
-// }
+parser grammar VDM;
+//import VDMLex;
+options 
+{
+    tokenVocab = VDMLex;
+}
 
 //------------------------
 // Parser Rules (ATTN: in antlr, all parser rules start with a small letter)
@@ -1426,7 +1425,18 @@ tuple_constructor
 //------------------------
 
 record_constructor
-    : SLK_mk name PAREN_L expression_list? PAREN_R
+    : tight_record_name PAREN_L expression_list? PAREN_R
+    ;
+
+// Nothing between tokens; make name lexer-explicit in that case for easier semantic predicate?
+// record_name 
+// 	: first=SLK_mk second=name //{this.NothingBetweenTokens($first, $second)}? // Nothing between the tokens? 
+//                              //{$first.index + 1 == $second.IDENTIFIER(0).index}?
+// 	;
+
+// Nothing between tokens
+tight_record_name
+    : first=SLK_mk second=IDENTIFIER (SEP_tick IDENTIFIER)? {$first.index+1 == $second.index}?
     ;
 
 record_modifier
@@ -1508,8 +1518,14 @@ general_is_expression
 
 //TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_istest (name | basic_type) PAREN_L expression PAREN_R
+    : SLK_istest (name | basic_type)
+      PAREN_L expression PAREN_R
     ;
+
+// tight_is_test
+//     : first=SLK_istest second=IDENTIFIER (SEP_tick IDENTIFIER)? 
+//     | first=SLK_istest second=basic_type
+//     ;
 
 type_judgement
     : SLK_istest PAREN_L expression SEP_comma type PAREN_R
@@ -2010,7 +2026,7 @@ tupple_pattern
     ;
 
 record_pattern 
-    : SLK_mk name PAREN_L pattern_list PAREN_R
+    : tight_record_name PAREN_L pattern_list PAREN_R
     ;
 
 pp_object_pattern 
