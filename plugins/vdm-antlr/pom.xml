@@ -103,13 +103,10 @@
 					 See https://www.antlr.org/api/maven-plugin/latest/examples/simple.html for package setup
 				-->
 				<configuration>
-					<!--
-					<sourceDirectory>${basedir}</sourceDirectory>
 					<includes>
-					   <include>Java9Lexer.g4</include>
-					   <include>Java9Parser.g4</include>
+					   <include>VDM.g4</include>
+					   <include>VDMLex.g4</include>
 					</includes>
-					-->
 					<visitor>true</visitor>
 					<listener>true</listener>
 				</configuration>
@@ -118,7 +115,6 @@
 						<goals>
 							<goal>antlr4</goal>
 						</goals>
-						<!--<libDirectory>src/main/antlr4_imports</libDirectory>-->
 					</execution>
 				</executions>
 			</plugin>
