@@ -1,7 +1,7 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "workbench.view.alwaysShowHeaderActions": true,
-    "workbench.tree.renderIndentGuides": false,
+    "workbench.tree.renderIndentGuides": "onHover",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
