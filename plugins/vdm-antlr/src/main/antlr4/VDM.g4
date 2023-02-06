@@ -503,10 +503,10 @@ pp_value_definitions
 
 access_value_definition
     : access? value_definition
-    ;
+    ; 
 
 value_definition 
-    : pattern (SEP_colon type) O_EQUAL expression
+    : pattern (SEP_colon type)? O_EQUAL expression
     ;
 
 //------------------------
