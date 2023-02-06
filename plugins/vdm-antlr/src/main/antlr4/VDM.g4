@@ -490,7 +490,10 @@ initialisation
 //------------------------
 
 sl_value_definitions 
-    : SLK_values (value_definition (SEP_scolon value_definition)* SEP_scolon? )?
+    : SLK_values 
+        (value_definition 
+            (SEP_scolon value_definition)* 
+        SEP_scolon? )?
     ;
 
 //@NB will stop completing PP + RT for now. 
