@@ -941,10 +941,10 @@ expression
     | record_constructor            #RecordMkExpr
     | record_modifier               #RecordMuExpr
 //    | apply                         #ApplyExpr
+    | expression SEP_dot IDENTIFIER     #FieldSelExpr       // has to be before field select
+//    | tuple_select                  #TupleSelExpr
     | expression PAREN_L expression_list? PAREN_R #ApplyExpr
 //    | field_select                  #FieldSelExpr
-    | expression SEP_dot IDENTIFIER     #FieldSelExpr
-//    | tuple_select                  #TupleSelExpr
     | expression SEP_tsel NUMERAL   #TupleSelExpr
     | function_type_instantiation   #FunctionTypeInstExpr
     | lambda_expression             #LambdaExpr
