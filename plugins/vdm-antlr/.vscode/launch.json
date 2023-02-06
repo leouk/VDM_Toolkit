@@ -2,7 +2,18 @@
     "version": "2.0.0",
     "configurations": [
         {
-            "name": "Debug ANTLR4 grammar",
+            "name": "Expression debug",
+            "type": "antlr-debug",
+            "request": "launch",
+            "input": "${file}",
+            "grammar": "src/main/antlr4/VDM.g4",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "expression_list",
+            "printParseTree": true,
+            "visualParseTree": true
+        },
+        {
+            "name": "Module debug",
             "type": "antlr-debug",
             "request": "launch",
             "input": "${file}",
