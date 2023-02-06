@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # delete previous builds
-echo 'Removing out output'
-rm -R output
+echo 'Removing out generated grammars'
+rm -R ./.antlr
 
 	# alias antlr4='java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool' 
 	# alias grun='java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.gui.TestRig'
@@ -16,14 +16,14 @@ export JAVA_HOME=$(/usr/libexec/java_home -v11)
 #TODO generalise to find in Maven Repo or download or etc. 
 
 # call ANTLR to generate parser
-# antlr4 VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./output
+# antlr4 VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./.antlr
 echo 'Calling ANTLR4 parser generator'
 # -package vdmantlr
-java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./output
+java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./.antlr
 
-# compile output files
+# compile generated files
 echo 'Compiling generarted parser'
-javac ./output/*.java
+javac ./.antlr/*.java
 
 source gtest.sh "$@"
 #TODO allow starting in inner rules beyond sl_document?

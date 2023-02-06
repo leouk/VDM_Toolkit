@@ -9,7 +9,11 @@ export JAVA_HOME=$(/usr/libexec/java_home -v11)
 #TODO grun has to be on the same directory as VDM.class from VDM.g4->VDM.java generated above, hence the "../$@" :-(
 #grun VDM sl_document -tree -gui "$@"
 echo 'Calling ANTLR grun test rig'
-cd output
+cd .antlr
+
+# compile generated files
+echo 'Compiling generarted parser'
+javac *.java
 
 START_PRODUCTION=sl_document
 if [[ "$#" -gt 1 ]]; then
