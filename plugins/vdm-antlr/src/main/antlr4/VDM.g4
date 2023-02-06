@@ -1144,6 +1144,7 @@ unary_expression
     | SLK_rng      expression  #RngExpr
     | SLK_merge    expression  #MergeExpr
     | SLK_inverse  expression  #MapInverseExpr
+    //| expression SEP_tsel NUMERAL   #TupleSelExpr
     ;
     
 /* 
