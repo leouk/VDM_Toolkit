@@ -134,6 +134,7 @@ import VDMLex;
 //------------------------
 // A.1 VDM-SL document
 //------------------------
+//TODO add {isVDMSL/PP/RT()}? semantic predicates 
 sl_document 
     : module+ 
     | sl_definition_block+
@@ -1344,9 +1345,10 @@ record_constructor
     ;
 
 // Nothing between tokens; make name lexer-explicit in that case for easier semantic predicate?
+// parser productions might have side effects, therefore, they can appear in actions but not in semantics predicates!
 // record_name 
-// 	: first=SLK_mk second=name //{this.NothingBetweenTokens($first, $second)}? // Nothing between the tokens? 
-//                              //{$first.index + 1 == $second.IDENTIFIER(0).index}?
+// 	: first=SLK_mk name {$name.IDENTIFIER(0).index > 0 ? System.out.println("Okay") : System.out.println("Not okay);}
+//     //{$first.index + 1 == $name.IDENTIFIER(0).index}?
 // 	;
 
 // Nothing between tokens
