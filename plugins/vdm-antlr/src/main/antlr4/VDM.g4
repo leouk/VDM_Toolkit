@@ -57,6 +57,34 @@ import VDMLex;
 //     tokenVocab = VDMLex;
 // }
 
+// If target is not Java, then this has to change accordingly
+@parser::header
+{
+//import com.fujitsu.vdmj.lex.Dialect;    
+}
+
+@parser::members
+{
+    // We can gate productions with the corresponding dialect given via semantic predicates on PP and RT productions
+    // See ANTLR4 book Section 11.1 Recognizing Multiple Language Dialect
+    //public static Dialect dialect = Dialect.VDM_SL;
+
+    public static boolean isVDMSL()
+    {
+        return true;//dialect == Dialect.VDM_SL;
+    }
+
+    public static boolean isVDMPP()
+    {
+        return false;//dialect == Dialect.VDM_PP;
+    }
+
+    public static boolean isVDMRT()
+    {
+        return false;//dialect == Dialect.VDM_RT;
+    }
+}
+
 //------------------------
 // Parser Rules (ATTN: in antlr, all parser rules start with a small letter)
 //
