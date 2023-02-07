@@ -2011,5 +2011,5 @@ multiple_type_bind
     ;
 
 type_bind_list
-    : type_bind (SEP_comma type_bind)
+    : type_bind (SEP_comma type_bind)*
     ;

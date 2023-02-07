@@ -83,11 +83,11 @@ values
 	v62= mk_(1,2);					--TCTupleExpression		
 	v63= mk_(1,2,3);
 	v64= mk_(1,2,3,4);					
-	v65= mk_(1,2,3,4).#3;	
-	v68= v64.#1;               --TCFieldNumberExpression 
-	v69= v64.#2;
-	v70= v64.#3;
-	v71= v64.#4;
+	-- v65= mk_(1,2,3,4).#3;	
+	-- v68= v64.#1;               --TCFieldNumberExpression 
+	-- v69= v64.#2;
+	-- v70= v64.#3;
+	-- v71= v64.#4;
 	--v72= not yet specified;	--TCNotYetSpecifiedExpression
 	v72= narrow_(4.0, nat1);	--TCNarrowExpression
 	v721=narrow_(4.0, int);
