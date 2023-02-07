@@ -136,11 +136,11 @@ fragment HEXADECIMAL_LITERAL
 //------------------------
 // Keywords (case sensitive); add PP/RT?
 //------------------------
-SLK_inys       : SLK_is SLK_not SLK_yet SLK_specified;
-SLK_best       : SLK_be SLK_st;
+SLK_inys       : SLK_is ' ' SLK_not ' ' SLK_yet ' ' SLK_specified;
+SLK_best       : SLK_be ' ' SLK_st;
 SLK_ninset     : SLK_not ' ' SLK_inset;
 SLK_inset      : SLK_in ' ' SLK_set;
-SLK_inseq      : SLK_in SLK_seq;
+SLK_inseq      : SLK_in ' ' SLK_seq;
 SLK_set1of     : SLK_set1 ' ' SLK_of;
 SLK_setof      : SLK_set ' ' SLK_of;
 SLK_seq1of     : SLK_seq1 ' ' SLK_of;
