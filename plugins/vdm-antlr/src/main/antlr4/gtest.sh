@@ -12,8 +12,8 @@ echo 'Calling ANTLR grun test rig'
 cd .antlr/output
 
 # compile generated files
-echo 'Compiling generarted parser'
-javac *.java
+# echo 'Compiling generarted parser'
+# javac *.java
 
 ANTLR4=/usr/local/lib/antlr4-4.11.1-complete.jar
 VDMJ=~/.m2/repository/dk/au/ece/vdmj/vdmj/4.5.0-SNAPSHOT/vdmj-4.5.0-SNAPSHOT.jar

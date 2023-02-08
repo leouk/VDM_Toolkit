@@ -26,8 +26,8 @@ echo 'Calling ANTLR4 parser generator' #' with CP ' $CP
 java -Xmx500M -cp $CP org.antlr.v4.Tool VDM.g4 VDMLex.g4 -listener -visitor -atn -o ./.antlr/output
 
 # compile generated files
-#echo 'Compiling generarted parser'
-#javac ./.antlr/output/*.java
+echo 'Compiling generarted parser'
+javac ./.antlr/output/*.java
 
 #source gtest.sh "$@"
 #TODO allow starting in inner rules beyond sl_document?
