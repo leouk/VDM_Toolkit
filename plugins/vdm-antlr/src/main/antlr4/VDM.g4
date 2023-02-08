@@ -363,25 +363,26 @@ type_specification
 //
 //@TODO This generates entry/exit for both entryQuoteType and entryQuote_type (!)
 //      might want to remove the singleton productions? 
+// C.8.5 Seq/Set type operators are higher precedence? 
 type 
     : bracketed_type    #BracketedType  
-    | basic_type        #BasicType
-    | quote_type        #QuoteType
+    | type_name         #TypeName
+    | type_variable     #TypeVariable
+    | seq_type          #SeqType
+    | set_type          #SetType
+    | map_type          #MapType
     | composite_type    #CompositeType
-    // | union_type        #UnionType
-    | type (SEP_bar type)+ #UnionType
     // | product_type      #ProductType
     | type (O_TIMES type)+ #ProductType
+    // | union_type        #UnionType
+    | type (SEP_bar type)+ #UnionType
+    | basic_type        #BasicType
+    | quote_type        #QuoteType
     | optional_type     #OptionalType
-    | set_type          #SetType
-    | seq_type          #SeqType
-    | map_type          #MapType
     // | function_type     #FunctionType
     | void_function_type #VoidFunctionType
     |<assoc=right> type SEP_pfcn type #PartialFunctionType
     |<assoc=right> type SEP_tfcn type #PartialFunctionType
-    | type_name         #TypeName
-    | type_variable     #TypeVariable
     ;
 
 void_function_type
@@ -451,12 +452,14 @@ map_type
     | injective_map_type
     ;
 
+// C.8.4 Map type operators are right associative 
 general_map_type 
-    : SLK_map type SLK_to type
+    :<assoc=right> SLK_map type SLK_to type
     ;
 
+// C.8.4 Map type operators are right associative 
 injective_map_type 
-    : SLK_inmap type SLK_to type
+    :<assoc=right> SLK_inmap type SLK_to type
     ;
 
 function_type 
