@@ -940,154 +940,288 @@ expression_list
 // In ANTLR(3)4 hidden left recursion removal (see the ALL(*) technical report appendix C), one cascades the left
 // recursion through operators, with lower precedence families at the top, all the way down to primary (non-left
 // recursive operators). The semantic-predicate gated productions (e.g. {isVDMRT())? won't appear in parser?    
-expression_primary 
-    : bracketed_expression          //#BracketedExpr          //1  primary
-    | let_expression                //#LetExpr                //2  primary
-    | let_be_expression             //#LetBestExpr            //3  primary 
-    | def_expression                //#DefExpr                //4  primary
-    | if_expression                 //#IfExpr                 //5  primary
-    | cases_expression              //#CasesExpr              //6  primary
-    | unary_expression              //#UnaryExpr              //7  primary
-    | quantified_expression         //#QuantifiedExpr         //8  primary
-    | iota_expression               //#IotaExpr               //9  primary
-    | set_enumeration               //#SetEnumExpr            //10 primary
-    | set_comprehension             //#SetCompExpr            //11 primary
-    | set_range_expression          //#SetRangeExpr           //12 primary
-    | sequence_enumeration          //#SeqEnumExpr            //13 primary
-    | sequence_comprehension        //#SeqCompExpr            //14 primary
-    | map_enumeration               //#MapEnumExpr            //15 primary
-    | map_comprehension             //#MapCompExpr            //16 primary
-    | tuple_constructor             //#TupleMkExpr            //17 primary
-    | record_constructor            //#RecordMkExpr           //18 primary
-    | record_modifier               //#RecordMuExpr           //19 primary
-    | lambda_expression             //#LambdaExpr             //20 primary
-    | narrow_expression             //#NarrowExpr             //21 primary
-    | general_is_expression         //#GeneralIsExpr          //22 primary
-    | undefined_expression          //#UndefinedExpr          //23 primary
-    | precondition_expression       //#PreconditionExpr       //24 primary
-    | SYMBOLIC_LITERAL              //#SymbolicLitExpr        //25 primary
-    | old_name                      //#OldNameExpr            //26 primary
-    | name                          //#NameExpr               //27 primary
-	;
 
+// This ANTLR3-style didn't quite work, and was way slower! 
+// expression_primary 
+//     : bracketed_expression          //#BracketedExpr          //1  primary
+//     | let_expression                //#LetExpr                //2  primary
+//     | let_be_expression             //#LetBestExpr            //3  primary 
+//     | def_expression                //#DefExpr                //4  primary
+//     | if_expression                 //#IfExpr                 //5  primary
+//     | cases_expression              //#CasesExpr              //6  primary
+//     | unary_expression              //#UnaryExpr              //7  primary
+//     | quantified_expression         //#QuantifiedExpr         //8  primary
+//     | iota_expression               //#IotaExpr               //9  primary
+//     | set_enumeration               //#SetEnumExpr            //10 primary
+//     | set_comprehension             //#SetCompExpr            //11 primary
+//     | set_range_expression          //#SetRangeExpr           //12 primary
+//     | sequence_enumeration          //#SeqEnumExpr            //13 primary
+//     | sequence_comprehension        //#SeqCompExpr            //14 primary
+//     | map_enumeration               //#MapEnumExpr            //15 primary
+//     | map_comprehension             //#MapCompExpr            //16 primary
+//     | tuple_constructor             //#TupleMkExpr            //17 primary
+//     | record_constructor            //#RecordMkExpr           //18 primary
+//     | record_modifier               //#RecordMuExpr           //19 primary
+//     | lambda_expression             //#LambdaExpr             //20 primary
+//     | narrow_expression             //#NarrowExpr             //21 primary
+//     | general_is_expression         //#GeneralIsExpr          //22 primary
+//     | undefined_expression          //#UndefinedExpr          //23 primary
+//     | precondition_expression       //#PreconditionExpr       //24 primary
+//     | SYMBOLIC_LITERAL              //#SymbolicLitExpr        //25 primary
+//     | old_name                      //#OldNameExpr            //26 primary
+//     | name                          //#NameExpr               //27 primary
+// 	;
+
+// //------------------------
+// // C.1 The family of combinators
+// //------------------------
+// expression_combinators 
+//     :              expression_primary
+//     |<assoc=right> expression_primary (O_EXP expression_primary)* //#IterateExpr 
+//     |<assoc=right> expression_primary (SLK_comp expression_primary)*           //#MapCompositionExpr
+//     ;
+
+// //------------------------
+// // C.2 The family of applicators
+// //------------------------
+
+// //TODO these are suffix operators, so their prioritisation has to be handled differently? See ALL(*) appendix C.1
+// //     that is, this requires priority precedence here and should be calling the general expression rather than inner bit? 
+// expression_applicators
+//     : expression_combinators
+//     | subsequence                   //#SubSeqExpr
+//     | apply                         //#ApplyExpr 
+//     | function_type_instantiation   //#FunctionTypeInstExpr
+//     | field_select                  //#FieldSelExpr
+//     //  expression_combinators PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R #SubSeqExpr
+//     //| expression_combinators PAREN_L expression_list? PAREN_R                                    #ApplyExpr                    
+//     //| expression_combinators /* name */ BRACE_L type (SEP_comma type)* BRACE_R                   #FunctionTypeInstExpr
+//     //| expression_combinators SEP_dot IDENTIFIER                                                  #FieldSelExpr       
+//     ;
+
+// //------------------------
+// // C.3 The family of evaluators
+// //------------------------
+
+// //@NB given the Table C.1, the order really is maps first. Also prefix ones are unary (primary) so no issue here
+// //TODO not sure I need th named productions here
+// expression_evaluators 
+//     //| map_prefix_expression
+//     //| arithmetic_prefix_expression
+//     //| set_prefix_expression
+//     //| sequence_prefix_expression
+//     //| 
+//     : expression_applicators        #ApplicatorsExpr
+//     | map_infix_expression          #MapInfixExpr
+//     | arithmetic_infix_expression   #ArithmeticInfixExpr
+//     | set_infix_expression          #SetInfixExpr
+//     | sequence_infix_expression     #SeqInfixExpr
+//     ;
+
+// map_infix_expression 
+//     :              expression_applicators (O_NRRES    expression_applicators)* #MapRngFilterExpr                    
+//     |              expression_applicators (O_RRES     expression_applicators)* #MapRngRestrictExpr                  
+//     |<assoc=right> expression_applicators (O_NDRES    expression_applicators)* #MapDomFilterExpr                    
+//     |<assoc=right> expression_applicators (O_DRES     expression_applicators)* #MapDomRestricExpr                   
+//     |              expression_applicators (SLK_munion expression_applicators)* #MapUnionExpr                        
+//     |              expression_applicators (O_OVERRIDE expression_applicators)* #MapSeqOverrideExpr                  
+//     ;    
+
+// arithmetic_infix_expression
+//     : expression_applicators (SLK_div expression_applicators)* #ArithmeticIntegerDivisionExpr         
+//     | expression_applicators (SLK_mod expression_applicators)* #ArithmeticModuloExpr                  
+//     | expression_applicators (SLK_rem expression_applicators)* #ArithmeticReminderExpr                
+//     | expression_applicators (O_DIV   expression_applicators)* #ArithmeticDivideExpr                  
+//     | expression_applicators (O_TIMES expression_applicators)* #ArithmeticMultiplicationExpr          
+//     | expression_applicators (O_MINUS expression_applicators)* #ArithmeticMinusExpr                   
+//     | expression_applicators (O_PLUS  expression_applicators)* #ArithmeticPlusExpr                    
+//     ;
+
+// set_infix_expression
+//     : expression_applicators (O_DIFF    expression_applicators)* #SetDiffExpr                            
+//     | expression_applicators (SLK_union expression_applicators)* #SetUnionExpr                        
+//     | expression_applicators (SLK_inter expression_applicators)* #SetInterExpr                        
+//     ;
+
+// sequence_infix_expression
+//     : expression_applicators (O_CONCAT   expression_applicators)* #SeqConcatExpr                         
+//     ;
+
+// //------------------------
+// // C.4 The family of relations
+// //------------------------
+
+// //TODO not sure I need the production names here 
+// expression_relations
+//     : expression_evaluators         #EvaluatorExpr                             
+//     | relational_infix_expression   #RelationalInfixExpr
+//     | set_relational_expression     #SetRelationalExpr
+//     ;
+
+// relational_infix_expression
+//     :              expression_evaluators (O_GEQ   expression_evaluators)* #RelationalGreaterThanEqualExpr   
+//     |              expression_evaluators (O_LEQ   expression_evaluators)* #RelationalLessThanEqualExpr    
+//     |              expression_evaluators (O_GT    expression_evaluators)* #RelationalGreaterThanExpr      
+//     |              expression_evaluators (O_LT    expression_evaluators)* #RelationalLessThanExpr         
+//     |<assoc=right> expression_evaluators (O_NEQ   expression_evaluators)* #RelationalNotEqualExpr    
+//     |<assoc=right> expression_evaluators (O_EQUAL expression_evaluators)* #RelationalEqualExpr       
+//     ;
+
+// set_relational_expression
+//     : expression_evaluators (SLK_ninset  expression_evaluators)* #SetNotMemberExpr    
+//     | expression_evaluators (SLK_inset   expression_evaluators)* #SetMemberExpr       
+//     | expression_evaluators (SLK_psubset expression_evaluators)* #SetPSubsetExpr      
+//     | expression_evaluators (SLK_subset  expression_evaluators)* #SetSubsetExpr       
+//     ;
+
+// //------------------------
+// // C.5 The family of connectives
+// //------------------------
+
+// expression_connective
+//     : //logical_prefix_expression
+//                    expression_relations                                   #RelationExpr
+//     |              expression_relations (SLK_and   expression_relations)* #LogicalAndExpr           
+//     |              expression_relations (SLK_or    expression_relations)* #LogicalOrExpr            
+//     |<assoc=right> expression_relations (O_IMPLIES expression_relations)* #LogicalImpliesExpr       
+//     |              expression_relations (O_IFF     expression_relations)* #LogicalIffExpr           
+//     ;  
+
+// expression
+//     : expression_connective
+//     ;
+
+named_applicator_expression
+    : PAREN_L 
+        expression 
+        SEP_comma SEP_range SEP_comma 
+        expression 
+        PAREN_R                                  #NamedSubSeqExpr                       //40 applicator(1)
+    | PAREN_L expression_list? PAREN_R           #NamedApplyExpr                        //41 applicator(2)
+    | BRACE_L 
+        type (SEP_comma type)* 
+        BRACE_R                                  #NamedFunctionTypeInstExpr             //42 applicator(3)
+    | SEP_dot IDENTIFIER                         #NamedFieldSelExpr       
+//C.2 is missing tuple selector!
+    | SEP_tsel NUMERAL                           #NamedTupleSelExpr                     //43 applicator(4)
+    ;
+
+expression
+locals [boolean foundName=false]
+//------------------------
+// C.0 The family of primary expressions
+//------------------------
+    : bracketed_expression                                  #BracketedExpr                     //1  primary
+    | let_expression                                        #LetExpr                           //2  primary
+    | let_be_expression                                     #LetBestExpr                       //3  primary 
+    | def_expression                                        #DefExpr                           //4  primary
+    | if_expression                                         #IfExpr                            //5  primary
+    | cases_expression                                      #CasesExpr                         //6  primary
+    | unary_expression                                      #UnaryExpr                         //7  primary
+    | quantified_expression                                 #QuantifiedExpr                    //8  primary
+    | iota_expression                                       #IotaExpr                          //9  primary
+    | set_enumeration                                       #SetEnumExpr                       //10 primary
+    | set_comprehension                                     #SetCompExpr                       //11 primary
+    | set_range_expression                                  #SetRangeExpr                      //12 primary
+    | sequence_enumeration                                  #SeqEnumExpr                       //13 primary
+    | sequence_comprehension                                #SeqCompExpr                       //14 primary
+    | map_enumeration                                       #MapEnumExpr                       //15 primary
+    | map_comprehension                                     #MapCompExpr                       //16 primary
+    | record_modifier                                       #RecordMuExpr                      //17 primary
+    | lambda_expression                                     #LambdaExpr                        //18 primary
+    | narrow_expression                                     #NarrowExpr                        //19 primary
+    | general_is_expression                                 #GeneralIsExpr                     //20 primary
+    | undefined_expression                                  #UndefinedExpr                     //21 primary
+    | precondition_expression                               #PreconditionExpr                  //22 primary
+    | SYMBOLIC_LITERAL                                      #SymbolicLitExpr                   //23 primary
+    | {!isVDMSL()}? self_expression                         #PPSelfExpr                        //24 primary
+    | {isVDMRT()}?  threadid_expression                     #PPThreadIdExpr                    //25 primary
+    | {!isVDMSL()}? isofbaseclass_expression                #PPIsOfBaseClassExpr               //26 primary
+    | {!isVDMSL()}? isofclass_expression                    #PPIsOfClassExpr                   //27 primary
+    | {!isVDMSL()}? samebaseclass_expression                #PPSameBaseClassExpr               //28 primary
+    | {!isVDMSL()}? sameclass_expression                    #PPSameClassExpr                   //29 primary
+    | {isVDMRT()}?  act_expression                          #RTActExpr                         //30 primary
+    | {isVDMRT()}?  fin_expression                          #RTFinExpr                         //31 primary
+    | {isVDMRT()}?  active_expression                       #RTActiveExpr                      //32 primary
+    | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
+    | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
+    | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
+    | {$foundName}? 
+       named_applicator_expression 
+      {$foundName = false;}                                 #ApplicatorsExpr
+    | old_name {$foundName = true;}                         #OldNameExpr                       //36 primary
+    | name     {$foundName = true;}                         #NameExpr                          //37 primary
 //------------------------
 // C.1 The family of combinators
 //------------------------
-expression_combinators 
-    :              expression_primary
-    |<assoc=right> expression_primary (O_EXP expression_primary)* //#IterateExpr 
-    |<assoc=right> expression_primary (SLK_comp expression_primary)*           //#MapCompositionExpr
-    ;
-
+    |<assoc=right> expression O_EXP    expression           #IterateExpr                       //38 combinator(1)
+    |<assoc=right> expression SLK_comp expression           #MapCompositionExpr                //39 combinator(2)
 //------------------------
 // C.2 The family of applicators
 //------------------------
-
-//TODO these are suffix operators, so their prioritisation has to be handled differently? See ALL(*) appendix C.1
-//     that is, this requires priority precedence here and should be calling the general expression rather than inner bit? 
-expression_applicators
-    : expression_combinators
-    | subsequence                   //#SubSeqExpr
-    | apply                         //#ApplyExpr 
-    | function_type_instantiation   //#FunctionTypeInstExpr
-    | field_select                  //#FieldSelExpr
-    //  expression_combinators PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R #SubSeqExpr
-    //| expression_combinators PAREN_L expression_list? PAREN_R                                    #ApplyExpr                    
-    //| expression_combinators /* name */ BRACE_L type (SEP_comma type)* BRACE_R                   #FunctionTypeInstExpr
-    //| expression_combinators SEP_dot IDENTIFIER                                                  #FieldSelExpr       
-    ;
-
+    | expression PAREN_L 
+        expression 
+        SEP_comma SEP_range SEP_comma 
+        expression 
+        PAREN_R                                             #SubSeqExpr                       //40 applicator(1)
+    | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
+    | expression /* name */ 
+        BRACE_L 
+        type (SEP_comma type)* 
+        BRACE_R                                             #FunctionTypeInstExpr             //42 applicator(3)
+    | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
+//C.2 is missing tuple selector!
+    | expression SEP_tsel NUMERAL                           #TupleSelExpr                     //43 applicator(4)
 //------------------------
 // C.3 The family of evaluators
 //------------------------
-
-//@NB given the Table C.1, the order really is maps first. Also prefix ones are unary (primary) so no issue here
-//TODO not sure I need th named productions here
-expression_evaluators 
-    //| map_prefix_expression
-    //| arithmetic_prefix_expression
-    //| set_prefix_expression
-    //| sequence_prefix_expression
-    //| 
-    : expression_applicators        #ApplicatorsExpr
-    | map_infix_expression          #MapInfixExpr
-    | arithmetic_infix_expression   #ArithmeticInfixExpr
-    | set_infix_expression          #SetInfixExpr
-    | sequence_infix_expression     #SeqInfixExpr
-    ;
-
-map_infix_expression 
-    :              expression_applicators (O_NRRES    expression_applicators)* #MapRngFilterExpr                    
-    |              expression_applicators (O_RRES     expression_applicators)* #MapRngRestrictExpr                  
-    |<assoc=right> expression_applicators (O_NDRES    expression_applicators)* #MapDomFilterExpr                    
-    |<assoc=right> expression_applicators (O_DRES     expression_applicators)* #MapDomRestricExpr                   
-    |              expression_applicators (SLK_munion expression_applicators)* #MapUnionExpr                        
-    |              expression_applicators (O_OVERRIDE expression_applicators)* #MapSeqOverrideExpr                  
-    ;    
-
-arithmetic_infix_expression
-    : expression_applicators (SLK_div expression_applicators)* #ArithmeticIntegerDivisionExpr         
-    | expression_applicators (SLK_mod expression_applicators)* #ArithmeticModuloExpr                  
-    | expression_applicators (SLK_rem expression_applicators)* #ArithmeticReminderExpr                
-    | expression_applicators (O_DIV   expression_applicators)* #ArithmeticDivideExpr                  
-    | expression_applicators (O_TIMES expression_applicators)* #ArithmeticMultiplicationExpr          
-    | expression_applicators (O_MINUS expression_applicators)* #ArithmeticMinusExpr                   
-    | expression_applicators (O_PLUS  expression_applicators)* #ArithmeticPlusExpr                    
-    ;
-
-set_infix_expression
-    : expression_applicators (O_DIFF    expression_applicators)* #SetDiffExpr                            
-    | expression_applicators (SLK_union expression_applicators)* #SetUnionExpr                        
-    | expression_applicators (SLK_inter expression_applicators)* #SetInterExpr                        
-    ;
-
-sequence_infix_expression
-    : expression_applicators (O_CONCAT   expression_applicators)* #SeqConcatExpr                         
-    ;
-
+    |              expression (O_NRRES     expression)      #MapRngFilterExpr                 //44 evaluators(1)    
+    |              expression (O_RRES      expression)      #MapRngRestrictExpr               //45 evaluators(2)   
+    |<assoc=right> expression (O_NDRES     expression)      #MapDomFilterExpr                 //46 evaluators(3)   
+    |<assoc=right> expression (O_DRES      expression)      #MapDomRestricExpr                //47 evaluators(4)   
+    |              expression (SLK_munion  expression)      #MapUnionExpr                     //48 evaluators(5)   
+    |              expression (O_OVERRIDE  expression)      #MapSeqOverrideExpr               //49 evaluators(6)   
+    |              expression (SLK_div     expression)      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
+    |              expression (SLK_mod     expression)      #ArithmeticModuloExpr             //51 evaluators(8)     
+    |              expression (SLK_rem     expression)      #ArithmeticReminderExpr           //52 evaluators(9)     
+    |              expression (O_DIV       expression)      #ArithmeticDivideExpr             //53 evaluators(10)     
+    |              expression (O_TIMES     expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
+    |              expression (O_MINUS     expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
+    |              expression (O_PLUS      expression)      #ArithmeticPlusExpr               //56 evaluators(13)
+    |              expression (O_DIFF      expression)      #SetDiffExpr                      //57 evaluators(14)      
+    |              expression (SLK_union   expression)      #SetUnionExpr                     //58 evaluators(15)   
+    |              expression (SLK_inter   expression)      #SetInterExpr                     //59 evaluators(16)   
+    |              expression (O_CONCAT    expression)      #SeqConcatExpr                    //60 evaluators(17)
 //------------------------
 // C.4 The family of relations
 //------------------------
-
-//TODO not sure I need the production names here 
-expression_relations
-    : expression_evaluators         #EvaluatorExpr                             
-    | relational_infix_expression   #RelationalInfixExpr
-    | set_relational_expression     #SetRelationalExpr
-    ;
-
-relational_infix_expression
-    :              expression_evaluators (O_GEQ   expression_evaluators)* #RelationalGreaterThanEqualExpr   
-    |              expression_evaluators (O_LEQ   expression_evaluators)* #RelationalLessThanEqualExpr    
-    |              expression_evaluators (O_GT    expression_evaluators)* #RelationalGreaterThanExpr      
-    |              expression_evaluators (O_LT    expression_evaluators)* #RelationalLessThanExpr         
-    |<assoc=right> expression_evaluators (O_NEQ   expression_evaluators)* #RelationalNotEqualExpr    
-    |<assoc=right> expression_evaluators (O_EQUAL expression_evaluators)* #RelationalEqualExpr       
-    ;
-
-set_relational_expression
-    : expression_evaluators (SLK_ninset  expression_evaluators)* #SetNotMemberExpr    
-    | expression_evaluators (SLK_inset   expression_evaluators)* #SetMemberExpr       
-    | expression_evaluators (SLK_psubset expression_evaluators)* #SetPSubsetExpr      
-    | expression_evaluators (SLK_subset  expression_evaluators)* #SetSubsetExpr       
-    ;
-
+    |              expression (O_GEQ       expression)      #RelationalGreaterThanEqualExpr   //61 relations(1)   
+    |              expression (O_LEQ       expression)      #RelationalLessThanEqualExpr      //62 relations(2)
+    |              expression (O_GT        expression)      #RelationalGreaterThanExpr        //63 relations(3)
+    |              expression (O_LT        expression)      #RelationalLessThanExpr           //64 relations(4)
+    |<assoc=right> expression (O_NEQ       expression)      #RelationalNotEqualExpr           //65 relations(5)
+    |<assoc=right> expression (O_EQUAL     expression)      #RelationalEqualExpr              //66 relations(6)
+    |              expression (SLK_ninset  expression)      #SetNotMemberExpr                 //67 relations(7)
+    |              expression (SLK_inset   expression)      #SetMemberExpr                    //68 relations(8)
+    |              expression (SLK_psubset expression)      #SetPSubsetExpr                   //69 relations(9)
+    |              expression (SLK_subset  expression)      #SetSubsetExpr                    //70 relations(10)
 //------------------------
 // C.5 The family of connectives
 //------------------------
-
-expression_connective
-    : //logical_prefix_expression
-                   expression_relations                                   #RelationExpr
-    |              expression_relations (SLK_and   expression_relations)* #LogicalAndExpr           
-    |              expression_relations (SLK_or    expression_relations)* #LogicalOrExpr            
-    |<assoc=right> expression_relations (O_IMPLIES expression_relations)* #LogicalImpliesExpr       
-    |              expression_relations (O_IFF     expression_relations)* #LogicalIffExpr           
+    |              expression (SLK_and     expression)      #LogicalAndExpr                   //71 connectives(1)  
+    |              expression (SLK_or      expression)      #LogicalOrExpr                    //72 connectives(2)
+    |<assoc=right> expression (O_IMPLIES   expression)      #LogicalImpliesExpr               //73 connectives(3)
+    |              expression (O_IFF       expression)      #LogicalIffExpr                   //74 connectives(4)
+//------------------------
+// C.6 The family of constructors
+//------------------------
+//These are also primary given their leading tokens
+    | tuple_constructor                                     #TupleMkExpr                      //75 primary
+    | record_constructor                                    #RecordMkExpr                     //76 primary
+    | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
     ;  
 
-expression
-    : expression_connective
-    ;
+// expression
 //     : bracketed_expression      #BracketedExpr                                  //1  primary
 //     | let_expression            #LetExpr                                        //2  primary
 //     | let_be_expression         #LetBestExpr                                    //3  primary 
@@ -1098,7 +1232,7 @@ expression
 
 // //--------------------------------------------------------------------------    //8
 // //    | binary_expression         #BinaryExpr
-//     | expression O_EXP       expression #IterateExpr                            //34                  
+//     |<assoc=right> expression O_EXP       expression #IterateExpr                            //34                  
 //     | expression O_TIMES     expression #ArithmeticMultiplicationExpr           //3
 //     | expression O_DIV       expression #ArithmeticDivideExpr                   //4
 //     | expression SLK_div     expression #ArithmeticIntegerDivisionExpr          //5
@@ -1158,7 +1292,8 @@ expression
 //     | expression SEP_dot IDENTIFIER     #FieldSelExpr       
 // //    | apply                         #ApplyExpr
 //     | expression PAREN_L expression_list? PAREN_R #ApplyExpr                    //22 primary
-//     | function_type_instantiation   #FunctionTypeInstExpr                       //25 primary
+// //    | function_type_instantiation   #FunctionTypeInstExpr                       //25 primary
+//     | expression/*_combinators*/ /* name */ BRACE_L type (SEP_comma type)* BRACE_R #FunctionTypeInstExpr
 //     | lambda_expression             #LambdaExpr                                 //26 primary
 //     | narrow_expression             #NarrowExpr                                 //27 primary
 //     | {!isVDMSL()}? new_expression              #PPNewExpr                                  //28
@@ -1475,7 +1610,7 @@ sequence_comprehension
     ;
 
 subsequence
-    : expression_combinators PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R
+    : expression/*_combinators */ PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R
     ;
 
 //------------------------
@@ -1536,11 +1671,11 @@ record_modification
 //------------------------
 
 apply 
-    : expression_combinators PAREN_L expression_list? PAREN_R
+    : expression/*_combinators */ PAREN_L expression_list? PAREN_R
     ;
 
 field_select 
-    : expression_combinators SEP_dot IDENTIFIER
+    : expression/*_combinators*/ SEP_dot IDENTIFIER
     ;
 
 tuple_select 
@@ -1549,7 +1684,7 @@ tuple_select
 
 //@NB function type inst allows expression and not just name ? 
 function_type_instantiation 
-    : expression_combinators /* name */ BRACE_L type (SEP_comma type)* BRACE_R
+    : expression/*_combinators*/ /* name */ BRACE_L type (SEP_comma type)* BRACE_R
     ;
 
 //------------------------
