@@ -1155,6 +1155,14 @@ expression
     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
     //| named_applicator_expression                           #NamedApplicatorExpr
+        // | //{$foundName}? 
+    //    named_applicator_expression 
+    //   //{$foundName = false;}                                
+    //    #ApplicatorsExpr
+    | old_name //{$foundName = true;}                         
+    #OldNameExpr                       //36 primary
+    | name     //{$foundName = true;}                         
+    #NameExpr                          //37 primary
 //------------------------
 // C.1 The family of combinators
 //------------------------
@@ -1176,28 +1184,6 @@ expression
     | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
 //C.2 is missing tuple selector!
     | expression SEP_tsel NUMERAL                           #TupleSelExpr                     //43 applicator(4)
-
-    | name PAREN_L 
-        expression 
-        SEP_comma SEP_range SEP_comma 
-        expression 
-        PAREN_R                                  #NamedSubSeqExpr                       //40 applicator(1)
-    | name PAREN_L expression_list? PAREN_R           #NamedApplyExpr                        //41 applicator(2)
-    | name BRACE_L 
-        type (SEP_comma type)* 
-        BRACE_R                                  #NamedFunctionTypeInstExpr             //42 applicator(3)
-    | name SEP_dot IDENTIFIER                         #NamedFieldSelExpr       
-//C.2 is missing tuple selector!
-    | name SEP_tsel NUMERAL                           #NamedTupleSelExpr                     //43 applicator(4)
-    // | //{$foundName}? 
-    //    named_applicator_expression 
-    //   //{$foundName = false;}                                
-    //    #ApplicatorsExpr
-    | old_name //{$foundName = true;}                         
-    #OldNameExpr                       //36 primary
-    | name     //{$foundName = true;}                         
-    #NameExpr                          //37 primary
-
 //------------------------
 // C.3 The family of evaluators
 //------------------------
