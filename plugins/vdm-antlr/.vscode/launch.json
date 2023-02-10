@@ -2,6 +2,17 @@
     "version": "2.0.0",
     "configurations": [
         {
+            "type": "antlr-debug",
+            "request": "launch",
+            "name": "Expr test grammar",
+            "input": "${file}",
+            "grammar": "src/main/antlr4/Test.g4",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "expr_list",
+            "printParseTree": true,
+            "visualParseTree": true
+        },
+        {
             "name": "Expression debug",
             "type": "antlr-debug",
             "request": "launch",
