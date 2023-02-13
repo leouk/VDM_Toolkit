@@ -942,7 +942,6 @@ expression_list
 // recursive operators). The semantic-predicate gated productions (e.g. {isVDMRT())? won't appear in parser?    
 
 expression
-//locals [boolean foundName=false]
 //------------------------
 // C.0 The family of primary expressions
 //------------------------
@@ -968,7 +967,6 @@ expression
     | general_is_expression                                 #GeneralIsExpr                     //20 primary
     | undefined_expression                                  #UndefinedExpr                     //21 primary
     | precondition_expression                               #PreconditionExpr                  //22 primary
-    | SYMBOLIC_LITERAL                                      #SymbolicLitExpr                   //23 primary
     | {!isVDMSL()}? self_expression                         #PPSelfExpr                        //24 primary
     | {isVDMRT()}?  threadid_expression                     #PPThreadIdExpr                    //25 primary
     | {!isVDMSL()}? isofbaseclass_expression                #PPIsOfBaseClassExpr               //26 primary
@@ -981,15 +979,9 @@ expression
     | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
-    //| named_applicator_expression                           #NamedApplicatorExpr
-        // | //{$foundName}? 
-    //    named_applicator_expression 
-    //   //{$foundName = false;}                                
-    //    #ApplicatorsExpr
-    | old_name //{$foundName = true;}                         
-    #OldNameExpr                       //36 primary
-    | name     //{$foundName = true;}                         
-    #NameExpr                          //37 primary
+    | old_name                                              #OldNameExpr                       //36 primary
+    | name                                                  #NameExpr                          //37 primary
+    | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
 //------------------------
 // C.1 The family of combinators
 //------------------------
@@ -1686,6 +1678,16 @@ old_name
     : IDENTIFIER SEP_old
     ;
 
+symbolic_literal
+    : NUMERIC_LITERAL
+	| SLK_true 
+    | SLK_false //BOOLEAN_LITERAL
+	| SLK_nil   //NIL_LITERAL 
+	| CHARACTER_LITERAL 
+	| TEXT_LITERAL
+	| QUOTE_LITERAL
+    ;
+
 //------------------------
 // A.6 State Designators  
 //------------------------
@@ -2044,7 +2046,7 @@ pattern_identifier
 
 match_value
     : PAREN_L expression PAREN_R
-    | SYMBOLIC_LITERAL
+    | symbolic_literal
     ;
 
 set_enum_pattern

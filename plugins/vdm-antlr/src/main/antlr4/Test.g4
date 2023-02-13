@@ -14,8 +14,8 @@ expr
     |<assoc=right> expr '**' expr
     | expr ('*' | '/') expr
     | expr ('+' | '-') expr
-    | SYMBOLIC_LITERAL
     | name
+    | symbolic_literal
     ;
 
 name
@@ -33,7 +33,7 @@ IDENTIFIER
     : LETTER (LETTER | DIGIT | '_')*
     ; 
 
-SYMBOLIC_LITERAL
+symbolic_literal
     : NUMERAL 
     | BOOL_LIT
     ;

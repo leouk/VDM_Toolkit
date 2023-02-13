@@ -90,34 +90,26 @@ lexer grammar VDMLex;
 //------------------------
 
 // This has to appear first, otherwise lexer gets confused between keywords (SLK_true), identifiers (true) and symbolic literal (true)!
-SYMBOLIC_LITERAL
-    : NUMERIC_LITERAL
-	| BOOLEAN_LITERAL
-	| NIL_LITERAL 
-	| CHARACTER_LITERAL 
-	| TEXT_LITERAL
-	| QUOTE_LITERAL
-    ;
 
 NUMERIC_LITERAL
     : DECIMAL_LITERAL 
 	| HEXADECIMAL_LITERAL
     ;
 
-fragment BOOLEAN_LITERAL
-    : SLK_true
- 	| SLK_false
-    ;
+// fragment BOOLEAN_LITERAL
+//     : SLK_true
+//  	| SLK_false
+//     ;
 
-fragment NIL_LITERAL
-    : SLK_nil
-    ;
+// fragment NIL_LITERAL
+//     : SLK_nil
+//     ;
 
-fragment CHARACTER_LITERAL
+CHARACTER_LITERAL
     : '\'' (NameChar | ESC) '\''
     ;
 
-fragment TEXT_LITERAL
+TEXT_LITERAL
     : '"' (NameChar | ESC | .)*? '"'
     ;
 
