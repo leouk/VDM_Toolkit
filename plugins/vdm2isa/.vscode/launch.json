@@ -6,29 +6,34 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch ST",
+            "name": "Launch vdm2isa",
             "request": "launch",
-            "mainClass": "vdm2isa.tr.templates.IsaST",//"${file}"
-            "projectName": "vdm2isa"
+            "mainClass": "plugins.commands.IsabelleCommand",
+            "projectName": "vdm2isa",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
         },
         {
             "type": "java",
-            "name": "Launch vdm2isa",
+            "name": "Launch ST",
             "request": "launch",
-            "mainClass": "plugins.GeneralisaPlugin",
-            "projectName": "vdm2isa",
-            // This starts the Java debug session inside ./src/test/resources
-            // useful to avoid VDMJ Copying new versions of library files on workspace folder
-            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+            "mainClass": "vdm2isa.tr.templates.IsaST",
+            "projectName": "vdm2isa"
         },
+        // {
+        //     "type": "java",
+        //     "name": "Launch vdm2isa",
+        //     "request": "launch",
+        //     "mainClass": "plugins.GeneralisaPlugin",
+        //     "projectName": "vdm2isa",
+        //     "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        // },
         {
             "name": "Debug Console",
             "type": "vdm",
             "request": "launch",
             "noDebug": false,
             "defaultName": "TestV2IFcns",
-            // This starts the Java debug session inside ./src/test/resources
-            // useful to avoid VDMJ Copying new versions of library files on workspace folder
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
         }
     ]
