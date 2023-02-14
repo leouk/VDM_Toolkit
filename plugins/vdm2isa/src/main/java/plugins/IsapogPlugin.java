@@ -107,6 +107,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
         }
     }
 
+    @Override
     protected String getSummaryPrefix()
     {
         return "Translated " + 
@@ -125,6 +126,7 @@ public class IsapogPlugin extends GeneralisaPlugin {
     @Override 
     protected boolean setup()
     {
+        //vdm2isa.setup();
         return true;
     }
 

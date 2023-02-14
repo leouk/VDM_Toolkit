@@ -90,6 +90,7 @@ public class Vdm2isaPlugin extends GeneralisaPlugin
     @Override 
     protected boolean setup()
     {
+		//exu.setup();
 		// VDM errors don't pass VDMJ typechecker; 
 		// some VDM warnings have to be raised as errors to avoid translation issues
 		Vdm2isaPlugin.processVDMWarnings(TypeChecker.getWarnings(), true);
