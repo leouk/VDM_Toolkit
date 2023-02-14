@@ -143,8 +143,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected File saveURI; 
     protected final Map<String, Long> timings;
 
-    protected IsabelleCommand(String[] argv) {
-        super(argv);
+    protected IsabelleCommand(String line) {
+        super(line);
         this.commands = new ArrayList<String>();
         this.tclist = new TCModuleList();
         this.modulesToProcess = new HashSet<String>();
@@ -178,7 +178,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 
     protected boolean calledFromVDMJConsole()
     {
-        return VDMJ.getMainName().equals(VDMJMain.VDMJ_NAME); 
+        return VDMJ.getMainName().equals(VDMJMain.VDMJ_MAIN); 
     } 
 
     protected TCModuleList getTC()
@@ -230,12 +230,12 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 
     protected void printFlag(String name, String val)
 	{
-		PluginConsole.println(String.format("%1$s flag is %2$s", name, val));
+		PluginConsole.infoln(String.format("%1$s flag is %2$s", name, val));
 	}
 
 	protected void printFlag(String name, boolean flag)
 	{
-		PluginConsole.println(String.format("%1$s flag is %2$s", name, flag ? "enabled" : "disabled"));
+		PluginConsole.infoln(String.format("%1$s flag is %2$s", name, flag ? "enabled" : "disabled"));
 	}
 
     protected String options()
@@ -423,12 +423,12 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected void prompt()
     {
         if (IsaProperties.general_debug)
-            PluginConsole.println(isabelleCommandName() + " plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
+            PluginConsole.infoln(isabelleCommandName() + " plugin with commands `" + commands.toString() + "` and options " + options() + "\n");
     }
 
     public void summarise(boolean result, long execTimeMs, int modSize) {
-        PluginConsole.println(getSummaryPrefix() + 
-            plural(getLocalModuleCount(), "module", "s") +
+        PluginConsole.infoln(getSummaryPrefix() + 
+            PluginConsole.plural(getLocalModuleCount(), "module", "s") +
             " (of " + modSize + ")" +
             " in " + (double)(execTimeMs/1000) + " secs. ");
         int errCnt = getLocalErrorCount(); 
@@ -437,19 +437,19 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         {
             PluginConsole.info("No errors were found.");
             if (wrnCnt > 0)
-                PluginConsole.println(" Found " + 
+                PluginConsole.infoln(" Found " + 
                     (IsaProperties.general_report_vdm_warnings ? "" : "(and suppressed) ") +
-                    plural(wrnCnt, "warning", "s") + ".");
+                    PluginConsole.plural(wrnCnt, "warning", "s") + ".");
             else 
-                PluginConsole.println(" No warnings were found.");
+                PluginConsole.infoln(" No warnings were found.");
         }
         else 
         {
-            PluginConsole.info("Found " + plural(errCnt, "error", "s"));
+            PluginConsole.info("Found " + PluginConsole.plural(errCnt, "error", "s"));
             if (wrnCnt > 0)
-                PluginConsole.println(" and " + 
+                PluginConsole.infoln(" and " + 
                 (IsaProperties.general_report_vdm_warnings ? "" : "suppressed ") +
-                plural(wrnCnt, "warning", "s") + ".");
+                PluginConsole.plural(wrnCnt, "warning", "s") + ".");
             else 
                 PluginConsole.info(".\n");
         }
@@ -647,7 +647,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         Path dir = createOutputDirectory(saveURI, isabelleCommandName());
 		String name = module + ".thy";//module.name.toString().substring(0, module.name.toString().lastIndexOf('.')) + ".thy";
 		File outfile = new File(dir.toFile(), name);
-        PluginConsole.println("Translating module " + module + " as " + outfile.getAbsolutePath());
+        PluginConsole.infoln("Translating module " + module + " as " + outfile.getAbsolutePath());
 		PrintWriter out = new PrintWriter(outfile);
 		out.write(result);
 		out.close();
@@ -799,10 +799,6 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         for (VDM2IsaWarning w : IsabelleCommand.warnings) {
             out.println(w.toString());
         }
-    }
-
-    public static final String plural(int n, String s, String pl) {
-        return n + " " + (n != 1 ? s + pl : s);
     }
 
     public static void fullReset(IsabelleCommand g)

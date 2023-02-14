@@ -29,6 +29,7 @@ public class ExuCommand extends IsabelleCommand {
     private ExuTypeChecker etc;
 
     private static ExuCommand INSTANCE = null;
+    private static final String USAGE = "exu - it analyses loaded VDM modules for Isabelle/HOL  (v. " + IsaProperties.general_isa_version + ") translation"; 
 
     // public static final ExuPlugin getInstance(Interpreter interpreter)
     // {
@@ -44,8 +45,12 @@ public class ExuCommand extends IsabelleCommand {
         return INSTANCE; 
     }
 
-    public ExuCommand(String[] argv) {
-        super(argv);
+    public ExuCommand(String line) {
+        super(line);
+        if (!argv[0].equals(isabelleCommandName()))
+		{
+			throw new IllegalArgumentException(USAGE);
+		}
         INSTANCE = this;
     }
 
@@ -112,7 +117,7 @@ public class ExuCommand extends IsabelleCommand {
     @Override
     protected void prompt()
     {
-        PluginConsole.println("Calling Exu VDM analyser...");
+        PluginConsole.infoln("Calling Exu VDM analyser...");
         super.prompt();
     }
 
@@ -279,7 +284,7 @@ public class ExuCommand extends IsabelleCommand {
     public static void help() 
     {
         // because the devil is in the detail; 
-        PluginConsole.println("exu - it analyses loaded VDM modules for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ") translation");
+        PluginConsole.println(USAGE);
     }
 
     @Override

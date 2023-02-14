@@ -19,7 +19,8 @@ import com.fujitsu.vdmj.plugins.events.CheckPrepareEvent;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import plugins.commands.ExuCommand;
-import plugins.commands.IsabelleCommand;
+import plugins.commands.IsapogCommand;
+import plugins.commands.TranslateCommand;
 
 public abstract class IsabellePlugin extends AnalysisPlugin implements EventListener {
 
@@ -48,7 +49,10 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
         usageMsg = null;
         saveURI = null;
         modulesToProcess = new HashSet<String>();
-        commandsList = new CommandList(ExuCommand.class);   
+        commandsList = new CommandList(
+            ExuCommand.class, 
+            TranslateCommand.class, 
+            IsapogCommand.class);   
     }
 
     @Override
@@ -111,9 +115,9 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
     }
 
     @Override
-    public AnalysisCommand getCommand(String[] argv)
+    public AnalysisCommand getCommand(String line)
     {
-        return lookup(argv, commandsList);
+        return lookup(line, commandsList);
     }
 
     @Override
