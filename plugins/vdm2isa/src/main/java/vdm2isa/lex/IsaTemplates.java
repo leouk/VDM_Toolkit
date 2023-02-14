@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaInfoMessage;
 
@@ -97,7 +97,7 @@ public final class IsaTemplates {
         boolean moduleIsKnown = translatedItems.containsKey(moduleName);
         if (moduleIsKnown && translatedItems.get(moduleName).containsKey(name))
         {
-            GeneralisaPlugin.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
+            IsabelleCommand.report(IsaErrorMessage.ISA_DUPLICATE_DEF_3P, moduleLoc, item, name, moduleName);
         }    
         else if (!moduleIsKnown)
         {
@@ -147,15 +147,15 @@ public final class IsaTemplates {
         boolean result = false;
 		if (sep == null)
             // null sep is not okay
-			GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "null", "null", kind.toString().toLowerCase());
+			IsabelleCommand.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "null", "null", kind.toString().toLowerCase());
 		else if (!sep.isEmpty()) 
         {
             if (kind == IsaSeparator.FORMATING && !IsaTemplates.isValidFormatingSeparator(sep))
                 // non white space formatting sep is not okay
-                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "formatting", sep, "white space");
+                IsabelleCommand.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "formatting", sep, "white space");
            else if (kind == IsaSeparator.SEMANTIC && !IsaTemplates.isValidSemanticSeparator(sep))
                 // non valid isatoken sep is not okay 
-                GeneralisaPlugin.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "semantic", sep, "Isabelle tokens or white space");
+                IsabelleCommand.report(IsaErrorMessage.ISA_SEP_ERROR_3P, location, "semantic", sep, "Isabelle tokens or white space");
             else
                 // validated sep is okay
                 result = true;

@@ -16,9 +16,9 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
-import plugins.GeneralisaPlugin;
 import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.lex.TRIsaVDMCommentList;
 import vdm2isa.messages.IsaErrorMessage;
@@ -351,12 +351,12 @@ public class TRExplicitFunctionDefinition extends TRAbstractFunctionDefinition
 				break;
 			case NONE:
 				undeclaredName = name; 
-				GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.getLocation(), name.toString(), 
+				IsabelleCommand.report(IsaErrorMessage.ISA_INVALID_IMPLSPEC_2P, name.getLocation(), name.toString(), 
 					VALID_IMPLICITLY_GENERATED_SPEC_KIND.toString());
 				break;
 			default:
 				undeclaredName = name; 
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, name.getLocation(), 
+				IsabelleCommand.report(IsaErrorMessage.PLUGIN_NYI_2P, name.getLocation(), 
 					"implicit definition for missing specification " + kind.name(), name.toString());
 				break;
 		}

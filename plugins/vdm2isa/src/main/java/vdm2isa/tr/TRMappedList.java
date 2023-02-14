@@ -17,7 +17,7 @@ import com.fujitsu.vdmj.tc.patterns.TCBind;
 import com.fujitsu.vdmj.tc.patterns.TCPattern;
 import com.fujitsu.vdmj.tc.types.TCType;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -50,7 +50,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Exception e)
 			{				
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, 
+				IsabelleCommand.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, 
 					figureOutLocation(type), 
 					from.getClass().getSimpleName(), 
 					type.getClass().getSimpleName() + " " + type.toString(),
@@ -61,7 +61,7 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 			}
 			catch (Throwable t)
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, 
+				IsabelleCommand.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, 
 					figureOutLocation(from), 
 					"when converting",
 					from.getClass().getSimpleName(), 
@@ -325,25 +325,25 @@ public abstract class TRMappedList<FROM extends Mappable, TO extends MappableNod
 	@Override
 	public void report(IsaErrorMessage message, Object... args)
 	{
-		GeneralisaPlugin.report(message, getLocation(), args);
+		IsabelleCommand.report(message, getLocation(), args);
 	}
 
 	@Override
 	public void warning(IsaWarningMessage warning, Object... args)
 	{
-		GeneralisaPlugin.warning(warning, getLocation(), args);
+		IsabelleCommand.warning(warning, getLocation(), args);
 	}
 
 	@Override
 	public void report(IsaErrorMessage message)
 	{
-		GeneralisaPlugin.report(message, getLocation(), (Object[])null);
+		IsabelleCommand.report(message, getLocation(), (Object[])null);
 	}
 
 	@Override
 	public void warning(IsaWarningMessage warning)
 	{
-		GeneralisaPlugin.warning(warning, getLocation(), (Object[])null);
+		IsabelleCommand.warning(warning, getLocation(), (Object[])null);
 	}
 
 	public static <T extends Mappable/*Node!*/>  LexLocation figureOutLocation(List<T> list)

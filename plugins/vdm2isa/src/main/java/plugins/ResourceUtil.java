@@ -87,7 +87,7 @@ public class ResourceUtil
 		// 	dir = module.files.get(0).getParent();
 		// 	if (dir == null) 
 		// 		dir = ".";
-		// 	dir = dir + File.separator + GeneralisaPlugin.DEFAULT_SAVEURI; 
+		// 	dir = dir + File.separator + IsabelleCommand.DEFAULT_SAVEURI; 
 		// }
 		// else 
 		// {

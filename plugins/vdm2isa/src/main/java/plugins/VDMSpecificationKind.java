@@ -24,7 +24,7 @@ public enum VDMSpecificationKind {
 		VDMSpecificationKind result = VDMSpecificationKind.NONE;
 
 		// presumes Settings.release = VDM_10 and dialect = VDMSL. 
-        // This is supposed to be checked by GeneralisaPlugin.run anyhow
+        // This is supposed to be checked by IsabelleCommand.run anyhow
         assert (Settings.release == Release.VDM_10 && Settings.dialect == Dialect.VDM_SL); 
 
 		if (name.isReserved())

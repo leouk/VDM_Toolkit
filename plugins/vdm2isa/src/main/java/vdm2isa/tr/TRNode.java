@@ -13,7 +13,7 @@ import vdm2isa.messages.IsaWarningMessage;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.MappedObject;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 
 abstract public class TRNode extends MappedObject implements MappableNode
 {
@@ -132,37 +132,37 @@ abstract public class TRNode extends MappedObject implements MappableNode
 	@Override
 	public void report(IsaErrorMessage message)
 	{
-		GeneralisaPlugin.report(message, getLocation());
+		IsabelleCommand.report(message, getLocation());
 	}
 
 	@Override
 	public void warning(IsaWarningMessage warning)
 	{
-		GeneralisaPlugin.warning(warning, getLocation());
+		IsabelleCommand.warning(warning, getLocation());
 	}
 
 	@Override
 	public void report(IsaErrorMessage message, Object... args)
 	{
-		GeneralisaPlugin.report(message, getLocation(), args);
+		IsabelleCommand.report(message, getLocation(), args);
 	}
 
 	@Override
 	public void warning(IsaWarningMessage warning, Object... args)
 	{
-		GeneralisaPlugin.warning(warning, getLocation(), args);
+		IsabelleCommand.warning(warning, getLocation(), args);
 	}
 	
 	//@Override
 	public void report(int number, String message)
 	{
-		GeneralisaPlugin.report(number, message, getLocation());
+		IsabelleCommand.report(number, message, getLocation());
 	}
 
 	//@Override
 	public void warning(int number, String warning)
 	{
-		GeneralisaPlugin.warning(number, warning, getLocation());
+		IsabelleCommand.warning(number, warning, getLocation());
 	}
 	
 	/**
