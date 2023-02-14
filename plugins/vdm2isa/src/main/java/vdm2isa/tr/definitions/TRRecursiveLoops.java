@@ -6,7 +6,7 @@ import java.util.Vector;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedMap;
 import vdm2isa.tr.expressions.TRApplyExpression;
@@ -113,7 +113,7 @@ public class TRRecursiveLoops extends TRMappedMap<TCNameToken, TCDefinitionList,
 			}
 			else 
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_MUTUALLY_RECURSIVE_CYCLE, root.getLocation(), root.toString());
+				IsabelleCommand.report(IsaErrorMessage.VDMSL_INVALID_MUTUALLY_RECURSIVE_CYCLE, root.getLocation(), root.toString());
 			}
 		}
 	}

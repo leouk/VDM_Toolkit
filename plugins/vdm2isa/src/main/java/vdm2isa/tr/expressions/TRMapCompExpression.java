@@ -399,7 +399,7 @@ public class TRMapCompExpression extends TRAbstractCompExpression {
                 fcnType = TRFunctionType.newConstantFunctionType(t);
                 args.add(easyExpr);
                 // // maybe better error msg later; pred can't be a variable and easy? 
-                // GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
+                // IsabelleCommand.report(IsaErrorMessage.VDMSL_INVALID_EXPR_4P, 
                 //     easyExpr.location, "map comp", "predicate", "0", original);
             }
         }

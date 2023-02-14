@@ -8,7 +8,7 @@ import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCRecordType;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -221,7 +221,7 @@ public class TRRecordType extends TRInvariantType
         if (map != null)
             result = map.get(recordName);
         if (result == null)
-            GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_RECORDNAME_1P, recordName.getLocation(), recordName.toString());
+            IsabelleCommand.report(IsaErrorMessage.ISA_INVALID_RECORDNAME_1P, recordName.getLocation(), recordName.toString());
         return result;
     }
 

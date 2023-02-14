@@ -43,7 +43,7 @@ import com.fujitsu.vdmj.tc.expressions.TCSubsetExpression;
 import com.fujitsu.vdmj.tc.expressions.TCSubtractExpression;
 import com.fujitsu.vdmj.tc.expressions.TCTimesExpression;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -536,7 +536,7 @@ public class TRBinaryExpression extends TRExpression
 		TRExpression result = TRLiteralExpression.newBooleanLiteralExpression(op.location, true);
 		if (!VALID_BOOLEAN_CHAIN_OPS.contains(IsaToken.from(op)))
 		{
-			GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, op.location, IsaToken.from(op).toString());
+			IsabelleCommand.report(IsaErrorMessage.VDMSL_INVALID_EXPROP_1P, op.location, IsaToken.from(op).toString());
 		}
 		else if (args != null && args.length > 0)
 		{
@@ -550,7 +550,7 @@ public class TRBinaryExpression extends TRExpression
 			}
 			else 
 			{
-				GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_EXPRCHAIN_TYPE_1P, op.location, IsaToken.from(op).toString());
+				IsabelleCommand.report(IsaErrorMessage.ISA_INVALID_EXPRCHAIN_TYPE_1P, op.location, IsaToken.from(op).toString());
 			}
 		}
 		TRNode.setup(result);

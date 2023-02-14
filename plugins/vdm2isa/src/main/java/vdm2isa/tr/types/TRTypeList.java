@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fujitsu.vdmj.plugins.PluginConsole;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 
-import plugins.GeneralisaPlugin;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRMappedList;
@@ -151,8 +151,8 @@ public class TRTypeList extends TRMappedList<TCType, TRType>
 		boolean validCall = isValidInvTranslateCall(varNames);
 		if (!validCall)
 		{
-			report(IsaErrorMessage.ISA_TYPELIST_INVTR_SIZE_3P, GeneralisaPlugin.plural(varNames.size(), "variable name", "s"), 
-				varNames.toString(), GeneralisaPlugin.plural(size(), "declared type", "s"));
+			report(IsaErrorMessage.ISA_TYPELIST_INVTR_SIZE_3P, PluginConsole.plural(varNames.size(), "variable name", "s"), 
+				varNames.toString(), PluginConsole.plural(size(), "declared type", "s"));
 			//System.out.println(varNames);//Throwable t = new Throwable();t.printStackTrace();
 		}
 		// can ask to up to size but not beyond

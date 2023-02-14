@@ -17,7 +17,7 @@ import com.fujitsu.vdmj.tc.patterns.TCQuotePattern;
 import com.fujitsu.vdmj.tc.patterns.TCRealPattern;
 import com.fujitsu.vdmj.tc.patterns.TCStringPattern;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -142,7 +142,7 @@ public class TRBasicPattern extends TRPattern {
 
     public static final TRPattern identifier(LexLocation location, String name) {
         if (!IsaToken.validIsaIdentifier(name))
-            GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
+            IsabelleCommand.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
         TRBasicPattern result = new TRBasicPattern(new TCIdentifierPattern(IsaToken.newNameToken(location, location.module, name)));
         TRNode.setup(result);
         return result;

@@ -11,7 +11,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeSet;
 import com.fujitsu.vdmj.util.Utils;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaSeparator;
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
@@ -549,21 +549,21 @@ public class TRTypeSet extends TreeSet<TRType> implements MappableNode
 
 	@Override
 	public void report(IsaErrorMessage message) {
-		GeneralisaPlugin.report(message, getLocation());
+		IsabelleCommand.report(message, getLocation());
 	}
 
 	@Override
 	public void report(IsaErrorMessage message, Object... args) {
-		GeneralisaPlugin.report(message, getLocation(), args);
+		IsabelleCommand.report(message, getLocation(), args);
 	}
 
 	@Override
 	public void warning(IsaWarningMessage message) {
-		GeneralisaPlugin.warning(message, getLocation());
+		IsabelleCommand.warning(message, getLocation());
 	}
 
 	@Override
 	public void warning(IsaWarningMessage message, Object... args) {
-		GeneralisaPlugin.warning(message, getLocation(), args);
+		IsabelleCommand.warning(message, getLocation(), args);
 	}
 }

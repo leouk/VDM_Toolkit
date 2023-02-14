@@ -7,7 +7,7 @@ import com.fujitsu.vdmj.tc.types.TCType;
 import com.fujitsu.vdmj.tc.types.TCTypeList;
 import com.fujitsu.vdmj.typechecker.TypeComparator;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.MappableNode;
 import vdm2isa.tr.TRNode;
@@ -53,7 +53,7 @@ public class TRTypeComparator {
         catch (Exception e)
         {
             result = null;
-            GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, location, 
+            IsabelleCommand.report(IsaErrorMessage.PLUGIN_MISSING_MAPPING_ERROR_3P, location, 
                 from.getClass().getSimpleName(), 
                 "TypeComparator",
                 e.toString());

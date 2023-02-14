@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsabelleCommand;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
 
@@ -131,7 +131,7 @@ public class IsaIdentifier extends IsaAbstractTemplate {
     {
         super(null);
         if (!validIsaIdentifier(name))
-			GeneralisaPlugin.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
+			IsabelleCommand.report(IsaErrorMessage.ISA_INVALID_IDENTIFIER_1P, location, name);
 		else 
 			IsaIdentifier.addIsaToken(name);
 		this.name = name; 
