@@ -1,4 +1,4 @@
-package plugins;
+package plugins.commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,8 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
-import plugins.commands.IsabelleCommand;
+import plugins.IsaProperties;
+import plugins.ResourceUtil;
 import vdm2isa.messages.IsaErrorMessage;
 
 public class ExuOrder extends DependencyOrder

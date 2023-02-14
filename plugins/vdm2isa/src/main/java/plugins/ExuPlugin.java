@@ -19,6 +19,7 @@ import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.commands.ExuTypeChecker;
 import plugins.visitors.exu.TCExuFunctionCallFinder;
 import vdm2isa.messages.IsaWarningMessage;
 

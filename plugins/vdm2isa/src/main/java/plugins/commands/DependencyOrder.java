@@ -1,4 +1,4 @@
-package plugins;
+package plugins.commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,8 @@ import com.fujitsu.vdmj.typechecker.Environment;
 import com.fujitsu.vdmj.typechecker.FlatEnvironment;
 import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
+
+import plugins.IsaProperties;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder

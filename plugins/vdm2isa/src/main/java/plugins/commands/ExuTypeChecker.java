@@ -1,4 +1,4 @@
-package plugins;
+package plugins.commands;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,6 +16,9 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.ModuleTypeChecker;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
+import plugins.ExuPlugin;
+import plugins.IsaProperties;
+import plugins.VDMSpecificationKind;
 import vdm2isa.messages.IsaErrorMessage;
 
 /**
@@ -169,7 +172,7 @@ public class ExuTypeChecker {
                 organisedToPrint.removeAll(original);
                 TCNameList sortedToPrint = originalSubsetSorted ? new TCNameList() : duplicate(ts);
                 sortedToPrint.removeAll(ts);
-                GeneralisaPlugin.report(IsaErrorMessage.VDMSL_EXU_INVALID_SORTING_6P, m.name.getLocation(), 
+                IsabelleCommand.report(IsaErrorMessage.VDMSL_EXU_INVALID_SORTING_6P, m.name.getLocation(), 
                     (originalSubsetOrganised ? "" : "not ") + "O subset G",
                     (organisedSubsetOriginal ? "" : "not ") + "G subset O",
                     (originalSubsetSorted ? "" : "not ") + "O subset S",                     
