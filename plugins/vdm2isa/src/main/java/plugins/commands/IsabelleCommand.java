@@ -66,10 +66,10 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
-             ,"./fmi3/rule-model" 
-             ,"./fmi3/rule-model/Rules"
-             ,"./fmi3/rule-model/Tests"
-            //, "./lvl0"
+            //  ,"./fmi3/rule-model" 
+            //  ,"./fmi3/rule-model/Rules"
+            //  ,"./fmi3/rule-model/Tests"
+            , "./lvl0"
             //    ,"./lvl0/TestV2IEmpty.vdmsl"
             //    ,"./lvl0/TestV2IExprs.vdmsl"
             //    ,"./lvl0/TestV2IUseBeforeDecl.vdmsl"
