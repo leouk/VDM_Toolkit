@@ -9,15 +9,24 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.commands.CommandPlugin;
 import com.fujitsu.vdmj.config.Properties;
+import com.fujitsu.vdmj.lex.Dialect;
+import com.fujitsu.vdmj.plugins.AnalysisCommand;
+import com.fujitsu.vdmj.plugins.AnalysisPlugin;
+import com.fujitsu.vdmj.plugins.PluginConsole;
+import com.fujitsu.vdmj.plugins.PluginRegistry;
 import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+
+import plugins.analyses.IsabellePlugin;
 
 public class ResourceUtil
 {
@@ -116,6 +125,43 @@ public class ResourceUtil
 			return (T)c; 
 		else 
 			return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends AnalysisCommand> T createCommand(String name, Interpreter interpreter) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, Exception
+	{
+		AnalysisCommand result = PluginRegistry.getInstance().getCommand(name);
+		
+		if (result == null)
+		{
+			IsabellePlugin isa = IsabellePlugin.factory(Dialect.VDM_SL);
+			PluginRegistry.getInstance().registerPlugin(isa);
+			result = PluginRegistry.getInstance().getCommand(name);
+		}
+
+		if (result == null && System.getProperty("vdmj.plugins") != null)
+		{
+			String[] plugins = System.getProperty("vdmj.plugins").split("\\s*[,;]\\s*");
+			
+			for (String plugin: plugins)
+			{
+				try
+				{
+					Class<?> clazz = Class.forName(plugin);
+					Method factory = clazz.getMethod("factory", Dialect.class);
+					AnalysisPlugin instance = (AnalysisPlugin)factory.invoke(null, Settings.dialect);
+					PluginRegistry.getInstance().registerPlugin(instance);
+					PluginConsole.verbose("Registered " + plugin + " plugin");
+				}
+				catch (NoSuchMethodException e)
+				{
+					PluginConsole.println("vdmj.plugins = " + System.getProperty("vdmj.plugins"));
+					PluginConsole.println("Cannot load plugin: " + plugin);
+					throw e;
+				}
+			}
+		}
+		return (T)result;
 	}
 
 	/**
