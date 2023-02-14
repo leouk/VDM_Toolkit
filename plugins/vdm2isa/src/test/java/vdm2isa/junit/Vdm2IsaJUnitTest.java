@@ -8,6 +8,8 @@ import org.junit.Before;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.messages.VDMMessage;
+import com.fujitsu.vdmj.plugins.PluginRegistry;
+import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmjunit.VDMJUnitTestSL;
 
@@ -31,7 +33,8 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     public void setUp()
 	{
 		Vdm2IsaJUnitTest.init();
-        tclist = interpreter.getTC();
+        tclist = ((TCPlugin)PluginRegistry.getInstance().getPlugin("TC")).getTC();
+        //tclist = interpreter.getTC();
         outputPath = getOutputPath();
 	}
 
