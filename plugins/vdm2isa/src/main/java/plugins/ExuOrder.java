@@ -27,6 +27,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 
+import plugins.commands.IsabelleCommand;
 import vdm2isa.messages.IsaErrorMessage;
 
 public class ExuOrder extends DependencyOrder
@@ -183,7 +184,7 @@ public class ExuOrder extends DependencyOrder
         // if no saveURI is set, then use the "default" 
         try 
         {
-            Path dir = GeneralisaPlugin.createOutputDirectory(saveURI, "exu"); 
+            Path dir = IsabelleCommand.createOutputDirectory(saveURI, "exu"); 
             String name = namePrefix + module.name + ".dot";
             File outfile = new File(dir.toFile(), name);
             graphOf(outfile);
@@ -296,13 +297,13 @@ public class ExuOrder extends DependencyOrder
                     }
                     else 
                     {
-                        GeneralisaPlugin.report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, vd.location, "value", "definitions", "must all be local definitions after typecheck?");
+                        IsabelleCommand.report(IsaErrorMessage.VDMSL_INVALID_VALUEDEF_3P, vd.location, "value", "definitions", "must all be local definitions after typecheck?");
                     }
                 }
             }
             else 
             {
-                GeneralisaPlugin.report(IsaErrorMessage.PLUGIN_NYI_2P, d.location, "sorting for", d.getClass());
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_NYI_2P, d.location, "sorting for", d.getClass());
             }
         }
         // value definitions might have more than one
