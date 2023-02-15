@@ -945,48 +945,48 @@ expression
 //------------------------
 // C.0 The family of primary expressions
 //------------------------
-    : bracketed_expression                                  #BracketedExpr                     //1  primary
-    | let_expression                                        #LetExpr                           //2  primary
-    | let_be_expression                                     #LetBestExpr                       //3  primary 
-    | def_expression                                        #DefExpr                           //4  primary
-    | if_expression                                         #IfExpr                            //5  primary
-    | cases_expression                                      #CasesExpr                         //6  primary
-    | unary_expression                                      #UnaryExpr                         //7  primary
-    | quantified_expression                                 #QuantifiedExpr                    //8  primary
-    | iota_expression                                       #IotaExpr                          //9  primary
-    | set_enumeration                                       #SetEnumExpr                       //10 primary
-    | set_comprehension                                     #SetCompExpr                       //11 primary
-    | set_range_expression                                  #SetRangeExpr                      //12 primary
-    | sequence_enumeration                                  #SeqEnumExpr                       //13 primary
-    | sequence_comprehension                                #SeqCompExpr                       //14 primary
-    | map_enumeration                                       #MapEnumExpr                       //15 primary
-    | map_comprehension                                     #MapCompExpr                       //16 primary
-    | record_modifier                                       #RecordMuExpr                      //17 primary
-    | lambda_expression                                     #LambdaExpr                        //18 primary
-    | narrow_expression                                     #NarrowExpr                        //19 primary
-    | general_is_expression                                 #GeneralIsExpr                     //20 primary
-    | undefined_expression                                  #UndefinedExpr                     //21 primary
-    | precondition_expression                               #PreconditionExpr                  //22 primary
-    | {!isVDMSL()}? self_expression                         #PPSelfExpr                        //24 primary
-    | {isVDMRT()}?  threadid_expression                     #PPThreadIdExpr                    //25 primary
-    | {!isVDMSL()}? isofbaseclass_expression                #PPIsOfBaseClassExpr               //26 primary
-    | {!isVDMSL()}? isofclass_expression                    #PPIsOfClassExpr                   //27 primary
-    | {!isVDMSL()}? samebaseclass_expression                #PPSameBaseClassExpr               //28 primary
-    | {!isVDMSL()}? sameclass_expression                    #PPSameClassExpr                   //29 primary
-    | {isVDMRT()}?  act_expression                          #RTActExpr                         //30 primary
-    | {isVDMRT()}?  fin_expression                          #RTFinExpr                         //31 primary
-    | {isVDMRT()}?  active_expression                       #RTActiveExpr                      //32 primary
-    | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
-    | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
-    | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
-    | old_name                                              #OldNameExpr                       //36 primary
-    | name                                                  #NameExpr                          //37 primary
-    | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
+    : bracketed_expression                                  //#BracketedExpr                     //1  primary
+    | let_expression                                        //#LetExpr                           //2  primary
+    | let_be_expression                                     //#LetBestExpr                       //3  primary 
+    | def_expression                                        //#DefExpr                           //4  primary
+    | if_expression                                         //#IfExpr                            //5  primary
+    | cases_expression                                      //#CasesExpr                         //6  primary
+    | unary_expression                                      //#UnaryExpr                         //7  primary
+    | quantified_expression                                 //#QuantifiedExpr                    //8  primary
+    | iota_expression                                       //#IotaExpr                          //9  primary
+    | set_enumeration                                       //#SetEnumExpr                       //10 primary
+    | set_comprehension                                     //#SetCompExpr                       //11 primary
+    | set_range_expression                                  //#SetRangeExpr                      //12 primary
+    | sequence_enumeration                                  //#SeqEnumExpr                       //13 primary
+    | sequence_comprehension                                //#SeqCompExpr                       //14 primary
+    | map_enumeration                                       //#MapEnumExpr                       //15 primary
+    | map_comprehension                                     //#MapCompExpr                       //16 primary
+    | record_modifier                                       //#RecordMuExpr                      //17 primary
+    | lambda_expression                                     //#LambdaExpr                        //18 primary
+    | narrow_expression                                     //#NarrowExpr                        //19 primary
+    | general_is_expression                                 //#GeneralIsExpr                     //20 primary
+    | undefined_expression                                  //#UndefinedExpr                     //21 primary
+    | precondition_expression                               //#PreconditionExpr                  //22 primary
+    | {!isVDMSL()}? self_expression                         //#PPSelfExpr                        //24 primary
+    | {isVDMRT()}?  threadid_expression                     //#PPThreadIdExpr                    //25 primary
+    | {!isVDMSL()}? isofbaseclass_expression                //#PPIsOfBaseClassExpr               //26 primary
+    | {!isVDMSL()}? isofclass_expression                    //#PPIsOfClassExpr                   //27 primary
+    | {!isVDMSL()}? samebaseclass_expression                //#PPSameBaseClassExpr               //28 primary
+    | {!isVDMSL()}? sameclass_expression                    //#PPSameClassExpr                   //29 primary
+    | {isVDMRT()}?  act_expression                          //#RTActExpr                         //30 primary
+    | {isVDMRT()}?  fin_expression                          //#RTFinExpr                         //31 primary
+    | {isVDMRT()}?  active_expression                       //#RTActiveExpr                      //32 primary
+    | {isVDMRT()}?  req_expression                          //#RTReqExpr                         //33 primary
+    | {isVDMRT()}?  waiting_expression                      //#RTWaitingExpr                     //34 primary
+    | {isVDMRT()}?  time_expression                         //#RTTimeExpr                        //35 primary
+    | old_name                                              //#OldNameExpr                       //36 primary
+    | name                                                  //#NameExpr                          //37 primary
+    | symbolic_literal                                      //#SymbolicLitExpr                   //23 primary
 //------------------------
 // C.1 The family of combinators
 //------------------------
-    |<assoc=right> expression O_EXP    expression           #IterateExpr                       //38 combinator(1)
-    |<assoc=right> expression SLK_comp expression           #MapCompositionExpr                //39 combinator(2)
+    |<assoc=right> expression O_EXP    expression           //#IterateExpr                       //38 combinator(1)
+    |<assoc=right> expression SLK_comp expression           //#MapCompositionExpr                //39 combinator(2)
 //------------------------
 // C.2 The family of applicators
 //------------------------
@@ -994,62 +994,62 @@ expression
         expression 
         SEP_comma SEP_range SEP_comma 
         expression 
-        PAREN_R                                             #SubSeqExpr                       //40 applicator(1)
-    | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
+        PAREN_R                                             //#SubSeqExpr                       //40 applicator(1)
+    | expression PAREN_L expression_list? PAREN_R           //#ApplyExpr                        //41 applicator(2)
     | expression /* name */ 
         BRACE_L 
         type (SEP_comma type)* 
-        BRACE_R                                             #FunctionTypeInstExpr             //42 applicator(3)
-    | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
+        BRACE_R                                             //#FunctionTypeInstExpr             //42 applicator(3)
+    | expression SEP_dot IDENTIFIER                         //#FieldSelExpr       
 //C.2 is missing tuple selector!
-    | expression SEP_tsel NUMERAL                           #TupleSelExpr                     //43 applicator(4)
+    | expression SEP_tsel NUMERAL                           //#TupleSelExpr                     //43 applicator(4)
 //------------------------
 // C.3 The family of evaluators
 //------------------------
-    |              expression (O_NRRES     expression)      #MapRngFilterExpr                 //44 evaluators(1)    
-    |              expression (O_RRES      expression)      #MapRngRestrictExpr               //45 evaluators(2)   
-    |<assoc=right> expression (O_NDRES     expression)      #MapDomFilterExpr                 //46 evaluators(3)   
-    |<assoc=right> expression (O_DRES      expression)      #MapDomRestricExpr                //47 evaluators(4)   
-    |              expression (SLK_munion  expression)      #MapUnionExpr                     //48 evaluators(5)   
-    |              expression (O_OVERRIDE  expression)      #MapSeqOverrideExpr               //49 evaluators(6)   
-    |              expression (SLK_div     expression)      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
-    |              expression (SLK_mod     expression)      #ArithmeticModuloExpr             //51 evaluators(8)     
-    |              expression (SLK_rem     expression)      #ArithmeticReminderExpr           //52 evaluators(9)     
-    |              expression (O_DIV       expression)      #ArithmeticDivideExpr             //53 evaluators(10)     
-    |              expression (O_TIMES     expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
-    |              expression (O_MINUS     expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
-    |              expression (O_PLUS      expression)      #ArithmeticPlusExpr               //56 evaluators(13)
-    |              expression (O_DIFF      expression)      #SetDiffExpr                      //57 evaluators(14)      
-    |              expression (SLK_union   expression)      #SetUnionExpr                     //58 evaluators(15)   
-    |              expression (SLK_inter   expression)      #SetInterExpr                     //59 evaluators(16)   
-    |              expression (O_CONCAT    expression)      #SeqConcatExpr                    //60 evaluators(17)
+    |              expression (O_NRRES     expression)      //#MapRngFilterExpr                 //44 evaluators(1)    
+    |              expression (O_RRES      expression)      //#MapRngRestrictExpr               //45 evaluators(2)   
+    |<assoc=right> expression (O_NDRES     expression)      //#MapDomFilterExpr                 //46 evaluators(3)   
+    |<assoc=right> expression (O_DRES      expression)      //#MapDomRestricExpr                //47 evaluators(4)   
+    |              expression (SLK_munion  expression)      //#MapUnionExpr                     //48 evaluators(5)   
+    |              expression (O_OVERRIDE  expression)      //#MapSeqOverrideExpr               //49 evaluators(6)   
+    |              expression (SLK_div     expression)      //#ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
+    |              expression (SLK_mod     expression)      //#ArithmeticModuloExpr             //51 evaluators(8)     
+    |              expression (SLK_rem     expression)      //#ArithmeticReminderExpr           //52 evaluators(9)     
+    |              expression (O_DIV       expression)      //#ArithmeticDivideExpr             //53 evaluators(10)     
+    |              expression (O_TIMES     expression)      //#ArithmeticMultiplicationExpr     //54 evaluators(11)     
+    |              expression (O_MINUS     expression)      //#ArithmeticMinusExpr              //55 evaluators(12)     
+    |              expression (O_PLUS      expression)      //#ArithmeticPlusExpr               //56 evaluators(13)
+    |              expression (O_DIFF      expression)      //#SetDiffExpr                      //57 evaluators(14)      
+    |              expression (SLK_union   expression)      //#SetUnionExpr                     //58 evaluators(15)   
+    |              expression (SLK_inter   expression)      //#SetInterExpr                     //59 evaluators(16)   
+    |              expression (O_CONCAT    expression)      //#SeqConcatExpr                    //60 evaluators(17)
 //------------------------
 // C.4 The family of relations
 //------------------------
-    |              expression (O_GEQ       expression)      #RelationalGreaterThanEqualExpr   //61 relations(1)   
-    |              expression (O_LEQ       expression)      #RelationalLessThanEqualExpr      //62 relations(2)
-    |              expression (O_GT        expression)      #RelationalGreaterThanExpr        //63 relations(3)
-    |              expression (O_LT        expression)      #RelationalLessThanExpr           //64 relations(4)
-    |<assoc=right> expression (O_NEQ       expression)      #RelationalNotEqualExpr           //65 relations(5)
-    |<assoc=right> expression (O_EQUAL     expression)      #RelationalEqualExpr              //66 relations(6)
-    |              expression (SLK_ninset  expression)      #SetNotMemberExpr                 //67 relations(7)
-    |              expression (SLK_inset   expression)      #SetMemberExpr                    //68 relations(8)
-    |              expression (SLK_psubset expression)      #SetPSubsetExpr                   //69 relations(9)
-    |              expression (SLK_subset  expression)      #SetSubsetExpr                    //70 relations(10)
+    |              expression (O_GEQ       expression)      //#RelationalGreaterThanEqualExpr   //61 relations(1)   
+    |              expression (O_LEQ       expression)      //#RelationalLessThanEqualExpr      //62 relations(2)
+    |              expression (O_GT        expression)      //#RelationalGreaterThanExpr        //63 relations(3)
+    |              expression (O_LT        expression)      //#RelationalLessThanExpr           //64 relations(4)
+    |<assoc=right> expression (O_NEQ       expression)      //#RelationalNotEqualExpr           //65 relations(5)
+    |<assoc=right> expression (O_EQUAL     expression)      //#RelationalEqualExpr              //66 relations(6)
+    |              expression (SLK_ninset  expression)      //#SetNotMemberExpr                 //67 relations(7)
+    |              expression (SLK_inset   expression)      //#SetMemberExpr                    //68 relations(8)
+    |              expression (SLK_psubset expression)      //#SetPSubsetExpr                   //69 relations(9)
+    |              expression (SLK_subset  expression)      //#SetSubsetExpr                    //70 relations(10)
 //------------------------
 // C.5 The family of connectives
 //------------------------
-    |              expression (SLK_and     expression)      #LogicalAndExpr                   //71 connectives(1)  
-    |              expression (SLK_or      expression)      #LogicalOrExpr                    //72 connectives(2)
-    |<assoc=right> expression (O_IMPLIES   expression)      #LogicalImpliesExpr               //73 connectives(3)
-    |              expression (O_IFF       expression)      #LogicalIffExpr                   //74 connectives(4)
+    |              expression (SLK_and     expression)      //#LogicalAndExpr                   //71 connectives(1)  
+    |              expression (SLK_or      expression)      //#LogicalOrExpr                    //72 connectives(2)
+    |<assoc=right> expression (O_IMPLIES   expression)      //#LogicalImpliesExpr               //73 connectives(3)
+    |              expression (O_IFF       expression)      //#LogicalIffExpr                   //74 connectives(4)
 //------------------------
 // C.6 The family of constructors
 //------------------------
 //These are also primary given their leading tokens
-    | tuple_constructor                                     #TupleMkExpr                      //75 primary
-    | record_constructor                                    #RecordMkExpr                     //76 primary
-    | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
+    | tuple_constructor                                     //#TupleMkExpr                      //75 primary
+    | record_constructor                                    //#RecordMkExpr                     //76 primary
+    | {!isVDMSL()}? new_expression                          //#PPNewExpr                        //77 primary
     ;  
 
 // expression

@@ -89,42 +89,6 @@ lexer grammar VDMLex;
 //     Because of this, it is important to place all keywords before the identifiers
 //------------------------
 
-// This has to appear first, otherwise lexer gets confused between keywords (SLK_true), identifiers (true) and symbolic literal (true)!
-
-NUMERIC_LITERAL
-    : DECIMAL_LITERAL 
-	| HEXADECIMAL_LITERAL
-    ;
-
-// fragment BOOLEAN_LITERAL
-//     : SLK_true
-//  	| SLK_false
-//     ;
-
-// fragment NIL_LITERAL
-//     : SLK_nil
-//     ;
-
-CHARACTER_LITERAL
-    : '\'' (NameChar | ESC) '\''
-    ;
-
-TEXT_LITERAL
-    : '"' (NameChar | ESC | .)*? '"'
-    ;
-
-fragment DECIMAL_LITERAL
-    : NUMERAL ('.' NUMERAL)? (EXPONENT)?
-    ;
-
-fragment EXPONENT          
-    : ('E' | 'e') ('+' | '-')? NUMERAL
-    ;
-
-fragment HEXADECIMAL_LITERAL
-    : ('0x' | '0X') HEXADECIMAL_DIGIT+
-    ;
-
 //------------------------
 // Keywords (case sensitive); add PP/RT?
 //------------------------
@@ -369,6 +333,42 @@ TYPE_VARIABLE_IDENTIFIER
 // IDNAME
 //     : IDENTIFIER (SEP_tick IDENTIFIER)?
 //     ;
+
+// This has to appear first, otherwise lexer gets confused between keywords (SLK_true), identifiers (true) and symbolic literal (true)!
+
+NUMERIC_LITERAL
+    : DECIMAL_LITERAL 
+	| HEXADECIMAL_LITERAL
+    ;
+
+// fragment BOOLEAN_LITERAL
+//     : SLK_true
+//  	| SLK_false
+//     ;
+
+// fragment NIL_LITERAL
+//     : SLK_nil
+//     ;
+
+CHARACTER_LITERAL
+    : '\'' (NameChar | ESC) '\''
+    ;
+
+TEXT_LITERAL
+    : '"' (NameChar | ESC | .)*? '"'
+    ;
+
+fragment DECIMAL_LITERAL
+    : NUMERAL ('.' NUMERAL)? (EXPONENT)?
+    ;
+
+fragment EXPONENT          
+    : ('E' | 'e') ('+' | '-')? NUMERAL
+    ;
+
+fragment HEXADECIMAL_LITERAL
+    : ('0x' | '0X') HEXADECIMAL_DIGIT+
+    ;
 
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 

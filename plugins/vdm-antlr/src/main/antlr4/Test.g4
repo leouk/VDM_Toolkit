@@ -22,6 +22,11 @@ name
     : IDENTIFIER ('`' IDENTIFIER)?
     ;
 
+symbolic_literal
+    : NUMERAL 
+    | BOOL_LIT
+    ;
+
 NUMERAL
     : DIGIT+
     ;
@@ -33,10 +38,6 @@ IDENTIFIER
     : LETTER (LETTER | DIGIT | '_')*
     ; 
 
-symbolic_literal
-    : NUMERAL 
-    | BOOL_LIT
-    ;
 
 fragment LETTER: [a-zA-Z];
 fragment DIGIT: [0-9];
