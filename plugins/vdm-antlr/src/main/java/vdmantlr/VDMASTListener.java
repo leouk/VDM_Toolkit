@@ -24,9 +24,13 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void enterModule(VDMParser.ModuleContext ctx)
+    public void exitModule(VDMParser.ModuleContext ctx)
     {
-        ctx.IDENTIFIER();
+        assert ctx.modName != null && ctx.endName != null;
+        if (!ctx.modName.getText().equals(ctx.endName.getText()))
+		{
+			//throwMessage(2049, "Expecting 'end " + ctx.modName.getText() + "'");
+		}
         nodes.put(ctx, null);
     }
 }

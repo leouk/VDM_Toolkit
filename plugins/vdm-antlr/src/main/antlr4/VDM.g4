@@ -144,7 +144,7 @@ sl_document
 // A.1.1 Module, imports and exports 
 //------------------------
 module
-    : SLK_module IDENTIFIER sl_interface module_body? SLK_end IDENTIFIER
+    : SLK_module modName=IDENTIFIER sl_interface module_body? SLK_end endName=IDENTIFIER
     ;
 
 sl_interface
