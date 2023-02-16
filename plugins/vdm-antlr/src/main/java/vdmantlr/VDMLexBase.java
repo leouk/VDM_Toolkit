@@ -1,9 +1,8 @@
 package vdmantlr;
 
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
 
-public abstract class VDMLexBase extends Lexer
+public abstract class VDMLexBase extends VDMLex
 {
     public VDMLexBase(CharStream input) {
     	super(input);
