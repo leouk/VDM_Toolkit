@@ -338,7 +338,11 @@ access
     ;
 
 sl_type_definitions 
-    : SLK_types type_definition 
+    : SLK_types type_definition_list SEP_scolon?
+    ;
+
+type_definition_list
+    : type_definition (SEP_scolon type_definition)*
     ;
 
 //@NB here added extra production to make parser faster; otherwise you will get
@@ -349,7 +353,9 @@ type_definition
 
 invariant_type_definition
     : O_EQUAL type type_specification
+   // | O_EQUAL type
     | SEP_rec field+ type_specification
+   // | SEP_rec field+
     ;
 
 //@LF will this generate empty production and potential conflict? 
