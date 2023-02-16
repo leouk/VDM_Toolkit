@@ -1,10 +1,12 @@
 package vdm2isa.junit;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.messages.VDMMessage;
@@ -20,6 +22,18 @@ import plugins.ResourceUtil;
 
 public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 
+    @BeforeClass
+	public static void start() throws Exception
+	{
+		System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
+	}
+	
+	@AfterClass
+	public static void stop()
+	{
+		System.clearProperty("vdmj.plugins");
+	}
+    
     protected static void init()
 	{
 		VDMJUnitTestSL.init();
@@ -34,8 +48,8 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     public void setUp()
 	{
 		Vdm2IsaJUnitTest.init();
-        //tclist = ((TCPlugin)PluginRegistry.getInstance().getPlugin("TC")).getTC();
-        tclist = interpreter.getTC();
+        tclist = ((TCPlugin)PluginRegistry.getInstance().getPlugin("TC")).getTC();
+        //tclist = interpreter.getTC();
         outputPath = getOutputPath();
 	}
 
@@ -49,7 +63,7 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 		}
     }
     
-    protected void runPlugin(String name, String module) throws Exception
+    protected void runCommand(String name, String module) throws Exception
     {
         GeneralisaPlugin cmd = ResourceUtil.createPlugin(name, interpreter);
         // choose specific module to allow for test granualirty

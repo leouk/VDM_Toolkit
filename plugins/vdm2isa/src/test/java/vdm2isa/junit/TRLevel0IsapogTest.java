@@ -8,6 +8,7 @@ public class TRLevel0IsapogTest extends Vdm2IsaJUnitTest
 	@BeforeClass
 	public static void start() throws Exception
 	{
+        Vdm2IsaJUnitTest.start();
 		readSpecification("lvl0");
 	}
 
@@ -20,55 +21,55 @@ public class TRLevel0IsapogTest extends Vdm2IsaJUnitTest
     @Test
     public void test0() throws Exception
 	{
-        runPlugin("isapog", "TestV2IEmpty");
+        runCommand("isapog", "TestV2IEmpty");
 	}
 
     @Test
     public void test1() throws Exception
 	{
-        runPlugin("isapog", "TestV2IExprs");
+        runCommand("isapog", "TestV2IExprs");
 	}
 
     @Test
     public void test2() throws Exception
 	{
-        runPlugin("isapog", "TestV2IFcns");
+        runCommand("isapog", "TestV2IFcns");
 	}
 
     @Test
     public void test3() throws Exception
 	{
-        runPlugin("isapog", "TestV2IDeclBeforeUse");
+        runCommand("isapog", "TestV2IDeclBeforeUse");
 	}
 
     @Test
     public void test4() throws Exception
 	{
-        runPlugin("isapog", "TestV2IUseBeforeDecl");
+        runCommand("isapog", "TestV2IUseBeforeDecl");
 	}
 
     @Test
     public void test5() throws Exception
 	{
-        runPlugin("isapog", "TestV2IUseBeforeDecl");
+        runCommand("isapog", "TestV2IUseBeforeDecl");
 	}
 
     @Test
     public void test6() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypes");
+        runCommand("isapog", "TestV2ITypes");
 	}
 
     @Test
     public void test7() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesOrdering");
+        runCommand("isapog", "TestV2ITypesOrdering");
 	}
 
     @Test
     public void test8() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesStructured");
+        runCommand("isapog", "TestV2ITypesStructured");
 	}
 
     // @Test
@@ -80,30 +81,30 @@ public class TRLevel0IsapogTest extends Vdm2IsaJUnitTest
     @Test
     public void test10() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesGeneric");
+        runCommand("isapog", "TestV2ITypesGeneric");
 	}
 
     @Test
     public void test11() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesNamed");
+        runCommand("isapog", "TestV2ITypesNamed");
 	}
 
     @Test
     public void test12() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesOptional");
+        runCommand("isapog", "TestV2ITypesOptional");
 	}
 
     @Test
     public void test13() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesRecords");
+        runCommand("isapog", "TestV2ITypesRecords");
 	}
 
     @Test
     public void test14() throws Exception
 	{
-        runPlugin("isapog", "TestV2ITypesQualifiedOptional");
+        runCommand("isapog", "TestV2ITypesQualifiedOptional");
 	}
 }
