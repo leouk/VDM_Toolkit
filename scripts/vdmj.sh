@@ -141,8 +141,8 @@ MAIN="com.fujitsu.vdmj.VDMJ"
     #check "$ANNOTATIONS2_JAR"
     ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${VTVERSION}/annotationsVDMToolkit-${VTVERSION}.jar
     check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
-    VDMJ_OPTS="$VDMJ_OPTS -annotations"
-    VM_OPTS="$VM_OPTS -Dvdmj.annotations.debug=true -Dvdmj.parser.merge_comments=true"
+    VDMJ_OPTS="$VDMJ_OPTS -annotations -strict"
+    VM_OPTS="$VM_OPTS -Dvdmj.annotations.debug=true -Dvdmj.parser.merge_comments=true -Dvdmj.plugins=plugins.analyses.IsabellePlugin"
     CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS_VDM_TOOLKIT_JAR"
     #$ANNOTATIONS2_JAR:
 #fi
