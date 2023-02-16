@@ -21,7 +21,7 @@ public class VDMASTListener extends VDMBaseListener {
     
     public static void main(String[] argv) throws IOException
     {
-        CharStream input = CharStreams.fromFileName("/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm-antlr/src/test/resources/exprScenario/setEnum.expr"); 
+        CharStream input = CharStreams.fromFileName("./exprScenario/setEnum.expr"); 
         //ANTLRInputStream input = new ANTLRInputStream(System.in); 
         // or read stdin SimpleLexer lexer = new SimpleLexer(input);
         VDMLexer lexer = new VDMLexer(input);
@@ -40,8 +40,6 @@ public class VDMASTListener extends VDMBaseListener {
     public void enterSl_document(VDMParser.Sl_documentContext ctx) 
     {
         astModuleList = new ASTModuleList();
-        ctx.getChildCount();
-        ctx.module(0);
     }
 
     @Override
@@ -54,4 +52,77 @@ public class VDMASTListener extends VDMBaseListener {
 		}
         nodes.put(ctx, null);
     }
+
+    @Override
+    public void enterSet_enumeration(VDMParser.Set_enumerationContext ctx)
+    {
+        System.out.println("Enter set_enum: " + ctx.getText());
+    }
+
+    @Override
+    public void exitSet_enumeration(VDMParser.Set_enumerationContext ctx)
+    {
+        System.out.println("Exit set_enum: " + ctx.getText());
+    }
+
+    @Override
+    public void enterSetEnumExpr(VDMParser.SetEnumExprContext ctx)
+    {
+        System.out.println("Enter #SetEnumExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void exitSetEnumExpr(VDMParser.SetEnumExprContext ctx)
+    {
+        System.out.println("Exit #SetEnumExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void enterExpression_list(VDMParser.Expression_listContext ctx)
+    {
+        System.out.println("Enter expression_list: " + ctx.getText());
+    }
+
+    @Override
+    public void exitExpression_list(VDMParser.Expression_listContext ctx)
+    {
+        System.out.println("Exit expression_list: " + ctx.getText());
+    }
+
+    @Override
+    public void enterArithmeticPlusExpr(VDMParser.ArithmeticPlusExprContext ctx)
+    {
+        System.out.println("Enter #ArithmeticPlusExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void exitArithmeticPlusExpr(VDMParser.ArithmeticPlusExprContext ctx)
+    {
+        System.out.println("Exit #ArithmeticPlusExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void enterArithmeticMultiplicationExpr(VDMParser.ArithmeticMultiplicationExprContext ctx)
+    {
+        System.out.println("Enter #ArithmeticMultiplicationExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void exitArithmeticMultiplicationExpr(VDMParser.ArithmeticMultiplicationExprContext ctx)
+    {
+        System.out.println("Exit #ArithmeticMultiplicationExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void enterSymbolicLitExpr(VDMParser.SymbolicLitExprContext ctx)
+    {
+        System.out.println("Enter #SymbolicLitExpr: " + ctx.getText());
+    }
+
+    @Override
+    public void exitSymbolicLitExpr(VDMParser.SymbolicLitExprContext ctx)
+    {
+        System.out.println("Exit #SymbolicLitExpr: " + ctx.getText());
+    }    
 }
+
