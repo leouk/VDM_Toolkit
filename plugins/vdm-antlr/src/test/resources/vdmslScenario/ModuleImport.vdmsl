@@ -2,12 +2,15 @@ module A
 exports all
 definitions 
 types 
+	T = nat;
 	R:: x:nat ;
+	S:: r: R;
 end A
 module B
-imports from A all
+imports from A types R; T = nat inv t == t > 10 renamed T1;
 exports all
 definitions 
 values
 	r = mk_A`R(10);
+	t : T1 = 5;
 end B
