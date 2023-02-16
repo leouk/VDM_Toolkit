@@ -2,6 +2,15 @@
     "version": "2.0.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Run Java listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
             "type": "antlr-debug",
             "request": "launch",
             "name": "Expr test grammar",
