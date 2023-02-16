@@ -5,6 +5,9 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
 
+import vdmantlr.generated.VDMBaseListener;
+import vdmantlr.generated.VDMParser;
+
 public class VDMASTListener extends VDMBaseListener {
     
     private final ParseTreeProperty<ASTNode> nodes = new ParseTreeProperty<ASTNode>();

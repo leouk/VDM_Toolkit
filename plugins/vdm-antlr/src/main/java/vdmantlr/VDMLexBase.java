@@ -2,6 +2,8 @@ package vdmantlr;
 
 import org.antlr.v4.runtime.CharStream;
 
+import vdmantlr.generated.VDMLex;
+
 public abstract class VDMLexBase extends VDMLex
 {
     public VDMLexBase(CharStream input) {
