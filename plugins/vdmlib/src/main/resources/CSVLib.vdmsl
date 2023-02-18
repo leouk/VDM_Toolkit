@@ -99,6 +99,10 @@ exports
         loadCSV       : Path * CSVParser * CSVSettings * Headers0 * bool ==> ();
         loadSimpleHeadersCSV: Path * CSVParser * seq1 of CSVType * bool ==> ();
         printCSV      : Path * nat ==> ();
+        getCSVData    : () ==> Data;
+        getCSVErrors  : () ==> Errors 
+
+
 definitions
 types
     String = seq of char;
@@ -648,5 +652,19 @@ operations
         )
     ext rd file, ferr, data
     pre file_status(path) in set {<Valid>, <DoesNotExist>};
+
+    -- @doc returns csv data
+    pure getCSVData: () ==> Data
+    getCSVData() == (
+            return data;
+    )
+    pre file <> nil;
+
+    -- @doc returns the list of invariant failure errors 
+    pure getCSVErrors: () ==> Errors 
+    getCSVErrors() == (
+            return pos;
+    )
+    pre pre_getCSVData(CSV)
          
 end CSVLib
