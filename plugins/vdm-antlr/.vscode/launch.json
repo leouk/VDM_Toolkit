@@ -3,9 +3,18 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Run Java listener",
+            "name": "Run listener",
             "request": "launch",
             "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run visitor",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTVisitor",
             "projectName": "vdm-antlr",
             "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"

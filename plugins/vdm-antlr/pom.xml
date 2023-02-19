@@ -11,6 +11,7 @@
 
 	<properties>
 		<!-- ANTLR version, which percolates to all dependent POMs -->	
+		<!--<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>-->
 		<org.antlr.antlr-version>4.9.2</org.antlr.antlr-version>
 		<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version>
 	</properties>
@@ -137,9 +138,18 @@
 							<showTree>true</showTree>
 							<entryPoint>expression_list</entryPoint>
 							<grammarName>VDM</grammarName>
-							<!--<packageName>dummy</packageName>-->
+							<!--<packageName>vdmantlr.generated?</packageName>-->
 							<testFileExtension>.expr</testFileExtension>
 							<exampleFiles>src/test/resources/exprScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>Patterns</scenarioName>
+							<verbose>false</verbose>
+							<showTree>true</showTree>
+							<entryPoint>pattern</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.pat</testFileExtension>
+							<exampleFiles>src/test/resources/patternScenario/</exampleFiles>
 						</scenario>
 						<scenario>
 							<scenarioName>Identifiers</scenarioName>
