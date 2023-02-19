@@ -13,24 +13,33 @@ import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
 
 import vdmantlr.generated.VDMBaseListener;
+import vdmantlr.generated.VDMBaseVisitor;
 //import vdmantlr.generated.VDMLex; which one?
 import vdmantlr.generated.VDMLexer;
 import vdmantlr.generated.VDMParser;
 
 public class VDMASTListener extends VDMBaseListener {
     
+    public static final String EXPR_TEST = "./exprScenario/setEnum.expr";
+    public static final String PAT_TEST = "./patternScenario/example.pat";
+    public static final String TEST = PAT_TEST;
+
     public static void main(String[] argv) throws IOException
     {
-        CharStream input = CharStreams.fromFileName("./exprScenario/setEnum.expr"); 
+        CharStream input = CharStreams.fromFileName(TEST); 
         //ANTLRInputStream input = new ANTLRInputStream(System.in); 
         // or read stdin SimpleLexer lexer = new SimpleLexer(input);
         VDMLexer lexer = new VDMLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         VDMParser parser = new VDMParser(tokens);
-        ParseTree t = parser.expression();
+        ParseTree t = parser.pattern();//parser.expression();
         ParseTreeWalker.DEFAULT.walk(new VDMASTListener(), t);
+        VDMBaseVisitor<ASTNode> v = new VDMBaseVisitor<ASTNode>();
+        ASTNode n = v.visit(t);
+        System.out.println("n="+n.toString());
     }
-
+    
+    //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
     private final ParseTreeProperty<ASTNode> nodes = new ParseTreeProperty<ASTNode>();
     
 	protected ASTModuleList astModuleList = null;
@@ -124,5 +133,17 @@ public class VDMASTListener extends VDMBaseListener {
     {
         System.out.println("Exit #SymbolicLitExpr: " + ctx.getText());
     }    
+
+    @Override
+    public void enterPattern_identifier(VDMParser.Pattern_identifierContext ctx)
+    {
+        System.out.println(ctx.IDENTIFIER());
+    }
+
+    @Override
+    public void exitPattern_identifier(VDMParser.Pattern_identifierContext ctx)
+    {
+        System.out.println(ctx.IDENTIFIER());
+    }
 }
 
