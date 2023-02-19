@@ -544,17 +544,18 @@ operations
                         return;
                     )
                 );
-                --@doc check invariants using teh installed headers against read rows
+                --@doc check invariants using the installed headers against read rows
                 let lcs: Errors = csv_invariants_failed(data') in
                     if (lcs = {}) then
                     (
-                        --@AB Changed <> to = as it seems that nil is a desired result. If there is a reason then there was an invariant failure
+                        --@doc if no file invariant errors
                         if file_invaraint_check(data') = nil then
                             --@doc update the headers with names as well, if successful.
                             atomic (
                                 data := data';
                                 pos  := lcs;
                             )
+                        --@doc there file invariant errors
                         else 
                             (
                                 printf("CSV overall file invariant failed for %1s", [file]);
@@ -564,6 +565,7 @@ operations
                                 );   
                             )
                     )
+                    --@doc there are invariant errors
                     else
                     (
                         printf("CSV invariants failed for %1s: %2s", [file, card lcs]);
@@ -653,17 +655,17 @@ operations
     ext rd file, ferr, data
     pre file_status(path) in set {<Valid>, <DoesNotExist>};
 
-    -- @doc returns csv data
-    pure getCSVData: () ==> Data
+    -- @doc returns csv data; if not strict, might contain errors
+    pure getCSVData: () ==> Data0
     getCSVData() == (
-            return data;
+        return data--csv_filter_invalid(data);
     )
     pre file <> nil;
 
     -- @doc returns the list of invariant failure errors 
     pure getCSVErrors: () ==> Errors 
     getCSVErrors() == (
-            return pos;
+        return pos;
     )
     pre pre_getCSVData(CSV)
          

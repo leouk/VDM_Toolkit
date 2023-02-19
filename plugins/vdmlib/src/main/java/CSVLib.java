@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fujitsu.vdmj.Settings;
-import com.fujitsu.vdmj.VDMJ;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.runtime.Interpreter;
@@ -415,7 +414,7 @@ public class CSVLib implements Serializable {
                         ValueFactoryHelper.mkEmptySeqValue(), // cells: seq of Row 
                         ValueFactory.mkNil() // no row invariant 
                     ),
-                    ValueFactory.mkNil()//@AB: nil File invariant
+                    ValueFactory.mkNil()// nil File invariant
             );
             
             //get the csv settings
