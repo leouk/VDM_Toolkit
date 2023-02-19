@@ -135,15 +135,10 @@ public class VDMASTListener extends VDMBaseListener {
     }    
 
     @Override
-    public void enterPattern_identifier(VDMParser.Pattern_identifierContext ctx)
+    public void enterIdPattern(VDMParser.IdPatternContext ctx)
     {
         System.out.println(ctx.IDENTIFIER());
     }
 
-    @Override
-    public void exitPattern_identifier(VDMParser.Pattern_identifierContext ctx)
-    {
-        System.out.println(ctx.IDENTIFIER());
-    }
 }
 

@@ -102,6 +102,7 @@ import VDMLex;
 // * Walk/visit route can be clearer with explicit rule names (#NAME) per production
 // * This means we will reduce the number of productions in favour of Named ones 
 // * This also means less rule names means shorted walk/stack, hence faster?
+// * productions where inner productions are all named are "skipped" to avoid the last point above
 //------------------------
 
 //--- Playing with the grammar:
@@ -2036,6 +2037,12 @@ identity_statement
 // A.8.1 Patterns
 //------------------------
 
+// pattern 
+//     : IDENTIFIER     #IdPattern 
+//     | O_MINUS        #IgnorePattern
+//     | symbolic_literal #SymbolicLiteralMatchPattern
+//     | PAREL_L expression PAREN_R #BracketedExprMatchPattern
+
 pattern
     : pattern_identifier            //#IdPattern
     | match_value                   //#MatchValuePattern
@@ -2059,33 +2066,33 @@ pattern_identifier
     ;
 
 match_value
-    : PAREN_L expression PAREN_R
-    | symbolic_literal
+    : PAREN_L expression PAREN_R #BracketedExprPattern
+    | symbolic_literal           #SymbolicLiteralPattern
     ;
 
 set_enum_pattern
-    : BRACE_L pattern_list? BRACE_R
+    : BRACE_L pattern_list? BRACE_R 
     ;
 
 set_union_pattern 
-    : pattern SLK_union pattern
+    : pattern SLK_union pattern 
     ;
 
 seq_enum_pattern 
-    : BRACKET_L pattern_list? BRACKET_R
+    : BRACKET_L pattern_list? BRACKET_R 
     ;
 
 seq_conc_pattern
-    : pattern O_CONCAT pattern
+    : pattern O_CONCAT pattern 
     ;
 
 map_enum_pattern 
-    : BRACE_L maplet_pattern_list BRACE_R
-    | BRACE_L SEP_maplet BRACE_R
+    : BRACE_L maplet_pattern_list BRACE_R #MapEnumPattern
+    | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
     ;
 
 maplet_pattern_list 
-    : maplet_pattern (SEP_comma maplet_pattern)*
+    : maplet_pattern (SEP_comma maplet_pattern)* 
     ;
 
 maplet_pattern

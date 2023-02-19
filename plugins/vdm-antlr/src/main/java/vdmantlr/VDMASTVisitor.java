@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.lex.LexNameToken;
+import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
 
 import vdmantlr.generated.VDMBaseVisitor;
 import vdmantlr.generated.VDMLexer;
@@ -39,12 +41,27 @@ public class VDMASTVisitor extends VDMBaseVisitor<ASTNode> {
         System.out.println("n="+n.toString());
     }
 
+    private String currentModule = "DEFAULT";
+
     @Override 
-    public ASTNode visitPattern_identifier(VDMParser.Pattern_identifierContext ctx) 
+    public ASTNode visitSet_enum_pattern(VDMParser.Set_enum_patternContext ctx)
+    {
+        //ctx.
+        return null
+    }
+
+    @Override 
+    public ASTNode visitIdPattern(VDMParser.IdPatternContext ctx) 
     { 
-        ctx.IDENTIFIER()
+        ASTNode n = new ASTIdentifierPattern(new LexNameToken(currentModule, ctx.IDENTIFIER().getText(), null));
+        ctx.IDENTIFIER();
         return visitChildren(ctx); 
     }
 
-    
+    @Override
+	public ASTNode visitTerminal(TerminalNode node) {
+		return defaultResult();
+	}
+
+
 }
