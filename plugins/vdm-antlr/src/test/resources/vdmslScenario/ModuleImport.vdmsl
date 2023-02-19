@@ -7,7 +7,7 @@ types
 	S:: r: R;
 end A
 module B
-imports from A types R; T = nat inv t == t > 10 renamed T1;
+imports from A types R; T renamed T1;
 exports all
 definitions 
 values
