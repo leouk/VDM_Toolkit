@@ -95,6 +95,13 @@ import VDMLex;
 // * run visualisation    : antlr4-parse VdmSLParser.g4 sl_document -gui
 // * type the program of interest followed by Control-D
 // * you get the GUI for the current grammar.
+//
+// Listeners and visitors:
+// * Visitors useful for result value, and for selective walk
+// * Listeners useful for total walk, possibly with ParseTreeProperty results
+// * Walk/visit route can be clearer with explicit rule names (#NAME) per production
+// * This means we will reduce the number of productions in favour of Named ones 
+// * This also means less rule names means shorted walk/stack, hence faster?
 //------------------------
 
 //--- Playing with the grammar:
@@ -2030,24 +2037,25 @@ identity_statement
 //------------------------
 
 pattern
-    : pattern_identifier            #IdPattern
-    | match_value                   #MatchValuePattern
-    | set_enum_pattern              #SetEnumPattern
-    //| set_union_pattern           #SetUnionPattern
-    | pattern SLK_union pattern     #SetUnionPattern
-    | seq_enum_pattern              #SeqEnumPattern
-    //| seq_conc_pattern            #SeqConcPattern
-    | pattern O_CONCAT pattern      #SeqConcPattern
-    | map_enum_pattern              #MapEnumPattern
-    //| map_union_pattern           #MapUnionPattern
-    | pattern SLK_munion pattern    #MapUnionPattern
-    | tupple_pattern                #TupplePattern
-    //object_pattern PP/RT only     #ObjectPattern //PP only
-    | record_pattern                #RecordPattern
+    : pattern_identifier            //#IdPattern
+    | match_value                   //#MatchValuePattern
+    | set_enum_pattern              //#SetEnumPattern
+    //| set_union_pattern           //#SetUnionPattern
+    | pattern SLK_union pattern     //#SetUnionPattern
+    | seq_enum_pattern              //#SeqEnumPattern
+    //| seq_conc_pattern            //#SeqConcPattern
+    | pattern O_CONCAT pattern      //#SeqConcPattern
+    | map_enum_pattern              //#MapEnumPattern
+    //| map_union_pattern           //#MapUnionPattern
+    | pattern SLK_munion pattern    //#MapUnionPattern
+    | tupple_pattern                //#TupplePattern
+    //object_pattern PP/RT only     //#ObjectPattern //PP only
+    | record_pattern                //#RecordPattern
     ;
 
 pattern_identifier 
-    : IDENTIFIER | O_MINUS
+    : IDENTIFIER     #IdPattern 
+    | O_MINUS        #IgnorePattern
     ;
 
 match_value
