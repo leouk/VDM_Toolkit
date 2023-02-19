@@ -47,7 +47,7 @@ public class VDMASTVisitor extends VDMBaseVisitor<ASTNode> {
     public ASTNode visitSet_enum_pattern(VDMParser.Set_enum_patternContext ctx)
     {
         //ctx.
-        return null
+        return null;
     }
 
     @Override 
