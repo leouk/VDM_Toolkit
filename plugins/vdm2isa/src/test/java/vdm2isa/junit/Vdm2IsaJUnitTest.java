@@ -16,9 +16,9 @@ import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmjunit.VDMJUnitTestSL;
 
-import plugins.GeneralisaPlugin;
 import plugins.IsaProperties;
 import plugins.ResourceUtil;
+import plugins.commands.IsabelleCommand;
 
 public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 
@@ -49,7 +49,6 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 	{
 		Vdm2IsaJUnitTest.init();
         tclist = ((TCPlugin)PluginRegistry.getInstance().getPlugin("TC")).getTC();
-        //tclist = interpreter.getTC();
         outputPath = getOutputPath();
 	}
 
@@ -76,13 +75,13 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
             Assert.fail(name + " plugin could not set output path " + module); 
         // every run does a reset of local + global errors
         result = cmd.run(new String[] { name });
-        printMessages(GeneralisaPlugin.getWarnings());
+        printMessages(IsabelleCommand.getWarnings());
         // if plugin run failed or if strictly reporting errors, then fail
-        if (!result || (IsaProperties.general_strict && GeneralisaPlugin.getErrorCount() > 0))
+        if (!result || (IsaProperties.general_strict && IsabelleCommand.getErrorCount() > 0))
         {
-            printMessages(GeneralisaPlugin.getErrors());
+            printMessages(IsabelleCommand.getErrors());
             
-            Assert.fail(name + " plugin failed. Found " + GeneralisaPlugin.getErrorCount() + " errors for module " + module);
+            Assert.fail(name + " plugin failed. Found " + IsabelleCommand.getErrorCount() + " errors for module " + module);
         }
     }
 }

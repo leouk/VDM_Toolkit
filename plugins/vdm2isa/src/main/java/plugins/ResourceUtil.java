@@ -27,6 +27,7 @@ import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
 import plugins.analyses.IsabellePlugin;
+import plugins.commands.IsabelleCommand;
 
 public class ResourceUtil
 {
@@ -109,24 +110,6 @@ public class ResourceUtil
 		// } 		
 	}
 
-	/** The cache of loaded plugin instances */
-	private static final Map<String, CommandPlugin> plugins = new HashMap<String, CommandPlugin>();
-
-	public static void clearPlugins()
-	{
-		plugins.clear();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T extends CommandPlugin> T getPlugin(String name)
-	{
-		CommandPlugin c = plugins.get(name);
-		if (c != null) 
-			return (T)c; 
-		else 
-			return null;
-	}
-
 	@SuppressWarnings("unchecked")
 	public static <T extends AnalysisCommand> T createCommand(String name, Interpreter interpreter) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, Exception
 	{
@@ -164,67 +147,16 @@ public class ResourceUtil
 		return (T)result;
 	}
 
-	/**
-	 * Mimics CommandReader's use plugin method: looks for plugins within the right paths
-	 * using naming convention, then runs then. Useful for jUnit testing. 
-	 * @param line
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends CommandPlugin> T createPlugin(String name, Interpreter interpreter) throws NoSuchMethodException, InvocationTargetException, ClassCastException
-	{
-		T cmd = getPlugin(name);
-		
-		if (cmd != null)
-		{
-			return cmd;
-		}
-		
-		String plugin = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase() + "Plugin";
-		String[] packages = Properties.cmd_plugin_packages.split(";|:");
-		
-		for (String pack: packages)
-		{
-			try
-			{
-				Class<?> clazz = Class.forName(pack + "." + plugin);
-
-				if (CommandPlugin.class.isAssignableFrom(clazz))
-				{
-					Constructor<?> ctor = clazz.getConstructor(Interpreter.class);
-					cmd = (T)ctor.newInstance(interpreter);
-					plugins.put(name, cmd);
-					return cmd;
-				}
-			}
-			catch (ClassNotFoundException e)
-			{
-				// Try next package
-			}
-			catch (InstantiationException e)
-			{
-				// Try next package
-			}
-			catch (IllegalAccessException e)
-			{
-				// Try next package
-			}
-		}
-
-		return null;
-	}
-
 	public static boolean runPlugin(String name, String args) throws Exception
 	{
 		if (name == null || name.isEmpty())
 			throw new IllegalArgumentException("Plugin name cannot be empty");
-		CommandPlugin cmd = getPlugin(name);
-		if (cmd == null)
-			throw new IllegalArgumentException("Plugin " + name + " needs to be created first");
+		AnalysisCommand cmd = PluginRegistry.getInstance().getCommand(name);
+		if (cmd == null || !(cmd instanceof IsabelleCommand))
+			throw new IllegalArgumentException("Isabelle command " + name + " needs to be created first");
 		
 		String[] argv = (args == null || args.length() == 0) ? new String[0] : args.split("\\s+");
-		return cmd.run(argv);
+		return ((IsabelleCommand)cmd).run(argv);
 	}
 
     public static File getParentFile(TCModuleList modulelist) {
