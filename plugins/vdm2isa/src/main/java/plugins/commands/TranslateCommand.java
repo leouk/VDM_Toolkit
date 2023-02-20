@@ -10,6 +10,7 @@ import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.plugins.PluginConsole;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
+import com.fujitsu.vdmj.util.Utils;
 
 import plugins.IsaProperties;
 import vdm2isa.messages.IsaErrorMessage;
@@ -36,10 +37,18 @@ public class TranslateCommand extends IsabelleCommand {
     //     return INSTANCE; 
     // }	
 
-	public static TranslateCommand getInstance()
-	{
-		return INSTANCE;
-	}
+	public static final TranslateCommand getInstance(String line)
+    {
+        if (INSTANCE == null)
+        {
+            INSTANCE = new TranslateCommand(line);
+        }
+        else
+        {
+            INSTANCE.setArguments(Utils.toArgv(line));
+        }
+        return INSTANCE; 
+    }
 
     private TRModuleList translatedModules;
 
@@ -49,12 +58,8 @@ public class TranslateCommand extends IsabelleCommand {
 		{
 			throw new IllegalArgumentException(USAGE);
 		}
-        if (ExuCommand.getInstance() == null)
-            this.exu = new ExuCommand("exu");
-        else 
-            this.exu = ExuCommand.getInstance();        
         this.translatedModules = new TRModuleList();
-		INSTANCE = this;
+        this.exu = ExuCommand.getInstance("exu");
     }
 
 	public TRModuleList getTranslatedModules()

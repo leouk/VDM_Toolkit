@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
+import com.fujitsu.vdmj.util.Utils;
 
 import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
@@ -39,8 +40,16 @@ public class ExuCommand extends IsabelleCommand {
     //     return INSTANCE; 
     // }
 
-    public static final ExuCommand getInstance()
+    public static final ExuCommand getInstance(String line)
     {
+        if (INSTANCE == null)
+        {
+            INSTANCE = new ExuCommand(line);
+        }
+        else
+        {
+            INSTANCE.setArguments(Utils.toArgv(line));
+        }
         return INSTANCE; 
     }
 
@@ -50,8 +59,7 @@ public class ExuCommand extends IsabelleCommand {
 		{
 			throw new IllegalArgumentException(USAGE);
 		}
-        INSTANCE = this;
-    }
+     }
 
     @Override
     protected boolean setup()

@@ -238,8 +238,8 @@ public enum IsaToken {
 	private final Token  vdm;
 	private final String isa;
 
-	private static final String IDENTIFIER_TAG;
-	private static long idCount;
+	// private static final String IDENTIFIER_TAG;
+	// private static long idCount;
 
 	protected static long dummyCount;
 	protected static final Set<String> VALID_SEMANTIC_SEP;
@@ -250,8 +250,8 @@ public enum IsaToken {
 		{		
 			assert ALL_ISA_TOKENS != null;
 			
-			IDENTIFIER_TAG = "__";
-			idCount = 0;
+			// IDENTIFIER_TAG = "__";
+			// idCount = 0;
 
 			dummyCount = 0;
 		

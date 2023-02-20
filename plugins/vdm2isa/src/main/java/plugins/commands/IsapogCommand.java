@@ -19,6 +19,7 @@ import com.fujitsu.vdmj.syntax.ParserException;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.TypeCheckException;
+import com.fujitsu.vdmj.util.Utils;
 
 import plugins.IsaProofStrategy;
 import plugins.IsaProperties;
@@ -46,8 +47,17 @@ public class IsapogCommand extends IsabelleCommand {
     private static IsapogCommand INSTANCE = null; 
     private static final String USAGE = "isapog - translate VDM pog results for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")"; 
 
-    public static IsapogCommand getInstance()
+    
+    public static final IsapogCommand getInstance(String line)
     {
+        if (INSTANCE == null)
+        {
+            INSTANCE = new IsapogCommand(line);
+        }
+        else
+        {
+            INSTANCE.setArguments(Utils.toArgv(line));
+        }
         return INSTANCE; 
     }
 
@@ -58,11 +68,7 @@ public class IsapogCommand extends IsabelleCommand {
 			throw new IllegalArgumentException(USAGE);
 		}
          // consider extending?
-        if (TranslateCommand.getInstance() == null)
-            translate = new TranslateCommand("vdm2isa"); 
-        else 
-            translate = TranslateCommand.getInstance();  
-        INSTANCE = this; 
+        translate = TranslateCommand.getInstance("vdm2isa");
     }
     
 

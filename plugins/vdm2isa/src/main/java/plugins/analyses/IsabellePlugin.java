@@ -17,6 +17,7 @@ import com.fujitsu.vdmj.plugins.analyses.TCPluginSL;
 import com.fujitsu.vdmj.plugins.events.CheckCompleteEvent;
 import com.fujitsu.vdmj.plugins.events.CheckPrepareEvent;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.util.Utils;
 
 import plugins.commands.ExuCommand;
 import plugins.commands.IsapogCommand;
@@ -114,10 +115,49 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
         return ((TCPluginSL)PluginRegistry.getInstance().getPlugin("TC")).getTC();
     }
 
+    private static enum IsaCommand { EXU, VDM2ISA, ISAPOG }  
+
+    private IsaCommand arg2cmd(String[] args)
+    {
+        IsaCommand result = null; 
+        try 
+        {
+            if (args != null && args.length > 0)
+                result = IsaCommand.valueOf(args[0].toUpperCase());
+        }
+        catch (IllegalArgumentException e)
+        {
+            // ignore it, wrong command
+        }
+        return result;
+    }
+
     @Override
     public AnalysisCommand getCommand(String line)
     {
-        return lookup(line, commandsList);
+        //return lookup(line, commandsList);
+        String[] args = Utils.toArgv(line);
+        IsaCommand cmd = arg2cmd(args);
+        AnalysisCommand result = null;
+        if (cmd != null)
+            switch (cmd)
+            {
+                case EXU: 
+                    result = ExuCommand.getInstance(line);
+                    break;
+                case VDM2ISA:
+                    result = TranslateCommand.getInstance(line);
+                    break;
+                case ISAPOG:
+                    result = IsapogCommand.getInstance(line);
+                    break;
+                default: 
+                    // null result 
+                    break;
+            }
+        if (result == null)
+            result = lookup(line, commandsList);
+        return result;
     }
 
     @Override

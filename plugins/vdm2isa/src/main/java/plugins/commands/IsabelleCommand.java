@@ -33,6 +33,7 @@ import com.fujitsu.vdmj.plugins.VDMJ;
 import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.util.Utils;
 
 import plugins.IsaProperties;
 import plugins.ResourceUtil;
@@ -140,11 +141,13 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected final TCModuleList tclist;
     protected final TCModuleList source;
     protected final List<String> commands;
+    protected List<String> arguments;
     protected File saveURI; 
     protected final Map<String, Long> timings;
 
     protected IsabelleCommand(String line) {
         super(line);
+        this.arguments = new ArrayList<String>();
         this.commands = new ArrayList<String>();
         this.tclist = new TCModuleList();
         this.modulesToProcess = new HashSet<String>();
@@ -156,6 +159,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         this.called = 0;
         created++;
         this.localReset();
+        setArguments(Utils.toArgv(line));
     }
 
     protected void localReset()
@@ -174,6 +178,15 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 
         tclist.clear();
         tclist.addAll(getTC());
+
+        arguments.clear();
+    }
+
+    protected void setArguments(String... args)
+    {
+        arguments.clear();
+        if (args != null)
+            arguments.addAll(Arrays.asList(args));
     }
 
     protected boolean calledFromVDMJConsole()
@@ -258,13 +271,13 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         printFlag("URI to save translation", saveURI == null ? ResourceUtil.DEFAULT_SAVEURI : saveURI.toURI().toString());
     }
 
-    protected boolean processArguments()
+    protected boolean processArguments(String[] args)
     {
-        assert argv != null && argv.length > 0;
-        List<String> largs = Arrays.asList(argv);
-        Iterator<String> i = largs.iterator();
+        assert args != null && args.length > 0; 
+        arguments = Arrays.asList(args);
+        Iterator<String> i = arguments.iterator();
         boolean cont_ = true;
-        assert largs.size() > 0 && largs.get(0).equals(isabelleCommandName()); 
+        assert arguments.size() > 0 && arguments.get(0).equals(isabelleCommandName()); 
         i.next(); // first argument is plugin name itself.
         if (!i.hasNext())
         {
@@ -522,7 +535,13 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected abstract boolean runCommand(String name, TCModuleList tclist);
 
     @Override
-    public void run()
+    public final void run()
+    {
+        // use the constructor arguments for the first time? 
+        run(arguments.toArray(new String[0]));
+    }
+
+    public final boolean run(String[] args)
     {
         boolean result = true;
         long before = System.currentTimeMillis();
@@ -534,7 +553,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         IsabelleCommand.fullReset(this);
         IsabelleCommand.checkVDMSettings();
 
-        boolean cont_ = processArguments();
+        boolean cont_ = processArguments(args);
         TCModuleList tclist_filtered = IsabelleCommand.filterModuleList(tclist, modulesToProcess);        
         long procArgs = System.currentTimeMillis();
         registerTime("args", procArgs - before);
@@ -577,7 +596,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
             }
         }    
 
-        //return result;
+        return result;
     }
 
     /**
