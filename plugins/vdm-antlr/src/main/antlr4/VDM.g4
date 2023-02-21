@@ -993,7 +993,7 @@ expression
     | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
-    | old_name                                              #OldNameExpr                       //36 primary
+    | OLD_NAME                                              #OldNameExpr                       //36 primary
     | name                                                  #NameExpr                          //37 primary
     | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
 //------------------------
@@ -1500,7 +1500,8 @@ record_constructor
 
 // Nothing between tokens
 tight_record_name
-    : first=SLK_mk second=IDENTIFIER (SEP_tick IDENTIFIER)? {$first.index+1 == $second.index}?
+    : first=SLK_mk second=QUALIFIED_NAME {$first.index+1 == $second.index}?
+    | first=SLK_mk second=IDENTIFIER {$first.index+1 == $second.index}?
     ;
 
 record_modifier
@@ -1685,45 +1686,28 @@ name_list
     ;
 
 name
-    : IDENTIFIER (SEP_tick IDENTIFIER)?
-    ;
-
-old_name
-    : IDENTIFIER SEP_old
+    : QUALIFIED_NAME        #QualifiedName
+    | IDENTIFIER            #IdName
     ;
 
 symbolic_literal
-    : NUMERIC_LITERAL
-	| SLK_true 
-    | SLK_false //BOOLEAN_LITERAL
-	| SLK_nil   //NIL_LITERAL 
-	| CHARACTER_LITERAL 
-	| TEXT_LITERAL
-	| QUOTE_LITERAL
+    : NUMERIC_LITERAL           #NumericLiteral
+	| (SLK_true|SLK_false)      #BooleanLiteral
+	| SLK_nil                   #NilLiteral 
+	| CHARACTER_LITERAL         #CharacterLiteral
+	| TEXT_LITERAL              #StringLiteral
+	| QUOTE_LITERAL             #QuoteLiteral
     ;
 
 //------------------------
 // A.6 State Designators  
 //------------------------
 
-//@NB these are kind of expression names no? 
-
 // Left-recursion requires inlining + labelling; order gives priority/precedence
 state_designator
-    : state_designator SEP_dot IDENTIFIER      #FieldReferenceDesignator
-    | state_designator PAREN_L expression PAREN_R  #MapSeqDesignator
-    | name                                 #NameDesignator
-    //: name
-    //| field_reference               
-    //| map_seq_reference
-    ;
-
-field_reference
-    : state_designator SEP_dot IDENTIFIER
-    ;
-
-map_seq_reference
-    : state_designator PAREN_L expression PAREN_R
+    : state_designator SEP_dot IDENTIFIER           #FieldReferenceDesignator
+    | state_designator PAREN_L expression PAREN_R   #MapSeqReferenceDesignator
+    | name                                          #NameDesignator
     ;
 
 //------------------------
@@ -2037,58 +2021,30 @@ identity_statement
 // A.8.1 Patterns
 //------------------------
 
-// pattern 
-//     : IDENTIFIER     #IdPattern 
-//     | O_MINUS        #IgnorePattern
-//     | symbolic_literal #SymbolicLiteralMatchPattern
-//     | PAREL_L expression PAREN_R #BracketedExprMatchPattern
-
-pattern
-    : pattern_identifier            //#IdPattern
-    | match_value                   //#MatchValuePattern
-    | set_enum_pattern              //#SetEnumPattern
-    //| set_union_pattern           //#SetUnionPattern
-    | pattern SLK_union pattern     //#SetUnionPattern
-    | seq_enum_pattern              //#SeqEnumPattern
-    //| seq_conc_pattern            //#SeqConcPattern
-    | pattern O_CONCAT pattern      //#SeqConcPattern
-    | map_enum_pattern              //#MapEnumPattern
-    //| map_union_pattern           //#MapUnionPattern
-    | pattern SLK_munion pattern    //#MapUnionPattern
-    | tupple_pattern                //#TupplePattern
-    //object_pattern PP/RT only     //#ObjectPattern //PP only
-    | record_pattern                //#RecordPattern
-    ;
-
-pattern_identifier 
-    : IDENTIFIER     #IdPattern 
-    | O_MINUS        #IgnorePattern
-    ;
-
-match_value
-    : PAREN_L expression PAREN_R #BracketedExprPattern
+pattern 
+    : 
+// A.8.1 match value
+      PAREN_L expression PAREN_R #BracketedExprPattern
     | symbolic_literal           #SymbolicLiteralPattern
-    ;
-
-set_enum_pattern
-    : BRACE_L pattern_list? BRACE_R 
-    ;
-
-set_union_pattern 
-    : pattern SLK_union pattern 
-    ;
-
-seq_enum_pattern 
-    : BRACKET_L pattern_list? BRACKET_R 
-    ;
-
-seq_conc_pattern
-    : pattern O_CONCAT pattern 
-    ;
-
-map_enum_pattern 
-    : BRACE_L maplet_pattern_list BRACE_R #MapEnumPattern
+// A.8.1 set enum + union pattern 
+    | BRACE_L pattern_list? BRACE_R #SetEnumPattern
+    | pattern SLK_union pattern     #SetUnionPattern
+// A.8.1 seq enum + concatenation pattern 
+    | BRACKET_L pattern_list? BRACKET_R #SeqEnumPattern 
+    | pattern O_CONCAT pattern  #SeqConcatPattern
+// A.8.1 map enum + munion pattern
+    | BRACE_L maplet_pattern_list BRACE_R #MapEnumPattern
     | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
+    | pattern SLK_munion pattern    #MapMunionPattern
+// A.8.1 tupple pattern
+    | SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R #TuplePattern
+// A.8.1 object pattern 
+    | {!isVDMSL()}? PPK_obj IDENTIFIER PAREN_L field_pattern_list PAREN_R #PPObjectPattern
+// A.8.1 record pattern 
+    | tight_record_name PAREN_L pattern_list PAREN_R #RecordPattern
+// A.8.1 pattern identifier
+    | O_MINUS                    #IgnorePattern
+    | IDENTIFIER                 #IdPattern 
     ;
 
 maplet_pattern_list 
@@ -2097,22 +2053,6 @@ maplet_pattern_list
 
 maplet_pattern
     : pattern SEP_maplet pattern
-    ;
-
-map_union_pattern 
-    : pattern SLK_munion pattern
-    ;
-
-tupple_pattern 
-    : SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R
-    ;
-
-record_pattern 
-    : tight_record_name PAREN_L pattern_list PAREN_R
-    ;
-
-pp_object_pattern 
-    : PPK_obj IDENTIFIER PAREN_L field_pattern_list PAREN_R
     ;
 
 field_pattern_list 

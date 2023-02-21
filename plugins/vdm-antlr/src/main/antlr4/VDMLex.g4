@@ -55,28 +55,28 @@ lexer grammar VDMLex;
 
 @lexer::header
 { 
-    //import com.fujitsu.vdmj.lex.Dialect; 
+    import com.fujitsu.vdmj.lex.Dialect; 
 }
 
 @lexer::members
 { 
     // Lexer predicates are on the RHS given how it interacts with the parser
     // See description in ANTLR4 book 11.2 Deactivating Tokens
-    //public static Dialect dialect = Dialect.VDM_SL;
+    public static Dialect dialect = Dialect.VDM_SL;
 
     public static boolean isVDMSL()
     {
-        return true;//dialect == Dialect.VDM_SL;
+        return dialect == Dialect.VDM_SL;
     }
 
     public static boolean isVDMPP()
     {
-        return false;//dialect == Dialect.VDM_PP;
+        return dialect == Dialect.VDM_PP;
     }
 
     public static boolean isVDMRT()
     {
-        return false;//dialect == Dialect.VDM_RT;
+        return dialect == Dialect.VDM_RT;
     }
 }
 //------------------------
@@ -108,7 +108,7 @@ SLK_always     : 'always';
 SLK_and        : 'and';
 SLK_as         : 'as';
 SLK_atomic     : 'atomic';
-fragment SLK_be         : 'be';
+fragment SLK_be: 'be';
 SLK_bool       : 'bool';
 SLK_by         : 'by'; 
 SLK_card       : 'card';
@@ -326,16 +326,6 @@ TYPE_VARIABLE_IDENTIFIER
     : '@' IDENTIFIER
     ;
 
-// TRACE_REPEAT_PATTERN
-//     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
-//     ;
-
-// IDNAME
-//     : IDENTIFIER (SEP_tick IDENTIFIER)?
-//     ;
-
-// This has to appear first, otherwise lexer gets confused between keywords (SLK_true), identifiers (true) and symbolic literal (true)!
-
 NUMERIC_LITERAL
     : DECIMAL_LITERAL 
 	| HEXADECIMAL_LITERAL
@@ -368,6 +358,18 @@ fragment EXPONENT
 
 fragment HEXADECIMAL_LITERAL
     : ('0x' | '0X') HEXADECIMAL_DIGIT+
+    ;
+
+// TRACE_REPEAT_PATTERN
+//     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
+//     ;
+
+QUALIFIED_NAME
+    : IDENTIFIER SEP_tick IDENTIFIER
+    ;
+
+OLD_NAME 
+    : IDENTIFIER SEP_old
     ;
 
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
@@ -419,9 +421,9 @@ fragment NameChar
    : NameStartChar
    | '0'..'9'
    | UNDERSCORE
-   | '\u00B7'
-   | '\u0300'..'\u036F' //Combining Diacritical Marks 
-   | '\u203F'..'\u2040' //General punctuation
+//    | '\u00B7'
+//    | '\u0300'..'\u036F' //Combining Diacritical Marks 
+//    | '\u203F'..'\u2040' //General punctuation
    //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
    ;
 
@@ -429,24 +431,24 @@ fragment NameChar
 fragment NameStartChar
    : 'A'..'Z' 
    | 'a'..'z'
-   | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
-   | '\u00D8'..'\u00F6' //Latin1-supplement
-   | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
-   | '\u0370'..'\u037D' //Latin1-supplement
-   | '\u037F'..'\u1FFF'
-   | '\u200C'..'\u200D'
-   | '\u2070'..'\u218F'
-   | '\u2C00'..'\u2FEF'
-   | '\u3001'..'\uD7FF'
-   | '\uF900'..'\uFDCF'
-   | '\uFDF0'..'\uFFFD'
+//    | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
+//    | '\u00D8'..'\u00F6' //Latin1-supplement
+//    | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
+//    | '\u0370'..'\u037D' //Latin1-supplement
+//    | '\u037F'..'\u1FFF'
+//    | '\u200C'..'\u200D'
+//    | '\u2070'..'\u218F'
+//    | '\u2C00'..'\u2FEF'
+//    | '\u3001'..'\uD7FF'
+//    | '\uF900'..'\uFDCF'
+//    | '\uFDF0'..'\uFFFD'
    ;
 
-fragment IDCHAR
-	: LETTER
-	| DIGIT
-	| UNDERSCORE
-	;
+// fragment IDCHAR
+// 	: LETTER
+// 	| DIGIT
+// 	| UNDERSCORE
+// 	;
 
 fragment UNDERSCORE: '_';
 
