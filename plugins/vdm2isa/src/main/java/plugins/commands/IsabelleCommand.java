@@ -203,7 +203,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 
     protected TCModuleList getTC()
     {
-        return ((TCPlugin)registry.getPlugin("TC")).getTC();
+        TCPlugin plugin = ((TCPlugin)registry.getPlugin("TC"));
+        return plugin.getTC();
     }
 
     protected void registerTime(String name, long time)
