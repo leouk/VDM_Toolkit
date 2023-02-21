@@ -181,17 +181,28 @@ public class IsapogCommand extends IsabelleCommand {
                 {
                     TCExpression potcExpr = po.getCheckedExpression();
 
-                    // translate the PO back to TR world
-                    workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
-                    TRExpression potrExpr = map2isa(potcExpr);
-
-                    workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
-                    TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
-                    TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
-                    TRType poType = potrExpr.getType();
-                    TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poNumber, poScript);
-                    isapogl.add(poe);
-                    poNumber++;
+                    // PO has type errors?
+                    if (potcExpr == null)
+                    {
+                        // generate an error, but still carry on for remaining POs
+                        NullPointerException npe = new NullPointerException("VDMJ said `PO has type errors?'");
+                        IsabelleCommand.report(IsaErrorMessage.PO_PROCESSING_ERROR_4P, po.location, po.number, po.name, "type checking", npe.getMessage());
+                        notTranslatedPOS.add(new Pair<ProofObligation, Exception>(po, npe));
+                    }
+                    else
+                    {
+                        // translate the PO back to TR world
+                        workingAt = "TR mapping PO " + poNumber + " for " + po.location.module;
+                        TRExpression potrExpr = map2isa(potcExpr);
+    
+                        workingAt = "creating proof script for PO " + poNumber + " for " + po.location.module;
+                        TRProofScriptDefinition poScript = chooseProofScript(po, potrExpr);
+                        TRIsaVDMCommentList comments = TRIsaVDMCommentList.newComment(po.location, "VDM PO("+ poNumber +"): \"" + po.toString() + "\"", false);
+                        TRType poType = potrExpr.getType();
+                        TRProofObligationDefinition poe = TRProofObligationDefinition.newProofObligationDefinition(comments, po, potrExpr, poType /* TRType for potrExpr!*/, poNumber, poScript);
+                        isapogl.add(poe);
+                        poNumber++;
+                    }
                 }
                 // added those after the problem with post_constS(,10)! for constS: ()->nat constS()==10 post RESULT <= 10;
                 // because these are "console" (not within the file) location info is mostly pointless? Except perhaps for VDMErrorsException
