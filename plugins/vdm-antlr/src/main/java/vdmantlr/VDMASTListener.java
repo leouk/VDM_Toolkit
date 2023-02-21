@@ -1,19 +1,32 @@
 package vdmantlr;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
+import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
+import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTPatternList;
+import com.fujitsu.vdmj.ast.patterns.ASTSetPattern;
+import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.mapper.Mappable;
+import com.fujitsu.vdmj.mapper.MappedObject;
 
 import vdmantlr.generated.VDMBaseListener;
-import vdmantlr.generated.VDMBaseVisitor;
 //import vdmantlr.generated.VDMLex; which one?
 import vdmantlr.generated.VDMLexer;
 import vdmantlr.generated.VDMParser;
@@ -26,23 +39,68 @@ public class VDMASTListener extends VDMBaseListener {
 
     public static void main(String[] argv) throws IOException
     {
-        CharStream input = CharStreams.fromFileName(TEST); 
+        VDMASTListener listener = new VDMASTListener(TEST);
+        ParseTree t = listener.parser.pattern();//parser.expression();
+        ParseTreeWalker.DEFAULT.walk(listener, t);
+        System.out.println("n="+t.toStringTree());
+    }
+    
+    //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
+    private final ParseTreeProperty<ASTNode> nodes;
+    private final ParseTreeProperty<Vector<? extends ASTNode>> lists;
+    private final VDMParser parser;
+    protected ASTModuleList astModuleList;
+    private final File currentFile;
+    private String currentModule;
+
+    public VDMASTListener(String fileName) throws IOException
+    {
+        super();
+        currentModule = "DEFAULT";
+        if (fileName == null || fileName.isEmpty())
+            throw new IllegalArgumentException("Invalid file name " + fileName);
+        currentFile = new File(fileName);
+        if (!currentFile.exists())
+            throw new IllegalArgumentException("File name does not exist: " + fileName);
+        CharStream input = CharStreams.fromFileName(fileName); 
         //ANTLRInputStream input = new ANTLRInputStream(System.in); 
         // or read stdin SimpleLexer lexer = new SimpleLexer(input);
         VDMLexer lexer = new VDMLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        VDMParser parser = new VDMParser(tokens);
-        ParseTree t = parser.pattern();//parser.expression();
-        ParseTreeWalker.DEFAULT.walk(new VDMASTListener(), t);
-        VDMBaseVisitor<ASTNode> v = new VDMBaseVisitor<ASTNode>();
-        ASTNode n = v.visit(t);
-        System.out.println("n="+n.toString());
+        parser = new VDMParser(tokens);
+        nodes = new ParseTreeProperty<ASTNode>();
+        lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
+        astModuleList = null;
     }
-    
-    //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
-    private final ParseTreeProperty<ASTNode> nodes = new ParseTreeProperty<ASTNode>();
-    
-	protected ASTModuleList astModuleList = null;
+
+    /**
+     * Transforms an ANTLR parser rule context (for each parsing production) into a VDMJ LexLocation.
+     * It uses the context start and stop token information. @TODO Perhaps add to lexing contexts as well? 
+     * @param ctx parsing context requiring LexLocation information
+     * @return VDMJ-equivalent LexLocation from given contex
+     */
+    protected LexLocation token2loc(ParserRuleContext ctx)
+    {
+        return new LexLocation(currentFile, currentModule, 
+            ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(),
+            ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
+    }
+
+	/**
+	 * Convert an identifier into a name. A name is an identifier that has
+	 * a module name qualifier, so this method uses the current module to
+	 * convert the identifier passed in.
+	 *
+	 * @param id The identifier to convert
+	 * @return The corresponding name.
+	 */
+    //com.fujitsu.vdmj.syntax.SyntaxReader.idToName
+    protected LexNameToken idToName(LexIdentifierToken id)
+	{
+		LexNameToken name = new LexNameToken(currentModule, id);
+		return name;
+	}
+
 
     //ASTModule
 	@Override 
@@ -132,13 +190,38 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitSymbolicLitExpr(VDMParser.SymbolicLitExprContext ctx)
     {
         System.out.println("Exit #SymbolicLitExpr: " + ctx.getText());
-    }    
+    }
+
+    @Override 
+    public void exitPattern_list(VDMParser.Pattern_listContext ctx)
+    {
+        ASTPatternList result = new ASTPatternList();
+        for(VDMParser.PatternContext c : ctx.pattern())
+        {
+            ASTNode n = nodes.get(c);
+            if (n != null && n instanceof ASTPattern)
+                result.add((ASTPattern)n);
+            else 
+                System.out.println("Invalid pattern " + String.valueOf(n));
+        }
+        //TODO has to be Mappable? Instead of ASTNode?!
+        //nodes.put(ctx, result);
+        lists.put(ctx, result);
+    }
+    
+    @Override 
+    public void exitSetEnumPattern(VDMParser.SetEnumPatternContext ctx)
+    {
+        ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
+        ASTSetPattern result = new ASTSetPattern(token2loc(ctx), list);
+        nodes.put(ctx, result);
+    }
 
     @Override
     public void enterIdPattern(VDMParser.IdPatternContext ctx)
     {
-        //System.out.println(ctx.IDENTIFIER());
+        LexIdentifierToken id = new LexIdentifierToken(ctx.IDENTIFIER().getText(), false, token2loc(ctx));
+        nodes.put(ctx, new ASTIdentifierPattern(idToName(id)));
     }
-
 }
 
