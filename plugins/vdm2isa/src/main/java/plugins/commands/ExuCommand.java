@@ -40,7 +40,7 @@ public class ExuCommand extends IsabelleCommand {
     //     return INSTANCE; 
     // }
 
-    public static final ExuCommand getInstance(String line)
+    public static synchronized final ExuCommand getInstance(String line)
     {
         if (INSTANCE == null)
         {

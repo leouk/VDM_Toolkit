@@ -48,7 +48,7 @@ public class IsapogCommand extends IsabelleCommand {
     private static final String USAGE = "isapog - translate VDM pog results for Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")"; 
 
     
-    public static final IsapogCommand getInstance(String line)
+    public static synchronized final IsapogCommand getInstance(String line)
     {
         if (INSTANCE == null)
         {

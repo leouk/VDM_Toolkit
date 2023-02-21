@@ -37,7 +37,7 @@ public class TranslateCommand extends IsabelleCommand {
     //     return INSTANCE; 
     // }	
 
-	public static final TranslateCommand getInstance(String line)
+	public static synchronized final TranslateCommand getInstance(String line)
     {
         if (INSTANCE == null)
         {
