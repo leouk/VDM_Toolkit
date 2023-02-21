@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 
-import plugins.IsapogPlugin;
+import plugins.commands.IsapogCommand;
 import vdm2isa.tr.definitions.TRProofScriptDefinition;
 import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.tr.TRNode;
@@ -67,7 +67,7 @@ public class IsaProofObligationList extends Vector<TRProofObligationDefinition> 
         // create the module list view of the this proof obligation definition list
         TRModuleList result = new TRModuleList();
         if (!checkAllDefinitionsArePOS())
-            IsapogPlugin.report(IsaErrorMessage.PO_INVALID_DEF_ERROR, LexLocation.ANY);
+            IsapogCommand.report(IsaErrorMessage.PO_INVALID_DEF_ERROR, LexLocation.ANY);
         else
         {
             // create PO modules per TRDefininitionList of POs or PSs for the correspoding PO module name 

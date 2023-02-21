@@ -7,6 +7,7 @@ import java.util.Map;
 import com.fujitsu.vdmj.ExitStatus;
 import com.fujitsu.vdmj.messages.Console;
 import com.fujitsu.vdmj.messages.InternalException;
+import com.fujitsu.vdmj.plugins.PluginConsole;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
 import com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
 import com.fujitsu.vdmj.tc.lex.TCNameList;
@@ -16,7 +17,6 @@ import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.typechecker.ModuleTypeChecker;
 import com.fujitsu.vdmj.typechecker.TypeChecker;
 
-import plugins.ExuPlugin;
 import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
 import vdm2isa.messages.IsaErrorMessage;
@@ -265,12 +265,12 @@ public class ExuTypeChecker {
 			TypeChecker.printWarnings(Console.out);
 		}
         
-        Console.out.print("Exu re-type checked sorted " + ExuPlugin.plural(sorted_list.size(), "module", "s") +
+        Console.out.print("Exu re-type checked sorted " + PluginConsole.plural(sorted_list.size(), "module", "s") +
         " in " + (double)(after-before)/1000 + " secs. ");
         Console.out.print(terrs == 0 ? "No type errors" :
-            "Found " + ExuPlugin.plural(terrs, "type error", "s"));
+            "Found " + PluginConsole.plural(terrs, "type error", "s"));
         Console.out.println(twarn == 0 ? "" : " and " +
-            (warnings ? "" : "suppressed ") + ExuPlugin.plural(twarn, "warning", "s"));
+            (warnings ? "" : "suppressed ") + PluginConsole.plural(twarn, "warning", "s"));
     
         return terrs == 0 ? ExitStatus.EXIT_OK : ExitStatus.EXIT_ERRORS;
     }
