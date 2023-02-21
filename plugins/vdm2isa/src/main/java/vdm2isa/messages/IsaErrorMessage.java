@@ -24,7 +24,8 @@ public enum IsaErrorMessage {
     "Unexpected command %1$s for plugin %2$s"),
     PLUGIN_INVALID_SAVE_URI_3P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 6,
     "%1$s plugin could not create directory to save results: %2$s\n%3$s"),
-
+    PLUGIN_INVALID_PLUGIN_REGISTRY_1P(VDM2IsaError.ISABELLE_E_PLUGIN_BASE + 7,
+    "Invalid VDMJ plugin registry. Could not find plugin %1$s. Loading all VDMJ again."),
     
     //VDM messages relate to ill formed ASTs; properly (VDMJ) typechecked ASts should never raise those
     VDMSL_VDM10_ONLY        (VDM2IsaError.ISABELLE_E_VDMSL_BASE + 0, 
