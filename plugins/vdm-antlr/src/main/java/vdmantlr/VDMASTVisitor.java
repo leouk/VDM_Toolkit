@@ -44,13 +44,6 @@ public class VDMASTVisitor extends VDMBaseVisitor<ASTNode> {
     private String currentModule = "DEFAULT";
 
     @Override 
-    public ASTNode visitSet_enum_pattern(VDMParser.Set_enum_patternContext ctx)
-    {
-        //ctx.
-        return null;
-    }
-
-    @Override 
     public ASTNode visitIdPattern(VDMParser.IdPatternContext ctx) 
     { 
         ASTNode n = new ASTIdentifierPattern(new LexNameToken(currentModule, ctx.IDENTIFIER().getText(), null));

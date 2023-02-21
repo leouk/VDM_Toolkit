@@ -12,5 +12,6 @@ exports all
 definitions 
 values
 	r = mk_A`R(10);
+	r'= mu(r, x |-> 20);
 	t : T1 = 5;
 end B
