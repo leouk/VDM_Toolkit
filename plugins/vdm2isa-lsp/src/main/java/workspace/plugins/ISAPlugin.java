@@ -40,11 +40,13 @@ import plugins.GeneralisaPlugin;
 import plugins.IsaProperties;
 import plugins.IsapogPlugin;
 import plugins.ResourceUtil;
+import plugins.commands.IsabelleCommand;
+import plugins.commands.IsapogCommand;
 import rpc.RPCErrors;
 import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdm2isa.lex.IsaTemplates;
-import vdmj.commands.Command;
+import vdmj.commands.AnalysisCommand;
 import vdmj.commands.HelpList;
 import vdmj.commands.IsaCommand;
 import workspace.DAPWorkspaceManager;
@@ -74,7 +76,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 
 	public static final String VDM2ISA_PROPERTIES = ".vscode/vdm2isa.properties";
 
-	protected IsapogPlugin isapog;
+	protected IsapogCommand isapog;
 
 	protected ISAPlugin()
 	{
@@ -108,11 +110,11 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		return new RPCMessageList();
 	}
 
-	protected void reportErrors(CheckCompleteEvent ev, GeneralisaPlugin plugin, boolean result)
+	protected void reportErrors(CheckCompleteEvent ev, IsabelleCommand command, boolean result)
 	{
-		Diag.info("%1$s run %2$s", plugin.pluginName(), (result ? "succeeded" : "failed"));
-		Diag.info("Reporting %1$s errors and %2$s warnings", plugin.getLocalErrorCount(), 
-			plugin.getLocalWarningCount());
+		Diag.info("%1$s run %2$s", command.isabelleCommandName(), (result ? "succeeded" : "failed"));
+		Diag.info("Reporting %1$s errors and %2$s warnings", command.getLocalErrorCount(), 
+			command.getLocalWarningCount());
 		List<VDMMessage> list = new ArrayList<VDMMessage>();
 		
 		list.addAll(GeneralisaPlugin.getErrors());
@@ -143,8 +145,8 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			boolean pluginResult = true; 
 			if (IsaProperties.vdm2isa_run_exu)
 			{
-				pluginResult = this.isapog.vdm2isa.exu.run(new String[] { "exu", "check", "sort" });
-				reportErrors(ev, this.isapog.vdm2isa.exu, pluginResult);
+				pluginResult = this.isapog.translate.exu.run(new String[] { "exu", "check", "sort" });
+				reportErrors(ev, this.isapog.translate.exu, pluginResult);
 			} 
 			// if (pluginResult)
 			// {
@@ -262,7 +264,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	}
 
 	@Override
-	public Command getCommand(String line)
+	public AnalysisCommand getCommand(String line)
 	{
 		String[] args = IsaCommand.isLineValid(line);
 		IsaCommand result = null;

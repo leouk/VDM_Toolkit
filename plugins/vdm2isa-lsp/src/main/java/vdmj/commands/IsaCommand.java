@@ -8,7 +8,7 @@ import dap.DAPRequest;
 import json.JSONObject;
 import plugins.GeneralisaPlugin;
 
-public class IsaCommand extends Command {
+public class IsaCommand extends AnalysisCommand {
 
     private final String[] args;
 	private final GeneralisaPlugin plugin; 
