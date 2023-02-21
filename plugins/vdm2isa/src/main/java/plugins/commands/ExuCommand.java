@@ -61,6 +61,13 @@ public class ExuCommand extends IsabelleCommand {
 		}
      }
 
+     @Override 
+     protected String getMinimalUsage()
+     {
+        return USAGE;
+     }
+
+
     @Override
     protected boolean setup()
     {
@@ -363,7 +370,7 @@ public class ExuCommand extends IsabelleCommand {
     }
 
     @Override
-    protected List<String> validCommands()
+    protected List<String> validSubCommands()
     {
         return Arrays.asList("graph", "sort", "check");
     }

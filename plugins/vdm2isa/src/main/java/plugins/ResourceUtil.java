@@ -7,22 +7,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.fujitsu.vdmj.Settings;
-import com.fujitsu.vdmj.commands.CommandPlugin;
-import com.fujitsu.vdmj.config.Properties;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.plugins.AnalysisCommand;
 import com.fujitsu.vdmj.plugins.AnalysisPlugin;
 import com.fujitsu.vdmj.plugins.PluginConsole;
 import com.fujitsu.vdmj.plugins.PluginRegistry;
-import com.fujitsu.vdmj.runtime.Interpreter;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 
@@ -111,7 +104,7 @@ public class ResourceUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends AnalysisCommand> T createCommand(String name, Interpreter interpreter) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, Exception
+	public static <T extends AnalysisCommand> T createCommand(String name) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, Exception
 	{
 		AnalysisCommand result = PluginRegistry.getInstance().getCommand(name);
 		

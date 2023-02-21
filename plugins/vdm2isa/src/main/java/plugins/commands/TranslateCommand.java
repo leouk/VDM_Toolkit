@@ -54,13 +54,15 @@ public class TranslateCommand extends IsabelleCommand {
 
     public TranslateCommand(String line) {
         super(line);
-		if (!argv[0].equals(isabelleCommandName()))
-		{
-			throw new IllegalArgumentException(USAGE);
-		}
         this.translatedModules = new TRModuleList();
         this.exu = ExuCommand.getInstance("exu");
     }
+
+	@Override 
+	protected String getMinimalUsage()
+	{
+		return USAGE;
+	}
 
 	public TRModuleList getTranslatedModules()
 	{
@@ -208,7 +210,7 @@ public class TranslateCommand extends IsabelleCommand {
             result = commands.add(arg);
 			if (result)
 			{
-				result = exu.processArgument0(exu.validCommands().iterator());
+				result = exu.processArgument0(exu.validSubCommands().iterator());
 				//mergeCommands(exu);
 			}
         }
@@ -274,7 +276,7 @@ public class TranslateCommand extends IsabelleCommand {
     }
 
     @Override
-    protected List<String> validCommands()
+    protected List<String> validSubCommands()
     {
         List<String> result = Arrays.asList("exu", "translate");
 		if (!IsaProperties.vdm2isa_run_exu)

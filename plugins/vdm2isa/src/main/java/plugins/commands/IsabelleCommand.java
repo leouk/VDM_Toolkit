@@ -48,20 +48,22 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     /** 
      * These lists *must* be static to allow TRNode tree to report
      */
-    private static final List<VDM2IsaError> errors = new Vector<VDM2IsaError>();
-    private static final List<VDM2IsaWarning> warnings = new Vector<VDM2IsaWarning>();
+    private static final List<VDM2IsaError> errors;
+    private static final List<VDM2IsaWarning> warnings;
     protected static int created;
 
     // list of VDM warning numbers to raise as errors
-    protected static final List<Integer> vdmWarningOfInterest = 
-        Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
-                            5012, 5013, 5016, 5017, 5018, 5019, 5020, 
-                            5021, 5031, 5032, 5033, 5037);
+    protected static final List<Integer> vdmWarningOfInterest;
 
     // Settings are initialised only once per class load
     static {
         created = 0;
         IsaProperties.init();
+        errors = new Vector<VDM2IsaError>();
+        warnings = new Vector<VDM2IsaWarning>();
+        vdmWarningOfInterest = Arrays.asList(5000, 5006, 5007, 5008, 5009, 5010, 5011,
+                            5012, 5013, 5016, 5017, 5018, 5019, 5020, 
+                            5021, 5031, 5032, 5033, 5037);
     }
 
     public static final void main(String args[])
@@ -70,9 +72,9 @@ public abstract class IsabelleCommand extends AnalysisCommand {
             //  ,"./fmi3/rule-model" 
             //  ,"./fmi3/rule-model/Rules"
             //  ,"./fmi3/rule-model/Tests"
-            , "./lvl0"
+            //, "./lvl0"
             //    ,"./lvl0/TestV2IEmpty.vdmsl"
-            //    ,"./lvl0/TestV2IExprs.vdmsl"
+                ,"./lvl0/TestV2IExprs.vdmsl"
             //    ,"./lvl0/TestV2IUseBeforeDecl.vdmsl"
             //    ,"./lvl0/TestV2IDeclBeforeUse.vdmsl"
             //    ,"./lvl0/TestV2IFcns.vdmsl"
@@ -141,12 +143,15 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected final TCModuleList tclist;
     protected final TCModuleList source;
     protected final List<String> commands;
-    protected List<String> arguments;
+    protected final List<String> arguments;
     protected File saveURI; 
     protected final Map<String, Long> timings;
 
     protected IsabelleCommand(String line) {
         super(line);
+        //if (!KNOWN_COMMANDS.contains(argv[0]))
+        if (!argv[0].equals(isabelleCommandName()))
+            throw new IllegalArgumentException(getMinimalUsage());
         this.arguments = new ArrayList<String>();
         this.commands = new ArrayList<String>();
         this.tclist = new TCModuleList();
@@ -161,6 +166,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         this.localReset();
         setArguments(Utils.toArgv(line));
     }
+
+    protected abstract String getMinimalUsage();
 
     protected void localReset()
     {
@@ -225,9 +232,9 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         return sb.toString();   
     }
 
-    protected abstract List<String> validCommands();
+    protected abstract List<String> validSubCommands();
 
-    protected void mergeCommands(List<String> cmds)
+    protected void mergeSubCommands(List<String> cmds)
     {
         for(String cmd : cmds)
         {
@@ -236,9 +243,9 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         }
     }
 
-    protected void mergeCommands(IsabelleCommand other)
+    protected void mergeSubCommands(IsabelleCommand other)
     {
-        mergeCommands(other.commands);
+        mergeSubCommands(other.commands);
     }
 
     protected void printFlag(String name, String val)
@@ -274,14 +281,14 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected boolean processArguments(String[] args)
     {
         assert args != null && args.length > 0; 
-        arguments = Arrays.asList(args);
+        setArguments(args);
         Iterator<String> i = arguments.iterator();
         boolean cont_ = true;
         assert arguments.size() > 0 && arguments.get(0).equals(isabelleCommandName()); 
         i.next(); // first argument is plugin name itself.
         if (!i.hasNext())
         {
-            i = validCommands().iterator();
+            i = validSubCommands().iterator();
             cont_ = processArgument0(i);
         }
         else
@@ -424,7 +431,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         sb.append("\n\tOptions:\n");
         sb.append(optionsHelp());
         sb.append("\n\tDefault commands: ");
-        sb.append(validCommands());
+        sb.append(validSubCommands());
         sb.append("\n\tDefault options : ");
         sb.append(options());
         sb.append("\n");
@@ -478,7 +485,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         
         boolean result = true;
         Iterator<String> it = commands.iterator();
-        List<String> validCmds = validCommands();
+        List<String> validCmds = validSubCommands();
         long before = 0, cmdSetup = -1, after = 0;
         while (it.hasNext() && result)
         {

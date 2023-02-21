@@ -61,16 +61,17 @@ public class IsapogCommand extends IsabelleCommand {
         return INSTANCE; 
     }
 
-    protected IsapogCommand(String line) {
+    public IsapogCommand(String line) {
         super(line);
-        if (!argv[0].equals(isabelleCommandName()))
-		{
-			throw new IllegalArgumentException(USAGE);
-		}
          // consider extending?
         translate = TranslateCommand.getInstance("vdm2isa");
     }
     
+    @Override 
+     protected String getMinimalUsage()
+     {
+        return USAGE;
+     }
 
     @Override
     protected void localReset()
@@ -393,7 +394,7 @@ public class IsapogCommand extends IsabelleCommand {
             result = commands.add(arg);
             if (result) 
             {
-                result = translate.processArgument0(translate.validCommands().iterator());
+                result = translate.processArgument0(translate.validSubCommands().iterator());
                 //mergeCommands(translate);
             }
         }
@@ -434,7 +435,7 @@ public class IsapogCommand extends IsabelleCommand {
     }
 
     @Override
-    protected List<String> validCommands()
+    protected List<String> validSubCommands()
     {
         return Arrays.asList("vdm2isa", "isapog");
     }

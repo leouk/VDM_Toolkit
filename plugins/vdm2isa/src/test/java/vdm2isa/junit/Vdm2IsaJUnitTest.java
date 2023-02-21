@@ -64,7 +64,7 @@ public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
     
     protected void runCommand(String name, String module) throws Exception
     {
-        GeneralisaPlugin cmd = ResourceUtil.createPlugin(name, interpreter);
+        IsabelleCommand cmd = ResourceUtil.createCommand(name);
         // choose specific module to allow for test granualirty
         //TODO would be better to have one TestCase per file? 
         boolean result = cmd.run(new String[] { name, "set", "ml", module });
