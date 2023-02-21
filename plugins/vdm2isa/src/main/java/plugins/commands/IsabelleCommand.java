@@ -209,7 +209,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         {
             // VDMJ.loadPlugins();
             // plugin = ((TCPlugin)registry.getPlugin("TC"));
-            // IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+            IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
             // if (plugin == null)
             // {
             //     try
@@ -226,9 +226,11 @@ public abstract class IsabelleCommand extends AnalysisCommand {
             //     throw new IllegalArgumentException("Plugin registry in trouble? " + registry.getPlugins().toString());
             // else 
             //     result = plugin.getTC();
-            if (result == null)
-                result = new TCModuleList();
         }
+        else
+            result = plugin.getTC();
+        if (result == null)
+            result = new TCModuleList();
         return result;
     }
 
@@ -567,6 +569,16 @@ public abstract class IsabelleCommand extends AnalysisCommand {
      */
     protected abstract boolean runCommand(String name, TCModuleList tclist);
 
+    protected final Set<String> getModuleNames(TCModuleList tclist)
+    {
+        Set<String> result = new HashSet<String>();
+        for(TCModule m : tclist)
+        {
+            result.add(m.name.toString());
+        }
+        return result;
+    }
+
     @Override
     public final void run()
     {
@@ -592,7 +604,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         registerTime("args", procArgs - before);
         if (tclist_filtered.isEmpty())
         {
-            PluginConsole.infoln("No modules to process; call `" + isabelleCommandName() + " set` to check!");
+            Set<String> names = getModuleNames(tclist);
+            PluginConsole.infof("Modules chosen to be processed do not match modules loaded: \n\tChosen: %1$s\n\tLoaded: %2$s\n\tThis is caused by mistaken setting. Call `%3$s set` to check!\n", modulesToProcess.toString(), names.toString(), isabelleCommandName());
         }
         else if (cont_)
         {

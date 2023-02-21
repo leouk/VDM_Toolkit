@@ -3,9 +3,8 @@ package plugins.commands;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
-
-import com.fujitsu.vdmj.in.modules.INModuleList;
 import com.fujitsu.vdmj.lex.LexException;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.ClassMapper;
@@ -16,7 +15,6 @@ import com.fujitsu.vdmj.plugins.PluginRegistry;
 import com.fujitsu.vdmj.plugins.analyses.POPlugin;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.pog.ProofObligationList;
-import com.fujitsu.vdmj.runtime.ModuleInterpreter;
 import com.fujitsu.vdmj.syntax.ParserException;
 import com.fujitsu.vdmj.tc.expressions.TCExpression;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
@@ -166,20 +164,23 @@ public class IsapogCommand extends IsabelleCommand {
             // create an isabelle module interpreter 
             workingAt = "creating filtered interpreter";
             POPlugin pop = PluginRegistry.getInstance().getPlugin("PO");
-            pop.getProofObligations();
-            ModuleInterpreter minterpreter = new ModuleInterpreter(new INModuleList(), tclist);
+            Set<String> moduleNames = getModuleNames(tclist);
 
             // get the POG and create a corresponding TRModuleList with its PO definitions 
             workingAt = "getting isa interpreter PO list";
-            ProofObligationList pogl = minterpreter.getProofObligations();
+
+            ProofObligationList pogl = pop.getProofObligations();
             IsaProofObligationList isapogl = new IsaProofObligationList();
             int poNumber = 1;
             List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
             for(ProofObligation po : pogl)
             {
-                // do not process VDMToolkit.vdmsl POs
-                if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())) 
+                // do not process VDMToolkit.vdmsl POs or POs outside tclist momdule names
+                if (po.location.module.equals(IsaToken.VDMTOOLKIT.toString())
+                    ||
+                    !moduleNames.contains(po.location.module)) 
                     continue;
+                
                 workingAt = "processing PO " + poNumber + " for " + po.location.module;
                 try 
                 {
