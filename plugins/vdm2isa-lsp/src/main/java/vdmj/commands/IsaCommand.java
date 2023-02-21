@@ -1,37 +1,25 @@
 package vdmj.commands;
 
-import java.util.Arrays;
-import java.util.List;
+import com.fujitsu.vdmj.util.Utils;
 
 import dap.DAPMessageList;
 import dap.DAPRequest;
 import json.JSONObject;
-import plugins.GeneralisaPlugin;
+import plugins.commands.IsapogCommand;
 
 public class IsaCommand extends AnalysisCommand {
 
     private final String[] args;
-	private final GeneralisaPlugin plugin; 
+	private final IsapogCommand plugin; 
 
     public static final String ExuHELP = "exu help - shows how to use the command";
 	public static final String Vdm2IsaHELP = "vdm2isa help - shows how to use the command";
 	public static final String IsapogHELP = "isapog help - shows how to use the command";
-
-    private static final List<String> VALID_PLUGINS = Arrays.asList("exu", "vdm2isa", "isapog");
-	
-    public static final String[] isLineValid(String line)
-    {
-        String[] parts = line.split("\\s+");
-		if ((parts.length > 0 && VALID_PLUGINS.contains(parts[0])))
-            return parts;
-        else 
-            return null;
-    } 
-
-	public IsaCommand(String line, GeneralisaPlugin pl)
+    
+	public IsaCommand(String line, IsapogCommand pl)
 	{
 		this.plugin = pl;
-		this.args = isLineValid(line);
+		this.args = Utils.toArgv(line);
 		if (this.args == null)
 		{
 			plugin.usage("Invalid args " + line);

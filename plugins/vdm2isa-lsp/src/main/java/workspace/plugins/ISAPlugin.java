@@ -32,13 +32,11 @@ import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
-import com.fujitsu.vdmj.tc.modules.TCModuleList;
+import com.fujitsu.vdmj.util.Utils;
 
 import json.JSONArray;
 import json.JSONObject;
-import plugins.GeneralisaPlugin;
 import plugins.IsaProperties;
-import plugins.IsapogPlugin;
 import plugins.ResourceUtil;
 import plugins.commands.IsabelleCommand;
 import plugins.commands.IsapogCommand;
@@ -49,7 +47,6 @@ import vdm2isa.lex.IsaTemplates;
 import vdmj.commands.AnalysisCommand;
 import vdmj.commands.HelpList;
 import vdmj.commands.IsaCommand;
-import workspace.DAPWorkspaceManager;
 import workspace.Diag;
 import workspace.EventHub;
 import workspace.EventListener;
@@ -117,11 +114,11 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			command.getLocalWarningCount());
 		List<VDMMessage> list = new ArrayList<VDMMessage>();
 		
-		list.addAll(GeneralisaPlugin.getErrors());
+		list.addAll(IsabelleCommand.getErrors());
 		MessageHub.getInstance().addPluginMessages(this, list);
 		
 		list.clear();
-		list.addAll(GeneralisaPlugin.getWarnings());
+		list.addAll(IsabelleCommand.getWarnings());
 		MessageHub.getInstance().addPluginMessages(this, list);
 	}
 
@@ -138,10 +135,9 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			long before = System.currentTimeMillis();
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
 			IsaTemplates.reset();
-			TCPlugin tcp = registry.getPlugin("TC");
-			TCModuleList mlist = tcp.getTC();
-			this.isapog = new IsapogPlugin(mlist);
-			//TODO @NB Do I need to get the interpreter again here? 
+			// TCPlugin tcp = registry.getPlugin("TC");
+			// TCModuleList mlist = tcp.getTC();
+			this.isapog = new IsapogCommand("isapog");//new IsapogPlugin(mlist);
 			boolean pluginResult = true; 
 			if (IsaProperties.vdm2isa_run_exu)
 			{
@@ -266,20 +262,31 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public AnalysisCommand getCommand(String line)
 	{
-		String[] args = IsaCommand.isLineValid(line);
+		String[] args = Utils.toArgv(line);
 		IsaCommand result = null;
 		if (args != null)
 		{
 			try
 			{
-				result = new IsaCommand(line, 
-					ResourceUtil.createPlugin(args[0], DAPWorkspaceManager.getInstance().getInterpreter()));	
+				result = new IsaCommand(line, ResourceUtil.createCommand(args[0]));	
+			}
+			catch (ClassNotFoundException e)
+			{
+				//throw new IllegalArgumentException("Could not find Exu plugin?");
+			}
+			catch (IllegalAccessException e)
+			{
+				//throw new IllegalArgumentException("Could not find Exu plugin?");
 			}
 			catch (NoSuchMethodException e)
 			{
 				//throw new IllegalArgumentException("Could not find Exu plugin?");
 			}
 			catch (InvocationTargetException e)
+			{
+				//throw new IllegalArgumentException("Could not find Exu plugin?");
+			}
+			catch (Exception e)
 			{
 				//throw new IllegalArgumentException("Could not find Exu plugin?");
 			}
