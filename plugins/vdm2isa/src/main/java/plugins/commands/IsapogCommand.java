@@ -12,6 +12,8 @@ import com.fujitsu.vdmj.mapper.ClassMapper;
 import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMErrorsException;
 import com.fujitsu.vdmj.plugins.PluginConsole;
+import com.fujitsu.vdmj.plugins.PluginRegistry;
+import com.fujitsu.vdmj.plugins.analyses.POPlugin;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.pog.ProofObligationList;
 import com.fujitsu.vdmj.runtime.ModuleInterpreter;
@@ -163,6 +165,8 @@ public class IsapogCommand extends IsabelleCommand {
         {
             // create an isabelle module interpreter 
             workingAt = "creating filtered interpreter";
+            POPlugin pop = PluginRegistry.getInstance().getPlugin("PO");
+            pop.getProofObligations();
             ModuleInterpreter minterpreter = new ModuleInterpreter(new INModuleList(), tclist);
 
             // get the POG and create a corresponding TRModuleList with its PO definitions 
