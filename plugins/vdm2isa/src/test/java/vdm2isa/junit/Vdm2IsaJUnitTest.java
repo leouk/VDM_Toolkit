@@ -22,17 +22,17 @@ import plugins.commands.IsabelleCommand;
 
 public abstract class Vdm2IsaJUnitTest extends VDMJUnitTestSL {
 
-    @BeforeClass
-	public static void start() throws Exception
-	{
-		System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
-	}
+    // @BeforeClass
+	// public static void start() throws Exception
+	// {
+	// 	System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
+	// }
 	
-	@AfterClass
-	public static void stop()
-	{
-		System.clearProperty("vdmj.plugins");
-	}
+	// @AfterClass
+	// public static void stop()
+	// {
+	// 	System.clearProperty("vdmj.plugins");
+	// }
     
     protected static void init()
 	{

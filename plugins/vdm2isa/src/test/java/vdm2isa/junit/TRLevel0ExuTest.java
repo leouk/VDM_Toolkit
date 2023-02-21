@@ -1,5 +1,6 @@
 package vdm2isa.junit;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -8,8 +9,15 @@ public class TRLevel0ExuTest extends Vdm2IsaJUnitTest
 	@BeforeClass
 	public static void start() throws Exception
 	{
-        Vdm2IsaJUnitTest.start();
-		readSpecification("lvl0");
+//        Vdm2IsaJUnitTest.start();
+        System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
+        readSpecification("lvl0");
+	}
+
+	@AfterClass
+	public static void stop()
+	{
+		System.clearProperty("vdmj.plugins");
 	}
     
     @Override
