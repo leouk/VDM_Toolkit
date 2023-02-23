@@ -13,14 +13,19 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
 import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
 import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTIgnorePattern;
+import com.fujitsu.vdmj.ast.patterns.ASTNamePatternPairList;
+import com.fujitsu.vdmj.ast.patterns.ASTObjectPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPatternList;
+import com.fujitsu.vdmj.ast.patterns.ASTRecordPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSetPattern;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
@@ -95,11 +100,34 @@ public class VDMASTListener extends VDMBaseListener {
 	 * @return The corresponding name.
 	 */
     //com.fujitsu.vdmj.syntax.SyntaxReader.idToName
-    protected LexNameToken idToName(LexIdentifierToken id)
+    protected LexNameToken id2lexname(LexIdentifierToken id)
 	{
-		LexNameToken name = new LexNameToken(currentModule, id);
-		return name;
+		return new LexNameToken(currentModule, id);
 	}
+
+    @SuppressWarnings("unchecked")
+    protected <T extends ASTNode> T getNode(ParserRuleContext ctx, Class<T> cls)
+    {
+        ASTNode result = nodes.get(ctx);
+        if (!cls.isAssignableFrom(result.getClass()))
+            throw new UnsupportedOperationException();
+        return (T)result;
+    }
+
+    /**
+     * Transforms the given terminal node id (e.g. ctx.IDENTIFIER()) for the given context, which will
+     * be the location source information. 
+     * @param id
+     * @param ctx
+     * @param old
+     * @return
+     */
+    //Could have a ParserRuleContext and have
+    protected LexIdentifierToken id2lexid(TerminalNode id, ParserRuleContext ctx, boolean old)
+    {
+        //TerminalNode id = getToken(VDMParser.IDENTIFIER, 0);? but might not be general
+        return new LexIdentifierToken(id.getText(), old, token2loc(ctx));
+    }
 
 
     //ASTModule
@@ -217,11 +245,69 @@ public class VDMASTListener extends VDMBaseListener {
         nodes.put(ctx, result);
     }
 
-    @Override
-    public void enterIdPattern(VDMParser.IdPatternContext ctx)
+    @Override 
+    public void exitTupplePattern(VDMParser.TupplePatternContext ctx)
     {
-        LexIdentifierToken id = new LexIdentifierToken(ctx.IDENTIFIER().getText(), false, token2loc(ctx));
-        nodes.put(ctx, new ASTIdentifierPattern(idToName(id)));
+        ASTPattern p = (ASTPattern)nodes.get()
+    }
+
+    @Override
+    public void exitTight_pp_obj_name(VDMParser.Tight_pp_obj_nameContext ctx)
+    {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+    
+    @Override
+    public void exitPPObjectPattern(VDMParser.PPObjectPatternContext ctx)
+    {
+        //@NB needs to be implement ASTNamePatternPairList Mappable 
+        ASTNamePatternPairList list = null;//(ASTNamePatternPairList)lists.get(ctx.field_pattern_list());
+        LexNameToken classname = (LexNameToken)nodes.get(ctx.tight_pp_obj_name());
+        nodes.put(ctx, new ASTObjectPattern(token2loc(ctx), classname, list));
+    }
+
+    @Override
+    public void exitTight_record_name(VDMParser.Tight_record_nameContext ctx)
+    {
+        LexNameToken typename;
+        // check on ctx.second token type instead of != null?
+        // mk_A`R(...)
+        if (ctx.QUALIFIED_NAME() != null)
+        {
+            String qualifiedName = ctx.QUALIFIED_NAME().getText();
+            int backtick = qualifiedName.indexOf('`');
+            assert backtick >= 0;
+            String mod = qualifiedName.substring(3, backtick);
+            String name = qualifiedName.substring(backtick + 1);
+            typename = new LexNameToken(mod, name, token2loc(ctx));
+        }
+        // mk_R(...)
+        else 
+        {
+            assert ctx.IDENTIFIER() != null; //TODO or do recognition failure?
+            typename = id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false));
+        }
+        nodes.put(ctx, typename);
+    }
+
+    @Override
+    public void exitRecordPattern(VDMParser.RecordPatternContext ctx)
+    {
+        ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
+        LexNameToken typename = (LexNameToken)nodes.get(ctx.tight_record_name());
+        nodes.put(ctx, new ASTRecordPattern(typename, list));
+    }
+
+    @Override
+    public void exitIgnorePattern(VDMParser.IgnorePatternContext ctx)
+    {
+        nodes.put(ctx, new ASTIgnorePattern(token2loc(ctx)));
+    }
+
+    @Override
+    public void exitIdPattern(VDMParser.IdPatternContext ctx)
+    {
+        nodes.put(ctx, new ASTIdentifierPattern(id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false))));
     }
 }
 

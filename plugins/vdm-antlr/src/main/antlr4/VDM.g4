@@ -1499,6 +1499,11 @@ record_constructor
 // 	;
 
 // Nothing between tokens
+tight_pp_obj_name
+    : first=PPK_obj second=IDENTIFIER {$first.index+1 == $second.index}?
+    ;
+
+// Nothing between tokens
 tight_record_name
     : first=SLK_mk second=QUALIFIED_NAME {$first.index+1 == $second.index}?
     | first=SLK_mk second=IDENTIFIER {$first.index+1 == $second.index}?
@@ -2037,9 +2042,9 @@ pattern
     | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
     | pattern SLK_munion pattern    #MapMunionPattern
 // A.8.1 tupple pattern
-    | SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R #TuplePattern
+    | SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R #TupplePattern
 // A.8.1 object pattern 
-    | {!isVDMSL()}? PPK_obj IDENTIFIER PAREN_L field_pattern_list PAREN_R #PPObjectPattern
+    | {!isVDMSL()}? tight_pp_obj_name PAREN_L field_pattern_list PAREN_R #PPObjectPattern
 // A.8.1 record pattern 
     | tight_record_name PAREN_L pattern_list PAREN_R #RecordPattern
 // A.8.1 pattern identifier
