@@ -224,13 +224,9 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitPattern_list(VDMParser.Pattern_listContext ctx)
     {
         ASTPatternList result = new ASTPatternList();
-        for(VDMParser.PatternContext c : ctx.pattern())
+        for(VDMParser.PatternContext p : ctx.pattern())
         {
-            ASTNode n = nodes.get(c);
-            if (n != null && n instanceof ASTPattern)
-                result.add((ASTPattern)n);
-            else 
-                System.out.println("Invalid pattern " + String.valueOf(n));
+            result.add(getNode(p, ASTPattern.class));
         }
         //TODO has to be Mappable? Instead of ASTNode?!
         //nodes.put(ctx, result);
@@ -248,7 +244,7 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitTupplePattern(VDMParser.TupplePatternContext ctx)
     {
-        ASTPattern p = (ASTPattern)nodes.get()
+        ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
     }
 
     @Override
@@ -262,7 +258,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         //@NB needs to be implement ASTNamePatternPairList Mappable 
         ASTNamePatternPairList list = null;//(ASTNamePatternPairList)lists.get(ctx.field_pattern_list());
-        LexNameToken classname = (LexNameToken)nodes.get(ctx.tight_pp_obj_name());
+        LexNameToken classname = getNode(ctx.tight_pp_obj_name(), LexNameToken.class);
         nodes.put(ctx, new ASTObjectPattern(token2loc(ctx), classname, list));
     }
 
@@ -294,7 +290,7 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitRecordPattern(VDMParser.RecordPatternContext ctx)
     {
         ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
-        LexNameToken typename = (LexNameToken)nodes.get(ctx.tight_record_name());
+        LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
         nodes.put(ctx, new ASTRecordPattern(typename, list));
     }
 
