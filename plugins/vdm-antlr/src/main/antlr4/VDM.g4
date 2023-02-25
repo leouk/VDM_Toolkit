@@ -2042,7 +2042,7 @@ pattern
     | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
     | pattern SLK_munion pattern    #MapMunionPattern
 // A.8.1 tupple pattern
-    | SLK_mk PAREN_L pattern SEP_comma pattern_list PAREN_R #TupplePattern
+    | SLK_mk PAREN_L  pattern_list PAREN_R #TupplePattern
 // A.8.1 object pattern 
     | {!isVDMSL()}? tight_pp_obj_name PAREN_L field_pattern_list PAREN_R #PPObjectPattern
 // A.8.1 record pattern 
