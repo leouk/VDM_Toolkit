@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
@@ -19,12 +17,23 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
+import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
+import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
+import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexNameToken;
+import com.fujitsu.vdmj.ast.lex.LexQuoteToken;
+import com.fujitsu.vdmj.ast.lex.LexRealToken;
+import com.fujitsu.vdmj.ast.lex.LexStringToken;
+import com.fujitsu.vdmj.ast.lex.LexToken;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
+import com.fujitsu.vdmj.ast.patterns.ASTBooleanPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTCharacterPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTConcatenationPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTIgnorePattern;
+import com.fujitsu.vdmj.ast.patterns.ASTIntegerPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTMapPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTMapUnionPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTMapletPatternList;
@@ -32,9 +41,12 @@ import com.fujitsu.vdmj.ast.patterns.ASTNamePatternPairList;
 import com.fujitsu.vdmj.ast.patterns.ASTObjectPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPatternList;
+import com.fujitsu.vdmj.ast.patterns.ASTQuotePattern;
+import com.fujitsu.vdmj.ast.patterns.ASTRealPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTRecordPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSeqPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSetPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTStringPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTuplePattern;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
@@ -125,6 +137,38 @@ public class VDMASTListener extends VDMBaseListener {
 	{
 		return new LexNameToken(currentModule, id);
 	}
+
+    protected LexIntegerToken str2int(LexLocation location, String s, int base
+    )
+    {
+        LexIntegerToken result;
+        try
+        {
+            long l = Long.parseLong(s, base);
+            result = new LexIntegerToken(l, location);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new UnsupportedOperationException();
+        }
+        return result;
+    }
+
+    protected LexRealToken str2real(LexLocation location, String s)
+    {
+        LexRealToken result;
+        try
+        {
+            double d = Double.parseDouble(s);
+            result = new LexRealToken(d, location);
+
+        }
+        catch (NumberFormatException e)
+        {
+            throw new UnsupportedOperationException();
+        }
+        return result;
+    }
 
     @SuppressWarnings("unchecked")
     protected <T extends ASTNode> T getNode(ParserRuleContext ctx, Class<T> cls)
@@ -268,18 +312,113 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitNumericLiteral(VDMParser.NumericLiteralContext ctx)
     {
+        LexLocation location = token2loc(ctx);
         if (littype == null)
             throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
         switch (littype)
         {
             case PATTERN:
-                int i = ctx.NUMERIC_LITERAL().getSymbol().getType();
+                ASTPattern pattern; 
+                String p = ctx.NUMERIC_LITERAL().getText();
+                // if a hex decimal
+                if (p.startsWith("0x") || p.startsWith("0X"))
+                {
+                    pattern = new ASTIntegerPattern(str2int(location, p.substring(2), 16));
+                }
+                // if proper real
+                else if (p.indexOf(".") != -1 || 
+                         p.indexOf("e") != -1 ||
+                         p.indexOf("E") != -1)
+                {
+                    pattern = new ASTRealPattern(str2real(location, p));
+                }
+                else
+                {   
+                    pattern = new ASTIntegerPattern(str2int(location, p, 10));
+                }
+                nodes.put(ctx, pattern);
                 break;
             case EXPRESSION:
                 break;
         }
-
     }
+
+    @Override 
+    public void exitCharacterLiteral(VDMParser.CharacterLiteralContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
+        switch (littype)
+        {
+            case PATTERN:
+                String p = ctx.CHARACTER_LITERAL().getText();
+                ASTPattern pattern = new ASTCharacterPattern(new LexCharacterToken(p.charAt(1), location)); 
+                nodes.put(ctx, pattern);
+                break;
+            case EXPRESSION:
+                break;
+        }
+    }
+
+    @Override
+    public void exitStringLiteral(VDMParser.StringLiteralContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
+        switch (littype)
+        {
+            case PATTERN:
+                String p = ctx.TEXT_LITERAL().getText();
+                ASTPattern pattern = new ASTStringPattern(new LexStringToken(p, location)); 
+                nodes.put(ctx, pattern);
+                break;
+            case EXPRESSION:
+                break;
+        }        
+    }
+
+    @Override
+    public void exitQuoteLiteral(VDMParser.QuoteLiteralContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
+        switch (littype)
+        {
+            case PATTERN:
+                String p = ctx.QUOTE_LITERAL().getText();
+                ASTPattern pattern = new ASTQuotePattern(new LexQuoteToken(p.substring(1, p.length()-1), location)); 
+                nodes.put(ctx, pattern);
+                break;
+            case EXPRESSION:
+                break;
+        }        
+    }
+
+    @Override 
+    public void exitBooleanLiteral(VDMParser.BooleanLiteralContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
+        switch (littype)
+        {
+            case PATTERN:
+                ASTPattern pattern = new ASTBooleanPattern(new LexBooleanToken(ctx.SLK_true() != null, location)); 
+                nodes.put(ctx, pattern);
+                break;
+            case EXPRESSION:
+                break;
+        }
+    }
+
 
     @Override 
     public void enterSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
@@ -292,14 +431,35 @@ public class VDMASTListener extends VDMBaseListener {
     {
         if (!SymbolicLiteralType.PATTERN.equals(littype))
             throw new UnsupportedOperationException();
+        this.littype = null; 
         // how to know what kind of pattern came through? 
-        // ctx.symbolic_literal? 
+        // ctx.symbolic_literal?
+        ASTPattern node = getNode(ctx.symbolic_literal(), ASTPattern.class);
+        if (!(node instanceof ASTIntegerPattern || 
+              node instanceof ASTRealPattern ||
+              node instanceof ASTCharacterPattern ||
+              node instanceof ASTStringPattern ||
+              node instanceof ASTQuotePattern ||
+              node instanceof ASTBooleanPattern))
+        {
+            throw new UnsupportedOperationException();
+        }
+        nodes.removeFrom(ctx.symbolic_literal()); 
+        nodes.put(ctx, node);
+        //TODO should such removals also be present in other sub-trees? 
     }    
     
     @Override 
     public void exitSetEnumPattern(VDMParser.SetEnumPatternContext ctx)
     {
-        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), getListNode(ctx.pattern_list(), ASTPatternList.class)));
+        ParserRuleContext plist = ctx.pattern_list();
+        ASTPatternList list;
+        // empty sets have no matching pattern_list context
+        if (plist == null)
+            list = new ASTPatternList();
+        else 
+            list = getListNode(plist, ASTPatternList.class);
+        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), list));
     }
 
     @Override 
@@ -313,7 +473,14 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitSeqEnumPattern(VDMParser.SeqEnumPatternContext ctx)
     {
-        nodes.put(ctx, new ASTSeqPattern(token2loc(ctx), getListNode(ctx.pattern_list(), ASTPatternList.class)));
+        ParserRuleContext plist = ctx.pattern_list();
+        ASTPatternList list;
+        // empty sets have no matching pattern_list context
+        if (plist == null)
+            list = new ASTPatternList();
+        else 
+            list = getListNode(plist, ASTPatternList.class);
+        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), list));
     }
 
     @Override 
