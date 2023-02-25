@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -19,14 +22,20 @@ import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
 import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
+import com.fujitsu.vdmj.ast.patterns.ASTConcatenationPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTIgnorePattern;
+import com.fujitsu.vdmj.ast.patterns.ASTMapPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTMapUnionPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTMapletPatternList;
 import com.fujitsu.vdmj.ast.patterns.ASTNamePatternPairList;
 import com.fujitsu.vdmj.ast.patterns.ASTObjectPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPatternList;
 import com.fujitsu.vdmj.ast.patterns.ASTRecordPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTSeqPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSetPattern;
+import com.fujitsu.vdmj.ast.patterns.ASTTuplePattern;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.mapper.Mappable;
 import com.fujitsu.vdmj.mapper.MappedObject;
@@ -45,10 +54,12 @@ public class VDMASTListener extends VDMBaseListener {
     public static void main(String[] argv) throws IOException
     {
         VDMASTListener listener = new VDMASTListener(TEST);
-        ParseTree t = listener.parser.pattern();//parser.expression();
+        ParseTree t = listener.parser.pattern_list();//parser.expression();
         ParseTreeWalker.DEFAULT.walk(listener, t);
         System.out.println("n="+t.toStringTree());
     }
+
+    public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
     
     //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
     private final ParseTreeProperty<ASTNode> nodes;
@@ -57,10 +68,12 @@ public class VDMASTListener extends VDMBaseListener {
     protected ASTModuleList astModuleList;
     private final File currentFile;
     private String currentModule;
+    private SymbolicLiteralType littype; 
 
     public VDMASTListener(String fileName) throws IOException
     {
         super();
+        littype = null;
         currentModule = "DEFAULT";
         if (fileName == null || fileName.isEmpty())
             throw new IllegalArgumentException("Invalid file name " + fileName);
@@ -91,6 +104,14 @@ public class VDMASTListener extends VDMBaseListener {
             ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
     }
 
+    protected LexLocation token2loc(TerminalNode terminal)
+    {
+        int line = terminal.getSymbol().getLine();
+        Interval i = terminal.getSourceInterval();
+        return new LexLocation(currentFile, currentModule, line, i.a, line, i.b);
+        // return new LexLocation(currentFile, currentModule, terminal.getSymbol().getLine(), terminal.getSymbol().getCharPositionInLine(), )
+    }
+
 	/**
 	 * Convert an identifier into a name. A name is an identifier that has
 	 * a module name qualifier, so this method uses the current module to
@@ -109,6 +130,17 @@ public class VDMASTListener extends VDMBaseListener {
     protected <T extends ASTNode> T getNode(ParserRuleContext ctx, Class<T> cls)
     {
         ASTNode result = nodes.get(ctx);
+        if (result == null)
+            throw new UnsupportedOperationException();
+        if (!cls.isAssignableFrom(result.getClass()))
+            throw new UnsupportedOperationException();
+        return (T)result;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends Vector<? extends ASTNode>> T getListNode(ParserRuleContext ctx, Class<T> cls)
+    {
+        Vector<? extends ASTNode> result = lists.get(ctx);
         if (!cls.isAssignableFrom(result.getClass()))
             throw new UnsupportedOperationException();
         return (T)result;
@@ -223,28 +255,99 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitPattern_list(VDMParser.Pattern_listContext ctx)
     {
+        // empty pattern list (empty set/q etc) is non-null 
         ASTPatternList result = new ASTPatternList();
         for(VDMParser.PatternContext p : ctx.pattern())
         {
             result.add(getNode(p, ASTPattern.class));
         }
         //TODO has to be Mappable? Instead of ASTNode?!
-        //nodes.put(ctx, result);
         lists.put(ctx, result);
     }
+
+    @Override 
+    public void exitNumericLiteral(VDMParser.NumericLiteralContext ctx)
+    {
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        switch (littype)
+        {
+            case PATTERN:
+                int i = ctx.NUMERIC_LITERAL().getSymbol().getType();
+                break;
+            case EXPRESSION:
+                break;
+        }
+
+    }
+
+    @Override 
+    public void enterSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
+    {
+        this.littype = SymbolicLiteralType.PATTERN;
+    }
+
+    @Override 
+    public void exitSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
+    {
+        if (!SymbolicLiteralType.PATTERN.equals(littype))
+            throw new UnsupportedOperationException();
+        // how to know what kind of pattern came through? 
+        // ctx.symbolic_literal? 
+    }    
     
     @Override 
     public void exitSetEnumPattern(VDMParser.SetEnumPatternContext ctx)
     {
-        ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
-        ASTSetPattern result = new ASTSetPattern(token2loc(ctx), list);
-        nodes.put(ctx, result);
+        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), getListNode(ctx.pattern_list(), ASTPatternList.class)));
+    }
+
+    @Override 
+    public void exitSetUnionPattern(VDMParser.SetUnionPatternContext ctx)
+    {
+        ASTPattern p1 = getNode(ctx.pattern(0), ASTPattern.class);
+        ASTPattern p2 = getNode(ctx.pattern(1), ASTPattern.class);
+        nodes.put(ctx, new ASTMapUnionPattern(p1, token2loc(ctx.SLK_union()), p2));
+    }
+
+    @Override 
+    public void exitSeqEnumPattern(VDMParser.SeqEnumPatternContext ctx)
+    {
+        nodes.put(ctx, new ASTSeqPattern(token2loc(ctx), getListNode(ctx.pattern_list(), ASTPatternList.class)));
+    }
+
+    @Override 
+    public void exitSeqConcatPattern(VDMParser.SeqConcatPatternContext ctx)
+    {
+        ASTPattern p1 = getNode(ctx.pattern(0), ASTPattern.class);
+        ASTPattern p2 = getNode(ctx.pattern(1), ASTPattern.class);
+        nodes.put(ctx, new ASTMapUnionPattern(p1, token2loc(ctx.O_CONCAT()), p2));
+    }
+
+    @Override 
+    public void exitMapEnumPattern(VDMParser.MapEnumPatternContext ctx)
+    {
+        // covers map enum and empty map
+        nodes.put(ctx, new ASTMapPattern(token2loc(ctx), getListNode(ctx.maplet_pattern_list(), ASTMapletPatternList.class)));
+    }
+
+    @Override 
+    public void exitMapMunionPattern(VDMParser.MapMunionPatternContext ctx)
+    {
+        ASTPattern p1 = getNode(ctx.pattern(0), ASTPattern.class);
+        ASTPattern p2 = getNode(ctx.pattern(1), ASTPattern.class);
+        nodes.put(ctx, new ASTMapUnionPattern(p1, token2loc(ctx.SLK_munion()), p2));
     }
 
     @Override 
     public void exitTupplePattern(VDMParser.TupplePatternContext ctx)
     {
-        ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
+        //ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
+        //LRM: no need for "pattern , pattern_list"
+        ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
+        if (list == null || list.isEmpty())
+            throw new UnsupportedOperationException("invalid tuple");
+        nodes.put(ctx, new ASTTuplePattern(token2loc(ctx), list));
     }
 
     @Override
@@ -289,7 +392,8 @@ public class VDMASTListener extends VDMBaseListener {
     @Override
     public void exitRecordPattern(VDMParser.RecordPatternContext ctx)
     {
-        ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
+        //ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
+        ASTPatternList list = (ASTPatternList)getListNode(ctx.pattern_list(), ASTPatternList.class);
         LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
         nodes.put(ctx, new ASTRecordPattern(typename, list));
     }
@@ -297,6 +401,8 @@ public class VDMASTListener extends VDMBaseListener {
     @Override
     public void exitIgnorePattern(VDMParser.IgnorePatternContext ctx)
     {
+        Interval i = ctx.getSourceInterval();
+        System.out.println(i);
         nodes.put(ctx, new ASTIgnorePattern(token2loc(ctx)));
     }
 
