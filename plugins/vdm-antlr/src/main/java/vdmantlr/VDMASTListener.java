@@ -2,14 +2,20 @@ package vdmantlr;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
@@ -74,6 +80,40 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
+
+    public static class VDMErrorListener extends BaseErrorListener 
+    {   
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, 
+            Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
+        {
+            List<String> stack = ((VDMParser)recognizer).getRuleInvocationStack(); 
+            Collections.reverse(stack);
+            System.err.println("rule stack: "+stack);
+            System.err.println("line "+line+":"+charPositionInLine+" at "+offendingSymbol+": "+msg);
+            underlineError(recognizer, (org.antlr.v4.runtime.Token)offendingSymbol, line, charPositionInLine);
+        } 
+
+        protected void underlineError(Recognizer<?, ?> recognizer, org.antlr.v4.runtime.Token offendingToken, 
+            int line, int charPositionInLine) 
+        {
+            CommonTokenStream tokens = (CommonTokenStream)recognizer.getInputStream();
+            String input = tokens.getTokenSource().getInputStream().toString(); 
+            String[] lines = input.split("\n");
+            String errorLine = lines[line - 1];
+            System.err.println(errorLine);
+            for (int i=0; i<charPositionInLine; i++) 
+                System.err.print(" "); 
+            int start = offendingToken.getStartIndex();
+            int stop = offendingToken.getStopIndex();
+            if ( start>=0 && stop>=0 ) {
+                for (int i=start; i<=stop; i++) 
+                    System.err.print("^"); 
+            }
+            System.err.println(); 
+        }
+    }
+        
     
     //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
     private final ParseTreeProperty<ASTNode> nodes;
@@ -100,6 +140,14 @@ public class VDMASTListener extends VDMBaseListener {
         VDMLexer lexer = new VDMLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         parser = new VDMParser(tokens);
+
+        // if we want full ambiguity/diagnostic information
+        parser.removeErrorListeners(); // remove ConsoleErrorListener 
+        parser.addErrorListener(new DiagnosticErrorListener());
+        parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+        // might as well add some extra information of our own 
+        parser.addErrorListener(new VDMErrorListener());
+        
         nodes = new ParseTreeProperty<ASTNode>();
         lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
         astModuleList = null;
@@ -118,15 +166,14 @@ public class VDMASTListener extends VDMBaseListener {
     {
         return new LexLocation(currentFile, currentModule, 
             ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(),
-            ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
+            ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()+1);
     }
 
     protected LexLocation token2loc(TerminalNode terminal)
     {
         int line = terminal.getSymbol().getLine();
-        Interval i = terminal.getSourceInterval();
-        return new LexLocation(currentFile, currentModule, line, i.a, line, i.b);
-        // return new LexLocation(currentFile, currentModule, terminal.getSymbol().getLine(), terminal.getSymbol().getCharPositionInLine(), )
+        return new LexLocation(currentFile, currentModule, line, 
+            terminal.getSymbol().getStartIndex(), line, terminal.getSymbol().getStopIndex());
     }
 
 	/**
