@@ -21,6 +21,7 @@ import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
+import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.lex.LexQuoteToken;
@@ -38,6 +39,7 @@ import com.fujitsu.vdmj.ast.patterns.ASTMapPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTMapUnionPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTMapletPatternList;
 import com.fujitsu.vdmj.ast.patterns.ASTNamePatternPairList;
+import com.fujitsu.vdmj.ast.patterns.ASTNilPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTObjectPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTPatternList;
@@ -109,6 +111,9 @@ public class VDMASTListener extends VDMBaseListener {
      * @param ctx parsing context requiring LexLocation information
      * @return VDMJ-equivalent LexLocation from given contex
      */
+    //See ANTLR4 Section 3.2; 2loc below is not quite right.
+    //CommonToken: [@5,8:10='451',<4>,1:8] 
+    //[@TokenIndex(0), StartPos(0):EndPos(inclusive)='TEXT',<TYPE>,StartLine(1):StartChar(0)]
     protected LexLocation token2loc(ParserRuleContext ctx)
     {
         return new LexLocation(currentFile, currentModule, 
@@ -175,7 +180,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTNode result = nodes.get(ctx);
         if (result == null)
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("No node for " + ctx.getClass().getSimpleName());
         if (!cls.isAssignableFrom(result.getClass()))
             throw new UnsupportedOperationException();
         return (T)result;
@@ -355,6 +360,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             case PATTERN:
                 String p = ctx.CHARACTER_LITERAL().getText();
+                // p = 'C' (e.g. p(0/2)=', p(1)=C )
                 ASTPattern pattern = new ASTCharacterPattern(new LexCharacterToken(p.charAt(1), location)); 
                 nodes.put(ctx, pattern);
                 break;
@@ -419,6 +425,23 @@ public class VDMASTListener extends VDMBaseListener {
         }
     }
 
+    @Override 
+    public void exitNilLiteral(VDMParser.NilLiteralContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        if (littype == null)
+            throw new UnsupportedOperationException();
+        //TODO these to me sounds like lexing rules that could have more info? 
+        switch (littype)
+        {
+            case PATTERN:
+                ASTPattern pattern = new ASTNilPattern(new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NIL, location)); 
+                nodes.put(ctx, pattern);
+                break;
+            case EXPRESSION:
+                break;
+        }
+    }
 
     @Override 
     public void enterSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
@@ -440,9 +463,10 @@ public class VDMASTListener extends VDMBaseListener {
               node instanceof ASTCharacterPattern ||
               node instanceof ASTStringPattern ||
               node instanceof ASTQuotePattern ||
-              node instanceof ASTBooleanPattern))
+              node instanceof ASTBooleanPattern ||
+              node instanceof ASTNilPattern))
         {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Unknown pattern node " + node.getClass().getSimpleName());
         }
         nodes.removeFrom(ctx.symbolic_literal()); 
         nodes.put(ctx, node);
@@ -492,9 +516,14 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
+    public void exitEmptyMapPattern(VDMParser.EmptyMapPatternContext ctx)
+    {
+        nodes.put(ctx, new ASTMapPattern(token2loc(ctx), new ASTMapletPatternList()));
+    }
+
+    @Override 
     public void exitMapEnumPattern(VDMParser.MapEnumPatternContext ctx)
     {
-        // covers map enum and empty map
         nodes.put(ctx, new ASTMapPattern(token2loc(ctx), getListNode(ctx.maplet_pattern_list(), ASTMapletPatternList.class)));
     }
 
@@ -568,8 +597,8 @@ public class VDMASTListener extends VDMBaseListener {
     @Override
     public void exitIgnorePattern(VDMParser.IgnorePatternContext ctx)
     {
-        Interval i = ctx.getSourceInterval();
-        System.out.println(i);
+        // Interval i = ctx.getSourceInterval();
+        // System.out.println(i);
         nodes.put(ctx, new ASTIgnorePattern(token2loc(ctx)));
     }
 
