@@ -57,7 +57,6 @@ import com.fujitsu.vdmj.ast.patterns.ASTQuotePattern;
 import com.fujitsu.vdmj.ast.patterns.ASTRealPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTRecordPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSeqBind;
-import com.fujitsu.vdmj.ast.patterns.ASTSeqPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTSetBind;
 import com.fujitsu.vdmj.ast.patterns.ASTSetPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTStringPattern;
@@ -363,13 +362,18 @@ public class VDMASTListener extends VDMBaseListener {
     @Override
     public void enterSymbolicLitExpr(VDMParser.SymbolicLitExprContext ctx)
     {
-        System.out.println("Enter #SymbolicLitExpr: " + ctx.getText());
+        this.littype = SymbolicLiteralType.EXPRESSION;
     }
 
     @Override
     public void exitSymbolicLitExpr(VDMParser.SymbolicLitExprContext ctx)
     {
-        System.out.println("Exit #SymbolicLitExpr: " + ctx.getText());
+        if (!SymbolicLiteralType.EXPRESSION.equals(littype))
+            throw new UnsupportedOperationException("Expected symbolic literal expression but found " + String.valueOf(littype));
+        this.littype = null; 
+        ASTExpression node = getNode(ctx.symbolic_literal(), ASTExpression.class);
+        nodes.removeFrom(ctx.symbolic_literal());
+        nodes.put(ctx, node);
     }
 
 //------------------------
@@ -538,7 +542,7 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
     {
         if (!SymbolicLiteralType.PATTERN.equals(littype))
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Expected symbolic literal pattern but found " + String.valueOf(littype));
         this.littype = null; 
         // how to know what kind of pattern came through? 
         // ctx.symbolic_literal?
