@@ -21,7 +21,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.expressions.ASTCharLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTIntegerLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTRealLiteralExpression;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
@@ -265,6 +268,18 @@ public class VDMASTListener extends VDMBaseListener {
         return (T)result;
     }
 
+    protected void putNode(ParserRuleContext ctx, ASTNode node)
+    {
+        checkResult(ctx, node, node == null ? ASTNode.class : node.getClass());
+        nodes.put(ctx, node);
+    }
+
+    protected void putListNode(ParserRuleContext ctx, Vector<? extends ASTNode> node)
+    {
+        checkResult(ctx, node, node == null ? Vector.class : node.getClass());
+        lists.put(ctx, node);
+    }
+
     /**
      * Transforms the given terminal node id (e.g. ctx.IDENTIFIER()) for the given context, which will
      * be the location source information. 
@@ -296,7 +311,7 @@ public class VDMASTListener extends VDMBaseListener {
 		{
 			//throwMessage(2049, "Expecting 'end " + ctx.modName.getText() + "'");
 		}
-        nodes.put(ctx, null);
+        putNode(ctx, null);
     }
 
     @Override
@@ -373,7 +388,7 @@ public class VDMASTListener extends VDMBaseListener {
         this.littype = null; 
         ASTExpression node = getNode(ctx.symbolic_literal(), ASTExpression.class);
         nodes.removeFrom(ctx.symbolic_literal());
-        nodes.put(ctx, node);
+        putNode(ctx, node);
     }
 
 //------------------------
@@ -394,48 +409,73 @@ public class VDMASTListener extends VDMBaseListener {
             result.add(getNode(p, ASTPattern.class));
         }
         //TODO has to be Mappable? Instead of ASTNode?!
-        lists.put(ctx, result);
+        putListNode(ctx, result);
     }
 
     @Override
     public void exitBracketedExprPattern(VDMParser.BracketedExprPatternContext ctx)
     {
-        nodes.put(ctx, new ASTExpressionPattern(getNode(ctx.expression(), ASTExpression.class)));
+        putNode(ctx, new ASTExpressionPattern(getNode(ctx.expression(), ASTExpression.class)));
     }
 
+    public static enum NumericLiteralType { INT10, INT16, REAL }
+
+    private final NumericLiteralType figureOutNumericLiteralType(String s)
+    {
+        //TODO these to me sounds like lexing rules that could have more info? 
+        NumericLiteralType result; 
+        if (s.startsWith("0x") || s.startsWith("0X"))
+            result = NumericLiteralType.INT16;
+        else if (s.indexOf(".") != -1 || 
+                 s.indexOf("e") != -1 ||
+                 s.indexOf("E") != -1)
+            result = NumericLiteralType.REAL;
+        else 
+            result = NumericLiteralType.INT10;
+        return result;
+    }
     @Override 
     public void exitNumericLiteral(VDMParser.NumericLiteralContext ctx)
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        String p = ctx.NUMERIC_LITERAL().getText();
+        NumericLiteralType nlittype = figureOutNumericLiteralType(p);
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                ASTPattern pattern; 
-                String p = ctx.NUMERIC_LITERAL().getText();
-                // if a hex decimal
-                if (p.startsWith("0x") || p.startsWith("0X"))
+                switch (nlittype)
                 {
-                    pattern = new ASTIntegerPattern(str2int(location, p.substring(2), 16));
+                    case INT10:
+                        node = new ASTIntegerPattern(str2int(location, p, 10));
+                        break;
+                    case INT16:
+                        node = new ASTIntegerPattern(str2int(location, p.substring(2), 16));
+                        break;
+                    case REAL:
+                        node = new ASTRealPattern(str2real(location, p));
+                        break;
                 }
-                // if proper real
-                else if (p.indexOf(".") != -1 || 
-                         p.indexOf("e") != -1 ||
-                         p.indexOf("E") != -1)
-                {
-                    pattern = new ASTRealPattern(str2real(location, p));
-                }
-                else
-                {   
-                    pattern = new ASTIntegerPattern(str2int(location, p, 10));
-                }
-                nodes.put(ctx, pattern);
                 break;
             case EXPRESSION:
+                switch (nlittype)
+                {
+                    case INT10:
+                        node = new ASTIntegerLiteralExpression(str2int(location, p, 10));
+                        break;
+                    case INT16:
+                        node = new ASTIntegerLiteralExpression(str2int(location, p.substring(2), 16));
+                        break;
+                    case REAL:
+                        node = new ASTRealLiteralExpression(str2real(location, p));
+                        break;
+                }
                 break;
         }
+        if (node == null) throw new UnsupportedOperationException("Invalid littype?");
+        putNode(ctx, node);
     }
 
     @Override 
@@ -443,19 +483,20 @@ public class VDMASTListener extends VDMBaseListener {
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        String p = ctx.CHARACTER_LITERAL().getText();
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                String p = ctx.CHARACTER_LITERAL().getText();
                 // p = 'C' (e.g. p(0/2)=', p(1)=C )
-                ASTPattern pattern = new ASTCharacterPattern(new LexCharacterToken(p.charAt(1), location)); 
-                nodes.put(ctx, pattern);
+                node = new ASTCharacterPattern(new LexCharacterToken(p.charAt(1), location)); 
                 break;
             case EXPRESSION:
+                node = new ASTCharLiteralExpression(new LexCharacterToken(p.charAt(1), location));
                 break;
         }
+        putNode(ctx, node);
     }
 
     @Override
@@ -470,7 +511,7 @@ public class VDMASTListener extends VDMBaseListener {
             case PATTERN:
                 String p = ctx.TEXT_LITERAL().getText();
                 ASTPattern pattern = new ASTStringPattern(new LexStringToken(p, location)); 
-                nodes.put(ctx, pattern);
+                putNode(ctx, pattern);
                 break;
             case EXPRESSION:
                 break;
@@ -489,7 +530,7 @@ public class VDMASTListener extends VDMBaseListener {
             case PATTERN:
                 String p = ctx.QUOTE_LITERAL().getText();
                 ASTPattern pattern = new ASTQuotePattern(new LexQuoteToken(p.substring(1, p.length()-1), location)); 
-                nodes.put(ctx, pattern);
+                putNode(ctx, pattern);
                 break;
             case EXPRESSION:
                 break;
@@ -507,7 +548,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             case PATTERN:
                 ASTPattern pattern = new ASTBooleanPattern(new LexBooleanToken(ctx.SLK_true() != null, location)); 
-                nodes.put(ctx, pattern);
+                putNode(ctx, pattern);
                 break;
             case EXPRESSION:
                 break;
@@ -525,7 +566,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             case PATTERN:
                 ASTPattern pattern = new ASTNilPattern(new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NIL, location)); 
-                nodes.put(ctx, pattern);
+                putNode(ctx, pattern);
                 break;
             case EXPRESSION:
                 break;
@@ -559,7 +600,7 @@ public class VDMASTListener extends VDMBaseListener {
         }
         //TODO should such removals also be present in other sub-trees? 
         nodes.removeFrom(ctx.symbolic_literal()); 
-        nodes.put(ctx, node);
+        putNode(ctx, node);
     }    
     
     @Override 
@@ -572,7 +613,7 @@ public class VDMASTListener extends VDMBaseListener {
             list = new ASTPatternList();
         else 
             list = getListNode(plist, ASTPatternList.class);
-        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), list));
+        putNode(ctx, new ASTSetPattern(token2loc(ctx), list));
     }
 
     @Override 
@@ -580,7 +621,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern p1 = getNode(ctx.pattern(0), ASTPattern.class);
         ASTPattern p2 = getNode(ctx.pattern(1), ASTPattern.class);
-        nodes.put(ctx, new ASTMapUnionPattern(p1, token2loc(ctx.SLK_union()), p2));
+        putNode(ctx, new ASTMapUnionPattern(p1, token2loc(ctx.SLK_union()), p2));
     }
 
     @Override 
@@ -593,7 +634,7 @@ public class VDMASTListener extends VDMBaseListener {
             list = new ASTPatternList();
         else 
             list = getListNode(plist, ASTPatternList.class);
-        nodes.put(ctx, new ASTSetPattern(token2loc(ctx), list));
+        putNode(ctx, new ASTSetPattern(token2loc(ctx), list));
     }
 
     @Override 
@@ -601,13 +642,13 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern lhs = getNode(/*ctx.pattern(0)*/ctx.lhs, ASTPattern.class);
         ASTPattern rhs = getNode(/*ctx.pattern(1)*/ctx.rhs, ASTPattern.class);
-        nodes.put(ctx, new ASTMapUnionPattern(lhs, token2loc(ctx.O_CONCAT()), rhs));
+        putNode(ctx, new ASTMapUnionPattern(lhs, token2loc(ctx.O_CONCAT()), rhs));
     }
 
     @Override 
     public void exitEmptyMapPattern(VDMParser.EmptyMapPatternContext ctx)
     {
-        nodes.put(ctx, new ASTMapPattern(token2loc(ctx), new ASTMapletPatternList()));
+        putNode(ctx, new ASTMapPattern(token2loc(ctx), new ASTMapletPatternList()));
     }
 
     @Override 
@@ -615,7 +656,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern from = getNode(ctx.from, ASTPattern.class);
         ASTPattern to = getNode(ctx.to, ASTPattern.class);
-        nodes.put(ctx, new ASTMapletPattern(from, to));
+        putNode(ctx, new ASTMapletPattern(from, to));
     }
 
     @Override
@@ -627,13 +668,13 @@ public class VDMASTListener extends VDMBaseListener {
         {
             result.add(getNode(p, ASTMapletPattern.class));
         }
-        lists.put(ctx, result);        
+        putListNode(ctx, result);        
     }
 
     @Override 
     public void exitMapEnumPattern(VDMParser.MapEnumPatternContext ctx)
     {
-        nodes.put(ctx, new ASTMapPattern(token2loc(ctx), getListNode(ctx.maplet_pattern_list(), ASTMapletPatternList.class)));
+        putNode(ctx, new ASTMapPattern(token2loc(ctx), getListNode(ctx.maplet_pattern_list(), ASTMapletPatternList.class)));
     }
 
     @Override 
@@ -641,7 +682,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern lhs = getNode(ctx.lhs, ASTPattern.class);
         ASTPattern rhs = getNode(ctx.rhs, ASTPattern.class);
-        nodes.put(ctx, new ASTMapUnionPattern(lhs, token2loc(ctx.SLK_munion()), rhs));
+        putNode(ctx, new ASTMapUnionPattern(lhs, token2loc(ctx.SLK_munion()), rhs));
     }
 
     @Override 
@@ -652,7 +693,7 @@ public class VDMASTListener extends VDMBaseListener {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         if (list.isEmpty())
             throw new UnsupportedOperationException("Tupple must have >1 arguments");
-        nodes.put(ctx, new ASTTuplePattern(token2loc(ctx), list));
+        putNode(ctx, new ASTTuplePattern(token2loc(ctx), list));
     }
 
     @Override
@@ -667,7 +708,7 @@ public class VDMASTListener extends VDMBaseListener {
         //@NB needs to be implement ASTNamePatternPairList Mappable 
         ASTNamePatternPairList list = null;//(ASTNamePatternPairList)lists.get(ctx.field_pattern_list());
         LexNameToken classname = getNode(ctx.tight_pp_obj_name(), LexNameToken.class);
-        nodes.put(ctx, new ASTObjectPattern(token2loc(ctx), classname, list));
+        putNode(ctx, new ASTObjectPattern(token2loc(ctx), classname, list));
     }
 
     @Override
@@ -691,7 +732,7 @@ public class VDMASTListener extends VDMBaseListener {
             assert ctx.IDENTIFIER() != null; //TODO or do recognition failure?
             typename = id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false));
         }
-        nodes.put(ctx, typename);
+        putNode(ctx, typename);
     }
 
     @Override
@@ -700,7 +741,7 @@ public class VDMASTListener extends VDMBaseListener {
         //ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
         ASTPatternList list = (ASTPatternList)getListNode(ctx.pattern_list(), ASTPatternList.class);
         LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
-        nodes.put(ctx, new ASTRecordPattern(typename, list));
+        putNode(ctx, new ASTRecordPattern(typename, list));
     }
 
     @Override
@@ -708,13 +749,13 @@ public class VDMASTListener extends VDMBaseListener {
     {
         // Interval i = ctx.getSourceInterval();
         // System.out.println(i);
-        nodes.put(ctx, new ASTIgnorePattern(token2loc(ctx)));
+        putNode(ctx, new ASTIgnorePattern(token2loc(ctx)));
     }
 
     @Override
     public void exitIdPattern(VDMParser.IdPatternContext ctx)
     {
-        nodes.put(ctx, new ASTIdentifierPattern(id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false))));
+        putNode(ctx, new ASTIdentifierPattern(id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false))));
     }
 
 //------------------------
@@ -730,13 +771,13 @@ public class VDMASTListener extends VDMBaseListener {
         {
             ASTBind bind = getNode(ctx.bind(), ASTBind.class);
             nodes.removeFrom(ctx.bind());
-            nodes.put(ctx, bind);
+            putNode(ctx, bind);
         }
         else if (ctx.pattern() != null)
         {
             ASTPattern pattern = getNode(ctx.bind(), ASTPattern.class);
             nodes.removeFrom(ctx.pattern());
-            nodes.put(ctx, pattern);
+            putNode(ctx, pattern);
         }
         else 
             // recognition exception might be null? 
@@ -748,7 +789,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
-        nodes.put(ctx, new ASTSetBind(p, expr));
+        putNode(ctx, new ASTSetBind(p, expr));
     }
 
     @Override
@@ -756,7 +797,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
-        nodes.put(ctx, new ASTSeqBind(p, expr));
+        putNode(ctx, new ASTSeqBind(p, expr));
     }
 
     @Override
@@ -764,7 +805,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
         ASTType type= getNode(ctx.type(), ASTType.class);
-        nodes.put(ctx, new ASTTypeBind(p, type));
+        putNode(ctx, new ASTTypeBind(p, type));
     }
 
     @Override 
@@ -776,7 +817,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             result.add(getNode(mb, ASTMultipleBind.class));
         }
-        lists.put(ctx, result);
+        putListNode(ctx, result);
     }
 
     @Override
@@ -784,7 +825,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
-        nodes.put(ctx, new ASTMultipleSetBind(list, expr));
+        putNode(ctx, new ASTMultipleSetBind(list, expr));
     }
 
     @Override
@@ -792,7 +833,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
-        nodes.put(ctx, new ASTMultipleSeqBind(list, expr));
+        putNode(ctx, new ASTMultipleSeqBind(list, expr));
     }
 
     @Override
@@ -800,7 +841,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTType type = getNode(ctx.type(), ASTType.class);
-        nodes.put(ctx, new ASTMultipleTypeBind(list, type));
+        putNode(ctx, new ASTMultipleTypeBind(list, type));
     }
 
     @Override 
@@ -812,7 +853,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             result.add(getNode(tb, ASTTypeBind.class));
         }
-        lists.put(ctx, result);
+        putListNode(ctx, result);
     }
 }
 
