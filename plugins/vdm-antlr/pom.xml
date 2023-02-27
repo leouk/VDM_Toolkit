@@ -12,8 +12,9 @@
 	<properties>
 		<!-- ANTLR version, which percolates to all dependent POMs -->	
 		<!--<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>-->
-		<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>
-		<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version>
+		<org.antlr.antlr-version>4.9.2</org.antlr.antlr-version>
+		<!--<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version> -->
+		<antlr4test-maven-plugin.version>1.18</antlr4test-maven-plugin.version>
 	</properties>
 
 
