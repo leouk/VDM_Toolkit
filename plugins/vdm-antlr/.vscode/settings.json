@@ -25,5 +25,49 @@
     },
     "[pvs]": {
         "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}|;:'\",.<>/"
+    },
+    "antlr4.atn.maxLabelCount": 5,
+    "antlr4.atn.saveDir": ".antlr",
+    "antlr4.call-graph.saveDir": ".antlr",
+    "antlr4.rrd.saveDir": ".antlr",
+    "antlr4.generation": {
+      //"alternativeJar": "~/antlr4-4.11.1-complete.jar",
+      "mode": "external",
+      "language": "Java",
+      "package": "vdmantlr.generated",
+      "outputDir": "../java/vdmantlr/generated",
+      "listeners": true,
+      "visitors": true        
+    },
+    "antlr4.format": {
+      "alignTrailingComments": false,
+      "allowShortBlocksOnASingleLine": true,
+      "breakBeforeBraces": false,
+      "columnLimit": 100,
+      "continuationIndentWidth": 4,
+      "indentWidth": 4,
+      "keepEmptyLinesAtTheStartOfBlocks": false,
+      "maxEmptyLinesToKeep": 1,
+      "reflowComments": true,
+      "spaceBeforeAssignmentOperators": true,
+      "tabWidth": 4,
+      "useTab": true,
+      "alignColons": "none",
+      "singleLineOverrulesHangingColon": true,
+      "allowShortRulesOnASingleLine": true,
+      "alignSemicolons": "none",
+      "breakBeforeParens": false,
+      "ruleInternalsOnSingleLine": false,
+      "minEmptyLines": 0,
+      "groupedAlignments": true,
+      "alignFirstTokens": false,
+      "alignLexerCommands": false,
+      "alignActions": false,
+      "alignLabels": true,
+      "alignTrailers": false
+    },
+    "antlr4.debug": {
+      "visualParseTreeHorizontal": true,
+      "visualParseTreeClustered": false
     }
 }
