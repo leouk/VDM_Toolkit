@@ -40,7 +40,6 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
 	}
 
     protected String usageMsg;
-    private final CommandList commandsList;
     protected final Set<String> modulesToProcess;
     protected File saveURI; 
     
@@ -50,10 +49,6 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
         usageMsg = null;
         saveURI = null;
         modulesToProcess = new HashSet<String>();
-        commandsList = new CommandList(
-            ExuCommand.class, 
-            TranslateCommand.class, 
-            IsapogCommand.class);   
     }
 
     @Override
@@ -155,14 +150,17 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
                     // null result 
                     break;
             }
-        if (result == null)
-            result = lookup(line, commandsList);
+        //@NB is just removing these right?
+        // if (result == null)
+        //     result = lookup(line, commandsList);
         return result;
     }
 
     @Override
 	public void help()
 	{
-		showHelp(commandsList);
+        ExuCommand.help();
+        TranslateCommand.help();
+        IsapogCommand.help();
 	}
 }

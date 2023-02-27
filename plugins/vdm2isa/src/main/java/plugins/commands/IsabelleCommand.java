@@ -580,10 +580,12 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     }
 
     @Override
-    public final void run()
+    public final String run(String line)
     {
-        // use the constructor arguments for the first time? 
-        run(arguments.toArray(new String[0]));
+        //@NB is this right fix?
+        setArguments(Utils.toArgv(line));
+        boolean r = run(arguments.toArray(new String[0]));
+        return String.valueOf(r);
     }
 
     public final boolean run(String[] args)
