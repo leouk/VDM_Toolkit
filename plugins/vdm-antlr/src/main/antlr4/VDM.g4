@@ -2036,11 +2036,11 @@ pattern
     | pattern SLK_union pattern     #SetUnionPattern
 // A.8.1 seq enum + concatenation pattern 
     | BRACKET_L pattern_list? BRACKET_R #SeqEnumPattern 
-    | pattern O_CONCAT pattern  #SeqConcatPattern
+    | lhs=pattern O_CONCAT rhs=pattern  #SeqConcatPattern
 // A.8.1 map enum + munion pattern
     | BRACE_L maplet_pattern_list BRACE_R #MapEnumPattern
     | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
-    | pattern SLK_munion pattern    #MapMunionPattern
+    | lhs=pattern SLK_munion rhs=pattern    #MapMunionPattern
 // A.8.1 tupple pattern
     | SLK_mk PAREN_L  pattern_list PAREN_R #TupplePattern
 // A.8.1 object pattern 
@@ -2057,7 +2057,7 @@ maplet_pattern_list
     ;
 
 maplet_pattern
-    : pattern SEP_maplet pattern
+    : from=pattern SEP_maplet to=pattern
     ;
 
 field_pattern_list 
@@ -2076,10 +2076,11 @@ pattern_list
 // A.8.2 Bindings
 //------------------------
 
-//@LF why doesn't this get left-recursive problems on pattern + set_bind (pattern on both sides)?
+//@NB VDMJ seems to prioritise bind over pattern? LRM says different
+//    will flip here
 pattern_bind 
-    : pattern 
-    | bind
+    : bind
+    | pattern 
     ;
 
 bind 
