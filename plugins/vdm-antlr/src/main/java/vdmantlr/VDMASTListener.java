@@ -83,9 +83,9 @@ public class VDMASTListener extends VDMBaseListener {
         VDMASTListener listener = new VDMASTListener(TEST);
         ParseTree t = listener.parser.pattern_list();//parser.expression();
         ParseTreeWalker.DEFAULT.walk(listener, t);
-        System.out.println("tree="+t.toStringTree(listener.parser));
+        System.out.println("\ntree="+t.toStringTree(listener.parser)+"\n");
         ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
-        System.out.println("VDM=" + n.toString());
+        System.out.println("VDM=" + n.toString()+"\n");
     }
 
     public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
