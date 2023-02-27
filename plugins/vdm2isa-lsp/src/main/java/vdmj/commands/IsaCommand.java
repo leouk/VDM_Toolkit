@@ -18,6 +18,7 @@ public class IsaCommand extends AnalysisCommand {
     
 	public IsaCommand(String line, IsapogCommand pl)
 	{
+		super(line);
 		this.plugin = pl;
 		this.args = Utils.toArgv(line);
 		if (this.args == null)
