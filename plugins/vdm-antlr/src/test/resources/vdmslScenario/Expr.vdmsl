@@ -8,13 +8,9 @@ definitions
 --     g[@elem]: seq of @elem -> nat 
 --     g(s) == len s;
 
-functions 
-    f: map nat to nat -> nat
-    f(m munion n munion t) == 0;
-    
 values
     v1 = mk_(mk_(1,2), mk_(1,2));
-    v11 = v1.#1.#1;
+    --v11 = v1.#1.#1;
     --v12 = (v1.#1).#1;
     -- v4 = [f, g];
     -- v5 = v4(1)[nat]({1,2,3});

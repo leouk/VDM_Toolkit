@@ -55,28 +55,28 @@ lexer grammar VDMLex;
 
 @lexer::header
 { 
-    import com.fujitsu.vdmj.lex.Dialect; 
+    //import com.fujitsu.vdmj.lex.Dialect; 
 }
 
 @lexer::members
 { 
     // Lexer predicates are on the RHS given how it interacts with the parser
     // See description in ANTLR4 book 11.2 Deactivating Tokens
-    public static Dialect dialect = Dialect.VDM_SL;
+    //public static Dialect dialect = Dialect.VDM_SL;
 
     public static boolean isVDMSL()
     {
-        return dialect == Dialect.VDM_SL;
+        return true;//dialect == Dialect.VDM_SL;
     }
 
     public static boolean isVDMPP()
     {
-        return dialect == Dialect.VDM_PP;
+        return false;//dialect == Dialect.VDM_PP;
     }
 
     public static boolean isVDMRT()
     {
-        return dialect == Dialect.VDM_RT;
+        return false;//dialect == Dialect.VDM_RT;
     }
 }
 //------------------------
