@@ -1,6 +1,6 @@
 package annotations;
 
-import com.fujitsu.vdmj.VDMJ;
+import com.fujitsu.vdmj.plugins.VDMJ;
 
 public class TestVDMJ {
     
