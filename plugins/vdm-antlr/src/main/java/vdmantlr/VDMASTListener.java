@@ -21,10 +21,14 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.expressions.ASTBooleanLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTCharLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTIntegerLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTNilExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTQuoteLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTRealLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTStringLiteralExpression;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
@@ -504,18 +508,19 @@ public class VDMASTListener extends VDMBaseListener {
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        String p = ctx.TEXT_LITERAL().getText();
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                String p = ctx.TEXT_LITERAL().getText();
-                ASTPattern pattern = new ASTStringPattern(new LexStringToken(p, location)); 
-                putNode(ctx, pattern);
+                node = new ASTStringPattern(new LexStringToken(p, location)); 
                 break;
             case EXPRESSION:
+                node = new ASTStringLiteralExpression(new LexStringToken(p, location));
                 break;
-        }        
+        }
+        putNode(ctx, node);
     }
 
     @Override
@@ -523,18 +528,19 @@ public class VDMASTListener extends VDMBaseListener {
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        String p = ctx.QUOTE_LITERAL().getText();
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                String p = ctx.QUOTE_LITERAL().getText();
-                ASTPattern pattern = new ASTQuotePattern(new LexQuoteToken(p.substring(1, p.length()-1), location)); 
-                putNode(ctx, pattern);
+                node = new ASTQuotePattern(new LexQuoteToken(p.substring(1, p.length()-1), location)); 
                 break;
             case EXPRESSION:
+                node = new ASTQuoteLiteralExpression(new LexQuoteToken(p.substring(1, p.length()-1), location));
                 break;
-        }        
+        }
+        putNode(ctx, node);
     }
 
     @Override 
@@ -542,17 +548,18 @@ public class VDMASTListener extends VDMBaseListener {
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                ASTPattern pattern = new ASTBooleanPattern(new LexBooleanToken(ctx.SLK_true() != null, location)); 
-                putNode(ctx, pattern);
+                node = new ASTBooleanPattern(new LexBooleanToken(ctx.SLK_true() != null, location));
                 break;
             case EXPRESSION:
+                node = new ASTBooleanLiteralExpression(new LexBooleanToken(ctx.SLK_true() != null, location));
                 break;
         }
+        putNode(ctx, node);
     }
 
     @Override 
@@ -560,17 +567,18 @@ public class VDMASTListener extends VDMBaseListener {
     {
         LexLocation location = token2loc(ctx);
         if (littype == null)
-            throw new UnsupportedOperationException();
-        //TODO these to me sounds like lexing rules that could have more info? 
+            throw new UnsupportedOperationException("Invalid literal type");
+        ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                ASTPattern pattern = new ASTNilPattern(new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NIL, location)); 
-                putNode(ctx, pattern);
+                node = new ASTNilPattern(new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NIL, location));
                 break;
             case EXPRESSION:
+                node = new ASTNilExpression(location);
                 break;
         }
+        putNode(ctx, node);
     }
 
     @Override 
