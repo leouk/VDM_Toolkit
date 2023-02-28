@@ -202,7 +202,7 @@ pdfstartview=Fit
 \maketitle
 \setcounter{footnote}{0} 
 \begin{abstract}
-    The \gls{ISQ} standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There has been such accidents in space missions, medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{F}ast, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which include a translation and proof environment for VDM in Isabelle~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
+    The \gls{ISQ} standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such a standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There have been such accidents in space missions, medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{F}ast, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which include a translation and proof environment for VDM in Isabelle\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
 \end{abstract}
 
 \keywords{VSCode, VDM, ISQ, Measurement, Libraries}
@@ -212,24 +212,24 @@ pdfstartview=Fit
 
 The International System of Quantities (ISQ) standard\footnote{\url{https://en.wikipedia.org/wiki/International_System_of_Quantities}} (also known as SI\footnote{\url{https://en.wikipedia.org/wiki/International_System_of_Units}}) represents the world's most widely used system of measurement. It has official status in nearly every country in the world, and is employed in a wide range of fields (\textit{e.g.}~science, technology, medicine, commerce, avionics, everyday use, \textit{etc.}). It is fundamental for both physics and engineering~\cite{bipm-jcgm:2012:VIM}. An interesting compendium of application and their relevance in various domains can be found in~\cite{NPL-book}. 
 
-The standard comprises an elegant, minimal and coherent system of units of measurement, with the following seven base unit dimensions of length (in metres, \textbf{m}), mass (in kilograms, \textbf{kg}), time (in seconds, \textbf{s}), electric current (in amperes, \textbf{A}), thermodynamic temperature (in kelvins, \textbf{K}), amount of substance (in mols, \textbf{mol}) and luminous intensity (in candelas, \textbf{cd}). From these base units, the system can accomodiate for an unlimited number of aditional (combined and converted) quantities (see~\Cref{tbl:SI}). 
+The standard comprises an elegant, minimal and coherent system of units of measurement, with the following seven base unit dimensions of length (in metres, \textbf{m}), mass (in kilograms, \textbf{kg}), time (in seconds, \textbf{s}), electric current (in amperes, \textbf{A}), thermodynamic temperature (in kelvins, \textbf{K}), amount of substance (in mols, \textbf{mol}) and luminous intensity (in candelas, \textbf{cd}). From these base units, the system can accommodate for an unlimited number of aditional (combined and converted) quantities (see~\Cref{tbl:SI}). 
 
-Unit combinations are known as coherent derived units (or measurement systems) and can be represented as products of powers of other units. For instance, one can combine length and time to create units of velocity (\(\frac{m}{s}\)) and acceleration (\(\frac{m}{s^2}\));~and one can convert between units to create alternative interpretations of units like velocity in kilometers or miles per hour. Importantly, these combinations give rise to new units, and conversions give rise to (mostly bijective) unit correspondencess. 
+Unit combinations are known as coherent derived units (or measurement systems) and can be represented as products of powers of other units. For instance, one can combine length and time to create units of velocity (\(\frac{m}{s}\)) and acceleration (\(\frac{m}{s^2}\));~and one can convert between units to create alternative interpretations of units like velocity in kilometers or miles per hour. Importantly, these combinations give rise to new units, and conversions give rise to bijective unit correspondences, unless conversions involve conversion schemas leading to approximation issues. 
 
-Over twenty such coherent derived units are standard, named and routinely used. Further new (unamed) units can still be created (\textit{e.g.}~velocity as centimeter per year).This expressivity gives rise to multiple prefixes (\textit{e.g.}~kilo, centi, \textit{etc.}) and industry-standard conversion and combination schemes (\textit{e.g.}~\(\frac{km}{h}\) in \(\frac{miles}{h}\)). Thus, representing those notions formally is particularly important. 
+Over twenty such coherent derived units are standard, named and routinely used. Further new (unamed) units can still be created (\textit{e.g.}~velocity as centimeter per year). This expressivity gives rise to multiple prefixes (\textit{e.g.}~kilo, centi, \textit{etc.}) and industry-standard conversion and combination schemes (\textit{e.g.}~\(\frac{km}{h}\) in \(\frac{miles}{h}\)). Thus, representing those notions formally is particularly important. 
 
-For example, Functional Mock-up Interfaces, which are used by various critical industries, have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. That community would benefit from having ISQ units formalised.         
+As an example, Functional Mock-up Interfaces (FMI), which are used by various critical industries, have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. That community would benefit from having ISQ units formalised.         
 
-The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains fields, such as of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, \textit{etc}. We extend VDM specification support with a suite of tools and mathematical libraries~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
+The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, \textit{etc}. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE\@.
 
-We were inspired to develop the \texttt{ISQ.vdmsl} library due to the frustration repetead error-prone (and tediuos) calculations involving unit use and conversions. The \texttt{ISQ} VDM library has been used in various industrial applications, such as embedded control systems, medical devices, chemical quantities composition (in drug dosage computation), complex scheduling time-scales, \textit{etc}. See the VDM\_Toolkit site for such examples.     
+We were inspired to develop the \texttt{ISQ.vdmsl} library due to the frustration of repetead error-prone (and tediuos) calculations involving unit use and conversions. The \texttt{ISQ} VDM library has been used in various industrial applications, such as embedded control systems, medical devices, chemical quantities composition (in drug dosage computation), complex scheduling time-scales, \textit{etc}.     
 
-In this paper, we report on the recent extension of the VDM toolkit to support ISQ standard, various conversion schemes, approximate precision, all base and derived representations, \textit{etc.}. We illustrate its use with a variety of scenarios frequently seen in practical applications of ISQ\@.    
+In this paper, we report on the recent extension of the VDM toolkit to support the ISQ standard, various conversion schemes, approximate precision, all base and derived representations, \textit{etc.}. We illustrate its use with a variety of scenarios frequently seen in practical applications of ISQ\@.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}~\label{sec:background}
 
-\gls{ISQ} has conventions corresponding to measurement-quantity category, abbreviations, dimensions and common names listed in~\Cref{tbl:SI}.
+\gls{ISQ} has conventions corresponding to measurement-quantity category, abbreviations, dimensions and common names listed in~\Cref{tbl:SI}. Further background on ISQ itself is given in context of their corresponding definitions within the VDM library description.  
 %
 \begin{table}[htbp]
     \centering
@@ -248,15 +248,15 @@ In this paper, we report on the recent extension of the VDM toolkit to support I
     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SI}
 \end{table} 
 
-\gls{ISQ} unit conversions and combinations are notosrioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications that rely on such units conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
+\gls{ISQ} unit conversions and combinations are notorioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications that rely on such unit conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
 
-The \texttt{ISQ} VDM library is heavily inspired by similar work provided for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. We integrate this library within the VDM VSCode extension~\footnote{\url{https://marketplace.visualstudio.com/items?itemName=overturetool.vdm-vscode})}, as well as VDMJ~\cite{Battle09}.
+The \texttt{ISQ} VDM library is heavily inspired by similar work provided for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. We integrate this library within the VDM VSCode extension\footnote{\url{https://marketplace.visualstudio.com/items?itemName=overturetool.vdm-vscode}}, as well as VDMJ~\cite{Battle09}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Design Principles}\label{sec:principles}
 
-Our VDM ISQ library has four core design principles:
+Our VDM \texttt{ISQ} library has four core design principles:
 
 	\begin{enumerate}
 		\item \textbf{S}imple:~ease of use is crucial, given ISQ unit combination and conversion are pervasive and rather menial, albeit error prone, task;
@@ -273,7 +273,7 @@ These \textbf{SAFE} principles underpin the overall library design goals. Its ar
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Library architecture}\label{sec:architecture}
 
-Next, we present the library architecture. User models have to import \texttt{ISQ.vdmsl}, which provides various functionalities divided in six parts: 
+Next, we present the library architecture. User models have to import \texttt{ISQ.vdmsl}, which provides various functionalities divided into six parts: 
 %
 \begin{enumerate}
     \item Dimensions (\textit{e.g.} length), dimension vectors (\textit{e.g.}~pressure as \(\frac{kg}{ms^s}\)), and operators;
@@ -293,12 +293,12 @@ Next, we present the library architecture. User models have to import \texttt{IS
  
 \subsection*{ISQ dimensions and dimension vectors}
 
-ISQ dimensions and dimension vectors represent base units of measurment and how they are combined and converted. There are seven base units of measurement as:~\textbf{L}ength, \textbf{M}ass, \textbf{T}ime, Electric Current (\textbf{I}), Temperature (\(\mathbf{\Theta}\)), Amount of Substance (\textbf{N}), and Luminous Intensity (\textbf{J}). Their standard quantity are, respectively:~meter (m), kilogram (kg), second (s), ampere (A), kelvin (K), mole (mol) and candela (cd). Their relationships and how they used for combination and conversions is illutrated in~\Cref{fig:UnitRelationships}.  
+ISQ dimensions and dimension vectors represent base units of measurment and how they are combined and converted. There are seven base units of measurement are:~\textbf{L}ength, \textbf{M}ass, \textbf{T}ime, Electric Current (\textbf{I}), Temperature (\(\mathbf{\Theta}\)), Amount of Substance (\textbf{N}), and Luminous Intensity (\textbf{J}). Their standard quantities are, respectively:~meter (m), kilogram (kg), second (s), ampere (A), kelvin (K), mole (mol) and candela (cd). Their relationships and how they used for combination and conversions is illutrated in~\Cref{fig:UnitRelationships}\footnote{Figure originally appeared in~\url{https://en.wikipedia.org/wiki/International_System_of_Units}.}.  
 
 \begin{figure}[htbp]
     \centering
         \includegraphics[width=\textwidth,scale=0.4]{figures/ISQLibUnitRelationships2.png}
-    \caption{\texttt{ISQ.vdmsl} units of measurement and their conversion relationships.}\label{fig:UnitRelationships}
+    \caption{ISQ units of measurement and their conversion relationships.}\label{fig:UnitRelationships}
  \end{figure}
 
 Dimension vectors are maps capturing how each dimension relates. For instance, the notion of pressure can be measured in a derived unit named \textit{Pascal}, which is kilo per metre per second per second (\(\frac{kg}{ms^2}\)). 
@@ -311,7 +311,7 @@ These base unit combinations are captured in a so-called dimension vector, which
 %
 \noindent This dimension mapping enables the representation of a wide variety of base and derived units with many dimensions. To make conversion operations (see below) homogeneous and compositional, dimension vectors must describe all base unit dimensions. In the example above, all remaining base units are mapped to zero.
 
-There are twenty two predefined dimension vectors:~seven for each of the base units mentioned; and fifteen for other so-called coherent derived units. These derived units combine one or more of the base units and are for:
+There are \(22\) predefined dimension vectors:~seven for each of the base units mentioned; and fifteen for other so-called coherent derived units. These derived units combine one or more of the base units and are for:
 %
 % \begin{table}[htbp]
 %     \centering
@@ -342,12 +342,12 @@ area (\(L^2\)), volume (\(L^3\)), frequency (\(\frac{1}{T}\)), velocity (\(\frac
 %
 Each of these derived units has a corresponding dimension vector as a VDM map constant. 
 
-It is also possible to define dimensionless vectors for so-called bare or pure quantities, such as radians. Even though they are non-SI units, such quantities are useful for various applications. These are dimension vectors where all dimensions map to zero. Single quantities like meter or seconds, have dimension vectors with all other dimensions mapped to zero, but the one dimension in question that is mapped to one.  
+It is also possible to define dimensionless vectors for so-called bare or pure quantities, such as radians. Even though they are non-SI units, such quantities are useful for various applications. These are dimension vectors where all omitted dimensions map to zero. Single quantities like meter or seconds, have dimension vectors with all other dimensions mapped to zero, but the one dimension in question that is mapped to one.  
 
 Dimension vector operators are used to combine these derived dimensions, as well as to create new user-defined dimentions. These are recursive map operations, which ensure quantity scaling and conversion will be sound. Moreover, to ensure sound dimension conversions, dimension vectors must be total on all seven base units.      
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{ISQ quantities}
+\subsection*{\texttt{ISQ} quantities}
 
 ISQ quantities represent the magnitude of a specific dimension vector. Unit quantities (of magnitude \(1\)) for each of the base and derived units are used to compute conversions between measurement systems (\textit{e.g.}~kilometer per hour into miles per hour). For example, the unit quantity of area is defined as
 %
@@ -364,16 +364,16 @@ Quantities comparison (or ordering) are also limited to those within the same di
     ord q1 < q2 == q1.m < q2.m; 
 \end{vdmsl}
 %  
-\noindent A variety of other kinds of auxiliary quantities are defined, such as integer quantities, or single dimension quantities for each base and derived units.  
+\noindent A variety of other kinds of auxiliary quantities are defined, such as integer quantities, or single dimension quantities for each base and derived units. Notice that we use record equality abstraction for the dimension vector part of \verb'Quantity'. That is, the dimension vector map is not to be considered when comparing two quantities for equality.   
 
-Operators between quantities include (but are not limited to): multiplication, replication, division, inversion, summation, (unary and binary) subtraction, scaling, \textit{etc}. They operate over the quantity's magnitude and perform any necessary dimension composition. Finaly, dimension composition operates in the same way as for quantities. For example, if users divide ten meters by two hours, they get the result in meters per hour, which is in fact just meter per second (the base units of length and time).    
+Operators between quantities include (but are not limited to): multiplication, replication, division, inversion, summation, (unary and binary) subtraction, scaling, \textit{etc}. They operate over the quantity's magnitude and perform any necessary dimension composition. Finaly, dimension composition operates in the same way as for quantities. For example, if users divide ten meters by two hours, they get the result in meters per hour. This is represented on the base units of the \texttt{SI} system, which is in fact just meter per second (the \texttt{SI} base units of length and time).    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{ISQ measurement systems}
+\subsection*{\texttt{ISQ} measurement systems}
 
 An ISQ measurement system represents a named quantity with a corresponding dimension vector conversion schema. A conversion schema defines (non-zero magnitude) factors to convert between other named measurement systems, for all base dimensions. 
 
-Like demension vectors, conversion schemas are VDM maps from all dimensions to a non-zero (real-valued) magnitude.    
+Like dimension vectors, conversion schemas are VDM maps from all dimensions to a non-zero (real-valued) magnitude.    
 They represent a mapping determining how each dimension magnitude is to be viewed within another measurement system. For example, the standard ISQ conversion schema (\texttt{SI}) is simply the identity map of all dimensions (\textit{e.g.}~one metre corresponds to one metre). More interestingly, the conversion schema for the British Imperial System (\textit{e.g.}~mile, yard, foot, \textit{etc.}) is named \texttt{BIS}. The measurement system representing yards in \texttt{BIS} is defined as     
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
@@ -383,7 +383,7 @@ They represent a mapping determining how each dimension magnitude is to be viewe
 %
 \noindent That is, a yard-unit quantity in \texttt{BIS} corresponds (will be converted into) \(0.9143993\) meters in the standard measurement system. The \texttt{LENGTH} dimension vector corresponds to dimension vector that maps all dimensions to zero and length to one.    
 
-Crucialy, all ommited dimensions in \texttt{BIS} map to \(1\). This is different from dimension vectors that are mapped to zero by default. Such setup is crucial for how quantity dimensions are converted, which will be explained below
+Crucialy, all ommited dimensions in \texttt{BIS} map to \(1\). This is different from dimension vectors that are mapped to zero by default. Such setup is crucial for how quantity dimensions are converted, which will be explained below.
 
 With this representation, it is now possible to perform conversions between measurement systems through various operators. There are conversion schema operators for inverse, composion and scaling; and measurement system operators for replication, multiplication, inverse, division and various conversions between different measurement system's schemas. 
 
@@ -400,9 +400,9 @@ For each of the base and derived dimensions and quantities, we define a correspo
 %
 \noindent where \texttt{SI} is the conversion schema that maps all dimensions to \(1\), and \texttt{UNIT\_AREA} is the unit quantity for the dimension vector of area described above. Users can then extend this type to define their own notions of area within further refined (type invariants over) \texttt{Area} types.
 
-These type extensions are performed for every base and derived dimentions. Furthermore, we define constants for the basic instance of such types (\textit{i.e.}~unit version of area within the \texttt{SI} standard measurement system). This in turn, enable the measurement system conversions described above, where the \texttt{SI} standard measurement system is the baseline.   
+These type extensions are performed for every base and derived dimentions. Furthermore, we define constants for the basic instance of such types (\textit{i.e.}~unit version of area within the \texttt{SI} standard measurement system). This in turn, enables the measurement system conversions described above, where the \texttt{SI} standard measurement system is the baseline.   
 
-Further useful measurements are created to illustrate the flexibility of the framework. For instance, the functions below perfom necessary conversions between \texttt{BIS} and \texttt{SI} measurement systems by scaling.   
+Further useful measurements are created to illustrate the flexibility of the framework. For instance, the functions below perfom the necessary conversions between \texttt{BIS} and \texttt{SI} measurement systems by scaling.   
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     METRE: Metre = mk_MeasurementSystem(UNIT_LENGTH, SI, SI_UNIT);
@@ -419,7 +419,7 @@ Further useful measurements are created to illustrate the flexibility of the fra
 %
 \noindent The first constant defines the baseline standard measurement system as a unit of length (\textit{i.e.}~a quantity with magnitude \(1\) and dimension vector mapping length to \(1\) and all other dimensions to \(0\)). The next functions transforms different imperial measurements by scaling their corresponding measurement system with their numerical magnitude correspondence (\textit{e.g.}~foot as third of a yard, yard as \(0.9144\) of a meter, \textit{etc.}). 
 
-This kind of setup serves to illustrate how the various named abstractions can help qualify what computation is needed for what kind of conversion in as an ituitive fashion as possible, hence reducing room for error-prone conversion mistakes.  
+This kind of setup serves to illustrate how the various named abstractions can help qualify what computation is needed for what kind of conversion in as ituitive a fashion as possible, hence reducing room for error-prone conversion mistakes.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{ISQ scaling and conversion}
@@ -437,11 +437,11 @@ ISQ scaling is performed by multiplying the magnitude of the entities involved. 
 %
 \noindent That is, measurement system scaling by magnitude \(m\) corresponds to scaling the measurement system's quantity magnitude by \(m\). 
 
-Of course, when you scale two quantities, there is no change in dimension vector, whereas when you scale a measurement system, you must take dimension conversion into account. If you perform a measurement system operations over two different quantities dimension vectors, then the result is in either a different dimension (\textit{e.g.}~if you divide quantities of length and time you get velocity) or in the dimension of one of the parameters (\textit{e.g.}~if you sum velocities in different units you must choose one as a resulting dimension vector). For example, if you perform a measurement system summation operation over two different quantities' dimension vectors, the result will be in the dimension of the leading operator (\textit{e.g.}~\(20\frac{miles}{hour} + 20\frac{km}{hour} = ?\frac{miles}{hour}\)).
+Of course, when you scale two quantities, there is no change in their dimension vectors, whereas when you scale a measurement system, you must take dimension conversion into account. If you perform a measurement system operations over two different quantities' dimension vectors, then the result is in either a different dimension (\textit{e.g.}~if you divide quantities of length and time you get velocity) or in the dimension of one of the parameters (\textit{e.g.}~if you sum velocities in different units you must choose one as a resulting dimension vector). For example, if you perform a measurement system summation operation over two different quantities' dimension vectors, the result will be in the dimension of the leading operator (\textit{e.g.}~\(20\frac{miles}{hour} + 20\frac{km}{hour} = ?\frac{miles}{hour}\)).
 
 To perform such operations over different measurement systems, a leading measurement system conversion schema has to be considered (\(\frac{miles}{hour}\)). For the \texttt{ISQ.vdmsl} library, that is the conversion schema of the first parameter in a measurement system operator. In the example above, the result would be in miles per hour. To achieve this, we must get the trailing measurement system (\(\frac{km}{hour}\)) converted into the leading (\(\frac{miles}{hour}\)) one, then perform quantity scaling.
 
-Given a target onversion schema (\texttt{cs\_conv}) and a measurement system, we convert the quantity by converting the magnitude according to the target schema (\texttt{cs\_conv}), keeping the given schema (\texttt{cs}). Next, to quantity-convert in multiple dimensions, we must use the set-product (\texttt{prods\_r}) of the integer exponenciation between the corresponding conversion schema (\texttt{cs(i)}) and dimension vector (\texttt{dv(i)}) dimensions, for all base dimensions. 
+Given a target conversion schema (\texttt{cs\_conv}) and a measurement system, we convert the quantity by converting the magnitude according to the target schema (\texttt{cs\_conv}), keeping the given schema (\texttt{cs}). Next, to quantity-convert in multiple dimensions, we must use the set-product (\texttt{prods\_r}) of the integer exponentiation between the corresponding conversion schema (\texttt{cs(i)}) and dimension vector (\texttt{dv(i)}) dimensions, for all base dimensions. The conversion function itself filters out any unexpected dimensions (\ie~those outside both conversion schema and dimension vector). Nevertheless, we also thought to add their dimension domain equivalence as a precondition to document the expected use of the function, despite the fact it would work without it.  
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     quant_conv: ConversionSchema * DimensionVector -> MagnitudeN0
@@ -461,7 +461,7 @@ The resulting set of magnitudes is then multiplied together, now that their conv
 
 \paragraph*{Dimension vector correspondences.}~
 %
-As with other areas of mathematics, the unit signature of operators determine the kind of activity being performed. For example, Joule per Kelvin (\(\frac{J}{K}\)) is a unit of entropy of heat capacity. Furthermore, the analysis of dimension vectors determines that every coherent (base or derived) SI unit can be written as a unique product of powers of the base units constants. 
+As with other areas of mathematics, the unit signature of operators determine the kind of activity being performed. For example, Joule per Kelvin (\(\frac{J}{K}\)) is a unit of entropy or heat capacity. Furthermore, the analysis of dimension vectors determines that every coherent (base or derived) SI unit can be written as a unique product of powers of the base units constants. 
 
 For example, the \textit{Joule} (\(J\)) is defined as the unit of energy as \(\frac{kgm^2}{s^2}\). That is, a Joule is equal to the amount of work done when a force displaces a mass (one \(kg\)) through a distance (one \(m\)) with particular acceleration (\(\frac{m}{s^2}\)). It can also be viewed as the amount of pressure (in \textit{Pascal}, \(Pa = \frac{kg}{ms^2}\)) through a volume (\(m^3\)). That is, \(Pa . m^3\), which is equal to \(\frac{kgm^3}{ms^2}\) and can be simplified to a \textit{Joule}. 
 
@@ -503,30 +503,35 @@ Specific (canonical \texttt{SI}) measurement systems can also be used for standa
     mph2mps(mph) ==	mag(metrify(scaleMS(mph, BIS_MILE_PER_HOUR())));
 \end{vdmsl}
 %
-\noindent The \texttt{BIS\_MILE\_PER\_HOUR} is a measurement system that divide the mile by the hour measurement systems. Overall, even though these computations are somewhat involved, the named abstractions help understanding and introspection of how various concepts are combined and converted.  
+\noindent The \texttt{BIS\_MILE\_PER\_HOUR} is a measurement system that divides the mile by the hour measurement systems. Overall, even though these computations are somewhat involved, the named abstractions help understanding and introspection of how various concepts are combined and converted.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{ISQ other (non-decimal) measurement systems}
+\subsection*{\texttt{ISQ} other (non-decimal) measurement systems}
 
 We define various narrowing types and conversion functions between other (non-decimal) measurement systems. Notably, the one for the British Imperial System (\textit{i.e.}~yard, mile, \textit{etc.}) and the one for standard date and time (\textit{i.e.}~minute, hour, week, \textit{etc.}). 
 
 Users can easily follow the examples to explore other exotic measurement systems they might be interested in representing, where the combination and conversion operators will be straightfoward (and hopefully intuitive) computations. 
 
-The library contains \(32\) defined measurement systems:~\texttt{SI} \(22\) basic and derived units; and \texttt{BIS} \(5\) units for length (yards), mass (pound), temperature (rankine), volume (\(yard^3\)), and velocity (\(\frac{yard}{s}\)). Also, definitions of the \texttt{CGS} (Centimetre Gram Second) measurement system of units for length (centimeter), and mass (gram); and the \texttt{MHC} (Miligram Hour Celcius) measurement system of units for mass (miligrams), time (hour), and temperature (celcius). These allows for further derived units like foot, inches, square foot, day, week, year, \textit{etc}. 
+The library contains \(32\) defined measurement systems:~\texttt{SI} which includes \(22\) basic and derived units; and \texttt{BIS} which includes \(5\) units for length (yards), mass (pound), temperature (rankine), volume (\(yard^3\)), and velocity (\(\frac{yard}{s}\)). Also, definitions of the \texttt{CGS} (Centimetre Gram Second) measurement system of units for length (centimeter), and mass (gram); and the \texttt{MHC} (Milligram Hour Celsius) measurement system of units for mass (miligrams), time (hour), and temperature (celsius). These allows for further derived units like foot, inches, square foot, day, week, year, \textit{etc}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{\texttt{ISQ} use and other definitions}
 
 We ported the most important theorems from Isabelle/HOL ISQ library~\cite{Physical_Quantities-AFP} and wrote them as VDM traces. We also added various expected equivalences between important measurement systems to hold as part of the library. These are defined through \(23\) VDM trace specifications, which lead to a total of \(2132\) trace tests run for nearly all defined measurement systems and their extension. This is useful to ensure computations are working as expected, and also to show users how to use the various library features in practice. 
 
-We also define some \texttt{SI} common constants, such as the ceaseium frequency, speed of light, \textit{Planck} constant, \textit{etc}. These also come from the Isabelle/HOL version of this library~\cite{Physical_Quantities-AFP}. Notice that non derived measurement systems are not defined as constants (\textit{e.g.}~\texttt{SI\_WATT}) but as constant functions (\textit{e.g.}~\texttt{SI\_JOULE()}). This is so that they are not computed at initialisation time.  
+We also define some \texttt{SI} common constants, such as the ceaseium frequency, speed of light, Planck constant, \textit{etc}. These also come from the Isabelle/HOL version of this library~\cite{Physical_Quantities-AFP}. Notice that non derived measurement systems are not defined as constants (\textit{e.g.}~\texttt{SI\_WATT}) but as constant functions (\textit{e.g.}~\texttt{SI\_JOULE()}). This is so that they are not computed at initialisation time.  
 
-When dealing with (potentially high precision) real-valued operations, it is important to consider approximations. We provide approximation functions for given orders of magnitude, as well as approximate equality module such order of magnitude (\textit{e.g.} \texttt{approx\_eq(pi, 3.14, 2) = true}). Another useful function we add that is not available in VDM is ceiling of a real value (\(\lceil r \rceil\)). 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{VDMJ high precision}
+
+VDMJ provides a high precision version, which allows for unbounded precision on integers and higher precision on reals. The \texttt{ISQ} library is orthogonal:~it works the same with either version of VDMJ.\@ This means users will have to be careful with approximation within calculations.\@  
+
+That is, when dealing with (potentially high precision) real-valued operations, it is important to consider approximations. We provide approximation functions for given orders of magnitude, as well as approximate equality module such order of magnitude (\textit{e.g.} \texttt{approx\_eq(pi, 3.14, 2) = true}). Another useful function we add that is not available in VDM is ceiling of a real value (\(\lceil r \rceil\)). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applications and Examples}\label{sec:Examples}
 
-This library was motivated after work various medical applications in a variety of (non standard) units alongside another variety of (familiar yet non-standard) time scales. For example, taking \(X\)mg of drug \(Y\) every \(8\) hours, which then has to be reviewed every \(4\) weeks for a year. Another concrete application was the use of different time abstractions having to be converted for understanding information within an embedded medical device for organ transplanation.  
+This library was motivated after work various medical applications in a variety of (non standard) units alongside another variety of (familiar yet non-standard) time scales. For example, taking \(X\)mg of drug \(Y\) every \(8\) hours, which then has to be reviewed every \(4\) weeks for a year. Another concrete application was the use of different time abstractions having to be converted for understanding information within an embedded medical device for organ transplantation.  
 
 \paragraph*{Dimension vector correspondence checking.}~
 %
@@ -546,7 +551,7 @@ The library types enable users to document expected unit correspondences after a
     = true
 \end{vdmsl}
 %
-\noindent That is, considering mass over acceleration (\(\frac{m}{s^2}\)) instead of mass dispersion over time. This also illustrate the use of measurement systems multiplication, replication and division. Finally, we check that the \textit{Pascal} measurement system alongside some volume equates to the expected unit of energy. These invariant checks (failures and successes) are useful to ensure that operations are being performed in the expected/adequate measurement system.  
+\noindent That is, considering mass over acceleration (\(\frac{m}{s^2}\)) instead of mass dispersion over time. This also illustrates the use of measurement systems multiplication, replication and division. Finally, we check that the \textit{Pascal} measurement system alongside some volume equates to the expected unit of energy. These invariant checks (failures and successes) are useful to ensure that operations are being performed in the expected/adequate measurement system.  
 
 % Another famous correspondence is the mass-energy equivalence (\(M = E . c^2\)), where mass (\(M\) in kilograms) corresponds to energy (\(E\), the amount of work) times the squared speed of light (\(c = 299792458 \frac{m}{s}\), the amount of velocity).  
 % %   
@@ -558,7 +563,7 @@ The library types enable users to document expected unit correspondences after a
 
 \paragraph*{Dimension vector inspection.}~
 %
-Given such computations over unit correspondences can test one's memory of physics (or other topics), the library also provides some useful utility functions to quickly inspect the dimension vector as one would use in ``pen-and-paper'' exercises. For instance, the dimension vector for the variables above can be viewed as
+Given that such computations over unit correspondences can test one's memory of physics (or other topics), the library also provides some useful utility functions to quickly inspect the dimension vector as one would use in ``pen-and-paper'' exercises. For instance, the dimension vector for the variables above can be viewed as
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     p si_dim_view(PA)
@@ -573,7 +578,7 @@ Given such computations over unit correspondences can test one's memory of physi
 %
 \noindent This can be useful for debugging whether the unit of the measurement system chosen is the one expected. Notice that \texttt{si\_dim\_view} accepts a \texttt{Prefix}, hence making it seemless whether you give it a quantity or measurement system. 
 
-Finally, the general \texttt{dim\_view} function expects an input that maps dimensions to their visualisation strings. For example, we add such a map to change the visualisation into \texttt{BIS}. This is not a check the dimension is ``correct'' with respect to the measurement system conversion schema, but simply a debugging aid.     
+Finally, the general \texttt{dim\_view} function expects an input that maps dimensions to their visualisation strings. For example, we add such a map to change the visualisation into \texttt{BIS}. This is not a check that the dimension is ``correct'' with respect to the measurement system conversion schema, but simply a debugging aid.     
 
 \paragraph*{New measurement systems.}~
 %
@@ -607,7 +612,7 @@ Next, we created application-level types for each dimension within the measureme
     MCELCIUS: Celcius   = mk_MeasurementSystem(UNIT_TEMP, MHC, MHC_UNIT);
 \end{vdmsl}	
 %
-\noindent These types and baseline constants were then refined in the actual application(s) to specific constraints like maximum treatment time or temperature. Then, we defined constant functions to convert other used time granularities back to the baseline in hour\footnote{We omitted the same type signature of other functions.}.
+\noindent These types and baseline constants were then refined in the actual application(s) to specific constraints like maximum treatment time or temperature. Then, we defined constant functions to convert other used time granularities back to the baseline in hours\footnote{We omitted the same type signature of other functions.}.
 % 
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     hDAY: () -> Hour
@@ -629,11 +634,9 @@ Next, we created application-level types for each dimension within the measureme
 %
 \noindent This function converts times per day in number of hours. Of course, this simple concrete example is somewhat overkill. It serves to show how the library can be used. 
 
-For the real application, however, this was crucial, given variations were defined per week, where intake was not always per hour (\textit{e.g.}~three times a day), and other more complicated pharmacokenetic interactions existed.   
+For the real application, however, this was crucial, given variations were defined per week, where intake was not always per hour (\textit{e.g.}~three times a day), and other more complicated pharmacokinetic interactions existed.   
 
-
-
-Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. They show various ISQ measurement systems in practical use.
+Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. They show various ISQ measurement systems in practical use.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}\label{sec:Results}
@@ -642,15 +645,15 @@ Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution~\footn
 
 The \texttt{ISQ.vdmsl} library closely follows the structure of a similar library for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. It has been used in a few practical industrial applications involving emedded systems and medical devices and processes.  
 
-In this paper, we presented a formally defined \gls{ISQ} library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariant and other structural and data validation checks, such as enforcement of specific measurement system characteristics for well known quantities and units. It is \textbf{F}ast, as the computations are simple and directly available in VDM itslef. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around ISQ measurement systems creation, combination, conversion, scaling, and so on.   
+In this paper, we presented a formally defined \gls{ISQ} library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariant and other structural and data validation checks, such as enforcement of specific measurement system characteristics for well known quantities and units. It is \textbf{F}ast, as the computations are simple and directly available in VDM itself. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around ISQ measurement systems creation, combination, conversion, scaling, and so on.   
 
 \paragraph*{Future work.}~
 %
-We are interested into applying the library concepts to other industrial applications, such as Functional Mock-up Interfaces, which do have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. Moreover, we also plan to extend the physical units to include all those in the SI tables\footnote{\url{https://en.wikipedia.org/wiki/International_System_of_Units}} and other more exotic list of units\footnote{\url{https://en.wikipedia.org/wiki/List_of_physical_quantities}}. 
+We are interested into applying the library concepts to other industrial applications, such as the Functional Mock-up Interface (FMI), which do have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. Moreover, we also plan to extend the physical units to include all those in the SI tables\footnote{\url{https://en.wikipedia.org/wiki/International_System_of_Units}} and other more exotic list of units\footnote{\url{https://en.wikipedia.org/wiki/List_of_physical_quantities}}. 
 
 \paragraph*{Acknowledgements.}~
 %
-We acknowledge funding from NCSC on verification on payment systems. We very much appreciate fruitiful discussion with and suggestions by Nick Battle about the usefulness of such library and on certain VDMJ needs. 
+We acknowledge funding from NCSC on verification on payment systems. We very much appreciate fruitiful discussion with and suggestions by Nick Battle about the usefulness of such a library and on certain VDMJ needs. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{splncs03}
