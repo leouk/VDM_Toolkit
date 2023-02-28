@@ -257,7 +257,7 @@ VDM translation to Isabelle/HOL is performed by traversing its abstract syntax t
 %
 VDM union types will create a maximal type set over the united types, where invariants are preserved. This can create quite complex (and confusing) selection and invariant checking processes. Of course, such specifications are rarely written. Yet, from a translation point of view, this illustrates some of the challenges around VDM's expressivity with respect to how they can be translated to Isabelle. 
 
-Another rather complex definition space in VDM are those for values and patterns. For example, one could define some pretty involved patterns in values and types like:
+Another rather complex definition space in VDM are those for values and patterns. For example, one could define some complex VDM patterns in values and types like:
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     types
@@ -271,13 +271,13 @@ The type definition states it is an ordered set of three explicit \verb'nat' val
 
 The translator, therefore, caters for the subset of VDM that is ``tamer'' (and mostly used). The translator has a VDM analysis tool (named \texttt{exu}\footnote{The name stems from the Yoruba divinity \textit{\`{E}\v{s}\`{u}} that was the gate keeper (and messenger) between mortals and deities.}), which checks for various such syntactic conondrums and limitations, telling users what to do and where problems are. Fixing such errors and warnings is important to ensure that translations are possible and without type errors for the user to solve on their own.  
 
-\texttt{exu} also provides support to prepare users for translation (\eg~there are over \(50\) kinds of ``error'' and \(20\) ``warnings'' that \texttt{exu} can issue). For example, it checks that any function call within a function definition ought to include that function's precondition, if one exists. Yet, one key hindrance remained:~ordering of module definitions and their dependencies. This hindrance will be addressed in this paper and have recently been implemented in the latest versoin of the translator (see Section~\ref{sec:integration}). 
+\texttt{exu} also provides support to prepare users for translation (\eg~there are over \(50\) kinds of error and \(20\) warnings that \texttt{exu} can issue). For example, it checks that any function call within a function definition ought to include that function's precondition, if one exists. Yet, one key hindrance remains:~ordering of module definitions and their dependencies. This hindrance will be addressed in this paper and has recently been implemented in the latest version of the translator (see Section~\ref{sec:integration}). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Important Historical Developments}\label{sec:history}
 
-Before getting to our solution, it is important to identify key (unrelated) extensions to the main VDM tools. They were the stepping stones that eventually enabled \texttt{exu} to sort definitions for translation. We highlight the motivation for such extensions, as well as how they are implemented, in the main VDM tools below.
+Before getting to our solution, it is important to identify key (albeit techically unrelated) extensions to the main VDM tools. They were the stepping stones that eventually enabled \texttt{exu} to sort definitions for translation. We highlight the motivation for such extensions, as well as how they are implemented, in the main VDM tools below.
 
 \subsection{Load time problems}
 
@@ -285,7 +285,7 @@ When working with large VDM models~\cite{emv2} (\eg~\(150\)+ modules, \(60\)+ KL
 
 Such long initialization times occurred because the VDM runtime performs multiple passes through the AST in order to cater for forward references. The number of passes depends on the number of module inter-dependencies (\ie~\texttt{module A} imports \texttt{module B} and vice-versa), and the order of definitions within modules (\ie~using definitions before defining them), etc. 
 
-To optimise type checking and initialization, users of large models would have to keep track of dependencies by carefully checking import chains and intra-module definitions. For example, we had to carefully craft dependencies and keep their documentation explicitly. This was error prone and hard to maintain. 
+To optimise type checking and initialization, users of large models would have to keep track of dependencies by carefully checking import chains and intra-module definitions. For example, users would have to have carefully crafted dependencies and keep their documentation explicitly. This was error prone and hard to maintain. 
 
 \paragraph*{Verbose output.}
 %
@@ -293,11 +293,11 @@ To address this, an extension was added to VDMJ~\cite{Battle09} that tracked top
 
 \paragraph*{Ordering, using dependency and free variable visitors.}
 %
-For identifying the optimal module ordering in VDM-SL, it was sufficient to consider each module's imports. This created a dependency grapg and the objective was to process the ``most depended on'' modules first. In VDM++, classes do not have explicit imports, but rather can use any public definitions from other classes. So class ordering used the same visitor that the type checker uses to search for cyclic dependencies - that is, it searches for which other public definitions the current one depends on for initialization. The objective was to process the ``most depended on'' class files first. Lastly, within either a module or a class, the optimal definition ordering minimises the number of forward references. This required a different visitor, which looks for the free variables used by each definition. The cyclic dependency visitor and the free variable visitor were very similar, but the cyclic dependency case \emph{must not produce false positives}, \ie~claiming that there is a cycle when there is not. This means that undecidable cases, such as cycles that include conditional ``if'' statements, must be ignored. On the other hand, the free variable visitor is only concerned with ordering at analysis-time and can tolerate cycles, so it returns all free variables.
+For identifying the optimal module ordering in VDM-SL, it was sufficient to consider each module's imports. This created a dependency graph and the objective was to process the ``most depended on'' modules first. In VDM++, classes do not have explicit imports, but rather can use any public definitions from other classes. So class ordering used the same visitor that the type checker uses to search for cyclic dependencies - that is, it searches for which other public definitions the current one depends on for initialization. The objective was to process the ``most depended on'' class files first. Lastly, within either a module or a class, the optimal definition ordering minimises the number of forward references. This required a different visitor, which looks for the free variables used by each definition. The cyclic dependency visitor and the free variable visitor were very similar, but the cyclic dependency case \emph{must not produce false positives}, \ie~claiming that there is a cycle when there is not. This means that undecidable cases, such as cycles that include conditional ``if'' statements, must be ignored. On the other hand, the free variable visitor is only concerned with ordering at analysis-time and can tolerate cycles, so it returns all free variables.
 
 \paragraph*{Topological sort of module dependencies.}
 %
-With the information gathered about dependencies, it was possible to create a topological sort of module names, where the result would be a list of module names with the fewest passes possible. This effectively solved (in most cases) the dependency warnings from the verbose output, hence giving the end user the ordered list of module names to load. This could then be given to VDMJ at load time directly. This was enabled output of a acyclic directed graph view of module dependencies as a \texttt{dot} file.    
+With the information gathered about dependencies, it was possible to create a topological sort of module names, where the result would be a list of module names with the fewest passes possible. This effectively solved (in most cases) the dependency warnings from the verbose output, hence giving the end user the ordered list of module names to load. This could then be given to VDMJ at load time directly. This has enabled output of an acyclic directed graph view of module dependencies as a \texttt{dot} file.    
 
 \subsection{Recursive cycles detection and removal.}
 
@@ -310,7 +310,7 @@ The solution adopted by VDMJ's module/class ordering was naive, simply removing 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exu ordering}\label{sec:exu}
 
-A topological sort of dependencies between modules resolved the long typecheck and initialization time issues. However, it did not optimize definitions within modules themselves. Moreover, the module dependency search only considered imports. It did not consider local (\eg~\texttt{let-in} definitions) and function name spaces, where type name spaces were not checked. It was also related to top-level imported definitions (\ie~types, values, functions, \etc) rather than their structure.    This required a different topological sort algorithm. The new algorithm had five stages: 
+A topological sort of dependencies between modules resolved the long typecheck and initialization time issues. However, it did not optimize definitions within modules themselves. Moreover, the module dependency search only considered imports. It did not consider local (\eg~\texttt{let-in} definitions) and function namespaces, where type namespaces were not checked. It was also related to top-level imported definitions (\ie~types, values, functions, \etc) rather than their structure.    This required a different topological sort algorithm. The new algorithm had five stages: 
 %
 \begin{enumerate} 
     \item Collect all named definitions;
@@ -347,7 +347,7 @@ The third stage searches for free-variable dependencies across all top-level def
 
 The fourth stage is the actual topological sort algorithm used by VDMJ to sort module names described above. It is a variation of Kahn's DAG sort algorithm\footnote{\url{https://en.wikipedia.org/wiki/Topological_sorting\#Kahn's_algorithm}}. The DAG sort algorithm also looks for (and does not tolerate) cyclic dependencies within the given graph. Such cyclic dependencies have to be resolved earlier. In the case of definitions, cyclic dependencies can only occur between mutually recursive type of function definitions. Fortunately, VDMJ already has a mechanism for removing cyclic dependencies, which we apply here as well. This works well in practice. In the general case, however, this might fail, depending on the complexity of the mutual recursion(s) involved (see above).
 
-The first three stages are considered as the module definition processing phase. They create all the necessary structures and implicit definitions needed for sorting. Nevertheless, before the sorting itself, it is important to provide two sources of information. First, the sort has to be made based on so-called graph start points:~nodes without incoming links. Second, sorting is only to be attempted if the module does contain use of definitions before their declaration. That is because if you sort an already sorted module you can get an inconsistent result (\ie~a sorting order that does not prevent use before declaration). Thus, we ensure that Kahn's algorithm is only run when necessary. Whether it will be necessary is discovered based on a variation of VDMJ's verbose output warning for cyclic dependencies check.
+The first three stages are considered as the module definition processing phase. They create all the necessary structures and implicit definitions needed for sorting. Nevertheless, before the sorting itself, it is important to provide two sources of information. First, the sort has to be made based on so-called graph start points:~nodes without incoming links. Second, sorting is only to be attempted if the module does contain use of definitions before their declaration. That is because attempting to sort an already sorted module can lead to an inconsistent result (\ie~a sorting order that does not prevent use before declaration). Thus, we ensure that Kahn's algorithm is only run when necessary. Whether it will be necessary is discovered based on a variation of VDMJ's verbose output warning for cyclic dependencies check.
 
 Finally, for the fifth stage, if module sorting is not required, then the topological sorting is skipped and the module is not modified. Otherwise, if the sorting is required, then it is necessary to reorganise the topologically sorted list of names to take into account the two separate names spaces for types and functions at a module top-level definitions (prior to flattening definitions in the first stage). 
 
@@ -376,7 +376,7 @@ For example, consider the module \verb'M' below. It defines types and functions 
     end M
 \end{vdmsl}
 %
-If you run \verb'exu' (with the \verb'debug' flag set) on this module you get this output. 
+When users run \verb'exu' (with the \verb'debug' flag set) on this module this is the tool's output. 
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     Calling Exu VDM analyser...
@@ -399,7 +399,9 @@ The original names are the user defined top-level names in declaration order, wh
 
 Furthermore, notice that the order between functions \verb'head' and \verb'tail' and type \verb'T' is ``unstable'' (\ie~they are incomparable in this case). That is, whatever order they are declared is valid, so long as they are declared before \verb'S', which has to be declared before \verb'Rec'. It is these kinds of incomparibility between certain names that makes sorting modules, where all names are declared before use can give irrelevant sorts. We try to minimise this by sorting the starting points by declaration order, but that cannot entirely prevent irrelevant sorts.  
 
-The algorithm satisfies the invariant that the original and organised name sets are equal, and that the sorted names list contains all organised names. This way, all names are accounted for and no implicitly created names (\eg~\verb'inv_T') are part of the result.     
+The algorithm satisfies the invariant that the original and organised name sets are equal, and that the sorted names list contains all organised names. This way, all names are accounted for and no implicitly created names (\eg~\verb'inv_T') are part of the result. 
+
+The translation has optional flags to generate VDM-source location information, as well as the original VDM-source, as Isabelle comments. This way, any model rearrangement is immaterial to the translation. VDM users ought not to change the Isabelle translation, and instead work on the proof obligation proof scripts.   
 
 \texttt{exu} also produces a \texttt{dot} file view of the dependencies, which is similar to VDMJ's order plugin output for module name dependencies (see Figure~\ref{fig:Mdot}). It depicts the user declared dependencies before sorting. It includes corresponding source line locations, where starting nodes are tagged red with an inverted triangle shape, implicitly created invariants are double circles, and (terminal) nodes without outgoing links are shaped as a triangle.  
 %
@@ -420,7 +422,7 @@ For the VDMJ console interface, it follows the VDMJ convention that plugin class
 
 For the VDM-VSCode interface, it follows the VDM-VSCode Language Server Protocol (LSP) convention~\cite{AdvancedVSCodePaper} that the plugin class encapsulates both GUI-editor reactive functionality as well as the Debug Protocol (DAP) command line debugging. For the DAP VDM debugging session, it offers the same VDMJ console plugin commands, where any issues or errors are reported to the DAP output console itself, as opposed to any GUI visualisations of such errors. This is mostly for debugging and low-level application purposes only. Users are encouraged to go via the GUI visualisation process instead. 
 
-For the GUI visualisation process, the \texttt{ISA} LSP plugin reacts to two LSP events:~\texttt{CompleteCheckEvent} and \texttt{UnknownTranslateEvent}. The former occurs after VDMJ has typechecked all loaded VDM-SL modules within a VDM-VSCode project, whereas the latter occurs when the user explicitly chooses the project pop-up menu associated with VDM as {\verb'VDM->Translate to Isabelle'}. 
+For the GUI visualisation process, the \texttt{ISA} LSP plugin reacts to two LSP events: \texttt{CompleteCheckEvent} and \texttt{UnknownTranslateEvent}. The former occurs after VDMJ has typechecked all loaded VDM-SL modules within a VDM-VSCode project, whereas the latter occurs when the user explicitly chooses the project pop-up menu associated with VDM as {\verb'VDM->Translate to Isabelle'}. 
 
 For the \texttt{CompleteCheckEvent}, the plugin performs a staggered execution of aspects of the various plugins, including execution of \texttt{exu} for checking and sorting, \textit{vdm2isa} for translation, and \textit{isapog} for proof obligation translations. The result is the output of module definition dependency graphs, translation of both VDM source and proof obligations to Isabelle, as well as any errors and warnings that might have occurred during this process. 
 
@@ -428,7 +430,7 @@ For the \texttt{UnknownTranslateEvent}, VDM-VSCode-wide translation options are 
 
 The trade off for this use case is that errors are handled in tandem and only after a translation request has happened. If the \texttt{CheckCompleteEvent} processing is fast for the loaded project, then that is a preferred route for translation, as it will keep the user informed as the model is developed. Otherwise, translation can take place at the user's request and any remaining issues can be reported and dealt with accordingly.  
 
-For the VDM-VSCode integration, we have tried to keep all three use cases (\ie~VDMJ console, VDM-VSCode DAP console, and VDM-VSCode LSP GUI-reactivity) as independent as possible, as well as reusable as possible. This is important so that each functionality does not need to be re-encoded in slightly different ways. This has been achieved through the use of he UNIX principle of argument-based command-line execution of the plugin as a the bottom-line for all kinds of interfaces. 
+For the VDM-VSCode integration, we have tried to keep all \(3\) use cases (\ie~VDMJ console, VDM-VSCode DAP console, and VDM-VSCode LSP GUI-reactivity) as independent as possible, as well as reusable as possible. This is important so that each functionality does not need to be re-encoded in slightly different ways. This has been achieved through the use of he UNIX principle of argument-based command-line execution of the plugin as a the bottom-line for all kinds of interfaces. Concretely, this means the \texttt{exu} tool is integrated within both command line and VSCode as stand-alone, independently of the Isabelle translator. 
 
 In practice, this means each plugin responds to specific commands. This is similar to other UNIX commands (\eg~\texttt{git} has commands like \texttt{push}, \texttt{pull}, \etc). Various default options are in place, and can be changed by a properties file, command line \texttt{set} command, or VSCode properties. The property read and set process is close to VDMJ's own properties file. For VDM-VSCode, the GUI also exposes these properties through its settings interface. Ultimately, the VDM-VSCode plugin makes specific command calls to specific plugins, depending on whether it is part of the LSP's reactive behaviour  (\eg~setting yellow/red squiggles on code locations to show warnings/errors), or part of the DAP's interactive behaviour (\eg~calling specific DAP plugins on the debug console). Correspondingly, the same functionality is available through the VDMJ console via the command line. Output of translation is saved to \texttt{./.generated/isabelle} by default, though users can set it to any directory of their choice. 
 
