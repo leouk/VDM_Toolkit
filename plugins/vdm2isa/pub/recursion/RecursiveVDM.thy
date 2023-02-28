@@ -26,7 +26,7 @@ toolkit repository at
 \<^verbatim>\<open>./plugins/vdm2isa/src/main/resources/RecursiveVDM.*\<close>\<^footnote>\<open>in~\<^url>\<open>https://github.com/leouk/VDM_Toolkit\<close>\<close>.
 
 In the next section, we present background on VDM and Isabelle recursion and
-measure relations. Section~\ref{sec:VDMTypes} briefly discuss VDM basic
+measure relations. Section~\ref{sec:VDMTypes} briefly discusses VDM basic
 types translation and their consequence for recursion. Next,
 Section~\ref{sec:Recursion} describes how both VDM and Isabelle recursive
 definitions work and how they differ. Our translation strategy is then
@@ -85,9 +85,9 @@ our translation strategy considers VDM \<^bold>\<open>nat\<close> as the Isabell
 \<^typ>\<open>VDMNat\<close>, which is just a type synonym for \<^typ>\<open>\<int>\<close>. This simplifies
 the translation process to Isabelle, such that no type coercions are
 necessary to encode all VDM type widenning rules. On the other hand, this
-design decision means encoding of recursive functions over \<^bold>\<open>nat\<close> to be more
-complicated than expected, given VDM's \<^bold>\<open>nat\<close> is represented as Isabelle's
-\<^typ>\<open>\<int>\<close>.
+design decision on type widening means encoding of recursive functions over
+\<^bold>\<open>nat\<close> to have to follow the scheme for \<^typ>\<open>\<int>\<close>, given VDM's \<^bold>\<open>nat\<close> is 
+represented as Isabelle's \<^typ>\<open>\<int>\<close>.
 
   Despite this design decision over basic types and their consequences,
   recursion over VDM \<^bold>\<open>int\<close>, sets or maps will still be involved. That is
@@ -113,7 +113,7 @@ factorial of a given natural number
 %   -- For the measure below, VDMJ produces a measure function as: 
 %   -- measure_fact: nat -> nat
 %   -- measure_fact(n) == n
-\noindent The \<^verbatim>\<open>fact\<close> recursive measure uses the \<^verbatim>\<open>n\<close> input itself as its
+\noindent The VDM  \<^verbatim>\<open>fact\<close>-function recursive measure uses the given  \<^verbatim>\<open>n\<close> input itself as its
 result. This works because the only recursive call is made with a decreasing
 value of \<^verbatim>\<open>n\<close>, until it reaches the base case \<^verbatim>\<open>0\<close> and terminates. VDMJ generates three
 proof obligations for the definition above. They are trivial to discharge in
@@ -178,8 +178,8 @@ recursion.
 The termination relation must be well-founded, which means have a well-ordered
 induction principle over a partially ordered relation defined as\<^footnote>\<open>Details on 
 well-ordered induction are in Isabelle's \<^verbatim>\<open>Wellfounded.thy\<close> theory.\<close> 
-@{thm[display,show_types] wf_def} A definition that
-Isabelle discovers all three proofs is\<close>
+@{thm[display,show_types] wf_def} A version of the factorial definition that
+Isabelle discovers all three termination and well-formedness proofs is given as\<close>
 (* find_theorems name:wellorder print_locale! wellorder *)
 fun fact' :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where \<open>fact' n = (if n = 0 then 1 else n * (fact' (n - 1)))\<close> 
 
@@ -342,7 +342,7 @@ text \<open>This transforms the abstract domain predicate into two new subgoals 
   by (simp add: pre_fact_defs int_ge_less_than_def) \<^marker>\<open>tag invisible\<close>
 
 text \<open>For this example, subgoals are proved with @{command
-sledgehammer}. In general, the user will be have to either find the proof, or
+sledgehammer}. In general, the user will have to either find the proof, or
 deal with domain predicates involving the recursive call. After the
 termination proof is discharged, Isabelle provides versions of rules for
 elimination, induction and simplification that are total and do not depend on
@@ -374,8 +374,8 @@ For this, we use a function that sums the elements of a set.
   measure card s;
 \end{vdmsl}
 %
-\noindent Most common VDM recursion over sets, consume the
-set by picking an arbitrary set element and then recurse without
+\noindent Most common VDM-recursion over sets consume the
+set by picking an arbitrary set element and then continue the recursion without
 the element picked, until the set is empty. The VDM measure states that the
 recursion is based on the cardinality of the input parameter. VDM measures are
 not suitable for Isabelle proofs, given Isabelle requires a relation;~hence,
@@ -391,7 +391,7 @@ definition pre_sumset :: \<open>VDMNat VDMSet \<Rightarrow> \<bool>\<close> wher
 lemmas pre_sumset_defs = pre_sumset_def inv_VDMSet'_defs 
 
 text \<open>We define the VDM recursive function in Isabelle next. It checks whether
-the given set satisfy the function precondition, returning \<^term>\<open>undefined\<close>
+the given set satisfies the function precondition, returning \<^term>\<open>undefined\<close>
 if not. Each case is encoded pretty much 1-1 from VDM after that. The
 translation strategy for VDM \<^verbatim>\<open>let-in-set\<close> patterns uses Isabelle's Hilbert's
 choice operator (\<^term>\<open>\<some> x . x \<in> s\<close>). Note this naturally extends to VDM's
@@ -512,7 +512,7 @@ Following the general translation strategy for maps~@{cite NimFull}, we define
 the function precondition using \<^term>\<open>inv_Map\<close>. It insists that both the map
 domain and range are finite, and that all domain and range elements satisfy
 their corresponding type invariant. Note that, if the recursion was defined
-over sets other than the domain and range, then Isabelle require the proof
+over sets other than the domain and range, then Isabelle requires a proof that
 such set is finite. Given both domain and range sets are finite,
 this should be easy, if needed.\<close>
 
@@ -845,7 +845,7 @@ termination \<^marker>\<open>tag invisible\<close>
     apply (simp add: l_perm_wf_rel) \<^marker>\<open>tag invisible\<close>
   by (simp_all add: perm_wf_rel_def)  \<^marker>\<open>tag invisible\<close>
 
-text \<open>Finally, the Takeuchi's
+text \<open>Finally, Takeuchi's
 function\<^footnote>\<open>\<^url>\<open>https://isabelle.in.tum.de/library/HOL/HOL-Examples/Functions.html\<close>\<close>,
 which contains both permutation and inner recursion is defined next, where the
 important part is the SCNP setup using multi-sets @{cite KrausSCNP}. That is
