@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
@@ -163,6 +164,8 @@ public class VDMASTListener extends VDMBaseListener {
         // might as well add some extra information of our own 
         parser.addErrorListener(new VDMErrorListener());
         
+        parser.setTrace(true);
+        //ParserATNSimulator.debug = true;
         nodes = new ParseTreeProperty<ASTNode>();
         lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
         astModuleList = null;
