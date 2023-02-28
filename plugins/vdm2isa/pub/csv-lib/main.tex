@@ -200,7 +200,7 @@ pdfstartview=Fit
 \maketitle
 \setcounter{footnote}{0}
 \begin{abstract}
-CSV is a widely used format for data representing systems control, information exchange and processing, logging, \textit{etc}. Nevertheless, the format is riddled with tricky corner cases and inconsistencies, which can lead input data unreliable. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-CSV VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{Fast}, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which also includes a translation and proof environment for VDM in Isabelle. 
+CSV is a widely used format for data representing systems control, information exchange and processing, logging, \textit{etc}. Nevertheless, the format is riddled with tricky corner cases and inconsistencies, which can make input data unreliable, thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-CSV VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{Fast}, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which also includes a translation and proof environment for VDM in Isabelle. 
 \end{abstract}
 
 \keywords{VSCode, VDM, CSV, file formats, Libraries}
@@ -208,11 +208,11 @@ CSV is a widely used format for data representing systems control, information e
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}\label{sec:intro}
 
-The \gls{CSV} format is widely used for a variety of applications:~from data science as in organ transplant allocation\footnote{\url{https://unos.org/data/}}, embedded systems representation as in state machines for medical devices~\cite{alastairMSc,scp-dialyser}, pharmaceutical applications~\cite{csv-validation-pharma-msc}, log files on various kinds of systems, databases, payments, government systems and so on. Despite there being a standard (RFC 4180) ~\footnote{\url{https://www.rfc-editor.org/rfc/rfc4180}}, there are many versions and variations~\footnote{\url{https://commons.apache.org/proper/commons-csv/}}. Its long history of use~\footnote{\url{https://bytescout.com/blog/csv-format-history-advantages.html}} has inspired various other ``simple'' formats for data management and exchange, such as JSON~\cite{JSON}, XML and various spreadsheet formats. 
+The \gls{CSV} format is widely used for a variety of applications:~from data science as in organ transplant allocation\footnote{\url{https://unos.org/data/}}, embedded systems representation as in state machines for medical devices~\cite{alastairMSc,scp-dialyser}, pharmaceutical applications~\cite{csv-validation-pharma-msc}, log files on various kinds of systems, databases, payments, government systems and so on. Despite there being a standard (RFC 4180)\footnote{\url{https://www.rfc-editor.org/rfc/rfc4180}}, there are many versions and variations\footnote{\url{https://commons.apache.org/proper/commons-csv/}}. Its long history of use\footnote{\url{https://bytescout.com/blog/csv-format-history-advantages.html}} has inspired various other ``simple'' formats for data management and exchange, such as JSON~\cite{JSON}, XML and various spreadsheet formats. 
  
-Therefore, we argue it is important to have a formal underpinning to CSV-file format, with enough flexibility and variation to cater for realistic applications. For that, we choose VDM. 
+Therefore, we argue it is important to have a formal underpinning to the CSV-file format, with enough flexibility and variation to cater for realistic applications. For that, we choose VDM. 
 
-The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries~\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
+The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
 
 We decided to depart from the standard VDM-CSV library because it is slow, cannot handle various CSV dialects, relies on CSV positioning management (\textit{e.g.}~knowing where in the file you are; reading one CSV line at a time), and has no checks on the CSV data itself.        
 
@@ -221,13 +221,11 @@ In this paper we report on the recent extension of the VDM toolkit to support CS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}~\label{sec:background}
 
-CSV is plagued with a variety of fiendish scenarios leading to unexpected errors~\cite{csv-validation-pharma-msc,10.1145/3274856.3274879,alastairMSc}. For critical applications relying on the format, this is particularly problematic. This motivated the creation of a formal environment to capture CSV problems clearly and concisely, and to validate outcomes according to user-defined invariants of different nature. For example, data type invariants on CSV cells and consistency invariants on row or column data, such as column ordering or row data redundancy consistency (\textit{e.g.}~weight, height and BMI info must be correlated). Finally, also an overall file invariant. Furthermore, CSV files can often contain implicit defaults or inconsistent correspondences. Thus, we are interested in capturing such constraints formally using a VDM library (\texttt{CSVLib}).      
-
-We integrate this library within the VDM VSCode extension~(\url{https://github.com/overturetool/vdm-vscode}), as well as VDMJ~\cite{Battle09}. 
+CSV is plagued with a variety of fiendish scenarios leading to unexpected errors~\cite{csv-validation-pharma-msc,10.1145/3274856.3274879,alastairMSc}. For critical applications relying on the format, this is particularly problematic. This motivated the creation of a formal environment to capture CSV problems clearly and concisely, and to validate outcomes according to user-defined invariants of different nature, for example, data type invariants on CSV cells and consistency invariants on row or column data, such as column ordering or row data redundancy consistency (\textit{e.g.}~weight, height and BMI info must be correlated). Finally, also an overall file invariant. Furthermore, CSV files can often contain implicit defaults or inconsistent correspondences. Thus, we are interested in capturing such constraints formally using a VDM library (\texttt{CSVLib}). We integrate this library within the VDM VSCode extension\footnote{\url{https://github.com/overturetool/vdm-vscode}}, as well as VDMJ~\cite{Battle09}. 
 
 Related to formal CSV (and data sources) formal processing, we worked on generation of VDM files from XSD files describing the data dictionary of the EMV payment systems~\cite{emv2}, and similar efforts have been applied to the Function Mockup Unit standard~\footnote{\url{https://github.com/INTO-CPS-Association/FMI-VDM-Model}}. Another example is for loading the control system finite state machine definitions in CSV for a dialyser~\cite{egleUG} and a brain pace maker~\cite{alastairMSc}. These read in data in the corresponding (CSV or XML) format(s), and generate a bespoke VDM model corresponding to implicitly understood design decisions. 
 
-These applications of CSV to VDM are different from our approach here, which focuses on raw CSV data loaded within a VDM data type that can then be further checked for various structural consistencies through dynamic invariants. Similar to our \texttt{CSVLib.vdmsl} library is the one defined within VDMJ standard libraries (\texttt{CSV.vdmsl}):~it provides users with native calls to a simple CSV parser, returning a sequence of wildcard (\texttt{?}) types. 
+These applications of CSV to VDM are different from our approach here, which focuses on raw CSV data loaded within a VDM data type that can then be further checked for various structural consistencies through dynamic invariants. Similar to our CSV library (\texttt{CSVLib.vdmsl}) is the one defined within VDMJ standard libraries (\texttt{CSV.vdmsl}): it provides users with native calls to a simple CSV parser, returning a sequence of wildcard (\texttt{?}) types. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -242,7 +240,7 @@ Our VDM CSV library has four core design principles:
 		 
 		\item \textbf{F}ast:~CSV input can often be large; hence, varied and computationally efficient IO parsing solutions are important~\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}};
 		 
-		\item \textbf{E}ffective:~there are multiple CSV format-variants~\footnote{\url{https://commons.apache.org/proper/commons-csv/}}; hence, format variations are important.   
+		\item \textbf{E}ffective:~there are multiple CSV format-variants~\footnote{\url{https://commons.apache.org/proper/commons-csv/}}; hence, tolerance of format variations is important.   
 	\end{enumerate}
 
 These \textbf{SAFE} principles underpin the overall library design goals. Its architecture is divided in three parts:~i) native calls to IO;~ii) various CSV invariants checking mechanisms per cell, across row and across column, and for the overall file;~and iii)~a series of supporting functions and operations to enable easy access to CSV functionality. 
@@ -280,14 +278,14 @@ Next, we present how the library architecture that implements our design princip
     loadSimpleHeadersCSV(path, <Native>, [<Str>,<Int>,<Bool>], false);
 \end{vdmsl}
 %
-This will load the CSV file on \texttt{path} using the given parser interface implementation. We currently support two interfaces:~our own native implementation and \texttt{uniVocity} CSV, one of the fastest we could find (\textit{e.g.}~see~\url{https://github.com/uniVocity/csv-parsers-comparison}). Other implementations are possible/planned. 
+This will load the CSV file on \texttt{path} using the given parser interface implementation. We currently support two interfaces:~our own native implementation and \texttt{uniVocity} CSV, one of the fastest we could find\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}}. Other implementations are possible/planned. 
 
 The list of quote values contain the types of the expected CSV columns, whilst the final argument states that processing will not be strict. That means, any failed invariant checks will be tolerated and recorded for further user inspection in the state. Otherwise, if strict was \texttt{true}, then invariant failures will not be tolerated and the result is an empty CSV\@.      
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{CSV headers}\label{subsec:Headers}
 
-Many CSV files contain no header. Nevertheless, they ought to have a notion of type correctness for each value read (\textit{i.e.}~an implicit type). In \texttt{CSVLib}, headers must have a type and a default value. Defaults are important for common situations like comma-sequences in a row. Types are important to enable type consistency and invariant checking, whereas default values are important so that we can infer what was the hidden intention behind comma-sequences, and to ensure defaults satisfy type invariants. For instance, the header below states that age is an integer with \(18\) as its default value
+Many CSV files contain no header. Nevertheless, they ought to have a notion of type correctness for each value read (\textit{i.e.}~an implicit type). In \texttt{CSVLib}, headers must define a type and a default value. Defaults are important for common situations like comma-sequences in a row. Types are important to enable type consistency and invariant checking, whereas default values are important so that we can infer what was the hidden intention behind empty fields, and to ensure defaults satisfy type invariants. For instance, the header below states that age is an integer with \(18\) as its default value:
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
     mk_Header("Age", <Integer>, 18, cell_inv, col_inv)
@@ -313,7 +311,7 @@ Some invariant kinds have an implicit check, regardless of whether a user-define
 
 For the \texttt{Age} header above, users could define \texttt{cell\_inv} (L1--3) to enforce age limits, whereas \texttt{col\_inv} (L5) could enforce no age uniqueness as:
 %
-\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize,numbers=left,caption={Cell and Column Invariant Definitions},label={lst:CSVInvs}]
+\begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize,numbers=left,caption={Cell and Column Invariant Definitions},label={lst:CSVInvs}, numbers=none]
     (lambda -: CSVType, v: CSVValue & 
         if v < 18 then "below minimal age" else
         if v > 65 then "above maximal age" else nil);
@@ -349,12 +347,12 @@ File invariants acts upon on the whole dataset. This might be useful when certai
     lastError     : () ==> Reason;
 \end{vdmsl} 
 
-CSV read data implements the link with the Java CSV parsers. It expects a valid path, a known parser, settings and valid headers; it returns a tripple. In the result, if the success flag is \texttt{\textbf{false}}, some unexpected Java error occurred that can be inspected by a call to \texttt{lastError()}; the other two parts of the tripple representing short-row errors and data are empty. Otherwise, if the success flag is \texttt{\textbf{true}} and errors are not empty, then CSV parsing has identified short rows (\textit{e.g.}~row's size smaller than header's size), and they contain details where such errors occured in the CSV file. If the success flag is \texttt{\textbf{true}}, then the resulting data will have the CSV data loaded, yet without invariant checks. This allows loading invalid data, which can then be processed and errors reasons can be given to the user. Finally, if the success flag is \texttt{\textbf{true}} and errors are not empty, data will not contain the short rows identified.        
+\texttt{csv\_read\_data} implements the link with the Java CSV parsers. It expects a valid path, a known parser, settings and valid headers; it returns a tripple. In the result, if the success flag is \texttt{\textbf{false}}, some unexpected Java error occurred that can be inspected by a call to \texttt{lastError()}; the other two parts of the tripple representing short-row errors and data are empty. Otherwise, if the success flag is \texttt{\textbf{true}} and errors are not empty, then CSV parsing has identified short rows (\textit{e.g.}~row's size smaller than header's size), and they contain details where such errors occured in the CSV file. If the success flag is \texttt{\textbf{true}}, then the resulting data will have the CSV data loaded, yet without invariant checks. This allows loading invalid data, which can then be processed and errors reasons can be given to the user. Finally, if the success flag is \texttt{\textbf{true}} and errors are not empty, data will not contain the short rows identified.        
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{CSV Java native implementation}\label{subsec:JavaNative}
 
-The implementation of VDM native calls is done in Java. \texttt{CSVLib.java} file implements the VDM link, as well as various specialised VDMJ value-AST handling methods. These might be useful for other libraries requiring handling VDMJ values within VDM native method call implementations in Java. For example, we added for the value-AST in Java the VDM equivalent of record \texttt{mu}-expressions for VDM-record updates. This made the VDM record construction and update process in Java much like one would do in VDM itself. For instance, the \texttt{loadSimpleHeadersCSV} call above does not provide a header name. This will come from the CSV itself, and must update the header name field akin to \texttt{mu(header, name |-> "Age")}. In Java, this is performed as 
+The implementation of VDM native calls is done in Java. The \texttt{CSVLib.java} file implements the VDM link, as well as various specialised VDMJ value-AST handling methods. These might be useful for other libraries requiring handling VDMJ values within VDM native method call implementations in Java. For example, we added for the value-AST in Java the VDM equivalent of record \texttt{mu}-expressions for VDM-record updates. This made the VDM record construction and update process in Java much like one would do in VDM itself. For instance, the \texttt{loadSimpleHeadersCSV} call above does not provide a header name. This will come from the CSV itself, and must update the header name field akin to \texttt{mu(header, name |-> "Age")}. In Java, this is performed as 
 %
 \begin{lstlisting}[language=Java,basicstyle=\footnotesize\ttfamily]
     namedHeaderAtI = ValueFactoryHelper.muRecord(headerAtI, 
@@ -366,9 +364,9 @@ The implementation of VDM native calls is done in Java. \texttt{CSVLib.java} fil
         ), ctx);
 \end{lstlisting}
 %
-\noindent The \texttt{ValueFactoryHelper} class provides a number of useful VDM value-AST support methods. The one above performs the record update on the field name given with the value passed. This illustrates how the \texttt{CSVLib} library can also be used by other libraries wanting to perofrm complex VDM value-AST manipulations. 
+\noindent The \texttt{ValueFactoryHelper} class provides a number of useful VDM value-AST support methods. The one above performs the record update on the field name given with the value passed. This illustrates how the \texttt{CSVLib} library can also be used by other libraries wanting to perform complex VDM value-AST manipulations. 
 
-Finally, \texttt{CSVLib.java} delegates to a separate \texttt{CSVParser} Java interface,which provides the necessary services needed by the native call implementations. This is important in order to separate the VDMJ value-AST processing from the low-level CSV-IO parser implementations. This makes extending the library with other CSV parsers a relatively stratight forward process:~users can implement the interface with their preferred CSV parser, and add the corresponding jar-file to the VDM-VSCode classpath. 
+Finally, \texttt{CSVLib.java} delegates to a separate \texttt{CSVParser} Java interface, which provides the necessary services needed by the native call implementations. This is important in order to separate the VDMJ value-AST processing from the low-level CSV-IO parser implementations. This makes extending the library with other CSV parsers a relatively straightforward process:~users can implement the interface with their preferred CSV parser, and add the corresponding jar-file to the VDM-VSCode classpath. 
 %
 \begin{lstlisting}[language=Java,basicstyle=\footnotesize\ttfamily]
 public interface CSVParser {
@@ -432,23 +430,23 @@ Finally, the operation \texttt{printCSV} prints out the loaded CSV to the given 
 
 The high-performance of our SAFE-CSV library is a core design principle. To demonstrate this, several CSV files, ranging from \(100\) to \(35,000\) rows were used to compare the performance of our library against the standard CSV library in VDM.
 
-The VDM CSV library provides limited features in terms of the variety of formats it can accept for the CSV input, its low-level IO mechanism (\textit{i.e.,}~read line by line) and the fact there are no data validation capabilities available. The scope of the performance testing was limited to largest subset of features allowed by the standard CSV library. SAFE-CSV provides a richer approach to data validation than VDM CSV;~however, these features were not used for this section to maintain parity between the two libraries during the performance test. 
+The standard CSV library provides limited features in terms of the variety of formats it can accept for the CSV input, its low-level IO mechanism (\textit{i.e.,}~read line by line) and the fact there are no data validation capabilities available. The scope of the performance testing was limited to largest subset of features allowed by the standard CSV library. SAFE-CSV provides a richer approach to data validation than VDM CSV;~however, these features were not used for this section to maintain parity between the two libraries during the performance test. 
 
 
-As SAFE-CSV also has the ability to use multiple different parsers, the library was tested using its Native parser and, the faster, Univocity parser\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}}.
+As SAFE-CSV also has the ability to change the underlying parser being used by the library, for this work, SAFE-CSV performance was tested using the Native parser and, the faster Univocity parser\footnote{\url{https://github.com/uniVocity/csv-parsers-comparison}}. 
 
-\begin{figure}[htbp]
+\begin{figure}[ht]
     \centering
         \includegraphics[width=\textwidth]{figures/CSVPerformanceChart.jpg}
-    \caption{VDM CSV and SAFE-CSV library performance comparison}\label{fig:CSVPerformanceChart}
+    \caption{Standard CSV library and SAFE-CSV library (using the Native and Univocity parser) performance comparison}\label{fig:CSVPerformanceChart}
  \end{figure}
 
- Figure~\ref{fig:CSVPerformanceChart} shows the performance of the libraries using the same input data. The SAFE-CSV parsers performed significantly better than the standard library showing a speed-up of \(\sim 1.5\)x. The Univocity parser performed even better with larger datsets averaging a higher speed-up rate even compared to the Native parser.
+ Figure~\ref{fig:CSVPerformanceChart} shows the performance of the libraries using the same input data. The SAFE-CSV parsers performed significantly better than the standard library showing a speed-up of \(\sim 1.5\)x. The choice of underlying parser for the SAFE-CSV library has an effect on performance as the Univocity parser performed even better than the Native parser. With larger datasets, the Univocity parser also averaged a higher speed-up rate even compared to the Native parser.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}\label{sec:Examples}
 
-Next ,we illustrate the intended use of our library through a few examples. First, users have to provide information about CSV headers. In our example, we have a list of names with their corresponding age, weight (in kg), height (in cm), and BMI. We then create the corresponding VDM header as:
+Next, we illustrate the intended use of our library with a few examples. First, users have to provide information about CSV headers. In our example, we have a list of names with their corresponding age, weight (in kg), height (in cm), and BMI. We then create the corresponding VDM header as:
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]
 	EXAMPLE_HEADERS : Headers = 
@@ -459,9 +457,9 @@ Next ,we illustrate the intended use of our library through a few examples. Firs
          mk_Header("BMI"       , <Float>  ,       MIN_BMI, CELL_INV_BMI, nil) ];
 \end{vdmsl} 
 %
-Default values are provided to test for CSV comma-sequences (\textit{e.g.}~CSV cells without any value), alongside cell and column invariant examples. These default values are used to ensure the implicit row invariant check that row size musts match header size. The cell invariants on age, weight, height and the column invariant on uniqueness are similar to the one showed above (see~\Cref{lst:CSVInvs}).
+Default values are provided to test for CSV comma-sequences (\textit{e.g.}~CSV cells without any value), alongside cell and column invariant examples. These default values are used to ensure the implicit row invariant check that row size musts match header size. The cell invariants on age, weight, height and the column invariant on uniqueness are similar to the one shown above (see~\Cref{lst:CSVInvs}).
 
-Next, we want to define a row invariant that checks the redundant BMI fields are consistent with respect to height and weight. Arguably the CSV should not have a BMI field. Having said that, many CSV files do contain such redundant information, which are frequently not accurate with respect to intended values. The BMI check row invariant is defined as:
+Next, we want to define a row invariant that checks the redundant BMI fields are consistent with respect to height and weight. Arguably the CSV should not have a BMI field. Having said that, many CSV files do contain such redundant information, which is frequently not accurate with respect to intended values. The BMI check row invariant is defined as:
 %
 \begin{vdmsl}[frame=none,basicstyle=\ttfamily\scriptsize]    
     (lambda h: Headers0, r: Row &
@@ -474,7 +472,7 @@ Next, we want to define a row invariant that checks the redundant BMI fields are
 %
 For the given row, the user-defined function \texttt{calculate\_bmi} calculates the BMI using the row values for height and weight, whereas \texttt{r(5)} gets the CSV BMI value, which needs to be approximately equal to the calculated value. Approximation here considers a particular number of digits of precision for comparison between the cell value and the calculated one.    
 
-Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{\scriptsize CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
+Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{ CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
 
 \begin{lstlisting}[]
 CSV (IO) error: ignoring 1 short rows from "CSVExample.csv"
