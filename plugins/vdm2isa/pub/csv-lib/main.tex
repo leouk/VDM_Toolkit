@@ -209,10 +209,14 @@ CSV is a widely used format for data representing systems control, information e
 \section{Introduction}\label{sec:intro}
 
 The \gls{CSV} format is widely used for a variety of applications:~from data science as in organ transplant allocation\footnote{\url{https://unos.org/data/}}, embedded systems representation as in state machines for medical devices~\cite{alastairMSc,scp-dialyser}, pharmaceutical applications~\cite{csv-validation-pharma-msc}, log files on various kinds of systems, databases, payments, government systems and so on. Despite there being a standard (RFC 4180)\footnote{\url{https://www.rfc-editor.org/rfc/rfc4180}}, there are many versions and variations\footnote{\url{https://commons.apache.org/proper/commons-csv/}}. Its long history of use\footnote{\url{https://bytescout.com/blog/csv-format-history-advantages.html}} has inspired various other ``simple'' formats for data management and exchange, such as JSON~\cite{JSON}, XML and various spreadsheet formats. 
- 
-Therefore, we argue it is important to have a formal underpinning to the CSV-file format, with enough flexibility and variation to cater for realistic applications. For that, we choose VDM. 
 
-The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.
+CSV processing is an important part of the computation involving multiple application domains. Areas dependant on CSV input are plagued with subtle errors and inconsistencies, which would ultimately invalidate the systems responses associated with CSV data. When such data represents a system's architecture in itself (\textit{e.g.}~dialyser state machine representation~\cite{scp-dialyser}), as opposed to system data, consequences can be catastrophic. 
+
+To be clear, we delegate CSV parsing (\textit{i.e.}~handling of CSV grammar/format itself) to external tools. Here we present a VDM CSV library to capture aspects of the CSV data being imported to VDM, such that users can introduce specification to the CSV data as if it was a VDM data type. For system-architecture CSV files, tools like VDMJ's \texttt{CSVReader} or bespoke tools like those in~\cite{egleUG,alastairMSc,emv2} are suited; whereas for general data manipuation over varied CSV dialects and IO speed (\textit{e.g.}~log files, simulation runs, \textit{etc.}), our proposed \texttt{CSVLib} library is better suited.
+
+Therefore, we argue it is important to have a formal characterisation of the data structures represented by CSV input, with enough flexibility and variation to cater for realistic applications. For that, we choose VDM.\@ For formal characterisation of the CSV-file format itself, we delegate this to formal grammars\footnote{For an example formal CSV-grammar, see~\url{https://github.com/antlr/grammars-v4/tree/master/csv}} and parsing tools.\@ 
+
+The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, among others. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE.\@
 
 We decided to depart from the standard VDM-CSV library because it is slow, cannot handle various CSV dialects, relies on CSV positioning management (\textit{e.g.}~knowing where in the file you are; reading one CSV line at a time), and has no checks on the CSV data itself.        
 
@@ -329,10 +333,7 @@ For the \texttt{Age} header above, users could define \texttt{cell\_inv} (L1--3)
 %
 Row invariants are useful for checking dependencies/redundancies across the row cells. If the CSV file had three extra \texttt{<Float>} headers for weight, height and BMI (Body Mass Index), there are interesting checks possible. For instance, given age type range (\texttt{\{18\ldots 65\}}) it is possible to presume some minimum height expected (\textit{i.e.}~row dependency invariant); and given BMI's formulae (\(\frac{height}{weight^2}\)), its cell value can be calculated (\textit{i.e.}~row redundancy invariant).    
 
-\abcomment{Not sure if this a good example for file invariant}
-File invariants acts upon on the whole dataset. This might be useful when certain properties needs to be correlated across multiple rows and columns. An example of this would the importation of end of year financial records, where tax calculations individual taxes are calculated for each row and their summation is correlated to some previously established value. 
-
-%\lfcomment{Add here some example of ile invariant? }
+File invariants acts upon on the whole dataset. This might be useful when certain properties needs to be correlated across multiple rows and columns. An example of this would be the importation of an end-of-year financial records, where individual taxes are calculated for each row and their summation is correlated to some previously established value. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{CSV VDM native calls}\label{subsec:VDMnative}
@@ -472,7 +473,7 @@ Next, we want to define a row invariant that checks the redundant BMI fields are
 %
 For the given row, the user-defined function \texttt{calculate\_bmi} calculates the BMI using the row values for height and weight, whereas \texttt{r(5)} gets the CSV BMI value, which needs to be approximately equal to the calculated value. Approximation here considers a particular number of digits of precision for comparison between the cell value and the calculated one.    
 
-Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{ CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on. 
+Other examples are provided in \texttt{CSVLib.vdmsl} and \texttt{ CSVExample.vdmsl}\footnote{\url{https://github.com/leouk/VDM_Toolkit/tree/main/plugins/vdmlib}}. They show CSV parsing with different IO-parsers, CSV printing, escaped quotes in string cells (\textit{e.g.}~strings across multiple lines), default values (\textit{e.g.}~comma-sequences in CSV row), short rows (\textit{e.g.}~rows smaller than expected header), various types of invariant violation (\textit{e.g.}~implicit and user-defined), and so on.
 
 \begin{lstlisting}[]
 CSV (IO) error: ignoring 1 short rows from "CSVExample.csv"
@@ -503,9 +504,7 @@ In this paper, we presented a formally defined CSV library in VDM that adheres t
 
 Compared to the standard VDM CSV library, our SAFE-CSV performed better, yielding over a \(50\)\% increase in speed. Whilst the more robust invariant system of the SAFE-CSV library was not used for performance analysis, the infrastructure for its execution and in-built type-checking are still present throughout. The performance impact of invariant checking is negligible. It is comparable to users encoding such check inv VDM themselves, on top of the standard VDM CSV library for IO anyhow.  
 
-CSV processing is an important part of the computation involving multiple application domains. The area is plagued with subtle errors and inconsistencies, which would ultimately invalidate the systems associated with the data. When that represents system architecture itself (\textit{e.g.}~dialyser state machine representation~\cite{scp-dialyser}), as opposed to system data, consequences can be catastrophic. For system architecture CSV files, tools like VDMJ's \texttt{CSVReader} or bespoke tools like those in~\cite{egleUG,alastairMSc,emv2} are suited; whereas for general data manipuation, varied CSV dialects, and IO speed, \texttt{CSVLib} library is better suited.
-
-A key motivation for this work was the need for a more robust data import functionality to analyse data produced by an organ preservation medical device. The standard VDM library proved to be too limited in the CSV format it can handle. Additionally, it provides no data validation capabilities, which are necessary for safety critical applications. 
+A key motivation for this work was the need for a more robust data import functionality to analyse data produced by an organ preservation medical device. The standard VDM CSV library proved to be too limited in the CSV format it can handle. Additionally, it provides no data validation capabilities, which are necessary for safety critical applications. 
 
 \paragraph*{Future Work.}~
 %
