@@ -28,8 +28,8 @@
 		<module>vdm2isa</module>
 		<module>vdm2isa-lsp</module>
 		<!-- TODO figure out how to build Java11 for the vdm-antlr plugin
-		-->
 		<module>vdm-antlr</module>
+		-->
 	</modules>
 
 	<!-- General dependency inclusion with relative versioning -->
