@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Java Test",
+            "request": "launch",
+            "mainClass": "annotations.TestVDMJ",
+            "projectName": "annotationsVDMToolkit",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "vdm",
+            "name": "VDMJ Test",
+            "request": "launch",
+            "noDebug": false,
+            "defaultName": "WitnessDates",
+        }
+    ]
+}
