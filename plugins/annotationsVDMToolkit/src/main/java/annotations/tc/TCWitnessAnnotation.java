@@ -24,11 +24,12 @@ public class TCWitnessAnnotation extends TCAnnotation
 {
 	private static final long serialVersionUID = 1L;
 	private static TCDefinitionList tagDefinitions = null;
-	private TCValueDefinition myDefinition = null;
+	private TCValueDefinition myDefinition;
 
 	public TCWitnessAnnotation(TCIdentifierToken name, TCExpressionList args)
 	{
 		super(name, args);
+		myDefinition = null;
 	}
 	
 	public static void doInit()
@@ -55,7 +56,7 @@ public class TCWitnessAnnotation extends TCAnnotation
 				result = args.get(1) instanceof TCExpression;
 				if (!result) 
 				{
-					name.report(6021, "@Witness first argument must be a valid name, found " + args.get(0));		
+					name.report(6021, "@Witness second argument must be a expression, found " + args.get(1));		
 				}
 			}
 			else 
@@ -65,7 +66,7 @@ public class TCWitnessAnnotation extends TCAnnotation
 		}
 		else 
 		{
-			name.report(6021, "@Witness must have exactly 2 arguments, found " + args.size());
+			name.report(6021, "@Witness must have exactly 2 arguments as witness name and expression, found " + args.size() + " arguments instead");
 		}
 		return result;
 	}
