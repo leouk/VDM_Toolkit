@@ -70,8 +70,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
@@ -87,7 +87,12 @@
 									<filtering>false</filtering>
 									<include>*.vdmsl</include>
 									<include>*.thy</include>
-									<include>*.sh</include>									
+								</resource>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
 								</resource>
 								<resource>
 									<directory>.</directory>
