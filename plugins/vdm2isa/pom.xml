@@ -89,6 +89,12 @@
 									<include>*.thy</include>
 								</resource>
 								<resource>
+									<directory>src/test/resources/lvl0</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
+								</resource>
+								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>false</filtering>
 									<include>*.vdmsl</include>
