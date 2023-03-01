@@ -91,7 +91,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
             //    ,"./lvl0/TestV2ITypesRecordOrdering.vdmsl"
             //    ,"./lvl0/TestV2ITypesRecords.vdmsl"
             //    ,"./lvl0/TestV2ITypesStructured.vdmsl"
-            //, "./lvl0/TestV2ITypesFieldOfUnion.vdmsl" 
+            //    ,"./lvl0/TestV2ITypesRecordOrdering.vdmsl"
+            //    ,"./lvl0/TestV2ITypesFieldOfUnion.vdmsl" 
 
             //    ,"lib/VDMToolkit.vdmsl" 
             //    ,"./lvl0/TestV2IBindsComplex.vdmsl"
