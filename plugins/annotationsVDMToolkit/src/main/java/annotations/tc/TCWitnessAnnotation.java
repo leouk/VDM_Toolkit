@@ -83,26 +83,31 @@ public class TCWitnessAnnotation extends TCAnnotation
 	@Override
 	protected void doInit(Environment globals)
 	{
-		Environment local = new FlatCheckedEnvironment(tagDefinitions, globals, NameScope.GLOBAL);
-		List<VDMError> errs = TypeChecker.getErrors();
-		int before = errs.size();
-		myDefinition.typeCheck(local, NameScope.ANYTHING);
-		
-		if (errs.size() > before)
+		// if myDefinition is null, then there's a more basic type error on number of arguments, which would already have been reported by checkArgs. 
+		if (myDefinition != null)
 		{
-			List<VDMError> problems = new Vector<VDMError>();
-			int after = errs.size();
-			
-			for (int i = before; i < after; i++)
+			List<VDMError> errs = TypeChecker.getErrors();
+			int before = errs.size();
+			Environment local = new FlatCheckedEnvironment(tagDefinitions, globals, NameScope.GLOBAL);
+			myDefinition.typeCheck(local, NameScope.ANYTHING);
+		
+			// if type checking generated more errors (e.g. Witness local context has bad expressions)
+			if (errs.size() > before)
 			{
-				problems.add(errs.remove(before));	// Always remove this one
-			}
-
-			TypeChecker.report(6666, "Bad witness", name.getLocation());
-
-			for (VDMError e: problems)
-			{
-				TypeChecker.detail("Witness", e);
+				List<VDMError> problems = new Vector<VDMError>();
+				int after = errs.size();
+				
+				for (int i = before; i < after; i++)
+				{
+					problems.add(errs.remove(before));	// Always remove this one
+				}
+	
+				TypeChecker.report(6666, "Bad witness", name.getLocation());
+	
+				for (VDMError e: problems)
+				{
+					TypeChecker.detail("Witness", e);
+				}
 			}
 		}
 	}
