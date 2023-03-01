@@ -1,3 +1,7 @@
+pom.xml
 target
 doc
 .generated
+src/main/resources
+src/main/java
+src/test/java
