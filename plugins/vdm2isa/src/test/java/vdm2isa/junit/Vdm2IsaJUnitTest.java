@@ -1,12 +1,10 @@
 package vdm2isa.junit;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.fujitsu.vdmj.Release;
 import com.fujitsu.vdmj.messages.VDMMessage;
