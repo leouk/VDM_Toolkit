@@ -5,3 +5,7 @@ doc
 src/main/resources
 src/main/java
 src/test/java
+src/test/resources/MinimalTheorem.thy 
+src/test/resources/MinimalTheorem_PO.thy 
+src/test/resources/VDMToolkit.thy 
+src/test/resources/time_build.sh

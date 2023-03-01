@@ -1,7 +1,5 @@
 package annotations.tc;
 
-import java.util.Arrays;
-
 import com.fujitsu.vdmj.tc.annotations.TCAnnotation;
 import com.fujitsu.vdmj.tc.definitions.TCClassDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
