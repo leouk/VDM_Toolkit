@@ -1216,6 +1216,7 @@ expression
 // A.5.1 Bracketed Expression  
 //------------------------
 
+//@LRM bracketed_expression could be reused within pattern and expression?  
 bracketed_expression
     : PAREN_L expression PAREN_R
     ;
