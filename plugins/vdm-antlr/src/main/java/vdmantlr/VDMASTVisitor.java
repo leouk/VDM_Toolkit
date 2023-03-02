@@ -46,7 +46,7 @@ public class VDMASTVisitor extends VDMBaseVisitor<ASTNode> {
     @Override 
     public ASTNode visitIdPattern(VDMParser.IdPatternContext ctx) 
     { 
-        ASTNode n = new ASTIdentifierPattern(new LexNameToken(currentModule, ctx.IDENTIFIER().getText(), null));
+        //ASTNode n = new ASTIdentifierPattern(new LexNameToken(currentModule, ctx.IDENTIFIER().getText(), null));
         //ctx.IDENTIFIER();
         return visitChildren(ctx); 
     }
