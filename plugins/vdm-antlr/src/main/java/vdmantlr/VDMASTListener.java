@@ -2,6 +2,8 @@ package vdmantlr;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -96,8 +98,10 @@ public class VDMASTListener extends VDMBaseListener {
 
     public static void main(String[] argv) throws IOException
     {
-        VDMASTListener listener = new VDMASTListener(TEST);
-        ParseTree t = listener.parser.pattern_list();//parser.expression();
+        if (argv.length < 2)
+            throw new IllegalArgumentException("VDM AST Listener expects two parameters");
+        VDMASTListener listener = new VDMASTListener(argv[0]);
+        ParseTree t = listener.production(argv[1]);//listener.parser.pattern_list();//parser.expression();
         ParseTreeWalker.DEFAULT.walk(listener, t);
         System.out.println("\ntree="+t.toStringTree(listener.parser)+"\n");
         ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
@@ -221,6 +225,21 @@ public class VDMASTListener extends VDMBaseListener {
         astModuleList = null;
     }
 
+    public ParseTree production(String ruleName)
+    {
+        if (parser.getRuleIndex(ruleName) == -1)
+        throw new IllegalArgumentException("Invalid VDM parser production rule name " + ruleName);
+        try
+        {
+            Method rule = parser.getClass().getMethod(ruleName);
+            return (ParseTree)rule.invoke(parser);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+        {
+            throw new IllegalArgumentException("Valid VDM parser rule name " + ruleName + " caused " + e.getMessage());
+        }
+    }
+
     protected void throwMessage(int number, String message, LexLocation location) throws com.fujitsu.vdmj.syntax.ParserException, com.fujitsu.vdmj.lex.LexException
     {
         //from MESSAGES: 1000-1999 = Lexing errors
@@ -230,6 +249,17 @@ public class VDMASTListener extends VDMBaseListener {
             //TODO figure out token depth from ANTLR somehow
             throw new com.fujitsu.vdmj.syntax.ParserException(number, message, location, 1);//reader.getTokensRead());
     }
+
+    // Token start = ctx.getStop();
+    //             Token stop = candidate.getStop();
+    //             int start_line = start.getLine();
+    //             int from_col = start.getCharPositionInLine() + 1 + start.getText().length();
+    //             int stop_line = stop.getLine();
+    //             int to_col = stop.getCharPositionInLine() + 1 + stop.getText().length();
+    //             System.out.println("\nSCOPE of " + identifier + " is " + ((candidate instanceof VDMParser.Sl_documentContext) ? "whole module" : getSource(candidate)));
+    //             System.out.println("start " + start_line + "(" + from_col + ")");
+    //             System.out.println("stop " + stop_line + "(" + to_col + ")");
+    //             return new Range(start_line, from_col, stop_line, to_col);
 
     /**
      * Transforms an ANTLR parser rule context (for each parsing production) into a VDMJ LexLocation.
@@ -243,9 +273,14 @@ public class VDMASTListener extends VDMBaseListener {
     //Start/EndPos=character number consumed up to that point
     protected LexLocation token2loc(ParserRuleContext ctx)
     {
+        //VDMParserUtils.Range r = VDMParserUtils.findScope(ctx);
+        VDMParserUtils.Range r = VDMParserUtils.createRange(null, ctx, ctx.getParent());
         return new LexLocation(currentFile, currentModule, 
-            ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(),
-            ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()+1);
+            r.start_line, r.start_character, 
+            r.stop_line, r.stop_character);
+        // return new LexLocation(currentFile, currentModule, 
+        //     ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(),
+        //     ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()+1);
     }
 
     protected LexLocation token2loc(TerminalNode terminal)
@@ -806,6 +841,8 @@ public class VDMASTListener extends VDMBaseListener {
         //ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
         ASTPatternList list = (ASTPatternList)getListNode(ctx.pattern_list(), ASTPatternList.class);
         LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
+        VDMParserUtils.Range r = VDMParserUtils.findScope(ctx.tight_record_name().getText(), ctx.tight_record_name());
+        System.out.println(r);
         putNode(ctx, new ASTRecordPattern(typename, list));
     }
 

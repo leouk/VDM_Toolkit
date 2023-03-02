@@ -3,12 +3,24 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Run listener",
+            "name": "Run pattern listener",
             "request": "launch",
             "mainClass": "vdmantlr.VDMASTListener",
             "projectName": "vdm-antlr",
             //"preLaunchTask": "clear-editor-history",
             "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./patternScenario/example.pat pattern_list",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run expression listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./exprScenario/example.expr expression_list",
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
         },
         {
