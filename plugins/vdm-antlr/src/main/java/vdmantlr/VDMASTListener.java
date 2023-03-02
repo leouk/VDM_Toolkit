@@ -296,12 +296,17 @@ public class VDMASTListener extends VDMBaseListener {
      * @return
      */
     //Could have a ParserRuleContext and have
+    protected LexIdentifierToken id2lexid(TerminalNode id, ParserRuleContext ctx, int offset, boolean old)
+    {
+        //TerminalNode id = getToken(VDMParser.IDENTIFIER, 0);? but might not be general
+        return new LexIdentifierToken(id.getText().substring(offset), old, token2loc(ctx));
+    }
+
     protected LexIdentifierToken id2lexid(TerminalNode id, ParserRuleContext ctx, boolean old)
     {
         //TerminalNode id = getToken(VDMParser.IDENTIFIER, 0);? but might not be general
-        return new LexIdentifierToken(id.getText(), old, token2loc(ctx));
+        return id2lexid(id, ctx, 0, old);
     }
-
 
     //ASTModule
 	@Override 
@@ -751,7 +756,8 @@ public class VDMASTListener extends VDMBaseListener {
     {
         //ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
         ASTPatternList list = (ASTPatternList)getListNode(ctx.pattern_list(), ASTPatternList.class);
-        LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
+        LexNameToken typename = id2lexname(id2lexid(ctx.RECORD_IDENTIFIER(), ctx, "mk_".length(), false));
+        //LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
         putNode(ctx, new ASTRecordPattern(typename, list));
     }
 
