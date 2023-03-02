@@ -64,6 +64,8 @@ values
     MAX_HEIGHT_CM: real = 250;
     WEIGHT_ROW_INDEX: nat1 = 3;
     HEIGHT_ROW_INDEX: nat1 = 4;
+    NAME_ROW_INDEX  :nat1 = 1;
+    AGE_ROW_INDEX   :nat1 = 2;
     BMI_ROW_INDEX   : nat1 = 5;
     CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
     
@@ -134,9 +136,18 @@ values
             if not r(1)(1) in set elems CAPITAL_LETTERS then "name not capitalised" else nil
         );
 
-    --@doc add here file-wide checks
+    --@doc caution: expensive for large (many rows) CSV files !
     FILE_INVARIANT_CONSISTENCY: CSVFileInv = 
-        (lambda -: Headers0, -: Matrix & nil);
+        (lambda h: Headers0, m: Matrix & 
+            if NAME_ROW_INDEX > len h then 
+                "invalid name header"
+            else if AGE_ROW_INDEX > len h then 
+                "invalid age header"
+            else if (forall r1,r2 in seq m.cells & check_name_age_uniqueness(r1, r2)) then
+                "duplicate person in csv"
+            else 
+                nil 
+        );
 
     --@doc see CSVExample.csv
     -- Name,Age,Weight(Kg),Height(cm),BMI
@@ -186,6 +197,19 @@ across multiple lines",50,58.5,179,18.26],
 functions 
    	approx: real * nat1 -> real
 	approx(m, precision) == m * (10**precision);
+
+    check_name_age_uniqueness: Row * Row -> bool
+    check_name_age_uniqueness(r1 ,r2) == (
+        --@doc Given 2 rows, if they are not the same
+        --      ensure that each person is different based on their name/age
+        r1 <> r2 
+        => 
+        (
+            r1(NAME_ROW_INDEX) <> r2(NAME_ROW_INDEX)
+            or
+            r1(AGE_ROW_INDEX) <> r2(AGE_ROW_INDEX)
+        ) 
+    );
 
     calculated_bmi: Row -> real
     calculated_bmi(r) ==
