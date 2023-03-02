@@ -778,7 +778,7 @@ public class VDMASTListener extends VDMBaseListener {
         {
             String qualifiedName = ctx.RECORD_IDENTIFIER().getText();
             String mod = qualifiedName.substring(3);//mk_.length()=3
-            String name = ctx.SIMPLE_IDENTIFIER().getText();
+            String name = ctx.IDENTIFIER().getText();
             typename = new LexNameToken(mod, name, token2loc(ctx));
             //String qualifiedName = ctx.RECORD_IDENTIFIER().getText();
             // int backtick = qualifiedName.indexOf('`');

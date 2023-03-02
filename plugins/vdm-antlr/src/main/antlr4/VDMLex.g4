@@ -87,6 +87,12 @@ lexer grammar VDMLex;
 //     An example common ambiguity in programming languages is that between keywords and identifier rules.
 //     Keyword begin (followed by a nonletter) is also an identifier, at least lexically, so the lexer can match b-e-g-i-n to either rule.
 //     Because of this, it is important to place all keywords before the identifiers
+//
+//  - "mismatch input XXX expecting YYY": error's culprit usually associated with repeated/competing Lexing rules.
+//      * keep lexing rules disjunct (no token should match superset of another)
+//      * if tokens have to match same strings, them make sure they are ordered and that this is sufficient
+//      * otherwise, break rules up to avoid confusing lexer
+//  - "extrenous input XXX expecting YYY": error's about expected tokens that are not there
 //------------------------
 
 //------------------------

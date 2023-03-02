@@ -1500,8 +1500,8 @@ record_constructor
 
 // Nothing between tokens
 tight_record_name
-    : modName=RECORD_IDENTIFIER SEP_tick recName=SIMPLE_IDENTIFIER
-    | simpleRecName=RECORD_IDENTIFIER
+    : RECORD_IDENTIFIER (SEP_tick IDENTIFIER)?
+    //| RECORD_IDENTIFIER
     ;
 
 record_modifier
