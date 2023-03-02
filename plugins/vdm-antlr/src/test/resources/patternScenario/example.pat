@@ -20,4 +20,5 @@ m munion n,
 m munion {x|->10, y |->20},
 mk_(x,y),
 mk_R(x,{0}),
+mk_A`R(x,{90}),
 (10)

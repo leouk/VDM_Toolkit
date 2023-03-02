@@ -1499,14 +1499,9 @@ record_constructor
 // 	;
 
 // Nothing between tokens
-tight_pp_obj_name
-    : PPK_obj IDENTIFIER //{$first.index+1 == $second.index}?
-    ;
-
-// Nothing between tokens
 tight_record_name
-    : SLK_mk QUALIFIED_NAME //{$first.index+1 == $second.index}?
-    | SLK_mk IDENTIFIER //{$first.index+1 == $second.index}?
+    : modName=RECORD_IDENTIFIER SEP_tick recName=SIMPLE_IDENTIFIER
+    | simpleRecName=RECORD_IDENTIFIER
     ;
 
 record_modifier
@@ -2007,27 +2002,27 @@ identity_statement
 pattern 
     : 
 // A.8.1 match value
-      PAREN_L expression PAREN_R #BracketedExprPattern
-    | symbolic_literal           #SymbolicLiteralPattern
+      PAREN_L expression PAREN_R            #BracketedExprPattern
+    | symbolic_literal                      #SymbolicLiteralPattern
 // A.8.1 set enum + union pattern 
-    | BRACE_L pattern_list? BRACE_R #SetEnumPattern
-    | pattern SLK_union pattern     #SetUnionPattern
+    | BRACE_L pattern_list? BRACE_R         #SetEnumPattern
+    | pattern SLK_union pattern             #SetUnionPattern
 // A.8.1 seq enum + concatenation pattern 
-    | BRACKET_L pattern_list? BRACKET_R #SeqEnumPattern 
-    | lhs=pattern O_CONCAT rhs=pattern  #SeqConcatPattern
+    | BRACKET_L pattern_list? BRACKET_R     #SeqEnumPattern 
+    | lhs=pattern O_CONCAT rhs=pattern      #SeqConcatPattern
 // A.8.1 map enum + munion pattern
-    | BRACE_L maplet_pattern_list BRACE_R #MapEnumPattern
-    | BRACE_L SEP_maplet BRACE_R          #EmptyMapPattern
+    | BRACE_L maplet_pattern_list BRACE_R   #MapEnumPattern
+    | BRACE_L SEP_maplet BRACE_R            #EmptyMapPattern
     | lhs=pattern SLK_munion rhs=pattern    #MapMunionPattern
 // A.8.1 tupple pattern
-    | SLK_mk PAREN_L  pattern_list PAREN_R #TupplePattern
+    | SLK_mk PAREN_L  pattern_list PAREN_R  #TupplePattern
 // A.8.1 object pattern 
-    | {!isVDMSL()}? tight_pp_obj_name PAREN_L field_pattern_list PAREN_R #PPObjectPattern
+    | {!isVDMSL()}? OBJECT_IDENTIFIER PAREN_L field_pattern_list PAREN_R #PPObjectPattern
 // A.8.1 record pattern 
-    | RECORD_IDENTIFIER PAREN_L pattern_list PAREN_R #RecordPattern
+    | tight_record_name PAREN_L pattern_list PAREN_R #RecordPattern
 // A.8.1 pattern IDENTIFIER
-    | O_MINUS                    #IgnorePattern
-    | IDENTIFIER                         #IdPattern
+    | O_MINUS                               #IgnorePattern
+    | IDENTIFIER                            #IdPattern
     ;
 
 maplet_pattern_list 

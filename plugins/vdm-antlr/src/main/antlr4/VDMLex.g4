@@ -364,11 +364,17 @@ fragment HEXADECIMAL_LITERAL
 //     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
 //     ;
 
-//------------------------
-// Fragments necessary for the lexer that we choose not to tokenize individually
-//------------------------
-NUMERAL
-    : DIGIT+
+//TODO how to get SLK_mk.getText() in this context? 
+RECORD_IDENTIFIER
+    : IDENTIFIER {getText().startsWith("mk_") && getText().length() > 3}? //"mk_".length() 
+    ;
+
+OBJECT_IDENTIFIER
+    : IDENTIFIER {getText().startsWith("obj_") && getText().length() > 4}? //"obj_".length() 
+    ;
+
+SIMPLE_IDENTIFIER
+    : IDENTIFIER {!getText().startsWith("mk_")}?
     ;
 
 QUALIFIED_NAME
@@ -379,13 +385,16 @@ OLD_NAME
     : IDENTIFIER SEP_old
     ;
 
-RECORD_IDENTIFIER
-    : IDENTIFIER {getText().startsWith("mk_") && getText().length() > 3}? //"mk_".length() 
-    ;
-
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 
     : NameStartChar NameChar*
+    ;
+
+//------------------------
+// Fragments necessary for the lexer that we choose not to tokenize individually
+//------------------------
+NUMERAL
+    : DIGIT+
     ;
 
 //@LF This didn;t work :-(. Caused almost everything to be an identifier :-(

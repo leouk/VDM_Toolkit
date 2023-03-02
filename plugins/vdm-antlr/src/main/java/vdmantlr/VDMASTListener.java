@@ -760,17 +760,11 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitTight_pp_obj_name(VDMParser.Tight_pp_obj_nameContext ctx)
-    {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-    
-    @Override
     public void exitPPObjectPattern(VDMParser.PPObjectPatternContext ctx)
     {
         //@NB needs to be implement ASTNamePatternPairList Mappable 
         ASTNamePatternPairList list = null;//(ASTNamePatternPairList)lists.get(ctx.field_pattern_list());
-        LexNameToken classname = getNode(ctx.tight_pp_obj_name(), LexNameToken.class);
+        LexNameToken classname = id2lexname(id2lexid(ctx.OBJECT_IDENTIFIER(), ctx, "obj_".length(), false));
         putNode(ctx, new ASTObjectPattern(token2loc(ctx), classname, list));
     }
 
@@ -780,20 +774,24 @@ public class VDMASTListener extends VDMBaseListener {
         LexNameToken typename;
         // check on ctx.second token type instead of != null?
         // mk_A`R(...)
-        if (ctx.QUALIFIED_NAME() != null)
+        if (ctx.SEP_tick() != null)
         {
-            String qualifiedName = ctx.QUALIFIED_NAME().getText();
-            int backtick = qualifiedName.indexOf('`');
-            assert backtick >= 0;
-            String mod = qualifiedName.substring(3, backtick);
-            String name = qualifiedName.substring(backtick + 1);
+            String qualifiedName = ctx.RECORD_IDENTIFIER().getText();
+            String mod = qualifiedName.substring(3);//mk_.length()=3
+            String name = ctx.SIMPLE_IDENTIFIER().getText();
             typename = new LexNameToken(mod, name, token2loc(ctx));
+            //String qualifiedName = ctx.RECORD_IDENTIFIER().getText();
+            // int backtick = qualifiedName.indexOf('`');
+            // assert backtick >= 0;
+            // String mod = qualifiedName.substring(3, backtick);//"mk_".length()=3
+            // String name = qualifiedName.substring(backtick + 1);
+            // typename = new LexNameToken(mod, name, token2loc(ctx));
         }
         // mk_R(...)
         else 
         {
-            assert ctx.IDENTIFIER() != null; //TODO or do recognition failure?
-            typename = id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false));
+            assert ctx.RECORD_IDENTIFIER() != null; //TODO assert or recognition failure?
+            typename = id2lexname(id2lexid(ctx.RECORD_IDENTIFIER(), ctx, 3, false));
         }
         putNode(ctx, typename);
     }
@@ -803,8 +801,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         //ASTPatternList list = (ASTPatternList)lists.get(ctx.pattern_list());
         ASTPatternList list = (ASTPatternList)getListNode(ctx.pattern_list(), ASTPatternList.class);
-        LexNameToken typename = id2lexname(id2lexid(ctx.RECORD_IDENTIFIER(), ctx, "mk_".length(), false));
-        //LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
+        LexNameToken typename = getNode(ctx.tight_record_name(), LexNameToken.class);
         putNode(ctx, new ASTRecordPattern(typename, list));
     }
 
