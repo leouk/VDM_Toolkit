@@ -26,10 +26,14 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.definitions.ASTDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
 import com.fujitsu.vdmj.ast.expressions.ASTBooleanLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTCharLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTIntegerLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTLetBeStExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTLetDefExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTNilExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTQuoteLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTRealLiteralExpression;
@@ -39,6 +43,7 @@ import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
 import com.fujitsu.vdmj.ast.lex.LexIntegerToken;
 import com.fujitsu.vdmj.ast.lex.LexKeywordToken;
+import com.fujitsu.vdmj.ast.lex.LexNameList;
 import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.lex.LexQuoteToken;
 import com.fujitsu.vdmj.ast.lex.LexRealToken;
@@ -107,8 +112,6 @@ public class VDMASTListener extends VDMBaseListener {
         ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
         System.out.println("VDM=" + n.toString()+"\n");
     }
-
-    public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
 
     /**
      * See ANTLR4 book Chapter 9 on error listeners
@@ -304,38 +307,6 @@ public class VDMASTListener extends VDMBaseListener {
 		return new LexNameToken(currentModule, id);
 	}
 
-    protected LexIntegerToken str2int(LexLocation location, String s, int base
-    )
-    {
-        LexIntegerToken result;
-        try
-        {
-            long l = Long.parseLong(s, base);
-            result = new LexIntegerToken(l, location);
-        }
-        catch (NumberFormatException e)
-        {
-            //throwMessage(1014, "Cannot convert [" + s + "] in base " + base, location);
-            throw e;
-        }
-        return result;
-    }
-
-    protected LexRealToken str2real(LexLocation location, String s)
-    {
-        LexRealToken result;
-        try
-        {
-            double d = Double.parseDouble(s);
-            result = new LexRealToken(d, location);
-        }
-        catch (NumberFormatException e)
-        {
-            throw new UnsupportedOperationException();
-        }
-        return result;
-    }
-
     private void checkResult(ParserRuleContext ctx, Object result, Class<?> resultExpectedClass)
     {
         assert resultExpectedClass != null;
@@ -394,6 +365,22 @@ public class VDMASTListener extends VDMBaseListener {
         return id2lexid(id, ctx, 0, old);
     }
 
+    protected LexNameToken qid2lexname(TerminalNode id, int beginOffset, ParserRuleContext ctx)
+    {
+        String qualifiedName = id.getText();
+        int backtick = qualifiedName.indexOf('`');
+        assert backtick >= 0;
+        String mod = qualifiedName.substring(beginOffset, backtick);
+        String name = qualifiedName.substring(backtick + 1);
+        return new LexNameToken(mod, name, token2loc(ctx));
+    }
+
+    protected LexNameToken qid2lexname(TerminalNode id, ParserRuleContext ctx)
+    {
+        return qid2lexname(id, 0, ctx);
+    }
+
+
     //ASTModule
 	@Override 
     public void enterSl_document(VDMParser.Sl_documentContext ctx) 
@@ -410,6 +397,35 @@ public class VDMASTListener extends VDMBaseListener {
 			//throwMessage(2049, "Expecting 'end " + ctx.modName.getText() + "'");
 		}
         putNode(ctx, null);
+    }
+
+    @Override
+    public void exitBracketedExpr(VDMParser.BracketedExprContext ctx)
+    {
+        putNode(ctx, getNode(ctx.bracketed_expression().expression(), ASTExpression.class));
+        //TODO is this needed? 
+        nodes.removeFrom(ctx.bracketed_expression().expression());
+    }
+
+    @Override
+    public void exitLetExpr(VDMParser.LetExprContext ctx)
+    {
+        putNode(ctx, new ASTLetDefExpression(token2loc(ctx), getListNode(ctx.let_expression().local_definition_list(), ASTDefinitionList.class), getNode(ctx.let_expression().expression(), ASTExpression.class)));
+        //TODO allow access of various parts within nodes? 
+        //nodes.removeFrom(ctx.let_expression().local_definition_list());
+       //nodes.removeFrom(ctx.let_expression().expression());
+    }
+
+    @Override
+    public void exitLetBestExpr(VDMParser.LetBestExprContext ctx)
+    {
+        putNode(ctx, new ASTLetBeStExpression(token2loc(ctx), 
+            getNode(ctx.let_be_expression().multiple_bind(), ASTMultipleBind.class),
+            ctx.let_be_expression().stexpr != null ? getNode(ctx.let_be_expression().stexpr, ASTExpression.class) : null,
+            getNode(ctx.let_be_expression().inexpr, ASTExpression.class)));
+        //TODO allow access of various parts within nodes? 
+        //nodes.removeFrom(ctx.let_expression().local_definition_list());
+       //nodes.removeFrom(ctx.let_expression().expression());
     }
 
     @Override
@@ -490,31 +506,10 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
 //------------------------
-// A.8 Patterns and Bindings
+// A.8.0 Names and Symbolic literals
 //------------------------
 
-//------------------------
-// A.8.1 Patterns + Literals
-//------------------------
-
-    @Override 
-    public void exitPattern_list(VDMParser.Pattern_listContext ctx)
-    {
-        // empty pattern list (empty set/q etc) is non-null 
-        ASTPatternList result = new ASTPatternList();
-        for(VDMParser.PatternContext p : ctx.pattern())
-        {
-            result.add(getNode(p, ASTPattern.class));
-        }
-        //TODO has to be Mappable? Instead of ASTNode?!
-        putListNode(ctx, result);
-    }
-
-    @Override
-    public void exitBracketedExprPattern(VDMParser.BracketedExprPatternContext ctx)
-    {
-        putNode(ctx, new ASTExpressionPattern(getNode(ctx.expression(), ASTExpression.class)));
-    }
+    public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
 
     public static enum NumericLiteralType { INT10, INT16, REAL }
 
@@ -525,13 +520,71 @@ public class VDMASTListener extends VDMBaseListener {
         if (s.startsWith("0x") || s.startsWith("0X"))
             result = NumericLiteralType.INT16;
         else if (s.indexOf(".") != -1 || 
-                 s.indexOf("e") != -1 ||
-                 s.indexOf("E") != -1)
+                s.indexOf("e") != -1 ||
+                s.indexOf("E") != -1)
             result = NumericLiteralType.REAL;
         else 
             result = NumericLiteralType.INT10;
         return result;
     }
+
+    protected LexIntegerToken str2int(LexLocation location, String s, int base)
+    {
+        LexIntegerToken result;
+        try
+        {
+            long l = Long.parseLong(s, base);
+            result = new LexIntegerToken(l, location);
+        }
+        catch (NumberFormatException e)
+        {
+            //throwMessage(1014, "Cannot convert [" + s + "] in base " + base, location);
+            throw e;
+        }
+        return result;
+    }
+
+    protected LexRealToken str2real(LexLocation location, String s)
+    {
+        LexRealToken result;
+        try
+        {
+            double d = Double.parseDouble(s);
+            result = new LexRealToken(d, location);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new UnsupportedOperationException();
+        }
+        return result;
+    }
+
+    @Override 
+    public void exitName_list(VDMParser.Name_listContext ctx)
+    {
+        // empty pattern list (empty set/q etc) is non-null 
+        LexNameList result = new LexNameList();
+        for(VDMParser.NameContext n : ctx.name())
+        {
+            result.add(getNode(n, LexNameToken.class));
+        }
+        putListNode(ctx, result);
+    }
+
+    //TODO these two ought to be reused in pattern?
+    //@LRM
+    @Override
+    public void exitQualifiedName(VDMParser.QualifiedNameContext ctx)
+    {
+        putNode(ctx, qid2lexname(ctx.QUALIFIED_NAME(), ctx));
+    }
+
+    @Override
+    public void exitIdName(VDMParser.IdNameContext ctx)
+    {
+        putNode(ctx, id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false)));
+    }
+
     @Override 
     public void exitNumericLiteral(VDMParser.NumericLiteralContext ctx)
     {
@@ -675,35 +728,28 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, node);
     }
 
-    @Override 
-    public void enterSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
-    {
-        this.littype = SymbolicLiteralType.PATTERN;
-    }
+//------------------------
+// A.8.1 Patterns + Literals
+//------------------------
 
     @Override 
-    public void exitSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
+    public void exitPattern_list(VDMParser.Pattern_listContext ctx)
     {
-        if (!SymbolicLiteralType.PATTERN.equals(littype))
-            throw new UnsupportedOperationException("Expected symbolic literal pattern but found " + String.valueOf(littype));
-        this.littype = null; 
-        // how to know what kind of pattern came through? 
-        // ctx.symbolic_literal?
-        ASTPattern node = getNode(ctx.symbolic_literal(), ASTPattern.class);
-        if (!(node instanceof ASTIntegerPattern || 
-              node instanceof ASTRealPattern ||
-              node instanceof ASTCharacterPattern ||
-              node instanceof ASTStringPattern ||
-              node instanceof ASTQuotePattern ||
-              node instanceof ASTBooleanPattern ||
-              node instanceof ASTNilPattern))
+        // empty pattern list (empty set/q etc) is non-null 
+        ASTPatternList result = new ASTPatternList();
+        for(VDMParser.PatternContext p : ctx.pattern())
         {
-            throw new UnsupportedOperationException("Unknown pattern node " + node.getClass().getSimpleName());
+            result.add(getNode(p, ASTPattern.class));
         }
-        //TODO should such removals also be present in other sub-trees? 
-        nodes.removeFrom(ctx.symbolic_literal()); 
-        putNode(ctx, node);
-    }    
+        //TODO has to be Mappable? Instead of ASTNode?!
+        putListNode(ctx, result);
+    }
+
+    @Override
+    public void exitBracketedExprPattern(VDMParser.BracketedExprPatternContext ctx)
+    {
+        putNode(ctx, new ASTExpressionPattern(getNode(ctx.expression(), ASTExpression.class)));
+    }
     
     @Override 
     public void exitSetEnumPattern(VDMParser.SetEnumPatternContext ctx)
@@ -845,6 +891,36 @@ public class VDMASTListener extends VDMBaseListener {
         System.out.println(r);
         putNode(ctx, new ASTRecordPattern(typename, list));
     }
+
+    @Override 
+    public void enterSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
+    {
+        this.littype = SymbolicLiteralType.PATTERN;
+    }
+
+    @Override 
+    public void exitSymbolicLiteralPattern(VDMParser.SymbolicLiteralPatternContext ctx)
+    {
+        if (!SymbolicLiteralType.PATTERN.equals(littype))
+            throw new UnsupportedOperationException("Expected symbolic literal pattern but found " + String.valueOf(littype));
+        this.littype = null; 
+        // how to know what kind of pattern came through? 
+        // ctx.symbolic_literal?
+        ASTPattern node = getNode(ctx.symbolic_literal(), ASTPattern.class);
+        if (!(node instanceof ASTIntegerPattern || 
+            node instanceof ASTRealPattern ||
+            node instanceof ASTCharacterPattern ||
+            node instanceof ASTStringPattern ||
+            node instanceof ASTQuotePattern ||
+            node instanceof ASTBooleanPattern ||
+            node instanceof ASTNilPattern))
+        {
+            throw new UnsupportedOperationException("Unknown pattern node " + node.getClass().getSimpleName());
+        }
+        //TODO should such removals also be present in other sub-trees? 
+        nodes.removeFrom(ctx.symbolic_literal()); 
+        putNode(ctx, node);
+    }    
 
     @Override
     public void exitIgnorePattern(VDMParser.IgnorePatternContext ctx)

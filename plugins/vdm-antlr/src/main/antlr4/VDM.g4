@@ -1231,8 +1231,8 @@ let_expression
     ;
 
 let_be_expression
-    : SLK_let multiple_bind (SLK_best expression)? 
-      SLK_in expression 
+    : SLK_let multiple_bind (SLK_best stexpr=expression)? 
+      SLK_in inexpr=expression 
     ;
 
 def_expression 
