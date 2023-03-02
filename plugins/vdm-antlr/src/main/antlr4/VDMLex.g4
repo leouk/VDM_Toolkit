@@ -364,6 +364,13 @@ fragment HEXADECIMAL_LITERAL
 //     : O_TIMES | O_PLUS | SEP_qm | '{' NUMERIC_LITERAL (',' NUMERIC_LITERAL)? '}'
 //     ;
 
+//------------------------
+// Fragments necessary for the lexer that we choose not to tokenize individually
+//------------------------
+NUMERAL
+    : DIGIT+
+    ;
+
 QUALIFIED_NAME
     : IDENTIFIER SEP_tick IDENTIFIER
     ;
@@ -372,16 +379,13 @@ OLD_NAME
     : IDENTIFIER SEP_old
     ;
 
+RECORD_IDENTIFIER
+    : IDENTIFIER {getText().startsWith("mk_") && getText().length() > 3}? //"mk_".length() 
+    ;
+
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 
     : NameStartChar NameChar*
-    ;
-
-//------------------------
-// Fragments necessary for the lexer that we choose not to tokenize individually
-//------------------------
-NUMERAL
-    : DIGIT+
     ;
 
 //@LF This didn;t work :-(. Caused almost everything to be an identifier :-(
