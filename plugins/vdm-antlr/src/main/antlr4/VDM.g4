@@ -1683,28 +1683,6 @@ time_expression
     ;
 
 //------------------------
-// A.5.28 Names  
-//------------------------
-
-name_list
-    : name (SEP_comma name)*
-    ;
-
-name
-    : QUALIFIED_NAME        #QualifiedName
-    | IDENTIFIER            #IdName
-    ;
-
-symbolic_literal
-    : NUMERIC_LITERAL           #NumericLiteral
-	| (SLK_true|SLK_false)      #BooleanLiteral
-	| SLK_nil                   #NilLiteral 
-	| CHARACTER_LITERAL         #CharacterLiteral
-	| TEXT_LITERAL              #StringLiteral
-	| QUOTE_LITERAL             #QuoteLiteral
-    ;
-
-//------------------------
 // A.6 State Designators  
 //------------------------
 
@@ -2125,4 +2103,27 @@ multiple_type_bind
 
 type_bind_list
     : type_bind (SEP_comma type_bind)*
+    ;
+
+
+//------------------------
+// A.5.28 Names  
+//------------------------
+
+name_list
+    : name (SEP_comma name)*
+    ;
+
+name
+    : QUALIFIED_NAME        #QualifiedName
+    | IDENTIFIER            #IdName
+    ;
+
+symbolic_literal
+    : NUMERIC_LITERAL           #NumericLiteral
+	| (SLK_true|SLK_false)      #BooleanLiteral
+	| SLK_nil                   #NilLiteral 
+	| CHARACTER_LITERAL         #CharacterLiteral
+	| TEXT_LITERAL              #StringLiteral
+	| QUOTE_LITERAL             #QuoteLiteral
     ;
