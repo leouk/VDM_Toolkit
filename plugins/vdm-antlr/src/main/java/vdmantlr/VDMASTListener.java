@@ -15,10 +15,7 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.atn.ParseInfo;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionMode;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -83,6 +80,13 @@ import vdmantlr.generated.VDMBaseListener;
 //import vdmantlr.generated.VDMLex; which one?
 import vdmantlr.generated.VDMLexer;
 import vdmantlr.generated.VDMParser;
+
+/******************
+ * MISSING CASES
+ ******************
+ * 1. Qualified record pattern      : "mk_A`R"; qualified record expressions are working though? 
+ * 2. Tuple projection expressions  : "x.#1";
+ */
 
 public class VDMASTListener extends VDMBaseListener {
     
