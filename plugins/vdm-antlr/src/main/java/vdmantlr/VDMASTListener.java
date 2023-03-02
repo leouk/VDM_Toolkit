@@ -9,14 +9,19 @@ import java.util.Vector;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.atn.ParseInfo;
 import org.antlr.v4.runtime.atn.ParserATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -97,6 +102,9 @@ public class VDMASTListener extends VDMBaseListener {
 
     public static enum SymbolicLiteralType { PATTERN, EXPRESSION }
 
+    /**
+     * See ANTLR4 book Chapter 9 on error listeners
+     */
     public static class VDMErrorListener extends BaseErrorListener 
     {   
         @Override
@@ -129,6 +137,43 @@ public class VDMASTListener extends VDMBaseListener {
             System.err.println(); 
         }
     }
+
+    /**
+     * See Parser super class TraceListener implementation and setTrace.
+     */
+    public class VDMTraceListener implements ParseTreeListener {
+		@Override
+		public void enterEveryRule(ParserRuleContext ctx) {
+            System.out.println("enter   " + VDMASTListener.this.parser.getRuleNames()[ctx.getRuleIndex()] +
+							   ", LT(1)=" + VDMASTListener.this.parser.getTokenStream().LT(1).getText());
+		}
+
+		@Override
+		public void visitTerminal(TerminalNode node) {
+            String token; 
+            if (node.getSymbol() instanceof CommonToken)
+            {
+                CommonToken ctok = (CommonToken)node.getSymbol();
+                token = ctok.toString(VDMASTListener.this.parser);
+            }
+            else
+            {
+                token = node.getSymbol().toString();
+            }
+			System.out.println("consume "+token+" rule "+
+            VDMASTListener.this.parser.getRuleNames()[VDMASTListener.this.parser.getContext().getRuleIndex()]);
+		}
+
+		@Override
+		public void visitErrorNode(ErrorNode node) {
+		}
+
+		@Override
+		public void exitEveryRule(ParserRuleContext ctx) {
+			System.out.println("exit    "+VDMASTListener.this.parser.getRuleNames()[ctx.getRuleIndex()]+
+							   ", LT(1)="+VDMASTListener.this.parser.getTokenStream().LT(1).getText());
+		}
+	}
         
     
     //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
@@ -156,15 +201,16 @@ public class VDMASTListener extends VDMBaseListener {
         VDMLexer lexer = new VDMLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         parser = new VDMParser(tokens);
-
+        // parser.setProfile(true);
+        // ParseInfo pip = parser.getParseInfo();
         // if we want full ambiguity/diagnostic information
         parser.removeErrorListeners(); // remove ConsoleErrorListener 
         parser.addErrorListener(new DiagnosticErrorListener());
         parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
         // might as well add some extra information of our own 
         parser.addErrorListener(new VDMErrorListener());
-        
-        parser.setTrace(true);
+        parser.addParseListener(new VDMTraceListener());
+        //parser.setTrace(true);
         //ParserATNSimulator.debug = true;
         nodes = new ParseTreeProperty<ASTNode>();
         lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
@@ -190,6 +236,7 @@ public class VDMASTListener extends VDMBaseListener {
     //See ANTLR4 Section 3.2; 2loc below is not quite right.
     //CommonToken: [@5,8:10='451',<4>,1:8] 
     //[@TokenIndex(0), StartPos(0):EndPos(inclusive)='TEXT',<TYPE>,StartLine(1):StartChar(0)]
+    //Start/EndPos=character number consumed up to that point
     protected LexLocation token2loc(ParserRuleContext ctx)
     {
         return new LexLocation(currentFile, currentModule, 
