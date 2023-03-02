@@ -366,16 +366,16 @@ fragment HEXADECIMAL_LITERAL
 
 //TODO how to get SLK_mk.getText() in this context? 
 RECORD_IDENTIFIER
-    : IDENTIFIER {getText().startsWith("mk_") && getText().length() > 3}? //"mk_".length() 
+    : IDENTIFIER {getText().startsWith("mk_") && getText().length() > 3 && getText().indexOf('`') == -1}? //"mk_".length() 
     ;
 
 OBJECT_IDENTIFIER
     : IDENTIFIER {getText().startsWith("obj_") && getText().length() > 4}? //"obj_".length() 
     ;
 
-SIMPLE_IDENTIFIER
-    : IDENTIFIER {!getText().startsWith("mk_")}?
-    ;
+// SIMPLE_IDENTIFIER
+//     : IDENTIFIER {!getText().startsWith("mk_")}?
+//     ;
 
 QUALIFIED_NAME
     : IDENTIFIER SEP_tick IDENTIFIER
