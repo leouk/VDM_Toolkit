@@ -354,7 +354,7 @@ type_definition_list
     ;
 
 //@NB here added extra production to make parser faster; otherwise you will get
-//    a look ahead on the identifier until the O_EQUAL or '::' to disambiguate. 
+//    a look ahead on the IDENTIFIER until the O_EQUAL or '::' to disambiguate. 
 type_definition 
     : IDENTIFIER invariant_type_definition 
     ;
@@ -1500,13 +1500,13 @@ record_constructor
 
 // Nothing between tokens
 tight_pp_obj_name
-    : first=PPK_obj second=IDENTIFIER {$first.index+1 == $second.index}?
+    : PPK_obj IDENTIFIER //{$first.index+1 == $second.index}?
     ;
 
 // Nothing between tokens
 tight_record_name
-    : first=SLK_mk second=QUALIFIED_NAME {$first.index+1 == $second.index}?
-    | first=SLK_mk second=IDENTIFIER {$first.index+1 == $second.index}?
+    : SLK_mk QUALIFIED_NAME //{$first.index+1 == $second.index}?
+    | SLK_mk IDENTIFIER //{$first.index+1 == $second.index}?
     ;
 
 record_modifier
@@ -2024,10 +2024,10 @@ pattern
 // A.8.1 object pattern 
     | {!isVDMSL()}? tight_pp_obj_name PAREN_L field_pattern_list PAREN_R #PPObjectPattern
 // A.8.1 record pattern 
-    | tight_record_name PAREN_L pattern_list PAREN_R #RecordPattern
-// A.8.1 pattern identifier
+    | RECORD_IDENTIFIER PAREN_L pattern_list PAREN_R #RecordPattern
+// A.8.1 pattern IDENTIFIER
     | O_MINUS                    #IgnorePattern
-    | IDENTIFIER                 #IdPattern 
+    | IDENTIFIER                         #IdPattern
     ;
 
 maplet_pattern_list 
