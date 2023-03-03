@@ -143,10 +143,19 @@ values
                 "invalid name header"
             else if AGE_ROW_INDEX > len h then 
                 "invalid age header"
-            else if (forall r1,r2 in seq m.cells & check_name_age_uniqueness(r1, r2)) then
-                "duplicate person in csv"
             else 
-                nil 
+            (
+                let 
+                    dups : set of nat = { j | i, j in set inds m.cells & i <> j 
+                                                                         and 
+                                                                         check_name_age_uniqueness(m.cells(i), 
+                                                                                                   m.cells(j))}
+                in
+                    if (dups <> {}) then
+                        "duplicate persons found in row(s) " ^ val2seq_of_char[set of nat](dups) 
+                    else 
+                        nil 
+            )
         );
 
     --@doc see CSVExample.csv
