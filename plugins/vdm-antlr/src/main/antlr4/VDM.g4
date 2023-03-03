@@ -993,9 +993,6 @@ expression
     | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
-    | OLD_NAME                                              #OldNameExpr                       //36 primary
-    | name                                                  #NameExpr                          //37 primary
-    | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
 //------------------------
 // C.1 The family of combinators
 //------------------------
@@ -1064,153 +1061,10 @@ expression
     | tuple_constructor                                     #TupleMkExpr                      //75 primary
     | record_constructor                                    #RecordMkExpr                     //76 primary
     | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
+    | OLD_NAME                                              #OldNameExpr                       //36 primary
+    | name                                                  #NameExpr                          //37 primary
+    | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
     ;  
-
-// expression
-//     : bracketed_expression      #BracketedExpr                                  //1  primary
-//     | let_expression            #LetExpr                                        //2  primary
-//     | let_be_expression         #LetBestExpr                                    //3  primary 
-//     | def_expression            #DefExpr                                        //4  primary
-//     | if_expression             #IfExpr                                         //5  primary
-//     | cases_expression          #CasesExpr                                      //6  primary
-//     | unary_expression          #UnaryExpr                                      //7  primary
-
-// //--------------------------------------------------------------------------    //8
-// //    | binary_expression         #BinaryExpr
-//     |<assoc=right> expression O_EXP       expression #IterateExpr                            //34                  
-//     | expression O_TIMES     expression #ArithmeticMultiplicationExpr           //3
-//     | expression O_DIV       expression #ArithmeticDivideExpr                   //4
-//     | expression SLK_div     expression #ArithmeticIntegerDivisionExpr          //5
-//     | expression SLK_rem     expression #ArithmeticReminderExpr                 //6
-//     | expression SLK_mod     expression #ArithmeticModuloExpr                   //7
-//     | expression O_PLUS      expression #ArithmeticPlusExpr                     //1
-//     | expression O_MINUS     expression #ArithmeticMinusExpr                    //2
-  
-//     | expression O_LT        expression #RelationalLessThanExpr                 //8
-//     | expression O_LEQ       expression #RelationalLessThanEqualExpr            //9   
-//     | expression O_GT        expression #RelationalGreaterThanExpr              //10
-//     | expression O_GEQ       expression #RelationalGreaterThanEqualExpr         //11     
-//     |<assoc=right> expression O_EQUAL     expression #RelationalEqualExpr       //12
-//     |<assoc=right> expression O_NEQ       expression #RelationalNotEqualExpr    //13
-//     | expression SLK_and     expression #LogicalAndExpr                         //15
-//     | expression SLK_or      expression #LogicalOrExpr                          //14
-//     |<assoc=right> expression O_IMPLIES   expression #LogicalImpliesExpr        //16
-//     | expression O_IFF       expression #LogicalIffExpr                         //17
-
-//     | expression SLK_ninset  expression #SetNotMemberExpr                       //19
-//     | expression SLK_inset   expression #SetMemberExpr                          //18
-//     | expression SLK_subset  expression #SetSubsetExpr                          //20
-//     | expression SLK_psubset expression #SetPSubsetExpr                         //21
-//     | expression O_DIFF      expression #SetDiffExpr                            //23
-//     | expression SLK_union   expression #SetUnionExpr                           //24
-//     | expression SLK_inter   expression #SetInterExpr                           //25
-
-//     | expression O_CONCAT    expression #SeqConcatExpr                          //26
-//     | expression O_OVERRIDE  expression #MapSeqOverrideExpr                     //27
-
-//     | expression SLK_munion  expression #MapUnionExpr                           //28
-//     |<assoc=right> expression O_NDRES     expression #MapDomFilterExpr                       //29
-//     |<assoc=right> expression O_DRES      expression #MapDomRestricExpr                      //30
-//     | expression O_NRRES     expression #MapRngFilterExpr                       //31
-//     | expression O_RRES      expression #MapRngRestrictExpr                     //32
-//     |<assoc=right> expression SLK_comp    expression #MapCompositionExpr                     //33
-// //--------------------------------------------------------------------------
-
-//     | quantified_expression     #QuantifiedExpr                                 //9  primary
-//     | iota_expression           #IotaExpr                                       //10 primary
-//     | set_enumeration           #SetEnumExpr                                    //11 primary
-//     | set_comprehension         #SetCompExpr                                    //12 primary
-//     | set_range_expression      #SetRangeExpr                                   //13 primary
-//     | sequence_enumeration      #SeqEnumExpr                                    //14 primary
-//     | sequence_comprehension    #SeqCompExpr                                    //15 primary
-// //    | subsequence             #SubSeqExpr
-//     | expression PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R #SubSeqExpr //16
-
-//     | map_enumeration               #MapEnumExpr                                //17 primary
-//     | map_comprehension             #MapCompExpr                                //18 primary
-//     | tuple_constructor             #TupleMkExpr                                //19 primary
-//     | record_constructor            #RecordMkExpr                               //20 primary
-//     | record_modifier               #RecordMuExpr                               //21 primary
-// //    | tuple_select                  #TupleSelExpr
-//     | expression SEP_tsel NUMERAL   #TupleSelExpr
-// //    | field_select                  #FieldSelExpr
-//     | expression SEP_dot IDENTIFIER     #FieldSelExpr       
-// //    | apply                         #ApplyExpr
-//     | expression PAREN_L expression_list? PAREN_R #ApplyExpr                    //22 primary
-// //    | function_type_instantiation   #FunctionTypeInstExpr                       //25 primary
-//     | expression/*_combinators*/ /* name */ BRACE_L type (SEP_comma type)* BRACE_R #FunctionTypeInstExpr
-//     | lambda_expression             #LambdaExpr                                 //26 primary
-//     | narrow_expression             #NarrowExpr                                 //27 primary
-//     | {!isVDMSL()}? new_expression              #PPNewExpr                                  //28
-//     | {!isVDMSL()}? self_expression             #PPSelfExpr                                 //29
-//     | {isVDMRT()}?  threadid_expression         #PPThreadIdExpr                             //30
-//     | general_is_expression         #GeneralIsExpr                              //31 primary
-//     | undefined_expression          #UndefinedExpr                              //32 primary
-//     | precondition_expression       #PreconditionExpr                           //33 primary
-//     | {!isVDMSL()}? isofbaseclass_expression    #PPIsOfBaseClassExpr                        //34
-//     | {!isVDMSL()}? isofclass_expression        #PPIsOfClassExpr                            //35
-//     | {!isVDMSL()}? samebaseclass_expression    #PPSameBaseClassExpr                        //36
-//     | {!isVDMSL()}? sameclass_expression        #PPSameClassExpr                            //37
-//     | {isVDMRT()}?  act_expression              #RTActExpr                                  //38
-//     | {isVDMRT()}?  fin_expression              #RTFinExpr                                  //39
-//     | {isVDMRT()}?  active_expression           #RTActiveExpr                               //40
-//     | {isVDMRT()}?  req_expression              #RTReqExpr                                  //41
-//     | {isVDMRT()}?  waiting_expression          #RTWaitingExpr                              //42
-//     | {isVDMRT()}?  time_expression             #RTTimeExpr                                 //43
-//     | SYMBOLIC_LITERAL              #SymbolicLitExpr                            //46 primary
-//     | old_name                      #OldNameExpr                                //45 primary
-//     | name                          #NameExpr                                   //44 primary
-//     ;
-
-// expression 
-//     : bracketed_expression      #BracketedExpr
-//     | let_expression            #LetExpr
-//     | let_be_expression         #LetBestExpr
-//     | def_expression            #DefExpr
-//     | if_expression             #IfExpr
-//     | cases_expression          #CasesExpr
-//     | unary_expression          #UnaryExpr
-//     | binary_expression         #BinaryExpr
-//     | quantified_expression     #QuantifiedExpr
-//     | iota_expression           #IotaExpr
-//     | set_enumeration           #SetEnumExpr
-//     | set_comprehension         #SetCompExpr
-//     | set_range_expression      #SetRangeExpr
-//     | sequence_enumeration      #SeqEnumExpr
-//     | sequence_comprehension    #SeqCompExpr
-//     | subsequence               #SubSeqExpr
-//     // | map_enumeration
-//     // | map_comprehension
-//     // | tuple_constructor
-//     // | record_constructor
-//     // | record_modifier
-//     // | apply
-//     // | field_select
-//     // | tuple_select
-//     // | function_type_instantiation
-//     // | lambda_expression
-//     // | narrow_expression
-//     // //TODO
-//     // //| new_expression
-//     // //| self_expression
-//     // //| threadid_expression
-//     // | general_is_expression
-//     // | undefined_expression
-//     // | precondition_expression
-//     // //| isofbaseclass_expression
-//     // //| isofclass_expression
-//     // //| samebaseclass_expression
-//     // //| sameclass_expression
-//     // //| act_expression
-//     // //| fin_expression
-//     // //| active_expression
-//     // //| req_expression
-//     // //| waiting_expression
-//     // //| time_expression
-//     // | name
-//     // | old_name
-//     // | symbolic_literal 
-//     ;
 
 //------------------------
 // A.5.1 Bracketed Expression  
@@ -1236,8 +1090,7 @@ let_be_expression
     ;
 
 def_expression 
-    : SLK_def pattern_bind O_EQUAL expression 
-      (SEP_scolon pattern_bind O_EQUAL expression)* SEP_scolon?
+    : SLK_def equals_definition_list SEP_scolon?
       SLK_in expression
     ;
 
@@ -1246,9 +1099,9 @@ def_expression
 //------------------------
 
 if_expression
-    : SLK_if expression SLK_then expression 
+    : SLK_if testExpr=expression SLK_then thenExpr=expression 
       elseif_expression*
-      SLK_else expression
+      SLK_else elseExpr=expression
     ;
 
 elseif_expression 
@@ -1302,100 +1155,6 @@ unary_expression
     | SLK_merge    expression  #MergeExpr
     | SLK_inverse  expression  #MapInverseExpr 
     ;
-    
-/* 
-unary_expression 
-    : prefix_expression 
-    //@NB why the need for map_inverse and not just have it as another kind of binary operator? 
-    | map_inverse
-    ;
-
-prefix_expression 
-    : unary_operator expression
-    ;
-
-//TODO have this a lex rule? 
-unary_operator
-    : O_PLUS
-    | O_MINUS
-    | SLK_abs
-    | SLK_floor
-    | SLK_not 
-    | SLK_card
-    | SLK_power
-    | SLK_dunion
-    | SLK_dinter 
-    | SLK_hd
-    | SLK_tl
-    | SLK_len
-    | SLK_elems
-    | SLK_inds
-    | SLK_reverse
-    | SLK_conc
-    | SLK_dom
-    | SLK_rng
-    | SLK_merge
-    ;
-
-map_inverse 
-    : SLK_inverse expression;
-*/
-
-// suffix_expression
-//     | SEP_tsel NUMERAL          #TupleSelExpr                             
-//     | SEP_dot IDENTIFIER        #FieldSelExpr       
-//     ;
-
-//------------------------
-// A.5.5 Binary Expressions  
-//------------------------
-
-// Binary expressions will entail left-recursive rules, which require explicit labelling.
-// Their order determine their binding power. I rearranged the VDM list of binary operators according to expected binding powers.
-// See ANTLR4 Definitive guide section 5.4.
-//@NB is this the right binding power order? 
-
-// binary_expression
-//     : expression O_EXP       expression //#IterateExpr                               //@NB matches both 4**3 (exponentiation) and f**2 (relational iteration)?//
-//     | expression O_TIMES     expression //#ArithmeticMultiplicationExpr    
-//     | expression O_DIV       expression //#ArithmeticDivideExpr    
-//     | expression SLK_div     expression //#ArithmeticIntegerDivisionExpr    
-//     | expression SLK_rem     expression //#ArithmeticReminderExpr    
-//     | expression SLK_mod     expression //#ArithmeticModuloExpr    
-//     | expression O_PLUS      expression //#ArithmeticPlusExpr
-//     | expression O_MINUS     expression //#ArithmeticMinusExpr    
-//   //
-//     | expression O_LEQ       expression //#RelationalLessThanEqualExpr              //@LF allow for eager match on <= before for speed?    
-//     | expression O_LT        expression //#RelationalLessThanExpr    
-//     | expression O_GEQ       expression //#RelationalGreaterThanEqualExpr           //@LF allow for eager match on >= before for speed?    
-//     | expression O_GT        expression //#RelationalGreaterThanExpr  
-//     | expression O_EQUAL     expression //#RelationalEqualExpr    
-//     | expression O_NEQ       expression //#RelationalNotEqualExpr
-// //
-//     | expression SLK_and     expression //#LogicalAndExpr
-//     | expression SLK_or      expression //#LogicalOrExpr
-//     | expression O_IMPLIES   expression //#LogicalImpliesExpr
-//     | expression O_IFF       expression //#LogicalIffExpr
-// //
-//     | expression SLK_ninset  expression //#SetNotMemberExpr
-//     | expression SLK_inset   expression //#SetMemberExpr
-//     | expression SLK_subset  expression //#SetSubsetExpr
-//     | expression SLK_psubset expression //#SetPSubsetExpr
-//     | expression O_DIFF      expression //#SetDiffExpr                          
-//     | expression SLK_union   expression //#SetUnionExpr
-//     | expression SLK_inter   expression //#SetInterExpr
-// //
-//     | expression SLK_inseq   expression //#SeqMemberExpr
-//     | expression O_CONCAT    expression //#SeqConcatExpr
-//     | expression O_OVERRIDE  expression //#MapSeqOverrideExpr
-// //
-//     | expression SLK_munion  expression //#MapUnionExpr
-//     | expression O_NDRES     expression //#MapDomFilterExpr
-//     | expression O_DRES      expression //#MapDomRestricExpr
-//     | expression O_NRRES     expression //#MapRngFilterExpr
-//     | expression O_RRES      expression //#MapRngRestrictExpr
-//     | expression SLK_comp    expression //#MapCompositionExpr
-//     ;
 
 //------------------------
 // A.5.6 Quantified Expressions  
@@ -2001,27 +1760,18 @@ identity_statement
 //------------------------
 
 pattern 
-    : 
-// A.8.1 match value
-      PAREN_L expression PAREN_R            #BracketedExprPattern
-    | symbolic_literal                      #SymbolicLiteralPattern
-// A.8.1 set enum + union pattern 
+    : PAREN_L expression PAREN_R            #BracketedExprPattern
     | BRACE_L pattern_list? BRACE_R         #SetEnumPattern
     | pattern SLK_union pattern             #SetUnionPattern
-// A.8.1 seq enum + concatenation pattern 
     | BRACKET_L pattern_list? BRACKET_R     #SeqEnumPattern 
     | lhs=pattern O_CONCAT rhs=pattern      #SeqConcatPattern
-// A.8.1 map enum + munion pattern
     | BRACE_L maplet_pattern_list BRACE_R   #MapEnumPattern
     | BRACE_L SEP_maplet BRACE_R            #EmptyMapPattern
     | lhs=pattern SLK_munion rhs=pattern    #MapMunionPattern
-// A.8.1 tupple pattern
     | SLK_mk PAREN_L  pattern_list PAREN_R  #TupplePattern
-// A.8.1 object pattern 
     | {!isVDMSL()}? OBJECT_IDENTIFIER PAREN_L field_pattern_list PAREN_R #PPObjectPattern
-// A.8.1 record pattern 
     | tight_record_name PAREN_L pattern_list PAREN_R #RecordPattern
-// A.8.1 pattern IDENTIFIER
+    | symbolic_literal                      #SymbolicLiteralPattern
     | O_MINUS                               #IgnorePattern
     | IDENTIFIER                            #IdPattern
     ;
@@ -2058,18 +1808,18 @@ pattern_bind
     ;
 
 bind 
-    : set_bind
-    | seq_bind
-    | type_bind
+    : pattern SLK_inset expression #SetBind
+    | pattern SLK_inseq expression #SeqBind
+    | type_bind                    #TypeBind
     ;
 
-set_bind
-    : pattern SLK_inset expression
-    ;
+// set_bind
+//     : pattern SLK_inset expression
+//     ;
 
-seq_bind
-    : pattern SLK_inseq expression
-    ;
+// seq_bind
+//     : pattern SLK_inseq expression
+//     ;
 
 type_bind
     : pattern SEP_colon type
@@ -2080,22 +1830,22 @@ bind_list
     ;
 
 multiple_bind
-    : multiple_set_bind
-    | multiple_seq_bind
-    | multiple_type_bind
+    : pattern_list SLK_inset expression #MultipleSetBind
+    | pattern_list SLK_inseq expression #MultipleSeqBind
+    | pattern_list SEP_colon type       #MultipleTypeBind
     ;
 
-multiple_set_bind
-    : pattern_list SLK_inset expression
-    ;
+// multiple_set_bind
+//     : pattern_list SLK_inset expression
+//     ;
 
-multiple_seq_bind
-    : pattern_list SLK_inseq expression
-    ;
+// multiple_seq_bind
+//     : pattern_list SLK_inseq expression
+//     ;
 
-multiple_type_bind
-    : pattern_list SEP_colon type
-    ;
+// multiple_type_bind
+//     : pattern_list SEP_colon type
+//     ;
 
 type_bind_list
     : type_bind (SEP_comma type_bind)*
