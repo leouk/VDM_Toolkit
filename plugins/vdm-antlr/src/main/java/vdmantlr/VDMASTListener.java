@@ -29,8 +29,14 @@ import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
 import com.fujitsu.vdmj.ast.expressions.ASTBooleanLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTCaseAlternative;
+import com.fujitsu.vdmj.ast.expressions.ASTCaseAlternativeList;
 import com.fujitsu.vdmj.ast.expressions.ASTCharLiteralExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTDefExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTElseIfExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTElseIfExpressionList;
 import com.fujitsu.vdmj.ast.expressions.ASTExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTIfExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTIntegerLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTLetBeStExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTLetDefExpression;
@@ -87,6 +93,7 @@ import vdmantlr.generated.VDMBaseListener;
 //import vdmantlr.generated.VDMLex; which one?
 import vdmantlr.generated.VDMLexer;
 import vdmantlr.generated.VDMParser;
+import vdmantlr.generated.VDMParser.Elseif_expressionContext;
 
 /******************
  * MISSING CASES
@@ -407,13 +414,16 @@ public class VDMASTListener extends VDMBaseListener {
         nodes.removeFrom(ctx.bracketed_expression().expression());
     }
 
+    //TODO
+    //equals_definition_list
+    //local_definition_list
+
     @Override
     public void exitLetExpr(VDMParser.LetExprContext ctx)
     {
-        putNode(ctx, new ASTLetDefExpression(token2loc(ctx), getListNode(ctx.let_expression().local_definition_list(), ASTDefinitionList.class), getNode(ctx.let_expression().expression(), ASTExpression.class)));
-        //TODO allow access of various parts within nodes? 
-        //nodes.removeFrom(ctx.let_expression().local_definition_list());
-       //nodes.removeFrom(ctx.let_expression().expression());
+        putNode(ctx, new ASTLetDefExpression(token2loc(ctx), 
+            getListNode(ctx.let_expression().local_definition_list(), ASTDefinitionList.class), 
+            getNode(ctx.let_expression().expression(), ASTExpression.class)));
     }
 
     @Override
@@ -423,9 +433,68 @@ public class VDMASTListener extends VDMBaseListener {
             getNode(ctx.let_be_expression().multiple_bind(), ASTMultipleBind.class),
             ctx.let_be_expression().stexpr != null ? getNode(ctx.let_be_expression().stexpr, ASTExpression.class) : null,
             getNode(ctx.let_be_expression().inexpr, ASTExpression.class)));
-        //TODO allow access of various parts within nodes? 
-        //nodes.removeFrom(ctx.let_expression().local_definition_list());
-       //nodes.removeFrom(ctx.let_expression().expression());
+    }
+
+    @Override
+    public void exitDefExpr(VDMParser.DefExprContext ctx)
+    {
+        putNode(ctx, new ASTLetDefExpression(token2loc(ctx), 
+            getListNode(ctx.def_expression().equals_definition_list(), ASTDefinitionList.class), 
+            getNode(ctx.def_expression().expression(), ASTExpression.class)));
+    }
+
+    @Override
+    public void exitIfExpr(VDMParser.IfExprContext ctx)
+    {
+        ASTElseIfExpressionList elseIfList = new ASTElseIfExpressionList();
+        for(Elseif_expressionContext ei : ctx.if_expression().elseif_expression())
+        {
+            elseIfList.add(getNode(ei, ASTElseIfExpression.class));
+        }
+        //If want to save the elseif_expression, have to create it as a separa ParserRuleContext
+        //putListNode(ctx.if_expression().elseif_expression(), ASTElseIfExpressionList.class);
+        putNode(ctx, new ASTIfExpression(
+                token2loc(ctx), 
+                getNode(ctx.if_expression().testExpr, ASTExpression.class),
+                getNode(ctx.if_expression().thenExpr, ASTExpression.class), 
+                elseIfList, 
+                getNode(ctx.if_expression().elseExpr, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitCases_expression_alternative(VDMParser.Cases_expression_alternativeContext ctx)
+    {
+        //TODO! 
+        putNode(ctx, new ASTCaseAlternative(null, null, null));
+    }
+
+    @Override 
+    public void exitCases_expression_alternatives(VDMParser.Cases_expression_alternativesContext ctx)
+    {
+        ASTCaseAlternativeList casesList = new ASTCaseAlternativeList();
+        for(VDMParser.Cases_expression_alternativeContext c : ctx.cases_expression_alternative())
+        {
+            casesList.add(getNode(c, ASTCaseAlternative.class));
+        }
+        putListNode(ctx, casesList);
+    }
+
+    @Override
+    public void exitCasesExpr(VDMParser.CasesExprContext ctx)
+    {
+        // ASTElseIfExpressionList elseIfList = new ASTElseIfExpressionList();
+        // for(VDMParser.Cases_expression_alternativeContext ei : ctx.cases_expression().cases_expression_alternatives().cases_expression_alternative())
+        // {
+        //     elseIfList.add(getNode(ei, ASTCaseAlternative.class));
+        // }
+        // //If want to save the elseif_expression, have to create it as a separa ParserRuleContext
+        // //putListNode(ctx.if_expression().elseif_expression(), ASTElseIfExpressionList.class);
+        // putNode(ctx, new ASTIfExpression(
+        //         token2loc(ctx), 
+        //         getNode(ctx.if_expression().testExpr, ASTExpression.class),
+        //         getNode(ctx.if_expression().thenExpr, ASTExpression.class), 
+        //         elseIfList, 
+        //         getNode(ctx.if_expression().elseExpr, ASTExpression.class)));
     }
 
     @Override
@@ -963,7 +1032,7 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitSet_bind(VDMParser.Set_bindContext ctx)
+    public void exitSetBind(VDMParser.SetBindContext ctx)
     {
         ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
@@ -971,7 +1040,7 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitSeq_bind(VDMParser.Seq_bindContext ctx)
+    public void exitSeqBind(VDMParser.SeqBindContext ctx)
     {
         ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
@@ -999,7 +1068,7 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitMultiple_set_bind(VDMParser.Multiple_set_bindContext ctx)
+    public void exitMultipleSetBind(VDMParser.MultipleSetBindContext ctx)
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
@@ -1007,7 +1076,7 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitMultiple_seq_bind(VDMParser.Multiple_seq_bindContext ctx)
+    public void exitMultipleSeqBind(VDMParser.MultipleSeqBindContext ctx)
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
@@ -1015,7 +1084,7 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void exitMultiple_type_bind(VDMParser.Multiple_type_bindContext ctx)
+    public void exitMultipleTypeBind(VDMParser.MultipleTypeBindContext ctx)
     {
         ASTPatternList list = getListNode(ctx.pattern_list(), ASTPatternList.class);
         ASTType type = getNode(ctx.type(), ASTType.class);
