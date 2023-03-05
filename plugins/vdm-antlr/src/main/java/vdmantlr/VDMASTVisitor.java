@@ -9,8 +9,6 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
 import com.fujitsu.vdmj.ast.ASTNode;
-import com.fujitsu.vdmj.ast.lex.LexNameToken;
-import com.fujitsu.vdmj.ast.patterns.ASTIdentifierPattern;
 
 import vdmantlr.generated.VDMBaseVisitor;
 import vdmantlr.generated.VDMLexer;
@@ -36,9 +34,9 @@ public class VDMASTVisitor extends VDMBaseVisitor<ASTNode> {
         VDMParser parser = new VDMParser(tokens);
         ParseTree t = parser.pattern();//parser.expression();
         //ParseTreeWalker.DEFAULT.walk(new VDMASTListener(), t);
-        VDMBaseVisitor<ASTNode> v = new VDMBaseVisitor<ASTNode>();
+        VDMASTVisitor v = new VDMASTVisitor();
         ASTNode n = v.visit(t);
-        System.out.println("n="+n.toString());
+        System.out.println("n="+n.toString()+v.currentModule);
     }
 
     private String currentModule = "DEFAULT";

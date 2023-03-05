@@ -1133,26 +1133,27 @@ others_expression
 
 // Have the unary expression product with identifying rules for ease of listener/visitor traversals
 // Unary appearing before binary makes them bind tigher (stronger) than binary, which is desirable. 
+//@LRM remove unary expression and put the others in place?
 unary_expression 
     : O_PLUS       expression  #UnaryPlusExpr
     | O_MINUS      expression  #UnaryMinusExpr
     | SLK_abs      expression  #AbsoluteExpr
     | SLK_floor    expression  #FloorExpr
     | SLK_not      expression  #NotExpr
-    | SLK_card     expression  #CardExpr
-    | SLK_power    expression  #PowerExpr
-    | SLK_dunion   expression  #DunionExpr
-    | SLK_dinter   expression  #DinterExpr
-    | SLK_hd       expression  #HdExpr
-    | SLK_tl       expression  #TlExpr
-    | SLK_len      expression  #LenExpr
-    | SLK_elems    expression  #ElemsExpr
-    | SLK_inds     expression  #IndsExpr
-    | SLK_reverse  expression  #ReverseExpr
-    | SLK_conc     expression  #ConcExpr
-    | SLK_dom      expression  #DomExpr
-    | SLK_rng      expression  #RngExpr
-    | SLK_merge    expression  #MergeExpr
+    | SLK_card     expression  #CardinalityExpr
+    | SLK_power    expression  #PowerSetExpr
+    | SLK_dunion   expression  #SetDunionExpr
+    | SLK_dinter   expression  #SetDinterExpr
+    | SLK_hd       expression  #SeqHdExpr
+    | SLK_tl       expression  #SeqTlExpr
+    | SLK_len      expression  #SeqLenExpr
+    | SLK_elems    expression  #SeqElemsExpr
+    | SLK_inds     expression  #SeqIndsExpr
+    | SLK_reverse  expression  #SeqReverseExpr
+    | SLK_conc     expression  #SeqDistConcExpr
+    | SLK_dom      expression  #MapDomExpr
+    | SLK_rng      expression  #MapRngExpr
+    | SLK_merge    expression  #MapMergeExpr
     | SLK_inverse  expression  #MapInverseExpr 
     ;
 
@@ -1160,6 +1161,7 @@ unary_expression
 // A.5.6 Quantified Expressions  
 //------------------------
 
+//@LRM remove this and put others in place?
 quantified_expression 
     : all_expression 
     | exists_expression 
