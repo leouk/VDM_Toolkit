@@ -479,13 +479,20 @@ public class VDMASTListener extends VDMBaseListener {
         putListNode(ctx, casesList);
     }
 
+    /**
+     * VDM case alternatives are irrgular, namely each case alternative depends on the toplevel expression
+     * as well as its own target/result expression. At enterCasesExpr, it's expression will not have been
+     * walked through yet. So we can't use it to populate the case alternative in the lisst, hence all is done
+     * here and other case alternative productions are ignored. 
+     */
     @Override
     public void exitCasesExpr(VDMParser.CasesExprContext ctx)
     {
-        // ASTElseIfExpressionList elseIfList = new ASTElseIfExpressionList();
-        // for(VDMParser.Cases_expression_alternativeContext ei : ctx.cases_expression().cases_expression_alternatives().cases_expression_alternative())
+        // ASTCaseAlternativeList casesList = new ASTCaseAlternativeList();
+        // for(VDMParser.Cases_expression_alternativeContext c : ctx.cases_expression().cases_expression_alternatives().cases_expression_alternative())
         // {
-        //     elseIfList.add(getNode(ei, ASTCaseAlternative.class));
+        //     //c.
+        //     //elseIfList.add(getNode(c, ASTCaseAlternative.class));
         // }
         // //If want to save the elseif_expression, have to create it as a separa ParserRuleContext
         // //putListNode(ctx.if_expression().elseif_expression(), ASTElseIfExpressionList.class);
