@@ -9,6 +9,8 @@ definitions
 --     g(s) == len s;
 
 values
+    v00 = cases v2: 0 -> 1, 1 -> 2, 2 -> 3, others -> 4 end;
+    v01 = cases v1: mk_(mk_(x,y), mk_(y,z)), mk_(x, y, z) -> x+y+z end;
     v1 = mk_(mk_(1,2), mk_(1,2));
     --v11 = v1.#1.#1;
     --v12 = (v1.#1).#1;
