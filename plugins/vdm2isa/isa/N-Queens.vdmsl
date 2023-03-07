@@ -20,9 +20,27 @@ types
 	Board = set of Coord
 	inv b == card b <= BOARD_SIZE * BOARD_SIZE;	
 
+/**
+	state
+		board: Board
+		current: nat  -- 
+		attempting: Queens
+
+ */
+	AnimationState ::
+		board: Board 
+		possible: Board 
+		current: nat 
+		attempting: Queens
+	inv mk_AnimationState(b, p, c, a) == b inter p = {} and c <= a;
+
+values 
+	ALL_BOARDS: Board = { mk_Coord(l, c) | l in set {1,...,BOARD_SIZE}, c in set {1,...,BOARD_SIZE} };
+
 functions
 	run: () -> [Board]
 	run() ==
+		--@AnimationInit(mk_AnimationState({}, ALL_BOARDS, 0, 1)) 
 		solve({}, 1);
 		
 	run': () -> seq of char
@@ -47,7 +65,8 @@ functions
 		then board
 		else
 			let possible': Board = possible(board) in
-				--@Printf("solve_try(p, b, q) = %1$s, %2$s, %3$s\n", card possible', card board, Q)
+				--@AnimationStep(mk_AnimationState(board, possible', ?, Q))
+				--@Printf("solve_try(p, b, q) = %1$s, %2$s, %3$s\n", possible', board, Q)
 				try(possible', board, Q)
 	pre 
 		Q < MAX_QUEENS and possible(board) <> {} => card board < 64
@@ -62,6 +81,7 @@ functions
 			let solution = solve(board union {p}, Q + 1) in
 				if solution = nil
 				then 
+					--@AnimationStep(Q, board, possible \ {p})
 					--@Printf("  try_try(p, b, q) = %1$s, %2$s, %3$s\n", card possible - 1, card board, Q)
 					try(possible \ {p}, board, Q)
 				else solution
