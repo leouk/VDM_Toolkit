@@ -2,12 +2,13 @@ module RecursiveVDM
 exports all
 definitions 
 functions
+
    factorial: nat -> nat 
-   factorial(n) == if n = 0 then 1 else n * factorial(n - 1)
+   factorial(n) == if n = 0 then 1 else n * factorial(n - 1) measure n;   
+
    -- For the measure below, VDMJ produces a measure function as: 
    -- measure_factorial: nat -> nat 
    -- measure_factorial(n) == n
-   measure n;   
    
    --@LF attempt at getting PVS's ackerman measure, but they use Cantor's normal form for ordinals!
 --     add: nat * nat * seq of nat -> (seq of nat )
