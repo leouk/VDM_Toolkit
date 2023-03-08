@@ -16,9 +16,17 @@ primrec factN :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where
   \<open>factN       0 = 1\<close> 
 | \<open>factN (Suc n) = (n * (factN n))\<close>
 
+\<comment> \<open>Pattern completeness missed is allowed as a warning\<close>
+primrec factNmissingConstructors :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where
+  \<open>factNmissingConstructors 0 = 1\<close> 
+
 \<comment> \<open>Automatic termination with pattern matching\<close>
 fun factN' :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where 
 \<open>factN' n = (if n = 0 then 1 else n * (factN' (n - 1)))\<close> 
+
+\<comment> \<open>Pattern completeness missed is provided as undefined\<close>
+fun factNincmplete' :: \<open>\<nat> \<Rightarrow> \<nat>\<close> where 
+\<open>factNincmplete' (Suc n) = (factNincmplete' n)\<close> 
 
 (********************************************************)
 section \<open>Algebraic type  (\<^typ>\<open>\<int>\<close>) recursion primitive and function\<close>
