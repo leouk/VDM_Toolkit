@@ -29,6 +29,7 @@ import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.plugins.AnalysisCommand;
 import com.fujitsu.vdmj.plugins.PluginConsole;
+import com.fujitsu.vdmj.plugins.PluginRegistry;
 import com.fujitsu.vdmj.plugins.VDMJ;
 import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.tc.modules.TCModule;
@@ -168,6 +169,17 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         setArguments(Utils.toArgv(line));
     }
 
+    public PluginRegistry getRegistry()
+    {
+        return registry;
+    }
+
+    public void setTCModules(TCModuleList mlist)
+    {
+        tclist.clear();
+        tclist.addAll(mlist);
+    }
+    
     protected abstract String getMinimalUsage();
 
     protected void localReset()
@@ -184,8 +196,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 
         timings.clear();
 
-        tclist.clear();
-        tclist.addAll(getTC());
+        setTCModules(getTC());
 
         arguments.clear();
     }

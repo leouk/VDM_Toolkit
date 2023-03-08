@@ -1,27 +1,3 @@
-/*******************************************************************************
- *
- *	Copyright (c) 2020 Nick Battle.
- *
- *	Author: Nick Battle
- *
- *	This file is part of VDMJ.
- *
- *	VDMJ is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
- *
- *	VDMJ is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *	GNU General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public License
- *	along with VDMJ.  If not, see <http://www.gnu.org/licenses/>.
- *	SPDX-License-Identifier: GPL-3.0-or-later
- *
- ******************************************************************************/
-
 package workspace.plugins;
 
 import java.io.PrintWriter;
@@ -32,6 +8,8 @@ import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
+import com.fujitsu.vdmj.plugins.PluginRegistry;
+import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.util.Utils;
 
 import json.JSONArray;
@@ -135,10 +113,16 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			long before = System.currentTimeMillis();
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
 			IsaTemplates.reset();
-			// TCPlugin tcp = registry.getPlugin("TC");
-			// TCModuleList mlist = tcp.getTC();
-			this.isapog = new IsapogCommand("isapog");//new IsapogPlugin(mlist);
+			this.isapog = IsapogCommand.getInstance("isapog");//new IsapogPlugin(mlist);
 			boolean pluginResult = true; 
+			PluginRegistry reg = this.isapog.getRegistry();
+			TCPlugin tcp1 = reg.getPlugin("TC");
+			TCModuleList mlist1 = tcp1.getTC();
+			//@NB above leads to empty registry? 
+			TCPlugin tcp = registry.getPlugin("TC");
+			TCModuleList mlist = tcp.getTC();
+			isapog.setTCModules(mlist);
+			
 			if (IsaProperties.vdm2isa_run_exu)
 			{
 				pluginResult = this.isapog.translate.exu.run(new String[] { "exu", "check", "sort" });
