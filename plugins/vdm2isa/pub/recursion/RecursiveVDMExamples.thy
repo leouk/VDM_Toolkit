@@ -150,6 +150,7 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
     using l_sumset_rel_wf apply blast \<^marker>\<open>tag sledgehammer\<close>
     oops
 
+\<comment> \<open>VDM measures are not expressive enough for relational measures\<close>
 
 end
 (*>*)
