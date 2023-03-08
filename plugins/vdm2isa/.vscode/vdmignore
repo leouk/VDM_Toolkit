@@ -30,5 +30,6 @@ src/main/resources/lvl1/.generated
 src/test/resources/VDMTools4VDMToolkit.opt
 src/test/resources/VDMTools4VDMToolkit.prj
 src/test/resources/VDMTools4VDMToolkit.wgm
+src/test/resources/fmi3/clock-model/clock_paper.pdf
 
 

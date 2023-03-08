@@ -1,0 +1,21 @@
+-- Examples of Exu errors and warnings
+module ExuEWExample
+exports all
+definitions
+
+types
+    T = nat 
+    eq t1 = t2 == t1 = t2;
+
+    R :: x: nat 
+    eq r1 = r2 == r1.x = r2.x;
+
+functions 
+
+    f: nat -> nat
+    f(x) == x;
+
+
+
+
+end ExuEWExample
