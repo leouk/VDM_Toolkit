@@ -168,6 +168,8 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
 
   \<comment> \<open>Recursion over maps is similar, if more involved; see paper source\<close>
 
+  \<comment> \<open>VDM measures are not expressive enough for relational measures\<close>
+
 (********************************************************)
 section \<open>Complex recursion examples\<close>
 
