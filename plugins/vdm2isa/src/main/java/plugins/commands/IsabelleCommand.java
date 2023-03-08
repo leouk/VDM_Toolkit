@@ -217,7 +217,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected TCModuleList getTC()
     {
         TCModuleList result = null; 
-        TCPlugin plugin = ((TCPlugin)registry.getPlugin("TC"));
+        TCPlugin plugin = ((TCPlugin)getRegistry().getPlugin("TC"));
         if (plugin == null)
         {
             // VDMJ.loadPlugins();
