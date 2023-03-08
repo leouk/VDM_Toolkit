@@ -52,7 +52,7 @@ public class TranslateCommand extends IsabelleCommand {
 
     private TRModuleList translatedModules;
 
-    public TranslateCommand(String line) {
+    private TranslateCommand(String line) {
         super(line);
         this.translatedModules = new TRModuleList();
         this.exu = ExuCommand.getInstance("exu");

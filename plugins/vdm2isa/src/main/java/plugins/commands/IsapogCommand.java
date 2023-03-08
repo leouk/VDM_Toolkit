@@ -61,7 +61,7 @@ public class IsapogCommand extends IsabelleCommand {
         return INSTANCE; 
     }
 
-    public IsapogCommand(String line) {
+    private IsapogCommand(String line) {
         super(line);
          // consider extending?
         translate = TranslateCommand.getInstance("vdm2isa");

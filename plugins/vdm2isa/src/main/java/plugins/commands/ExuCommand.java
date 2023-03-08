@@ -53,7 +53,7 @@ public class ExuCommand extends IsabelleCommand {
         return INSTANCE; 
     }
 
-    public ExuCommand(String line) {
+    private ExuCommand(String line) {
         super(line);
         if (!argv[0].equals(isabelleCommandName()))
 		{
