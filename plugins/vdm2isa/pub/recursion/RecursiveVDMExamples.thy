@@ -102,6 +102,7 @@ lemma l_fact_term_valid: \<open>(gen_VDMNat_term factV_wf) = factV_wf\<close>
   apply (simp_all add: pre_factV_def int_ge_less_than_def case_prod_beta)
   by auto
 
+(********************************************************)
 section \<open>VDM recursion over sets\<close>
 
 \<comment> \<open>  
@@ -130,7 +131,7 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
   \<comment> \<open>Users will have to finish this before proceeding if proof suggestion fails!\<close>
   by (pat_completeness, auto)
 
-  \<comment> \<open>Recursive definitions available, yet as partial functions (psimps)\<close>
+  \<comment> \<open>Recursive definitions available, yet as partial functions (psimps + dom predicate)\<close>
   find_theorems name:"sumset"
 
   \<comment> \<open>Well founded recursive relation translated from user defined @IsaMeasure\<close>
@@ -150,7 +151,26 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
     using l_sumset_rel_wf apply blast \<^marker>\<open>tag sledgehammer\<close>
     oops
 
-\<comment> \<open>VDM measures are not expressive enough for relational measures\<close>
+  \<comment> \<open>Verbatim copy of failed goal. Perhaps could be auto generated? (Problem it might be spurious)\<close>
+  lemma l_pre_sumset_sumset_wf_rel: 
+     \<open>pre_sumset s \<Longrightarrow> s \<noteq> {} \<Longrightarrow> (s - {(\<some> x. x \<in> s)}, s) \<in> (gen_set_term sumset_wf_rel)\<close>
+    unfolding gen_set_term_def apply (simp add: pre_sumset_defs)\<^marker>\<open>tag manual\<close>
+    by (metis Diff_subset member_remove psubsetI remove_def some_in_eq)\<^marker>\<open>tag sledgehammer\<close>
+
+  \<comment> \<open>Lemma enables sledgehammer to find the termination proof\<close>
+  termination
+    apply (relation \<open>(gen_set_term sumset_wf_rel)\<close>)
+    using l_sumset_rel_wf apply blast \<^marker>\<open>tag sledgehammer\<close>
+    using l_pre_sumset_sumset_wf_rel by presburger \<^marker>\<open>tag sledgehammer\<close>
+
+  \<comment> \<open>Recursive definitions available as total functions (simps)\<close>
+  find_theorems name:"sumset"
+
+  \<comment> \<open>Recursion over maps is similar, if more involved; see paper source\<close>
+
+(********************************************************)
+section \<open>Complex recursion examples\<close>
+
 
 end
 (*>*)
