@@ -119,7 +119,8 @@ definition pre_sumset :: \<open>VDMNat VDMSet \<Rightarrow> \<bool>\<close> wher
   \<open>pre_sumset s \<equiv> inv_VDMSet' inv_VDMNat s \<and> (\<forall> n \<in> s . n > 5)\<close>
 
 \<comment> \<open>Automatically generated def set: inferred from function AST + signature\<close>
-lemmas pre_sumset_defs = pre_sumset_def inv_VDMSet'_defs 
+\<comment> \<open>Notice the unfolding is staggered and deep into the AST term\<close>
+lemmas pre_sumset_defs = pre_sumset_def inv_VDMSet'_defs inv_VDMNat_def 
 
 \<comment> \<open>Mostly verbatim translation from VDM; let-in-set becomes Isabelle's Hilbert Choice binder (\<some>)\<close>
 function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close> where 
@@ -168,11 +169,140 @@ function (domintros) sumset :: \<open>VDMNat VDMSet \<Rightarrow> VDMNat\<close>
 
   \<comment> \<open>Recursion over maps is similar, if more involved; see paper source\<close>
 
-  \<comment> \<open>VDM measures are not expressive enough for relational measures\<close>
+  \<comment> \<open>VDM measures are not expressive enough for non-functional measures?\<close>
 
 (********************************************************)
-section \<open>Complex recursion examples\<close>
+section \<open>Complex recursion example with automation support\<close>
 
+\<comment> \<open>ack: nat * nat -> nat 
+    ack(m,n) == if m = 0 then n+1
+           else if n = 0 then ack(m-1, 1)
+           else               ack(m-1, ack(m, (n-1)))
+    --@IsaMeasure( pair_less_VDMNat )
+    measure is not yet specified;
+  \<close>
+
+definition pre_ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> \<bool>\<close> where
+  \<open>pre_ack m n \<equiv> inv_VDMNat m \<and> inv_VDMNat n\<close>
+lemmas pre_ack_defs = pre_ack_def 
+
+function (domintros) ack :: \<open>VDMNat \<Rightarrow> VDMNat \<Rightarrow> VDMNat\<close> where
+  \<open>ack m n = (if pre_ack m n then
+                       if m = 0 then n+1
+                  else if n = 0 then ack (m-1) 1
+                  else               ack (m-1) (ack m (n-1))
+                  else               undefined)\<close>
+  by (pat_completeness, auto) \<^marker>\<open>tag sledgehammer\<close>
+
+  \<comment> \<open>User defined well formed relation, yet as part of Isabelle's high levels of automation armoury \<close>
+  abbreviation ack_wf :: \<open>((VDMNat \<times> VDMNat) \<times> (VDMNat \<times> VDMNat)) VDMSet\<close> 
+    where \<open>ack_wf \<equiv> pair_less_VDMNat\<close>
+
+  \<comment> \<open>Proof is manual, but mostly discovered by sledgehammer\<close>
+  termination 
+    apply (relation ack_wf)\<^marker>\<open>tag manual\<close>
+    using wf_pair_less_VDMNat apply blast \<^marker>\<open>tag sledgehammer\<close>
+    apply (simp add: l_pair_less_VDMNat_I1 pre_ack_def) \<^marker>\<open>tag sledgehammer\<close>
+    apply (simp add:  pre_ack_defs) \<^marker>\<open>tag sledgehammer\<close>
+    by (simp add: pair_less_VDMNat_def pre_ack_def) \<^marker>\<open>tag sledgehammer\<close>
+
+(********************************************************)
+section \<open>Complex recursion where Isabelle proof discovers missing VDM specification!\<close>
+
+\<comment> \<open>perm: int * int * int -> int 
+    perm(m,n,r) == if 0 < r then perm(m, r-1, n) 
+              else if 0 < n then perm(r, n-1, m) else m
+    measure is not yet specified;\<close>
+
+definition pre_perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>\<close> where
+  \<open>pre_perm m n r \<equiv> inv_VDMInt m \<and> inv_VDMInt n \<and> inv_VDMInt r\<close>
+lemmas pre_perm_defs = pre_perm_def inv_VDMInt_def inv_True_def
+
+function (domintros) perm :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt\<close> where
+  \<open>perm m n r = (if pre_perm m n r then
+                         if 0 < r then perm m (r-1) n 
+                    else if 0 < n then perm r (n-1) m else m
+                 else undefined)\<close>
+  by (pat_completeness, auto) \<^marker>\<open>tag sledgehammer\<close>
+
+  \<comment> \<open>Inferred recursive relation based on recursive call patterns and VDM AST\<close>
+  definition perm_wf_rel :: \<open>((VDMInt \<times> VDMInt \<times> VDMInt) \<times> 
+                              (VDMInt \<times> VDMInt \<times> VDMInt)) VDMSet\<close>
+    where \<open>perm_wf_rel \<equiv> 
+     { ((m, r-1, n), (m, n, r)) | m r n . pre_perm m n r \<and> 0 < r } \<union> 
+     { ((r, n-1, m), (m, n, r)) | m r n . pre_perm m n r \<and> \<not> 0 < r \<and> 0 < n }\<close>
+
+  \<comment> \<open>Automatically generated lemma left for the user to discharge\<close>
+  \<comment> \<open>This will force the user to think of a VDM measure to use, which can be
+      expressed in this case using the measure method\<close>
+  lemma l_perm_wf_rel: \<open>wf perm_wf_rel\<close>
+    sorry
+
+  termination 
+    apply (relation \<open>perm_wf_rel\<close>) 
+      apply (simp add: l_perm_wf_rel) \<^marker>\<open>tag sledgehammer\<close>
+    \<comment> \<open>Sledgehammer fails here, yet the proof is "easy" \<close>
+    by (simp_all add: perm_wf_rel_def)  \<^marker>\<open>tag manual\<close>
+
+  (*----------------------------------------------------------------*)
+  subsection \<open>Distilling missing proof: take 1\<close>
+
+  \<comment> \<open>Suggests a VDM measure as max(m+n+r, 0)\<close>
+  lemma l_perm_wf_rel_VDM_measure: 
+    \<open>perm_wf_rel \<subseteq> measure (\<lambda> (m, r, n) . nat (max 0 (m+r+n)))\<close>
+    apply (intro subsetI, case_tac x)
+      apply (simp add: pre_perm_defs perm_wf_rel_def case_prod_beta max_def)
+       apply (elim disjE conjE, simp_all) 
+       nitpick
+       \<comment> \<open>Counter example shows the recursion would fail for certain inputs!\<close>
+       \<comment> \<open>It suggests a precondition is needed.\<close>
+       \<comment> \<open>@NB would quickcheck find it?\<close>
+       sorry
+
+  \<comment> \<open>If measure lemma is proved, sledgehammer can find the missing proof\<close>
+  lemma l_perm_wf_rel': \<open>wf perm_wf_rel\<close>
+    using l_perm_wf_rel_VDM_measure wf_subset by blast
+
+  (*----------------------------------------------------------------*)
+  subsection \<open>Distilling missing proof: take 2\<close>
+
+  \<comment> \<open>Reviewed VDM specification must include:
+      * pre ((0 < r or 0 < n) => m+n+r > 0)   
+      * measure maxs({m+n+r, 0});    
+     \<close>
+  definition pre_perm' :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> \<bool>\<close> where
+    \<open>pre_perm' m n r \<equiv> pre_perm m n r \<and> ((0 < r \<or> 0 < n) \<longrightarrow> m+n+r > 0)\<close>
+  lemmas pre_perm'_defs = pre_perm'_def pre_perm_defs
+
+  definition perm_wf_rel' :: \<open>((VDMInt \<times> VDMInt \<times> VDMInt) \<times> 
+                              (VDMInt \<times> VDMInt \<times> VDMInt)) VDMSet\<close>
+    where \<open>perm_wf_rel' \<equiv> 
+     { ((m, r-1, n), (m, n, r)) | m r n . pre_perm' m n r \<and> 0 < r } \<union> 
+     { ((r, n-1, m), (m, n, r)) | m r n . pre_perm' m n r \<and> \<not> 0 < r \<and> 0 < n }\<close>
+
+function (domintros) perm' :: \<open>VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt \<Rightarrow> VDMInt\<close> where
+  \<open>perm' m n r = (if pre_perm' m n r then
+                         if 0 < r then perm' m (r-1) n 
+                    else if 0 < n then perm' r (n-1) m else m
+                 else undefined)\<close>
+  by (pat_completeness, auto) \<^marker>\<open>tag sledgehammer\<close>
+
+  lemma l_perm_wf_rel_VDM_measure':
+    \<open>perm_wf_rel' \<subseteq> measure (\<lambda> (m, r, n) . nat (max 0 (m+r+n)))\<close>
+    apply (intro subsetI, case_tac x)
+      apply (simp add: pre_perm'_defs perm_wf_rel'_def case_prod_beta max_def)
+       apply (elim disjE conjE, simp_all) 
+  done
+
+  \<comment> \<open>With the lemma proved, sledgehammer can find the missing proof on updated spec\<close>
+  lemma l_perm_wf_rel'': \<open>wf perm_wf_rel'\<close>
+    using l_perm_wf_rel_VDM_measure' wf_subset by blast
+
+  termination 
+    apply (relation \<open>perm_wf_rel'\<close>) 
+      apply (simp add: l_perm_wf_rel'') \<^marker>\<open>tag sledgehammer\<close>
+    \<comment> \<open>Sledgehammer fails here, yet the proof is "easy" \<close>
+    by (simp_all add: perm_wf_rel'_def)  \<^marker>\<open>tag manual\<close>
 
 end
 (*>*)
