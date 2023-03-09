@@ -220,25 +220,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         TCPlugin plugin = ((TCPlugin)getRegistry().getPlugin("TC"));
         if (plugin == null)
         {
-            // VDMJ.loadPlugins();
-            // plugin = ((TCPlugin)registry.getPlugin("TC"));
             IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
-            // if (plugin == null)
-            // {
-            //     try
-            //     {
-            //         plugin = TCPlugin.factory(Settings.dialect);
-            //         registry.registerPlugin(plugin);
-            //     }
-            //     catch (Exception e)
-            //     {
-            //         throw new RuntimeException(e);
-            //     }
-            // }
-            // if (plugin == null)
-            //     throw new IllegalArgumentException("Plugin registry in trouble? " + registry.getPlugins().toString());
-            // else 
-            //     result = plugin.getTC();
         }
         else
             result = plugin.getTC();
