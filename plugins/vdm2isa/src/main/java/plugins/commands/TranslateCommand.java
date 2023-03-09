@@ -28,16 +28,13 @@ public class TranslateCommand extends IsabelleCommand {
 	private static TranslateCommand INSTANCE = null;
 	private static final String USAGE = "vdm2isa - translate all loaded VDM modules to Isabelle/HOL (v. " + IsaProperties.general_isa_version + ")";
 	
-	// public static final Vdm2isaPlugin getInstance(Interpreter interpreter)
-    // {
-    //     if (INSTANCE == null)
-    //     {
-    //         INSTANCE = new Vdm2isaPlugin(interpreter);
-    //     }
-    //     return INSTANCE; 
-    // }	
+    //@NB does this need to also be synchronized? No? 
+    public static final TranslateCommand getInstance(String line)
+    {
+        return getInstance(line, null);
+    }
 
-	public static synchronized final TranslateCommand getInstance(String line)
+    public static synchronized final TranslateCommand getInstance(String line, workspace.PluginRegistry lspR)
     {
         if (INSTANCE == null)
         {
@@ -47,6 +44,9 @@ public class TranslateCommand extends IsabelleCommand {
         {
             INSTANCE.setArguments(Utils.toArgv(line));
         }
+        // ensure the source registry is updated for LSP
+        if (lspR != null) 
+            INSTANCE.setLSPRegistry(lspR);
         return INSTANCE; 
     }
 
@@ -57,6 +57,13 @@ public class TranslateCommand extends IsabelleCommand {
         this.translatedModules = new TRModuleList();
         this.exu = ExuCommand.getInstance("exu");
     }
+
+	@Override
+	protected void setLSPRegistry(workspace.PluginRegistry lspR)
+	{
+		super.setLSPRegistry(lspR);
+		this.exu.setLSPRegistry(lspR);
+	}
 
 	@Override 
 	protected String getMinimalUsage()

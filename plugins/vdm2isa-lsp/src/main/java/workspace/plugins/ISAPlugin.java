@@ -113,16 +113,8 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			long before = System.currentTimeMillis();
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
 			IsaTemplates.reset();
-			this.isapog = IsapogCommand.getInstance("isapog");//new IsapogPlugin(mlist);
-			boolean pluginResult = true; 
-			PluginRegistry reg = this.isapog.getRegistry();
-			TCPlugin tcp1 = reg.getPlugin("TC");
-			TCModuleList mlist1 = tcp1.getTC();
-			//@NB above leads to empty registry? 
-			TCPlugin tcp = registry.getPlugin("TC");
-			TCModuleList mlist = tcp.getTC();
-			isapog.setTCModules(mlist);
-			
+			this.isapog = IsapogCommand.getInstance("isapog", registry);
+			boolean pluginResult = true; 			
 			if (IsaProperties.vdm2isa_run_exu)
 			{
 				pluginResult = this.isapog.translate.exu.run(new String[] { "exu", "check", "sort" });

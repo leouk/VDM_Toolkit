@@ -29,9 +29,7 @@ import com.fujitsu.vdmj.messages.InternalException;
 import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.plugins.AnalysisCommand;
 import com.fujitsu.vdmj.plugins.PluginConsole;
-import com.fujitsu.vdmj.plugins.PluginRegistry;
 import com.fujitsu.vdmj.plugins.VDMJ;
-import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.tc.modules.TCModule;
 import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.util.Utils;
@@ -149,6 +147,7 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     protected final List<String> arguments;
     protected File saveURI; 
     protected final Map<String, Long> timings;
+    private workspace.PluginRegistry lspRegistry;
 
     protected IsabelleCommand(String line) {
         super(line);
@@ -165,14 +164,38 @@ public abstract class IsabelleCommand extends AnalysisCommand {
 //        this.saveURI = ResourceUtil.defaultSaveURI(ResourceUtil.getParentFile(getTC()));
         this.timings = new TreeMap<String, Long>(); 
         this.called = 0;
+        this.lspRegistry = null;
         created++;
         this.localReset();
         setArguments(Utils.toArgv(line));
     }
 
-    public PluginRegistry getRegistry()
+    protected void setLSPRegistry(workspace.PluginRegistry lspR)
     {
-        return registry;
+        if (lspR == null || lspR.getPlugin("TC") == null)
+        {
+            IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+            throw new IllegalArgumentException("Invalid LSP plugin registry. Could not find TC plugin for source modules list.");
+        }
+        this.lspRegistry = lspR;
+        // mildly repeated set but needed for when creating within LSP x VDMJ 
+        setTCModules(getTC());
+    }
+
+    protected <T> T getPlugin(String name, Class<T> target)
+    {
+        T result; 
+        // if LSP is present expect a workspace.plugins.AnalysisPlugin
+        if (this.lspRegistry != null)
+        {
+            result = lspRegistry.getPlugin(name);
+        }
+        // otherwise expect a com.fujitsu.vdmj.plugins.AnalysisPlugin
+        else 
+        {
+            result = this.registry.getPlugin(name);
+        }
+        return result;
     }
 
     public void setTCModules(TCModuleList mlist)
@@ -214,18 +237,44 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         return VDMJ.getMainName().equals(VDMJMain.VDMJ_MAIN); 
     } 
 
+    protected final boolean calledFromLSP()
+    {
+        return lspRegistry != null;
+    }
+
+    /**
+     * Convoluted but works? 
+     * @return
+     */
     protected TCModuleList getTC()
     {
         TCModuleList result = null; 
-        TCPlugin plugin = ((TCPlugin)getRegistry().getPlugin("TC"));
-        if (plugin == null)
+        if (calledFromLSP())
         {
-            IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+            workspace.plugins.TCPlugin plugin = getPlugin("TC", workspace.plugins.TCPlugin.class);
+            if (plugin == null)
+            {
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+                result = new TCModuleList();
+            }
+            else
+            {
+                result = plugin.getTC();
+            }
         }
-        else
-            result = plugin.getTC();
-        if (result == null)
-            result = new TCModuleList();
+        else 
+        {
+            com.fujitsu.vdmj.plugins.analyses.TCPlugin plugin = getPlugin("TC", com.fujitsu.vdmj.plugins.analyses.TCPlugin.class);
+            if (plugin == null)
+            {
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+                result = new TCModuleList();
+            }
+            else
+            {
+                result = plugin.getTC();
+            }
+        }
         return result;
     }
 
@@ -757,11 +806,15 @@ public abstract class IsabelleCommand extends AnalysisCommand {
         {
             TCModule m = mi.next();
             String name = m.name.toString();
-            if (name.equals(IsaToken.VDMTOOLKIT.toString()) || 
-               (!modules.isEmpty() && !modules.contains(name)))
-            {
+            // remove if toolkit
+            if (name.equals(IsaToken.VDMTOOLKIT.toString())) 
                 mi.remove();
-            }
+            // continue if empty
+            else if (modules.isEmpty())
+                continue;
+            // if not toolkit neither empty, remove if not within modules to process
+            else if (!modules.contains(name))
+                mi.remove();
         } 
         return result;
     } 
