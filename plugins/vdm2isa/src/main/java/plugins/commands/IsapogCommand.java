@@ -166,6 +166,38 @@ public class IsapogCommand extends IsabelleCommand {
         return result; 
     }
 
+    protected ProofObligationList getPOList()
+    {
+        ProofObligationList result; 
+        if (calledFromLSP())
+        {
+            workspace.plugins.POPlugin plugin = getPlugin("PO", workspace.plugins.POPlugin.class);
+            if (plugin == null)
+            {
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "POPlugin");
+                result = new ProofObligationList();
+            }
+            else
+            {
+                result = plugin.getProofObligations();
+            }
+        }
+        else 
+        {
+            com.fujitsu.vdmj.plugins.analyses.POPlugin plugin = getPlugin("PO", com.fujitsu.vdmj.plugins.analyses.POPlugin.class);
+            if (plugin == null)
+            {
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_INVALID_PLUGIN_REGISTRY_1P, LexLocation.ANY, "TCPlugin");
+                result = new ProofObligationList();
+            }
+            else
+            {
+                result = plugin.getProofObligations();
+            }
+        }
+        return result;
+    }
+
     protected boolean doTranslate(TCModuleList tclist)
     {
         String workingAt = "";
@@ -176,13 +208,12 @@ public class IsapogCommand extends IsabelleCommand {
         {
             // create an isabelle module interpreter 
             workingAt = "creating filtered interpreter";
-            POPlugin pop = PluginRegistry.getInstance().getPlugin("PO");
             Set<String> moduleNames = getModuleNames(tclist);
 
             // get the POG and create a corresponding TRModuleList with its PO definitions 
             workingAt = "getting isa interpreter PO list";
 
-            ProofObligationList pogl = pop.getProofObligations();
+            ProofObligationList pogl = getPOList();
             IsaProofObligationList isapogl = new IsaProofObligationList();
             int poNumber = 1;
             List<Pair<ProofObligation, Exception>> notTranslatedPOS = new Vector<Pair<ProofObligation, Exception>>();
