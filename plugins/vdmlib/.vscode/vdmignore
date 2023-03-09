@@ -15,6 +15,7 @@ src/main/resources/VDM_Toolkit_order.dot
 src/main/resources/VDM_Toolkit_order.png 
 src/main/resources/nz_short.csv 
 src/main/resources/vdmlib.mods
+src/main/resources/ISQ.script
 src/test/java
 src/main/resources/performance/CSVs
 src/main/resources/performance/runCSV.sc 
