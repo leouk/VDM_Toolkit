@@ -1115,7 +1115,8 @@ functions
 values
 	BIS_UNIT   : UnitSystem = "BIS";
 	--@doc British Imperial System; choose Rankine instead of Farenheit for offset simplicity
-	BIS 	     : ConversionSchema = CONV_ID ++ { <Length> |-> 0.9143993, <Mass> |-> 0.453592338, <Temperature> |-> 5/9 };
+	BIS: ConversionSchema = CONV_ID ++ 
+		{ <Length> |-> 0.9143993, <Mass> |-> 0.453592338, <Temperature> |-> 5/9 };
 
 types
 	--@doc an BIS measurement system has an BIS conversion
