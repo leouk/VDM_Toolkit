@@ -113,6 +113,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
 			if (ev.request != null) 
 				setProperties(ev.request);
+			//IsaProperties.exu_linient_inv_check = false;
 			IsaTemplates.reset();
 			this.isapog = IsapogCommand.getInstance("isapog", registry);
 			boolean pluginResult = true; 			
