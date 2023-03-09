@@ -8,8 +8,6 @@ import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
-import com.fujitsu.vdmj.plugins.PluginRegistry;
-import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmj.util.Utils;
 
 import json.JSONArray;
@@ -110,8 +108,11 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 		}
 		else if (event instanceof CheckCompleteEvent)
 		{
+			//@NB how  to set properties at this point? 
 			long before = System.currentTimeMillis();
 			CheckCompleteEvent ev = (CheckCompleteEvent)event;
+			if (ev.request != null) 
+				setProperties(ev.request);
 			IsaTemplates.reset();
 			this.isapog = IsapogCommand.getInstance("isapog", registry);
 			boolean pluginResult = true; 			
