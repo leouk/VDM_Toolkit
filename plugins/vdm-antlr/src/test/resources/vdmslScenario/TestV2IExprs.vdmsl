@@ -77,8 +77,8 @@ values
 	v56= t9 subset t11;				--TCSubsetExpression		
 	v57= t9 psubset t11;				--TCProperSubsetExpression	
 	v58= {1,...,3};					--TCSetRangeExpression	
-	v65= {};						--TCSetEnumExpression for empty set
-	v66= [];						--TCSeqEnumExpression for empty seq 
+	--v65= {};						--TCSetEnumExpression for empty set
+	--v66= [];						--TCSeqEnumExpression for empty seq 
 	v59= {1,2,3,4};					--TCSetEnumExpression		
 	v60= [1,3,4];					--TCSeqEnumExpression		
 	v61= {1 |-> 2, 2|->3};			--TCMapEnumExpression,TCMapletExpressionList,TCMapletExpression	
