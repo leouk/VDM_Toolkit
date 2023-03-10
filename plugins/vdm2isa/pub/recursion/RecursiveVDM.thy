@@ -963,6 +963,7 @@ simplification rules.
     even(n) == if n = 0 then true else odd(n-1) measure n;
     
     --@IsaMutualRec({even})
+    --@TheoremAttribte pre_even_def = {termination_simp}
     odd: nat -> bool
     odd(n) == if n = 0 then false else even(n-1) measure n;
 \end{vdmsl}
