@@ -4,8 +4,8 @@
 --@v40, 31/11/2020
 --@doc International Standard of Quantities and Units
 --@doc inspired by ISQ (https://en.wikipedia.org/wiki/International_System_of_Units) 
---		 encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
---		 simplified to consider just time, with hours as the base unit of time.
+--	   encoding in Isabelle (https://www.isa-afp.org/entries/Physical_Quantities.html)
+--	   simplified to consider just time, with hours as the base unit of time.
 --@todo conversions map yet to be created/used; just exported for now.
 ------------------------------------------------------------------------------------
 module ISQ
@@ -346,7 +346,7 @@ types
 --@section ISQ dimensions
 ------------------------------------------------------------------------------------
 
-	--@doc SI base units, ordered according to SI's listing
+	--@doc SI base units, ordered according to SI's listing; ordered them for pretty printing only
 	Dimension = <Length> | <Mass> | <Time> | <Current> | <Temperature> | <Amount> | <Intensity>
 	ord d1 < d2 == 
 		let 
@@ -374,14 +374,15 @@ types
 		--(dunion rng dv) \ {0} <> {}
 		;
 
-	--@doc there is some dimention. For dimensionless, we get the unit vector (algebraic one), as in DRADIAN or DSTERADIAN
+	--@doc Invariant insits that there is some dimension in the vector. 
+	--     For dimensionless, we get the unit vector (algebraic one), as in DRADIAN or DSTERADIAN
 	DimensionVector = DimensionlessVector
 	inv dv == 
 		--OnFail(4060, "Dimension vector has only dimensionless (0) ranges for %1s", dom(dv :> {0}))
 		(rng(dv :-> {0}) <> {});
 	
 	--@doc The vector where only one of the base unit dimension registers 
-	--		 (i.e. only one mapping to 1, and all other mappings are to zero)
+	--	   (i.e. only one mapping to 1, and all other mappings are to zero)
 	SingleDimension = DimensionVector
 	inv sd == card dom (sd :> {1}) = 1 and rng (sd :-> {1}) = {0};
 	 
@@ -389,28 +390,27 @@ types
 --@section ISQ quantities
 ------------------------------------------------------------------------------------
   
-  --@doc magnitude values 
-	Magnitude = real;
-	MagnitudeN0 = Magnitude
-	inv m == m <> 0;
-	Magnitude1 = Magnitude
-	inv m == m > 0;
+    --@doc magnitude values 
+	Magnitude   = real;
+	MagnitudeN0 = Magnitude inv m == m <> 0;
+	Magnitude1  = Magnitude	inv m == m > 0;
 
 	--@doc quantity semantic domain as magnitude and a dimension vector to measure it within (e.g. 3 km/hr)
 	--@doc the domain is ordered by magnitude when within the same dimension; see quant_lt operators below 
 	--@doc some quantities are dimensionless (e.g. radian is meter/meter)
 	--		 (i.e. can't compare different dimension quantities directly)
+	--@doc quantity equality only compares magnitude.  
 	Quantity ::
 		mag: Magnitude
 		dim:- DimensionlessVector
 	--eq  mk_Quantity(m1, d1) = mk_Quantity(m2, d2) == m1 = m2 --and d1 = d2
 	ord mk_Quantity(m1, -) < mk_Quantity(m2, -) == m1 < m2 ; --and d1 = d2;
 	
-	--@doc non-zero quantity in any dimension
+	--@doc non-zero quantity in any dimension (e.g. x dimension, x > 0)
 	QuantityN0 = Quantity
 	inv mk_Quantity(m, -) == is_MagnitudeN0(m);
 
-	--@doc single dimension quantity (e.g. 3km)
+	--@doc single dimension quantity (e.g. 3km, no 3km/hr)
 	SQuantity = Quantity
 	inv mk_Quantity(-, d) == is_SingleDimension(d);
 
@@ -418,6 +418,7 @@ types
 	SQuantityN0 = SQuantity
 	inv sq == is_QuantityN0(sq);
 	
+	--@doc integer (whole) quanity
 	IntQuantity = Quantity
 	inv iq == is_int(iq.mag);
 		
@@ -426,30 +427,31 @@ types
 ------------------------------------------------------------------------------------
 
 	--@doc the name of unit system for measurement; could be enums, but then harder to extend?
-	UnitSystem = seq1 of char;
+	UnitSystem = String1;
 	
 	--@doc a conversion schema defines (non zero magnitude) factors to convert between 
-	--		 measurement systems for all standard dimensions
+	--	   measurement systems for all standard dimensions
 	ConversionSchema = map Dimension to MagnitudeN0
 	inv cs == dom cs = DIMENSIONS;
 	
 	--@doc Each conversion target associates different conversion schemas to a specific unit system target
-	--		 (e.g. converting to BIS with given schema from whatever unit) 
+	--	   (e.g. converting to BIS with given schema from whatever unit) 
 	--@doc Conversions Source to Target unit system conversion schemas.
 	Conversion  = map UnitSystem to ConversionSchema;
 	
 	--@todo conversions matrix could be useful for well known transformations of interest to be instantiated.
 	Conversions = map UnitSystem to Conversion
-	--@doc It's always possible to convert to itself: crucial to allow bottoming it up 
+	--@doc It's always possible to convert to itself: crucial to allow bottoming constants up 
 	inv cs == forall u in set dom cs & u in set dom cs(u); -- dom cs = dunion { dom i | i in set (rng cs) }
 	
 	--@doc a measurement system is a conversion schema and a typed quantity, possibly in multiple dimensions
 	--@doc equality and comparison can happen between mulitple dimensions within the same measurement system
-	--		 (i.e. if conversion schemas are the same for the given unit system)
+	--	   (i.e. if conversion schemas are the same for the given unit system)
 	MeasurementSystem ::
 		quantity: Quantity
 		  schema: ConversionSchema
 		    unit: UnitSystem
+		--@doc quantity dimension vector must agree with conversion schema (e.g. know what to convert to)
 	inv mk_MeasurementSystem(mk_Quantity(-, d), s, -) == dom d = dom s
 	eq  mk_MeasurementSystem(q1, s1, u1) 
 		= 
@@ -524,10 +526,12 @@ functions
 		true;--(is_DimensionVector(RESULT) <=> is_DimensionVector(d1) or is_DimensionVector(d2));
 	
 types 
+	--@doc human readable string for a dimension vector
 	DimensionView = map Dimension to String1
 	inv dv == dom dv = DIMENSIONS;
 
 values 
+	--@doc specific dimension view for each measurement system
 	SI_DIM_VIEW: DimensionView = 
 		{<Length> |-> "m", <Mass> |-> "kg", <Time> |-> "s", <Current> |-> "A", 
 		 <Temperature> |-> "K", <Amount> |-> "mol",  <Intensity> |-> "cd" };
@@ -537,6 +541,7 @@ values
 			
 functions 
 
+	--@doc mapps given dimension on dimension vector to its corresponding dimension view
 	print_dim: Dimension * DimensionView * DimensionVector -> String1 
 	print_dim(d, dview, dvector) ==
 		let exp: nat1 = abs dvector(d) in
@@ -546,7 +551,7 @@ functions
 				"(" ^ dview(d) ^ "**" ^ val2seq_of_char[nat1](exp) ^ ")"  
 	pre dvector(d) <> 0;
 
-	--@doc create a dimension vector print out as a sequence of number of times to print? 
+	--@doc creates a dimension vector print out  
 	print_dims: set of Dimension * DimensionView * DimensionVector -> String 
 	print_dims(dims, dview, dvector) ==
 		if dims = {} then 
@@ -558,6 +563,7 @@ functions
 		--@doc cannot print dimensionless dimension!
 		not 0 in set rng (dims <: dvector)
 	post 
+		--@doc results are non empty except at the end
 		(card dims <> 0 => is_String1(RESULT))
 	measure
 		card dims;
@@ -565,6 +571,7 @@ functions
 	parenthesise: bool * String -> String1
 	parenthesise(y, s) == if y then "( " ^ s ^ " )" else s;
 
+	--@doc user function to prints a dimention's vector view 
 	dim_view: DimensionView * DimensionlessVector -> String1
 	dim_view(dview, dvector) == 
 		if not is_DimensionVector(dvector) then 
@@ -588,6 +595,7 @@ functions
 				    ""
 				);
 
+	--@doc dimension view for any SI prefix
 	si_dim_view: Prefix -> String1 
 	si_dim_view(x) == 
 		cases true:
@@ -596,6 +604,7 @@ functions
 			(is_MeasurementSystem(x)) -> dim_view(SI_DIM_VIEW, x.quantity.dim)
 		end;
 
+	--@doc dimension view for any BIS prefix
 	bis_dim_view: Prefix -> String1 
 	bis_dim_view(x) == 
 		cases true:
@@ -617,20 +626,22 @@ functions
 	quant_times(mk_Quantity(m1, d1), mk_Quantity(m2, d2)) == 
 		mk_Quantity(m1*m2, dim_comp(d1, d2));
 		
-	--@doc useful to make metre^3
+	--@doc given m, 3 you get m**3
 	quant_itself_n: Quantity * nat1 -> Quantity
 	quant_itself_n(mk_Quantity(m, d), n) == mk_Quantity(m, dim_comp_n(d, n));
 		 
-		--@doc dividing quantities divides their magnitude and divides their dimensions
+	--@doc dividing quantities divides their magnitude and divides their dimensions
 	--@doc notice the second argument must be a non-zero quantity
 	quant_div: Quantity * QuantityN0 -> Quantity
 	quant_div(mk_Quantity(m1, d1), mk_Quantity(m2, d2)) ==
 		mk_Quantity(m1/m2, dim_div(d1, d2));
 		
+	--@doc given q, you get 1/q 
 	--@doc inverting quantities invert their magnitude and invert their dimensions
 	quant_inv: QuantityN0 -> Quantity
 	quant_inv(q) == quant_div(mk_Quantity(1, q.dim), q);
 
+	--@doc given q, you get 1/q**n 
 	quant_inv_n: QuantityN0 * nat1 -> Quantity
 	quant_inv_n(q, n) == quant_inv(quant_itself_n(q, n));
 		
@@ -676,11 +687,11 @@ values
 	DINTENSITY: SingleDimension = ZERO_DV ++ { <Intensity>   |-> 1 };
 
 	--@doc common dimension units
-	DAREA        : DimensionVector = dim_comp_n(DLENGTH, 2);																--L**2
-	DVOLUME      : DimensionVector = dim_comp_n(DLENGTH, 3);                                --L**3
-	DFREQUENCY   : DimensionVector = dim_inv(DTIME);                                        --T**-1
-	DVELOCITY    : DimensionVector = dim_comp(DLENGTH, DFREQUENCY);                          --L*T**-1
-	DACCELERATION: DimensionVector = dim_comp(DVELOCITY, DFREQUENCY);                        --L*T**-2
+	DAREA        : DimensionVector = dim_comp_n(DLENGTH, 2);                                  --L**2
+	DVOLUME      : DimensionVector = dim_comp_n(DLENGTH, 3);                                  --L**3
+	DFREQUENCY   : DimensionVector = dim_inv(DTIME);                                          --T**-1
+	DVELOCITY    : DimensionVector = dim_comp(DLENGTH, DFREQUENCY);                           --L*T**-1
+	DACCELERATION: DimensionVector = dim_comp(DVELOCITY, DFREQUENCY);                         --L*T**-2
 	DENERGY      : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 2)));   --L**2*M*T**-2
 	DPOWER       : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));   --L**2*M*T**-3
 	DFORCE       : DimensionVector = dim_comp(DLENGTH, dim_comp(DMASS, dim_inv_n(DTIME, 2))); --L*M*T**-2
@@ -688,21 +699,21 @@ values
 	DCHARGE      : DimensionVector = dim_comp(DINTENSITY, DTIME);                            --I*T
 	DPDIFFERENCE : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_comp(dim_inv_n(DTIME, 3), dim_inv(DINTENSITY)))); --L**2*M*T**-3*I**-1
 	DCAPACITANCE : DimensionVector = dim_comp(dim_inv(DAREA),                               --L**-2*M**-1*T**4*I**2
-																	dim_comp(dim_inv(DMASS), 
-																		dim_comp(dim_comp_n(DTIME, 4), 
-																							dim_comp_n(DINTENSITY, 2)))); 	
-																							
-	DRADIAN      : DimensionlessVector = dim_comp(DLENGTH, dim_inv(DLENGTH)); --L*L**-1
-	DSTERADIAN   : DimensionlessVector = dim_comp(DAREA, dim_inv(DAREA));     --L**2*L**-2
+											dim_comp(dim_inv(DMASS), 
+												dim_comp(dim_comp_n(DTIME, 4), 
+																	dim_comp_n(DINTENSITY, 2))));
+	DRADIAN      : DimensionlessVector = dim_comp(DLENGTH, dim_inv(DLENGTH));                    --L*L**-1
+	DSTERADIAN   : DimensionlessVector = dim_comp(DAREA, dim_inv(DAREA));                        --L**2*L**-2
 	DWATT        : DimensionVector     = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));  --L**2*M*T**-3
 	
-  	--@doc identity conversion schema maps all dimensions to 1 (i.e. no conversion)																						 
+  	--@doc identity conversion schema maps all dimensions to 1 (i.e. no conversion)
   	CONV_ID     : ConversionSchema = { i |-> 1 | i in set DIMENSIONS };
   
 ------------------------------------------------------------------------------------
 --@section International Standard Units constants basic, accepted, derived, prefixes 
 ------------------------------------------------------------------------------------
 
+	--@doc single unit of quantity for each base dimension  
 	UNIT_LENGTH   : IntQuantity   = mk_Quantity(1, DLENGTH);
 	UNIT_MASS     : IntQuantity   = mk_Quantity(1, DMASS);
 	UNIT_TIME     : IntQuantity   = mk_Quantity(1, DTIME);
@@ -711,6 +722,7 @@ values
 	UNIT_AMOUNT   : IntQuantity   = mk_Quantity(1, DAMOUNT);
 	UNIT_INTENSITY: IntQuantity   = mk_Quantity(1, DINTENSITY);
 
+	--@doc common SI prefixes
 	PREFIX_DECA   : MagnitudeN0 = (10**1);
 	PREFIX_HECTO  : MagnitudeN0 = (10**2)  ;
 	PREFIX_KILO   : MagnitudeN0 = (10**3)  ;
@@ -724,22 +736,23 @@ values
 	PREFIX_NANO   : MagnitudeN0 = 1/PREFIX_GIGA;
 	PREFIX_PICO   : MagnitudeN0 = 1/PREFIX_TERA;
 
-	UNIT_AREA        : Quantity = mk_Quantity(1, DAREA)         ;
-	UNIT_VOLUME      : Quantity = mk_Quantity(1, DVOLUME)       ;
-	UNIT_FREQUENCY   : Quantity = mk_Quantity(1, DFREQUENCY)    ;
-	UNIT_VELOCITY    : Quantity = mk_Quantity(1, DVELOCITY)     ;
-	UNIT_ACCELERATION: Quantity = mk_Quantity(1, DACCELERATION) ;
-	UNIT_ENERGY      : Quantity = mk_Quantity(1, DENERGY)       ;
-	UNIT_POWER       : Quantity = mk_Quantity(1, DPOWER)        ;
-	UNIT_FORCE       : Quantity = mk_Quantity(1, DFORCE)        ;
-	UNIT_PRESSURE    : Quantity = mk_Quantity(1, DPRESSURE)     ;
-	UNIT_CHARGE      : Quantity = mk_Quantity(1, DCHARGE)       ;
-	UNIT_PDIFFERENCE : Quantity = mk_Quantity(1, DPDIFFERENCE);
-	UNIT_CAPACITANCE : Quantity = mk_Quantity(1, DCAPACITANCE) ;
+	--@doc single unit of quantity for each base dimension  
+	UNIT_AREA        : IntQuantity = mk_Quantity(1, DAREA)         ;
+	UNIT_VOLUME      : IntQuantity = mk_Quantity(1, DVOLUME)       ;
+	UNIT_FREQUENCY   : IntQuantity = mk_Quantity(1, DFREQUENCY)    ;
+	UNIT_VELOCITY    : IntQuantity = mk_Quantity(1, DVELOCITY)     ;
+	UNIT_ACCELERATION: IntQuantity = mk_Quantity(1, DACCELERATION) ;
+	UNIT_ENERGY      : IntQuantity = mk_Quantity(1, DENERGY)       ;
+	UNIT_POWER       : IntQuantity = mk_Quantity(1, DPOWER)        ;
+	UNIT_FORCE       : IntQuantity = mk_Quantity(1, DFORCE)        ;
+	UNIT_PRESSURE    : IntQuantity = mk_Quantity(1, DPRESSURE)     ;
+	UNIT_CHARGE      : IntQuantity = mk_Quantity(1, DCHARGE)       ;
+	UNIT_PDIFFERENCE : IntQuantity = mk_Quantity(1, DPDIFFERENCE);
+	UNIT_CAPACITANCE : IntQuantity = mk_Quantity(1, DCAPACITANCE) ;
 
-	UNIT_RADIAN      : Quantity = mk_Quantity(1, DRADIAN)       ;
-	UNIT_STERADIAN   : Quantity = mk_Quantity(1, DSTERADIAN)    ;
-	UNIT_WATT        : Quantity = mk_Quantity(1, DWATT)         ;
+	UNIT_RADIAN      : IntQuantity = mk_Quantity(1, DRADIAN)       ;
+	UNIT_STERADIAN   : IntQuantity = mk_Quantity(1, DSTERADIAN)    ;
+	UNIT_WATT        : IntQuantity = mk_Quantity(1, DWATT)         ;
 	
 ------------------------------------------------------------------------------------
 --@section SI basic and derived unit types
@@ -839,7 +852,7 @@ functions
 	scaleMS(m1, mk_MeasurementSystem(q, s, u)) == mk_MeasurementSystem(scaleQ(m1, q), s, u);
 	
 	--@doc to quantity convert in multiple dimensions, we must use product of the integer exponenciation on the dimensions
-	--		 for all dimensions. Those with zero dimension, will lead to 1, others will be multiplied accordingly
+	--     for all dimensions. Those with zero dimension, will lead to 1, others will be multiplied accordingly
 	quant_conv: ConversionSchema * DimensionlessVector -> MagnitudeN0
 	quant_conv(cs, dv) ==
 		prods_r({ cs(i)**dv(i) | i in set dom cs inter dom dv })
@@ -898,16 +911,17 @@ functions
 		dom cs1 = dom RESULT;
 
 	--@doc given a conversion schema (cs_conv) and a measurement system, convert the quantity by 
-	--		 converting the magnitude according to the schema (cs_conv), keeping the given schema (cs)
-	--		 (i.e. it is will be transformed by ms_conv)
+	--     converting the magnitude according to the schema (cs_conv), keeping the given schema (cs)
+	--     (i.e. it is will be transformed by ms_conv)
 	ms_quant_conv: ConversionSchema * MeasurementSystem -> MeasurementSystem
 	ms_quant_conv(cs_conv, mk_MeasurementSystem(mk_Quantity(m, d), s, u)) ==
-		mk_MeasurementSystem(mk_Quantity(quant_conv(cs_conv, d) * m, d), s, u);--@todo this ought to be cs_conv unit for s?!
+		--@todo this ought to be cs_conv unit for s?!
+		mk_MeasurementSystem(mk_Quantity(quant_conv(cs_conv, d) * m, d), s, u);
 		
 	--@doc From -> To convert(ms): 
-	--		 given a measurement system (ms), convert its quantity from the given conversion schema 
-	--		 to the selected conversion schema (i.e. inverting and composing schemas, then
-	--		 converting the magnitude accordingly). Avoid id conversion for speed.
+	--     given a measurement system (ms), convert its quantity from the given conversion schema 
+	--     to the selected conversion schema (i.e. inverting and composing schemas, then
+	--     converting the magnitude accordingly). Avoid id conversion for speed.
 	ms_conv: /*ConversionSchema * ConversionSchema * MeasurementSystem*/ MeasurementSystem * ConversionSchema -> MeasurementSystem
 	ms_conv(/*cs_from, cs_to, ms*/ms, cs_to) == 
 		let
@@ -925,6 +939,7 @@ functions
 		conv_comp(cs_from, conv_inv(cs_to)) = RESULT.schema;
 	*/	
 	;
+
 ------------------------------------------------------------------------------------
 --@section SI prefixes
 ------------------------------------------------------------------------------------
@@ -938,6 +953,7 @@ functions
 			(is_MeasurementSystem(x)) -> x.quantity.mag
 		end;
 
+	--@doc multiply magnitude, quantity or measurement system
 	scale_prefix: Prefix * Magnitude -> Prefix
 	scale_prefix(x, p) == 
 		cases true:
