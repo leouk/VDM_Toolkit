@@ -1,13 +1,40 @@
 module Runner 
 imports 
-    from PGN 
+    from IO
+        functions 
+            freadval renamed freadval;
+            fwriteval renamed fwriteval;
+        operations
+            fecho renamed fecho;
+            print renamed print;
+            println renamed println;
+,   from PM 
+        types 
+            Piece renamed Piece ;
+,   from BM 
+        types 
+            Move renamed Move;
+,   from PGN 
         types  
             String renamed String;
+        functions 
+            movetext_to_move renamed movetext_to_move;
+            string_to_move renamed string_to_move;
+            move_to_pgn_string renamed move_to_pgn_string;
 ,   from GM
         types
+            Winner renamed Winner;
             Game renamed Game; 
         functions 
             default_game renamed default_game;
+            move_game renamed move_game;
+exports 
+    operations 
+        --RunnerIO: String ==> ();
+        --Run: () ==> ();
+        Main: String ==> ();
+        Test: () ==> ();
+
 definitions
 values 
     DEFAULT_OUTPUT_FILE: String = "output.txt";
@@ -18,4 +45,83 @@ state Runner of
 init r == r = mk_Runner(default_game(), DEFAULT_OUTPUT_FILE, [])
 end
 
+operations 
+
+    RunnerIO(filename: String) ==
+	(
+		let mk_(b,input) = freadval[seq of char](filename) in
+		(
+			pgn_moves := movetext_to_move(input); -- NB. file body must be surrounded with "..."
+            if (not b) then 
+                println("Could not read file " ^ filename);
+		);
+        let b: bool = fecho(output, "", <start>) in -- Flush file
+            if (not b) then 
+                println("Could not flush output file " ^ output);
+	)
+    ext rd output wr pgn_moves;
+
+    Run() ==
+    (
+        for move_str in pgn_moves do (
+            let move: Move = string_to_move(game, move_str) in
+                let mk_(g, w) = move_game(game, move) in
+                (
+                    game := g;
+                    if w <> nil then
+                    (
+                        print("Winner: ");
+                        print(w);
+                        print("\n\n");
+                        -- def guarantees that it is executed sequentially
+                        def bw1: bool = fwriteval[seq of char](output, "Winner: ", <append>);
+                            bw2: bool = fwriteval[Winner](output, w, <append>) in
+                            if (not bw1 or not bw2) then
+                                println("Could not save winner's information");
+                    );
+                    def b1: bool = fwriteval[seq of char](output, "From: ", <append>);
+                        b2: bool = fwriteval[Piece](output, move.from_, <append>);
+                        b3: bool = fwriteval[seq of char](output, "To: ", <append>);
+                        b4: bool = fwriteval[Piece](output, move.to_, <append>);
+                        b5: bool = fwriteval[seq of char](output, "\n", <append>) in
+                            if ({b1, b2, b3, b4, b5} <> {true}) then 
+                                println("Could not save game move " ^ move_to_pgn_string(move));
+                    print(move.from_);
+                    print(" To: ");
+                    print(move.to_);
+                    print("\n");
+                );
+        );
+        let b = fwriteval[seq of char](output, "\n\n PGN:\n\n", <append>) in
+            if not b then 
+                println("Could not start PGN output");
+        for move in reverse game.board.history do (
+            let mstr: String = move_to_pgn_string(move),
+                b:bool = fwriteval[seq of char](output, mstr ^ " ", <append>) in
+                if not b then 
+                    println("Could not write PGN move " ^ mstr);
+        );
+    )
+    ext wr game rd pgn_moves, output;
+
+    Main(filename: String) ==
+    (
+        RunnerIO(filename);
+        print("Start: " ^ filename ^ "\n");
+        Run();
+        print("End: " ^ filename ^ "\n\n");
+    )
+    pre len filename > 0;
+
+    Test() ==
+    (
+        Main("games/pgn4.txt"); -- NOTE: Ends in resignation
+        Main("games/pgn1.txt"); -- NOTE: Ends in resignation = no winner seen in simulation
+        Main("games/pgn2.txt");
+        Main("games/pgn3.txt"); -- NOTE: Ends in resignation = no winner seen in simulation
+
+        -- let tmp = new RunUnitTests() in
+        --     tmp.All()
+
+    );
 end Runner 
