@@ -1,0 +1,21 @@
+module Runner 
+imports 
+    from PGN 
+        types  
+            String renamed String;
+,   from GM
+        types
+            Game renamed Game; 
+        functions 
+            default_game renamed default_game;
+definitions
+values 
+    DEFAULT_OUTPUT_FILE: String = "output.txt";
+state Runner of 
+    game : Game
+    output: String
+    pgn_moves : seq of String
+init r == r = mk_Runner(default_game(), DEFAULT_OUTPUT_FILE, [])
+end
+
+end Runner 

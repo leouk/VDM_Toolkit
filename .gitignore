@@ -46,3 +46,5 @@ plugins/vdm2isa/pub/csv-lib/main.synctex.gz
 plugins/vdm2isa/pub/csv-lib/main.aux
 plugins/vdm2isa/pub/csv-lib/main.fdb_latexmk
 plugins/vdm2isa/pub/csv-lib/main.fls
+experiments/vdm/Chesss/PP/lib/IO.vdmpp
+experiments/vdm/Chesss/PP/lib/VDMUnit.vdmpp

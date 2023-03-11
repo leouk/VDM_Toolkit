@@ -1,0 +1,58 @@
+module GM 
+imports 
+    from PM 
+        types 
+            Color renamed Color;
+        functions 
+            opposite_color renamed opposite_color;
+    ,  
+    from BM
+        types 
+            Board renamed Board; 
+            Move renamed Move;
+        functions   
+            default_board renamed default_board;
+            move_board renamed move_board;
+            possible_moves renamed possible_moves;
+            in_check renamed in_check;
+exports
+    types 
+        struct Game;
+        struct Winner;
+    functions 
+        default_game: () -> Game;
+        move_game: Game * Move -> (Game * Winner);
+definitions 
+types
+    Winner = [Color | <remis>];
+
+    Game ::
+        board : Board
+        turn : Color;
+
+functions
+    -- Returns a Game containing a default Board and where it is white's turn
+    default_game: () -> Game
+    default_game() == mk_Game(default_board(), <white>);
+
+    -- Performs a move and evaluates if the game is decided.
+    move_game: Game * Move -> (Game * Winner)
+    move_game(game, mov) == (
+        let new_board = move_board(game.board, mov),
+        opposite_c = opposite_color(game.turn) in
+            if forall p in set new_board.board_state & p.color = opposite_c => possible_moves(new_board, p) = {} then -- Opponent cannot move
+                if in_check(new_board.board_state, opposite_c) then -- And they are put in check
+                    mk_(game, game.turn) -- They won
+                else
+                    mk_(game, <remis>) -- Draw
+            else
+                mk_(
+                    mk_Game(new_board, opposite_c),
+                    nil
+                )
+    )
+    pre mov.from_.color = game.turn and mov in set possible_moves(game.board, mov.from_)
+    post len game.board.history < len RESULT.#1.board.history
+        and RESULT.#2 = nil => game.board.board_state <> RESULT.#1.board.board_state;
+
+end GM

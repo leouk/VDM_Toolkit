@@ -1,0 +1,231 @@
+module PM
+exports 
+    types 
+        --@doc every public type is struct export; private is non-struct
+        struct Color;
+        struct PieceType;
+        struct Pos;
+        struct Coordinate;
+        struct Piece;
+        struct Obstacle;
+        struct ObstacleSet;
+        struct PawnDirection;
+    values 
+        BOARD_SIZE: nat1;
+        COLORS: set1 of Color;
+    functions
+        opposite_color : Color -> Color;
+        coordinate_factory : int * int -> [Coordinate];
+        get_pawn_direction : Piece -> PawnDirection;
+        pieces_to_obstacles : set of Piece -> ObstacleSet;
+        obstacles_to_coord_set : ObstacleSet -> set of Coordinate;
+        type_based_moves : Piece * ObstacleSet -> set of Coordinate;
+definitions
+
+values 
+    BOARD_SIZE: nat1 = 9;
+    COLORS: set1 of Color = {<white>,<black>};
+
+types
+    Color = <white>|<black>;
+
+    --@doc maybe add piece ordering? 
+    PieceType = <pawn>|<rook>|<knight>|<bishop>|<queen>|<king>
+    ord p1 < p2 == 
+		let value = { <pawn> |-> 1, <bishop> |-> 2, <knight> |-> 3,  <rook> |-> 4,  
+					  <queen> |-> 5,  <king> |-> 6 
+					}
+		 in value(p1) < value(p2);
+    
+    Pos = nat1 
+    inv p == p < BOARD_SIZE;
+
+    Coordinate ::
+        x : Pos
+        y : Pos;
+
+    Piece ::
+        type   : PieceType
+        square : Coordinate
+        color  : Color;
+
+    Obstacle ::
+        square : Coordinate
+        color : Color;
+
+    ObstacleSet = set of Obstacle;
+
+    PawnDirection = int
+    inv pd == pd in set {-1,1};
+
+functions 
+
+    -- Dispatcher for returning the valid Coordinates that a Piece can move to based on the type
+    type_based_moves : Piece * ObstacleSet -> set of Coordinate
+    type_based_moves(p, os) == (
+        cases p.type:
+            <pawn>  ->   pawn_move_pattern(p, os),
+            <rook>  ->   rook_move_pattern(p, os), 
+            <knight>-> knight_move_pattern(p, os), 
+            <bishop>-> bishop_move_pattern(p, os), 
+            <queen> ->  queen_move_pattern(p, os), 
+            <king>  ->   king_move_pattern(p, os)
+        end
+    );
+
+    -- Describes <rook> move pattern
+    rook_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    rook_move_pattern(p, os) ==
+        dunion {
+                possible_moves_direction(p, os, mk_(0, 1)),
+                possible_moves_direction(p, os, mk_(0, -1)),
+                possible_moves_direction(p, os, mk_(1, 0)),
+                possible_moves_direction(p, os, mk_(-1, 0))
+            }
+    pre p.type = <rook>;
+
+    -- Describes <bishop> move pattern
+    bishop_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    bishop_move_pattern(p, os) ==
+        dunion {
+                possible_moves_direction(p, os, mk_(1, 1)),
+                possible_moves_direction(p, os, mk_(-1, -1)),
+                possible_moves_direction(p, os, mk_(-1, 1)),
+                possible_moves_direction(p, os, mk_(1, -1))
+            }
+    pre p.type = <bishop>;
+
+    -- Describes <queen> move pattern
+    queen_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    queen_move_pattern(p, os) ==
+        dunion {
+                possible_moves_direction(p, os, mk_(0, 1)),
+                possible_moves_direction(p, os, mk_(0, -1)),
+                possible_moves_direction(p, os, mk_(1, 0)),
+                possible_moves_direction(p, os, mk_(-1, 0)),
+                possible_moves_direction(p, os, mk_(1, 1)),
+                possible_moves_direction(p, os, mk_(-1, -1)),
+                possible_moves_direction(p, os, mk_(-1, 1)),
+                possible_moves_direction(p, os, mk_(1, -1))
+            }
+    pre p.type = <queen>;
+
+    -- Describes <knight> move pattern
+    knight_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    knight_move_pattern(p, os) ==
+        {
+                possible_move_direction(p, os, mk_(1, 2)), -- 2Up1Right
+                possible_move_direction(p, os, mk_(-1, 2)), -- 2Up1Left
+                possible_move_direction(p, os, mk_(1, -2)), -- 2Down1Right
+                possible_move_direction(p, os, mk_(-1, -2)), -- 2Down1Left
+                possible_move_direction(p, os, mk_(2, 1)), -- 1Up2Right
+                possible_move_direction(p, os, mk_(-2, 1)), -- 1Up2Left
+                possible_move_direction(p, os, mk_(2, -1)), -- 1Down2Right
+                possible_move_direction(p, os, mk_(-2, -1)) -- 1Down2Left
+        } \ {nil} -- Set containing possible moves minus the nil
+    pre p.type = <knight>;
+
+    -- Describes <king> move pattern
+    king_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    king_move_pattern(p, os) ==
+        {
+            possible_move_direction(p, os, mk_(1, 0)), -- Right
+            possible_move_direction(p, os, mk_(-1, 0)), -- Left
+            possible_move_direction(p, os, mk_(0, 1)), -- Up
+            possible_move_direction(p, os, mk_(0, -1)), -- Down
+            possible_move_direction(p, os, mk_(1, 1)), -- Up-right
+            possible_move_direction(p, os, mk_(-1, 1)), -- Up-left
+            possible_move_direction(p, os, mk_(1, -1)), -- Down-left
+            possible_move_direction(p, os, mk_(-1, -1)) -- Down-right
+        } \ {nil} -- Set containing possible moves minus the nil
+    pre p.type = <king>;
+
+    -- Describes <pawn> move pattern
+    pawn_move_pattern : Piece * ObstacleSet -> set of Coordinate
+    pawn_move_pattern(p, os) ==
+        dunion {
+                pawn_forward_case(p, os),
+                pawn_diagonal_cases(p, os)
+            }
+    pre p.type = <pawn>;
+
+    -- Describes how a pawn can move forward.
+    -- Needs special case because other piece-types can attack if they are blocked by opponent in front
+    pawn_forward_case : Piece * ObstacleSet -> set of Coordinate
+    pawn_forward_case(p, os) ==
+        -- The case where the pawn moves directly forward
+        {c | c in set {coordinate_factory(p.square.x, p.square.y + get_pawn_direction(p))} 
+            & c <> nil -- Must be legal coord
+            -- There cannot be an existing piece on that coordinate (blocking)
+            and (not exists piece in set os & piece.square = c) 
+        }
+    pre p.type = <pawn>;
+
+    -- Describes how a pawn can attack diagonally
+    pawn_diagonal_cases : Piece * ObstacleSet -> set of Coordinate
+    pawn_diagonal_cases(p, os) == 
+        {c | c in set {
+            -- The cases where the pawn moves diagonally
+            coordinate_factory(p.square.x + 1, p.square.y + get_pawn_direction(p)),
+            coordinate_factory(p.square.x - 1, p.square.y + get_pawn_direction(p))} 
+            & c <> nil -- Must be legal coord
+            and (exists piece in set os & -- Must be an attackable color
+                (piece.square = c) and (piece.color = opposite_color(p.color)))
+        }
+    pre p.type = <pawn>;
+
+    -- Returns the set containing the Coordinates a Piece can move to until meeting
+    -- an Obstacle in the ObstacleSet, when it moves in the given dir.
+    -- If the Obstacle met is an opponent then that square is included in the returned set.
+    possible_moves_direction : Piece * ObstacleSet * (int * int) -> set of Coordinate
+    possible_moves_direction(p, os, dir) ==
+        -- Evaluate in direction
+        let new_c = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in 
+            if (new_c = nil) or 
+                (exists piece in set os & -- Invalid coord or blocked by friend
+                 (piece.square = new_c) and (piece.color = p.color)) then 
+                    {}
+            elseif exists piece in set os &
+                (piece.square = new_c) and (piece.color = opposite_color(p.color)) then
+                    {new_c} -- An opponent that can be taken
+            else
+                -- Add this coord as possible move and keep recursing in that direction
+                {new_c} union possible_moves_direction(mk_Piece(p.type, new_c, p.color), os, dir);
+    -- TODO: Add measure - A bit difficult as it can either grow until it reaches coord bounds or shrink
+    
+    -- Returns the Coordinate a Piece can move to if it moves one step in the given dir.
+    -- Returns nil if it is blocked or an invalid Coordinate.
+    -- If the Obstacle met is an opponent then that square is returned.
+    --private 
+    possible_move_direction : Piece * ObstacleSet * (int * int) -> [Coordinate]
+    possible_move_direction(p, os, dir) ==
+    let new_c = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in -- Evaluate in direction
+        if (new_c = nil) or exists piece in set os & -- Invalid coord or blocked by friend
+            (piece.square = new_c) and (piece.color = p.color) then 
+                nil
+        else
+            new_c; -- Empty field or opponent on field
+
+    -- ###### Helper functions ###### --
+
+    -- Returns Coordinate if valid else nil
+    coordinate_factory : int * int -> [Coordinate]
+    coordinate_factory(x, y) ==
+        --if x > 0 and x < BOARD_SIZE and y > 0 and y < BOARD_SIZE then mk_Coordinate(x, y) else nil;
+        if is_Pos(x) and is_Pos(y) then mk_Coordinate(x, y) else nil;
+    
+    -- Returns the direction the pawn can move in
+    get_pawn_direction : Piece -> PawnDirection
+    get_pawn_direction(p) == if p.color = <white> then 1 else -1
+    pre p.type = <pawn>;
+
+    opposite_color : Color -> Color
+    opposite_color(col) == if col = <white> then <black> else <white>;
+
+    pieces_to_obstacles : set of Piece -> ObstacleSet
+    pieces_to_obstacles(pieces) == {mk_Obstacle(p.square, p.color) | p in set pieces};
+
+    obstacles_to_coord_set : ObstacleSet -> set of Coordinate
+    obstacles_to_coord_set(obstacles) == {p.square | p in set obstacles};
+
+end PM

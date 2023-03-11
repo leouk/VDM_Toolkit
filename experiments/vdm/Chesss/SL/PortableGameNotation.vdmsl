@@ -1,0 +1,203 @@
+module PGN -- Portable Game Notation
+imports 
+    from PM 
+        types 
+            Piece renamed Piece;
+            PieceType renamed PieceType;
+            Coordinate renamed Coordinate;
+,   from BM 
+        types 
+            Move renamed Move;
+        functions 
+            find_piece renamed find_piece;
+            piece_coord_to_move renamed piece_coord_to_move;
+            possible_moves renamed possible_moves;
+
+,   from GM 
+        types 
+            Game renamed Game;
+exports 
+    types 
+        struct String;
+    functions 
+        move_to_pgn_string: Move -> String;
+        string_to_move: Game * String -> Move;
+        movetext_to_move: String -> seq of String;
+definitions 
+
+types
+    String = seq of char;
+
+values 
+    NUMERICAL_CHARS: String = "0123456789";
+    NUMERICAL_CHARS_TO_NAT : inmap char to nat = {NUMERICAL_CHARS(i) |-> i-1 | i in set inds NUMERICAL_CHARS};
+
+    VALID_X_CHARS: String = "abcdefgh";
+    X_CHAR_TO_NAT1 : inmap char to nat1 = {VALID_X_CHARS(i) |-> i | i in set inds VALID_X_CHARS};
+
+    PIECE_TYPE_TO_STRING : inmap PieceType to String = {<pawn> |-> "", <rook> |-> "R", <knight> |-> "N", <bishop> |-> "B", <queen> |-> "Q", <king> |-> "K"}
+
+functions
+    move_to_pgn_string: Move -> String
+    move_to_pgn_string(move) ==
+    (
+        let piece_type = PIECE_TYPE_TO_STRING(move.from_.type),
+            x = (inverse X_CHAR_TO_NAT1)(move.to_.square.x),
+            y = (inverse NUMERICAL_CHARS_TO_NAT)(move.to_.square.y) in
+                piece_type ^ [x] ^ [y]
+    );
+
+    string_to_move: Game * String -> Move
+    string_to_move(game, str) == (
+        if str = "O-O" or str = "O-O-O" then string_to_castling(game, str) -- Castle case
+        elseif '=' in set elems str then
+            string_to_promotion(game, str)
+        else 
+        let pt = char_to_piece_type(str(1)) in
+            let tmp_str = string_remove_all_seq(str, ["N", "B", "K", "Q", "R", "#", "+", "x"]) in -- piece_type, takes and check/mate indicators
+                if len tmp_str = 2 then
+                    let coord = string_to_coord(tmp_str) in
+                        let piece = find_piece(game.board.board_state, 
+                                lambda p: Piece & p.type = pt and p.color = game.turn
+                                    and coord in set {m.to_.square | m in set possible_moves(game.board, p)}) in
+                            piece_coord_to_move(piece, coord)
+                else -- len tmp_str = 3
+                    if tmp_str(1) in set dom NUMERICAL_CHARS_TO_NAT then -- Vertical specification
+                        let piece_y = NUMERICAL_CHARS_TO_NAT(tmp_str(1)) in
+                            let coord = string_to_coord([tmp_str(2), tmp_str(3)]) in
+                                let piece = find_piece(game.board.board_state, 
+                                    lambda p: Piece & p.type = pt and p.color = game.turn and p.square.y = piece_y
+                                            and coord in set {m.to_.square | m in set possible_moves(game.board, p)}) in
+                                piece_coord_to_move(piece, coord)
+                    else -- Horizontal specification (tmp_str(1) != numerical_char...)
+                        let piece_x = X_CHAR_TO_NAT1(tmp_str(1)) in 
+                            let coord = string_to_coord([tmp_str(2), tmp_str(3)]) in
+                                let piece = find_piece(game.board.board_state, 
+                                    lambda p: Piece & p.type = pt and p.color = game.turn and p.square.x = piece_x
+                                            and coord in set {m.to_.square | m in set possible_moves(game.board, p)}) in
+                                piece_coord_to_move(piece, coord)
+    )
+    pre len str > 1 or len str < 6 -- Between 2 and 5 chars
+        and string_remove_all_seq(str, ["N", "B", "K", "Q", "R", "#", "+", "x"])(1) in set elems VALID_X_CHARS; -- x coordinate must be valid
+    -- TODO: Update precondition
+
+    string_to_coord: String -> Coordinate
+    string_to_coord(str) == mk_Coordinate(X_CHAR_TO_NAT1(str(1)), NUMERICAL_CHARS_TO_NAT(str(2)))
+    pre len(str) = 2 and str(1) in set elems VALID_X_CHARS;
+
+    string_to_castling: Game * String -> Move
+    string_to_castling(game, str) == 
+    (
+        let king = iota k in set game.board.board_state & k.type = <king> and k.color = game.turn in
+            cases str:
+                "O-O" -> piece_coord_to_move(king, mk_Coordinate(7, king.square.y)),
+                "O-O-O" -> piece_coord_to_move(king, mk_Coordinate(3, king.square.y)),
+                others -> piece_coord_to_move(king, mk_Coordinate(1, 1)) -- Guaranteed to not hit...
+            end
+    )
+    pre str = "O-O" or str = "O-O-O" and exists k in set game.board.board_state & k.type = <king> and k.color = game.turn
+    post RESULT.from_.type = <king> and RESULT.to_.square.x in set {3, 7} and RESULT.to_.square.y = RESULT.from_.square.y;
+
+    string_to_promotion: Game * String -> Move
+    string_to_promotion(game, str) == (
+        let str_l = string_split(str, "=") in
+            if len str_l(1) = 2 then -- Unambigous which pawn
+                let coord_str = str_l(1),
+                    promo_str = str_l(2) in
+                        let promo_type = char_to_piece_type(promo_str(1)),
+                            new_coord = string_to_coord(coord_str) in
+                            let pawn = find_piece(game.board.board_state, 
+                                    lambda p: Piece & p.type = <pawn> and p.color = game.turn
+                                            and new_coord in set {m.to_.square | m in set possible_moves(game.board, p)}) in
+                                    mk_Move(pawn, mk_Piece(promo_type, new_coord, pawn.color))
+            else -- len str_l(1) = 4
+            -- TODO: This could use a refactoring
+                let piece_x = str_l(1)(1) in
+                    let coord_str = string_split(str_l(1), [str_l(1)(1), str_l(1)(2)])(2),
+                        promo_str = str_l(2) in
+                            let promo_type = char_to_piece_type(promo_str(1)),
+                            new_coord = string_to_coord(coord_str) in
+                            let pawn = find_piece(game.board.board_state, 
+                                    lambda p: Piece & p.type = <pawn> and p.color = game.turn and p.square.x = X_CHAR_TO_NAT1(piece_x)
+                                            and new_coord in set {m.to_.square | m in set possible_moves(game.board, p)}) in
+                                    mk_Move(pawn, mk_Piece(promo_type, new_coord, pawn.color))
+
+    );
+
+    -- Splits a string of movetext into a sequence of strings describing moves. Discards the turn number indicators
+    movetext_to_move: String -> seq of String
+    movetext_to_move(str) == [m | m in seq string_split(str, " ") & m(1) not in set elems NUMERICAL_CHARS];
+    
+    -- Non-recursive string_split implemented by Nick Battle
+    string_split: String * String -> seq of String
+    string_split(str, delimiter) ==
+        let dstr = delimiter ^ str ^ delimiter,
+            indexes = inds dstr,
+            dlen = len delimiter,
+            dspans =
+            [
+                [i, i + dlen - 1] | i in set indexes &
+                    dstr(i, ..., i + dlen - 1) = delimiter
+            ] in
+            -- Return sequence of sequence that is string seperated
+            [let first = dspans(s)(2) + 1,
+                 last  = dspans(s+1)(1) - 1 in
+                    dstr(first, ..., last) | s in set inds dspans \ {len dspans}];
+
+    -- Remove "turn number" indicator
+    string_turn_number_trim: String -> String
+    string_turn_number_trim(str) == (
+        if str(1) in set dom NUMERICAL_CHARS_TO_NAT or str(1) = '.' or str(1) = ' ' then
+            string_turn_number_trim(string_remove_starts_with(str, [str(1)])) 
+        else
+            str
+    )
+    pre len str >= 2
+    measure len(str);
+
+
+    -- Removes `rm` from `str` if `str` starts with `rm`.
+    string_remove_starts_with: String * String -> String
+    string_remove_starts_with(str, rm) ==
+    if forall i in set inds rm & str(i) = rm(i) then
+        [str(i) | i in set inds str & i > len rm] -- Recurse without the `rm` part of the seq
+    else
+        str;
+
+    string_remove_all: String * String -> String
+    string_remove_all(str, rm) ==
+        if len str = 0 then
+            ""
+        else
+        if forall i in set inds rm & str(i) = rm(i) then
+            string_remove_all(
+                [str(i) | i in set inds str & i > len rm], -- Recurse without the `rm` part of the seq
+                rm
+            )
+        else
+            [str(1)] ^ string_remove_all(
+                [str(i) | i in set inds str & i > 1], -- Recurse with the first index as result
+                rm
+            )
+    measure len str;
+
+    string_remove_all_seq : String * seq of String -> String
+    string_remove_all_seq(str, rm_seq) ==
+    if rm_seq = [] then
+        str
+    else
+        string_remove_all_seq(string_remove_all(str, hd rm_seq), tl rm_seq)
+    measure len rm_seq;
+
+    char_to_piece_type: char -> PieceType
+    char_to_piece_type(c) ==
+    cases c:
+        'N' -> <knight>,
+        'B' -> <bishop>,
+        'K' -> <king>,
+        'Q' -> <queen>,
+        'R' -> <rook>,
+        others -> <pawn> -- Pawn is denoted by not writing any prefix
+    end;
+
+end PGN 
