@@ -5,6 +5,8 @@ imports
             Piece renamed Piece;
             PieceType renamed PieceType;
             Color renamed Color;
+            Pos renamed Pos;
+            PawnDirection renamed PawnDirection;
             Coordinate renamed Coordinate; 
         values 
             BOARD_SIZE renamed BOARD_SIZE;
@@ -116,17 +118,21 @@ functions
     -- Performs a castling Move on the Board
     move_castling: Board * Move -> Board
     move_castling(board, mov) == (
-        let y = mov.to_.square.y,
-            king_side = mov.to_.square.x <> 3 in
-            let r_new_x = if king_side then 6 else 4,
-                r_cur_x = if king_side then 8 else 1 in
-                let rook = iota r in set board.board_state & r.square = mk_Coordinate(r_cur_x, y) in
-                    let r_move = piece_coord_to_move(rook, mk_Coordinate(r_new_x, y)),
-                        after_king_state = (board.board_state \ {mov.from_}) union {mov.to_} in
-                            let after_rook_state = (after_king_state \ {r_move.from_}) union {r_move.to_} in
+        let y: Pos = mov.to_.square.y,
+            king_side: bool = mov.to_.square.x <> 3 in
+            --@LF notice that Pos here imposes results can't go beyond BOARD_SIZE!
+            let r_new_x: Pos = if king_side then 6 else 4,
+                r_cur_x: Pos = if king_side then 8 else 1 in
+                let rook: Piece = iota r in set board.board_state & r.square = mk_Coordinate(r_cur_x, y) in
+                    --@LF arguably you could impose further invariants on BoardState at this point (i.e. castle-free and castle-full board state, so that you can't repeat castling for example; or if you had moved rook or king then moves them to "castle position" then wants to castle etc.)
+                    let r_move: Move = piece_coord_to_move(rook, mk_Coordinate(r_new_x, y)),
+                        after_king_state: BoardState = (board.board_state \ {mov.from_}) union {mov.to_} in
+                            let after_rook_state: BoardState = (after_king_state \ {r_move.from_}) union {r_move.to_} in
                                 mk_Board(after_rook_state, [r_move, mov] ^ board.history)
     )
     pre pre_castling_legal(board, mov) and castling_legal(board, mov);
+    --@LF nice post condition here would bethat board.history seq_prefix RESULT.history (see Support1.vdmsl for seq_prefix)
+    --@LF as-is, you are allowing the game history to be "undone"/forgotten at any stage! 
 
     -- Returns true if `color` is in check.
     -- Note: We can simply use type_based_moves because we don't need to take the special rules into account:
@@ -211,9 +217,9 @@ functions
     -- Note: We don't need to check if the pawn has moved as a pawn can't move backwards
     pawn_move_two: BoardState * Piece -> set of Move
     pawn_move_two(board_state, piece) == (
-        let initial_y = {<white> |-> 2, <black> |-> 7},
-        dir = get_pawn_direction(piece) in
-        let sq = coordinate_factory(piece.square.x, piece.square.y + 2*dir) in
+        let initial_y: map Color to Pos = {<white> |-> 2, <black> |-> 7},
+                  dir: PawnDirection = get_pawn_direction(piece) in
+        let sq: [Coordinate] = coordinate_factory(piece.square.x, piece.square.y + 2*dir) in
             -- Piece is located on initial square and there doesn't exist a piece on resulting square
             if sq <> nil and piece.square.y = initial_y(piece.color) and
                 not exists p in set board_state & p.square = sq then
