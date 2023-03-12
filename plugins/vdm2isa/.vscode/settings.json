@@ -1,4 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive",
     "vdm-vscode.server.development.experimentalServer": true
 }

@@ -68,7 +68,8 @@ public abstract class IsabelleCommand extends AnalysisCommand {
     public static final void main(String args[])
     {
 		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
-            ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/vdm2isa/pub/sorting/vdm/ExuEWExample.vdmsl"
+            ,"/Users/nljsf/Local/reps/git/VDM_Toolkit/experiments/vdm/Chesss/SL"
+            , "/Users/nljsf/Local/reps/git/VDM_Toolkit/experiments/vdm/Chesss/SL/lib"
             //  ,"./fmi3/rule-model" 
             //  ,"./fmi3/rule-model/Rules"
             //  ,"./fmi3/rule-model/Tests"
