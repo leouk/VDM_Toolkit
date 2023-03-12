@@ -531,7 +531,7 @@ public class DependencyOrder
              throw new IllegalStateException("Invalid dependency ordering: call definitionOrder first");
     }
 
-    protected boolean updateSet(TCDefinitionSet s, TCNameToken name, boolean add)
+    protected boolean updateSet(TCDefinitionSet s, TCNameToken name, TCNameToken inTheContextOf, boolean add)
     {
         TCDefinition d = findDefinition(name);
         if (d != null)
@@ -542,7 +542,8 @@ public class DependencyOrder
                 return s.remove(d);
         }
         else 
-            throw new IllegalStateException("Could not find linked definition " + name.toString() + " at " + name.getLocation());
+            throw new IllegalStateException("Could not find linked definition associated with named context." + "\n\t Name   : " + name.toString() + " at " + name.getLocation() + 
+            "\n\t Context: " + inTheContextOf.toString() + " at " + inTheContextOf.getLocation());
     }
 
 	protected void add(TCNameToken from, TCNameToken to)
@@ -557,7 +558,7 @@ public class DependencyOrder
 	    		uses.put(from, set);
 	    	}
 	    	
-            updateSet(set, to, true);
+            updateSet(set, to, from, true);
     		set = usedBy.get(to);
 	    	
 	    	if (set == null)
@@ -566,14 +567,14 @@ public class DependencyOrder
 	    		usedBy.put(to, set);
 	    	}
 	    	
-            updateSet(set, from, true);
+            updateSet(set, from, to, true);
     	}
     }
 	
 	protected int delete(TCNameToken from, TCNameToken to)
 	{
-    	updateSet(uses.get(from), to, false);   // uses.get(from).remove(to);
-        updateSet(usedBy.get(to), from, false); // usedBy.get(to).remove(from);
+    	updateSet(uses.get(from), to, from, false);   // uses.get(from).remove(to);
+        updateSet(usedBy.get(to), from, to, false); // usedBy.get(to).remove(from);
     	return usedBy.get(to).size();	// remaining size
 	}
 }
