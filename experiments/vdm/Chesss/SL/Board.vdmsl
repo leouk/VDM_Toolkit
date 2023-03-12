@@ -6,6 +6,8 @@ imports
             PieceType renamed PieceType;
             Color renamed Color;
             Coordinate renamed Coordinate; 
+        values 
+            BOARD_SIZE renamed BOARD_SIZE;
         functions
             opposite_color renamed opposite_color;
             type_based_moves renamed type_based_moves;
@@ -35,11 +37,17 @@ types
               mi.from_.square <> mi.to_.square; 
 
     BoardState = set1 of Piece
-    inv b == forall p1, p2 in set b & 
-        -- Two pieces cannot be on the same square
-        --p1 <> p2 => p1.square <> p2.square
-        p1.square = p2.square => p1 = p2; 
+    inv b == 
+        --@LF board can never have more than those
+        --@LF you can then also add things like 16 pawns, 8 each color etc. 
+        (card b <= 4 * BOARD_SIZE) 
+        and
+        (forall p1, p2 in set b & 
+            -- Two pieces cannot be on the same square
+            --p1 <> p2 => p1.square <> p2.square
+            p1.square = p2.square => p1 = p2); 
 
+    --@LF shouldn't this be limited at least to some number?
     History = seq of Move;
 
     Board ::
@@ -66,7 +74,9 @@ functions
             {mk_Piece(<pawn>, mk_Coordinate(x_coord, 7), <black>) | x_coord in set {1, ..., 8}}
         } in
             mk_Board(board_state, [])
-    );
+    )
+    --@LF document default gamee as having no history
+    post RESULT.history = [];
 
     -- Perform a Move on the Board
     move_board: Board * Move -> Board

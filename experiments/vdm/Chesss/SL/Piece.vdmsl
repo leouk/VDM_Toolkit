@@ -23,7 +23,7 @@ exports
 definitions
 
 values 
-    BOARD_SIZE: nat1 = 9;
+    BOARD_SIZE: nat1 = 8;
     COLORS: set1 of Color = {<white>,<black>};
 
 types
@@ -38,7 +38,7 @@ types
 		 in value(p1) < value(p2);
     
     Pos = nat1 
-    inv p == p < BOARD_SIZE;
+    inv p == p <= BOARD_SIZE;
 
     Coordinate ::
         x : Pos
@@ -53,6 +53,7 @@ types
         square : Coordinate
         color : Color;
 
+    --@LF shouldn't this have an upper bound? i.e. you can't have too many obstables
     ObstacleSet = set of Obstacle;
 
     PawnDirection = int
@@ -69,7 +70,8 @@ functions
             <knight>-> knight_move_pattern(p, os), 
             <bishop>-> bishop_move_pattern(p, os), 
             <queen> ->  queen_move_pattern(p, os), 
-            <king>  ->   king_move_pattern(p, os)
+            <king>  ->   king_move_pattern(p, os),
+            others  -> {}
         end
     );
 
@@ -180,7 +182,7 @@ functions
     possible_moves_direction : Piece * ObstacleSet * (int * int) -> set of Coordinate
     possible_moves_direction(p, os, dir) ==
         -- Evaluate in direction
-        let new_c = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in 
+        let new_c: [Coordinate] = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in 
             if (new_c = nil) or 
                 (exists piece in set os & -- Invalid coord or blocked by friend
                  (piece.square = new_c) and (piece.color = p.color)) then 
@@ -199,7 +201,7 @@ functions
     --private 
     possible_move_direction : Piece * ObstacleSet * (int * int) -> [Coordinate]
     possible_move_direction(p, os, dir) ==
-    let new_c = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in -- Evaluate in direction
+    let new_c: [Coordinate] = coordinate_factory(p.square.x + dir.#1, p.square.y + dir.#2) in -- Evaluate in direction
         if (new_c = nil) or exists piece in set os & -- Invalid coord or blocked by friend
             (piece.square = new_c) and (piece.color = p.color) then 
                 nil
