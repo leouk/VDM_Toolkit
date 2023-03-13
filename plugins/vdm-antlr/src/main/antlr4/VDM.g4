@@ -1009,7 +1009,7 @@ expression
     | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
     | expression /* name */ 
         BRACE_L 
-        type (SEP_comma type)* 
+        type_list 
         BRACE_R                                             #FunctionTypeInstExpr             //42 applicator(3)
     | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
 //C.2 is missing tuple selector!
@@ -1193,15 +1193,15 @@ iota_expression
 //------------------------
 
 set_enumeration
-    : BRACE_L expression_list BRACE_R
+    : BRACE_L expression_list? BRACE_R
     ;
 
 set_comprehension
-    : BRACE_L expression SEP_bar bind_list (SEP_amp expression)? BRACE_R 
+    : BRACE_L expr=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R 
     ;
 
 set_range_expression
-    : BRACE_L expression SEP_comma SEP_range SEP_comma expression BRACE_R
+    : BRACE_L low=expression SEP_comma SEP_range SEP_comma high=expression BRACE_R
     ;
 
 //------------------------
@@ -1209,15 +1209,15 @@ set_range_expression
 //------------------------
 
 sequence_enumeration 
-    : BRACKET_L expression_list BRACKET_R
+    : BRACKET_L expression_list? BRACKET_R
     ;
 
 sequence_comprehension
-    : BRACKET_L expression SEP_bar bind_list (SEP_amp expression)? BRACKET_R 
+    : BRACKET_L expr=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACKET_R 
     ;
 
 subsequence
-    : expression/*_combinators */ PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R
+    : call=expression/*_combinators */ PAREN_L low=expression SEP_comma SEP_range SEP_comma high=expression PAREN_R
     ;
 
 //------------------------
@@ -1225,16 +1225,19 @@ subsequence
 //------------------------
 
 map_enumeration 
-    : BRACE_L maplet (SEP_comma maplet)? BRACE_R
-    | BRACE_L SEP_maplet BRACE_R
+    : BRACE_L maplet_list? BRACE_R
+    ;
+
+maplet_list
+    : maplet (SEP_comma maplet)?
     ;
 
 maplet
-    : expression SEP_maplet expression
+    : dom=expression SEP_maplet rng=expression
     ;
 
 map_comprehension
-    : BRACE_L maplet SEP_bar bind_list (SEP_amp expression)? BRACE_R
+    : BRACE_L expr=maplet SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R
     ;
 
 //------------------------
@@ -1292,7 +1295,11 @@ tuple_select
 
 //@NB function type inst allows expression and not just name ? 
 function_type_instantiation 
-    : expression/*_combinators*/ /* name */ BRACE_L type (SEP_comma type)* BRACE_R
+    : expression/*_combinators*/ /* name */ BRACE_L type_list BRACE_R
+    ;
+
+type_list 
+    : type (SEP_comma type)*
     ;
 
 //------------------------
