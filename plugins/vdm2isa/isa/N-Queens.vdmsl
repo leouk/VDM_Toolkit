@@ -35,7 +35,7 @@ types
 	inv mk_AnimationState(b, p, c, a) == b inter p = {} and c <= a;
 
 values 
-	ALL_BOARDS: Board = { mk_Coord(l, c) | l in set {1,...,BOARD_SIZE}, c in set {1,...,BOARD_SIZE} };
+	ALL_BOARDS: Board = { mk_(l, c) | l in set {0,...,BOARD_SIZE-1}, c in set {0,...,BOARD_SIZE-1} };
 
 functions
 	run: () -> [Board]

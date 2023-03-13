@@ -129,7 +129,8 @@ check "$VDMTOOLKIT_PLUGIN_JAR"
 check "$ST_JAR"
 check "$ANTLR_JAR"
 CLASSPATH="$VDMJ_JAR:$PLUGINS_JAR:$VDMTOOLKIT_PLUGIN_JAR:$STDLIB_JAR:$VDMTOOLKIT_LIB_JAR:$ST_JAR:$ANTLR_JAR"
-MAIN="com.fujitsu.vdmj.VDMJ"
+#MAIN="com.fujitsu.vdmj.VDMJ"
+MAIN="com.fujitsu.vdmj.plugins.VDMJ"
 
 #always keep them on for now 
 #if [ $ANNOTATIONS_VERSION ]
