@@ -1225,7 +1225,8 @@ subsequence
 //------------------------
 
 map_enumeration 
-    : BRACE_L maplet_list? BRACE_R
+    : BRACE_L maplet_list BRACE_R
+    | BRACE_L SEP_maplet BRACE_R
     ;
 
 maplet_list
