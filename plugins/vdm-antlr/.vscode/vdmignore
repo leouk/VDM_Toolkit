@@ -2,6 +2,6 @@ pom.xml
 doc
 target
 src/main
-src/main/reousrces/patternScenario
+src/test/resources/patternScenario
 src/test/resources/exprScenario
 src/test/resources/idScenario
