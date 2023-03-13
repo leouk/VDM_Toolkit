@@ -39,6 +39,7 @@ import com.fujitsu.vdmj.typechecker.ModuleEnvironment;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import plugins.IsaProperties;
+import vdm2isa.messages.IsaErrorMessage;
 
 /**
  * Heavily inspired by com.fujitsu.vdmj.util.DependencyOrder
@@ -134,7 +135,10 @@ public class DependencyOrder
                     if (invDef != null)
                     {
                         if (!(invDef instanceof TCExplicitFunctionDefinition) || !((TCExplicitFunctionDefinition)invDef).isTypeInvariant)
-                            throw new IllegalStateException("Implicit dependency discovered is not an invariant definition " + invDef.name);
+                        {
+                            ExuCommand.handleError(IsaErrorMessage.VDMSL_EXU_IMPLICITDEP_NOT_INV_1P, invDef.location, invDef.name);
+                            continue;
+                        }
                         if (Settings.verbose)
                         {
                             Console.out.println("Adding implicit dependency " + invN);
@@ -156,42 +160,63 @@ public class DependencyOrder
 
     private TCExplicitFunctionDefinition createImplicitInvariantSpecification(TCDefinition def)
     {
-        if (!(def instanceof TCTypeDefinition))
-            throw new IllegalStateException("Invalid definition to create implicit invariant specification " + def.name);
-        TCTypeDefinition tdef = (TCTypeDefinition)def;
-        TCNameToken invDefName = tdef.name.getInvName(tdef.location);
+        TCExplicitFunctionDefinition invDef;
         TCFunctionType invFunType;
+        TCNameToken invDefName = def.name.getInvName(def.location);
         TCPatternListList params = new TCPatternListList();
         TCPatternList param = new TCPatternList();
         params.add(param);
-        param.add(new TCIdentifierPattern(
-            new TCNameToken(tdef.name.getLocation(), tdef.name.getModule(), tdef.name.getName().toLowerCase())));
-        if (tdef.type instanceof TCNamedType)
+        if (!(def instanceof TCTypeDefinition))
         {
-            TCNamedType tnamed = (TCNamedType)tdef.type;
-            invFunType = new TCFunctionType(tdef.location, new TCTypeList(tnamed.type), false, new TCBooleanType(tdef.location));
+            ExuCommand.handleError(IsaErrorMessage.VDMSL_EXU_INVALID_IMPLICITDEF_NOT_INV_1P, def.location, def.name);
+            // inv_T: () +> bool 
+            // inv_T() == false
+            invFunType = new TCFunctionType(def.location, new TCTypeList(), false, new TCBooleanType(def.location));
+            invDef = new TCExplicitFunctionDefinition(null, 
+                null, 
+                invDefName, 
+                null, 
+                invFunType, 
+                params, 
+                new TCBooleanLiteralExpression(new LexBooleanToken(false, def.location)), 
+                null, 
+                null, 
+                true, 
+                null);
         }
-        else if (tdef.type instanceof TCRecordType)
+        else
         {
-            invFunType = new TCFunctionType(tdef.location, new TCTypeList(tdef.type), false, new TCBooleanType(tdef.location));                
+            TCTypeDefinition tdef = (TCTypeDefinition)def;
+            param.add(new TCIdentifierPattern(
+                new TCNameToken(def.name.getLocation(), def.name.getModule(), def.name.getName().toLowerCase())));    
+            if (tdef.type instanceof TCNamedType)
+            {
+                TCNamedType tnamed = (TCNamedType)tdef.type;
+                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tnamed.type), false, new TCBooleanType(tdef.location));
+            }
+            else if (tdef.type instanceof TCRecordType)
+            {
+                invFunType = new TCFunctionType(tdef.location, new TCTypeList(tdef.type), false, new TCBooleanType(tdef.location));                
+            }
+            else 
+                // this is something structural within VDMJ's AST, so always run error? 
+                throw new IllegalStateException("Invalid type definition kind? " + tdef.getClass().getSimpleName());
+            // T = Expr inv x == P(x)
+            // inv_T: Expr +> bool 
+            // inv_T(t) == true
+            invDef = new TCExplicitFunctionDefinition(null, 
+                tdef.accessSpecifier, 
+                invDefName, 
+                null, 
+                invFunType, 
+                params, 
+                new TCBooleanLiteralExpression(new LexBooleanToken(true, tdef.location)), 
+                null, 
+                null, 
+                true, 
+                null);
         }
-        else 
-            throw new IllegalStateException("Invalid type definition kind? " + tdef.getClass().getSimpleName());
-        // T = Expr inv x == P(x)
-        // inv_T: Expr +> bool 
-        // inv_T(t) == true
-        TCExplicitFunctionDefinition invDef = new TCExplicitFunctionDefinition(null, 
-            tdef.accessSpecifier, 
-            invDefName, 
-            null, 
-            invFunType, 
-            params, 
-            new TCBooleanLiteralExpression(new LexBooleanToken(true, tdef.location)), 
-            null, 
-            null, 
-            true, 
-            null);
-        return invDef;
+        return invDef;    
     }
 	
 	protected void definitionOrder()
@@ -263,7 +288,16 @@ public class DependencyOrder
         for (TCDefinition def: singleDefs)
 		{
 
-			TCNameSet freevars = def.getFreeVariables();
+            TCNameSet freevars;
+            try 
+            {
+                freevars = def.getFreeVariables();
+            }
+            catch (NullPointerException e)
+            {
+                IsabelleCommand.report(IsaErrorMessage.PLUGIN_UNEXPECTED_ERROR_3P, def.location, "NPE for", def.name, e.getMessage());
+                freevars = new TCNameSet();
+            }
 
             // ignore recursive calls; recursion will be handled differently
             freevars.remove(def.name);
@@ -319,6 +353,7 @@ public class DependencyOrder
             return result;
         }
         else
+            // This one leave it: it's user misuse
             throw new IllegalStateException("Invalid dependency ordering: call definitionOrder first");
     }
 
@@ -423,7 +458,7 @@ public class DependencyOrder
     {
     	if (sortCalled)
     	{
-    		throw new IllegalStateException("topologicalSort already called");
+            throw new IllegalStateException("topologicalSort already called");
     	}
     	
 		//	See https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
@@ -470,14 +505,11 @@ public class DependencyOrder
         int cycles = edgeCount();
 		if (cycles > 0)
 		{
-			throw new IllegalStateException("Dependency graph has " + cycles + " cycles; switch debug mode on for details.");
+            ExuCommand.handleError(IsaErrorMessage.VDMSL_EXU_DEPCYCLES_1P, ordering.isEmpty() ? LexLocation.ANY : ordering.get(0).getLocation(), cycles);
 		}
-		else
-		{
-			Collections.reverse(ordering);	// the init order
-			sortCalled = true;
-			return ordering;
-		}
+        Collections.reverse(ordering);	// the init order
+        sortCalled = true;
+        return ordering;
     }
 
 	protected int edgeCount()
@@ -542,8 +574,10 @@ public class DependencyOrder
                 return s.remove(d);
         }
         else 
-            throw new IllegalStateException("Could not find linked definition associated with named context." + "\n\t Name   : " + name.toString() + " at " + name.getLocation() + 
-            "\n\t Context: " + inTheContextOf.toString() + " at " + inTheContextOf.getLocation());
+        {
+            ExuCommand.handleError(IsaErrorMessage.VDMSL_EXU_INVALID_DEPORDER_4P, name.getLocation(), name.toString(), name.getLocation(), inTheContextOf.toString(), inTheContextOf.getLocation());
+            return false;
+        }
     }
 
 	protected void add(TCNameToken from, TCNameToken to)

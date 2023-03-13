@@ -77,6 +77,16 @@ public enum IsaErrorMessage {
     "Implicit function `%1$s` cannot have bodies for Isabelle Translation."),
     VDMSL_EXU_INVALID_SORTING_6P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 51, 
     "Original names differ from orGanised names after Sorting. %1$s; %2$s; %3$s. Offending names are:\n\tOriginal : %4$s\n\tOrganised: %5$s\n\tSorted   : %6$s"),
+    VDMSL_EXU_INVALID_DEPORDER_4P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 52, 
+    "Could not find linked definition associated with named context.\n\t Name   : %1$s %2$s\n\t Context: %3$s %4$s"),
+    VDMSL_EXU_IMPLICITDEP_NOT_INV_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 53, 
+    "Implicit dependency discovered is not an invariant definition %1$s"),
+    VDMSL_EXU_INVALID_IMPLICITDEF_NOT_INV_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 54,
+    "Invalid definition to create implicit invariant specification %1$s"),
+    VDMSL_EXU_DEPCYCLES_1P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 55,
+    "Dependency graph has %1$s cycles; switch debug mode on for details."),
+    VDMSL_EXU_KNOWNINV_UNKNOWN_TYPE_2P(VDM2IsaError.ISABELLE_E_VDMSL_BASE + 56, 
+    "Could not find type %1$s for known invariant name? %2$s"),
 
     //Isabelle message relate to difficulties or incompatibilities in translation 
     ISA_DUPLICATE_DEF_3P    (VDM2IsaError.ISABELLE_E_ISA_BASE + 0,
