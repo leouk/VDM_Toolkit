@@ -72,6 +72,7 @@ import com.fujitsu.vdmj.ast.expressions.ASTPowerSetExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTQuoteLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTRealLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTReverseExpression;
+import com.fujitsu.vdmj.ast.expressions.ASTSetCompExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTSetEnumExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTStringLiteralExpression;
 import com.fujitsu.vdmj.ast.expressions.ASTTailExpression;
@@ -708,12 +709,6 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void enterSetEnumExpr(VDMParser.SetEnumExprContext ctx)
-    {
-        System.out.println("Enter #SetEnumExpr: " + ctx.getText());
-    }
-
-    @Override
     public void exitSetEnumExpr(VDMParser.SetEnumExprContext ctx)
     {
         // empty set has no expression_list context but just an empty members list
@@ -724,15 +719,13 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void enterExpression_list(VDMParser.Expression_listContext ctx)
+    public void exitSetCompExpr(VDMParser.SetCompExprContext ctx)
     {
-        System.out.println("Enter expression_list: " + ctx.getText());
-    }
-
-    @Override
-    public void exitExpression_list(VDMParser.Expression_listContext ctx)
-    {
-        System.out.println("Exit expression_list: " + ctx.getText());
+        // if no filter, then pass null
+        putNode(ctx, new ASTSetCompExpression(token2loc(ctx),
+            getNode(ctx.set_comprehension().expr, ASTExpression.class),
+            getListNode(ctx.set_comprehension().bind_list(), ASTMultipleBindList.class),
+            ctx.set_comprehension().filter != null ? getNode(ctx.set_comprehension().filter, ASTExpression.class) : null));
     }
 
     @Override
@@ -774,6 +767,18 @@ public class VDMASTListener extends VDMBaseListener {
         ASTExpression node = getNode(ctx.symbolic_literal(), ASTExpression.class);
         nodes.removeFrom(ctx.symbolic_literal());
         putNode(ctx, node);
+    }
+
+    @Override
+    public void exitExpression_list(VDMParser.Expression_listContext ctx)
+    {
+        // empty expression list  
+        ASTExpressionList result = new ASTExpressionList();
+        for(VDMParser.ExpressionContext e : ctx.expression())
+        {
+            result.add(getNode(e, ASTExpression.class));
+        }
+        putListNode(ctx, result);
     }
 
 //------------------------
