@@ -1,0 +1,120 @@
+digraph G {
+	 Obstacle [label="Obstacle 
+@ M=PM L53", shape=doublecircle, color=blue]
+	 Obstacle -> Color;
+	 Obstacle -> Coordinate;
+	inv_Color [label="inv_Color 
+@ M=PM L53", shape=triangle]	 Obstacle -> inv_Color;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=PM L53", shape=triangle]	 Obstacle -> inv_Coordinate;
+	inv_Obstacle [label="inv_Obstacle 
+@ M=PM L53", shape=triangle]	 Obstacle -> inv_Obstacle;
+	 king_move_pattern [label="king_move_pattern 
+@ M=PM L132", shape=doublecircle, color=blue]
+	 king_move_pattern -> possible_move_direction;
+	 possible_moves_direction [label="possible_moves_direction 
+@ M=PM L183", shape=doublecircle, color=blue]
+	 possible_moves_direction -> Coordinate;
+	 possible_moves_direction -> coordinate_factory;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=PM L183", shape=triangle]	 possible_moves_direction -> inv_Coordinate;
+	opposite_color [label="opposite_color 
+@ M=PM L183", shape=triangle]	 possible_moves_direction -> opposite_color;
+	 knight_move_pattern [label="knight_move_pattern 
+@ M=PM L117", shape=doublecircle, color=blue]
+	 knight_move_pattern -> possible_move_direction;
+	 pawn_forward_case [label="pawn_forward_case 
+@ M=PM L157", shape=doublecircle, color=blue]
+	 pawn_forward_case -> coordinate_factory;
+	get_pawn_direction [label="get_pawn_direction 
+@ M=PM L157", shape=triangle]	 pawn_forward_case -> get_pawn_direction;
+	 Color [label="Color 
+@ M=PM L30", shape=doublecircle, color=blue]
+	inv_Color [label="inv_Color 
+@ M=PM L30", shape=triangle]	 Color -> inv_Color;
+	 PawnDirection [label="PawnDirection 
+@ M=PM L60", shape=invtriangle, color=red]
+	inv_PawnDirection [label="inv_PawnDirection 
+@ M=PM L60", shape=triangle]	 PawnDirection -> inv_PawnDirection;
+	 coordinate_factory [label="coordinate_factory 
+@ M=PM L215", shape=doublecircle, color=blue]
+	BOARD_SIZE [label="BOARD_SIZE 
+@ M=PM L215", shape=triangle]	 coordinate_factory -> BOARD_SIZE;
+	 type_based_moves [label="type_based_moves 
+@ M=PM L66", shape=invtriangle, color=red]
+	 type_based_moves -> bishop_move_pattern;
+	 type_based_moves -> king_move_pattern;
+	 type_based_moves -> knight_move_pattern;
+	 type_based_moves -> pawn_move_pattern;
+	 type_based_moves -> queen_move_pattern;
+	 type_based_moves -> rook_move_pattern;
+	 pawn_move_pattern [label="pawn_move_pattern 
+@ M=PM L147", shape=doublecircle, color=blue]
+	 pawn_move_pattern -> pawn_diagonal_cases;
+	 pawn_move_pattern -> pawn_forward_case;
+	 pawn_diagonal_cases [label="pawn_diagonal_cases 
+@ M=PM L168", shape=doublecircle, color=blue]
+	 pawn_diagonal_cases -> coordinate_factory;
+	get_pawn_direction [label="get_pawn_direction 
+@ M=PM L168", shape=triangle]	 pawn_diagonal_cases -> get_pawn_direction;
+	opposite_color [label="opposite_color 
+@ M=PM L168", shape=triangle]	 pawn_diagonal_cases -> opposite_color;
+	 rook_move_pattern [label="rook_move_pattern 
+@ M=PM L80", shape=doublecircle, color=blue]
+	 rook_move_pattern -> possible_moves_direction;
+	 inv_Pos [label="inv_Pos 
+@ M=PM L42", shape=doublecircle, color=blue]
+	BOARD_SIZE [label="BOARD_SIZE 
+@ M=PM L42", shape=triangle]	 inv_Pos -> BOARD_SIZE;
+	 possible_move_direction [label="possible_move_direction 
+@ M=PM L203", shape=doublecircle, color=blue]
+	 possible_move_direction -> Coordinate;
+	 possible_move_direction -> coordinate_factory;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=PM L203", shape=triangle]	 possible_move_direction -> inv_Coordinate;
+	 Pos [label="Pos 
+@ M=PM L41", shape=invtriangle, color=red]
+	BOARD_SIZE [label="BOARD_SIZE 
+@ M=PM L41", shape=triangle]	 Pos -> BOARD_SIZE;
+	 Pos -> inv_Pos;
+	 Piece [label="Piece 
+@ M=PM L48", shape=invtriangle, color=red]
+	 Piece -> Color;
+	 Piece -> Coordinate;
+	 Piece -> PieceType;
+	inv_Color [label="inv_Color 
+@ M=PM L48", shape=triangle]	 Piece -> inv_Color;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=PM L48", shape=triangle]	 Piece -> inv_Coordinate;
+	inv_Piece [label="inv_Piece 
+@ M=PM L48", shape=triangle]	 Piece -> inv_Piece;
+	inv_PieceType [label="inv_PieceType 
+@ M=PM L48", shape=triangle]	 Piece -> inv_PieceType;
+	 ObstacleSet [label="ObstacleSet 
+@ M=PM L58", shape=invtriangle, color=red]
+	 ObstacleSet -> Obstacle;
+	inv_Obstacle [label="inv_Obstacle 
+@ M=PM L58", shape=triangle]	 ObstacleSet -> inv_Obstacle;
+	inv_ObstacleSet [label="inv_ObstacleSet 
+@ M=PM L58", shape=triangle]	 ObstacleSet -> inv_ObstacleSet;
+	 queen_move_pattern [label="queen_move_pattern 
+@ M=PM L102", shape=doublecircle, color=blue]
+	 queen_move_pattern -> possible_moves_direction;
+	 Coordinate [label="Coordinate 
+@ M=PM L44", shape=doublecircle, color=blue]
+	inv_Coordinate [label="inv_Coordinate 
+@ M=PM L44", shape=triangle]	 Coordinate -> inv_Coordinate;
+	 Coordinate -> inv_Pos;
+	 bishop_move_pattern [label="bishop_move_pattern 
+@ M=PM L91", shape=doublecircle, color=blue]
+	 bishop_move_pattern -> possible_moves_direction;
+	 COLORS [label="COLORS 
+@ M=PM L27", shape=invtriangle, color=red]
+	 COLORS -> Color;
+	inv_Color [label="inv_Color 
+@ M=PM L27", shape=triangle]	 COLORS -> inv_Color;
+	 PieceType [label="PieceType 
+@ M=PM L33", shape=doublecircle, color=blue]
+	inv_PieceType [label="inv_PieceType 
+@ M=PM L33", shape=triangle]	 PieceType -> inv_PieceType;
+}

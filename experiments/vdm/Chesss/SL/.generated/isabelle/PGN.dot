@@ -1,0 +1,34 @@
+digraph G {
+	 X_CHAR_TO_NAT1 [label="X_CHAR_TO_NAT1 
+@ M=PGN L36", shape=doublecircle, color=blue]
+	 string_to_move [label="string_to_move 
+@ M=PGN L50", shape=invtriangle, color=red]
+	 movetext_to_move [label="movetext_to_move 
+@ M=PGN L128", shape=invtriangle, color=red]
+	 NUMERICAL_CHARS_TO_NAT [label="NUMERICAL_CHARS_TO_NAT 
+@ M=PGN L33", shape=doublecircle, color=blue]
+	 string_remove_all_seq [label="string_remove_all_seq 
+@ M=PGN L184", shape=doublecircle, color=blue]
+	 string_to_castling [label="string_to_castling 
+@ M=PGN L88", shape=doublecircle, color=blue]
+	 string_to_coord [label="string_to_coord 
+@ M=PGN L84", shape=doublecircle, color=blue]
+	 VALID_X_CHARS [label="VALID_X_CHARS 
+@ M=PGN L35", shape=doublecircle, color=blue]
+	 PIECE_TYPE_TO_STRING [label="PIECE_TYPE_TO_STRING 
+@ M=PGN L38", shape=doublecircle, color=blue]
+	 string_to_promotion [label="string_to_promotion 
+@ M=PGN L101", shape=doublecircle, color=blue]
+	 string_turn_number_trim [label="string_turn_number_trim 
+@ M=PGN L148", shape=invtriangle, color=red]
+	 move_to_pgn_string [label="move_to_pgn_string 
+@ M=PGN L41", shape=invtriangle, color=red]
+	 String [label="String 
+@ M=PGN L29", shape=doublecircle, color=blue]
+	 NUMERICAL_CHARS [label="NUMERICAL_CHARS 
+@ M=PGN L32", shape=doublecircle, color=blue]
+	 pre_string_to_move [label="pre_string_to_move 
+@ M=PGN L80", shape=invtriangle, color=red]
+	 pre_string_to_coord [label="pre_string_to_coord 
+@ M=PGN L86", shape=invtriangle, color=red]
+}

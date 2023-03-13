@@ -1,0 +1,16 @@
+module M1
+exports 
+    types 
+        struct --@NB if you comment struct, you get the error in M2.f! 
+        Pos;
+    functions 
+        make_pos: nat -> Pos;
+definitions 
+types 
+    Pos = nat
+    inv n == n < 5;
+functions
+    make_pos: nat -> Pos
+    make_pos(n) == n;
+
+end M1

@@ -1,0 +1,78 @@
+digraph G {
+	 game [label="game 
+@ M=Runner L45", shape=invtriangle, color=red]
+	Game [label="Game 
+@ M=Runner L45", shape=triangle]	 game -> Game;
+	inv_Game [label="inv_Game 
+@ M=Runner L45", shape=triangle]	 game -> inv_Game;
+	 game [label="game 
+@ M=Runner L45", shape=invtriangle, color=red]
+	Game [label="Game 
+@ M=Runner L45", shape=triangle]	 game -> Game;
+	inv_Game [label="inv_Game 
+@ M=Runner L45", shape=triangle]	 game -> inv_Game;
+	 output [label="output 
+@ M=Runner L46", shape=invtriangle, color=red]
+	String [label="String 
+@ M=Runner L46", shape=triangle]	 output -> String;
+	inv_String [label="inv_String 
+@ M=Runner L46", shape=triangle]	 output -> inv_String;
+	 output [label="output 
+@ M=Runner L46", shape=invtriangle, color=red]
+	String [label="String 
+@ M=Runner L46", shape=triangle]	 output -> String;
+	inv_String [label="inv_String 
+@ M=Runner L46", shape=triangle]	 output -> inv_String;
+	 pgn_moves [label="pgn_moves 
+@ M=Runner L47", shape=invtriangle, color=red]
+	String [label="String 
+@ M=Runner L47", shape=triangle]	 pgn_moves -> String;
+	inv_String [label="inv_String 
+@ M=Runner L47", shape=triangle]	 pgn_moves -> inv_String;
+	 pgn_moves [label="pgn_moves 
+@ M=Runner L47", shape=invtriangle, color=red]
+	String [label="String 
+@ M=Runner L47", shape=triangle]	 pgn_moves -> String;
+	inv_String [label="inv_String 
+@ M=Runner L47", shape=triangle]	 pgn_moves -> inv_String;
+	 DEFAULT_OUTPUT_FILE [label="DEFAULT_OUTPUT_FILE 
+@ M=Runner L42", shape=invtriangle, color=red]
+	String [label="String 
+@ M=Runner L42", shape=triangle]	 DEFAULT_OUTPUT_FILE -> String;
+	inv_String [label="inv_String 
+@ M=Runner L42", shape=triangle]	 DEFAULT_OUTPUT_FILE -> inv_String;
+	 RunnerIO [label="RunnerIO 
+@ M=Runner L53", shape=doublecircle, color=blue]
+	fecho [label="fecho 
+@ M=Runner L53", shape=triangle]	 RunnerIO -> fecho;
+	freadval [label="freadval 
+@ M=Runner L53", shape=triangle]	 RunnerIO -> freadval;
+	movetext_to_move [label="movetext_to_move 
+@ M=Runner L53", shape=triangle]	 RunnerIO -> movetext_to_move;
+	 RunnerIO -> output;
+	 Run [label="Run 
+@ M=Runner L67", shape=doublecircle, color=blue]
+	fwriteval [label="fwriteval 
+@ M=Runner L67", shape=triangle]	 Run -> fwriteval;
+	 Run -> game;
+	move_game [label="move_game 
+@ M=Runner L67", shape=triangle]	 Run -> move_game;
+	move_to_pgn_string [label="move_to_pgn_string 
+@ M=Runner L67", shape=triangle]	 Run -> move_to_pgn_string;
+	 Run -> output;
+	 Run -> pgn_moves;
+	string_to_move [label="string_to_move 
+@ M=Runner L67", shape=triangle]	 Run -> string_to_move;
+	 Test [label="Test 
+@ M=Runner L123", shape=invtriangle, color=red]
+	 Test -> Main;
+	 RunnerSt [label="RunnerSt 
+@ M=Runner L44", shape=invtriangle, color=red]
+	 RunnerSt -> RunnerSt;
+	 Main [label="Main 
+@ M=Runner L114", shape=doublecircle, color=blue]
+	 Main -> Run;
+	 Main -> RunnerIO;
+	print [label="print 
+@ M=Runner L114", shape=triangle]	 Main -> print;
+}
