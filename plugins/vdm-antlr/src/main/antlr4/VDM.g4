@@ -379,7 +379,8 @@ type_specification
 //      might want to remove the singleton productions? 
 // C.8.5 Seq/Set type operators are higher precedence? 
 type 
-    : bracketed_type    #BracketedType  
+    : bracketed_type    #BracketedType
+    | SEP_qm            #WildcardType  
     | type_name         #TypeName
     | type_variable     #TypeVariable
     | seq_type          #SeqType
@@ -408,7 +409,7 @@ basic_type
     ;
 
 quote_type 
-    : QUOTE_LITERAL
+    : O_LT IDENTIFIER O_GT
     ;
 
 composite_type
@@ -472,22 +473,15 @@ injective_map_type
     :<assoc=right> SLK_inmap dom=type SLK_to rng=type
     ;
 
+//@LRM these are used in other places, yet cannot be directly on the type production rule :-(
 function_type 
-    : partial_function_type
-    | total_function_type 
-    ;
-
-partial_function_type 
-    :<assoc=right> discretionary_type SEP_pfcn type 
-    ;
-
-total_function_type 
-    :<assoc=right> discretionary_type SEP_tfcn type
+    :<assoc=right> discretionary_type SEP_pfcn type #PartialFunctionType
+    |<assoc=right> discretionary_type SEP_tfcn type #TotalFunctionType
     ;
 
 discretionary_type 
     : PAREN_L PAREN_R   #VoidType
-    | type      #FunctionType
+    | type              #FunctionParametersType
     ;
 
 type_name
@@ -495,7 +489,7 @@ type_name
     ;
 
 type_variable 
-    : TYPE_VARIABLE_IDENTIFIER
+    : '@' IDENTIFIER
     ;
 
 invariant 
@@ -616,9 +610,8 @@ extended_explicit_function_definition
       measure_definition?
     ; 
 
-//TODO should these comma separated lists be parameterised?
 type_variable_list 
-    : BRACKET_L TYPE_VARIABLE_IDENTIFIER (SEP_comma TYPE_VARIABLE_IDENTIFIER)* BRACKET_R
+    : BRACKET_L type_variable (SEP_comma type_variable)* BRACKET_R
     ;
 
 parameter_types 
@@ -1891,5 +1884,5 @@ symbolic_literal
 	| SLK_nil                   #NilLiteral 
 	| CHARACTER_LITERAL         #CharacterLiteral
 	| TEXT_LITERAL              #StringLiteral
-	| QUOTE_LITERAL             #QuoteLiteral
+	| O_LT IDENTIFIER O_GT      #QuoteLiteral
     ;

@@ -324,13 +324,9 @@ BRACKET_R : ']';
 BRACE_L   : '{';
 BRACE_R   : '}';
 
-QUOTE_LITERAL
-    : '<' IDENTIFIER '>'
-    ;
-
-TYPE_VARIABLE_IDENTIFIER
-    : '@' IDENTIFIER
-    ;
+// TYPE_VARIABLE_IDENTIFIER
+//     : '@' IDENTIFIER
+//     ;
 
 NUMERIC_LITERAL
     : DECIMAL_LITERAL 
