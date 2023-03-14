@@ -1061,7 +1061,7 @@ expression
     | tuple_constructor                                     #TupleMkExpr                      //75 primary
     | record_constructor                                    #RecordMkExpr                     //76 primary
     | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
-    | OLD_NAME                                              #OldNameExpr                       //36 primary
+    | old_name                                              #OldNameExpr                       //36 primary
     | name                                                  #NameExpr                          //37 primary
     | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
     ;  
@@ -1870,9 +1870,19 @@ name_list
     : name (SEP_comma name)*
     ;
 
+//@NB name is both a LexNameToken and a ASTVariableExpression? 
+//@doc never implement the exiName(ctx) directly?! 
 name
-    : QUALIFIED_NAME        #QualifiedName
-    | IDENTIFIER            #IdName
+    : mod=IDENTIFIER SEP_tick n=IDENTIFIER  #QualifiedName
+    | IDENTIFIER                            #IdName
+    ;
+
+// qualified_name
+//     : IDENTIFIER SEP_tick IDENTIFIER
+//     ;
+
+old_name
+    : IDENTIFIER SEP_old
     ;
 
 symbolic_literal
