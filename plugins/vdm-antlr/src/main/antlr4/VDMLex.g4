@@ -383,13 +383,13 @@ OBJECT_IDENTIFIER
 //     : IDENTIFIER {!getText().startsWith("mk_")}?
 //     ;
 
-QUALIFIED_NAME
-    : IDENTIFIER SEP_tick IDENTIFIER
-    ;
+// QUALIFIED_NAME
+//     : IDENTIFIER SEP_tick IDENTIFIER
+//     ;
 
-OLD_NAME 
-    : IDENTIFIER SEP_old
-    ;
+// OLD_NAME 
+//     : IDENTIFIER SEP_old
+//     ;
 
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 
