@@ -79,11 +79,17 @@ import com.fujitsu.vdmj.ast.patterns.ASTStringPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTuplePattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBind;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBindList;
+import com.fujitsu.vdmj.ast.types.ASTField;
+import com.fujitsu.vdmj.ast.types.ASTFieldList;
 import com.fujitsu.vdmj.ast.types.ASTFunctionType;
 import com.fujitsu.vdmj.ast.types.ASTInMapType;
 import com.fujitsu.vdmj.ast.types.ASTMapType;
 import com.fujitsu.vdmj.ast.types.ASTNamedType;
+import com.fujitsu.vdmj.ast.types.ASTOptionalType;
+import com.fujitsu.vdmj.ast.types.ASTParameterType;
 import com.fujitsu.vdmj.ast.types.ASTProductType;
+import com.fujitsu.vdmj.ast.types.ASTQuoteType;
+import com.fujitsu.vdmj.ast.types.ASTRecordType;
 import com.fujitsu.vdmj.ast.types.ASTSeq1Type;
 import com.fujitsu.vdmj.ast.types.ASTSeqType;
 import com.fujitsu.vdmj.ast.types.ASTSet1Type;
@@ -91,6 +97,7 @@ import com.fujitsu.vdmj.ast.types.ASTSetType;
 import com.fujitsu.vdmj.ast.types.ASTTokenType;
 import com.fujitsu.vdmj.ast.types.ASTType;
 import com.fujitsu.vdmj.ast.types.ASTTypeList;
+import com.fujitsu.vdmj.ast.types.ASTUnknownType;
 import com.fujitsu.vdmj.ast.types.ASTUnresolvedType;
 import com.fujitsu.vdmj.ast.types.ASTVoidType;
 import com.fujitsu.vdmj.lex.Dialect;
@@ -130,6 +137,7 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * 11. maplet expression requires a Lex(Keyword)Token where a location would be sufficient?
  * 12. lambda expressions cannot be constant functions? (e.g. type_bind_list cannot be empty)? 
  * 13. name is being used (within name list) as a LexNameToken as well as a ASTVariableExpression? 
+ * 14. function_type cannot directly be on the type rule, yet is used in other places. So will effectively have two equal implementations :-(
  */
 
 public class VDMASTListener extends VDMBaseListener {
@@ -474,15 +482,24 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, getNode(ctx.bracketed_type().type(), ASTType.class));
     }  
 
-    @Override public void exitTypeName(VDMParser.TypeNameContext ctx) 
+    @Override
+    public void exitWildcardType(VDMParser.WildcardTypeContext ctx)
     {
-        // new ASTNamedType(null, null)
-        // ctx.type_name().name()
-        // putNode(ctx, getNode(ctx.bracketed_type().type(), ASTType.class));
+        putNode(ctx, new ASTUnknownType(token2loc(ctx)));
+    }
+
+    @Override 
+    public void exitTypeName(VDMParser.TypeNameContext ctx) 
+    {
+        // This is to be used in ASTNamedType as per DefinitionReader (e.g. type_definition production)? 
+        //@NB Or is it UnresolvedType?
+        putNode(ctx, new ASTUnresolvedType(getNode(ctx.type_name().name(), LexNameToken.class)));
     }
     
-    @Override public void exitTypeVariable(VDMParser.TypeVariableContext ctx) 
+    @Override 
+    public void exitTypeVariable(VDMParser.TypeVariableContext ctx) 
     {
+        putNode(ctx, new ASTParameterType(id2lexname(id2lexid(ctx.type_variable().IDENTIFIER(), ctx, false))));
     }
     
     @Override 
@@ -505,7 +522,8 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, set1 ? new ASTSet1Type(location, type) : new ASTSetType(location, type));
     }
     
-    @Override public void exitMapType(VDMParser.MapTypeContext ctx) 
+    @Override 
+    public void exitMapType(VDMParser.MapTypeContext ctx) 
     {
         boolean inmap = ctx.map_type().injective_map_type() != null;
         LexLocation location = token2loc(ctx);
@@ -514,15 +532,30 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, inmap ? new ASTInMapType(location, dtype, rtype) : new ASTMapType(location, dtype, rtype));
     }
     
-    @Override public void exitCompositeType(VDMParser.CompositeTypeContext ctx) 
+    @Override 
+    public void exitCompositeType(VDMParser.CompositeTypeContext ctx) 
     {
+        ASTFieldList fields = new ASTFieldList();
+        for(VDMParser.FieldContext f : ctx.composite_type().field())
+        {
+            fields.add(getNode(f, ASTField.class));
+        }
+        putNode(ctx, new ASTRecordType(id2lexname(id2lexid(ctx.composite_type().IDENTIFIER(), ctx, false)), fields, true));
     }
     
-    @Override public void exitProductType(VDMParser.ProductTypeContext ctx) 
+    @Override 
+    public void exitProductType(VDMParser.ProductTypeContext ctx) 
     {
+        ASTTypeList productList = new ASTTypeList();
+        for(VDMParser.TypeContext t : ctx.type())
+        {
+            productList.add(getNode(t, ASTType.class));
+        }
+        putNode(ctx, new ASTProductType(token2loc(ctx), productList));
     }
     
-    @Override public void exitUnionType(VDMParser.UnionTypeContext ctx) 
+    @Override 
+    public void exitUnionType(VDMParser.UnionTypeContext ctx) 
     {
     }
     
@@ -530,12 +563,16 @@ public class VDMASTListener extends VDMBaseListener {
     {
     }
     
-    @Override public void exitQuoteType(VDMParser.QuoteTypeContext ctx) 
+    @Override 
+    public void exitQuoteType(VDMParser.QuoteTypeContext ctx) 
     {
+        putNode(ctx, new ASTQuoteType(new LexQuoteToken(ctx.quote_type().IDENTIFIER().getText(), token2loc(ctx))));
     }
     
-    @Override public void exitOptionalType(VDMParser.OptionalTypeContext ctx) 
+    @Override 
+    public void exitOptionalType(VDMParser.OptionalTypeContext ctx) 
     {
+        putNode(ctx, new ASTOptionalType(token2loc(ctx), getNode(ctx.optional_type().type(), ASTType.class)));
     }
     
     @Override 
@@ -553,6 +590,39 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, new ASTFunctionType(token2loc(ctx), ctx.SEP_pfcn() != null,
             productExpand(getNode(ctx.params, ASTType.class)), 
             getNode(ctx.ret, ASTType.class)));
+    }
+
+    /**
+     * LRM has function_type in more places than just the type tree. On type tree it cannot be directly there
+     * because of left-recursive issues, so repeat it here, with the same VoidType treatment as VDMJ
+     */
+    @Override 
+    public void exitPartialFunctionType(VDMParser.PartialFunctionTypeContext ctx) 
+    {
+        putNode(ctx, new ASTFunctionType(token2loc(ctx), true,
+            productExpand(getNode(ctx.discretionary_type(), ASTType.class)), 
+            getNode(ctx.type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitTotalFunctionType(VDMParser.TotalFunctionTypeContext ctx) 
+    {
+        putNode(ctx, new ASTFunctionType(token2loc(ctx), false,
+            productExpand(getNode(ctx.discretionary_type(), ASTType.class)), 
+            getNode(ctx.type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitVoidType(VDMParser.VoidTypeContext ctx)
+    {
+        putNode(ctx, new ASTVoidType(token2loc(ctx)));
+    }
+
+    @Override 
+    public void exitFunctionParametersType(VDMParser.FunctionParametersTypeContext ctx)
+    {
+        // Leave productExpand to do the job at the right place
+        putNode(ctx, getNode(ctx.type(), ASTType.class));
     }
 
 //------------------------
@@ -1620,15 +1690,15 @@ public class VDMASTListener extends VDMBaseListener {
         LexLocation location = token2loc(ctx);
         if (littype == null)
             throw new UnsupportedOperationException("Invalid literal type");
-        String p = ctx.QUOTE_LITERAL().getText();
+        String quote = ctx.IDENTIFIER().getText();
         ASTNode node = null;
         switch (littype)
         {
             case PATTERN:
-                node = new ASTQuotePattern(new LexQuoteToken(p.substring(1, p.length()-1), location)); 
+                node = new ASTQuotePattern(new LexQuoteToken(quote, location)); 
                 break;
             case EXPRESSION:
-                node = new ASTQuoteLiteralExpression(new LexQuoteToken(p.substring(1, p.length()-1), location));
+                node = new ASTQuoteLiteralExpression(new LexQuoteToken(quote, location));
                 break;
         }
         putNode(ctx, node);
