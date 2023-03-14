@@ -1,5 +1,16 @@
-module TestV2IEmpty 
+module Other
 exports all
-
 definitions 
+values 
+    y: nat1 = 10;
+end Other
+module TestV2IEmpty 
+imports from Other all
+exports 
+    values 
+        TestV2IEmpty`x: nat1;
+        Other`y: nat1;
+definitions
+values 
+    x: nat1 = 2**3;
 end TestV2IEmpty 
