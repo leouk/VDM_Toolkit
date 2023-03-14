@@ -996,15 +996,15 @@ expression
 //------------------------
 // C.1 The family of combinators
 //------------------------
-    |<assoc=right> expression O_EXP    expression           #IterateExpr                       //38 combinator(1)
-    |<assoc=right> expression SLK_comp expression           #MapCompositionExpr                //39 combinator(2)
+    |<assoc=right> iter=expression O_EXP power=expression   #IterateExpr                       //38 combinator(1)
+    |<assoc=right> lhs=expression SLK_comp rhs=expression   #MapCompositionExpr                //39 combinator(2)
 //------------------------
 // C.2 The family of applicators
 //------------------------
-    | expression PAREN_L 
-        expression 
+    | call=expression PAREN_L 
+        low=expression 
         SEP_comma SEP_range SEP_comma 
-        expression 
+        high=expression 
         PAREN_R                                             #SubSeqExpr                       //40 applicator(1)
     | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
     | expression /* name */ 
@@ -1017,43 +1017,43 @@ expression
 //------------------------
 // C.3 The family of evaluators
 //------------------------
-    |              expression (O_NRRES     expression)      #MapRngFilterExpr                 //44 evaluators(1)    
-    |              expression (O_RRES      expression)      #MapRngRestrictExpr               //45 evaluators(2)   
-    |<assoc=right> expression (O_NDRES     expression)      #MapDomFilterExpr                 //46 evaluators(3)   
-    |<assoc=right> expression (O_DRES      expression)      #MapDomRestricExpr                //47 evaluators(4)   
-    |              expression (SLK_munion  expression)      #MapUnionExpr                     //48 evaluators(5)   
-    |              expression (O_OVERRIDE  expression)      #MapSeqOverrideExpr               //49 evaluators(6)   
-    |              expression (SLK_div     expression)      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
-    |              expression (SLK_mod     expression)      #ArithmeticModuloExpr             //51 evaluators(8)     
-    |              expression (SLK_rem     expression)      #ArithmeticReminderExpr           //52 evaluators(9)     
-    |              expression (O_DIV       expression)      #ArithmeticDivideExpr             //53 evaluators(10)     
-    |              expression (O_TIMES     expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
-    |              expression (O_MINUS     expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
-    |              expression (O_PLUS      expression)      #ArithmeticPlusExpr               //56 evaluators(13)
-    |              expression (O_DIFF      expression)      #SetDiffExpr                      //57 evaluators(14)      
-    |              expression (SLK_union   expression)      #SetUnionExpr                     //58 evaluators(15)   
-    |              expression (SLK_inter   expression)      #SetInterExpr                     //59 evaluators(16)   
-    |              expression (O_CONCAT    expression)      #SeqConcatExpr                    //60 evaluators(17)
+    |              lhs=expression (O_NRRES     rhs=expression)      #MapRngFilterExpr                 //44 evaluators(1)    
+    |              lhs=expression (O_RRES      rhs=expression)      #MapRngRestrictExpr               //45 evaluators(2)   
+    |<assoc=right> lhs=expression (O_NDRES     rhs=expression)      #MapDomFilterExpr                 //46 evaluators(3)   
+    |<assoc=right> lhs=expression (O_DRES      rhs=expression)      #MapDomRestrictExpr               //47 evaluators(4)   
+    |              lhs=expression (SLK_munion  rhs=expression)      #MapUnionExpr                     //48 evaluators(5)   
+    |              lhs=expression (O_OVERRIDE  rhs=expression)      #MapOverrideExpr                  //49 evaluators(6)   
+    |              lhs=expression (SLK_div     rhs=expression)      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
+    |              lhs=expression (SLK_mod     rhs=expression)      #ArithmeticModuloExpr             //51 evaluators(8)     
+    |              lhs=expression (SLK_rem     rhs=expression)      #ArithmeticReminderExpr           //52 evaluators(9)     
+    |              lhs=expression (O_DIV       rhs=expression)      #ArithmeticDivideExpr             //53 evaluators(10)     
+    |              lhs=expression (O_TIMES     rhs=expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
+    |              lhs=expression (O_MINUS     rhs=expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
+    |              lhs=expression (O_PLUS      rhs=expression)      #ArithmeticPlusExpr               //56 evaluators(13)
+    |              lhs=expression (O_DIFF      rhs=expression)      #SetDiffExpr                      //57 evaluators(14)      
+    |              lhs=expression (SLK_union   rhs=expression)      #SetUnionExpr                     //58 evaluators(15)   
+    |              lhs=expression (SLK_inter   rhs=expression)      #SetInterExpr                     //59 evaluators(16)   
+    |              lhs=expression (O_CONCAT    rhs=expression)      #SeqConcatExpr                    //60 evaluators(17)
 //------------------------
 // C.4 The family of relations
 //------------------------
-    |              expression (O_GEQ       expression)      #RelationalGreaterThanEqualExpr   //61 relations(1)   
-    |              expression (O_LEQ       expression)      #RelationalLessThanEqualExpr      //62 relations(2)
-    |              expression (O_GT        expression)      #RelationalGreaterThanExpr        //63 relations(3)
-    |              expression (O_LT        expression)      #RelationalLessThanExpr           //64 relations(4)
-    |<assoc=right> expression (O_NEQ       expression)      #RelationalNotEqualExpr           //65 relations(5)
-    |<assoc=right> expression (O_EQUAL     expression)      #RelationalEqualExpr              //66 relations(6)
-    |              expression (SLK_ninset  expression)      #SetNotMemberExpr                 //67 relations(7)
-    |              expression (SLK_inset   expression)      #SetMemberExpr                    //68 relations(8)
-    |              expression (SLK_psubset expression)      #SetPSubsetExpr                   //69 relations(9)
-    |              expression (SLK_subset  expression)      #SetSubsetExpr                    //70 relations(10)
+    |              lhs=expression (O_GEQ       rhs=expression)      #RelationalGreaterThanEqualExpr   //61 relations(1)   
+    |              lhs=expression (O_LEQ       rhs=expression)      #RelationalLessThanEqualExpr      //62 relations(2)
+    |              lhs=expression (O_GT        rhs=expression)      #RelationalGreaterThanExpr        //63 relations(3)
+    |              lhs=expression (O_LT        rhs=expression)      #RelationalLessThanExpr           //64 relations(4)
+    |<assoc=right> lhs=expression (O_NEQ       rhs=expression)      #RelationalNotEqualExpr           //65 relations(5)
+    |<assoc=right> lhs=expression (O_EQUAL     rhs=expression)      #RelationalEqualExpr              //66 relations(6)
+    |              lhs=expression (SLK_ninset  rhs=expression)      #SetNotMemberExpr                 //67 relations(7)
+    |              lhs=expression (SLK_inset   rhs=expression)      #SetMemberExpr                    //68 relations(8)
+    |              lhs=expression (SLK_psubset rhs=expression)      #SetPSubsetExpr                   //69 relations(9)
+    |              lhs=expression (SLK_subset  rhs=expression)      #SetSubsetExpr                    //70 relations(10)
 //------------------------
-// C.5 The family of connectives
+// C.5 The family of logical connectives
 //------------------------
-    |              expression (SLK_and     expression)      #LogicalAndExpr                   //71 connectives(1)  
-    |              expression (SLK_or      expression)      #LogicalOrExpr                    //72 connectives(2)
-    |<assoc=right> expression (O_IMPLIES   expression)      #LogicalImpliesExpr               //73 connectives(3)
-    |              expression (O_IFF       expression)      #LogicalIffExpr                   //74 connectives(4)
+    |              lhs=expression (SLK_and     rhs=expression)      #LogicalAndExpr                   //71 connectives(1)  
+    |              lhs=expression (SLK_or      rhs=expression)      #LogicalOrExpr                    //72 connectives(2)
+    |<assoc=right> lhs=expression (O_IMPLIES   rhs=expression)      #LogicalImpliesExpr               //73 connectives(3)
+    |              lhs=expression (O_IFF       rhs=expression)      #LogicalIffExpr                   //74 connectives(4)
 //------------------------
 // C.6 The family of constructors
 //------------------------
