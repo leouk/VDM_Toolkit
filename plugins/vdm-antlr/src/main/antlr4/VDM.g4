@@ -1134,6 +1134,7 @@ others_expression
 // Have the unary expression product with identifying rules for ease of listener/visitor traversals
 // Unary appearing before binary makes them bind tigher (stronger) than binary, which is desirable. 
 //@LRM remove unary expression and put the others in place?
+//@LRM cannot have 
 unary_expression 
     : O_PLUS       expression  #UnaryPlusExpr
     | O_MINUS      expression  #UnaryMinusExpr
@@ -1213,7 +1214,7 @@ sequence_enumeration
     ;
 
 sequence_comprehension
-    : BRACKET_L expr=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACKET_R 
+    : BRACKET_L expr=expression SEP_bar bind (SEP_amp filter=expression)? BRACKET_R 
     ;
 
 subsequence
@@ -1271,7 +1272,11 @@ tight_record_name
     ;
 
 record_modifier
-    : SLK_mu PAREN_L expression SEP_comma record_modification (SEP_comma record_modification)* PAREN_R
+    : SLK_mu PAREN_L expression SEP_comma record_modification_list PAREN_R
+    ;
+
+record_modification_list 
+    : record_modification (SEP_comma record_modification)*
     ;
 
 record_modification
@@ -1348,13 +1353,12 @@ threadid_expression
 //------------------------
 
 general_is_expression 
-    : is_expression 
-    | type_judgement
+    : is_expression     
+    | type_judgement    
     ;
 
-//TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_istest (name | basic_type)
+    : SLK_istest (name | basic_type) 
       PAREN_L expression PAREN_R
     ;
 
