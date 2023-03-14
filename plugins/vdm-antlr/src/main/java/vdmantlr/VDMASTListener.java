@@ -25,6 +25,8 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.fujitsu.vdmj.Release;
+import com.fujitsu.vdmj.Settings;
 /**
  * DO NOT *-import all AST nodes! 
  * 
@@ -32,52 +34,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * The "unused import" warning may help to identify those. 
  */
 import com.fujitsu.vdmj.ast.ASTNode;
-import com.fujitsu.vdmj.ast.definitions.ASTDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
-import com.fujitsu.vdmj.ast.expressions.ASTAbsoluteExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTBooleanLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTCardinalityExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTCaseAlternative;
-import com.fujitsu.vdmj.ast.expressions.ASTCaseAlternativeList;
-import com.fujitsu.vdmj.ast.expressions.ASTCasesExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTCharLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTDefExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTDistConcatExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTDistIntersectExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTDistMergeExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTDistUnionExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTElementsExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTElseIfExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTElseIfExpressionList;
-import com.fujitsu.vdmj.ast.expressions.ASTExists1Expression;
-import com.fujitsu.vdmj.ast.expressions.ASTExistsExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTExpressionList;
-import com.fujitsu.vdmj.ast.expressions.ASTFloorExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTForAllExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTHeadExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTIfExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTIndicesExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTIntegerLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTIotaExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTLenExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTLetBeStExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTLetDefExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTMapDomainExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTMapInverseExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTMapRangeExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTNilExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTNotExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTPowerSetExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTQuoteLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTRealLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTReverseExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTSetCompExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTSetEnumExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTStringLiteralExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTTailExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTUnaryMinusExpression;
-import com.fujitsu.vdmj.ast.expressions.ASTUnaryPlusExpression;
+import com.fujitsu.vdmj.ast.expressions.*;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
 import com.fujitsu.vdmj.ast.lex.LexIdentifierToken;
@@ -121,7 +79,21 @@ import com.fujitsu.vdmj.ast.patterns.ASTStringPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTuplePattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBind;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBindList;
+import com.fujitsu.vdmj.ast.types.ASTFunctionType;
+import com.fujitsu.vdmj.ast.types.ASTInMapType;
+import com.fujitsu.vdmj.ast.types.ASTMapType;
+import com.fujitsu.vdmj.ast.types.ASTNamedType;
+import com.fujitsu.vdmj.ast.types.ASTProductType;
+import com.fujitsu.vdmj.ast.types.ASTSeq1Type;
+import com.fujitsu.vdmj.ast.types.ASTSeqType;
+import com.fujitsu.vdmj.ast.types.ASTSet1Type;
+import com.fujitsu.vdmj.ast.types.ASTSetType;
+import com.fujitsu.vdmj.ast.types.ASTTokenType;
 import com.fujitsu.vdmj.ast.types.ASTType;
+import com.fujitsu.vdmj.ast.types.ASTTypeList;
+import com.fujitsu.vdmj.ast.types.ASTUnresolvedType;
+import com.fujitsu.vdmj.ast.types.ASTVoidType;
+import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 
 import vdmantlr.generated.VDMBaseListener;
@@ -140,6 +112,8 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  *     //TODO
     //equals_definition_list
     //local_definition_list
+    //ASTType + ASTTypeList! 
+    //all the isVDMPP()? isVDMRT()? semantic predicate cases
  ******************
  * LRM issues
  ****************** 
@@ -153,9 +127,10 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  *  8. cases expression is irregular (e.g., leading expr features in all case alternative productios)
  *  9. cases alternative pattern list on LHS??
  * 10. various name discrepancies in unary expression AST (e.g. compared say with pattern or within itself)
+ * 11. maplet expression requires a Lex(Keyword)Token where a location would be sufficient?
+ * 12. lambda expressions cannot be constant functions? (e.g. type_bind_list cannot be empty)? 
+ * 13. name is being used (within name list) as a LexNameToken as well as a ASTVariableExpression? 
  */
-
-
 
 public class VDMASTListener extends VDMBaseListener {
     
@@ -171,8 +146,9 @@ public class VDMASTListener extends VDMBaseListener {
         ParseTree t = listener.production(argv[1]);//listener.parser.pattern_list();//parser.expression();
         ParseTreeWalker.DEFAULT.walk(listener, t);
         System.out.println("\ntree="+t.toStringTree(listener.parser)+"\n");
-        ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
-        System.out.println("VDM=" + n.toString()+"\n");
+        //ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
+        //ASTPatternList n = listener.getListNode((ParserRuleContext)t, ASTPatternList.class);
+        System.out.println("VDM=" + listener.lists.get(t).toString()+"\n");
     }
 
     /**
@@ -339,7 +315,7 @@ public class VDMASTListener extends VDMBaseListener {
     protected LexLocation token2loc(ParserRuleContext ctx)
     {
         //VDMParserUtils.Range r = VDMParserUtils.findScope(ctx);
-        VDMParserUtils.Range r = VDMParserUtils.createRange(null, ctx, ctx.getParent());
+        VDMParserUtils.Range r = VDMParserUtils.createRange(ctx.getText(), ctx, ctx.getParent());
         return new LexLocation(currentFile, currentModule, 
             r.start_line, r.start_character, 
             r.stop_line, r.stop_character);
@@ -368,6 +344,26 @@ public class VDMASTListener extends VDMBaseListener {
 	{
 		return new LexNameToken(currentModule, id);
 	}
+
+    protected LexNameToken getMkTypeName(LexNameToken mktoken) //throws com.fujitsu.vdmj.syntax.ParserException, com.fujitsu.vdmj.lex.LexException
+    {
+        String typename = mktoken.name.substring(3);	// mk_... or is_...
+        String[] parts = typename.split("`");
+
+        switch (parts.length)
+        {
+            case 1:
+                return new LexNameToken(currentModule, parts[0], mktoken.location);
+
+            case 2:
+                return new LexNameToken(parts[0], parts[1], mktoken.location, false, true);
+
+            default:
+                //throwMessage(2037, "Malformed mk_<type> name " + typename, mktoken.location);
+        }
+
+        return mktoken;//null;
+    }
 
     private void checkResult(ParserRuleContext ctx, Object result, Class<?> resultExpectedClass)
     {
@@ -427,22 +423,6 @@ public class VDMASTListener extends VDMBaseListener {
         return id2lexid(id, ctx, 0, old);
     }
 
-    protected LexNameToken qid2lexname(TerminalNode id, int beginOffset, ParserRuleContext ctx)
-    {
-        String qualifiedName = id.getText();
-        int backtick = qualifiedName.indexOf('`');
-        assert backtick >= 0;
-        String mod = qualifiedName.substring(beginOffset, backtick);
-        String name = qualifiedName.substring(backtick + 1);
-        return new LexNameToken(mod, name, token2loc(ctx));
-    }
-
-    protected LexNameToken qid2lexname(TerminalNode id, ParserRuleContext ctx)
-    {
-        return qid2lexname(id, 0, ctx);
-    }
-
-
     //ASTModule
 	@Override 
     public void enterSl_document(VDMParser.Sl_documentContext ctx) 
@@ -460,6 +440,141 @@ public class VDMASTListener extends VDMBaseListener {
 		}
         putNode(ctx, null);
     }
+
+//------------------------
+// A.4.1 Type definitions
+//------------------------
+
+    private ASTTypeList productExpand(ASTType parameters)
+    {
+        ASTTypeList types = new ASTTypeList();
+
+        if (parameters instanceof ASTProductType)
+        {
+            // Expand unbracketed product types
+            ASTProductType pt = (ASTProductType)parameters;
+            types.addAll(pt.types);
+        }
+        else if (parameters instanceof ASTVoidType)
+        {
+            // No type
+        }
+        else
+        {
+            // One parameter, including bracketed product types
+            types.add(parameters);
+        }
+
+        return types;
+    }
+
+    @Override 
+    public void exitBracketedType(VDMParser.BracketedTypeContext ctx) 
+    {
+        putNode(ctx, getNode(ctx.bracketed_type().type(), ASTType.class));
+    }  
+
+    @Override public void exitTypeName(VDMParser.TypeNameContext ctx) 
+    {
+        // new ASTNamedType(null, null)
+        // ctx.type_name().name()
+        // putNode(ctx, getNode(ctx.bracketed_type().type(), ASTType.class));
+    }
+    
+    @Override public void exitTypeVariable(VDMParser.TypeVariableContext ctx) 
+    {
+    }
+    
+    @Override 
+    public void exitSeqType(VDMParser.SeqTypeContext ctx) 
+    {
+        //@NB concrete example of the mess of multiple layers can cause. An alternative is to have
+        //    exitSeq1_type(...) then create there but then needs to update here, just like in UnaryExprCtx :-(
+        boolean seq1 = ctx.seq_type().seq1_type() != null;
+        LexLocation location = token2loc(ctx);
+        ASTType type = getNode(seq1 ? ctx.seq_type().seq1_type().type() : ctx.seq_type().seq0_type().type(), ASTType.class);
+        putNode(ctx, seq1 ? new ASTSeq1Type(location, type) : new ASTSeqType(location, type));
+    }
+    
+    @Override 
+    public void exitSetType(VDMParser.SetTypeContext ctx) 
+    {
+        boolean set1 = ctx.set_type().set1_type() != null;
+        LexLocation location = token2loc(ctx);
+        ASTType type = getNode(set1 ? ctx.set_type().set1_type().type() : ctx.set_type().set0_type().type(), ASTType.class);
+        putNode(ctx, set1 ? new ASTSet1Type(location, type) : new ASTSetType(location, type));
+    }
+    
+    @Override public void exitMapType(VDMParser.MapTypeContext ctx) 
+    {
+        boolean inmap = ctx.map_type().injective_map_type() != null;
+        LexLocation location = token2loc(ctx);
+        ASTType dtype = getNode(inmap ? ctx.map_type().injective_map_type().dom : ctx.map_type().general_map_type().dom, ASTType.class);
+        ASTType rtype = getNode(inmap ? ctx.map_type().injective_map_type().rng : ctx.map_type().general_map_type().rng, ASTType.class);
+        putNode(ctx, inmap ? new ASTInMapType(location, dtype, rtype) : new ASTMapType(location, dtype, rtype));
+    }
+    
+    @Override public void exitCompositeType(VDMParser.CompositeTypeContext ctx) 
+    {
+    }
+    
+    @Override public void exitProductType(VDMParser.ProductTypeContext ctx) 
+    {
+    }
+    
+    @Override public void exitUnionType(VDMParser.UnionTypeContext ctx) 
+    {
+    }
+    
+    @Override public void exitBasicType(VDMParser.BasicTypeContext ctx) 
+    {
+    }
+    
+    @Override public void exitQuoteType(VDMParser.QuoteTypeContext ctx) 
+    {
+    }
+    
+    @Override public void exitOptionalType(VDMParser.OptionalTypeContext ctx) 
+    {
+    }
+    
+    @Override 
+    public void exitVoidFunctionType(VDMParser.VoidFunctionTypeContext ctx) 
+    {
+        //@NB here because of the way the production is, there is never a ASTVoidType!
+        putNode(ctx, new ASTFunctionType(token2loc(ctx), ctx.void_function_type().SEP_pfcn() != null,
+            new ASTTypeList(), 
+            getNode(ctx.void_function_type().type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitFunctionType(VDMParser.FunctionTypeContext ctx) 
+    {
+        putNode(ctx, new ASTFunctionType(token2loc(ctx), ctx.SEP_pfcn() != null,
+            productExpand(getNode(ctx.params, ASTType.class)), 
+            getNode(ctx.ret, ASTType.class)));
+    }
+
+//------------------------
+// A.5 Expressions
+//------------------------
+/* The "expression" production rule is ordered in terms of its expected precedence binding power, as defined in LRM's Appendix C.
+ * This is particularly important to avoid left-recursion errors. That means the order of productions was altered reflect both 
+ * Appendix's C rules, but also other implicitly needed precedence modifications not documented in the LRM (yet implemented in 
+ * places like VDMJ's ExpressionReader).
+ * 
+ * For clarity, we kept the original LRM rule names as much as possible (e.g. either directly, or with a #NAME that is similar),
+ * which means drilling into the context for the inner rule defining the actual call. Later on we might want to remove these 
+ * indirections and hence minimise the number of parser rules, ATN size, prediction speed, etc. To do this, we will need to inline
+ * production names on the expression tree, rather than have one production for each of the A.X.Y entries.    
+ * 
+ * We identified the primary expressions based on ANTLR's prediction and resolution of left-recursion. That is, by looking at 
+ * the generated parser prediction switch that did not required priority semantic predicates to decide binding power. We called 
+ * those the C.0 family of primary expressions (i.e. those that will always win any prediction, given their lead token uniqueness).
+ */
+//------------------------
+// C.0 Primary expressions
+//------------------------
 
     @Override
     public void exitBracketedExpr(VDMParser.BracketedExprContext ctx)
@@ -512,24 +627,6 @@ public class VDMASTListener extends VDMBaseListener {
                 getNode(ctx.if_expression().elseExpr, ASTExpression.class)));
     }
 
-    @Override 
-    public void exitCases_expression_alternative(VDMParser.Cases_expression_alternativeContext ctx)
-    {
-        //TODO! 
-        putNode(ctx, new ASTCaseAlternative(null, null, null));
-    }
-
-    @Override 
-    public void exitCases_expression_alternatives(VDMParser.Cases_expression_alternativesContext ctx)
-    {
-        ASTCaseAlternativeList casesList = new ASTCaseAlternativeList();
-        for(VDMParser.Cases_expression_alternativeContext c : ctx.cases_expression_alternative())
-        {
-            casesList.add(getNode(c, ASTCaseAlternative.class));
-        }
-        putListNode(ctx, casesList);
-    }
-
     /**
      * VDM case alternatives are irrgular, namely each case alternative depends on the toplevel expression
      * as well as its own target/result expression. At enterCasesExpr, it's expression will not have been
@@ -554,6 +651,19 @@ public class VDMASTListener extends VDMBaseListener {
             }
         }
         putNode(ctx, new ASTCasesExpression(token2loc(ctx), leadExpr, casesList, others));
+    }
+
+//------------------------
+// A.5.4 Unary Expressions
+//------------------------
+
+    //@LRM Concrete example where having multiple layers is bad idea? 
+    @Override
+    public void exitUnaryExpr(VDMParser.UnaryExprContext ctx)
+    {
+        ASTExpression node = getNode(ctx.unary_expression(), ASTExpression.class);
+        nodes.removeFrom(ctx.unary_expression());
+        putNode(ctx, node);
     }
 
     @Override
@@ -676,6 +786,10 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, new ASTMapInverseExpression(token2loc(ctx), getNode(ctx.expression(), ASTExpression.class)));
     }
 
+//------------------------
+// A.5.6 Quantified Expressions
+//------------------------
+
     @Override
     public void exitAll_expression(VDMParser.All_expressionContext ctx)
     {
@@ -729,27 +843,605 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
-    public void enterArithmeticPlusExpr(VDMParser.ArithmeticPlusExprContext ctx)
+    public void exitSetRangeExpr(VDMParser.SetRangeExprContext ctx)
     {
-        System.out.println("Enter #ArithmeticPlusExpr: " + ctx.getText());
+        putNode(ctx, new ASTSetRangeExpression(token2loc(ctx),
+            getNode(ctx.set_range_expression().low, ASTExpression.class),
+            getNode(ctx.set_range_expression().high, ASTExpression.class)));
     }
 
     @Override
-    public void exitArithmeticPlusExpr(VDMParser.ArithmeticPlusExprContext ctx)
+    public void exitSeqEnumExpr(VDMParser.SeqEnumExprContext ctx)
     {
-        System.out.println("Exit #ArithmeticPlusExpr: " + ctx.getText());
+        // empty set has no expression_list context but just an empty members list
+        ASTExpressionList members = 
+            ctx.sequence_enumeration().expression_list() != null ?
+                getListNode(ctx.sequence_enumeration().expression_list(), ASTExpressionList.class) : new ASTExpressionList();
+        putNode(ctx, new ASTSeqEnumExpression(token2loc(ctx), members));
     }
 
     @Override
-    public void enterArithmeticMultiplicationExpr(VDMParser.ArithmeticMultiplicationExprContext ctx)
+    public void exitSeqCompExpr(VDMParser.SeqCompExprContext ctx)
     {
-        System.out.println("Enter #ArithmeticMultiplicationExpr: " + ctx.getText());
+        // if no filter, then pass null
+        putNode(ctx, new ASTSeqCompExpression(token2loc(ctx),
+            getNode(ctx.sequence_comprehension().expr, ASTExpression.class),
+            getNode(ctx.sequence_comprehension().bind(), ASTBind.class),
+            ctx.sequence_comprehension().filter != null ? getNode(ctx.sequence_comprehension().filter, ASTExpression.class) : null));
+    }
+
+    @Override 
+    public void exitMaplet(VDMParser.MapletContext ctx)
+    {
+        //@NB the use of LexToken is unnecessary here? 
+        //      From LexTokenReader.nextToken(), it seems this should be a keyword token?
+        putNode(ctx, new ASTMapletExpression(
+            getNode(ctx.dom, ASTExpression.class),
+            // explicitly fully imported Token to avoid confusion with ANTLR's Token class
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.MAPLET, token2loc(ctx.SEP_maplet())),
+            getNode(ctx.rng, ASTExpression.class)));
     }
 
     @Override
-    public void exitArithmeticMultiplicationExpr(VDMParser.ArithmeticMultiplicationExprContext ctx)
+    public void exitMaplet_list(VDMParser.Maplet_listContext ctx)
     {
-        System.out.println("Exit #ArithmeticMultiplicationExpr: " + ctx.getText());
+        ASTMapletExpressionList result = new ASTMapletExpressionList();
+        for(VDMParser.MapletContext m : ctx.maplet())
+        {
+            result.add(getNode(m, ASTMapletExpression.class));
+        }
+        putListNode(ctx, result);
+    }
+
+    @Override
+    public void exitMapEnumExpr(VDMParser.MapEnumExprContext ctx)
+    {
+        // empty set has no expression_list context but just an empty members list
+        ASTMapletExpressionList members = ctx.map_enumeration().maplet_list() != null ?
+                getListNode(ctx.map_enumeration().maplet_list(), ASTMapletExpressionList.class) : new ASTMapletExpressionList();
+        putNode(ctx, new ASTMapEnumExpression(token2loc(ctx), members));
+    }
+
+    @Override
+    public void exitMapCompExpr(VDMParser.MapCompExprContext ctx)
+    {
+        putNode(ctx, new ASTMapCompExpression(token2loc(ctx),
+            getNode(ctx.map_comprehension().expr, ASTMapletExpression.class),
+            getListNode(ctx.map_comprehension().bind_list(), ASTMultipleBindList.class),
+            ctx.map_comprehension().filter != null ? getNode(ctx.map_comprehension().filter, ASTExpression.class) : null));
+    }
+
+    @Override 
+    public void exitRecord_modification(VDMParser.Record_modificationContext ctx)
+    {
+        putNode(ctx, new ASTRecordModifier(id2lexid(ctx.IDENTIFIER(), ctx, false), 
+            getNode(ctx.expression(), ASTExpression.class)));
+    }
+
+    @Override
+    public void exitRecord_modification_list(VDMParser.Record_modification_listContext ctx)
+    {
+        ASTRecordModifierList result = new ASTRecordModifierList();
+        for(VDMParser.Record_modificationContext r : ctx.record_modification())
+        {
+            result.add(getNode(r, ASTRecordModifier.class));
+        }
+        putListNode(ctx, result);
+    }
+
+    @Override
+    public void exitRecordMuExpr(VDMParser.RecordMuExprContext ctx)
+    {
+        putNode(ctx, new ASTMuExpression(token2loc(ctx), 
+            getNode(ctx.record_modifier().expression(), ASTExpression.class),
+            getListNode(ctx.record_modifier().record_modification_list(), ASTRecordModifierList.class)));
+    }
+
+    @Override 
+    public void exitLambdaExpr(VDMParser.LambdaExprContext ctx)
+    {
+        //@NB why not constant lambda functions? (e.g. lambda & 20) 
+        putNode(ctx, new ASTLambdaExpression(token2loc(ctx), 
+            getListNode(ctx.lambda_expression().type_bind_list(), ASTTypeBindList.class), 
+            getNode(ctx.lambda_expression().expression(), ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitNarrowExpr(VDMParser.NarrowExprContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        ASTType type = getNode(ctx.narrow_expression().type(), ASTType.class);
+        ASTExpression test = getNode(ctx.narrow_expression().expression(), ASTExpression.class);
+        ASTNarrowExpression result;
+        //@NB is this right? got similar to ExpressionReader
+        if (type instanceof ASTUnresolvedType)
+        {
+            ASTUnresolvedType utype = (ASTUnresolvedType)type;
+            result = new ASTNarrowExpression(location, utype.typename, test);
+        }
+        else
+        {
+            result = new ASTNarrowExpression(location, type, test);
+        }
+        putNode(ctx, result);
+    }
+
+    @Override
+    public void exitIs_expression(VDMParser.Is_expressionContext ctx)
+    {
+        ASTIsExpression result;
+        LexLocation location = token2loc(ctx);
+        //@NB is this right? Seemed so from the ASTIsExpression constructor, but not quite the same as ExpressionReader 
+        //    given I separated the two productions for is_expression (is_X(E)) and type judgement (is_(X, E))
+        ASTExpression test = getNode(ctx.expression(), ASTExpression.class);
+        if (ctx.basic_type() != null)
+        {
+            result = new ASTIsExpression(location, getNode(ctx.basic_type(), ASTType.class), test);
+        }
+        else 
+        {
+            result = new ASTIsExpression(location, 
+                getNode(ctx.name(), LexNameToken.class), test);
+        }
+        putNode(ctx, result);
+    }
+
+    @Override 
+    public void exitType_judgement(VDMParser.Type_judgementContext ctx)
+    {
+        ASTIsExpression result;
+        LexLocation location = token2loc(ctx);
+        ASTExpression test = getNode(ctx.expression(), ASTExpression.class);
+        ASTType type = getNode(ctx.type(), ASTType.class);
+        //@NB is this right? got similar to ExpressionReader
+        if (type instanceof ASTUnresolvedType)
+        {
+            ASTUnresolvedType utype = (ASTUnresolvedType)type;
+            result = new ASTIsExpression(location, utype.typename, test);
+        }
+        else
+        {
+            result = new ASTIsExpression(location, type, test);
+        }
+        putNode(ctx, result);
+    }
+
+    @Override
+    public void exitUndefinedExpr(VDMParser.UndefinedExprContext ctx)
+    {
+        putNode(ctx, new ASTUndefinedExpression(token2loc(ctx)));
+    }
+
+    @Override
+    public void exitPreconditionExpr(VDMParser.PreconditionExprContext ctx)
+    {
+        ASTExpressionList exprs = getListNode(ctx.precondition_expression().expression_list(), ASTExpressionList.class);
+        ASTExpressionList params = new ASTExpressionList();
+        params.addAll(exprs.subList(1, exprs.size()));
+        putNode(ctx, new ASTPreExpression(token2loc(ctx), exprs.get(0), params));
+    }
+
+    //TODO all the isVDMPP()? isVDMRT()? semantic predicate cases
+
+//------------------------
+// C.1 The family of combinators
+//------------------------
+
+    @Override 
+    public void exitIterateExpr(VDMParser.IterateExprContext ctx)
+    {
+        //@NB I think these will all be LexKeywordToken right? 
+        putNode(ctx, new ASTStarStarExpression(
+            getNode(ctx.iter, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.STARSTAR, token2loc(ctx.O_EXP())), 
+            getNode(ctx.power, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapCompositionExpr(VDMParser.MapCompositionExprContext ctx)
+    {
+        putNode(ctx, new ASTCompExpression(
+            getNode(ctx.lhs, ASTExpression.class), 
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.COMP, token2loc(ctx.SLK_comp())), 
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+//------------------------
+// C.2 The family of applicators
+//------------------------
+
+    @Override 
+    public void exitSubSeqExpr(VDMParser.SubSeqExprContext ctx)
+    {
+        putNode(ctx, new ASTSubseqExpression(
+            getNode(ctx.call, ASTExpression.class), 
+            getNode(ctx.low, ASTExpression.class), 
+            getNode(ctx.high, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitApplyExpr(VDMParser.ApplyExprContext ctx)
+    {
+        ASTExpressionList params = 
+            ctx.expression_list() != null ? getListNode(ctx.expression_list(), ASTExpressionList.class) : new ASTExpressionList();
+        putNode(ctx, new ASTApplyExpression(getNode(ctx.expression(), ASTExpression.class), params));
+    }
+
+    @Override 
+    public void exitFunctionTypeInstExpr(VDMParser.FunctionTypeInstExprContext ctx)
+    {
+        putNode(ctx, new ASTFuncInstantiationExpression(
+            getNode(ctx.expression(), ASTExpression.class), 
+            getListNode(ctx.type_list(), ASTTypeList.class)));
+    }
+
+    @Override 
+    public void exitFieldSelExpr(VDMParser.FieldSelExprContext ctx)
+    {
+        //@NB I think this is always going to be ASTFieldExpression with LexIdentifierToken for SL right? 
+        putNode(ctx, new ASTFieldExpression(getNode(ctx.expression(), ASTExpression.class), 
+            id2lexid(ctx.IDENTIFIER(), ctx, false)));
+    }
+
+    @Override
+    public void exitTupleSelExpr(VDMParser.TupleSelExprContext ctx)
+    {
+        putNode(ctx, new ASTFieldNumberExpression(
+            getNode(ctx.expression(), ASTExpression.class), 
+            str2int(token2loc(ctx.NUMERAL()), ctx.NUMERAL().getText(), 10)));
+    }
+
+//------------------------
+// A.5.5 Binary Expressions
+//------------------------
+
+//------------------------
+// C.3 The family of evaluators
+//------------------------
+    @Override 
+    public void exitMapRngFilterExpr(VDMParser.MapRngFilterExprContext ctx) 
+    {
+        putNode(ctx, new ASTRangeResByExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.RANGERESBY, token2loc(ctx.O_NRRES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapRngRestrictExpr(VDMParser.MapRngRestrictExprContext ctx) 
+    {
+        putNode(ctx, new ASTRangeResToExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.RANGERESTO, token2loc(ctx.O_RRES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapDomFilterExpr(VDMParser.MapDomFilterExprContext ctx) 
+    {
+        putNode(ctx, new ASTDomainResByExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.DOMRESBY, token2loc(ctx.O_NDRES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapDomRestrictExpr(VDMParser.MapDomRestrictExprContext ctx) 
+    {
+        putNode(ctx, new ASTDomainResToExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.DOMRESTO, token2loc(ctx.O_DRES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapUnionExpr(VDMParser.MapUnionExprContext ctx) 
+    {
+        putNode(ctx, new ASTMapUnionExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.MUNION, token2loc(ctx.SLK_munion())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitMapOverrideExpr(VDMParser.MapOverrideExprContext ctx) 
+    {
+        putNode(ctx, new ASTPlusPlusExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.PLUSPLUS, token2loc(ctx.O_OVERRIDE())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticIntegerDivisionExpr(VDMParser.ArithmeticIntegerDivisionExprContext ctx) 
+    {
+        putNode(ctx, new ASTDivExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.DIV, token2loc(ctx.SLK_div())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticModuloExpr(VDMParser.ArithmeticModuloExprContext ctx) 
+    {
+        putNode(ctx, new ASTModExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.MOD, token2loc(ctx.SLK_mod())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticReminderExpr(VDMParser.ArithmeticReminderExprContext ctx) 
+    {
+        putNode(ctx, new ASTRemExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.REM, token2loc(ctx.SLK_rem())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticDivideExpr(VDMParser.ArithmeticDivideExprContext ctx) 
+    {
+        putNode(ctx, new ASTDivideExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.DIVIDE, token2loc(ctx.O_DIV())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticMultiplicationExpr(VDMParser.ArithmeticMultiplicationExprContext ctx) 
+    {
+        putNode(ctx, new ASTTimesExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.TIMES, token2loc(ctx.O_TIMES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticMinusExpr(VDMParser.ArithmeticMinusExprContext ctx) 
+    {
+        putNode(ctx, new ASTSubtractExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.MINUS, token2loc(ctx.O_MINUS())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitArithmeticPlusExpr(VDMParser.ArithmeticPlusExprContext ctx) 
+    {
+        putNode(ctx, new ASTPlusExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.PLUS, token2loc(ctx.O_PLUS())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetDiffExpr(VDMParser.SetDiffExprContext ctx) 
+    {
+        putNode(ctx, new ASTSetDifferenceExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.SETDIFF, token2loc(ctx.O_DIFF())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetUnionExpr(VDMParser.SetUnionExprContext ctx) 
+    {
+        putNode(ctx, new ASTSetUnionExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.UNION, token2loc(ctx.SLK_union())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetInterExpr(VDMParser.SetInterExprContext ctx) 
+    {
+        putNode(ctx, new ASTSetIntersectExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.INTER, token2loc(ctx.SLK_inter())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSeqConcatExpr(VDMParser.SeqConcatExprContext ctx) 
+    {
+        putNode(ctx, new ASTSeqConcatExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.CONCATENATE, token2loc(ctx.O_CONCAT())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+//------------------------
+// C.4 The family of relations
+//------------------------
+
+    @Override 
+    public void exitRelationalGreaterThanEqualExpr(VDMParser.RelationalGreaterThanEqualExprContext ctx) 
+    {
+        putNode(ctx, new ASTGreaterEqualExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.GE, token2loc(ctx.O_GEQ())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitRelationalLessThanEqualExpr(VDMParser.RelationalLessThanEqualExprContext ctx) 
+    {
+        putNode(ctx, new ASTLessEqualExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.LE, token2loc(ctx.O_LEQ())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitRelationalGreaterThanExpr(VDMParser.RelationalGreaterThanExprContext ctx) 
+    {
+        putNode(ctx, new ASTGreaterExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.GT, token2loc(ctx.O_GT())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitRelationalLessThanExpr(VDMParser.RelationalLessThanExprContext ctx) 
+    {
+        putNode(ctx, new ASTLessExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.LT, token2loc(ctx.O_LT())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitRelationalNotEqualExpr(VDMParser.RelationalNotEqualExprContext ctx) 
+    {
+        putNode(ctx, new ASTNotEqualExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NE, token2loc(ctx.O_NEQ())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitRelationalEqualExpr(VDMParser.RelationalEqualExprContext ctx) 
+    {
+        putNode(ctx, new ASTEqualsExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.EQUALS, token2loc(ctx.O_EQUAL())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetNotMemberExpr(VDMParser.SetNotMemberExprContext ctx) 
+    {
+        putNode(ctx, new ASTNotInSetExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.NOTINSET, token2loc(ctx.SLK_ninset())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetMemberExpr(VDMParser.SetMemberExprContext ctx) 
+    {
+        putNode(ctx, new ASTInSetExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.INSET, token2loc(ctx.SLK_inset())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetPSubsetExpr(VDMParser.SetPSubsetExprContext ctx) 
+    {
+        putNode(ctx, new ASTProperSubsetExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.PSUBSET, token2loc(ctx.SLK_psubset())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitSetSubsetExpr(VDMParser.SetSubsetExprContext ctx) 
+    {
+        putNode(ctx, new ASTSubsetExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.SUBSET, token2loc(ctx.SLK_subset())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+//------------------------
+// C.5 The family of (logical) connectives
+//------------------------
+
+    @Override 
+    public void exitLogicalAndExpr(VDMParser.LogicalAndExprContext ctx) 
+    {
+        putNode(ctx, new ASTAndExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.AND, token2loc(ctx.SLK_and())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitLogicalOrExpr(VDMParser.LogicalOrExprContext ctx) 
+    {
+        putNode(ctx, new ASTOrExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.OR, token2loc(ctx.SLK_or())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitLogicalImpliesExpr(VDMParser.LogicalImpliesExprContext ctx) 
+    {
+        putNode(ctx, new ASTImpliesExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.IMPLIES, token2loc(ctx.O_IMPLIES())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitLogicalIffExpr(VDMParser.LogicalIffExprContext ctx) 
+    {
+        putNode(ctx, new ASTEquivalentExpression(
+            getNode(ctx.lhs, ASTExpression.class),
+            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.EQUIVALENT, token2loc(ctx.O_IFF())),
+            getNode(ctx.rhs, ASTExpression.class)));
+    }
+
+//------------------------
+// C.6 The family of constructors
+//------------------------
+
+    @Override 
+    public void exitTupleMkExpr(VDMParser.TupleMkExprContext ctx)
+    {
+        ASTExpressionList tuple = new ASTExpressionList();
+        tuple.add(getNode(ctx.tuple_constructor().expression(), ASTExpression.class));
+        tuple.addAll(getListNode(ctx.tuple_constructor().expression_list(), ASTExpressionList.class));
+        putNode(ctx, new ASTTupleExpression(token2loc(ctx), tuple));
+    }
+
+    @Override 
+    public void exitRecordMkExpr(VDMParser.RecordMkExprContext ctx)
+    {
+        ASTExpression result;
+        ASTExpressionList exprs = ctx.record_constructor().expression_list() != null ? 
+            getListNode(ctx.record_constructor().expression_list(), ASTExpressionList.class) : new ASTExpressionList();
+        LexNameToken typename = getNode(ctx.record_constructor().tight_record_name(), LexNameToken.class);        
+        LexNameToken mktypeName = getMkTypeName(typename);
+        com.fujitsu.vdmj.lex.Token type = com.fujitsu.vdmj.lex.Token.lookup(mktypeName.name, Dialect.VDM_SL);
+        if (type != null)
+        {
+            if (exprs.size() != 1)
+            {
+                //TODO
+                result = null;//throwMessage(2300, "mk_<type> must have a single argument", typename.location);
+            }
+
+            if (type == com.fujitsu.vdmj.lex.Token.TOKEN)
+            {
+                result = new ASTMkBasicExpression(new ASTTokenType(mktypeName.location), exprs.get(0));
+            }
+            else
+            {
+                //TODO
+                result = null;//throwMessage(2036, "Expecting mk_token", typename.location);
+            }
+        }
+        else
+        {
+            result = new ASTMkTypeExpression(mktypeName, exprs);
+        }
+        putNode(ctx, result);
+    }
+
+    @Override 
+    public void exitOldNameExpr(VDMParser.OldNameExprContext ctx)
+    {
+        putNode(ctx, new ASTVariableExpression(id2lexname(id2lexid(ctx.old_name().IDENTIFIER(), ctx, true))));
+    }
+
+    @Override 
+    public void exitNameExpr(VDMParser.NameExprContext ctx)
+    {
+        putNode(ctx, new ASTVariableExpression(getNode(ctx.name(), LexNameToken.class)));
     }
 
     @Override
@@ -778,6 +1470,8 @@ public class VDMASTListener extends VDMBaseListener {
         {
             result.add(getNode(e, ASTExpression.class));
         }
+        //TODO throw an ANTLR error in case of null? Not really given production is never empty ?
+        assert !result.isEmpty();
         putListNode(ctx, result);
     }
 
@@ -833,32 +1527,6 @@ public class VDMASTListener extends VDMBaseListener {
             throw new UnsupportedOperationException();
         }
         return result;
-    }
-
-    @Override 
-    public void exitName_list(VDMParser.Name_listContext ctx)
-    {
-        // empty pattern list (empty set/q etc) is non-null 
-        LexNameList result = new LexNameList();
-        for(VDMParser.NameContext n : ctx.name())
-        {
-            result.add(getNode(n, LexNameToken.class));
-        }
-        putListNode(ctx, result);
-    }
-
-    //TODO these two ought to be reused in pattern?
-    //@LRM
-    @Override
-    public void exitQualifiedName(VDMParser.QualifiedNameContext ctx)
-    {
-        putNode(ctx, qid2lexname(ctx.QUALIFIED_NAME(), ctx));
-    }
-
-    @Override
-    public void exitIdName(VDMParser.IdNameContext ctx)
-    {
-        putNode(ctx, id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false)));
     }
 
     @Override 
@@ -1308,6 +1976,60 @@ public class VDMASTListener extends VDMBaseListener {
             result.add(getNode(tb, ASTTypeBind.class));
         }
         putListNode(ctx, result);
+    }
+
+        /**
+     * Akin to ExpressionReader.readIdList() as a LexNameList result!
+     */
+    @Override 
+    public void exitName_list(VDMParser.Name_listContext ctx)
+    {
+        // empty pattern list (empty set/q etc) is non-null 
+        LexNameList result = new LexNameList();
+        for(VDMParser.NameContext n : ctx.name())
+        {
+            result.add(getNode(n, LexNameToken.class));
+        }
+        putListNode(ctx, result);
+    }
+
+    protected boolean isReserved(String name)
+	{
+		return
+			name.startsWith("pre_") ||
+			name.startsWith("post_") ||
+			name.startsWith("inv_") ||
+			name.startsWith("init_") ||
+			name.startsWith("measure_") ||
+			Settings.release == Release.VDM_10 &&
+			(
+				name.startsWith("eq_") ||
+				name.startsWith("ord_") ||
+				name.startsWith("min_") ||
+				name.startsWith("max_")
+			);
+	}
+
+    @Override
+    public void exitQualifiedName(VDMParser.QualifiedNameContext ctx)
+    {
+        LexNameToken name = new LexNameToken(ctx.IDENTIFIER(0).getText(), id2lexid(ctx.IDENTIFIER(1), ctx, false));
+        if (isReserved(name.name))
+        {
+            //throwMessage(2295, "Name " + name + " contains a reserved prefix", tok);
+        }
+        putNode(ctx, name);
+    }
+
+    @Override
+    public void exitIdName(VDMParser.IdNameContext ctx)
+    {
+        LexNameToken name = id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false));
+        if (isReserved(name.name))
+        {
+            //throwMessage(2295, "Name " + name + " contains a reserved prefix", tok);
+        }
+        putNode(ctx, name);
     }
 }
 
