@@ -386,17 +386,13 @@ type
     | set_type          #SetType
     | map_type          #MapType
     | composite_type    #CompositeType
-    // | product_type      #ProductType
     | type (O_TIMES type)+ #ProductType
-    // | union_type        #UnionType
     | type (SEP_bar type)+ #UnionType
     | basic_type        #BasicType
     | quote_type        #QuoteType
     | optional_type     #OptionalType
-    // | function_type     #FunctionType
     | void_function_type #VoidFunctionType
-    |<assoc=right> type SEP_pfcn type #PartialFunctionType
-    |<assoc=right> type SEP_tfcn type #PartialFunctionType
+    |<assoc=right> params=type (SEP_pfcn | SEP_tfcn) ret=type #FunctionType
     ;
 
 void_function_type
@@ -468,12 +464,12 @@ map_type
 
 // C.8.4 Map type operators are right associative 
 general_map_type 
-    :<assoc=right> SLK_map type SLK_to type
+    :<assoc=right> SLK_map dom=type SLK_to rng=type
     ;
 
 // C.8.4 Map type operators are right associative 
 injective_map_type 
-    :<assoc=right> SLK_inmap type SLK_to type
+    :<assoc=right> SLK_inmap dom=type SLK_to rng=type
     ;
 
 function_type 
