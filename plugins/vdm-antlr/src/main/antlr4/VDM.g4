@@ -183,8 +183,8 @@ import_types_signature
     ;
 
 type_import
-    : name (SLK_renamed name)?
-    | type_definition (SLK_renamed name)?
+    : tname=name (SLK_renamed renamed=name)?            #NamedImport
+    | tdef=type_definition (SLK_renamed renamed=name)?  #TypeDefinitionImport
     ;
 
 import_values_signature
@@ -192,7 +192,7 @@ import_values_signature
     ;
 
 value_import 
-    : name (SEP_colon type)? (SLK_renamed name)?
+    : vname=name (SEP_colon type)? (SLK_renamed renamed=name)?
     ;
 
 import_functions_signature
@@ -200,7 +200,7 @@ import_functions_signature
     ;
 
 function_import     
-    : name (type_variable_list? SEP_colon function_type)? (SLK_renamed name)?
+    : fname=name (type_variable_list? SEP_colon function_type)? (SLK_renamed renamed=name)?
     ;
 
 import_operations_signature 
@@ -208,7 +208,7 @@ import_operations_signature
     ;
 
 operation_import 
-    : name (SEP_colon operation_type)? (SLK_renamed name)?
+    : oname=name (SEP_colon operation_type)? (SLK_renamed renamed=name)?
     ;
 
 export_definition 
@@ -719,7 +719,7 @@ extended_explicit_operation_definition
     ;
 
 operation_type
-    : discretionary_type SEP_optype discretionary_type
+    : params=discretionary_type SEP_optype rtype=discretionary_type
     ;
 
 operation_body 

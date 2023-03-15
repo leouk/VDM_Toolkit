@@ -34,7 +34,9 @@ import com.fujitsu.vdmj.Settings;
  * The "unused import" warning may help to identify those. 
  */
 import com.fujitsu.vdmj.ast.ASTNode;
+import com.fujitsu.vdmj.ast.definitions.ASTDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
+import com.fujitsu.vdmj.ast.definitions.ASTTypeDefinition;
 import com.fujitsu.vdmj.ast.expressions.*;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
@@ -46,6 +48,24 @@ import com.fujitsu.vdmj.ast.lex.LexNameToken;
 import com.fujitsu.vdmj.ast.lex.LexQuoteToken;
 import com.fujitsu.vdmj.ast.lex.LexRealToken;
 import com.fujitsu.vdmj.ast.lex.LexStringToken;
+import com.fujitsu.vdmj.ast.modules.ASTExportAll;
+import com.fujitsu.vdmj.ast.modules.ASTExportList;
+import com.fujitsu.vdmj.ast.modules.ASTExportedFunction;
+import com.fujitsu.vdmj.ast.modules.ASTExportedOperation;
+import com.fujitsu.vdmj.ast.modules.ASTExportedType;
+import com.fujitsu.vdmj.ast.modules.ASTExportedValue;
+import com.fujitsu.vdmj.ast.modules.ASTImport;
+import com.fujitsu.vdmj.ast.modules.ASTImportAll;
+import com.fujitsu.vdmj.ast.modules.ASTImportFromModule;
+import com.fujitsu.vdmj.ast.modules.ASTImportFromModuleList;
+import com.fujitsu.vdmj.ast.modules.ASTImportList;
+import com.fujitsu.vdmj.ast.modules.ASTImportedFunction;
+import com.fujitsu.vdmj.ast.modules.ASTImportedOperation;
+import com.fujitsu.vdmj.ast.modules.ASTImportedType;
+import com.fujitsu.vdmj.ast.modules.ASTImportedValue;
+import com.fujitsu.vdmj.ast.modules.ASTModule;
+import com.fujitsu.vdmj.ast.modules.ASTModuleExports;
+import com.fujitsu.vdmj.ast.modules.ASTModuleImports;
 import com.fujitsu.vdmj.ast.modules.ASTModuleList;
 import com.fujitsu.vdmj.ast.patterns.ASTBind;
 import com.fujitsu.vdmj.ast.patterns.ASTBooleanPattern;
@@ -79,16 +99,24 @@ import com.fujitsu.vdmj.ast.patterns.ASTStringPattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTuplePattern;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBind;
 import com.fujitsu.vdmj.ast.patterns.ASTTypeBindList;
+import com.fujitsu.vdmj.ast.types.ASTBooleanType;
+import com.fujitsu.vdmj.ast.types.ASTCharacterType;
 import com.fujitsu.vdmj.ast.types.ASTField;
 import com.fujitsu.vdmj.ast.types.ASTFieldList;
 import com.fujitsu.vdmj.ast.types.ASTFunctionType;
 import com.fujitsu.vdmj.ast.types.ASTInMapType;
+import com.fujitsu.vdmj.ast.types.ASTIntegerType;
 import com.fujitsu.vdmj.ast.types.ASTMapType;
 import com.fujitsu.vdmj.ast.types.ASTNamedType;
+import com.fujitsu.vdmj.ast.types.ASTNaturalOneType;
+import com.fujitsu.vdmj.ast.types.ASTNaturalType;
+import com.fujitsu.vdmj.ast.types.ASTOperationType;
 import com.fujitsu.vdmj.ast.types.ASTOptionalType;
 import com.fujitsu.vdmj.ast.types.ASTParameterType;
 import com.fujitsu.vdmj.ast.types.ASTProductType;
 import com.fujitsu.vdmj.ast.types.ASTQuoteType;
+import com.fujitsu.vdmj.ast.types.ASTRationalType;
+import com.fujitsu.vdmj.ast.types.ASTRealType;
 import com.fujitsu.vdmj.ast.types.ASTRecordType;
 import com.fujitsu.vdmj.ast.types.ASTSeq1Type;
 import com.fujitsu.vdmj.ast.types.ASTSeqType;
@@ -97,6 +125,8 @@ import com.fujitsu.vdmj.ast.types.ASTSetType;
 import com.fujitsu.vdmj.ast.types.ASTTokenType;
 import com.fujitsu.vdmj.ast.types.ASTType;
 import com.fujitsu.vdmj.ast.types.ASTTypeList;
+import com.fujitsu.vdmj.ast.types.ASTTypeSet;
+import com.fujitsu.vdmj.ast.types.ASTUnionType;
 import com.fujitsu.vdmj.ast.types.ASTUnknownType;
 import com.fujitsu.vdmj.ast.types.ASTUnresolvedType;
 import com.fujitsu.vdmj.ast.types.ASTVoidType;
@@ -119,7 +149,7 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  *     //TODO
     //equals_definition_list
     //local_definition_list
-    //ASTType + ASTTypeList! 
+    //ASTTypeDefinition
     //all the isVDMPP()? isVDMRT()? semantic predicate cases
  ******************
  * LRM issues
@@ -138,6 +168,13 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * 12. lambda expressions cannot be constant functions? (e.g. type_bind_list cannot be empty)? 
  * 13. name is being used (within name list) as a LexNameToken as well as a ASTVariableExpression? 
  * 14. function_type cannot directly be on the type rule, yet is used in other places. So will effectively have two equal implementations :-(
+ * 15. sl_interface can lead to empty production matching if both imports and exports are empty! Force at least exports all
+ * 16. what's the point of type_definition on import_type_signature if invariants or other parts cannot be changed? 
+ * 17. name production on type imports is too linient. allows for waky things like "from Other types Other`T renamed Another`S"!
+ * 18. type_variable (like name) ends up being confused with AST(ParameterType) or LexNameToken depending on context (e.g. requires two production interpretations)
+ * 19. Imported function AST receives type variables after function type
+ * 20. export XXXX_signature should be called XXX_export (like type_export, instea of value_signature)!
+ * 21. ASTExportedFunction optional type parameters come after function type?
  */
 
 public class VDMASTListener extends VDMBaseListener {
@@ -240,13 +277,23 @@ public class VDMASTListener extends VDMBaseListener {
     protected ASTModuleList astModuleList;
     private final File currentFile;
     private String currentModule;
+    private String savedCurrentModule;
+    private LexIdentifierToken fromModuleImport;
+    private ASTImportList fromModuleImportList;
+    private ASTExportList moduleExportList;
+    private final Dialect dialect;
     private SymbolicLiteralType littype; 
 
     public VDMASTListener(String fileName) throws IOException
     {
         super();
         littype = null;
-        currentModule = "DEFAULT";
+        dialect = Dialect.VDM_SL;
+        currentModule = null;
+        fromModuleImport = null;
+        fromModuleImportList = null;
+        moduleExportList = null;
+        savedCurrentModule = setCurrentModule("?");
         if (fileName == null || fileName.isEmpty())
             throw new IllegalArgumentException("Invalid file name " + fileName);
         currentFile = new File(fileName);
@@ -272,6 +319,13 @@ public class VDMASTListener extends VDMBaseListener {
         nodes = new ParseTreeProperty<ASTNode>();
         lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
         astModuleList = null;
+    }
+
+    private String setCurrentModule(String mod)
+    {
+        String result = currentModule;
+        currentModule = mod;
+        return result;
     }
 
     public ParseTree production(String ruleName)
@@ -438,15 +492,300 @@ public class VDMASTListener extends VDMBaseListener {
         astModuleList = new ASTModuleList();
     }
 
-    @Override
-    public void exitModule(VDMParser.ModuleContext ctx)
+    @Override 
+    public void enterModule(VDMParser.ModuleContext ctx)
     {
         assert ctx.modName != null && ctx.endName != null;
         if (!ctx.modName.getText().equals(ctx.endName.getText()))
 		{
 			//throwMessage(2049, "Expecting 'end " + ctx.modName.getText() + "'");
 		}
-        putNode(ctx, null);
+        setCurrentModule(ctx.modName.getText());
+    }
+
+    @Override
+    public void exitModule(VDMParser.ModuleContext ctx)
+    {
+        LexIdentifierToken moduleName = id2lexid((TerminalNode)ctx.modName, ctx, false);
+        //@NB like with caseExpr, the ASTModuleImports require information about the module (name) :-(
+		ASTModuleImports imports; 
+        if (ctx.sl_interface().import_definition_list() != null) 
+        {
+            ASTImportFromModuleList importsList = new ASTImportFromModuleList();
+            for(VDMParser.Import_definitionContext i : ctx.sl_interface().import_definition_list().import_definition())
+            {
+                importsList.add(getNode(i, ASTImportFromModule.class));    
+            }
+            imports = new ASTModuleImports(moduleName, importsList);
+        }
+        else 
+            imports = null;
+        //@NB if we allow empty exports as well, then you get a empty loop potential  for sl_interface()? 
+		ASTModuleExports exports = getNode(ctx.sl_interface().export_definition(), ASTModuleExports.class);
+        ASTDefinitionList defs = getListNode(ctx.module_body(), ASTDefinitionList.class);
+        putNode(ctx, new ASTModule(moduleName, imports, exports, defs));
+    }
+
+    /**
+     * Save the current "from" module name and create a "global" from module list.
+     * Each kind of import then contributes to the overall list in whichever order.
+     * The different exitImport_XXXX_signature are given to impose Java type safety 
+     * on each kind of import signature.  
+     */
+    @Override 
+    public void enterImport_definition(VDMParser.Import_definitionContext ctx)
+    {
+        // save where it is coming from, if different from all
+        fromModuleImport = id2lexid(ctx.IDENTIFIER(), ctx, false);
+        fromModuleImportList = new ASTImportList();
+        // set the current module as the "from" import so that LexNameToken get the from module in its name
+        savedCurrentModule = setCurrentModule(fromModuleImport.name);
+    }
+
+    @Override 
+    public void exitImport_definition(VDMParser.Import_definitionContext ctx)
+    {
+        assert fromModuleImportList != null && fromModuleImportList.isEmpty() && fromModuleImport != null;
+        if (ctx.import_module_signature().SLK_all() != null)
+        {
+            assert fromModuleImport.name.equals(currentModule);
+            LexNameToken all = new LexNameToken(currentModule, "all", token2loc(ctx.import_module_signature().SLK_all()));
+            fromModuleImportList.add(new ASTImportAll(all));
+        }
+        else 
+        {
+            assert ctx.import_module_signature().import_signature() != null && fromModuleImport.name.equals(ctx.IDENTIFIER().getText());
+            // because of fromName dependency and multiple kinds of imports, require saving state on entry
+            for(VDMParser.Import_signatureContext i : ctx.import_module_signature().import_signature())
+            {
+                fromModuleImportList.addAll(getListNode(i, ASTImportList.class));
+            }
+        }
+        putNode(ctx, new ASTImportFromModule(fromModuleImport, fromModuleImportList));
+        // restore the saveed module to be current after import processing
+        setCurrentModule(savedCurrentModule);
+        savedCurrentModule = null;
+    }
+
+    @Override 
+    public void exitImport_types_signature(VDMParser.Import_types_signatureContext ctx)
+    {
+        assert fromModuleImport != null;
+        ASTImportList importList = new ASTImportList();
+        for(VDMParser.Type_importContext i : ctx.type_import())
+        {
+            importList.add(getNode(i, ASTImportedType.class));
+        }
+        putListNode(ctx, importList);
+    }
+
+    @Override 
+    public void exitNamedImport(VDMParser.NamedImportContext ctx)
+    {
+        assert fromModuleImport != null;
+        // here the NameContext for ctx.tname wil have LexNameToken with fromModuleImport.name
+        LexNameToken tname = getNode(ctx.tname, LexNameToken.class);
+        //@NB renamed module allows for any wacky name from the LRM? Will enforce same module too! 
+        LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
+        assert tname.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
+        putNode(ctx, new ASTImportedType(tname, renamed));
+    }
+
+    @Override 
+    public void exitTypeDefinitionImport(VDMParser.TypeDefinitionImportContext ctx)
+    {
+        assert fromModuleImport != null;
+        ASTTypeDefinition tdef = getNode(ctx.type_definition(), ASTTypeDefinition.class);
+        //@NB renamed module allows for any wacky name from the LRM? Will enforce same module too! 
+        LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
+        assert tdef.name.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
+        putNode(ctx, new ASTImportedType(tdef, renamed));
+    }
+
+    @Override 
+    public void exitImport_values_signature(VDMParser.Import_values_signatureContext ctx)
+    {
+        assert fromModuleImport != null;
+        ASTImportList importList = new ASTImportList();
+        for(VDMParser.Value_importContext i : ctx.value_import())
+        {
+            importList.add(getNode(i, ASTImportedValue.class));
+        }
+        putListNode(ctx, importList);
+    }
+
+    @Override
+    public void exitValue_import(VDMParser.Value_importContext ctx)
+    {
+        assert fromModuleImport != null;
+        LexNameToken vname = getNode(ctx.vname, LexNameToken.class);
+        ASTType type = ctx.type() != null ? getNode(ctx.type(), ASTType.class) : null;
+        LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
+        assert vname.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
+        putNode(ctx, new ASTImportedValue(vname, type, renamed));
+    }
+
+    @Override 
+    public void exitImport_functions_signature(VDMParser.Import_functions_signatureContext ctx)
+    {
+        assert fromModuleImport != null;
+        ASTImportList importList = new ASTImportList();
+        for(VDMParser.Function_importContext i : ctx.function_import())
+        {
+            importList.add(getNode(i, ASTImportedFunction.class));
+        }
+        putListNode(ctx, importList);
+    }
+
+    @Override 
+    public void exitFunction_import(VDMParser.Function_importContext ctx)
+    {
+        assert fromModuleImport != null;
+        LexNameToken fname = getNode(ctx.fname, LexNameToken.class);
+        LexNameList tvars = ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), LexNameList.class) : null;
+        ASTFunctionType ftype = ctx.function_type() != null ? getNode(ctx.function_type(), ASTFunctionType.class) : null;
+        LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
+        assert fname.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
+        putNode(ctx, new ASTImportedFunction(fname, ftype, tvars, renamed));
+    }
+
+    @Override 
+    public void exitImport_operations_signature(VDMParser.Import_operations_signatureContext ctx)
+    {
+        assert fromModuleImport != null;
+        ASTImportList importList = new ASTImportList();
+        for(VDMParser.Operation_importContext i : ctx.operation_import())
+        {
+            importList.add(getNode(i, ASTImportedOperation.class));
+        }
+        putListNode(ctx, importList);
+    }
+
+    @Override
+    public void exitOperation_import(VDMParser.Operation_importContext ctx)
+    {
+        assert fromModuleImport != null;
+        LexNameToken oname = getNode(ctx.oname, LexNameToken.class);
+        ASTOperationType otype = ctx.operation_type() != null ? getNode(ctx.operation_type(), ASTOperationType.class) : null;
+        LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
+        assert oname.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
+        putNode(ctx, new ASTImportedOperation(oname, otype, renamed));
+    }
+
+    @Override 
+    public void enterExport_definition(VDMParser.Export_definitionContext ctx)
+    {
+        moduleExportList = new ASTExportList();
+    }
+
+    @Override 
+    public void exitExport_definition(VDMParser.Export_definitionContext ctx)
+    {
+        assert moduleExportList != null && moduleExportList.isEmpty();
+        if (ctx.export_module_signature().SLK_all() != null)
+        {
+            //@NB no need for a LexNameToken all? 
+            moduleExportList.add(new ASTExportAll(token2loc(ctx.export_module_signature().SLK_all())));
+        }
+        else 
+        {
+            assert ctx.export_module_signature().export_signature() != null;
+            // because of multiple kinds of exports, require saving state on entry
+            for(VDMParser.Export_signatureContext i : ctx.export_module_signature().export_signature())
+            {
+                moduleExportList.addAll(getListNode(i, ASTExportList.class));
+            }
+        }
+        putNode(ctx, new ASTModuleExports(moduleExportList));
+    }
+
+    @Override 
+    public void exitExport_types_signature(VDMParser.Export_types_signatureContext ctx)
+    {
+        //TODO arguably I could add to moduleExportList directly...
+        // cannot have a single export_signature type because don't have access to the inner lists
+        ASTExportList exportList = new ASTExportList();
+        for(VDMParser.Type_exportContext i : ctx.type_export())
+        {
+            exportList.add(getNode(i, ASTExportedType.class));
+        }
+        putListNode(ctx, exportList);
+    }
+
+    @Override 
+    public void exitType_export(VDMParser.Type_exportContext ctx)
+    {
+        putNode(ctx, new ASTExportedType(getNode(ctx.name(), LexNameToken.class), ctx.SLK_struct() != null));
+    }
+
+    @Override 
+    public void exitExport_values_signature(VDMParser.Export_values_signatureContext ctx)
+    {
+        ASTExportList exportList = new ASTExportList();
+        for(VDMParser.Value_signatureContext i : ctx.value_signature())
+        {
+            exportList.add(getNode(i, ASTExportedValue.class));
+        }
+        putListNode(ctx, exportList);
+    }
+
+    @Override 
+    public void exitValue_signature(VDMParser.Value_signatureContext ctx)
+    {
+        putNode(ctx, new ASTExportedValue(token2loc(ctx), 
+            getListNode(ctx.name_list(), LexNameList.class),
+            getNode(ctx.type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitExport_functions_signature(VDMParser.Export_functions_signatureContext ctx)
+    {
+        ASTExportList exportList = new ASTExportList();
+        for(VDMParser.Function_signatureContext i : ctx.function_signature())
+        {
+            exportList.add(getNode(i, ASTExportedFunction.class));
+        }
+        putListNode(ctx, exportList);
+    }
+
+    @Override 
+    public void exitFunction_signature(VDMParser.Function_signatureContext ctx)
+    {
+        putNode(ctx, new ASTExportedFunction(token2loc(ctx), 
+            getListNode(ctx.name_list(), LexNameList.class),
+            getNode(ctx.function_type(), ASTFunctionType.class),
+            ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), LexNameList.class) : null));
+    }
+
+    @Override 
+    public void exitExport_operations_signature(VDMParser.Export_operations_signatureContext ctx)
+    {
+        ASTExportList exportList = new ASTExportList();
+        for(VDMParser.Operation_signatureContext i : ctx.operation_signature())
+        {
+            exportList.add(getNode(i, ASTExportedOperation.class));
+        }
+        putListNode(ctx, exportList);
+    }
+
+    @Override 
+    public void exitOperation_signature(VDMParser.Operation_signatureContext ctx)
+    {
+        putNode(ctx, new ASTExportedOperation(token2loc(ctx), 
+            getListNode(ctx.name_list(), LexNameList.class),
+            getNode(ctx.operation_type(), ASTOperationType.class)));
+    }
+
+    @Override 
+    public void exitModule_body(VDMParser.Module_bodyContext ctx)
+    {
+        //TODO these list methods seem prime for refactoring?
+        ASTDefinitionList defs = new ASTDefinitionList();
+        for(VDMParser.Sl_definition_blockContext d : ctx.sl_definition_block())
+        {
+            defs.add(getNode(d, ASTDefinition.class));
+        }
+        putListNode(ctx, defs);
     }
 
 //------------------------
@@ -499,7 +838,8 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitTypeVariable(VDMParser.TypeVariableContext ctx) 
     {
-        putNode(ctx, new ASTParameterType(id2lexname(id2lexid(ctx.type_variable().IDENTIFIER(), ctx, false))));
+        //@NB just like with "name" for expression x lexnametoken, we need two productions for type_variable as lexnametoken as well as a ASTType
+        putNode(ctx, new ASTParameterType(getNode(ctx.type_variable(), LexNameToken.class)));
     }
     
     @Override 
@@ -557,10 +897,52 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitUnionType(VDMParser.UnionTypeContext ctx) 
     {
+        ASTTypeSet types = new ASTTypeSet();
+        for(VDMParser.TypeContext t : ctx.type())
+        {
+            types.add(getNode(t, ASTType.class));
+        }
+        putNode(ctx, new ASTUnionType(token2loc(ctx), types));
     }
     
-    @Override public void exitBasicType(VDMParser.BasicTypeContext ctx) 
+    @Override 
+    public void exitBasicType(VDMParser.BasicTypeContext ctx) 
     {
+        ASTType type;
+        LexLocation location = token2loc(ctx);
+        com.fujitsu.vdmj.lex.Token token = com.fujitsu.vdmj.lex.Token.lookup(ctx.getText(), dialect);
+        if (token == null) 
+            throw new IllegalStateException("Cannot have this basic type = " + ctx.getText());
+        switch (token)
+        {
+            case BOOL:
+                type = new ASTBooleanType(location);
+                break;
+            case NAT:
+                type = new ASTNaturalType(location);
+                break;
+            case NAT1:
+                type = new ASTNaturalOneType(location);
+                break;
+            case INT:
+                type = new ASTIntegerType(location);
+                break;
+            case RAT:
+                type = new ASTRationalType(location);
+                break;
+            case REAL:
+                type = new ASTRealType(location);
+                break;
+            case CHAR:
+                type = new ASTCharacterType(location);
+                break;
+            case TOKEN:
+                type = new ASTTokenType(location);
+                break;
+            default:
+                throw new IllegalStateException("Cannot have this basic type = " + ctx.getText());
+        }
+        putNode(ctx, type);
     }
     
     @Override 
@@ -613,6 +995,14 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
+    public void exitOperation_type(VDMParser.Operation_typeContext ctx)
+    {
+        putNode(ctx, new ASTOperationType(token2loc(ctx), 
+            productExpand(getNode(ctx.params, ASTType.class)),
+            getNode(ctx.rtype, ASTType.class)));
+    }
+
+    @Override 
     public void exitVoidType(VDMParser.VoidTypeContext ctx)
     {
         putNode(ctx, new ASTVoidType(token2loc(ctx)));
@@ -625,6 +1015,36 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, getNode(ctx.type(), ASTType.class));
     }
 
+    @Override 
+    public void exitType_list(VDMParser.Type_listContext ctx)
+    {
+        ASTTypeList result = new ASTTypeList();
+        for(VDMParser.TypeContext t : ctx.type())
+        {
+            result.add(getNode(t, ASTType.class));
+        }
+        assert !result.isEmpty();
+        putListNode(ctx, result);        
+    }
+
+    @Override 
+    public void exitType_variable_list(VDMParser.Type_variable_listContext ctx)
+    {
+        LexNameList result = new LexNameList();
+        for(VDMParser.Type_variableContext t : ctx.type_variable())
+        {
+            result.add(getNode(t, LexNameToken.class));
+        }
+        assert !result.isEmpty();
+        putListNode(ctx, result);        
+    }
+
+    @Override 
+    public void exitType_variable(VDMParser.Type_variableContext ctx)
+    {
+        putNode(ctx, id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false)));
+    }
+    
 //------------------------
 // A.5 Expressions
 //------------------------
@@ -1476,7 +1896,7 @@ public class VDMASTListener extends VDMBaseListener {
             getListNode(ctx.record_constructor().expression_list(), ASTExpressionList.class) : new ASTExpressionList();
         LexNameToken typename = getNode(ctx.record_constructor().tight_record_name(), LexNameToken.class);        
         LexNameToken mktypeName = getMkTypeName(typename);
-        com.fujitsu.vdmj.lex.Token type = com.fujitsu.vdmj.lex.Token.lookup(mktypeName.name, Dialect.VDM_SL);
+        com.fujitsu.vdmj.lex.Token type = com.fujitsu.vdmj.lex.Token.lookup(mktypeName.name, dialect);
         if (type != null)
         {
             if (exprs.size() != 1)
