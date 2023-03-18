@@ -36,7 +36,12 @@ import com.fujitsu.vdmj.Settings;
 import com.fujitsu.vdmj.ast.ASTNode;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
+import com.fujitsu.vdmj.ast.definitions.ASTEqualsDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTExplicitFunctionDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTImplicitFunctionDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTLocalDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTTypeDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTValueDefinition;
 import com.fujitsu.vdmj.ast.expressions.*;
 import com.fujitsu.vdmj.ast.lex.LexBooleanToken;
 import com.fujitsu.vdmj.ast.lex.LexCharacterToken;
@@ -106,6 +111,7 @@ import com.fujitsu.vdmj.ast.types.ASTFieldList;
 import com.fujitsu.vdmj.ast.types.ASTFunctionType;
 import com.fujitsu.vdmj.ast.types.ASTInMapType;
 import com.fujitsu.vdmj.ast.types.ASTIntegerType;
+import com.fujitsu.vdmj.ast.types.ASTInvariantType;
 import com.fujitsu.vdmj.ast.types.ASTMapType;
 import com.fujitsu.vdmj.ast.types.ASTNamedType;
 import com.fujitsu.vdmj.ast.types.ASTNaturalOneType;
@@ -132,6 +138,7 @@ import com.fujitsu.vdmj.ast.types.ASTUnresolvedType;
 import com.fujitsu.vdmj.ast.types.ASTVoidType;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdmantlr.generated.VDMBaseListener;
 //import vdmantlr.generated.VDMLex; which one?
@@ -147,9 +154,6 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * 
  * 
  *     //TODO
-    //equals_definition_list
-    //local_definition_list
-    //ASTTypeDefinition
     //all the isVDMPP()? isVDMRT()? semantic predicate cases
  ******************
  * LRM issues
@@ -175,6 +179,8 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * 19. Imported function AST receives type variables after function type
  * 20. export XXXX_signature should be called XXX_export (like type_export, instea of value_signature)!
  * 21. ASTExportedFunction optional type parameters come after function type?
+ * 22. ASTModule named DEFAULT is allowed; maybe add a warning?
+ * 23. invariant_definition renamed to instance_variable_invariant_definition for clarity on what invariant that is? Similar for invariant on type invaraints? 
  */
 
 public class VDMASTListener extends VDMBaseListener {
@@ -274,7 +280,6 @@ public class VDMASTListener extends VDMBaseListener {
     private final ParseTreeProperty<ASTNode> nodes;
     private final ParseTreeProperty<Vector<? extends ASTNode>> lists;
     private final VDMParser parser;
-    protected ASTModuleList astModuleList;
     private final File currentFile;
     private String currentModule;
     private String savedCurrentModule;
@@ -283,6 +288,7 @@ public class VDMASTListener extends VDMBaseListener {
     private ASTExportList moduleExportList;
     private final Dialect dialect;
     private SymbolicLiteralType littype; 
+    private final ASTModuleList astModuleList;
 
     public VDMASTListener(String fileName) throws IOException
     {
@@ -318,7 +324,7 @@ public class VDMASTListener extends VDMBaseListener {
         //ParserATNSimulator.debug = true;
         nodes = new ParseTreeProperty<ASTNode>();
         lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
-        astModuleList = null;
+        astModuleList = new ASTModuleList();
     }
 
     private String setCurrentModule(String mod)
@@ -485,11 +491,31 @@ public class VDMASTListener extends VDMBaseListener {
         return id2lexid(id, ctx, 0, old);
     }
 
-    //ASTModule
-	@Override 
-    public void enterSl_document(VDMParser.Sl_documentContext ctx) 
+//------------------------
+// A.1.1 Modules
+//------------------------
+
+    @Override 
+    public void exitSLModules(VDMParser.SLModulesContext ctx)
     {
-        astModuleList = new ASTModuleList();
+        for(VDMParser.ModuleContext m : ctx.module())
+        {
+            astModuleList.add(getNode(m, ASTModule.class));
+        }
+        putListNode(ctx, astModuleList);
+    } 
+
+    @Override 
+    public void exitSLFlatModule(VDMParser.SLFlatModuleContext ctx)
+    {
+        ASTDefinitionList defs = new ASTDefinitionList();
+        for(VDMParser.Sl_definition_blockContext d : ctx.sl_definition_block())
+        {
+            defs.addAll(getListNode(d, ASTDefinitionList.class));
+        }
+        ASTModule flat = new ASTModule(currentFile, defs);
+        astModuleList.add(flat);
+        putNode(ctx, flat);
     }
 
     @Override 
@@ -500,6 +526,10 @@ public class VDMASTListener extends VDMBaseListener {
 		{
 			//throwMessage(2049, "Expecting 'end " + ctx.modName.getText() + "'");
 		}
+        if (ctx.modName.getText().equals("DEFAULT"))
+        {
+            //invalid name for module? or at least warn about that
+        }
         setCurrentModule(ctx.modName.getText());
     }
 
@@ -779,14 +809,18 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitModule_body(VDMParser.Module_bodyContext ctx)
     {
-        //TODO these list methods seem prime for refactoring?
+        assert currentModule != null && !currentModule.equals("DEFAULT");
         ASTDefinitionList defs = new ASTDefinitionList();
         for(VDMParser.Sl_definition_blockContext d : ctx.sl_definition_block())
         {
-            defs.add(getNode(d, ASTDefinition.class));
+            defs.addAll(getListNode(d, ASTDefinitionList.class));
         }
         putListNode(ctx, defs);
     }
+
+//------------------------
+// A.4 Definitions
+//------------------------
 
 //------------------------
 // A.4.1 Type definitions
