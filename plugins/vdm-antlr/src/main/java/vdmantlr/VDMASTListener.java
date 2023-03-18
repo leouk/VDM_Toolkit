@@ -536,7 +536,7 @@ public class VDMASTListener extends VDMBaseListener {
     @Override
     public void exitModule(VDMParser.ModuleContext ctx)
     {
-        LexIdentifierToken moduleName = id2lexid((TerminalNode)ctx.modName, ctx, false);
+        LexIdentifierToken moduleName = id2lexid(ctx.IDENTIFIER(0), ctx, false);//id2lexid((TerminalNode)ctx.modName, ctx, false);
         //@NB like with caseExpr, the ASTModuleImports require information about the module (name) :-(
 		ASTModuleImports imports; 
         if (ctx.sl_interface().import_definition_list() != null) 
@@ -2275,7 +2275,7 @@ public class VDMASTListener extends VDMBaseListener {
         }
         catch (NumberFormatException e)
         {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Could not convert " + s + " to a float");
         }
         return result;
     }
@@ -2654,7 +2654,7 @@ public class VDMASTListener extends VDMBaseListener {
         }
         else 
             // recognition exception might be null? 
-            throw ctx.exception != null ? ctx.exception : new UnsupportedOperationException();
+            throw ctx.exception != null ? ctx.exception : new UnsupportedOperationException("Invalid type bind " + ctx.toInfoString(parser));
     }
 
     @Override
