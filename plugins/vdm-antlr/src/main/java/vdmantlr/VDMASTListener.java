@@ -850,21 +850,22 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
-    public void exitSl_type_definitions(VDMParser.Sl_type_definitionsContext ctx)
+    //public void exitSl_type_definitions(VDMParser.Sl_type_definitionsContext ctx)
+    public void exitTypeDefinitions(VDMParser.TypeDefinitionsContext ctx)
     {
-        putListNode(ctx, getListNode(ctx.type_definition_list(), ASTTypeList.class));
+        putListNode(ctx, getListNode(ctx.sl_type_definitions().type_definition_list(), ASTDefinitionList.class));
         // clear the type definition list from the store, given there might be others 
-        lists.removeFrom(ctx.type_definition_list());
+        lists.removeFrom(ctx.sl_type_definitions().type_definition_list());
     }
     
     @Override 
     public void exitType_definition_list(VDMParser.Type_definition_listContext ctx)
     {
-        ASTTypeList result = new ASTTypeList();
+        ASTDefinitionList result = new ASTDefinitionList();
         for(VDMParser.Type_definitionContext t : ctx.type_definition())
         {
             // @TLD, must be an invariant type (e.g. Named or Record types only)
-            result.add(getNode(t, ASTInvariantType.class));
+            result.add(getNode(t, ASTTypeDefinition.class));
         }
         putListNode(ctx, result);        
     }
@@ -1192,17 +1193,17 @@ public class VDMASTListener extends VDMBaseListener {
     private NameScope nameScope = null; 
     
     @Override 
-    public void enterSl_value_definitions(VDMParser.Sl_value_definitionsContext ctx)
+    public void enterValueDefinitions(VDMParser.ValueDefinitionsContext ctx)
     {
         nameScope = NameScope.GLOBAL;
     }
 
     @Override 
-    public void exitSl_value_definitions(VDMParser.Sl_value_definitionsContext ctx)
+    public void exitValueDefinitions(VDMParser.ValueDefinitionsContext ctx)
     {
         assert nameScope != null;
         ASTDefinitionList defs = new ASTDefinitionList();
-        for(VDMParser.Value_definitionContext v : ctx.value_definition())
+        for(VDMParser.Value_definitionContext v : ctx.sl_value_definitions().value_definition())
         {
             defs.add(getNode(v, ASTValueDefinition.class));
         }

@@ -319,13 +319,14 @@ pp_definition_block
     | instance_variable_definitions 
     ;
 
+//TODO avoid sych layering or if there, add named prodcutions for simplicity?
 sl_definition_block
-    : sl_type_definitions
-    | state_definition 
-    | sl_value_definitions 
-    | sl_function_definitions
-    | sl_operation_definitions
-    | traces_definitions
+    : sl_type_definitions       #TypeDefinitions
+    | state_definition          #StateDefinition
+    | sl_value_definitions      #ValueDefinitions
+    | sl_function_definitions   #FunctionDefinitions
+    | sl_operation_definitions  #OperationDefinitions
+    | traces_definitions        #TracesDefinitions
     ;
 
 //------------------------
