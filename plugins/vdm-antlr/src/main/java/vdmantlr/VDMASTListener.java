@@ -1074,6 +1074,16 @@ public class VDMASTListener extends VDMBaseListener {
         nodes.removeFrom(ctx.bracketed_expression().expression());
     }
 
+    @Override 
+    public void exitLocal_definition(VDMParser.Local_definitionContext ctx)
+    {
+        if (ctx.value_definition() != null) 
+            putNode(ctx, getNode(ctx.value_definition(), ASTValueDefinition.class));
+        else 
+            // must be either ASTImplicit/ExplicitFunctionDefinition
+            putNode(ctx, getNode(ctx.function_definition(), ASTDefinition.class));
+    }
+
     @Override
     public void exitLetExpr(VDMParser.LetExprContext ctx)
     {
@@ -1280,6 +1290,18 @@ public class VDMASTListener extends VDMBaseListener {
 // A.5.6 Quantified Expressions
 //------------------------
 
+    @Override 
+    public void exitQuantifiedExpr(VDMParser.QuantifiedExprContext ctx)
+    {
+        //TODO another concrete example of having multiple layers of grammar becoming convoluted
+        if (ctx.quantified_expression().all_expression() != null)
+            putNode(ctx, getNode(ctx.quantified_expression().all_expression(), ASTExpression.class));
+        else if (ctx.quantified_expression().exists_expression() != null)
+            putNode(ctx, getNode(ctx.quantified_expression().exists_expression(), ASTExpression.class));
+        else 
+            putNode(ctx, getNode(ctx.quantified_expression().exists_unique_expression(), ASTExpression.class));
+    }
+
     @Override
     public void exitAll_expression(VDMParser.All_expressionContext ctx)
     {
@@ -1304,12 +1326,16 @@ public class VDMASTListener extends VDMBaseListener {
             getNode(ctx.expression(), ASTExpression.class)));
     }
 
+    /**
+     * Concrete example where having the inner productions explicitly named can cause confusion!
+     */
     @Override
-    public void exitIota_expression(VDMParser.Iota_expressionContext ctx)
+    //public void exitIota_expression(VDMParser.Iota_expressionContext ctx)
+    public void exitIotaExpr(VDMParser.IotaExprContext ctx)
     {
         putNode(ctx, new ASTIotaExpression(token2loc(ctx), 
-            getNode(ctx.bind(), ASTBind.class),
-            getNode(ctx.expression(), ASTExpression.class)));
+            getNode(ctx.iota_expression().bind(), ASTBind.class),
+            getNode(ctx.iota_expression().expression(), ASTExpression.class)));
     }
 
     @Override
@@ -2413,11 +2439,18 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override
+    //TODO another example of possible confusion; in this case we must have both! Given how they are used in bind and type_bind_list!
     public void exitType_bind(VDMParser.Type_bindContext ctx)
     {
-        ASTPattern p = getNode(ctx.pattern(), ASTPattern.class);
-        ASTType type= getNode(ctx.type(), ASTType.class);
+        ASTPattern p = getNode(ctx./*type_bind().*/pattern(), ASTPattern.class);
+        ASTType type= getNode(ctx./*type_bind().*/type(), ASTType.class);
         putNode(ctx, new ASTTypeBind(p, type));
+    }
+ 
+    @Override
+    public void exitTypeBind(VDMParser.TypeBindContext ctx)
+    {
+        putNode(ctx, getNode(ctx.type_bind(), ASTTypeBind.class));
     }
 
     @Override 
