@@ -47,6 +47,15 @@
         },
         {
             "type": "java",
+            "name": "ANTLR AST plugin test",
+            "request": "launch",
+            "mainClass": "vdmantlr.ANTLRASTPlugin",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=vdmantlr.ANTLRASTPlugin -Dvdmj.diag.max_stack=10",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
             "name": "Run ANTLR visitor in Java",
             "request": "launch",
             "mainClass": "vdmantlr.VDMASTVisitor",
