@@ -879,6 +879,8 @@ public class VDMASTListener extends VDMBaseListener {
     private ASTPattern typeOrdLHSPattern      = null;
     private ASTPattern typeOrdRHSPattern      = null;
     private ASTExpression typeOrdExpression   = null;
+    private ASTPattern initPattern            = null;
+    private ASTExpression initExpression      = null;
 
     @Override 
     public void enterType_definition(VDMParser.Type_definitionContext ctx)
@@ -898,7 +900,8 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitType_definition(VDMParser.Type_definitionContext ctx)
     {
         assert currentType != null;
-        // invariant type definition part gives an ASTInvariantType; the specification parts are collected separately (if at all)        
+        // invariant type definition part gives an ASTInvariantType; the specification parts are collected separately (if at all)     
+        //assert typeInvPattern != null iff typeInvExpression != null etc for others?     
         putNode(ctx, new ASTTypeDefinition(currentType, 
             getNode(ctx.invariant_type_definition(), ASTInvariantType.class),
             typeInvPattern, typeInvExpression, typeEqLHSPattern, typeEqRHSPattern, typeEqExpression, 
@@ -931,24 +934,24 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitType_invariant(VDMParser.Type_invariantContext ctx)
     {
-        typeInvPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
-        typeInvExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+        typeInvPattern = getNode(ctx.pattern(), ASTPattern.class);
+        typeInvExpression = getNode(ctx.expression(), ASTExpression.class);
     }
 
     @Override 
     public void exitEq_clause(VDMParser.Eq_clauseContext ctx)
     {
-        typeEqLHSPattern = getNode(ctx.pattern(), ASTPattern.class);
-        typeEqRHSPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
-        typeEqExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+        typeEqLHSPattern = getNode(ctx.lhs, ASTPattern.class);
+        typeEqRHSPattern = getNode(ctx.rhs, ASTPattern.class);
+        typeEqExpression = getNode(ctx.expression(), ASTExpression.class);
     }
 
     @Override 
     public void exitOrd_clause(VDMParser.Ord_clauseContext ctx)
     {
-        typeOrdLHSPattern = getNode(ctx.pattern(), ASTPattern.class);
-        typeOrdRHSPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
-        typeOrdExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+        typeOrdLHSPattern = getNode(ctx.lhs, ASTPattern.class);
+        typeOrdRHSPattern = getNode(ctx.rhs, ASTPattern.class);
+        typeOrdExpression = getNode(ctx.expression(), ASTExpression.class);
     }
 
     @Override 
@@ -1182,9 +1185,38 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
 //------------------------
-// A.4.2 State definition
+// A.4.2 VDM-SL State definition
 //------------------------
-//TODO
+
+    @Override 
+    public void enterStateDefinition(VDMParser.StateDefinitionContext ctx)
+    {
+        typeInvPattern = null;
+        typeInvExpression = null;
+        initPattern = null;
+        initExpression = null;
+    }
+
+    @Override 
+    public void exitInitialisation(VDMParser.InitialisationContext ctx)
+    {
+        initPattern = getNode(ctx.pattern(), ASTPattern.class);
+        initExpression = getNode(ctx.expression(), ASTExpression.class);
+    }
+
+    @Override
+    public void exitStateDefinition(VDMParser.StateDefinitionContext ctx)
+    {
+        ASTFieldList fields = new ASTFieldList();
+        for(VDMParser.FieldContext f : ctx.state_definition().field())
+        {
+            fields.add(getNode(f, ASTField.class));
+        }
+        //If null, the enter will sort it out; otherwise, the exitType_invariant will have values. Nice
+        //if (ctx.state_definition().type_invariant() != null)
+        putNode(ctx, new ASTStateDefinition(id2lexname(id2lexid(ctx.state_definition().IDENTIFIER(), ctx, false)), 
+            fields, typeInvPattern, typeInvExpression, initPattern, initExpression));
+    }
 
 //------------------------
 // A.4.3 SL Values definitions

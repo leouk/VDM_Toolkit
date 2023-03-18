@@ -359,12 +359,14 @@ type_definition_list
 type_definition 
     : IDENTIFIER invariant_type_definition 
     ;
+    //TODO This is also okay, but the above seemed better? 
+    // : IDENTIFIER O_EQUAL type type_specification    #NamedType
+    // | IDENTIFIER SEP_rec field+ type_specification  #RecordType 
+    // ;
 
 invariant_type_definition
     : O_EQUAL type type_specification    #NamedType
-   // | O_EQUAL type
     | SEP_rec field+ type_specification  #RecordType
-   // | SEP_rec field+
     ;
 
 //@LF will this generate empty production and potential conflict? 
@@ -493,21 +495,17 @@ type_variable
     : '@' IDENTIFIER
     ;
 
+// Do not reuse pattern SEP_def as this will create context sensitive productions!
 type_invariant 
-    : SLK_inv invariant_initial_function 
+    : SLK_inv pattern SEP_def expression 
     ;
 
 eq_clause
-    : SLK_eq pattern O_EQUAL invariant_initial_function
+    : SLK_eq lhs=pattern O_EQUAL rhs=pattern SEP_def expression
     ;
 
 ord_clause
-    : SLK_ord pattern O_LT invariant_initial_function
-    ;
-
-//@NB refactored this one given equivalence
-invariant_initial_function 
-    : pattern SEP_def expression
+    : SLK_ord lhs=pattern O_LT rhs=pattern SEP_def expression
     ;
 
 //------------------------
@@ -519,7 +517,7 @@ state_definition
     ;
 
 initialisation 
-    : SLK_init invariant_initial_function
+    : SLK_init pattern SEP_def expression 
     ;
 
 //------------------------
