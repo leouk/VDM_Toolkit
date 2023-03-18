@@ -1145,7 +1145,48 @@ public class VDMASTListener extends VDMBaseListener {
     {
         putNode(ctx, id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false)));
     }
+
+//------------------------
+// A.4.2 State definition
+//------------------------
+//TODO
+
+//------------------------
+// A.4.3 SL Values definitions
+//------------------------
+
+    private NameScope nameScope = null; 
     
+    @Override 
+    public void enterSl_value_definitions(VDMParser.Sl_value_definitionsContext ctx)
+    {
+        nameScope = NameScope.GLOBAL;
+    }
+
+    @Override 
+    public void exitSl_value_definitions(VDMParser.Sl_value_definitionsContext ctx)
+    {
+        assert nameScope != null;
+        ASTDefinitionList defs = new ASTDefinitionList();
+        for(VDMParser.Value_definitionContext v : ctx.value_definition())
+        {
+            defs.add(getNode(v, ASTValueDefinition.class));
+        }
+        putListNode(ctx, defs);
+        nameScope = null;
+    }
+
+    @Override 
+    public void exitValue_definition(VDMParser.Value_definitionContext ctx)
+    {
+        // Name scope must be set at TLD (global) or in let-defs (local)
+        assert nameScope != null;
+        putNode(ctx, new ASTValueDefinition(nameScope, 
+            getNode(ctx.pattern(), ASTPattern.class), 
+            ctx.type() != null ? getNode(ctx.type(), ASTType.class) : null, 
+            getNode(ctx.expression(), ASTExpression.class)));
+    }
+
 //------------------------
 // A.5 Expressions
 //------------------------
@@ -1176,6 +1217,28 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
+    public void enterLocal_definition_list(VDMParser.Local_definition_listContext ctx)
+    {
+        nameScope = NameScope.LOCAL;
+    }
+
+    @Override 
+    public void exitLocal_definition_list(VDMParser.Local_definition_listContext ctx)
+    {
+        assert nameScope != null;
+        ASTDefinitionList defs = new ASTDefinitionList();
+        for(VDMParser.Local_definitionContext ldef : ctx.local_definition())
+        {
+            ASTDefinition def = getNode(ldef, ASTDefinition.class);
+            assert def instanceof ASTValueDefinition || def instanceof ASTExplicitFunctionDefinition || def instanceof ASTImplicitFunctionDefinition;
+            //@NB ASTLocalDefinition would be nice for the above as super classes. IT doesn't get constructed ever in VDMJ? But has a line in ast-tc.mappings?
+            defs.add(def);
+        }
+        putListNode(ctx, defs);
+        nameScope = null;
+    }
+
+    @Override 
     public void exitLocal_definition(VDMParser.Local_definitionContext ctx)
     {
         if (ctx.value_definition() != null) 
@@ -1200,6 +1263,42 @@ public class VDMASTListener extends VDMBaseListener {
             getNode(ctx.let_be_expression().multiple_bind(), ASTMultipleBind.class),
             ctx.let_be_expression().stexpr != null ? getNode(ctx.let_be_expression().stexpr, ASTExpression.class) : null,
             getNode(ctx.let_be_expression().inexpr, ASTExpression.class)));
+    }
+
+    @Override 
+    public void exitEquals_definition_list(VDMParser.Equals_definition_listContext ctx)
+    {
+        ASTDefinitionList defs = new ASTDefinitionList();
+        for(VDMParser.Equals_definitionContext eqdef : ctx.equals_definition())
+        {
+            defs.add(getNode(eqdef, ASTEqualsDefinition.class));
+        }
+        putListNode(ctx, defs);        
+    }
+
+    @Override 
+    public void exitEquals_definition(VDMParser.Equals_definitionContext ctx)
+    {
+        LexLocation location = token2loc(ctx);
+        ASTExpression expr = getNode(ctx.expression(), ASTExpression.class);
+
+        // this is complicated. See VDMJ's DefinitionReader.readEqualsDefinition!
+        ASTEqualsDefinition result; 
+        ASTNode patternBind = getNode(ctx.pattern_bind(), ASTNode.class);
+        assert patternBind instanceof ASTPattern || patternBind instanceof ASTBind;
+        if (patternBind instanceof ASTPattern)
+        {
+            result = new ASTEqualsDefinition(location, (ASTPattern)patternBind, expr);
+        }
+        else if (patternBind instanceof ASTTypeBind)
+        {
+            result = new ASTEqualsDefinition(location, (ASTTypeBind)patternBind, expr);
+        }
+        else // set or seq bind
+        {
+            result = new ASTEqualsDefinition(location, (ASTBind)patternBind, expr);
+        }
+        putNode(ctx, result);
     }
 
     @Override
