@@ -152,13 +152,18 @@ public class ANTLRASTPlugin extends ASTPluginSL
                     antlrVDMString = listener.toVDMString(t);
                     PluginConsole.println("VDM=" + antlrVDMString +"\n");
                 }
-                if (stdParse && ruleName.equals("sl_document"))
+                if (stdParse)
                 {
-                    ModuleReader mr = new ModuleReader(new LexTokenReader(file, Dialect.VDM_SL, Settings.filecharset));
-                    ASTModuleList list = mr.readModules();
-                    String stdString = list.toString();
-                    PluginConsole.println("StdVDM=" + stdString +"\n");
-                    PluginConsole.println("StdVDM equal ANTLRVDM? " + antlrVDMString.equals(stdString));
+                    if (ruleName.equals("sl_document"))
+                    {
+                        ModuleReader mr = new ModuleReader(new LexTokenReader(file, Dialect.VDM_SL, Settings.filecharset));
+                        ASTModuleList list = mr.readModules();
+                        String stdString = list.toString();
+                        PluginConsole.println("StdVDM=" + stdString +"\n");
+                        PluginConsole.println("StdVDM equal ANTLRVDM? " + antlrVDMString.equals(stdString));
+                    }
+                    else 
+                        PluginConsole.fail("VDMJ parsing *must* start from \"sl_document\" rule name! Found " + ruleName);
                 }
                 astModuleList.addAll(listener.getAST());
 			}
