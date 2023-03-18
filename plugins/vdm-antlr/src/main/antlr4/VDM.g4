@@ -144,8 +144,8 @@ import VDMLex;
 //------------------------
 //TODO add {isVDMSL/PP/RT()}? semantic predicates 
 sl_document 
-    : module+ 
-    | sl_definition_block+
+    : module+               #SLModules 
+    | sl_definition_block+  #SLFlatModule
     ;
 
 //------------------------
@@ -360,15 +360,15 @@ type_definition
     ;
 
 invariant_type_definition
-    : O_EQUAL type type_specification
+    : O_EQUAL type type_specification    #NamedType
    // | O_EQUAL type
-    | SEP_rec field+ type_specification
+    | SEP_rec field+ type_specification  #RecordType
    // | SEP_rec field+
     ;
 
 //@LF will this generate empty production and potential conflict? 
 type_specification 
-    : invariant? eq_clause? ord_clause?
+    : type_invariant? eq_clause? ord_clause?
     ;
 
 // ANTLR4 allows left-recursive productions, so long as they have uniquely named 
@@ -492,7 +492,7 @@ type_variable
     : '@' IDENTIFIER
     ;
 
-invariant 
+type_invariant 
     : SLK_inv invariant_initial_function 
     ;
 
@@ -514,7 +514,7 @@ invariant_initial_function
 //------------------------
 
 state_definition 
-    : SLK_state IDENTIFIER SLK_of field+ invariant? initialisation? SLK_end SEP_scolon
+    : SLK_state IDENTIFIER SLK_of field+ type_invariant? initialisation? SLK_end SEP_scolon
     ;
 
 initialisation 
@@ -761,7 +761,7 @@ instance_variable_definitions
 
 instance_variable_definition
     : access_assignment_definition 
-    | invariant_definition
+    | instance_variable_invariant_definition
     ;
 
 access_assignment_definition
@@ -769,7 +769,7 @@ access_assignment_definition
       assignment_definition
     ;
 
-invariant_definition
+instance_variable_invariant_definition
     : SLK_inv expression
     ;
 
@@ -1499,7 +1499,7 @@ local_definition_list
     ;
 
 local_definition 
-    : value_definition
+    : value_definition    
     | function_definition
     ;
 

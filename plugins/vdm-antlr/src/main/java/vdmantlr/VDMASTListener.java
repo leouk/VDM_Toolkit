@@ -816,6 +816,107 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
+    public void exitSl_type_definitions(VDMParser.Sl_type_definitionsContext ctx)
+    {
+        putListNode(ctx, getListNode(ctx.type_definition_list(), ASTTypeList.class));
+        // clear the type definition list from the store, given there might be others 
+        lists.removeFrom(ctx.type_definition_list());
+    }
+    
+    @Override 
+    public void exitType_definition_list(VDMParser.Type_definition_listContext ctx)
+    {
+        ASTTypeList result = new ASTTypeList();
+        for(VDMParser.Type_definitionContext t : ctx.type_definition())
+        {
+            // @TLD, must be an invariant type (e.g. Named or Record types only)
+            result.add(getNode(t, ASTInvariantType.class));
+        }
+        putListNode(ctx, result);        
+    }
+
+    private LexNameToken currentType          = null;      
+    private ASTPattern typeInvPattern         = null;
+    private ASTExpression typeInvExpression   = null;
+    private ASTPattern typeEqLHSPattern       = null;
+    private ASTPattern typeEqRHSPattern       = null;
+    private ASTExpression typeEqExpression    = null;
+    private ASTPattern typeOrdLHSPattern      = null;
+    private ASTPattern typeOrdRHSPattern      = null;
+    private ASTExpression typeOrdExpression   = null;
+
+    @Override 
+    public void enterType_definition(VDMParser.Type_definitionContext ctx)
+    {
+        currentType = id2lexname(id2lexid(ctx.IDENTIFIER(), ctx, false));
+        typeInvPattern = null;
+        typeInvExpression = null;
+        typeEqLHSPattern = null;
+        typeEqRHSPattern = null;
+        typeEqExpression = null;
+        typeOrdLHSPattern = null;
+        typeOrdRHSPattern = null;
+        typeOrdExpression = null;
+    }
+
+    @Override 
+    public void exitType_definition(VDMParser.Type_definitionContext ctx)
+    {
+        assert currentType != null;
+        // invariant type definition part gives an ASTInvariantType; the specification parts are collected separately (if at all)        
+        putNode(ctx, new ASTTypeDefinition(currentType, 
+            getNode(ctx.invariant_type_definition(), ASTInvariantType.class),
+            typeInvPattern, typeInvExpression, typeEqLHSPattern, typeEqRHSPattern, typeEqExpression, 
+            typeOrdLHSPattern, typeOrdRHSPattern, typeOrdExpression));  
+    }
+
+    @Override 
+    public void exitNamedType(VDMParser.NamedTypeContext ctx)
+    {
+        assert currentType != null;
+        putNode(ctx, new ASTNamedType(currentType, getNode(ctx.type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitRecordType(VDMParser.RecordTypeContext ctx)
+    {
+        assert currentType != null;
+        ASTFieldList fields = new ASTFieldList();
+        for(VDMParser.FieldContext f : ctx.field())
+        {
+            fields.add(getNode(f, ASTField.class));
+        }
+        putNode(ctx, new ASTRecordType(currentType, fields, false));
+    }
+
+    /**
+     * invariant_initial_function is used in multiple productions. It's pattern might be the first or RHS (second) on eq/ord productions!
+     * To avoid confusion, don't have a exit for invariant_initial_function, but it's outer constituent parts instead!
+     */
+    @Override 
+    public void exitType_invariant(VDMParser.Type_invariantContext ctx)
+    {
+        typeInvPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
+        typeInvExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+    }
+
+    @Override 
+    public void exitEq_clause(VDMParser.Eq_clauseContext ctx)
+    {
+        typeEqLHSPattern = getNode(ctx.pattern(), ASTPattern.class);
+        typeEqRHSPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
+        typeEqExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+    }
+
+    @Override 
+    public void exitOrd_clause(VDMParser.Ord_clauseContext ctx)
+    {
+        typeOrdLHSPattern = getNode(ctx.pattern(), ASTPattern.class);
+        typeOrdRHSPattern = getNode(ctx.invariant_initial_function().pattern(), ASTPattern.class);
+        typeOrdExpression = getNode(ctx.invariant_initial_function().expression(), ASTExpression.class);
+    }
+
+    @Override 
     public void exitBracketedType(VDMParser.BracketedTypeContext ctx) 
     {
         putNode(ctx, getNode(ctx.bracketed_type().type(), ASTType.class));
