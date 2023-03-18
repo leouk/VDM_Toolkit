@@ -192,12 +192,13 @@ public class VDMASTListener extends VDMBaseListener {
     public static final String PAT_TEST = "./patternScenario/example.pat";
     public static final String MOD_TEST = "./vdmslScenario/SLText.vdmsl";
     public static final String TEST = MOD_TEST;
+    public static final boolean DEBUG = false; 
 
     public static void main(String[] argv) throws IOException
     {
         if (argv.length < 2)
             throw new IllegalArgumentException("VDM AST Listener expects two parameters");
-        VDMASTListener listener = new VDMASTListener(argv[0], Settings.filecharset);
+        VDMASTListener listener = new VDMASTListener(argv[0], Settings.filecharset, DEBUG);
         ParseTree t = listener.production(argv[1]);
         ParseTreeWalker.DEFAULT.walk(listener, t);
         System.out.println("\ntree="+t.toStringTree(listener.parser)+"\n");
@@ -313,7 +314,7 @@ public class VDMASTListener extends VDMBaseListener {
     private SymbolicLiteralType littype; 
     private final ASTModuleList astModuleList;
 
-    public VDMASTListener(String fileName, Charset charset) throws IOException
+    public VDMASTListener(String fileName, Charset charset, boolean diagnostics) throws IOException
     {
         super();
         littype = null;
@@ -334,17 +335,22 @@ public class VDMASTListener extends VDMBaseListener {
         VDMLexer lexer = new VDMLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         parser = new VDMParser(tokens);
-        // parser.setProfile(true);
-        // ParseInfo pip = parser.getParseInfo();
-        // if we want full ambiguity/diagnostic information
-        parser.removeErrorListeners(); // remove ConsoleErrorListener 
-        parser.addErrorListener(new DiagnosticErrorListener());
-        parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
-        // might as well add some extra information of our own 
-        parser.addErrorListener(new VDMErrorListener());
-        parser.addParseListener(new VDMTraceListener());
-        //parser.setTrace(true);
-        //ParserATNSimulator.debug = true;
+        //// parser.setProfile(true);
+        //// ParseInfo pip = parser.getParseInfo();
+        ////parser.setTrace(true);
+        ////ParserATNSimulator.debug = true;
+        
+        if (diagnostics)
+        {
+            // if we want full ambiguity/diagnostic information
+            parser.removeErrorListeners(); // remove ConsoleErrorListener 
+            parser.addErrorListener(new DiagnosticErrorListener());
+            parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+            
+            // might as well add some extra information of our own 
+            parser.addErrorListener(new VDMErrorListener());
+            parser.addParseListener(new VDMTraceListener());
+        }
         nodes = new VDMParseTreeProperty<ASTNode>();
         lists = new VDMParseTreeProperty<Vector<? extends ASTNode>>();
         astModuleList = new ASTModuleList();
@@ -360,6 +366,25 @@ public class VDMASTListener extends VDMBaseListener {
     public ASTModuleList getAST()
     {
         return astModuleList;
+    }
+
+    public String toSString(ParseTree t)
+    {
+        return t.toStringTree(parser);
+    }
+
+    public String toVDMString(ParseTree t)
+    {
+        Vector<? extends ASTNode> v = lists.get(t);
+        if (v != null)
+            return v.toString();
+        else
+            return String.valueOf(nodes.get(t));
+    }
+
+    public String statsString()
+    {
+        return "Map= L=" + lists.size() + "; N=" + nodes.size()+"\n";
     }
 
     public List<VDMError> getErrors()
@@ -1015,6 +1040,7 @@ public class VDMASTListener extends VDMBaseListener {
         // This is to be used in ASTNamedType as per DefinitionReader (e.g. type_definition production)? 
         //@NB Or is it UnresolvedType?
         putNode(ctx, new ASTUnresolvedType(getNode(ctx.type_name().name(), LexNameToken.class)));
+        //putNode(ctx, new ASTNamedType(getNode(ctx.type_name().name(), LexNameToken.class)));
     }
     
     @Override 

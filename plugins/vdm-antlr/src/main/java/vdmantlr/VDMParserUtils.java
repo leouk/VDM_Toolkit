@@ -91,9 +91,9 @@ public class VDMParserUtils {
         int from_col = start.getCharPositionInLine() + 1 + start.getText().length();
         int stop_line = stop.getLine();
         int to_col = stop.getCharPositionInLine() + 1 + stop.getText().length();
-        System.out.println("\nSCOPE of " + identifier + " is " + ((parentCandidate instanceof VDMParser.Sl_documentContext) ? "whole module" : getSource(parentCandidate)));
-        System.out.println("start " + start_line + "(" + from_col + ")");
-        System.out.println("stop " + stop_line + "(" + to_col + ")");
+        //System.out.println("\nSCOPE of " + identifier + " is " + ((parentCandidate instanceof VDMParser.Sl_documentContext) ? "whole module" : getSource(parentCandidate)));
+        //System.out.println("start " + start_line + "(" + from_col + ")");
+        //System.out.println("stop " + stop_line + "(" + to_col + ")");
         return new Range(start_line, from_col, stop_line, to_col);
     }
 
