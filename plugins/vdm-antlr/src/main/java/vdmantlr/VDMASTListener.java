@@ -372,10 +372,15 @@ public class VDMASTListener extends VDMBaseListener {
         return new ArrayList<VDMWarning>();
     }
 
+    public boolean validRuleName(String ruleName)
+    {
+        return parser.getRuleIndex(ruleName) != -1;
+    }
+
     public ParseTree production(String ruleName)
     {
-        if (parser.getRuleIndex(ruleName) == -1)
-        throw new IllegalArgumentException("Invalid VDM parser production rule name " + ruleName);
+        if (!validRuleName(ruleName))
+            throw new IllegalArgumentException("Invalid VDM parser production rule name " + ruleName);
         try
         {
             Method rule = parser.getClass().getMethod(ruleName);
