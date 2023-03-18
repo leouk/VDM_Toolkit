@@ -1,3 +1,8 @@
+module DEFAULT 
+exports all
+definitions
+types T = nat; 
+end DEFAULT
 module Other
 exports all
 definitions 
