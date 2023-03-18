@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -39,7 +41,7 @@ import com.fujitsu.vdmj.ast.definitions.ASTDefinitionList;
 import com.fujitsu.vdmj.ast.definitions.ASTEqualsDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTExplicitFunctionDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTImplicitFunctionDefinition;
-import com.fujitsu.vdmj.ast.definitions.ASTLocalDefinition;
+import com.fujitsu.vdmj.ast.definitions.ASTStateDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTTypeDefinition;
 import com.fujitsu.vdmj.ast.definitions.ASTValueDefinition;
 import com.fujitsu.vdmj.ast.expressions.*;
@@ -59,7 +61,6 @@ import com.fujitsu.vdmj.ast.modules.ASTExportedFunction;
 import com.fujitsu.vdmj.ast.modules.ASTExportedOperation;
 import com.fujitsu.vdmj.ast.modules.ASTExportedType;
 import com.fujitsu.vdmj.ast.modules.ASTExportedValue;
-import com.fujitsu.vdmj.ast.modules.ASTImport;
 import com.fujitsu.vdmj.ast.modules.ASTImportAll;
 import com.fujitsu.vdmj.ast.modules.ASTImportFromModule;
 import com.fujitsu.vdmj.ast.modules.ASTImportFromModuleList;
@@ -138,6 +139,8 @@ import com.fujitsu.vdmj.ast.types.ASTUnresolvedType;
 import com.fujitsu.vdmj.ast.types.ASTVoidType;
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
+import com.fujitsu.vdmj.messages.VDMError;
+import com.fujitsu.vdmj.messages.VDMWarning;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdmantlr.generated.VDMBaseListener;
@@ -187,19 +190,39 @@ public class VDMASTListener extends VDMBaseListener {
     
     public static final String EXPR_TEST = "./exprScenario/setEnum.expr";
     public static final String PAT_TEST = "./patternScenario/example.pat";
-    public static final String TEST = PAT_TEST;
+    public static final String MOD_TEST = "./vdmslScenario/SLText.vdmsl";
+    public static final String TEST = MOD_TEST;
 
     public static void main(String[] argv) throws IOException
     {
         if (argv.length < 2)
             throw new IllegalArgumentException("VDM AST Listener expects two parameters");
-        VDMASTListener listener = new VDMASTListener(argv[0]);
-        ParseTree t = listener.production(argv[1]);//listener.parser.pattern_list();//parser.expression();
+        VDMASTListener listener = new VDMASTListener(argv[0], Settings.filecharset);
+        ParseTree t = listener.production(argv[1]);
         ParseTreeWalker.DEFAULT.walk(listener, t);
         System.out.println("\ntree="+t.toStringTree(listener.parser)+"\n");
-        //ASTPatternList n = listener.getListNode((VDMParser.Pattern_listContext)t, ASTPatternList.class);
-        //ASTPatternList n = listener.getListNode((ParserRuleContext)t, ASTPatternList.class);
         System.out.println("VDM=" + listener.lists.get(t).toString()+"\n");
+        System.out.println("Map= L=" + listener.lists.size() + "; N=" + listener.nodes.size()+"\n");
+        //System.out.println(listener.lists.toString()+"\n");
+        //System.out.println(listener.nodes.toString()+"\n");
+    }
+
+    public static class VDMParseTreeProperty<T> extends ParseTreeProperty<T>
+    {
+        public VDMParseTreeProperty()
+        {
+            super();
+        }
+
+        public int size()
+        {
+            return this.annotations.size();
+        }
+
+        public String toString()
+        {
+            return this.annotations.toString();
+        }
     }
 
     /**
@@ -277,8 +300,8 @@ public class VDMASTListener extends VDMBaseListener {
         
     
     //See ANTLR4 discussion on options Chapter 7. Choosing listeners with parse tree properties (i.e. to avoid visitor aggregation?)
-    private final ParseTreeProperty<ASTNode> nodes;
-    private final ParseTreeProperty<Vector<? extends ASTNode>> lists;
+    private final VDMParseTreeProperty<ASTNode> nodes;
+    private final VDMParseTreeProperty<Vector<? extends ASTNode>> lists;
     private final VDMParser parser;
     private final File currentFile;
     private String currentModule;
@@ -290,7 +313,7 @@ public class VDMASTListener extends VDMBaseListener {
     private SymbolicLiteralType littype; 
     private final ASTModuleList astModuleList;
 
-    public VDMASTListener(String fileName) throws IOException
+    public VDMASTListener(String fileName, Charset charset) throws IOException
     {
         super();
         littype = null;
@@ -305,7 +328,7 @@ public class VDMASTListener extends VDMBaseListener {
         currentFile = new File(fileName);
         if (!currentFile.exists())
             throw new IllegalArgumentException("File name does not exist: " + fileName);
-        CharStream input = CharStreams.fromFileName(fileName); 
+        CharStream input = CharStreams.fromFileName(fileName, charset); 
         //ANTLRInputStream input = new ANTLRInputStream(System.in); 
         // or read stdin SimpleLexer lexer = new SimpleLexer(input);
         VDMLexer lexer = new VDMLexer(input);
@@ -322,8 +345,8 @@ public class VDMASTListener extends VDMBaseListener {
         parser.addParseListener(new VDMTraceListener());
         //parser.setTrace(true);
         //ParserATNSimulator.debug = true;
-        nodes = new ParseTreeProperty<ASTNode>();
-        lists = new ParseTreeProperty<Vector<? extends ASTNode>>();
+        nodes = new VDMParseTreeProperty<ASTNode>();
+        lists = new VDMParseTreeProperty<Vector<? extends ASTNode>>();
         astModuleList = new ASTModuleList();
     }
 
@@ -332,6 +355,21 @@ public class VDMASTListener extends VDMBaseListener {
         String result = currentModule;
         currentModule = mod;
         return result;
+    }
+
+    public ASTModuleList getAST()
+    {
+        return astModuleList;
+    }
+
+    public List<VDMError> getErrors()
+    {
+        return new ArrayList<VDMError>();
+    }
+
+    public List<VDMWarning> getWarnings()
+    {
+        return new ArrayList<VDMWarning>();
     }
 
     public ParseTree production(String ruleName)
