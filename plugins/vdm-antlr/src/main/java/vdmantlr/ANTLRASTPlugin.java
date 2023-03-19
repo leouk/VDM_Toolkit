@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.antlr.v4.runtime.misc.TestRig;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -31,8 +32,9 @@ public class ANTLRASTPlugin extends ASTPluginSL
             //, "-antlrAST"
             , "-printAST" 
             , "-std"
-            //, "-antlrDebug"
+            , "-antlrDebug"
             , "./vdmslScenario/Types.vdmsl"
+            , "./vdmslScenario/TestV2IExprs.vdmsl"
         });
     }
 
