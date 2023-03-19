@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import org.antlr.v4.gui.TestRig;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -184,6 +185,9 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * 21. ASTExportedFunction optional type parameters come after function type?
  * 22. ASTModule named DEFAULT is allowed; maybe add a warning?
  * 23. invariant_definition renamed to instance_variable_invariant_definition for clarity on what invariant that is? Similar for invariant on type invaraints? 
+ * 
+ * 24. VDMJ's arithmetic "+" is right associative? (e.g. x+y+z = (x+y)+z instead of (x+(y+z))? why?)
+ * 
  */
 
 public class VDMASTListener extends VDMBaseListener {
