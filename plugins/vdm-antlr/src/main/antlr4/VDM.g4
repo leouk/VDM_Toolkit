@@ -57,31 +57,38 @@ import VDMLex;
 //     tokenVocab = VDMLex;
 // }
 
-// If target is not Java, then this has to change accordingly
-@parser::header
-{
-//import com.fujitsu.vdmj.lex.Dialect;    
-}
-
 @parser::members
 {
     // We can gate productions with the corresponding dialect given via semantic predicates on PP and RT productions
     // See ANTLR4 book Section 11.1 Recognizing Multiple Language Dialect
-    //public static Dialect dialect = Dialect.VDM_SL;
+    public static com.fujitsu.vdmj.lex.Dialect dialect = com.fujitsu.vdmj.lex.Dialect.VDM_SL;
 
     public static boolean isVDMSL()
     {
-        return true;//dialect == Dialect.VDM_SL;
+        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_SL;
     }
 
     public static boolean isVDMPP()
     {
-        return false;//dialect == Dialect.VDM_PP;
+        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_PP;
     }
 
     public static boolean isVDMRT()
     {
-        return false;//dialect == Dialect.VDM_RT;
+        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_RT;
+    }
+
+    java.util.Set<String> tldTypeNames = new java.util.HashSet<String>();
+    
+    protected boolean isTLDTypeName() 
+    { 
+        System.out.println("Testing " + getCurrentToken().getText() + " ; " + tldTypeNames.toString());
+        return tldTypeNames.contains(getCurrentToken().getText()); 
+    } 
+
+    protected void addTLDTypeName(String typeName)
+    {
+        tldTypeNames.add(typeName);
     }
 }
 
@@ -357,7 +364,8 @@ type_definition_list
 //@NB here added extra production to make parser faster; otherwise you will get
 //    a look ahead on the IDENTIFIER until the O_EQUAL or '::' to disambiguate. 
 type_definition 
-    : IDENTIFIER invariant_type_definition 
+    : id=IDENTIFIER { addTLDTypeName($id.text); } 
+      invariant_type_definition 
     ;
     //TODO This is also okay, but the above seemed better? 
     // : IDENTIFIER O_EQUAL type type_specification    #NamedType
@@ -487,7 +495,8 @@ discretionary_type
     ;
 
 type_name
-    : name 
+    : //{isTLDTypeName()}? Don't add this here because of declaration before use?  
+      name 
     ;
 
 type_variable 
@@ -1121,13 +1130,17 @@ expression
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
     | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
     | old_name                                              #OldNameExpr                       //36 primary
-    | name                                                  #NameExpr                          //37 primary
+    | variable                                              #VariableExpr                      //37 primary
     | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
     ;  
 
 //------------------------
 // A.5.1 Bracketed Expression  
 //------------------------
+
+variable 
+    : {!isTLDTypeName()}? name
+    ;
 
 //@LRM bracketed_expression could be reused within pattern and expression?  
 bracketed_expression

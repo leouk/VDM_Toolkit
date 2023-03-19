@@ -950,6 +950,10 @@ public class VDMASTListener extends VDMBaseListener {
     private ASTPattern initPattern            = null;
     private ASTExpression initExpression      = null;
 
+    /**
+     * Type_name and Variable (name) gets the parser into ambigous / context-sensitive issues. 
+     * Will try to use semantic predicates and collect the names to see if that helps. 
+     */
     @Override 
     public void enterType_definition(VDMParser.Type_definitionContext ctx)
     {
@@ -1037,10 +1041,7 @@ public class VDMASTListener extends VDMBaseListener {
     @Override 
     public void exitTypeName(VDMParser.TypeNameContext ctx) 
     {
-        // This is to be used in ASTNamedType as per DefinitionReader (e.g. type_definition production)? 
-        //@NB Or is it UnresolvedType?
         putNode(ctx, new ASTUnresolvedType(getNode(ctx.type_name().name(), LexNameToken.class)));
-        //putNode(ctx, new ASTNamedType(getNode(ctx.type_name().name(), LexNameToken.class)));
     }
     
     @Override 
@@ -1049,7 +1050,13 @@ public class VDMASTListener extends VDMBaseListener {
         //@NB just like with "name" for expression x lexnametoken, we need two productions for type_variable as lexnametoken as well as a ASTType
         putNode(ctx, new ASTParameterType(getNode(ctx.type_variable(), LexNameToken.class)));
     }
-    
+
+    @Override 
+    public void exitSeq1OfType(VDMParser.Seq1OfTypeContext ctx) 
+    {
+        putNode(ctx, new ASTSeq1Type(token2loc(ctx), getNode(ctx.type(), ASTType.class)));
+    }
+
     @Override 
     public void exitSeqOfType(VDMParser.SeqOfTypeContext ctx) 
     {
@@ -1057,22 +1064,31 @@ public class VDMASTListener extends VDMBaseListener {
     }
     
     @Override 
-    public void exitSetType(VDMParser.SetTypeContext ctx) 
+    public void exitSet1OfType(VDMParser.Set1OfTypeContext ctx) 
     {
-        boolean set1 = ctx.set_type().set1_type() != null;
-        LexLocation location = token2loc(ctx);
-        ASTType type = getNode(set1 ? ctx.set_type().set1_type().type() : ctx.set_type().set0_type().type(), ASTType.class);
-        putNode(ctx, set1 ? new ASTSet1Type(location, type) : new ASTSetType(location, type));
+        putNode(ctx, new ASTSet1Type(token2loc(ctx), getNode(ctx.type(), ASTType.class)));
+    }
+
+    @Override 
+    public void exitSetOfType(VDMParser.SetOfTypeContext ctx) 
+    {
+        putNode(ctx, new ASTSetType(token2loc(ctx), getNode(ctx.type(), ASTType.class)));
     }
     
     @Override 
     public void exitMapType(VDMParser.MapTypeContext ctx) 
     {
-        boolean inmap = ctx.map_type().injective_map_type() != null;
-        LexLocation location = token2loc(ctx);
-        ASTType dtype = getNode(inmap ? ctx.map_type().injective_map_type().dom : ctx.map_type().general_map_type().dom, ASTType.class);
-        ASTType rtype = getNode(inmap ? ctx.map_type().injective_map_type().rng : ctx.map_type().general_map_type().rng, ASTType.class);
-        putNode(ctx, inmap ? new ASTInMapType(location, dtype, rtype) : new ASTMapType(location, dtype, rtype));
+        putNode(ctx, new ASTMapType(token2loc(ctx), 
+            getNode(ctx.dom, ASTType.class), 
+            getNode(ctx.rng, ASTType.class)));
+    }
+
+    @Override 
+    public void exitInmapType(VDMParser.InmapTypeContext ctx) 
+    {
+        putNode(ctx, new ASTInMapType(token2loc(ctx), 
+            getNode(ctx.dom, ASTType.class), 
+            getNode(ctx.rng, ASTType.class)));
     }
     
     @Override 
@@ -1164,9 +1180,9 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitVoidFunctionType(VDMParser.VoidFunctionTypeContext ctx) 
     {
         //@NB here because of the way the production is, there is never a ASTVoidType!
-        putNode(ctx, new ASTFunctionType(token2loc(ctx), ctx.void_function_type().SEP_pfcn() != null,
+        putNode(ctx, new ASTFunctionType(token2loc(ctx), ctx.SEP_pfcn() != null,
             new ASTTypeList(), 
-            getNode(ctx.void_function_type().type(), ASTType.class)));
+            getNode(ctx.type(), ASTType.class)));
     }
 
     @Override 
@@ -1489,13 +1505,13 @@ public class VDMASTListener extends VDMBaseListener {
 //------------------------
 
     //@LRM Concrete example where having multiple layers is bad idea? 
-    @Override
-    public void exitUnaryExpr(VDMParser.UnaryExprContext ctx)
-    {
-        ASTExpression node = getNode(ctx.unary_expression(), ASTExpression.class);
-        nodes.removeFrom(ctx.unary_expression());
-        putNode(ctx, node);
-    }
+    // @Override
+    // public void exitUnaryExpr(VDMParser.UnaryExprContext ctx)
+    // {
+    //     ASTExpression node = getNode(ctx.unary_expression(), ASTExpression.class);
+    //     nodes.removeFrom(ctx.unary_expression());
+    //     putNode(ctx, node);
+    // }
 
     @Override
     public void exitUnaryPlusExpr(VDMParser.UnaryPlusExprContext ctx)
@@ -2286,9 +2302,9 @@ public class VDMASTListener extends VDMBaseListener {
     }
 
     @Override 
-    public void exitNameExpr(VDMParser.NameExprContext ctx)
+    public void exitVariableExpr(VDMParser.VariableExprContext ctx)
     {
-        putNode(ctx, new ASTVariableExpression(getNode(ctx.name(), LexNameToken.class)));
+        putNode(ctx, new ASTVariableExpression(getNode(ctx.variable().name(), LexNameToken.class)));
     }
 
     @Override
