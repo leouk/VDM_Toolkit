@@ -61,21 +61,21 @@ import VDMLex;
 {
     // We can gate productions with the corresponding dialect given via semantic predicates on PP and RT productions
     // See ANTLR4 book Section 11.1 Recognizing Multiple Language Dialect
-    public static com.fujitsu.vdmj.lex.Dialect dialect = com.fujitsu.vdmj.lex.Dialect.VDM_SL;
+    //public static com.fujitsu.vdmj.lex.Dialect dialect = com.fujitsu.vdmj.lex.Dialect.VDM_SL;
 
     public static boolean isVDMSL()
     {
-        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_SL;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_SL;
     }
 
     public static boolean isVDMPP()
     {
-        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_PP;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_PP;
     }
 
     public static boolean isVDMRT()
     {
-        return dialect == com.fujitsu.vdmj.lex.Dialect.VDM_RT;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_RT;
     }
 
     java.util.Set<String> tldTypeNames = new java.util.HashSet<String>();

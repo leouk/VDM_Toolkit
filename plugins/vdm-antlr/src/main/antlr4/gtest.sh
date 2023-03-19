@@ -23,10 +23,10 @@ START_PRODUCTION=sl_document
 if [[ "$#" -gt 1 ]]; then
     START_PRODUCTION=$1
     # gets the second arguments onwards
-    ARGS=../../"${@:2}"   
+    ARGS=${@:2} #../../"${@:2}"   
 else 
     # gets all arguments
-    ARGS=../../"${@}"
+    ARGS=${@} #../../"${@}"
 fi
 echo 'Parsing from ' $START_PRODUCTION ' for file ' $ARGS ' with CP ' $CP
 java -Xmx500M -cp $CP org.antlr.v4.gui.TestRig VDM $START_PRODUCTION -tokens -gui $ARGS
