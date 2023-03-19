@@ -1051,14 +1051,9 @@ public class VDMASTListener extends VDMBaseListener {
     }
     
     @Override 
-    public void exitSeqType(VDMParser.SeqTypeContext ctx) 
+    public void exitSeqOfType(VDMParser.SeqOfTypeContext ctx) 
     {
-        //@NB concrete example of the mess of multiple layers can cause. An alternative is to have
-        //    exitSeq1_type(...) then create there but then needs to update here, just like in UnaryExprCtx :-(
-        boolean seq1 = ctx.seq_type().seq1_type() != null;
-        LexLocation location = token2loc(ctx);
-        ASTType type = getNode(seq1 ? ctx.seq_type().seq1_type().type() : ctx.seq_type().seq0_type().type(), ASTType.class);
-        putNode(ctx, seq1 ? new ASTSeq1Type(location, type) : new ASTSeqType(location, type));
+        putNode(ctx, new ASTSeqType(token2loc(ctx), getNode(ctx.type(), ASTType.class)));
     }
     
     @Override 

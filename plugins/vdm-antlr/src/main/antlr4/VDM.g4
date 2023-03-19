@@ -381,26 +381,25 @@ type_specification
 //@TODO This generates entry/exit for both entryQuoteType and entryQuote_type (!)
 //      might want to remove the singleton productions? 
 // C.8.5 Seq/Set type operators are higher precedence? 
-type 
-    : bracketed_type    #BracketedType
-    | SEP_qm            #WildcardType  
-    | type_name         #TypeName
-    | type_variable     #TypeVariable
-    | seq_type          #SeqType
-    | set_type          #SetType
-    | map_type          #MapType
-    | composite_type    #CompositeType
-    | type (O_TIMES type)+ #ProductType
+type     
+    :<assoc=right> params=type (SEP_pfcn | SEP_tfcn) ret=type #FunctionType
+    |<assoc=right> PAREN_L PAREN_R (SEP_pfcn | SEP_tfcn) type #VoidFunctionType
     | type (SEP_bar type)+ #UnionType
+    | type (O_TIMES type)+ #ProductType
+    |<assoc=right> SLK_map dom=type SLK_to rng=type   #MapType
+    |<assoc=right> SLK_inmap dom=type SLK_to rng=type #InmapType
+    | SLK_seqof type    #SeqOfType
+    | SLK_seq1of type   #Seq1OfType
+    | SLK_setof type    #SetOfType
+    | SLK_set1of type   #Set1OfType
+    | bracketed_type    #BracketedType
+    | optional_type     #OptionalType
+    | composite_type    #CompositeType
     | basic_type        #BasicType
     | quote_type        #QuoteType
-    | optional_type     #OptionalType
-    | void_function_type #VoidFunctionType
-    |<assoc=right> params=type (SEP_pfcn | SEP_tfcn) ret=type #FunctionType
-    ;
-
-void_function_type
-    :<assoc=right> PAREN_L PAREN_R (SEP_pfcn | SEP_tfcn) type
+    | type_variable     #TypeVariable
+    | type_name         #TypeName
+    | SEP_qm            #WildcardType  
     ;
 
 bracketed_type 
