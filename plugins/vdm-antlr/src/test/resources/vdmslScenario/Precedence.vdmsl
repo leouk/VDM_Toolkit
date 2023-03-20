@@ -1,0 +1,8 @@
+module Precedence
+exports all
+definitions 
+values
+    v1: real = 1+2*3/4**2;
+    v1t: bool = v1 = 1.375;
+    v2: bool = v1 < 2 and not not v1t;
+end Precedence

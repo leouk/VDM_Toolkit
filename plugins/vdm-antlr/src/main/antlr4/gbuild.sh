@@ -23,7 +23,7 @@ CP="$ANTLR4:$VDMJ:$CLASSPATH"
 # antlr4 VDM.g4 VDMLex.g4 -listener -visitor -Xlog -atn -o ./.antlr/output
 echo 'Calling ANTLR4 parser generator' #' with CP ' $CP
 # -package vdmantlr
-java -Xmx500M -cp $CP org.antlr.v4.Tool VDM.g4 Test.g4 VDMLex.g4 -listener -visitor -atn -o ./.antlr/output
+java -Xmx500M -cp $CP org.antlr.v4.Tool VDM.g4 Test.g4 VDMLex.g4 -listener -visitor -atn ${@} -o ./.antlr/output
 
 # compile generated files
 echo 'Compiling generarted parser'

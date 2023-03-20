@@ -33,8 +33,9 @@ public class ANTLRASTPlugin extends ASTPluginSL
             , "-printAST" 
             , "-std"
             , "-antlrDebug"
-            , "./vdmslScenario/Types.vdmsl"
-            , "./vdmslScenario/TestV2IExprs.vdmsl"
+            , "./vdmslScenario/Precedence.vdmsl"
+            // , "./vdmslScenario/Types.vdmsl"
+            // , "./vdmslScenario/TestV2IExprs.vdmsl"
         });
     }
 

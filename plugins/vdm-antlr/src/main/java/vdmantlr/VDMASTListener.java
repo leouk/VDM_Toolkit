@@ -1704,7 +1704,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         // if no filter, then pass null
         putNode(ctx, new ASTSetCompExpression(token2loc(ctx),
-            getNode(ctx.set_comprehension().expr, ASTExpression.class),
+            getNode(ctx.set_comprehension().filter, ASTExpression.class),
             getListNode(ctx.set_comprehension().bind_list(), ASTMultipleBindList.class),
             ctx.set_comprehension().filter != null ? getNode(ctx.set_comprehension().filter, ASTExpression.class) : null));
     }
@@ -1732,7 +1732,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         // if no filter, then pass null
         putNode(ctx, new ASTSeqCompExpression(token2loc(ctx),
-            getNode(ctx.sequence_comprehension().expr, ASTExpression.class),
+            getNode(ctx.sequence_comprehension().filter, ASTExpression.class),
             getNode(ctx.sequence_comprehension().bind(), ASTBind.class),
             ctx.sequence_comprehension().filter != null ? getNode(ctx.sequence_comprehension().filter, ASTExpression.class) : null));
     }
@@ -1773,7 +1773,7 @@ public class VDMASTListener extends VDMBaseListener {
     public void exitMapCompExpr(VDMParser.MapCompExprContext ctx)
     {
         putNode(ctx, new ASTMapCompExpression(token2loc(ctx),
-            getNode(ctx.map_comprehension().expr, ASTMapletExpression.class),
+            getNode(ctx.map_comprehension().filter, ASTMapletExpression.class),
             getListNode(ctx.map_comprehension().bind_list(), ASTMultipleBindList.class),
             ctx.map_comprehension().filter != null ? getNode(ctx.map_comprehension().filter, ASTExpression.class) : null));
     }

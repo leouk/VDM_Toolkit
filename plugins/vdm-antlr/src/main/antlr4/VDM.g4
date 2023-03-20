@@ -1270,7 +1270,7 @@ set_enumeration
     ;
 
 set_comprehension
-    : BRACE_L expr=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R 
+    : BRACE_L first=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R 
     ;
 
 set_range_expression
@@ -1286,7 +1286,7 @@ sequence_enumeration
     ;
 
 sequence_comprehension
-    : BRACKET_L expr=expression SEP_bar bind (SEP_amp filter=expression)? BRACKET_R 
+    : BRACKET_L first=expression SEP_bar bind (SEP_amp filter=expression)? BRACKET_R 
     ;
 
 subsequence
@@ -1311,7 +1311,7 @@ maplet
     ;
 
 map_comprehension
-    : BRACE_L expr=maplet SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R
+    : BRACE_L first=maplet SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R
     ;
 
 //------------------------
