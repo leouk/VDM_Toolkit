@@ -9,4 +9,7 @@ values
     v4: set of nat = {1} union {2} \ {1};
     v4': set of nat = ({1} union {2}) \ {1};
     --$x: nat = 10;
+    v5: nat * nat = mk_(1,2);
+    v51: nat = v5.#1;
+    v52: nat = mk_(1,2).#1;
 end Precedence
