@@ -163,7 +163,7 @@ import vdmantlr.generated.VDMParser.Elseif_expressionContext;
  * LRM issues
  ****************** 
  *  1. map merge in binary munion operator
- *  2. C.2 x A.5.13 for function type instantiation expression x name
+ *  2. C.2 x A.5.13 for function type instantiation expression x name; C.2 is also missing tuple selector expr.#NUMERAL production
  *  3. tuple selection is left assoc and not explicitly features in family of precedences
  *  4. <> is right assoc and nothing is said about it
  *  5. various precedence priorities for unary prefix operators are irrelevant / redundant (i.e. they won’t matter and just confuse)
