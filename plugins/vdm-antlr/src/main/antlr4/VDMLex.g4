@@ -78,6 +78,63 @@ lexer grammar VDMLex;
     {
         return false;//dialect == Dialect.VDM_RT;
     }
+
+    private boolean startOfName(char c)
+	{
+		if (c < 0x0100)
+		{
+			return Character.isLetter(c) || 
+            c == '$';//Character.toCodePoint('$');
+		}
+		else
+		{
+			switch (Character.getType(c))
+			{
+				case Character.CONTROL:
+				case Character.LINE_SEPARATOR:
+				case Character.PARAGRAPH_SEPARATOR:
+				case Character.SPACE_SEPARATOR:
+				case Character.SURROGATE:
+				case Character.UNASSIGNED:
+				case Character.DECIMAL_DIGIT_NUMBER:
+				case Character.CONNECTOR_PUNCTUATION:
+					return false;
+
+				default:
+					return true;
+			}
+		}
+	}
+
+	/**
+	 * @return True if the character passed can be part of a variable name.
+	 */
+	private boolean restOfName(/*char*/int c)
+	{
+		if (c < 0x0100)
+		{
+			return Character.isLetterOrDigit(c) || 
+            c == '$' || //Character.toCodePoint('$') || 
+            c == '_' || //Character.toCodePoint('_') || 
+            c == '\''; //Character.toCodePoint('\'');
+		}
+		else
+		{
+			switch (Character.getType(c))
+			{
+				case Character.CONTROL:
+				case Character.LINE_SEPARATOR:
+				case Character.PARAGRAPH_SEPARATOR:
+				case Character.SPACE_SEPARATOR:
+				case Character.SURROGATE:
+				case Character.UNASSIGNED:
+					return false;
+
+				default:
+					return true;
+			}
+		}
+	}   
 }
 //------------------------
 // Lexer Rules:
@@ -433,30 +490,33 @@ NUMERAL
 //     ;
 
 fragment NameChar
-   : NameStartChar
-   | '0'..'9'
-   | UNDERSCORE
-   | '\u00B7'
-   | '\u0300'..'\u036F' //Combining Diacritical Marks 
-   | '\u203F'..'\u2040' //General punctuation
+   : [a-zA-Z0-9$_]
+   | // covers all characters above 0xFF which are not a surrogate
+	  ~[\u0000-\u00FF\uD800-\uDBFF]
+	  {restOfName((char)_input.LA(-1))}?
+//    | '\u00B7'
+//    | '\u0300'..'\u036F' //Combining Diacritical Marks 
+//    | '\u203F'..'\u2040' //General punctuation
    //@LF see gramars-v4/java/java9/Java9Lexer.g4 line 487 on super class Check predicates! 
    ;
 
 //TODO check out https://jrgraphix.net/r/Unicode/00A0-00FF for code ranges   
 fragment NameStartChar
-   : 'A'..'Z' 
-   | 'a'..'z'
-   | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
-   | '\u00D8'..'\u00F6' //Latin1-supplement
-   | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
-   | '\u0370'..'\u037D' //Latin1-supplement
-   | '\u037F'..'\u1FFF'
-   | '\u200C'..'\u200D'
-   | '\u2070'..'\u218F'
-   | '\u2C00'..'\u2FEF'
-   | '\u3001'..'\uD7FF'
-   | '\uF900'..'\uFDCF'
-   | '\uFDF0'..'\uFFFD'
+    : [a-zA-Z$]
+    | // covers all characters above 0xFF which are not a surrogate
+	  ~[\u0000-\u00FF\uD800-\uDBFF]
+	  {startOfName((char)_input.LA(-1))}?
+//    | '\u00C0'..'\u00D6' //Latin1-supplement (remove times) https://jrgraphix.net/r/Unicode/00A0-00FF
+//    | '\u00D8'..'\u00F6' //Latin1-supplement
+//    | '\u00F8'..'\u02FF' //Latin1-supplement (remove div)
+//    | '\u0370'..'\u037D' //Latin1-supplement
+//    | '\u037F'..'\u1FFF'
+//    | '\u200C'..'\u200D'
+//    | '\u2070'..'\u218F'
+//    | '\u2C00'..'\u2FEF'
+//    | '\u3001'..'\uD7FF'
+//    | '\uF900'..'\uFDCF'
+//    | '\uFDF0'..'\uFFFD'
    ;
 
 // fragment IDCHAR
@@ -480,8 +540,8 @@ fragment ESC:
 	| '\\u' HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT HEXADECIMAL_DIGIT
 	| '\\c' LETTER  
 	| '\\' OCTAL_DIGIT OCTAL_DIGIT OCTAL_DIGIT
-	| '\\"'  // \" escape double quote
-	| '\\\'' // \' escape quote
+	// | '\\"'  // \" escape double quote
+	// | '\\\'' // \' escape quote
 	; 
 
 fragment NL
