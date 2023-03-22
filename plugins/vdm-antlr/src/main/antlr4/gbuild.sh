@@ -2,7 +2,7 @@
 
 # delete previous builds
 echo 'Removing out generated grammars'
-rm -R ./.antlr/output
+#rm -R ./.antlr/output
 
 	# alias antlr4='java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.Tool' 
 	# alias grun='java -Xmx500M -cp /usr/local/lib/antlr4-4.11.1-complete.jar:$CLASSPATH org.antlr.v4.gui.TestRig'
