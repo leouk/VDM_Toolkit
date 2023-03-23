@@ -927,9 +927,9 @@ primary_expression
 //------------------------
 // C.6 The family of constructors
 //------------------------
-    // | SLK_mk PAREN_L 
-    //     expression SEP_comma expression_list 
-    //   PAREN_R                                               #TupleMkExpr      // mk_(expr, expr_list)
+    | SLK_mk PAREN_L 
+        expression SEP_comma expression_list 
+      PAREN_R                                               #TupleMkExpr      // mk_(expr, expr_list)
     // | tight_record_name 
     //     PAREN_L expression_list? PAREN_R                    #RecordMkExpr     // mk_R(expr_list)
     | {!isTLDTypeName()}? variable                          #VariableExpr     // ID, ID~
@@ -941,13 +941,13 @@ expression
 //------------------------
 // C.2 The family of applicators
 //------------------------
-//     | expression SEP_dot IDENTIFIER                         #FieldSelExpr                     // expr.ID
-//     | expression SEP_tsel NUMERAL                           #TupleSelExpr                     // expr.#NUMERAL
-//     | call=expression PAREN_L 
-//         low=expression 
-//         SEP_comma SEP_range SEP_comma 
-//         high=expression 
-//         PAREN_R                                             #SubSeqExpr                       // expr(expr,...,expr)
+    // | expression SEP_dot IDENTIFIER                         #FieldSelExpr                     // expr.ID
+    | expression SEP_tsel NUMERAL                           #TupleSelExpr                     // expr.#NUMERAL
+    | call=expression PAREN_L 
+        low=expression 
+        SEP_comma SEP_range SEP_comma 
+        high=expression 
+        PAREN_R                                             #SubSeqExpr                       // expr(expr,...,expr)
 //     | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        // expr(expr_list)
 //     | expression /* name */ 
 //         BRACE_L 
@@ -969,7 +969,7 @@ expression
 // //------------------------
 // // C.3 The family of evaluators
 // //------------------------
-//     | O_PLUS       expression  #UnaryPlusExpr
+    | (O_PLUS   | O_MINUS)    expression  #UnaryPlusExpr
 //     | O_MINUS      expression  #UnaryMinusExpr
 //     | SLK_abs      expression  #AbsoluteExpr
 //     | SLK_floor    expression  #FloorExpr
@@ -1004,11 +1004,11 @@ expression
     |              lhs=expression (O_TIMES | O_DIV)       rhs=expression      #ArithmeticDivideExpr             //53 evaluators(10)     
 //    |              lhs=expression (O_TIMES     rhs=expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
 //     |              lhs=expression (SLK_inter   rhs=expression)      #SetInterExpr                     //59 evaluators(16)   
-    |              lhs=expression O_PLUS      rhs=expression     #ArithmeticPlusExpr               //56 evaluators(13)
+    |              lhs=expression (O_PLUS | O_MINUS)     rhs=expression     #ArithmeticPlusExpr               //56 evaluators(13)
 //     |              lhs=expression (O_MINUS     rhs=expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
 //     |              lhs=expression (SLK_munion  rhs=expression)      #MapUnionExpr                     //48 evaluators(5)   
 //     |              lhs=expression (O_OVERRIDE  rhs=expression)      #MapOverrideExpr                  //49 evaluators(6)   
-//     |              lhs=expression (SLK_union   rhs=expression)      #SetUnionExpr                     //58 evaluators(15)   
+     |              lhs=expression (SLK_union | O_DIFF)  rhs=expression      #SetUnionExpr                     //58 evaluators(15)   
 //     |              lhs=expression (O_DIFF      rhs=expression)      #SetDiffExpr                      //57 evaluators(14)      
 //     |              lhs=expression (O_CONCAT    rhs=expression)      #SeqConcatExpr                    //60 evaluators(17)
 //------------------------
@@ -1039,7 +1039,7 @@ expression
 //     //| unary_expression                                      #UnaryExpr                         //7  primary
 //     | quantified_expression                                 #QuantifiedExpr                    //8  primary
 //     | iota_expression                                       #IotaExpr                          //9  primary
-//     | set_enumeration                                       #SetEnumExpr                       //10 primary
+     | set_enumeration                                       #SetEnumExpr                       //10 primary
 //     | set_comprehension                                     #SetCompExpr                       //11 primary
 //     | set_range_expression                                  #SetRangeExpr                      //12 primary
 //     | sequence_enumeration                                  #SeqEnumExpr                       //13 primary

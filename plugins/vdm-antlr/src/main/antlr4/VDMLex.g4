@@ -446,7 +446,8 @@ OBJECT_IDENTIFIER
 
 // Identifier *must* be after keywords, otherwise gets confused whether 'true' is SLK_true or IDENTIFIER! Same for other keywords of course! 
 IDENTIFIER 
-    : NameStartChar NameChar*
+    : //[a-zA-Z$] ([a-zA-Z0-9$_] | '\'')* 
+	  NameStartChar NameChar*
     ;
 
 //------------------------
@@ -491,6 +492,7 @@ NUMERAL
 
 fragment NameChar
    : [a-zA-Z0-9$_]
+   | '\''
    | // covers all characters above 0xFF which are not a surrogate
 	  ~[\u0000-\u00FF\uD800-\uDBFF]
 	  {restOfName((char)_input.LA(-1))}?
