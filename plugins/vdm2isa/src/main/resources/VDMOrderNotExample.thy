@@ -52,6 +52,7 @@ lemma PO4:
 
 lemma PO5: 
   \<open>\<forall> r1 r2 . r1 \<le>\<^sub>R r2 \<or> r2 \<le>\<^sub>R r1\<close>
+  quickcheck
   nitpick
   oops
 
