@@ -1744,8 +1744,7 @@ public class VDMASTListener extends VDMBaseListener {
         //      From LexTokenReader.nextToken(), it seems this should be a keyword token?
         putNode(ctx, new ASTMapletExpression(
             getNode(ctx.dom, ASTExpression.class),
-            // explicitly fully imported Token to avoid confusion with ANTLR's Token class
-            new LexKeywordToken(com.fujitsu.vdmj.lex.Token.MAPLET, token2loc(ctx.SEP_maplet())),
+            token2loc(ctx.SEP_maplet()),
             getNode(ctx.rng, ASTExpression.class)));
     }
 

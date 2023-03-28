@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.antlr.v4.runtime.misc.TestRig;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
