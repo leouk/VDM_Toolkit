@@ -1,0 +1,80 @@
+module AATree
+exports all
+definitions
+types 
+    AATreeType = ?;
+
+    AATreeNode0 :: 
+        element: AATreeType 
+        level  : nat
+        left   : [AATreeNode0] 
+        right  : [AATreeNode0];
+
+    AATreeNode = AATreeNode0 
+    inv mk_AATreeNode0(-, l, -, -) == is_nat1(l);
+
+    --@doc total (<) order between set values. 
+    --     bool result will ignore repeated insertions.
+    --     int result could be used to error on repeated insertions. 
+    AATreeOrder = (AATreeType * AATreeType -> bool);
+
+    AATreeSet0 :: 
+        --@doc arguably this could be "root: [AATreeNode0]" to avoid NULL_NODE?
+        root: AATreeNode0
+        order: AATreeOrder;
+    
+    AATreeSet = AATreeSet0 
+    inv mk_AATreeSet0(root, -) == 
+        --@doc not-null check redundant given is_AATreeNode(root) <=> root <> NULL_NODE
+        --root <> NULL_NODE and 
+        is_AATreeNode(root);
+
+values 
+    NULL_NODE: AATreeNode0 = mk_AATreeNode0(nil, 0, nil, nil);
+    NULL_CONSITENT: bool = not is_AATreeNode(NULL_NODE);
+    
+functions 
+
+    data: AATreeNode0 -> 
+
+    skew: AATreeNode0 -> AATreeNode0
+    skew(n) == 
+        if n = NULL_NODE then 
+            n
+        else 
+            let mk_AATreeNode0(x, k, t, u) = n in       
+                if t <> NULL_NODE and k = level(t) then 
+                    mk_AATreeNode0(data(t), k, left(t), mk_AATreeNode0(x, k, right(t), u))
+                else 
+                    n;
+
+    
+    addNode: AATreeNode0 * AATreeOrder * AATreeType -> AATreeNode
+    addNode(n, order, x) == 
+        if n = NULL_NODE then
+            mk_AATreeNode0(x, 1, nil, nil)
+        else
+            let mk_AATreeNode0(y, k, t, u) = n,
+                leq: bool = order(x, y) 
+            in
+                mk_AATreeNode0(y, k, 
+                        if     leq then addNode(t, order, x) else t,
+                        if not leq then addNode(u, order, x) else u)
+    --measure 
+    --    n.level
+    -- not quite as might go up and down; perhaps depth(n) - n.level? 
+    ;
+
+    add: AATreeSet * AATreeType -> AATreeSet
+    add(mk_AATreeSet0(root, order), v) == 
+            --y=val,k=lvl,t=l,u=r
+        let mk_AATreeNode0(val, lvl, l, r) = root,
+            leq: bool = order(v, val)
+         in
+            mk_AATreeSet0(
+                mk_AATreeNode0(val, lvl, 
+                    if leq then add() else l,
+                    if not leq then add() else r),
+                order);
+
+end AATree
