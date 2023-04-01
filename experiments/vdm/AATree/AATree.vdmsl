@@ -20,22 +20,31 @@ types
 
     AATreeSet0 :: 
         --@doc arguably this could be "root: [AATreeNode0]" to avoid NULL_NODE?
-        root: AATreeNode0
+        root : [AATreeNode0]
         order: AATreeOrder;
     
     AATreeSet = AATreeSet0 
     inv mk_AATreeSet0(root, -) == 
         --@doc not-null check redundant given is_AATreeNode(root) <=> root <> NULL_NODE
-        --root <> NULL_NODE and 
+        --root <> NULL_NODE / nil and 
         is_AATreeNode(root);
 
 values 
-    NULL_NODE: AATreeNode0 = mk_AATreeNode0(nil, 0, nil, nil);
-    NULL_CONSITENT: bool = not is_AATreeNode(NULL_NODE);
+    --NULL_NODE: AATreeNode0 = mk_AATreeNode0(nil, 0, nil, nil);
+    --NULL_CONSITENT: bool = is_AATreeSet(mk_AATreeSet0(root, order)) <=> is_AATreeNode(root);  or just not is_AATreeNode(NULL_NODE)
     
 functions 
 
-    data: AATreeNode0 -> 
+    data: [AATreeNode0] -> AATreeType
+    data(n) == if n = nil then nil else n.element
+    pre  (n <> nil => n.element <> nil)
+    post (n = nil <=> RESULT = nil);
+
+    level: [AATreeNode0] -> nat
+    level(n) == if (n = nil) then 0 else n.level
+    post (n <> nil <=> is_nat1(RESULT));
+
+    left: [AATreeNode0] 
 
     skew: AATreeNode0 -> AATreeNode0
     skew(n) == 
