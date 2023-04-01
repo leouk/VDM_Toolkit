@@ -4,86 +4,120 @@ definitions
 types 
     AATreeType = ?;
 
-    AATreeNode0 :: 
-        element: AATreeType 
-        level  : nat
-        left   : [AATreeNode0] 
-        right  : [AATreeNode0];
+    AATreeLevel = nat1; 
 
-    AATreeNode = AATreeNode0 
-    inv mk_AATreeNode0(-, l, -, -) == is_nat1(l);
+    AATreeNode :: 
+        element: AATreeType 
+        level  : AATreeLevel
+        left   : [AATreeNode] 
+        right  : [AATreeNode]
+    inv mk_AATreeNode(x, -, -, -) == x <> nil;
 
     --@doc total (<) order between set values. 
     --     bool result will ignore repeated insertions.
     --     int result could be used to error on repeated insertions. 
     AATreeOrder = (AATreeType * AATreeType -> bool);
 
-    AATreeSet0 :: 
-        --@doc arguably this could be "root: [AATreeNode0]" to avoid NULL_NODE?
-        root : [AATreeNode0]
+    AATreeSet :: 
+        root : [AATreeNode]
         order: AATreeOrder;
-    
-    AATreeSet = AATreeSet0 
-    inv mk_AATreeSet0(root, -) == 
-        --@doc not-null check redundant given is_AATreeNode(root) <=> root <> NULL_NODE
-        --root <> NULL_NODE / nil and 
-        is_AATreeNode(root);
-
-values 
-    --NULL_NODE: AATreeNode0 = mk_AATreeNode0(nil, 0, nil, nil);
-    --NULL_CONSITENT: bool = is_AATreeSet(mk_AATreeSet0(root, order)) <=> is_AATreeNode(root);  or just not is_AATreeNode(NULL_NODE)
     
 functions 
 
-    data: [AATreeNode0] -> AATreeType
+    data[@T]: [AATreeNode] -> [@T]
     data(n) == if n = nil then nil else n.element
-    pre  (n <> nil => n.element <> nil)
+    --pre  (n <> nil => n.element <> nil)
+    post (n = nil 
+          <=> 
+          --Warning(5037) element should not be lambda typed; adding @T prevents this
+          (RESULT = nil));
+
+    dataset: [AATreeNode] -> set of AATreeType 
+    dataset(n) == 
+        if n = nil then {} else {n.element} union dataset(n.left) union dataset(n.right)
+    post 
+        (n = nil <=> RESULT = {})
+    measure 
+        is not yet specified;
+
+    level: [AATreeNode] -> nat
+    level(n) == if (n = nil) then 0 else n.level
+    post (n <> nil <=> is_AATreeLevel(RESULT));
+
+    left: [AATreeNode] -> [AATreeNode]
+    left(n) == if n = nil then nil else n.left
+    post (n = nil => RESULT = nil); 
+
+    right: [AATreeNode] -> [AATreeNode]
+    right(n) == if n = nil then nil else n.right
+    post (n = nil => RESULT = nil); 
+
+    skew: [AATreeNode] -> [AATreeNode]
+    skew(n) ==  
+        if n = nil then nil 
+        else 
+            let mk_AATreeNode(x, k, t, u) = n in       
+                --@doc level(nil)=0, which k can never be given AATreeLevel
+                if /*t <> nil and*/ k = level(t) then 
+                    mk_AATreeNode(data(t), k, left(t), mk_AATreeNode(x, k, right(t), u))
+                else -- n <> nil of course. 
+                    n
     post (n = nil <=> RESULT = nil);
 
-    level: [AATreeNode0] -> nat
-    level(n) == if (n = nil) then 0 else n.level
-    post (n <> nil <=> is_nat1(RESULT));
-
-    left: [AATreeNode0] 
-
-    skew: AATreeNode0 -> AATreeNode0
-    skew(n) == 
-        if n = NULL_NODE then 
-            n
+    split: [AATreeNode] -> [AATreeNode]
+    split(n) == 
+        if n = nil then nil 
         else 
-            let mk_AATreeNode0(x, k, t, u) = n in       
-                if t <> NULL_NODE and k = level(t) then 
-                    mk_AATreeNode0(data(t), k, left(t), mk_AATreeNode0(x, k, right(t), u))
+            let mk_AATreeNode(x, k, t, u) = n in 
+                --@doc level(nil)=0, which k can never be given AATreeLevel
+                if /*u <> nil and*/ k = level(right(u)) then 
+                    mk_AATreeNode(data(u), k+1, mk_AATreeNode(x, k, t, left(u)), right(u))
                 else 
-                    n;
+                    n
+    post (n = nil <=> RESULT = nil);
 
+    wf: [AATreeNode] -> bool 
+    wf(n) == 
+        (n = nil)
+        or 
+        (let mk_AATreeNode(-, k, t, u) = n in 
+            if t = nil then 
+                k = 1 and (u = nil or (level(u) = 1 and left(u) = nil and right(u) = nil))
+            else 
+                wf(t) and wf(u) and u <> nil and 
+                level(t) < k and level(u) <= k and level(right(u)) < k 
+        )
+    measure 
+        is not yet specified;
     
-    addNode: AATreeNode0 * AATreeOrder * AATreeType -> AATreeNode
-    addNode(n, order, x) == 
-        if n = NULL_NODE then
-            mk_AATreeNode0(x, 1, nil, nil)
+    insort: [AATreeNode] * AATreeOrder * AATreeType -> AATreeNode
+    insort(n, order, x) == 
+        if n = nil then
+            mk_AATreeNode(x, 1, nil, nil)
         else
-            let mk_AATreeNode0(y, k, t, u) = n,
-                leq: bool = order(x, y) 
-            in
-                mk_AATreeNode0(y, k, 
-                        if     leq then addNode(t, order, x) else t,
-                        if not leq then addNode(u, order, x) else u)
-    --measure 
+            let mk_AATreeNode(y, k, t, u) = n,
+                leq: bool = order(x, y),
+                r: AATreeNode =  
+                    mk_AATreeNode(y, k, 
+                            if     leq then insort(t, order, x) else t,
+                            if not leq then insort(u, order, x) else u)
+            in 
+                split(skew(r))
+    pre x <> nil and 
+    measure 
+        is not yet specified
     --    n.level
     -- not quite as might go up and down; perhaps depth(n) - n.level? 
     ;
 
-    add: AATreeSet * AATreeType -> AATreeSet
-    add(mk_AATreeSet0(root, order), v) == 
-            --y=val,k=lvl,t=l,u=r
-        let mk_AATreeNode0(val, lvl, l, r) = root,
-            leq: bool = order(v, val)
-         in
-            mk_AATreeSet0(
-                mk_AATreeNode0(val, lvl, 
-                    if leq then add() else l,
-                    if not leq then add() else r),
-                order);
+    --@IsaLemma(dataset_skew_split, 
+    --      forall n: [AATreeNode] & 
+    --          dataset(skew(n)) = dataset(n) and dataset(n) = dataset(split(n)))
+
+    --@IsaLemma(wf_skew_split, forall n: [AATreeNode] & wf(n) => skew(n) = n and split(n) = n)
+
+    --@IsaLemma(wf_insort, 
+    --      forall n: [AATreeNode], o: AATreeOrder, x: AATreeType &
+    --          wf(n) => wf(insort(n, order, x)) )
 
 end AATree
