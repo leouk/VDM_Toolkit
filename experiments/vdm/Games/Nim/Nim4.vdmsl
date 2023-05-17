@@ -1,4 +1,4 @@
-module NimFull
+module Nim4
 imports from IO		 operations  println	renamed println;
 															printf  renamed printf;
 															print		renamed print
@@ -63,9 +63,8 @@ measure
 who_plays_next: Moves -> Player
 who_plays_next(ms) == 
 	if len ms mod 2 = 0 then <P1> else <P2>
-pre isFirst(<P1>)
+pre isFirst(<P1>);
 	-- TODO: consider the more complex if-then-else when not isFirst(<P1>) 
-post true;
 
 fair_play: Player * Moves -> bool
 fair_play(p, ms) == p = who_plays_next(ms);
@@ -212,7 +211,6 @@ moves_of: Moves * bool -> seq of Move
 moves_of(ms, first) == 
 	let idxs = first_player_inds(ms) in
 			[ ms(i) | i in set if (first) then idxs else inds ms \ idxs ]
-			-- set {1,2,3}  [ms(1), ms(2), ms(3)] x [ms(3), ms(2), ms(1)]?
 ;
 
 will_first_player_win: Move -> bool
@@ -468,4 +466,4 @@ values
 									-- 1 2 1 2 1 2 1 2 1 2
 FIXED_PLAY: Moves = [3,2,2,1,3,2,2,1,3,1];
 
-end NimFull
+end Nim4

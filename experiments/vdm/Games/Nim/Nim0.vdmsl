@@ -1,0 +1,77 @@
+module Nim0
+exports all
+definitions 
+
+values 
+	MAX_PILE: nat1 = 20;
+	MAX_MOV : nat1 = 3;
+
+types 
+
+	Pile = nat1
+	inv p == /*p > MAX_MOV and*/ p <= MAX_PILE;
+
+	Move = nat1
+	inv p == p <= MAX_MOV;
+
+	Moves = seq of Move
+	inv s == 
+		-- you can never move beyond what's in the pile
+		sum_elems(s) <= MAX_PILE
+		and
+		-- last move is always 1, when moves are present, at the end of the game
+		(sum_elems(s) = MAX_PILE => s(len s) = 1)
+		-- [3,3,2,2,2,1,3,3,1]
+
+		;
+	
+functions 
+
+sum_elems: seq of Move -> nat
+sum_elems(s) == 
+	cases s:
+		[]     -> 0,
+		[x]^xs -> x + sum_elems(xs)
+	end
+pre
+	true
+post	
+	((s <> []) <=> (RESULT > 0))
+	--(5 * 3) + 2
+measure 
+	len s;
+--[3,2,1]
+
+sum_elems2: seq of Move -> nat
+sum_elems2(s) == 
+	if s = [] then 
+		0
+	else	
+		hd s + sum_elems2(tl s)
+measure 
+	len s;
+
+current_pile: Moves -> nat
+current_pile(s) == MAX_PILE - sum_elems(s);
+
+play: Move /* 1...3 */ * Moves -> Moves
+play(m, s) == s ^ [m]
+pre 
+	-- what's left is within what's to be played
+	m <= current_pile(s)
+	and
+	-- 
+	--sum_elems(s) < MAX_PILE
+	current_pile(s) > 0
+post 
+	-- you play something = implicitly true by the inv of Move
+	sum_elems(s) < sum_elems(RESULT)
+	and
+	sum_elems(s) + m = sum_elems(RESULT) 
+	--[3,3,2,2,2,1,3,3]^[m]? 19
+	--[2,2,2,1,3,3,3,3]      19
+	-- (pile - 1) mod (mov_limit + 1) = 3
+;
+
+
+end Nim0
