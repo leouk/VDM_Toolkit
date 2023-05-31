@@ -10,6 +10,21 @@ exports
     functions 
         empty: () -> Bag;  
         isEmpty: Bag -> bool;  
+        bset[@T]: Bag -> set of @T;
+        inbag[@T]: @T * Bag -> bool;
+        count[@T]: Bag -> (@T -> nat);
+        amount[@T]: Bag * @T -> nat;
+        post_amount[@T]: Bag * @T * nat +> bool;
+        subbageq[@T]: Bag * Bag -> bool;
+        scale[@T]: nat * Bag -> Bag;
+        bunion[@T]: Bag * Bag -> Bag;
+        post_bunion[@T]: Bag * Bag * Bag +> bool;
+        difference[@T]: Bag * Bag -> Bag;
+        post_difference[@T]: Bag * Bag * Bag +> bool;
+        items[@T]: seq of @T -> Bag;
+        --@todo if we have @T, these aren't needed? 
+        type_test[@T]: () -> (? -> bool);
+        type_convergent[@T]: Bag -> bool;
 definitions
 types 
     Bag = map ? to nat1;
@@ -42,7 +57,9 @@ functions
 
     subbageq[@T]: Bag * Bag -> bool
     subbageq(a, b) ==
-        forall xa in set dom a & amount[@T](a, a(xa)) <= amount[@T](b, b(xa));
+        forall xa in set dom a & amount[@T](a, a(xa)) <= amount[@T](b, b(xa))
+    post 
+        bset[@T](a) subset bset[@T](b);
 
     --@doc ZEves scale definition is wrong! wrt to theorem bagscaleBy1 (!
     scale[@T]: nat * Bag -> Bag 
@@ -65,20 +82,20 @@ functions
         --@doc not equal because when zeroed it goes out of the domain
         bset[@T](RESULT) subset bset[@T](a) \ bset[@T](b);
 
-    filter[@T]: seq of @T * @T -> seq of @T 
-    filter(s, x) == [ s(i) | i in set inds s & s(i) = x ]
+    filter[@T]: seq of @T * (@T -> bool) -> seq of @T 
+    filter(s, f) == [ s(i) | i in set inds s & f(s(i)) ]
     post 
-        RESULT <> [] <=> elems RESULT = {x};
+        RESULT <> [] <=> (forall x in set elems RESULT & f(x)); -- RESULT <> [] <=> elems RESULT = {x};
 
     items[@T]: seq of @T -> Bag 
-    items(s) == { s(i) |-> card elems filter[@T](s, s(i)) | i in set inds s }
+    items(s) == { s(i) |-> card elems filter[@T](s, (lambda x: @T & s(i) = x)) | i in set inds s }
     post 
         elems s = bset[@T](RESULT);
 
 	type_test[@T]: () -> (? -> bool)
 	type_test() == (lambda t: ? & is_(t, @T));
 
-	--@doc all elements of the stack are type convergent up to @T
+	--@doc all elements of the bag are type convergent up to @T
 	type_convergent[@T]: Bag -> bool
 	type_convergent(b) == 
 		forall i in set dom b & type_test[@T]()(b(i));
