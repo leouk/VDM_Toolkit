@@ -1,0 +1,86 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2023 
+--@doc Bag as an abstract data type (inspired by SPARK ADTs and Z/Eves bags)
+------------------------------------------------------------------------------------
+module Bag 
+exports 
+    types 
+        Bag;
+    functions 
+        empty: () -> Bag;  
+        isEmpty: Bag -> bool;  
+definitions
+types 
+    Bag = map ? to nat1;
+
+functions 
+    empty: () -> Bag
+    empty() == {|->};
+
+    isEmpty: Bag -> bool 
+    isEmpty(b) == b = empty()
+    post 
+        b = empty();
+
+    bset[@T]: Bag -> set of @T
+    bset(b) == dom b;
+
+    inbag[@T]: @T * Bag -> bool    
+    inbag(x, b) == x in set bset[@T](b)
+    post 
+        x in set bset[@T](b);
+
+    count[@T]: Bag -> (@T -> nat)
+    count(b) == (lambda x: @T & amount[@T](b, x));
+
+    amount[@T]: Bag * @T -> nat 
+    amount(b, x) == 
+        if inbag[@T](x, b) then b(x) else 0
+    post 
+        (inbag[@T](x, b) <=> is_nat1(RESULT));
+
+    subbageq[@T]: Bag * Bag -> bool
+    subbageq(a, b) ==
+        forall xa in set dom a & amount[@T](a, a(xa)) <= amount[@T](b, b(xa));
+
+    --@doc ZEves scale definition is wrong! wrt to theorem bagscaleBy1 (!
+    scale[@T]: nat * Bag -> Bag 
+    scale(n, b) == 
+        if n = 0 then 
+            empty() 
+        else  
+            { x |-> n * b(x) | x in set dom b };
+
+    bunion[@T]: Bag * Bag -> Bag 
+    bunion(a, b) == 
+        { x |-> a(x) + b(x) | x in set dom a union dom b }
+    post 
+        bset[@T](RESULT) = bset[@T](a) union bset[@T](b);
+
+    difference[@T]: Bag * Bag -> Bag 
+    difference(a, b) == 
+        { x |-> a(x) - b(x) | x in set dom a union dom b /*inter dom b*/ & a(x) - b(x) > 0 }
+    post 
+        --@doc not equal because when zeroed it goes out of the domain
+        bset[@T](RESULT) subset bset[@T](a) \ bset[@T](b);
+
+    filter[@T]: seq of @T * @T -> seq of @T 
+    filter(s, x) == [ s(i) | i in set inds s & s(i) = x ]
+    post 
+        RESULT <> [] <=> elems RESULT = {x};
+
+    items[@T]: seq of @T -> Bag 
+    items(s) == { s(i) |-> card elems filter[@T](s, s(i)) | i in set inds s }
+    post 
+        elems s = bset[@T](RESULT);
+
+	type_test[@T]: () -> (? -> bool)
+	type_test() == (lambda t: ? & is_(t, @T));
+
+	--@doc all elements of the stack are type convergent up to @T
+	type_convergent[@T]: Bag -> bool
+	type_convergent(b) == 
+		forall i in set dom b & type_test[@T]()(b(i));
+
+end Bag
