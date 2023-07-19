@@ -678,13 +678,13 @@ functions
 
 values
 	--@doc basic dimension vectors
-	DLENGTH   : SingleDimension = ZERO_DV ++ { <Length>      |-> 1 };
-	DMASS     : SingleDimension = ZERO_DV ++ { <Mass>        |-> 1 };
-	DTIME     : SingleDimension = ZERO_DV ++ { <Time>        |-> 1 };
-	DCURRENT  : SingleDimension = ZERO_DV ++ { <Current>     |-> 1 };
-	DTEMP     : SingleDimension = ZERO_DV ++ { <Temperature> |-> 1 };
-	DAMOUNT   : SingleDimension = ZERO_DV ++ { <Amount>      |-> 1 };
-	DINTENSITY: SingleDimension = ZERO_DV ++ { <Intensity>   |-> 1 };
+	DLENGTH   : SingleDimension = ZERO_DV ++ { <Length>      |-> 1 }; -- L
+	DMASS     : SingleDimension = ZERO_DV ++ { <Mass>        |-> 1 }; -- M
+	DTIME     : SingleDimension = ZERO_DV ++ { <Time>        |-> 1 }; -- T
+	DCURRENT  : SingleDimension = ZERO_DV ++ { <Current>     |-> 1 }; -- I (be careful this is not intensity, but charge)!
+	DTEMP     : SingleDimension = ZERO_DV ++ { <Temperature> |-> 1 }; -- theta
+	DAMOUNT   : SingleDimension = ZERO_DV ++ { <Amount>      |-> 1 }; -- N
+	DINTENSITY: SingleDimension = ZERO_DV ++ { <Intensity>   |-> 1 }; -- J
 
 	--@doc common dimension units
 	DAREA        : DimensionVector = dim_comp_n(DLENGTH, 2);                                  --L**2
@@ -696,12 +696,12 @@ values
 	DPOWER       : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));   --L**2*M*T**-3
 	DFORCE       : DimensionVector = dim_comp(DLENGTH, dim_comp(DMASS, dim_inv_n(DTIME, 2))); --L*M*T**-2
 	DPRESSURE    : DimensionVector = dim_comp(dim_inv(DLENGTH), dim_comp(DMASS, dim_inv_n(DTIME, 2)));  --L**-1*M*T**-2               
-	DCHARGE      : DimensionVector = dim_comp(DINTENSITY, DTIME);                            --I*T
-	DPDIFFERENCE : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_comp(dim_inv_n(DTIME, 3), dim_inv(DINTENSITY)))); --L**2*M*T**-3*I**-1
+	DCHARGE      : DimensionVector = dim_comp(DCURRENT, DTIME);                            --I*T
+	DPDIFFERENCE : DimensionVector = dim_comp(DAREA, dim_comp(DMASS, dim_comp(dim_inv_n(DTIME, 3), dim_inv(DCURRENT)))); --L**2*M*T**-3*I**-1
 	DCAPACITANCE : DimensionVector = dim_comp(dim_inv(DAREA),                               --L**-2*M**-1*T**4*I**2
 											dim_comp(dim_inv(DMASS), 
 												dim_comp(dim_comp_n(DTIME, 4), 
-																	dim_comp_n(DINTENSITY, 2))));
+																	dim_comp_n(DCURRENT, 2))));
 	DRADIAN      : DimensionlessVector = dim_comp(DLENGTH, dim_inv(DLENGTH));                    --L*L**-1
 	DSTERADIAN   : DimensionlessVector = dim_comp(DAREA, dim_inv(DAREA));                        --L**2*L**-2
 	DWATT        : DimensionVector     = dim_comp(DAREA, dim_comp(DMASS, dim_inv_n(DTIME, 3)));  --L**2*M*T**-3
