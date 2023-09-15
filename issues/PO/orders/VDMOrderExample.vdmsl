@@ -1,0 +1,32 @@
+module VDMOrderExample
+exports all
+definitions 
+types 
+    R :: 
+        x: nat
+        y: nat 
+    eq mk_R(x1, -) = mk_R(x2, -) == x1 = x2
+    ord mk_R(x1, y1) < mk_R(x2, y2) == (x1 < x2) or (x1 = x2 and y1 < y2);  
+
+end VDMOrderExample
+
+/*
+Proof Obligation 1: (Unproved)
+R: total function obligation in 'VDMOrderExample' (VDMOrderExample.vdmsl) at line 8:8
+(forall mk_R(x1, $any1):R, mk_R(x2, $any2):R &
+  is_(eq_R(mk_R(x1, $any1), mk_R(x2, $any2)), bool))
+
+Proof Obligation 2: (Unproved)
+R: equivalence relation obligation in 'VDMOrderExample' (VDMOrderExample.vdmsl) at line 8:8
+(forall x:R & eq_R(x, x)) and (forall x:R, y:R & eq_R(x, y) => eq_R(y, x)) and (forall x:R, y:R, z:R & eq_R(x, y) and eq_R(y, z) => eq_R(x, z))
+
+Proof Obligation 3: (Unproved)
+R: total function obligation in 'VDMOrderExample' (VDMOrderExample.vdmsl) at line 9:9
+(forall mk_R(x1, y1):R, mk_R(x2, y2):R &
+  is_(ord_R(mk_R(x1, y1), mk_R(x2, y2)), bool))
+
+Proof Obligation 4: (Unproved)
+R: strict order obligation in 'VDMOrderExample' (VDMOrderExample.vdmsl) at line 9:9
+(forall x:R & not ord_R(x, x)) and (forall x:R, y:R, z:R & ord_R(x, y) and ord_R(y, z) => ord_R(x, z))
+
+*/
