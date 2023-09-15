@@ -1,5 +1,5 @@
 theory VDMOrderExample
-imports VDMToolkit
+imports Main
 begin
 
 record R = 
