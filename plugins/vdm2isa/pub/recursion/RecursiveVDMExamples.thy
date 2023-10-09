@@ -109,7 +109,7 @@ section \<open>VDM recursion over sets\<close>
   sumset: set of nat -> nat 
   sumset(s) == if s = {} then 0 else let e in set s in sumset(s - {e}) + e
   pre (forall n in set s & n > 5)
-  --@IsaMeasure({(x - { let e in set x in e }, x) | x : set of nat & x <> {}}) 
+  --@IsaMeasure({(s - { let e in set s in e }, x) | s : set of nat & s <> {}}) 
   --@Witness(sumset({ 1 }))
   measure card s;
 \<close>
