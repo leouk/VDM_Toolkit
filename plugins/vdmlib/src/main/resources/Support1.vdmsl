@@ -337,7 +337,26 @@ functions
     --@doc ceil is a real ceiling function
     ceil: real -> nat
     ceil(n) == - floor (- n); 
-	
+
+    --@doc greatest common divisor between two naturals 
+    gcd: nat * nat -> nat 
+    gcd(a, b) ==
+        if b = 0 then 
+            a 
+        else
+            gcd(b, a mod b)
+    post 
+        RESULT = 0 <=> a = b and b = 0
+    measure 
+        b; 	
+
+	lcm: nat * nat -> nat 
+	lcm(a, b) == 
+		let gd: nat = gcd(a, b) in 
+			if gd = 0 then 0 else abs (a * b) / gcd(a, b)
+	post 
+        RESULT = 0 <=> a = b and b = 0;
+		
 ---------------------------------------------------------------
 -- Generic functions for VDM data types
 ---------------------------------------------------------------
