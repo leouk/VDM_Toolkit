@@ -27,45 +27,45 @@ public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
     /**
 	 * Override the default parse, and look for @TheoremAttribute <name> = <set-enum>;
 	 */
-	@Override
-	public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
-	{
-		ltr.nextToken();
-		ASTExpressionList args = new ASTExpressionList();
-		ExpressionReader er = new ExpressionReader(ltr);
-		ASTExpression exp = er.readExpression();
+	// @Override
+	// public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
+	// {
+	// 	ltr.nextToken();
+	// 	ASTExpressionList args = new ASTExpressionList();
+	// 	ExpressionReader er = new ExpressionReader(ltr);
+	// 	ASTExpression exp = er.readExpression();
 		
-		if (exp instanceof ASTEqualsExpression)		// Should parse as an equals expression
-		{
-			ASTEqualsExpression eqexp = (ASTEqualsExpression)exp;
+	// 	if (exp instanceof ASTEqualsExpression)		// Should parse as an equals expression
+	// 	{
+	// 		ASTEqualsExpression eqexp = (ASTEqualsExpression)exp;
 			
-			if (eqexp.left instanceof ASTVariableExpression)
-			{
-				args.add(eqexp.left);
-				if (eqexp.right instanceof ASTSetEnumExpression)
-				{
-					args.add(eqexp.right);
-				}
-				else 
-				{
-					parseException("expecting <name> = <set-enum>", eqexp.right.location);
-				}
-			}
-			else
-			{
-				parseException("expecting <name> = <set-enum>;", eqexp.left.location);
-			}
-		}
-		else
-		{
-			parseException("expecting <name> = <set-enum>;", exp.location);
-		}
+	// 		if (eqexp.left instanceof ASTVariableExpression)
+	// 		{
+	// 			args.add(eqexp.left);
+	// 			if (eqexp.right instanceof ASTSetEnumExpression)
+	// 			{
+	// 				args.add(eqexp.right);
+	// 			}
+	// 			else 
+	// 			{
+	// 				parseException("expecting <name> = <set-enum>", eqexp.right.location);
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			parseException("expecting <name> = <set-enum>;", eqexp.left.location);
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		parseException("expecting <name> = <set-enum>;", exp.location);
+	// 	}
 		
-		if (ltr.getLast().isNot(Token.SEMICOLON))
-		{
-			parseException("missing ;", ltr.getLast().location);
-		}
+	// 	if (ltr.getLast().isNot(Token.SEMICOLON))
+	// 	{
+	// 		parseException("missing ;", ltr.getLast().location);
+	// 	}
 		
-		return args;
-	}
+	// 	return args;
+	// }
 }
