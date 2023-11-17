@@ -474,7 +474,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 	 * @param typeParams
 	 * @return
 	 */
-    public static final TRFunctionType expandGenericTypes(TRFunctionType type, TCNameList typeParams) 
+    public static final TRFunctionType expandGenericTypes(TRFunctionType type, TRTypeList typeParams) 
 	{
 		assert type != null && typeParams != null;
 		TRFunctionType result = type;
