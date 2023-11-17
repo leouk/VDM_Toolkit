@@ -1,7 +1,6 @@
 package vdm2isa.tr.definitions;
 
 import com.fujitsu.vdmj.tc.definitions.TCImplicitFunctionDefinition;
-import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
@@ -13,6 +12,7 @@ import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRPatternListTypePairList;
 import vdm2isa.tr.types.TRPatternTypePair;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 public class TRImplicitFunctionDefinition extends TRExplicitFunctionDefinition 
 {
@@ -23,7 +23,7 @@ public class TRImplicitFunctionDefinition extends TRExplicitFunctionDefinition
  
     public TRImplicitFunctionDefinition(TCImplicitFunctionDefinition definition, TRIsaVDMCommentList comments,
             TRAnnotationList annotations, TCNameToken name, NameScope nameScope, boolean used, boolean excluded,
-            TCNameList typeParams, TRPatternListTypePairList parameterPatterns, TRPatternTypePair result,
+            TRTypeList typeParams, TRPatternListTypePairList parameterPatterns, TRPatternTypePair result,
             TRFunctionType type, TRExpression body,
             TRExpression precondition, TRExpression postcondition, 
             TRExpression measureExp,
