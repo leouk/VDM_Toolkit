@@ -103,7 +103,8 @@ public class INTimeAnnotation extends INAnnotation
 		
 			// build the output string including the time param at values[0]
 			INStringLiteralExpression fmt = (INStringLiteralExpression)args.get(0);
-			Console.out.printf("[%1s]\t\t " + fmt.value.value, values);
+			// fmt.value.value is a format string, hence the concatenation
+			Console.out.printf("[%1s]\t\t " + fmt.value.value + "\n", values);
 		}		
 		
 		//reset the time summary per call to it.
@@ -117,10 +118,10 @@ public class INTimeAnnotation extends INAnnotation
 		    {
 		    	final long specificTime = timeTotal.get(k);
 		    	final double percentTime = ((double)specificTime * 100 / (double)elapsedTime); 
-		        Console.out.printf("[%1s%%][%2s] %3s\n", percentTime, specificTime, k);
+		        Console.out.printf("[%1s%%][%2s]\t\t %3s\n", percentTime, specificTime, k);
 		    }
 		    Console.out.println("---------------------------------------------------\n");
-		    Console.out.printf("[%1s] %2s\n", elapsedTime, currentTimeKey);
+		    Console.out.printf("[%1s]\t\t %2s\n", elapsedTime, currentTimeKey);
 		    Console.out.println("---------------------------------------------------\n");
 		    timeTotal.clear();
 		}

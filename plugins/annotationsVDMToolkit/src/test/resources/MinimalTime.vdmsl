@@ -8,7 +8,7 @@ functions
 	--@Warning(5012)
 	f: nat * nat -> nat
 	f(m, n) == 
-		--@Time("f(%2s, %3s)\n", m, n) 
+		--@Time("f(%2s, %3s)", m, n) 
 		if m = 0 then
 			n+1
 		else
