@@ -142,6 +142,7 @@ import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.messages.VDMError;
 import com.fujitsu.vdmj.messages.VDMWarning;
+import com.fujitsu.vdmj.tc.types.TCTypeList;
 import com.fujitsu.vdmj.typechecker.NameScope;
 
 import vdmantlr.generated.VDMBaseListener;
@@ -744,7 +745,7 @@ public class VDMASTListener extends VDMBaseListener {
     {
         assert fromModuleImport != null;
         LexNameToken fname = getNode(ctx.fname, LexNameToken.class);
-        LexNameList tvars = ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), LexNameList.class) : null;
+        ASTTypeList tvars = ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), ASTTypeList.class) : null;
         ASTFunctionType ftype = ctx.function_type() != null ? getNode(ctx.function_type(), ASTFunctionType.class) : null;
         LexNameToken renamed = ctx.renamed != null ? getNode(ctx.renamed, LexNameToken.class) : null;
         assert fname.module.equals(currentModule) && (renamed == null || renamed.module.equals(currentModule));
@@ -856,7 +857,7 @@ public class VDMASTListener extends VDMBaseListener {
         putNode(ctx, new ASTExportedFunction(token2loc(ctx), 
             getListNode(ctx.name_list(), LexNameList.class),
             getNode(ctx.function_type(), ASTFunctionType.class),
-            ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), LexNameList.class) : null));
+            ctx.type_variable_list() != null ? getListNode(ctx.type_variable_list(), ASTTypeList.class) : null));
     }
 
     @Override 
@@ -2293,7 +2294,9 @@ public class VDMASTListener extends VDMBaseListener {
         }
         else
         {
-            result = new ASTMkTypeExpression(mktypeName, exprs);
+            //TODO: where to get to maximal!
+            boolean maximal = false;
+            result = new ASTMkTypeExpression(mktypeName, exprs, maximal);
         }
         putNode(ctx, result);
     }
