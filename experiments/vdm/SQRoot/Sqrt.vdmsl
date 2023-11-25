@@ -1,0 +1,137 @@
+module Sqrt
+imports from IO operations printf renamed printf,
+		from VDMUtil functions val2seq_of_char renamed val2str;
+exports all
+definitions 
+
+functions
+
+	--@doc naive square root specification: 
+	--		 assumption: no complex numbers, please
+	--		 commitment: result squared equals input
+
+	--@doc R1: calculate the square root of a natural (positive) number
+	--@doc R2: result must be within mathematical understanding of square root
+	--@doc R2.1: user must define the calculation tolerance for "real" result 
+	--@doc R2.2: error handling, error assumptions, error margin/narrowness, etc.
+	--@doc R3: provide tests to show results adhere to intent
+	-- int=-inf..+inf
+	square_root: real -> real
+	square_root(x) == 
+		is not yet specified
+	pre x >= 0
+	post RESULT * RESULT = x;
+
+functions
+	--@doc tighter specification of inputs, naive/restricted output type (int square root)  
+	sqrtSpec: nat -> int
+	sqrtSpec(x) == is not yet specified
+	post RESULT * RESULT = x;
+ 	
+	sqrt_contract: nat1 * real -> real
+	sqrt_contract(value, err) == 
+		is not yet specified
+	pre 
+		err > 0 and err <= value
+	post
+		(RESULT * RESULT) - err <= value;
+		
+	newton_guess: real * real -> real
+	newton_guess(value,guess) ==
+		(guess + (value / guess)) / 2
+	pre
+		value >= 0 and guess > 0;
+
+	sqrt_efficient: real * real -> real
+	sqrt_efficient(value, err) == 
+		sqrt0(value,value,err,newton_guess(value, value))
+	pre
+		value >= 0
+		and 
+		err > 0 and err <= value 
+	post
+		--@OnFail("Error tolerance is too big (i.e. reduce err), RESULT=%1s, err=%2s, input=%3s", RESULT, err, value)
+		((RESULT * RESULT)-err <= value)
+		and
+		--@OnFail("Result precision is too coarse (i.e. incorrect algoritm), RESULT=%1s, input=%2s", RESULT, value)
+		((RESULT + 1) * (RESULT + 1) > value)
+		;
+
+	sqrt0: real * real * real * real -> real
+	sqrt0(valueI,value,err,result) ==
+		if (abs (value - result) >= err * value) then
+			sqrt0(valueI,result,err,newton_guess(valueI,result))
+		else
+			result
+	pre
+		value >= 0 and valueI >= 0 and value <= valueI
+		and
+		err > 0 and err <= valueI;
+
+types
+	MySQRT2 ::
+		sqrt_error: real
+	inv mk_MySQRT2(sqrt_error) == sqrt_error <= ERROR;
+
+state MySQRT of
+	sqrt_error: real
+inv
+	mk_MySQRT(sqrt_error) == sqrt_error <= ERROR
+init
+  mys == mys = mk_MySQRT(ERROR / 10)
+end
+
+operations
+
+	Change_Error: real ==> ()
+	Change_Error(e) == sqrt_error := e;
+	
+	-- sqrt_error
+	SquareRoot : real  ==> real 
+	SquareRoot (value) ==
+	-- 9
+	-- guess = 4.5; 9
+	-- next  = 9
+	-- (guess + (value / guess)) / 2 = 9 + 1 / 2 = 5 
+	-- abs (4.5 - 9) >= 0.01 * 4.5  = -4.5 >= 0.045
+	    (dcl guess:real := value / 2,
+	  		     nextx: real := value;
+				while abs (guess - nextx) >= sqrt_error * guess do
+				   ( printf("guess=%1s; next=%2s\n", [guess, nextx]);
+				   	 guess := nextx;
+				     nextx := newton_guess(value,guess);
+				);
+				return nextx
+				)
+	pre 
+		value >= 0 and sqrt_error > 0 and sqrt_error <= value
+	post
+	  --RESULT * RESULT = value
+		(RESULT * RESULT) - sqrt_error <= value;
+
+	--  forall value : real, err: real & 
+	--		pre_SquareRoot(value, err) => post_SquareRoot(value, err, SquareRoot(value, err))
+	--  =
+	--  	value >= 0 and sqrt_error > 0 and sqrt_error <= value
+	--	 	=>
+	--		(SquareRoot(value, err) * SquareRoot(value, err)) - sqrt_error <= value
+		
+values
+	SMALL : nat = 5;
+	LARGE : nat = SMALL * 10;
+	ERROR : real = 0.01;
+	
+traces
+	ALLR:
+		let n in set {1,...,SMALL} in sqrt_efficient(n, ERROR);
+
+	ALLI:
+		let n in set {1,...,SMALL} in SquareRoot(n);
+		
+	ALLRLARGE:
+		let n in set {1,...,LARGE} in sqrt_efficient(n, ERROR);
+		
+	ALLILARGE:
+		let n in set {1,...,LARGE} in SquareRoot(n);
+			
+end Sqrt
