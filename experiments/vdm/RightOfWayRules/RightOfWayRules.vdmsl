@@ -1,3 +1,6 @@
+--@doc Leo Freitas, Copyright 2023
+--     Model of "right of way" rules for aircraft
+--     follows the ideas in https://link.springer.com/chapter/10.1007/978-3-031-20872-0_4 
 module RightOfWay
 imports from MATH functions atan renamed atan;
 exports all
