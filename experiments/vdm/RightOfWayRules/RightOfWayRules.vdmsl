@@ -11,15 +11,19 @@ types
     nzreal = real 
     inv r == r <> 0;
 
+    --@doc positive real
     preal = real 
     inv r == r >= 0;
 
+    --@doc negative real
     nreal = real 
     inv r == r <= 0; 
 
+    --@doc positive non-zero (>0) real
     pnzreal = preal 
     inv r == is_nzreal(r); 
 
+    --@doc negative non-zero (<0) real
     nnzreal = nreal 
     inv r == is_nzreal(r); 
 
@@ -293,7 +297,65 @@ functions
          zero_crossed(a0, a1)
         );
 
+    --@doc Safety 1: no two aircraft can share right of way
     theorem1: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem1(a0, a1)(delta_o, delta_c, Delta_h) == true;
+    theorem1(a0, a1)(delta_o, delta_c, Delta_h) == 
+        right_of_way(a1, a0)(delta_o, delta_c, Delta_h)
+        => 
+        not right_of_way(a0, a1)(delta_o, delta_c, Delta_h);
+
+    --@doc Safety 1a: if two aircraft have not crossed trajectories, then only one is to right of the other
+    theorem2: Aircraft * Aircraft -> preal * preal * preal -> bool 
+    theorem2(a0, a1)(delta_o, delta_c, Delta_h) == 
+        zero_crossed(a1, a0)
+        =>
+        ((to_the_right_of(a0, a1.position) 
+          and 
+          not to_the_right_of(a1, a0.position)
+         )
+         or
+         (to_the_right_of(a1, a0.position) 
+          and 
+          not to_the_right_of(a0, a1.position)
+         )
+        );
+
+    --@doc Overtaking is assymetric 
+    theorem3: Aircraft * Aircraft -> preal * preal * preal -> bool 
+    theorem3(a0, a1)(delta_o, delta_c, Delta_h) == 
+        overtaking(a0, a1)(delta_o) => not overtaking(a1, a0)(delta_o);
+
+    --@doc No right-of-way after crossing
+    theorem4: Aircraft * Aircraft -> preal * preal * preal -> bool 
+    theorem4(a0, a1)(delta_o, delta_c, Delta_h) == 
+        one_crossed(a0, a1)
+        =>
+        ((to_the_right_of(a0, a1.position) 
+          and 
+          to_the_right_of(a1, a0.position)
+         )
+         or 
+         (to_the_left_of(a0, a1.position) 
+          and 
+          to_the_left_of(a1, a0.position)
+         )
+        );
+
+    --@doc Aircraft awareness
+    theorem5: Aircraft * Aircraft -> preal * preal * preal -> bool 
+    theorem5(a0, a1)(delta_o, delta_c, Delta_h) == 
+        conv_not_headon(a0, a1)(delta_c, Delta_h)
+        =>
+        (zero_crossed(a0, a1) and to_the_left_of(a0, a1.position)
+         =>
+         right_of_way(a1, a0)(delta_o, delta_c, Delta_h)
+        );
+
+    --@doc Had right of way
+    theorem6: Aircraft * Aircraft -> preal * preal * preal -> bool 
+    theorem6(a0, a1)(delta_o, delta_c, Delta_h) == 
+        Q1(a0, a1.position) and Q1(a1, a0.position) and not parallel(a0, a1)
+        =>
+        (IS_in_q1_and_was_in_q2(a0, a1) or IS_in_q1_and_was_in_q2(a1, a0));
 
 end RightOfWay
