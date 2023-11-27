@@ -2,7 +2,7 @@ module GC0
 exports 
 	types
 		struct Sigma0;
-		Addr;
+		struct Addr;
 		
 	values
 		MAX_ADDR: nat;
