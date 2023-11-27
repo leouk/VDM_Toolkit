@@ -1,7 +1,7 @@
 --@doc Leo Freitas, Copyright 2023
 --     Model of "right of way" rules for aircraft
 --     follows the ideas in https://link.springer.com/chapter/10.1007/978-3-031-20872-0_4 
-module RightOfWay
+module RightOfWayRules
 imports from MATH functions atan renamed atan;
 exports all
 definitions
@@ -42,7 +42,7 @@ types
     inv a == a <= 360;
 
 values 
-    DEFAULT_SQRT_ERROR: pnzreal = 0.0001;
+    DEFAULT_SQRT_ERROR: pnzreal = 0.000001;
 
 functions 
     
@@ -305,8 +305,8 @@ functions
         not right_of_way(a0, a1)(delta_o, delta_c, Delta_h);
 
     --@doc Safety 1a: if two aircraft have not crossed trajectories, then only one is to right of the other
-    theorem2: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem2(a0, a1)(delta_o, delta_c, Delta_h) == 
+    theorem2: Aircraft * Aircraft -> bool 
+    theorem2(a0, a1) == 
         zero_crossed(a1, a0)
         =>
         ((to_the_right_of(a0, a1.position) 
@@ -321,13 +321,13 @@ functions
         );
 
     --@doc Overtaking is assymetric 
-    theorem3: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem3(a0, a1)(delta_o, delta_c, Delta_h) == 
+    theorem3: Aircraft * Aircraft -> preal -> bool 
+    theorem3(a0, a1)(delta_o) == 
         overtaking(a0, a1)(delta_o) => not overtaking(a1, a0)(delta_o);
 
     --@doc No right-of-way after crossing
-    theorem4: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem4(a0, a1)(delta_o, delta_c, Delta_h) == 
+    theorem4: Aircraft * Aircraft -> bool 
+    theorem4(a0, a1) == 
         one_crossed(a0, a1)
         =>
         ((to_the_right_of(a0, a1.position) 
@@ -352,10 +352,10 @@ functions
         );
 
     --@doc Had right of way
-    theorem6: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem6(a0, a1)(delta_o, delta_c, Delta_h) == 
+    theorem6: Aircraft * Aircraft -> bool 
+    theorem6(a0, a1) == 
         Q1(a0, a1.position) and Q1(a1, a0.position) and not parallel(a0, a1)
         =>
         (IS_in_q1_and_was_in_q2(a0, a1) or IS_in_q1_and_was_in_q2(a1, a0));
 
-end RightOfWay
+end RightOfWayRules
