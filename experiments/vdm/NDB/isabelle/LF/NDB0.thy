@@ -94,9 +94,14 @@ where
                    (* Maybe this deserve a better formatting ? Make it an intro rule? *)
 
 definition
+  inv_RelinfM :: "Relinf \<Rightarrow> \<bool>"
+where
+  "inv_RelinfM r \<equiv> finite (conns r)"
+
+definition
   inv_Relinf :: "Relinf \<Rightarrow> \<bool>"
 where
-  "inv_Relinf r \<equiv> finite (conns r) \<and> inv_Maps r"
+  "inv_Relinf r \<equiv> inv_RelinfM r \<and> inv_Maps r"
                   (* To keep track of checking Relinf invariant, we use a clearer (if redundant) name *)
 
 definition
@@ -609,7 +614,6 @@ unfolding inv_Pairs_def
 apply (simp add: l_munion_ran)
 
 apply (intro conjI)
-sledgehammer
   apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1))
 (* apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1)) *)
 
@@ -699,5 +703,10 @@ done
 
 (*print_syntax*)
 
+lemma \<open>\<forall> r . inv_RelinfM r \<longrightarrow> inv_Relinf r\<close>
+  apply (intro allI impI)
+  unfolding inv_RelinfM_def inv_Relinf_def
+  apply simp
+  oops
 
 end

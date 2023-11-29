@@ -4,6 +4,12 @@
 
 package vdm2isa.tr.types;
 
+import java.util.Set;
+import java.util.TreeSet;
+
+import com.fujitsu.vdmj.tc.types.TCFunctionType;
+import com.fujitsu.vdmj.tc.types.TCType;
+
 import vdm2isa.lex.IsaTemplates;
 import vdm2isa.lex.IsaToken;
 import vdm2isa.messages.IsaErrorMessage;
@@ -16,13 +22,6 @@ import vdm2isa.tr.patterns.TRPatternList;
 import vdm2isa.tr.patterns.TRPatternListList;
 import vdm2isa.tr.types.visitors.TRParametricTypeFinder;
 import vdm2isa.tr.types.visitors.TRTypeVisitor;
-
-import java.util.Set;
-import java.util.TreeSet;
-
-import com.fujitsu.vdmj.tc.lex.TCNameList;
-import com.fujitsu.vdmj.tc.types.TCFunctionType;
-import com.fujitsu.vdmj.tc.types.TCType;
 
 public class TRFunctionType extends TRAbstractInnerTypedType
 {
