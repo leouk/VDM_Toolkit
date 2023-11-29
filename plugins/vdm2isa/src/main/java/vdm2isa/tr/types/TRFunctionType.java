@@ -138,7 +138,8 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 
 	public TCFunctionType getVDMFunctionMeasureType(boolean isCurried, TCType actual)
 	{
-		return getVDMFunctionType().getMeasureType(isCurried, actual);
+		//@NB: can I ignore isCurried upwards the chain all up to TRExplicitFunctionDefinition? 
+		return getVDMFunctionType().getMeasureType(/*isCurried,*/ actual);
 	}
 
 	@Override
