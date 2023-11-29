@@ -27,19 +27,19 @@ types
     nnzreal = nreal 
     inv r == is_nzreal(r); 
 
-    RVector = real * real; 
+    RVector = preal * preal; 
 
     Position = RVector; 
 
     --@doc plane velocity
-    Velocity = nzreal * nzreal; 
+    Velocity = pnzreal * pnzreal; 
 
     Aircraft ::
         position: Position
         velocity: Velocity; 
 
-    Angle = real 
-    inv a == a <= 360;
+    Angle = preal 
+    inv a == a < 360;
 
 values 
     DEFAULT_SQRT_ERROR: pnzreal = 0.000001;
