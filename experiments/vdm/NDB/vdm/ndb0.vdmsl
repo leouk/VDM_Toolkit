@@ -1,0 +1,67 @@
+module ndb0
+exports all
+definitions 
+
+types 
+	State_a1 :: esets : map Esetnm to Esetinf
+							rels  : map Reltype to Relinf1;
+
+	State_a2 :: esets : map Esetnm to Esetinf
+							rels  : map Reltype to Relinf2;
+							
+	State_a3 :: esets : map Esetnm to Esetinf3
+							rels  : map Reltype to Relinf3;
+
+	Esetinf :: membs : map Eid to [Value];
+
+	Esetinf3 :: status : Status
+						 picture: Picture
+						 width  : Width 
+						 membs  : map Eid to [Value];
+	
+	-- NOTE: relationship types are said to be distinguishable, perhaps by name only?
+	--			 as given, a relationship like mk_RelType(F, currency, T), 
+	--			 mk_RelType(X, currency, Y) will be distinct (assuming X != F or Y != T),
+	--			 despite the fact there shouldn't be different currencies for element sets?
+	--
+	--			 i.e. the equality test over the Reltype should be on nm only?
+	--
+	Reltype :: fs : Esetnm
+						 nm : [Relnm]
+						 ts : Esetnm;
+						 
+	Relinf1 :: conns : set of Pair1;
+	
+	Pair1 :: fv : map Eid to [Value]
+				 	 tv : map Eid to [Value];
+
+	Relinf2 :: conns : set of Pair2;
+	
+	Pair2 :: fv : Eid
+				 	 tv : Eid; -- Value can be found from within the Esetinf
+
+	Relinf3 :: map_: Maptype
+						 conns : set of Pair2;
+						 
+  Maptype = <OneOne> | <OneMany> | <ManyOne> | <ManyMany> ;
+						 
+	Eid    = token;
+	Esetnm = token;
+	Relnm  = token;
+	Value  = token;
+	
+	Status = token;
+	Picture= token;
+	Width  = token;
+
+
+state StateName of
+-- TODO Define state here
+end 
+values 
+-- TODO Define values here
+functions 
+-- TODO Define functions here
+operations 
+-- TODO Define operations here
+end ndb0

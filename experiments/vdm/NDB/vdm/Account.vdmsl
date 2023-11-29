@@ -1,0 +1,28 @@
+module Account
+exports all
+definitions 
+
+types 
+   Acct0 :: name : seq of char
+   				  num  : nat
+   				  sort : nat;
+   				  
+   Acct =  Acct0
+   inv a == 10 <= a.num and a.num <= 20 and
+   				  21 <= a.sort and a.sort <= 30;
+
+values
+
+	  leo: Acct0 = mk_Acct0(['L','e', 'o'],  10, 31);
+	  
+functions 
+	
+   changeSC: Acct0 * nat -> Acct0
+   changeSC(a, sc) == mk_Acct0(a.name, a.num, sc)
+   pre inv_Acct(a)
+   post inv_Acct(RESULT);
+
+   changeSC2: Acct * nat -> Acct
+   changeSC2(a, sc) == mk_Acct0(a.name, a.num, sc);
+
+end Account
