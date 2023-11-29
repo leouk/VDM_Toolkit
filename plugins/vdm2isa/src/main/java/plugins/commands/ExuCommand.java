@@ -305,10 +305,9 @@ public class ExuCommand extends IsabelleCommand {
         return "exu";
     }
 
-    public static void help() 
+    public static String help() 
     {
-        // because the devil is in the detail; 
-        PluginConsole.println(USAGE);
+        return USAGE;
     }
 
     @Override

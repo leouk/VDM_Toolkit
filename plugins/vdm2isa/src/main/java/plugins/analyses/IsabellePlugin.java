@@ -11,6 +11,7 @@ import com.fujitsu.vdmj.plugins.AnalysisCommand;
 import com.fujitsu.vdmj.plugins.AnalysisEvent;
 import com.fujitsu.vdmj.plugins.AnalysisPlugin;
 import com.fujitsu.vdmj.plugins.EventListener;
+import com.fujitsu.vdmj.plugins.HelpList;
 import com.fujitsu.vdmj.plugins.PluginRegistry;
 import com.fujitsu.vdmj.plugins.analyses.TCPluginSL;
 import com.fujitsu.vdmj.plugins.events.CheckCompleteEvent;
@@ -156,10 +157,12 @@ public abstract class IsabellePlugin extends AnalysisPlugin implements EventList
     }
 
     @Override
-	public void help()
+	public HelpList getCommandHelp()
 	{
-        ExuCommand.help();
-        TranslateCommand.help();
-        IsapogCommand.help();
+    	return new HelpList(
+	        ExuCommand.help(),
+	        TranslateCommand.help(),
+	        IsapogCommand.help()
+	    );
 	}
 }

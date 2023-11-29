@@ -138,7 +138,7 @@ public class TRFunctionType extends TRAbstractInnerTypedType
 
 	public TCFunctionType getVDMFunctionMeasureType(boolean isCurried, TCType actual)
 	{
-		return getVDMFunctionType().getMeasureType(isCurried, actual);
+		return getVDMFunctionType().getMeasureType(actual);
 	}
 
 	@Override

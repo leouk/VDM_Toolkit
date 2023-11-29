@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
+import com.fujitsu.vdmj.plugins.HelpList;
 import com.fujitsu.vdmj.util.Utils;
 
 import json.JSONArray;
@@ -21,7 +22,6 @@ import rpc.RPCMessageList;
 import rpc.RPCRequest;
 import vdm2isa.lex.IsaTemplates;
 import vdmj.commands.AnalysisCommand;
-import vdmj.commands.HelpList;
 import vdmj.commands.IsaCommand;
 import workspace.Diag;
 import workspace.EventHub;
