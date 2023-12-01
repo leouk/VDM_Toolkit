@@ -121,7 +121,7 @@ functions
 			if size(fr) > 0 then fr(size(fr)) else nil--hd (reverse fr) else nil
 	post
 		--@doc lookup succeeds similarly to top
-		(RESULT <> nil <=> within_stack(s,RESULT));
+		(RESULT <> nil <=> s <> [] and within_stack(s,RESULT));
 		
 	--@doc determines whether the top of the stack has type @T, empty stack top is nil, which doesn't have type @T
 	top_has_type[@T]: Stack -> bool

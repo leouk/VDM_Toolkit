@@ -390,7 +390,7 @@ functions
 	measure
 		if hs in set dom HEX_TOUPPER then 1 else 0;
 
-	hex2nat0: seq of char * nat -> nat
+	hex2nat0: HexString * nat -> nat
 	hex2nat0(hs, res) == 
 		if hs = [] then
 			res
