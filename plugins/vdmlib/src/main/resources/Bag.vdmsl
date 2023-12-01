@@ -40,7 +40,9 @@ functions
 
     --@QuickCheck @T = nat
     bset[@T]: Bag -> set of @T
-    bset(b) == dom b;
+    bset(b) == dom b
+    pre 
+        type_convergent[@T](b);
 
     --@QuickCheck @T = nat
     inbag[@T]: @T * Bag -> bool    
@@ -52,12 +54,16 @@ functions
 
     --@QuickCheck @T = nat
     count[@T]: Bag -> (@T -> nat)
-    count(b) == (lambda x: @T & amount[@T](b, x));
+    count(b) == (lambda x: @T & amount[@T](b, x))
+    pre 
+        type_convergent[@T](b);
 
     --@QuickCheck @T = nat
     amount[@T]: Bag * @T -> nat 
     amount(b, x) == 
         if inbag[@T](x, b) then b(x) else 0
+    pre 
+        type_convergent[@T](b)
     post 
         (inbag[@T](x, b) <=> is_nat1(RESULT));
 
@@ -65,6 +71,8 @@ functions
     subbageq[@T]: Bag * Bag -> bool
     subbageq(a, b) ==
         forall xa in set dom a & amount[@T](a, a(xa)) <= amount[@T](b, b(xa))
+    pre 
+        type_convergent[@T](a) and type_convergent[@T](b)
     post 
         bset[@T](a) subset bset[@T](b);
 
@@ -75,12 +83,20 @@ functions
         if n = 0 then 
             empty() 
         else  
-            { x |-> n * b(x) | x in set dom b };
+            { x |-> n * b(x) | x in set dom b }
+    pre 
+        type_convergent[@T](b)
+    post 
+        bset[@T](b) = bset[@T](RESULT)
+        and
+        type_convergent[@T](RESULT);
 
     --@QuickCheck @T = nat
     bunion[@T]: Bag * Bag -> Bag 
     bunion(a, b) == 
         { x |-> a(x) + b(x) | x in set dom a union dom b }
+    pre 
+        type_convergent[@T](a) and type_convergent[@T](b)
     post 
         bset[@T](RESULT) = bset[@T](a) union bset[@T](b);
 
@@ -88,6 +104,8 @@ functions
     difference[@T]: Bag * Bag -> Bag 
     difference(a, b) == 
         { x |-> a(x) - b(x) | x in set dom a union dom b /*inter dom b*/ & a(x) - b(x) > 0 }
+    pre 
+        type_convergent[@T](a) and type_convergent[@T](b)
     post 
         --@doc not equal because when zeroed it goes out of the domain
         bset[@T](RESULT) subset bset[@T](a) \ bset[@T](b);
@@ -102,7 +120,9 @@ functions
     items[@T]: seq of @T -> Bag 
     items(s) == { s(i) |-> len filter[@T](s, (lambda x: @T & s(i) = x)) | i in set inds s }
     post 
-        elems s = bset[@T](RESULT);
+        elems s = bset[@T](RESULT)
+        and
+        type_convergent[@T](RESULT);
 
     --@QuickCheck @T = nat
 	type_test[@T]: () -> (? -> bool)
