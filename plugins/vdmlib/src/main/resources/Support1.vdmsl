@@ -125,6 +125,9 @@ exports
 		seq2bag[@T]: seq of @T -> (map @T to nat1)	;
 		howManyOfIn[@T]: @T * seq of @T -> nat;
 		howManyOfCharIn: char * seq of char -> nat;
+
+		gcd: nat * nat -> nat;
+		lcm: nat * nat -> nat; 
 		
 	operations
 		fresh_random: () ==> int;
@@ -357,9 +360,7 @@ functions
 	lcm: nat * nat -> nat 
 	lcm(a, b) == 
 		let gd: nat = gcd(a, b) in 
-			if gd = 0 then 0 else abs (a * b) / gcd(a, b)
-	post 
-        RESULT = 0 <=> a = b and b = 0;
+			if gd = 0 then 0 else abs (a * b) / gcd(a, b);
 		
 ---------------------------------------------------------------
 -- Generic functions for VDM data types
