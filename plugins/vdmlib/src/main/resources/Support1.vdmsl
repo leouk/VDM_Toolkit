@@ -26,9 +26,10 @@ exports
 		struct String1List1;
 		struct UniqueStringList;
 		struct UniqueStringList1;
+		struct preal;
 	functions                                   
-		inv_UniqueStringList: seq of String1 +> bool;
-		inv_UniqueStringList1: seq1 of String1 +> bool;
+		inv_UniqueStringList: UniqueStringList! +> bool;
+		inv_UniqueStringList1: UniqueStringList1! +> bool;
 		identity[@T]: @T -> @T                    ;
 		xor: bool * bool -> bool                  ;
 		--@todo sort these out after mergning and sorting dependencies; too many versions
@@ -60,9 +61,9 @@ exports
 		averages: set of int -> int               ;
 		average_r: seq of real -> real            ;
 		averages_r: set of real -> real           ;
-		nearest_precision: real * Precision * nat -> nat;
-		approximate: real * Precision -> nat;
-		ceil: real -> nat;
+		nearest_precision: preal * Precision * nat -> nat;
+		approximate: preal * Precision -> nat;
+		ceil: real -> int;
 	  	ordered: set of set1 of int * set of set1 of int -> bool         ;
 	  	well_ordered[@elem]: set of (@elem * set of set1 of int) -> bool ;
 		unique_seq_inv[@T,@R]: seq of @T * (@T -> @R) -> bool    ;       
@@ -152,8 +153,11 @@ values
 	xor_constant: bool * bool -> bool = (lambda a: bool, b: bool & xor(a,b));
 
 types
-	Precision = nat
+	Precision = nat1
 	inv p == p mod 10 = 0;
+
+	preal = real 
+	inv r == r >= 0;
 
 	SortKind = <Select> | <Merge> | <Quick>;
 
@@ -307,7 +311,7 @@ functions
 	averages(s) == average(set2seq[int](s));	
 
 	average_r: seq of real -> real
-	average_r(ss) == if len ss = 0 then 0 else sum(ss) / len ss;
+	average_r(ss) == if len ss = 0 then 0 else sum_r(ss) / len ss;
 	
 	averages_r: set of real -> real
 	averages_r(s) == average_r(set2seq[real](s));	
@@ -316,7 +320,7 @@ functions
 	--		 e.g. nearest_precision(137.558, 100, 50) = 138
 	--					nearest_precision(137.558,  10,  5) = 137
 	--					nearest_precision(137.558, 100, 60) = 137
-	nearest_precision: real * Precision * nat -> nat
+	nearest_precision: preal * Precision * nat -> nat
 	nearest_precision(r, precision, cut_off) ==
 		let
 			 floored: nat = floor(r) * precision,				 --floor(137.635) * 100 = 137 * 100      = 13700
@@ -331,11 +335,11 @@ functions
 	pre
 		cut_off <= precision;
 		
-	approximate: real * Precision -> nat
+	approximate: preal * Precision -> nat
 	approximate(r, precision) == nearest_precision(r, precision, precision div 2);
 
     --@doc ceil is a real ceiling function
-    ceil: real -> nat
+    ceil: real -> int
     ceil(n) == - floor (- n); 
 
     --@doc greatest common divisor between two naturals 
