@@ -357,7 +357,7 @@ post
 -- Calculated the dependency-chain as a map for a given dependency map.
 -- e.g., 			m  = { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {1} }
 --		depMap[nat](m) = { 0 |-> {1, 2}, 1 |-> {2}, 2 |-> {}, 3 |-> {1, 2} }
---@QuickCheck @K = nat
+--@QuickCheck @K = nat;
 depMap[@K]: map @K to set of @K -> map @K to set of @K
 depMap(m) == 
 	{ k |-> validDeps[@K](m, k) | k in set dom m & 
