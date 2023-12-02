@@ -356,7 +356,8 @@ post
 
 -- Calculated the dependency-chain as a map for a given dependency map.
 -- e.g., 			m  = { 0 |-> {1}, 1 |-> {2}, 2 |-> {}, 3 |-> {1} }
---		depMap[nat](m) = { 0 |-> {1, 2, 3}, 1 |-> {2}, 2 |-> {}, 3 |-> {1, 2} }
+--		depMap[nat](m) = { 0 |-> {1, 2}, 1 |-> {2}, 2 |-> {}, 3 |-> {1, 2} }
+--@QuickCheck @K = nat
 depMap[@K]: map @K to set of @K -> map @K to set of @K
 depMap(m) == 
 	{ k |-> validDeps[@K](m, k) | k in set dom m & 
@@ -375,7 +376,7 @@ depMap(m) ==
 --		isKeyDepValid[@K](m, k) and not hasCircularDeps[@K](m, k) and not hasUnknownDeps[@K](m, k) => pre_validDeps[@K](m, k) => post_validDeps[@K](m,k) !
 post
 	-- all mapped elements *must* have calculated results
-	dom RESULT = dom m
+	dom RESULT subset dom m
 	and
 	-- all collected results are known
 	dunion rng RESULT subset dom m;

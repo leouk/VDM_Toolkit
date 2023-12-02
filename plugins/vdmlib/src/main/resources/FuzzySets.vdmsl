@@ -239,7 +239,7 @@ functions
 		height[@T](fs) = 1
 	post
 		--@doc here the design decision over the fuzzy set type shows itself. 
-		(exists u in set universe[@T](fs) & full_member[@T](u, fs));
+		RESULT => not empty[@T](fs) and (exists u in set universe[@T](fs) & full_member[@T](u, fs));
 			 
 	--@doc non-empty fuzzy set can be normalised by dividing its membership over its height for every element
 	normalise[@T]: FuzzySet -> FuzzySet
