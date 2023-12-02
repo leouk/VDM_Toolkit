@@ -215,7 +215,7 @@ exports
 
 		MEASUREMENT_SYSTEMS: () -> set1 of MeasurementSystem; 
 		CONVERSION_SCHEMAS : () -> set1 of ConversionSchema;
-		DIMENSION_VECTORS  : () -> set1 of DimensionVector;
+		DIMENSION_VECTORS  : () -> set1 of DimensionlessVector;
 		
 	values
 		DIMENSIONS 	     : set1 of Dimension;
@@ -568,8 +568,10 @@ functions
 	measure
 		card dims;
 
-	parenthesise: bool * String -> String1
-	parenthesise(y, s) == if y then "( " ^ s ^ " )" else s;
+	parenthesise: bool * String -> String
+	parenthesise(y, s) == if y then "( " ^ s ^ " )" else s
+	post 
+		if y then is_String1(RESULT) else RESULT = s;
 
 	--@doc user function to prints a dimention's vector view 
 	dim_view: DimensionView * DimensionlessVector -> String1
@@ -1388,12 +1390,14 @@ functions
 	CONVERSION_SCHEMAS : () -> set1 of ConversionSchema
 	CONVERSION_SCHEMAS() == {SI, BIS, MHC, MDC, MWC};
 	
-	DIMENSION_VECTORS  : () -> set1 of DimensionVector  
+	DIMENSION_VECTORS  : () -> set1 of DimensionlessVector  
 	DIMENSION_VECTORS() == 
 			 {DLENGTH, DMASS, DTIME, DCURRENT, DTEMP, DAMOUNT, DINTENSITY, DAREA, 
 				DVOLUME, DFREQUENCY, DVELOCITY, DACCELERATION, DENERGY, DPOWER, DFORCE, 
 				DPRESSURE, DCHARGE, DPDIFFERENCE, DCAPACITANCE	, DWATT, DRADIAN, DSTERADIAN 
-			 };
+			 }
+	post 
+		is_(RESULT \ {DRADIAN, DSTERADIAN}, set1 of DimensionVector);
 			 
 	MAGNITUDES: () -> set1 of Magnitude
 	MAGNITUDES() == { 10, 20, 30, 40, 100, centi(100), kilo(10), pico(1), deci(10) };
