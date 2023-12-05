@@ -298,6 +298,7 @@ functions
         );
 
     --@doc Safety 1: no two aircraft can share right of way
+    --@Theorem(t1, exists a0, a1: Aircraft, dO, dC, dH: preal & theorem1(a0, a1)(dO, dC, dH))
     theorem1: Aircraft * Aircraft -> preal * preal * preal -> bool 
     theorem1(a0, a1)(delta_o, delta_c, Delta_h) == 
         right_of_way(a1, a0)(delta_o, delta_c, Delta_h)
