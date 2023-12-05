@@ -2600,6 +2600,8 @@ lemmas [VDM_seq_spec_post_1]  = post_len_def post_elems_def post_inds_def post_h
 lemmas [VDM_seq_spec_post_2]  = post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
 lemmas [VDM_seq_spec_post_3]  = post_applyVDMSeq_def post_applyVDMSubseq_def 
 
+thm VDM_seq_fcns_1
+thm VDM_seq_fcns_2
 lemmas [VDM_map_defs]         = inv_Option_def inv_VDMMap1_def inv_VDMMap_def inv_VDMInmap_def
 lemmas [VDM_map_fcns_1]       = rng_def dagger_def munion_def 
 lemmas [VDM_map_fcns_2]       = dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def
