@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.fujitsu.vdmj.in.expressions.INExpression;
 import com.fujitsu.vdmj.in.patterns.INBindingSetter;
+import com.fujitsu.vdmj.plugins.VDMJ;
 import com.fujitsu.vdmj.pog.ProofObligation;
 import com.fujitsu.vdmj.runtime.Context;
 import com.fujitsu.vdmj.values.ValueList;
@@ -18,6 +19,13 @@ public class ExpandQCStrategy extends QCStrategy
 {
 	private boolean provedResult = false;
 	private int errorCount = 0;
+
+	public static void main(String[] args)
+	{
+		VDMJ.main(new String[] {"-vdmsl", "-strict", "-annotations", "-i"//, "-verbose" 
+		,"/Users/nljsf/Local/reps/git/VDM_Toolkit/plugins/quickcheck/src/test/resources/MinimalQCTheorem.vdmsl"
+		});
+	}
 
 	public ExpandQCStrategy(List<String> argv)
 	{
