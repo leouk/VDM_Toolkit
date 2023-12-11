@@ -1,14 +1,13 @@
-module ndbOriginal
+module ndb0Original
 exports all
 definitions 
 types
-    State_a_0 :: 
+
+	State_a ::
         esets : map Esetnm to Esetinf
         rels  : map Reltype to Relinf
-        ents  : map Eid to [Value];
-
-	State_a = State_a_0
-    inv mk_State_a_0(esets, rels, ents) == inva(esets, rels, ents);
+        ents  : map Eid to [Value]
+    inv sa == inva(sa);
 							
 	Esetinf :: 
         status : Status
@@ -50,8 +49,10 @@ types
 
 functions
 	
-	inva : (map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
-	inva(esm_, rm_, em_) ==
+	inva : State_a! -> bool 
+          --(map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
+	--inva(esm_, rm_, em_) ==
+    inva(mk_State_a(esm_, rm_, em_)) == 
         forall esetnm in set dom esm_ & 
             invVals(esm_(esetnm), em_) and
             invEsets(dom esm_, dom rm_) and
@@ -69,24 +70,21 @@ functions
 
 	invEsets: set of Esetnm * set of Reltype -> bool
 	invEsets(esetnms, em_) ==
-      --@NB here em_ is not used and a unamed variable "reltypes" is used. 
-      --    I am assuming it means type bind. Or is it "in set em_"?
-      --@NB note here em_ is not used too .
-        forall reltype : Reltype & -- reltypes?
-            reltype.fs in set esetnms and
-            reltype.ts in set esetnms; 
-
-	invEsets': set of Esetnm * set of Reltype -> bool
-	invEsets'(esetnms, em_) ==
-        forall reltype in set em_ & 
+        --@NB here em_ is not used and a unamed variable "reltypes" is used. 
+        --    I am assuming it means type bind. Or is it "in set em_"?
+        --@NB note here em_ is not used too .
+        --@NB renamed reltype to reltype' to avoid hidden name with function reltype for State_r 
+        --forall reltype : Reltype & -- reltypes?
+        --@NB changed the original here to at least allow for initialisation 
+        forall reltype in set em_ &
             reltype.fs in set esetnms and
             reltype.ts in set esetnms; 
 
     invPairs: (map Esetnm to Esetinf) * (map Reltype to Relinf) -> bool
     invPairs(esm_, rm_) ==
-        forall reltype in set dom rm_ &
-            let mk_Reltype(fs, -, ts) = reltype in
-                let prset = rm_(reltype).conns in
+        forall reltype' in set dom rm_ &
+            let mk_Reltype(fs, -, ts) = reltype' in
+                let prset = rm_(reltype').conns in
                     --@NB missing invariant for well formedness of map app?? 
                     --fs in set dom esm_ and ts in set dom esm_ and 
                     are_membs(froms(prset), esm_(fs)) and
@@ -117,8 +115,7 @@ functions
             <ManyOne>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.fv = pr2_.fv),
             <OneMany>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.tv = pr2_.tv),
             <OneOne>   -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and 
-                                    (pr1_.fv = pr2_.fv or pr1_.tv = pr2_.tv)),
-            others		 -> false
+                                    (pr1_.fv = pr2_.fv or pr1_.tv = pr2_.tv))
         end;
    		   
 -- state NDBVDMRefinementMachine of	
@@ -132,7 +129,7 @@ state NDBStateA of
     rels  : map Reltype to Relinf
     ents  : map Eid to [Value]
 inv mk_NDBStateA(esets, rels, ents) == 
-    inva(esets, rels, ents)
+    inva(mk_State_a(esets, rels, ents))
 init ndbst == 
     ndbst = mk_NDBStateA({ |-> }, { |-> }, { |-> })
 end
@@ -143,6 +140,120 @@ operations
     ext wr esets : map Esetnm to Esetinf
     pre not (eset in set dom esets)
     post esets = esets~ munion { eset |-> mk_Esetinf(s, p, w, {}) };
+
+types 
+    State_r ::
+        status : map Esetnm to Status 
+        picture: map Esetnm to Picture 
+        width  : map Esetnm to Width 
+        membs  : map Esetnm to set of Eid
+        fs     : map Rid to Esetnm 
+        nm     : map Rid to [Relnm]
+        ts     : map Rid to Esetnm 
+        map_   : map Rid to Maptype 
+        valof  : map Eid to [Value]
+        conns  : set of Tripple
+    inv sr == 
+        inva(retra(sr)) and 
+        -- invDomains'(dom sr.status, dom sr.width, dom sr.picture, dom sr.membs, --invDomains(sr) and 
+        --            dom sr.fs, dom sr.nm, dom sr.ts, dom sr.map_) and 
+        invDomains(sr) and
+        invRids(sr.conns, dom sr.nm) and 
+        invRels(sr.fs, sr.nm, sr.ts);
+
+    Tripple ::
+        fv: Eid 
+        rnm: Rid 
+        tv: Eid; 
+
+    Rid = token;    
+
+functions 
+    -- invDomains': 
+    --     set of Esetnm * set of Esetnm * set of Esetnm * set of Esetnm * 
+    --     set of Rid * set of Rid * set of Rid * set of Rid -> bool 
+    -- invDomains'(domStatus, domWidth, domPicture, domMembs, 
+    --            domFsr, domNmr, domTsr, domMapr) ==
+    --     domStatus = domWidth and domStatus = domPicture and 
+    --     domStatus = domMembs and domFsr = domNmr and 
+    --     domFsr = domTsr and domFsr = domMapr;
+
+    invDomains: State_r! -> bool 
+    invDomains(sr) ==
+        let statusr = dom sr.status in
+        let fsr = dom sr.fs in 
+            dom sr.width = statusr and 
+            dom sr.picture = statusr and 
+            dom sr.membs = statusr and 
+            dom sr.nm = fsr and 
+            dom sr.ts = fsr and 
+            dom sr.map_ = fsr;
+
+    invRids: set of Tripple * set of Rid -> bool 
+    invRids(conns, nms) == 
+        forall t in set conns & t.rnm in set nms;
+
+    invRels: (map Rid to Esetnm) * (map Rid to [Relnm]) * (map Rid to Esetnm) -> bool 
+    invRels(fs, nm, ts) == 
+        not (exists rid1, rid2 in set dom fs &
+                rid1 <> rid2 and fs(rid1) = fs(rid2) and
+                nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
+            )
+    --@NB this presumes that 
+    -- pre 
+    --     dom fs = dom nm and dom fs = dom ts
+    ;
+
+    retra: State_r! -> State_a
+    retra(sr) == 
+        let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
+        let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
+        let ents  = sr.valof in 
+            mk_State_a(esets, rels, ents)
+    --@NB this presumes that 
+    -- pre 
+    --     invDomains(sr)
+    ;
+
+    esetinfo: Esetnm * State_r! -> Esetinf 
+    esetinfo(esetnm, sr) == 
+        let a_status  = sr.status(esetnm) in 
+        let a_picture = sr.picture(esetnm) in 
+        let a_width   = sr.width(esetnm) in 
+        let a_membs   = sr.membs(esetnm) in 
+            mk_Esetinf(a_status, a_picture, a_width, a_membs)
+    --@NB this presumes that
+    -- pre 
+    --     esetnm in set dom sr.status and
+    --     dom sr.status = dom sr.picture and 
+    --     dom sr.status = dom sr.width and 
+    --     dom sr.status = dom sr.membs 
+        ;
+
+    reltype: Rid * State_r! -> Reltype 
+    reltype(rid, sr) == 
+        let a_fs = sr.fs(rid) in 
+        let a_nm = sr.nm(rid) in 
+        let a_ts = sr.ts(rid) in 
+            mk_Reltype(a_fs, a_nm, a_ts)
+    --@NB this presumes that
+    -- pre 
+    --     rid in set dom sr.fs and 
+    --     dom sr.fs = dom sr.nm and
+    --     dom sr.fs = dom sr.ts 
+    ;
+
+    relinfo: Rid * State_r! -> Relinf 
+    relinfo(rid, sr) == 
+        let a_map = sr.map_(rid) in 
+        let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
+            mk_Relinf(a_map, a_conns)
+    --@NB this presumes that 
+    -- pre 
+    --     rid in set dom sr.map_
+    ;
+
+    --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
 
 values
 /*
@@ -178,7 +289,7 @@ values
    emf = { eidf1 |-> vf1, eidf2 |-> vf2, eidf3 |-> vf3, eidf4 |-> vf4, eidf5 |-> vf5 };
    */
    
-    STA: State_a_0 = mk_State_a_0(esm, rm, em);
+    STA: State_a = mk_State_a(esm, rm, em);
 
     esm: map (token) to (Esetinf) = { esm1 |-> esi1, esm2 |-> esi2, esm3 |-> esi3, esm4 |-> esi4, esm5 |-> esi5 };    
     rm : map Reltype to Relinf = {rt1 |-> rti1, rt2 |-> rti2, rt3 |-> rti3, rt4 |-> rti4, rt5 |-> rti5  };
@@ -250,4 +361,4 @@ values
     rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
     rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
 
-end ndbOriginal
+end ndb0Original
