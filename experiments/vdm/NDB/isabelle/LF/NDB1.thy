@@ -168,7 +168,9 @@ definition
 where
   "somePos ps \<equiv> Eps (\<lambda> x . x \<in> ps \<and> x \<ge> 0)"
 
-value "somePos {0,1}"
+lemma "somePos {(0::\<nat>),1} \<in> {0,1}"
+  unfolding somePos_def 
+  by (metis (no_types, lifting) insertCI linordered_nonzero_semiring_class.zero_le_one some_eq_imp)
 
 thm somePos_def[of "{0 ,1}",simplified]
 
@@ -186,22 +188,12 @@ nitpick
 thm bot_least bot_nat_def equals0I someI_ex
 by (metis (lifting, full_types) bot_least bot_nat_def equals0I someI_ex)
 
-lemma "A \<noteq> {} \<Longrightarrow> somePos A \<in> A"
-unfolding somePos_def
-apply (rule someI_ex)
-apply (simp add: equals0I)
-apply (rule someI_ex)
-apply (simp add: nonempty_iff)
-apply (elim exE conjE)
-apply (rule_tac x=x in exI)
-apply simp
-done
 
 find_theorems "\<some> _._" 
 lemma " (\<some> x . x \<in> A \<and> 0 \<le> x) = somePos A"
 unfolding somePos_def by simp
 
-text {* Defining VDM map comprehension is difficult, mostly because comprehension is defined 
+text \<open> Defining VDM map comprehension is difficult, mostly because comprehension is defined 
         over sets and lists, but not maps. Maps can be created from lists, but transforming 
         sets (i.e. other map domains) into lists to create new maps is innefective and complex. 
 
@@ -250,7 +242,7 @@ text {* Defining VDM map comprehension is difficult, mostly because comprehensio
         one also needs to check the invariant for h/g's result.
 
         Simpler alternative representations would be welcome! 
-        *}
+        \<close>
 
 definition 
    r_esets :: "State_r \<Rightarrow> (Esetnm \<rightharpoonup> Esetinf)"
@@ -375,7 +367,7 @@ lemma PO_add1_FEAS_a0_invbd_state_a1_retra_r_esets_a0:
           fs = State_r.fs st, nm = State_r.nm st, ts = State_r.ts st, map = State_r.map st, valof = valof st,
           conns = State_r.conns st\<rparr>) = SA_esets"
 unfolding r_esets_def Let_def
-apply (simp add: split_if)
+apply (simp add: split_ifs)
 oops
 
 lemma PO_add1_FEAS_a0_invbd_state_a1_retra_a0:
@@ -474,7 +466,5 @@ apply (intro allI impI)
 unfolding inv_State_a_def Let_def
 apply simp
 oops
-
-definition 
 
 end
