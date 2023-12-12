@@ -3,10 +3,12 @@ exports all
 definitions 
 types
 
-	State_a ::
+	State_a_0 ::
         esets : map Esetnm to Esetinf
         rels  : map Reltype to Relinf
-        ents  : map Eid to [Value]
+        ents  : map Eid to [Value];
+    
+    State_a = State_a_0
     inv sa == inva(sa);
 							
 	Esetinf :: 
@@ -17,7 +19,7 @@ types
 
 	-- NOTE: relationship types are said to be distinguishable, perhaps by name only?
 	--			 as given, a relationship like mk_RelType(F, currency, T), 
-	--			 mk_RelType(X, currency, Y) will be distinct (assuming X != F or Y != T),
+	--			 mk_RelType(X, currency, Y) will be distinct (assuming X <> F or Y <> T),
 	--			 despite the fact there shouldn't be different currencies for element sets?
 	--
 	--			 i.e. the equality test over the Reltype should be on nm only?
@@ -27,9 +29,11 @@ types
         nm : [Relnm]
         ts : Esetnm;
 
-	Relinf :: 
+	Relinf0 :: 
         map_: Maptype
-        conns : set of Pair
+        conns : set of Pair;
+    
+    Relinf = Relinf0 
 	inv r == invMaps(r);
 						 
     Maptype = <OneOne> | <OneMany> | <ManyOne> | <ManyMany> ;
@@ -49,10 +53,10 @@ types
 
 functions
 	
-	inva : State_a! -> bool 
+	inva : State_a_0 -> bool 
           --(map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
 	--inva(esm_, rm_, em_) ==
-    inva(mk_State_a(esm_, rm_, em_)) == 
+    inva(mk_State_a_0(esm_, rm_, em_)) == 
         forall esetnm in set dom esm_ & 
             invVals(esm_(esetnm), em_) and
             invEsets(dom esm_, dom rm_) and
@@ -102,9 +106,9 @@ functions
     invEnts(esetinfs, eids) ==
         let ents = dunion { esetinf.membs | esetinf in set esetinfs } in
             ents = eids;
-  			
-    invMaps: Relinf -> bool
-    invMaps(mk_Relinf(map_, prset)) ==
+
+    invMaps: Relinf0 -> bool
+    invMaps(mk_Relinf0(map_, prset)) ==
         -- NOTE: horrible logic description for Isabelle but okay. Original
         --			 had this as a partial function. I am totalising it with others -> false.
         --			 I think the original should have been total.
@@ -127,7 +131,7 @@ state NDBStateA of
     rels  : map Reltype to Relinf
     ents  : map Eid to [Value]
 inv mk_NDBStateA(esets, rels, ents) == 
-    inva(mk_State_a(esets, rels, ents))
+    inva(mk_State_a_0(esets, rels, ents))
 init ndbst == 
     ndbst = mk_NDBStateA({ |-> }, { |-> }, { |-> })
 end
@@ -140,7 +144,7 @@ operations
     post esets = esets~ munion { eset |-> mk_Esetinf(s, p, w, {}) };
 
 types 
-    State_r ::
+    State_r_0 ::
         status : map Esetnm to Status 
         picture: map Esetnm to Picture 
         width  : map Esetnm to Width 
@@ -150,14 +154,16 @@ types
         ts     : map Rid to Esetnm 
         map_   : map Rid to Maptype 
         valof  : map Eid to [Value]
-        conns  : set of Tripple
+        conns  : set of Tripple;
+
+    State_r = State_r_0
     inv sr == 
-        inva(retra(sr)) and 
-        -- invDomains'(dom sr.status, dom sr.width, dom sr.picture, dom sr.membs, --invDomains(sr) and 
-        --            dom sr.fs, dom sr.nm, dom sr.ts, dom sr.map_) and 
         invDomains(sr) and
         invRids(sr.conns, dom sr.nm) and 
-        invRels(sr.fs, sr.nm, sr.ts);
+        invRels(sr.fs, sr.nm, sr.ts) and
+        
+        --@NB order here mattered, given retra precondition! 
+        inva(retra(sr));
 
     Tripple ::
         fv: Eid 
@@ -176,7 +182,7 @@ functions
     --     domStatus = domMembs and domFsr = domNmr and 
     --     domFsr = domTsr and domFsr = domMapr;
 
-    invDomains: State_r! -> bool 
+    invDomains: State_r_0 -> bool 
     invDomains(sr) ==
         let statusr = dom sr.status in
         let fsr = dom sr.fs in 
@@ -202,18 +208,18 @@ functions
         dom fs = dom nm and dom fs = dom ts
     ;
 
-    retra: State_r! -> State_a
+    retra: State_r_0 -> State_a
     retra(sr) == 
         let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
         let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
         let ents  = sr.valof in 
-            mk_State_a(esets, rels, ents)
+            mk_State_a_0(esets, rels, ents)
     --@NB this presumes that 
     pre 
         invDomains(sr)
     ;
 
-    esetinfo: Esetnm * State_r! -> Esetinf 
+    esetinfo: Esetnm * State_r_0 -> Esetinf 
     esetinfo(esetnm, sr) == 
         let a_status  = sr.status(esetnm) in 
         let a_picture = sr.picture(esetnm) in 
@@ -228,7 +234,7 @@ functions
         dom sr.status = dom sr.membs 
         ;
 
-    reltype: Rid * State_r! -> Reltype 
+    reltype: Rid * State_r_0 -> Reltype 
     reltype(rid, sr) == 
         let a_fs = sr.fs(rid) in 
         let a_nm = sr.nm(rid) in 
@@ -241,11 +247,11 @@ functions
         dom sr.fs = dom sr.ts 
     ;
 
-    relinfo: Rid * State_r! -> Relinf 
+    relinfo: Rid * State_r_0 -> Relinf 
     relinfo(rid, sr) == 
         let a_map = sr.map_(rid) in 
         let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
-            mk_Relinf(a_map, a_conns)
+            mk_Relinf0(a_map, a_conns)
     --@NB this presumes that 
     pre 
         rid in set dom sr.map_
@@ -287,7 +293,7 @@ values
    emf = { eidf1 |-> vf1, eidf2 |-> vf2, eidf3 |-> vf3, eidf4 |-> vf4, eidf5 |-> vf5 };
    */
    
-    STA: State_a = mk_State_a(esm, rm, em);
+    STA: State_a = mk_State_a_0(esm, rm, em);
 
     esm: map (token) to (Esetinf) = { esm1 |-> esi1, esm2 |-> esi2, esm3 |-> esi3, esm4 |-> esi4, esm5 |-> esi5 };    
     rm : map Reltype to Relinf = {rt1 |-> rti1, rt2 |-> rti2, rt3 |-> rti3, rt4 |-> rti4, rt5 |-> rti5  };
@@ -353,10 +359,13 @@ values
     pr4: Pair = mk_Pair(eid4,eid5);
     pr5: Pair = mk_Pair(eid5,eid1);
 
-    rti1: Relinf = mk_Relinf(<OneOne>,{pr1,pr2});
-    rti2: Relinf = mk_Relinf(<ManyOne>,{pr2,pr3});
-    rti3: Relinf = mk_Relinf(<OneMany>,{pr3,pr4});
-    rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
-    rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
+    rti1: Relinf = mk_Relinf0(<OneOne>,{pr1,pr2});
+    rti2: Relinf = mk_Relinf0(<ManyOne>,{pr2,pr3});
+    rti3: Relinf = mk_Relinf0(<OneMany>,{pr3,pr4});
+    rti4: Relinf = mk_Relinf0(<ManyMany>,{pr4,pr5});
+    rti5: Relinf = mk_Relinf0(<OneOne>,{pr5,pr1}); 
 
+--   b: bool = inv_Relinf(mk_Relinf!(<OneMany>, {mk_Pair(mk_token(-1330417465), mk_token(-1842229197)), mk_Pair(mk_token(-1447908648), mk_token(-1842229197)), mk_Pair(mk_token(881021702), mk_token(-1842229197))}));
+		
+    
 end ndb0

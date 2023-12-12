@@ -1,4 +1,4 @@
-module ndb0Original
+module ndb0MaxType
 exports all
 definitions 
 types
@@ -49,7 +49,7 @@ types
 
 functions
 	
-	    inva : State_a! -> bool 
+	inva : State_a! -> bool 
           --(map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
 	--inva(esm_, rm_, em_) ==
     inva(mk_State_a(esm_, rm_, em_)) == 
@@ -62,7 +62,7 @@ functions
 	invVals: Esetinf * (map Eid to [Value]) -> bool
 	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
         --@NB missing invariant for the application of em(eid)?
-        --(membs subset dom em_) and	
+        (membs subset dom em_) and	
         forall eid in set membs & pictureMatch(em_(eid), picture);
 					
 	pictureMatch: [Value] * Picture -> bool
@@ -74,11 +74,9 @@ functions
         --    I am assuming it means type bind. Or is it "in set em_"?
         --@NB note here em_ is not used too .
         --@NB renamed reltype to reltype' to avoid hidden name with function reltype for State_r 
-        --forall reltype : Reltype & -- reltypes?
-        --@NB changed the original here to at least allow for initialisation 
-        forall reltype in set em_ &
-            reltype.fs in set esetnms and
-            reltype.ts in set esetnms; 
+        forall reltype' in set em_ &--reltype : Reltype & -- reltypes?
+            reltype'.fs in set esetnms and
+            reltype'.ts in set esetnms; 
 
     invPairs: (map Esetnm to Esetinf) * (map Reltype to Relinf) -> bool
     invPairs(esm_, rm_) ==
@@ -86,7 +84,7 @@ functions
             let mk_Reltype(fs, -, ts) = reltype' in
                 let prset = rm_(reltype').conns in
                     --@NB missing invariant for well formedness of map app?? 
-                    --fs in set dom esm_ and ts in set dom esm_ and 
+                    fs in set dom esm_ and ts in set dom esm_ and 
                     are_membs(froms(prset), esm_(fs)) and
                     are_membs(tos(prset), esm_(ts));
   						
@@ -104,8 +102,8 @@ functions
     invEnts(esetinfs, eids) ==
         let ents = dunion { esetinf.membs | esetinf in set esetinfs } in
             ents = eids;
-  			
-    invMaps: Relinf -> bool
+
+    invMaps: Relinf! -> bool
     invMaps(mk_Relinf(map_, prset)) ==
         -- NOTE: horrible logic description for Isabelle but okay. Original
         --			 had this as a partial function. I am totalising it with others -> false.
@@ -200,8 +198,8 @@ functions
                 nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
             )
     --@NB this presumes that 
-    -- pre 
-    --     dom fs = dom nm and dom fs = dom ts
+    pre 
+        dom fs = dom nm and dom fs = dom ts
     ;
 
     retra: State_r! -> State_a
@@ -211,8 +209,8 @@ functions
         let ents  = sr.valof in 
             mk_State_a(esets, rels, ents)
     --@NB this presumes that 
-    -- pre 
-    --     invDomains(sr)
+    pre 
+        invDomains(sr)
     ;
 
     esetinfo: Esetnm * State_r! -> Esetinf 
@@ -223,11 +221,11 @@ functions
         let a_membs   = sr.membs(esetnm) in 
             mk_Esetinf(a_status, a_picture, a_width, a_membs)
     --@NB this presumes that
-    -- pre 
-    --     esetnm in set dom sr.status and
-    --     dom sr.status = dom sr.picture and 
-    --     dom sr.status = dom sr.width and 
-    --     dom sr.status = dom sr.membs 
+    pre 
+        esetnm in set dom sr.status and
+        dom sr.status = dom sr.picture and 
+        dom sr.status = dom sr.width and 
+        dom sr.status = dom sr.membs 
         ;
 
     reltype: Rid * State_r! -> Reltype 
@@ -237,10 +235,10 @@ functions
         let a_ts = sr.ts(rid) in 
             mk_Reltype(a_fs, a_nm, a_ts)
     --@NB this presumes that
-    -- pre 
-    --     rid in set dom sr.fs and 
-    --     dom sr.fs = dom sr.nm and
-    --     dom sr.fs = dom sr.ts 
+    pre 
+        rid in set dom sr.fs and 
+        dom sr.fs = dom sr.nm and
+        dom sr.fs = dom sr.ts 
     ;
 
     relinfo: Rid * State_r! -> Relinf 
@@ -249,8 +247,8 @@ functions
         let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
             mk_Relinf(a_map, a_conns)
     --@NB this presumes that 
-    -- pre 
-    --     rid in set dom sr.map_
+    pre 
+        rid in set dom sr.map_
     ;
 
     --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
@@ -361,4 +359,7 @@ values
     rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
     rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
 
-end ndb0Original
+--   b: bool = inv_Relinf(mk_Relinf!(<OneMany>, {mk_Pair(mk_token(-1330417465), mk_token(-1842229197)), mk_Pair(mk_token(-1447908648), mk_token(-1842229197)), mk_Pair(mk_token(881021702), mk_token(-1842229197))}));
+		
+    
+end ndb0MaxType
