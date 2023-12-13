@@ -257,8 +257,6 @@ functions
         rid in set dom sr.map_
     ;
 
-    --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
-
 values
 /*
    STA = mk_State_a_0(esm, rm, em);

@@ -1,0 +1,208 @@
+module ndbR
+imports 
+    from ndbA 
+        types 
+            Esetnm      renamed Esetnm;
+            Status      renamed Status;
+            Picture     renamed Picture;
+            Width       renamed Width;
+            Relnm       renamed Relnm;
+            Eid         renamed Eid;
+            Maptype     renamed Maptype;
+            Value       renamed Value;
+            Relinf      renamed Relinf;
+            Relinf0     renamed Relinf0;
+            Esetinf     renamed Esetinf;
+            Reltype     renamed Reltype;
+            Pair        renamed Pair;
+            State_a     renamed State_a;
+            State_a_0   renamed State_a_0;
+        functions 
+            inva        renamed inva;
+            pre_ADDA    renamed pre_ADDA;
+exports all
+definitions 
+types 
+    State_r_0 ::
+        status : map Esetnm to Status 
+        picture: map Esetnm to Picture 
+        width  : map Esetnm to Width 
+        membs  : map Esetnm to set of Eid
+        fs     : map Rid to Esetnm 
+        nm     : map Rid to [Relnm]
+        ts     : map Rid to Esetnm 
+        map_   : map Rid to Maptype 
+        valof  : map Eid to [Value]
+        conns  : set of Tripple;
+
+    State_r = State_r_0
+    inv sr == 
+        invr(sr);
+
+    Tripple ::
+        fv: Eid 
+        rnm: Rid 
+        tv: Eid; 
+
+    Rid = token;    
+
+functions 
+
+    invr: State_r_0 -> bool 
+    invr(sr) == 
+        invDomains(sr) and
+        invRids(sr.conns, dom sr.nm) and 
+        invRels(sr.fs, sr.nm, sr.ts) and
+        
+        --@NB order here mattered, given retra precondition! 
+        inva(retra(sr));
+
+    -- invDomains': 
+    --     set of Esetnm * set of Esetnm * set of Esetnm * set of Esetnm * 
+    --     set of Rid * set of Rid * set of Rid * set of Rid -> bool 
+    -- invDomains'(domStatus, domWidth, domPicture, domMembs, 
+    --            domFsr, domNmr, domTsr, domMapr) ==
+    --     domStatus = domWidth and domStatus = domPicture and 
+    --     domStatus = domMembs and domFsr = domNmr and 
+    --     domFsr = domTsr and domFsr = domMapr;
+
+    invDomains: State_r_0 -> bool 
+    invDomains(sr) ==
+        let statusr = dom sr.status in
+        let fsr = dom sr.fs in 
+            dom sr.width = statusr and 
+            dom sr.picture = statusr and 
+            dom sr.membs = statusr and 
+            dom sr.nm = fsr and 
+            dom sr.ts = fsr and 
+            dom sr.map_ = fsr;
+
+    invRids: set of Tripple * set of Rid -> bool 
+    invRids(conns, nms) == 
+        forall t in set conns & t.rnm in set nms;
+
+    invRels: (map Rid to Esetnm) * (map Rid to [Relnm]) * (map Rid to Esetnm) -> bool 
+    invRels(fs, nm, ts) == 
+        not (exists rid1, rid2 in set dom fs &
+                rid1 <> rid2 and fs(rid1) = fs(rid2) and
+                nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
+            )
+    --@NB this presumes that 
+    pre 
+        dom fs = dom nm and dom fs = dom ts
+    ;
+
+    --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
+    retra: State_r_0 -> State_a
+    retra(sr) == 
+        let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
+        let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
+        let ents  = sr.valof in 
+            mk_State_a_0(esets, rels, ents)
+    --@NB this presumes that 
+    pre 
+        invDomains(sr)
+    ;
+
+    esetinfo: Esetnm * State_r_0 -> Esetinf 
+    esetinfo(esetnm, sr) == 
+        let a_status  = sr.status(esetnm) in 
+        let a_picture = sr.picture(esetnm) in 
+        let a_width   = sr.width(esetnm) in 
+        let a_membs   = sr.membs(esetnm) in 
+            mk_Esetinf(a_status, a_picture, a_width, a_membs)
+    --@NB this presumes that
+    pre 
+        esetnm in set dom sr.status and
+        dom sr.status = dom sr.picture and 
+        dom sr.status = dom sr.width and 
+        dom sr.status = dom sr.membs 
+        ;
+
+    reltype: Rid * State_r_0 -> Reltype 
+    reltype(rid, sr) == 
+        let a_fs = sr.fs(rid) in 
+        let a_nm = sr.nm(rid) in 
+        let a_ts = sr.ts(rid) in 
+            mk_Reltype(a_fs, a_nm, a_ts)
+    --@NB this presumes that
+    pre 
+        rid in set dom sr.fs and 
+        dom sr.fs = dom sr.nm and
+        dom sr.fs = dom sr.ts 
+    ;
+
+    relinfo: Rid * State_r_0 -> Relinf 
+    relinfo(rid, sr) == 
+        let a_map = sr.map_(rid) in 
+        let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
+            mk_Relinf0(a_map, a_conns)
+    --@NB this presumes that 
+    pre 
+        rid in set dom sr.map_
+    ;
+
+state NDBStateR of	
+    status : map Esetnm to Status 
+    picture: map Esetnm to Picture 
+    width  : map Esetnm to Width 
+    membs  : map Esetnm to set of Eid
+    fs     : map Rid to Esetnm 
+    nm     : map Rid to [Relnm]
+    ts     : map Rid to Esetnm 
+    map_   : map Rid to Maptype 
+    valof  : map Eid to [Value]
+    conns  : set of Tripple
+inv mk_NDBStateR(status, picture, width, membs, fs, nm, ts, map_, valof, conns) == 
+    invr(mk_State_r_0(status, picture, width, membs, fs, nm, ts, map_, valof, conns))
+init ndbRst == 
+    ndbRst = mk_NDBStateR({ |-> }, { |-> }, { |-> }, { |-> }, { |-> }, { |-> }, { |-> }, { |-> }, { |-> }, {})
+end
+
+operations
+
+operations
+
+    ADDR(eset: Esetnm, s: Status, p: Picture, w: Width) 
+    ext wr status : map Esetnm to Status 
+        wr picture: map Esetnm to Picture 
+        wr width  : map Esetnm to Width 
+        wr membs  : map Esetnm to set of Eid
+    pre 
+        --pre_ADDA(eset, s, p, w, mk_NDBStateA(retra()))
+        --and
+        not (eset in set dom status)
+    post
+        status  = status~  munion { eset |-> s } and 
+        picture = picture~ munion { eset |-> p } and 
+        width   = width~   munion { eset |-> w } and 
+        membs   = membs~   munion { eset |-> {} };
+
+    ADDRExplicit(eset: Esetnm, s: Status, p: Picture, w: Width) == 
+        (atomic 
+         (status  := status  munion { eset |-> s }; 
+          picture := picture munion { eset |-> p }; 
+          width   := width   munion { eset |-> w }; 
+          membs   := membs   munion { eset |-> {} };
+         )
+        )
+    ext wr status : map Esetnm to Status 
+        wr picture: map Esetnm to Picture 
+        wr width  : map Esetnm to Width 
+        wr membs  : map Esetnm to set of Eid
+    pre 
+        not (eset in set dom status)
+    post
+        status  = status~  munion { eset |-> s } and 
+        picture = picture~ munion { eset |-> p } and 
+        width   = width~   munion { eset |-> w } and 
+        membs   = membs~   munion { eset |-> {} };
+
+    --@Theorem(ADDAR_feasible, forall eset: Esetnm, s: Status, p: Picture, w: Width, r : State_r & 
+    --      pre_ADDA(eset, s, p, w, retra(r)) & pre_ADDR(eset, s, p, w, r))
+    --@Theorem(ADDAR_adequate, forall eset: Esetnm, s: Status, p: Picture, w: Width, r : State_r & 
+    --      pre_ADDA(eset, s, p, w, retra(r)) & pre_ADDR(eset, s, p, w, r))
+
+values 
+    keep_theorems: bool = true;
+end ndbR

@@ -49,9 +49,7 @@ types
 
 functions
 	
-	    inva : State_a! -> bool 
-          --(map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
-	--inva(esm_, rm_, em_) ==
+	inva : State_a! -> bool 
     inva(mk_State_a(esm_, rm_, em_)) == 
         forall esetnm in set dom esm_ & 
             invVals(esm_(esetnm), em_) and
