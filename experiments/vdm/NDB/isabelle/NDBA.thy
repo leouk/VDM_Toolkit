@@ -246,10 +246,17 @@ where
   "ADDA_explicit eset s p w st \<equiv> 
       st\<lparr> esets := (esets st) \<union>m [ eset \<mapsto> \<lparr> status = s, picture = p, width = w, membs = {} \<rparr>]\<rparr>"
 
+lemma PO_ADDA_fsb_l1_1: 
+   "inv_State_a_0 st \<Longrightarrow>  inv_State_a_0 (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)" 
+  sorry
+
 lemma PO_ADDA_fsb_l1: 
   "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> inv_State_a (ADDA_explicit eset s p w st)" 
   unfolding ADDA_explicit_def inv_State_a_def Let_def 
-  apply simp
+  apply (elim conjE, intro conjI)
+      apply (simp add: PO_ADDA_fsb_l1_1)
+  apply (intro ballI conjI)
+  apply (simp_all)
 
 theorem PO_ADDA_fsb
   unfolding PO_ADDA_fsb_def
