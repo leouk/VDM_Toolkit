@@ -1,6 +1,6 @@
 (* $Id$ *)
-theory NDB1
-imports NDB0
+theory NDBR
+imports NDBA_sta_fix
 begin
 
 typedecl Rid
@@ -21,11 +21,6 @@ record State_r =
   map     :: "Rid \<rightharpoonup> Maptype"
   valof   :: "Eid \<rightharpoonup> Value option"
   conns   :: "Triple set"
-
-print_theorems
-find_theorems name:State_r
-
-lemma "the ((fs state_r) r) = A \<and> (Reltype.fs real_type) = B" oops
 
 definition
   inv_domains_sr :: "State_r \<Rightarrow> \<bool>"
@@ -131,67 +126,6 @@ where
 
 (* m22 = *)
 *)
-
-definition  
-   bla1 :: "(\<bool> \<rightharpoonup> \<nat>)"
-where
-   "bla1  \<equiv> (\<lambda> x . (if x = True then (Some (0::nat)) else None))"
-
-record 
-   RT = xx :: \<bool> yx :: \<nat>
-record 
-   RT2 = ax :: \<nat> bx :: \<nat>
-
-definition  
-   bla2 :: "(RT \<rightharpoonup> \<nat>)"
-where
-   "bla2 \<equiv> (\<lambda> rt . (let xrt = (xx rt); yrt = (yx rt) in Some 0))"
-
-definition  
-   bla3 :: "RT2 \<Rightarrow> (RT \<rightharpoonup> \<nat>)"
-where
-   "bla3 rt2 \<equiv> (\<lambda> rt . (let xrt = (xx rt); yrt = (yx rt) ;
-                            art2 = (ax rt2); brt2 = (bx rt2) in Some (art2 + brt2)))"
-
-definition 
-   r_esets0 :: "State_r \<Rightarrow> (Rid \<rightharpoonup> Relinf)"
-where
-  "r_esets0 sr \<equiv> (\<lambda> rid . Some (relinfo_r rid sr))"
-
-find_theorems name:choice
-thm inv_def
-find_theorems name:Hilbert
-find_theorems "Eps _"
-
-definition
-  somePos :: "\<nat> set \<Rightarrow> \<nat>"
-where
-  "somePos ps \<equiv> Eps (\<lambda> x . x \<in> ps \<and> x \<ge> 0)"
-
-lemma "somePos {(0::\<nat>),1} \<in> {0,1}"
-  unfolding somePos_def 
-  by (metis (no_types, lifting) insertCI linordered_nonzero_semiring_class.zero_le_one some_eq_imp)
-
-thm somePos_def[of "{0 ,1}",simplified]
-
-declare [[rule_trace]]
-lemma "(somePos A) \<in> B"
-unfolding somePos_def
-find_theorems "(SOME _ . _)"
-thm some_eq_ex
-    some_eq_ex[of "(\<lambda> x . x \<in> A \<and> 0 \<le> x)"] 
-oops
-
-lemma "A \<noteq> {} \<Longrightarrow> somePos A \<in> A"
-unfolding somePos_def
-nitpick
-thm bot_least bot_nat_def equals0I someI_ex
-by (metis (lifting, full_types) bot_least bot_nat_def equals0I someI_ex)
-
-
-find_theorems "\<some> _._" 
-lemma " (\<some> x . x \<in> A \<and> 0 \<le> x) = somePos A"
-unfolding somePos_def by simp
 
 text \<open> Defining VDM map comprehension is difficult, mostly because comprehension is defined 
         over sets and lists, but not maps. Maps can be created from lists, but transforming 
