@@ -17,10 +17,16 @@ imports
             Pair        renamed Pair;
             State_a     renamed State_a;
             State_a_0   renamed State_a_0;
+            NDBStateA   renamed NDBStateA;
         functions 
             inva        renamed inva;
+            staconv     renamed staconv; 
             pre_ADDA    renamed pre_ADDA;
-exports all
+exports 
+    types 
+        struct NDBStateR;
+    functions
+        strconv: State_r -> NDBStateR;
 definitions 
 types 
     State_r_0 ::
@@ -47,6 +53,11 @@ types
     Rid = token;    
 
 functions 
+
+    strconv: State_r -> NDBStateR
+    strconv(sr) == mk_NDBStateR(sr.status, sr.picture, 
+        sr.width, sr.membs, sr.fs, sr.nm, sr.ts, 
+        sr.map_, sr.valof, sr.conns);
 
     invr: State_r_0 -> bool 
     invr(sr) == 
@@ -142,6 +153,9 @@ functions
         rid in set dom sr.map_
     ;
 
+    f: State_r -> [ndbA`NDBStateA]
+    f(sr) == nil;
+
 state NDBStateR of	
     status : map Esetnm to Status 
     picture: map Esetnm to Picture 
@@ -199,9 +213,9 @@ operations
         membs   = membs~   munion { eset |-> {} };
 
     --@Theorem(ADDAR_feasible, forall eset: Esetnm, s: Status, p: Picture, w: Width, r : State_r & 
-    --      pre_ADDA(eset, s, p, w, retra(r)) & pre_ADDR(eset, s, p, w, r))
+    --      pre_ADDA(eset, s, p, w, staconv(retra(r))) & pre_ADDR(eset, s, p, w, strconv(r)))
     --@Theorem(ADDAR_adequate, forall eset: Esetnm, s: Status, p: Picture, w: Width, r : State_r & 
-    --      pre_ADDA(eset, s, p, w, retra(r)) & pre_ADDR(eset, s, p, w, r))
+    --      pre_ADDA(eset, s, p, w, staconv(retra(r))) & pre_ADDR(eset, s, p, w, strconv(r)))
 
 values 
     keep_theorems: bool = true;

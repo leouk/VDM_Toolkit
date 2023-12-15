@@ -1,5 +1,29 @@
 module ndbA
-exports all
+exports 
+    types 
+        struct Esetmap;
+        struct Relmap;
+        struct Eidmap;
+        struct State_a_0;
+        struct State_a; 
+        struct Esetinf;
+        struct Reltype;
+        struct Relinf0;
+        struct Relinf;
+        struct Maptype;
+        struct Pair;
+        struct Eid    ;
+        struct Esetnm ;
+        struct Relnm  ;
+        struct Value  ;
+        struct Status ;
+        struct Picture;
+        struct Width  ;
+        struct NDBStateA;
+    functions 
+        inva: State_a_0 -> bool;
+        staconv: State_a -> NDBStateA;
+        pre_ADDA: Esetnm * Status * Picture * Width * NDBStateA +> bool;
 definitions
 types
     --@NB these are useful for compartimentalising type invariants expansion
@@ -73,6 +97,9 @@ functions
         invEsets(dom esm_, dom rm_) and
         invPairs(esm_, rm_) and
         invEnts(rng esm_, dom em_);
+
+    staconv: State_a -> NDBStateA
+    staconv(sa) == mk_NDBStateA(sa.esets, sa.rels, sa.ents);
 
 	invVals: Esetinf * Eidmap -> bool
 	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
