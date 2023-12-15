@@ -1,4 +1,4 @@
-theory NDBA
+theory NDBA_sta_fix
 imports "VDMToolkit"
 begin
 
@@ -169,54 +169,11 @@ where
            em  = ents s 
        in 
           (\<forall> esetnm \<in> dom esm .
-            invEsets (dom esm) (dom rm) \<and>
+            invVals (the(esm esetnm)) em) \<and>
+          invEsets (dom esm) (dom rm) \<and>
             invPairs esm rm \<and>
-            invEnts (ran esm) (dom em) \<and>
-            invVals (the(esm esetnm)) em))"
+            invEnts (ran esm) (dom em))"
 
-thm atomize_ball
-
-lemma narrow_ball: "(\<forall> x \<in> S . Q \<and> P x) = (S = {} \<or> ((\<forall> x \<in> S . P x) \<and> Q))"
-by (metis (full_types) empty_iff equals0I)
-
-
-lemma l1: "(rels s) = Map.empty \<Longrightarrow> invEsets {} (dom (rels s))" 
-  unfolding invEsets_def inv_Relmap_def inv_VDMMap_def
-  by (clarsimp)
-
-lemma l2: "(ents s) = Map.empty \<Longrightarrow> invEnts {} (dom (ents s))" 
-  unfolding invEnts_def
-  by (simp)
- 
-lemma l3: "(rels s) = Map.empty \<Longrightarrow> invPairs Map.empty (rels s)" 
-  unfolding invPairs_def inv_Esetmap_def inv_Relmap_def
-  by simp
-
-(* NOTE: move invariants out of \<forall>, where possible *)
-lemma inv_State_a_rule: 
-  "inv_State_a s 
-   = 
-   (inv_State_a_0 s \<and> 
-    invEsets (dom (esets s)) (dom (rels s)) \<and>
-    invPairs (esets s) (rels s) \<and>
-    invEnts (ran (esets s)) (dom (ents s)) \<and>
-    (\<forall> esetnm \<in> dom (esets s) . invVals (the((esets s) esetnm)) (ents s)))"
-  unfolding inv_State_a_def Let_def 
-  apply (intro iffI, simp_all)
-  apply (elim conjE)
-  apply (cases "dom (esets s) \<noteq> {}")
-   apply (simp add: l_map_non_empty_has_elem_conv, elim exE)
-   apply (erule_tac x=x in ballE, simp_all)
-  apply (cases "dom (rels s) \<noteq> {}")
-  apply (cases "dom (ents s) \<noteq> {}")
-   defer 
-  apply simp_all
-   apply (simp add: l_map_non_empty_has_elem_conv, elim exE)
-  unfolding inv_State_a_0_def 
-    apply (clarsimp, safe)
-  (* hidden case analysis on empty esets! *)
-  oops
-  
 definition
   ADDA_pre :: "Esetnm \<Rightarrow> Status \<Rightarrow> Picture \<Rightarrow> Width \<Rightarrow> State_a \<Rightarrow> \<bool>"
 where
@@ -261,59 +218,24 @@ lemma PO_ADDA_fsb_1_sta_upd_invEsets:
     unfolding inv_State_a_def invEsets_def Let_def
   apply (simp add: l_vdmmap_dom_munion_dist)
     apply (elim conjE, intro conjI ballI)  
-    using inv_Esetmap_def inv_State_a_0_def inv_VDMMap_def apply blast
-    using inv_Relmap_def inv_State_a_0_def inv_VDMMap_def apply blast
-    (*     apply (rule l_indom_munion_in_map') *)
-     apply (rule l_indom_munion_in_map)
-      defer 
-        apply assumption
-     apply (rule l_indom_munion_in_map)
-      defer 
-      apply assumption
-     apply (erule ballE, elim conjE)
-    (* Here we get the annoying bit of quantifiers in the way *)
-      apply (erule_tac x=reltype in ballE, simp+)
-    oops
-
-lemma l_nonempty_dom_conv:
-  "dom m \<noteq> {} \<longleftrightarrow> (\<exists> x . x \<in> dom m)"
-  by blast
-
-lemma PO_ADDA_fsb_1_sta_upd_invEsets:
-  "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> 
-     invEsets
-        (dom (esets (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)))
-        (dom (rels (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)))
-"   
-    unfolding inv_State_a_def invEsets_def Let_def
-  apply (simp add: l_vdmmap_dom_munion_dist)
-    apply (elim conjE, intro conjI ballI)  
-    using inv_Esetmap_def inv_State_a_0_def inv_VDMMap_def apply blast
-    using inv_Relmap_def inv_State_a_0_def inv_VDMMap_def apply blast
-    (* Here we get the annoying bit of quantifiers in the way *)
-    apply (cases "dom (esets st) = {}", simp)
-      defer
-    apply (simp add: l_map_non_empty_has_elem_conv l_map_non_empty_dom_conv)
-      apply (erule exE)
       apply(rule l_indom_munion_in_map)
-     apply (erule_tac x=x in ballE, elim conjE)
        apply (erule_tac x=reltype in ballE, simp+)
-
-         apply (cases "dom (esets st) = {}", simp)
-      defer
-    apply (simp add: l_map_non_empty_has_elem_conv l_map_non_empty_dom_conv)
-      apply (erule exE)
       apply(rule l_indom_munion_in_map)
-     apply (erule_tac x=x in ballE, elim conjE)
-        apply (erule_tac x=reltype in ballE, simp+)
-    (* UNPROVABLE! Needs to change the invariant! Nice one *)
-    sorry
+       apply (erule_tac x=reltype in ballE, simp+)
+    done
 
 lemma PO_ADDA_fsb_1_sta_upd_invPairs:
   "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> 
     invPairs (esets (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>))
         (rels (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>))"
-  sorry 
+    unfolding inv_State_a_def invPairs_def Let_def
+  apply (simp add: l_vdmmap_dom_munion_dist)
+    apply (elim conjE, intro conjI ballI)  
+      apply(rule l_indom_munion_in_map)
+       apply (erule_tac x=reltype in ballE, simp+)
+      apply(rule l_indom_munion_in_map)
+       apply (erule_tac x=reltype in ballE, simp+)
+    done
 
 lemma PO_ADDA_fsb_1_sta_upd_invEnts: 
   "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> 
@@ -335,15 +257,14 @@ lemma PO_ADDA_fsb_1_sta_upd:
   apply (elim conjE, intro conjI)
       apply (simp add: PO_ADDA_fsb_l1_1)
   apply (intro ballI conjI)
+  using PO_ADDA_fsb_1_sta_upd_invVals inv_State_a_def apply presburger
   using PO_ADDA_fsb_1_sta_upd_invEsets inv_State_a_def apply presburger
   using PO_ADDA_fsb_1_sta_upd_invPairs inv_State_a_def apply presburger
   using PO_ADDA_fsb_1_sta_upd_invEnts inv_State_a_def apply presburger
-  using PO_ADDA_fsb_1_sta_upd_invVals inv_State_a_def apply presburger
   done
 
 theorem PO_ADDA_fsb
   unfolding PO_ADDA_fsb_def
-  thm exI[of _ "ADDA_explicit eset s p w st"]
   apply (intro allI impI)
   apply (rule_tac x="ADDA_explicit eset s p w st" in exI)
   unfolding ADDA_post_def ADDA_pre_def
