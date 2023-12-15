@@ -22,8 +22,12 @@ exports
         struct NDBStateA;
     functions 
         inva: State_a_0 -> bool;
+        inva' : State_a_0 -> bool;
         staconv: State_a -> NDBStateA;
         pre_ADDA: Esetnm * Status * Picture * Width * NDBStateA +> bool;
+    operations 
+        ADDA: Esetnm * Status * Picture * Width ==> (); 
+        ADDAExplicit: Esetnm * Status * Picture * Width ==> (); 
 definitions
 types
     --@NB these are useful for compartimentalising type invariants expansion

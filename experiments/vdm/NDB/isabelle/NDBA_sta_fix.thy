@@ -198,7 +198,7 @@ where
   "ADDA_explicit eset s p w st \<equiv> 
       st\<lparr> esets := (esets st) \<union>m [ eset \<mapsto> \<lparr> status = s, picture = p, width = w, membs = {} \<rparr>]\<rparr>"
 
-lemma PO_ADDA_fsb_l1_1: 
+lemma PO_ADDA_fsb_st_maxtyp: 
    "inv_State_a_0 st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> inv_State_a_0 (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)" 
   unfolding inv_State_a_0_def
   apply simp
@@ -229,35 +229,65 @@ lemma PO_ADDA_fsb_1_sta_upd_invPairs:
     invPairs (esets (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>))
         (rels (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>))"
     unfolding inv_State_a_def invPairs_def Let_def
-  apply (simp add: l_vdmmap_dom_munion_dist)
-    apply (elim conjE, intro conjI ballI)  
+  apply (simp )
+    apply (elim conjE, intro conjI ballI) 
+    unfolding inv_Esetmap_def
+        apply (simp add: l_vdmmap_inv_munion_dist)
+        apply (rule l_vdmmap_inv_singleton)
+         apply simp
+    apply (simp add: inv_Esetinf_def)
       apply(rule l_indom_munion_in_map)
        apply (erule_tac x=reltype in ballE, simp+)
       apply(rule l_indom_munion_in_map)
-       apply (erule_tac x=reltype in ballE, simp+)
+  (* This one surprised me *)
+    apply (simp add: l_the_map_union)+
     done
+
+lemma l_vdm_dunion_bigunion_eq: "(\<Union> x \<in> S. P x) = \<Union> {P x | x . x \<in> S}"
+  apply (intro equalityI subsetI)
+   apply (simp, safe)
+  apply (rule_tac x="P xa" in exI, simp)
+  apply (rule_tac x="xa" in exI, simp)
+   apply (simp)
+  apply (rule_tac x="xa" in bexI, simp_all)
+  done
 
 lemma PO_ADDA_fsb_1_sta_upd_invEnts: 
   "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> 
         invEnts (ran (esets (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)))
         (dom (ents (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>)))
  "
-  sorry
+ unfolding inv_State_a_def invEnts_def  Let_def
+  apply (simp )
+  apply (elim conjE, intro conjI ballI) 
+   apply (simp add: l_vdmmap_ran_munion_dist inv_Esetinf_def)+
+  apply (erule subst)
+  apply (intro equalityI subsetI)
+  apply (simp, elim bexE)
+  apply (rule_tac x="xa" in bexI, simp)
+  apply (smt (verit) Esetinf.select_convs(4) Int_emptyI emptyE l_map_dom_ran l_munion_apply l_ranE_frule option.sel ranI)
+  by (metis Sup_insert Un_iff domIff image_insert k_munion_map_upd_wd l_munion_upd ran_map_upd)
 
 lemma PO_ADDA_fsb_1_sta_upd_invVals:
-  "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> 
+  "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> esetnm\<in>dom (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]) \<Longrightarrow>
     invVals
         (the (esets (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>) esetnm))
         (ents (st\<lparr>esets := esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]\<rparr>))"
-  sorry 
+  unfolding inv_State_a_def invVals_def Let_def
+  apply simp
+  apply (elim conjE)
+  apply (simp add: l_munion_apply l_munion_dom)
+   apply (elim disjE, intro conjI impI ballI)
+        apply (simp add: inv_Esetinf_def)
+  using inv_State_a_0_def by blast+
 
 lemma PO_ADDA_fsb_1_sta_upd: 
   "inv_State_a st \<Longrightarrow> eset \<notin> dom (esets st) \<Longrightarrow> inv_State_a (ADDA_explicit eset s p w st)" 
   unfolding ADDA_explicit_def inv_State_a_def Let_def 
   apply (elim conjE, intro conjI)
-      apply (simp add: PO_ADDA_fsb_l1_1)
-  apply (intro ballI conjI)
-  using PO_ADDA_fsb_1_sta_upd_invVals inv_State_a_def apply presburger
+      apply (simp add: PO_ADDA_fsb_st_maxtyp)
+     apply (intro ballI conjI)
+  using PO_ADDA_fsb_1_sta_upd_invVals inv_State_a_def apply auto[1]
   using PO_ADDA_fsb_1_sta_upd_invEsets inv_State_a_def apply presburger
   using PO_ADDA_fsb_1_sta_upd_invPairs inv_State_a_def apply presburger
   using PO_ADDA_fsb_1_sta_upd_invEnts inv_State_a_def apply presburger
@@ -271,261 +301,5 @@ theorem PO_ADDA_fsb
   apply (elim conjE, intro conjI)
    apply (simp add: PO_ADDA_fsb_1_sta_upd)
   unfolding ADDA_explicit_def by simp
-
-text \<open> We will use various delimiters to avoid confusion in finding the attempts/justifications.
-        PP should give us that out of the box? (ATT/TODO: Andrius?)
-     \<close>
-
-(*================================================================================================*)
-text \<open> some lemmas are needed prior to PO_add0_FEAS_a4 \<close>
-
-(*------------------------------------------------------------------------------------------------*)
-lemma PO_add0_FEAS_a4_invbd_state_esetmap_a1: 
-  "eset \<notin> dom (esets st) \<Longrightarrow> 
-   inv_Esetmap (esets st)  \<Longrightarrow>
-    inv_Esetmap
-     (esets \<lparr>esets = esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>], rels = rels st,
-               ents = ents st\<rparr>)"
-(* Strategy 1: invariant zoom *)
-unfolding inv_Esetmap_def inv_Esetinf_def
-  apply simp
-  unfolding inv_VDMMap_def
-  apply simp
-(* Strategy 2: structural break down ; PS: tool automation would suffice here, but that's because inv_Esetinf_def is trivial! *)
-  apply (intro ballI)
-   (metis Esetinf.select_convs(4) State_a.select_convs(1) finite.emptyI fun_upd_same k_munion_map_upd_wd l_inmapupd_dom_iff l_munion_upd l_the_map_union option.sel)
-  oops
-(*------------------------------------------------------------------------------------------------*)
-text \<open> Trying sub lemmas for PO_add0_FEAS_a4_invbd_state_a3 \<close>
-
-(*________________________________________________________________________________________________*)
-
-lemma PO_add0_FEAS_a3_invbd_state_vals_a3: 
-  (* added a supposed missing condition  esetnm \<in> dom (esets st); case analysis might be needed *)
-  "eset \<notin> dom (esets st) \<Longrightarrow>
-   esetnm \<in> dom (esets st) \<Longrightarrow>
-   invVals (the (esets st esetnm)) (ents st)
-    \<Longrightarrow>
-    invVals (the ((esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]) esetnm))
-        (ents st)"
-unfolding invVals_def Let_def
-
-  apply (elim conjE, intro conjI)
-  apply (simp add: l_the_map_union)
-apply assumption
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply (intro ballI, erule_tac x=eid in ballE)
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-
-apply (simp add: l_the_map_union_left)
-done
-
-(*________________________________________________________________________________________________*)
-
-lemma PO_add0_FEAS_a3_invbd_state_esets_a1:
-"eset \<notin> dom (esets st) \<Longrightarrow> 
- esetnm \<in> dom (esets st) \<Longrightarrow>
- invEsets (dom (esets st)) (dom (rels st)) \<Longrightarrow>
-       invEsets (dom (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]))
-        (dom (rels st))"
-unfolding invEsets_def 
-
-  apply (intro ballI)
-  apply (erule_tac x=reltype in ballE)
-
-apply (elim conjE, intro conjI)
-
-apply (metis l_dom_ar_not_in_dom l_munion_dom_ar_singleton_subsume)
-apply (metis l_dom_ar_not_in_dom l_munion_dom_ar_singleton_subsume)
-
-apply (intro conjI)
-
-apply metis+
-done
-
-lemma PO_add0_FEAS_a3_invbd_state_esets_simplified_a1:
-"eset \<notin> dom (esets st) \<Longrightarrow> 
- esetnm \<in> dom (esets st) \<Longrightarrow>
- inv_Esets (dom (esets st)) (dom (rels st)) \<Longrightarrow>
-       inv_Esets (insert eset (dom (esets st))) (dom (rels st))"
-unfolding inv_Esets_def 
-
-apply (intro ballI, erule_tac x=reltype in ballE)
-
-apply (elim conjE, intro conjI)
-
-apply (metis insert_iff)
-apply (metis insert_iff)
-apply (metis)
-done
-
-(*________________________________________________________________________________________________*)
-
-lemma  PO_add0_FEAS_a3_invbd_state_ents_a2:
-"eset \<notin> dom (esets st) \<Longrightarrow>
-inv_Ents (ran (esets st)) (dom (ents st)) \<Longrightarrow>
-       inv_Ents (ran (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>])) (dom (ents st))"
-unfolding inv_Ents_def 
-
-(*sledgehammer fails*)
-apply (simp add: l_munion_ran)
-done
-
-lemma PO_add0_FEAS_a3_invbd_state_pairs_a3:
-"eset \<notin> dom (esets st) \<Longrightarrow> 
- esetnm \<in> dom (esets st) \<Longrightarrow>
-  inv_Pairs (esets st) (rels st) \<Longrightarrow>
-       inv_Pairs (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]) (rels st)
-"
-unfolding inv_Pairs_def 
-apply (simp add: l_munion_ran)
-
-  apply (intro conjI)
-  apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1))
-(* apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1)) *)
-
-apply (unfold Let_def, elim conjE, intro ballI)
-
-apply (erule_tac x=reltype in ballE)
-apply (elim conjE, intro conjI)
-
-find_theorems "dom(_ \<union>m _)"
-apply (subst l_munion_dom)
-  apply simp
-  apply simp
-
-apply (subst l_munion_dom)
-  apply simp
-  apply simp
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply simp
-done 
-
-lemma PO_add0_FEAS_a3_invbd_state_pairs_general_a1:
-"eset \<notin> dom (esets st) \<Longrightarrow> 
-  inv_Pairs (esets st) (rels st) \<Longrightarrow>
-       inv_Pairs (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]) (rels st)
-"
-unfolding inv_Pairs_def 
-apply (simp add: l_munion_ran)
-
-apply (intro conjI)
-  apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1))
-(* apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1)) *)
-
-apply (unfold Let_def, elim conjE, intro ballI)
-
-apply (erule_tac x=reltype in ballE)
-apply (elim conjE, intro conjI)
-
-find_theorems "dom(_ \<union>m _)"
-apply (subst l_munion_dom)
-  apply simp
-  apply simp
-
-apply (subst l_munion_dom)
-  apply simp
-  apply simp
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply (subst l_the_map_union_left)
-  apply assumption
-  apply simp
-  apply assumption
-
-apply simp
-done 
-
-(*________________________________________________________________________________________________*)
-
-lemma 
-PO_add0_FEAS_a4_invbd_state_munion_a1: 
-  "esetnm \<in> dom (esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]) \<Longrightarrow>
-   eset \<notin> dom (esets st) \<Longrightarrow> esetnm \<noteq> eset \<Longrightarrow> esetnm \<in> dom (esets st)"
-find_theorems "dom(_ \<union>m _)"
-thm unionm_in_dom_left[of "esetnm" "esets st" "[eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>]",simplified]
-  (* TODO: should generalise? *)
-by (metis l_in_dom_ar l_munion_dom_ar_singleton_subsume singletonE)
-
-(*________________________________________________________________________________________________*)
-
-lemma PO_add0_FEAS_a4_invbd_state_a9: 
-  "inv_State_a st \<Longrightarrow>
-       eset \<notin> dom (esets st) \<Longrightarrow>
-       inv_State_a
-        \<lparr>esets = esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>], rels = rels st,
-           ents = ents st\<rparr>"
-unfolding inv_State_a_def Let_def
-apply (elim conjE)
-apply simp
-apply (intro conjI)
-    apply (metis PO_add0_FEAS_a4_invbd_state_esetmap_a1 State_a.select_convs(1))
-   apply (metis PO_add0_FEAS_a3_invbd_state_esets_a1 inv_Esets_def)
-  apply (simp add: PO_add0_FEAS_a3_invbd_state_pairs_general_a1)
-  apply (simp add: PO_add0_FEAS_a3_invbd_state_ents_a2)
-  by (simp add: PO_add0_FEAS_a4_invbd_state_munion_a1 inv_Esetinf_def inv_Vals_def l_the_map_union)
-
-(*________________________________________________________________________________________________*)
-
-theorem 
-  PO_add0_FEAS_a4: "PO_add0_fsb"
-
-(* Strategy 1: structural breakdown *) 
-unfolding PO_add0_fsb_def
-apply (intro allI impI, elim conjE)
-
-
-(* Strategy 2: unfold to appropriate layer *) 
-unfolding add0_pre_def add0_post_def
-  (* Strategy 3: structural breakdown *) 
-  apply (elim conjE)
-  (* wanted to remove duplicated assumption, please! *)
-  apply simp
-
-(* Strategy 4: existential witness single point - but only one record field! Argh *) 
-apply (rule_tac x="\<lparr> esets = 
-                     esets st \<union>m [eset \<mapsto> \<lparr>status = s, picture = p, width = w, membs = {}\<rparr>],
-                     rels = 
-                     rels st,
-                     ents = ents st\<rparr>" in exI) 
-
-(* Strategy 5: apply invariant-breakdown lemma ; NOTE: why not rule PO_add0_FEAS_a3_invbd_state_a3? Iain help? *)
-apply (simp add: PO_add0_FEAS_a4_invbd_state_a9)
-done
-
-(*print_syntax*)
-
-lemma \<open>\<forall> r . inv_RelinfM r \<longrightarrow> inv_Relinf r\<close>
-  apply (intro allI impI)
-  unfolding inv_RelinfM_def inv_Relinf_def
-  apply simp
-  oops
 
 end
