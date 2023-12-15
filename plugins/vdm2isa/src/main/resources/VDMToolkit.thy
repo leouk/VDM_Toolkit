@@ -2134,17 +2134,17 @@ apply simp
 apply (rule l_dagger_dom_ar_assoc)
 by (metis equalityE inf_mono subset_empty)
 
-lemma l_munion_empty_rhs: 
+lemma l_munion_empty_rhs[simp]: 
   "(f \<union>m Map.empty) = f"
 unfolding munion_def
 by (metis dom_empty inf_bot_right l_dagger_empty_rhs)
 
-lemma l_munion_empty_lhs: 
+lemma l_munion_empty_lhs[simp]: 
   "(Map.empty \<union>m f) = f"
 unfolding munion_def
 by (metis dom_empty inf_bot_left l_dagger_empty_lhs)
 
-lemma k_finite_munion:
+lemma k_finite_munion[simp]:
   "finite (dom f) \<Longrightarrow> finite(dom g) \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> finite(dom(f \<union>m g))" 
 by (metis finite_Un l_munion_dom)
 
@@ -2156,12 +2156,58 @@ unfolding munion_def
 apply simp
 by (metis dagger_def map_add_None)
 
+lemma l_trivial_vdmset[simp]: "inv_VDMSet' invt {}" 
+  by (simp add: inv_VDMSet'_def)
+
+lemma l_trivial_vdmmap[simp]: "inv_VDMMap invd invr Map.empty"
+  by (simp add: inv_VDMMap_def)
+
+lemma l_vdmmap_dom_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMSet' invDom (dom (m \<union>m n)) = (inv_VDMSet' invDom (dom m) \<and> inv_VDMSet' invDom (dom n))"
+  unfolding inv_VDMSet'_def inv_VDMSet_def
+  find_theorems "dom (_ \<union>m _) = _"
+  by (auto simp add: l_munion_dom)
+
+(* Use ran instead of rng, given internal Maps.thy expansions(?) *)
+lemma l_vdmmap_ran_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMSet' invRng (ran (m \<union>m n)) = (inv_VDMSet' invRng (ran m) \<and> inv_VDMSet' invRng (ran n))"
+  unfolding inv_VDMSet'_def inv_VDMSet_def
+  find_theorems "ran (_ \<union>m _) = _"
+  by (auto simp add: l_munion_ran)
+
+lemma l_vdmmap_inv_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMMap invDom invRng (m \<union>m n) = (inv_VDMMap invDom invRng m \<and> inv_VDMMap invDom invRng n)"
+  unfolding inv_VDMMap_def
+  by (auto simp add: l_vdmmap_dom_munion_dist l_vdmmap_ran_munion_dist)
+
+lemma l_vdmmap_inv_singleton[simp]:   
+  "invDom x \<Longrightarrow> invRng y \<Longrightarrow> inv_VDMMap invDom invRng [x \<mapsto> y]"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by simp
+
+lemma l_vdmset_inv_singleton[simp]:
+  "invElem x \<Longrightarrow> inv_VDMSet' invElem {x}"
+  unfolding inv_VDMSet'_def inv_VDMSet_def inv_SetElems_def
+  by simp
+
 lemma l_munion_empty_iff: 
   "dom f \<inter> dom g = {} \<Longrightarrow> (f \<union>m g = Map.empty) \<longleftrightarrow> (f = Map.empty \<and> g = Map.empty)"
 apply (rule iffI)
 apply (simp only: dom_eq_empty_conv[symmetric] l_munion_dom)
 apply (metis Un_empty)
-by (simp add: l_munion_empty_lhs l_munion_empty_rhs)
+by (simp ) (*add: l_munion_empty_lhs l_munion_empty_rhs)*)
+
+lemma l_indom_munion_in_map: "d \<in> dom m \<Longrightarrow> x \<notin> dom m \<Longrightarrow> d \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
+
+lemma l_indom_munion_in_map': "dom m \<inter> {x} = {} \<Longrightarrow> d \<in> dom m  \<Longrightarrow> d \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
+
+lemma l_indom_munion_in_maplet: "x \<notin> dom m \<Longrightarrow> x \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
 
 lemma l_munion_dom_ar_singleton_subsume: 
     "x \<notin> dom f \<Longrightarrow> {x} -\<triangleleft> (f \<union>m [x \<mapsto> y]) = f"
