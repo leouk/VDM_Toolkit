@@ -22,10 +22,25 @@ record State_r =
   valof   :: "Eid \<rightharpoonup> Value option"
   conns   :: "Triple set"
 
+definition 
+  inv_State_r_0 :: "State_r \<Rightarrow> \<bool>"
+  where 
+  "inv_State_r_0 sr \<equiv> 
+    inv_VDMMap inv_True inv_True (status sr) \<and>
+    inv_VDMMap inv_True inv_True (picture sr) \<and>
+    inv_VDMMap inv_True inv_True (width sr) \<and>
+    inv_VDMMap inv_True (inv_VDMSet' inv_True) (membs sr) \<and>
+    inv_VDMMap inv_True inv_True (fs sr) \<and>
+    inv_VDMMap inv_True (inv_Option inv_True) (nm sr) \<and>
+    inv_VDMMap inv_True inv_True (ts sr) \<and>
+    inv_VDMMap inv_True inv_True (map sr) \<and>
+    inv_VDMMap inv_True (inv_Option inv_True) (valof sr) \<and>
+    inv_VDMSet' inv_True (conns sr)
+"
 definition
-  inv_domains_sr :: "State_r \<Rightarrow> \<bool>"
+  invDomains :: "State_r \<Rightarrow> \<bool>"
 where
-  "inv_domains_sr sr \<equiv> (let statusr = dom (status sr); 
+  "invDomains sr \<equiv> (let statusr = dom (status sr); 
                             fsr = dom (fs sr) in 
                               dom (width sr) = statusr \<and>
                               dom (picture sr) = statusr \<and>
@@ -35,19 +50,26 @@ where
                               dom (map sr) = fsr) "
 
 definition
-  inv_rids_sr :: "Triple set \<Rightarrow> Rid set \<Rightarrow> \<bool>"
+  invRids :: "Triple set \<Rightarrow> Rid set \<Rightarrow> \<bool>"
 where
-  "inv_rids_sr tconns nms \<equiv> \<forall> t \<in> tconns . (rnm t) \<in> nms"
+  "invRids tconns nms \<equiv> 
+      inv_VDMSet' inv_True tconns \<and>
+      inv_VDMSet' inv_True nms \<and>
+      (\<forall> t \<in> tconns . (rnm t) \<in> nms)"
 
 definition
-  inv_rels_sr :: "(Rid \<rightharpoonup> Esetnm) \<Rightarrow> (Rid \<rightharpoonup> Relnm option) \<Rightarrow> (Rid \<rightharpoonup> Esetnm)\<Rightarrow> \<bool>"
+  invRels :: "(Rid \<rightharpoonup> Esetnm) \<Rightarrow> (Rid \<rightharpoonup> Relnm option) \<Rightarrow> (Rid \<rightharpoonup> Esetnm)\<Rightarrow> \<bool>"
 where
-  "inv_rels_sr fsr nmr tsr \<equiv> \<not>(\<exists> rid1 \<in> (dom fsr) . \<exists> rid2 \<in> dom fsr . 
-                                  rid1 \<noteq> rid2 \<and>
-                                  (fsr rid1) = (fsr rid2) \<and>
-                                  (nmr rid1) = (nmr rid2) \<and>
-                                  (tsr rid1) = (tsr rid2))" (* TODO: rephrase that? *)
-thm State_a.make_def
+  "invRels fsr nmr tsr \<equiv> 
+      inv_VDMMap inv_True inv_True (fsr) \<and>
+      inv_VDMMap inv_True (inv_Option inv_True) (nmr) \<and>
+      inv_VDMMap inv_True inv_True (tsr) \<and>
+      dom fsr = dom tsr \<and> dom fsr = dom nmr \<and>
+      \<not>(\<exists> rid1 \<in> (dom fsr) . \<exists> rid2 \<in> dom fsr . 
+                rid1 \<noteq> rid2 \<and>
+                (fsr rid1) = (fsr rid2) \<and>
+                (nmr rid1) = (nmr rid2) \<and>
+                (tsr rid1) = (tsr rid2))" (* TODO: rephrase that? *)
 
 definition
   esetinfo_r :: "Esetnm \<Rightarrow> State_r \<Rightarrow> Esetinf"
@@ -219,9 +241,9 @@ definition
   inv_State_r :: "State_r \<Rightarrow> \<bool>"
 where
   "inv_State_r sr \<equiv> inv_State_a (retra sr) \<and>
-                    inv_domains_sr sr \<and> 
-                    inv_rids_sr (conns sr) (dom (nm sr)) \<and>
-                    inv_rels_sr (fs sr) (nm sr) (ts sr)"
+                    invDomains sr \<and> 
+                    invRids (conns sr) (dom (nm sr)) \<and>
+                    invRels (fs sr) (nm sr) (ts sr)"
 (* NOTE: This is kind of cheating like in Heap1 original: you depend on the retrieve to 
          jump between modelling decisions / data representations. 
  *)
@@ -277,7 +299,7 @@ apply (smt DiffD2 State_r.select_convs(1)
                   State_r.select_convs(8) 
            disjoint_iff_not_equal 
            domIff dom_empty dom_fun_upd 
-           fun_upd_triv inv_domains_sr_def 
+           fun_upd_triv invDomains_def 
            l_munion_upd option.distinct(1))
 
 unfolding inv_State_a_def Let_def
@@ -325,9 +347,9 @@ oops
 lemma PO_add1_FEAS_a0_invbd_state_a1_state_a_retr_a0:
   "eset \<notin> dom (State_r.status st) \<Longrightarrow>
     inv_State_a (retra st) \<Longrightarrow>
-    inv_domains_sr st \<Longrightarrow>
-    inv_rids_sr (State_r.conns st) (dom (State_r.nm st)) \<Longrightarrow>
-    inv_rels_sr (State_r.fs st) (State_r.nm st) (State_r.ts st) \<Longrightarrow>
+    invDomains st \<Longrightarrow>
+    invRids (State_r.conns st) (dom (State_r.nm st)) \<Longrightarrow>
+    invRels (State_r.fs st) (State_r.nm st) (State_r.ts st) \<Longrightarrow>
     inv_State_a
      (retra \<lparr>State_r.status = State_r.status st \<union>m [eset \<mapsto> s], picture = State_r.picture st \<union>m [eset \<mapsto> p],
                width = State_r.width st \<union>m [eset \<mapsto> w], membs = State_r.membs st \<union>m [eset \<mapsto> {}],
@@ -361,7 +383,7 @@ apply (smt DiffD2 State_r.select_convs(1)
                   State_r.select_convs(8) 
            disjoint_iff_not_equal 
            domIff dom_empty dom_fun_upd 
-           fun_upd_triv inv_domains_sr_def 
+           fun_upd_triv invDomains_def 
            l_munion_upd option.distinct(1))
 done
 
