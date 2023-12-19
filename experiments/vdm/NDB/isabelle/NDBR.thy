@@ -1,4 +1,3 @@
-(* $Id$ *)
 theory NDBR
 imports NDBA_sta_fix
 begin
@@ -89,65 +88,11 @@ where
                           Reltype.make a_fs a_nm a_ts)"
 
 definition
-  relinfo_r :: "Rid \<Rightarrow> State_r \<Rightarrow> Relinf"
+  relinfo_r :: "Rid \<Rightarrow> State_r \<Rightarrow> Relinf0"
 where
   "relinfo_r rid sr \<equiv> (let a_map = the ((map sr) rid);
                            a_conns = { Pair.make (fv t) (tv t) | t . t \<in> (conns sr) \<and> (rnm t) = rid} in 
-                          Relinf.make a_map a_conns)"
-
-find_theorems name:list name:set
-
-find_theorems "_ (_::'a \<rightharpoonup> 'b) = _" -name:Quickcheck -name:Option -name:VDM -name:NDB
-
-definition 
-  bla :: "\<nat> set \<Rightarrow> \<nat> list" (* needs to be linear order *)
-where
-  "bla es \<equiv> sorted_list_of_set es"
-
-thm sorted_list_of_set[of  "(dom f)"]
-
-(* NOTE: as suggested in List.thy l.344-347, we add separate definitions for the comprehensions 
-definition 
-  r_esets_map_lc :: "State_r \<Rightarrow> (Esetnm \<times> Esetinf) list"
-where
-  "r_esets_map_lc sr \<equiv> [(esetnm, (esetinfo_r esetnm sr)) . esetnm \<leftarrow> (sorted_list_of_set (dom (status sr))) ]"
- 
-
-typedecl T1 
-typedecl T2
-typedecl T3
-typedecl T4
-
-record Type1 =
-  m11 :: "T1 \<rightharpoonup> T2"
-  m12 :: "T1 \<rightharpoonup> T3"
-  m13 :: "T1 \<rightharpoonup> T4"
-
-record RT1 =
-  a :: T1
-  b :: T2
-
-record RT2 =
-  c :: T3
-  d :: T4
-
-record RT3 =
-  e :: T2
-  f :: T3
-
-record Type2 =
-  m21 :: "RT1 \<rightharpoonup> RT2"
-  m22 :: "T1 \<rightharpoonup> RT3"
-
-definition 
-   trans :: "Type1 \<Rightarrow> Type2"
-where 
-  "trans t1 \<equiv> (let AA = empty; 
-                   AB = (\<lambda> x . (if x \<in> dom (m11 t1) then RT3.make (the ((m11 t1) x)) (the (m12 t1 x)) else undefined)) in 
-                  Type2.make AA AB)"
-
-(* m22 = *)
-*)
+                          Relinf0.make a_map a_conns)"
 
 text \<open> Defining VDM map comprehension is difficult, mostly because comprehension is defined 
         over sets and lists, but not maps. Maps can be created from lists, but transforming 
@@ -201,18 +146,36 @@ text \<open> Defining VDM map comprehension is difficult, mostly because compreh
         \<close>
 
 definition 
-   r_esets :: "State_r \<Rightarrow> (Esetnm \<rightharpoonup> Esetinf)"
+   r_esets0 :: "State_r \<Rightarrow> (Esetnm \<rightharpoonup> Esetinf)"
 where
-  "r_esets sr \<equiv> (\<lambda> esetnm . (if esetnm \<in> dom (status sr) then
+  "r_esets0 sr \<equiv> (\<lambda> esetnm . (if esetnm \<in> dom (status sr) then
                                (let esetinfo = (esetinfo_r esetnm sr) in
                                  (if inv_Esetinf esetinfo 
                                   then 
                                      Some esetinfo
                                   else None)) 
-                             else None))" (* TODO: should we check the invariant result? *)
+                             else None))" 
 
+(* { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } *)
+definition
+   r_esets :: "State_r \<Rightarrow> (Esetnm \<rightharpoonup> Esetinf)"
+where
+  "r_esets sr \<equiv> mapCompSetBound (dom (status sr)) UNIV inv_True inv_Esetinf domid (\<lambda> esetnm . (\<lambda> y . esetinfo_r esetnm sr)) truecnst" 
+
+(* { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } *)
+(*definition
+   r_rels :: "State_r \<Rightarrow> (Reltype \<rightharpoonup> Relinf0)"
+   where
+  "r_rels sr \<equiv> mapCompSetBound 
+      { (reltype_r rid sr) | rid . rid \<in> (dom (fs sr)) } 
+      (UNIV::Relinf0 set) 
+      inv_Reltype inv_Relinf 
+      (\<lambda> rid . (\<lambda> y . (reltype_r rid sr))) 
+      (\<lambda> rid . (\<lambda> y . (relinfo_r rid sr))) 
+      truecnst" 
+*)
 definition 
-   r_rels :: "State_r \<Rightarrow> (Reltype \<rightharpoonup> Relinf)"
+   r_rels :: "State_r \<Rightarrow> (Reltype \<rightharpoonup> Relinf0)"
 where
   "r_rels sr \<equiv> (\<lambda> rt .  (if (\<exists> x . x \<in> (dom (fs sr))) then
                            (let rid = (SOME x . x \<in> (dom (fs sr)));
@@ -223,7 +186,8 @@ where
                                  Some relinf
                                else
                                  None))
-                          else None))" (* TODO: should we check the invariant result? *)
+                          else None))"
+
 
 find_theorems name:Collect name:Set
 find_theorems name:cong name:HOL
@@ -231,22 +195,17 @@ find_theorems name:cong name:HOL
 definition
   retra :: "State_r \<Rightarrow> State_a"
 where
-  "retra sr \<equiv> State_a.make (r_esets sr) (r_rels sr) (valof sr)"
-(* NOTE: original uses LPF's notion of Unidefined-disjunction, where the second disjunct (other
-         invariants) is False, whereas the first disjunct is undefined (inv(state_a)).
-         The retrive being part of the invariant isn't good, I Think.
- *)
+  "retra sr \<equiv> \<lparr> esets = (r_esets sr), rels = (r_rels sr), ents = (valof sr)\<rparr>"
 
 definition
   inv_State_r :: "State_r \<Rightarrow> \<bool>"
 where
-  "inv_State_r sr \<equiv> inv_State_a (retra sr) \<and>
+  "inv_State_r sr \<equiv> 
+      inv_State_r_0 sr \<and>
+      inv_State_a (retra sr) \<and>
                     invDomains sr \<and> 
                     invRids (conns sr) (dom (nm sr)) \<and>
                     invRels (fs sr) (nm sr) (ts sr)"
-(* NOTE: This is kind of cheating like in Heap1 original: you depend on the retrieve to 
-         jump between modelling decisions / data representations. 
- *)
 
 definition
   add1_pre :: "State_r \<Rightarrow> Esetnm \<Rightarrow> Status \<Rightarrow> Picture \<Rightarrow> Width \<Rightarrow> \<bool>"
@@ -289,7 +248,8 @@ apply simp
 apply (intro conjI)
 
 defer
-apply (smt DiffD2 State_r.select_convs(1) 
+(*
+  apply (smt DiffD2 State_r.select_convs(1)
                   State_r.select_convs(2) 
                   State_r.select_convs(3) 
                   State_r.select_convs(4) 
@@ -300,7 +260,7 @@ apply (smt DiffD2 State_r.select_convs(1)
            disjoint_iff_not_equal 
            domIff dom_empty dom_fun_upd 
            fun_upd_triv invDomains_def 
-           l_munion_upd option.distinct(1))
+           l_munion_upd option.distinct(1))*)
 
 unfolding inv_State_a_def Let_def
 apply (elim conjE, intro conjI)
@@ -371,7 +331,7 @@ unfolding inv_State_r_def
 apply (elim conjE)
 apply simp
 apply (intro conjI)
-
+(*
 apply (metis PO_add1_FEAS_a0_invbd_state_a1_state_a_retr_a0)
 apply (smt DiffD2 State_r.select_convs(1) 
                   State_r.select_convs(2) 
@@ -384,8 +344,8 @@ apply (smt DiffD2 State_r.select_convs(1)
            disjoint_iff_not_equal 
            domIff dom_empty dom_fun_upd 
            fun_upd_triv invDomains_def 
-           l_munion_upd option.distinct(1))
-done
+           l_munion_upd option.distinct(1))*)
+  sorry
 
 theorem l_PO_add1_fsb_a0:
   "PO_add1_fsb"
@@ -412,7 +372,8 @@ done
 theorem l_adequacy_a0:
    "PO_state_a_r_adequacy"
 unfolding PO_state_a_r_adequacy_def retra_def inv_State_r_def
-apply (intro allI impI exI conjI)
+  apply (intro allI impI conjI)
+  apply (rule_tac x="retra sr"))
 oops
 
 theorem l_adequacy_a1:

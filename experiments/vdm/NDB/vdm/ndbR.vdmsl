@@ -106,9 +106,9 @@ functions
     --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
     retra: State_r_0 -> State_a
     retra(sr) == 
-        let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
-        let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
-        let ents  = sr.valof in 
+        let esets: map Esetnm to Esetinf = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
+        let rels : map Reltype to Relinf = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
+        let ents : map Eid to [Value]    = sr.valof in 
             mk_State_a_0(esets, rels, ents)
     --@NB this presumes that 
     pre 

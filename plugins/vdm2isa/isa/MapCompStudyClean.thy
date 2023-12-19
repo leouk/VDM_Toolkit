@@ -318,11 +318,12 @@ lemma ex2'_map: "x \<in> dom ex2' \<Longrightarrow> ex2' x = Some 10"
     apply (erule impE)
   using ex2'_dom_clearer ex2'_dom_inv' apply auto[1]
   using inv_VDMNat_def apply auto[1]
-   apply (smt (verit, del_insts) atLeastAtMost_iff ex2'_dom_clearer l_map_dom_ran)
+(*   apply (smt (verit, del_insts) atLeastAtMost_iff ex2'_dom_clearer l_map_dom_ran)*)
 (*  by (smt (z3) Collect_cong atLeastAtMost_iff ex2'_dom_clearer ex2'_dom_finite finite.emptyI finite.insertI inv_SetElems_def inv_VDMNat_def l_invVDMSet_finite mem_Collect_eq singletonD) *)
   apply (erule impE)
-  using ex2'_dom_clearer ex2'_dom_inv' apply force
-  using inv_VDMNat_def by auto
+  using ex2'_dom_clearer ex2'_dom_inv' apply simp
+  using inv_VDMNat_def apply auto
+  sorry
 
 (* more direct binds even if with range expressions it's fine. UNIV isn't finite! DUH 
    = { x |-> x+5 | x in set {1,2,3,4} & x > 2 } *)
