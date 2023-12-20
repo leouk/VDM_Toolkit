@@ -27,6 +27,7 @@ exports
         struct NDBStateR;
     functions
         strconv: State_r -> NDBStateR;
+        strconv': NDBStateR -> State_r;
 definitions 
 types 
     State_r_0 ::
@@ -58,6 +59,11 @@ functions
     strconv(sr) == mk_NDBStateR(sr.status, sr.picture, 
         sr.width, sr.membs, sr.fs, sr.nm, sr.ts, 
         sr.map_, sr.valof, sr.conns);
+
+    strconv': NDBStateR -> State_r
+    strconv'(ndbr) == mk_State_r_0(ndbr.status, ndbr.picture, 
+        ndbr.width, ndbr.membs, ndbr.fs, ndbr.nm, ndbr.ts, 
+        ndbr.map_, ndbr.valof, ndbr.conns);
 
     invr: State_r_0 -> bool 
     invr(sr) == 
@@ -218,5 +224,33 @@ operations
     --      pre_ADDA(eset, s, p, w, staconv(retra(r))) & pre_ADDR(eset, s, p, w, strconv(r)))
 
 values 
-    keep_theorems: bool = true;
+    esm1: Esetnm = mk_token("UK");
+    esm2: Esetnm = mk_token("Brazil");
+    esm3: Esetnm = mk_token("US");
+    esm4: Esetnm = mk_token("France");
+
+    p1: Picture = mk_token("Picture1");
+    p2: Picture = mk_token("Picture2");
+    p3: Picture = mk_token("Picture3");
+    p4: Picture = mk_token("Picture4");
+
+    s1: Status = mk_token("Status1");
+    s2: Status = mk_token("Status2");
+    s3: Status = mk_token("Status3");
+    s4: Status = mk_token("Status4");
+
+    v1: Value = mk_token("Value1");
+    v2: Value = mk_token("Value2");
+    v3: Value = mk_token("Value3");
+    v4: Value = mk_token("Value4");
+
+    w1: Width = mk_token("Width1");
+    w2: Width = mk_token("Width2");
+    w3: Width = mk_token("Width3");
+    w4: Width = mk_token("Width4");
+
+traces 
+    T1: ADDRExplicit(esm1, s1, p1, w1); ADDRExplicit(esm2, s2, p2, w2); 
+        ADDRExplicit(esm3, s3, p3, w3); ADDRExplicit(esm4, s4, p4, w4);
+
 end ndbR

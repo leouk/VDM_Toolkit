@@ -232,7 +232,70 @@ definition
 where
   "PO_state_a_r_adequacy \<equiv> \<forall> sa . inv_State_a sa \<longrightarrow> (\<exists> sr . inv_State_r sr \<and> retra sr = sa)"
 
-thm State_r.fields_def
+definition 
+  state_r_witness :: "State_r" 
+  where 
+  "state_r_witness \<equiv> \<lparr> status = Map.empty, picture = Map.empty, width = Map.empty, 
+                       membs = Map.empty, fs = Map.empty, nm = Map.empty, ts = Map.empty,
+                       map = Map.empty, valof = Map.empty, conns = {} \<rparr>"
+
+lemma PO_state_a_r_adequacy_retrsta_rsets_state_r_witness: 
+  "inv_State_a sa \<Longrightarrow> r_esets state_r_witness = esets sa" 
+  unfolding r_esets_def mapCompSetBound_def
+  apply (rule, simp)
+  apply (intro conjI impI, elim conjE)
+  sorry 
+
+lemma PO_state_a_r_adequacy_retrsta: 
+  "inv_State_a sa \<Longrightarrow> retra state_r_witness = sa"
+  unfolding retra_def 
+  apply (cases sa)
+  apply (simp add: PO_state_a_r_adequacy_retrsta_rsets_state_r_witness)
+  
+  unfolding state_r_witness_def
+  apply (cases sa, simp)
+  unfolding inv_State_a_def Let_def state_r_witness_def inv_State_a_0_def
+  apply (elim conjE, intro conjI)
+  unfolding r_esets_def mapCompSetBound_def
+    apply (simp)
+    apply (rule, simp)
+  apply (intro conjI impI)
+ 
+
+lemma PO_state_a_r_adequacy_invsta_retra:
+  "inv_State_a sa \<Longrightarrow> inv_State_a (retra state_r_witness)"
+  apply (simp add: PO_state_a_r_adequacy_retrsta)
+  done  
+
+lemma PO_state_a_r_adequacy_invsta: 
+  "inv_State_a sa \<Longrightarrow> inv_State_r state_r_witness"
+  unfolding inv_State_r_def 
+  apply (intro conjI)
+      apply (simp add: inv_State_r_0_def state_r_witness_def) 
+  apply (simp add: PO_state_a_r_adequacy_invsta_retra)
+  apply (simp add:  invDomains_def state_r_witness_def)
+    apply (simp add: invRids_def state_r_witness_def)
+  apply (simp add: invRels_def state_r_witness_def)
+  done
+
+theorem PO_state_a_r_adequacy
+  unfolding PO_state_a_r_adequacy_def
+  apply (intro allI impI)
+  apply (rule_tac x="state_r_witness" in exI)
+  apply (simp add: PO_state_a_r_adequacy_invsta PO_state_a_r_adequacy_retrsta)
+  done
+(*
+  status  :: "Esetnm \<rightharpoonup> Status"
+  picture :: "Esetnm \<rightharpoonup> Picture"
+  width   :: "Esetnm \<rightharpoonup> Width"
+  membs   :: "Esetnm \<rightharpoonup> Eid set"
+  fs      :: "Rid \<rightharpoonup> Esetnm"
+  nm      :: "Rid \<rightharpoonup> Relnm option"
+  ts      :: "Rid \<rightharpoonup> Esetnm"
+  map     :: "Rid \<rightharpoonup> Maptype"
+  valof   :: "Eid \<rightharpoonup> Value option"
+  conns   :: "Triple set"
+*)
 
 lemma PO_add1_FEAS_a0_invbd_state_a0:
   "inv_State_r st \<Longrightarrow>
