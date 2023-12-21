@@ -1,6 +1,8 @@
 module ndbR
-imports 
-    from ndbA 
+imports
+    from VDMUtil 
+        functions val2seq_of_char renamed val2str;
+,   from ndbA 
         types 
             Esetnm      renamed Esetnm;
             Status      renamed Status;
@@ -28,6 +30,7 @@ exports
     functions
         strconv: State_r -> NDBStateR;
         strconv': NDBStateR -> State_r;
+        retrr: State_a -> State_r;
 definitions 
 types 
     State_r_0 ::
@@ -159,8 +162,27 @@ functions
         rid in set dom sr.map_
     ;
 
-    f: State_r -> [ndbA`NDBStateA]
-    f(sr) == nil;
+    mkrid: Reltype -> Rid 
+    mkrid(mk_Reltype(fs, nm, ts)) == 
+        mk_token("rid-" ^ val2str[Esetnm](fs) ^ val2str[[Relnm]](nm) ^ val2str[Esetnm](ts));
+
+    retrr: State_a -> State_r 
+    retrr(mk_State_a_0(esets, rels, ents)) ==  
+        let status : map Esetnm to Status     = { esetnm    |-> esets(esetnm).status  | esetnm in set dom esets },
+            picture: map Esetnm to Picture    = { esetnm    |-> esets(esetnm).picture | esetnm in set dom esets },
+            width  : map Esetnm to Picture    = { esetnm    |-> esets(esetnm).width   | esetnm in set dom esets },
+            membs  : map Esetnm to set of Eid = { esetnm    |-> esets(esetnm).membs   | esetnm in set dom esets },
+            fs     : map Rid to Esetnm        = { mkrid(rt) |-> rt.fs                 | rt in set dom rels },
+            nm     : map Rid to [Relnm]       = { mkrid(rt) |-> rt.nm                 | rt in set dom rels },
+            ts     : map Rid to Esetnm        = { mkrid(rt) |-> rt.ts                 | rt in set dom rels },
+            map_   : map Rid to Maptype       = { mkrid(rt) |-> rels(rt).map_         | rt in set dom rels },
+            valof  : map Eid to [Value]       = ents,
+            conns  : set of Tripple           = dunion { { mk_Tripple(p.fv, mk_token("rid"), p.tv) | p in set rels(rt).conns } | rt in set dom rels }
+        in  
+            mk_State_r_0(status, picture, width, membs, fs, nm, ts, map_, valof, conns);
+
+    -- f: State_r -> [ndbA`NDBStateA]
+    -- f(sr) == nil;
 
 state NDBStateR of	
     status : map Esetnm to Status 

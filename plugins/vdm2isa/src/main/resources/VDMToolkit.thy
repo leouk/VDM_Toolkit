@@ -394,9 +394,9 @@ lemma l_inv_SetElems_Int[simp]: "(inv_SetElems f (S \<inter> T)) = (inv_SetElems
 lemma l_inv_SetElems_empty[simp]: "inv_SetElems f {}" 
 unfolding inv_SetElems_def by simp
 
-lemma l_invSetElems_inv_True_True[simp]: "undefined \<notin> r \<Longrightarrow> inv_SetElems inv_True r" 
+lemma l_invSetElems_inv_True_True[simp]: "inv_SetElems inv_True r" 
   by (metis inv_SetElems_def l_inv_True_True)
-  
+
 lemma l_vdm_card_finite[simp]: "finite s \<Longrightarrow> vdm_card s = int (card s)"
   unfolding vdm_card_defs by simp
 
@@ -1155,6 +1155,8 @@ text \<open>Type bound map comprehension cannot filter for type invariants, henc
               exists findex2 in set dom finmap1 & 
                 finmap1(findex2) = {(x + y) |-> 10}
       \end{verbatim}
+      %
+      This isn't general enough for when types change between input and output result from domexpr and rngexpr.
      \<close>
 definition 
   mapCompTypeBound :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
@@ -2161,6 +2163,21 @@ lemma l_trivial_vdmset[simp]: "inv_VDMSet' invt {}"
 
 lemma l_trivial_vdmmap[simp]: "inv_VDMMap invd invr Map.empty"
   by (simp add: inv_VDMMap_def)
+
+lemma l_vdmmap_true[simp]: "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow>  inv_VDMMap inv_True inv_True m" 
+  by (simp add: inv_VDMMap_def inv_VDMSet'_def)
+
+lemma l_trivial_vdmmap_ranset[simp]: 
+  "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow> inv_SetElems finite (ran m) \<Longrightarrow> inv_VDMMap inv_True (inv_VDMSet' inv_True) m"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by simp
+
+lemma l_trivial_invoption[simp]: "inv_Option inv_True x"
+  unfolding inv_Option_def inv_True_def by simp
+
+lemma l_trivial_vdmmap_ranopt[simp]: "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow> inv_VDMMap inv_True (inv_Option inv_True) m"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by (simp add: inv_SetElems_def)
 
 lemma l_vdmmap_dom_munion_dist: 
   "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMSet' invDom (dom (m \<union>m n)) = (inv_VDMSet' invDom (dom m) \<and> inv_VDMSet' invDom (dom n))"

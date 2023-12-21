@@ -260,12 +260,12 @@ lemma PO_state_a_r_adequacy_retrsta:
     apply (simp)
     apply (rule, simp)
   apply (intro conjI impI)
- 
+  oops
 
 lemma PO_state_a_r_adequacy_invsta_retra:
   "inv_State_a sa \<Longrightarrow> inv_State_a (retra state_r_witness)"
   apply (simp add: PO_state_a_r_adequacy_retrsta)
-  done  
+  oops  
 
 lemma PO_state_a_r_adequacy_invsta: 
   "inv_State_a sa \<Longrightarrow> inv_State_r state_r_witness"
@@ -276,14 +276,15 @@ lemma PO_state_a_r_adequacy_invsta:
   apply (simp add:  invDomains_def state_r_witness_def)
     apply (simp add: invRids_def state_r_witness_def)
   apply (simp add: invRels_def state_r_witness_def)
-  done
-
+  oops
+  
 theorem PO_state_a_r_adequacy
   unfolding PO_state_a_r_adequacy_def
   apply (intro allI impI)
-  apply (rule_tac x="state_r_witness" in exI)
-  apply (simp add: PO_state_a_r_adequacy_invsta PO_state_a_r_adequacy_retrsta)
-  done
+  unfolding inv_State_r_def inv_State_r_0_def
+  apply (intro exI conjI l_vdmmap_true l_trivial_vdmmap_ranopt l_trivial_vdmmap_ranset)
+                      defer defer defer defer defer defer defer defer defer defer defer defer defer defer defer defer
+  oops
 (*
   status  :: "Esetnm \<rightharpoonup> Status"
   picture :: "Esetnm \<rightharpoonup> Picture"

@@ -24,6 +24,7 @@ exports
         inva: State_a_0 -> bool;
         inva' : State_a_0 -> bool;
         staconv: State_a -> NDBStateA;
+        staconv': NDBStateA -> State_a;
         pre_ADDA: Esetnm * Status * Picture * Width * NDBStateA +> bool;
     operations 
         ADDA: Esetnm * Status * Picture * Width ==> (); 
@@ -104,6 +105,9 @@ functions
 
     staconv: State_a -> NDBStateA
     staconv(sa) == mk_NDBStateA(sa.esets, sa.rels, sa.ents);
+
+    staconv': NDBStateA -> State_a
+    staconv'(ndba) == mk_State_a_0(ndba.esets, ndba.rels, ndba.ents);
 
 	invVals: Esetinf * Eidmap -> bool
 	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
