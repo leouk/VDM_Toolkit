@@ -10,7 +10,7 @@ public class TRLevel0IsapogTest extends Vdm2IsaJUnitTest
 	public static void start() throws Exception
 	{
 //        Vdm2IsaJUnitTest.start();
-        System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
+//        System.setProperty("vdmj.plugins", "plugins.analyses.IsabellePluginSL");
         readSpecification("lvl0");
 	}
 

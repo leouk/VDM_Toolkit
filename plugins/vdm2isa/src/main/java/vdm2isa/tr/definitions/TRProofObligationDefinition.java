@@ -101,7 +101,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         // measure-related POs are spurious given Isabelle's recursive definition principles
         result = (poNameStr.indexOf("measure_") != -1 && 
                   poExprStr.indexOf("measure_") != -1 &&
-                  kind.equals(POType.TOTAL)
+                  kind.equals(POType.TOTAL_FUNCTION)
                  )
                  ||
                  //this name was just something in gateway.vdmsl
