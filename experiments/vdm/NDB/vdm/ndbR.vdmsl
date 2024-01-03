@@ -184,6 +184,10 @@ functions
     -- f: State_r -> [ndbA`NDBStateA]
     -- f(sr) == nil;
 
+    -- isqrt: nat -> nat 
+    -- isqrt(n) ==
+    --     let r in set {1,...,n} be st r**2 <= n and n < (r+1)**2 in r;
+
 state NDBStateR of	
     status : map Esetnm to Status 
     picture: map Esetnm to Picture 
