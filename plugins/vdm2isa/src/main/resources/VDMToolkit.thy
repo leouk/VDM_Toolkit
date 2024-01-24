@@ -440,7 +440,7 @@ proof -
     using a1 by (metis (no_types) Int_commute)
 qed
 
-theorem l_vdm_card_fsb:
+lemma l_vdm_card_fsb:
   "pre_vdm_card s \<Longrightarrow> post_vdm_card s (vdm_card s)"
   by (simp add: inv_VDMNat_def inv_VDMSet_def post_vdm_card_def pre_vdm_card_def)
 
