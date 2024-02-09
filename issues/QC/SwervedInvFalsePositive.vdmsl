@@ -1,0 +1,68 @@
+/*
+module SwervedInvFalsePositive
+exports 
+types
+	B;
+	struct C;
+	struct E;
+	struct P;
+	struct I;
+	struct S;
+	struct SR;
+	struct SRC;
+	struct EI;
+definitions
+	*/
+types
+
+	B = nat;
+	C ::
+		i: B
+		n: seq1 of char;
+	
+	E ::
+		c: C
+		i: int;
+	
+	P = E * E;
+	
+	I = set1 of nat
+	inv i == i = complete(i);
+	
+	S = P
+	inv mk_(e, f) == access(e) = access(f);
+	
+	SR = set of S;
+	
+	SRC = SR
+	inv s == complicated_inv(s);
+
+	EI = map P to I
+	inv m == inv_SRC(dom m);
+	
+	EI' = map P to I
+	inv m == (forall mk_(e, f) in set dom m & access(e) = access(f)) and card dom m > 0;
+
+functions
+	access: E -> B
+	access(mk_E(mk_C(i, -), -)) == i;
+
+	maxs: set1 of int -> int
+	maxs(s) == 
+		(iota m in set s & (forall n in set s & n <= m))
+	post
+		forall x in set s & x <= RESULT;
+
+	mins: set1 of int -> int
+	mins(s) == 
+		(iota m in set s & (forall n in set s & m <= n))
+	post
+		forall x in set s & RESULT <= x;
+
+	complete: set1 of nat -> set1 of nat
+	complete(s) == {mins(s),...,maxs(s)}
+	post s subset RESULT;
+
+	complicated_inv: SR -> bool
+	complicated_inv(s) == card s > 0;
+--end SwervedInvFalsePositive
