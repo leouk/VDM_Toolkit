@@ -41,7 +41,7 @@ types
 	inv m == inv_SRC(dom m);
 	
 	EI' = map P to I
-	inv m == (forall mk_(e, f) in set dom m & access(e) = access(f)) and card dom m > 0;
+	inv m == (forall mk_(e, f) in set dom m & access(e) = access(f)) and card dom m > 0;	
 
 functions
 	access: E -> B
