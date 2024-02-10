@@ -26,7 +26,17 @@ types
 	Relinf :: 
         map_: Maptype
         conns : set of Pair
-	inv r == invMaps(r);
+	inv mk_Relinf(map_, prset) == 
+        -- NOTE: horrible logic description for Isabelle but okay. Original
+        --			 had this as a partial function. I am totalising it with others -> false.
+        --			 I think the original should have been total.
+        cases map_ :
+            <ManyMany> -> true,
+            <ManyOne>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.fv = pr2_.fv),
+            <OneMany>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.tv = pr2_.tv),
+            <OneOne>   -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and 
+                                    (pr1_.fv = pr2_.fv or pr1_.tv = pr2_.tv))
+        end;
 						 
     Maptype = <OneOne> | <OneMany> | <ManyOne> | <ManyMany> ;
 	
@@ -56,7 +66,7 @@ functions
 	invVals: Esetinf * (map Eid to [Value]) -> bool
 	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
         --@NB missing invariant for the application of em(eid)?
-        --(membs subset dom em_) and	
+        (membs subset dom em_) and	
         forall eid in set membs & pictureMatch(em_(eid), picture);
 					
 	pictureMatch: [Value] * Picture -> bool
@@ -80,7 +90,7 @@ functions
             let mk_Reltype(fs, -, ts) = reltype' in
                 let prset = rm_(reltype').conns in
                     --@NB missing invariant for well formedness of map app?? 
-                    --fs in set dom esm_ and ts in set dom esm_ and 
+                    fs in set dom esm_ and ts in set dom esm_ and 
                     are_membs(froms(prset), esm_(fs)) and
                     are_membs(tos(prset), esm_(ts));
   						

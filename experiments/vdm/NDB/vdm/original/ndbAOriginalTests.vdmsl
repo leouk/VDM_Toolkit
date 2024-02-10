@@ -1,0 +1,107 @@
+values
+/*
+   STA = mk_State_a_0(esm, rm, em);
+   esm = { esm1 |-> esi1, esm2 |-> esi2 };   
+   rm = { |-> } ;
+   em = { eid1 |-> v1, eid2 |-> v2 };
+   esm1 = mk_token("China");
+   esm2 = mk_token("UK");
+   esi1 = mk_Esetinf(s1, p1, w1, m2);
+   esi2 = mk_Esetinf(s1, p1, w1, m1);
+   s1 = mk_token("Status1");
+   p1 = mk_token("Picture1");
+   w1 = mk_token("Width1");
+   m1 = {eid1};
+   m2 = {eid2, eid1};
+   eid1 = mk_token("Eid1");
+   eid2 = mk_token("Eid2");
+   eid3 = mk_token("Eid3");
+   eid4 = mk_token("Eid4");
+   eid5 = mk_token("Eid5");
+   eid6 = mk_token("Eid6");
+   
+   v1 = mk_token("country");
+   v2 = mk_token("currency");
+   v3 = mk_token("material");
+   v4 = mk_token("price per meter");
+   v5 = mk_token("amount in meters");
+   v6 = mk_token("export number");
+   STA1 = mk_State_a_0(esmf,rmf, emf);
+   esmf = { esm1f |-> esi1f, esm2f |-> esi2f, esm3f |-> esi3f, esm4f |-> esi4f, esm5f |-> esi5f };
+   rmf = {rtf1 |-> rtif1, rtf2 |-> rtif2, rtf3 |-> rtif3, rtf4 |-> rtif4, rtf5 |-> rtif5  } ;
+   emf = { eidf1 |-> vf1, eidf2 |-> vf2, eidf3 |-> vf3, eidf4 |-> vf4, eidf5 |-> vf5 };
+   */
+   
+    STA: State_a = mk_State_a(esm, rm, em);
+
+    esm: map (token) to (Esetinf) = { esm1 |-> esi1, esm2 |-> esi2, esm3 |-> esi3, esm4 |-> esi4, esm5 |-> esi5 };    
+    rm : map Reltype to Relinf = {rt1 |-> rti1, rt2 |-> rti2, rt3 |-> rti3, rt4 |-> rti4, rt5 |-> rti5  };
+    em : map token to token = { eid1 |-> v1, eid2 |-> v2, eid3 |-> v3, eid4 |-> v4, eid5 |-> v5 };
+
+    esm1: token = mk_token("China");
+    esm2: token = mk_token("UK");
+    esm3: token = mk_token("Brazil");
+    esm4: token = mk_token("Ecuador");
+    esm5: token = mk_token("France");
+
+    esi1: Esetinf = mk_Esetinf(s1, p1, w1, m1);
+    esi2: Esetinf = mk_Esetinf(s2, p2, w2, m2);
+    esi3: Esetinf = mk_Esetinf(s3, p3, w3, m3);
+    esi4: Esetinf = mk_Esetinf(s4, p4, w4, m4);
+    esi5: Esetinf = mk_Esetinf(s5, p5, w5, m5);
+
+    p1: token = mk_token("Picture1");
+    p2: token = mk_token("Picture2");
+    p3: token = mk_token("Picture3");
+    p4: token = mk_token("Picture4");
+    p5: token = mk_token("Picture5");
+
+    s1: token = mk_token("Status1");
+    s2: token = mk_token("Status2");
+    s3: token = mk_token("Status3");
+    s4: token = mk_token("Status4");
+    s5: token = mk_token("Status5");
+
+    v1: token = mk_token("Value1");
+    v2: token = mk_token("Value2");
+    v3: token = mk_token("Value3");
+    v4: token = mk_token("Value4");
+    v5: token = mk_token("Value5");
+
+    w1: token = mk_token("Width1");
+    w2: token = mk_token("Width2");
+    w3: token = mk_token("Width3");
+    w4: token = mk_token("Width4");
+    w5: token = mk_token("Width5");
+
+    eid1: token = mk_token("Eid1");
+    eid2: token = mk_token("Eid2");
+    eid3: token = mk_token("Eid3");
+    eid4: token = mk_token("Eid4");
+    eid5: token = mk_token("Eid5");
+
+    m1: set1 of token = {eid1, eid5, eid2, eid3};
+    m2: set1 of token = {eid2, eid3, eid4};
+    m3: set1 of token = {eid3,eid2,eid4, eid5};
+    m4: set1 of token = {eid4, eid1, eid2, eid3, eid5};
+    m5: set1 of token = {eid5};
+
+    rt1: Reltype = mk_Reltype(esm1,v1,esm2);
+    rt2: Reltype = mk_Reltype(esm3,v2,esm3);
+    rt3: Reltype = mk_Reltype(esm2,v5,esm4);
+    rt4: Reltype = mk_Reltype(esm3,v4,esm1);
+    rt5: Reltype = mk_Reltype(esm4,v2,esm4);
+
+    pr1: Pair = mk_Pair(eid1,eid2);
+    pr2: Pair = mk_Pair(eid2,eid3);
+    pr3: Pair = mk_Pair(eid4,eid3);
+    pr4: Pair = mk_Pair(eid4,eid5);
+    pr5: Pair = mk_Pair(eid5,eid1);
+
+    rti1: Relinf = mk_Relinf(<OneOne>,{pr1,pr2});
+    rti2: Relinf = mk_Relinf(<ManyOne>,{pr2,pr3});
+    rti3: Relinf = mk_Relinf(<OneMany>,{pr3,pr4});
+    rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
+    rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
+
+--   b: bool = inv_Relinf(mk_Relinf!(<OneMany>, {mk_Pair(mk_token(-1330417465), mk_token(-1842229197)), mk_Pair(mk_token(-1447908648), mk_token(-1842229197)), mk_Pair(mk_token(881021702), mk_token(-1842229197))}));
