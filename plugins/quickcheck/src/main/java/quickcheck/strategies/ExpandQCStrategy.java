@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fujitsu.vdmj.in.expressions.INExpression;
 import com.fujitsu.vdmj.in.patterns.INBindingOverride;
 import com.fujitsu.vdmj.plugins.VDMJ;
 import com.fujitsu.vdmj.pog.ProofObligation;
@@ -75,8 +74,22 @@ public class ExpandQCStrategy extends QCStrategy
 		return true;	// Return value => whether to do checks or stop 
 	}
 
+
+
 	@Override
-	public StrategyResults getValues(ProofObligation po, INExpression exp, List<INBindingOverride> binds, Context ctxt)
+	public String help()
+	{
+		return getName() + " [-example:proved <bool>]";
+	}
+
+	@Override
+	public boolean useByDefault()
+	{
+		return false;	// Not used if no -s options given
+	}
+
+	@Override
+	public StrategyResults getValues(ProofObligation po, List<INBindingOverride> binds, Context ctxt) 
 	{
 		Map<String, ValueList> values = new HashMap<String, ValueList>();
 		long before = System.currentTimeMillis();
@@ -95,17 +108,5 @@ public class ExpandQCStrategy extends QCStrategy
 		{
 			return new StrategyResults(values, false, System.currentTimeMillis() - before);
 		}
-	}
-
-	@Override
-	public String help()
-	{
-		return getName() + " [-example:proved <bool>]";
-	}
-
-	@Override
-	public boolean useByDefault()
-	{
-		return false;	// Not used if no -s options given
 	}
 }
