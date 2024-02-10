@@ -50,8 +50,6 @@ types
 functions
 	
 	inva : State_a! -> bool 
-          --(map Esetnm to Esetinf) * (map Reltype to Relinf) * (map Eid to [Value]) -> bool
-	--inva(esm_, rm_, em_) ==
     inva(mk_State_a(esm_, rm_, em_)) == 
         forall esetnm in set dom esm_ & 
             invVals(esm_(esetnm), em_) and
@@ -198,8 +196,8 @@ functions
                 nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
             )
     --@NB this presumes that 
-    pre 
-        dom fs = dom nm and dom fs = dom ts
+    -- pre 
+    --     dom fs = dom nm and dom fs = dom ts
     ;
 
     retra: State_r! -> State_a
@@ -209,8 +207,8 @@ functions
         let ents  = sr.valof in 
             mk_State_a(esets, rels, ents)
     --@NB this presumes that 
-    pre 
-        invDomains(sr)
+    -- pre 
+    --     invDomains(sr)
     ;
 
     esetinfo: Esetnm * State_r! -> Esetinf 
@@ -221,11 +219,11 @@ functions
         let a_membs   = sr.membs(esetnm) in 
             mk_Esetinf(a_status, a_picture, a_width, a_membs)
     --@NB this presumes that
-    pre 
-        esetnm in set dom sr.status and
-        dom sr.status = dom sr.picture and 
-        dom sr.status = dom sr.width and 
-        dom sr.status = dom sr.membs 
+    -- pre 
+    --     esetnm in set dom sr.status and
+    --     dom sr.status = dom sr.picture and 
+    --     dom sr.status = dom sr.width and 
+    --     dom sr.status = dom sr.membs 
         ;
 
     reltype: Rid * State_r! -> Reltype 
@@ -235,10 +233,10 @@ functions
         let a_ts = sr.ts(rid) in 
             mk_Reltype(a_fs, a_nm, a_ts)
     --@NB this presumes that
-    pre 
-        rid in set dom sr.fs and 
-        dom sr.fs = dom sr.nm and
-        dom sr.fs = dom sr.ts 
+    -- pre 
+    --     rid in set dom sr.fs and 
+    --     dom sr.fs = dom sr.nm and
+    --     dom sr.fs = dom sr.ts 
     ;
 
     relinfo: Rid * State_r! -> Relinf 
@@ -247,8 +245,8 @@ functions
         let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
             mk_Relinf(a_map, a_conns)
     --@NB this presumes that 
-    pre 
-        rid in set dom sr.map_
+    -- pre 
+    --     rid in set dom sr.map_
     ;
 
     --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)

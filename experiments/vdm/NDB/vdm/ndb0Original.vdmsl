@@ -359,4 +359,6 @@ values
     rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
     rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
 
+--   b: bool = inv_Relinf(mk_Relinf!(<OneMany>, {mk_Pair(mk_token(-1330417465), mk_token(-1842229197)), mk_Pair(mk_token(-1447908648), mk_token(-1842229197)), mk_Pair(mk_token(881021702), mk_token(-1842229197))}));
+
 end ndb0Original
