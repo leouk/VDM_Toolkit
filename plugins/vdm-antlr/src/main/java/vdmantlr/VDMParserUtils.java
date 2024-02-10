@@ -1,6 +1,9 @@
 package vdmantlr;
 
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -88,9 +91,9 @@ public class VDMParserUtils {
         int from_col = start.getCharPositionInLine() + 1 + start.getText().length();
         int stop_line = stop.getLine();
         int to_col = stop.getCharPositionInLine() + 1 + stop.getText().length();
-        System.out.println("\nSCOPE of " + identifier + " is " + ((parentCandidate instanceof VDMParser.Sl_documentContext) ? "whole module" : getSource(parentCandidate)));
-        System.out.println("start " + start_line + "(" + from_col + ")");
-        System.out.println("stop " + stop_line + "(" + to_col + ")");
+        //System.out.println("\nSCOPE of " + identifier + " is " + ((parentCandidate instanceof VDMParser.Sl_documentContext) ? "whole module" : getSource(parentCandidate)));
+        //System.out.println("start " + start_line + "(" + from_col + ")");
+        //System.out.println("stop " + stop_line + "(" + to_col + ")");
         return new Range(start_line, from_col, stop_line, to_col);
     }
 
@@ -169,5 +172,24 @@ public class VDMParserUtils {
         Interval interval = new Interval(start.getStartIndex(), stop.getStopIndex());
         String src = cs.getText(interval);
         return src;
+    }
+
+    private static String[] sortedRuleNames = null;
+    private static Comparator<String> ruleComparator = null;
+
+    public synchronized static int ruleIndex(String ruleName)
+    {
+        if (sortedRuleNames == null)
+        {   
+            ruleComparator = Comparator.comparing(String::toString);
+            sortedRuleNames = Arrays.copyOf(VDMParser.ruleNames, VDMParser.ruleNames.length);
+            Arrays.sort(sortedRuleNames, ruleComparator);
+        }
+        return Arrays.binarySearch(sortedRuleNames, ruleName, ruleComparator); 
+    }
+
+    public static boolean validRuleName(String ruleName)
+    {
+        return ruleIndex(ruleName) != -1; 
     }
 }

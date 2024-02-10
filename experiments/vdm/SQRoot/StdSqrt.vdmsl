@@ -1,0 +1,76 @@
+module StdSqrt
+imports from IO operations printf renamed printf;
+exports all
+definitions 
+
+types
+	Square = nat1;
+	
+functions
+	--@doc R1: calculate the square root of a natural (positive) number
+	--@doc R2: result must be within mathematical understanding of square root
+	--@doc R2.1: user must define the calculation tolerance for "real" result 
+	--@doc R2.2: error handling, error assumptions, error margin/narrowness, etc.
+	--@doc R3: provide tests to show results adhere to intent
+	-- int=-inf..+inf
+	sqrt: Square * real -> real
+	sqrt(x, err) == 
+		-- implement
+		is not yet specified 
+	pre 
+		-- assumption
+		err > 0 and err <= x
+	post
+		-- committment 
+		(RESULT * RESULT) - err <= x
+		and -- &&
+		(RESULT + 1) * (RESULT + 1) > x;
+	--floor(RESULT * (10 ** precision)) = x * (10 ** precision)
+
+	newton_guess: real * real -> real
+	newton_guess(value,guess) ==
+		(guess + (value / guess)) / 2
+	pre
+		value >= 0 and guess > 0;
+
+values
+	MAX   : nat = 100;
+	ERROR : real = 0.01;
+	
+state MySQRT of
+	sqrt_error: real
+inv
+	mk_MySQRT(sqrt_error) == sqrt_error <= ERROR
+init
+  mys == mys = mk_MySQRT(ERROR / 10)
+end
+
+operations
+
+	SquareRoot : real  ==> real 
+	SquareRoot (value) ==
+	-- 9
+	-- guess = 4.5; 9
+	-- next  = 9
+	-- (guess + (value / guess)) / 2 = 9 + 1 / 2 = 5 
+	-- abs (4.5 - 9) >= 0.01 * 4.5  = -4.5 >= 0.045
+	    (dcl guess:real := value / 2,
+	  		   nextx: real := value;
+				while abs (guess - nextx) >= sqrt_error * guess do
+				   ( printf("guess=%1s; next=%2s\n", [guess, nextx]);
+				   	 guess := nextx;
+				     nextx := newton_guess(value,guess);
+				   );
+				return nextx
+				)
+	pre 
+		value >= 0 and sqrt_error > 0 and sqrt_error <= value
+	post
+	  --RESULT * RESULT = value
+		(RESULT * RESULT) - sqrt_error <= value;
+		
+traces
+	Trace1: 
+		let n in set {0,...,MAX} in sqrt(n, ERROR);
+			
+end StdSqrt

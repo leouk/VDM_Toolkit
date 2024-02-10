@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "plugins.commands.IsabelleCommand",
             "projectName": "vdm2isa",
-            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin -Dvdmj.diag.max_stack=10",
             "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
         },
         {

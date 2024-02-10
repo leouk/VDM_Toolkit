@@ -1,0 +1,33 @@
+module A 
+exports 
+types 
+	T;
+functions
+	x_of_t: T -> nat;
+definitions
+types
+	T :: x: nat
+	inv mk_T(x) == x > 10;
+	
+functions 
+	x_of_t: T -> nat 
+	x_of_t(t) == t.x;
+	
+end A
+
+module B 
+imports 
+from A 
+	types T renamed T; 
+	functions x_of_t renamed x_of_t;
+exports 
+types S;
+definitions 
+types
+
+	S :: t: T
+		 y: real
+	inv mk_S(t, y) == x_of_t(t) > y and y > 0;
+	
+end B
+	

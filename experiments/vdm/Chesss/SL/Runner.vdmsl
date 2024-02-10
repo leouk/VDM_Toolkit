@@ -14,6 +14,8 @@ imports
 ,   from BM 
         types 
             Move renamed Move;
+            --@Warning(5000) It's needed for the "for move in reverse ...." below
+            History renamed History;
 ,   from PGN 
         types  
             String renamed String;
@@ -38,11 +40,12 @@ exports
 definitions
 values 
     DEFAULT_OUTPUT_FILE: String = "output.txt";
-state Runner of 
+
+state RunnerSt of 
     game : Game
     output: String
     pgn_moves : seq of String
-init r == r = mk_Runner(default_game(), DEFAULT_OUTPUT_FILE, [])
+init r == r = mk_RunnerSt(default_game(), DEFAULT_OUTPUT_FILE, [])
 end
 
 operations 
@@ -63,6 +66,7 @@ operations
 
     Run() ==
     (
+        --@LF same issue here
         for move_str in pgn_moves do (
             let move: Move = string_to_move(game, move_str) in
                 let mk_(g, w) = move_game(game, move) in
@@ -95,12 +99,15 @@ operations
         let b = fwriteval[seq of char](output, "\n\n PGN:\n\n", <append>) in
             if not b then 
                 println("Could not start PGN output");
-        for move in reverse game.board.history do (
-            let mstr: String = move_to_pgn_string(move),
-                b:bool = fwriteval[seq of char](output, mstr ^ " ", <append>) in
-                if not b then 
-                    println("Could not write PGN move " ^ mstr);
-        );
+        --@LF here is even worse: we get History as hidden type that can't be "explicitly typed"?!
+        --@LF even if I add the import, still get scope error, so had to "explicitly" locally bind it. Exu wasn't happy either
+        --let moves: History = reverse game.board.history in
+            for move in reverse game.board.history /*moves */ do (
+                let mstr: String = move_to_pgn_string(move),
+                    b:bool = fwriteval[seq of char](output, mstr ^ " ", <append>) in
+                    if not b then 
+                        println("Could not write PGN move " ^ mstr);
+            );
     )
     ext wr game rd pgn_moves, output;
 

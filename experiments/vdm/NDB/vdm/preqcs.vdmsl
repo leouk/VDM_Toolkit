@@ -1,0 +1,22 @@
+module preqcs
+exports all 
+definitions
+types 
+    T1 = nat 
+    inv t == t < 0;
+
+    T2 = nat1 
+    inv t == t < 10;
+
+functions 
+    f: T1 -> int
+    f(x) == x + 1;
+
+    g: T2 -> int
+    g(x) == x + 1
+    pre x >= 10;
+
+    h: () -> T1
+    h() == 10;
+    
+end preqcs

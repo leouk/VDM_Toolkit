@@ -77,6 +77,8 @@ exports
 		relative_card[@T]: FuzzySet -> real;
 		extended_relative_card[@T]: FuzzySet * FuzzySet -> real;
 		general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real; 
+
+		type_convergent[@T]: FuzzySet -> bool
 definitions 
 
 types
@@ -108,47 +110,72 @@ functions
 	
 	--@doc make a core fuzzy set (all maps to 1) on given universe set. 
 	make_fuzzy_set[@T]: set of @T -> FuzzySet
-	make_fuzzy_set(U) == { x |-> 1 | x in set U };
+	make_fuzzy_set(U) == { x |-> 1 | x in set U }
+	post 
+		type_convergent[@T](RESULT);
 	
 	--@doc fuzzy set universe closed under the polymorphic type
 	universe[@T]: FuzzySet -> set of @T
-	universe(fs) == dom fs;
+	universe(fs) == dom fs
+	pre
+		type_convergent[@T](fs);
 	
 	scores[@T]: FuzzySet -> set of Score
-	scores(fs) == rng fs;
+	scores(fs) == rng fs
+	pre
+		type_convergent[@T](fs);
 	
 	--@doc fuzzy set membership (objective) function closed under the polymorphic type
 	membership[@T]: @T * FuzzySet -> Score
 	membership(x, fs) ==
 		fs(x) 
 	pre	
+		type_convergent[@T](fs)
+		and
 		x in set universe[@T](fs);
 	
 	--@doc general crisp fuzzy set filtered by the given fuzzy test 
 	--@todo could have avoided the @T everywhere but then would loose implementation independence on map ? to Score.
 	crisp_fuzzy_set[@T]: FuzzySet * FuzzyTest -> FuzzySet
 	crisp_fuzzy_set(fs, ft) ==
-		{ x | x in set universe[@T](fs) & ft(membership[@T](x, fs)) } <: fs; 
+		{ x | x in set universe[@T](fs) & ft(membership[@T](x, fs)) } <: fs
+	pre 
+		type_convergent[@T](fs);
 	
 	--@doc fuzzy set "alpha" cut (i.e. all mappings >= alpha)
   alpha_cut[@T]: FuzzySet * Score -> FuzzySet
   alpha_cut(fs, alpha) == 
-  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s >= alpha));
+  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s >= alpha))
+  pre 
+  	type_convergent[@T](fs)
+  post 
+  		type_convergent[@T](RESULT);
   
 	--@doc fuzzy set strong "alpha" cut (i.e. all mappings > alpha)
   strong_alpha_cut[@T]: FuzzySet * Score -> FuzzySet
   strong_alpha_cut(fs, alpha) == 
-  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s > alpha));
+  	crisp_fuzzy_set[@T](fs, (lambda s: Score & s > alpha))
+  pre 
+  	type_convergent[@T](fs)
+post 
+			type_convergent[@T](RESULT)
+;
   
 	--@doc fuzzy set all elements have membership (i.e. all mappings > 0)
   support_fuzzy_set[@T]: FuzzySet -> FuzzySet
   support_fuzzy_set(fs) == 
-		strong_alpha_cut[@T](fs, 0);
+		strong_alpha_cut[@T](fs, 0)
+  pre 
+  	type_convergent[@T](fs)
+	post 
+			type_convergent[@T](RESULT)
+;
 	
   --@doc fuzzy set full membership test
 	full_member[@T]: @T * FuzzySet -> bool
 	full_member(x, fs) ==
-		pre_membership[@T](x, fs) and membership[@T](x, fs) = 1;
+		pre_membership[@T](x, fs) and membership[@T](x, fs) = 1
+  	;
 		
 	--@doc fuzzy set no membership test
 	not_member[@T]: @T * FuzzySet -> bool
@@ -163,16 +190,26 @@ functions
 	--@doc level fuzzy set 
 	level[@T]: FuzzySet * Score -> FuzzySet
 	level(fs, alpha) == 
-		crisp_fuzzy_set[@T](fs, (lambda s: Score & s = alpha));
+		crisp_fuzzy_set[@T](fs, (lambda s: Score & s = alpha))
+	pre 
+		type_convergent[@T](fs)
+	post 
+		type_convergent[@T](RESULT);
 			
 	--@doc fuzzy set all elements are full members (i.e. all mapptings = 1)		
   core_fuzzy_set[@T]: FuzzySet -> FuzzySet
   core_fuzzy_set(fs) == 
-  	level[@T](fs, 1);
+  	level[@T](fs, 1)
+	pre 
+		type_convergent[@T](fs)
+	post 
+		type_convergent[@T](RESULT);
 
 	strict_empty[@T]: FuzzySet -> bool
 	strict_empty(fs) == 
-		universe[@T](fs) = {};
+		universe[@T](fs) = {}
+	pre 
+		type_convergent[@T](fs);
 
 	--@doc empty fuzzy set is either empty universe or all elements maps to 0.
 	--     filtering on empty universe might be redundant.  
@@ -183,18 +220,27 @@ functions
 				card universe[@T](fs) 
 				= 
 				card universe[@T](level[@T](fs, 0))
-		);
+		)
+	pre 
+		type_convergent[@T](fs);
 	
 	--@doc universe types are compatible so long as their types multually converge (or are equivalent)
 	universe_compatible[@T, @R]: FuzzySet * FuzzySet -> bool
 	universe_compatible(fsA, fsB) ==
+		type_convergent[@T](fsA)
+		and 
+		type_convergent[@T](fsB)
+		and
 		is_(universe[@T](fsA), set of @R) 
 		and
-		is_(universe[@R](fsB), set of @T);
+		is_(universe[@R](fsB), set of @T)
+	;
 		
 	--@doc fuzzy set equality can be mapped to VDM equality	so long as their universe type agree
 	equals[@T, @R]: FuzzySet * FuzzySet -> bool
 	equals(fsA, fsB) == 
+		type_convergent[@T](fsA) and type_convergent[@T](fsB)
+		and 
 		universe_compatible[@T, @R](fsA, fsB)
 		and
 		fsA = fsB;
@@ -202,6 +248,8 @@ functions
 	--@doc fuzzy set subset containment; it requires A's universe to be within B's
 	included[@T, @R]: FuzzySet * FuzzySet -> bool
 	included(fsA, fsB) ==
+		type_convergent[@T](fsA) and type_convergent[@T](fsB)
+		and
 		universe_compatible[@T, @R](fsA, fsB)
 		and
 		universe[@T](fsA) subset universe[@R](fsB)
@@ -211,7 +259,9 @@ functions
 	--@doc a fuzzy set where some element maps to 0.5 has crossed over
 	crossed_over[@T]: FuzzySet -> bool
 	crossed_over(fs) ==
-		not empty[@T](level[@T](fs, 0.5));
+		not empty[@T](level[@T](fs, 0.5))
+	pre 
+		type_convergent[@T](fs);
 	
 	--@doc maximum over scores using VDM's iota (i.e. for Isabelle, convert to fold). 
 	maxs: set1 of Score -> Score
@@ -231,15 +281,20 @@ functions
 	height[@T]: FuzzySet -> Score
 	height(fs) == 
 		--@doc check for empty universe as maxs depends on non-empty universe. 
-		if strict_empty[@T](fs) then 0 else maxs(scores[@T](fs));
+		if strict_empty[@T](fs) then 0 else maxs(scores[@T](fs))
+	pre
+		type_convergent[@T](fs);
+
 	
 	--@doc normal fuzzy set is one where at least one element has full membership
 	normal[@T]: FuzzySet -> bool
 	normal(fs) ==
 		height[@T](fs) = 1
+	pre
+		type_convergent[@T](fs)
 	post
 		--@doc here the design decision over the fuzzy set type shows itself. 
-		(exists u in set universe[@T](fs) & full_member[@T](u, fs));
+		RESULT => not empty[@T](fs) and (exists u in set universe[@T](fs) & full_member[@T](u, fs));
 			 
 	--@doc non-empty fuzzy set can be normalised by dividing its membership over its height for every element
 	normalise[@T]: FuzzySet -> FuzzySet
@@ -249,11 +304,15 @@ functions
 		 in	
 		 	{ x |-> membership[@T](x, fs) / h | x in set universe[@T](fs) }  
 	pre
+		type_convergent[@T](fs)
+		and
 		--@doc to normalise, must not be striclty empty, as it will divide by height; perhaps say in terms of height
 		--not strict_empty[@T](fs)
 		height[@T](fs) <> 0
 	post
-		normal[@T](fs);
+		type_convergent[@T](RESULT)
+		and
+		normal[@T](RESULT);--fs?
 	
 	--@doc assuming the single-dimensioned fuzzy set, width is difference between its maximum and minimum
 	width[@T]: FuzzySet -> Score
@@ -264,11 +323,15 @@ functions
 		 	if strict_empty[@T](support_fs) then 
 			 	0 
 			else 
-				(maxs(scores[@T](support_fs)) - mins(scores[@T](support_fs)));
+				(maxs(scores[@T](support_fs)) - mins(scores[@T](support_fs)))
+	pre 
+		type_convergent[@T](fs);
 	
 	--@doc convex fuzzy set	
 	convex[@T]: FuzzySet -> bool
 	convex(fs) ==
+		type_convergent[@T](fs)
+		and
 		(forall x, y in set universe[@T](fs) & forall z in set {x,y} & 
 				membership[@T](z, fs) >= mins({membership[@T](x, fs), membership[@T](y, fs)})
 		);
@@ -277,6 +340,8 @@ functions
 	--@doc we use the membership projection to get to the actual scores for the t_norm instance
 	valid_fuzzy_t_norm[@T]: FuzzySet * FuzzyTNorm * (@T * @T -> bool) -> bool
 	valid_fuzzy_t_norm(fs, t_norm, ordered) ==
+		type_convergent[@T](fs)
+		and
 		--@doc commutative: t_norm(a, b) = t_norm(b, a)
 		(forall a, b in set universe[@T](fs) & 
 				t_norm(membership[@T](a, fs), membership[@T](b, fs)) 
@@ -349,6 +414,8 @@ functions
 	--@doc has strong negator (strict involution), n(n(x)) = x
 	has_fuzzy_strong_negator[@T]: FuzzySet * FuzzyStrongNegator -> bool 
 	has_fuzzy_strong_negator(fs, s_n) ==
+		type_convergent[@T](fs)
+		and
 		(forall a in set universe[@T](fs) & s_n(s_n(membership[@T](a, fs))) = membership[@T](a, fs));
 	
 	std_negator: Score -> Score
@@ -358,7 +425,11 @@ functions
 	complement[@T]: FuzzySet -> FuzzySet
 	complement(fs) == 
 		{ x |-> std_negator(membership[@T](x, fs)) | x in set universe[@T](fs) }
+	pre
+		type_convergent[@T](fs)
 	post
+		type_convergent[@T](RESULT) 
+		and
 		has_fuzzy_strong_negator[@T](fs, std_negator);
 
 	--@doc fuzzy intersection of two sets considering the given FuzzyTNorm; requires valid t_norm and compatible universes
@@ -371,11 +442,18 @@ functions
 		 in
   		{ x |-> t_norm(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		universe_compatible[@T,@R](fsA, fsB)
 		and
 		valid_fuzzy_t_norm[@T](fsA, t_norm, orderA)
 		and
-		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB);
+		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB)
+	post 
+		type_convergent[@T](RESULT)
+	;
 			
 	--@doc fuzzy union of two sets considering the given FuzzyTNorm; 
 	--		 requires valid t_norm (which will be turned into cannonical s_norm) and compatible universes
@@ -392,6 +470,10 @@ functions
 		  munion
 		  { x |-> s_norm(t_norm)(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		--@doc relax this by munion their corresponding differences
 		--	dom fsA = dom fsB
 		--and
@@ -399,7 +481,9 @@ functions
 		and
 		valid_fuzzy_t_norm[@T](fsA, t_norm, orderA)
 		and
-		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB);
+		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB)
+	post
+			type_convergent[@T](RESULT);
 	
 	general_fuzzy_diff[@T, @R]: FuzzySet * FuzzySet * FuzzyTNorm * FuzzyStrongNegator * (@T * @T -> bool) * (@R * @R -> bool) -> FuzzySet
 	general_fuzzy_diff(fsA, fsB, t_norm, s_n, orderA, orderB) ==
@@ -409,6 +493,10 @@ functions
 		 in
 		  { x |-> t_norm(membership[@T](x, fsA), s_n(membership[@T](x, fsB))) | x in set uA inter uB }
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		--@doc relax this by munion their corresponding differences
 		--	dom fsA = dom fsB
 		--and
@@ -418,7 +506,9 @@ functions
 		and
 		valid_fuzzy_t_norm[@R](fsB, t_norm, orderB)
 		and
-		has_fuzzy_strong_negator[@R](fsB, s_n);
+		has_fuzzy_strong_negator[@R](fsB, s_n)
+	post 
+			type_convergent[@T](RESULT);
 	
 	
 		 
@@ -438,6 +528,10 @@ functions
 		 in
 		  { x |-> t_norm_min(membership[@T](x, fsA), membership[@T](x, fsB)) | x in set uA inter uB }
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		--@doc given we are assuming the partial order for @T, and that there is no polymorphic access to ord_@T
 		--		 we are effectively assuming this holds for given type @T order relation
 		--valid_fuzzy_t_norm[@T](fsA, t_norm_min, ord_@T)
@@ -445,7 +539,9 @@ functions
 		--valid_fuzzy_t_norm[@R](fsB, t_norm_min, ord_@T)
 		--and
 		--@doc still check the universes type-agree
-		universe_compatible[@T,@T](fsA, fsB);	
+		universe_compatible[@T,@T](fsA, fsB)
+	post 
+			type_convergent[@T](RESULT);	
 
 	--@doc simplified fuzzy union: 
 	--		 1. it (implicitily) assumes @T for fuzy set universe is partially ordered 
@@ -462,6 +558,10 @@ functions
 		  munion
 		  { x |-> maxs({ membership[@T](x, fsA), membership[@T](x, fsB) }) | x in set uA inter uB }
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		--@doc given we are assuming the partial order for @T, and that there is no polymorphic access to ord_@T
 		--		 we are effectively assuming this holds for given type @T order relation
 		--valid_fuzzy_t_norm[@T](fsA, s_norm(t_norm_min), ord_@T)
@@ -469,19 +569,28 @@ functions
 		--valid_fuzzy_t_norm[@R](fsB, s_norm(t_norm_min), ord_@T)
 		--and
 		--@doc still check the universes type-agree
-		universe_compatible[@T,@T](fsA, fsB);	
+		universe_compatible[@T,@T](fsA, fsB)
+	post
+			type_convergent[@T](RESULT);	
 		
 	--@doc simplified fuzzy set difference A \ B is the intersection between A and B's complement.
 	fuzzy_diff[@T]: FuzzySet * FuzzySet -> FuzzySet
 	fuzzy_diff(fsA, fsB) ==
 		fuzzy_inter[@T](fsA, complement[@T](fsB))
 	pre
+		type_convergent[@T](fsA)
+		and
+		type_convergent[@T](fsB)
+		and
 		--@doc still check the universes type-agree
-		universe_compatible[@T,@T](fsA, fsB);	
+		universe_compatible[@T,@T](fsA, fsB)
+	post 
+			type_convergent[@T](RESULT);	
 	
 	--@doc disjoint fuzzy sets have no membership between their elements	
 	disjoint[@T, @R]: FuzzySet * FuzzySet -> bool
 	disjoint(fsA, fsB) ==
+		type_convergent[@T](fsA) and 		type_convergent[@T](fsB) and
 	  universe_compatible[@T, @R](fsA, fsB)
 	  and
 	  (forall x in set universe[@T](fsA) inter universe[@R](fsB) &
@@ -492,6 +601,8 @@ functions
 	scalar_card[@T]: FuzzySet -> real 
 	scalar_card(fs) == 
 		sum_r(set2seq[Score](scores[@T](fs)))
+	pre	
+		type_convergent[@T](fs)
 	post
 		--@doc weaker empty, given summing of results 
 		(not empty[@T](fs) => RESULT > 0);
@@ -502,24 +613,35 @@ functions
 		if strict_empty[@T](fs) then
 			0
 		else
-			scalar_card[@T](fs) / card universe[@T](fs);
+			scalar_card[@T](fs) / card universe[@T](fs)
+	pre
+			type_convergent[@T](fs);
 
 	--@doc extended relative cardinality with fixed fuzzy_inter 
 	extended_relative_card[@T]: FuzzySet * FuzzySet -> real 
 	extended_relative_card(fsA, fsB) ==
 		scalar_card[@T](fuzzy_inter[@T](fsA, fsB)) / scalar_card[@T](fsB)
 	pre
-		scalar_card[@T](fsB) > 0
-		and
-		pre_fuzzy_inter[@T](fsA, fsB);	
+		pre_fuzzy_inter[@T](fsA, fsB)
+		and	
+		scalar_card[@T](fsB) > 0;
 
 	--@doc general relative cardinality with general t_norm intersection and order 
 	general_relative_card[@T,@R]: FuzzySet * FuzzySet * FuzzyTNorm * (@T * @T -> bool) * (@R * @R -> bool) -> real 
 	general_relative_card(fsA, fsB, t_norm, orderA, orderB) ==
 		scalar_card[@T](general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)) / scalar_card[@T](fsB)
 	pre
-		scalar_card[@T](fsB) > 0
+		pre_general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB)
 		and
-		pre_general_fuzzy_inter[@T,@R](fsA, fsB, t_norm, orderA, orderB);
+		scalar_card[@T](fsB) > 0;
+
+	type_test[@T]: () -> (? -> bool)
+	type_test() == (lambda t: ? & is_(t, @T));
+
+	--@doc all elements of the bag are type convergent up to @T
+    --@QuickCheck @T = nat;
+	type_convergent[@T]: FuzzySet -> bool
+	type_convergent(b) == 
+		forall i in set dom b & type_test[@T]()(i);
 
 end FuzzySets

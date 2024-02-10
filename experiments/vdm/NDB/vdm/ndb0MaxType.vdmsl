@@ -1,0 +1,363 @@
+module ndb0MaxType
+exports all
+definitions 
+types
+
+	State_a ::
+        esets : map Esetnm to Esetinf
+        rels  : map Reltype to Relinf
+        ents  : map Eid to [Value]
+    inv sa == inva(sa);
+							
+	Esetinf :: 
+        status : Status
+        picture: Picture
+        width  : Width 
+        membs  : set of Eid;
+
+	-- NOTE: relationship types are said to be distinguishable, perhaps by name only?
+	--			 as given, a relationship like mk_RelType(F, currency, T), 
+	--			 mk_RelType(X, currency, Y) will be distinct (assuming X != F or Y != T),
+	--			 despite the fact there shouldn't be different currencies for element sets?
+	--
+	--			 i.e. the equality test over the Reltype should be on nm only?
+	--
+	Reltype :: 
+        fs : Esetnm
+        nm : [Relnm]
+        ts : Esetnm;
+
+	Relinf :: 
+        map_: Maptype
+        conns : set of Pair
+	inv r == invMaps(r);
+						 
+    Maptype = <OneOne> | <OneMany> | <ManyOne> | <ManyMany> ;
+	
+	Pair :: 
+        fv : Eid
+		tv : Eid; -- Value can be found from within the Esetinf
+
+	Eid    = token;
+	Esetnm = token;
+	Relnm  = token;
+	Value  = token;
+	
+	Status = token;
+	Picture= token;
+	Width  = token;
+
+functions
+	
+	inva : State_a! -> bool 
+    inva(mk_State_a(esm_, rm_, em_)) == 
+        forall esetnm in set dom esm_ & 
+            invVals(esm_(esetnm), em_) and
+            invEsets(dom esm_, dom rm_) and
+            invPairs(esm_, rm_) and
+            invEnts(rng esm_, dom em_);
+					
+	invVals: Esetinf * (map Eid to [Value]) -> bool
+	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
+        --@NB missing invariant for the application of em(eid)?
+        (membs subset dom em_) and	
+        forall eid in set membs & pictureMatch(em_(eid), picture);
+					
+	pictureMatch: [Value] * Picture -> bool
+	pictureMatch(v, -) == v <> nil;
+
+	invEsets: set of Esetnm * set of Reltype -> bool
+	invEsets(esetnms, em_) ==
+        --@NB here em_ is not used and a unamed variable "reltypes" is used. 
+        --    I am assuming it means type bind. Or is it "in set em_"?
+        --@NB note here em_ is not used too .
+        --@NB renamed reltype to reltype' to avoid hidden name with function reltype for State_r 
+        forall reltype' in set em_ &--reltype : Reltype & -- reltypes?
+            reltype'.fs in set esetnms and
+            reltype'.ts in set esetnms; 
+
+    invPairs: (map Esetnm to Esetinf) * (map Reltype to Relinf) -> bool
+    invPairs(esm_, rm_) ==
+        forall reltype' in set dom rm_ &
+            let mk_Reltype(fs, -, ts) = reltype' in
+                let prset = rm_(reltype').conns in
+                    --@NB missing invariant for well formedness of map app?? 
+                    fs in set dom esm_ and ts in set dom esm_ and 
+                    are_membs(froms(prset), esm_(fs)) and
+                    are_membs(tos(prset), esm_(ts));
+  						
+    are_membs: set of Eid * Esetinf -> bool
+    are_membs(eset, esetinf) ==
+        eset psubset esetinf.membs;
+  		
+    froms: set of Pair -> set of Eid
+    froms(prset) == { pr.fv | pr in set prset };
+  
+    tos: set of Pair -> set of Eid
+    tos(prset) == { pr.tv | pr in set prset };
+  
+    invEnts: set of Esetinf * set of Eid -> bool
+    invEnts(esetinfs, eids) ==
+        let ents = dunion { esetinf.membs | esetinf in set esetinfs } in
+            ents = eids;
+
+    invMaps: Relinf! -> bool
+    invMaps(mk_Relinf(map_, prset)) ==
+        -- NOTE: horrible logic description for Isabelle but okay. Original
+        --			 had this as a partial function. I am totalising it with others -> false.
+        --			 I think the original should have been total.
+        cases map_ :
+            <ManyMany> -> true,
+            <ManyOne>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.fv = pr2_.fv),
+            <OneMany>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.tv = pr2_.tv),
+            <OneOne>   -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and 
+                                    (pr1_.fv = pr2_.fv or pr1_.tv = pr2_.tv))
+        end;
+   		   
+-- state NDBVDMRefinementMachine of	
+--     statea: State_a
+-- inv mk_NDBVDMRefinementMachine(-) == true
+-- init ndbst == 
+--     ndbst = mk_NDBVDMRefinementMachine(mk_State_a_0({ |-> }, { |-> }, { |-> }))
+-- end
+state NDBStateA of	
+    esets : map Esetnm to Esetinf
+    rels  : map Reltype to Relinf
+    ents  : map Eid to [Value]
+inv mk_NDBStateA(esets, rels, ents) == 
+    inva(mk_State_a(esets, rels, ents))
+init ndbst == 
+    ndbst = mk_NDBStateA({ |-> }, { |-> }, { |-> })
+end
+
+operations
+
+    ADDA(eset: Esetnm, s: Status, p: Picture, w: Width) 
+    ext wr esets : map Esetnm to Esetinf
+    pre not (eset in set dom esets)
+    post esets = esets~ munion { eset |-> mk_Esetinf(s, p, w, {}) };
+
+types 
+    State_r ::
+        status : map Esetnm to Status 
+        picture: map Esetnm to Picture 
+        width  : map Esetnm to Width 
+        membs  : map Esetnm to set of Eid
+        fs     : map Rid to Esetnm 
+        nm     : map Rid to [Relnm]
+        ts     : map Rid to Esetnm 
+        map_   : map Rid to Maptype 
+        valof  : map Eid to [Value]
+        conns  : set of Tripple
+    inv sr == 
+        inva(retra(sr)) and 
+        -- invDomains'(dom sr.status, dom sr.width, dom sr.picture, dom sr.membs, --invDomains(sr) and 
+        --            dom sr.fs, dom sr.nm, dom sr.ts, dom sr.map_) and 
+        invDomains(sr) and
+        invRids(sr.conns, dom sr.nm) and 
+        invRels(sr.fs, sr.nm, sr.ts);
+
+    Tripple ::
+        fv: Eid 
+        rnm: Rid 
+        tv: Eid; 
+
+    Rid = token;    
+
+functions 
+    -- invDomains': 
+    --     set of Esetnm * set of Esetnm * set of Esetnm * set of Esetnm * 
+    --     set of Rid * set of Rid * set of Rid * set of Rid -> bool 
+    -- invDomains'(domStatus, domWidth, domPicture, domMembs, 
+    --            domFsr, domNmr, domTsr, domMapr) ==
+    --     domStatus = domWidth and domStatus = domPicture and 
+    --     domStatus = domMembs and domFsr = domNmr and 
+    --     domFsr = domTsr and domFsr = domMapr;
+
+    invDomains: State_r! -> bool 
+    invDomains(sr) ==
+        let statusr = dom sr.status in
+        let fsr = dom sr.fs in 
+            dom sr.width = statusr and 
+            dom sr.picture = statusr and 
+            dom sr.membs = statusr and 
+            dom sr.nm = fsr and 
+            dom sr.ts = fsr and 
+            dom sr.map_ = fsr;
+
+    invRids: set of Tripple * set of Rid -> bool 
+    invRids(conns, nms) == 
+        forall t in set conns & t.rnm in set nms;
+
+    invRels: (map Rid to Esetnm) * (map Rid to [Relnm]) * (map Rid to Esetnm) -> bool 
+    invRels(fs, nm, ts) == 
+        not (exists rid1, rid2 in set dom fs &
+                rid1 <> rid2 and fs(rid1) = fs(rid2) and
+                nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
+            )
+    --@NB this presumes that 
+    -- pre 
+    --     dom fs = dom nm and dom fs = dom ts
+    ;
+
+    retra: State_r! -> State_a
+    retra(sr) == 
+        let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
+        let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
+        let ents  = sr.valof in 
+            mk_State_a(esets, rels, ents)
+    --@NB this presumes that 
+    -- pre 
+    --     invDomains(sr)
+    ;
+
+    esetinfo: Esetnm * State_r! -> Esetinf 
+    esetinfo(esetnm, sr) == 
+        let a_status  = sr.status(esetnm) in 
+        let a_picture = sr.picture(esetnm) in 
+        let a_width   = sr.width(esetnm) in 
+        let a_membs   = sr.membs(esetnm) in 
+            mk_Esetinf(a_status, a_picture, a_width, a_membs)
+    --@NB this presumes that
+    -- pre 
+    --     esetnm in set dom sr.status and
+    --     dom sr.status = dom sr.picture and 
+    --     dom sr.status = dom sr.width and 
+    --     dom sr.status = dom sr.membs 
+        ;
+
+    reltype: Rid * State_r! -> Reltype 
+    reltype(rid, sr) == 
+        let a_fs = sr.fs(rid) in 
+        let a_nm = sr.nm(rid) in 
+        let a_ts = sr.ts(rid) in 
+            mk_Reltype(a_fs, a_nm, a_ts)
+    --@NB this presumes that
+    -- pre 
+    --     rid in set dom sr.fs and 
+    --     dom sr.fs = dom sr.nm and
+    --     dom sr.fs = dom sr.ts 
+    ;
+
+    relinfo: Rid * State_r! -> Relinf 
+    relinfo(rid, sr) == 
+        let a_map = sr.map_(rid) in 
+        let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
+            mk_Relinf(a_map, a_conns)
+    --@NB this presumes that 
+    -- pre 
+    --     rid in set dom sr.map_
+    ;
+
+    --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
+
+values
+/*
+   STA = mk_State_a_0(esm, rm, em);
+   esm = { esm1 |-> esi1, esm2 |-> esi2 };   
+   rm = { |-> } ;
+   em = { eid1 |-> v1, eid2 |-> v2 };
+   esm1 = mk_token("China");
+   esm2 = mk_token("UK");
+   esi1 = mk_Esetinf(s1, p1, w1, m2);
+   esi2 = mk_Esetinf(s1, p1, w1, m1);
+   s1 = mk_token("Status1");
+   p1 = mk_token("Picture1");
+   w1 = mk_token("Width1");
+   m1 = {eid1};
+   m2 = {eid2, eid1};
+   eid1 = mk_token("Eid1");
+   eid2 = mk_token("Eid2");
+   eid3 = mk_token("Eid3");
+   eid4 = mk_token("Eid4");
+   eid5 = mk_token("Eid5");
+   eid6 = mk_token("Eid6");
+   
+   v1 = mk_token("country");
+   v2 = mk_token("currency");
+   v3 = mk_token("material");
+   v4 = mk_token("price per meter");
+   v5 = mk_token("amount in meters");
+   v6 = mk_token("export number");
+   STA1 = mk_State_a_0(esmf,rmf, emf);
+   esmf = { esm1f |-> esi1f, esm2f |-> esi2f, esm3f |-> esi3f, esm4f |-> esi4f, esm5f |-> esi5f };
+   rmf = {rtf1 |-> rtif1, rtf2 |-> rtif2, rtf3 |-> rtif3, rtf4 |-> rtif4, rtf5 |-> rtif5  } ;
+   emf = { eidf1 |-> vf1, eidf2 |-> vf2, eidf3 |-> vf3, eidf4 |-> vf4, eidf5 |-> vf5 };
+   */
+   
+    STA: State_a = mk_State_a(esm, rm, em);
+
+    esm: map (token) to (Esetinf) = { esm1 |-> esi1, esm2 |-> esi2, esm3 |-> esi3, esm4 |-> esi4, esm5 |-> esi5 };    
+    rm : map Reltype to Relinf = {rt1 |-> rti1, rt2 |-> rti2, rt3 |-> rti3, rt4 |-> rti4, rt5 |-> rti5  };
+    em : map token to token = { eid1 |-> v1, eid2 |-> v2, eid3 |-> v3, eid4 |-> v4, eid5 |-> v5 };
+
+    esm1: token = mk_token("China");
+    esm2: token = mk_token("UK");
+    esm3: token = mk_token("Brazil");
+    esm4: token = mk_token("Ecuador");
+    esm5: token = mk_token("France");
+
+    esi1: Esetinf = mk_Esetinf(s1, p1, w1, m1);
+    esi2: Esetinf = mk_Esetinf(s2, p2, w2, m2);
+    esi3: Esetinf = mk_Esetinf(s3, p3, w3, m3);
+    esi4: Esetinf = mk_Esetinf(s4, p4, w4, m4);
+    esi5: Esetinf = mk_Esetinf(s5, p5, w5, m5);
+
+    p1: token = mk_token("Picture1");
+    p2: token = mk_token("Picture2");
+    p3: token = mk_token("Picture3");
+    p4: token = mk_token("Picture4");
+    p5: token = mk_token("Picture5");
+
+    s1: token = mk_token("Status1");
+    s2: token = mk_token("Status2");
+    s3: token = mk_token("Status3");
+    s4: token = mk_token("Status4");
+    s5: token = mk_token("Status5");
+
+    v1: token = mk_token("Value1");
+    v2: token = mk_token("Value2");
+    v3: token = mk_token("Value3");
+    v4: token = mk_token("Value4");
+    v5: token = mk_token("Value5");
+
+    w1: token = mk_token("Width1");
+    w2: token = mk_token("Width2");
+    w3: token = mk_token("Width3");
+    w4: token = mk_token("Width4");
+    w5: token = mk_token("Width5");
+
+    eid1: token = mk_token("Eid1");
+    eid2: token = mk_token("Eid2");
+    eid3: token = mk_token("Eid3");
+    eid4: token = mk_token("Eid4");
+    eid5: token = mk_token("Eid5");
+
+    m1: set1 of token = {eid1, eid5, eid2, eid3};
+    m2: set1 of token = {eid2, eid3, eid4};
+    m3: set1 of token = {eid3,eid2,eid4, eid5};
+    m4: set1 of token = {eid4, eid1, eid2, eid3, eid5};
+    m5: set1 of token = {eid5};
+
+    rt1: Reltype = mk_Reltype(esm1,v1,esm2);
+    rt2: Reltype = mk_Reltype(esm3,v2,esm3);
+    rt3: Reltype = mk_Reltype(esm2,v5,esm4);
+    rt4: Reltype = mk_Reltype(esm3,v4,esm1);
+    rt5: Reltype = mk_Reltype(esm4,v2,esm4);
+
+    pr1: Pair = mk_Pair(eid1,eid2);
+    pr2: Pair = mk_Pair(eid2,eid3);
+    pr3: Pair = mk_Pair(eid4,eid3);
+    pr4: Pair = mk_Pair(eid4,eid5);
+    pr5: Pair = mk_Pair(eid5,eid1);
+
+    rti1: Relinf = mk_Relinf(<OneOne>,{pr1,pr2});
+    rti2: Relinf = mk_Relinf(<ManyOne>,{pr2,pr3});
+    rti3: Relinf = mk_Relinf(<OneMany>,{pr3,pr4});
+    rti4: Relinf = mk_Relinf(<ManyMany>,{pr4,pr5});
+    rti5: Relinf = mk_Relinf(<OneOne>,{pr5,pr1}); 
+
+--   b: bool = inv_Relinf(mk_Relinf!(<OneMany>, {mk_Pair(mk_token(-1330417465), mk_token(-1842229197)), mk_Pair(mk_token(-1447908648), mk_token(-1842229197)), mk_Pair(mk_token(881021702), mk_token(-1842229197))}));
+		
+    
+end ndb0MaxType

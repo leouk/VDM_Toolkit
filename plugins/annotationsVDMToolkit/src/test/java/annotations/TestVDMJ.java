@@ -21,9 +21,9 @@ public class TestVDMJ extends VDMJUnitTestSL {
         //    "MinimalTheorem.vdmsl"
         //   ,"Doc.vdmsl"
         //   ,"MinimalTheoremAttr.vdmsl"
-        //   ,"MinimalTime.vdmsl"
+           "MinimalTime.vdmsl",
         //,"Witness.vdmsl"
-        "WitnessDates.vdmsl"
+        //"WitnessDates.vdmsl"
         });  
     }
 

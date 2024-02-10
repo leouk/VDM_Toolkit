@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Stack;
 
 import com.fujitsu.vdmj.ExitStatus;
+import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.plugins.PluginConsole;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionList;
@@ -22,6 +23,7 @@ import com.fujitsu.vdmj.util.Utils;
 import plugins.IsaProperties;
 import plugins.VDMSpecificationKind;
 import plugins.visitors.exu.TCExuFunctionCallFinder;
+import vdm2isa.messages.IsaErrorMessage;
 import vdm2isa.messages.IsaWarningMessage;
 
 public class ExuCommand extends IsabelleCommand {
@@ -53,20 +55,28 @@ public class ExuCommand extends IsabelleCommand {
         return INSTANCE; 
     }
 
-    private ExuCommand(String line) {
+    private ExuCommand(String line) 
+    {
         super(line);
         if (!argv[0].equals(isabelleCommandName()))
 		{
 			throw new IllegalArgumentException(USAGE);
 		}
-     }
+    }
 
-     @Override 
-     protected String getMinimalUsage()
-     {
+    protected static void handleError(IsaErrorMessage message, LexLocation location, Object... args)
+    {
+        if (IsaProperties.general_strict)
+            throw new IllegalStateException(message.format(args));
+        else 
+            IsabelleCommand.report(message, location, args);
+    }
+
+    @Override 
+    protected String getMinimalUsage()
+    {
         return USAGE;
-     }
-
+    }
 
     @Override
     protected boolean setup()
@@ -295,10 +305,9 @@ public class ExuCommand extends IsabelleCommand {
         return "exu";
     }
 
-    public static void help() 
+    public static String help() 
     {
-        // because the devil is in the detail; 
-        PluginConsole.println(USAGE);
+        return USAGE;
     }
 
     @Override

@@ -306,6 +306,7 @@ functions
     --@qst_leo their well-ordering in terms of higher values are prioritised is important for later TeleoR?
     well_ordered_mandate: MandateMap -> bool
     well_ordered_mandate(mandate_idxs) ==
+        (
         --@doc can't have mixed objectives + link seq bind with mandate_inds map 
         --     i.e. same as disjoint([M,D,V]), where M/D/V are set of inds for each mandate in the map) 
         disjoint[nat1]([ mandate_idxs(j) | j in seq MANDATES & elems MANDATES subset dom mandate_idxs ])
@@ -330,7 +331,8 @@ functions
         )
         and
         */
-        well_ordered[Mandate]({ mk_(m, {mandate_idxs(m)}) | m in set elems MANDATES & mandate_idxs(m) <> {} });
+        well_ordered[Mandate]({ mk_(m, {mandate_idxs(m)}) | m in set dom mandate_idxs /*inter elems MANDATES*/ & mandate_idxs(m) <> {} })
+        );
 
     --@doc given a sequence of @Ts with Mandate, order them by mandate; 
     --		 post condition helps establish that flattened result is well_ordered wrt mandate 

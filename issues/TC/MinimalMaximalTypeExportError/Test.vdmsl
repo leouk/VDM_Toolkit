@@ -1,0 +1,24 @@
+module Test
+exports 
+    types 
+        struct S;
+    functions 
+    	--@doc can't have it as 
+    	-- inv_S: seq of char +> bool
+    	--@doc but then can't have it as expected actual?
+      inv_S: S! +> bool;
+definitions 
+types 
+    S = seq of char
+    inv s == card elems s = len s;
+    
+end Test
+
+module B
+imports from Test
+  types
+	S;
+  functions
+	inv_S: Test`S! +> bool;
+definitions
+end B

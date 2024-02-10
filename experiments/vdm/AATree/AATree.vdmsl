@@ -1,0 +1,213 @@
+module AATree
+exports all
+definitions
+types 
+    AATreeType = ?;
+
+    AATreeLevel = nat1; 
+
+    AATreeNode :: 
+        element: AATreeType 
+        level  : AATreeLevel
+        left   : [AATreeNode] 
+        right  : [AATreeNode]
+    inv mk_AATreeNode(x, -, -, -) == x <> nil;
+
+    --@doc total (<) order between set values. 
+    --     bool result will ignore repeated insertions.
+    --     int result could be used to error on repeated insertions. 
+    AATreeOrder = (AATreeType * AATreeType -> int);
+
+    AATreeSet :: 
+        root : [AATreeNode]
+        order: AATreeOrder;
+    
+functions 
+
+    leaf: [AATreeNode] -> bool 
+    leaf(n) == n <> nil and n.level = 1 and n.left = nil and n.right = nil; 
+
+    --@doc access tree node data with extra type information for element
+    data[@T]: [AATreeNode] -> [@T]
+    data(n) == if n = nil then nil else n.element
+    --pre  (n <> nil => n.element <> nil)
+    post (n = nil 
+          <=> 
+          --Warning(5037) element should not be lambda typed; adding @T prevents this
+          (RESULT = nil));
+
+    --@doc transform AA tree into a normal set of @T
+    dataset[@T]: [AATreeNode] -> set of @T 
+    dataset(n) == 
+        if n = nil then {} else {n.element} union dataset[@T](n.left) union dataset[@T](n.right)
+    post 
+        (n = nil <=> RESULT = {})
+    measure 
+        is not yet specified;
+
+    --@doc level of AA tree; possibly 0 for root node
+    level: [AATreeNode] -> nat
+    level(n) == if (n = nil) then 0 else n.level
+    post (n <> nil <=> is_AATreeLevel(RESULT));
+
+    --@doc left branch
+    left: [AATreeNode] -> [AATreeNode]
+    left(n) == if n = nil then nil else n.left
+    post (n = nil => RESULT = nil); 
+
+    --@doc right branch
+    right: [AATreeNode] -> [AATreeNode]
+    right(n) == if n = nil then nil else n.right
+    post (n = nil => RESULT = nil); 
+
+    --@doc rebalance of left tree
+    --  
+    --        |          |
+    --    A - B    ->    A - B
+    --   / \   \        /   / \
+    --  0   1   2      0   1   2 
+    skew[@T]: [AATreeNode] -> [AATreeNode]
+    skew(n) ==  
+        if n = nil then nil 
+        else 
+            let mk_AATreeNode(x, k, t, u) = n in       
+                --@doc level(nil)=0, which k can never be given AATreeLevel
+                if /*t <> nil and*/ k = level(t) then 
+                    mk_AATreeNode(data[@T](t), k, left(t), mk_AATreeNode(x, k, right(t), u))
+                else -- n <> nil of course. 
+                    n
+    post (n = nil <=> RESULT = nil);
+
+    --@doc rebalance of right tree
+    --   |                      |
+    --   |                    - B -
+    --   |                   /     \
+    --   A - B - C    ->    A       C
+    --  /   /   / \        / \     / \
+    -- 0   1   2   3      0   1   2   3
+    split[@T]: [AATreeNode] -> [AATreeNode]
+    split(n) == 
+        if n = nil then nil 
+        else 
+            let mk_AATreeNode(x, k, t, u) = n in 
+                --@doc level(nil)=0, which k can never be given AATreeLevel
+                if /*u <> nil and*/ k = level(right(u)) then 
+                    mk_AATreeNode(data[@T](u), k+1, mk_AATreeNode(x, k, t, left(u)), right(u))
+                else 
+                    n
+    post (n = nil <=> RESULT = nil);
+
+    --@doc well formedness conditions
+    wf: [AATreeNode] -> bool 
+    wf(n) == 
+        --@doc 0. root tree is well formed
+        (n = nil)
+        or 
+        (let mk_AATreeNode(-, k, t, u) = n in 
+            if t = nil then 
+                --@doc 1. the level of every leaf node is 1
+                k = 1 and (u = nil or leaf(u))--(level(u) = 1 and left(u) = nil and right(u) = nil))
+            else
+                --@doc both sides are well formed and balanced
+                wf(t) and wf(u) and u <> nil 
+                and 
+                --@doc 2. the level of every left child is exactly one less than that of its parent.  
+                level(t) < k --level(t)+1 = k 
+                and 
+                --@doc 3. the level of every right child is equal to or one less than that of its parent.
+                level(u) <= k -- level(u)+1 = k or level(u) = k
+                and 
+                --@doc 4. the level of every right grandchild is strictly less than that of its grandparent.
+                level(right(u)) < k
+                and 
+                --@doc 5. every node of level greater than one has two children 
+                --@NB why error here on u <> nil? I know it's repeated 
+                (k > 1 => t <> nil )--and u <> nil)
+        )
+    measure 
+        is not yet specified;
+    
+    insort[@T]: [AATreeNode] * AATreeOrder * @T -> AATreeNode
+    insort(n, order, x) == 
+        if n = nil then
+            mk_AATreeNode(x, 1, nil, nil)
+        else
+            let mk_AATreeNode(y, k, t, u) = n,
+                c: int = order(x, y), --c: bool = order(x,y)
+                r: AATreeNode =  
+                    mk_AATreeNode(y, k,
+                        if /*x < y */ c < 0 then insort[@T](t, order, x) else t,
+                        if /*x > y */ c > 0 then insort[@T](u, order, x) else u 
+--                            if     c then insort(t, order, x) else t,
+--                            if not c then insort(u, order, x) else u
+                    )
+            in 
+                split[@T](skew[@T](r))
+    pre x <> nil  
+    measure 
+        is not yet specified
+    --    n.level
+    -- not quite as might go up and down; perhaps depth(n) - n.level? 
+    ;
+
+    -- delete[@T]: [AATreeNode] * AATreeOrder * @T -> [AATreeNode]
+    -- delete(n, order, x) == 
+    --     if n = nil then n 
+    --     else 
+    --         let c: int = order(x, n.element) in 
+    --             if      /* x > n.element */ c > 0 then 
+    --                 n
+    --             else if /* x < n.element */c < 0 then
+    --                 n
+    --             else    /* x = n.element , c=0*/
+    --                 n;
+    min: nat * nat -> nat 
+    min(x, y) == if x < y then x else y;
+
+    decrease_level: [AATreeNode] -> [AATreeNode]
+    decrease_level(n) == 
+        let rlvl: AATreeLevel = level(right(n)),
+            should_be: AATreeLevel = min(level(left(n)), rlvl) + 1 in 
+            if should_be < level(n) then
+                let mk_AATreeNode(x, -, t, u) = n in --mk_AATreeNode(xr, -, rt, ru)
+                    mk_AATreeNode(x, should_be, t, 
+                        if should_be < rlvl then 
+                            u else u
+                    )  
+            else 
+                n;  
+
+    --@doc creates an is_ type test for @T 
+	type_test[@T]: () -> (AATreeType -> bool)
+	type_test() == (lambda t: AATreeType & is_(t, @T));
+
+	--@doc all elements of the stack are type convergent up to @T
+	type_convergent[@T]: [AATreeNode] -> bool
+	type_convergent(n) == 
+		(n = nil) 
+        or 
+        (let mk_AATreeNode(x, -, t, u) = n in 
+            type_test[@T]()(x)
+            and 
+            type_convergent[@T](t) 
+            and 
+            type_convergent[@T](u)
+        )
+    measure 
+        is not yet specified;
+
+    --@NB how else would you "pick" the type from within? 
+    --@IsaLemma(dataset_skew_split, 
+    --      forall n: [AATreeNode], -: @T & (n = nil or is_(n.element, @T)) and   
+    --          dataset[@T](skew[@T](n)) = dataset[@T](n) and dataset[@T](n) = dataset[@T](split[@T](n)))
+
+    --@IsaLemma(wf_skew_split, 
+    --      forall n: [AATreeNode], -: @T & (n = nil or is_(n.element, @T)) and
+    --          (wf(n) => skew[@T](n) = n and split[@T](n) = n))
+
+    --@IsaLemma(wf_insort, 
+    --      forall n: [AATreeNode], o: AATreeOrder, x: @T &
+    --          (n = nil or is_(n.element, @T)) and 
+    --          (wf(n) => wf(insort[@T](n, order, x)))
+
+end AATree

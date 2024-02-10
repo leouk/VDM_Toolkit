@@ -31,7 +31,7 @@ public class TCGetFreeVariablesVisitorSet extends TCVisitorSet<TCNameToken, TCNa
         this.expressionVisitor = new TCFreeVariableExpressionVisitor(this);
         this.statementVisitor = null;//new TCFreeVariableStatementVisitor(this);
         this.patternVisitor = null;//new TCFreeVariablePatternVisitor(this);
-        this.typeVisitor = new TCFreeVariableTypeVisitor(this);
+        this.typeVisitor = new TCFreeVariableTypeVisitor();//(this);?
         this.bindVisitor = new TCFreeVariableBindVisitor(this);
         this.multiBindVisitor = new TCFreeVariableMultipleBindVisitor(this); 
     }

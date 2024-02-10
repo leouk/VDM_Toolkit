@@ -1,0 +1,14 @@
+module M2
+imports 
+    from M1 
+    --     types Pos renamed Pos;
+    functions make_pos renamed make_pos;
+exports 
+    functions 
+        f: nat -> nat;
+definitions
+functions 
+    f: nat -> nat
+    --@NB r generates a type error if Pos is not struct export, which is right, but then accepts if it is struct export, which leads to hidden type import! 
+    f(x) == let r = make_pos(x) in r;
+end M2

@@ -87,8 +87,8 @@ exports
         csv_invariants_failed: Data0 -> Errors;
         csv_filter_invalid   : Data0 -> Data;
         --@doc construction functions for empty and updated row invariant data
-        empty_csv            : Headers0 -> Data;
-        empty_csv'           : CSVSettings * Headers0 -> Data;
+        empty_csv            : seq of Header -> Data;
+        empty_csv'           : CSVSettings * seq of Header -> Data;
         install_row_invariant: Data0 * CSVRowInv -> Data0;
         install_col_invariant: Data0 * CSVColInv * set1 of ColNo -> Data0;
     operations
@@ -265,11 +265,11 @@ functions
             (h(i).cell_invariant = h'(i).cell_invariant)); 
 
     --@doc creates empty CSV matrix with expected headers
-    empty_csv': CSVSettings * Headers0 -> Data
+    empty_csv': CSVSettings * seq of Header -> Data
     empty_csv'(settings, headers) == mk_Data0(settings, headers, EMPTY_MATRIX, nil)
     post RESULT.settings = settings and RESULT.headers = headers and RESULT.matrix.cells = [];
 
-    empty_csv: Headers0 -> Data
+    empty_csv: seq of Header -> Data
     empty_csv(headers) == empty_csv'(DEFAULT_SETTINGS, headers)
     post post_empty_csv'(DEFAULT_SETTINGS, headers, RESULT);
     
@@ -403,10 +403,12 @@ functions
     --@doc cheks user defined col invariant 
     col_invairant_check: Headers0 * Matrix * ColNo -> Reason 
     col_invairant_check(headers, mk_Matrix(cells, -), colNo) == 
-        let header: Header0       = headers(colNo),
-            trow  : TransposedRow = [ cells(l)(colNo) | l in set inds cells ]
-        in 
-            if header.col_invariant = nil then nil else header.col_invariant(header, trow)
+        let header: Header0       = headers(colNo) in
+            if header.col_invariant = nil then nil else 
+                let 
+                    trow  : TransposedRow = [ cells(l)(colNo) | l in set inds cells ]
+                in 
+                    header.col_invariant(header, trow)
     pre colNo in set inds headers;
 
     --@doc checks cell value type consistency and user dfined cells invariant concatenating their reasons

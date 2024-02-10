@@ -42,8 +42,8 @@ functions
 	pre x < 20
 	post pre_g(x,RESULT) ;
 
-	-- curried function with undeclared specification	
-	curried: nat -> nat -> nat
+	-- curried function with undeclared specification (and implicit PO on inner type)	
+	curried: nat -> int -> nat
 	curried(x)(y) == x + y;
 
 	-- curried function with declared specification	
@@ -60,12 +60,12 @@ functions
 		== [x,y]
 	pre x < y and x in set z
 	post x > len r;
-	
+		
 end TestV2IFcns
 
 /*
 > pog
-Generated 20 proof obligations:
+Generated 21 proof obligations:
 
 Proof Obligation 1: (Unproved)
 constS: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 12:5
@@ -145,26 +145,31 @@ h'': subtype obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl
   x > 0)
 
 Proof Obligation 16: (Unproved)
+curried: subtype obligation in 'TestV2IFcns' (TestV2IFcns.vdmsl) at line 46:5
+(forall x:nat, y:int &
+  (x + y) >= 0)
+  
+Proof Obligation 17: (Unproved)
 curriedS: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 50:5
 (forall x:nat, y:nat &
   pre_curriedS(x)(y) => post_curriedS(x)(y, (x + y)))
 
-Proof Obligation 17: (Unproved)
+Proof Obligation 18: (Unproved)
 implicit: total function obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 56:15
 (forall x:nat, y:nat, z:set of (nat) &
   is_(pre_implicit(x, y, z), bool))
 
-Proof Obligation 18: (Unproved)
+Proof Obligation 19: (Unproved)
 implicit: function satisfiability obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 55:5
 (forall x:nat, y:nat, z:set of (nat) &
   pre_implicit(x, y, z) => exists r:seq of (nat) & post_implicit(x, y, z, r))
 
-Proof Obligation 19: (Unproved)
+Proof Obligation 20: (Unproved)
 implicitexplicit: total function obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 61:15
 (forall x:nat, y:nat, z:set of (nat) &
   is_(pre_implicitexplicit(x, y, z), bool))
 
-Proof Obligation 20: (Unproved)
+Proof Obligation 21: (Unproved)
 implicitexplicit: post condition obligation in 'TestV2IFcns' (./src/test/resources/TestV2IFcns.vdmsl) at line 59:5
 (forall x:nat, y:nat, z:set of (nat) &
   pre_implicitexplicit(x, y, z) => post_implicitexplicit(x, y, z, [x, y]))

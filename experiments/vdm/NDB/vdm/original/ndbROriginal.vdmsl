@@ -1,0 +1,119 @@
+types
+
+
+types 
+    State_r ::
+        status : map Esetnm to Status 
+        picture: map Esetnm to Picture 
+        width  : map Esetnm to Width 
+        membs  : map Esetnm to set of Eid
+        fs     : map Rid to Esetnm 
+        nm     : map Rid to [Relnm]
+        ts     : map Rid to Esetnm 
+        map_   : map Rid to Maptype 
+        valof  : map Eid to [Value]
+        conns  : set of Tripple
+    inv sr == 
+        inva(retra(sr)) and 
+        -- invDomains'(dom sr.status, dom sr.width, dom sr.picture, dom sr.membs, --invDomains(sr) and 
+        --            dom sr.fs, dom sr.nm, dom sr.ts, dom sr.map_) and 
+        invDomains(sr) and
+        invRids(sr.conns, dom sr.nm) and 
+        invRels(sr.fs, sr.nm, sr.ts);
+
+    Tripple ::
+        fv: Eid 
+        rnm: Rid 
+        tv: Eid; 
+
+    Rid = token;    
+
+functions 
+    -- invDomains': 
+    --     set of Esetnm * set of Esetnm * set of Esetnm * set of Esetnm * 
+    --     set of Rid * set of Rid * set of Rid * set of Rid -> bool 
+    -- invDomains'(domStatus, domWidth, domPicture, domMembs, 
+    --            domFsr, domNmr, domTsr, domMapr) ==
+    --     domStatus = domWidth and domStatus = domPicture and 
+    --     domStatus = domMembs and domFsr = domNmr and 
+    --     domFsr = domTsr and domFsr = domMapr;
+
+    invDomains: State_r! -> bool 
+    invDomains(sr) ==
+        let statusr = dom sr.status in
+        let fsr = dom sr.fs in 
+            dom sr.width = statusr and 
+            dom sr.picture = statusr and 
+            dom sr.membs = statusr and 
+            dom sr.nm = fsr and 
+            dom sr.ts = fsr and 
+            dom sr.map_ = fsr;
+
+    invRids: set of Tripple * set of Rid -> bool 
+    invRids(conns, nms) == 
+        forall t in set conns & t.rnm in set nms;
+
+    invRels: (map Rid to Esetnm) * (map Rid to [Relnm]) * (map Rid to Esetnm) -> bool 
+    invRels(fs, nm, ts) == 
+        not (exists rid1, rid2 in set dom fs &
+                rid1 <> rid2 and fs(rid1) = fs(rid2) and
+                nm(rid1) = nm(rid2) and ts(rid1) = ts(rid2)
+            )
+    --@NB this presumes that 
+    -- pre 
+    --     dom fs = dom nm and dom fs = dom ts
+    ;
+
+    retra: State_r! -> State_a
+    retra(sr) == 
+        let esets = { esetnm |-> esetinfo(esetnm, sr) | esetnm in set dom sr.status } in 
+        let rels  = { reltype(rid, sr) |-> relinfo(rid, sr) | rid in set dom sr.fs } in 
+        let ents  = sr.valof in 
+            mk_State_a(esets, rels, ents)
+    --@NB this presumes that 
+    -- pre 
+    --     invDomains(sr)
+    ;
+
+    esetinfo: Esetnm * State_r! -> Esetinf 
+    esetinfo(esetnm, sr) == 
+        let a_status  = sr.status(esetnm) in 
+        let a_picture = sr.picture(esetnm) in 
+        let a_width   = sr.width(esetnm) in 
+        let a_membs   = sr.membs(esetnm) in 
+            mk_Esetinf(a_status, a_picture, a_width, a_membs)
+    --@NB this presumes that
+    -- pre 
+    --     esetnm in set dom sr.status and
+    --     dom sr.status = dom sr.picture and 
+    --     dom sr.status = dom sr.width and 
+    --     dom sr.status = dom sr.membs 
+        ;
+
+    reltype: Rid * State_r! -> Reltype 
+    reltype(rid, sr) == 
+        let a_fs = sr.fs(rid) in 
+        let a_nm = sr.nm(rid) in 
+        let a_ts = sr.ts(rid) in 
+            mk_Reltype(a_fs, a_nm, a_ts)
+    --@NB this presumes that
+    -- pre 
+    --     rid in set dom sr.fs and 
+    --     dom sr.fs = dom sr.nm and
+    --     dom sr.fs = dom sr.ts 
+    ;
+
+    relinfo: Rid * State_r! -> Relinf 
+    relinfo(rid, sr) == 
+        let a_map = sr.map_(rid) in 
+        let a_conns = { mk_Pair(t.fv, t.tv) | t in set sr.conns & t.rnm = rid } in 
+            mk_Relinf(a_map, a_conns)
+    --@NB this presumes that 
+    -- pre 
+    --     rid in set dom sr.map_
+    ;
+
+    --@Theorem(StateAR_Adequacy, forall a : State_a & exists r: State_r & retra(r) = a)
+
+values  
+    c: seq of char = "needed to avoid ignoring annotation at the end!"; 

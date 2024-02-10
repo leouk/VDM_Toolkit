@@ -25,7 +25,38 @@
         },
         {
             "type": "java",
-            "name": "Run visitor",
+            "name": "Run module listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./vdmslScenario/SLTest.vdmsl sl_document",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run module (types) listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./vdmslScenario/Types.vdmsl sl_document",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "ANTLR AST plugin test",
+            "request": "launch",
+            "mainClass": "vdmantlr.ANTLRASTPlugin",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=vdmantlr.ANTLRASTPlugin -Dvdmj.diag.max_stack=10",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run ANTLR visitor in Java",
             "request": "launch",
             "mainClass": "vdmantlr.VDMASTVisitor",
             "projectName": "vdm-antlr",
@@ -35,7 +66,7 @@
         {
             "type": "antlr-debug",
             "request": "launch",
-            "name": "Expr test grammar",
+            "name": "Expr test grammar ANTLR debug",
             "input": "${file}",
             //"preLaunchTask": "clear-editor-history",
             "grammar": "src/main/antlr4/Test.g4",
@@ -45,7 +76,7 @@
             "visualParseTree": true
         },
         {
-            "name": "Expression debug",
+            "name": "Expression ANTLR debug",
             "type": "antlr-debug",
             "request": "launch",
             "input": "${file}",
@@ -57,7 +88,7 @@
             "visualParseTree": true
         },
         {
-            "name": "Module debug",
+            "name": "Module ANTLR debug",
             "type": "antlr-debug",
             "request": "launch",
             "input": "${file}",

@@ -57,31 +57,38 @@ import VDMLex;
 //     tokenVocab = VDMLex;
 // }
 
-// If target is not Java, then this has to change accordingly
-@parser::header
-{
-//import com.fujitsu.vdmj.lex.Dialect;    
-}
-
 @parser::members
 {
     // We can gate productions with the corresponding dialect given via semantic predicates on PP and RT productions
     // See ANTLR4 book Section 11.1 Recognizing Multiple Language Dialect
-    //public static Dialect dialect = Dialect.VDM_SL;
+    //public static com.fujitsu.vdmj.lex.Dialect dialect = com.fujitsu.vdmj.lex.Dialect.VDM_SL;
 
     public static boolean isVDMSL()
     {
-        return true;//dialect == Dialect.VDM_SL;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_SL;
     }
 
     public static boolean isVDMPP()
     {
-        return false;//dialect == Dialect.VDM_PP;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_PP;
     }
 
     public static boolean isVDMRT()
     {
-        return false;//dialect == Dialect.VDM_RT;
+        return true;//dialect == com.fujitsu.vdmj.lex.Dialect.VDM_RT;
+    }
+
+    java.util.Set<String> tldTypeNames = new java.util.HashSet<String>();
+    
+    protected boolean isTLDTypeName() 
+    { 
+        System.out.println("Testing " + getCurrentToken().getText() + " ; " + tldTypeNames.toString());
+        return tldTypeNames.contains(getCurrentToken().getText()); 
+    } 
+
+    protected void addTLDTypeName(String typeName)
+    {
+        tldTypeNames.add(typeName);
     }
 }
 
@@ -144,8 +151,8 @@ import VDMLex;
 //------------------------
 //TODO add {isVDMSL/PP/RT()}? semantic predicates 
 sl_document 
-    : module+ 
-    | sl_definition_block+
+    : module+               #SLModules 
+    | sl_definition_block+  #SLFlatModule
     ;
 
 //------------------------
@@ -183,8 +190,8 @@ import_types_signature
     ;
 
 type_import
-    : name (SLK_renamed name)?
-    | type_definition (SLK_renamed name)?
+    : tname=name (SLK_renamed renamed=name)?            #NamedImport
+    | tdef=type_definition (SLK_renamed renamed=name)?  #TypeDefinitionImport
     ;
 
 import_values_signature
@@ -192,7 +199,7 @@ import_values_signature
     ;
 
 value_import 
-    : name (SEP_colon type)? (SLK_renamed name)?
+    : vname=name (SEP_colon type)? (SLK_renamed renamed=name)?
     ;
 
 import_functions_signature
@@ -200,7 +207,7 @@ import_functions_signature
     ;
 
 function_import     
-    : name (type_variable_list? SEP_colon function_type)? (SLK_renamed name)?
+    : fname=name (type_variable_list? SEP_colon function_type)? (SLK_renamed renamed=name)?
     ;
 
 import_operations_signature 
@@ -208,7 +215,7 @@ import_operations_signature
     ;
 
 operation_import 
-    : name (SEP_colon operation_type)? (SLK_renamed name)?
+    : oname=name (SEP_colon operation_type)? (SLK_renamed renamed=name)?
     ;
 
 export_definition 
@@ -319,13 +326,14 @@ pp_definition_block
     | instance_variable_definitions 
     ;
 
+//TODO avoid sych layering or if there, add named prodcutions for simplicity?
 sl_definition_block
-    : sl_type_definitions
-    | state_definition 
-    | sl_value_definitions 
-    | sl_function_definitions
-    | sl_operation_definitions
-    | traces_definitions
+    : sl_type_definitions       #TypeDefinitions
+    | state_definition          #StateDefinition
+    | sl_value_definitions      #ValueDefinitions
+    | sl_function_definitions   #FunctionDefinitions
+    | sl_operation_definitions  #OperationDefinitions
+    | traces_definitions        #TracesDefinitions
     ;
 
 //------------------------
@@ -356,19 +364,22 @@ type_definition_list
 //@NB here added extra production to make parser faster; otherwise you will get
 //    a look ahead on the IDENTIFIER until the O_EQUAL or '::' to disambiguate. 
 type_definition 
-    : IDENTIFIER invariant_type_definition 
+    : id=IDENTIFIER { addTLDTypeName($id.text); } 
+      invariant_type_definition 
     ;
+    //TODO This is also okay, but the above seemed better? 
+    // : IDENTIFIER O_EQUAL type type_specification    #NamedType
+    // | IDENTIFIER SEP_rec field+ type_specification  #RecordType 
+    // ;
 
 invariant_type_definition
-    : O_EQUAL type type_specification
-   // | O_EQUAL type
-    | SEP_rec field+ type_specification
-   // | SEP_rec field+
+    : O_EQUAL type type_specification    #NamedType
+    | SEP_rec field+ type_specification  #RecordType
     ;
 
 //@LF will this generate empty production and potential conflict? 
 type_specification 
-    : invariant? eq_clause? ord_clause?
+    : type_invariant? eq_clause? ord_clause?
     ;
 
 // ANTLR4 allows left-recursive productions, so long as they have uniquely named 
@@ -378,29 +389,25 @@ type_specification
 //@TODO This generates entry/exit for both entryQuoteType and entryQuote_type (!)
 //      might want to remove the singleton productions? 
 // C.8.5 Seq/Set type operators are higher precedence? 
-type 
-    : bracketed_type    #BracketedType  
-    | type_name         #TypeName
-    | type_variable     #TypeVariable
-    | seq_type          #SeqType
-    | set_type          #SetType
-    | map_type          #MapType
-    | composite_type    #CompositeType
-    // | product_type      #ProductType
-    | type (O_TIMES type)+ #ProductType
-    // | union_type        #UnionType
+type     
+    :<assoc=right> params=type (SEP_pfcn | SEP_tfcn) ret=type #FunctionType
+    |<assoc=right> PAREN_L PAREN_R (SEP_pfcn | SEP_tfcn) type #VoidFunctionType
     | type (SEP_bar type)+ #UnionType
+    | type (O_TIMES type)+ #ProductType
+    |<assoc=right> SLK_map dom=type SLK_to rng=type   #MapType
+    |<assoc=right> SLK_inmap dom=type SLK_to rng=type #InmapType
+    | SLK_seqof type    #SeqOfType
+    | SLK_seq1of type   #Seq1OfType
+    | SLK_setof type    #SetOfType
+    | SLK_set1of type   #Set1OfType
+    | bracketed_type    #BracketedType
+    | optional_type     #OptionalType
+    | composite_type    #CompositeType
     | basic_type        #BasicType
     | quote_type        #QuoteType
-    | optional_type     #OptionalType
-    // | function_type     #FunctionType
-    | void_function_type #VoidFunctionType
-    |<assoc=right> type SEP_pfcn type #PartialFunctionType
-    |<assoc=right> type SEP_tfcn type #PartialFunctionType
-    ;
-
-void_function_type
-    :<assoc=right> PAREN_L PAREN_R (SEP_pfcn | SEP_tfcn) type
+    | type_variable     #TypeVariable
+    | type_name         #TypeName
+    | SEP_qm            #WildcardType  
     ;
 
 bracketed_type 
@@ -412,7 +419,7 @@ basic_type
     ;
 
 quote_type 
-    : QUOTE_LITERAL
+    : O_LT IDENTIFIER O_GT
     ;
 
 composite_type
@@ -468,55 +475,45 @@ map_type
 
 // C.8.4 Map type operators are right associative 
 general_map_type 
-    :<assoc=right> SLK_map type SLK_to type
+    :<assoc=right> SLK_map dom=type SLK_to rng=type
     ;
 
 // C.8.4 Map type operators are right associative 
 injective_map_type 
-    :<assoc=right> SLK_inmap type SLK_to type
+    :<assoc=right> SLK_inmap dom=type SLK_to rng=type
     ;
 
+//@LRM these are used in other places, yet cannot be directly on the type production rule :-(
 function_type 
-    : partial_function_type
-    | total_function_type 
-    ;
-
-partial_function_type 
-    :<assoc=right> discretionary_type SEP_pfcn type 
-    ;
-
-total_function_type 
-    :<assoc=right> discretionary_type SEP_tfcn type
+    :<assoc=right> discretionary_type SEP_pfcn type #PartialFunctionType
+    |<assoc=right> discretionary_type SEP_tfcn type #TotalFunctionType
     ;
 
 discretionary_type 
     : PAREN_L PAREN_R   #VoidType
-    | type      #FunctionType
+    | type              #FunctionParametersType
     ;
 
 type_name
-    : name 
+    : //{isTLDTypeName()}? Don't add this here because of declaration before use?  
+      name 
     ;
 
 type_variable 
-    : TYPE_VARIABLE_IDENTIFIER
+    : '@' IDENTIFIER
     ;
 
-invariant 
-    : SLK_inv invariant_initial_function 
+// Do not reuse pattern SEP_def as this will create context sensitive productions!
+type_invariant 
+    : SLK_inv pattern SEP_def expression 
     ;
 
 eq_clause
-    : SLK_eq pattern O_EQUAL invariant_initial_function
+    : SLK_eq lhs=pattern O_EQUAL rhs=pattern SEP_def expression
     ;
 
 ord_clause
-    : SLK_ord pattern O_LT invariant_initial_function
-    ;
-
-//@NB refactored this one given equivalence
-invariant_initial_function 
-    : pattern SEP_def expression
+    : SLK_ord lhs=pattern O_LT rhs=pattern SEP_def expression
     ;
 
 //------------------------
@@ -524,11 +521,11 @@ invariant_initial_function
 //------------------------
 
 state_definition 
-    : SLK_state IDENTIFIER SLK_of field+ invariant? initialisation? SLK_end SEP_scolon
+    : SLK_state IDENTIFIER SLK_of field+ type_invariant? initialisation? SLK_end SEP_scolon
     ;
 
 initialisation 
-    : SLK_init invariant_initial_function
+    : SLK_init pattern SEP_def expression 
     ;
 
 //------------------------
@@ -620,9 +617,8 @@ extended_explicit_function_definition
       measure_definition?
     ; 
 
-//TODO should these comma separated lists be parameterised?
 type_variable_list 
-    : BRACKET_L TYPE_VARIABLE_IDENTIFIER (SEP_comma TYPE_VARIABLE_IDENTIFIER)* BRACKET_R
+    : BRACKET_L type_variable (SEP_comma type_variable)* BRACKET_R
     ;
 
 parameter_types 
@@ -730,7 +726,7 @@ extended_explicit_operation_definition
     ;
 
 operation_type
-    : discretionary_type SEP_optype discretionary_type
+    : params=discretionary_type SEP_optype rtype=discretionary_type
     ;
 
 operation_body 
@@ -772,7 +768,7 @@ instance_variable_definitions
 
 instance_variable_definition
     : access_assignment_definition 
-    | invariant_definition
+    | instance_variable_invariant_definition
     ;
 
 access_assignment_definition
@@ -780,7 +776,7 @@ access_assignment_definition
       assignment_definition
     ;
 
-invariant_definition
+instance_variable_invariant_definition
     : SLK_inv expression
     ;
 
@@ -922,50 +918,156 @@ expression_list
     : expression (SEP_comma expression)*
     ;
 
-// We must eliminate left-recursion, so have to have the whole tree in one place with labelled attributes. 
-// See ANTLR4 reference guide section 5.2 on left recursion elimination.
-// 
-// Left recursion use (implicitly defined) semantic predicates to induce a priority grammar 
-// (e.g. precedence defined according to order of definition of productions). This works well for 
-// left recursion where all (or most) productions participate (e.g. ^, *, /, +, -, ID expressions). 
-// 
-// ANTLR4 identifies productions with left recursion first; they get highest priority according to their
-// placement in the grammar (i.e. earlier production has higher precedence). All other (non-left recursive)
-// productions are considered primary and can be declared *in any order*. To really identify what priority
-// rules will have, have a look at VDM.java private ExpressionContext expression(int _p) method.
-//
-// Here, name will win to "expression SEP_tsel expression"! So, either we need a semantic predicate in name 
-// or a grammar rearrangemnts for left-recursive expressions that are lower priority than name.    
-//
-// VDM language manual appendix C talks about ``relative precedences of the operators within families is 
-// determined by considering type information, and this is used to resolve ambiguity.'' Yet, the grammar of
-// appendix A does not separate the expression tree in such families. Here, we will have to in order to avoid
-// the hidden left-recursion induced by rules like tuple selector, etc. 
-//
-// In VDMJ, expressions (in the hand-made parser) are dealt with by 
-// com.fujitsu.vdmj.syntax.ExpressionReader#readExpression, which cascades the appendix C grammar as we do
-// below in ANTLR4's EBNF format. From the manual we have that families' precedences are as follows:
-//      ``combinators > applicators > evaluators > relations > connectives > constructors``
-//
-// That means, we build the expression grammar from primary (non recursive) production upwards through the family
-// ordering, starting with combinators all to way to constructors. Within recursive productions, the earlier declaration
-// has higher priority (precedence), hence we follow that order 
-//
-// In ANTLR(3)4 hidden left recursion removal (see the ALL(*) technical report appendix C), one cascades the left
-// recursion through operators, with lower precedence families at the top, all the way down to primary (non-left
-// recursive operators). The semantic-predicate gated productions (e.g. {isVDMRT())? won't appear in parser?    
-
 expression
+//------------------------
+// C.1 The family of combinators
+//------------------------
+    :<assoc=right> iter=expression O_EXP power=expression   #IterateExpr                       //38 combinator(1)
+    |<assoc=right> lhs=expression SLK_comp rhs=expression   #MapCompositionExpr                //39 combinator(2)
+//------------------------
+// C.2 The family of applicators
+//------------------------
+    | call=expression PAREN_L 
+        low=expression 
+        SEP_comma SEP_range SEP_comma 
+        high=expression 
+        PAREN_R                                             #SubSeqExpr                       //40 applicator(1)
+    | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
+    | expression /* name */ 
+        BRACE_L 
+        type_list 
+        BRACE_R                                             #FunctionTypeInstExpr             //42 applicator(3)
+    | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
+//C.2 is missing tuple selector!
+    | expression SEP_tsel NUMERAL                           #TupleSelExpr                     //43 applicator(4)
+//------------------------
+// C.3 The family of evaluators
+//------------------------
+//TODO maybe put each of these with something like op=(O1|O2|O3) etc to have same precedence?
+    | O_PLUS       expression  #UnaryPlusExpr
+    | O_MINUS      expression  #UnaryMinusExpr
+    | SLK_abs      expression  #AbsoluteExpr
+    | SLK_floor    expression  #FloorExpr
+    | SLK_card     expression  #CardinalityExpr
+    | SLK_power    expression  #PowerSetExpr
+    | SLK_dunion   expression  #SetDunionExpr
+    | SLK_dinter   expression  #SetDinterExpr
+    | SLK_dom      expression  #MapDomExpr
+    | SLK_rng      expression  #MapRngExpr
+    | SLK_merge    expression  #MapMergeExpr
+    | SLK_hd       expression  #SeqHdExpr
+    | SLK_tl       expression  #SeqTlExpr
+    | SLK_len      expression  #SeqLenExpr
+    | SLK_elems    expression  #SeqElemsExpr
+    | SLK_inds     expression  #SeqIndsExpr
+    | SLK_reverse  expression  #SeqReverseExpr
+    | SLK_conc     expression  #SeqDistConcExpr
+    |              lhs=expression O_NRRES     rhs=expression      #MapRngFilterExpr                 //44 evaluators(1)    
+    |              lhs=expression O_RRES      rhs=expression      #MapRngRestrictExpr               //45 evaluators(2)   
+    |<assoc=right> lhs=expression O_NDRES     rhs=expression      #MapDomFilterExpr                 //46 evaluators(3)   
+    |<assoc=right> lhs=expression O_DRES      rhs=expression      #MapDomRestrictExpr               //47 evaluators(4)   
+    | SLK_inverse  expression  #MapInverseExpr 
+    |              lhs=expression SLK_div     rhs=expression      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
+    |              lhs=expression SLK_mod     rhs=expression      #ArithmeticModuloExpr             //51 evaluators(8)     
+    |              lhs=expression SLK_rem     rhs=expression      #ArithmeticReminderExpr           //52 evaluators(9)     
+    |              lhs=expression O_DIV       rhs=expression      #ArithmeticDivideExpr             //53 evaluators(10)     
+    |              lhs=expression O_TIMES     rhs=expression      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
+    |              lhs=expression SLK_inter   rhs=expression      #SetInterExpr                     //59 evaluators(16)   
+    |              lhs=expression O_PLUS      rhs=expression      #ArithmeticPlusExpr               //56 evaluators(13)
+    |              lhs=expression O_MINUS     rhs=expression      #ArithmeticMinusExpr              //55 evaluators(12)     
+    |              lhs=expression SLK_munion  rhs=expression      #MapUnionExpr                     //48 evaluators(5)   
+    |              lhs=expression O_OVERRIDE  rhs=expression      #MapOverrideExpr                  //49 evaluators(6)   
+    |              lhs=expression SLK_union   rhs=expression      #SetUnionExpr                     //58 evaluators(15)   
+    |              lhs=expression O_DIFF      rhs=expression      #SetDiffExpr                      //57 evaluators(14)      
+    |              lhs=expression O_CONCAT    rhs=expression      #SeqConcatExpr                    //60 evaluators(17)
+//------------------------
+// C.4 The family of relations
+//------------------------
+    |              lhs=expression O_GEQ       rhs=expression      #RelationalGreaterThanEqualExpr   //61 relations(1)   
+    |              lhs=expression O_LEQ       rhs=expression      #RelationalLessThanEqualExpr      //62 relations(2)
+    |              lhs=expression O_GT        rhs=expression      #RelationalGreaterThanExpr        //63 relations(3)
+    |              lhs=expression O_LT        rhs=expression      #RelationalLessThanExpr           //64 relations(4)
+    |<assoc=right> lhs=expression O_NEQ       rhs=expression      #RelationalNotEqualExpr           //65 relations(5)
+    |<assoc=right> lhs=expression O_EQUAL     rhs=expression      #RelationalEqualExpr              //66 relations(6)
+    |              lhs=expression SLK_ninset  rhs=expression      #SetNotMemberExpr                 //67 relations(7)
+    |              lhs=expression SLK_inset   rhs=expression      #SetMemberExpr                    //68 relations(8)
+    |              lhs=expression SLK_psubset rhs=expression      #SetPSubsetExpr                   //69 relations(9)
+    |              lhs=expression SLK_subset  rhs=expression      #SetSubsetExpr                    //70 relations(10)
+//------------------------
+// C.5 The family of logical connectives
+//------------------------
+    | SLK_not      expression  #NotExpr
+    |              lhs=expression SLK_and     rhs=expression      #LogicalAndExpr                   //71 connectives(1)  
+    |              lhs=expression SLK_or      rhs=expression      #LogicalOrExpr                    //72 connectives(2)
+    |<assoc=right> lhs=expression O_IMPLIES   rhs=expression      #LogicalImpliesExpr               //73 connectives(3)
+    |              lhs=expression O_IFF       rhs=expression      #LogicalIffExpr                   //74 connectives(4)
+// //------------------------
+// // C.6 The family of constructors
+// //------------------------
+//     | SLK_mk PAREN_L 
+//         expression SEP_comma expression_list 
+//       PAREN_R                                               #TupleMkExpr                      //75 primary
+//     | tight_record_name 
+//         PAREN_L expression_list? PAREN_R                    #RecordMkExpr                     //76 primary
+// //------------------------
+// // C.0 The family of primary expressions
+// //------------------------
+//     | PAREN_L expression PAREN_R                            #BracketedExpr                     //1  primary
+//     | SLK_let local_definition_list 
+//       SLK_in expression                                     #LetExpr                           //2  primary
+//     | SLK_let multiple_bind (SLK_best stexpr=expression)? 
+//       SLK_in inexpr=expression                              #LetBestExpr                       //3  primary 
+//     | SLK_def equals_definition_list SEP_scolon?
+//       SLK_in expression                                     #DefExpr                           //4  primary
+//     | if_expression                                         #IfExpr                            //5  primary
+//     | cases_expression                                      #CasesExpr                         //6  primary
+//     //| unary_expression                                      #UnaryExpr                         //7  primary
+//     | quantified_expression                                 #QuantifiedExpr                    //8  primary
+//     | iota_expression                                       #IotaExpr                          //9  primary
+//     | set_enumeration                                       #SetEnumExpr                       //10 primary
+//     | set_comprehension                                     #SetCompExpr                       //11 primary
+//     | set_range_expression                                  #SetRangeExpr                      //12 primary
+//     | sequence_enumeration                                  #SeqEnumExpr                       //13 primary
+//     | sequence_comprehension                                #SeqCompExpr                       //14 primary
+//     | map_enumeration                                       #MapEnumExpr                       //15 primary
+//     | map_comprehension                                     #MapCompExpr                       //16 primary
+//     | record_modifier                                       #RecordMuExpr                      //17 primary
+//     | lambda_expression                                     #LambdaExpr                        //18 primary
+//     | narrow_expression                                     #NarrowExpr                        //19 primary
+//     | general_is_expression                                 #GeneralIsExpr                     //20 primary
+//     | undefined_expression                                  #UndefinedExpr                     //21 primary
+//     | precondition_expression                               #PreconditionExpr                  //22 primary
+//     | {!isVDMSL()}? self_expression                         #PPSelfExpr                        //24 primary
+//     | {isVDMRT()}?  threadid_expression                     #PPThreadIdExpr                    //25 primary
+//     | {!isVDMSL()}? isofbaseclass_expression                #PPIsOfBaseClassExpr               //26 primary
+//     | {!isVDMSL()}? isofclass_expression                    #PPIsOfClassExpr                   //27 primary
+//     | {!isVDMSL()}? samebaseclass_expression                #PPSameBaseClassExpr               //28 primary
+//     | {!isVDMSL()}? sameclass_expression                    #PPSameClassExpr                   //29 primary
+//     | {isVDMRT()}?  act_expression                          #RTActExpr                         //30 primary
+//     | {isVDMRT()}?  fin_expression                          #RTFinExpr                         //31 primary
+//     | {isVDMRT()}?  active_expression                       #RTActiveExpr                      //32 primary
+//     | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
+//     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
+//     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
+//     | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
+//     | old_name                                              #OldNameExpr                       //36 primary
+//     | name                                                  #NameExpr                          //37 primary
+//     | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
+//------------------------
+// C.6 The family of constructors
+//------------------------
+//These are also primary given their leading tokens
+    | tuple_constructor                                     #TupleMkExpr                      //75 primary
+    | record_constructor                                    #RecordMkExpr                     //76 primary
 //------------------------
 // C.0 The family of primary expressions
 //------------------------
-    : bracketed_expression                                  #BracketedExpr                     //1  primary
+    | bracketed_expression                                  #BracketedExpr                     //1  primary
     | let_expression                                        #LetExpr                           //2  primary
     | let_be_expression                                     #LetBestExpr                       //3  primary 
     | def_expression                                        #DefExpr                           //4  primary
     | if_expression                                         #IfExpr                            //5  primary
     | cases_expression                                      #CasesExpr                         //6  primary
-    | unary_expression                                      #UnaryExpr                         //7  primary
     | quantified_expression                                 #QuantifiedExpr                    //8  primary
     | iota_expression                                       #IotaExpr                          //9  primary
     | set_enumeration                                       #SetEnumExpr                       //10 primary
@@ -993,82 +1095,19 @@ expression
     | {isVDMRT()}?  req_expression                          #RTReqExpr                         //33 primary
     | {isVDMRT()}?  waiting_expression                      #RTWaitingExpr                     //34 primary
     | {isVDMRT()}?  time_expression                         #RTTimeExpr                        //35 primary
-//------------------------
-// C.1 The family of combinators
-//------------------------
-    |<assoc=right> expression O_EXP    expression           #IterateExpr                       //38 combinator(1)
-    |<assoc=right> expression SLK_comp expression           #MapCompositionExpr                //39 combinator(2)
-//------------------------
-// C.2 The family of applicators
-//------------------------
-    | expression PAREN_L 
-        expression 
-        SEP_comma SEP_range SEP_comma 
-        expression 
-        PAREN_R                                             #SubSeqExpr                       //40 applicator(1)
-    | expression PAREN_L expression_list? PAREN_R           #ApplyExpr                        //41 applicator(2)
-    | expression /* name */ 
-        BRACE_L 
-        type (SEP_comma type)* 
-        BRACE_R                                             #FunctionTypeInstExpr             //42 applicator(3)
-    | expression SEP_dot IDENTIFIER                         #FieldSelExpr       
-//C.2 is missing tuple selector!
-    | expression SEP_tsel NUMERAL                           #TupleSelExpr                     //43 applicator(4)
-//------------------------
-// C.3 The family of evaluators
-//------------------------
-    |              expression (O_NRRES     expression)      #MapRngFilterExpr                 //44 evaluators(1)    
-    |              expression (O_RRES      expression)      #MapRngRestrictExpr               //45 evaluators(2)   
-    |<assoc=right> expression (O_NDRES     expression)      #MapDomFilterExpr                 //46 evaluators(3)   
-    |<assoc=right> expression (O_DRES      expression)      #MapDomRestricExpr                //47 evaluators(4)   
-    |              expression (SLK_munion  expression)      #MapUnionExpr                     //48 evaluators(5)   
-    |              expression (O_OVERRIDE  expression)      #MapSeqOverrideExpr               //49 evaluators(6)   
-    |              expression (SLK_div     expression)      #ArithmeticIntegerDivisionExpr    //50 evaluators(7)     
-    |              expression (SLK_mod     expression)      #ArithmeticModuloExpr             //51 evaluators(8)     
-    |              expression (SLK_rem     expression)      #ArithmeticReminderExpr           //52 evaluators(9)     
-    |              expression (O_DIV       expression)      #ArithmeticDivideExpr             //53 evaluators(10)     
-    |              expression (O_TIMES     expression)      #ArithmeticMultiplicationExpr     //54 evaluators(11)     
-    |              expression (O_MINUS     expression)      #ArithmeticMinusExpr              //55 evaluators(12)     
-    |              expression (O_PLUS      expression)      #ArithmeticPlusExpr               //56 evaluators(13)
-    |              expression (O_DIFF      expression)      #SetDiffExpr                      //57 evaluators(14)      
-    |              expression (SLK_union   expression)      #SetUnionExpr                     //58 evaluators(15)   
-    |              expression (SLK_inter   expression)      #SetInterExpr                     //59 evaluators(16)   
-    |              expression (O_CONCAT    expression)      #SeqConcatExpr                    //60 evaluators(17)
-//------------------------
-// C.4 The family of relations
-//------------------------
-    |              expression (O_GEQ       expression)      #RelationalGreaterThanEqualExpr   //61 relations(1)   
-    |              expression (O_LEQ       expression)      #RelationalLessThanEqualExpr      //62 relations(2)
-    |              expression (O_GT        expression)      #RelationalGreaterThanExpr        //63 relations(3)
-    |              expression (O_LT        expression)      #RelationalLessThanExpr           //64 relations(4)
-    |<assoc=right> expression (O_NEQ       expression)      #RelationalNotEqualExpr           //65 relations(5)
-    |<assoc=right> expression (O_EQUAL     expression)      #RelationalEqualExpr              //66 relations(6)
-    |              expression (SLK_ninset  expression)      #SetNotMemberExpr                 //67 relations(7)
-    |              expression (SLK_inset   expression)      #SetMemberExpr                    //68 relations(8)
-    |              expression (SLK_psubset expression)      #SetPSubsetExpr                   //69 relations(9)
-    |              expression (SLK_subset  expression)      #SetSubsetExpr                    //70 relations(10)
-//------------------------
-// C.5 The family of connectives
-//------------------------
-    |              expression (SLK_and     expression)      #LogicalAndExpr                   //71 connectives(1)  
-    |              expression (SLK_or      expression)      #LogicalOrExpr                    //72 connectives(2)
-    |<assoc=right> expression (O_IMPLIES   expression)      #LogicalImpliesExpr               //73 connectives(3)
-    |              expression (O_IFF       expression)      #LogicalIffExpr                   //74 connectives(4)
-//------------------------
-// C.6 The family of constructors
-//------------------------
-//These are also primary given their leading tokens
-    | tuple_constructor                                     #TupleMkExpr                      //75 primary
-    | record_constructor                                    #RecordMkExpr                     //76 primary
     | {!isVDMSL()}? new_expression                          #PPNewExpr                        //77 primary
-    | OLD_NAME                                              #OldNameExpr                       //36 primary
-    | name                                                  #NameExpr                          //37 primary
+    | old_name                                              #OldNameExpr                       //36 primary
+    | variable                                              #VariableExpr                      //37 primary
     | symbolic_literal                                      #SymbolicLitExpr                   //23 primary
     ;  
 
 //------------------------
 // A.5.1 Bracketed Expression  
 //------------------------
+
+variable 
+    : {!isTLDTypeName()}? name
+    ;
 
 //@LRM bracketed_expression could be reused within pattern and expression?  
 bracketed_expression
@@ -1134,28 +1173,29 @@ others_expression
 // Have the unary expression product with identifying rules for ease of listener/visitor traversals
 // Unary appearing before binary makes them bind tigher (stronger) than binary, which is desirable. 
 //@LRM remove unary expression and put the others in place?
-unary_expression 
-    : O_PLUS       expression  #UnaryPlusExpr
-    | O_MINUS      expression  #UnaryMinusExpr
-    | SLK_abs      expression  #AbsoluteExpr
-    | SLK_floor    expression  #FloorExpr
-    | SLK_not      expression  #NotExpr
-    | SLK_card     expression  #CardinalityExpr
-    | SLK_power    expression  #PowerSetExpr
-    | SLK_dunion   expression  #SetDunionExpr
-    | SLK_dinter   expression  #SetDinterExpr
-    | SLK_hd       expression  #SeqHdExpr
-    | SLK_tl       expression  #SeqTlExpr
-    | SLK_len      expression  #SeqLenExpr
-    | SLK_elems    expression  #SeqElemsExpr
-    | SLK_inds     expression  #SeqIndsExpr
-    | SLK_reverse  expression  #SeqReverseExpr
-    | SLK_conc     expression  #SeqDistConcExpr
-    | SLK_dom      expression  #MapDomExpr
-    | SLK_rng      expression  #MapRngExpr
-    | SLK_merge    expression  #MapMergeExpr
-    | SLK_inverse  expression  #MapInverseExpr 
-    ;
+//@LRM cannot have 
+// unary_expression 
+//     : O_PLUS       expression  #UnaryPlusExpr
+//     | O_MINUS      expression  #UnaryMinusExpr
+//     | SLK_abs      expression  #AbsoluteExpr
+//     | SLK_floor    expression  #FloorExpr
+//     | SLK_not      expression  #NotExpr
+//     | SLK_card     expression  #CardinalityExpr
+//     | SLK_power    expression  #PowerSetExpr
+//     | SLK_dunion   expression  #SetDunionExpr
+//     | SLK_dinter   expression  #SetDinterExpr
+//     | SLK_hd       expression  #SeqHdExpr
+//     | SLK_tl       expression  #SeqTlExpr
+//     | SLK_len      expression  #SeqLenExpr
+//     | SLK_elems    expression  #SeqElemsExpr
+//     | SLK_inds     expression  #SeqIndsExpr
+//     | SLK_reverse  expression  #SeqReverseExpr
+//     | SLK_conc     expression  #SeqDistConcExpr
+//     | SLK_dom      expression  #MapDomExpr
+//     | SLK_rng      expression  #MapRngExpr
+//     | SLK_merge    expression  #MapMergeExpr
+//     | SLK_inverse  expression  #MapInverseExpr 
+//     ;
 
 //------------------------
 // A.5.6 Quantified Expressions  
@@ -1193,15 +1233,15 @@ iota_expression
 //------------------------
 
 set_enumeration
-    : BRACE_L expression_list BRACE_R
+    : BRACE_L expression_list? BRACE_R
     ;
 
 set_comprehension
-    : BRACE_L expression SEP_bar bind_list (SEP_amp expression)? BRACE_R 
+    : BRACE_L first=expression SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R 
     ;
 
 set_range_expression
-    : BRACE_L expression SEP_comma SEP_range SEP_comma expression BRACE_R
+    : BRACE_L low=expression SEP_comma SEP_range SEP_comma high=expression BRACE_R
     ;
 
 //------------------------
@@ -1209,15 +1249,15 @@ set_range_expression
 //------------------------
 
 sequence_enumeration 
-    : BRACKET_L expression_list BRACKET_R
+    : BRACKET_L expression_list? BRACKET_R
     ;
 
 sequence_comprehension
-    : BRACKET_L expression SEP_bar bind_list (SEP_amp expression)? BRACKET_R 
+    : BRACKET_L first=expression SEP_bar bind (SEP_amp filter=expression)? BRACKET_R 
     ;
 
 subsequence
-    : expression/*_combinators */ PAREN_L expression SEP_comma SEP_range SEP_comma expression PAREN_R
+    : call=expression/*_combinators */ PAREN_L low=expression SEP_comma SEP_range SEP_comma high=expression PAREN_R
     ;
 
 //------------------------
@@ -1225,16 +1265,20 @@ subsequence
 //------------------------
 
 map_enumeration 
-    : BRACE_L maplet (SEP_comma maplet)? BRACE_R
+    : BRACE_L maplet_list BRACE_R
     | BRACE_L SEP_maplet BRACE_R
     ;
 
+maplet_list
+    : maplet (SEP_comma maplet)?
+    ;
+
 maplet
-    : expression SEP_maplet expression
+    : dom=expression SEP_maplet rng=expression
     ;
 
 map_comprehension
-    : BRACE_L maplet SEP_bar bind_list (SEP_amp expression)? BRACE_R
+    : BRACE_L first=maplet SEP_bar bind_list (SEP_amp filter=expression)? BRACE_R
     ;
 
 //------------------------
@@ -1267,7 +1311,11 @@ tight_record_name
     ;
 
 record_modifier
-    : SLK_mu PAREN_L expression SEP_comma record_modification (SEP_comma record_modification)* PAREN_R
+    : SLK_mu PAREN_L expression SEP_comma record_modification_list PAREN_R
+    ;
+
+record_modification_list 
+    : record_modification (SEP_comma record_modification)*
     ;
 
 record_modification
@@ -1292,7 +1340,11 @@ tuple_select
 
 //@NB function type inst allows expression and not just name ? 
 function_type_instantiation 
-    : expression/*_combinators*/ /* name */ BRACE_L type (SEP_comma type)* BRACE_R
+    : expression/*_combinators*/ /* name */ BRACE_L type_list BRACE_R
+    ;
+
+type_list 
+    : type (SEP_comma type)*
     ;
 
 //------------------------
@@ -1340,13 +1392,12 @@ threadid_expression
 //------------------------
 
 general_is_expression 
-    : is_expression 
-    | type_judgement
+    : is_expression     
+    | type_judgement    
     ;
 
-//TODO no space between SLK_is and name/type
 is_expression 
-    : SLK_istest (name | basic_type)
+    : SLK_istest (name | basic_type) 
       PAREN_L expression PAREN_R
     ;
 
@@ -1498,7 +1549,7 @@ local_definition_list
     ;
 
 local_definition 
-    : value_definition
+    : value_definition    
     | function_definition
     ;
 
@@ -1862,9 +1913,19 @@ name_list
     : name (SEP_comma name)*
     ;
 
+//@NB name is both a LexNameToken and a ASTVariableExpression? 
+//@doc never implement the exiName(ctx) directly?! 
 name
-    : QUALIFIED_NAME        #QualifiedName
-    | IDENTIFIER            #IdName
+    : mod=IDENTIFIER SEP_tick n=IDENTIFIER  #QualifiedName
+    | IDENTIFIER                            #IdName
+    ;
+
+// qualified_name
+//     : IDENTIFIER SEP_tick IDENTIFIER
+//     ;
+
+old_name
+    : IDENTIFIER SEP_old
     ;
 
 symbolic_literal
@@ -1873,5 +1934,5 @@ symbolic_literal
 	| SLK_nil                   #NilLiteral 
 	| CHARACTER_LITERAL         #CharacterLiteral
 	| TEXT_LITERAL              #StringLiteral
-	| QUOTE_LITERAL             #QuoteLiteral
+	| O_LT IDENTIFIER O_GT      #QuoteLiteral
     ;

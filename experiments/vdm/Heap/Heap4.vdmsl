@@ -1,6 +1,8 @@
 -- $Id$
 module Heap4
-imports from Heap1 functions locs_of renamed Heap1locs_of;,
+imports 
+		from Heap1 functions locs_of renamed Heap1locs_of;
+		   		types Piece renamed Heap0Piece;,
 		from Heap3 types Loc   renamed Heap3Loc; 
 						 Piece renamed Heap3Piece;
 						 Free3 renamed Heap3Free3;
@@ -19,16 +21,11 @@ types
 
 values 
 functions 
-	min: set of nat -> nat
-	min(ss) ==
-		let x in set ss in 
-			let y = min (ss \ {x}) in
-				if x < y then
-					x	
-				else
-					y
-		pre ss <> {}
-		measure xmeasure_min;
+	min: set1 of int -> int
+	min(s) == 
+		(iota m in set s & (forall n in set s & m <= n))
+	post
+		forall x in set s & RESULT <= x;
 	
 	remove4: [Loc] * [Loc] * Store * nat1 -> (Store * Piece)
 	remove4(prev, curr, store, n) ==
@@ -42,8 +39,8 @@ functions
 								store ++ { prev+1 |-> store(curr+1) }
 						 else
 							store ++ { curr |-> store(curr)-n }) in 
-				mk_(store1, mk_Piece(curr + store(curr)-n, n))
-		measure xmeasure_LocLocStoreNat1;
+				mk_(store1, mk_Heap0Piece(curr + store(curr)-n, n))
+		measure card dom store;
 
 	insert4: [Loc] * [Loc] * Store * Loc * nat1 -> Store
 	insert4(prev, curr, store, a, s) == 
@@ -72,16 +69,7 @@ functions
 			(prev = nil or curr = nil or prev < curr) and
 			Heap3isOk3(prev, store) and
 			Heap3isOk3(curr, store)
-		measure xmeasure_LocLocStoreLocNat1;
-
-	xmeasure_min: set of nat -> nat
-	xmeasure_min(ss) == card ss;
-
-	xmeasure_LocLocStoreNat1: [Loc] * [Loc] * Store * nat1 -> nat
-	xmeasure_LocLocStoreNat1(-, -, store, -) == card dom store;
-
-	xmeasure_LocLocStoreLocNat1: [Loc] * [Loc] * Store * Loc * nat1 -> nat
-	xmeasure_LocLocStoreLocNat1(-, -, store, -, -) == card dom store;
+		measure card dom store;
 
 state StateName of
 	free4: Free3
@@ -109,7 +97,7 @@ operations
 		pre ret.SIZE > 1 and
 			let mk_(start, store) = free4 in 
 				Heap1locs_of(ret) inter Heap3locs3(start, store) = {}
-		post let mk_Piece(a, s) = ret in
+		post let mk_Heap0Piece(a, s) = ret in
 				let mk_(startA, storeA) = free4 in
 					let mk_(startB, storeB) = free4~ in
 						startA = (if startB = nil then

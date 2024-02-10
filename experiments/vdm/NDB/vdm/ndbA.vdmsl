@@ -1,0 +1,192 @@
+module ndbA
+exports 
+    types 
+        struct Esetmap;
+        struct Relmap;
+        struct Eidmap;
+        struct State_a_0;
+        struct State_a; 
+        struct Esetinf;
+        struct Reltype;
+        struct Relinf0;
+        struct Relinf;
+        struct Maptype;
+        struct Pair;
+        struct Eid    ;
+        struct Esetnm ;
+        struct Relnm  ;
+        struct Value  ;
+        struct Status ;
+        struct Picture;
+        struct Width  ;
+        struct NDBStateA;
+    functions 
+        inva: State_a_0 -> bool;
+        inva' : State_a_0 -> bool;
+        staconv: State_a -> NDBStateA;
+        staconv': NDBStateA -> State_a;
+        pre_ADDA: Esetnm * Status * Picture * Width * NDBStateA +> bool;
+    operations 
+        ADDA: Esetnm * Status * Picture * Width ==> (); 
+        ADDAExplicit: Esetnm * Status * Picture * Width ==> (); 
+definitions
+types
+    --@NB these are useful for compartimentalising type invariants expansion
+    Esetmap = map Esetnm to Esetinf; 
+    Relmap  = map Reltype to Relinf;
+    Eidmap  = map Eid to [Value];
+
+	State_a_0 ::
+        esets : Esetmap
+        rels  : Relmap
+        ents  : Eidmap;
+    
+    State_a = State_a_0
+    inv sa == inva(sa);
+							
+	Esetinf :: 
+        status : Status
+        picture: Picture
+        width  : Width 
+        membs  : set of Eid;
+
+	-- NOTE: relationship types are said to be distinguishable, perhaps by name only?
+	--			 as given, a relationship like mk_RelType(F, currency, T), 
+	--			 mk_RelType(X, currency, Y) will be distinct (assuming X <> F or Y <> T),
+	--			 despite the fact there shouldn't be different currencies for element sets?
+	--
+	--			 i.e. the equality test over the Reltype should be on nm only?
+	--
+	Reltype :: 
+        fs : Esetnm
+        nm : [Relnm]
+        ts : Esetnm;
+
+	Relinf0 :: 
+        map_: Maptype
+        conns : set of Pair;
+    
+    Relinf = Relinf0 
+	inv r == invMaps(r);
+						 
+    Maptype = <OneOne> | <OneMany> | <ManyOne> | <ManyMany> ;
+	
+	Pair :: 
+        fv : Eid
+		tv : Eid; -- Value can be found from within the Esetinf
+
+	Eid    = token;
+	Esetnm = token;
+	Relnm  = token;
+	Value  = token;
+	
+	Status = token;
+	Picture= token;
+	Width  = token;
+
+functions
+	
+	inva : State_a_0 -> bool 
+    inva(mk_State_a_0(esm_, rm_, em_)) == 
+        forall esetnm in set dom esm_ & 
+            invVals(esm_(esetnm), em_) and
+            invEsets(dom esm_, dom rm_) and
+            invPairs(esm_, rm_) and
+            invEnts(rng esm_, dom em_);
+
+    --@NB this one is subtle (and interesting): the narrowed context is preferred for the forall, yet the above colapses everywhere when esm_ is empty! 
+	inva' : State_a_0 -> bool 
+    inva'(mk_State_a_0(esm_, rm_, em_)) == 
+        (forall esetnm in set dom esm_ & 
+            invVals(esm_(esetnm), em_)) and
+        invEsets(dom esm_, dom rm_) and
+        invPairs(esm_, rm_) and
+        invEnts(rng esm_, dom em_);
+
+    staconv: State_a -> NDBStateA
+    staconv(sa) == mk_NDBStateA(sa.esets, sa.rels, sa.ents);
+
+    staconv': NDBStateA -> State_a
+    staconv'(ndba) == mk_State_a_0(ndba.esets, ndba.rels, ndba.ents);
+
+	invVals: Esetinf * Eidmap -> bool
+	invVals(mk_Esetinf(-, picture, -, membs), em_) ==
+        --@NB missing invariant for the application of em(eid)?
+        (membs subset dom em_) and	
+        forall eid in set membs & pictureMatch(em_(eid), picture);
+					
+	pictureMatch: [Value] * Picture -> bool
+	pictureMatch(v, -) == v <> nil;
+
+	invEsets: set of Esetnm * set of Reltype -> bool
+	invEsets(esetnms, em_) ==
+        --@NB here em_ is not used and a unamed variable "reltypes" is used. 
+        --    I am assuming it means type bind. Or is it "in set em_"?
+        --@NB note here em_ is not used too .
+        --@NB renamed reltype to reltype' to avoid hidden name with function reltype for State_r 
+        forall reltype' in set em_ &--reltype : Reltype & -- reltypes?
+            reltype'.fs in set esetnms and
+            reltype'.ts in set esetnms; 
+
+    invPairs: Esetmap * Relmap -> bool
+    invPairs(esm_, rm_) ==
+        forall reltype' in set dom rm_ &
+            let mk_Reltype(fs, -, ts) = reltype' in
+                let prset = rm_(reltype').conns in
+                    --@NB missing invariant for well formedness of map app?? 
+                    fs in set dom esm_ and ts in set dom esm_ and 
+                    are_membs(froms(prset), esm_(fs)) and
+                    are_membs(tos(prset), esm_(ts));
+  						
+    are_membs: set of Eid * Esetinf -> bool
+    are_membs(eset, esetinf) ==
+        eset psubset esetinf.membs;
+  		
+    froms: set of Pair -> set of Eid
+    froms(prset) == { pr.fv | pr in set prset };
+  
+    tos: set of Pair -> set of Eid
+    tos(prset) == { pr.tv | pr in set prset };
+  
+    invEnts: set of Esetinf * set of Eid -> bool
+    invEnts(esetinfs, eids) ==
+        let ents = dunion { esetinf.membs | esetinf in set esetinfs } in
+            ents = eids;
+
+    invMaps: Relinf0 -> bool
+    invMaps(mk_Relinf0(map_, prset)) ==
+        -- NOTE: horrible logic description for Isabelle but okay. Original
+        --			 had this as a partial function. I am totalising it with others -> false.
+        --			 I think the original should have been total.
+        cases map_ :
+            <ManyMany> -> true,
+            <ManyOne>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.fv = pr2_.fv),
+            <OneMany>  -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and pr1_.tv = pr2_.tv),
+            <OneOne>   -> not (exists pr1_, pr2_ in set prset & pr1_ <> pr2_ and 
+                                    (pr1_.fv = pr2_.fv or pr1_.tv = pr2_.tv))
+        end;
+   		   
+state NDBStateA of	
+    esets : map Esetnm to Esetinf
+    rels  : map Reltype to Relinf
+    ents  : map Eid to [Value]
+inv mk_NDBStateA(esets, rels, ents) == 
+    inva(mk_State_a_0(esets, rels, ents))
+init ndbast == 
+    ndbast = mk_NDBStateA({ |-> }, { |-> }, { |-> })
+end
+
+operations
+
+    ADDA(eset: Esetnm, s: Status, p: Picture, w: Width) 
+    ext wr esets : map Esetnm to Esetinf
+    pre not (eset in set dom esets)
+    post esets = esets~ munion { eset |-> mk_Esetinf(s, p, w, {}) };
+
+    ADDAExplicit(eset: Esetnm, s: Status, p: Picture, w: Width) == 
+        (esets := esets munion { eset |-> mk_Esetinf(s, p, w, {}) })
+    ext wr esets : map Esetnm to Esetinf
+    pre not (eset in set dom esets)
+    post esets = esets~ munion { eset |-> mk_Esetinf(s, p, w, {}) };
+
+end ndbA

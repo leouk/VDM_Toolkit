@@ -1,0 +1,284 @@
+digraph G {
+	 pre_move_board [label="pre_move_board 
+@ M=BM L94", shape=doublecircle, color=blue]
+	 pre_move_board -> possible_moves;
+	 puts_in_check [label="puts_in_check 
+@ M=BM L154", shape=doublecircle, color=blue]
+	Piece [label="Piece 
+@ M=BM L154", shape=triangle]	 puts_in_check -> Piece;
+	 puts_in_check -> in_check;
+	inv_Piece [label="inv_Piece 
+@ M=BM L154", shape=triangle]	 puts_in_check -> inv_Piece;
+	pre_in_check [label="pre_in_check 
+@ M=BM L154", shape=triangle]	 puts_in_check -> pre_in_check;
+	 move_board [label="move_board 
+@ M=BM L84", shape=invtriangle, color=red]
+	 move_board -> iss_castling;
+	 move_board -> iss_en_passant;
+	 move_board -> move_castling;
+	 move_board -> move_en_passant;
+	 move_board -> move_other;
+	 move_board -> possible_moves;
+	 History [label="History 
+@ M=BM L53", shape=doublecircle, color=blue]
+	inv_History [label="inv_History 
+@ M=BM L53", shape=triangle]	 History -> inv_History;
+	inv_Move [label="inv_Move 
+@ M=BM L53", shape=triangle]	 History -> inv_Move;
+	 Board [label="Board 
+@ M=BM L55", shape=doublecircle, color=blue]
+	 Board -> History;
+	inv_Board [label="inv_Board 
+@ M=BM L55", shape=triangle]	 Board -> inv_Board;
+	 Board -> inv_BoardState;
+	inv_History [label="inv_History 
+@ M=BM L55", shape=triangle]	 Board -> inv_History;
+	 pre_stateful_impossible_moves [label="pre_stateful_impossible_moves 
+@ M=BM L197", shape=invtriangle, color=red]
+	 pre_stateful_impossible_moves -> piece_coord_to_move;
+	pieces_to_obstacles [label="pieces_to_obstacles 
+@ M=BM L197", shape=triangle]	 pre_stateful_impossible_moves -> pieces_to_obstacles;
+	 pre_stateful_impossible_moves -> pre_puts_in_check;
+	 pre_stateful_impossible_moves -> stateful_possible_moves;
+	type_based_moves [label="type_based_moves 
+@ M=BM L197", shape=triangle]	 pre_stateful_impossible_moves -> type_based_moves;
+	 pre_puts_in_check [label="pre_puts_in_check 
+@ M=BM L162", shape=doublecircle, color=blue]
+	pre_in_check [label="pre_in_check 
+@ M=BM L162", shape=triangle]	 pre_puts_in_check -> pre_in_check;
+	 post_move_other [label="post_move_other 
+@ M=BM L106", shape=invtriangle, color=red]
+	post_move_board [label="post_move_board 
+@ M=BM L106", shape=triangle]	 post_move_other -> post_move_board;
+	 en_passant [label="en_passant 
+@ M=BM L245", shape=doublecircle, color=blue]
+	get_pawn_direction [label="get_pawn_direction 
+@ M=BM L245", shape=triangle]	 en_passant -> get_pawn_direction;
+	 move_castling [label="move_castling 
+@ M=BM L119", shape=doublecircle, color=blue]
+	 move_castling -> Board;
+	Coordinate [label="Coordinate 
+@ M=BM L119", shape=triangle]	 move_castling -> Coordinate;
+	Piece [label="Piece 
+@ M=BM L119", shape=triangle]	 move_castling -> Piece;
+	Pos [label="Pos 
+@ M=BM L119", shape=triangle]	 move_castling -> Pos;
+	 move_castling -> castling_legal;
+	inv_Board [label="inv_Board 
+@ M=BM L119", shape=triangle]	 move_castling -> inv_Board;
+	 move_castling -> inv_BoardState;
+	inv_Move [label="inv_Move 
+@ M=BM L119", shape=triangle]	 move_castling -> inv_Move;
+	inv_Piece [label="inv_Piece 
+@ M=BM L119", shape=triangle]	 move_castling -> inv_Piece;
+	inv_Pos [label="inv_Pos 
+@ M=BM L119", shape=triangle]	 move_castling -> inv_Pos;
+	 move_castling -> piece_coord_to_move;
+	pre_castling_legal [label="pre_castling_legal 
+@ M=BM L119", shape=triangle]	 move_castling -> pre_castling_legal;
+	 pawn_promotion [label="pawn_promotion 
+@ M=BM L233", shape=doublecircle, color=blue]
+	Coordinate [label="Coordinate 
+@ M=BM L233", shape=triangle]	 pawn_promotion -> Coordinate;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=BM L233", shape=triangle]	 pawn_promotion -> inv_Coordinate;
+	pieces_to_obstacles [label="pieces_to_obstacles 
+@ M=BM L233", shape=triangle]	 pawn_promotion -> pieces_to_obstacles;
+	 pawn_promotion -> sets_combine_tuple;
+	type_based_moves [label="type_based_moves 
+@ M=BM L233", shape=triangle]	 pawn_promotion -> type_based_moves;
+	 BoardState [label="BoardState 
+@ M=BM L41", shape=invtriangle, color=red]
+	BOARD_SIZE [label="BOARD_SIZE 
+@ M=BM L41", shape=triangle]	 BoardState -> BOARD_SIZE;
+	Piece [label="Piece 
+@ M=BM L41", shape=triangle]	 BoardState -> Piece;
+	 BoardState -> inv_BoardState;
+	inv_Piece [label="inv_Piece 
+@ M=BM L41", shape=triangle]	 BoardState -> inv_Piece;
+	 pre_iss_en_passant [label="pre_iss_en_passant 
+@ M=BM L268", shape=doublecircle, color=blue]
+	 pre_iss_en_passant -> possible_moves;
+	 pre_iss_castling [label="pre_iss_castling 
+@ M=BM L319", shape=invtriangle, color=red]
+	pre_castling_legal [label="pre_castling_legal 
+@ M=BM L319", shape=triangle]	 pre_iss_castling -> pre_castling_legal;
+	 Move [label="Move 
+@ M=BM L35", shape=invtriangle, color=red]
+	Piece [label="Piece 
+@ M=BM L35", shape=triangle]	 Move -> Piece;
+	inv_Move [label="inv_Move 
+@ M=BM L35", shape=triangle]	 Move -> inv_Move;
+	inv_Piece [label="inv_Piece 
+@ M=BM L35", shape=triangle]	 Move -> inv_Piece;
+	 iss_en_passant [label="iss_en_passant 
+@ M=BM L264", shape=doublecircle, color=blue]
+	 iss_en_passant -> en_passant;
+	 iss_en_passant -> possible_moves;
+	 pre_move_other [label="pre_move_other 
+@ M=BM L105", shape=invtriangle, color=red]
+	 pre_move_other -> pre_move_board;
+	 stateful_impossible_moves [label="stateful_impossible_moves 
+@ M=BM L181", shape=doublecircle, color=blue]
+	inv_Move [label="inv_Move 
+@ M=BM L181", shape=triangle]	 stateful_impossible_moves -> inv_Move;
+	 stateful_impossible_moves -> pawn_promotion;
+	 stateful_impossible_moves -> piece_coord_to_move;
+	pieces_to_obstacles [label="pieces_to_obstacles 
+@ M=BM L181", shape=triangle]	 stateful_impossible_moves -> pieces_to_obstacles;
+	 stateful_impossible_moves -> pre_puts_in_check;
+	 stateful_impossible_moves -> puts_in_check;
+	 stateful_impossible_moves -> stateful_possible_moves;
+	type_based_moves [label="type_based_moves 
+@ M=BM L181", shape=triangle]	 stateful_impossible_moves -> type_based_moves;
+	 inv_BoardState [label="inv_BoardState 
+@ M=BM L46", shape=doublecircle, color=blue]
+	BOARD_SIZE [label="BOARD_SIZE 
+@ M=BM L46", shape=triangle]	 inv_BoardState -> BOARD_SIZE;
+	 step [label="step 
+@ M=BM L371", shape=doublecircle, color=blue]
+	Coordinate [label="Coordinate 
+@ M=BM L371", shape=triangle]	 step -> Coordinate;
+	distance [label="distance 
+@ M=BM L371", shape=triangle]	 step -> distance;
+	round_step [label="round_step 
+@ M=BM L371", shape=triangle]	 step -> round_step;
+	 stateful_possible_moves [label="stateful_possible_moves 
+@ M=BM L202", shape=doublecircle, color=blue]
+	 stateful_possible_moves -> castling_possible;
+	 stateful_possible_moves -> en_passant;
+	 stateful_possible_moves -> pawn_move_two;
+	 stateful_possible_moves -> pawn_promotion;
+	 possible_moves [label="possible_moves 
+@ M=BM L166", shape=doublecircle, color=blue]
+	Coordinate [label="Coordinate 
+@ M=BM L166", shape=triangle]	 possible_moves -> Coordinate;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=BM L166", shape=triangle]	 possible_moves -> inv_Coordinate;
+	inv_Move [label="inv_Move 
+@ M=BM L166", shape=triangle]	 possible_moves -> inv_Move;
+	 possible_moves -> piece_coord_to_move;
+	pieces_to_obstacles [label="pieces_to_obstacles 
+@ M=BM L166", shape=triangle]	 possible_moves -> pieces_to_obstacles;
+	 possible_moves -> stateful_impossible_moves;
+	 possible_moves -> stateful_possible_moves;
+	type_based_moves [label="type_based_moves 
+@ M=BM L166", shape=triangle]	 possible_moves -> type_based_moves;
+	 iss_castling [label="iss_castling 
+@ M=BM L317", shape=doublecircle, color=blue]
+	 iss_castling -> castling_legal;
+	pre_castling_legal [label="pre_castling_legal 
+@ M=BM L317", shape=triangle]	 iss_castling -> pre_castling_legal;
+	 move_other [label="move_other 
+@ M=BM L99", shape=doublecircle, color=blue]
+	 move_other -> Board;
+	Piece [label="Piece 
+@ M=BM L99", shape=triangle]	 move_other -> Piece;
+	inv_Board [label="inv_Board 
+@ M=BM L99", shape=triangle]	 move_other -> inv_Board;
+	inv_Piece [label="inv_Piece 
+@ M=BM L99", shape=triangle]	 move_other -> inv_Piece;
+	post_move_board [label="post_move_board 
+@ M=BM L99", shape=triangle]	 move_other -> post_move_board;
+	 move_other -> pre_move_board;
+	 pre_move_en_passant [label="pre_move_en_passant 
+@ M=BM L116", shape=invtriangle, color=red]
+	 pre_move_en_passant -> iss_en_passant;
+	 pre_move_en_passant -> pre_iss_en_passant;
+	 in_check [label="in_check 
+@ M=BM L142", shape=doublecircle, color=blue]
+	Color [label="Color 
+@ M=BM L142", shape=triangle]	 in_check -> Color;
+	Piece [label="Piece 
+@ M=BM L142", shape=triangle]	 in_check -> Piece;
+	inv_Color [label="inv_Color 
+@ M=BM L142", shape=triangle]	 in_check -> inv_Color;
+	inv_Piece [label="inv_Piece 
+@ M=BM L142", shape=triangle]	 in_check -> inv_Piece;
+	opposite_color [label="opposite_color 
+@ M=BM L142", shape=triangle]	 in_check -> opposite_color;
+	pieces_to_obstacles [label="pieces_to_obstacles 
+@ M=BM L142", shape=triangle]	 in_check -> pieces_to_obstacles;
+	type_based_moves [label="type_based_moves 
+@ M=BM L142", shape=triangle]	 in_check -> type_based_moves;
+	 pawn_move_two [label="pawn_move_two 
+@ M=BM L218", shape=doublecircle, color=blue]
+	Color [label="Color 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> Color;
+	Coordinate [label="Coordinate 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> Coordinate;
+	PawnDirection [label="PawnDirection 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> PawnDirection;
+	Pos [label="Pos 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> Pos;
+	coordinate_factory [label="coordinate_factory 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> coordinate_factory;
+	get_pawn_direction [label="get_pawn_direction 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> get_pawn_direction;
+	inv_Color [label="inv_Color 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> inv_Color;
+	inv_Coordinate [label="inv_Coordinate 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> inv_Coordinate;
+	inv_PawnDirection [label="inv_PawnDirection 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> inv_PawnDirection;
+	inv_Pos [label="inv_Pos 
+@ M=BM L218", shape=triangle]	 pawn_move_two -> inv_Pos;
+	 move_en_passant [label="move_en_passant 
+@ M=BM L109", shape=doublecircle, color=blue]
+	 move_en_passant -> Board;
+	Piece [label="Piece 
+@ M=BM L109", shape=triangle]	 move_en_passant -> Piece;
+	inv_Board [label="inv_Board 
+@ M=BM L109", shape=triangle]	 move_en_passant -> inv_Board;
+	inv_Piece [label="inv_Piece 
+@ M=BM L109", shape=triangle]	 move_en_passant -> inv_Piece;
+	 move_en_passant -> iss_en_passant;
+	 move_en_passant -> pre_iss_en_passant;
+	 pre_move_castling [label="pre_move_castling 
+@ M=BM L133", shape=invtriangle, color=red]
+	 pre_move_castling -> castling_legal;
+	pre_castling_legal [label="pre_castling_legal 
+@ M=BM L133", shape=triangle]	 pre_move_castling -> pre_castling_legal;
+	 pieces_between [label="pieces_between 
+@ M=BM L387", shape=doublecircle, color=blue]
+	 pieces_between -> coords_between;
+	 coords_between [label="coords_between 
+@ M=BM L377", shape=doublecircle, color=blue]
+	distance [label="distance 
+@ M=BM L377", shape=triangle]	 coords_between -> distance;
+	 coords_between -> step;
+	 default_board [label="default_board 
+@ M=BM L61", shape=invtriangle, color=red]
+	 default_board -> Board;
+	Coordinate [label="Coordinate 
+@ M=BM L61", shape=triangle]	 default_board -> Coordinate;
+	Piece [label="Piece 
+@ M=BM L61", shape=triangle]	 default_board -> Piece;
+	inv_Board [label="inv_Board 
+@ M=BM L61", shape=triangle]	 default_board -> inv_Board;
+	 default_board -> inv_BoardState;
+	 piece_coord_to_move [label="piece_coord_to_move 
+@ M=BM L324", shape=doublecircle, color=blue]
+	Piece [label="Piece 
+@ M=BM L324", shape=triangle]	 piece_coord_to_move -> Piece;
+	inv_Move [label="inv_Move 
+@ M=BM L324", shape=triangle]	 piece_coord_to_move -> inv_Move;
+	 sets_combine_tuple [label="sets_combine_tuple 
+@ M=BM L332", shape=doublecircle, color=blue]
+	sets_combine_tuple_acc [label="sets_combine_tuple_acc 
+@ M=BM L332", shape=triangle]	 sets_combine_tuple -> sets_combine_tuple_acc;
+	 castling_possible [label="castling_possible 
+@ M=BM L271", shape=doublecircle, color=blue]
+	 castling_possible -> castling_legal;
+	has_moved [label="has_moved 
+@ M=BM L271", shape=triangle]	 castling_possible -> has_moved;
+	 castling_possible -> piece_coord_to_move;
+	 castling_legal [label="castling_legal 
+@ M=BM L296", shape=doublecircle, color=blue]
+	has_moved [label="has_moved 
+@ M=BM L296", shape=triangle]	 castling_legal -> has_moved;
+	opposite_color [label="opposite_color 
+@ M=BM L296", shape=triangle]	 castling_legal -> opposite_color;
+	 castling_legal -> pieces_between;
+	 castling_legal -> possible_moves;
+}

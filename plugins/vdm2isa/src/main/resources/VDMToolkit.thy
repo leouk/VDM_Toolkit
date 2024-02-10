@@ -394,9 +394,9 @@ lemma l_inv_SetElems_Int[simp]: "(inv_SetElems f (S \<inter> T)) = (inv_SetElems
 lemma l_inv_SetElems_empty[simp]: "inv_SetElems f {}" 
 unfolding inv_SetElems_def by simp
 
-lemma l_invSetElems_inv_True_True[simp]: "undefined \<notin> r \<Longrightarrow> inv_SetElems inv_True r" 
+lemma l_invSetElems_inv_True_True[simp]: "inv_SetElems inv_True r" 
   by (metis inv_SetElems_def l_inv_True_True)
-  
+
 lemma l_vdm_card_finite[simp]: "finite s \<Longrightarrow> vdm_card s = int (card s)"
   unfolding vdm_card_defs by simp
 
@@ -440,7 +440,7 @@ proof -
     using a1 by (metis (no_types) Int_commute)
 qed
 
-theorem l_vdm_card_fsb:
+lemma l_vdm_card_fsb:
   "pre_vdm_card s \<Longrightarrow> post_vdm_card s (vdm_card s)"
   by (simp add: inv_VDMNat_def inv_VDMSet_def post_vdm_card_def pre_vdm_card_def)
 
@@ -1155,6 +1155,8 @@ text \<open>Type bound map comprehension cannot filter for type invariants, henc
               exists findex2 in set dom finmap1 & 
                 finmap1(findex2) = {(x + y) |-> 10}
       \end{verbatim}
+      %
+      This isn't general enough for when types change between input and output result from domexpr and rngexpr.
      \<close>
 definition 
   mapCompTypeBound :: "('a \<Rightarrow> \<bool>) \<Rightarrow> ('b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'a) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> 'b) \<Rightarrow> ('a \<Rightarrow> 'b \<Rightarrow> \<bool>) \<Rightarrow> ('a \<rightharpoonup> 'b)"
@@ -2134,17 +2136,17 @@ apply simp
 apply (rule l_dagger_dom_ar_assoc)
 by (metis equalityE inf_mono subset_empty)
 
-lemma l_munion_empty_rhs: 
+lemma l_munion_empty_rhs[simp]: 
   "(f \<union>m Map.empty) = f"
 unfolding munion_def
 by (metis dom_empty inf_bot_right l_dagger_empty_rhs)
 
-lemma l_munion_empty_lhs: 
+lemma l_munion_empty_lhs[simp]: 
   "(Map.empty \<union>m f) = f"
 unfolding munion_def
 by (metis dom_empty inf_bot_left l_dagger_empty_lhs)
 
-lemma k_finite_munion:
+lemma k_finite_munion[simp]:
   "finite (dom f) \<Longrightarrow> finite(dom g) \<Longrightarrow> dom f \<inter> dom g = {} \<Longrightarrow> finite(dom(f \<union>m g))" 
 by (metis finite_Un l_munion_dom)
 
@@ -2156,12 +2158,73 @@ unfolding munion_def
 apply simp
 by (metis dagger_def map_add_None)
 
+lemma l_trivial_vdmset[simp]: "inv_VDMSet' invt {}" 
+  by (simp add: inv_VDMSet'_def)
+
+lemma l_trivial_vdmmap[simp]: "inv_VDMMap invd invr Map.empty"
+  by (simp add: inv_VDMMap_def)
+
+lemma l_vdmmap_true[simp]: "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow>  inv_VDMMap inv_True inv_True m" 
+  by (simp add: inv_VDMMap_def inv_VDMSet'_def)
+
+lemma l_trivial_vdmmap_ranset[simp]: 
+  "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow> inv_SetElems finite (ran m) \<Longrightarrow> inv_VDMMap inv_True (inv_VDMSet' inv_True) m"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by simp
+
+lemma l_trivial_invoption[simp]: "inv_Option inv_True x"
+  unfolding inv_Option_def inv_True_def by simp
+
+lemma l_trivial_vdmmap_ranopt[simp]: "finite (dom m) \<Longrightarrow> finite (ran m) \<Longrightarrow> inv_VDMMap inv_True (inv_Option inv_True) m"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by (simp add: inv_SetElems_def)
+
+lemma l_vdmmap_dom_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMSet' invDom (dom (m \<union>m n)) = (inv_VDMSet' invDom (dom m) \<and> inv_VDMSet' invDom (dom n))"
+  unfolding inv_VDMSet'_def inv_VDMSet_def
+  find_theorems "dom (_ \<union>m _) = _"
+  by (auto simp add: l_munion_dom)
+
+(* Use ran instead of rng, given internal Maps.thy expansions(?) *)
+lemma l_vdmmap_ran_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMSet' invRng (ran (m \<union>m n)) = (inv_VDMSet' invRng (ran m) \<and> inv_VDMSet' invRng (ran n))"
+  unfolding inv_VDMSet'_def inv_VDMSet_def
+  find_theorems "ran (_ \<union>m _) = _"
+  by (auto simp add: l_munion_ran)
+
+lemma l_vdmmap_inv_munion_dist: 
+  "dom m \<inter> dom n = {} \<Longrightarrow> inv_VDMMap invDom invRng (m \<union>m n) = (inv_VDMMap invDom invRng m \<and> inv_VDMMap invDom invRng n)"
+  unfolding inv_VDMMap_def
+  by (auto simp add: l_vdmmap_dom_munion_dist l_vdmmap_ran_munion_dist)
+
+lemma l_vdmmap_inv_singleton[simp]:   
+  "invDom x \<Longrightarrow> invRng y \<Longrightarrow> inv_VDMMap invDom invRng [x \<mapsto> y]"
+  unfolding inv_VDMMap_def inv_VDMSet'_def inv_VDMSet_def
+  by simp
+
+lemma l_vdmset_inv_singleton[simp]:
+  "invElem x \<Longrightarrow> inv_VDMSet' invElem {x}"
+  unfolding inv_VDMSet'_def inv_VDMSet_def inv_SetElems_def
+  by simp
+
 lemma l_munion_empty_iff: 
   "dom f \<inter> dom g = {} \<Longrightarrow> (f \<union>m g = Map.empty) \<longleftrightarrow> (f = Map.empty \<and> g = Map.empty)"
 apply (rule iffI)
 apply (simp only: dom_eq_empty_conv[symmetric] l_munion_dom)
 apply (metis Un_empty)
-by (simp add: l_munion_empty_lhs l_munion_empty_rhs)
+by (simp ) (*add: l_munion_empty_lhs l_munion_empty_rhs)*)
+
+lemma l_indom_munion_in_map: "d \<in> dom m \<Longrightarrow> x \<notin> dom m \<Longrightarrow> d \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
+
+lemma l_indom_munion_in_map': "dom m \<inter> {x} = {} \<Longrightarrow> d \<in> dom m  \<Longrightarrow> d \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
+
+lemma l_indom_munion_in_maplet: "x \<notin> dom m \<Longrightarrow> x \<in> dom (m \<union>m [x \<mapsto> y])"
+  unfolding munion_def dagger_def
+  by simp
 
 lemma l_munion_dom_ar_singleton_subsume: 
     "x \<notin> dom f \<Longrightarrow> {x} -\<triangleleft> (f \<union>m [x \<mapsto> y]) = f"
@@ -2600,6 +2663,8 @@ lemmas [VDM_seq_spec_post_1]  = post_len_def post_elems_def post_inds_def post_h
 lemmas [VDM_seq_spec_post_2]  = post_vdm_reverse_def post_vdmtake_def post_seq_prefix_def post_append_def
 lemmas [VDM_seq_spec_post_3]  = post_applyVDMSeq_def post_applyVDMSubseq_def 
 
+thm VDM_seq_fcns_1
+thm VDM_seq_fcns_2
 lemmas [VDM_map_defs]         = inv_Option_def inv_VDMMap1_def inv_VDMMap_def inv_VDMInmap_def
 lemmas [VDM_map_fcns_1]       = rng_def dagger_def munion_def 
 lemmas [VDM_map_fcns_2]       = dom_restr_def dom_antirestr_def rng_restr_def rng_antirestr_def

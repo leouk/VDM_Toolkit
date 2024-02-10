@@ -5,8 +5,8 @@
             "type": "vdm",
             "request": "launch",
             "noDebug": true,
-            "defaultName": "RunAll",
-            "command": "p new RunAll().Run()"
+            "defaultName": "Run",
+            "command": "p Test()"
         }
     ]
 }

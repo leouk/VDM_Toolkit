@@ -9,7 +9,6 @@ import java.util.Vector;
 
 import com.fujitsu.vdmj.lex.LexLocation;
 import com.fujitsu.vdmj.tc.definitions.TCDefinition;
-import com.fujitsu.vdmj.tc.lex.TCNameList;
 import com.fujitsu.vdmj.tc.lex.TCNameSet;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 import com.fujitsu.vdmj.typechecker.NameScope;
@@ -28,6 +27,7 @@ import vdm2isa.tr.expressions.visitors.TRFunctionCallFinder;
 import vdm2isa.tr.patterns.TRUnionContext;
 import vdm2isa.tr.types.TRFunctionType;
 import vdm2isa.tr.types.TRType;
+import vdm2isa.tr.types.TRTypeList;
 
 /**
  * Initially we thought that we would need separate hierarchy between 
@@ -58,7 +58,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 						VDMSpecificationKind.MAX));
 
 	//private final TCNameToken name;
-	protected final TCNameList typeParams;
+	protected final TRTypeList typeParams;
 	protected TRFunctionType type;
 	protected final TRExpression body;
 	protected final TRExpression precondition;
@@ -82,7 +82,7 @@ public abstract class TRAbstractFunctionDefinition extends TRDefinition
 			NameScope nameScope, 
 			boolean used, 
 			boolean excluded,
-			TCNameList typeParams, 
+			TRTypeList typeParams, 
 			TRFunctionType type,
 			TRExpression body,
 			TRExpression precondition,

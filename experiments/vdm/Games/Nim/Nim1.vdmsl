@@ -1,0 +1,85 @@
+module Nim1
+exports all
+definitions 
+
+values 
+MAX_PILE: nat1 = 20;
+MAX_MOV: nat1 = 3;
+
+types 
+Player = <P1> | <P2> ;
+
+Pile = nat
+inv p == p <= MAX_PILE;
+
+Move = nat1
+inv m == m <= MAX_MOV;
+
+--@doc choosing simpler sequence because X Y Z. 
+Moves = seq of Move
+inv ms == 
+	-- possile moves bound by MAX_PILE 
+	sum_elems(ms) <= MAX_PILE
+	;
+
+ --Game = map Pos to Player
+ Moves2 = map Move to Player;
+ Moves3 = map Player to seq of Move; 
+ -- P1 |-> [3, 3, 2]   = [3,1,3,3,2,1]
+ -- P2 |-> [1, 3, 1] 
+ Moves4 = map nat1 to (Move * Player)
+ inv m == {1,...,card dom m} = dom m;
+ -- 1 |-> (3, <P1>),
+ -- 2 |-> (3, <P2>) 
+
+functions 
+
+sum_elems: seq of Move -> nat
+sum_elems(ms) == 
+	cases ms:
+		[]     -> 0,
+		[x]^xs -> x + sum_elems(xs)
+	end
+post
+	-- if someone played, then sum is not zero
+	ms <> [] => RESULT > 0
+measure 
+  len ms;
+
+who_plays_next: Moves -> Player
+who_plays_next(ms) == 
+	if len ms mod 2 = 0 then <P2> else <P1>
+;
+
+fair_play: Player * Moves -> bool
+fair_play(p, ms) == p = who_plays_next(ms);
+
+moves_left: seq of Move -> nat1
+moves_left(ms) == MAX_PILE - sum_elems(ms);
+
+play: Player * Move * Moves -> Moves
+play(p, m, s) == s ^ [m]
+pre 
+	-- encodes fairness: if even no moves, then it must be <P1>'s turn
+	fair_play(p, s)
+	--p = who_plays_next(s)
+	-- p = <P1> <=> len s mod 2 = 0
+	-- p = <P2> <=> len s mod 2 <> 0?
+	and
+	-- cannot play to loose
+	m < moves_left(s)
+post 
+	sum_elems(s) < sum_elems(RESULT)
+	and
+	not fair_play(p, RESULT)
+;
+
+last_play: Player * Moves -> Moves
+last_play(p, ms) == ms ^ [1]
+pre sum_elems(ms) = MAX_PILE - 1
+		and
+		--p = who_plays_next(ms)
+		fair_play(p, ms)
+		;
+
+end Nim1

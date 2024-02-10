@@ -80,9 +80,9 @@ public class INTimeAnnotation extends INAnnotation
 	{
 	    // get current time and save it for future totals
 	    assert currentTimeKey != null /*&& timeTotal.containsKey(currentTimeKey)*/ : "Invalid or unknown current time key";
-		long currentTime = System.currentTimeMillis() - checkPoint;
-		Long mappedTimeLong = timeTotal.get(currentTimeKey);
-		long mappedTime = mappedTimeLong == null ? 0 : mappedTimeLong.longValue();
+		final long currentTime = System.currentTimeMillis() - checkPoint;
+		final Long mappedTimeLong = timeTotal.get(currentTimeKey);
+		final long mappedTime = mappedTimeLong == null ? 0 : mappedTimeLong.longValue();
         long elapsedTime = mappedTime+currentTime;
         if (!currentTimeKey.equals("TIME_SUMMARY"))
         {	
@@ -103,7 +103,8 @@ public class INTimeAnnotation extends INAnnotation
 		
 			// build the output string including the time param at values[0]
 			INStringLiteralExpression fmt = (INStringLiteralExpression)args.get(0);
-			Console.out.printf("[%1s]\t\t " + fmt.value.value, values);
+			// fmt.value.value is a format string, hence the concatenation
+			Console.out.printf("[%1s]\t\t " + fmt.value.value + "\n", values);
 		}		
 		
 		//reset the time summary per call to it.
@@ -115,12 +116,12 @@ public class INTimeAnnotation extends INAnnotation
 		    elapsedTime = elapsedTime == 0 ? 1 : elapsedTime;
 		    for(String k : timeTotal.keySet())
 		    {
-		    	long specificTime = timeTotal.get(k);
-		    	long percentTime = (specificTime * 100 / elapsedTime); 
-		        Console.out.printf("[%1s%%][%2s] %3s\n", percentTime, specificTime, k);
+		    	final long specificTime = timeTotal.get(k);
+		    	final double percentTime = ((double)specificTime * 100 / (double)elapsedTime); 
+		        Console.out.printf("[%1s%%][%2s]\t\t %3s\n", percentTime, specificTime, k);
 		    }
 		    Console.out.println("---------------------------------------------------\n");
-		    Console.out.printf("[%1s] %2s\n", elapsedTime, currentTimeKey);
+		    Console.out.printf("[%1s]\t\t %2s\n", elapsedTime, currentTimeKey);
 		    Console.out.println("---------------------------------------------------\n");
 		    timeTotal.clear();
 		}

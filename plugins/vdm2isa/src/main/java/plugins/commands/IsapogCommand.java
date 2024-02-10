@@ -416,8 +416,9 @@ public class IsapogCommand extends IsabelleCommand {
         return result;
     }
 
-    public static void help() {
-        PluginConsole.println(USAGE);
+    public static String help()
+    {
+        return USAGE;
     }
 
     @Override 

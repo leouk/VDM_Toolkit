@@ -77,7 +77,9 @@ public class ExuTypeChecker {
                         String name = n.getName().substring(kind.name().length()+1);
                         TCNameToken type = find(ts, name);
                         if (type == null)
-                            throw new IllegalStateException("Couldn't find type " + name + " for known invariant name? " + n);
+                        {
+                            ExuCommand.handleError(IsaErrorMessage.VDMSL_EXU_KNOWNINV_UNKNOWN_TYPE_2P, n.getLocation(), name, n);
+                        }
                         else if (!result.contains(type))
                             result.add(type);
                         break;

@@ -19,17 +19,19 @@ ANTLR4=/usr/local/lib/antlr4-4.11.1-complete.jar
 VDMJ=~/.m2/repository/dk/au/ece/vdmj/vdmj/4.5.0-SNAPSHOT/vdmj-4.5.0-SNAPSHOT.jar
 CP="$ANTLR4:$VDMJ:$CLASSPATH"
 
+GRAMMAR=VDM
 START_PRODUCTION=sl_document
 if [[ "$#" -gt 1 ]]; then
-    START_PRODUCTION=$1
+    GRAMMAR=$1
+    START_PRODUCTION=$2
     # gets the second arguments onwards
-    ARGS=../../"${@:2}"   
+    ARGS=${@:3} #../../"${@:2}"   
 else 
     # gets all arguments
-    ARGS=../../"${@}"
+    ARGS=${@} #../../"${@}"
 fi
-echo 'Parsing from ' $START_PRODUCTION ' for file ' $ARGS ' with CP ' $CP
-java -Xmx500M -cp $CP org.antlr.v4.gui.TestRig VDM $START_PRODUCTION -tokens -gui $ARGS
+echo 'Parsing from ' $START_PRODUCTION ' for grammar ' $GRAMMAR ' for file ' $ARGS ' with CP ' $CP
+java -Xmx500M -cp $CP org.antlr.v4.gui.TestRig $GRAMMAR $START_PRODUCTION -tokens -gui $ARGS
 
 echo 'Restoring default java version'
 cd ../..

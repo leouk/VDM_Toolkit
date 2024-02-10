@@ -317,8 +317,8 @@ public class TranslateCommand extends IsabelleCommand {
         return sb.toString();
     }
 
-    public static void help()
+    public static String help()
 	{
-		PluginConsole.println(USAGE);
+		return USAGE;
 	}
 }

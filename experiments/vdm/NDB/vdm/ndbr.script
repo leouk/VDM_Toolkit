@@ -1,0 +1,7 @@
+default ndbR
+p ADDRExplicit(esm1, s1, p1, w1)
+p ADDRExplicit(esm2, s2, p2, w2)
+p ADDRExplicit(esm3, s3, p3, w3)
+p ADDRExplicit(esm4, s4, p4, w4)
+state
+p retra(strconv'(NDBStateR))

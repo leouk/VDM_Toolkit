@@ -4,6 +4,8 @@
 --@doc Z mathametical toolkit for relations for VDM as executable specifications
 ------------------------------------------------------------------------------------
 module Relations
+imports 
+	from Support1 functions sums renamed sums;
 exports
 	types
 		struct Negative
@@ -61,6 +63,7 @@ types
 	
 functions
 	--@doc Creates an identity relation for given set of values (i.e. map every element to itself) 
+	--@QuickCheck @X = nat;
 	id[@X]: set of @X -> set of (@X*@X)
 	id(s) == { mk_(x,x) | x in set s }
 	post
@@ -68,24 +71,31 @@ functions
 	
 	--@doc Projected identity relation (i.e. identity relation over the overall elements of R)
 	--	   ex. R={mk_(1,2), mk_(3,4)}, RESULT = {mk_(1,1), mk_(2,2), mk_(3,3), mk_(4,4)}
+	--@QuickCheck @X = nat;
 	id_rel[@X]: set of (@X * @X) -> set of (@X*@X)
 	id_rel(R) == id[@X](unzip[@X](R))
 	post
 		unzip[@X](R) subset unzip[@X](RESULT);
 	
 	--@doc First projection on the set of pairs (i.e like VDM's "dom R") 
+	--@QuickCheck @X = nat;
 	rel_dom[@X,@Y]: set of (@X*@Y) -> set of @X
 	rel_dom(R) == { x.#1 | x in set R }
 	post
 		forall mk_(x,-) in set R & x in set RESULT;
 	
 	--@doc Second projection on the set of pairs (i.e like VDM's "rng R") 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_rng[@X,@Y]: set of (@X*@Y) -> set of @Y
 	rel_rng(R) == { x.#2 | x in set R }
 	post
 		forall mk_(-,y) in set R & y in set RESULT;
 	
 	--@doc Forward relational composition (i.e like sequential composition Q ;; R) 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
+	--@QuickCheck @Z = nat;
 	rel_comp[@X,@Y,@Z]: set of (@X*@Y) * set of (@Y*@Z) -> set of (@X*@Z)
 	rel_comp(Q, R) == 
 		--@doc very slow for large relations without the let; thanks @NB!
@@ -106,40 +116,55 @@ functions
 		rel_rng[@X,@Z](RESULT) subset rel_rng[@Y,@Z](R);
 
 	--@doc Relational composition (i.e. like VDM's "Q comp R" and (f o g)(x) = g(f(x)))
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
+	--@QuickCheck @Z = nat;
 	rel_circ[@X,@Y,@Z]: set of (@Y*@Z) * set of (@X*@Y) -> set of (@X*@Z)
 	rel_circ(R, Q) == rel_comp[@X,@Y,@Z](Q, R);
 	
 	--@doc Domain restriction (i.e. like VDM's "S <: R")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_dres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y)
 	rel_dres(S, R) == { mk_(x,y) | mk_(x,y) in set R & x in set S }
 	post
 		RESULT subset R;
 
 	--@doc Range restriction (i.e. like VDM's "R :> S")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_rres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y)
 	rel_rres(R, S) == { mk_(x,y) | mk_(x,y) in set R & y in set S }
 	post
 		RESULT subset R;
 
 	--@doc Domain anti-restriction (i.e. like VDM's "S <-: R")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_ndres[@X,@Y]: set of @X * set of (@X*@Y) -> set of (@X*@Y)
 	rel_ndres(S, R) == { mk_(x,y) | mk_(x,y) in set R & not x in set S }
 	post
 		RESULT subset R;
 
 	--@doc Range anti-restriction (i.e. like VDM's "R :-> S")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_nrres[@X,@Y]: set of (@X*@Y) * set of @Y -> set of (@X*@Y)
 	rel_nrres(R, S) == { mk_(x,y) | mk_(x,y) in set R & not y in set S }
 	post
 		RESULT subset R;
 	
 	--@doc Relational inverse (i.e. like VDM's "inverse R")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_inv[@X,@Y]: set of (@X*@Y) -> set of (@Y*@X)
 	rel_inv(R) == { mk_(y, x) | mk_(x,y) in set R }
 	post
 		card R = card RESULT;
 
 	--@doc Projected relational imagine over S (i.e. all @Y related elements from S in R)
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_img[@X,@Y]: set of (@X*@Y) * set of @X -> set of @Y
 	rel_img(R, S) == rel_rng[@X,@Y](rel_dres[@X,@Y](S, R))
 	post
@@ -147,10 +172,13 @@ functions
 		(card RESULT = 1 => rel_is_map_on[@X,@Y](R, S));
 
 	--@doc Relational override (i.e. like VDM's "Q ++ R")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_dagger[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> set of (@Y*@X)
 	rel_dagger(Q, R) == rel_ndres[@X,@Y](rel_dom[@X,@Y](R), Q) union R;
 	
 	--@doc Relational iteration (i.e. like VDM's "R ** n")
+	--@QuickCheck @X = nat;
 	rel_iter[@X]: nat * set of (@X*@X) -> set of (@X * @X)
 	rel_iter(n, R) == 
 		cases n:
@@ -162,11 +190,13 @@ functions
 		n; 
 		
 	--@doc Inverse relational iteration (i.e. like VDM's "(inverse R) ** (-n)")
+	--@QuickCheck @X = nat;
 	rel_niter[@X]: Negative * set of (@X*@X) -> set of (@X*@X)
 	rel_niter(n, R) == rel_iter[@X](-n, rel_inv[@X,@X](R));
 		
 	--@doc Relational transitive closure as the largest relation of exaustive relational composition iteration
 	--@todo Interesting property that the iteration is bound to card R (PROVE IT)!
+	--@QuickCheck @X = nat;
 	rel_tclosure[@X]: set of (@X*@X) -> set of (@X*@X)
 	rel_tclosure(R) == dunion { rel_iter[@X](n, R) | n in set {1,...,card R} }
 	post
@@ -174,20 +204,26 @@ functions
 	
 	--@doc Relational transitive closure as the smallest relation that is transitive
 	--@todo Doesn't quite work as Q is not growing beyond R (i.e. VDM's power R, and meaning of dinter of {} in VDM)
+	--@QuickCheck @X = nat;
 	rel_tclosure2[@X]: set of (@X*@X) -> set of (@X*@X)
 	rel_tclosure2(R) == 
 		let closed_R: set of set of (@X*@X) = { Q | Q in set power R & R subset Q and rel_comp[@X,@X,@X](Q,Q) subset Q } in
 			if closed_R = {} then {} else dinter closed_R;
 
 	--@doc Relational reflective transitive closure as the transitive closure plust the identity relation
+	--@QuickCheck @X = nat;
 	rel_rtclosure[@X]: set of (@X*@X) -> set of (@X*@X)
 	rel_rtclosure(R) == rel_tclosure[@X](R) union id_rel[@X](R)
 	post
 		R subset RESULT;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_total_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
 	rel_is_total_on(R, S) == rel_dom[@X,@Y](R) = S;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
 	rel_is_map_on(R, S) == 
 		--@doc don't use y, y' in set rel_img[@X,@Y](R,S) to prevent looping in the postcondition of rel_img; or remove post 
@@ -196,12 +232,16 @@ functions
 		--card rel_dom[@X,@Y](R) <= card R 
 
 	--@doc Functional relation test (i.e. related elements form a map, like VDM "R = map @X to @Y")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_map[@X,@Y]: set of (@X*@Y) -> bool
 	rel_is_map(R) == 
 		rel_is_map_on[@X,@Y](R, rel_dom[@X,@Y](R));
 		--forall x in set rel_dom[@X,@Y](R), y, y' in set rel_rng[@X,@Y](R) & 
 		--	(mk_(x, y) in set R and mk_(x,y') in set R => y = y');
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_inmap_on[@X,@Y]: set of (@X*@Y) * set of @X -> bool
 	rel_is_inmap_on(R, S) == 
 		rel_is_map_on[@X,@Y](R, S) 
@@ -210,19 +250,27 @@ functions
 			rel_is_map_on[@Y,@X](relinv', rel_dom[@Y,@X](relinv'))
 		)
 	post
-		(RESULT <=> (forall x1, x2 in set S & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
+		(RESULT => R = {} or (forall x1, x2 in set S & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_inmap[@X,@Y]: set of (@X*@Y) -> bool
-	rel_is_inmap(R) == rel_is_map_on[@X,@Y](R, rel_dom[@X,@Y](R))
+	rel_is_inmap(R) == rel_is_inmap_on[@X,@Y](R, rel_dom[@X,@Y](R))
 	post
-		(RESULT <=> (forall x1, x2 in set rel_dom[@X,@Y](R) & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
+		(RESULT => R = {} or (forall x1, x2 in set rel_dom[@X,@Y](R) & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_surj_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool
 	rel_is_surj_on(R, S) == rel_is_map[@X,@Y](R) and rel_rng[@X,@Y](R) = S;
 	
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_is_bij_on[@X,@Y]: set of (@X*@Y) * set of @Y -> bool
 	rel_is_bij_on(R,S) == rel_is_inmap[@X,@Y](R) and rel_is_surj_on[@X,@Y](R,S);
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_subset_is_map_subset[@X,@Y]: set of (@X*@Y) * set of (@X*@Y) -> bool
 	rel_subset_is_map_subset(R, f) == 
 		(rel_is_map[@X,@Y](R) and f subset R => rel_is_map[@X,@Y](f));
@@ -232,6 +280,8 @@ functions
 	--map_inj_on_D(m, S) == 
 
 	--@doc relational application within their domains when they are maps (i.e. like VDM's "R(x)")
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_apply[@X,@Y]: set of (@X*@Y) * @X -> @Y
 	rel_apply(R, x) == (iota y in set rel_rng[@X,@Y](R) & rel_img[@X,@Y](R, {x}) = {y})
 	pre
@@ -242,6 +292,8 @@ functions
 		rel_img[@X,@Y](R, {x}) = {RESULT}; 
 
 	--@doc Functional view of a relation (i.e. relation R as a map)
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_as_map_on[@X,@Y]: set of (@X*@Y) * set of @X -> (map @X to @Y)
 	rel_as_map_on(R, S) == { x |-> y | mk_(x,y) in set R & x in set S }
 	pre
@@ -252,6 +304,8 @@ functions
 		(rel_img[@X,@Y](R, S) = rng RESULT);
 
 	--@doc Functional view of a relation (i.e. relation R as a map)
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	rel_as_map[@X,@Y]: set of (@X*@Y) -> (map @X to @Y)
 	rel_as_map(R) == 
 		rel_as_map_on[@X,@Y](R, rel_dom[@X,@Y](R))
@@ -262,6 +316,8 @@ functions
 		and
 		rel_rng[@X,@Y](R) = rng RESULT;
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	map_as_rel0[@X,@Y]: (map @X to @Y) * set of (@X*@Y) -> set of (@X*@Y)
 	map_as_rel0(m, R) == 
 		if m = {|->} then 
@@ -278,6 +334,8 @@ functions
 	measure
 		card dom m;
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	map_as_rel[@X,@Y]: (map @X to @Y) -> set of (@X*@Y)
 	map_as_rel(m) == map_as_rel0[@X,@Y](m,{})
 	post
@@ -288,9 +346,12 @@ functions
 		rel_is_map[@X,@Y](RESULT);
 	
 	--@doc auxiliary function that flattens a relation into a set through its projections	
+	--@QuickCheck @X = nat;
 	unzip[@X]: set of (@X * @X) -> set of @X
 	unzip(s) == rel_dom[@X,@X](s) union rel_rng[@X,@X](s);
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	zip[@X,@Y]: set of @X * set of @Y -> set of (@X * @Y)
 	zip(ls, rs) == { mk_(l, r) | l in set ls, r in set rs }
 	post
@@ -302,12 +363,17 @@ functions
 	refl_bool: bool -> bool
 	refl_bool(x) == x;
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_from_set[@X, @Y]: set of @X * set of @Y -> set of (@X * @Y)
 	make_rel_from_set(x, y) == zip[@X,@Y](x,y);
 	
+	--@QuickCheck @X = nat;
 	make_rel_trcl_from_set[@X]: (set of @X) -> set of (@X * @X)
 	make_rel_trcl_from_set(x) == rel_tclosure[@X](make_rel_from_set[@X,@X](x, x));
 	
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_subset0[@X, @Y]: set of (@X * @Y) * set of (@X * @Y) * nat -> set of (@X * @Y)
 	make_rel_subset0(R, S, n) == 
 		if card R > n and n > 0 then
@@ -322,6 +388,8 @@ functions
 	measure
 		n;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_subset[@X, @Y]: set of (@X * @Y) * nat1 -> set of (@X * @Y)
 	make_rel_subset(R, n) == make_rel_subset0[@X,@Y](R, {}, n)
 	pre
@@ -331,6 +399,8 @@ functions
 		and
 		RESULT subset R;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_map0[@X,@Y]: set of (@X * @Y) * (map @X to @Y) * bool -> map @X to @Y
 	make_rel_map0(R, m, injective) == 
 		if R = {} then
@@ -346,18 +416,24 @@ functions
 	measure
 		card R;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_map[@X,@Y]: set of (@X * @Y) -> map @X to @Y
 	make_rel_map(R) == 
 		make_rel_map0[@X,@Y](R, {|->}, false)
 	post
 		map_as_rel[@X,@Y](RESULT) subset R;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	make_rel_inmap[@X,@Y]: set of (@X * @Y) -> inmap @X to @Y
 	make_rel_inmap(R) == 
 		make_rel_map0[@X,@Y](R, {|->}, true)
 	post
 		map_as_rel[@X,@Y](RESULT) subset R;
 
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	force_rel_as_map0[@X,@Y]: set of (@X * @Y) * (map @X to set of @Y) -> (map @X to set of @Y)
 	force_rel_as_map0(R, m) ==
 		if R = {} then
@@ -370,13 +446,15 @@ functions
 	measure
 		card R; 
 		
+	--@QuickCheck @X = nat;
+	--@QuickCheck @Y = nat;
 	force_rel_as_map[@X,@Y]: set of (@X * @Y) -> (map @X to set of @Y)
 	force_rel_as_map(R) == force_rel_as_map0[@X,@Y](R, {|->})
 	post
 		if rel_is_map[@X, @Y](R) then
 			dom RESULT = rel_dom[@X, @Y](R)
 		else 
-			card dunion rng RESULT = card R;
+			sums({ card r | r in set rng RESULT }) = card R;
 
 --p let R = make_rel_from_set[nat,nat](TYPE_RANGE1, TYPE_RANGE2), R' = make_rel_subset[nat,nat](R, card R - 2), F = make_rel_map[nat,nat](R), I = make_rel_inmap[nat,nat](R) in mk_(R', F, I)	
 values

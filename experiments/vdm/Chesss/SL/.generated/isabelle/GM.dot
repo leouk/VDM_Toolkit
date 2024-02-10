@@ -1,0 +1,51 @@
+digraph G {
+	 default_game [label="default_game 
+@ M=GM L35", shape=invtriangle, color=red]
+	 default_game -> Game;
+	default_board [label="default_board 
+@ M=GM L35", shape=triangle]	 default_game -> default_board;
+	inv_Game [label="inv_Game 
+@ M=GM L35", shape=triangle]	 default_game -> inv_Game;
+	 Winner [label="Winner 
+@ M=GM L27", shape=invtriangle, color=red]
+	Color [label="Color 
+@ M=GM L27", shape=triangle]	 Winner -> Color;
+	inv_Color [label="inv_Color 
+@ M=GM L27", shape=triangle]	 Winner -> inv_Color;
+	inv_Winner [label="inv_Winner 
+@ M=GM L27", shape=triangle]	 Winner -> inv_Winner;
+	 Game [label="Game 
+@ M=GM L29", shape=doublecircle, color=blue]
+	Board [label="Board 
+@ M=GM L29", shape=triangle]	 Game -> Board;
+	Color [label="Color 
+@ M=GM L29", shape=triangle]	 Game -> Color;
+	inv_Board [label="inv_Board 
+@ M=GM L29", shape=triangle]	 Game -> inv_Board;
+	inv_Color [label="inv_Color 
+@ M=GM L29", shape=triangle]	 Game -> inv_Color;
+	inv_Game [label="inv_Game 
+@ M=GM L29", shape=triangle]	 Game -> inv_Game;
+	 pre_move_game [label="pre_move_game 
+@ M=GM L54", shape=invtriangle, color=red]
+	possible_moves [label="possible_moves 
+@ M=GM L54", shape=triangle]	 pre_move_game -> possible_moves;
+	 move_game [label="move_game 
+@ M=GM L39", shape=invtriangle, color=red]
+	Board [label="Board 
+@ M=GM L39", shape=triangle]	 move_game -> Board;
+	Color [label="Color 
+@ M=GM L39", shape=triangle]	 move_game -> Color;
+	in_check [label="in_check 
+@ M=GM L39", shape=triangle]	 move_game -> in_check;
+	inv_Board [label="inv_Board 
+@ M=GM L39", shape=triangle]	 move_game -> inv_Board;
+	inv_Color [label="inv_Color 
+@ M=GM L39", shape=triangle]	 move_game -> inv_Color;
+	move_board [label="move_board 
+@ M=GM L39", shape=triangle]	 move_game -> move_board;
+	opposite_color [label="opposite_color 
+@ M=GM L39", shape=triangle]	 move_game -> opposite_color;
+	possible_moves [label="possible_moves 
+@ M=GM L39", shape=triangle]	 move_game -> possible_moves;
+}

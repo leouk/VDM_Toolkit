@@ -1,0 +1,9 @@
+module M
+exports all
+definitions 
+--@NB module.defs.singleDefinitions().get(0).getFreeVariables will generate NPE
+state MSt of 
+    x: nat 
+init m == m = mk_MSt(0)
+end
+end M

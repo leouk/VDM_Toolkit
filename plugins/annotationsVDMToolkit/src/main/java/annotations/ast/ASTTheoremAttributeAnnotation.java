@@ -28,14 +28,15 @@ public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
 	 * Override the default parse, and look for @TheoremAttribute <name> = <set-enum>;
 	 */
 	@Override
-	public ASTExpressionList parse(LexTokenReader ltr) throws LexException, ParserException
+	public void parse(LexTokenReader ltr) throws LexException, ParserException
 	{
+		this.args = new ASTExpressionList();
+		
 		ltr.nextToken();
-		ASTExpressionList args = new ASTExpressionList();
 		ExpressionReader er = new ExpressionReader(ltr);
 		ASTExpression exp = er.readExpression();
 		
-		if (exp instanceof ASTEqualsExpression)		// Should parse as an equals expression
+		if (exp instanceof ASTEqualsExpression)		//Should parse as an equals expression
 		{
 			ASTEqualsExpression eqexp = (ASTEqualsExpression)exp;
 			
@@ -65,7 +66,5 @@ public class ASTTheoremAttributeAnnotation extends ASTAnnotation {
 		{
 			parseException("missing ;", ltr.getLast().location);
 		}
-		
-		return args;
 	}
 }

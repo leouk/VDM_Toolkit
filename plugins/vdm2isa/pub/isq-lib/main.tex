@@ -1,4 +1,3 @@
-%!TEX-program=pdflatexmk
 %"runningheads" enables:
 %  - page number on page 2 onwards
 %  - title/authors on even/odd pages
@@ -137,7 +136,24 @@ pdfstartview=Fit
 
 % Glossaries and Acronyms
 \usepackage[acronym]{glossaries} 
-\input{acronyms}
+%\input{acronyms}
+\newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{ct}{CT}{Combinatorial Testing}
+\newacronym{czt}{CZT}{Community Z Tools}
+\newacronym{dap}{DAP}{Debug Adapter Protocol}
+\newacronym{dbgp}{DBGP}{Common DeBugGer Protocol}
+\newacronym{gui}{GUI}{Graphical User Interface}
+\newacronym{ide}{IDE}{Integrated Development Environment}
+\newacronym{lsp}{LSP}{Language Server Protocol}
+\newacronym{poc}{PoC}{Proof of Concept}
+\newacronym{pog}{POG}{Proof Obligation Generation}
+\newacronym{po}{PO}{Proof Obligation}
+\newacronym{slsp}{SLSP}{Specification Language Server Protocol}
+\newacronym{vdm}{VDM}{Vienna Development Method}
+\newacronym{vscode}{VS Code}{Visual Studio Code}
+\newacronym{CSV}{CSV}{Comma Separated Values}
+\newacronym{ISQ}{ISQ}{International System of Quantities}
+
 % \makeglossaries   % Include to be able to print a glossary list
 % \usepackage{acronym}
 % \input{acronyms}
@@ -202,7 +218,7 @@ pdfstartview=Fit
 \maketitle
 \setcounter{footnote}{0} 
 \begin{abstract}
-    The \gls{ISQ} standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such a standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There have been such accidents in space missions, medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{F}ast, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which include a translation and proof environment for VDM in Isabelle\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
+    The International Systems of Quantities (ISQ) standard was published in 1960 as an effort to tame the wide diversity of measuments systems being developed across the world, such as the centimeter-gram-second versus the meter-kilogram-second for example. Such a standard is highly motivated by the potential of ``trivial'' (rather error-prone) mistakes in converting between incompatible units. There have been such accidents in space missions, medical devices, etc. Thus, rendering modelling or simulation experiments unusable or unsafe. We address this problem by providing a \textbf{SAFE}-ISQ VDM-library that is: \textbf{S}imple, \textbf{A}ccurate, \textbf{F}ast, and \textbf{E}ffective. It extends an ecosystem of other VDM mathematical toolkit extensions, which include a translation and proof environment for VDM in Isabelle\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}.
 \end{abstract}
 
 \keywords{VSCode, VDM, ISQ, Measurement, Libraries}
@@ -220,7 +236,7 @@ Over twenty such coherent derived units are standard, named and routinely used. 
 
 As an example, Functional Mock-up Interfaces (FMI), which are used by various critical industries, have such notions for ISQ units\footnote{\url{https://fmi-standard.org/docs/3.0/\#_physical_units}}. That community would benefit from having ISQ units formalised.         
 
-The \gls{vdm} has has been widely used both in industrial contexts and academic ones covering several domains, such as of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, \textit{etc}. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM \gls{vscode} IDE\@.
+The Vienna Development Method (VDM) has has been widely used both in industrial contexts and academic ones covering several domains, such as of Security~\cite{Kulik&20,Kulik&21a}, Fault-Tolerance~\cite{Nilsson&18}, Medical Devices~\cite{Macedo&08}, \textit{etc}. We extend VDM specification support with a suite of tools and mathematical libraries\footnote{\url{https://github.com/leouk/VDM_Toolkit/}}. The work is also integrated within the VDM Visual Studio Code (VSCode) IDE\@.
 
 We were inspired to develop the \texttt{ISQ.vdmsl} library due to the frustration of repetead error-prone (and tediuos) calculations involving unit use and conversions. The \texttt{ISQ} VDM library has been used in various industrial applications, such as embedded control systems, medical devices, chemical quantities composition (in drug dosage computation), complex scheduling time-scales, \textit{etc}.     
 
@@ -229,7 +245,7 @@ In this paper, we report on the recent extension of the VDM toolkit to support t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}~\label{sec:background}
 
-\gls{ISQ} has conventions corresponding to measurement-quantity category, abbreviations, dimensions and common names listed in~\Cref{tbl:SI}. Further background on ISQ itself is given in context of their corresponding definitions within the VDM library description.  
+ISQ has conventions corresponding to measurement-quantity category, abbreviations, dimensions and common names listed in~\Cref{tbl:SI}. Further background on ISQ itself is given in context of their corresponding definitions within the VDM library description.  
 %
 \begin{table}[htbp]
     \centering
@@ -248,7 +264,7 @@ In this paper, we report on the recent extension of the VDM toolkit to support t
     \caption{Standard measurement system (SI) base quantities of measurement}\label{tbl:SI}
 \end{table} 
 
-\gls{ISQ} unit conversions and combinations are notorioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications that rely on such unit conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
+ISQ unit conversions and combinations are notorioulsy error-prone, with well known examples of tragic accidents as a result of miscalculations\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}. For critical applications that rely on such unit conversions and combinations, this is particularly problematic. This motivated the creation of a formal environment to capture ISQ clearly and concisely. For example, multiple conversion schemes are available, such as British Imperial System to the stadard one (SI).       
 
 The \texttt{ISQ} VDM library is heavily inspired by similar work provided for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. We integrate this library within the VDM VSCode extension\footnote{\url{https://marketplace.visualstudio.com/items?itemName=overturetool.vdm-vscode}}, as well as VDMJ~\cite{Battle09}.
 
@@ -297,7 +313,7 @@ ISQ dimensions and dimension vectors represent base units of measurment and how 
 
 \begin{figure}[htbp]
     \centering
-        \includegraphics[width=\textwidth,scale=0.4]{figures/ISQLibUnitRelationships2.png}
+        \includegraphics[width=\textwidth,scale=0.4]{ISQLibUnitRelationships2.png}
     \caption{ISQ units of measurement and their conversion relationships.}\label{fig:UnitRelationships}
  \end{figure}
 
@@ -641,11 +657,11 @@ Other examples of use are provided in the \texttt{ISQ.vdmsl} distribution\footno
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}\label{sec:Results}
 
-\gls{ISQ} representation and operations are an important part of modelling tasks within computing, physics and engineering. Unit conversion, combination and manipulation are notoriously error prone, having led to a number of serious accidents\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}.%\footnote{\url{https://gizmodo.com/five-massive-screw-ups-that-wouldnt-have-happened-if-we-1828746184}}. 
+ISQ representation and operations are an important part of modelling tasks within computing, physics and engineering. Unit conversion, combination and manipulation are notoriously error prone, having led to a number of serious accidents\footnote{\url{https://www.simscale.com/blog/nasa-mars-climate-orbiter-metric/}}.%\footnote{\url{https://gizmodo.com/five-massive-screw-ups-that-wouldnt-have-happened-if-we-1828746184}}. 
 
 The \texttt{ISQ.vdmsl} library closely follows the structure of a similar library for the Isabelle/HOL theorem prover~\cite{Physical_Quantities-AFP}. It has been used in a few practical industrial applications involving emedded systems and medical devices and processes.  
 
-In this paper, we presented a formally defined \gls{ISQ} library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariant and other structural and data validation checks, such as enforcement of specific measurement system characteristics for well known quantities and units. It is \textbf{F}ast, as the computations are simple and directly available in VDM itself. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around ISQ measurement systems creation, combination, conversion, scaling, and so on.   
+In this paper, we presented a formally defined ISQ library in VDM that adheres to our \textbf{SAFE} design principles (in~\Cref{sec:principles}). The library architecture (\Cref{sec:architecture}) is \textbf{S}imple, given its layered access to functionality. It is also \textbf{A}ccurate, given the presence of multiple kinds of user-defined invariant and other structural and data validation checks, such as enforcement of specific measurement system characteristics for well known quantities and units. It is \textbf{F}ast, as the computations are simple and directly available in VDM itself. Finally, it is \textbf{E}ffective, given its combination of speed, ease of use, multiple capabilities around ISQ measurement systems creation, combination, conversion, scaling, and so on.   
 
 \paragraph*{Future work.}~
 %
