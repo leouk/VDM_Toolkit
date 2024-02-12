@@ -1,0 +1,10 @@
+session isa = "HOL-Library" +
+  options [quick_and_dirty = true, document = pdf, document_output = "output"]
+theories [document = false]
+    VDMToolkit
+  theories
+    NDBA
+    NDBA_sta_fix
+    NDBR
+  document_files
+    "root.tex"
