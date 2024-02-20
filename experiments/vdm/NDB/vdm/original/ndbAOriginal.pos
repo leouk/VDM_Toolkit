@@ -1,0 +1,175 @@
+➜  original git:(development) vdmj -i ndbAOriginal.vdmsl
+Parsed 1 module in 0.069 secs. No syntax errors
+Type checked 1 module in 0.283 secs. No type errors
+Initialized 1 module in 0.186 secs. No init errors
+Interpreter started
+> qc
+PO #1, FAILED in 0.008s: Counterexample: sa = mk_State_a!({mk_token(0) |-> mk_Esetinf(mk_token(0), mk_token(0), mk_token(0), {mk_token(0)})}, {|->}, {|->})
+Causes Error 4061: No such key value in map: mk_token(0) in 'DEFAULT' (ndbAOriginal.vdmsl) at line 60:48
+----
+State_a: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 6:9
+(forall sa:State_a! &
+  is_(inv_State_a(sa), bool))
+
+PO #2, PROVABLE by witness sa = mk_State_a({|->}, {|->}, {|->}) in 0.011s
+PO #3, FAILED in 0.003s: Counterexample: r = mk_Relinf!(<OneMany>, {mk_Pair(mk_token(0), mk_token(0)), mk_Pair(mk_token(1), mk_token(0))})
+Causes Error 4079: Type invariant violated by mk_Relinf arguments in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:14
+----
+Relinf: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:9
+(forall r:Relinf! &
+  is_(inv_Relinf(r), bool))
+
+PO #4, FAILED in 0.002s: Counterexample: r = mk_Relinf!(<OneMany>, {mk_Pair(mk_token(0), mk_token(0)), mk_Pair(mk_token(1), mk_token(0))})
+Causes Error 4079: Type invariant violated by mk_Relinf arguments in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:14
+----
+Relinf: subtype obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:22
+(forall r:Relinf! &
+  inv_Relinf(r))
+
+PO #5, PROVABLE by witness r = mk_Relinf(<ManyMany>, {}) in 0.002s
+PO #6, PROVABLE by trivial esetnm in set (dom esm_) in 0.001s
+PO #7, MAYBE in 0.005s
+PO #8, MAYBE in 0.023s
+PO #9, FAILED in 0.003s: Counterexample: reltype' = mk_Reltype(mk_token(0), mk_token(0), mk_token(0)), rm_ = {mk_Reltype(mk_token(0), mk_token(0), mk_token(0)) |-> mk_Relinf(<ManyMany>, {})}, esm_ = {|->}
+----
+invPairs: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 84:45
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        fs in set dom esm_))))
+
+PO #10, FAILED in 0.003s: Counterexample: reltype' = mk_Reltype(mk_token(0), mk_token(0), mk_token(0)), rm_ = {mk_Reltype(mk_token(0), mk_token(0), mk_token(0)) |-> mk_Relinf(<ManyMany>, {})}, esm_ = {|->}
+Causes Error 4061: No such key value in map: mk_token(0) in 'DEFAULT' (console) at line 5:34
+----
+invPairs: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 85:43
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        (are_membs(froms(prset), esm_(fs)) =>
+          ts in set dom esm_)))))
+
+PO #11, PROVABLE by direct (patterns match all type values) in 0.006s
+PO #12, MAYBE in 0.024s
+PO #13, MAYBE in 0.009s
+PO #14, PROVABLE by witness esets = {|->}, ents = {|->}, rels = {|->} in 0.006s
+PO #15, PROVABLE by witness ndbst = mk_NDBStateA({|->}, {|->}, {|->}) in 0.005s
+PO #16, PROVABLE by direct (body is total) in 0.004s
+PO #17, TIMEOUT in 5.008s
+PO #18, UNCHECKED
+PO #19, MAYBE in 0.004s
+> pog
+Generated 19 proof obligations:
+
+Proof Obligation 1: (Failed, Counterexample: sa = mk_State_a!({mk_token(0) |-> mk_Esetinf(mk_token(0), mk_token(0), mk_token(0), {mk_token(0)})}, {|->}, {|->}))
+Causes Error 4061: No such key value in map: mk_token(0) in 'DEFAULT' (ndbAOriginal.vdmsl) at line 60:48
+State_a: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 6:9
+(forall sa:State_a! &
+  is_(inv_State_a(sa), bool))
+
+Proof Obligation 2: (Provable)
+State_a: invariant satisfiability obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 6:9
+exists sa : State_a & inva(sa)
+
+Proof Obligation 3: (Failed, Counterexample: r = mk_Relinf!(<OneMany>, {mk_Pair(mk_token(0), mk_token(0)), mk_Pair(mk_token(1), mk_token(0))}))
+Causes Error 4079: Type invariant violated by mk_Relinf arguments in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:14
+Relinf: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:9
+(forall r:Relinf! &
+  is_(inv_Relinf(r), bool))
+
+Proof Obligation 4: (Failed, Counterexample: r = mk_Relinf!(<OneMany>, {mk_Pair(mk_token(0), mk_token(0)), mk_Pair(mk_token(1), mk_token(0))}))
+Causes Error 4079: Type invariant violated by mk_Relinf arguments in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:14
+Relinf: subtype obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:22
+(forall r:Relinf! &
+  inv_Relinf(r))
+
+Proof Obligation 5: (Provable)
+Relinf: invariant satisfiability obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 29:9
+exists r : Relinf & invMaps(r)
+
+Proof Obligation 6: (Provable)
+esetnm in set (dom esm_)
+inva: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 51:21
+(forall mk_State_a(esm_, rm_, em_):State_a! &
+  (forall esetnm in set (dom esm_) &
+    esetnm in set dom esm_))
+
+Proof Obligation 7: (Maybe)
+invVals: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 60:48
+(forall mk_Esetinf($any1, picture, $any2, membs):Esetinf, em_:map Eid to ([Value]) &
+  (forall eid in set membs &
+    eid in set dom em_))
+
+Proof Obligation 8: (Maybe)
+invPairs; prset: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 81:29
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        reltype' in set dom rm_))))
+
+Proof Obligation 9: (Failed, Counterexample: reltype' = mk_Reltype(mk_token(0), mk_token(0), mk_token(0)), rm_ = {mk_Reltype(mk_token(0), mk_token(0), mk_token(0)) |-> mk_Relinf(<ManyMany>, {})}, esm_ = {|->})
+invPairs: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 84:45
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        fs in set dom esm_))))
+
+Proof Obligation 10: (Failed, Counterexample: reltype' = mk_Reltype(mk_token(0), mk_token(0), mk_token(0)), rm_ = {mk_Reltype(mk_token(0), mk_token(0), mk_token(0)) |-> mk_Relinf(<ManyMany>, {})}, esm_ = {|->})
+Causes Error 4061: No such key value in map: mk_token(0) in 'DEFAULT' (console) at line 5:34
+invPairs: map apply obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 85:43
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        (are_membs(froms(prset), esm_(fs)) =>
+          ts in set dom esm_)))))
+
+Proof Obligation 11: (Provable)
+(patterns match all type values)
+invMaps: cases exhaustive obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 107:9
+(forall mk_Relinf(map_, prset):Relinf &
+  map_ = <ManyMany> or map_ = <ManyOne> or map_ = <OneMany> or map_ = <OneOne>)
+
+Proof Obligation 12: (Maybe)
+NDBStateA: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 125:5
+(forall mk_NDBStateA(esets, rels, ents):NDBStateA &
+  is_(inv_NDBStateA(mk_NDBStateA(esets, rels, ents)), bool))
+
+Proof Obligation 13: (Maybe)
+NDBStateA: subtype obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 126:10
+(forall mk_NDBStateA(esets, rels, ents):NDBStateA &
+  inv_State_a(mk_State_a(esets, rels, ents)))
+
+Proof Obligation 14: (Provable)
+NDBStateA: invariant satisfiability obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 125:5
+exists mk_NDBStateA(esets, rels, ents) : NDBStateA & inva(mk_State_a(esets, rels, ents))
+
+Proof Obligation 15: (Provable)
+NDBStateA: state init obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 127:6
+exists ndbst : NDBStateA & (ndbst = mk_NDBStateA({|->}, {|->}, {|->}))
+
+Proof Obligation 16: (Provable)
+(body is total)
+ADDA: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 135:9
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldNDBStateA:NDBStateA &
+  is_(pre_ADDA(eset, s, p, w, oldNDBStateA), bool))
+
+Proof Obligation 17: (Timeout)
+ADDA: total function obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 136:16
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldNDBStateA:NDBStateA, NDBStateA:NDBStateA &
+  (pre_ADDA(eset, s, p, w, oldNDBStateA) =>
+    is_(post_ADDA(eset, s, p, w, oldNDBStateA, NDBStateA), bool)))
+
+Proof Obligation 18: (Unchecked)
+ADDA: operation post condition obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 133:5
+(esets = (esets~ munion {eset |-> mk_Esetinf(s, p, w, {})}))
+
+Proof Obligation 19: (Maybe)
+ADDA: operation satisfiability obligation in 'DEFAULT' (ndbAOriginal.vdmsl) at line 133:5
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldstate:NDBStateA &
+  pre_ADDA(eset, s, p, w, oldstate) => exists newstate:NDBStateA & post_ADDA(eset, s, p, w, oldstate, newstate))
+
+> 
