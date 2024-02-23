@@ -1,0 +1,141 @@
+➜  original git:(development) ✗ vdmj -i ndbAFixed.vdmsl   
+Parsed 1 module in 0.07 secs. No syntax errors
+Type checked 1 module in 0.283 secs. No type errors
+Initialized 1 module in 0.296 secs. No init errors
+Interpreter started
+> qc
+PO #1, MAYBE in 0.013s
+PO #2, PROVABLE by witness sa = mk_State_a({|->}, {|->}, {|->}) in 0.009s
+PO #3, MAYBE in 0.005s
+PO #4, PROVABLE by direct (patterns match all type values) in 0.011s
+PO #5, PROVABLE by witness map_ = <ManyMany>, prset = {} in 0.002s
+PO #6, PROVABLE by trivial esetnm in set (dom esm_) in 0.001s
+PO #7, MAYBE in 0.004s
+PO #8, MAYBE in 0.018s
+PO #9, MAYBE in 0.011s
+PO #10, MAYBE in 0.015s
+PO #11, PROVABLE by direct (patterns match all type values) in 0.001s
+PO #12, MAYBE in 0.011s
+PO #13, MAYBE in 0.007s
+PO #14, PROVABLE by witness esets = {|->}, ents = {|->}, rels = {|->} in 0.004s
+PO #15, PROVABLE by witness ndbst = mk_NDBStateA({|->}, {|->}, {|->}) in 0.003s
+PO #16, PROVABLE by direct (body is total) in 0.002s
+PO #17, TIMEOUT in 5.008s
+PO #18, UNCHECKED
+PO #19, MAYBE in 0.006s
+> pog
+Generated 19 proof obligations:
+
+Proof Obligation 1: (Maybe)
+State_a: total function obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 6:9
+(forall sa:State_a! &
+  is_(inv_State_a(sa), bool))
+
+Proof Obligation 2: (Provable)
+State_a: invariant satisfiability obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 6:9
+exists sa : State_a & inva(sa)
+
+Proof Obligation 3: (Maybe)
+Relinf: total function obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 29:9
+(forall mk_Relinf(map_, prset):Relinf! &
+  is_(inv_Relinf(mk_Relinf!(map_, prset)), bool))
+
+Proof Obligation 4: (Provable)
+(patterns match all type values)
+Relinf: cases exhaustive obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 33:9
+(forall mk_Relinf(map_, prset):Relinf! &
+  map_ = <ManyMany> or map_ = <ManyOne> or map_ = <OneMany> or map_ = <OneOne>)
+
+Proof Obligation 5: (Provable)
+Relinf: invariant satisfiability obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 29:9
+exists mk_Relinf(map_, prset) : Relinf & (cases map_ : <ManyMany> -> true, <ManyOne> -> (not (exists pr1_, pr2_ in set prset & ((pr1_ <> pr2_) and ((pr1_.fv) = (pr2_.fv))))), <OneMany> -> (not (exists pr1_, pr2_ in set prset & ((pr1_ <> pr2_) and ((pr1_.tv) = (pr2_.tv))))), <OneOne> -> (not (exists pr1_, pr2_ in set prset & ((pr1_ <> pr2_) and (((pr1_.fv) = (pr2_.fv)) or ((pr1_.tv) = (pr2_.tv)))))) end)
+
+Proof Obligation 6: (Provable)
+esetnm in set (dom esm_)
+inva: map apply obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 61:21
+(forall mk_State_a(esm_, rm_, em_):State_a! &
+  (forall esetnm in set (dom esm_) &
+    esetnm in set dom esm_))
+
+Proof Obligation 7: (Maybe)
+invVals: map apply obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 70:48
+(forall mk_Esetinf($any1, picture, $any2, membs):Esetinf, em_:map Eid to ([Value]) &
+  ((membs subset (dom em_)) =>
+    (forall eid in set membs &
+      eid in set dom em_)))
+
+Proof Obligation 8: (Maybe)
+invPairs; prset: map apply obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 91:29
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        reltype' in set dom rm_))))
+
+Proof Obligation 9: (Maybe)
+invPairs: map apply obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 94:45
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        ((fs in set (dom esm_)) =>
+          ((ts in set (dom esm_)) =>
+            fs in set dom esm_))))))
+
+Proof Obligation 10: (Maybe)
+invPairs: map apply obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 95:43
+(forall esm_:map Esetnm to Esetinf, rm_:map Reltype to Relinf &
+  (forall reltype' in set (dom rm_) &
+    (let mk_Reltype(fs, -, ts):Reltype = reltype' in
+      (let prset:set of Pair = (rm_(reltype').conns) in
+        ((fs in set (dom esm_)) =>
+          ((ts in set (dom esm_)) =>
+            (are_membs(froms(prset), esm_(fs)) =>
+              ts in set dom esm_)))))))
+
+Proof Obligation 11: (Provable)
+(patterns match all type values)
+invMaps: cases exhaustive obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 117:9
+(forall mk_Relinf(map_, prset):Relinf &
+  map_ = <ManyMany> or map_ = <ManyOne> or map_ = <OneMany> or map_ = <OneOne>)
+
+Proof Obligation 12: (Maybe)
+NDBStateA: total function obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 135:5
+(forall mk_NDBStateA(esets, rels, ents):NDBStateA &
+  is_(inv_NDBStateA(mk_NDBStateA(esets, rels, ents)), bool))
+
+Proof Obligation 13: (Maybe)
+NDBStateA: subtype obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 136:10
+(forall mk_NDBStateA(esets, rels, ents):NDBStateA &
+  inv_State_a(mk_State_a(esets, rels, ents)))
+
+Proof Obligation 14: (Provable)
+NDBStateA: invariant satisfiability obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 135:5
+exists mk_NDBStateA(esets, rels, ents) : NDBStateA & inva(mk_State_a(esets, rels, ents))
+
+Proof Obligation 15: (Provable)
+NDBStateA: state init obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 137:6
+exists ndbst : NDBStateA & (ndbst = mk_NDBStateA({|->}, {|->}, {|->}))
+
+Proof Obligation 16: (Provable)
+(body is total)
+ADDA: total function obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 145:9
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldNDBStateA:NDBStateA &
+  is_(pre_ADDA(eset, s, p, w, oldNDBStateA), bool))
+
+Proof Obligation 17: (Timeout)
+ADDA: total function obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 146:16
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldNDBStateA:NDBStateA, NDBStateA:NDBStateA &
+  (pre_ADDA(eset, s, p, w, oldNDBStateA) =>
+    is_(post_ADDA(eset, s, p, w, oldNDBStateA, NDBStateA), bool)))
+
+Proof Obligation 18: (Unchecked)
+ADDA: operation post condition obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 143:5
+(esets = (esets~ munion {eset |-> mk_Esetinf(s, p, w, {})}))
+
+Proof Obligation 19: (Maybe)
+ADDA: operation satisfiability obligation in 'DEFAULT' (ndbAFixed.vdmsl) at line 143:5
+(forall eset:Esetnm, s:Status, p:Picture, w:Width, oldstate:NDBStateA &
+  pre_ADDA(eset, s, p, w, oldstate) => exists newstate:NDBStateA & post_ADDA(eset, s, p, w, oldstate, newstate))
+
+> 
