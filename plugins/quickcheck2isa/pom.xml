@@ -9,7 +9,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>quickcheck</artifactId>
+	<artifactId>quickcheck2isa</artifactId>
 	<name>QuickCheck Extended plugin</name>
 	<description>Direct execution plugin for PO verification.</description>
 
