@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>vdm2isa</artifactId>
-	<name>vdm2isa</name>
+	<name>VDM to Isabelle translator</name>
 	<!--TODO: separate the command plugin from the LSP extension as separate projects?-->
 	<description>VDM-SL translation to Isabelle as a command plugin and VSCode LSP extension</description>
 

@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>vdm2isa-lsp</artifactId>
-	<name>vdm2isa-lsp</name>
+	<name>VDM to Isabelle translator LSP</name>
 	<description>VDM-SL translation to Isabelle LSP extension</description>
 
 	<developers>

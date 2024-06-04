@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>annotationsVDMToolkit</artifactId>
-	<name>AnnotationsVDMToolkit</name>
+	<name>VDM Toolkit annotations</name>
 	<description>VDM Toolkit annotations</description>
 		
 	<developers>
