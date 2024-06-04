@@ -9,8 +9,8 @@
 	</parent>
 
 	<artifactId>vdmlib</artifactId>
-	<name>vdmlib</name>
-	<description>VDM Toolkit Libraries</description>
+	<name>VDM Toolkit extended libraries</name>
+	<description>VDM Toolkit extended libraries</description>
 
 	<developers>
 		<developer>
