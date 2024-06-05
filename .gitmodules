@@ -1,0 +1,3 @@
+[submodule "vdmj-remote"]
+	path = vdmj-remote
+	url = https://github.com/pointerless/vdmj-remote.git
