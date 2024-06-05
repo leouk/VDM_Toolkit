@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>vdmtoolkit</groupId>
+		<artifactId>VDMToolkit-suite</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>vdmlib</artifactId>
+	<name>VDM Toolkit extended libraries</name>
+	<description>VDM Toolkit extended libraries</description>
+
+	<developers>
+		<developer>
+			<id>leouk</id>
+			<name>Leo Freitas</name>
+			<email>leo.york@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>vdmj</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>lsp</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency> -->
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>vdmjunit</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>stdlib</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.univocity</groupId>
+			<artifactId>univocity-parsers</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+								</resource>
+								<resource>
+									<directory>.</directory>
+									<filtering>false</filtering>
+									<include>LICENCE</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>single</goal>
+					</goals>
+					<configuration>
+						<!-- <archive>
+						<manifest>
+							<mainClass>${fully.qualified.main.class}</mainClass>
+						</manifest>
+						</archive> -->
+						<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

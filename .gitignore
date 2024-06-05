@@ -1,52 +1,425 @@
-experiments/Games/ConwayGL/target
-experiments/Games/ConwayGL/bin
-plugins/vdm2isa/java/.generated
-plugins/vdm2isa/.ci-friendly-pom.xml
-plugins/vdm2isa/java/src/main/resources/.generated
-plugins/vdm2isa/java/bin
-plugins/annotationsVDMToolkit/target
-plugins/vdm2isa/src/main/resources/dump
-plugins/vdm2isa/src/main/resources/output
-plugins/vdm2isa-lsp/target
+# Created by https://www.toptal.com/developers/gitignore/api/latex,java,maven
+# Edit at https://www.toptal.com/developers/gitignore?templates=latex,java,maven
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+### LaTeX ###
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+## Intermediate documents:
+*.dvi
+*.xdv
+*-converted-to.*
+# these rules might exclude image files for figures etc.
+# *.ps
+# *.eps
+# *.pdf
+
+## Generated if empty string is given at "Please type another file name for output:"
+.pdf
+
+## Bibliography auxiliary files (bibtex/biblatex/biber):
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+## Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+## Build tool directories for auxiliary files
+# latexrun
+latex.out/
+
+## Auxiliary and intermediate files from other packages:
+# algorithms
+*.alg
+*.loa
+
+# achemso
+acs-*.bib
+
+# amsthm
+*.thm
+
+# beamer
+*.nav
+*.pre
+*.snm
+*.vrb
+
+# changes
+*.soc
+
+# comment
+*.cut
+
+# cprotect
+*.cpt
+
+# elsarticle (documentclass of Elsevier journals)
+*.spl
+
+# endnotes
+*.ent
+
+# fixme
+*.lox
+
+# feynmf/feynmp
+*.mf
+*.mp
+*.t[1-9]
+*.t[1-9][0-9]
+*.tfm
+
+#(r)(e)ledmac/(r)(e)ledpar
+*.end
+*.?end
+*.[1-9]
+*.[1-9][0-9]
+*.[1-9][0-9][0-9]
+*.[1-9]R
+*.[1-9][0-9]R
+*.[1-9][0-9][0-9]R
+*.eledsec[1-9]
+*.eledsec[1-9]R
+*.eledsec[1-9][0-9]
+*.eledsec[1-9][0-9]R
+*.eledsec[1-9][0-9][0-9]
+*.eledsec[1-9][0-9][0-9]R
+
+# glossaries
+*.acn
+*.acr
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.lzo
+*.lzs
+*.slg
+*.slo
+*.sls
+
+# uncomment this for glossaries-extra (will ignore makeindex's style files!)
+# *.ist
+
+# gnuplot
+*.gnuplot
+*.table
+
+# gnuplottex
+*-gnuplottex-*
+
+# gregoriotex
+*.gaux
+*.glog
+*.gtex
+
+# htlatex
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.trc
+*.xref
+
+# hyperref
+*.brf
+
+# knitr
+*-concordance.tex
+# TODO Uncomment the next line if you use knitr and want to ignore its generated tikz files
+# *.tikz
+*-tikzDictionary
+
+# listings
+*.lol
+
+# luatexja-ruby
+*.ltjruby
+
+# makeidx
+*.idx
+*.ilg
+*.ind
+
+# minitoc
+*.maf
+*.mlf
+*.mlt
+*.mtc[0-9]*
+*.slf[0-9]*
+*.slt[0-9]*
+*.stc[0-9]*
+
+# minted
+_minted*
+*.pyg
+
+# morewrites
+*.mw
+
+# newpax
+*.newpax
+
+# nomencl
+*.nlg
+*.nlo
+*.nls
+
+# pax
+*.pax
+
+# pdfpcnotes
+*.pdfpc
+
+# sagetex
+*.sagetex.sage
+*.sagetex.py
+*.sagetex.scmd
+
+# scrwfile
+*.wrt
+
+# svg
+svg-inkscape/
+
+# sympy
+*.sout
+*.sympy
+sympy-plots-for-*.tex/
+
+# pdfcomment
+*.upa
+*.upb
+
+# pythontex
+*.pytxcode
+pythontex-files-*/
+
+# tcolorbox
+*.listing
+
+# thmtools
+*.loe
+
+# TikZ & PGF
+*.dpth
+*.md5
+*.auxlock
+
+# titletoc
+*.ptc
+
+# todonotes
+*.tdo
+
+# vhistory
+*.hst
+*.ver
+
+# easy-todo
+*.lod
+
+# xcolor
+*.xcp
+
+# xmpincl
+*.xmpi
+
+# xindy
+*.xdy
+
+# xypic precompiled matrices and outlines
+*.xyc
+*.xyd
+
+# endfloat
+*.ttt
+*.fff
+
+# Latexian
+TSWLatexianTemp*
+
+## Editors:
+# WinEdt
+*.bak
+*.sav
+
+# Texpad
+.texpadtmp
+
+# LyX
+*.lyx~
+
+# Kile
+*.backup
+
+# gummi
+.*.swp
+
+# KBibTeX
+*~[0-9]*
+
+# TeXnicCenter
+*.tps
+
+# auto folder when using emacs and auctex
+./auto/*
+*.el
+
+# expex forward references with \gathertags
+*-tags.tex
+
+# standalone packages
+*.sta
+
+# Makeindex log files
+*.lpz
+
+# xwatermark package
+*.xwm
+
+# REVTeX puts footnotes in the bibliography by default, unless the nofootinbib
+# option is specified. Footnotes are the stored in a file with suffix Notes.bib.
+# Uncomment the next line to have this generated file ignored.
+#*Notes.bib
+
+### LaTeX Patch ###
+# LIPIcs / OASIcs
+*.vtc
+
+# glossaries
+*.glstex
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse m2e generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# End of https://www.toptal.com/developers/gitignore/api/latex,java,maven
+
+bin/
 .ci-friendly-pom.xml
-plugins/vdmlib/src/main/resources/lib
-plugins/vdmlib/.generated
-plugins/vdmlib/src/main/resources/.generated
-plugins/vdm2isa/src/main/resources/HTML
-plugins/AnnotationsVDMToolkit/target
-plugins/vdm2isa/isa/dump
-plugins/vdm2isa/isa/HTML
-plugins/vdm2isa/isa/output/document
-plugins/vdm2isa/pub/recursion/HTML
-plugins/vdm2isa/pub/recursion/output/document
-plugins/vdm2isa/pub/sorting/main.bbl
-plugins/vdm2isa/pub/sorting/main.blg
-plugins/vdm2isa/pub/sorting/main.log
-plugins/vdm2isa/src/test/resources/lvl0/.generated
-plugins/vdm2isa/src/test/resources/.generated/isabelle
-plugins/vdm2isa/src/test/resources/fmi3/ls-bus-model/.generated
-plugins/vdm2isa/src/test/resources/fmi3/rule-model/.generated
-plugins/vdm2isa/src/test/resources/fmi3/static-model/.generated
-plugins/vdm2isa/src/test/resources/fmi3/vdmcheck/target
-plugins/vdm2isa/pub/csv-lib/main.bbl
-plugins/vdm2isa/pub/csv-lib/main.blg
-plugins/vdm2isa/pub/csv-lib/main.log
-main.log
-plugins/vdm2isa/pub/isq-lib/main.bbl
-plugins/vdm2isa/pub/isq-lib/main.blg
-plugins/vdm-antlr/target
-plugins/vdm-antlr/src/main/resources/.antlr
-experiments/vdm/Games/ConwayGL/target
-experiments/vdm/Games/ConwayNB/target
-experiments/vdm/IsaGenOverture/target
-plugins/vdm-antlr/src/main/resources/output
-plugins/vdm-antlr/src/main/antlr4/.antlr
-plugins/vdm-antlr/src/main/java/vdmantlr/generated
-plugins/vdm2isa/pub/csv-lib/main.synctex.gz
-plugins/vdm2isa/pub/csv-lib/main.aux
-plugins/vdm2isa/pub/csv-lib/main.fdb_latexmk
-plugins/vdm2isa/pub/csv-lib/main.fls
-experiments/vdm/Chesss/PP/lib/IO.vdmpp
-experiments/vdm/Chesss/PP/lib/VDMUnit.vdmpp
 IO.vdmsl
-plugins/quickcheck/target
+IO.vdmpp
+VDMUnit.vdmsl
+VDMUnit.vdmpp
+
+.generated/
+HTML/
+output/
+
+.antlr
+plugins/vdm-antlr/src/main/java/vdmantlr/generated
+
+# experiments/Games/ConwayGL/target
+# experiments/Games/ConwayGL/bin
+# plugins/vdm2isa/java/.generated
+# plugins/vdm2isa/.ci-friendly-pom.xml
+# plugins/vdm2isa/java/src/main/resources/.generated
+# plugins/vdm2isa/java/bin
+# plugins/annotationsVDMToolkit/target
+# plugins/vdm2isa/src/main/resources/dump
+# plugins/vdm2isa/src/main/resources/output
+# plugins/vdm2isa-lsp/target
+# plugins/vdmlib/src/main/resources/lib
+# plugins/vdmlib/.generated
+# plugins/vdmlib/src/main/resources/.generated
+# plugins/vdm2isa/src/main/resources/HTML
+# plugins/AnnotationsVDMToolkit/target
+# plugins/vdm2isa/isa/dump
+# plugins/vdm2isa/isa/HTML
+# plugins/vdm2isa/isa/output/document
+# plugins/vdm2isa/pub/recursion/HTML
+# plugins/vdm2isa/pub/recursion/output/document
+# plugins/vdm2isa/pub/sorting/main.bbl
+# plugins/vdm2isa/pub/sorting/main.blg
+# plugins/vdm2isa/pub/sorting/main.log
+# plugins/vdm2isa/src/test/resources/lvl0/.generated
+# plugins/vdm2isa/src/test/resources/.generated/isabelle
+# plugins/vdm2isa/src/test/resources/fmi3/ls-bus-model/.generated
+# plugins/vdm2isa/src/test/resources/fmi3/rule-model/.generated
+# plugins/vdm2isa/src/test/resources/fmi3/static-model/.generated
+# plugins/vdm2isa/src/test/resources/fmi3/vdmcheck/target
+# plugins/vdm2isa/pub/csv-lib/main.bbl
+# plugins/vdm2isa/pub/csv-lib/main.blg
+# plugins/vdm2isa/pub/csv-lib/main.log
+# main.log
+# plugins/vdm2isa/pub/isq-lib/main.bbl
+# plugins/vdm2isa/pub/isq-lib/main.blg
+# plugins/vdm-antlr/target
+# plugins/vdm-antlr/src/main/resources/.antlr
+# experiments/vdm/Games/ConwayGL/target
+# experiments/vdm/Games/ConwayNB/target
+# experiments/vdm/IsaGenOverture/target
+# plugins/vdm-antlr/src/main/resources/output
+# plugins/vdm-antlr/src/main/antlr4/.antlr
+# plugins/vdm-antlr/src/main/java/vdmantlr/generated
+# plugins/vdm2isa/pub/csv-lib/main.synctex.gz
+# plugins/vdm2isa/pub/csv-lib/main.aux
+# plugins/vdm2isa/pub/csv-lib/main.fdb_latexmk
+# plugins/vdm2isa/pub/csv-lib/main.fls
+# experiments/vdm/Chesss/PP/lib/IO.vdmpp
+# experiments/vdm/Chesss/PP/lib/VDMUnit.vdmpp
+# IO.vdmsl
+# plugins/quickcheck2isa/target
+# 

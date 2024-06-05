@@ -6,8 +6,8 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION=${VDMJ_VERSION:-4.5.0-SNAPSHOT}
-PVERSION=${VDMJ_PVERSION:-4.5.0-P-SNAPSHOT}
+MVERSION=${VDMJ_VERSION:-4.6.0-SNAPSHOT}
+PVERSION=${VDMJ_PVERSION:-4.6.0-P-SNAPSHOT}
 
 # The Maven repository directory containing VDMJ versions
 MAVENREPO=~/.m2/repository/dk/au/ece/vdmj
@@ -18,8 +18,8 @@ ANTLRVERSION="3.5.3"
 
 # Details for 64-bit Java
 JAVA64="/usr/bin/java"
-VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
-# Preferred VDMJ options
+VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
+# Preferred VDMJ options  -annotations
 VDMJOPTS=${VDMJ_OPTS:--strict}
 
 # The Maven repository directory containing VDMJ and VDM_Toolkit jars
@@ -35,7 +35,7 @@ function help()
     echo "Usage: $0 [--help|-?] [-P] [-A] <VM and VDMJ options>"
     echo "-P use high precision VDMJ ($PVERSION)"
     echo "-A use annotation libraries"
-    echo "Set \$VDMJ_VMOPTS and/or \$VDMJ_OPTS to set Java/tool options"
+    echo "Set \$VDMJ_VMOPTS and/or \$VDMJ_OPTS to override Java/tool options"
     echo "Set \$VDMJ_VERSION and \$VDMJ_PVERSION to change versions"
     echo "Set \$VDMJ_ANNOTATIONS and/or \$VDMJ_CLASSPATH for extensions" 
     echo "Default VM options are $JAVA64 $VM_OPTS"
@@ -109,6 +109,9 @@ do
     esac
     shift
 done
+
+# Warn if a later version is available in Maven
+latest $VERSION
 
 # Locate the jars; append VDMToolkit jars accordingly, but with MVERSION (not -P)!
 VDMJ_JAR=$MAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar

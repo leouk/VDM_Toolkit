@@ -1,8 +1,0 @@
-Name,Age,Weight(Kg),Height(cm),BMI
-"Quoted long string
-across multiple lines",50,58.5,179.0,18.26
-Okay1,40,58.5,169.0,20.5
-Okay2,30,61.5,170.0,21.3
-Okay3,46,100.0,180.0,30.86
-DefaultAge,18,58.5,169.0,20.5
-Okay4,50,58.5,179.0,18.26
