@@ -29,6 +29,7 @@
 		<module>vdm2isa</module>
 		<module>vdm2isa-lsp</module>
 		<!-- TODO figure out how to build Java11 for the vdm-antlr plugin
+			 now we are at Java11 but ANTLR4 requires mvn clean + mvn install (twice)?
 		<module>vdm-antlr</module>
 		-->
 	</modules>
@@ -45,11 +46,6 @@
 	    	<dependency>
 				<groupId>dk.au.ece.vdmj</groupId>
 				<artifactId>vdmj</artifactId>
-				<version>${dk.au.ece.vdmj-version}</version>
-			</dependency>
-	    	<dependency>
-				<groupId>dk.au.ece.vdmj</groupId>
-				<artifactId>quickcheck</artifactId>
 				<version>${dk.au.ece.vdmj-version}</version>
 			</dependency>
 			<dependency>
