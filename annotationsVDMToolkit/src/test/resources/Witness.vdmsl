@@ -1,0 +1,44 @@
+module A
+exports all
+definitions 
+types
+	--@Witness(ONE_R, mk_R(1,2))
+	--@Witness(TWO_R, mk_R(2,4))
+	--Witness(BAD_R, mk_R(4,2))
+	R ::
+		a : nat
+		b : nat
+	inv mk_R(a, b) == a < b;
+end A
+
+module B
+imports from A types R renamed R
+exports all
+definitions 
+
+types
+
+	--@Witness(ONE_S, mk_S(A`ONE_R, A`TWO_R))
+	--@Witness(TWO_S, mk_S(mk_R(1, 2), mk_R(2,4)))
+	--@Witness(THREE_S, ONE_S)
+	S ::
+		a : R
+		b : R
+															  --@doc witness names are not in scope outside annotation
+	inv mk_S(mk_R(a1, b1), mk_R(a2, b2)) == a1 + a2 < b1 + b2;-- and ONE_S.a < TWO_S.a;
+
+--INWQitnessAnnoataion effectively create those
+-- values
+-- 	ONE_R: R = mk_R(1,2);
+-- 	TWO_R: R = mk_R(2,4);
+-- 	ONE_S: S = mk_S(ONE_R, TWO_R);
+
+functions
+
+	f: R -> nat
+	f(rec) == rec.a + rec.b
+	post
+		--@Witness(THREE, post_f(A`ONE_R, f(A`ONE_R)))
+		(RESULT > rec.a and RESULT > rec.b);
+
+end B

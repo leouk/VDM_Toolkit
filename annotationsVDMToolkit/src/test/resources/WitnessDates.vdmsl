@@ -1,0 +1,69 @@
+module WitnessDates
+exports all
+definitions 
+
+types 
+
+--@doc witnesses D1 and D2 will fail at run time if added 
+--Witness(D1, mk_Date(0, 2, 3))
+--Witness(D2, mk_Date(32, 2, 2010))
+--@Witness(D3, mk_Date(30, 2, 2010))
+Date :: 
+  day  : nat1
+  month: nat1
+  year : nat
+inv mk_Date ( d ,m, y ) == d <= 31 and m<=12 and y <=3000;
+
+values
+
+types 
+--@Witness(T1, mk_Time(10, 10, 10))
+Time ::
+  hour  : nat
+  minute: nat
+  second: nat
+inv mk_Time(h,m,s) == s < 60 and m < 60 and h < 24;
+
+--@Witness(DTG1, mk_DTG(D3, T1))
+DTG :: 
+  d: Date
+  t: Time;
+
+functions
+	SQRT(x:nat)r:real
+	pre 
+        --@Witness(SQRT_PRE1, pre_SQRT(25))
+        --@Witness(SQRT_PRE2, pre_SQRT(250))
+        (x < 101)
+	post 
+        --@Witness(SQRT_POST1, post_SQRT(36,6))
+        (r*r = x);
+	
+	f: nat -> nat
+	f(x) == x + 1
+	pre x > 0 
+	post RESULT > x;
+	
+operations
+  --@Witness(ADD_PRE_1, pre_ADD(10,mk_Register(0)))
+  --@Witness(ADD_PRE_2, pre_ADD(10,mk_Register(0)))
+	--@Witness(ADD_POST_1, post_ADD(10,mk_Register(0),mk_Register(25)))
+	--@Witness(ADD_POST_2, post_ADD(10,mk_Register(0),mk_Register(10)))
+	ADD(i:nat)
+	pre i > 9 and i mod 5 = 0
+	post someStateRegister = someStateRegister + i;
+
+	Test: () ==> ()
+	Test() == (
+		--@Printf("%1$s", someStateRegister)
+		someStateRegister := someStateRegister + 5;
+		--@Printf("%1$s", someStateRegister)
+	)
+
+state Register of
+  someStateRegister: nat
+  inv mk_Register(someStateRegister) == someStateRegister mod 5 = 0
+  init reg == reg = mk_Register(0)
+end
+
+end WitnessDates
