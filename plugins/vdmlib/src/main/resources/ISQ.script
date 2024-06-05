@@ -1,4 +1,0 @@
-default ISQ
-p let PA = ms_div(KILOGRAM, SI_ACCELERATION) in mk_(is_Pressure(PA), si_dim_view(PA))
-p let PA = ms_div(KILOGRAM, ms_times(METER, ms_itself_n(SECOND, 2))) in  mk_(is_Pressure(PA), si_dim_view(PA))
-p let PA = ms_div(KILOGRAM, ms_times(METER, ms_itself_n(SECOND, 2))), EPV = ms_times(PA, SI_VOLUME) in mk_(is_Energy(EPV), si_dim_view(EPV))

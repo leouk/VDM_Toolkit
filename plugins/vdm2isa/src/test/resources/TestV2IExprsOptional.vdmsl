@@ -1,9 +1,0 @@
-module TestV2IExprsOptional
-exports all
-definitions
-values
-	v37: [nat] = nil;				--TCNilExpression			TCOptionalType,
-	v371: [nat] = 100;				--TCNilExpression			TCOptionalType,
-	v93= (cases v37: nil -> 0, v -> v+v end);
-
-end TestV2IExprsOptional

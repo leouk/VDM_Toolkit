@@ -1,9 +1,0 @@
-== Tell / show nick LSP looping 
-	= add ExuExample to src/main/test/resources/
-	= set experimental LSP server on
-	= run experimental server (vdmignore being ignored for papers?)
-	= loops + generates stuff inside pub? 
-
-=== Tell nick about registry multiple copies? 
-	= IsaPogcommand.getRegistry gives different ones? 
-
