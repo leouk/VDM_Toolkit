@@ -1,0 +1,22 @@
+*TCModule
+*TCModuleList
+*TCExport
+*TCExportAll
+*TCExportList
+*TCExportedFunction
+*TCExportedOperation
+*TCExportedType
+*TCExportedValue
+*TCImport
+*TCImportAll
+*TCImportFromModule
+*TCImportFromModuleList
+*TCImportList
+*TCImportedFunction
+*TCImportedOperation
+*TCImportedType
+*TCImportedValue
+*TCModuleExports
+*TCModuleImports
+
+(20 of 20) 100%

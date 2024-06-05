@@ -1,0 +1,12 @@
+module TestV2IExprsSets
+exports all
+definitions
+
+values
+	fv = 1;
+	v0 = { x | x in set {1,2,3} };
+	v1 = { 1+fv | x in set {1,2,3} };
+	v2 = { x | x in set {1,2,3} };
+	v3 = { 1+fv, 2+fv, 3+fv };
+
+end TestV2IExprsSets

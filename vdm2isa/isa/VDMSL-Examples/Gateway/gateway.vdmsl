@@ -1,0 +1,91 @@
+module gateway
+exports all
+definitions
+-- A trusted gateway
+-- For Chapter 7 (Sequences)
+
+types
+
+  --@idiom(isa) reodering of declaration before use
+  String = seq of char
+  inv s == s <> [];  
+
+  Message = String
+  inv m == len m <= 100;
+
+  Classification = <HI> | <LO>;
+
+  Category = set of String;
+
+  Ports :: high: seq of Message
+           low : seq of Message
+
+functions
+
+-- checking whether a substring occur in another string
+
+  Occurs: String * String -> bool
+  Occurs(substr,str) ==
+    exists i,j in set inds str & substr = str(i,...,j);
+
+-- Classifying messages
+
+  Classify: Message * Category -> Classification
+  Classify(m,cat) ==
+    if exists hi in set cat & Occurs(hi,m)
+    then <HI>
+    else <LO>;
+
+-- Classify the message and add to the appropriate port.
+  ProcessMessage: Message * Category * Ports -> Ports
+  ProcessMessage(m,cat,ps) ==
+    if Classify(m,cat) = <HI>
+    then mk_Ports([m]^ps.high,ps.low)
+    else mk_Ports(ps.high,[m]^ps.low);
+
+
+-- The main gateway function using recursion
+  --@idiom(vdm) recursive functions lead to complex/inductive proofs
+  --@idiom(isa) --@TODO recursion is only allowed for lists and nat 
+  Gateway: seq of Message * Category -> Ports
+  Gateway(ms,cat) ==
+    if ms = []
+    then mk_Ports([],[])
+    else let rest_p = Gateway(tl ms,cat)
+         in
+           ProcessMessage(hd ms,cat,rest_p)
+  --@idiom(isa) measure expressions only used in Isabelle when fun-declaration/termination automated proofs fail
+  --@idiom(isa) measure-related POs are ignored given Isabelle's definitional principle subsumes them
+   measure len ms;
+
+-- The main gateway function without using recursion
+
+  Gateway2: seq of Message * Category -> Ports
+  Gateway2(ms,cat) ==
+    --@idiom(vdm) defining recusrion through comprehension leads to easier proofs and definitions
+    mk_Ports([m|m in seq ms & Classify(m,cat) = <HI>],
+             [m|m in seq ms & Classify(m,cat) = <LO>]);
+
+-- Functions illustrating other sequence operators. 
+
+  AnyHighClass: seq of Message * Category -> bool
+  AnyHighClass(ms,cat) ==
+    exists m in seq ms & Classify(m,cat) = <HI>;
+
+  Censor: seq of Message * Category -> seq of Message
+  Censor(ms,cat) ==
+    [m | m in seq ms & Classify(m,cat) = <LO>];
+
+  --@idiom(PO) PO for FlattenMessage fails when ms = []
+  FlattenMessages: seq of Message -> Message
+  FlattenMessages(ms) ==
+    conc ms
+  pre len conc ms <= 100;
+
+  FlattenMessages': seq of Message -> Message
+  FlattenMessages'(ms) ==
+    conc ms
+  pre ms <> [] and len conc ms <= 100 ;
+
+end gateway
+

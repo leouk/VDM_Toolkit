@@ -1,0 +1,73 @@
+// Isabelle theory template
+theory(utc, comment, location, name, imports, body) ::= <<
+(* VDM to Isabelle Translation @$utc$  
+   Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
+   
+   $comment; wrap$
+   $location; wrap$
+   $files; wrap$
+*)
+theory $name$
+imports VDMToolkit $imports$
+begin
+$body$
+end 
+>>
+
+// Isabelle type synonym template
+typedecl(kind, name, expr) ::= <<
+$kind$ $defineIt(listIt(name, " "), innerSyntaxIt(expr), true)$
+>>
+
+//TODO how to pass lemma list for lemma? 
+lemmas(name, lemma) ::= <<
+lemmas $defineIt(name, listIt(lemma, " "), true)$
+>>
+
+// Isabelle abbreviation template 
+// version with type:innerSyntaxIt() is confusing to me when multiple params?
+abbreviation(name, type, expr) ::= <<
+abbreviation 
+    $name$ :: $innerSyntaxIt(type); wrap$ where
+    $innerSyntaxIt(defineIt(name, expr, false)); wrap$
+>> 
+
+// Isabelle definition template 
+definition(name, type, attr, expr, eq) ::= <<
+definition
+    $name$ :: $innerSyntaxIt(type); wrap$ where
+    $attributeIt(attr, innerSyntaxIt(defineIt(name, expr, eq))); wrap$
+>>
+
+// Isabelle named claims with possible attribute 
+// e.g. lemma XYZ[ATTRLIST]: EXPR; 
+//TODO how to filter kind = {lemma, theorem, corollary}?
+claim(kind, name, attr, expr) ::= <<
+$kind$ $name$ $attribute(attr); wrap$:
+    $innerSyntaxIt(expr); wrap$  
+>>
+
+// Isabelle theorem attribute for given expression, if any
+// e.g. [simp, intro!]: EXPR 
+listIt(l, sep=", ") ::= "$l; separator=sep$"
+attribute(attr) ::= "$if(attr)$ [$listIt(attr)$] $endif$"
+attributeIt(attr, expr) ::= "$if(attr)$ $attribute(attr)$: $endif$ $expr$"
+
+
+// Isabelle inner syntax brackets over given expression
+// e.g. \<open> EXPR \<close>
+innerSyntaxIt(expr) ::= "\\<open>$expr$\\<close>"
+
+// Isabelle named definitions as equality or equivalence 
+// e.g., NAME = EXPR vs NAME == EXPR 
+defineIt(name, expr, eq) ::= "$name$ $if(eq)$ = $else$ \\<equiv> $endif$ $expr$"
+
+
+
+//TODO: how to use the :XXXX tempaltes? 
+abbreviationNEW(name, type, attr, expr) ::= <<
+abbreviationNEW 
+    $name$ :: $type:innerSyntaxIt()$ where
+    $attributeIt(attr, innerSyntaxIt(defineIt(name, expr, false)))$
+>> 
+

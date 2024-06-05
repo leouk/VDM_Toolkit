@@ -1,0 +1,40 @@
+module TestV2ITypesUnion
+exports all
+definitions
+
+types
+
+	--quotes *must* be part of a union (and not dangling) we need their unique names on literals
+	TQuoteUnion = <A> | <B> | <C>;
+	
+	--other unions are okay
+	TBasicUnion = nat | int;
+	
+	TMixedUnion = nat | <D>;
+	
+	--you can mix unions
+	TBasicQuoteUnion = TBasicUnion | TQuoteUnion; 
+	
+	TMixedQuoteUnion = TQuoteUnion | TMixedUnion;
+	
+functions
+
+	f1: TQuoteUnion -> bool
+	f1(qu) == qu <> <A>;
+
+	f2: TBasicUnion -> int
+	f2(bu) == bu;
+	
+	f3: () -> TMixedUnion 
+	f3() == <D>;
+	
+	f3': () -> bool
+	f3'() == let -: TMixedUnion = f3() in true
+	--pre post_f3(f3())
+	;
+
+	f4: () -> TMixedQuoteUnion
+	f4() == <A>;
+		
+end TestV2ITypesUnion
+

@@ -1,0 +1,103 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Run pattern listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./patternScenario/example.pat pattern_list",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run expression listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./exprScenario/example.expr expression_list",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run module listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./vdmslScenario/SLTest.vdmsl sl_document",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run module (types) listener",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTListener",
+            "projectName": "vdm-antlr",
+            //"preLaunchTask": "clear-editor-history",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "args": "./vdmslScenario/Types.vdmsl sl_document",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "ANTLR AST plugin test",
+            "request": "launch",
+            "mainClass": "vdmantlr.ANTLRASTPlugin",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=vdmantlr.ANTLRASTPlugin -Dvdmj.diag.max_stack=10",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Run ANTLR visitor in Java",
+            "request": "launch",
+            "mainClass": "vdmantlr.VDMASTVisitor",
+            "projectName": "vdm-antlr",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "antlr-debug",
+            "request": "launch",
+            "name": "Expr test grammar ANTLR debug",
+            "input": "${file}",
+            //"preLaunchTask": "clear-editor-history",
+            "grammar": "src/main/antlr4/Test.g4",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "expr_list",
+            "printParseTree": true,
+            "visualParseTree": true
+        },
+        {
+            "name": "Expression ANTLR debug",
+            "type": "antlr-debug",
+            "request": "launch",
+            "input": "${file}",
+            "grammar": "src/main/antlr4/VDM.g4",
+            //"preLaunchTask": "clear-editor-history",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "expression_list",
+            "printParseTree": true,
+            "visualParseTree": true
+        },
+        {
+            "name": "Module ANTLR debug",
+            "type": "antlr-debug",
+            "request": "launch",
+            "input": "${file}",
+            "grammar": "src/main/antlr4/VDM.g4",
+            //"preLaunchTask": "clear-editor-history",
+            //"actionFile": "grammars/exampleActions.js",
+            "startRule": "sl_document",
+            "printParseTree": true,
+            "visualParseTree": true
+        }
+    ]
+}

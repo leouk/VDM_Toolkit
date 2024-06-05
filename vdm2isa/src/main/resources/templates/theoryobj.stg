@@ -1,0 +1,151 @@
+delimiters "$", "$"
+
+import "exp.stg"
+
+// Isabelle theory template
+theory(thy) ::= <<
+(* VDM to Isabelle Translation @$thy.utc$  
+   Copyright 2019-22, Leo Freitas, leo.freitas@newcastle.ac.uk
+   
+   $thy.comment; wrap$
+   $thy.location; wrap$
+   $thy.files; wrap$ 
+*)
+theory $thy.name$
+imports VDMToolkit $thy.imports:{ imp | "$imp$" }; wrap, separator=" "$
+begin
+
+$listIt(thy.body, "\n")$
+$thy.exports:{ exp | $hideIt(exp.kind, exp.name)$ }; wrap, separator="\n"$ 
+
+end 
+>>
+
+// Isabelle named claims with possible attribute 
+// e.g. lemma XYZ[ATTRLIST]: EXPR; 
+//TODO how to filter kind = {lemma, theorem, corollary}?
+claim(clm) ::= <<
+$vdmsourceIt(clm.source)$
+$comments(clm.comment)$
+$clm.kind$ $clm.name$$attribute(clm.attr); wrap$:
+    $innerSyntaxIt(clm.expr); wrap$  
+    $if(clm.proof)$$clm.proof$$else$oops$endif$
+
+>>
+
+lemmas(lms) ::= <<
+$comments(lms.comment)$
+lemmas $defineIt(lms.name, listIt(lms.lemma), true)$
+
+>>
+
+// Isabelle type synonym and simple data type template
+typesynonym(tsym) ::= << 
+$vdmsourceIt(tsym.source)$
+$comment(tsym.comment)$
+type_synonym $defineIt(listIt(tsym.name), innerSyntaxIt(listIt(tsym.expr)), true)$
+
+>>
+
+datatype(dtype) ::= <<
+$vdmsourceIt(dtype.source)$
+$comments(dtype.comment)$
+datatype $listIt(dtype.name)$ = $dtype.expr: { e | $innerSyntaxIt(e)$ }; wrap, separator=" | "$
+
+>>
+
+record(rec) ::= <<
+$vdmsourceIt(rec.source)$
+$comments(rec.comment)$
+record $rec.name$ = 
+    $rec.fields: { f | $signature(f)$ }; wrap, separator="\n"$
+
+>>
+
+abbreviation(def) ::= <<
+$vdmsourceIt(def.source)$
+$comments(def.comment)$
+abbreviation 
+    $signature(def)$ where
+    $innerSyntaxIt(defineIt(def.name, def.expr, false)); wrap$
+
+>> 
+
+// Isabelle definition template 
+definition(def) ::= <<
+$vdmsourceIt(def.source)$
+$comments(def.comment)$
+definition
+    $signature(def)$ where
+    $attributeIt(def.attr, innerSyntaxIt(defineIt(def.name, def.expr, def.eq))); wrap$
+
+>>
+
+fundef(fdef) ::= <<
+$vdmsourceIt(fdef.source)$
+$comments(fdef.comment)$
+definition
+    $signature(fdef)$ where
+    $attributeIt(fdef.attr, innerSyntaxIt(fundefIt(fdef.name, fdef.expr, fdef.eq))); wrap$
+
+>>
+
+//TODO refactor some of these defs into inner templates
+//don't attribute the pre_name_def, as user-defined one is likely to be different
+rfundef(fdef) ::= <<
+$fdef: { f | $vdmsourceIt(f.source)$ }; wrap, separator="\n"$
+$fdef: { f | $comments(f.comment)$ }; wrap, separator="\n"$
+declare $fdef:{ f | $declareIt(f)$ }; wrap, separator="\n\t"$
+    
+fun (domintros) 
+    $fdef: { f | $signature(f)$ }; wrap, separator=" and\n"$ where
+    $fdef: { f | $attributeIt(f.attr, innerSyntaxIt(fundefIt(f.name, f.expr, true))); wrap$ }; wrap, separator="\n|\t"$
+        
+declare $fdef:{ f | $declareIt(f, true)$ }; wrap, separator="\n"$
+>>
+
+declareIt(fdef, del=false) ::= <%$ndefIt("pre_", fdef.name, "_def")$ [simp$if(del)$ del$endif$]%>
+
+hideIt(kind, name) ::= <%$kind$ $innerSyntaxIt(name)$%>
+
+// Inner templates. 
+//    * name can contain formal parameters; e.g. name = ["f", "x", "y"] for "f(x,y)"
+//
+
+// VDM function in Isabelle as (if pre_f_def then f)
+fundefIt(name, expr, eq) ::= <<
+    $listIt(name)$$if(eq)$ = $else$ \\<equiv> $endif$
+        $ifexpIt(ndefIt("pre_", name), expr, "undefined"); wrap$
+>>
+
+// name definition expansion with prefix/suffix (if any)
+ndefIt(prefix, name, suffix=" ") ::= <%$prefix$$first(name)$$suffix$ $listIt(rest(name))$%>
+
+// Isabelle type signature as "name :: \\<open>type\\<close>"
+signature(x) ::= <%$first(x.name)$ :: $innerSyntaxIt(listIt(x.type, " \\<Rightarrow> ")); wrap$%>
+
+// Separate given list with given separator with ", " as default; ST can't have " " as default?!
+listIt(l, sep=" ") ::= <%$l; separator=sep$%>
+
+// Isabelle theorem attribute for given expression, if any, e.g. [simp,intro]
+attribute(attr) ::= <%$if(attr)$ [$listIt(attr, ", ")$]  $endif$%>
+attributeIt(attr, expr) ::= <%$if(attr)$ $attribute(attr)$: $endif$ $expr$%>
+
+// Isabelle inner syntax brackets over given expression, e.g. \<open> EXPR \<close>
+innerSyntaxIt(expr) ::= <%\\<open>$expr$\\<close>%>
+
+// Isabelle named definitions as equality or equivalence 
+// e.g., NAME = EXPR vs NAME == EXPR 
+defineIt(name, expr, eq=false) ::= <%$listIt(name)$ $if(eq)$ = $else$ \\<equiv> $endif$$expr$%>
+
+// Isabelle comment(s), if any; should we have VDM source + loc as Object? 
+comments(cmt) ::= <%$cmt: { c | $commentIt(c)$ }; wrap, separator="\n"$%>
+commentIt(cmt) ::= <%$if(cmt)$\\<comment>$innerSyntaxIt(cmt); wrap$$endif$%>
+
+vdmsource(source, location) ::= <<
+    VDMS source:
+    $source$
+    $if(location)$$location$$endif$
+>>
+
+vdmsourceIt(v) ::= <%$if(v)$$vdmsource(v.source, v.location)$$endif$%>

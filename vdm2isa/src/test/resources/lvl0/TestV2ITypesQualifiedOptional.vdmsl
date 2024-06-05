@@ -1,0 +1,24 @@
+module TestV2ITypesQualifiedOptional
+exports all
+definitions
+
+types	
+	R :: s: [seq of nat];
+	
+	S = seq of nat;
+	R' :: s: [S];
+	
+functions
+	f: R -> seq of nat
+	f(mk_R(s)) == [ i | i in seq s & i > 0 ]
+	--pre s <> nil
+	;
+	
+	f': R' -> seq of nat
+	f'(mk_R'(s)) == [ i | i in seq s & i > 0 ]
+	--pre s<> nil
+	;
+	
+end TestV2ITypesQualifiedOptional
+
+	

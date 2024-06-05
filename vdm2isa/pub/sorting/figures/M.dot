@@ -1,0 +1,22 @@
+digraph G {
+	 T [label="T @ L12"]
+	 inv_T [shape=doublecircle]
+	 T -> inv_T;
+	 Rec [label="Rec @ L5", shape=invtriangle, color=red]
+	 Rec -> T;
+	 inv_Rec[shape=doublecircle]
+	 Rec -> inv_Rec;
+	 Rec -> inv_S;
+	 Rec -> inv_T;
+	 S [label="S @ L8", shape=invtriangle, color=red]
+	 S -> T;
+	 head[shape=triangle]
+	 S -> head;
+	 S -> inv_S;
+	 S -> inv_T;
+	 tail[shape=triangle]
+	 S -> tail;
+	 inv_S [label="inv_S @ L9"]
+	 inv_S -> head;
+	 inv_S -> tail;
+}

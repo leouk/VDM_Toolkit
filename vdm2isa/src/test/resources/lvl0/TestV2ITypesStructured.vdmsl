@@ -1,0 +1,56 @@
+module TestV2ITypesStructured
+--avoid TRRenamedDefinition for now! 
+--imports from VDMToolkit 
+--	functions seq_prefix renamed seq_prefix;
+exports all
+definitions
+
+types	
+	--plain structured context with product type
+	G2 = int * int
+	inv mk_(l,r) == l < r;
+	
+	--field number projection over product type 
+	G2' = int * int
+	inv g == g.#1 < g.#2;
+	
+	TSet = set of nat1
+	inv s       == s <> {}
+	eq  s1 = s2 == s1 subset s2
+	ord s1 < s2 == card s1 < card s2
+	;
+	
+	TSet2 = TSet
+	inv s == card s > 10;
+	
+	TSet3 = set of TSet;
+	
+	TSet4 = set of TSet3
+	inv s == card s > 20;
+
+	TSeq = seq1 of nat1
+	inv s       == card elems s = len s
+	eq  s1 = s2 == elems s1 = elems s2
+	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
+	; 
+	
+	TSeq2 = seq1 of TSet
+	inv s       == card elems s = len s
+	eq  s1 = s2 == elems s1 = elems s2
+	ord s1 < s2 == len s1 < len s2--seq_prefix[TSet](s1, s2)
+	; 
+
+	TMap = map nat1 to nat1 
+	inv m == dom m <> {}
+	eq m1 = m2 == dom m1 = dom m2 and (forall x in set dom m1 & m1(x) = m2(x))
+	ord m1 < m2 == 
+		dom m1 subset dom m2
+		or
+		(dom m1 = dom m2 and (forall x in set dom m1 & m1(x) < m2(x)))
+	;
+	
+	TMap2 = map TSet4 to TSeq2;
+	
+	TMap3 = map TMap2 to TMap;
+
+end TestV2ITypesStructured

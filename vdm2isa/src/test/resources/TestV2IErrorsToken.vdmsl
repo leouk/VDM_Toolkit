@@ -1,0 +1,10 @@
+module TestV2IErrorsToken
+exports all
+definitions
+functions
+	f: set of nat -> token
+	f(x) == mk_token(x);
+values
+	v: token = f({1,2,3});
+
+end TestV2IErrorsToken

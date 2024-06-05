@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch vdm2isa",
+            "request": "launch",
+            "mainClass": "plugins.commands.IsabelleCommand",
+            "projectName": "vdm2isa",
+            "vmArgs": "-Dvdmj.plugins=plugins.analyses.IsabellePlugin -Dvdmj.diag.max_stack=10",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        },
+        {
+            "type": "java",
+            "name": "Launch ST",
+            "request": "launch",
+            "mainClass": "vdm2isa.tr.templates.IsaST",
+            "projectName": "vdm2isa"
+        },
+        // {
+        //     "type": "java",
+        //     "name": "Launch vdm2isa",
+        //     "request": "launch",
+        //     "mainClass": "plugins.GeneralisaPlugin",
+        //     "projectName": "vdm2isa",
+        //     "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        // },
+        {
+            "name": "Debug Console",
+            "type": "vdm",
+            "request": "launch",
+            "noDebug": false,
+            "defaultName": "TestV2IFcns",
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        }
+    ]
+}

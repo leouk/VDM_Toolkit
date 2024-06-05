@@ -1,0 +1,497 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+/**
+ * Model generated from win64/Test-FMUs BouncingBall implementation.
+ */
+values
+	HEIGHT			= 1;
+	VELOCITY		= 2;
+	GRAVITY			= 3;
+	REBOUND			= 4;
+	MINIMUM			= 5;
+
+functions
+	calculateValues: fmi3Instance -> fmi3Status * [fmi3Instance]
+	calculateValues(c) ==
+		mk_(<fmi3OK>, mu(c, dirty |-> false));
+
+	calculateDoStep: fmi3Instance * fmi3Float * fmi3Float -> fmi3Status * [fmi3Instance]
+	calculateDoStep(c, currentCommunicationPoint, communicationStepSize) ==
+		let height   = hd c.variables(HEIGHT),
+			velocity = hd c.variables(VELOCITY),
+			gravity  = hd c.variables(GRAVITY),
+			endstep  = currentCommunicationPoint + communicationStepSize,
+			stepsize =
+				if c.eventInfo.nextEventTimeDefined and c.eventInfo.nextEventTime < endstep
+				then c.eventInfo.nextEventTime - currentCommunicationPoint
+				else communicationStepSize
+		in
+	        let height2 = height + stepsize * velocity,
+	        	velocity2 = velocity + stepsize * gravity,	-- forward Euler steps
+	        	c2 = mu(c,
+					currentTime |-> currentCommunicationPoint + stepsize,
+					variables   |-> c.variables ++ { HEIGHT |-> [height2], VELOCITY |-> [velocity2] })
+	        in
+	        	-- @Printf("DoStep: %s %s\n", c.currentTime, c.variables)
+	        	if stepsize < communicationStepSize		-- Time event occurred
+	        		or height * height2 < 0				-- State event occurred
+	        	then
+	        		calculateEvents(c2)
+	        	else
+					mk_(<fmi3OK>, c2);
+
+
+	calculateEvents: fmi3Instance -> fmi3Status * [fmi3Instance]
+	calculateEvents(c) ==
+		let info = mk_fmi3EventInfo
+			(
+				nil,	-- nextEventTime						: fmi3Real
+				false,	-- newDiscreteStatesNeeded				: fmi3Boolean
+				false,	-- terminateSimulation					: fmi3Boolean
+				false,	-- nominalsOfContinuousStatesChanged	: fmi3Boolean
+				false,	-- valuesOfContinuousStatesChanged		: fmi3Boolean
+				false	-- nextEventTimeDefined					: fmi3Boolean
+			),
+			height   = hd c.variables(HEIGHT),
+			velocity = hd c.variables(VELOCITY),
+			rebound  = hd c.variables(REBOUND),
+			minimum  = hd c.variables(MINIMUM)
+		in
+			let updates =
+			    if height <= 0
+			    then
+			        { HEIGHT |-> 0,
+			          VELOCITY |-> abs(velocity * -rebound) }
+			        ++ if abs velocity < minimum
+			        then { VELOCITY |-> 0, GRAVITY |-> 0 }
+			        else { |-> }
+				else
+					{ |-> }
+			in
+				-- @Printf("Events: %s\n", c.variables)
+				mk_(<fmi3OK>, mu(c,
+					eventInfo |-> mu(info, valuesOfContinuousStatesChanged |-> (height <= 0)),
+					variables |-> c.variables ++ updates,
+					isNewEventIteration |-> false));
+
+
+/**
+ * VDM value created from /tmp/XML
+ */
+values
+    POSITIVE_INFINITY : real = 9218868437227405312;  -- 0x7ff0000000000000
+    NEGATIVE_INFINITY : real = -4503599627370496;    -- 0xfff0000000000000
+    NOT_A_NUMBER : real      = 9221120237041090560;  -- 0x7ff8000000000000
+
+values
+    model17608 =
+    mk_FmiModelDescription
+    (
+        mk_Location("XML", 9),
+        "3.0-beta.3",
+        "MyLibrary.SpringMassDamper",
+        "{8c4e810f-3df3-4a00-8276-176fa3c9f9e0}",
+        "Rotational Spring Mass Damper System",
+        nil,  -- author
+        "1.0",
+        nil,  -- copyright
+        nil,  -- license
+        nil,  -- generationTool
+        "2011-09-23T16:57:33Z",
+        <structured>,
+        nil,  -- modelExchange
+        mk_CoSimulation
+        (
+            mk_Location("XML", 12),
+            "MyLibrary_SpringMassDamper",
+            nil,  -- needsExecutionTool
+            nil,  -- canBeInstantiatedOnlyOncePerProcess
+            nil,  -- canGetAndSetFMUState
+            nil,  -- canSerializeFMUState
+            nil,  -- providesDirectionalDerivatives
+            nil,  -- providesAdjointDerivatives
+            nil,  -- providesPerElementDependencies
+			nil,
+            true,
+            nil,  -- maxOutputDerivativeOrder
+			nil,  -- recommendedIntermediateInputSmoothness
+            nil,  -- providesIntermediateUpdate
+            nil,  -- recommendedIntermediateInputSmoothness
+            nil,  -- canReturnEarlyAfterIntermediateUpdate
+            nil,  -- fixedInternalStepSize
+            nil,  -- hasEventMode
+			nil,  -- providesEvaluateDiscreteStates
+            nil   -- annotations
+        ),
+        nil,  -- scheduledExecution
+        -- unitDefinitions
+        [
+            mk_Unit
+            (
+                mk_Location("XML", 14),
+                "rad",
+                mk_BaseUnit
+                (
+                    mk_Location("XML", 15),
+                    nil,  -- kg
+                    nil,  -- m
+                    nil,  -- s
+                    nil,  -- a
+                    nil,  -- k
+                    nil,  -- mol
+                    nil,  -- cd
+                    1,
+                    nil,  -- factor
+                    nil   -- offset
+                ),
+                -- displayUnit
+                [
+                    mk_DisplayUnit
+                    (
+                        mk_Location("XML", 16),
+                        "deg",
+                        57.2957795130823,
+                        nil,  -- offset
+                        nil,  -- inverse
+                        nil   -- annotations
+                    )
+                ],
+                nil   -- annotations
+            ),
+            mk_Unit
+            (
+                mk_Location("XML", 18),
+                "rad/s",
+                mk_BaseUnit
+                (
+                    mk_Location("XML", 19),
+                    nil,  -- kg
+                    nil,  -- m
+                    -1,
+                    nil,  -- a
+                    nil,  -- k
+                    nil,  -- mol
+                    nil,  -- cd
+                    1,
+                    nil,  -- factor
+                    nil   -- offset
+                ),
+                nil,  -- displayUnit
+                nil   -- annotations
+            ),
+            mk_Unit
+            (
+                mk_Location("XML", 21),
+                "kg.m2",
+                mk_BaseUnit
+                (
+                    mk_Location("XML", 22),
+                    1,
+                    2,
+                    nil,  -- s
+                    nil,  -- a
+                    nil,  -- k
+                    nil,  -- mol
+                    nil,  -- cd
+                    nil,  -- rad
+                    nil,  -- factor
+                    nil   -- offset
+                ),
+                nil,  -- displayUnit
+                nil   -- annotations
+            ),
+            mk_Unit
+            (
+                mk_Location("XML", 24),
+                "N.m",
+                mk_BaseUnit
+                (
+                    mk_Location("XML", 25),
+                    1,
+                    2,
+                    -2,
+                    nil,  -- a
+                    nil,  -- k
+                    nil,  -- mol
+                    nil,  -- cd
+                    nil,  -- rad
+                    nil,  -- factor
+                    nil   -- offset
+                ),
+                nil,  -- displayUnit
+                nil   -- annotations
+            )
+        ],
+        -- typeDefinitions
+        [
+            mk_Float64Type
+            (
+                mk_Location("XML", 29),
+                "Modelica.Units.SI.Inertia",
+                nil,  -- description
+                "MomentOfInertia",
+                "kg.m2",
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                0.0,
+                nil,  -- max
+                nil,  -- nominal
+                nil   -- annotations
+            ),
+            mk_Float64Type
+            (
+                mk_Location("XML", 30),
+                "Modelica.Units.SI.Torque",
+                nil,  -- description
+                "Torque",
+                "N.m",
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                nil   -- annotations
+            ),
+            mk_Float64Type
+            (
+                mk_Location("XML", 31),
+                "Modelica.Units.SI.AngularVelocity",
+                nil,  -- description
+                "AngularVelocity",
+                "rad/s",
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                nil   -- annotations
+            ),
+            mk_Float64Type
+            (
+                mk_Location("XML", 32),
+                "Modelica.Units.SI.Angle",
+                nil,  -- description
+                "Angle",
+                "rad",
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                nil   -- annotations
+            )
+        ],
+        nil,  -- logCategories
+        mk_DefaultExperiment
+        (
+            mk_Location("XML", 34),
+            0.0,
+            3.0,
+            0.0001,
+            nil,  -- stepSize
+            nil   -- annotations
+        ),
+        -- modelVariables
+        [
+            mk_Float64
+            (
+                mk_Location("XML", 38),
+                "inertia1.J",
+                1073741824,
+                "Moment of load inertia",
+                <parameter>,
+                <fixed>,
+                nil,  -- canHandleMultipleSetPerTimeInstant
+                nil,  -- intermediateUpdate
+                nil,  -- previous
+                nil,  -- clocks
+                "Modelica.Units.SI.Inertia",
+                nil,  -- initial
+                nil,  -- quantity
+                nil,  -- unit
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                -- start
+                [
+                    1
+                ],
+                nil,  -- derivative
+                nil,  -- reinit
+                nil,  -- dimension
+                nil,  -- annotations
+                nil   -- alias
+            ),
+            mk_Float64
+            (
+                mk_Location("XML", 41),
+                "torque.tau",
+                536870912,
+                "Accelerating torque acting at flange (= -flange.tau)",
+                <input>,
+                nil,  -- variability
+                nil,  -- canHandleMultipleSetPerTimeInstant
+                nil,  -- intermediateUpdate
+                nil,  -- previous
+                nil,  -- clocks
+                "Modelica.Units.SI.Torque",
+                nil,  -- initial
+                nil,  -- quantity
+                nil,  -- unit
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                -- start
+                [
+                    0
+                ],
+                nil,  -- derivative
+                nil,  -- reinit
+                nil,  -- dimension
+                nil,  -- annotations
+                nil   -- alias
+            ),
+            mk_Float64
+            (
+                mk_Location("XML", 44),
+                "inertia1.phi",
+                805306368,
+                "Absolute rotation angle of component",
+                <output>,
+                nil,  -- variability
+                nil,  -- canHandleMultipleSetPerTimeInstant
+                nil,  -- intermediateUpdate
+                nil,  -- previous
+                nil,  -- clocks
+                "Modelica.Units.SI.Angle",
+                nil,  -- initial
+                nil,  -- quantity
+                nil,  -- unit
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                nil,  -- start
+                nil,  -- derivative
+                nil,  -- reinit
+                nil,  -- dimension
+                nil,  -- annotations
+                nil   -- alias
+            ),
+            mk_Float64
+            (
+                mk_Location("XML", 47),
+                "inertia1.w",
+                805306369,
+                "Absolute angular velocity of component (= der(phi))",
+                <output>,
+                nil,  -- variability
+                nil,  -- canHandleMultipleSetPerTimeInstant
+                nil,  -- intermediateUpdate
+                nil,  -- previous
+                nil,  -- clocks
+                "Modelica.Units.SI.AngularVelocity",
+                nil,  -- initial
+                nil,  -- quantity
+                nil,  -- unit
+                nil,  -- displayUnit
+                nil,  -- relativeQuantity
+                nil,  -- unbounded
+                nil,  -- min
+                nil,  -- max
+                nil,  -- nominal
+                nil,  -- start
+                nil,  -- derivative
+                nil,  -- reinit
+                nil,  -- dimension
+                nil,  -- annotations
+                nil   -- alias
+            )
+        ],
+        mk_ModelStructure
+        (
+            mk_Location("XML", 49),
+            -- output
+            [
+                mk_Output
+                (
+                    mk_Location("XML", 50),
+                    805306368,
+                    nil,  -- dependencies
+                    nil,  -- dependenciesKind
+                    nil   -- annotations
+                ),
+                mk_Output
+                (
+                    mk_Location("XML", 51),
+                    805306369,
+                    nil,  -- dependencies
+                    nil,  -- dependenciesKind
+                    nil   -- annotations
+                )
+            ],
+            nil,  -- continuousStateDerivative
+            nil,  -- clockedState
+            -- initialUnknown
+            [
+                mk_InitialUnknown
+                (
+                    mk_Location("XML", 52),
+                    805306368,
+                    nil,  -- dependencies
+                    nil,  -- dependenciesKind
+                    nil   -- annotations
+                ),
+                mk_InitialUnknown
+                (
+                    mk_Location("XML", 53),
+                    805306369,
+                    nil,  -- dependencies
+                    nil,  -- dependenciesKind
+                    nil   -- annotations
+                )
+            ],
+            nil   -- eventIndicator
+        ),
+        nil   -- annotations
+    );
+

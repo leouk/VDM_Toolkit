@@ -1,0 +1,23 @@
+delimiters "$", "$"
+
+binexp(bexp) ::= <%$bexp.lhs$ $bexp.op$ $bexp.rhs$%>
+
+//compexp(expr, vars, pred, ldelim="{", rdelim="}") ::= <%$ldelim$ $expr$ | $vars:{ n, t | ($vars.name$::$vars.type$) }$ . $pred$ $rdelim$%>
+
+ifexp(vdmif) ::= <%$ifexpIt(vdmif.test, vdmif.then, vdmif.els)$%>
+
+ifexpIt(test, then, els) ::= <<
+        (if $test$ then 
+            $then$
+        else 
+            $els$
+        )
+>>
+
+iotaexp(iota) ::= <%(\\<some> $iota.var$ . $iota.pred$)%>
+
+maplet(m) ::= <%$m.x$ \\<mapsto> $m.y$%>
+
+parenthesise(x) ::= <%($x$)%>
+
+id(x) ::= <%$x.name$%>

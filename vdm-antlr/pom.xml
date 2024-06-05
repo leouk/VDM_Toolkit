@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>vdmtoolkit</groupId>
+		<artifactId>VDMToolkit-suite</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<!-- ANTLR version, which percolates to all dependent POMs -->	
+		<!--<org.antlr.antlr-version>4.11.1</org.antlr.antlr-version>-->
+		<org.antlr.antlr-version>4.9.2</org.antlr.antlr-version>
+		<!--<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version> -->
+		<antlr4test-maven-plugin.version>1.18</antlr4test-maven-plugin.version>
+	</properties>
+
+
+	<artifactId>vdm-antlr</artifactId>
+	<name>vdm-antlr</name>
+	<description>VDM-SL ANTLR parser</description>
+
+	<developers>
+		<developer>
+			<id>leouk</id>
+			<name>Leo Freitas</name>
+			<email>leo.york@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>dk.au.ece.vdmj</groupId>
+			<artifactId>vdmj</artifactId>
+			<version>${dk.au.ece.vdmj-version}</version>
+		</dependency>
+		<dependency> 
+		    <groupId>org.antlr</groupId> 
+		    <artifactId>antlr4</artifactId> 
+		    <version>${org.antlr.antlr-version}</version> 
+		</dependency> 
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/test/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
+								</resource>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>false</filtering>
+									<include>*.vdmsl</include>
+									<include>*.thy</include>
+									<include>ROOT</include>
+									<include>VDMJ-class-mapping.md</include>
+								</resource>
+								<resource>
+									<directory>.</directory>
+									<filtering>false</filtering>
+									<include>LICENCE</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${org.antlr.antlr-version}</version>
+				<!-- See org.antlr.mojo.antlr4.Antlr4Mojo @Parameters for options 
+					 See https://www.antlr.org/api/maven-plugin/latest/examples/simple.html for package setup
+				-->
+				<configuration>
+					<includes>
+					   <include>VDM.g4</include>
+					   <include>VDMLex.g4</include>
+					</includes>
+					<visitor>true</visitor>
+					<listener>true</listener>
+					<antlr4.atn>true</antlr4.atn>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- See https://github.com/antlr/antlr4test-maven-plugin/blob/master/src/main/java/com/khubla/antlr/antlr4test/GrammarTestMojo.java for configuration parameters + package setup -->
+			<plugin>
+				<groupId>com.khubla.antlr</groupId>
+				<artifactId>antlr4test-maven-plugin</artifactId>
+				<version>${antlr4test-maven-plugin.version}</version>
+				<configuration>
+					<scenarios>
+						<scenario>
+							<scenarioName>Expressions</scenarioName>
+							<!-- Verbose is the same as -tokens for ANTLR (i.e. tokenising intput) -->
+							<verbose>false</verbose>
+							<!-- Useful for copy-paste tree to tree file for checking later in case grammar fails! -->
+							<showTree>true</showTree>
+							<entryPoint>expression_list</entryPoint>
+							<grammarName>VDM</grammarName>
+							<!--<packageName>vdmantlr.generated?</packageName>-->
+							<testFileExtension>.expr</testFileExtension>
+							<exampleFiles>src/test/resources/exprScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>Patterns</scenarioName>
+							<verbose>false</verbose>
+							<showTree>true</showTree>
+							<entryPoint>pattern</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.pat</testFileExtension>
+							<exampleFiles>src/test/resources/patternScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>Identifiers</scenarioName>
+							<verbose>false</verbose>
+							<showTree>true</showTree>
+							<entryPoint>name_list</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.id</testFileExtension>
+							<exampleFiles>src/test/resources/idScenario/</exampleFiles>
+						</scenario>
+						<scenario>
+							<scenarioName>VDM-SL</scenarioName>
+							<verbose>false</verbose>
+							<showTree>true</showTree>
+							<entryPoint>sl_document</entryPoint>
+							<grammarName>VDM</grammarName>
+							<testFileExtension>.vdmsl</testFileExtension>
+							<exampleFiles>src/test/resources/vdmslScenario/</exampleFiles>
+						</scenario>
+					</scenarios>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

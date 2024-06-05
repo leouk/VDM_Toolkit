@@ -1,0 +1,116 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+/**
+ * 2.1.5 Logging of FMU Instances.
+ */
+functions
+	/**
+	 * The implementation of the standard logger function.
+	 */
+	fmi3Logger_Impl: fmi3InstanceEnvironment * fmi3String * fmi3Status * fmi3String * fmi3String -> <VOID>
+	fmi3Logger_Impl(instanceEnvironment, instanceName, status, category, message) ==
+		let expanded = expandValueRefs(instanceEnvironment, message) in
+			-- @Printf("%s: %s %s %s\n", instanceName, status, category, expanded)
+			<VOID>;
+
+	/**
+	 * The Logger interface includes a check of whether a category is enabled. Note that
+	 * log calls can be made with unknown Categories, but if the category is not in the
+	 * list of enabled Categories, it will not appear.
+	 */
+	fmi3Logger: fmi3InstanceEnvironment * fmi3String * fmi3Status * fmi3String * fmi3String -> <VOID>
+	fmi3Logger(instanceEnvironment, instanceName, status, category, message) ==
+		if instanceEnvironment.logCategories = nil or not category in set instanceEnvironment.logCategories
+		then <VOID>		-- logging disabled or category not enabled
+		else fmi3Logger_Impl(instanceEnvironment, instanceName, status, category, message);
+
+
+	/**
+	 * Helper functions for the APIs to raise various status code log messages. The function takes
+	 * a result argument of an arbitrary type, and returns that. So the function is expected to be
+	 * used to log an error and return an error value.
+	 */
+	logAPIError: fmi3Instance * fmi3String * ? +> ?
+	logAPIError(c, message, result) ==
+		let - = c.logMessage(c.instanceEnvironment, c.instanceName, <fmi3Error>, "logAll", message)
+		in result;
+
+
+	/**
+	 * Support functions to expand logger strings.
+	 */
+	expandValueRefs: fmi3InstanceEnvironment * fmi3String +> fmi3String
+	expandValueRefs(ienv, s) ==
+		if s = []
+		then []
+		elseif hd s = '#'
+		then
+			let mk_(hash, tail) = readToHash(s) in
+				cases hash:
+					"##" -> "#" ^ expandValueRefs(ienv, tail),
+
+					"#" ^ digits ^ "#" ->
+						let vref = valueOf(digits) in
+						let sv = lookup(ienv.xmlModel.modelVariables, vref) in
+							if sv = nil
+							then "?" ^ expandValueRefs(ienv, tail)
+							else sv.name ^ expandValueRefs(ienv, tail),
+
+					others -> "?" ^ expandValueRefs(ienv, tail)
+				end
+		else
+			[hd s] ^ expandValueRefs(ienv, tl s)
+	measure len s;
+
+	readToHash: fmi3String +> fmi3String * fmi3String
+	readToHash(s) ==
+		let hashes = [ i | i in set inds s & i > 1 and s(i) = '#' ] in
+			if hashes <> []
+			then
+				let i = hd hashes in
+					mk_(s(1, ..., i), s(i+1, ..., len s))
+			else
+				mk_("", tl s)
+	pre
+		s <> "" and s(1) = '#';
+
+	valueOf: fmi3String +> nat
+	valueOf(s) ==
+		if s = []
+		then 0
+		else let rest ^ [last] = s in
+			digitValueOf(last) + 10 * valueOf(rest)
+	pre
+		elems s subset elems DECIMALS 
+	measure len s;
+
+values
+	DECIMALS = "0123456789";
+	digitValueOf : map char to nat = { DECIMALS(i) |-> (i-1) | i in set inds DECIMALS };

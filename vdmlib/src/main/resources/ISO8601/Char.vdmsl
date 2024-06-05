@@ -1,0 +1,296 @@
+/*
+   A module that specifies and defines general purpose types, constants and functions over
+   characters and strings (sequences characters).
+
+   All functions are explicit and executable. Where a non-executable condition adds value, it
+   is included as a comment.
+*/
+module Char
+--@qst why not struct export those? 
+exports types Upper;
+              Lower;
+              Letter;
+              Digit;
+              Octal;
+              Hex;
+              AlphaNum;
+              AlphaNumUpper;
+              AlphaNumLower;
+              Space;
+              WhiteSpace;
+              Phrase;
+              PhraseUpper;
+              PhraseLower;
+              Text;
+              TextUpper;
+              TextLower;
+              --@doc don't struct export Id0 or ReservedId
+              struct Id0;
+              ReservedId;
+              --@doc struct export Id
+              struct Id;
+              struct Ids;
+              struct Ids0;
+              struct String;
+              struct String1;
+              struct Collation;
+        values SP, TB, CR, LF, US, DL : char;
+               WHITE_SPACE, UPPER, LOWER, DIGIT, OCTAL, HEX : set of char;
+               DIGITS: seq of Digit;
+               OCTALS: seq of Octal;
+               HEXS  : seq of Hex;
+               UPPERS: seq of Upper;
+               LOWERS: seq of Lower;
+               ASCIIFY: Collation;
+        functions char2digit: char -> Digit;
+        					digit2char: Digit -> char;
+        					digits2str: seq of Digit -> seq of char;
+        					toLower: Upper +> Lower;
+                  toUpper: Lower +> Upper;
+                  make_id: String1 -> Id;
+                  make_rid: String1 -> ReservedId;
+								  prefix: Id * Id -> Id;
+								  prefixs: Id * set of Id -> set of Id;
+								  starts_with: Id * Id -> bool;
+								  ends_with: Id * Id -> bool;
+								  all_starts_with: set of Id * Id -> bool;
+								  drop: nat * Id -> Id;
+								  pre_drop: nat * Id +> bool;
+								  post_drop: nat * Id * Id +> bool;
+                  pre_make_id: String1 +> bool;
+                  pre_char2digit: char +> bool;
+                  post_digits2str: seq of Digit * seq of char +> bool;
+                  toLowerCase: String -> String;
+                  id2str: Id -> String1;
+                  size_id: Id -> nat;
+                  lessCh: char * char -> bool;
+									less: String * String -> bool;
+definitions
+
+values
+
+  SP:char = ' ';
+  TB:char = '\t';
+  CR:char = '\r';
+  LF:char = '\n';
+  US:char = '_';
+  DL:char = '$';
+  WHITE_SPACE:set of char = {SP,TB,CR,LF};
+  UPPER:set of char = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
+                       'R','S','T','U','V','W','X','Y','Z'};
+  LOWER:set of char = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',
+                       'r','s','t','u','v','w','x','y','z'};
+  DIGIT:set of char = {'0','1','2','3','4','5','6','7','8','9'};
+  OCTAL:set of char = {'0','1','2','3','4','5','6','7'};
+  HEX:set of char = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+
+types
+	String = seq of char;
+	
+	String1 = seq1 of char;
+	
+  Upper = char
+  inv c == c in set UPPER;
+
+  Lower = char
+  inv c == c in set LOWER;
+
+  Letter = Upper | Lower;
+
+  Digit = char
+  inv c == c in set DIGIT;
+  
+  Octal = char
+  inv c == c in set OCTAL;
+
+  Hex = char
+  inv c == c in set HEX;
+
+  AlphaNum = Letter | Digit;
+
+  AlphaNumUpper = Upper | Digit;
+
+  AlphaNumLower = Lower | Digit;
+
+  Space = char
+  inv sp == sp = SP;
+  
+  Underscore = char
+  inv us == us = US;
+  
+  ReservedChar = char
+  inv rc == rc = DL;
+
+  WhiteSpace = char
+  inv ws == ws in set WHITE_SPACE;
+
+  Phrase = seq1 of (AlphaNum|Space);
+
+  PhraseUpper = seq1 of (AlphaNumUpper|Space);
+
+  PhraseLower = seq1 of (AlphaNumLower|Space);
+
+  Text = seq1 of (AlphaNum|WhiteSpace);
+
+  TextUpper = seq1 of (AlphaNumUpper|WhiteSpace);
+
+  TextLower = seq1 of (AlphaNumLower|WhiteSpace);
+
+	Collation = String
+	inv c == card elems c = len c;		-- No duplicates in a collation sequence
+
+values
+  DIGITS:seq of Digit = "0123456789";
+  UPPERS: seq of Upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  LOWERS: seq of Lower = "abcdefghijklmnopqrstuvwxyz";
+  OCTALS:seq of Octal = "01234567";
+  HEXS:seq of Hex = "0123456789ABCDEF";
+  
+	--codeChars:Collation = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+  ASCIIFY: Collation = [DL] ^ DIGITS ^ UPPERS ^ [US] ^ LOWERS;
+
+functions
+	
+	-- It is absurdly difficult to sort strings in VDM :-) The reason is that chars
+	-- are opaque (only comparable to other chars for equality) which means that it
+	-- is difficult to decide their order. The functions below implement a collation
+	-- sequence for strings based on the order and content of codeChars (above).
+	valofCh: char * Collation -> nat1
+	valofCh(c, collation) ==
+		iota i in set inds collation & collation(i) = c
+	pre 
+		c in set elems collation;
+
+	lessCh: char * char -> bool
+	lessCh(a, b) ==
+		valofCh(a, ASCIIFY) < valofCh(b, ASCIIFY);
+
+	less: String * String -> bool
+	less(a, b) ==
+		if a = [] and b = []
+		then false
+		else if a = [] or b = []
+			then a = []
+			else if a(1) <> b(1)
+				then lessCh(a(1), b(1))
+				else less(tl a, tl b)
+	measure 
+		len a + len b;	-- Strictly decreasing
+	
+types
+	Id0 = seq1 of (AlphaNum | Underscore | ReservedChar)
+	inv id == is_Letter(hd id) or is_Underscore(hd id) or is_ReservedChar(hd id);
+	
+	ReservedId = Id0
+	inv ri == is_ReservedChar(hd ri);
+	
+	Id = Id0 | ReservedId
+	ord id1 < id2 == less(id1, id2);
+
+	Ids0 = set of Id;
+	
+	Ids = set1 of Id;		
+		 
+functions
+
+	char2digit: char -> Digit
+	char2digit(c) == c
+	pre
+		is_Digit(c);
+		
+	digit2char: Digit -> char
+	digit2char(d) == d;
+
+	digits2str: seq of Digit -> seq of char
+	digits2str(ds) == ds
+	post
+		len ds = len RESULT
+		and
+		elems ds = elems RESULT;
+
+	indexOf[@T]: @T * seq1 of @T -> nat1
+	indexOf(x,xs) == 
+	  let i in set inds xs be st xs(i) = x in i
+	pre
+		x in set elems xs
+	post	
+		xs(RESULT) = x;		
+		
+  -- Convert lower case letter to upper case.
+  toUpper: Lower +> Upper
+  toUpper(c) == UPPERS(indexOf[Lower](c,LOWERS));
+  --post toLower(RESULT) = c;
+  
+  -- Convert upper case letter to lower case.
+  toLower: Upper +> Lower
+  toLower(c) == LOWERS(indexOf[Upper](c,UPPERS))
+  post toUpper(RESULT) = c;
+
+  make_id: String1 -> Id
+  make_id(s) == s
+  pre
+  	--@doc CG perhaps look at support.vdmsl check_is_seq_of_depth?
+  	--is_Id(s)
+  	inv_Id0(s) or inv_ReservedId(s);
+  	
+	size_id: Id -> nat
+	size_id(id) == len id;
+	  	
+  prefix: Id * Id -> Id
+  prefix(p, x) == p ^ x
+  post
+  	size_id(RESULT) = size_id(p) + size_id(x);
+  
+  make_rid: String1 -> ReservedId
+  make_rid(s) == prefix(make_id("$"), s);
+  
+  id2str: Id -> String1
+  id2str(id) == id; 
+  	
+  --@doc prefixes given id with p
+  prefixs: Id * set of Id -> set of Id
+  prefixs(p, ids) == { prefix(p, id) | id in set ids }
+  post
+  	card ids = card RESULT;
+
+  --@doc id s starts with id t; this doesn't work if t is empty
+	starts_with: Id * Id -> bool
+	starts_with(s, t) == 
+		let
+			size_t: nat = size_id(t),
+			size_s: nat = size_id(s)
+		 in
+		  size_t > 0 and size_t <= size_s and t = s(1,...,size_t);
+		
+	--@doc id s ends with id t; this doesn't work if t is empty
+	ends_with: Id * Id -> bool
+	ends_with(s, t) ==
+		let
+			size_t: nat = size_id(t),
+			size_s: nat = size_id(s)
+		 in
+		  size_t > 0 and size_t <= size_s and t = s(size_s - size_t + 1,...,size_s);
+
+	all_starts_with: set of Id * Id -> bool
+	all_starts_with(ids, id) ==
+		forall i in set ids & starts_with(i, id);
+
+  drop: nat * Id -> Id
+	drop(n, id) == id(n + 1,...,size_id(id))
+	pre 
+		n <= size_id(id)
+	post
+		size_id(RESULT) = size_id(id) - n
+		and
+		elems RESULT subset elems id;
+	
+	toLowerCase: String -> String
+	toLowerCase(s) == 
+		if len s = 0 then 
+			s
+		else
+			[ let c: char = s(i) in if is_Upper(c) then toLower(c) else c | i in set inds s ]
+	post
+		len s = len RESULT;
+
+end Char

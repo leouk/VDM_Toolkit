@@ -1,0 +1,125 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+/**
+ * 2.1.2 Platform Dependent Definitions
+ */
+types
+	SolverDerivative ::
+		vref							: fmi3ValueReference	-- SV reference of base variable
+		order							: nat1					-- Order of solver's derivative
+		type							: <input> | <output>;
+
+	SolverData ::
+		derivatives						: seq of SolverDerivative;
+
+	-- The opaque data for the model - the XML model and solver data
+	fmi3InstanceEnvironment ::
+		xmlModel				: FmiModelDescription
+		solverData				: SolverData
+		logCategories			: [set1 of fmi3String]	-- nil means logging is off
+		calculateValues			: fmi3Instance -> fmi3Status * [fmi3Instance]
+		calculateDoStep			: fmi3Instance * fmi3Float * fmi3Float -> fmi3Status * [fmi3Instance]
+		calculateEvents			: fmi3Instance -> fmi3Status * [fmi3EventInfo] * [fmi3Instance]
+
+	inv ienv ==
+		-- The FMI model is valid
+		isValidFMIModelDescription(ienv.xmlModel)
+
+		-- And the solver data does not contain any derivatives of SVs that are
+		-- already represented in the SV list
+		and (forall sd in seq ienv.solverData.derivatives &
+			not exists sv in set inds ienv.xmlModel.modelVariables &
+				let mk_(o, b) = getDerivativeBase(sv, ienv.xmlModel.modelVariables) in
+					sd.order = o and sd.vref = b)
+
+		-- And CoSim solver data output derivative orders do not exceed
+		-- maxOutputDerivativeOrder
+		and (ienv.xmlModel.coSimulation <> nil =>
+			let max = ienv.xmlModel.coSimulation.maxOutputDerivativeOrder in
+				max <> nil => forall sd in seq ienv.solverData.derivatives &
+					sd.type = <output> => sd.order <= max)
+
+		-- And any log categories are defined in the XML file
+		and (ienv.logCategories <> nil =>
+				ienv.xmlModel.logCategories <> nil 
+				and forall cat in set ienv.logCategories &
+					exists lc in seq ienv.xmlModel.logCategories & lc.name = cat);
+
+	-- Structure used to represent per-element dependencies
+	ElementDependency ::
+		elementIndexOfDependent		: nat
+		independent					: fmi3ValueReference
+		elementIndexOfIndependent	: nat
+		dependencyKind				: fmi3DependencyKind;
+
+	-- The opaque instance data for the model, passed to and from API functions
+	fmi3Instance ::
+		instanceName				: fmi3String
+		fmuKind						: fmi3FMUKind
+		fmuState					: fmi3State
+		logMessage					: fmi3CallbackLogMessage
+		instanceEnvironment			: fmi3InstanceEnvironment
+		coSimulationConfiguration	: [fmi3CoSimulationConfiguration] 
+
+		-- convenience read-only fields, copied from instanceEnvironment
+		xmlModel				: FmiModelDescription
+		eModelVariables			: seq1 of Variable
+		continuousTimeStates	: seq of fmi3ValueReference			-- In ModelStructure/Derivatives order
+		stateDerivatives		: set of fmi3ValueReference
+		initialUnknowns			: set of fmi3ValueReference
+		solverDerivatives		: seq of SolverDerivative
+
+		-- state, events and settings
+		aliasVars				: map fmi3ValueReference to set of Variable		-- Map vref to Variables
+		variables				: map fmi3ValueReference to seq1 of fmi3Value	-- Raw SV data values (scalar and array)
+		dependencies			: map fmi3ValueReference to seq of ElementDependency	-- Per element dependencies
+		derivatives				: seq of fmi3Float					-- Solver derivative data
+		eventIndicators			: seq of fmi3Float					-- ME events
+		dirty					: bool								-- True if SVs updated but not recalculated
+		isNewEventIteration		: bool								-- Used in ME
+		eventInfo				: fmi3EventInfo						-- Used in ME and CS?
+
+		intermediateAccessGetAllowed	: bool
+		intermediateAccessSetAllowed	: bool
+
+		-- time values
+		tolerance				: [fmi3Float]
+		startTime				: [fmi3Float]
+		stopTime				: [fmi3Float]
+		currentTime				: [fmi3Float]	-- TODO should be independent SV?
+
+	inv c ==
+		card dom c.variables = card rng c.aliasVars
+		and (len c.derivatives = len c.solverDerivatives)
+		and (len c.eventIndicators = len nilSeq[EventIndicator](c.xmlModel.modelStructure.eventIndicator))
+		and (c.isNewEventIteration => is_(c.fmuKind, <ModelExchange>))
+		and (c.currentTime <> nil => c.startTime <> nil)
+		and (c.currentTime <> nil => c.currentTime >= c.startTime)
+		and (c.stopTime <> nil and c.startTime <> nil => c.stopTime > c.startTime);

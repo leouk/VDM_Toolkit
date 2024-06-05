@@ -1,0 +1,310 @@
+module CSVExample
+imports 
+    from VDMUtil 
+    functions 
+        val2seq_of_char renamed val2seq_of_char;
+    ,
+    from CSVLib
+    types 
+        Path renamed Path;
+        Data renamed Data;
+        Data0 renamed Data0;
+        ColNo renamed ColNo;
+        --@doc This import is needed for ValueFactory.mkRecord to work?!! see ValueFactoryHelper.getType use instead
+        --Error renamed Error;
+        Header0 renamed Header0;
+        Headers renamed Headers;
+        CSVParser renamed CSVParser;
+        Row renamed Row;
+        TransposedRow renamed TransposedRow;
+        Matrix renamed Matrix;
+        CSVCellInv renamed CSVCellInv;
+        CSVRowInv renamed CSVRowInv;
+        CSVColInv renamed CSVColInv;
+        CSVFileInv renamed CSVFileInv;
+        CSVType renamed CSVType;
+        Headers0 renamed Headers0;
+        CSVValue renamed CSVValue;
+        CSVSettings renamed CSVSettings;
+    functions 
+        csv_filter_invalid renamed csv_filter_invalid;
+        csv_invariants_failed renamed csv_invariants_failed;
+        install_row_invariant renamed install_row_invariant;
+        install_col_invariant renamed install_col_invariant;
+    operations 
+        loadCSV renamed loadCSV;
+        loadSimpleHeadersCSV renamed loadSimpleHeadersCSV;
+        printCSV renamed printCSV;
+    values 
+        DEFAULT_SETTINGS renamed DEFAULT_SETTINGS;
+exports 
+    functions
+        VALID_DATA  : [CSVRowInv] -> Data;
+        KILL_ROW_VALID_DATA: () -> Data;
+    values 
+        EXAMPLE_DATA: Data0;
+        CAPITAL_NAMES_ROW_INV: CSVRowInv;
+    operations 
+        load                 : [CSVSettings] ==> ();
+        loadNative           : [CSVSettings] ==> ();
+        loadCSVExample       : Path * CSVParser * [CSVSettings] * Headers0 * bool ==> ();
+        loadTrivialCSVExample: Path * CSVParser ==> ();
+definitions 
+
+--@doc tests to show the data type usage, including dynamic invariants
+values 
+    MIN_AGE: nat1 = 18;
+    MAX_AGE: nat1 = 60;
+    MIN_BMI: nat1 = 18;
+    MAX_BMI: nat1 = 35;
+    PRECISION: nat1 = 2;
+    MIN_WEIGHT_KG: real = 10.5;
+    MAX_WEIGHT_KG: real = 100;
+    MIN_HEIGHT_CM: real = 100;
+    MAX_HEIGHT_CM: real = 250;
+    WEIGHT_ROW_INDEX: nat1 = 3;
+    HEIGHT_ROW_INDEX: nat1 = 4;
+    NAME_ROW_INDEX  :nat1 = 1;
+    AGE_ROW_INDEX   :nat1 = 2;
+    BMI_ROW_INDEX   : nat1 = 5;
+    CAPITAL_LETTERS: seq of char = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
+    
+    --@doc various invariants examples: if failed, return a non-empty string for a reason; nil if succeeds. 
+    CELL_INVARIANT_AGE: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_AGE then "below minimal age" else if v > MAX_AGE then "above maximal age" else nil);
+
+    CELL_INVARIANT_WEIGHT: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_WEIGHT_KG then "below minimal weight" else if v > MAX_WEIGHT_KG then "above maximal weight" else nil);
+
+    CELL_INVARIANT_HEIGHT: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue & 
+            if v < MIN_HEIGHT_CM then "below minimal height" else if v > MAX_HEIGHT_CM then "above maximal height" else nil);
+
+    CELL_INVARIANT_BMI: CSVCellInv =
+        (lambda -: CSVType, v: CSVValue &  
+            if v < MIN_BMI then "below minimal BMI" else if v > MAX_BMI then "above maximal BMI" else nil);
+
+    COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
+        (lambda h: Header0, c: TransposedRow & 
+            if h.type <> <String> then "not string typed" else if card elems c <> len c then "repeated names" else nil);
+
+    --@doc caution: expensive for large (many rows) CSV files !
+    COL_INVARIANT_ORDERED: CSVColInv = 
+        (lambda h: Header0, c: TransposedRow & 
+            if not h.type in set  {<Integer>, <Float>} then 
+                "not number typed" 
+            else if --not (forall i, j in set inds c & i < j => c(i) <= c(j))
+                          (exists i, j in set inds c & i < j and c(i) > c(j)) then 
+                "column is not in ascending order"
+            else 
+                nil
+        );
+
+    --@doc caution: expensive for wide (many columns) CSV files
+    ROW_INVARIANT_BMI_CONSISTENCY: CSVRowInv =
+        (lambda h: Headers0, r: Row & 
+            if BMI_ROW_INDEX > len h then 
+                "invalid BMI header"
+            else 
+                (let bmi: real = calculated_bmi(r) in
+                    if floor(bmi) = floor(r(BMI_ROW_INDEX))
+                    then nil 
+                    else "invalid BMI for given CSV weight and height: expected " ^ 
+                        val2seq_of_char[real](bmi) ^"; found " ^ val2seq_of_char[real](r(BMI_ROW_INDEX)))
+        );
+
+    --@doc when failure anywhere in the row, kill the whole row
+    KILL_ROW_INVARIANT_EXAMPLE: CSVRowInv = 
+        (lambda h: Headers0, r: Row & 
+            if (exists i in set inds h & 
+                    (h(i).cell_invariant <> nil) 
+                    and 
+                    (h(i).cell_invariant(h(i).type, r(i)) <> nil)
+                ) then
+                "kill row with cell invariant violations"
+            else 
+                nil
+        );
+
+    CAPITAL_NAMES_ROW_INV: CSVRowInv = 
+        (lambda h: Headers0, r: Row & 
+            --@doc row-specific check, e.g. all names must be capitalised :-) 
+            if len h = 0 then "empty headers" else 
+            if len r(1) = 0 then "invalid (empty) name" else 
+            if not r(1)(1) in set elems CAPITAL_LETTERS then "name not capitalised" else nil
+        );
+
+    --@doc caution: expensive for large (many rows) CSV files !
+    FILE_INVARIANT_CONSISTENCY: CSVFileInv = 
+        (lambda h: Headers0, m: Matrix & 
+            if NAME_ROW_INDEX > len h then 
+                "invalid name header"
+            else if AGE_ROW_INDEX > len h then 
+                "invalid age header"
+            else 
+            (
+                let 
+                    dups : set of nat = { j | i, j in set inds m.cells & i <> j 
+                                                                         and 
+                                                                         check_name_age_uniqueness(m.cells(i), 
+                                                                                                   m.cells(j))}
+                in
+                    if (dups <> {}) then
+                        "duplicate persons found in row(s) " ^ val2seq_of_char[set of nat](dups) 
+                    else 
+                        nil 
+            )
+        );
+
+    --@doc see CSVExample.csv
+    -- Name,Age,Weight(Kg),Height(cm),BMI
+    -- "Okay1",40,58.5,169,20.5
+    -- "BMICalcWrong",50,70.2,180,30
+    -- "Young",15,61.5,170,21.3
+    -- "OldHeavy",70,150.3,180,46.4
+    -- "TallBMIinvalid",40,50,270,6.86
+    -- "DefaultAge",,58.5,169,20.5
+    -- "RepeatedName",40,58.5,169,20.5
+    -- "RepeatedName",50,58.5,179,18.26
+    --@doc make it Data0, so that the invariants won't be checked at creation time. 
+    EXAMPLE_DATA_HEADERS: Headers = 
+        [mk_Header0("Name"      , <String> ,         "Joe", nil, COL_INVARIANT_UNIQUE_NAME),
+         mk_Header0("Age"       , <Integer>,       MIN_AGE, CELL_INVARIANT_AGE, nil),
+         mk_Header0("Weight(Kg)", <Float>  , MIN_WEIGHT_KG, CELL_INVARIANT_WEIGHT, nil),
+         mk_Header0("Height(cm)", <Float>  , MIN_HEIGHT_CM, CELL_INVARIANT_HEIGHT, nil),
+         mk_Header0("BMI"       , <Float>  ,       MIN_BMI, CELL_INVARIANT_BMI, nil)
+        ];
+
+    EXAMPLE_DATA: Data0 = 
+        mk_Data0(
+            DEFAULT_SETTINGS,
+            EXAMPLE_DATA_HEADERS,
+            --       C1    C2  C3        R0 (Header)
+            mk_Matrix(
+                [
+                   ["Quoted long string 
+across multiple lines",50,58.5,179,18.26],
+                   ["Okay1",40,58.5,169,20.5],
+                   ["BMICalcWrong",50,70.2,180,30],
+                   ["Young",15,61.5,170,21.3],
+                   ["OldHeavy",70,150.3,180,46.4],
+                   ["TallBMIinvalid",40,50,270,6.86],
+                   ["DefaultAge",MIN_AGE,58.5,169,20.5],
+                   ["RepeatedName",40,58.5,169,20.5],
+                   ["RepeatedName",50,58.5,179,18.26]
+                ],
+                ROW_INVARIANT_BMI_CONSISTENCY                
+            ),
+            FILE_INVARIANT_CONSISTENCY
+        );
+
+    NZ_SHORT_HEADER: seq of CSVType = [<Integer>,<String>,<Integer>,<String>, <String>, <String>, <String>, <String>, <String>, <String>];
+    NZ_EXAMPLE: Path = "nz_short.csv";
+
+functions 
+   	approx: real * nat1 -> real
+	approx(m, precision) == m * (10**precision);
+
+    check_name_age_uniqueness: Row * Row -> bool
+    check_name_age_uniqueness(r1 ,r2) == (
+        --@doc Given 2 rows, if they are not the same
+        --      ensure that each person is different based on their name/age
+        r1 <> r2 
+        => 
+        (
+            r1(NAME_ROW_INDEX) <> r2(NAME_ROW_INDEX)
+            or
+            r1(AGE_ROW_INDEX) <> r2(AGE_ROW_INDEX)
+        ) 
+    );
+
+    calculated_bmi: Row -> real
+    calculated_bmi(r) ==
+        let 
+            --@doc get values from each row; calculate height in meters
+            --     if denominator (d) is aprox equal / negligeble to zero, adjust 
+            w: real = r(WEIGHT_ROW_INDEX),
+            h: real = r(HEIGHT_ROW_INDEX),
+            h_m: real = h / 100,
+            d: real = h_m * h_m
+        in
+            if floor(approx(d, PRECISION)) = 0 then MIN_BMI-1 else w / d 
+    pre BMI_ROW_INDEX <= len r;
+
+    VALID_DATA: [CSVRowInv] -> Data 
+    VALID_DATA(rowInv) == 
+        let d: Data0 = 
+            if (rowInv <> nil) then 
+                install_row_invariant(EXAMPLE_DATA, rowInv) 
+            else 
+                EXAMPLE_DATA 
+        in
+           csv_filter_invalid(d);
+
+    KILL_ROW_VALID_DATA: () -> Data 
+    KILL_ROW_VALID_DATA() == VALID_DATA(KILL_ROW_INVARIANT_EXAMPLE);
+
+    change_col_inv: CSVColInv * ColNo -> Data
+    change_col_inv(col_inv, colNo) == install_col_invariant(EXAMPLE_DATA, col_inv, {colNo});
+    
+traces 
+    --@doc kills only specific cells that violate CAPITAL_LETTERS
+    test1: csv_invariants_failed(EXAMPLE_DATA); 
+            --= {mk_(3, 2), mk_(4, 2), mk_(4, 3), mk_(5, 1), mk_(5, 2), mk_(5, 3)};
+
+    --@doc kills all lines where any cell invariant is broken
+    test2: csv_invariants_failed(install_row_invariant(EXAMPLE_DATA, KILL_ROW_INVARIANT_EXAMPLE));
+            --= {mk_(3, 1), mk_(3, 2), mk_(3, 3), mk_(4, 1), mk_(4, 2), mk_(4, 3)}
+
+    test3: change_col_inv(COL_INVARIANT_ORDERED, 2);
+
+--@doc tests to show native CSV calls and CSV loaded state
+values 
+   --@doc For testing, launch.json *must* have cwd set to $VDMJTK_HOME/vdmjlib/src/main/resources !!!
+    CSV_EXAMPLE_FILE   : Path = "CSVExample.csv";
+    CSV_INV_FAILED_FILE: Path = "CSVInvFailedExample.csv";
+    CSV_SHORT_ROW_FILE : Path = "CSVShortRowExample.csv";
+
+    CSV_SETTINGS: CSVSettings = mk_CSVSettings(true, true, "#");
+
+operations 
+    load(settings: [CSVSettings]) ==
+        (
+            loadCSVExample(CSV_EXAMPLE_FILE, <Univocity>, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_SHORT_ROW_FILE, <Univocity>, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_INV_FAILED_FILE, <Univocity>, settings, EXAMPLE_DATA_HEADERS, false);
+        );
+
+    loadNative(settings: [CSVSettings]) ==
+        (
+            loadCSVExample(CSV_EXAMPLE_FILE, <Native>, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_SHORT_ROW_FILE, <Native>, settings, EXAMPLE_DATA_HEADERS, false);
+            loadCSVExample(CSV_INV_FAILED_FILE, <Native>, settings, EXAMPLE_DATA_HEADERS, false);
+        );
+
+    loadCSVExample(path: Path, parser: CSVParser, settings: [CSVSettings], headers: Headers0, strict: bool) ==
+        (
+         loadCSV(path, parser, if settings = nil then DEFAULT_SETTINGS else settings, headers, strict);
+         printCSV(path ^ ".out", PRECISION);
+        );
+
+    loadTrivialCSVExample(path: Path, parser: CSVParser) ==
+        (
+         loadSimpleHeadersCSV(path, parser, [<String>, <Integer>, <Float>, <Float>, <Float>], false);
+         printCSV(path ^ ".out", PRECISION);
+        );
+
+traces 
+    test4: load(nil);
+
+    test5: load(CSV_SETTINGS);
+
+    --@todo this fails, as the <Native> parser gets confused a bit
+    test6: loadSimpleHeadersCSV(NZ_EXAMPLE, <Native>,  NZ_SHORT_HEADER, false);
+
+    test7: loadSimpleHeadersCSV(NZ_EXAMPLE, <Univocity>,  NZ_SHORT_HEADER, false);
+
+
+end CSVExample

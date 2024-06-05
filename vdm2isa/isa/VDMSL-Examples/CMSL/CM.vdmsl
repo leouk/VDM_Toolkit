@@ -1,0 +1,211 @@
+module CM 
+exports all
+definitions
+\begin{vdm_al}
+types
+
+  --@idiom(isa) reordering for declaration before use
+  MissileType = <MissileA> | <MissileB> | <MissileC> | <None>;
+
+  Angle = nat
+  inv num == num <= 360;
+
+  MissileInput = MissileType * Angle;
+
+  MissileInputs = seq of MissileInput;
+
+  MagId = token;
+
+  AbsTime = nat;
+
+  FlareType = <FlareOneA>  | <FlareTwoA>  | <FlareOneB> |
+              <FlareTwoB>  | <FlareOneC>  | <FlareTwoC> |
+              <DoNothingA> | <DoNothingB> | <DoNothingC>;
+
+  OutputStep = FlareType * AbsTime;
+
+  --@LF using a record as well as a structured pattern to show the difference
+  --    in the isabelle translation of record + structure pattern (let...in...) contexts
+  --@idiom(vdm)
+  --@idiom(isa)
+  OutputStepRecord :: 
+    x: FlareType 
+    y: AbsTime;
+
+  Output = map MagId to seq of OutputStep;
+
+  Response = FlareType * nat;
+
+  Delay = nat;
+
+  Plan = seq of (FlareType * Delay);
+
+  --@LF for comparison, notice the translation difference between Plan and Plan2
+  --    it shows how having types as layered as possible (i.e. Plan2 is better)
+  --    leads to simpler/layered inv_T expressions, hence more managebable proofs.  
+  --@idiom(vdm) layer structured types tightly through named types 
+  FlareProd = FlareType * Delay;
+  Plan2 = seq of FlareProd;
+
+values
+
+  plan1 : Plan = [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
+                      mk_(<DoNothingA>,100), mk_(<FlareOneA>,500)];
+  
+  plan2: Plan2 = [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
+                      mk_(<DoNothingA>,100), mk_(<FlareOneA>,500)];
+
+  responseDB : map MissileType to Plan =
+    {<MissileA> |-> [ mk_(<FlareOneA>,900), mk_(<FlareTwoA>,500),
+                      mk_(<DoNothingA>,100), mk_(<FlareOneA>,500)],
+     <MissileB> |-> [ mk_(<FlareTwoB>,500), mk_(<FlareTwoB>,700)],
+     <MissileC> |-> [ mk_(<FlareOneC>,400), mk_(<DoNothingC>,100),
+                      mk_(<FlareTwoC>,400), mk_(<FlareOneC>,500)]
+    };
+
+  --@LF the decision on type Plan2 percolates everywhere Plan/Plan2 is used. 
+  --    notice the translation of inv_responseDB2 in comparison to inv_respondeDB
+  --@idiom(vdm) consequence of how more layered structured leads to simpler definitions
+  responseDB2 : map MissileType to Plan2 = responseDB;
+
+  missilePriority : map MissileType to nat
+                      = {<MissileA> |-> 1,
+                         <MissileB> |-> 2,
+                         <MissileC> |-> 3,
+                         <None> |-> 0};
+
+  stepLength : nat = 100;
+
+  testval1 : MissileInputs = [mk_(<MissileA>,88),
+                              mk_(<MissileB>,70),
+                              mk_(<MissileA>,222),
+                              mk_(<MissileC>,44)];
+
+  testval2 : MissileInputs = [mk_(<MissileC>,188),
+                              mk_(<MissileB>,70),
+                              mk_(<MissileA>,2),
+                              mk_(<MissileC>,44)];
+
+  testval3 : MissileInputs = [mk_(<MissileA>,288),
+                              mk_(<MissileB>,170),
+                              mk_(<MissileA>,222),
+                              mk_(<MissileC>,44)];
+
+functions
+
+Angle2MagId: Angle -> MagId
+Angle2MagId(angle) ==
+  if angle < 90
+  then mk_token("Magazine 1")
+  elseif angle < 180
+  then mk_token("Magazine 2")
+  elseif angle < 270
+  then mk_token("Magazine 3")
+  else mk_token("Magazine 4");
+
+LeavePrefixUnchangedRecord: seq of OutputStepRecord * nat -> 
+                      seq of OutputStepRecord
+LeavePrefixUnchangedRecord(output_l, curTime) ==
+  --@idiom(isa) o is a reserved identifier for function composition (f o g) x
+  [oid | oid in seq output_l & let mk_OutputStepRecord(-,t) = oid in t <= curTime];
+
+LeavePrefixUnchanged: seq of OutputStep * nat -> 
+                      seq of OutputStep
+LeavePrefixUnchanged(output_l, curTime) ==
+  --@idiom(isa) o is a reserved identifier for function composition (f o g) x
+  [oid | oid in seq output_l & let mk_(-,t) = oid in t <= curTime];
+
+RelativeToAbsoluteTimes : seq of Response -> 
+                          seq of (FlareType * nat)
+RelativeToAbsoluteTimes(ts) ==
+  if ts = []
+  then []
+  else let mk_(f,t) = hd ts
+           ,
+           ns = RelativeToAbsoluteTimes(tl ts) 
+       in
+         [mk_(f,t)] 
+         ^
+         [ let mk_(nf, nt) = n in mk_(nf, nt + t) | n in seq ns]
+measure len ts;
+
+--@idiom(PO) missing case for when absTimes = []! (hd absTimes is undefined then!)
+--@idiom(isa) multiple structured patterns and complex binds
+OutputAtTimeZero : seq of Response -> seq of OutputStep
+OutputAtTimeZero(response) ==
+  let absTimes = RelativeToAbsoluteTimes(response) in
+    let mk_(firstFlare,-) = hd absTimes in
+      [mk_(firstFlare,0)] ^
+      [ let mk_(-,t) = absTimes(i-1),
+            mk_(f,-) = absTimes(i) in
+          mk_(f,t) | i in set {2,...,len absTimes}];
+
+--@LF the equivalent version below contains less patterns, hence will entail simpler invariant checks (i.e. no need for
+--    invariant check the result of a field projection say). On the other hand, this might be harder to understand/read 
+--    than the example above. So here is a catch-22 scenario: clarity for ease of proof. 
+--@idiom(vdm) simpler binds/patterns; harder to read VDM
+OutputAtTimeZero' : seq of Response -> seq of OutputStep
+OutputAtTimeZero'(response) ==
+  let absTimes = RelativeToAbsoluteTimes(response) in
+    let mk_(firstFlare,-) = hd absTimes in
+      [mk_(firstFlare,0)] ^
+      [ mk_(absTimes(i).#1, absTimes(i-1).#2) | i in set {2,...,len absTimes} ];
+
+MakeOutputFromPlan : nat * seq of Response -> seq of OutputStep
+MakeOutputFromPlan(curTime, response) ==
+  --@idiom(isa) output is a reserved identifier for marking concrete syntax
+  let outputLF = OutputAtTimeZero(response) in
+    [let mk_(flare,t) = oid
+     in
+       mk_(flare,t+curTime)
+    | oid in seq outputLF];
+
+InterruptPlan: nat * Output * Plan * MagId -> Output
+InterruptPlan(curTime,expOutput,plan,magid) ==
+  {magid |-> (if magid in set dom expOutput
+              then LeavePrefixUnchanged(expOutput(magid), 
+                                        curTime)
+              else []) ^
+              MakeOutputFromPlan(curTime, plan)} 
+  munion
+  ({magid} <-: expOutput);
+  
+CM: MissileInputs * Output * map MagId to [MissileType] * 
+    nat -> Output
+CM( missileInputs, outputSoFar, lastMissile, curTime) ==
+  if missileInputs = []
+  then outputSoFar
+  else let mk_(curMis,angle) = hd missileInputs , 
+        --@LF Here the local bound variable "angle" if used in the same let context (e.g. let mk_(x,y) = t, z = f(x) in ...)
+        --    the projection won't work, as locally defined names are only projected after the "in"; so for now the separation 
+        --    of lets is a simple solution. 
+        --@idiom(isa) pattern bound variable cannot appear in single let 
+          magid = Angle2MagId(angle) in
+         if magid not in set dom lastMissile or
+            (magid in set dom lastMissile and lastMissile(magid) <> nil and 
+             missilePriority(curMis) > 
+             missilePriority(lastMissile(magid)))
+         then let newOutput = 
+                     InterruptPlan(curTime,outputSoFar,
+                                   responseDB(curMis),
+                                   magid),
+                --@NB even with the explicit type given to the maplet, VDMJ "eats" up the optionality :-(
+                magidMaplet: map MagId to [MissileType] = {magid |-> curMis}--map MagId to MissileType
+              in CM(tl missileInputs, newOutput, 
+                    lastMissile ++ magidMaplet,--{magid |-> curMis},
+                    curTime + stepLength)
+         else CM(tl missileInputs, outputSoFar, 
+                 lastMissile,curTime + stepLength)
+measure len missileInputs;
+
+CounterMeasures: MissileInputs -> Output
+CounterMeasures(missileInputs) ==
+  CM(missileInputs,{|->},{|->},0);
+
+end CM 
+\end{vdm_al}
+
+\begin{rtinfo}[RelativeToAbsoluteTimes]
+{vdm.tc}[DefaultMod]
+\end{rtinfo}
+

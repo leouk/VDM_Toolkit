@@ -1,0 +1,68 @@
+module TestV2ITypesComplexRecord
+exports all
+definitions
+
+types
+	-- record pattern with different pattern name to field name
+	A :: a: int
+	inv mk_A(v) == v > 0;
+	
+	-- layered field expressions projection without pattern 
+	B :: b: A;
+	C :: c: B
+	inv x == x.c.b.a > 10; 
+	
+	-- layered record patterns without field expression projection 
+	D :: d: C
+	inv mk_D(mk_C(mk_B(mk_A(a)))) == a > 10;
+	
+	-- mixed projection + record pattern see if works in the context! 
+	E :: d: C
+		 e: D
+	inv mk_E(mk_C(x), e) == e.d.c = x;
+	
+	--E = set pattern; F = seq concat pattern etc.
+		
+	--mix layered contexts
+	G :: g: int * int
+	inv mk_G(mk_(l,r)) == l < r;
+	
+	R :: 
+		r : real
+		i : nat
+	--use record pattern with dummy
+	inv mk_R(r,-) == r > 0;
+
+	T :: k: int;
+	
+	-- separate the names out in layered field projections
+	S0 :: 
+		x: R
+		y: T
+	inv s == s.x.r > s.y.k; 
+
+	-- mix the names up in layered field projectios (e.g. inner r is of type R, outer is of type real!)
+	S1 :: 
+		r: R
+		t: R
+	inv s == s.r.r > s.t.r; 
+
+	-- mixed but with record context to help
+	S2 :: 
+		r: R
+		t: R
+	inv mk_S2(r,t) == r.r > t.r; 
+
+	-- layered + multiple record contexts 
+	S3 :: 
+		r: R
+		t: R
+	inv mk_S3(mk_R(rs, i),mk_R(ts, j)) == rs > ts and i > j; 
+
+	-- layered + multiple record contexts with dummys 
+	S4 :: 
+		r: R
+		t: R
+	inv mk_S4(mk_R(rs, -),mk_R(ts, -)) == rs > ts; 
+	
+end TestV2ITypesComplexRecord

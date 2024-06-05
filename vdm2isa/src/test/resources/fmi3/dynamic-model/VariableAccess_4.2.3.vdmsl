@@ -1,0 +1,113 @@
+/*********************************************************************************
+ *
+ *	Copyright (c) 2017-2022, INTO-CPS Association,
+ *	c/o Professor Peter Gorm Larsen, Department of Engineering
+ *	Finlandsgade 22, 8200 Aarhus N.
+ *
+ *	MIT Licence:
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *	this software and associated documentation files (the "Software"), to deal in
+ *	the Software without restriction, including without limitation the rights to use,
+ *	copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *	Software, and to permit persons to whom the Software is furnished to do so,
+ *	subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ *	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ *	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ *	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ *	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *	SPDX-License-Identifier: MIT
+ *
+ *********************************************************************************/
+
+/**
+ * 4.2.3. Variables Access
+ */
+functions
+	/**
+	 * Implementation and API for fmi3GetRealOutputDerivatives.
+	 */
+	fmi3GetOutputDerivatives_Impl: fmi3Instance * seq of fmi3ValueReference * nat *
+								  seq of fmi3Integer +> fmi3Status * seq of fmi3Float
+	fmi3GetOutputDerivatives_Impl(c, vrs, nvr, order) ==
+		let reals =
+		[
+			let sdis = [ sdi | sdi in set inds c.solverDerivatives &
+				c.solverDerivatives(sdi) = mk_SolverDerivative(vrs(i), order(i), <output>) ]
+			in
+				if order(i) > c.xmlModel.coSimulation.maxOutputDerivativeOrder
+				then 0
+				elseif sdis <> []	-- May be multiple matches, but should be all the same
+				then
+					c.derivatives(hd sdis)
+				else
+					let svis = [ svi | svi in set inds c.eModelVariables &
+						let mk_(o, bidx) = getDerivativeBase(svi, c.eModelVariables) in
+							c.eModelVariables(bidx).valueReference = vrs(i) and o = order(i) ]
+					in
+						c.variables(c.eModelVariables(hd svis).valueReference)	-- Precondition guarantees len >0
+
+			| i in set inds vrs
+		]
+		in 
+			mk_(<fmi3OK>, reals)
+	pre
+		mk_(c.fmuKind, c.fmuState) in set STATES_fmi3GetOutputDerivatives
+		and nvr = len vrs
+		and nvr = len order
+		and (forall o in seq order & o > 0)
+		and (forall vr in seq vrs &
+			let sv = lookup(c.eModelVariables, vr) in
+				sv <> nil and sv.causality = <output>)
+
+		-- Output derivatives must exist as SVs with "derivative" set,
+		-- or be defined in solver data (but not both!)
+		and (forall i in set inds vrs &
+			(exists sd in seq c.solverDerivatives &
+				sd.vref = vrs(i) and sd.order = order(i))
+			<=>
+			not exists didx in set inds c.eModelVariables &
+				let mk_(o, bidx) = getDerivativeBase(didx, c.eModelVariables) in
+					o = order(i) and c.eModelVariables(bidx).valueReference = vrs(i))
+	post
+		RESULT.#1 = <fmi3OK> => nvr = len RESULT.#2;
+
+
+	fmi3GetOutputDerivatives: fmi3Instance * seq of fmi3ValueReference * nat *
+								  seq of fmi3Integer +> fmi3Status * [seq of fmi3Float]
+	fmi3GetOutputDerivatives(c, vrs, nvr, orders) ==
+		if mk_(c.fmuKind, c.fmuState) not in set STATES_fmi3GetOutputDerivatives
+		then logAPIError(c, "Cannot call fmi3GetOutputDerivatives in this state", mk_(<fmi3Error>, nil))
+
+		elseif nvr <> len vrs or nvr <> len orders
+		then logAPIError(c, "nvr, vr and order are not consistent", mk_(<fmi3Error>, nil))
+
+		elseif exists o in seq orders & o <= 0
+		then logAPIError(c, "Order entries must all be >0", mk_(<fmi3Error>, nil))
+
+		elseif exists vr in seq vrs &
+			let sv = lookup(c.eModelVariables, vr) in
+				sv = nil or sv.causality <> <output>
+		then logAPIError(c, "Some arguments are not outputs", mk_(<fmi3Error>, nil))
+
+		-- Output derivatives must exist as SVs with "derivative" set
+		-- or be defined in solver data (but not both!)
+		elseif not forall i in set inds vrs &
+			(exists sd in seq c.solverDerivatives &
+				sd.vref = vrs(i) and sd.order = orders(i))
+			<=>
+			not exists didx in set inds c.eModelVariables &
+				let mk_(o, bidx) = getDerivativeBase(didx, c.eModelVariables) in
+					o = orders(i) and c.eModelVariables(bidx).valueReference = vrs(i)
+		then logAPIError(c, "Some outputs do not have derivatives of the right order", mk_(<fmi3Error>, nil))
+
+		else fmi3GetOutputDerivatives_Impl(c, vrs, nvr, orders)
+	 post
+	 	RESULT.#1 <> <fmi3OK> <=> RESULT.#2 = nil;

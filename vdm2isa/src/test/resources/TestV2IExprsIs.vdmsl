@@ -1,0 +1,24 @@
+module TestV2IExprsIs
+exports all
+definitions
+
+types
+	T = real
+	inv t == t > 0;
+	
+	TS = set of T;
+	
+values
+	s1: set of real = {1,2,3};
+	s2: set of real = {0.5, 1, 2};
+	
+	-- type test that works up to coercion
+	v1=is_(s1, set of nat);
+	-- type test that fails regardless of coercion
+	v2=is_(s2, set of nat);
+	-- type test that works for named type coercion
+	v3=is_(s1, set of T);
+	-- type test that works for typedef type coercion 
+	v4=is_TS(s1);
+
+end TestV2IExprsIs

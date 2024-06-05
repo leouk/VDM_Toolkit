@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Console",
+            "type": "vdm",
+            "request": "launch",
+            "noDebug": false,
+            "defaultName": "TestV2IFcns",
+            // This starts the Java debug session inside ./src/test/resources
+            // useful to avoid VDMJ Copying new versions of library files on workspace folder
+            "cwd": "${workspaceFolder}${pathSeparator}src${pathSeparator}test${pathSeparator}resources"
+        }
+    ]
+}

@@ -1,0 +1,163 @@
+\documentclass{entcs} 
+\usepackage{CSC8498macro}
+
+\usepackage{ifthen}
+\usepackage[usenames,dvipsnames]{xcolor}
+\newboolean{showComments}
+\setboolean{showComments}{false} 
+\setboolean{showComments}{true} % comment out this line to disable comment commands
+
+\usepackage{hyperref} % clickable reference links
+\usepackage{vdmlisting}
+
+
+% Dafny langauge definition
+\definecolor{backcolour}{rgb}{0.98, 0.98, 0.97}
+
+\lstdefinelanguage{dafny}
+{
+    morekeywords={function,seq,int,var,decreases,match,case,if,then,else},
+	sensitive=true,
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]", %chktex 18	
+	% morestring=[d]' %chktex 18
+}
+
+\lstdefinestyle{dafnycode}{
+	basicstyle=\footnotesize\ttfamily,
+	backgroundcolor=\color{backcolour},
+	numberstyle=\footnotesize\ttfamily,
+	numbers=left,
+	numbersep=5pt,
+	tabsize=2,
+	breaklines=true,
+	frame=single,
+	frameround=trBL,
+	language=dafny
+}
+
+\lstdefinestyle{dfy-error}{
+	basicstyle=\footnotesize\ttfamily,
+	backgroundcolor=\color{backcolour},
+	numberstyle=\footnotesize\ttfamily,
+	numbers=left,
+	numbersep=5pt,
+	tabsize=2,
+	breaklines=true,
+	frame=single,
+	frameround=trBL,
+	language=dafny,
+	commentstyle=\color{red}
+}
+
+\lstset{basicstyle=\small, style=dafnycode}
+
+% Dafny langauge definition end 
+
+
+% Please take one of these comment commands if you would like to add comments to the latex. Change XX to some identifier (e.g. initials)
+\newcommand{\awcomment}[1]{\ifthenelse { \boolean{showComments} } {\textcolor{blue}{AW:~#1}} { } } %
+
+\newcommand{\lfcomment}[1]{\ifthenelse { \boolean{showComments} } {\textcolor{red}{LF:~#1}} { } } %
+
+%% This document describes the formatting instructions for the CSC8498 final report.
+
+\makeatletter
+
+\def\lastname{CSC8498}
+\begin{document}
+\begin{frontmatter}
+\title{VDM2Dafny: An Automated Translation Tool for VDMSL to Dafny}
+\author{Adam Winstanley}
+  \address{School of Computing Science, Newcastle University, UK} 
+\thanks[adamemail]{Email:
+    \href{mailto:a.winstanley2@newcastle.ac.uk} {\texttt{\normalshape
+        a.winstanley2@newcastle.ac.uk}}}
+
+			
+				
+\begin{abstract} 
+This paper provides the rough skeleton for the writeup of my dissertation, there are short sentences throughout defining what the main focus of the section should be.
+\end{abstract}
+
+\begin{keyword}
+Translation, VDMSL, Dafny, VDMJ plugin.
+\end{keyword}
+\end{frontmatter}
+
+\section{Introduction}
+
+\section{Background}
+
+\subsection{Program Proofs}
+Describe the information on how the programming patterns used in Dafny vary to those used in VDM. This will go on to subtly describe what possible issues there may be in the implementation of the translation strategies. Further details and mitigations will be discussed at a later point.
+
+\subsection{Why3}
+Why3 is another formal software verification language that was considered as a translation target for the project. Why3 is focused primarily on producing a 
+
+\cite{why3}
+
+\subsection{VDM2Isa}
+Existing tool that translated VDM to Isabelle.
+\cite{VDMToolkit}
+
+\section{What you did and how}
+
+\subsection{Possible problems and approaches to solve them}
+On a preliminary look, why may each of these be a problem, how can they be resolved?
+
+\subsubsection{Patterns}
+
+\subsubsection{Cases}
+
+\subsubsection{Types}
+
+
+\subsubsection{Lemmas}
+
+\subsection{Manual Translation}
+Talks through the rationale in manually translating a Dafny example to translate to VDM. That being, identifying additional points of friction in the translation.
+
+\subsubsection{Selecting an example}
+Talks about why specific examples were chosen to translate. What makes these interesting.
+
+\subsubsection{Thoughts on translation}
+Talk on any of the previously identified points of friction and how to address them.
+
+\subsection{Deriving string templates}
+This should answer: why approach the project in this order? How would you go about deriving string templates for this task? what technology is used to produce strings.
+
+\subsection{AST traversal}
+How is the VDM AST traversed to gather all of information in each module?
+
+\subsection{Producing a translated module}
+Bringing this together, talk about how the AST is traversed to each leaf and how the translation produced as a result of this should arise.
+
+\section{Evaluation}
+\subsection{The subset of VDM that was tackled}
+Evaluates the subset of VDM that can be translated into Dafny, against the subset of VDM that was actually translated --- any difference in this is likely due to time constraints, or a mistaken belief that a certain part is untranslatable compared to the reality.
+
+\subsection{Program Proofs Examples}
+Show how the translation tool handles the examples translated earlier.
+
+\subsection{VDM Toolkit Examples}
+Show how the translation tool handles premade VDM models.
+
+\subsection{Comparison of translation approaches}
+How does the translation approach taken in VDM2ISA compare, merits and demerits of both.
+
+\section{Conclusions and further work}
+
+\subsection{Alternative approaches}
+Talk on the more extensive approach that makes heavy use of the defined grammar rules in Dafny and VDM to produce the translation.
+
+\subsection{Integrations with existing tools}
+VDM2ISA is integrated with a vscode extension; on route forward to making this more usable would be to integrate this into the same one as VDM2ISA.
+
+\section{Acknowledgements}
+
+\bibliographystyle{plain}
+\bibliography{CSC8498}
+
+\end{document}

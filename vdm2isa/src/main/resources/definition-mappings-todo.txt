@@ -1,0 +1,44 @@
+-TCAccessSpecifier
+-TCBUSClassDefinition
+-TCClassDefinition
+-TCClassInvariantDefinition
+-TCClassList
+-TCCPUClassDefinition
+*TCEqualsDefinition
+-TCInheritedDefinition
+-TCInstanceVariableDefinition
+-TCMutexSyncDefinition
+-TCPerSyncDefinition
+-TCSystemDefinition
+-TCThreadDefinition
+*TCDefinition
+*TCDefinitionList
+-TCMultiBindListDefinition
+*TCLocalDefinition
+*TCValueDefinition
+*TCTypeDefinition
+*TCExplicitFunctionDefinition
+*TCDefinitionListList
+*TCDefinitionSet
+*TCQualifiedDefinition
+-TCUntypedDefinition (this is used in TCValueDefinition for calculating things then gets resolved)
+*TCImportedDefinition
+*TCRenamedDefinition
+*TCStateDefinition
+*TCExplicitOperationDefinition
+*TCImplicitOperationDefinition
+*TCImplicitFunctionDefinition
+
+TCNamedTraceDefinition
+TCAssignmentDefinition
+TCExternalDefinition
+
+(30 of 33) = 79%
+
+ 26  33 defs  ( 79%)
+ 37  37 binds (100%)
+ 39  42 types ( 93%)
+107 110 exp   ( 97%)
+ 20  20 mods  (100%)
+
+229 242 total = 95%
