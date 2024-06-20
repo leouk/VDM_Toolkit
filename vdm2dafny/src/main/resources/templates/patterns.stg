@@ -1,0 +1,27 @@
+record(pattern) ::= <<
+<if(pattern.invalid)><pattern.warning>
+<endif>
+<if(pattern.parentType)>
+/*<pattern.typeName>.*/mk_<pattern.name>(<pattern.internalPatterns:{p|<p>}; separator=", ">)<else>
+<pattern.name>.mk_<pattern.name>(<pattern.internalPatterns:{p|<p>}; separator=", ">)<endif>
+>>
+
+collection(pattern) ::= <<
+<pattern.l><pattern.internalPatterns:{p|<p>};separator=", "><pattern.r>
+>>
+
+maplet(pattern) ::= <<
+<pattern.from> := <pattern.to>
+>>
+
+concat(pattern) ::= <<
+<pattern.left> + <pattern.right>
+>>
+
+munion(pattern) ::= <<
+vdm.munion(<pattern.left>, <pattern.right>)
+>>
+
+union(pattern) ::= <<
+<pattern.left> + <pattern.right>
+>>

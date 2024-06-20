@@ -1,0 +1,15 @@
+message(msg) ::= <<
+[UTC <msg.time> | <msg.severity.upperCase>]: <msg.message>
+>>
+
+block(message) ::= <<
+/*<message>*/
+>>
+
+comment(message) ::= <<
+// <trim(message)>
+>>
+
+error(type, message) ::= <<
+//@vdm.<type>.error <message>
+>>

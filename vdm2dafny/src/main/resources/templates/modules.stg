@@ -1,0 +1,24 @@
+comment(obj) ::= <<
+<obj.comments:{comment|<trim(comment.message)>};separator="\n">
+>>
+
+module(mod) ::= <<
+<comment(mod)>
+//@vdm.module(<mod.name>)
+//@vdm.translation.note(Automatically translated to Dafny using VDM2Dafny, there will be situations where human intervention is needed.)
+include "<mod.pathToVdmDfy>"
+module <mod.name> {
+    //@vdm.vdmtoolkit.imports
+    import vdm = vdm`{types, functions}
+
+    //@vdm.exports
+    <mod.exports:{export|<export>};separator="\n">
+    
+
+    //@vdm.imports
+    <mod.imports:{import|<import>};separator="\n">
+
+    //@vdm.definitions
+    <mod.definitions>
+}
+>>

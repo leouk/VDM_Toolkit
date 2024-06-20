@@ -1,0 +1,335 @@
+
+#############################################################################
+package com.fujitsu.vdmj.tc.definitions to uk.ac.ncl.vdm2dafny.tr.definitions;
+#############################################################################
+
+map TCDefinition{} to TRDefinition();
+map TCDefinitionList{} to TRDefinitionList(this);
+map TCDefinitionListList{} to TRDefinitionListList(this); 
+
+map TCTypeDefinition{comments, annotations, name, nameScope, used, excluded, type, invPattern, invExpression, eqPattern1, eqPattern2, eqExpression, ordPattern1, ordPattern2, ordExpression, invdef, eqdef, orddef, mindef, maxdef, composeDefinitions} to TRTypeDefinition(this, comments, annotations, name, nameScope, used, excluded, type, invPattern, invExpression, eqPattern1, eqPattern2, eqExpression, ordPattern1, ordPattern2, ordExpression, invdef, eqdef, orddef, mindef, maxdef, composeDefinitions);
+map TCExplicitFunctionDefinition{comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined, actualResult, expectedResult} to TRExplicitFunctionDefinition(this, comments, annotations, name, nameScope, used, excluded, typeParams, type, paramPatternList, body, precondition, postcondition, isTypeInvariant, measureExp, isCurried, predef, postdef, paramDefinitionList, recursive, isUndefined, actualResult, expectedResult);
+map TCImplicitFunctionDefinition{comments, annotations, name, nameScope, used, excluded, typeParams, parameterPatterns, result, type, body, precondition, postcondition, measureExp, predef, postdef, recursive, isUndefined, actualResult} to TRImplicitFunctionDefinition(this, comments, annotations, name, nameScope, used, excluded, typeParams, parameterPatterns, result, type, body, precondition, postcondition, measureExp, predef, postdef, recursive, isUndefined, actualResult);
+
+# This is an important case to handle all TRDefinitionList within various parts, e.g., let x = 1 in x + 10;
+map TCLocalDefinition{location, comments, annotations, name, nameScope, used, excluded, type} to TRLocalDefinition(this, location, comments, annotations, name, nameScope, used, excluded, type);
+map TCValueDefinition{comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs} to TRValueDefinition(this, comments, annotations, nameScope, used, excluded, pattern, type, exp, expType, defs);
+map TCEqualsDefinition{location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs} to TREqualsDefinition(this, location, comments, annotations, nameScope, used, excluded, pattern, typebind, bind, test, expType, defType, defs);
+map TCMultiBindListDefinition{location, comments, annotations, name, nameScope, used, excluded, bindings, defs} to TRMultiBindListDefinition(this, location, comments, annotations, name, nameScope, used, excluded, bindings, defs);
+
+map TCQualifiedDefinition{location, comments, annotations, name, nameScope, used, excluded, def, type} to TRQualifiedDefinition(this, location, comments, annotations, name, nameScope, used, excluded, def, type);
+map TCImportedDefinition{location, comments, annotations, name, nameScope, used, excluded, def} to TRImportedDefinition(this, location, comments, annotations, name, nameScope, used, excluded, def);
+map TCRenamedDefinition{location, comments, annotations, name, used, excluded, def} to TRRenamedDefinition(this, location, comments, annotations, name, used, excluded, def);
+
+map TCStateDefinition{location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted} to TRStateDefinition(this, location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted);
+
+map TCExplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions} to TRExplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions);
+map TCImplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions} to TRImplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.expressions to uk.ac.ncl.vdm2dafny.tr.expressions;
+#############################################################################
+
+map TCExpression{} to TRExpression();
+map TCExpressionList{} to TRExpressionList(this);
+map TCElseIfExpressionList{} to TRElseIfExpressionList(this);
+map TCMapletExpressionList{} to TRMapletExpressionList(this);
+map TCRecordModifierList{} to TRRecordModifierList(this);
+map TCCaseAlternativeList{} to TRCaseAlternativeList(this);
+
+map TCBooleanLiteralExpression{exptype} to TRLiteralExpression(this, exptype); 
+map TCCharLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCIntegerLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCRealLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCStringLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+map TCQuoteLiteralExpression{exptype} to TRLiteralExpression(this, exptype);
+
+map TCNotExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCAbsoluteExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCFloorExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCUnaryMinusExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCUnaryPlusExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCCardinalityExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCPowerSetExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistUnionExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistIntersectExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCLenExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCHeadExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCTailExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCIndicesExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCElementsExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCDistConcatExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCReverseExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCDistMergeExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapDomainExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapRangeExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+map TCMapInverseExpression{exp, exptype} to TRUnaryExpression(this, exp, exptype);
+
+map TCAndExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCOrExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCEquivalentExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCImpliesExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+
+map TCEqualsExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCNotEqualExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCLessEqualExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCLessExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCGreaterEqualExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCGreaterExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+
+map TCPlusExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSubtractExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCTimesExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCDivExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCDivideExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCModExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCRemExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCStarStarExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+
+map TCInSetExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCNotInSetExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSetUnionExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSetIntersectExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSetDifferenceExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSubsetExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCProperSubsetExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+
+map TCSeqConcatExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCSubseqExpression{seq, from, to, exptype} to TRSubseqExpression(this, seq, from, to, exptype);
+
+map TCPlusPlusExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCDomainResByExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCDomainResToExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCRangeResByExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCRangeResToExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCMapUnionExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+map TCCompExpression{left, op, right, exptype} to TRBinaryExpression(this, left, op, right, exptype);
+
+map TCSetRangeExpression{location, first, last, exptype} to TRSetRangeExpression(location, this, first, last, exptype);
+map TCSetEnumExpression{location, members, exptype} to TRSetEnumExpression(location, this, members, exptype);
+map TCSeqEnumExpression{location, members, exptype} to TRSeqEnumExpression(location, this, members, exptype);
+map TCMapEnumExpression{location, members, exptype} to TRMapEnumExpression(location, this, members, exptype);
+map TCMapletExpression{left, right} to TRMapletExpression(this, left, right);
+map TCTupleExpression{location, args, exptype} to TRTupleExpression(location, this, args, exptype); 
+
+map TCRecordModifier{tag, value} to TRRecordModifier(this, tag, value);
+map TCMuExpression{location, record, modifiers, exptype} to TRMuExpression(location, this, record, modifiers, exptype);
+map TCMkTypeExpression{typename, args, exptype} to TRMkTypeExpression(this, typename, args, exptype);
+map TCMkBasicExpression{location, type, arg, exptype} to TRMkBasicExpression(location, this, type, arg, exptype);
+map TCFieldNumberExpression{tuple, field, type, exptype} to TRFieldNumberExpression(this, tuple, field, type, exptype);
+map TCFieldExpression{object, field, exptype} to TRFieldExpression(this, object, field, exptype);
+
+map TCNotYetSpecifiedExpression{location, exptype} to TRNotYetSpecifiedExpression(location, this, exptype);
+map TCNarrowExpression{location, typename, basictype, test, typedef, testtype, exptype} to TRNarrowExpression(location, this, typename, basictype, test, typedef, testtype, exptype);
+map TCIsExpression{location, typename, basictype, test, typedef, exptype} to TRIsExpression(location, this, typename, basictype, test, typedef, exptype);
+map TCUndefinedExpression{location, exptype} to TRUndefinedExpression(location, this, exptype);
+
+map TCIotaExpression{location, bind, predicate, exptype} to TRIotaExpression(location, this, bind, predicate, exptype);
+map TCExists1Expression{bind, predicate, exptype} to TRBoundedExpression(this, bind, predicate, exptype);
+map TCExistsExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
+map TCForAllExpression{bindList, predicate, exptype} to TRBoundedExpression(this, bindList, predicate, exptype);
+map TCLetBeStExpression{location, bind, suchThat, value, def, exptype} to TRLetBeStExpression(location, this, bind, suchThat, value, def, exptype);
+map TCLetDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
+map TCDefExpression{location, localDefs, expression, exptype} to TRLetDefExpression(this, location, localDefs, expression, exptype);
+
+#Lambda type is the same as exptype but as a TCFunctionType; stick to that one
+#map TCLambdaExpression{location, bindList, expression, type, exptype} to TRLambdaExpression(location, bindList, expression, type, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, exptype); 
+#map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype} to TRLambdaExpression(location, bindList, expression, type, paramPatterns, paramDefinitions, def, exptype); 
+map TCLambdaExpression{location, bindList, expression, type, paramPatterns, paramDefinitions, def} to TRLambdaExpression(location, this, bindList, expression, type, paramPatterns, paramDefinitions, def); 
+
+map TCCasesExpression{location, exp, cases, others, exptype} to TRCasesExpression(location, this, exp, cases, others, exptype);
+map TCCaseAlternative{location, pattern, result} to TRCaseAlternative(location, this, pattern, result);
+
+map TCSetCompExpression{location, first, bindings, predicate, def, exptype} to TRSetCompExpression(location, this, first, bindings, predicate, def, exptype);
+map TCSeqCompExpression{location, first, bind, predicate, def, exptype} to TRSeqCompExpression(location, this, first, bind, predicate, def, exptype);
+map TCMapCompExpression{location, first, bindings, predicate, def, exptype} to TRMapCompExpression(location, this, first, bindings, predicate, def, exptype);
+
+map TCNilExpression{location, exptype, exptype} to TRNilExpression(location, this, exptype);
+map TCApplyExpression{type, root, args, argtypes, recursiveCycles, exptype} to TRApplyExpression(this, type, root, args, argtypes, recursiveCycles, exptype);
+map TCIfExpression{location, ifExp, thenExp, elseList, elseExp, exptype} to TRIfExpression(location, this, ifExp, thenExp, elseList, elseExp, exptype);
+map TCElseIfExpression{location, elseIfExp, thenExp, exptype} to TRElseIfExpression(location, this, elseIfExp, thenExp, exptype);
+map TCVariableExpression{location, name, original, vardef, exptype} to TRVariableExpression(location, this, name, original, vardef, exptype);
+
+map TCPreExpression{location, function, args, exptype} to TRPreExpression(location, this, function, args, exptype);
+map TCFuncInstantiationExpression{function, type, actualTypes, expdef, exptype} to TRFunctionInstantiationExpression(this, function, type, actualTypes, expdef, exptype);
+
+map TCStateInitExpression{exptype, state} to TRStateInitExpression(this, exptype, state);
+
+map TCPreOpExpression{location, exptype, opname, expression, state} to TRPreOpExpression(this, location, exptype, opname, expression, state);
+map TCPostOpExpression{location, exptype, opname, preexpression, postexpression, state} to TRPostOpExpression(this, location, exptype, opname, preexpression, postexpression, state);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.statements to uk.ac.ncl.vdm2dafny.tr.statements;
+#############################################################################
+
+map TCStatement{} to TRStatement();
+map TCStatementList{} to TRStatementList(this);
+
+map TCSimpleBlockStatement{} to TRSimpleBlockStatement();
+map TCBlockStatement{location, comments, stmttype, statements, assignmentDefs} to TRBlockStatement(location, comments, this, stmttype, statements, assignmentDefs);
+
+map TCAssignmentStatement{location, comments, stmttype, target, exp, targetType, expType} to TRAssignmentStatement(location, comments, this, stmttype, target, exp, targetType, expType);
+
+map TCStateDesignator{} to TRStateDesignator();
+map TCFieldDesignator{location, object, field} to TRFieldDesignator(location, object, field);
+map TCIdentifierDesignator{location, name} to TRIdentifierDesignator(location, name);
+
+#############################################################################
+package com.fujitsu.vdmj.ast.lex to uk.ac.ncl.vdm2dafny.lex;
+#############################################################################
+map LexCommentList{} to TRIsaVDMCommentList(this);
+map LexComment{} to TRIsaVDMComment(this);
+
+#unmapped com.fujitsu.vdmj.ast.lex.LexCommentList;
+
+#############################################################################
+package com.fujitsu.vdmj.tc.lex to uk.ac.ncl.vdm2dafny.tr.lex;
+#package com.fujitsu.vdmj.ast.lex to vdn2isa.tr.lex;
+#############################################################################
+
+unmapped com.fujitsu.vdmj.tc.lex.TCNameToken;
+unmapped com.fujitsu.vdmj.tc.lex.TCNameList;
+unmapped com.fujitsu.vdmj.tc.lex.TCNameSet;
+unmapped com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
+unmapped com.fujitsu.vdmj.lex.LexLocation;
+unmapped com.fujitsu.vdmj.typechecker.NameScope;
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.modules to uk.ac.ncl.vdm2dafny.tr.modules;
+#############################################################################
+
+map TCModuleList{} to TRModuleList(this);
+map TCModule{comments, annotations, name, importdefs, exportdefs, defs, files} to TRModule(this, comments, annotations, name, importdefs, exportdefs, defs, files);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.annotations to uk.ac.ncl.vdm2dafny.tr.annotations;
+#############################################################################
+
+map TCAnnotationList{} to TRAnnotationList(this);
+map TCAnnotation{} to TRAnnotation();
+
+map TCNoAnnotation{name, args} to TRNoAnnotation(this, name, args); 
+map TCAnnotatedExpression{location, annotation, expression, exptype} to TRAnnotatedExpression(location, this, annotation, expression, exptype);
+
+#############################################################################
+#package annotations.tc to uk.ac.ncl.vdm2dafny.tr.annotations;
+#############################################################################
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.patterns to uk.ac.ncl.vdm2dafny.tr.patterns;
+#############################################################################
+
+map TCPattern{} to TRPattern();
+map TCPatternList{} to TRPatternList(this);
+map TCPatternListList{} to TRPatternListList(this); 
+map TCBind{} to TRMultipleBind();
+map TCMultipleBind{} to TRMultipleBind();
+map TCMultipleBindList{} to TRMultipleBindList(this);
+map TCTypeBindList{} to TRTypeBindList(this);
+
+map TCSetBind{pattern, set} to TRMultipleSetBind(this, pattern, set);
+map TCMultipleSetBind{plist, set} to TRMultipleSetBind(this, plist, set);
+map TCSeqBind{pattern, sequence} to TRMultipleSeqBind(this, pattern, sequence);
+map TCMultipleSeqBind{plist, sequence} to TRMultipleSeqBind(this, plist, sequence);
+map TCTypeBind{pattern, type} to TRMultipleTypeBind(this, pattern, type);
+map TCMultipleTypeBind{plist, type} to TRMultipleTypeBind(this, plist, type); 
+
+map TCIdentifierPattern{} to TRBasicPattern(this);
+map TCBooleanPattern{} to TRBasicPattern(this);
+map TCCharacterPattern{} to TRBasicPattern(this);
+map TCIntegerPattern{} to TRBasicPattern(this);
+map TCQuotePattern{} to TRBasicPattern(this);
+map TCRealPattern{} to TRBasicPattern(this);
+map TCStringPattern{} to TRBasicPattern(this);
+map TCNilPattern{} to TRBasicPattern(this);
+map TCIgnorePattern{} to TRBasicPattern(this);
+
+map TCSetPattern{plist} to TRStructuredPattern(this, plist);
+map TCSeqPattern{plist} to TRStructuredPattern(this, plist);
+map TCTuplePattern{plist} to TRStructuredPattern(this, plist);
+map TCConcatenationPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCUnionPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCMapUnionPattern{left, right} to TRStructuredPattern(this, left, right);
+map TCExpressionPattern{exp} to TRStructuredPattern(this, exp);
+
+map TCMapletPattern{from, to} to TRStructuredPattern(this, from, to);
+map TCRecordPattern{location, typename, plist, type} to TRRecordPattern(this, location, typename, plist, type);
+map TCPatternBind{location, pattern, bind} to TRPatternBind(this, location, pattern, bind);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.types to uk.ac.ncl.vdm2dafny.tr.types;
+#############################################################################
+map TCType{} to TRType();
+map TCInvariantType{} to TRInvariantType();
+map TCTypeList{} to TRTypeList(this);
+map TCTypeSet{} to TRTypeSet(this);
+map TCFieldList{} to TRFieldList(this);
+
+map TCPatternListTypePairList{} to TRPatternListTypePairList(this);
+map TCPatternListTypePair{patterns, type} to TRPatternListTypePair(patterns, type);
+map TCPatternTypePair{pattern, type} to TRPatternTypePair(pattern, type);
+
+map TCFunctionType{definitions, parameters, partial, result} to TRFunctionType(this, definitions, parameters, partial, result);
+
+map TCNaturalOneType{definitions} to TRBasicType(this, definitions);
+map TCNaturalType{definitions} to TRBasicType(this, definitions);
+map TCIntegerType{definitions} to TRBasicType(this, definitions);
+map TCRationalType{definitions} to TRBasicType(this, definitions);
+map TCRealType{definitions} to TRBasicType(this, definitions);
+map TCBooleanType{definitions} to TRBasicType(this, definitions);
+map TCCharacterType{definitions} to TRBasicType(this, definitions);
+map TCTokenType{definitions, argtypes} to TRTokenType(this, definitions, argtypes);
+
+map TCQuoteType{definitions, value} to TRQuoteType(this, definitions, value);
+map TCProductType{definitions, types} to TRProductType(this, definitions, types);
+map TCMapType{definitions, from, to} to TRMapType(this, definitions, from, to);
+map TCInMapType{definitions, from, to} to TRMapType(this, definitions, from, to);
+map TCNamedType{typename, definitions, type, invdef, eqdef, orddef} to TRNamedType(this, typename, definitions, type, invdef, eqdef, orddef);
+map TCRecordType{name, definitions, fields, composed, invdef, eqdef, orddef} to TRRecordType(this, name, definitions, fields, composed, invdef, eqdef, orddef);
+map TCField{tagname, type, equalityAbstraction} to TRField(tagname, type, equalityAbstraction);
+map TCSetType{setof, definitions} to TRSetType(this, definitions, setof);
+map TCSet1Type{setof, definitions} to TRSetType(this, definitions, setof);
+map TCSeqType{seqof, definitions} to TRSeqType(this, definitions, seqof);
+map TCSeq1Type{seqof, definitions} to TRSeqType(this, definitions, seqof);
+map TCOptionalType{definitions, type} to TROptionalType(this, definitions, type);
+map TCUnknownType{location, definitions} to TRUnknownType(location, definitions);
+map TCUnionType{definitions, types} to TRUnionType(this, definitions, types);
+map TCBracketType{definitions, type} to TRBracketType(this, definitions, type);
+
+map TCParameterType{definitions, name, paramdef} to TRParameterType(this, definitions, name, paramdef);
+
+map TCOperationType{definitions, parameters, result, pure} to TROperationType(this, definitions, parameters, result, pure);
+map TCVoidType{definitions} to TRVoidType(this, definitions);
+
+#############################################################################
+# Recursive loops
+#############################################################################
+package com.fujitsu.vdmj.tc to uk.ac.ncl.vdm2dafny.tr.definitions;
+map TCRecursiveMap{} to TRRecursiveMap(this);
+map TCRecursiveLoops{recursiveLoops} to TRRecursiveLoops(recursiveLoops);
+
+#############################################################################
+# Classes that are not mapped
+#############################################################################
+
+unmapped java.lang.Boolean;
+unmapped java.lang.String;
+unmapped java.lang.Long;
+unmapped com.fujitsu.vdmj.mapper.FileList;
+
+#############################################################################
+# initializers, called by ClassMapper.init()
+#############################################################################
+init uk.ac.ncl.vdm2dafny.lex.IsaTemplates.reset();
+init uk.ac.ncl.vdm2dafny.tr.types.TRRecordType.reset();
+init uk.ac.ncl.vdm2dafny.tr.types.TRQuoteType.reset();
+init uk.ac.ncl.vdm2dafny.tr.definitions.TRRecursiveLoops.reset();

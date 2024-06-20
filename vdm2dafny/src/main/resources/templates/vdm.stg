@@ -1,0 +1,24 @@
+nat1() ::= <<
+type nat1 = n: nat | n > 0
+>>
+
+seq1(T) ::= <<
+//@vdm.warning This will show issues, not sure how to fix this with generic types, apologies.
+type seq1<T> = s: seq<T> | |s| > 0 witness *
+>>
+
+set1(T) ::= <<
+//@vdm.warning This will show issues, not sure how to fix this with generic types, apologies.
+type set1<T> = s: set1<T> | |s| > 0 witness *
+>>
+
+rem() ::= <<
+//@vdm.expression(a rem b)
+function VDMRem(a: int, b: int): int 
+    requires b != 0
+{ a - b * (a / b) }
+>>
+
+dunion() ::= <<
+//@vdm.expression(dunion a)
+>>

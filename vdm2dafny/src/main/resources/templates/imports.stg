@@ -1,0 +1,38 @@
+export(export) ::= <<
+export <export.name> <if(export.reveals)>reveals<else>provides<endif> <export.name>
+>>
+
+exportAll(export) ::= <<
+//@vdm.export.all
+export reveals *
+>>
+
+imp(imp) ::= <<
+import <imp.rename> = <imp.module>`<imp.name>
+>>
+
+csv(list) ::= <<
+<list:{v|<v>}; separator=", ">
+>>
+
+nonRenamedImports(mods) ::= <<
+<mods:{mod|<mod.key>`{<csv(mod.value)>\}}; separator="\n">
+>>
+
+importAll(mod) ::= <<
+import <mod>
+>>
+
+imports(warnings, hasRenamed, renamed, hasNonRenamed, nonRenamed, hasAll, all) ::= <<
+<if(hasRenamed)>//@vdm.import.renamed
+<renamed:{imp|<imp>}; separator="\n">
+<endif>
+
+<if(hasNonRenamed)>//@vdm.import.non_renamed
+<nonRenamedImports(non_renamed)>
+<endif>
+
+<if(hasAll)>//@vdm.import.all
+<all:{mod|<importAll(mod)>}; separator="\n">
+<endif>
+>>

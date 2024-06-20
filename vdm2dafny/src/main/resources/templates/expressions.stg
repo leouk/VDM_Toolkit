@@ -1,0 +1,176 @@
+comment(obj) ::= <<
+<obj.comments:{comment|<trim(comment.message)>};separator="\n">
+>>
+
+apply(expr) ::= <<
+<expr.root>(<expr.params:{param|<param>};separator=", ">)
+>>
+
+applySeq(expr) ::= <<
+<expr.root>[<expr.params:{param|<param>};separator=", "> - 1]
+>>
+
+applyMap(expr) ::= <<
+<expr.root>[<expr.params:{param|<param>};separator=", ">]
+>>
+
+operate(operation) ::= <<
+(<if(!operation.unary)><operation.left> <endif><operation.op><if(!operation.unary)> <endif><operation.right>)
+>>
+
+call(function, params) ::= <<
+<function>(<params; separator=", ">)
+>>
+
+forallcheck(bind) ::= <<
+forall <bind.name>: <bind.type> :: <bind.typebind> ==\> <bind.check>
+>>
+
+exists(bind) ::= <<
+exists <bind.name>: <bind.type> :: <bind.typebind> && <bind.check>
+>>
+
+constFieldDeclaration(Field) ::= <<
+<comment(Field)>
+const <Field.id>: <Field.type><if(Field.hasValue)> := <Field.value><endif>
+>>
+
+varFieldDeclaration(Field) ::= <<
+<comment(Field)>
+var <Field.id>: <Field.type><if(Field.hasValue)> := <Field.value><endif>;
+>>
+
+letBeSt(Field) ::= <<
+<comment(Field)>
+var <Field.id><if(Field.hasType)>: <Field.type><endif> :| <Field.bindExpression>;
+>>
+
+letPatternAssignment(Assign) ::= <<
+<comment(Assign)>
+var <Assign.ids:{id|<id.name>}; separator=", "> :| <Assign.leftPattern> == <Assign.right>;
+>>
+
+compExpression(comp) ::= <<
+<comment(comp)>
+(<comp.type> <comp.vars> | <if(comp.predicateTranslation)><comp.predicate> && <endif><comp.bindings> :: <comp.expr>)
+>>
+
+bind(bind, keyword, binding) ::= <<
+<bind> <keyword> <binding>
+>>
+
+multibind(bind) ::= <<
+<bind.patterns:{pattern|<bind(pattern, bind.keyword, bind.binding)>}; separator=" && ">
+>>
+
+range(first, last) ::= <<
+(set vdmTmpRange | <first> \<= vdmTmpRange \<= <last> :: vdmTmpRange)
+>>
+
+case(case) ::= <<
+<comment(case)>
+<if(case.invalid)><case.warnings>
+<endif>case <case.pattern> => 
+    <case.result>
+>>
+
+cases(exp) ::= <<
+<comment(exp)>
+(match (<exp.caseExpression>) 
+    <exp.cases:{case|<case(case)>};separator="\n">
+)
+>>
+
+subseq(exp) ::= <<
+(<exp.seq>[(<exp.from> - 1)..(<exp.to>)])
+>>
+
+
+
+ifthenelse(iexp) ::= <<
+<comment(iexp)>
+if <iexp.condition> then 
+    <iexp.then>
+<if(iexp.elseIf)>
+<iexp.elseIfs:{eif|<elseIf(eif)>}; separator="\n">
+<endif>
+else
+    <iexp.elseCase>
+>>
+
+elseIf(eif) ::= <<
+<comment(eif)>
+else if (<eif.condition>) then 
+    <eif.then>
+>>
+
+mkType(cons) ::= <<
+mk_<cons.type>(<cons.args:{arg|<arg>};separator=", ">)
+>>
+
+field(fieldExpr) ::= <<
+<fieldExpr.id>.<fieldExpr.member>
+>>
+
+tupleAccess(tup) ::= <<
+<tup.expr>.<tup.member>
+>>
+
+seqAccess(seq) ::= <<
+<comment(seq)>
+<seq.seq>[(<seq.from>-1)..(<seq.to>-1)] /*@vdm.warning(Added -1s to account for VDM-Dafny array starting idx)*/
+>>
+
+iterationType(type) ::= <<
+<comment(type)>
+<type.keyword> <type.vars> |
+    //@vdm.bindings
+    (<type.bindings>) ::
+    //@vdm.predicate
+    (<type.predicate>)
+>>
+
+exists1(type) ::= <<
+<comment(type)>
+(| (set <type.vars> | 
+    //@vdm.bindings
+    <type.bindings> && 
+    //@vdm.predicate
+    <type.predicate> 
+    :: (<type.vars>)) | 
+==  1)
+>>
+
+ordCall(exp) ::= <<
+ord_<exp.typeName>(<ord.left>, <ord.right>)
+>>
+
+compare(exp) ::= <<
+<exp.ops:{op|<op>_<exp.typeName>(<exp.left>, <exp.right>)}; separator=" && ">
+>>
+
+postop(exp) ::= <<
+//@vdm.translation.note(As part of the post expression, we will assert that the precondition holds)
+assert <exp.pre>;
+<exp.post>
+>>
+
+quoteComparison(exp) ::= <<
+<exp.var>.<exp.quot>?
+>>
+
+funcInstantiation(exp) ::= <<
+<exp.name>\<<exp.types:{type|<type>}; separator=", ">\>
+>>
+
+isExp(exp) ::= <<
+<if(exp.consTest)>(<exp.test>).<exp.type>?<else>(<exp.test>) is <exp.type><endif>
+>>
+
+lambda(exp) ::= <<
+((<exp.definition>) => (<exp.expression>))
+>>
+
+mu(exp) ::= <<
+(<exp.root>.( <exp.modifiers:{mod|<mod.key> := <mod.value>};separator=", "> ))
+>>

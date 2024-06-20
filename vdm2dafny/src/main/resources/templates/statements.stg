@@ -1,0 +1,104 @@
+comment(obj) ::= <<
+<obj.comments:{comment|<trim(comment.message)>};separator="\n">
+>>
+
+individualCase(case) ::= <<
+    <comment(stmt)>
+    case <case.pattern> =\> {
+        <case.body>
+    }
+>>
+
+switchcase(pattern, cases) ::= <<
+<comment(stmt)>
+match <pattern> {
+    <cases:{case | individualCase(case)}>
+}
+>>
+
+skip(stmt) ::= <<
+<comment(stmt)>
+>>
+
+call(stmt) ::= <<
+<comment(stmt)>
+<stmt.name>(<stmt.args:{arg|<arg>};separator=", ">);
+>>
+
+return(stmt) ::= <<
+<comment(stmt)>
+return (<stmt.expr>);
+>>
+
+block(stmt) ::= <<
+<comment(stmt)>
+<stmt.declarationComments:{comment|<trim(comment.message)>};separator="\n">
+<stmt.declarations:{d|var <d>;};separator="\n">
+<stmt.statements:{s|<s>};separator="\n">
+>>
+
+assign(stmt) ::= <<
+<comment(stmt)>
+<stmt.stateDesignator> := <stmt.exp>;
+>>
+
+newVar(stmt) ::= <<
+<comment(stmt)>
+var <stmt.names> := <stmt.exprs>
+>>
+
+forIdx(stmt) ::= <<
+<comment(stmt)>
+for <stmt.iteratorName> := <stmt.from> to <stmt.to> {
+    <stmt.statement>
+}
+>>
+
+forall(stmt) ::= <<
+<comment(stmt)>
+forall <stmt.names> | <stmt.bind> {
+    <stmt.do>
+}
+>>
+
+def(stmt) ::= <<
+<comment(stmt)>
+<stmt.defs:{def|var <def>;}; separator="\n">
+<stmt.in>
+>>
+
+letbest(stmt) ::= <<
+var <stmt.vars:{var|<var>};separator=", "> :| 
+    <stmt.bind:{bind|<bind>}; separator="\n&& ">
+    ==
+    <stmt.suchThat>;
+<stmt.in> 
+>>
+
+ifthenelse(stmt) ::= <<
+<comment(stmt)>
+if (<stmt.ifExp>) {
+    <stmt.ifBody>
+}
+<stmt.elseIfs:{eif|<eif>};separator="\n">
+<if(stmt.elses)>
+else {
+    <stmt.elseBody>
+}
+<endif>
+>>
+
+elseif(stmt) ::= <<
+<comment(stmt)>
+else if (<stmt.condition>) {
+    <stmt.body>
+}
+>>
+
+mapseqDesignator(designator) ::= <<
+<designator.root>[<designator.exp>]
+>>
+
+atomic(stmt) ::= <<
+<stmt.lhs:{assignment|<assignment>}; separator=", "> := <stmt.rhs:{value|<value>};separator=", "> {:atomic};
+>>
