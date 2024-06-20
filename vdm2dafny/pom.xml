@@ -2,18 +2,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	
-	<groupId>aj-winstanley-dissertation</groupId>
+	<parent>
+		<groupId>vdmtoolkit</groupId>
+		<artifactId>VDMToolkit-suite</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<artifactId>vdm2dafny</artifactId>
-	<name>vdm2dafny</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<name>VDM to Dafny translator</name>
 	<!--TODO: separate the command plugin from the LSP extension as separate projects?-->
 	<description>VDM-SL translation to Dafny as a command plugin and VSCode LSP extension</description>
 
 	<properties>
+		<!--
 		<revision>1.2.0-SNAPSHOT</revision>
 		<dk.au.ece.vdmj-version>4.5.0</dk.au.ece.vdmj-version>
+		-->
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.source>11</maven.compiler.source>
 	</properties>

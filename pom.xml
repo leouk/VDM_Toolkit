@@ -28,6 +28,7 @@
 		<module>vdmlib</module>
 		<module>vdm2isa</module>
 		<module>vdm2isa-lsp</module>
+		<module>vdm2dafny</module>
 		<!-- TODO figure out how to build Java11 for the vdm-antlr plugin
 			 now we are at Java11 but ANTLR4 requires mvn clean + mvn install (twice)?
 		<module>vdm-antlr</module>
