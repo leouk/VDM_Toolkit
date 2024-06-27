@@ -1,0 +1,144 @@
+comment(obj) ::= <<
+<obj.comments:{comment|<trim(comment.message)>};separator="\n">
+>>
+
+localDef(local) ::= <<
+<local.declaredName>: <local.typeString>
+>>
+
+param(param) ::= <<
+<param.name>: <param.type>
+>>
+
+assignSuchThat(def) ::= <<
+<comment(def)>
+<def.names:{name|<name>};separator=", "> :| <def.pattern> == <def.value>
+>>
+
+reconcile(pattern, valid, value, vars) ::= <<
+<if(valid)>
+var <pattern> := <value>;<else>
+var <vars:{var|<var>};separator=", "> :| <pattern> == <value>;<endif>
+>>
+
+let(def) ::= <<
+<comment(def)>
+<if(def.validPattern)>
+<def.pattern> := <def.valueDef><else>
+<def.names> :| <def.pattern> == <def.valueDef><endif>
+>>
+
+multilet(defs) ::= <<
+<defs.defs:{def|var <def>;}; separator="\n">
+<defs.body>
+>>
+
+assign(def) ::= <<
+<comment(def)>
+<def.name>: <def.type> := <def.value>
+>>
+
+
+
+const(decl) ::= <<
+<comment(decl)>
+const <decl.names> := <decl.valueDef>
+>>
+
+type(type) ::= <<
+//@vdm.type(<type.name>)
+<comment(type)>
+
+datatype <type.name> = 
+    <type.definitions:{def|| <def.translate>}; separator="\n">
+>>
+
+union(type) ::= <<
+//@vdm.type(<type.name>)
+<comment(type)>
+type <type.name> = <if(type.invariant)>
+    <type.declaredName>: <endif> mk_<type.name>
+    <if(type.invariant)>| <type.invName>(<type.declaredName>)<endif>
+
+//@vdm.union(<type.name>)
+datatype <type.implName> = <type.union:{type|<if(type.quote)><type.quote><else>mk_<type.name>(<type.name>)<endif>}; separator=" | ">
+
+//@vdm.invariant(<type.name>)
+predicate <type.invName>(<type.declaredName>: <type.typeName>) {
+    <type.invBody>
+}
+>>
+
+typeDef(type) ::= <<
+//@vdm.type(<type.name>)
+<comment(type)>
+type <type.name> = 
+    <if(type.invariant)><type.declaredName>: <endif><type.typeName>
+    <if(type.invariant)>| <type.invName>(<type.declaredName>)<endif>
+
+predicate <type.invName>(<type.declaredName>: <type.typeName>) {
+    <type.invBody>
+}
+>>
+
+signature(op) ::= <<
+<if(op.predef)>requires <op.preDefObj.name>(<op.preDefObj.paramList:{param|<param.name>}; separator=", ">)<endif>
+<if(op.postdef)>ensures <op.postDefObj.name>(<op.postDefObj.paramList:{param|<param.name>}; separator=", ">)<endif>
+<if(op.externals)><op.ext:{ext|<externals(ext)>};separator="\n"><endif>
+>>
+
+operation(op) ::= <<
+<if(op.predef)><op.predef>
+
+<endif><if(op.postdef)><op.postdef>
+
+<endif>//@vdm.operation(<op.name>)
+<comment(op)>
+method <op.name>(<op.params:{p|<p>};separator=", ">)<if(op.return)> returns (RESULT: <op.returnType>)<endif> <if(op.sig)>
+    <signature(op)>
+<endif>{ 
+    <if(op.reconcilablePatterns)>
+    //@vdm.patterns
+    <op.reconilation>
+<endif>
+    <if(op.body)>//@vdm.operation.body
+<op.body>
+<endif>
+}
+>>
+
+state(def) ::= <<
+//@ERROR. THIS IS INVALID
+/*
+class VDMState {
+    // State composition
+    <def.stateVariables:{var|var <var.name>: <var.type>};separator="\n">
+
+    constructor() {
+        <def.stateInit>
+        assert inv();
+    }
+
+    predicate inv() {
+        <def.stateInv>
+    }
+}
+
+const <def.name>: VDMState?
+
+//state initiation
+method InitVDMState() 
+    modifies <def.name>
+{
+    <def.name> := new VDMState();
+}
+*/
+>>
+
+externals(clause) ::= <<
+<clause.mode> <clause.identifiers>
+>>
+
+paramList(params) ::= <<
+<params:{param|<param.key>: <param.value>};separator=", ">
+>>

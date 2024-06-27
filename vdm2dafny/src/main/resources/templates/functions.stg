@@ -1,0 +1,114 @@
+comment(obj) ::= <<
+<obj.comments:{comment|<trim(comment.message)>};separator="\n">
+>>
+
+param(arg) ::= <<
+<arg.name>: <arg.type>
+>>
+
+FunctionDecl(func) ::= <<
+function <if(func.attribute)><func.attribute><endif><functionName(func)>: <func.returnType>
+    <functionSignature(func)>
+<if(func.specified)>{
+    <func.body>
+}<endif>
+>>
+
+PredicateDecl(func) ::= <<
+predicate <if(func.attribute)><func.attribute><endif><functionName(func)>
+    <functionSignature(func)>
+<if(func.specified)>{
+    <func.body>
+}<endif>
+>>
+
+
+
+functionName(func) ::= <<
+<func.name><if(func.parmaterisedFunction)>\< <func.typeParams:{typeParam|<typeParam>};separator=", "> \><endif>(<func.paramList:{param|<param.name>: <param.type>}; separator=", ">)
+>>
+
+functionSignature(func) ::= <<
+    <if(func.precondition)>requires pre_<func.name>(<func.paramList:{param|<param.name>}; separator=", ">)<endif>
+    <if(func.postcondition)>ensures var RESULT := <func.name>(<func.paramList:{param|<param.name>}; separator=", ">);
+        post_<func.name>(<if(func.parameters)><func.paramList:{param|<param.name>}; separator=", ">, <endif>RESULT)<endif>
+    <if(func.measureExpression)>decreases <func.measure><endif>
+>>
+
+function(func) ::= << 
+<if(func.predef)><func.predef>
+
+<endif><if(func.postdef)><func.postdef>
+
+<endif><comment(func)>
+//@vdm.function(<func.name>)
+function <functionName(func)>: <func.returnType>
+<functionSignature(func)>
+{   
+    <if(func.reconcilablePatterns)>//@vdm.patterns
+<func.reconciliation><endif>
+    <if(func.body)>
+    //@vdm.function.body
+<if(func.unionReturn)>
+    <func.unionCons>(
+        <if(func.body)><func.body><endif>
+    )
+<else>
+    <if(func.body)><func.body><endif>
+<endif>
+<endif>
+}
+>>
+
+predicate(func) ::= << 
+
+<if(func.predef)><func.predef>
+
+<endif><if(func.postdef)><func.postdef>
+
+<endif><comment(func)>
+//@vdm.function(<func.name>)
+predicate <functionName(func)>
+<functionSignature(func)>
+{   
+    <if(func.reconcilablePatterns)>//@vdm.patterns
+<func.reconciliation>
+    <endif>
+    <if(func.body)>//@vdm.function.body
+<if(func.unionReturn)>
+<func.unionCons>(
+    <if(func.body)><func.body><endif>
+)
+<else>
+<if(func.body)><func.body><endif>
+<endif>
+<endif>
+}
+>>
+
+ord(ordFunc) ::= <<
+//@vdm.warning  This may replace some instances of comparison operations when comparing two instances of <ordFunc.tname>; 
+//              take care and see if this is desired in your code.
+//@vdm.ord(<ordFunc.tname>) -- Should be defined such that ((<ordFunc.v1>, <ordFunc.v2>) = true) \<==\> (<ordFunc.v1> \< <ordFunc.v2>)
+predicate ord<ordFunc.tname>(<ordFunc.v1>: <ordFunc.type>, <ordFunc.v2>: <ordFunc.type>) {
+    <ordFunc.body>
+}
+
+//@vdm.ord.derived(<ordFunc.tname>) as per VDM Language Manual 10
+function max<ordFunc.tname>(arg0: <ordFunc.type>, arg1: <ordFunc.type>): <ordFunc.type> {
+    if (ord<ordFunc.tname>(arg0, arg1) || arg0 == arg1) then arg1 else arg0
+}
+
+//@vdm.ord.derived(<ordFunc.tname>) as per VDM Language Manual 10
+function max<ordFunc.tname>(arg0: <ordFunc.type>, arg1: <ordFunc.type>): <ordFunc.type> {
+    if (ord<ordFunc.tname>(arg0, arg1) || arg0 == arg1) then arg0 else arg1
+}
+>>
+
+paramReconciliation(pattern) ::= <<
+//@vdm.pattern_matching
+/*@vdm.warning(There may be patterns in this that are not reconcilable. This is primarily included to give you a possible
+               Dafny implementation of the VDM pattern, if it complains that it cannot find a LHS that satisfies the patter
+               then you will have to implement something yourself. Sorry!)*/
+var <pattern.vars:{var|<var>};separator=", "> :| <pattern.name> == <pattern.pattern>;
+>>

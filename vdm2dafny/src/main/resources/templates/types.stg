@@ -1,0 +1,81 @@
+alias(type) ::= <<
+//@vdm.type(<type.name>)
+type <type.name> = <if(type.inv)><type.var>: <type.alias>
+|   <type.invCall>
+   /* witness ? */
+<else><type.alias><endif>
+<typeFunctions(type)>
+>>
+
+invariant(inv) ::= <<
+//@vdm.function(<inv.name>)
+predicate <inv.name>(<inv.param.name>: <inv.implType>)
+{   
+    <if(inv.reconcilablePatterns)>//@vdm.patterns
+<inv.reconciliation><endif>
+    <if(inv.body)>
+    //@vdm.function.body
+<inv.body>
+<endif>
+}
+>>
+
+typeFunctions(type) ::= <<
+<if(type.inv)>
+
+<type.invBody>
+<endif>
+<if(type.ord)>
+
+<type.ordBody>
+
+//@vdm.implicit(max_<type.name>)
+function max_<type.name>(arg0: <type.name>, arg1: <type.name>): <type.name> {
+    if ((ord_<type.name>(arg0, arg1)) || (arg0 == arg1)) then arg1 else arg0
+}
+
+//@vdm.implicit(min_<type.name>)
+function min_<type.name>(arg0: <type.name>, arg1: <type.name>): <type.name> {
+    if ((ord_<type.name>(arg0, arg1)) || (arg0 == arg1)) then arg0 else arg1
+}
+<endif>
+<if(type.eq)>
+
+<type.eqBody>
+<endif>
+>>
+
+record(type) ::= <<
+//@vdm.type(<type.name>)
+type <type.name> = <if(type.inv)><type.var>: <type.implName> 
+    | <type.invCall>// witness @vdm.warning(This may need a witness)
+<else><type.implName>
+<endif>  
+datatype <type.implName> = mk_<type.name>(<type.cons:{c|<c.key>: <c.value>}; separator=", ">)
+<typeFunctions(type)>
+>>
+
+union(type) ::= <<
+//@vdm.type(<type.name>)
+type <type.name> = <if(type.inv)><type.var>: <type.implName> 
+    | <type.invCall>// witness @vdm.warning(This may need a witness)
+<else><type.implName>
+<endif>  
+datatype <type.implName> = 
+    <type.unionTypes:{t|| <if(t.quote)><t.name><else><t.name>(<t.name>: <t.name>)<endif>}; separator="\n">
+<typeFunctions(type)>
+>>
+
+defaultMax(type) ::= <<
+//@vdm.implicit
+predicate max_<type>(arg0: <type>, arg1: <type>) {
+    if (ord_<type.name>(arg0, arg1)) || arg0 == arg1) then arg1 else arg0
+}
+>>
+
+defaultMin(type) ::= <<
+//@vdm.implicit
+predicate min_<type>(arg0: <type>, arg1: <type>) {
+    if (ord_<type.name>(arg0, arg1)) || arg0 == arg1) then arg0 else arg1
+}
+>>

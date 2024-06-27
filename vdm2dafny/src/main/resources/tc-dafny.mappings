@@ -1,0 +1,89 @@
+
+#############################################################################
+package com.fujitsu.vdmj.tc.definitions to uk.ac.ncl.vdm2dafny.tr.dafny.definitions;
+#############################################################################
+
+map TCDefinition{} to DafnyDefinition();
+map TCDefinitionList{} to DafnyDefinitionList(this);
+map TCDefinitionListList{} to DafnyDefinitionListList(this);
+
+map TCTypeDefinition{} to DafnyTypeDefinition(this);
+map TCExplicitFunctionDefinition{} to DafnyExplicitFunctionDefinition(this);
+map TCImplicitFunctionDefinition{} to DafnyImplicitFunctionDefinition(this);
+
+#############################################################################
+package com.fujitsu.vdmj.tc.expressions to uk.ac.ncl.vdm2dafny.tr.expressions;
+#############################################################################
+
+#############################################################################
+package com.fujitsu.vdmj.tc.statements to uk.ac.ncl.vdm2dafny.tr.statements;
+#############################################################################
+
+#############################################################################
+package com.fujitsu.vdmj.ast.lex to uk.ac.ncl.vdm2dafny.lex;
+#############################################################################
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.lex to uk.ac.ncl.vdm2dafny.tr.lex;
+#package com.fujitsu.vdmj.ast.lex to vdn2isa.tr.lex;
+#############################################################################
+
+unmapped com.fujitsu.vdmj.tc.lex.TCNameToken;
+unmapped com.fujitsu.vdmj.tc.lex.TCNameList;
+unmapped com.fujitsu.vdmj.tc.lex.TCNameSet;
+unmapped com.fujitsu.vdmj.tc.lex.TCIdentifierToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexIntegerToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexRealToken;
+unmapped com.fujitsu.vdmj.ast.lex.LexKeywordToken;
+unmapped com.fujitsu.vdmj.lex.LexLocation;
+unmapped com.fujitsu.vdmj.typechecker.NameScope;
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.modules to uk.ac.ncl.vdm2dafny.tr.modules;
+#############################################################################
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.annotations to uk.ac.ncl.vdm2dafny.tr.annotations;
+#############################################################################
+
+#############################################################################
+#package annotations.tc to uk.ac.ncl.vdm2dafny.tr.annotations;
+#############################################################################
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.patterns to uk.ac.ncl.vdm2dafny.tr.patterns;
+#############################################################################
+
+
+#############################################################################
+package com.fujitsu.vdmj.tc.types to uk.ac.ncl.vdm2dafny.tr.types;
+#############################################################################
+
+
+#############################################################################
+# Recursive loops
+#############################################################################
+package com.fujitsu.vdmj.tc to uk.ac.ncl.vdm2dafny.tr.definitions;
+map TCRecursiveMap{} to TRRecursiveMap(this);
+map TCRecursiveLoops{recursiveLoops} to TRRecursiveLoops(recursiveLoops);
+
+#############################################################################
+# Classes that are not mapped
+#############################################################################
+
+unmapped java.lang.Boolean;
+unmapped java.lang.String;
+unmapped java.lang.Long;
+unmapped com.fujitsu.vdmj.mapper.FileList;
+
+#############################################################################
+# initializers, called by ClassMapper.init()
+#############################################################################
+init uk.ac.ncl.vdm2dafny.lex.IsaTemplates.reset();
+init uk.ac.ncl.vdm2dafny.tr.types.TRRecordType.reset();
+init uk.ac.ncl.vdm2dafny.tr.types.TRQuoteType.reset();
+init uk.ac.ncl.vdm2dafny.tr.definitions.TRRecursiveLoops.reset();

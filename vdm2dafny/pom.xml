@@ -9,16 +9,26 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>vdm2isa</artifactId>
-	<name>VDM to Isabelle/HOL translator</name>
+	<artifactId>vdm2dafny</artifactId>
+	<name>VDM to Dafny translator</name>
 	<!--TODO: separate the command plugin from the LSP extension as separate projects?-->
-	<description>VDM-SL translation to Isabelle as a command plugin and VSCode LSP extension</description>
+	<description>VDM-SL translation to Dafny as a command plugin and VSCode LSP extension</description>
+
+	<properties>
+		<!--
+		<revision>1.2.0-SNAPSHOT</revision>
+		<dk.au.ece.vdmj-version>4.5.0</dk.au.ece.vdmj-version>
+		-->
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+	</properties>
 
 	<developers>
 		<developer>
-			<id>leouk</id>
-			<name>Leo Freitas</name>
-			<email>leo.york@gmail.com</email>
+			<id>adamwistanley02</id>
+			<name>Adam Winstanley</name>
+			<!-- <email>a.winstanley2@newcastle.ac.uk</email> -->
+			<email>a.winstanley02@outlook.com</email>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -56,11 +66,24 @@
 			<artifactId>annotationsVDMToolkit</artifactId>
 			<version>${revision}</version>
 		</dependency>
-		<dependency> 
-			<groupId>org.antlr</groupId> 
-			<artifactId>ST4</artifactId> 
-			<version>4.3.4</version> 
+
+		<!-- String templating -->
+		<!-- https://mvnrepository.com/artifact/org.antlr/ST4 -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>ST4</artifactId>
+			<version>4.3.4</version>
 		</dependency>
+
+		<!-- Testing -->
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -72,45 +95,6 @@
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/classes</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/test/resources</directory>
-									<filtering>false</filtering>
-									<include>*.vdmsl</include>
-									<include>*.thy</include>
-								</resource>
-								<resource>
-									<directory>src/test/resources/lvl0</directory>
-									<filtering>false</filtering>
-									<include>*.vdmsl</include>
-									<include>*.thy</include>
-								</resource>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>false</filtering>
-									<include>*.vdmsl</include>
-									<include>*.thy</include>
-									<include>ROOT</include>
-									<include>VDMJ-class-mapping.md</include>
-								</resource>
-								<resource>
-									<directory>.</directory>
-									<filtering>false</filtering>
-									<include>LICENCE</include>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
