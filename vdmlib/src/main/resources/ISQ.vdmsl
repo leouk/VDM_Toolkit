@@ -330,9 +330,9 @@ exports
 		HERTZ			 : Hertz;
 		CAESIUM_FREQUENCY: Hertz;
 		SPEED_OF_LIGHT   : Velocity;
-		PLANK_CONSTANT   : SI_MeasurementSystem;
-		ELEMENTARY_CHARGE: SI_MeasurementSystem; 
-		AVOGRADO		 : SI_MeasurementSystem; 
+		--PLANK_CONSTANT   : SI_MeasurementSystem;
+		--ELEMENTARY_CHARGE: SI_MeasurementSystem; 
+		--AVOGRADO		 : SI_MeasurementSystem; 
 		MAX_LUMINOUS_FREQ: Hertz;
 		LUMINOUS_EFFICACY: SI_MeasurementSystem;
 definitions 
@@ -1336,9 +1336,10 @@ values
 	HERTZ			 : Hertz = SI_FREQUENCY;
 	CAESIUM_FREQUENCY: Hertz = scaleMS(9192631770, HERTZ);
 	SPEED_OF_LIGHT   : Velocity = scaleMS(299792458, SI_VELOCITY);
-	PLANK_CONSTANT   : SI_MeasurementSystem = scaleMS(6.62607015 * (1/(10**34)), ms_times(SI_JOULE(), SECOND));
-	ELEMENTARY_CHARGE: SI_MeasurementSystem = scaleMS(1.602176634 * (1/(10**19)), SI_COLOUMB());
-	AVOGRADO		 : SI_MeasurementSystem = scaleMS(6.02214076 * (10**23), ms_inv(MOLE));
+	--@LF this requires HighPrecision to work
+	--PLANK_CONSTANT   : SI_MeasurementSystem = scaleMS(6.62607015 * (1/(10**34)), ms_times(SI_JOULE(), SECOND));
+	--ELEMENTARY_CHARGE: SI_MeasurementSystem = scaleMS(1.602176634 * (1/(10**19)), SI_COLOUMB());
+	--AVOGRADO		 : SI_MeasurementSystem = scaleMS(6.02214076 * (10**23), ms_inv(MOLE));
 	MAX_LUMINOUS_FREQ: Hertz = scaleMS(540 * (10**12), HERTZ);
 	LUMINOUS_EFFICACY: SI_MeasurementSystem = scaleMS(683, ms_div(SI_LUMEN(), SI_WATT));
 
