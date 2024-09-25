@@ -18,7 +18,7 @@
 		<!-- Change VDM Toolkit  -->
 	    <revision>1.2.0-SNAPSHOT</revision>
 		<!-- VDMJ version, which percolates to all dependent POMs -->	
-		<dk.au.ece.vdmj-version>4.6.0-SNAPSHOT</dk.au.ece.vdmj-version>
+		<dk.au.ece.vdmj-version>4.6.0</dk.au.ece.vdmj-version>
 	</properties>
 
 	<!-- sub modules -->
