@@ -1,0 +1,6 @@
+{
+    "name": "vdm2isa",
+    "description": "Isabelle translation plugin",
+    "dialects": [ "vdmsl" ],
+    "precision": "standard"
+}
