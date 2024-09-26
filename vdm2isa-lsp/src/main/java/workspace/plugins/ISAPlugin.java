@@ -2,19 +2,16 @@ package workspace.plugins;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fujitsu.vdmj.lex.Dialect;
 import com.fujitsu.vdmj.messages.VDMMessage;
 import com.fujitsu.vdmj.plugins.HelpList;
-import com.fujitsu.vdmj.util.Utils;
 
 import json.JSONArray;
 import json.JSONObject;
 import plugins.IsaProperties;
-import plugins.ResourceUtil;
 import plugins.commands.IsabelleCommand;
 import plugins.commands.IsapogCommand;
 import rpc.RPCErrors;
@@ -160,9 +157,11 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	{
 		try
 		{
-			JSONObject params = request.get("params");
-			if (params != null)
+			Object p = request.get("params");	// Abstract events don't have this set correctly
+			
+			if (p instanceof JSONObject)
 			{
+				JSONObject params = (JSONObject) p;
 				// File saveUri = Utils.uriToFile(params.get("saveUri"));
 				JSONObject options = params.get("options");
 
@@ -240,35 +239,35 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	@Override
 	public AnalysisCommand getCommand(String line)
 	{
-		String[] args = Utils.toArgv(line);
+//		String[] args = Utils.toArgv(line);
 		IsaCommand result = null;
-		if (args != null)
-		{
-			try
-			{
-				result = new IsaCommand(line, ResourceUtil.createCommand(args[0]));	
-			}
-			catch (ClassNotFoundException e)
-			{
-				//throw new IllegalArgumentException("Could not find Exu plugin?");
-			}
-			catch (IllegalAccessException e)
-			{
-				//throw new IllegalArgumentException("Could not find Exu plugin?");
-			}
-			catch (NoSuchMethodException e)
-			{
-				//throw new IllegalArgumentException("Could not find Exu plugin?");
-			}
-			catch (InvocationTargetException e)
-			{
-				//throw new IllegalArgumentException("Could not find Exu plugin?");
-			}
-			catch (Exception e)
-			{
-				//throw new IllegalArgumentException("Could not find Exu plugin?");
-			}
-		}
+//		if (args != null)
+//		{
+//			try
+//			{
+//				result = new IsaCommand(line, ResourceUtil.createCommand(args[0]));	
+//			}
+//			catch (ClassNotFoundException e)
+//			{
+//				//throw new IllegalArgumentException("Could not find Exu plugin?");
+//			}
+//			catch (IllegalAccessException e)
+//			{
+//				//throw new IllegalArgumentException("Could not find Exu plugin?");
+//			}
+//			catch (NoSuchMethodException e)
+//			{
+//				//throw new IllegalArgumentException("Could not find Exu plugin?");
+//			}
+//			catch (InvocationTargetException e)
+//			{
+//				//throw new IllegalArgumentException("Could not find Exu plugin?");
+//			}
+//			catch (Exception e)
+//			{
+//				//throw new IllegalArgumentException("Could not find Exu plugin?");
+//			}
+//		}
 		return result;
 	}
 	
