@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>vdmtoolkit</groupId>
 		<artifactId>VDMToolkit-suite</artifactId>
-		<version>${revision}</version>
+	    <version>${revision}${sha1}${changelist}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

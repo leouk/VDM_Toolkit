@@ -10,15 +10,18 @@
 	<name>VDMToolkit Suite</name>
 	<packaging>pom</packaging>
 	<!-- This version is inherited by all modules -->
-	<version>${revision}</version>	
+    <version>${revision}${sha1}${changelist}</version>
 
 	<properties>
 	    <maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Change VDM Toolkit  -->
 	    <revision>1.2.0-SNAPSHOT</revision>
+	    <changelist></changelist>
+        <sha1/>
 		<!-- VDMJ version, which percolates to all dependent POMs -->	
 		<dk.au.ece.vdmj-version>4.6.0</dk.au.ece.vdmj-version>
+		
 	</properties>
 
 	<!-- sub modules -->
