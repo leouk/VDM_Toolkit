@@ -10,7 +10,8 @@
 	<name>VDMToolkit Suite</name>
 	<packaging>pom</packaging>
 	<!-- This version is inherited by all modules -->
-    <version>${revision}${sha1}${changelist}</version>
+    <version>${revision}${sha1}${changelist}
+    </version>
 
 	<properties>
 	    <maven.build.timestamp.format>yyMMdd</maven.build.timestamp.format>
