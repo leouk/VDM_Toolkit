@@ -21,7 +21,7 @@ functions
 	-- "normal" function with declared specification
 	g: nat * nat1 -> nat1
 	g(x, y) == x + y
-	pre x > 10 
+	pre x > 10 			--@thmAttr pre_g[simp,intro!]
 	post x < RESULT;
 
 	-- "normal" function with declared specification and pre/post references
