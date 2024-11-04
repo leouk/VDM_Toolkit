@@ -38,7 +38,7 @@ do
     echo "Cleaned $RESOURCES/$DIR"
 done
 
-ln -sf $HOME/.m2/repository/$GROUPID/annotations/$VDMJSUITE-SNAPSHOT/annotations-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj 	#$RESOURCES/jars/vdmj/annotations-$VDMJSUITE-SNAPSHOT.jar
+ln -sf $HOME/.m2/repository/$GROUPID/annotations/$VDMJSUITE-SNAPSHOT/annotations-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj/annotations 	#$RESOURCES/jars/vdmj/annotations-$VDMJSUITE-SNAPSHOT.jar
 #echo "Created annotations from $HOME/.m2/repository/$GROUPID/annotations/$VDMJSUITE-SNAPSHOT/annotations-$VDMJSUITE-SNAPSHOT.jar to $RESOURCES/jars/vdmj/annotations-$VDMJSUITE-SNAPSHOT.jar"
 #ln -sf $HOME/.m2/repository/$GROUPID/annotations2/$VDMJSUITE-SNAPSHOT/annotations2-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj # $RESOURCES/jars/vdmj/annotations2-$VDMJSUITE-SNAPSHOT.jar
 ln -sf $HOME/.m2/repository/$GROUPID/vdmj/$VDMJSUITE-SNAPSHOT/vdmj-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj 				#$RESOURCES/jars/vdmj/vdmj-$VDMJSUITE-SNAPSHOT.jar
@@ -56,7 +56,7 @@ ln -sf $HOME/.m2/repository/$GROUPID/stdlib/$VDMJSUITE-SNAPSHOT/stdlib-$VDMJSUIT
 #echo "Created high precision vdmtoolkit vdmlib links"
 
 
-ln -sf $HOME/.m2/repository/$VDMTOOLKIT/annotationsVDMToolkit/$VDMTKSUITE-SNAPSHOT/annotationsVDMToolkit-$VDMTKSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj
+ln -sf $HOME/.m2/repository/$VDMTOOLKIT/annotationsVDMToolkit/$VDMTKSUITE-SNAPSHOT/annotationsVDMToolkit-$VDMTKSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj/annotations
 ln -sf $HOME/.m2/repository/$VDMTOOLKIT/vdm2isa/$VDMTKSUITE-SNAPSHOT/vdm2isa-$VDMTKSUITE-SNAPSHOT.jar $RESOURCES/jars/plugins
 ln -sf $HOME/.m2/repository/$VDMTOOLKIT/vdm2isa-lsp/$VDMTKSUITE-SNAPSHOT/vdm2isa-lsp-$VDMTKSUITE-SNAPSHOT.jar $RESOURCES/jars/plugins
 ln -sf $HOME/.m2/repository/$VDMTOOLKIT/vdmlib/$VDMTKSUITE-SNAPSHOT/vdmlib-$VDMTKSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj/libs
