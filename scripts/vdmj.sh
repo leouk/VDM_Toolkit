@@ -6,8 +6,8 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION=${VDMJ_VERSION:-4.6.0-SNAPSHOT}
-PVERSION=${VDMJ_PVERSION:-4.6.0-P-SNAPSHOT}
+MVERSION=${VDMJ_VERSION:-4.7.0-SNAPSHOT}
+PVERSION=${VDMJ_PVERSION:-4.7.0-P-SNAPSHOT}
 
 # The Maven repository directory containing VDMJ versions
 MAVENREPO=~/.m2/repository/dk/au/ece/vdmj
@@ -173,6 +173,7 @@ if which rlwrap >/dev/null 2>&1
 then
 	# Keep rlwrap output in a separate folder
 	export RLWRAP_HOME=~/.vdmj
+	echo exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS
 	exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
 else
 	exec "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
