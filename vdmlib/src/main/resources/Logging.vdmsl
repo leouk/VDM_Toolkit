@@ -88,6 +88,7 @@ functions
 			level_trace(level) ^ tag' ^ trace ^ extra ^ "\n";
 	
 	--@todo refactor for god sake!
+    --@QuickCheck @e = nat;
 	take[@e]: nat * seq of @e -> seq of @e
 	take(n, s) == s(1,...,n)
 	--pre n <= len s
@@ -96,13 +97,14 @@ functions
 		and
 		elems RESULT subset elems s;
 	
+    --@QuickCheck @e = nat;
 	seq_prefix[@e]: seq of @e * seq of @e -> bool
 	seq_prefix(s,t) == 
 		(s = t) or (s = []) or (len s <= len t and (exists i in set inds t & s = take[@e](i, t)))
 	post
 		--@OnFail("seq prefix %1$s [= %2$s", s, t)
 		(RESULT 
-		<=>
+		=>
 		 (elems s subset elems t
 		  and
 		  len s <= len t
