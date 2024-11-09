@@ -71,24 +71,41 @@ values
     
     --@doc various invariants examples: if failed, return a non-empty string for a reason; nil if succeeds. 
     CELL_INVARIANT_AGE: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & 
-            if v < MIN_AGE then "below minimal age" else if v > MAX_AGE then "above maximal age" else nil);
+        (lambda t: CSVType, v: CSVValue & 
+            if t in set {<Integer>, <Real>} and (is_int(v) or is_real(v)) then 
+                if v < MIN_AGE then "below minimal age" else if v > MAX_AGE then "above maximal age" else nil
+            else 
+                "invalid type"
+        );
 
     CELL_INVARIANT_WEIGHT: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & 
-            if v < MIN_WEIGHT_KG then "below minimal weight" else if v > MAX_WEIGHT_KG then "above maximal weight" else nil);
+        (lambda t: CSVType, v: CSVValue &
+            if t in set {<Integer>, <Real>} and (is_int(v) or is_real(v)) then 
+                if v < MIN_WEIGHT_KG then "below minimal weight" else if v > MAX_WEIGHT_KG then "above maximal weight" else nil
+            else 
+                "invalid type"
+        );
 
     CELL_INVARIANT_HEIGHT: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue & 
-            if v < MIN_HEIGHT_CM then "below minimal height" else if v > MAX_HEIGHT_CM then "above maximal height" else nil);
+        (lambda t: CSVType, v: CSVValue & 
+            if t in set {<Integer>, <Real>} and (is_int(v) or is_real(v)) then 
+                if v < MIN_HEIGHT_CM then "below minimal height" else if v > MAX_HEIGHT_CM then "above maximal height" else nil
+            else 
+                "invalid type"
+        );
 
     CELL_INVARIANT_BMI: CSVCellInv =
-        (lambda -: CSVType, v: CSVValue &  
-            if v < MIN_BMI then "below minimal BMI" else if v > MAX_BMI then "above maximal BMI" else nil);
+        (lambda t: CSVType, v: CSVValue &  
+            if t in set {<Integer>, <Real>} and (is_int(v) or is_real(v)) then 
+                if v < MIN_BMI then "below minimal BMI" else if v > MAX_BMI then "above maximal BMI" else nil
+            else 
+                "invalid type"
+        );
 
     COL_INVARIANT_UNIQUE_NAME: CSVColInv = 
         (lambda h: Header0, c: TransposedRow & 
-            if h.type <> <String> then "not string typed" else if card elems c <> len c then "repeated names" else nil);
+            if h.type <> <String> then "not string typed" else if card elems c <> len c then "repeated names" else nil
+        );
 
     --@doc caution: expensive for large (many rows) CSV files !
     COL_INVARIANT_ORDERED: CSVColInv = 
