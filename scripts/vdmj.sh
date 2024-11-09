@@ -18,7 +18,8 @@ ANTLRVERSION="3.5.3"
 
 # Details for 64-bit Java
 JAVA64="/usr/bin/java"
-VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true -Dvdmj.plugins=plugins.analyses.IsabellePlugin}
+#-Dvdmj.plugins=plugins.analyses.IsabellePlugin
+VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
 # Preferred VDMJ options  
 VDMJOPTS=${VDMJ_OPTS:--strict -annotations}
 
@@ -103,7 +104,7 @@ do
 	    VMOPTS="$VMOPTS $1"
 	    ;;
 	*)
-	    VDMJOPTS="$VDMJOPTS \"$1\""
+	    VDMJOPTS="$VDMJOPTS $1"
     esac
     shift
 done
@@ -157,8 +158,8 @@ then
 	# Keep rlwrap output in a separate folder
 	export RLWRAP_HOME=~/.vdmj
 	#echo exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS
-	exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
+	exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS 
 else
-	exec "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
+	exec "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS
 fi
 

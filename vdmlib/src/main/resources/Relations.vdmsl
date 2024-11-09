@@ -4,8 +4,6 @@
 --@doc Z mathametical toolkit for relations for VDM as executable specifications
 ------------------------------------------------------------------------------------
 module Relations
-imports 
-	from Support1 functions sums renamed sums;
 exports
 	types
 		struct Negative

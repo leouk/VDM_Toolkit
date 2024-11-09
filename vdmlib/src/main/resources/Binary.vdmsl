@@ -115,7 +115,7 @@ types
 	inv b == b in set BITS;
 	
 	Byte = nat
-	inv v == v < npow(2,BITS_PER_BYTE);	
+	inv v == v < npow(BIN_BASE, BITS_PER_BYTE);	
 	
 	BitVector = seq of bool;
 	
@@ -461,7 +461,7 @@ traces
 
 	N2B_EQUIV: 
 		let b in set BITS in
-			let bp: nat1 = npow(2,b) in
+			let bp: nat1 = npow(BIN_BASE,b) in
 				equal(bin2byte(byte2bin(bp-1)),bp-1)
 				
 end Binary
