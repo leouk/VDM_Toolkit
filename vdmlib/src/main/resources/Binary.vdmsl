@@ -86,13 +86,17 @@ definitions
 
 functions
 	--@doc arguably not necessary?
-	npow: nat * nat -> nat1
+	npow: nat * nat -> nat
 	npow(base, exp) == 
 		base**exp--if exp = 0 then 1 else base * npow(base, exp - 1)
 	--post 
 	--	RESULT = base**exp
 	--measure 
 	--	npow_measure
+	pre 
+		base in set {BIN_BASE}
+	post 
+		base > 0 => RESULT > 0
 	;
 
 values
