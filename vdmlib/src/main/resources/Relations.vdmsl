@@ -446,6 +446,12 @@ functions
 	measure
 		card R; 
 		
+	h[@X]: map @X to nat -> nat
+	h(s) == 
+		if dom s = {} then 0 else let x in set dom s in s(x) + h[@X]({x}<-: s)
+	measure
+		card dom s;
+
 	--@QuickCheck @X = nat;
 	--@QuickCheck @Y = nat;
 	force_rel_as_map[@X,@Y]: set of (@X * @Y) -> (map @X to set of @Y)
@@ -454,7 +460,10 @@ functions
 		if rel_is_map[@X, @Y](R) then
 			dom RESULT = rel_dom[@X, @Y](R)
 		else 
-			sums({ card r | r in set rng RESULT }) = card R;
+			--sums({ card r | r in set rng RESULT }) = card R;
+			h[@X]({ x |-> card RESULT(x) | x in set dom RESULT }) 
+			= 
+			card R;
 
 --p let R = make_rel_from_set[nat,nat](TYPE_RANGE1, TYPE_RANGE2), R' = make_rel_subset[nat,nat](R, card R - 2), F = make_rel_map[nat,nat](R), I = make_rel_inmap[nat,nat](R) in mk_(R', F, I)	
 values
