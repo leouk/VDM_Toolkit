@@ -250,7 +250,7 @@ functions
 			rel_is_map_on[@Y,@X](relinv', rel_dom[@Y,@X](relinv'))
 		)
 	post
-		(RESULT => R = {} or (forall x1, x2 in set S & rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
+		(RESULT => R = {} or (forall x1, x2 in set S & rel_img[@X,@Y](R, {x1}) <> {} and rel_img[@X,@Y](R, {x1}) = rel_img[@X,@Y](R, {x2}) => x1 = x2));
 		
 	--@QuickCheck @X = nat;
 	--@QuickCheck @Y = nat;
