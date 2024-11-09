@@ -218,7 +218,11 @@ functions
             or
             r1(AGE_ROW_INDEX) <> r2(AGE_ROW_INDEX)
         ) 
-    );
+    )
+    pre 
+        {NAME_ROW_INDEX, AGE_ROW_INDEX} subset inds r1
+        and
+        {NAME_ROW_INDEX, AGE_ROW_INDEX} subset inds r2;
 
     calculated_bmi: Row -> real
     calculated_bmi(r) ==
