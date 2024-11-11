@@ -278,7 +278,7 @@ functions
   drop: nat * Id -> Id
 	drop(n, id) == id(n + 1,...,size_id(id))
 	pre 
-		n <= size_id(id)
+		n < size_id(id)
 	post
 		size_id(RESULT) = size_id(id) - n
 		and
