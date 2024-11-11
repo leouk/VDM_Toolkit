@@ -44,6 +44,8 @@ ln -sf $HOME/.m2/repository/$GROUPID/annotations/$VDMJSUITE-SNAPSHOT/annotations
 ln -sf $HOME/.m2/repository/$GROUPID/vdmj/$VDMJSUITE-SNAPSHOT/vdmj-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj 				#$RESOURCES/jars/vdmj/vdmj-$VDMJSUITE-SNAPSHOT.jar
 ln -sf $HOME/.m2/repository/$GROUPID/lsp/$VDMJSUITE-SNAPSHOT/lsp-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj 					#$RESOURCES/jars/vdmj/lsp-$VDMJSUITE-SNAPSHOT.jar
 ln -sf $HOME/.m2/repository/$GROUPID/stdlib/$VDMJSUITE-SNAPSHOT/stdlib-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj/libs 		#$RESOURCES/jars/vdmj/libs/stdlib-$VDMJSUITE-SNAPSHOT.jar
+ln -sf $HOME/.m2/repository/$GROUPID/quickcheck/$VDMJSUITE-SNAPSHOT/quickcheck-$VDMJSUITE-SNAPSHOT.jar $RESOURCES/jars/vdmj/plugins 		#$RESOURCES/jars/vdmj/libs/stdlib-$VDMJSUITE-SNAPSHOT.jar
+
 #echo "Created jars/vdmj links"
 
 #ln -sf $HOME/.m2/repository/$GROUPID/annotations/$VDMJSUITE-P-SNAPSHOT/annotations-$VDMJSUITE-P-SNAPSHOT.jar $RESOURCES/jars/vdmj_hp

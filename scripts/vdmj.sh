@@ -19,7 +19,7 @@ ANTLRVERSION="3.5.3"
 # Details for 64-bit Java
 JAVA64="/usr/bin/java"
 #-Dvdmj.plugins=plugins.analyses.IsabellePlugin
-VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
+VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.tc.max_errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
 # Preferred VDMJ options  
 VDMJOPTS=${VDMJ_OPTS:--strict -annotations}
 
