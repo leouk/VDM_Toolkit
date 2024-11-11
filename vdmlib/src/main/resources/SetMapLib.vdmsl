@@ -524,7 +524,7 @@ Test() ==
 			IO`print("extract(s0, even(inds s0)}) = "); IO`println(se);
 			IO`print("is0                         = "); IO`println(is0);
 			IO`print("inv_ISeq(is0)               = "); IO`println(inv_ISeq(is0));
-			IO`print("inv_ISeq( s0)               = "); IO`println(inv_ISeq(s0));
+			IO`print("not inv_ISeq( s0)           = "); IO`println(not inv_ISeq(s0));
 			IO`print("inj_concat(is0, [6, 10, 20])= "); IO`println(is1);
 			IO`print("force_inj_concat(is0, s0)   = "); IO`println(fis2);
 		);
