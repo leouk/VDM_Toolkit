@@ -92,7 +92,7 @@ exports types struct Year;
                   durAdd: Duration * Duration +> Duration;
                   durSubtract: Duration * Duration +> Duration;
                   durMultiply: Duration * nat +> Duration;
-                  durDivide: Duration * nat +> Duration;
+                  durDivide: Duration * nat1 +> Duration;
                   durDiff: Duration * Duration +> Duration;
                   durToMillis: Duration +> nat;
                   durFromMillis: nat +> Duration;
@@ -287,14 +287,14 @@ functions
        durSubtract(RESULT, d2) = d1;
 
   --@doc Divide a duration by a fixed amount.
-  durDivide: Duration * nat +> Duration
+  durDivide: Duration * nat1 +> Duration
   durDivide(d, n) == mk_Duration(d.dur div n);
   --post durLeq(durMultiply(RESULT, n), d) and durLess(d, durMultiply(RESULT, n+1));
 
   --@doc Multiply a duration by a fixed amount.
   durMultiply: Duration * nat +> Duration
   durMultiply(d, n) == mk_Duration(d.dur * n)
-  post durDivide(RESULT, n) = d;
+  post if n = 0 then RESULT = NO_DURATION else durDivide(RESULT, n) = d;
 
   --@doc The difference between two durations.
   durDiff: Duration * Duration +> Duration
