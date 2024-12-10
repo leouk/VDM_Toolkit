@@ -48,7 +48,7 @@ functions
 	pre
 		value >= 0
 		and 
-		err > 0 and err <= value 
+		err > 0 and err < 1 and err <= value 
 	post
 		--@OnFail("Error tolerance is too big (i.e. reduce err), RESULT=%1s, err=%2s, input=%3s", RESULT, err, value)
 		((RESULT * RESULT)-err <= value)
