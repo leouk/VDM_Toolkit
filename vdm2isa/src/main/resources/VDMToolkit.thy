@@ -271,7 +271,7 @@ lemma l_vdm_rem_fsb: "pre_vdm_rem x y \<Longrightarrow> post_vdm_rem x y (x vdmr
   apply safe
   apply (cases "y \<ge> 0")
     apply simp
-    apply (metis Euclidean_Division.pos_mod_sign add.commute add.left_neutral add_mono_thms_linordered_semiring(3) div_mult_mod_eq le_less mult.commute)
+    apply (metis Euclidean_Rings.pos_mod_sign add.commute add.left_neutral add_mono_thms_linordered_semiring(3) div_mult_mod_eq le_less mult.commute)
    defer
    apply (cases "y \<le> 0")
     apply simp 
@@ -1462,8 +1462,9 @@ lemma l_less_than_VDMNat_subset_int_ge_less_than:
   "less_than_VDMNat \<subseteq> int_ge_less_than 0"
   apply (simp add: less_than_VDMNat_def int_ge_less_than_def inv_VDMNat_def  pred_VDMNat_def subset_iff)
   apply (intro allI impI conjI)
-  using tranclD apply fastforce 
-  by (smt (z3) case_prodD mem_Collect_eq trancl_trans_induct)
+  using tranclD apply fastforce
+  apply (smt (z3) case_prodD mem_Collect_eq trancl_trans_induct)
+  done
 
 lemma l_less_than_VDMNat_iff [iff]: "inv_VDMNat x \<Longrightarrow> ((x,y) \<in> less_than_VDMNat) = (x<y)"
   apply (intro iffI)  
