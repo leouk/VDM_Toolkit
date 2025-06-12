@@ -445,7 +445,7 @@ lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<clos
   apply (simp add: VDM_seq_defs, safe?)+
   apply (simp add: VDM_set_defs, safe?)+
   apply (metis diff_ge_0_iff_ge inv_VDMNat_def inv_VDMSeq'_defs(2) l_inv_SeqElems_append not_one_le_zero)
-  done
+  oops
 
 lemma TestV2IFcns_POG_l18[simp]: \<open>PO_18_implicit_FUNC_SATISFIABILITY\<close> 
 	 \<comment>\<open>Inferred proof strategy for lemma:\<close> 
@@ -476,6 +476,7 @@ lemma TestV2IFcns_POG_l20[simp]: \<open>PO_20_implicitexplicit_FUNC_POST_CONDITI
   unfolding inv_VDMSet'_def inv_VDMSet_def inv_SetElems_def
   apply (safe?, simp?)
   unfolding inv_VDMNat_def
+  
   oops
 	
 

@@ -6,7 +6,7 @@
    files = [TestV2IFcns.vdmsl]
 *)
 theory TestV2IFcns
-imports VDMToolkit 
+imports "../VDMToolkit" 
 begin
 
 
