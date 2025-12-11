@@ -1,0 +1,55 @@
+module List
+exports all
+definitions
+
+types
+values 
+  -- Make the T type space finite for simplicity
+  MAX_T   : nat = 10;
+  T_SPACE : set1 of nat = {0,...,MAX_T};
+
+types 
+  string = seq1 of char;
+
+  T = nat
+  inv t == t in set T_SPACE;
+
+functions
+
+  -- Functor map 
+  fmap[@T,@R]: (@T -> @R) -> seq of @T -> seq of @R
+  fmap(f)(xs) == [ f(xs(i)) | i in set inds xs ];
+
+  -- Applicative pure, star and apply
+  pure_[@T]: @T -> seq1 of @T 
+  pure_(x) == [x];
+
+  star[@T,@R]: seq of (@T -> @R) -> seq of @T -> seq of @R
+  star(fs)(xs) == conc [ fmap[@T,@R](fs(i))(xs) | i in set inds fs ];
+
+  apply[@T,@R]: seq of (@T -> @R) -> seq of @T -> seq of @R
+  apply(fab)(xs) == star[@T,@R](fab)(xs);
+
+  -- Monad bind
+  bind[@T,@R]: (@T -> seq of @R) -> seq of @T -> seq of @R
+  bind(f)(xs) == conc [ f(xs(i)) | i in set inds xs ]; 
+  
+operations 
+
+  test: () ==> seq of real 
+  test() == 
+    let 
+      numbers: seq of nat = [1,2,3],
+      fcns   : seq of (nat -> real) = 
+        [ lambda x: nat & x * 2.0, lambda x: nat & x + 3.0 ]
+    in 
+      return apply[nat,real](fcns)(numbers);
+
+  test2: () ==> seq of nat 
+  test2() == 
+    let 
+      numbers: seq of nat = [1,2,3]
+    in 
+      return bind[nat,nat](lambda x: nat & pure_[nat](x * 10))(numbers);
+
+end List

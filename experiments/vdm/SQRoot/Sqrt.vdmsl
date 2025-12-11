@@ -42,7 +42,7 @@ functions
 	pre
 		value >= 0 and guess > 0;
 
-	sqrt_efficient: real * real -> real
+	sqrt_efficient: int * real -> real
 	sqrt_efficient(value, err) == 
 		sqrt0(value,value,err,newton_guess(value, value))
 	pre
@@ -51,10 +51,10 @@ functions
 		err > 0 and err < 1 and err <= value 
 	post
 		--@OnFail("Error tolerance is too big (i.e. reduce err), RESULT=%1s, err=%2s, input=%3s", RESULT, err, value)
-		((RESULT * RESULT)-err <= value)
+		((RESULT * RESULT) - err >= value)
 		and
 		--@OnFail("Result precision is too coarse (i.e. incorrect algoritm), RESULT=%1s, input=%2s", RESULT, value)
-		((RESULT + 1) * (RESULT + 1) > value)
+		((RESULT + 1) * (RESULT) > value)
 		;
 
 	sqrt0: real * real * real * real -> real
