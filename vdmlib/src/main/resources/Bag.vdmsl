@@ -70,11 +70,15 @@ functions
     --@QuickCheck @T = nat;
     subbageq[@T]: Bag * Bag -> bool
     subbageq(a, b) ==
-        forall xa in set dom a & amount[@T](a, a(xa)) <= amount[@T](b, b(xa))
+        forall xa in set dom a & inbag[@T](xa, b) and amount[@T](a, xa) <= amount[@T](b, xa)
     pre 
         type_convergent[@T](a) and type_convergent[@T](b)
     post 
-        bset[@T](a) subset bset[@T](b);
+        RESULT <=> 
+        (bset[@T](a) subset bset[@T](b) 
+         and 
+         forall x in set bset[@T](a) & amount[@T](a, x) <= amount[@T](b, x)
+        );
 
     --@doc ZEves scale definition is wrong! wrt to theorem bagscaleBy1 (!
     --@QuickCheck @T = nat;
@@ -87,28 +91,48 @@ functions
     pre 
         type_convergent[@T](b)
     post 
-        bset[@T](b) = bset[@T](RESULT)
-        and
-        type_convergent[@T](RESULT);
+        type_convergent[@T](RESULT)
+        and 
+        (bset[@T](RESULT) = if n = 0 then {} else bset[@T](b))
+        and 
+        (forall x in set bset[@T](b) & amount[@T](RESULT, x) = n * amount[@T](b, x));
 
     --@QuickCheck @T = nat;
     bunion[@T]: Bag * Bag -> Bag 
     bunion(a, b) == 
-        { x |-> a(x) + b(x) | x in set dom a union dom b }
+        --@doc unique of a + unique of b + common with summed amounts
+       (bset[@T](b) <-: a) 
+       munion 
+       (bset[@T](a) <-: b) 
+       munion 
+       { x |-> a(x) + b(x) | x in set dom a inter dom b }
     pre 
         type_convergent[@T](a) and type_convergent[@T](b)
     post 
-        bset[@T](RESULT) = bset[@T](a) union bset[@T](b);
+        bset[@T](RESULT) = bset[@T](a) union bset[@T](b)
+        and 
+        (forall x in set bset[@T](a) inter bset[@T](b) & amount[@T](RESULT, x) = amount[@T](a, x) + amount[@T](b, x))
+        and 
+        (forall x in set bset[@T](a) \ bset[@T](b) & amount[@T](RESULT, x) = amount[@T](a, x))
+        and 
+        (forall x in set bset[@T](b) \ bset[@T](a) & amount[@T](RESULT, x) = amount[@T](b, x));
 
     --@QuickCheck @T = nat;
     difference[@T]: Bag * Bag -> Bag 
     difference(a, b) == 
-        { x |-> a(x) - b(x) | x in set dom a union dom b /*inter dom b*/ & a(x) - b(x) > 0 }
+        --@doc unique of a with subtraction over common with b (or removal)
+        bset[@T](b) <-: a 
+        munion 
+        { x |-> a(x) - b(x) | x in set bset[@T](a) inter bset[@T](b) & a(x) > b(x) }
     pre 
         type_convergent[@T](a) and type_convergent[@T](b)
     post 
-        --@doc not equal because when zeroed it goes out of the domain
-        bset[@T](RESULT) subset bset[@T](a) \ bset[@T](b);
+        --@doc resulting bag has elements of a with elements of b subtracted (or removed) 
+        (forall x in set bset[@T](RESULT) & 
+            amount[@T](RESULT, x) = max(0, amount[@T](a, x) - amount[@T](b, x)));
+
+    max: int * int -> int
+    max(a, b) == if a >= b then a else b;
 
     --@QuickCheck @T = nat;
     filter[@T]: seq of @T * (@T -> bool) -> seq of @T 

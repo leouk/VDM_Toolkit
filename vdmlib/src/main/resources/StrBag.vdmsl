@@ -1,0 +1,127 @@
+------------------------------------------------------------------------------------
+--@header 
+--@doc Copyright Leo Freitas 2019-2023 
+--@doc Bag as an abstract data type (inspired by SPARK ADTs and Z/Eves bags)
+------------------------------------------------------------------------------------
+module StrBag 
+exports 
+    types 
+        Bag;
+        struct String;
+    functions 
+        empty: () -> Bag;  
+        isEmpty: Bag -> bool;  
+        bset: Bag -> set of String;
+        inbag: String * Bag -> bool;
+        count: Bag -> (String -> nat);
+        amount: Bag * String -> nat;
+        post_amount: Bag * String * nat +> bool;
+        subbageq: Bag * Bag -> bool;
+        scale: nat * Bag -> Bag;
+        bunion: Bag * Bag -> Bag;
+        post_bunion: Bag * Bag * Bag +> bool;
+        difference: Bag * Bag -> Bag;
+        post_difference: Bag * Bag * Bag +> bool;
+        items: seq of String -> Bag;
+definitions
+types 
+    String = seq1 of char; 
+    Bag = map String to nat1;
+
+functions 
+    empty: () -> Bag
+    empty() == {|->};
+
+    isEmpty: Bag -> bool 
+    isEmpty(b) == b = empty()
+    post 
+        RESULT <=> b = empty();
+
+    bset: Bag -> set of String
+    bset(b) == dom b;
+
+    inbag: String * Bag -> bool    
+    inbag(x, b) == x in set bset(b)
+    post 
+        RESULT <=> x in set bset(b);
+
+    count: Bag -> (String -> nat)
+    count(b) == (lambda x: String & amount(b, x));
+
+    amount: Bag * String -> nat 
+    amount(b, x) == 
+        if inbag(x, b) then b(x) else 0
+    post 
+        (inbag(x, b) <=> is_nat1(RESULT));
+
+    --@QuickCheck String = nat;
+    subbageq: Bag * Bag -> bool
+    subbageq(a, b) ==
+        forall xa in set dom a & inbag(xa, b) and amount(a, xa) <= amount(b, xa)
+    post 
+        RESULT <=> 
+        (bset(a) subset bset(b) 
+         and 
+         forall x in set bset(a) & amount(a, x) <= amount(b, x)
+        );
+
+    --@doc ZEves scale definition is wrong! wrt to theorem bagscaleBy1 (!
+    --@QuickCheck String = nat;
+    scale: nat * Bag -> Bag 
+    scale(n, b) == 
+        if n = 0 then 
+            empty() 
+        else  
+            { x |-> n * b(x) | x in set dom b }
+    post 
+        bset(RESULT) = (if n = 0 then {} else bset(b))
+        and 
+        (forall x in set bset(b) & amount(RESULT, x) = n * amount(b, x));
+
+    --@QuickCheck String = nat;
+    bunion: Bag * Bag -> Bag 
+    bunion(a, b) == 
+        --@doc unique of a + unique of b + common with summed amounts
+       (bset(b) <-: a) 
+       munion 
+       (bset(a) <-: b) 
+       munion 
+       { x |-> a(x) + b(x) | x in set dom a inter dom b }
+    post 
+        bset(RESULT) = bset(a) union bset(b)
+        and 
+        (forall x in set bset(a) inter bset(b) & amount(RESULT, x) = amount(a, x) + amount(b, x))
+        and 
+        (forall x in set bset(a) \ bset(b) & amount(RESULT, x) = amount(a, x))
+        and 
+        (forall x in set bset(b) \ bset(a) & amount(RESULT, x) = amount(b, x));
+
+    --@QuickCheck String = nat;
+    difference: Bag * Bag -> Bag 
+    difference(a, b) == 
+        --@doc unique of a with subtraction over common with b (or removal)
+        bset(b) <-: a 
+        munion 
+        { x |-> a(x) - b(x) | x in set bset(a) inter bset(b) & a(x) > b(x) }
+    post 
+        --@doc resulting bag has elements of a with elements of b subtracted (or removed) 
+        (forall x in set bset(RESULT) & 
+            amount(RESULT, x) = max(0, amount(a, x) - amount(b, x)));
+
+    max: int * int -> int
+    max(a, b) == if a >= b then a else b;
+
+    --@QuickCheck String = nat;
+    filter: seq of String * (String -> bool) -> seq of String 
+    filter(s, f) == [ s(i) | i in set inds s & f(s(i)) ]
+    post 
+        RESULT <> [] <=> (forall x in set elems RESULT & f(x)); 
+        -- RESULT <> [] <=> elems RESULT = {x};
+
+    --@QuickCheck String = nat;
+    items: seq of String -> Bag 
+    items(s) == { s(i) |-> len filter(s, (lambda x: String & s(i) = x)) | i in set inds s }
+    post 
+        elems s = bset(RESULT);
+
+end StrBag
