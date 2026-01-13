@@ -105,7 +105,7 @@ functions
        munion 
        (bset[@T](a) <-: b) 
        munion 
-       { x |-> a(x) + b(x) | x in set dom a inter dom b }
+       { x |-> a(x) + b(x) | x in set bset[@T](a) inter bset[@T](b) }
     pre 
         type_convergent[@T](a) and type_convergent[@T](b)
     post 

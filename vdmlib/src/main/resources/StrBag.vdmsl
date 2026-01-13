@@ -86,7 +86,7 @@ functions
        munion 
        (bset(a) <-: b) 
        munion 
-       { x |-> a(x) + b(x) | x in set dom a inter dom b }
+       { x |-> a(x) + b(x) | x in set bset(a) inter bset(b) }
     post 
         bset(RESULT) = bset(a) union bset(b)
         and 
