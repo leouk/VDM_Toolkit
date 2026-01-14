@@ -105,10 +105,12 @@ functions
         { x |-> a(x) - b(x) | x in set bset(a) inter bset(b) & a(x) > b(x) }
     post 
         --@doc resulting bag has elements of a with elements of b subtracted (or removed) 
-        (forall x in set bset(RESULT) & 
+        (forall x in set bset(RESULT) &
+            --amount(a, x) >= amount(b, x) 
+            --and 
             amount(RESULT, x) = max(0, amount(a, x) - amount(b, x)));
 
-    max: int * int -> int
+    max: int * int -> int--nat * nat -> nat
     max(a, b) == if a >= b then a else b;
 
     --@QuickCheck String = nat;
