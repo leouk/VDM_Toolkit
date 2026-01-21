@@ -7,10 +7,10 @@ theory VDMToolkit
     \<comment> \<open> Include real fields, list and option types ordering \<close>
     "Complex_Main"
 (*    VDMEisbach*)
-    "HOL-Library.List_Lexorder"
+(*    "HOL-Library.List_Lexorder"
     "HOL-Library.Option_ord"
     "HOL-Library.LaTeXsugar"
-    "HOL-Library.While_Combinator"
+    "HOL-Library.While_Combinator"*)
 begin
 
 (*****************************************************************)      
