@@ -1,0 +1,73 @@
+functions 
+
+--Proof Obligation 1: (Unproved)
+--check invariant before while condition
+--op: loop invariant obligation in 'DEFAULT' (Sigma.vdmsl) at line 12:37
+PO1: () -> bool 
+PO1() == 
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((sv + local) = a))));
+
+--Proof Obligation 2: (Unproved)
+--check invariant before first while body
+--op: loop invariant obligation in 'DEFAULT' (Sigma.vdmsl) at line 14:9
+PO2: () -> bool 
+PO2() == 
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((sv > 0) =>
+        ((sv + local) = a)))));
+
+--Proof Obligation 3: (Unproved)
+--op: subtype obligation in 'DEFAULT' (Sigma.vdmsl) at line 15:22
+PO3: () -> bool 
+PO3() ==
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((sv > 0) =>
+        (forall local:nat, sv:nat &
+          (((sv + local) = a) and (sv > 0) =>
+            (sv - 1) >= 0))))));
+
+--Proof Obligation 4: (Unproved)
+--check invariant preserved by while body
+--op: loop invariant obligation in 'DEFAULT' (Sigma.vdmsl) at line 14:9
+PO4: () -> bool 
+PO4() == 
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((sv > 0) =>
+        (forall local:nat, sv:nat &
+          (((sv + local) = a) and (sv > 0) =>
+            (let sv : nat = (sv - 1) in
+              (let local : nat = (local + 1) in
+                ((sv + local) = a)))))))));
+
+--Proof Obligation 5: (Unproved)
+--op: subtype obligation in 'DEFAULT' (Sigma.vdmsl) at line 19:18
+PO5: () -> bool 
+PO5() ==
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((sv > 0) =>
+        (forall local:nat, sv:nat &
+          (((sv + local) = a) and (not (sv > 0)) =>
+            (a - 1) >= 0))))));
+
+--Proof Obligation 6: (Unproved)
+--op: subtype obligation in 'DEFAULT' (Sigma.vdmsl) at line 19:18
+PO6: () -> bool 
+PO6() ==
+(forall a:nat, mk_Sigma(sv):Sigma &
+  (let local : nat = 0 in
+    (let sv : nat = a in
+      ((not (sv > 0)) =>
+        (-- Did not enter loop at 13:9
+          (((sv + local) = a) =>
+            (a - 1) >= 0))))));

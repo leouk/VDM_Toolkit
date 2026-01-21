@@ -1,0 +1,20 @@
+state Sigma of 
+	sv: nat 
+end 
+
+operations
+	op: nat ==> nat
+	op(a) == 
+	(
+		dcl local: nat:= 0; 
+		sv := a;
+		
+		--@LoopInvariant(sv + local = a)
+		while (sv > 0) do
+		(
+			sv := sv - 1;
+			local := local + 1
+		);
+		
+		return a -1
+	);

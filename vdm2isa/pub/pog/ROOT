@@ -1,0 +1,8 @@
+session pog = HOL + 
+  options [document = pdf, document_output = "output"]
+  theories [document = false]
+    "VDMToolkit"
+  theories
+  Sigma
+  document_files
+    "root.tex"
