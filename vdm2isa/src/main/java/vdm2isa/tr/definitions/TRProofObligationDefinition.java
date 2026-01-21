@@ -107,7 +107,7 @@ public class TRProofObligationDefinition extends TRDefinition {
                  //this name was just something in gateway.vdmsl
                  (//poNameStr.indexOf("rest_p") != -1 &&
                   poExprStr.indexOf("measure_") != -1 &&
-                  kind.equals(POType.RECURSIVE)
+                  kind.equals(POType.FUNC_RECURSIVE)
                 ); 
         return result;
     }
