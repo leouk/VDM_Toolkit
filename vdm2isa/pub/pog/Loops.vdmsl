@@ -1,3 +1,8 @@
+module Loops 
+exports all
+definitions 
+
+-- because of multiple examples with state on same directory
 state MySQRT of
 	sqrt_error: real
 inv
@@ -11,9 +16,9 @@ functions
 	newton_guess(value, guess) ==
 		(guess + (value / guess)) / 2
 	pre
-		value >= 0 and guess > 0
+		value >= 0 and guess > 0 and value > guess 
   post 
-    value >= RESULT && RESULT >= 0;
+    value >= RESULT and RESULT >= 0;
 
 values
 	SMALL : nat = 5;
@@ -21,6 +26,20 @@ values
 	ERROR : real = 0.01;
 
 operations 
+
+	Loop11_1_2: () ==> nat
+	Loop11_1_2() == 
+	(
+		dcl n: nat := 0, s: nat := 0;		
+		--@LoopInvariant(s = n * (n-1)/2) 
+		--LoopMeasure(?)
+		while (n <> 33) do
+		(
+			s := s + n;
+			n := n + 1;
+		);	
+		return s;
+	);
 
   Loop11_2: () ==> nat
   Loop11_2() == 
@@ -90,3 +109,5 @@ operations
 	post
 	  --RESULT * RESULT = value
 		(RESULT * RESULT) - sqrt_error <= value;
+
+end Loops

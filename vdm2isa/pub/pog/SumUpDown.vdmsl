@@ -1,0 +1,117 @@
+module SumUpDown
+exports all 
+
+definitions 
+functions 
+
+  f: int -> int
+  f(x) == x;
+
+  sumUp: int * int -> int 
+  sumUp(lo, hi) == 
+    if lo = hi 
+    then 0 
+    else 
+      --Printf("sumUp called with lo=%s hi=%s\n", lo,hi)
+      f(lo) + sumUp(lo + 1, hi)
+  pre 
+    --OnFail(4055, "Precondition violation in sumUp: lo > hi: %s > %s", lo, hi)
+    (lo <= hi)
+  measure
+    hi - lo;
+
+  sumDown: int * int -> int 
+  sumDown(lo, hi) == 
+    if lo = hi then 0 else sumDown(lo, hi - 1) + f(hi - 1)
+  pre 
+    lo <= hi
+  measure
+    hi - lo;
+
+state SumState of
+  F: int -> int
+--inv
+--  forall x: int & F(x) = f(x)
+init
+  sumState == sumState = mk_SumState(f)
+end 
+
+operations 
+
+    loopUp: int * int ==> int
+    loopUp(lo, hi) == 
+    (
+      dcl sum: int := 0, i: int := lo;
+      --@LoopInvariant(lo <= i and i <= hi)
+      --@LoopInvariant(sum + sumUp(i, hi) = sumUp(lo, hi))
+      --@LoopMeasure(hi - lo)
+      while (i <> hi) do
+      (
+        sum := sum + F(i);
+        i := i + 1
+      );
+      return sum
+    )
+    pre 
+      lo <= hi
+    post 
+      RESULT = sumUp(lo, hi);
+
+    loopDown: int * int ==> int
+    loopDown(lo, hi) == 
+    (
+      dcl sum: int := 0, i: int := hi;
+      --@LoopInvariant(lo <= i and i <= hi)
+      --@LoopInvariant(sumDown(lo, i) + sum = sumDown(lo, hi))
+      --@LoopMeasure(hi - lo)
+      while (i <> lo) do
+      (
+        i := i - 1;
+        sum := sum + F(i)
+      );
+      return sum
+    )     
+    pre 
+      lo <= hi
+    post 
+      RESULT = sumDown(lo, hi);
+
+    loopUpViaDown: int * int ==> int
+    loopUpViaDown(lo, hi) == 
+    (
+      dcl sum: int := 0, i: int := lo;
+      --@LoopInvariant(lo <= i and i <= hi)
+      --@LoopInvariant(sum = sumDown(lo, i))
+      --@LoopMeasure(hi - lo)
+      while (i <> hi) do
+      (
+        sum := sum + F(i);
+        i := i + 1
+      );
+      return sum
+    )
+    pre 
+      lo <= hi
+    post 
+      RESULT = sumDown(lo, hi);
+
+    loopDownViaUp: int * int ==> int
+    loopDownViaUp(lo, hi) == 
+    (
+      dcl sum: int := 0, i: int := hi;
+      --@LoopInvariant(lo <= i and i <= hi)
+      --@LoopInvariant(sum = sumUp(i, hi))
+      --@LoopMeasure(hi - lo)
+      while (i <> lo) do
+      (
+        i := i - 1;
+        sum := sum + F(i)
+      );
+      return sum
+    )     
+    pre 
+      lo <= hi
+    post 
+      RESULT = sumUp(lo, hi);
+      
+end SumUpDown
