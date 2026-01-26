@@ -314,7 +314,7 @@ map TCVoidType{definitions} to TRVoidType(this, definitions);
 # Recursive loops
 #############################################################################
 package com.fujitsu.vdmj.tc to vdm2isa.tr.definitions;
-map TCRecursiveMap{} to TRRecursiveMap(this);
+map TCRecursiveCycles{} to TRRecursiveMap(this);
 map TCRecursiveLoops{recursiveLoops} to TRRecursiveLoops(recursiveLoops);
 
 #############################################################################

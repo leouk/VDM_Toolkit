@@ -1,6 +1,6 @@
 package vdm2isa.tr.definitions;
 
-import com.fujitsu.vdmj.tc.TCRecursiveMap;
+import com.fujitsu.vdmj.typechecker.TCRecursiveCycles;
 import com.fujitsu.vdmj.tc.definitions.TCDefinitionListList;
 import com.fujitsu.vdmj.tc.lex.TCNameToken;
 
@@ -10,9 +10,10 @@ public class TRRecursiveMap extends TRMappedMap<TCNameToken, TCDefinitionListLis
 {
 	private static final long serialVersionUID = 1L;
 	
-	public TRRecursiveMap(TCRecursiveMap from) throws Exception
+	public TRRecursiveMap(TCRecursiveCycles from) throws Exception
 	{
-		super(from);
+		super();
+		throw new Exception("Not implemented yet: was passing TCRecursiveMap!");
 	}
 
 	public TRRecursiveMap()
