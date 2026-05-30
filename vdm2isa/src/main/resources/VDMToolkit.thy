@@ -271,7 +271,9 @@ lemma l_vdm_rem_fsb: "pre_vdm_rem x y \<Longrightarrow> post_vdm_rem x y (x vdmr
   apply safe
   apply (cases "y \<ge> 0")
     apply simp
-    apply (metis Euclidean_Division.pos_mod_sign add.commute add.left_neutral add_mono_thms_linordered_semiring(3) div_mult_mod_eq le_less mult.commute)
+  apply (smt (verit, best) mult_imp_div_pos_less nonzero_mult_div_cancel_left
+      of_int_less_iff of_int_mult of_int_pos pos_divide_le_eq
+      real_of_int_div4)
    defer
    apply (cases "y \<le> 0")
     apply simp 
