@@ -23,16 +23,21 @@ types
     pnzreal = preal 
     inv r == is_nzreal(r); 
 
+    --@doc positive non-zero/one (>0, <>1) real
+    pnzonereal = pnzreal
+    inv r == r <> 1;
+
     --@doc negative non-zero (<0) real
     nnzreal = nreal 
     inv r == is_nzreal(r); 
 
-    RVector = preal * preal; 
+    RVector :: x: real y: real; 
 
-    Position = RVector; 
+    Position = RVector; --:: x: real y: real; 
 
     --@doc plane velocity
-    Velocity = pnzreal * pnzreal; 
+    Velocity = RVector 
+    inv mk_RVector(x,y) == is_nzreal(x) and is_nzreal(y);--:: x: nzreal y: nzreal; 
 
     Aircraft ::
         position: Position
@@ -41,139 +46,228 @@ types
     Angle = preal 
     inv a == a < 360;
 
+    Precision = nat 
+    inv p == p mod 10 = 0;
+
 values 
-    DEFAULT_SQRT_ERROR: pnzreal = 0.000001;
+    DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 6; 
+    DEFAULT_SQRT_ERROR: real = 10**(-DEFAULT_SQRT_PRECISION_MAGNITUDE);
+
+    P1: Position = mk_RVector(-3,3);
+    V1: Velocity = mk_RVector(2,1);
+    P2: Position = mk_RVector(3,4);
+    V2: Velocity = mk_RVector(1,2);
+    A1: Aircraft = mk_Aircraft(P1, V1);
+    A2: Aircraft = mk_Aircraft(P2, V2);
+    --tCPA(A1, A2) fail, but not QC! 
 
 functions 
-    
-	newton_guess: nat * pnzreal -> pnzreal
+--@doc approximate to the given precision; useful for comparing up to an order of magnitude
+	approx: real * nat -> real
+	approx(m, precision) == m * (10**precision);
+	
+	--@doc approximate  both sides to the same precision then floor them for equality testing
+	approx_eq: real * real * nat -> bool
+	approx_eq(lhs, rhs, precision) == 
+		let 
+			lhs': real = approx(lhs, precision),
+			rhs': real = approx(rhs, precision)
+		 in
+		  floor(lhs') = floor(rhs');
+
+	approx_eq': real * real -> bool
+	approx_eq'(lhs, rhs) == 
+        approx_eq(lhs, rhs, DEFAULT_SQRT_PRECISION_MAGNITUDE);
+
+	approx_leq': real * real -> bool
+	approx_leq'(lhs, rhs) == lhs < rhs or approx_eq'(lhs, rhs);
+
+	approx_geq': real * real -> bool
+	approx_geq'(lhs, rhs) == lhs > rhs or approx_eq'(lhs, rhs);
+
+	newton_guess: pnzreal * pnzreal -> pnzreal
 	newton_guess(value, guess) ==
 		(guess + (value / guess)) / 2
+    pre 
+        true--guess <> 1
     post 
-        (2 * RESULT - guess) * guess < value;
+        --(value <> 0 => 
+        approx_leq'((2 * RESULT - guess) * guess, value)
+        --and 
+        --(value = 0 => RESULT * 2 = guess)
+        ;
 
-	sqrt0: nat * preal * pnzreal * preal -> preal
-	sqrt0(valueI, value, err, result) ==
-		if (abs (value - result) >= err * value) then
-			sqrt0(valueI, result, err, newton_guess(valueI,result))
+	sqrt0: preal * pnzonereal * pnzreal * preal -> preal
+	sqrt0(valueI, value, episilon, result) ==
+		if approx_geq'(abs (value - result), episilon * value) then
+		--if approx_leq'(abs(value**2 - valueI), episilon) then
+        	sqrt0(valueI, result, episilon, newton_guess(valueI, result))
 		else
 			result
 	pre
+        valueI <> 1 
+        and
+        result >= 1
+        and
+        result < value
+        and
 		value <= valueI
 		and
-		err <= valueI
+		approx_leq'(episilon, value)
+        and
+        episilon > 0
     post 
-        RESULT < value
-    measure 
-        result;
+        result <> 1 => approx_leq'(abs(RESULT**2 - valueI), episilon) 
+    -- measure 
+    --     floor(result)
+    ;
+
+    max: real * real -> real 
+    max(x,y) == if approx_geq'(x, y) then x else y
+    post true;--approx_geq'(RESULT, x) or approx_geq'(RESULT, y);
 
 	sqrt: preal * pnzreal -> preal
-	sqrt(value, err) == 
-		sqrt0(value, value, err, newton_guess(value, value))
+	sqrt(value, episilon) ==
+        if value in set {0,1} then value  
+        else 
+           sqrt0(value, value, episilon, max(1, newton_guess(value, value)))
 	pre
-        err <= value 
+        --@OnFail("Episilon must be strictly positive, e=%1s", episilon)
+        (episilon > 0)
+        and
+        --@OnFail("Episilon must be within value, e=%1s, v=%2s", episilon, value)
+        (value <> 0 => approx_leq'(episilon, value))
+        and
+        (not value in set {0,1} => pre_sqrt0(value, value, episilon, max(1, newton_guess(value, value)))) 
 	post
-		--@OnFail("Error tolerance is too big (i.e. reduce err), RESULT=%1s, err=%2s, input=%3s", RESULT, err, value)
-		((RESULT * RESULT) - err <= value)
+		--@OnFail("Error tolerance is too big (i.e. reduce episilon), RESULT=%1s, episilon=%2s, input=%3s", RESULT, episilon, value)
+		(approx_leq'(abs((RESULT**2) - value), episilon))
 		and
 		--@OnFail("Result precision is too coarse (i.e. incorrect algoritm), RESULT=%1s, input=%2s", RESULT, value)
 		((RESULT + 1) * (RESULT + 1) > value)
 		;
+    
+    sqrt': preal -> preal
+    sqrt'(x) == sqrt(x, DEFAULT_SQRT_ERROR)
+    pre pre_sqrt(x, DEFAULT_SQRT_ERROR)
+    post post_sqrt(x, DEFAULT_SQRT_ERROR, RESULT);
 
     magnitude: RVector -> preal  
-    magnitude(mk_(x, y)) == sqrt(x**2 + y**2, DEFAULT_SQRT_ERROR);
+    magnitude(mk_RVector(x, y)) == sqrt(x**2 + y**2, DEFAULT_SQRT_ERROR);
 
     sum: RVector * RVector -> RVector 
-    sum(mk_(x1, y1), mk_(x2, y2)) == mk_(x1+x2, y1+y2);
+    sum(mk_RVector(x1, y1), mk_RVector(x2, y2)) == mk_RVector(x1+x2, y1+y2);
 
     minus: RVector -> RVector 
-    minus(mk_(x, y)) == mk_(-x, -y);
+    minus(mk_RVector(x, y)) == mk_RVector(-x, -y);
 
     sub: RVector * RVector -> RVector
     sub(x, y) == sum(x, minus(y)); 
 
     rotate90: RVector -> RVector 
-    rotate90(mk_(vx, vy)) == mk_(vy, -vx);
+    rotate90(mk_RVector(vx, vy)) == mk_RVector(vy, -vx);
+
+    isZero: RVector -> bool
+    isZero(mk_RVector(vx, vy)) == vx = 0 and vy = 0;
+
+    hasZero: RVector -> bool
+    hasZero(mk_RVector(vx, vy)) == vx = 0 or vy = 0;
 
     dot_product: RVector * RVector -> real 
-    dot_product(mk_(vx1, vy1), mk_(vx2, vy2)) == 
-        (vx1*vx2) + (vy1*vy2);
+    dot_product(u, v) ==
+        if isZero(u) or isZero(v) then 0 
+        else if u.y = 0 or v.y = 0 then u.x * v.x
+        else if u.x = 0 or v.x = 0 then u.y * v.y
+        else u.x * v.x + u.y * v.y
+    --pre <> nan and <> infinity
+    post
+        (isZero(u) and isZero(v) => RESULT = 0) 
+        and 
+        (u = v and not isZero(u) => is_nzreal(RESULT))
+        and
+        -- (u . v)**2 <= (u . u) * (v . v)
+        ((u.x*v.x) + (u.y*v.y))**2 <= (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y)
+        --true;
+        ;
 
     scalar_product: real * RVector -> RVector
-    scalar_product(v, mk_(x,y)) == mk_(v*x, v*y); 
+    scalar_product(v, mk_RVector(x,y)) == mk_RVector(v*x, v*y); 
 
     --@doc Aircraft quadrants (Q1..Q4) on the flight (2D) plane
     Q1: Aircraft * Position -> bool 
-    Q1(mk_Aircraft(s0, v0), s1) == 
-        let psub: Position = sub(s1, s0) in 
-            dot_product(psub, rotate90(v0)) > 0
+    Q1(a, p) == 
+        let psub: Position = sub(p, a.position) in 
+            dot_product(psub, rotate90(a.velocity)) > 0
             and
-            dot_product(psub, v0) >= 0
+            dot_product(psub, a.velocity) >= 0
     post 
-        to_the_right_of(mk_Aircraft(s0, v0), s1);
+        (RESULT => to_the_right_of(a, p));
 
     Q2: Aircraft * Position -> bool 
-    Q2(mk_Aircraft(s0, v0), s1) == 
-        let psub: Position = sub(s1, s0) in 
-            dot_product(psub, rotate90(v0)) <= 0
+    Q2(a, p) == 
+        let psub: Position = sub(p, a.position) in 
+            dot_product(psub, rotate90(a.velocity)) <= 0
             and
-            dot_product(psub, v0) > 0;
+            dot_product(psub, a.velocity) > 0;
 
     Q3: Aircraft * Position -> bool 
-    Q3(mk_Aircraft(s0, v0), s1) == 
-        let psub: Position = sub(s1, s0) in 
-            dot_product(psub, rotate90(v0)) < 0
+    Q3(a, p) == 
+        let psub: Position = sub(p, a.position) in 
+            dot_product(psub, rotate90(a.velocity)) < 0
             and
-            dot_product(psub, v0) <= 0
+            dot_product(psub, a.velocity) <= 0
     post 
-        to_the_left_of(mk_Aircraft(s0, v0), s1);
+        (RESULT => to_the_left_of(a, p));
 
     Q4: Aircraft * Position -> bool 
-    Q4(mk_Aircraft(s0, v0), s1) == 
-        let psub: Position = sub(s1, s0) in 
-            dot_product(psub, rotate90(v0)) >= 0
+    Q4(a, p) == 
+        let psub: Position = sub(p, a.position) in 
+            dot_product(psub, rotate90(a.velocity)) >= 0
             and
-            dot_product(psub, v0) < 0;
+            dot_product(psub, a.velocity) < 0;
 
     --@doc Aircrafrt track (i.e. angle between north and aircraft directon)
     track: Aircraft -> Angle 
-    track(mk_Aircraft(-, mk_(v0x, v0y))) == 
+    track(mk_Aircraft(-, mk_RVector(v0x, v0y))) == 
         atan(v0x / v0y);
 
     --@doc Time to Closest Point of Approach
     tCPA: Aircraft * Aircraft -> nreal 
-    tCPA(mk_Aircraft(s0, v0), mk_Aircraft(s1, v1)) ==
-        if v0 = v1 then 
+    tCPA(a1, a2) ==
+        if a1.velocity = a2.velocity then 
             0
         else 
-            let sub_v0v1: Velocity = sub(v0, v1) in
-                - (dot_product(sub(s0, s1), sub_v0v1) / dot_product(sub_v0v1, sub_v0v1))
+            let 
+              sub_v1v2: Velocity = sub(a1.velocity, a2.velocity),
+              vDiffProd: nzreal = dot_product(sub_v1v2, sub_v1v2) 
+             in
+                - (dot_product(sub(a1.position, a2.position), sub_v1v2) / vDiffProd)
     post 
-        v0 <> v1 <=> is_nnzreal(RESULT);  
+        a1.velocity <> a2.velocity <=> is_nnzreal(RESULT);  
 
     --@doc Horizontal Miss Distance is the distance at the Closest Point of Approach 
     --     when their position and velocity vectors are projected in time.
     HMD: Aircraft * Aircraft -> real 
-    HMD(mk_Aircraft(s0, v0), mk_Aircraft(s1, v1)) == 
+    HMD(a1, a2) == 
         magnitude(
             sum(
-                sub(s0, s1), 
+                sub(a1.position, a2.position), 
                 scalar_product(
-                    tCPA(mk_Aircraft(s0, v0), mk_Aircraft(s1, v1)), 
-                    sub(v0, v1)
+                    tCPA(a1, a2), 
+                    sub(a1.velocity, a2.velocity)
                 ) 
             )
         );
 
     --@doc aircraft relative position 
     to_the_left_of: Aircraft * Position -> bool 
-    to_the_left_of(mk_Aircraft(s0, v0), s1) ==
-        dot_product(sub(s1, s0), rotate90(v0)) < 0;
+    to_the_left_of(a, p) ==
+        dot_product(sub(p, a.position), rotate90(a.velocity)) < 0;
 
     --@doc aircraft relative position 
     to_the_right_of: Aircraft * Position -> bool 
-    to_the_right_of(mk_Aircraft(s0, v0), s1) ==
-        dot_product(sub(s1, s0), rotate90(v0)) > 0;
+    to_the_right_of(a, p) ==
+        dot_product(sub(p, a.position), rotate90(a.velocity)) > 0;
 
     --@doc aircraft relative motion
     left_to_right: Aircraft * Aircraft -> bool 
@@ -203,9 +297,7 @@ functions
     zero_crossed: Aircraft * Aircraft -> bool 
     zero_crossed(a0, a1) == 
         going_to_cross(a0, a1) and 
-        going_to_cross(a1, a0)
-    post 
-        RESULT <=> not crossed(a0, a1);
+        going_to_cross(a1, a0); 
         
     --@doc One aircraft (a0) has crossed trajectory of other (a1) but not other way round
     one_crossed: Aircraft * Aircraft -> bool 

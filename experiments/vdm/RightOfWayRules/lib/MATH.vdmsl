@@ -1,3 +1,4 @@
+-- @NoPOG - do not generate obligations for this module
 module MATH
 exports all
 definitions
@@ -56,7 +57,7 @@ definitions
     sqrt:real -> real
     sqrt(a) ==
     is not yet specified
-    ;--pre a >= 0;
+    pre a >= 0;
 
     pi_f:() +> real
     pi_f () ==
@@ -97,7 +98,11 @@ definitions
     fac:nat -> nat1
     fac(a) ==
     is not yet specified
-    -- pre a < 21;
+    ;-- pre a < 21;
+
+	defined: ? +> bool
+	defined(v) ==
+	is not yet specified;
 
   values
     pi = pi_f();
