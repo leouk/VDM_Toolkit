@@ -5,7 +5,7 @@ in './src/test/resources/Examples/Alarm/alarm.vdmsl' at line 1:8
 files = [./src/test/resources/Examples/Alarm/alarm.vdmsl]
 *)
 theory alarm
-imports "VDMToolkit" 
+imports "../../VDMToolkit" 
 begin
 
 
@@ -119,12 +119,12 @@ definition
 where
 	"inv_Schedule sch \<equiv> 
 		\<comment>\<open>Implicitly defined type invariant checks for  `inv_Schedule` specification.\<close>
-		(((inv_Map (inv_Period) (inv_VDMSet' inv_Expert ) sch)))  \<and> 
+		(((inv_VDMMap (inv_Period) (inv_VDMSet' inv_Expert ) sch)))  \<and> 
 		\<comment>\<open>User defined body of inv_Schedule.\<close>
 		(\<forall> exs \<in> (rng sch)  . ((exs \<noteq> {}) \<and> (\<forall> ex1 \<in> exs  . (\<forall> ex2 \<in> exs  . ((ex1 \<noteq> ex2) \<longrightarrow> ((expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex1) \<noteq> (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex2)))))))"
 
 		 
-lemmas inv_Schedule_defs = inv_Expert_def inv_ExpertId_def inv_Map_defs inv_Period_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
+lemmas inv_Schedule_defs = inv_Expert_def inv_ExpertId_def inv_VDMMap_defs inv_Period_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
 
 
 	
@@ -218,7 +218,7 @@ where
 		\<comment>\<open>User defined body of inv_Plant.\<close>
 		(\<forall> a \<in> alarms  . (\<forall> peri \<in> (dom schedule)  . (QualificationOK ((the(schedule peri)))   (quali\<^sub>A\<^sub>l\<^sub>a\<^sub>r\<^sub>m a)))))"
  
-lemmas inv_Plant_defs = inv_Alarm_def inv_Expert_def inv_ExpertId_def inv_Map_defs inv_Period_def inv_Plant_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
+lemmas inv_Plant_defs = inv_Alarm_def inv_Expert_def inv_ExpertId_def inv_VDMMap_defs inv_Period_def inv_Plant_def inv_Qualification_def inv_Schedule_def inv_True_def inv_VDMChar_def inv_VDMSeq'_def inv_VDMSeq'_defs inv_VDMSet'_def inv_VDMSet'_defs inv_VDMToken'_def 
 
 
 	
@@ -731,7 +731,7 @@ where
 	definition
 	inv_s :: "\<bool>"
 where
-	"inv_s  \<equiv> (inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) s)"
+	"inv_s  \<equiv> (inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) s)"
 
 	
 	

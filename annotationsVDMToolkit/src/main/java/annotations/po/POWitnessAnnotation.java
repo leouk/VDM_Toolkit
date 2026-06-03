@@ -34,11 +34,11 @@ public class POWitnessAnnotation extends POAnnotation
 				POApplyExpression postArg = (POApplyExpression) args.get(0);
 				String postResult = postArg.args.get(args.size()-1).toString();
 
-				String poValue = po.value;
+				String poValue = po.source;
 				poValue = poValue.replaceAll(imDefResultName + ":", postResult + ":");
 				poValue = poValue.replaceAll(imDefResultName + "\\)", postResult +"\\)");
 				
-				po.value = poValue;
+				po.source = poValue;
 			}
 			else if(po.kind.equals(POType.OP_SATISFIABILITY)){
 				POImplicitOperationDefinition imDef = (POImplicitOperationDefinition) def;
@@ -47,11 +47,11 @@ public class POWitnessAnnotation extends POAnnotation
 					POApplyExpression postArg = (POApplyExpression) args.get(0);
 					String postResult = postArg.args.get(args.size()-1).toString();
 
-					String poValue = po.value;
+					String poValue = po.source;
 					poValue = poValue.replaceAll(imDefResultName + ":", postResult + ":");
 					poValue = poValue.replaceAll(imDefResultName + "\\)", postResult +"\\)");
 				
-					po.value = poValue;
+					po.source = poValue;
 				}
 			}
 		}			

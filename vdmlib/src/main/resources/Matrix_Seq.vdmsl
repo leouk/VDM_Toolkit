@@ -159,6 +159,7 @@ functions
 	measure
   	len zip[@T,@T](v,w);
 	
+	--@QuickCheck @T = nat
 	row[@T]: Matrix * Index -> Vector
 	row(m,r) == 
 		seqMapH[seq of @T, @T]((lambda v: seq of @T & v(r)), m)
@@ -190,12 +191,18 @@ functions
 	transpose[@T]: nat * Matrix -> Matrix
 	transpose(nr, m) ==
 		cases m: 
-			[] 		 -> replicate[seq of @T](nr,[]),
-			[v]^m' -> let f: (@T * (seq of @T)) -> (seq of seq of @T) = (lambda vi_mi: (@T * (seq of @T)) & [vi_mi.#1] ^ vi_mi.#2),
-										s: seq of (@T * (seq of @T)) = zip[@T,seq of @T](v, transpose[@T](nr,m'))
-								 in
-								 		[ f(s(i)) | i in set inds s ]
-								 		--seqMap[(@T * (seq of @T)), (seq of seq of @T), (seq of @T)](f,s)
+			[] 	   -> replicate[seq of @T](nr,[]),
+			[v]^m' -> 
+				let f: (@T * (seq of @T)) -> (seq of @T) 
+					= 
+					(lambda vi_mi: (@T * (seq of @T)) & [vi_mi.#1] ^ vi_mi.#2),
+					
+					s: seq of (@T * (seq of @T)) 
+					= 
+					zip[@T,seq of @T](v, transpose[@T](nr,m'))
+				in
+					[ f(s(i)) | i in set inds s ]
+					--seqMap[(@T * (seq of @T)), (seq of seq of @T), (seq of @T)](f,s)
 		end
 	pre
 		matrix_of_t[@T](m)

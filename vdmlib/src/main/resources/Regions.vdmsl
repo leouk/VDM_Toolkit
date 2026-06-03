@@ -1,12 +1,16 @@
 module Regions
 exports 
     functions 
-        regions[@X]: set1 of set of @X -> set1 of set of @X;
+        regions[@X]: set1 of set1 of @X -> set1 of set1 of @X;
 definitions 
 
 functions 
-    regions[@X]: set1 of set of @X -> set1 of set of @X
-    regions(SS) == { (dinter P \ (dunion (SS \ P))) | P in set power SS & P <> {} } \ {{}}; 
+    regions[@X]: set1 of set1 of @X -> set1 of set1 of @X
+    regions(SS) == { (dinter P \ (dunion (SS \ P))) | P in set power SS & P <> {} } \ {{}}
+    pre 
+        true
+    post 
+        dunion RESULT = dunion SS; 
 
     refl: ? * ? -> bool
     refl(x, y) == x = y;

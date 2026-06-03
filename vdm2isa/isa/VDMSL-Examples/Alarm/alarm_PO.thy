@@ -36,7 +36,7 @@ theorem Expert_INV_SATISFIABILITY_PO2:
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 36:7\<close>
 theorem Schedule_TOTAL_PO3:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<forall> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> isTest ((inv_Schedule sch)) (inv_bool))))"
+	"((\<forall> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> isTest ((inv_Schedule sch)) (inv_bool))))"
 	
 	by simp
 	
@@ -47,7 +47,7 @@ theorem Schedule_TOTAL_PO3:
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 35:3\<close>
 theorem Schedule_INV_SATISFIABILITY_PO4:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<exists> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> (\<forall> exs \<in> (rng sch)  . ((exs \<noteq> {}) \<and> (\<forall> ex1 \<in> exs  . (\<forall> ex2 \<in> exs  . ((ex1 \<noteq> ex2) \<longrightarrow> ((expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex1) \<noteq> (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex2))))))))))"
+	"((\<exists> (sch :: (Period \<rightharpoonup> Expert VDMSet))  . ((((inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ) sch))) \<longrightarrow> (\<forall> exs \<in> (rng sch)  . ((exs \<noteq> {}) \<and> (\<forall> ex1 \<in> exs  . (\<forall> ex2 \<in> exs  . ((ex1 \<noteq> ex2) \<longrightarrow> ((expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex1) \<noteq> (expertid\<^sub>E\<^sub>x\<^sub>p\<^sub>e\<^sub>r\<^sub>t ex2))))))))))"
 	
 	by (metis empty_iff ran_empty rng_def)
 	
@@ -154,6 +154,8 @@ theorem ChangeExpert_MAP_APPLY_PO13:
   apply (simp add: VDM_map, safe?)+
   apply (simp add: VDM_basic_defs VDM_seq_defs VDM_set_defs Typ_defs, safe?)+
   unfolding VDM_basic_defs VDM_seq_defs VDM_set_defs Typ_defs apply (simp?, safe?)
+  
+  nitpick
 	oops
 	
 	
@@ -163,7 +165,7 @@ theorem ChangeExpert_MAP_APPLY_PO13:
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:19\<close>
 theorem ChangeExpert_SUB_TYPE_PO14:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<forall> (dummy0 :: Plant)   (v11 :: Expert)   (v22 :: Expert)   (peri :: Period)  . (((inv_Plant dummy0))  \<and>  ((inv_Expert v11))  \<and>  ((inv_Expert v22))  \<and>  (((inv_Period peri))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  ((inv_Schedule (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) \<and> isTest ((plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) (inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert )))))))"
+	"((\<forall> (dummy0 :: Plant)   (v11 :: Expert)   (v22 :: Expert)   (peri :: Period)  . (((inv_Plant dummy0))  \<and>  ((inv_Expert v11))  \<and>  ((inv_Expert v22))  \<and>  (((inv_Period peri))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  ((inv_Schedule (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) \<and> isTest ((plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) (inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert )))))))"
 	
 	oops
 	
@@ -174,7 +176,7 @@ theorem ChangeExpert_SUB_TYPE_PO14:
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 79:5\<close>
 theorem ChangeExpert_SUB_TYPE_PO15:
 	\<comment>\<open>Implicitly defined type invariant checks for quantified type binds\<close> 
-	"((\<forall> (dummy0 :: Plant)   (v11 :: Expert)   (v22 :: Expert)   (peri :: Period)  . (((inv_Plant dummy0))  \<and>  ((inv_Expert v11))  \<and>  ((inv_Expert v22))  \<and>  (((inv_Period peri))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  ((inv_Plant \<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})]), alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = alarms\<rparr>) \<and> ((inv_Schedule (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) \<and> isTest ((plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) (inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ))))))))"
+	"((\<forall> (dummy0 :: Plant)   (v11 :: Expert)   (v22 :: Expert)   (peri :: Period)  . (((inv_Plant dummy0))  \<and>  ((inv_Expert v11))  \<and>  ((inv_Expert v22))  \<and>  (((inv_Period peri))) \<longrightarrow> (let plan = (schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0); alarms = (alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t dummy0) in  ((inv_Plant \<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})]), alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = alarms\<rparr>) \<and> ((inv_Schedule (plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) \<and> isTest ((plan \<dagger> [peri\<mapsto>((((the(plan peri))) - {v11}) \<union> {v22})])) (inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ))))))))"
 	
 	oops
 	
@@ -264,7 +266,7 @@ theorem s_MAP_SEQ_OF_COMPATIBLE_PO24:
 \<comment>\<open>VDM source: plant1 = ?\<close>
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 121:29\<close>
 theorem plant1_SUB_TYPE_PO25:
-	"(((inv_Schedule s) \<and> isTest (s) (inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ))))"
+	"(((inv_Schedule s) \<and> isTest (s) (inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert ))))"
 	
 	oops
 	
@@ -274,9 +276,13 @@ theorem plant1_SUB_TYPE_PO25:
 \<comment>\<open>VDM source: plant1 = ?\<close>
 \<comment>\<open>in 'alarm' (./src/test/resources/Examples/Alarm/alarm.vdmsl) at line 121:20\<close>
 theorem plant1_SUB_TYPE_PO26:
-	"(((inv_Plant \<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = s, alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = {a1 , a2 , a3}\<rparr>) \<and> ((inv_Schedule s) \<and> isTest (s) (inv_Map ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert )))))"
-	unfolding inv_Plant_defs inv_Schedule_defs QualificationOK_def by simp
-	
+	"(((inv_Plant \<lparr>schedule\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = s, alarms\<^sub>P\<^sub>l\<^sub>a\<^sub>n\<^sub>t = {a1 , a2 , a3}\<rparr>) \<and> ((inv_Schedule s) \<and> isTest (s) (inv_VDMMap ((inv_VDMToken' (inv_VDMSeq' (inv_VDMChar)))) (inv_VDMSet' inv_Expert )))))"
+	unfolding inv_Plant_defs inv_Schedule_defs QualificationOK_def 
+	apply simp
+  apply safe
+	unfolding rng_def apply simp
+  apply (simp, safe)
+  oops
 	
 	
 \<comment>\<open>Processing VDM exports as Isabelle hidden declarations\<close>

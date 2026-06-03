@@ -1,0 +1,94 @@
+module Option
+exports all
+definitions
+
+values 
+  -- Make the T type space finite for simplicity
+  MAX_T   : nat = 10;
+  T_SPACE : set1 of nat = {0,...,MAX_T};
+
+types 
+  string = seq1 of char;
+
+  T = nat
+  inv t == t in set T_SPACE;
+
+  R ::
+    value: T
+    name :- string;
+
+  Some :: 
+    value: T | R;
+
+  Option = <NONE> | Some;
+
+  Transform = (T -> R);
+
+  FlatTransform = (T -> Option)
+  -- inv fm == 
+  --   forall t: T & 
+  --     let o: Option = fm(t) in 
+  --       o = <NONE> or is_R(o.value)
+  ; 
+
+  ApplyTransform = (Option -> R)
+  --inv atm == dom atm = { o | o: Option & o = <NONE> or is_T(o.value) }
+  ;
+
+values 
+  -- Give me a option then I give you a mapped transformer for it
+  APP_TYPE: Option -> Transform -> Option = lambda o: Option & lambda f: Transform & mapping(o)(f);
+ 
+functions
+
+  mapping: Option -> Transform -> Option 
+  mapping(o)(transform) ==
+    cases true:
+      (is_Some(o))     -> mk_Some(transform(o.value)),
+      (is_(o, <NONE>)) -> <NONE>
+    end
+  pre  is_T(o.value)
+  post is_R(RESULT.value);   
+
+  flatMapping: Option -> FlatTransform -> Option 
+  flatMapping(o)(flatTransform) ==
+    cases true:
+      (is_Some(o))     -> flatTransform(o.value),
+      (is_(o, <NONE>)) -> <NONE>
+    end
+  pre  is_T(o.value)
+  post is_R(RESULT.value);
+
+  pure_: T -> Option 
+  pure_(t) == mk_Some(t)
+  post is_T(RESULT.value); 
+
+  -- apply: Option -> ApplyTransform -> Option 
+  -- apply(o)(fab) ==
+  --   flatMapping(o)( lambda t: T & mapping(o)
+  --     let r: R = fab(mk_Some(t)) in 
+  --       mk_Some(r)
+  --   )
+  --   --<NONE>--flatMapping(o, (lambda f: Transform & mapping(o, f)))
+  -- pre  is_T(o.value) 
+  -- post is_R(RESULT.value);
+
+-- Example usage
+
+values 
+  discountedTransform: FlatTransform =
+    (lambda t: T & 
+      if t > 50 then 
+        mk_R(t, "Discounted Price")
+      else 
+        <NONE>
+    );
+
+functions 
+
+  calculateDiscount: Option -> Option
+  calculateDiscount(opt) == flatMapping(opt)(discountedTransform);
+
+
+
+end Option

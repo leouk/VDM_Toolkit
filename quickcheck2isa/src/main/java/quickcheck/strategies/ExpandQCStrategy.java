@@ -99,14 +99,15 @@ public class ExpandQCStrategy extends QCStrategy
 			values.put(bind.toString(), new ValueList());	// ie. nothing, for every bind
 		}
 		
-		if (provedResult)
-		{
-			Context witness = null;		// Could have witness values set
-			return new StrategyResults(getName(), "Just an example", witness , System.currentTimeMillis() - before);
-		}
-		else
-		{
-			return new StrategyResults(values, false, System.currentTimeMillis() - before);
-		}
+		// if (provedResult)
+		// {
+		// 	Context witness = null;		// Could have witness values set
+		// 	return new StrategyResults(getName(), "Just an example", witness , System.currentTimeMillis() - before);
+		// }
+		// else
+		// {
+		// 	return new StrategyResults(values, false, System.currentTimeMillis() - before);
+		// }
+		return new StrategyResults();
 	}
 }

@@ -1,0 +1,5 @@
+document/
+output/
+*.pdf 
+ROOT*
+*.thy

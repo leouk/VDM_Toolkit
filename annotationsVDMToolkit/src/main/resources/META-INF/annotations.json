@@ -1,0 +1,6 @@
+{
+    "name": "annotationsVDMToolkit",
+    "description": "VDM Toolkit VDM Annotations",
+    "dialects": [ "vdmsl" ],
+    "precision": "standard"
+}

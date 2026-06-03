@@ -6,8 +6,8 @@
 #####################################################################################
 
 # Change these to flip VDMJ version
-MVERSION=${VDMJ_VERSION:-4.6.0-SNAPSHOT}
-PVERSION=${VDMJ_PVERSION:-4.6.0-P-SNAPSHOT}
+MVERSION=${VDMJ_VERSION:-4.7.0-SNAPSHOT}
+PVERSION=${VDMJ_PVERSION:-4.7.0-P-SNAPSHOT}
 
 # The Maven repository directory containing VDMJ versions
 MAVENREPO=~/.m2/repository/dk/au/ece/vdmj
@@ -18,9 +18,11 @@ ANTLRVERSION="3.5.3"
 
 # Details for 64-bit Java
 JAVA64="/usr/bin/java"
-VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
-# Preferred VDMJ options  -annotations
-VDMJOPTS=${VDMJ_OPTS:--strict}
+#-Dvdmj.plugins=plugins.analyses.IsabellePlugin
+VMOPTS=${VDMJ_VMOPTS:--Xmx3000m -Xss1m -Dannotations.debug=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dmax.errors=1000 -Dvdmj.tc.max_errors=1000 -Dvdmj.diag.max_stack=10 -Dvdmj.parser.maximal_types=true -Dvdmj.parser.merge_comments=true}
+# Preferred VDMJ options  
+VDMJOPTS=${VDMJ_OPTS:--strict -annotations}
+
 
 # The Maven repository directory containing VDMJ and VDM_Toolkit jars
 VDMJMAVENREPO=~/.m2/repository/dk/au/ece/vdmj
@@ -32,9 +34,9 @@ PROPDIR="$HOME/lib"
 
 function help()
 {
-    echo "Usage: $0 [--help|-?] [-P] [-A] <VM and VDMJ options>"
+    echo "Usage: $0 [--help|-?] [-P] <VM and VDMJ options>"
     echo "-P use high precision VDMJ ($PVERSION)"
-    echo "-A use annotation libraries"
+#    echo "-A use annotation libraries"
     echo "Set \$VDMJ_VMOPTS and/or \$VDMJ_OPTS to override Java/tool options"
     echo "Set \$VDMJ_VERSION and \$VDMJ_PVERSION to change versions"
     echo "Set \$VDMJ_ANNOTATIONS and/or \$VDMJ_CLASSPATH for extensions" 
@@ -95,9 +97,6 @@ do
 	--help|-\?)
 	    help
 	    ;;
-	-A)
-	    USE_ANNOTATIONS=1
-	    ;;
 	-P)
 	    VERSION=$PVERSION
 	    ;;
@@ -118,8 +117,11 @@ VDMJ_JAR=$MAVENREPO/vdmj/${VERSION}/vdmj-${VERSION}.jar
 STDLIB_JAR=$MAVENREPO/stdlib/${VERSION}/stdlib-${VERSION}.jar
 COMMANDS_JAR=$MAVENREPO/cmd-plugins/${VERSION}/cmd-plugins-${VERSION}.jar
 QUICKCHECK_JAR=$MAVENREPO/quickcheck/${VERSION}/quickcheck-${VERSION}.jar
+ANNOTATIONS_JAR=$MAVENREPO/annotations/${VERSION}/annotations-${VERSION}.jar
+ANNOTATIONS2_JAR=$MAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
 VDMTOOLKIT_LIB_JAR=$VDMTOOLKITMAVENREPO/vdmlib/${VTVERSION}/vdmlib-${VTVERSION}.jar
 VDMTOOLKIT_PLUGIN_JAR=$VDMTOOLKITMAVENREPO/vdm2isa/${VTVERSION}/vdm2isa-${VTVERSION}.jar
+ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${VTVERSION}/annotationsVDMToolkit-${VTVERSION}.jar
 ST_JAR=$STMAVENREPO/ST4/${STVERSION}/ST4-${STVERSION}.jar
 ANTLR_JAR=$STMAVENREPO/antlr-runtime/${ANTLRVERSION}/antlr-runtime-${ANTLRVERSION}.jar
 
@@ -127,40 +129,22 @@ check "$VDMJ_JAR"
 check "$STDLIB_JAR"
 check "$COMMANDS_JAR"
 check "$QUICKCHECK_JAR"
+check "$ANNOTATIONS_JAR"
+check "$ANNOTATIONS2_JAR"
 check "$VDMTOOLKIT_LIB_JAR"
 check "$VDMTOOLKIT_PLUGIN_JAR"
+check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
 check "$ST_JAR"
 check "$ANTLR_JAR"
 
-CLASSPATH="$VDMJ_JAR:$COMMANDS_JAR:$STDLIB_JAR:$QUICKCHECK_JAR:$VDMTOOLKIT_PLUGIN_JAR:$VDMTOOLKIT_LIB_JAR:$ST_JAR:$ANTLR_JAR:$VDMJ_CLASSPATH"
+CLASSPATH="$VDMJ_JAR:$COMMANDS_JAR:$STDLIB_JAR:$QUICKCHECK_JAR:$ANNOTATIONS_JAR:$ANNOTATIONS2_JAR:$VDMJ_ANNOTATIONS:$VDMTOOLKIT_PLUGIN_JAR:$VDMTOOLKIT_LIB_JAR:$ST_JAR:$ANTLR_JAR:$VDMJ_CLASSPATH"
 MAIN="VDMJ"
 #MAIN="com.fujitsu.vdmj.VDMJ"
 #MAIN="com.fujitsu.vdmj.plugins.VDMJ"
 
-#always keep them on for now 
-#if [ $USE_ANNOTATIONS ]
-#then
-    ANNOTATIONS_JAR=$MAVENREPO/annotations/${VERSION}/annotations-${VERSION}.jar
-    # Remove Annotations2 to allow for right "Witness" to be picked
-    #ANNOTATIONS2_JAR=$MAVENREPO/annotations2/${VERSION}/annotations2-${VERSION}.jar
-
-    ANNOTATIONS_VDM_TOOLKIT_JAR=$VDMTOOLKITMAVENREPO/annotationsVDMToolkit/${VTVERSION}/annotationsVDMToolkit-${VTVERSION}.jar
-
-    check "$ANNOTATIONS_JAR"
-    #check "$ANNOTATIONS2_JAR"
-    check "$ANNOTATIONS_VDM_TOOLKIT_JAR"
-
-    VDMJ_OPTS="$VDMJ_OPTS -annotations -strict"
-    VM_OPTS="$VM_OPTS -Dvdmj.annotations.debug=true -Dvdmj.parser.merge_comments=true -Dvdmj.plugins=plugins.analyses.IsabellePlugin"
-    CLASSPATH="$CLASSPATH:$ANNOTATIONS_JAR:$ANNOTATIONS_VDM_TOOLKIT_JAR"
-    #$ANNOTATIONS2_JAR:
-#fi
-
 # The dialect for vdm2isa is always VDMSL for now; is based on $0, so hard-link this file as vdmsl, vdmpp and vdmrt.
 #DIALECT=$(basename $0)
 DIALECT=vdmsl
-
-#echo "\"$JAVA64\" $VM_OPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJ_OPTS \"$@\""
 
 if [ "$VDMJ_DEBUG" ]
 then
@@ -173,8 +157,9 @@ if which rlwrap >/dev/null 2>&1
 then
 	# Keep rlwrap output in a separate folder
 	export RLWRAP_HOME=~/.vdmj
-	exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
+	#echo exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS
+	exec rlwrap "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS 
 else
-	exec "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS "$@"
+	exec "$JAVA64" $VMOPTS -cp $CLASSPATH $MAIN -$DIALECT $VDMJOPTS
 fi
 

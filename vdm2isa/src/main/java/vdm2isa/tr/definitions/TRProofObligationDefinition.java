@@ -67,7 +67,7 @@ public class TRProofObligationDefinition extends TRDefinition {
         setFormattingSeparator("\n");// setFormattingSeparator("\n\t");
         if (poExpr == null)
         {
-            report(IsaErrorMessage.PO_INVALID_POEXPR_2P, po.name, po.value);
+            report(IsaErrorMessage.PO_INVALID_POEXPR_2P, po.name, po.source);
         }
 
         TRNode.setup(poExpr, poType, poScripts);
@@ -107,7 +107,7 @@ public class TRProofObligationDefinition extends TRDefinition {
                  //this name was just something in gateway.vdmsl
                  (//poNameStr.indexOf("rest_p") != -1 &&
                   poExprStr.indexOf("measure_") != -1 &&
-                  kind.equals(POType.RECURSIVE)
+                  kind.equals(POType.FUNC_RECURSIVE)
                 ); 
         return result;
     }
