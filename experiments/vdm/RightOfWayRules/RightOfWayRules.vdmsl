@@ -49,6 +49,17 @@ types
     Precision = nat 
     inv p == p mod 10 = 0;
 
+    Convergence = <Convergent> | <Divergent> | <Overtaking>;
+
+    Aircrafts = set of Aircraft
+        --forall ca in set aspace & forall cb in set aspace \ {ca} & true;
+        -- -- no duplicate aircraft pairs
+        -- card aspace = card { mk_(ca.a1, ca.a0) | ca in set aspace } 
+        -- and 
+        -- -- unique pairing of aircraft
+        -- card aspace = card { ca.a1 | ca in set aspace }
+        ;
+
 values 
     DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 6; 
     DEFAULT_SQRT_ERROR: real = 10**(-DEFAULT_SQRT_PRECISION_MAGNITUDE);
@@ -197,34 +208,34 @@ functions
     Q1: Aircraft * Position -> bool 
     Q1(a, p) == 
         let psub: Position = sub(p, a.position) in 
-            dot_product(psub, rotate90(a.velocity)) > 0
+            dot_product(psub, rotate90(a.velocity)) > 0.0
             and
-            dot_product(psub, a.velocity) >= 0
+            dot_product(psub, a.velocity) >= 0.0
     post 
         (RESULT => to_the_right_of(a, p));
 
     Q2: Aircraft * Position -> bool 
     Q2(a, p) == 
         let psub: Position = sub(p, a.position) in 
-            dot_product(psub, rotate90(a.velocity)) <= 0
+            dot_product(psub, rotate90(a.velocity)) <= 0.0
             and
-            dot_product(psub, a.velocity) > 0;
+            dot_product(psub, a.velocity) > 0.0;
 
     Q3: Aircraft * Position -> bool 
     Q3(a, p) == 
         let psub: Position = sub(p, a.position) in 
-            dot_product(psub, rotate90(a.velocity)) < 0
+            dot_product(psub, rotate90(a.velocity)) < 0.0
             and
-            dot_product(psub, a.velocity) <= 0
+            dot_product(psub, a.velocity) <= 0.0
     post 
         (RESULT => to_the_left_of(a, p));
 
     Q4: Aircraft * Position -> bool 
     Q4(a, p) == 
         let psub: Position = sub(p, a.position) in 
-            dot_product(psub, rotate90(a.velocity)) >= 0
+            dot_product(psub, rotate90(a.velocity)) >= 0.0
             and
-            dot_product(psub, a.velocity) < 0;
+            dot_product(psub, a.velocity) < 0.0;
 
     --@doc Aircrafrt track (i.e. angle between north and aircraft directon)
     track: Aircraft -> Angle 
@@ -233,60 +244,72 @@ functions
 
     --@doc Time to Closest Point of Approach
     tCPA: Aircraft * Aircraft -> nreal 
-    tCPA(a1, a2) ==
-        if a1.velocity = a2.velocity then 
+    tCPA(a0, a1) ==
+        if a0.velocity = a1.velocity then 
             0
         else 
             let 
-              sub_v1v2: Velocity = sub(a1.velocity, a2.velocity),
+              sub_v1v2: Velocity = sub(a0.velocity, a1.velocity),
               vDiffProd: nzreal = dot_product(sub_v1v2, sub_v1v2) 
              in
-                - (dot_product(sub(a1.position, a2.position), sub_v1v2) / vDiffProd)
+                - (dot_product(sub(a0.position, a1.position), sub_v1v2) / vDiffProd)
     post 
-        a1.velocity <> a2.velocity <=> is_nnzreal(RESULT);  
+        a0.velocity <> a1.velocity <=> is_nnzreal(RESULT);  
 
     --@doc Horizontal Miss Distance is the distance at the Closest Point of Approach 
-    --     when their position and velocity vectors are projected in time.
-    HMD: Aircraft * Aircraft -> real 
-    HMD(a1, a2) == 
+    --     when their position and velocity vectors are projected in time. Assumes delta_c ~< 1000 nautical miles
+    --
+    -- case 1(HMD > delta_c): a0 travelling west, a1 travelling south BEFORE a0 HMD
+    --                                                     |
+    --                                                    \/ 
+    --                                                    a1 [a1 travelling south before]
+    -- a0 ->----------------HMD--------------------------->  [a0 travelling west ]
+    --
+    -- case 2(HMD <= delta_c): a0 travelling west, a1 travelling south AFTER a0 HMD
+    --                                                     | 
+    --                                                    \/ 
+    -- a0 ->----------------HMD--------------------------->  
+    --                                                    a1 [a1 after a0]    HMD: Aircraft * Aircraft -> real 
+    HMD:Aircraft * Aircraft -> real 
+    HMD(a0, a1) ==
         magnitude(
             sum(
-                sub(a1.position, a2.position), 
+                sub(a0.position, a1.position), 
                 scalar_product(
-                    tCPA(a1, a2), 
-                    sub(a1.velocity, a2.velocity)
+                    tCPA(a0, a1), 
+                    sub(a0.velocity, a1.velocity)
                 ) 
             )
         );
 
-    --@doc aircraft relative position 
+    --@doc aircraft relative position (i.e., p is to the left of a's position)
     to_the_left_of: Aircraft * Position -> bool 
     to_the_left_of(a, p) ==
-        dot_product(sub(p, a.position), rotate90(a.velocity)) < 0;
+        dot_product(sub(p, a.position), rotate90(a.velocity)) < 0.0;
 
-    --@doc aircraft relative position 
+    --@doc aircraft relative position (i.e., p is to the right of a's position) 
     to_the_right_of: Aircraft * Position -> bool 
     to_the_right_of(a, p) ==
-        dot_product(sub(p, a.position), rotate90(a.velocity)) > 0;
+        dot_product(sub(p, a.position), rotate90(a.velocity)) > 0.0;
 
-    --@doc aircraft relative motion
+    --@doc aircraft relative motion (i.e., a1 is moving left to right relative to a0)
     left_to_right: Aircraft * Aircraft -> bool 
-    left_to_right(mk_Aircraft(-, v0), mk_Aircraft(-, v1)) == 
-        dot_product(v0, v1) < 0;
+    left_to_right(a0, a1) == 
+        dot_product(a0.velocity, rotate90(a1.velocity)) < 0.0;
 
-    --@doc aircraft relative motion
+    --@doc aircraft relative motion (i.e., a1 is moving right to left relative to a0)
     right_to_left: Aircraft * Aircraft -> bool 
-    right_to_left(mk_Aircraft(-, v0), mk_Aircraft(-, v1)) == 
-        dot_product(v0, v1) > 0;
+    right_to_left(a0, a1) == 
+        dot_product(a0.velocity, rotate90(a1.velocity)) > 0.0;
 
-    --@doc Check trajectories will cross in future
+    --@doc Check trajectories will cross in future (i.e., a1 is going to cross a0's trajectory) 
     going_to_cross: Aircraft * Aircraft -> bool 
     going_to_cross(a0, a1) == 
         (to_the_left_of(a0, a1.position) and left_to_right(a0, a1))
         or
         (to_the_right_of(a0, a1.position) and right_to_left(a0, a1));
 
-    --@doc Check trajectories have already crossed
+    --@doc Check trajectories have already crossed (i.e. a1 has crossed a0's trajectory)
     crossed: Aircraft * Aircraft -> bool 
     crossed(a0, a1) == 
         (to_the_left_of(a0, a1.position) and right_to_left(a0, a1))
@@ -314,22 +337,24 @@ functions
     --@doc 
     parallel: Aircraft * Aircraft -> bool 
     parallel(a0, a1) == 
-        dot_product(a0.velocity, rotate90(a1.velocity)) = 0;
+        dot_product(a0.velocity, rotate90(a1.velocity)) = 0.0;
 
     same_orientation: Aircraft * Aircraft -> bool 
     same_orientation(a0, a1) == 
-        dot_product(a0.velocity, rotate90(a1.velocity)) > 0;
+        dot_product(a0.velocity, a1.velocity) > 0.0;
 
     opposite_orientation: Aircraft * Aircraft -> bool 
     opposite_orientation(a0, a1) == 
-        dot_product(a0.velocity, rotate90(a1.velocity)) < 0;
+        dot_product(a0.velocity, a1.velocity) < 0.0;
 
-    IS_in_q1_and_was_in_q2: Aircraft * Aircraft -> bool
-    IS_in_q1_and_was_in_q2(a0, a1) == 
+    --@doc a1 is in a0's Q1 and a1 was in a0's Q2
+    IS_in_Q1_and_was_in_Q2: Aircraft * Aircraft -> bool
+    IS_in_Q1_and_was_in_Q2(a0, a1) == 
         (Q1(a0, a1.position) and Q4(a1, a0.position))
         or
         (opposite_orientation(a0, a1) and left_to_right(a0, a1));
 
+    --@doc aircraft quadrant convergence
     QC: Aircraft * Aircraft -> bool 
     QC(a0, a1) == 
         (Q1(a0, a1.position) and Q1(a1, a0.position))
@@ -340,36 +365,68 @@ functions
         or
         (Q4(a0, a1.position) and Q4(a1, a0.position));
 
+    QD: Aircraft * Aircraft -> bool 
+    QD(a0, a1) == 
+        (Q3(a0, a1.position) and Q3(a1, a0.position))
+        or
+        (Q3(a0, a1.position) and Q4(a1, a0.position))
+        or
+        (Q4(a0, a1.position) and Q3(a1, a0.position))
+        or
+        (Q4(a0, a1.position) and Q4(a1, a0.position));
+
+    QO: Aircraft * Aircraft -> bool 
+    QO(a0, a1) == 
+        (Q1(a0, a1.position) and Q3(a1, a0.position))
+        or
+        (Q1(a0, a1.position) and Q4(a1, a0.position))
+        or
+        (Q2(a0, a1.position) and Q3(a1, a0.position))
+        or
+        (Q2(a0, a1.position) and Q4(a1, a0.position))
+        or
+        (Q3(a0, a1.position) and Q1(a1, a0.position))
+        or
+        (Q3(a0, a1.position) and Q2(a1, a0.position))
+        or
+        (Q4(a0, a1.position) and Q1(a1, a0.position))
+        or
+        (Q4(a0, a1.position) and Q2(a1, a0.position));
+
+    --@doc Convergence relative to qudrant convergence and horizontal miss distance up to a delta_c >= 0 threshold 
     converging: Aircraft * Aircraft -> preal -> bool
     converging(a0, a1)(delta_c) == 
         QC(a0, a1) and (HMD(a0, a1) < delta_c);
 
+    --@doc Convergence not head on bar the Theta_h angular threshold (i.e. not head on if their tracks are not within Theta_h of 180 degrees apart)
     conv_not_headon: Aircraft * Aircraft -> preal * Angle -> bool 
-    conv_not_headon(a0, a1)(delta_c, Delta_h) == 
+    conv_not_headon(a0, a1)(delta_c, Theta_h) == 
         converging(a0, a1)(delta_c)
         and 
         (
         let track_delta: Angle/*or nat? */ = 
                 abs (track(a0) - track(a1))
         in
-             (180 + Delta_h < track_delta)
+             (180 + Theta_h < track_delta)
              or 
-             (track_delta < 180 - Delta_h)
+             (track_delta < 180 - Theta_h)
         );
 
     headon: Aircraft * Aircraft -> preal * Angle -> bool 
-    headon(a0, a1)(delta_c, Delta_h) == 
+    headon(a0, a1)(delta_c, Theta_h) == 
         converging(a0, a1)(delta_c)
         and 
         (
         let track_delta: Angle/*or nat? */ = 
                 abs (track(a0) - track(a1))
         in
-             (180 - Delta_h <= track_delta)
+             (180 - Theta_h <= track_delta)
              and 
-             (track_delta < 180 + Delta_h)
+             (track_delta < 180 + Theta_h)
         );
 
+    --@doc Aircraft a0 is overtaking a1 when a1 is in a0's Q1 or Q2 and a0 is in a1's Q3 or Q4 and 
+    --     their horizontal miss distance is less than delta_o >= 0
     overtaking: Aircraft * Aircraft -> preal -> bool 
     overtaking(a0, a1)(delta_o) == 
         (Q1(a0, a1.position) or Q2(a0, a1.position))
@@ -378,28 +435,45 @@ functions
         and 
         (HMD(a0, a1) < delta_o);
 
-    right_of_way: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    right_of_way(a0, a1)(delta_o, delta_c, Delta_h) == 
+    --@doc Aircraft a1 has right of way over a0 (which must give way), when either 
+    --     a0 is overtaking a1, or a0 is converging (except head on) and a1 is to the 
+    --     right of a0 and thier trajectivies have not yet crossed
+    right_of_way: Aircraft * Aircraft -> preal * preal * Angle -> bool 
+    right_of_way(a1, a0)(delta_o, delta_c, Theta_h) == 
         overtaking(a0, a1)(delta_o)
         or 
-        (conv_not_headon(a0, a1)(delta_c, Delta_h)
+        (conv_not_headon(a0, a1)(delta_c, Theta_h)
          and 
          to_the_right_of(a0, a1.position)
          and
          zero_crossed(a0, a1)
         );
 
+    -- space_independent_safety: Aircraft * Aircraft -> bool
+    -- space_independent_safety(a0, a1) == 
+    --     theorem2(a0, a1) and theorem4(a0, a1) and theorem6(a0, a1);
+
+    -- overall_safety: Aircraft * Aircraft -> real * preal * Angle -> bool
+    -- overall_safety(a0, a1)(delta_o, delta_c, Theta_h) == 
+    --     space_independent_safety(a0, a1) 
+    --     and 
+    --     theorem1(a0, a1)(delta_o, delta_c, Theta_h)
+    --     and       
+    --     theorem3(a0, a1)(delta_o)
+    --     and       
+    --     theorem5(a0, a1)(delta_o, delta_c, Theta_h);
+
     --@doc Safety 1: no two aircraft can share right of way
     --@Theorem(t1, exists a0, a1: Aircraft, dO, dC, dH: preal & theorem1(a0, a1)(dO, dC, dH))
-    theorem1: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem1(a0, a1)(delta_o, delta_c, Delta_h) == 
-        right_of_way(a1, a0)(delta_o, delta_c, Delta_h)
+    thm1_deterministic_right_of_way: Aircraft * Aircraft -> preal * preal * Angle -> bool 
+    thm1_deterministic_right_of_way(a0, a1)(delta_o, delta_c, Theta_h) == 
+        right_of_way(a1, a0)(delta_o, delta_c, Theta_h)
         => 
-        not right_of_way(a0, a1)(delta_o, delta_c, Delta_h);
+        not right_of_way(a0, a1)(delta_o, delta_c, Theta_h);
 
     --@doc Safety 1a: if two aircraft have not crossed trajectories, then only one is to right of the other
-    theorem2: Aircraft * Aircraft -> bool 
-    theorem2(a0, a1) == 
+    thm2_zero_crossed_only_one_to_right: Aircraft * Aircraft -> bool 
+    thm2_zero_crossed_only_one_to_right(a0, a1) == 
         zero_crossed(a1, a0)
         =>
         ((to_the_right_of(a0, a1.position) 
@@ -414,13 +488,13 @@ functions
         );
 
     --@doc Overtaking is assymetric 
-    theorem3: Aircraft * Aircraft -> preal -> bool 
-    theorem3(a0, a1)(delta_o) == 
+    thm3_overtaking_asymmetric: Aircraft * Aircraft -> preal -> bool 
+    thm3_overtaking_asymmetric(a0, a1)(delta_o) == 
         overtaking(a0, a1)(delta_o) => not overtaking(a1, a0)(delta_o);
 
     --@doc No right-of-way after crossing
-    theorem4: Aircraft * Aircraft -> bool 
-    theorem4(a0, a1) == 
+    thm4_no_right_of_way_after_crossing: Aircraft * Aircraft -> bool 
+    thm4_no_right_of_way_after_crossing(a0, a1) == 
         one_crossed(a0, a1)
         =>
         ((to_the_right_of(a0, a1.position) 
@@ -435,20 +509,47 @@ functions
         );
 
     --@doc Aircraft awareness
-    theorem5: Aircraft * Aircraft -> preal * preal * preal -> bool 
-    theorem5(a0, a1)(delta_o, delta_c, Delta_h) == 
-        conv_not_headon(a0, a1)(delta_c, Delta_h)
+    thm5_mutual_awareness: Aircraft * Aircraft -> preal * preal * Angle -> bool 
+    thm5_mutual_awareness(a0, a1)(delta_o, delta_c, Theta_h) == 
+        conv_not_headon(a0, a1)(delta_c, Theta_h)
         =>
         (zero_crossed(a0, a1) and to_the_left_of(a0, a1.position)
          =>
-         right_of_way(a1, a0)(delta_o, delta_c, Delta_h)
+         right_of_way(a1, a0)(delta_o, delta_c, Theta_h)
         );
 
     --@doc Had right of way
-    theorem6: Aircraft * Aircraft -> bool 
-    theorem6(a0, a1) == 
+    thm6_had_right_of_way: Aircraft * Aircraft -> bool 
+    thm6_had_right_of_way(a0, a1) == 
         Q1(a0, a1.position) and Q1(a1, a0.position) and not parallel(a0, a1)
         =>
-        (IS_in_q1_and_was_in_q2(a0, a1) or IS_in_q1_and_was_in_q2(a1, a0));
+        (IS_in_Q1_and_was_in_Q2(a0, a1) or IS_in_Q1_and_was_in_Q2(a1, a0));
+
+types 
+    AirSpace :: 
+        aircrafts: Aircrafts
+        delta_c: preal
+        delta_o: preal
+        Theta_h: Angle
+    inv mk_AirSpace(aircrafts, delta_c, delta_o, Theta_h) ==
+        -- unique positions
+        card { a.position | a in set aircrafts } = card aircrafts 
+        and
+        -- safe airspace 
+        forall a0 in set aircrafts & forall a1 in set aircrafts \ {a0} &
+            thm1_deterministic_right_of_way(a0, a1)(delta_o, delta_c, Theta_h) and
+            thm2_zero_crossed_only_one_to_right(a0, a1) and
+            thm3_overtaking_asymmetric(a0, a1)(delta_o) and
+            thm4_no_right_of_way_after_crossing(a0, a1) and
+            thm5_mutual_awareness(a0, a1)(delta_o, delta_c, Theta_h) and
+            thm6_had_right_of_way(a0, a1); 
+
+--     String = seq1 of char; 
+
+-- state S of
+--     aspaces: map String to AirSpace
+-- inv mk_S(aspaces) == forall k in set dom aspaces & aspaces(k).delta_c >= 0.0 
+-- init s == s = mk_S(mk_AirSpace({}, 1.0, 1.0, 10.0))
+-- end
 
 end RightOfWayRules
