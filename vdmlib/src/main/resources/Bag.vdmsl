@@ -22,6 +22,8 @@ exports
         difference[@T]: Bag * Bag -> Bag;
         post_difference[@T]: Bag * Bag * Bag +> bool;
         items[@T]: seq of @T -> Bag;
+        image[@T, @U]: Bag * (@T -> @U) -> Bag;
+        bsum[@T]: Bag -> nat;
         --@todo if we have @T, these aren't needed? 
         type_test[@T]: () -> (? -> bool);
         type_convergent[@T]: Bag -> bool;
@@ -148,7 +150,38 @@ functions
         and
         type_convergent[@T](RESULT);
 
-    --@QuickCheck @T = nat;
+    image[@T, @U]: Bag * (@T -> @U) -> Bag
+    image(b, f) ==  
+        { f(x) |-> amount[@T](b, x) | x in set bset[@T](b) }
+    pre 
+        type_convergent[@T](b)
+        --and bset[@T](b) subset dom f
+    post 
+        type_convergent[@U](RESULT)
+        and
+        bset[@U](RESULT) = { f(x) | x in set bset[@T](b) }
+        and
+        (forall y in set bset[@U](RESULT) & 
+            amount[@U](RESULT, y) = amount[@T](b, (iota x: @T & f(x) = y)));
+
+    bsum[@T]: Bag -> nat
+    bsum(b) == 
+        --if isEmpty(b) then 
+        --    0 
+        --else
+            --@doc TODO use generalised fold? 
+            --let x in set bset[@T](b) in
+            --    amount[@T](b, x) + bsum[@T](difference(b, items[@T](replicate[@T](x, amount[@T](b, x)))
+            sum([ amount[@T](b, x) | x in set bset[@T](b) ])
+    pre 
+        type_convergent[@T](b)
+    post 
+        RESULT = sum([ amount[@T](b, x) | x in set bset[@T](b) ]);
+
+    sum: seq of nat -> nat 
+    sum(s) == if s = [] then 0 else s(hd s) + sum(tl s)
+    measure len s;
+
 	type_test[@T]: () -> (? -> bool)
 	type_test() == (lambda t: ? & is_(t, @T));
 

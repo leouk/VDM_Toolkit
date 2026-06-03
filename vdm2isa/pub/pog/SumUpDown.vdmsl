@@ -54,6 +54,7 @@ operations
     )
     pre 
       lo <= hi
+      --not pre_sumUp(lo, hi)
     post 
       RESULT = sumUp(lo, hi);
 

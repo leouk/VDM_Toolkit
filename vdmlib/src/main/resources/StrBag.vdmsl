@@ -23,6 +23,8 @@ exports
         difference: Bag * Bag -> Bag;
         post_difference: Bag * Bag * Bag +> bool;
         items: seq of String -> Bag;
+        image: Bag * (String -> String) -> Bag;
+        bsum: Bag -> nat;
 definitions
 types 
     String = seq1 of char; 
@@ -125,5 +127,28 @@ functions
     items(s) == { s(i) |-> len filter(s, (lambda x: String & s(i) = x)) | i in set inds s }
     post 
         elems s = bset(RESULT);
+
+    image: Bag * (String -> String) -> Bag
+    image(b, f) ==  
+        { f(x) |-> amount(b, x) | x in set bset(b) }
+    post 
+        bset(RESULT) = { f(x) | x in set bset(b) }
+        and
+        (forall y in set bset(RESULT) & 
+            amount(RESULT, y) = amount(b, (iota x: String & f(x) = y)));
+
+    bsum: Bag -> nat    
+    bsum(b) == 
+        if isEmpty(b) then 
+            0 
+        else
+            --@doc TODO use generalised fold? 
+            let x in set bset(b) in
+                amount(b, x) + bsum( {x} <-: b )
+    measure card bset(b);
+
+    sum: seq of nat -> nat 
+    sum(s) == if s = [] then 0 else s(hd s) + sum(tl s)
+    measure len s;
 
 end StrBag
