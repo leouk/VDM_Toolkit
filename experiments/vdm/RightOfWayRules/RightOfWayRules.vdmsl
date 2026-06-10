@@ -359,11 +359,11 @@ functions
     QC(a0, a1) == 
         (Q1(a0, a1.position) and Q1(a1, a0.position))
         or
-        (Q2(a0, a1.position) and Q2(a1, a0.position))
+        (Q1(a0, a1.position) and Q2(a1, a0.position))
         or
-        (Q3(a0, a1.position) and Q3(a1, a0.position))
+        (Q2(a0, a1.position) and Q1(a1, a0.position))
         or
-        (Q4(a0, a1.position) and Q4(a1, a0.position));
+        (Q2(a0, a1.position) and Q2(a1, a0.position));
 
     QD: Aircraft * Aircraft -> bool 
     QD(a0, a1) == 
@@ -525,31 +525,136 @@ functions
         =>
         (IS_in_Q1_and_was_in_Q2(a0, a1) or IS_in_Q1_and_was_in_Q2(a1, a0));
 
-types 
-    AirSpace :: 
-        aircrafts: Aircrafts
-        delta_c: preal
-        delta_o: preal
-        Theta_h: Angle
-    inv mk_AirSpace(aircrafts, delta_c, delta_o, Theta_h) ==
-        -- unique positions
-        card { a.position | a in set aircrafts } = card aircrafts 
-        and
-        -- safe airspace 
+    thm_safe_airspace: set of Aircraft -> preal * preal * Angle -> bool 
+    thm_safe_airspace(aircrafts)(delta_o, delta_c, Theta_h) == 
         forall a0 in set aircrafts & forall a1 in set aircrafts \ {a0} &
             thm1_deterministic_right_of_way(a0, a1)(delta_o, delta_c, Theta_h) and
             thm2_zero_crossed_only_one_to_right(a0, a1) and
             thm3_overtaking_asymmetric(a0, a1)(delta_o) and
             thm4_no_right_of_way_after_crossing(a0, a1) and
             thm5_mutual_awareness(a0, a1)(delta_o, delta_c, Theta_h) and
-            thm6_had_right_of_way(a0, a1); 
+            thm6_had_right_of_way(a0, a1);
 
---     String = seq1 of char; 
+    add_aircraft: Airspace * Aircraft -> Airspace
+    add_aircraft(asp, a) == mu (asp, aircrafts |-> asp.aircrafts union {a})
+    pre 
+        not a.position in set { ap.position | ap in set asp.aircrafts }
+        and 
+        thm_safe_airspace(asp.aircrafts union {a})(asp.delta_o, asp.delta_c, asp.Theta_h)
+    post   
+        a in set RESULT.aircrafts;
 
--- state S of
---     aspaces: map String to AirSpace
--- inv mk_S(aspaces) == forall k in set dom aspaces & aspaces(k).delta_c >= 0.0 
--- init s == s = mk_S(mk_AirSpace({}, 1.0, 1.0, 10.0))
--- end
+values
+    MIN_POS: real = -10.0;
+    MAX_POS: real = 10.0;
+
+functions 
+
+    get_xs: set of RVector * nzreal -> set1 of real 
+    get_xs(v, xinc) == 
+        if v = {} then 
+            { xinc }
+        else
+            { x + xinc | x in set { r.x | r in set v } } 
+    pre 
+        forall r in set v & r.x + xinc <> 0
+    post 
+        (v = {} => card RESULT = 1)
+        and
+        (v <> {} => card RESULT <= card v);
+
+    get_ys: set of RVector * nzreal -> set1 of real 
+    get_ys(v, yinc) == 
+        if v = {} then 
+            { yinc }
+        else
+            { y + yinc | y in set { r.y | r in set v } } 
+    pre 
+        forall r in set v & r.y + yinc <> 0
+    post 
+        (v = {} => card RESULT = 1)
+        and
+        -- velocities might be equal, so only up to original set
+        (v <> {} => card RESULT <= card v);
+
+    generate_vectors: set of RVector * nat1 * nzreal * nzreal -> set1 of RVector
+    generate_vectors(v, amount, xinc, yinc) == 
+        dunion 
+        { 
+            { mk_RVector(x*i, y*i) | x in set get_xs(v, xinc), y in set get_ys(v, yinc) 
+            -- & 
+            --   x+xinc <> 0 and y+yinc <> 0 
+            } 
+        | 
+            i in set { 1,...,amount }
+        }
+        \ v
+    pre 
+        pre_get_xs(v, xinc) and pre_get_ys(v, yinc)
+    post 
+        v inter RESULT = {}
+        --and
+        -- not true when repeated element in individual set results, depending on the input inc
+        -- print generate_vectors({mk_RVector(1.0, 1.0), mk_RVector(3.0, 1.0)}, 2, -5.0, -1.0)
+        -- dunion {{mk_RVector(-4, 0), mk_RVector(-2, 0)}, {mk_RVector(-8, 0), mk_RVector(-4, 0)}}
+        --card RESULT >= (card v * amount)
+        --card RESULT >= amount
+        ;
+ 
+    generate_aircrafts: Airspace * nat1 * nzreal * nzreal -> set of Aircraft
+    generate_aircrafts(mk_Airspace(aircrafts, -, -, -), amount, xinc, yinc) ==
+        let 
+          -- new unique positions
+          positions : set1 of Position = generate_vectors({ a.position | a in set aircrafts }, amount, xinc, yinc) 
+        in 
+          -- new aircraft positions
+          { mk_Aircraft(p, mk_RVector(100,100)) | p in set positions } 
+    pre 
+        pre_generate_vectors({ a.position | a in set aircrafts }, amount, xinc, yinc)
+    post 
+        { a.position | a in set aircrafts } inter { a.position | a in set RESULT } = {}
+        and
+        card RESULT >= amount;
+
+    generate_safe_aircrafts: Airspace * nat1 * nzreal * nzreal -> set of Aircraft
+    generate_safe_aircrafts(asp, amount, xinc, yinc) ==
+        { a | a in set generate_aircrafts(asp, amount, xinc, yinc) & 
+            thm_safe_airspace(asp.aircrafts union {a})(asp.delta_o, asp.delta_c, asp.Theta_h) 
+        };
+
+types 
+    Airspace :: 
+        aircrafts: Aircrafts
+        delta_c: preal
+        delta_o: preal
+        Theta_h: Angle
+    inv mk_Airspace(aircrafts, delta_c, delta_o, Theta_h) ==
+        -- unique positions
+        card { a.position | a in set aircrafts } = card aircrafts 
+        and
+        -- safe airspace 
+        thm_safe_airspace(aircrafts)(delta_o, delta_c, Theta_h);
+
+    String = seq1 of char; 
+
+state S of
+    aspaces: map String to Airspace
+  inv mk_S(aspaces) == forall k in set dom aspaces & aspaces(k).delta_c >= 0.0 
+  init s == s = mk_S({ "UK_AS" |-> mk_Airspace({}, 1.0, 1.0, 10.0) })
+end
+
+operations 
+
+    AddAircraft(airspaceName: String, a: Aircraft) ==
+    (
+        aspaces := aspaces ++ { airspaceName |-> add_aircraft(aspaces(airspaceName), a) }
+    )
+    ext wr aspaces
+    pre 
+        airspaceName in set dom aspaces
+        and
+        pre_add_aircraft(aspaces(airspaceName), a)
+    post 
+        post_add_aircraft(aspaces~(airspaceName), a, aspaces(airspaceName));
 
 end RightOfWayRules
