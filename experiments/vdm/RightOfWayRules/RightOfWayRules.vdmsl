@@ -2,7 +2,7 @@
 --     Model of "right of way" rules for aircraft
 --     follows the ideas in https://link.springer.com/chapter/10.1007/978-3-031-20872-0_4 
 module RightOfWayRules
-imports from MATH functions atan renamed atan;
+imports from MATH functions atan renamed atan sqrt renamed math_sqrt;
 exports all
 definitions
 
@@ -52,17 +52,11 @@ types
     Convergence = <Convergent> | <Divergent> | <Overtaking>;
 
     Aircrafts = set of Aircraft
-        --forall ca in set aspace & forall cb in set aspace \ {ca} & true;
-        -- -- no duplicate aircraft pairs
-        -- card aspace = card { mk_(ca.a1, ca.a0) | ca in set aspace } 
-        -- and 
-        -- -- unique pairing of aircraft
-        -- card aspace = card { ca.a1 | ca in set aspace }
-        ;
+    inv aircrafts == card { a.position | a in set aircrafts } = card aircrafts;
 
 values 
-    DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 6; 
-    DEFAULT_SQRT_ERROR: real = 10**(-DEFAULT_SQRT_PRECISION_MAGNITUDE);
+    DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 7; 
+    DEFAULT_SQRT_ERROR: real = 10**(-(DEFAULT_SQRT_PRECISION_MAGNITUDE));
 
     P1: Position = mk_RVector(-3,3);
     V1: Velocity = mk_RVector(2,1);
@@ -93,6 +87,9 @@ functions
 	approx_leq': real * real -> bool
 	approx_leq'(lhs, rhs) == lhs < rhs or approx_eq'(lhs, rhs);
 
+    rought_approx: real * real -> bool
+    rought_approx(lhs, rhs) == floor(lhs) = floor(rhs);
+
 	approx_geq': real * real -> bool
 	approx_geq'(lhs, rhs) == lhs > rhs or approx_eq'(lhs, rhs);
 
@@ -104,6 +101,8 @@ functions
     post 
         --(value <> 0 => 
         approx_leq'((2 * RESULT - guess) * guess, value)
+        or 
+        rought_approx((2 * RESULT - guess) * guess, value)
         --and 
         --(value = 0 => RESULT * 2 = guess)
         ;
@@ -164,7 +163,7 @@ functions
     post post_sqrt(x, DEFAULT_SQRT_ERROR, RESULT);
 
     magnitude: RVector -> preal  
-    magnitude(mk_RVector(x, y)) == sqrt(x**2 + y**2, DEFAULT_SQRT_ERROR);
+    magnitude(mk_RVector(x, y)) == math_sqrt((x**2) + (y**2)); --sqrt'(x**2 + y**2);
 
     sum: RVector * RVector -> RVector 
     sum(mk_RVector(x1, y1), mk_RVector(x2, y2)) == mk_RVector(x1+x2, y1+y2);
@@ -544,10 +543,6 @@ functions
     post   
         a in set RESULT.aircrafts;
 
-values
-    MIN_POS: real = -10.0;
-    MAX_POS: real = 10.0;
-
 functions 
 
     get_xs: set of RVector * nzreal -> set1 of real 
@@ -601,7 +596,10 @@ functions
         --card RESULT >= amount
         ;
  
-    generate_aircrafts: Airspace * nat1 * nzreal * nzreal -> set of Aircraft
+    -- generation is relative to the Position(x,y) coordinates, but it somewhat exponential given the original size * amount
+    -- spurious?
+    -- generate_safe_aircrafts(mk_Airspace({mk_Aircraft(mk_RVector(1.0, 1.0), mk_RVector(1.0, 1.0))}, 1.0, 1.0, 1.0), 1, -1.0, -5.0)
+    generate_aircrafts: Airspace * nat1 * nzreal * nzreal -> Aircrafts
     generate_aircrafts(mk_Airspace(aircrafts, -, -, -), amount, xinc, yinc) ==
         let 
           -- new unique positions
@@ -612,16 +610,43 @@ functions
     pre 
         pre_generate_vectors({ a.position | a in set aircrafts }, amount, xinc, yinc)
     post 
+        -- no conflicting positions with existing aircrafts
         { a.position | a in set aircrafts } inter { a.position | a in set RESULT } = {}
+        -- or simply 
+        and
+        aircrafts inter RESULT = {}
         and
         card RESULT >= amount;
 
-    generate_safe_aircrafts: Airspace * nat1 * nzreal * nzreal -> set of Aircraft
+    generate_safe_aircrafts: Airspace * nat1 * nzreal * nzreal -> Aircrafts
     generate_safe_aircrafts(asp, amount, xinc, yinc) ==
-        { a | a in set generate_aircrafts(asp, amount, xinc, yinc) & 
-            thm_safe_airspace(asp.aircrafts union {a})(asp.delta_o, asp.delta_c, asp.Theta_h) 
-        };
+        let 
+            aircrafts : Aircrafts = { a | a in set generate_aircrafts(asp, amount, xinc, yinc) },
+            -- post condition of generate_aircrafts ensures that union is okay
+            aircrafts': Aircrafts = aircrafts union asp.aircrafts
+        in 
+            { a | a in set aircrafts' & thm_safe_airspace(aircrafts')(asp.delta_o, asp.delta_c, asp.Theta_h) }
+    pre 
+        pre_generate_aircrafts(asp, amount, xinc, yinc)
+    post 
+        -- result must expand on current airspace 
+        asp.aircrafts psubset RESULT
+        and 
+        -- expansion remains safe
+        thm_safe_airspace(RESULT)(asp.delta_o, asp.delta_c, asp.Theta_h);
 
+    generate_safe_aircrafts_novel: Airspace * nat1 * nzreal * nzreal -> Aircrafts
+    generate_safe_aircrafts_novel(asp, amount, xinc, yinc) ==
+        generate_safe_aircrafts(asp, amount, xinc, yinc) \ asp.aircrafts
+    pre 
+        pre_generate_safe_aircrafts(asp, amount, xinc, yinc)
+    post 
+        -- result is novel
+        asp.aircrafts inter RESULT = {}
+        and
+        -- any result aircraft is safe to add 
+        thm_safe_airspace(asp.aircrafts union RESULT)(asp.delta_o, asp.delta_c, asp.Theta_h);
+        
 types 
     Airspace :: 
         aircrafts: Aircrafts
@@ -637,10 +662,26 @@ types
 
     String = seq1 of char; 
 
+values
+    MIN_POS: real = -10.0;
+    MAX_POS: real = 10.0;
+    DELTA_C: preal = 1000.0;
+    DELTA_O: preal = 100.0;
+    THETA_H: Angle = 90.0;
+
+    -- Keep the amounts low for the second interation otherwise gets quite big; 5 and 2 gives 51 aircrafts
+    -- let as1 = generate_safe_aircrafts(AIRSPACE, 5, 100, 200) in 
+    --    generate_safe_aircrafts(mu (AIRSPACE, aircrafts |-> as1), 2, 300, 200)
+    AIRSPACE0  : Airspace = mk_Airspace({}, DELTA_C, DELTA_O, THETA_H);
+    -- 51 crafts
+    AIRSPACE_UK: Airspace = mu (AIRSPACE0, aircrafts |-> generate_safe_aircrafts(AIRSPACE0, 5, 100, 200));
+    -- 120 to be filtered
+    --BIGGER_AIRSPACE_UK: Airspace = mu (AIRSPACE_UK, aircrafts |-> generate_safe_aircrafts(AIRSPACE_UK, 2, 300, 200));
+
 state S of
     aspaces: map String to Airspace
   inv mk_S(aspaces) == forall k in set dom aspaces & aspaces(k).delta_c >= 0.0 
-  init s == s = mk_S({ "UK_AS" |-> mk_Airspace({}, 1.0, 1.0, 10.0) })
+  init s == s = mk_S({ "UK_AS" |-> AIRSPACE0 })
 end
 
 operations 
