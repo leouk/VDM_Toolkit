@@ -107,11 +107,14 @@ functions
         --(value = 0 => RESULT * 2 = guess)
         ;
 
-	sqrt0: preal * pnzonereal * pnzreal * preal -> preal
-	sqrt0(valueI, value, episilon, result) ==
-		if approx_geq'(abs (value - result), episilon * value) then
+	sqrt0: preal * pnzonereal * pnzreal * preal * nat -> preal
+	sqrt0(valueI, value, episilon, result, rounds) ==
+        if rounds = 0 then 
+            result 
+        -- test in this order for L-to-R chain (i.e. don't want to carry on to negative rounds)
+        else if approx_geq'(abs (value - result), episilon * value) then
 		--if approx_leq'(abs(value**2 - valueI), episilon) then
-        	sqrt0(valueI, result, episilon, newton_guess(valueI, result))
+        	sqrt0(valueI, result, episilon, newton_guess(valueI, result), rounds - 1)
 		else
 			result
 	pre
@@ -127,9 +130,9 @@ functions
         and
         episilon > 0
     post 
-        result <> 1 => approx_leq'(abs(RESULT**2 - valueI), episilon) 
-    -- measure 
-    --     floor(result)
+        result <> 1 => approx_leq'(abs(RESULT**2 - valueI), episilon) or rounds = 0
+    measure 
+        rounds
     ;
 
     max: real * real -> real 
@@ -138,9 +141,10 @@ functions
 
 	sqrt: preal * pnzreal -> preal
 	sqrt(value, episilon) ==
-        if value in set {0,1} then value  
+        if value in set {0,1} then 
+            value  
         else 
-           sqrt0(value, value, episilon, max(1, newton_guess(value, value)))
+            sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE)
 	pre
         --@OnFail("Episilon must be strictly positive, e=%1s", episilon)
         (episilon > 0)
@@ -148,7 +152,7 @@ functions
         --@OnFail("Episilon must be within value, e=%1s, v=%2s", episilon, value)
         (value <> 0 => approx_leq'(episilon, value))
         and
-        (not value in set {0,1} => pre_sqrt0(value, value, episilon, max(1, newton_guess(value, value)))) 
+        (not value in set {0,1} => pre_sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE))
 	post
 		--@OnFail("Error tolerance is too big (i.e. reduce episilon), RESULT=%1s, episilon=%2s, input=%3s", RESULT, episilon, value)
 		(approx_leq'(abs((RESULT**2) - value), episilon))
