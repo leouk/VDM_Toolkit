@@ -246,7 +246,7 @@ functions
         atan(v0x / v0y);
 
     --@doc Time to Closest Point of Approach
-    tCPA: Aircraft * Aircraft -> nreal 
+    tCPA: Aircraft * Aircraft -> real 
     tCPA(a0, a1) ==
         if a0.velocity = a1.velocity then 
             0
@@ -257,7 +257,8 @@ functions
              in
                 - (dot_product(sub(a0.position, a1.position), sub_v1v2) / vDiffProd)
     post 
-        a0.velocity <> a1.velocity <=> is_nnzreal(RESULT);  
+        true--a0.velocity <> a1.velocity <=> is_nnzreal(RESULT)
+        ;  
 
     --@doc Horizontal Miss Distance is the distance at the Closest Point of Approach 
     --     when their position and velocity vectors are projected in time. Assumes delta_c ~< 1000 nautical miles
