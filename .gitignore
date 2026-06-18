@@ -423,3 +423,4 @@ plugins/vdm-antlr/src/main/java/vdmantlr/generated
 # IO.vdmsl
 # plugins/quickcheck2isa/target
 # 
+.cursor/rules/backslash

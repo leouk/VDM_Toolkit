@@ -33,7 +33,8 @@ types
 
     RVector :: x: real y: real; 
 
-    Position = RVector; --:: x: real y: real; 
+    Position = RVector
+    inv mk_RVector(x,y) == is_preal(x) and is_preal(y); --:: x: preal y: preal; 
 
     --@doc plane velocity
     Velocity = RVector 
@@ -54,118 +55,8 @@ types
     Aircrafts = set of Aircraft
     inv aircrafts == card { a.position | a in set aircrafts } = card aircrafts;
 
-values 
-    DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 7; 
-    DEFAULT_SQRT_ERROR: real = 10**(-(DEFAULT_SQRT_PRECISION_MAGNITUDE));
-
-    P1: Position = mk_RVector(-3,3);
-    V1: Velocity = mk_RVector(2,1);
-    P2: Position = mk_RVector(3,4);
-    V2: Velocity = mk_RVector(1,2);
-    A1: Aircraft = mk_Aircraft(P1, V1);
-    A2: Aircraft = mk_Aircraft(P2, V2);
-    --tCPA(A1, A2) fail, but not QC! 
-
 functions 
---@doc approximate to the given precision; useful for comparing up to an order of magnitude
-	approx: real * nat -> real
-	approx(m, precision) == m * (10**precision);
-	
-	--@doc approximate  both sides to the same precision then floor them for equality testing
-	approx_eq: real * real * nat -> bool
-	approx_eq(lhs, rhs, precision) == 
-		let 
-			lhs': real = approx(lhs, precision),
-			rhs': real = approx(rhs, precision)
-		 in
-		  floor(lhs') = floor(rhs');
-
-	approx_eq': real * real -> bool
-	approx_eq'(lhs, rhs) == 
-        approx_eq(lhs, rhs, DEFAULT_SQRT_PRECISION_MAGNITUDE);
-
-	approx_leq': real * real -> bool
-	approx_leq'(lhs, rhs) == lhs < rhs or approx_eq'(lhs, rhs);
-
-    rought_approx: real * real -> bool
-    rought_approx(lhs, rhs) == floor(lhs) = floor(rhs);
-
-	approx_geq': real * real -> bool
-	approx_geq'(lhs, rhs) == lhs > rhs or approx_eq'(lhs, rhs);
-
-	newton_guess: pnzreal * pnzreal -> pnzreal
-	newton_guess(value, guess) ==
-		(guess + (value / guess)) / 2
-    pre 
-        true--guess <> 1
-    post 
-        --(value <> 0 => 
-        approx_leq'((2 * RESULT - guess) * guess, value)
-        or 
-        rought_approx((2 * RESULT - guess) * guess, value)
-        --and 
-        --(value = 0 => RESULT * 2 = guess)
-        ;
-
-	sqrt0: preal * pnzonereal * pnzreal * preal * nat -> preal
-	sqrt0(valueI, value, episilon, result, rounds) ==
-        if rounds = 0 then 
-            result 
-        -- test in this order for L-to-R chain (i.e. don't want to carry on to negative rounds)
-        else if approx_geq'(abs (value - result), episilon * value) then
-		--if approx_leq'(abs(value**2 - valueI), episilon) then
-        	sqrt0(valueI, result, episilon, newton_guess(valueI, result), rounds - 1)
-		else
-			result
-	pre
-        valueI <> 1 
-        and
-        result >= 1
-        and
-        result < value
-        and
-		value <= valueI
-		and
-		approx_leq'(episilon, value)
-        and
-        episilon > 0
-    post 
-        result <> 1 => approx_leq'(abs(RESULT**2 - valueI), episilon) or rounds = 0
-    measure 
-        rounds
-    ;
-
-    max: real * real -> real 
-    max(x,y) == if approx_geq'(x, y) then x else y
-    post true;--approx_geq'(RESULT, x) or approx_geq'(RESULT, y);
-
-	sqrt: preal * pnzreal -> preal
-	sqrt(value, episilon) ==
-        if value in set {0,1} then 
-            value  
-        else 
-            sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE)
-	pre
-        --@OnFail("Episilon must be strictly positive, e=%1s", episilon)
-        (episilon > 0)
-        and
-        --@OnFail("Episilon must be within value, e=%1s, v=%2s", episilon, value)
-        (value <> 0 => approx_leq'(episilon, value))
-        and
-        (not value in set {0,1} => pre_sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE))
-	post
-		--@OnFail("Error tolerance is too big (i.e. reduce episilon), RESULT=%1s, episilon=%2s, input=%3s", RESULT, episilon, value)
-		(approx_leq'(abs((RESULT**2) - value), episilon))
-		and
-		--@OnFail("Result precision is too coarse (i.e. incorrect algoritm), RESULT=%1s, input=%2s", RESULT, value)
-		((RESULT + 1) * (RESULT + 1) > value)
-		;
     
-    sqrt': preal -> preal
-    sqrt'(x) == sqrt(x, DEFAULT_SQRT_ERROR)
-    pre pre_sqrt(x, DEFAULT_SQRT_ERROR)
-    post post_sqrt(x, DEFAULT_SQRT_ERROR, RESULT);
-
     magnitude: RVector -> preal  
     magnitude(mk_RVector(x, y)) == math_sqrt((x**2) + (y**2)); --sqrt'(x**2 + y**2);
 
@@ -195,7 +86,7 @@ functions
         else u.x * v.x + u.y * v.y
     --pre <> nan and <> infinity
     post
-        (isZero(u) and isZero(v) => RESULT = 0) 
+        (isZero(u) or isZero(v) => RESULT = 0) 
         and 
         (u = v and not isZero(u) => is_nzreal(RESULT))
         and
@@ -210,7 +101,7 @@ functions
     --@doc Aircraft quadrants (Q1..Q4) on the flight (2D) plane
     Q1: Aircraft * Position -> bool 
     Q1(a, p) == 
-        let psub: Position = sub(p, a.position) in 
+        let psub: RVector = sub(p, a.position) in 
             dot_product(psub, rotate90(a.velocity)) > 0.0
             and
             dot_product(psub, a.velocity) >= 0.0
@@ -219,14 +110,14 @@ functions
 
     Q2: Aircraft * Position -> bool 
     Q2(a, p) == 
-        let psub: Position = sub(p, a.position) in 
+        let psub: RVector = sub(p, a.position) in 
             dot_product(psub, rotate90(a.velocity)) <= 0.0
             and
             dot_product(psub, a.velocity) > 0.0;
 
     Q3: Aircraft * Position -> bool 
     Q3(a, p) == 
-        let psub: Position = sub(p, a.position) in 
+        let psub: RVector = sub(p, a.position) in 
             dot_product(psub, rotate90(a.velocity)) < 0.0
             and
             dot_product(psub, a.velocity) <= 0.0
@@ -235,7 +126,7 @@ functions
 
     Q4: Aircraft * Position -> bool 
     Q4(a, p) == 
-        let psub: Position = sub(p, a.position) in 
+        let psub: RVector = sub(p, a.position) in 
             dot_product(psub, rotate90(a.velocity)) >= 0.0
             and
             dot_product(psub, a.velocity) < 0.0;
@@ -442,6 +333,10 @@ functions
     --@doc Aircraft a1 has right of way over a0 (which must give way), when either 
     --     a0 is overtaking a1, or a0 is converging (except head on) and a1 is to the 
     --     right of a0 and thier trajectivies have not yet crossed
+    --
+    --     note the input parameters (confusingly) are the other way around from other functions! 
+    --     to avoid confusion we will have the inputs the way round like other functions and
+    --     change the implementation itself to match. 
     right_of_way: Aircraft * Aircraft -> preal * preal * Angle -> bool 
     right_of_way(a1, a0)(delta_o, delta_c, Theta_h) == 
         overtaking(a0, a1)(delta_o)
@@ -548,6 +443,17 @@ functions
     post   
         a in set RESULT.aircrafts;
 
+    set_airspace: Airspace * bool -> Airspace
+    set_airspace(mk_Airspace(aircrafts, delta_o, delta_c, theta_h, -), value) == 
+        mk_Airspace(aircrafts, delta_o, delta_c, theta_h, value)
+    pre 
+        --@OnFail("Cannot open airspace with unsafe aircrafts")
+        (value => thm_safe_airspace(aircrafts)(delta_o, delta_c, theta_h));
+
+    -- other models use strings for aircraft presence; here will be unique position 
+    has_aircraft: Airspace * Aircraft -> bool
+    has_aircraft(asp, a) == a in set asp.aircrafts;
+
 functions 
 
     get_xs: set of RVector * nzreal -> set1 of real 
@@ -605,7 +511,7 @@ functions
     -- spurious?
     -- generate_safe_aircrafts(mk_Airspace({mk_Aircraft(mk_RVector(1.0, 1.0), mk_RVector(1.0, 1.0))}, 1.0, 1.0, 1.0), 1, -1.0, -5.0)
     generate_aircrafts: Airspace * nat1 * nzreal * nzreal -> Aircrafts
-    generate_aircrafts(mk_Airspace(aircrafts, -, -, -), amount, xinc, yinc) ==
+    generate_aircrafts(mk_Airspace(aircrafts, -, -, -, -), amount, xinc, yinc) ==
         let 
           -- new unique positions
           positions : set1 of Position = generate_vectors({ a.position | a in set aircrafts }, amount, xinc, yinc) 
@@ -655,15 +561,16 @@ functions
 types 
     Airspace :: 
         aircrafts: Aircrafts
-        delta_c: preal
         delta_o: preal
+        delta_c: preal
         Theta_h: Angle
-    inv mk_Airspace(aircrafts, delta_c, delta_o, Theta_h) ==
+        open: bool
+    inv mk_Airspace(aircrafts, delta_o, delta_c, Theta_h, open) ==
         -- unique positions
         card { a.position | a in set aircrafts } = card aircrafts 
         and
         -- safe airspace 
-        thm_safe_airspace(aircrafts)(delta_o, delta_c, Theta_h);
+        (open => thm_safe_airspace(aircrafts)(delta_o, delta_c, Theta_h));
 
     String = seq1 of char; 
 
@@ -674,10 +581,21 @@ values
     DELTA_O: preal = 100.0;
     THETA_H: Angle = 90.0;
 
+    P1: Position = mk_RVector(3,3);
+    V1: Velocity = mk_RVector(2,1);
+    P2: Position = mk_RVector(30,40);
+    V2: Velocity = mk_RVector(1,2);
+    A1: Aircraft = mk_Aircraft(P1, V1);
+    A2: Aircraft = mk_Aircraft(P2, V2);
+    AIRSPACE1 : Airspace = mk_Airspace({A1, A2}, DELTA_O, DELTA_C, THETA_H, true);
+
+    ex1: bool = not right_of_way(A1,A2)(DELTA_O, DELTA_C, THETA_H);
+    ex2: bool = right_of_way(A2,A1)(DELTA_O, DELTA_C, THETA_H);
+
     -- Keep the amounts low for the second interation otherwise gets quite big; 5 and 2 gives 51 aircrafts
     -- let as1 = generate_safe_aircrafts(AIRSPACE, 5, 100, 200) in 
     --    generate_safe_aircrafts(mu (AIRSPACE, aircrafts |-> as1), 2, 300, 200)
-    AIRSPACE0  : Airspace = mk_Airspace({}, DELTA_C, DELTA_O, THETA_H);
+    AIRSPACE0  : Airspace = mk_Airspace({}, DELTA_O, DELTA_C, THETA_H, true);
     -- 51 crafts
     AIRSPACE_UK: Airspace = mu (AIRSPACE0, aircrafts |-> generate_safe_aircrafts(AIRSPACE0, 5, 100, 200));
     -- 120 to be filtered
@@ -690,6 +608,25 @@ state S of
 end
 
 operations 
+
+    OpenAirspace(airspaceName: String) ==
+    (
+        aspaces := aspaces ++ { airspaceName |-> set_airspace(aspaces(airspaceName), true) }
+    )
+    pre 
+        airspaceName in set dom aspaces
+        and 
+        pre_set_airspace(aspaces(airspaceName), true);
+
+    CloseAirspace(airspaceName: String) ==
+    (
+        aspaces := aspaces ++ { airspaceName |-> set_airspace(aspaces(airspaceName), false) }
+    )
+    pre 
+        airspaceName in set dom aspaces
+        -- and 
+        -- pre_set_airspace(aspaces(airspaceName), false)
+        ;
 
     AddAircraft(airspaceName: String, a: Aircraft) ==
     (

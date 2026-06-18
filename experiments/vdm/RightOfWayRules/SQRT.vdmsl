@@ -1,0 +1,122 @@
+module SQRT
+definitions
+values
+    DEFAULT_SQRT_PRECISION_MAGNITUDE: nat1 = 7; 
+    DEFAULT_SQRT_ERROR: real = 10**(-(DEFAULT_SQRT_PRECISION_MAGNITUDE));
+types
+    --@doc non-zero real
+    nzreal = real 
+    inv r == r <> 0;
+
+    --@doc positive real
+    preal = real 
+    inv r == r >= 0;
+
+    --@doc positive non-zero (>0) real
+    pnzreal = preal 
+    inv r == is_nzreal(r); 
+
+    --@doc positive non-zero/one (>0, <>1) real
+    pnzonereal = pnzreal
+    inv r == r <> 1;
+
+functions
+  --@doc approximate to the given precision; useful for comparing up to an order of magnitude
+	approx: real * nat -> real
+	approx(m, precision) == m * (10**precision);
+	
+	--@doc approximate  both sides to the same precision then floor them for equality testing
+	approx_eq: real * real * nat -> bool
+	approx_eq(lhs, rhs, precision) == 
+		let 
+			lhs': real = approx(lhs, precision),
+			rhs': real = approx(rhs, precision)
+		 in
+		  floor(lhs') = floor(rhs');
+
+	approx_eq': real * real -> bool
+	approx_eq'(lhs, rhs) == 
+        approx_eq(lhs, rhs, DEFAULT_SQRT_PRECISION_MAGNITUDE);
+
+	approx_leq': real * real -> bool
+	approx_leq'(lhs, rhs) == lhs < rhs or approx_eq'(lhs, rhs);
+
+    rought_approx: real * real -> bool
+    rought_approx(lhs, rhs) == floor(lhs) = floor(rhs);
+
+	approx_geq': real * real -> bool
+	approx_geq'(lhs, rhs) == lhs > rhs or approx_eq'(lhs, rhs);
+
+	newton_guess: pnzreal * pnzreal -> pnzreal
+	newton_guess(value, guess) ==
+		(guess + (value / guess)) / 2
+    pre 
+        true--guess <> 1
+    post 
+        --(value <> 0 => 
+        approx_leq'((2 * RESULT - guess) * guess, value)
+        or 
+        rought_approx((2 * RESULT - guess) * guess, value)
+        --and 
+        --(value = 0 => RESULT * 2 = guess)
+        ;
+
+	sqrt0: preal * pnzonereal * pnzreal * preal * nat -> preal
+	sqrt0(valueI, value, episilon, result, rounds) ==
+        if rounds = 0 then 
+            result 
+        -- test in this order for L-to-R chain (i.e. don't want to carry on to negative rounds)
+        else if approx_geq'(abs (value - result), episilon * value) then
+		--if approx_leq'(abs(value**2 - valueI), episilon) then
+        	sqrt0(valueI, result, episilon, newton_guess(valueI, result), rounds - 1)
+		else
+			result
+	pre
+        valueI <> 1 
+        and
+        result >= 1
+        and
+        result < value
+        and
+		value <= valueI
+		and
+		approx_leq'(episilon, value)
+        and
+        episilon > 0
+    post 
+        result <> 1 => approx_leq'(abs(RESULT**2 - valueI), episilon) or rounds = 0
+    measure 
+        rounds
+    ;
+
+    max: real * real -> real 
+    max(x,y) == if approx_geq'(x, y) then x else y
+    post true;--approx_geq'(RESULT, x) or approx_geq'(RESULT, y);
+
+	sqrt: preal * pnzreal -> preal
+	sqrt(value, episilon) ==
+        if value in set {0,1} then 
+            value  
+        else 
+            sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE)
+	pre
+        --@OnFail("Episilon must be strictly positive, e=%1s", episilon)
+        (episilon > 0)
+        and
+        --@OnFail("Episilon must be within value, e=%1s, v=%2s", episilon, value)
+        (value <> 0 => approx_leq'(episilon, value))
+        and
+        (not value in set {0,1} => pre_sqrt0(value, value, episilon, max(1, newton_guess(value, value)), DEFAULT_SQRT_PRECISION_MAGNITUDE))
+	post
+		--@OnFail("Error tolerance is too big (i.e. reduce episilon), RESULT=%1s, episilon=%2s, input=%3s", RESULT, episilon, value)
+		(approx_leq'(abs((RESULT**2) - value), episilon))
+		and
+		--@OnFail("Result precision is too coarse (i.e. incorrect algoritm), RESULT=%1s, input=%2s", RESULT, value)
+		((RESULT + 1) * (RESULT + 1) > value)
+		;
+    
+    sqrt': preal -> preal
+    sqrt'(x) == sqrt(x, DEFAULT_SQRT_ERROR)
+    pre pre_sqrt(x, DEFAULT_SQRT_ERROR)
+    post post_sqrt(x, DEFAULT_SQRT_ERROR, RESULT);
+end SQRT
