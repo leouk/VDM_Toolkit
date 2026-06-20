@@ -1,0 +1,30 @@
+-- @Warning(5000) suppress warnings for unused definitions
+module Animation
+imports
+  from RightOfWayRules
+    types
+Airspace
+Aircraft
+definitions
+operations
+    AnimateCheck: () ==> bool
+    AnimateCheck() ==
+(
+(
+dcl UK: RightOfWayRules`Airspace := mk_RightOfWayRules`Airspace({}, 100.0, 1000.0, 80.0, true);
+
+            (
+                dcl airspace: RightOfWayRules`Airspace := UK;
+                dcl expected: bool := true;
+                
+            if not (airspace.open = true and card airspace.aircrafts = 0) = expected
+            then return false
+            else skip;
+        
+            );
+            
+);
+return true
+)
+
+end Animation
