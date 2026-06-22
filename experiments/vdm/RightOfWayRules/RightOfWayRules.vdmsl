@@ -91,12 +91,15 @@ functions
         else u.x * v.x + u.y * v.y
     --pre <> nan and <> infinity
     post
+        --@OnFail("Dot product zero case not zero: u=%1s, v=%2s, RESULT=%3s", u, v, RESULT)
         (isZero(u) or isZero(v) => RESULT = 0) 
         and 
+        --@OnFail("Dot product equal non-zero case not zero: u=%1s, v=%2s, RESULT=%3s", u, v, RESULT)
         (u = v and not isZero(u) => is_nzreal(RESULT))
         and
         -- (u . v)**2 <= (u . u) * (v . v)
-        ((u.x*v.x) + (u.y*v.y))**2 <= (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y)
+        --@OnFail("Dot product equivalent symmetry case: u=%1s, v=%2s, pow2=%3s, itself=4s", u, v, (u.x*v.x) + (u.y*v.y))**2, (((u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y))))
+        (((u.x*v.x) + (u.y*v.y))**2 <= (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y))
         --true;
         ;
 
