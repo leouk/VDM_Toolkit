@@ -60,8 +60,29 @@ types
     Aircrafts = set of Aircraft
     inv aircrafts == card { a.position | a in set aircrafts } = card aircrafts;
 
+values 
+    --@doc order of precision magnitude to compare equals
+    EQ_PRECISION: nat1 = 8;
+
 functions 
-    
+
+  --@doc approximate to the given precision; useful for comparing up to an order of magnitude
+	approx: real * nat -> real
+	approx(m, precision) == m * (10**precision);
+	
+	--@doc approximate  both sides to the same precision then floor them for equality testing
+	approx_eq: real * real * nat -> bool
+	approx_eq(lhs, rhs, precision) == 
+		let 
+			lhs': real = approx(lhs, precision),
+			rhs': real = approx(rhs, precision)
+		 in
+          --@doc avoiding simpler "abs(lhs - rhs) > 1e-[precision]" to avoid floating issues
+		  floor(lhs') = floor(rhs');
+
+	approx_leq: real * real -> bool
+	approx_leq(lhs, rhs) == lhs < rhs or approx_eq(lhs, rhs, EQ_PRECISION);
+
     magnitude: RVector -> preal  
     magnitude(mk_RVector(x, y)) == math_sqrt((x**2) + (y**2)); --sqrt'(x**2 + y**2);
 
@@ -99,7 +120,8 @@ functions
         and
         -- (u . v)**2 <= (u . u) * (v . v)
         --@OnFail("Dot product equivalent symmetry case: u=%1s, v=%2s, pow2=%3s, itself=4s", u, v, (u.x*v.x) + (u.y*v.y))**2, (((u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y))))
-        (((u.x*v.x) + (u.y*v.y))**2 <= (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y))
+        (approx_leq(((u.x*v.x) + (u.y*v.y))**2, (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y)))
+        --(((u.x*v.x) + (u.y*v.y))**2 <= (u.x*u.x + u.y*u.y) * (v.x*v.x + v.y*v.y))
         --true;
         ;
 
