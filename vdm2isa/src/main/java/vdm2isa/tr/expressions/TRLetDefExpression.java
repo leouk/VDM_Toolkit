@@ -41,7 +41,11 @@ public class TRLetDefExpression extends TRVDMLocalDefinitionListExpression {
 
     public TRLetDefExpression(TCDefExpression def, LexLocation location, TRDefinitionList localDefs, TRExpression expression, TRType exptype)
     {
-        this(location, def, localDefs, expression, exptype, true);
+        // this(location, def, localDefs, expression, exptype, true);
+        super(location, def, expression, exptype);
+        this.localDefs = localDefs;
+        //TODO limit the scope of things? Or not need, because VDMJ already does that? 
+        this.isDefExpression = true;
     }
 
     @Override

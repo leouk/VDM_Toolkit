@@ -216,7 +216,7 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 	}
 
 	@Override
-	public void setServerCapabilities(JSONObject capabilities)
+	public void setLSPCapabilities(JSONObject capabilities)
 	{
 		JSONObject experimental = capabilities.get("experimental");
 		
@@ -226,11 +226,12 @@ public abstract class ISAPlugin extends AnalysisPlugin implements EventListener
 			
 			if (provider != null)
 			{
-				JSONArray ids = provider.get("languageId");
+				JSONArray ids = provider.get("languages");
 				
 				if (ids != null)
 				{
-					ids.add("isabelle");	// Edit the capabilities to include isabelle
+					ids.add(new JSONObject(	// Edit the capabilities to include isabelle
+						"name", "isabelle", "description", "VDM to Isabelle"));
 				}
 			}
 		}

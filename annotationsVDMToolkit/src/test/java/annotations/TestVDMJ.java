@@ -3,14 +3,10 @@ package annotations;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fujitsu.vdmj.Release;
-import com.fujitsu.vdmj.plugins.PluginRegistry;
-import com.fujitsu.vdmj.plugins.analyses.TCPlugin;
 import com.fujitsu.vdmj.plugins.VDMJ;
-import com.fujitsu.vdmj.tc.modules.TCModuleList;
 import com.fujitsu.vdmjunit.VDMJUnitTestSL;
 
 public class TestVDMJ extends VDMJUnitTestSL {
