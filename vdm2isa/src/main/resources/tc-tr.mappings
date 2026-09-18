@@ -23,8 +23,8 @@ map TCRenamedDefinition{location, comments, annotations, name, used, excluded, d
 
 map TCStateDefinition{location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted} to TRStateDefinition(this, location, comments, annotations, name, nameScope, used, excluded, recordType, invPattern, invExpression, initPattern, initExpression, initdef, statedefs, canBeExecuted);
 
-map TCExplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions} to TRExplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions);
-map TCImplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions} to TRImplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, state, actualResult, possibleExceptions);
+map TCExplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, stateDefinition, actualResult, possibleExceptions} to TRExplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, stateDefinition, actualResult, possibleExceptions);
+map TCImplicitOperationDefinition{comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, stateDefinition, actualResult, possibleExceptions} to TRImplicitOperationDefinition(this, comments, annotations, name, nameScope, used, excluded, parameterPatterns, paramDefinitions, type, body, precondition, postcondition, predef, postdef, stateDefinition, actualResult, possibleExceptions);
 
 #############################################################################
 package com.fujitsu.vdmj.tc.expressions to vdm2isa.tr.expressions;
@@ -313,9 +313,9 @@ map TCVoidType{definitions} to TRVoidType(this, definitions);
 #############################################################################
 # Recursive loops
 #############################################################################
-package com.fujitsu.vdmj.tc to vdm2isa.tr.definitions;
+package com.fujitsu.vdmj.typechecker to vdm2isa.tr.definitions;
 map TCRecursiveCycles{} to TRRecursiveMap(this);
-map TCRecursiveLoops{recursiveLoops} to TRRecursiveLoops(recursiveLoops);
+#map TCRecursiveLoops{recursiveLoops} to TRRecursiveLoops(recursiveLoops);
 
 #############################################################################
 # Classes that are not mapped
